@@ -23,5 +23,6 @@ Web server root directory is `www/`
 - access log is at `./log/access.log`
 - database files are at `/Database/npl/` folder
 
-### Link
-- [[https://github.com/tatfook/wikicraft/wiki]]
+### Links
+- Design Docs: [[https://github.com/tatfook/wikicraft/wiki]]
+- Learning NPL: [[https://github.com/LiXizhi/NPLRuntime/wiki]]
