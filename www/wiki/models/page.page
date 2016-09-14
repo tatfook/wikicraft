@@ -1,0 +1,97 @@
+<?npl
+--[[
+Title: all local web pages
+Author: LiXizhi
+Date: 2016/6/28
+TODO: sharded by website name in future.
+]]
+include_once("./abstract/base.page");
+include_once("./project.page");
+include_once("./project_pages.page");
+
+local page = inherit(models.abstract.base, gettable("models.page"));
+
+page.db_name = "page";
+
+function page:ctor()
+	-- unique name: "sitename/pagename"
+	self:addfield("url", "string", true, 128);
+	-- markdown text description
+	self:addfield("title", "string", false, 30);
+	-- markdown content
+	self:addfield("content", "string", false, 100000);
+	-- content type: default to markdown
+	self:addfield("type", "string", false, 20);
+	-- sha hash: sha1("blob "+"filesize"+"\0"+"content");
+	self:addfield("sha", "string", false, 128);
+	-- last modify date
+	self:addfield("modifydate", "string", false, 64);
+	-- create date
+	self:addfield("createdate", "string", false, 64);
+end
+
+function page:get(params)
+	return page._super.get(self, params);
+end
+
+-- the site must be owned by the current signedin user. 
+-- @return err, query: if there is error, err is true. otherwise it is nil. query contains a validated table.
+function page:validateWriteQuery(params)
+	self:ensureAuthenticated();
+	local err, query = page._super.validateQuery(self, params);
+	if(not err) then
+		err = true;
+		if(query.url) then
+			local sitename, pagename = query.url:match("^(%w+)/(%w+)$");
+			if(sitename and pagename) then
+				local projs = models.project:new():get({name = sitename);
+				if(projs and #projs==1 and projs[1].userid == request.userid) then
+					return true, query;
+				end
+			end
+		end
+	end
+	return err, query;
+end
+
+function page:update(params)
+	local err, query = self:validateWriteQuery(params);
+	if(not err) then
+		query.modifydate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+		return page._super.update(self, query);
+	end
+end
+
+function page:getSHA1Hash(content)
+	-- TODO: 
+	return nil;
+end
+
+function page:create(params)
+	local err, query = self:validateWriteQuery(params);
+	if(not err and query.url) then
+		local sitename, pagename = query.url:match("^(%w+)/(%w+)$");
+		if(sitename and pagename) then
+			if(models.project_pages:new():addPage(sitename, pagename)) then
+				query.modifydate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+				query.createdate = query.modifydate;
+				return page._super.create(self, query);
+			end
+		end
+	end
+end
+
+function page:delete(params)
+	local err, query = self:validateWriteQuery(params);
+	if(not err and query.url) then
+		local sitename, pagename = query.url:match("^(%w+)/(%w+)$");
+		if(sitename and pagename) then
+			local data = page._super.delete(self, query);
+			if(data) then
+				if(models.project_pages:new():removePage(sitename, pagename)) then
+					return data;
+				end
+			end
+		end
+	end
+end

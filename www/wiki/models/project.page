@@ -1,0 +1,95 @@
+<?npl
+--[[
+Title: projects of a user
+Author: LiXizhi
+Date: 2016/7/31
+]]
+include_once("./abstract/multi_user_base.page");
+include_once("./stats.page");
+
+local project = inherit(models.abstract.multi_user_base, gettable("models.project"));
+
+project.db_name = "project";
+-- max items per user
+project.max_items_per_user = 10;
+
+function project:ctor()
+	-- unique name
+	self:addfield("name", "string", true, 30);
+	-- markdown text description
+	self:addfield("desc", "string");
+	-- site bg color 
+	self:addfield("color", "string", false, 16);
+	-- such as "https://github.com/LiXizhi/wiki"
+	self:addfield("store", "string", false, 200);
+	-- upstream forked url
+	self:addfield("fork", "string", false, 200);
+	-- creation date
+	self:addfield("createdate", "string", false, 64);
+	-- number of stars 
+	self:addfield("stars", "number");
+	-- 1 for private, null or 0 for public one
+	self:addfield("private", "number");
+end
+
+function project:create(params)
+	params.createdate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	params.stars = 0;
+	local name = params.name;
+	-- name should contain no non-word letters like `,` 
+	if(name and #name>=3 and #name <30 and not name:match("%W")) then
+		local data = project._super.create(self, params);
+		if(data) then
+			models.stats:new():addProject(name, true);
+		end
+		return data;
+	end
+end
+
+function project:delete(params)
+	local data = project._super.delete(self, params);
+	if(data and params.name) then
+		models.stats:new():addProject(params.name, false);
+	end
+	return data;
+end
+
+function project:update(params)
+	-- ignore these fields
+	params.stars = nil;
+	params.createdate = nil;
+	params.name = nil;
+	return project._super.update(self, params);
+end
+
+-- protected: increase the star count
+-- @param bIsAdding: true to add, false to remove
+-- @return proj object or nil. 
+function project:addStarCount(proj_name, bIsAdding)
+	local projs = self:get({name=proj_name});
+	if(projs and #projs == 1) then
+		local proj = projs[1];
+		if(proj) then
+			local stars = math.max(0, (proj.stars or 0) + (bIsAdding and 1 or -1));
+			self:db():updateOne({name=proj_name}, {stars = stars}, resume);
+			local err, data = yield(true); 
+			return data;
+		end
+	else
+		--local sites = include("../config/buildin.page");
+		--if(sites and sites[proj_name]) then
+			--
+		--end
+	end
+end
+
+-- return minimum info about the project
+function project:api_getminiproject(params)
+	if(not params.name) then
+		return;
+	end
+	local projs = project._super.get(self, params);
+	if(projs and #projs == 1) then
+		return projs[1];
+	end
+end

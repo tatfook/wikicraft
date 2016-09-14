@@ -1,0 +1,122 @@
+<?npl
+--[[
+Title: stars subscribed by the user
+Author: LiXizhi
+Date: 2016/8/2
+]]
+include_once("./abstract/per_user_base.page");
+include_once("project.page");
+include_once("project_stars.page");
+
+local user_stars = inherit(models.abstract.per_user_base, gettable("models.user_stars"));
+
+user_stars.db_name = "user_stars";
+user_stars.max_stars = 1000;
+-- max text length
+local max_length = 5000;
+
+function user_stars:ctor()
+	-- commar separated string of project names
+	self:addfield("stars", "string", nil);
+	-- TODO: add date when star is added. 
+end
+
+function user_stars:create(params)
+end
+
+function user_stars:update(params)
+end
+
+function user_stars:delete(params)
+end
+
+-- add a given project by name into the users' star list
+-- @params: {name=project_name}
+function user_stars:api_starproject(params)
+	self:ensureAuthenticated();
+	local name = params.name;
+	if(name and type(name) == "string" and #name < 30) then
+		local user = self:get();
+		if(user) then
+			local stars = user.stars or "";
+			if (stars:match(name..",")) then
+				return {success = true};
+			else
+				-- add star count
+				local proj = models.project:new():addStarCount(name, true);
+				if(proj and proj._id) then
+					-- add to project
+					if(#stars > max_length) then
+						-- add to front, pop the last.
+						stars = stars:gsub("[^,]+,$", "");
+						stars = (name..",")..stars;
+					else
+						stars = (name..",")..stars;
+					end
+					local res = user_stars._super.update(self, {stars = stars})
+					if(res) then
+						models.project_stars:new():addUser(name, self:getUserId());
+						return {success = true, stars=proj.stars};
+					end
+				end
+			end
+		else
+			local proj = models.project:new():addStarCount(name, true);
+			if(proj and proj._id) then
+				-- add to project
+				local stars = (name..",");
+				local res = user_stars._super.create(self, {stars = stars})
+				if(res) then
+					models.project_stars:new():addUser(name, self:getUserId());
+					return {success = true, stars=proj.stars};
+				end
+			end
+		end
+	end
+end
+
+-- add a given project by name into the users' star list
+-- @params: {name=project_name, [stars=number]}
+function user_stars:api_unstarproject(params)
+	self:ensureAuthenticated();
+	local name = params.name;
+	if(name and type(name) == "string" and #name < 30) then
+		local user = self:get();
+		if(user) then
+			local stars = user.stars or "";
+			if (stars:match(name..",")) then
+				-- remove star count
+				local proj = models.project:new():addStarCount(name, false);
+				if(proj and proj._id) then
+					stars = stars:gsub(name..",", "")
+					local res = user_stars._super.update(self, {stars = stars})
+					if(res) then
+						models.project_stars:new():removeUser(name, self:getUserId());
+						return {success = true, stars=proj.stars};
+					end
+				end
+			else
+				return {success = true};
+			end
+		end
+	end
+end
+
+-- @params: {name=project_name}
+-- @return true if the user has stared the project before
+-- return  {result = boolean, name=name} 
+function user_stars:api_hasproject(params)
+	self:ensureAuthenticated();
+	local name = params.name;
+	if(name and type(name) == "string" and #name < 30) then
+		local user = self:get();
+		if(user) then
+			local stars = user.stars or "";
+			if (stars:match(name..",")) then
+				return {result = true, name=name};
+			else
+				return {result = false, name=name};
+			end
+		end
+	end
+end

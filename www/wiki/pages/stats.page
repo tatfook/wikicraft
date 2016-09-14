@@ -1,0 +1,74 @@
+﻿<?npl
+wp_enqueue_script("statsController", "/wp-content/pages/wiki/controllers/statsController.js");
+?>
+<div class="col-sm-12 mt-4" ng-controller="statsController">
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					作品总数: {{siteinfo.projectcount || 0}}
+				</div>
+				<div class="panel-body">
+					<p class="mb-2">
+						最近创建的{{recent_projects.length}}个作品
+					</p>
+					<table class="table table-striped" style="text-align:left">
+						<tbody>
+							<tr ng-repeat="proj in recent_projects">
+								<td>
+									<div>
+										<div uib-tooltip="内部id: {{proj._id}} 派生自: {{proj.fork}}" class="img-rounded" ng-style="{'background-color':proj.color || '#808080' }" style="float:left;width:32px;height:32px;margin-right:5px;"></div>
+										<a ng-href="/{{proj.name}}">
+											<big>{{getProject($index).name}}</big>
+										</a>
+										<div uib-tooltip="查看订阅用户" class="pull-right" style="margin-top:5px;min-height:20px;min-width:50px">
+											<a ng-href="/{{proj.name}}/_subscribers"><i class="glyphicon glyphicon-star"></i>{{proj.stars || 0}}</a>
+										</div>
+									</div>
+									<div style="color:#808080" class="mt-2">
+										<div style="font-size:11px;">创建日期: {{proj.createdate}}<span style="margin-left:20px;" ng-if="proj.store">数据源: <a ng-href="{{proj.store}}">{{proj.store}}</a></span></div>
+										<div ng-if="selected_index != $index">
+											<div>{{proj.desc}}</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="row col-sm-12">
+						<ul uib-pagination items-per-page="projs_per_page" boundary-links="true" total-items="projects.length || 0" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					用户总数: {{siteinfo.usercount || 0}}
+				</div>
+				<div class="panel-body">
+					<div>
+						<p class="mb-2">
+							最近注册的{{recent_users.length || 0}}人
+						</p>
+						<div class="row col-sm-12 mb-2" ng-repeat="user in recent_users">
+							<a class="pull-left" ng-href="/wiki/profile#?userid={{getUser($index)._id}}">
+								<wiki-identicon userid="user._id" size="64" imageurl="user.picture"></wiki-identicon>
+							</a>
+							<div style="padding-left:10px;float:left;" >
+								<a ng-href="/wiki/profile#?userid={{user._id}}"><big>{{user.displayName}}</big></a><br />
+								<span style="font-size:11px;color:#808080" class="mt-1">
+									<div ng-show="user.joindate" tooltip-placement="bottom" uib-tooltip="注册日期"><i class="glyphicon glyphicon-time"></i> {{user.joindate}}</div>
+									<div ng-show="user.location" ><i class="glyphicon glyphicon-home"></i> {{user.location}}</div>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="row col-sm-12">
+						<ul uib-pagination items-per-page="users_per_page" boundary-links="true" total-items="users.length || 0" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

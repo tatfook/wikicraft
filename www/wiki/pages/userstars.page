@@ -1,0 +1,40 @@
+﻿<?npl
+wp_enqueue_script("userStarsController", "/wp-content/pages/wiki/controllers/userStarsController.js");
+?>
+<div class="col-sm-12" ng-controller="userStarsController">
+    <div>
+        <big class="mt-2 mb-2">
+            <span style="padding-bottom:10px">
+				<wiki-identicon userid="user._id" size="64" imageurl="user.picture" ></wiki-identicon>
+            </span>
+            <span>
+                `{{isOwner() ? "你" : getUser().displayName}}`共订阅了{{projects.length || 0}}个作品
+            </span>
+        </big>
+        <table class="table table-striped mt-2" style="text-align:left">
+            <tbody>
+                <tr ng-repeat="proj in getProjectsInPage()">
+                    <td>
+			            <div>
+				            <div uib-tooltip="内部id: {{proj._id}} 派生自: {{proj.fork}}" class="img-rounded" ng-style="{'background-color':proj.color || '#808080' }" style="float:left;width:32px;height:32px;margin-right:5px;"></div>
+				            <a ng-href="/{{proj.name}}">
+					            <big>{{getProject($index).name}}</big>
+				            </a>
+                            <button ng-show="isOwner()" class="pull-right btn btn-default" ng-click="unstar(proj.name)">取消订阅</button>
+				            <div uib-tooltip="查看订阅用户" class="pull-right" style="margin-top:5px;min-height:20px;min-width:50px">
+					            <a ng-href="/{{proj.name}}/_subscribers"><i class="glyphicon glyphicon-star"></i>{{proj.stars || 0}}</a>
+				            </div>
+			            </div>
+			            <div style="color:#808080" class="mt-2">
+				            <div style="font-size:11px;">创建日期: {{proj.createdate}}<span style="margin-left:20px;" ng-if="proj.store">数据源: <a ng-href="{{proj.store}}">{{proj.store}}</a></span></div>
+				            <div>{{proj.desc}}</div>
+			            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+	<div class="mt-2 mb-2 col-sm-12">
+        <ul uib-pagination items-per-page="items_per_page" boundary-links="true" total-items="projects.length || 0" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+    </div>
+</div>

@@ -1,0 +1,246 @@
+﻿<div ng-non-bindable class="wikitop">
+    <div class="container" style="position:relative;z-index:2">
+        <div class="row" style="position:absolute;width:100%">
+            <div class="col-sm-12 mt-2 carousel-frontpage" >
+                <h1>创造属于每一个人的作品网站</h1>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="9000">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                    <li data-target="#myCarousel" data-slide-to="3"></li>
+                    <li data-target="#myCarousel" data-slide-to="4"></li>
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox" style="color:#fff;">
+                    <div class="item active">
+                        <div class="carousel-fp-bg" style="background-color:#0094ff;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 carousel-frontpage">
+                                        <h3>"免费"，"数据安全"</h3>
+                                        <div>
+                                            <a class="btn btn-start" href="/wiki/projects">开始创作</a>
+                                        </div>
+                                        <div class="center-block" style="max-width:500px;text-align:left">
+                                            <p>
+                                                <ul>
+                                                    <li>数据中心在<a href="https://github.com">github</a>, 全球1000万程序员和Google, Microsoft, NASA, MIT等企业和学校的共同选择。你的网站内容将与它们一样安全与持久。</li>
+                                                    <li>下载<a href="/paracraft">Paracraft客户端</a>，您网站的所有数据可同步到您的个人电脑，随时将自己的电脑变成个人网站服务器。</li>
+                                                </ul>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="carousel-fp-bg" style="background-color:#c25406;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 carousel-frontpage">
+                                        <h3>制作并发布3D动画与VR作品</h3>
+                                        <div>
+                                            <a class="btn btn-start" href="/wiki/login">开始创作</a>
+                                        </div>
+                                        <div class="center-block" style="max-width:500px;text-align:left">
+                                            <p>
+                                                <ul>
+                                                    <li>21世界每个人都应学习写作，绘画与3D动画。</li>
+                                                    <li><a href="/paracraft">Paracraft</a>是一个人人都能学会的3D动画与VR制作工具，用方块创建人物，场景，可添加摄影机，制作骨骼动画，编程交互等。</li>
+                                                    <li>你可以发布作品到个人网站，别人可以进入你的3D世界。</li>
+                                                </ul>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="carousel-fp-bg" style="background-color:#988702;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 carousel-frontpage">
+                                        <h3>学习编程并发布你的作品</h3>
+                                        <div>
+                                            <a class="btn btn-start" href="/wiki/login">开始创作</a>
+                                        </div>
+                                        <div class="center-block" style="max-width:500px;text-align:left">
+                                            <p>
+                                                人人都应掌握计算机编程语言，学习<a href="/npl">NPL语言</a>让你的作品更加丰富
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="carousel-fp-bg" style="background-color:#1b8203;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 carousel-frontpage">
+                                        <h3>制作可交互的教学课程</h3>
+                                        <div>
+                                            <a class="btn btn-start" href="/wiki/login">开始创作</a>
+                                        </div>
+                                        <div class="center-block" style="max-width:550px;text-align:left">
+                                            <p>
+                                                <ul>
+                                                    <li>自学是教育的核心，老师应当整理或制作能够让学生自学的课件。 </li>
+                                                    <li><a href="/paracraft">Paracraft平台</a>可制作出比视频更便于实践的交互教学网站，并改变教育的评估方式。</li>
+                                                    <li>学生的作品才是教育或就业评估的唯一标准。</li>
+                                                </ul>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="carousel-fp-bg" style="background-color:#6602b4;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 carousel-frontpage">
+                                        <h3>建立你的在线简历，积累与传播个人思想</h3>
+                                        <div>
+                                            <a class="btn btn-start" href="/wiki/login">开始创作</a>
+                                        </div>
+                                        <div class="center-block" style="max-width:520px;text-align:left">
+                                            <p>
+                                                <ul>
+                                                    <li>作品就是你自己。它是你的文章，软件，VR视频，3D动画，书。</li>
+                                                    <li>无需专业知识，任何人都可以拥有自己的个人作品网站。</li>
+                                                    <li>人人都应学会将自己的思想永久的联入整个互联网。</li>
+                                                </ul>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Left and right controls -->
+                <a style="z-index:3" class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">上一页</span>
+                </a>
+                <a style="z-index:3" class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">下一页</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12  mt-4 mb-4" style="text-align:center;">
+                <h1>欢迎加入WikiCraft</h1>
+                <p>
+                    我们致力于为个人，老师，企业提供免费，可靠的作品创作与分享平台。
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid shade-gray tile-block">
+        <div class="row" style="text-align:center;">
+            <div class="col-sm-3 tile-bordered" >
+                <img src="https://assets-cdn.github.com/images/modules/site/home-ill-build.png" class="featurette-sm mb-4 mt-4">
+                <h3>用自然语言写网页</h3>
+                <p>你可以用WIKI的形式写网页和超链接。也可以混合HTML语言。</p>
+            </div>
+            <div class="col-sm-3 tile-bordered">
+                <img src="https://assets-cdn.github.com/images/modules/site/home-ill-work.png" class="featurette-sm mb-4 mt-4">
+                <h3>可嵌入3D交互世界</h3>
+                <p>通过NPL语言或Paracraft在网页中嵌入可交互的代码，3D世界或电影。不断加入新的扩展模块。</p>
+            </div>
+            <div class="col-sm-3 tile-bordered">
+                <img src="https://assets-cdn.github.com/images/modules/site/home-ill-projects.png" class="featurette-sm mb-4 mt-4">
+                <h3>分布式存储</h3>
+                <p>Github分布式中央数据源，可靠，持久。记录你的所有编辑历史。可免费架设NPL网站私服或自定义1级域名。</p>
+            </div>
+            <div class="col-sm-3 tile-bordered">
+                <img src="https://assets-cdn.github.com/images/modules/site/home-ill-platform.png" class="featurette-sm mb-4 mt-4">
+                <h3>免费，开源</h3>
+                <p>
+                    任何人可观看任何人订阅的网站； 任何人可观看任何人的网页源码，作品是最好的老师。
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 mt-4 mb-4">
+                <h2>谁在使用WikiCraft?</h2>
+                <hr class="triband-hr">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h3 class=""><a href="#" style="color:#0094ff">个人 <svg aria-hidden="true" class="octicon-right" height="16" version="1.1" viewBox="0 0 8 16" width="8"><path d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3z"></path></svg></a></h3>
+                        <p>上万名中小学生，使用WikiCraft建立了自己的3D作品。</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h3 class=""><a href="#" style="color:#1b8203">老师 <svg aria-hidden="true" class="octicon-right" height="16" version="1.1" viewBox="0 0 8 16" width="8"><path d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3z"></path></svg></a></h3>
+                        <p>优秀的老师与企业CTO使用WikiCraft创建了可交互的教学课件。</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h3 class=""><a href="#" style="color:#6602b4">企业 <svg aria-hidden="true" class="octicon-right" height="16" version="1.1" viewBox="0 0 8 16" width="8"><path d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3z"></path></svg></a></h3>
+                        <p>幼儿园，私立学校，培训机构用WikiCraft创建了连结学生，家长，老师的公司网站。</p>
+                    </div>
+                </div>
+                <hr class="triband-hr">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p>我们很荣幸为知名教育机构和企业提供了作品创作与分享平台。例如：</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <a class="btn btn-info btn-lg btn-partner" href="http://www.tatfook.com">大富科技</a>
+                        <a class="btn btn-info btn-lg btn-partner" href="http://www.taomee.com">淘米TaoMee</a>
+                        <a class="btn btn-default btn-lg btn-partner" href="#">北京开放大学</a>
+                        <a class="btn btn-info btn-lg btn-partner" href="#">联合大学</a>
+                        <a class="btn btn-info btn-lg btn-partner" href="#">深圳动漫基地</a>
+                        <a class="btn btn-default btn-lg btn-partner" href="#">安徽工程大学</a>
+                        <a class="btn btn-default btn-lg btn-partner" href="#">哈尔滨工业大学</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid shade-gray tile-block">
+        <div class="row">
+            <div class="container">
+                <div class="row mt-4 mb-4">
+                    <div class="col-sm-12">
+                        <h3>我们使用的软件(全部用NPL语言开发)</h3>
+                    </div>
+                    <div class="col-sm-12 mt-2">
+                        <a class="btn btn-success btn-lg btn-partner" href="https://github.com/LiXizhi/NPLRuntime/">NPL语言</a>
+                        <a class="btn btn-success btn-lg btn-partner" href="http://www.paracraft.cn/">Paracraft创意空间</a>
+                        <a class="btn btn-default btn-lg btn-partner" href="#">智慧地球</a>
+                        <a class="btn btn-success btn-lg btn-partner" href="http://haqi.61.com">魔法哈奇</a>
+                        <a class="btn btn-default btn-lg btn-partner" href="#">开放大学教育平台</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row mt-4 mb-4">
+            <div class="col-sm-4">
+                <a href="/wiki/projects" class="btn btn-lg btn-block btn-primary" style="margin:10px">注册新用户</a>
+            </div>
+            <div class="col-sm-8">
+                <p>马上注册新用户，创建你的首个个人作品网站</p>
+            </div>
+        </div>
+    </div>
+</div>

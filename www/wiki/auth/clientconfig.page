@@ -1,0 +1,20 @@
+<?npl
+--[[
+Title: client config
+Author: LiXizhi
+Date: 2016/6/7
+Desc:
+]]
+?>
+<script>
+angular.module('MyApp')
+.config(function ($authProvider) {
+	$authProvider.github({
+        url: "/api/wiki/auth/github",
+        clientId: '<?=wiki_config().wiki.clientid.GITHUB_CLIENTID?>',
+        redirectUri: window.location.origin + '/wiki/login',
+		// scope: ["public_repo", "delete_repo"], 
+		scope: ["public_repo"], 
+    });
+});
+</script>

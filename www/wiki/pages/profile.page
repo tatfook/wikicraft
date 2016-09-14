@@ -1,0 +1,63 @@
+﻿<?npl
+wp_enqueue_script("profileController", "/wp-content/pages/wiki/controllers/profileController.js");
+?>
+<div class="col-sm-12 mt-4" ng-controller="profileController">
+    <div class="col-sm-4">
+        <big>
+            <div style="padding-bottom:10px">
+                <wiki-identicon userid="user._id" size="256" imageurl="user.picture"></wiki-identicon>
+            </div>
+            <div>{{getUser().displayName}}</div>
+            <div ng-show="user.company" style="color:#808080">{{user.company}}</div>
+            <div>
+                <a class="btn btn-primary" ng-href="/wiki/userstars#?userid={{user._id}}"><i class="glyphicon glyphicon-star"></i> 我的订阅</a>
+                <a class="btn btn-default" ng-show="isOwner()" ng-href="/wiki/settings">编辑</a>
+            </div>
+        </big>
+        <hr />
+        <div ng-show="user.joindate" uib-tooltip="注册日期"><i class="glyphicon glyphicon-time"></i> {{user.joindate}}</div>
+        <div ng-show="user.location"><i class="glyphicon glyphicon-home"></i> {{user.location}}</div>
+        <div ng-show="user.publicemail"><i class="glyphicon glyphicon-envelope"></i> <a ng-href="mailto:{{user.publicemail}}">{{user.publicemail}}</a></div>
+        <div ng-show="user.url"><i class="glyphicon glyphicon-link"></i> <a ng-href="{{user.url}}">{{user.url}}</a></div>
+        <div ng-show="user.github"><i class="glyphicon glyphicon-heart"></i> <a style="cursor:pointer" uib-tooltip="github id:{{user.github}}" ng-click="gotoGithubPage(user.github)">github page</a></div>
+        <hr />
+        <div ng-show="user.bio">{{user.bio}}</div>
+    </div>
+    <div class="col-sm-8">
+        <table class="table table-striped" style="text-align:left">
+            <thead>
+                <tr style="font-weight:bold">
+                    <td>
+                        <div>
+                            共{{projects.length}}个作品
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="proj in projects">
+                    <td>
+                        <div>
+                            <div uib-tooltip="内部id: {{proj._id}} 派生自: {{proj.fork}}" class="img-rounded" ng-style="{'background-color':proj.color || '#808080' }" style="float:left;width:32px;height:32px;margin-right:5px;"></div>
+                            <a ng-href="/{{proj.name}}">
+                                <big>{{proj.name}}</big>
+                            </a>
+                            <span ng-if="proj.private" class="bg-danger" style="font-size:11px">
+                                私有
+                            </span>
+                            <div uib-tooltip="查看订阅用户" class="pull-right" style="margin-top:5px;min-height:20px;min-width:50px">
+                                <a ng-href="/{{proj.name}}/_subscribers"><i class="glyphicon glyphicon-star"></i>{{proj.stars || 0}}</a>
+                            </div>
+                        </div>
+                        <div style="color:#808080" class="mt-2">
+                            <div style="font-size:11px;">创建日期: {{proj.createdate}}<span style="margin-left:20px;" ng-if="proj.store">数据源: <a ng-href="{{proj.store}}">{{proj.store}}</a></span></div>
+                            <div ng-if="selected_index != $index">
+                                <div>{{proj.desc}}</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
