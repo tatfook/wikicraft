@@ -22,3 +22,6 @@ Web server root directory is `www/`
 - error log is at `./log.txt`
 - access log is at `./log/access.log`
 - database files are at `/Database/npl/` folder
+
+### Link
+- [[https://github.com/tatfook/wikicraft/wiki]]
