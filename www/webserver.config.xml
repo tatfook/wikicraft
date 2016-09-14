@@ -15,9 +15,6 @@
   <rules id="simple_rule">
     <!--URI map everything without extension to index.page-->
     <rule match='{"^[^%./]*/$", "^[^%.]+$", "robots.txt"}' with="WebServer.redirecthandler" params='{"/index.page"}'></rule>
-    <!--npl script example-->
-    <!--<rule match="%.lua$" with="WebServer.makeGenericHandler" params='{docroot="script/apps/WebServer/test", params={}, extra_vars=nil}'></rule>-->
-    <rule match="%.lua$" with="WebServer.npl_script_handler" params='%CD%'></rule>
     <!--npl server page example-->
     <rule match="%.page$" with="WebServer.npl_page_handler" params='%CD%'></rule>
     <!--filehandler example, base dir is where the root file directory is. 

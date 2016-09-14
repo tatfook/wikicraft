@@ -24,5 +24,6 @@ Web server root directory is `www/`
 - database files are at `/Database/npl/` folder
 
 ### Links
+- Testing page is at: [[http://localhost:8099/test/test.page]]
 - Design Docs: [[https://github.com/tatfook/wikicraft/wiki]]
 - Learning NPL: [[https://github.com/LiXizhi/NPLRuntime/wiki]]
