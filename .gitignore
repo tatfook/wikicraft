@@ -4,6 +4,7 @@ database/
 npl_packages/
 log/
 obj/
+Properties/
 *.out
 *.log
 .vs/
