@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="log.txt" />
     <Content Include="npl_packages\main\script\apps\WebServer\admin\changes.txt" />
     <Content Include="npl_packages\main\script\apps\WebServer\admin\license.txt" />
     <Content Include="npl_packages\main\script\apps\WebServer\admin\readme.html" />

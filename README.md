@@ -25,5 +25,6 @@ Web server root directory is `www/`
 
 ### Links
 - Testing page is at: [[http://localhost:8099/dev/test.page]]
+- Debugger page is at: [[http://127.0.0.1:8099/]]
 - Design Docs: [[https://github.com/tatfook/wikicraft/wiki]]
 - Learning NPL: [[https://github.com/LiXizhi/NPLRuntime/wiki]]

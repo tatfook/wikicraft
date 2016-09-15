@@ -8,6 +8,10 @@
     -->
     <server host="*" port="8080">
       <defaultHost rules_id="simple_rule"></defaultHost>
+      <virtualhosts>
+        <!-- force "http://127.0.0.1/" to match to iternal npl_code_wiki site for debugging  -->
+        <host name="127.0.0.1:8099" rules_id="npl_code_wiki" allow='{"127.0.0.1"}'></host>
+      </virtualhosts>
     </server>
   </servers>
   

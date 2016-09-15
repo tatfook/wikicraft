@@ -9,3 +9,4 @@ Properties/
 *.log
 .vs/
 *.user
+*.ffs_gui
