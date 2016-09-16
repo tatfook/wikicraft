@@ -1019,6 +1019,8 @@
     <None Include="npl_packages\main\script\sqlite\tests.lua" />
     <None Include="README.md" />
     <None Include="start.bat" />
+    <None Include="update_packages.bat" />
+    <None Include="wikicraft.lua" />
     <None Include="www\dev\debugger.page" />
     <None Include="www\dev\test.page" />
     <None Include="www\index.page" />
