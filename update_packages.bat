@@ -12,6 +12,7 @@ if exist "main\README.md" (
 
 ) else (
 
+    RMDIR /S /Q "%CD%\main"
     git clone https://github.com/NPLPackages/main
 
 )
