@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/github.min.css">
     <script src="./lib/js/markdown-it.js"></script>
     <script src="./lib/js/bootstrap-treeview.js"></script>
-    <!--<script src="./lib/js/twemoji.min.js"></script>-->
+    <script src="https://twemoji.maxcdn.com/twemoji.min.js"></script>
     <link rel="stylesheet" href="./lib/css/index.css">
     <script src="./lib/js/index.js"></script>
 </head>
