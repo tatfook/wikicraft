@@ -66,6 +66,7 @@
     <None Include="wikicraft.lua" />
     <None Include="www\dev\debugger.page" />
     <None Include="www\dev\test.page" />
+    <None Include="www\test.page" />
     <None Include="www\index.page" />
     <None Include="www\wiki\auth\api.page" />
     <None Include="www\wiki\auth\clientconfig.page" />

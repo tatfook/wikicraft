@@ -25,6 +25,10 @@ wp_enqueue_script("wikiController", "/wp-content/pages/wiki/controllers/wikiCont
 wp_enqueue_script("angular-identicon", "/wp-content/pages/wiki/controllers/angular-identicon.js");
 wp_enqueue_style("wiki_style", "/wp-content/pages/wiki/assets/wiki.css");
 ?>
+
+HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+
 <div ng-app="MyApp" class="wiki">
     <nav style="<?=IsSingleSite() and 'display:none'?>" class="navbar navbar-inverse" ng-controller="UserCtrl as User">
         <div class="container">
