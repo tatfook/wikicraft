@@ -10,3 +10,4 @@ Properties/
 .vs/
 *.user
 *.ffs_gui
+*.ffs_db

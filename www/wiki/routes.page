@@ -16,8 +16,9 @@ Mapping of CRUD AJAX operations:
 Everything else is mapped to `wiki.page` as standard html file.
 ]]
 local path = pagename() or "";
-
-WIKI_ROOT = dirname(__FILE__).."/";
+-- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
+WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
+WIKI_ROOT = dirname(__FILE__);
 
 local ajax_path = path:match("^/?api/wiki/(.+)");
 if(ajax_path) then	

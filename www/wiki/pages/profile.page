@@ -1,5 +1,5 @@
 ﻿<?npl
-wp_enqueue_script("profileController", "/wp-content/pages/wiki/controllers/profileController.js");
+wp_enqueue_script("profileController", WIKI_WEBROOT.."controllers/profileController.js");
 ?>
 <div class="col-sm-12 mt-4" ng-controller="profileController">
     <div class="col-sm-4">

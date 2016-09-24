@@ -68,7 +68,7 @@
     $scope.ShowCreateProjectDialog = function () {
         $scope.isCreateBtnClicked = true;
         $uibModal.open({
-            templateUrl: "/wp-content/pages/wiki/partials/create_project.html",
+            templateUrl: WIKI_WEBROOT + "partials/create_project.html",
             controller: "ModelCreateProjectCtrl",
         }).result.then(function (proj) {
             $http.put("/api/wiki/models/project/new", {

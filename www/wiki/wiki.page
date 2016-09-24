@@ -18,12 +18,12 @@ wp_enqueue_style("highlight", "/wp-includes/js/highlight/default.css");
 wp_enqueue_script("highlight", "/wp-includes/js/highlight/highlight.pack.js");
 
 -- following is wiki angular app code, app.js must be included first followed by controllers.
-wp_enqueue_script("MyApp", "/wp-content/pages/wiki/app.js");
+wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
 include(WIKI_ROOT.."auth/clientconfig.page");
-wp_enqueue_script("authController", "/wp-content/pages/wiki/controllers/userController.js");
-wp_enqueue_script("wikiController", "/wp-content/pages/wiki/controllers/wikiController.js");
-wp_enqueue_script("angular-identicon", "/wp-content/pages/wiki/controllers/angular-identicon.js");
-wp_enqueue_style("wiki_style", "/wp-content/pages/wiki/assets/wiki.css");
+wp_enqueue_script("authController", WIKI_WEBROOT.."controllers/userController.js");
+wp_enqueue_script("wikiController", WIKI_WEBROOT.."controllers/wikiController.js");
+wp_enqueue_script("angular-identicon", WIKI_WEBROOT.."controllers/angular-identicon.js");
+wp_enqueue_style("wiki_style", WIKI_WEBROOT.."assets/wiki.css");
 ?>
 <div ng-app="MyApp" class="wiki">
     <nav style="<?=IsSingleSite() and 'display:none'?>" class="navbar navbar-inverse" ng-controller="UserCtrl as User">
