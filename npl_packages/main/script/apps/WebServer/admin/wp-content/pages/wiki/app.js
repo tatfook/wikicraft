@@ -1,1 +1,0 @@
-angular.module('MyApp', ['satellizer', 'ui.bootstrap']);

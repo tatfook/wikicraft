@@ -1,6 +1,7 @@
 assets.log
 log.txt
 database/
+npl_packages/
 log/
 obj/
 Properties/
