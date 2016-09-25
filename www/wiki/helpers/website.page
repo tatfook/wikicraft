@@ -139,6 +139,7 @@ function RenderServerWikiScript()
 			echo(format("<script>window.siteInfo = %s;</script>", json_encode(curSite)));
 		end
 	end
+	echo(format("<script>WIKI_WEBROOT = \"%s\";</script>", WIKI_WEBROOT));
 end
 
 -- server side cached content for google agent and special wiki/* pages, etc. 

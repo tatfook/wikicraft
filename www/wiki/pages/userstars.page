@@ -1,5 +1,5 @@
 ﻿<?npl
-wp_enqueue_script("userStarsController", "/wp-content/pages/wiki/controllers/userStarsController.js");
+wp_enqueue_script("userStarsController", WIKI_WEBROOT.."controllers/userStarsController.js");
 ?>
 <div class="col-sm-12" ng-controller="userStarsController">
     <div>

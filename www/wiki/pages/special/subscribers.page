@@ -1,5 +1,5 @@
 ﻿<?npl
-wp_enqueue_script("subscribersController", "/wp-content/pages/wiki/controllers/subscribersController.js");
+wp_enqueue_script("subscribersController", WIKI_WEBROOT.."controllers/subscribersController.js");
 ?>
 <div class="col-sm-12" ng-controller="SubscribersCtrl">
     <div>

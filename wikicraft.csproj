@@ -35,6 +35,20 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="log.txt" />
+    <Content Include="www\dev\lib\css\index.css" />
+    <Content Include="www\dev\lib\img\u617.png" />
+    <Content Include="www\dev\lib\js\ace.js" />
+    <Content Include="www\dev\lib\js\bootstrap-treeview.js" />
+    <Content Include="www\dev\lib\js\index.js" />
+    <Content Include="www\dev\lib\js\markdown-it.js" />
+    <Content Include="www\dev\lib\js\markdown-it.min.js" />
+    <Content Include="www\dev\lib\js\mode-html.js" />
+    <Content Include="www\dev\lib\js\show_own_source.js" />
+    <Content Include="www\dev\lib\js\theme-tomorrow.js" />
+    <Content Include="www\dev\lib\js\twemoji.js" />
+    <Content Include="www\dev\lib\js\twemoji.min.js" />
+    <Content Include="www\dev\lib\js\worker-html.js" />
+    <Content Include="www\dev\lib\js\worker-lua.js" />
     <Content Include="www\license.txt" />
     <Content Include="www\webserver.config.xml" />
     <Content Include="www\wiki\app.js" />
@@ -64,7 +78,7 @@
     <None Include="start.bat" />
     <None Include="update_packages.bat" />
     <None Include="wikicraft.lua" />
-    <None Include="www\dev\debugger.page" />
+    <None Include="www\dev\edit.page" />
     <None Include="www\dev\test.page" />
     <None Include="www\test.page" />
     <None Include="www\index.page" />
