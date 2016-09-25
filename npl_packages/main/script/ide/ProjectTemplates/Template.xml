@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<item>
+  <item>
+    <name>Applications</name>
+    <templates>
+      <item>
+        <name>ParaWorld App</name>
+        <des>create a new paraworld application with empty UI. files are app_main.lua and IP.xml</des>
+        <icon>Texture/3DMapSystem/AppIcons/Intro_64.dds</icon>
+        <startup>script/ide/ProjectTemplates/Templates/InstallApps/Startup.html</startup>
+        <loadnpl></loadnpl>
+      </item>
+      <item>
+        <name>Dev Template</name>
+        <des>Create a template, which can be used to create other component in DeveloperApp.</des>
+        <icon>Texture/3DMapSystem/AppIcons/Settings_64.dds</icon>
+        <startup>script/ide/ProjectTemplates/Templates/ProjectTemplate/Startup.html</startup>
+        <loadnpl></loadnpl>
+      </item>
+    </templates>
+  </item>
+	<item>
+		<name>NPL Components</name>
+		<templates>
+        <item>
+          <name>Empty NPL File</name>
+          <des>Create an empty NPL file</des>
+          <icon>Texture/3DMapSystem/AppIcons/Intro_64.dds</icon>
+          <startup>script/ide/ProjectTemplates/Templates/NPL_File/Startup.html</startup>
+          <loadnpl></loadnpl>
+        </item>
+        <item>
+          <name>NPL Class</name>
+          <des>TODO:create an NPL Class which can has many instances</des>
+          <icon>Texture/3DMapSystem/AppIcons/CG_64.dds</icon>
+          <startup></startup>
+          <loadnpl></loadnpl>
+        </item>
+        <item>
+          <name>NPL Window</name>
+          <des>TODO:create a simple NPL window</des>
+          <icon>Texture/3DMapSystem/AppIcons/Book_64.dds</icon>
+          <startup></startup>
+          <loadnpl></loadnpl>
+				</item>
+				<item>
+					<name>MCML Page</name>
+					<des>Create an mcml page with a default code behind script file</des>
+					<icon>Texture/3DMapSystem/AppIcons/homepage_64.dds</icon>
+					<startup>script/ide/ProjectTemplates/Templates/MCMLPage/Startup.html</startup>
+          <loadnpl></loadnpl>
+				</item>
+		</templates>
+	</item>
+	<item>
+		<name>Others</name>
+		<templates>
+					<item>
+						<name>others</name>
+						<des></des>
+						<icon></icon>
+						<startup></startup>
+            <loadnpl></loadnpl>
+					</item>
+		</templates>
+	</item>
+</item>
+
+	
+		

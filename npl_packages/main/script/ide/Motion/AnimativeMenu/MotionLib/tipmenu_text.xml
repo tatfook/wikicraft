@@ -1,0 +1,19 @@
+<!--script/ide/Motion/AnimativeMenu/MotionLib/tipmenu_text.xml-->
+<Motion duration="155" xmlns="fl.motion.*" xmlns:geom="flash.geom.*" xmlns:filters="flash.filters.*">
+  <source>
+    <Source frameRate="33" x="239.95" y="337.9" scaleX="1" scaleY="1" rotation="0" elementType="text">
+      <dimensions>
+        <geom:Rectangle left="-2" top="-2" width="463.95" height="66.2"/>
+      </dimensions>
+      <transformationPoint>
+        <geom:Point x="0.4999461148830693" y="0.5"/>
+      </transformationPoint>
+    </Source>
+  </source>
+
+  <Keyframe index="0"/>
+
+  <Keyframe index="26"/>
+
+  <Keyframe index="154"/>
+</Motion>

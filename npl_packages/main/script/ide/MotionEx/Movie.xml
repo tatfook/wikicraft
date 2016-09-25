@@ -1,0 +1,104 @@
+<!--script/ide/MotionEx/Movie.xml-->
+<Movie>
+	<Assets>
+		<Model id="test1" />
+	</Assets>
+	<Scenes>
+		<Scene motionid="1" />
+		<Scene motionid="1" />
+	</Scenes>
+	<Motions>
+		<Motion id="1">
+		  <MotionLine >
+			<UID></UID>
+			<Target></Target>
+			更新的类型 
+			<Type>aries_camera</Type>
+			场景名称，空为大场景
+			<Scene></Scene>
+			<Origin>{ CameraObjectDistance = 0, CameraLiftupAngle = 0, CameraRotY = 0,}</Origin>
+			<Desc>camrea motion line</Desc>
+			<KeyFrames>
+			  <KeyFrame>
+				<KeyTime>00:00:00</KeyTime>
+				<Value>{ CameraObjectDistance = 8, CameraLiftupAngle = 0, CameraRotY = -1.3,}</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:01</KeyTime>
+				<Value>{ CameraObjectDistance = 8, CameraLiftupAngle = 0.6, CameraRotY = -1.3 }</Value>
+				<FrameType>easeInQuad</FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:02</KeyTime>
+				<Value>{ CameraObjectDistance = 8, CameraLiftupAngle = 0, CameraRotY = -1.3 }</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:03</KeyTime>
+				<Value>{ CameraObjectDistance = 8, CameraLiftupAngle = 0.6, CameraRotY = -1.3 }</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			</KeyFrames>
+		  </MotionLine>
+		  <MotionLine>
+			<UID></UID>
+			<Target>test1</Target>
+			<!--更新的类型 -->
+			<Type>movie_entity</Type>
+			<!--场景名称，空为大场景-->
+			<Scene></Scene>
+			<Origin>{ x = 0, y = 0, z = 0, facing = 0 }</Origin>
+			<Desc></Desc>
+			<KeyFrames>
+			  <KeyFrame>
+				<KeyTime>00:00:00</KeyTime>
+				<Value>{ x = 255}</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:05</KeyTime>
+				<Value>{ x = 260}</Value>
+				<FrameType>easeInQuad</FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:10</KeyTime>
+				<Value>{ y = 3, facing = 0 }</Value>
+				<FrameType>easeInQuad</FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:20</KeyTime>
+				<Value>{ y = 0, facing = 3.14 }</Value>
+				<FrameType>easeInQuad</FrameType>
+			  </KeyFrame>
+			</KeyFrames>
+		  </MotionLine>
+		  <MotionLine>
+			<UID></UID>
+			<Target></Target>
+			<Type>aries_preloading_text</Type>
+			<!--场景名称，空为大场景-->
+			<Scene></Scene>
+			<Origin></Origin>
+			<Desc></Desc>
+			<KeyFrames>
+			  <KeyFrame>
+				<KeyTime>00:00:00</KeyTime>
+				<Value>{"hello npl"}</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:04</KeyTime>
+				<Value>{"hello lua"}</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			  <KeyFrame>
+				<KeyTime>00:00:20</KeyTime>
+				<Value>{"over"}</Value>
+				<FrameType></FrameType>
+			  </KeyFrame>
+			</KeyFrames>
+		  </MotionLine>
+		</Motion>
+	</Motions>
+</Movie>

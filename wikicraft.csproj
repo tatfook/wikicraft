@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{ABA4D99F-E00E-4E6C-AF4D-BE7BE091C438}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>wikicraft</RootNamespace>
+    <AssemblyName>wikicraft</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>log\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>log\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="log.txt" />
+    <Content Include="www\dev\lib\css\index.css" />
+    <Content Include="www\dev\lib\img\u617.png" />
+    <Content Include="www\dev\lib\js\ace.js" />
+    <Content Include="www\dev\lib\js\bootstrap-treeview.js" />
+    <Content Include="www\dev\lib\js\index.js" />
+    <Content Include="www\dev\lib\js\markdown-it.js" />
+    <Content Include="www\dev\lib\js\markdown-it.min.js" />
+    <Content Include="www\dev\lib\js\mode-html.js" />
+    <Content Include="www\dev\lib\js\show_own_source.js" />
+    <Content Include="www\dev\lib\js\theme-tomorrow.js" />
+    <Content Include="www\dev\lib\js\twemoji.js" />
+    <Content Include="www\dev\lib\js\twemoji.min.js" />
+    <Content Include="www\dev\lib\js\worker-html.js" />
+    <Content Include="www\dev\lib\js\worker-lua.js" />
+    <Content Include="www\license.txt" />
+    <Content Include="www\webserver.config.xml" />
+    <Content Include="www\wiki\app.js" />
+    <Content Include="www\wiki\assets\wiki.css" />
+    <Content Include="www\wiki\auth\login.html" />
+    <Content Include="www\wiki\auth\register.html" />
+    <Content Include="www\wiki\controllers\angular-identicon.js" />
+    <Content Include="www\wiki\controllers\githubService.js" />
+    <Content Include="www\wiki\controllers\profileController.js" />
+    <Content Include="www\wiki\controllers\projectsController.js" />
+    <Content Include="www\wiki\controllers\settingsController.js" />
+    <Content Include="www\wiki\controllers\statsController.js" />
+    <Content Include="www\wiki\controllers\subscribersController.js" />
+    <Content Include="www\wiki\controllers\userController.js" />
+    <Content Include="www\wiki\controllers\userReposController.js" />
+    <Content Include="www\wiki\controllers\userStarsController.js" />
+    <Content Include="www\wiki\controllers\wikiController.js" />
+    <Content Include="www\wiki\partials\create_project.html" />
+    <Content Include="www\wiki\partials\page_popup.html" />
+    <Content Include="www\wiki\partials\site_popup.html" />
+    <Content Include="www\wiki\partials\userRepos.html" />
+    <Content Include="www\wiki\plugins\cloudgraph\cloudgraph.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.md" />
+    <None Include="README.md" />
+    <None Include="start.bat" />
+    <None Include="update_packages.bat" />
+    <None Include="wikicraft.lua" />
+    <None Include="www\dev\edit.page" />
+    <None Include="www\dev\test.page" />
+    <None Include="www\test.page" />
+    <None Include="www\index.page" />
+    <None Include="www\wiki\auth\api.page" />
+    <None Include="www\wiki\auth\clientconfig.page" />
+    <None Include="www\wiki\auth\config.page" />
+    <None Include="www\wiki\auth\facebook.page" />
+    <None Include="www\wiki\auth\github.page" />
+    <None Include="www\wiki\auth\google.page" />
+    <None Include="www\wiki\config\buildin.page" />
+    <None Include="www\wiki\config\db.page" />
+    <None Include="www\wiki\helpers\website.page" />
+    <None Include="www\wiki\models\abstract\base.page" />
+    <None Include="www\wiki\models\abstract\multi_user_base.page" />
+    <None Include="www\wiki\models\abstract\per_user_base.page" />
+    <None Include="www\wiki\models\page.page" />
+    <None Include="www\wiki\models\project.page" />
+    <None Include="www\wiki\models\project_pages.page" />
+    <None Include="www\wiki\models\project_stars.page" />
+    <None Include="www\wiki\models\recommended.page" />
+    <None Include="www\wiki\models\stats.page" />
+    <None Include="www\wiki\models\user.page" />
+    <None Include="www\wiki\models\user_stars.page" />
+    <None Include="www\wiki\pages\home.page" />
+    <None Include="www\wiki\pages\login.page" />
+    <None Include="www\wiki\pages\profile.page" />
+    <None Include="www\wiki\pages\projects.page" />
+    <None Include="www\wiki\pages\settings.page" />
+    <None Include="www\wiki\pages\special\subscribers.page" />
+    <None Include="www\wiki\pages\stats.page" />
+    <None Include="www\wiki\pages\userstars.page" />
+    <None Include="www\wiki\routes.page" />
+    <None Include="www\wiki\wiki.page" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

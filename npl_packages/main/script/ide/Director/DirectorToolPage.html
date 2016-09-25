@@ -1,0 +1,61 @@
+<!-- "script/ide/Director/DirectorToolPage.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Leio</title>
+</head>
+<body>
+<pe:mcml>
+<script type="text/npl" refresh="true"><![CDATA[
+NPL.load("(gl)script/ide/Director/DirectorToolPage.lua");
+local DirectorToolPage = commonlib.gettable("Director.DirectorToolPage");
+DirectorToolPage.OnInitPage();
+local page = document:GetPageCtrl();
+
+function SetPosition(name)
+    local dx = 0;
+    local dy = 0;
+    local dz = 0;
+    if(name == "dx+")then
+        dx = 0.1
+    elseif(name == "dx-")then
+        dx = -0.1
+    elseif(name == "dy+")then
+        dy = 0.1
+    elseif(name == "dy-")then
+            dy = -0.1
+    elseif(name == "dz+")then
+            dz = 0.1
+    elseif(name == "dz-")then
+            dz = -0.1
+    end
+    DirectorToolPage.SetPosition(dx,dy,dz);
+end
+function SetFacing(name)
+    local delta = 0;
+    if(name == "facing+")then
+        delta = 0.1;
+    elseif(name == "facing-")then
+        delta = -0.1;
+    end
+    DirectorToolPage.SetFacing(delta);
+end
+]]></script>
+    <div>
+        <input style="margin-left:5px;" type="button" name="dx+" value="dx+" onclick="SetPosition"/>
+        <input style="margin-left:5px;" type="button" name="dx-" value="dx-" onclick="SetPosition"/>
+        <br />
+        <input style="margin-left:5px;" type="button" name="dy+" value="dy+" onclick="SetPosition"/>
+        <input style="margin-left:5px;" type="button" name="dy-" value="dy-" onclick="SetPosition"/>
+        <br />
+        <input style="margin-left:5px;" type="button" name="dz+" value="dz+" onclick="SetPosition"/>
+        <input style="margin-left:5px;" type="button" name="dz-" value="dz-" onclick="SetPosition"/>
+        <br />
+        <input style="margin-left:5px;" type="button" name="facing+" value="facing+" onclick="SetFacing"/>
+        <input style="margin-left:5px;" type="button" name="facing-" value="facing-" onclick="SetFacing"/>
+        <br />
+    </div>
+</pe:mcml> 
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!-- "script/ide/KeyboardShortcut/KeyboardShortcut_page.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title></title>
+</head>
+<body>
+<pe:mcml style="max-width:800px" align="center">
+<script type="text/npl" src="KeyboardShortcut.lua">
+CommonCtrl.KeyboardShortcut.OnInit();
+function createCustom(params)
+   CommonCtrl.KeyboardShortcut.Show(params);
+end
+function createCustom_KeyLineBox(params)
+   CommonCtrl.KeyboardShortcut.ShowKeyLineBox(params);
+end
+</script>
+<div style="padding:5px;" width="100%">
+<div style="margin-bottom:5px">
+    命令列表:
+     <div style="float:left"  height="40%">
+        <pe:custom oncreate="createCustom" />     
+    </div>
+
+</div>
+<div style="margin-bottom:5px">
+    快捷键是:
+    <div style="float:left" width="70%" >
+     <textarea name="isCommand_txt"  rows="2" ReadOnly="true"></textarea>
+     </div>
+     <input style="margin-left:5px" type="button" value="移除"  onclick="CommonCtrl.KeyboardShortcut.DoRemoveKey()"/>
+</div>  
+<div style="margin-bottom:5px">
+    请按键盘:
+     <div style="float:left" width="70%" height="8%">
+        <pe:custom oncreate="createCustom_KeyLineBox" />     
+    </div>
+     <input style="margin-left:5px" type="button" value="检测"  onclick="CommonCtrl.KeyboardShortcut.DoFindItemByKey()"/>
+     <input style="margin-left:5px" type="button" value="替换快捷键"  onclick="CommonCtrl.KeyboardShortcut.DoReplaceKey()"/>
+</div>
+<div style="margin-bottom:5px">
+    是否使用:
+     <textarea name="usedBy_txt" rows="2" ReadOnly="true"></textarea>
+</div>
+<div style="margin-bottom:5px">
+   <input style="margin-left:5px" type="button" value="取消"  onclick="CommonCtrl.KeyboardShortcut.OnCancel()"/>
+   <input style="margin-left:5px" type="button" value="保存"  onclick="CommonCtrl.KeyboardShortcut.DoSaveFile()"/>
+   <br/>
+   <!--<font style="color:#808080;">编辑完后，请记得点击一下“关闭”按钮，这个时候所有的命令才起作用。</font>
+   <br/>
+   <input style="margin-left:5px" type="button" value="关闭"  onclick="CommonCtrl.KeyboardShortcut.DoClose()"/>-->
+</div>
+</div>
+</pe:mcml>
+</body>
+</html>
+

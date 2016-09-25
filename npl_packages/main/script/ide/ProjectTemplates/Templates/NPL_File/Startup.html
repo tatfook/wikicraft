@@ -1,0 +1,46 @@
+﻿<!-- "script/ide/ProjectTemplates/Templates/NPL_File/Startup.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NPL file, Leio, 2008.3</title>
+</head>
+<body>
+<pe:mcml>
+<script>
+NPL.load("(gl)script/ide/ProjectTemplates/TemplateProcessor.lua");
+local template_files = {
+	{filename = "script/ide/ProjectTemplates/Templates/NPL_File/template.lua.template", output="%location%/%name%.lua", },
+}
+ProjectTemplates.TemplateProcessor.OnInit();
+function OnSubmit(btnName, values)
+    ProjectTemplates.TemplateProcessor.OnSubmit(btnName, values, template_files)
+end
+</script>
+<div class="darkbox" style="padding:5px;height:74px;" width="100%">
+    <img style="width:64px;height:64px;margin-left:4px;margin-top:2px;background:Texture/3DMapSystem/AppIcons/Intro_64.dds;" />
+    <div style="float:left;font-weight:bold;color:#FFFFFF;font-size:14px;margin-top:10px;margin-left:10px">创建一个空的NPL脚本文件</div>
+</div>
+<pe:tabs name="LoginTabParent" style="margin-top:5px;">
+<pe:tab-item text="基本信息" selected="true" style="padding-left:10px">
+    <form name="basic">
+        <div style="width:120px;float:left;text-align:right">* 文件名称:</div><input name="name" type="text" style="width:400px"/>
+        <br />
+        <div style="width:120px;float:left;text-align:right">* 文件路径:</div><div style="float:left"><input name="location" type="file" style="width:400px" dir="*."/></div>
+        <hr />
+        <div style="width:120px;float:left;text-align:right">标题:</div><input name="title" type="text" style="width:400"/>
+        <br />
+        <div style="width:120px;float:left;text-align:right">作者:</div><input name="author" type="text" style="width:400"/>
+        <br />
+        <div style="width:120px;float:left;text-align:right">时间:</div><input name="date"  type="text" style="width:400" />
+        <br />
+        <div style="width:120px;float:left;text-align:right">描述:</div><textarea name="desc" rows="4"  style="width:400;"></textarea>
+        <hr />
+        <input type="submit" class="defaultbutton" name="save" value="保存"   onclick="OnSubmit"/>
+        <input type="submit" name="cancel" value="取消"   onclick="OnSubmit"/>
+    </form>
+</pe:tab-item>       
+</pe:tabs>
+</pe:mcml> 
+</body>
+</html>

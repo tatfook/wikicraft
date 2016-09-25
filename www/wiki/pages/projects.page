@@ -1,0 +1,77 @@
+﻿<?npl
+wp_enqueue_script("githubService", WIKI_WEBROOT.."controllers/githubService.js");
+wp_enqueue_script("projectsController", WIKI_WEBROOT.."controllers/projectsController.js");
+?>
+<div class="col-sm-12" ng-controller="projectsController as projCtrl">
+    <div style="text-align:center" class="mt-2">
+        <div class="mt-2 mb-2" ng-if="!isAuthenticated()">
+            <button class="btn btn-primary" ng-click="login()">请先登录</button>
+        </div>
+        <button tooltip-trigger="'none'" tooltip-is-open="isAuthenticated() && projects.length==0 && !lastCreatedProjName && !isCreateBtnClicked" uib-tooltip="请点击这里" tooltip-placement="left" ng-disabled="projects.length>=max_free_count" class="btn btn-lg btn-primary" ng-click="ShowCreateProjectDialog()">新建网站</button>
+        <div class="mt-2 mb-2" ng-show="projects.length==0">
+            马上拥有你的个人作品网站，永久免费
+        </div>
+        <div class="mt-2 mb-2" ng-show="projects.length>=max_free_count">
+            每个用户最多可创建{{max_free_count}}个免费个人作品网站
+        </div>
+        <div ng-show="lastCreatedProjName" class="mt-2" style="color:green">恭喜！ `{{lastCreatedProjName}}`创建成功！</div>
+        <table class="table table-hover mt-4" style="text-align:left">
+            <thead>
+                <tr style="font-weight:bold">
+                    <td>
+                        <div class="mt-2 mb-2" ng-show="!projects.length || projects.length==0">
+                            你没有创建过任何作品网站
+                        </div>
+                        <div class="mt-2 mb-2" ng-show="projects.length && projects.length>0">
+                            你有{{projects.length}}个作品网站
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="proj in projects" ng-click="selectProj($index)">
+                    <td>
+                        <div>
+                            <blockquote ng-show="lastCreatedProjName==proj.name" class="bg-success"><big><i class="glyphicon glyphicon-arrow-down"></i> 请点击`{{proj.name}}`访问网站</big></blockquote>
+                            <div uib-tooltip="内部id: {{proj._id}} 派生自: {{proj.fork}}" class="img-rounded" ng-style="{'background-color':proj.color || '#808080' }" style="float:left;width:32px;height:32px;margin-right:5px;"></div>
+                            <a ng-href="/{{proj.name}}">
+                                <big>{{proj.name}}</big>
+                            </a>
+                            <span ng-if="!proj.store" class="bg-danger" style="font-size:11px">
+                                未开启数据备份
+                            </span>
+                            <div uib-tooltip="查看订阅用户" class="pull-right" style="margin-top:5px;min-height:20px;min-width:50px">
+                                <a ng-href="/{{proj.name}}/_subscribers"><i class="glyphicon glyphicon-star"></i>{{proj.stars || 0}}</a>
+                            </div>
+                        </div>
+                        <div style="color:#808080" class="mt-2">
+                            <div style="font-size:11px;">创建日期: {{proj.createdate}}<span style="margin-left:20px;" ng-if="proj.store">数据源: <a ng-href="{{proj.store}}">{{proj.store}}</a></span></div>
+                            <div ng-if="selected_index == $index" class="mt-2">
+                                <div class="form-group">
+                                    <h4>描述</h4>
+                                    <input type="text" class="form-control" ng-model="proj.desc" placeholder="输入描述文字" />
+                                </div>
+                                <div class="form-group">
+                                    <h4>数据源<a uib-tooltip="点击查看帮助" style="margin-left:5px;color:#808080;cursor:pointer" data-toggle="collapse" data-target="#data_help"><i class="glyphicon glyphicon-question-sign"></i></a></h4>
+                                    <div id="data_help" class="collapse" style="font-size:12px;">
+                                        例如: https://github.com/[用户名]/[项目名] <br />
+                                        或用wiki: https://github.com/[用户名]/[项目名]/wiki  
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="proj.store" placeholder="https://github.com/[username]/[projname]" />
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-success" ng-disabled="loading" ng-click="saveProj($index); $event.stopPropagation();">保存</button>
+                                    <button class="btn btn-default" ng-click="selectProj(); $event.stopPropagation();">取消</button>
+                                    <button class="btn btn-default pull-right" ng-click="deleteProj($index); $event.stopPropagation();">删除'{{proj.name}}'</button>
+                                </div>
+                            </div>
+                            <div ng-if="selected_index != $index">
+                                <div>{{proj.desc}}</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

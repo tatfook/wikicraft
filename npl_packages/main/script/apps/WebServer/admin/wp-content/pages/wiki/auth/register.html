@@ -1,0 +1,32 @@
+﻿<div style="position:absolute;top:5px;right:10px;">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+</div>
+
+<div class="modal-header" style="text-align:center;">
+    <h2>加入Paracraft, 开始学习与创作</h2>
+</div>
+<div class="modal-body">
+    <div align="center">
+        <form name="form" class="wiki-form" style="max-width:300px;">
+            <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && !form.username.$valid }">
+                <input type="text" name="username" placeholder="用户名（即个性后缀，注册后还可修改）" ng-minlength="3" ng-maxlength="30" class="form-control" ng-model="username" required />
+                <span ng-show="form.username.$dirty && !form.username.$valid" class="help-block">请输入用户名</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && !form.email.$valid }">
+                <input type="email" name="email" placeholder="输入Email地址" class="form-control" ng-model="email" required />
+                <span ng-show="form.email.$dirty && form.email.$error.email" class="help-block">Email格式例如:abc@example.com</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && !form.password.$valid }">
+                <input type="password" name="password" placeholder="密码" ng-minlength="6" ng-maxlength="20" class="form-control" ng-model="password" required />
+                <span ng-show="form.password.$dirty && !form.password.$valid" class="help-block">请输入密码，6位以上</span>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary btn-block" ng-click="registerUser()" ng-disabled="!form.$valid || loading" ng-class="{loading: loading}">注册</button>
+            </div>
+            <div style="margin-top:10px">
+                <div>你也可以用Github账号登录</div>
+                <div><a ng-click="login()" style="cursor:pointer">已有账户? 马上登录</a></div>
+            </div>
+        </form>
+    </div>
+</div>

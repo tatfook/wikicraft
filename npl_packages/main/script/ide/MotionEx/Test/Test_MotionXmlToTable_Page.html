@@ -1,0 +1,119 @@
+﻿<!-- "script/ide/MotionEx/Test/Test_MotionXmlToTable_Page.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+<pe:mcml>
+<script refresh="true" type="text/npl" ><![CDATA[
+local page = document:GetPageCtrl();
+
+NPL.load("(gl)script/ide/MotionEx/MotionXmlToTable.lua");
+local MotionXmlToTable = commonlib.gettable("MotionEx.MotionXmlToTable");
+
+local path = "config/Aries/StaticMovies/AllMovies.xml";
+local xmlRoot = ParaXML.LuaXML_ParseFile(path);
+local node;
+local movie_list = {};
+
+
+NPL.load("(gl)script/ide/Director/Movie.lua");
+local Movie = commonlib.gettable("Director.Movie");
+local player_name = "test"
+local player = Movie.CreateOrGetPlayer(player_name);
+
+for node in commonlib.XPath.eachNode(xmlRoot, "//items/item") do
+    table.insert(movie_list,node.attr)
+end
+local file;
+function DoStop()
+    MotionXmlToTable.Clear();
+    Movie.Clear(player_name);
+end
+function DoPlay(index)
+    index = tonumber(index);
+    local node = movie_list[index];
+    if(node)then
+        file = node.src;
+        Play();
+    end
+end
+function Play()
+    NPL.load("(gl)script/ide/TooltipHelper.lua");
+    local BroadcastHelper = commonlib.gettable("CommonCtrl.BroadcastHelper");
+    BroadcastHelper.PushLabel({label = file,});
+    MotionXmlToTable.Clear();
+    MotionXmlToTable.Play(file,1,nil,nil);
+end
+function DoPlay2(index)
+    index = tonumber(index);
+    local node = movie_list[index];
+    if(node)then
+        file = node.src;
+        Play2();
+    end
+end
+
+function Play2()
+    NPL.load("(gl)script/ide/TooltipHelper.lua");
+    local BroadcastHelper = commonlib.gettable("CommonCtrl.BroadcastHelper");
+    BroadcastHelper.PushLabel({label = file,});
+    MotionXmlToTable.Clear();
+    MotionXmlToTable.PlayCombatMotion(file,callbackFunc)
+end
+function DoPlay3(index)
+    index = tonumber(index);
+    local node = movie_list[index];
+    if(node)then
+        file = node.src;
+        Play3();
+    end
+end
+function Play3()
+    Movie.DoPlay_File(player_name,file);
+end
+function GoTo(index)
+    index = tonumber(index);
+    local node = movie_list[index];
+    if(node and node.worldpath)then
+            System.App.Commands.Call(System.App.Commands.GetDefaultCommand("LoadWorld"), {
+		        worldpath = node.worldpath,
+	        });
+    end
+end
+function ClosePage()
+    page:CloseWindow();
+end
+function DS_Func_MovieList(index)
+    if(not movie_list)then return 0 end
+	if(index == nil) then
+		return #(movie_list);
+	else
+		return movie_list[index];
+	end
+end
+]]></script>
+<pe:gridview name="view" style="margin-left:10px;margin-top:10px;width:900px;height:500px;" DataSource="<%=DS_Func_MovieList%>"  ItemsPerLine="1" AllowPaging="true" pagesize="14">
+                <Columns>
+                <div>
+                    <div style="float:left;"><%=Eval("src")%></div>
+                    <div style="float:left;"><%=Eval("label")%></div>
+                    <input type="button" style="float:left;margin-left:2px;" value="进入世界" name="<%=Eval('index')%>" onclick="GoTo"/>
+                    <!--<input type="button" style="float:left;margin-left:2px;" value="播放" tooltip ="MotionXmlToTable.Play"  name="<%=Eval('index')%>" onclick="DoPlay"/>-->
+                    <input type="button" style="float:left;margin-left:2px;" value="播放 " tooltip="MotionXmlToTable.PlayCombatMotion" name="<%=Eval('index')%>" onclick="DoPlay2"/>
+                    <!--<input type="button" style="float:left;margin-left:2px;" value="播放 新" tooltip="Movie.DoPlay_File" name="<%=Eval('index')%>" onclick="DoPlay3"/>-->
+                    <input type="button" style="float:left;margin-left:2px;" value="停止" onclick="DoStop()"/>
+                </div>
+                </Columns>
+                <EmptyDataTemplate>
+                    <b>空</b>
+                </EmptyDataTemplate>
+                <FetchingDataTemplate>
+                    <b>请稍等 ... </b>
+                </FetchingDataTemplate>
+</pe:gridview>
+</pe:mcml> 
+</body>
+</html>

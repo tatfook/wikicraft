@@ -1,0 +1,24 @@
+--[[
+Title: code behind for page %name%.html
+Author(s): %author%
+Date: %date%
+Desc: %desc% 
+Use Lib:
+-------------------------------------------------------
+NPL.load("(gl)%location%/%name%.lua");
+-------------------------------------------------------
+]]
+
+local %name% = {};
+commonlib.setfield("%package%.%name%", %name%)
+
+---------------------------------
+-- page event handlers
+---------------------------------
+
+-- init
+function %name%.OnInit()
+	--local self = document:GetPageCtrl();
+	--local name = self:GetRequestParam("name")
+	--self:SetNodeValue("fileName", name);
+end

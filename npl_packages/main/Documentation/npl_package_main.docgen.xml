@@ -1,0 +1,4760 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<doc>
+	<tables>
+		<table name="mathlib" src="script/ide/mathlib.lua">
+			<function line="26" name="QuatToEuler">
+				<summary>function mathlib.QuatToEuler(q1) 
+Conversion Quaternion to Euler
+   @param q1: {x,y,z,w}
+   @returns: heading, attitude, bank
+   @note: code converted from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
+				</summary>
+				<parameter name="q1">{x,y,z,w}
+				</parameter>
+				<returns>return heading, attitude, bank
+				</returns>
+			</function>
+			<function line="53" name="EulerToQuat">
+				<summary>function mathlib.EulerToQuat(heading, attitude, bank) 
+Conversion Euler to Quaternion
+   @param heading(yaw), attitude(roll), bank(pitch)
+   @returns: x,y,z,w
+				</summary>
+				<parameter name="heading">(yaw), attitude(roll), bank(pitch)
+				</parameter>
+				<parameter name="attitude"/>
+				<parameter name="bank"/>
+				<returns>return x,y,z,w
+				</returns>
+			</function>
+			<function line="73" name="QuatFromAxisAngle">
+				<summary>function mathlib.QuatFromAxisAngle(x,y,z, angle) 
+assumes axis is already normalised
+   @param x,y,z: is a normalized axis vector
+   @param angle: is the angle to rotate
+				</summary>
+				<parameter name="x">,y,z: is a normalized axis vector
+				</parameter>
+				<parameter name="y"/>
+				<parameter name="z"/>
+				<parameter name="angle">is the angle to rotate
+				</parameter>
+			</function>
+			<function line="88" name="QuaternionMultiply">
+				<summary>function mathlib.QuaternionMultiply(q1,q2)
+Since a unit quaternion represents an orientation in 3D space, the multiplication of two unit quaternions will result in 
+another unit quaternion that represents the combined rotation. Amazing, but it's true.
+see: http://www.cprogramming.com/tutorial/3d/quaternions.html
+   @param q1,q2: q1 and q2 are two quaternion{x,y,z,w}
+				</summary>
+				<parameter name="q1">,q2: q1 and q2 are two quaternion{x,y,z,w}
+				</parameter>
+				<parameter name="q2"/>
+			</function>
+			<function line="98" name="WrapAngleTo180">
+				<summary>function mathlib.WrapAngleTo180(angle)
+the angle is reduced to an angle between -180 and +180 by mod, and a 360 check
+				</summary>
+				<parameter name="angle"/>
+			</function>
+			<function line="109" name="ToStandardAngle">
+				<summary>function mathlib.ToStandardAngle(fAngle)
+make sure that the angle is in the range (-Pi,Pi]
+				</summary>
+				<parameter name="fAngle"/>
+			</function>
+			<function line="140" name="SmoothMoveAngle">
+				<summary>function mathlib.SmoothMoveAngle(src, dest, fMaxStep)
+change src from src to dest, by a maximum of fMaxStep. If dest has been reached, return true; otherwise return false.
+   @return result_value, bEqual: 
+				</summary>
+				<parameter name="src"/>
+				<parameter name="dest"/>
+				<parameter name="fMaxStep"/>
+				<returns>return , bEqual: 
+				</returns>
+			</function>
+			<function line="154" name="lerp">
+				<summary>function mathlib.lerp(a, b, t)
+such that t=0, return a. t=1, return b
+				</summary>
+				<parameter name="a"/>
+				<parameter name="b"/>
+				<parameter name="t"/>
+			</function>
+			<function line="159" name="GetHash">
+				<summary>function mathlib.GetHash(value)
+get string hash, return int (maybe negative)
+				</summary>
+				<parameter name="value"/>
+			</function>
+			<function line="173" name="clamp">
+				<summary>function mathlib.clamp(value, from, to)
+Returns the value of the first parameter, clamped to be within the lower and upper limits given by the second and third parameters
+				</summary>
+				<parameter name="value"/>
+				<parameter name="from"/>
+				<parameter name="to"/>
+			</function>
+			<function line="184" name="NextPowerOf2">
+				<summary>function mathlib.NextPowerOf2(x)
+
+   @param x: must be int, make sure to call math.floor(x) before this.
+				</summary>
+				<parameter name="x">must be int, make sure to call math.floor(x) before this.
+				</parameter>
+			</function>
+		</table>
+		<table name="algorithm" src="script/ide/commonlib.lua">
+			<function line="94" name="sort_by_predicate">
+				<summary>function algorithm.sort_by_predicate(input, predicate_func)
+in place sort of the input list. the item order is unchanged for those who passed and not passed the predicate test.
+   @param input: a table array
+   @param predicate_func: a function(item) that should return true, if item should come before that that return false. 
+				</summary>
+				<parameter name="input">a table array
+				</parameter>
+				<parameter name="predicate_func">a function(item) that should return true, if item should come before that that return false. 
+				</parameter>
+			</function>
+		</table>
+		<table name="commonlib" src="script/ide/commonlib.lua">
+			<function line="148" name="GetUIObject">
+				<summary>function commonlib.GetUIObject(name, parent)
+get an UI object by specifying a serie of names separated by #, such as childname#childname#childname, 
+e.g. commonlib.GetUIObject("wndParent#button1");
+   @param name: e.g. "wndParent#button1", it can also be number id. if it is number, parent is ignored.
+   @param parent: nil or a parent UI object inside which the name is searched. If nil, first childname is searched globally.
+   @return: return the ParaUIObject found. if not found, the returned object IsValid() returns false. 
+				</summary>
+				<parameter name="name">e.g. "wndParent#button1", it can also be number id. if it is number, parent is ignored.
+				</parameter>
+				<parameter name="parent">nil or a parent UI object inside which the name is searched. If nil, first childname is searched globally.
+				</parameter>
+				<returns>return return the ParaUIObject found. if not found, the returned object IsValid() returns false. 
+				</returns>
+			</function>
+			<function line="172" name="getfield">
+				<summary>function commonlib.getfield (f, rootEnv)
+We rely on gfind, from the string library, to iterate over all words in f (where "word" is a sequence of one or more alphanumeric characters and underscores).
+   @param f: f is a string like "a.b.c.d"
+   @param rootEnv: it can be a table from which to search for f, if nil, the global table _G is used.
+   @return: return the field in LUA, it may be nil, a value, or a table, etc. 
+				</summary>
+				<parameter name="f">f is a string like "a.b.c.d"
+				</parameter>
+				<parameter name="rootEnv">it can be a table from which to search for f, if nil, the global table _G is used.
+				</parameter>
+				<returns>return return the field in LUA, it may be nil, a value, or a table, etc. 
+				</returns>
+			</function>
+			<function line="193" name="setfield">
+				<summary>function commonlib.setfield (f, v, rootEnv)
+set a variable v to f, where f is a string
+the call setfield("t.x.y", 10) creates a global table t, another table t.x, and assigns 10 to t.x.y
+   @param f: f is a string like "a.b.c.d"
+   @param rootEnv: it can be a table from which to search for f, if nil, the global table _G is used. 
+				</summary>
+				<parameter name="f">f is a string like "a.b.c.d"
+				</parameter>
+				<parameter name="v"/>
+				<parameter name="rootEnv">it can be a table from which to search for f, if nil, the global table _G is used. 
+				</parameter>
+			</function>
+			<function line="210" name="gettable">
+				<summary>function commonlib.gettable(f, rootEnv)
+get a table f, where f is a string
+   @param f: f is a string like "a.b.c.d"
+   @param rootEnv: it can be a table from which to search for f, if nil, the global table _G is used. 
+				</summary>
+				<parameter name="f">f is a string like "a.b.c.d"
+				</parameter>
+				<parameter name="rootEnv">it can be a table from which to search for f, if nil, the global table _G is used. 
+				</parameter>
+			</function>
+			<function line="222" name="createtable">
+				<summary>function commonlib.createtable(f, init_params, rootEnv)
+create/get a table and init it with init_params
+				</summary>
+				<parameter name="f"/>
+				<parameter name="init_params"/>
+				<parameter name="rootEnv"/>
+			</function>
+			<function line="234" name="ResetModelAsset">
+				<summary>function commonlib.ResetModelAsset(_obj, assetfilename)
+reset the model asset
+   @param obj: model object
+   @assetfilename: file name of the asset file
+   @return the new obj
+				</summary>
+				<parameter name="_obj"/>
+				<parameter name="assetfilename"/>
+				<returns>return new obj
+				</returns>
+			</function>
+			<function line="262" name="MetaClone">
+				<summary>function commonlib.MetaClone(obj)
+clone a obj using just meta table. It does not actually copy parameters. 
+Note: one can not serialize a meta cloned object, because it is an empty table with the same meta table as input obj. 
+				</summary>
+				<parameter name="obj"/>
+			</function>
+			<function line="274" name="deepcopy">
+				<summary>function commonlib.deepcopy(object)
+code from: http://lua-users.org/wiki/CopyTable
+This function returns a deep copy of a given table. The function below also copies the metatable to the new table if there is one, 
+so the behaviour of the copied table is the same as the original. But the 2 tables share the same metatable, 
+you can avoid this by changing this 'getmetatable(object)' to '_copy( getmetatable(object) )'.
+				</summary>
+				<parameter name="object"/>
+			</function>
+			<function line="297" name="copy">
+				<summary>function commonlib.copy(object)
+same as commonlib.clone except that it does not copy meta table. 
+				</summary>
+				<parameter name="object"/>
+			</function>
+			<function line="318" name="partialcopy">
+				<summary>function commonlib.partialcopy(dest, src)
+this function simply does, dest = src, but it copies value from src to dest. 
+It is mostly used with tables.It just copies what is in src to dest, but dest retains its other fields that does not exist in src.
+				</summary>
+				<parameter name="dest"/>
+				<parameter name="src"/>
+			</function>
+			<function line="340" name="mincopy">
+				<summary>function commonlib.mincopy(dest, src)
+this function simply does, dest = src, but it copies value from src to dest. 
+It is mostly used with tables.It only copies src field to dest field, if src field name does not exist in dest. In other words, dest will preserve all its named fields plus additional fields in dest
+				</summary>
+				<parameter name="dest"/>
+				<parameter name="src"/>
+			</function>
+			<function line="362" name="partialcompare">
+				<summary>function commonlib.partialcompare(dest, src, tolerance)
+this function simply does, dest = src, but it copies value from src to dest. 
+It is mostly used with tables.It only copies src field to dest field, if src field name does not exist in dest. In other words, dest will preserve all its named fields plus additional fields in dest
+compares all fields in src with destination, value by value, if they are equal, true is returned. otherwise, return nil or false.
+Note that if dest has more fields than src, yet all src fields equals to dest, then it will still return true.
+Note: it also compare indexed array items
+   @param tolerance: if not nil, it will be used to compare number type values. smaller than this will be regarded as equal.
+				</summary>
+				<parameter name="dest"/>
+				<parameter name="src"/>
+				<parameter name="tolerance">if not nil, it will be used to compare number type values. smaller than this will be regarded as equal.
+				</parameter>
+			</function>
+			<function line="385" name="partialfields">
+				<summary>function commonlib.partialfields(dest, src, fields)
+compare all fields in dest with src and return true if equal.
+				</summary>
+				<parameter name="dest"/>
+				<parameter name="src"/>
+				<parameter name="fields"/>
+			</function>
+			<function line="393" name="compare">
+				<summary>function commonlib.compare(dest, src, tolerance)
+strict compare all fields reccursively in dest and src, value by value
+Note: it also compare indexed array items
+   @param tolerance: if not nil, it will be used to compare number type values. smaller than this will be regarded as equal.
+   @return true if equal.
+				</summary>
+				<parameter name="dest"/>
+				<parameter name="src"/>
+				<parameter name="tolerance">if not nil, it will be used to compare number type values. smaller than this will be regarded as equal.
+				</parameter>
+				<returns>return if equal.
+				</returns>
+			</function>
+			<function line="400" name="resize">
+				<summary>function commonlib.resize(t, size, v)
+resize a table to a new size. It ensures that all elements are nil. 
+this function uses table_getn() instead of #t, use table.resize for #t
+				</summary>
+				<parameter name="t"/>
+				<parameter name="size"/>
+				<parameter name="v"/>
+			</function>
+			<function line="437" name="removeArrayItem">
+				<summary>function commonlib.removeArrayItem(t, nIndex)
+remove an item from a table. The table size will be minored by 1.
+   @param t: table array.
+   @param nIndex: 1 based index, at which to remove the item
+				</summary>
+				<parameter name="t">table array.
+				</parameter>
+				<parameter name="nIndex">1 based index, at which to remove the item
+				</parameter>
+			</function>
+			<function line="448" name="insertArrayItem">
+				<summary>function commonlib.insertArrayItem(t, nIndex, item)
+insert an array item to a table array. The table size will be increased by 1.
+   @param t: table array.
+   @param nIndex: 1 based index, at which to insert the item. if nil, it will inserted to the end
+   @return return 1 based index at which the item is inserted
+				</summary>
+				<parameter name="t">table array.
+				</parameter>
+				<parameter name="nIndex">1 based index, at which to insert the item. if nil, it will inserted to the end
+				</parameter>
+				<parameter name="item"/>
+				<returns>return 1 based index at which the item is inserted
+				</returns>
+			</function>
+			<function line="473" name="removeArrayItems">
+				<summary>function commonlib.removeArrayItems(t, callback_func)
+remove all items that matches a certain criteria from an array table
+e.g. 
+commonlib.removeArrayItems({1,2,3,4,5,6}, function(i, item) return (i%2==0); end); --&gt; {1,3,5}
+   @param t: table to be removed
+   @param callback_func: the callback function(index, item) end. if the function returns true, then the table item at the given index will be removed from the table.
+				</summary>
+				<parameter name="t">table to be removed
+				</parameter>
+				<parameter name="callback_func">the callback function(index, item) end. if the function returns true, then the table item at the given index will be removed from the table.
+				</parameter>
+			</function>
+			<function line="491" name="swapArrayItem">
+				<summary>function commonlib.swapArrayItem(t, nIndex1, nIndex2)
+swap two items in a table. 
+				</summary>
+				<parameter name="t"/>
+				<parameter name="nIndex1"/>
+				<parameter name="nIndex2"/>
+			</function>
+			<function line="499" name="moveArrayItem">
+				<summary>function commonlib.moveArrayItem(t, nIndex1, nIndex2)
+move array item from one nIndex1 to nIndex2
+				</summary>
+				<parameter name="t"/>
+				<parameter name="nIndex1"/>
+				<parameter name="nIndex2"/>
+			</function>
+			<function line="518" name="cleartable">
+				<summary>function commonlib.cleartable(tab)
+empty a given table
+				</summary>
+				<parameter name="tab"/>
+			</function>
+			<function line="565" name="SearchFiles">
+				<summary>function commonlib.SearchFiles(...)
+OBSOLETED: use commonlib.Files.SearchFiles(), instead. 
+				</summary>
+			</function>
+			<function line="571" name="Absolute">
+				<summary>function commonlib.Absolute(num)
+get the absolute of the given number, if param not number type return nil
+				</summary>
+				<parameter name="num"/>
+			</function>
+			<function line="587" name="tonumber">
+				<summary>function commonlib.tonumber(s)
+convert the string to number
+this function will handle the string will additional "0" digits in the front of the string
+e.x. input: "010" return: 10
+				</summary>
+				<parameter name="s"/>
+			</function>
+			<function line="604" name="tolower">
+				<summary>function commonlib.tolower(o)
+make all table fields (including fields of sub tables) lower cased. This is useful for case-insensitive table.
+   @param o: it will modify on this table and its sub-tables. If it is string. this function will return the lower cased string.
+   @return: return the modified input 
+				</summary>
+				<parameter name="o">it will modify on this table and its sub-tables. If it is string. this function will return the lower cased string.
+				</parameter>
+				<returns>return return the modified input 
+				</returns>
+			</function>
+			<function line="646" name="GetEmptyList">
+				<summary>function commonlib.GetEmptyList(source_list,goal_num,bSort)
+-random search a number of item from a list
+&lt;verbatim&gt;
+local source_list = {
+	{ label = 1, isEmpty = true, },
+	{ label = 2, isEmpty = true, },
+	{ label = 3, isEmpty = false, },
+	{ label = 4, isEmpty = true, },
+}&lt;/verbatim&gt;
+local goal_num = 5;
+local result = commonlib.GetEmptyList(source_list,goal_num,true);
+commonlib.echo(result);
+-
+   @param source_list: it is a table which will be searched
+-
+   @param goal_num:the number of search from source_list;
+-NOTE:if #source_list &lt; goal_num then goal_num = #source_list;
+-return nil or a result table
+				</summary>
+				<parameter name="source_list">it is a table which will be searched
+-
+				</parameter>
+				<parameter name="goal_num">the number of search from source_list;
+-NOTE:if #source_list &lt; goal_num then goal_num = #source_list;
+-return nil or a result table
+				</parameter>
+				<parameter name="bSort"/>
+			</function>
+			<function line="700" name="GetRandomList">
+				<summary>function commonlib.GetRandomList(source_num,goal_num,bSort)
+在一个范围内随机选取一定的数目
+goal_num = math.min(source_num,goal_num);
+返回一个table: result = {1,3,7}
+
+local result = commonlib.GetRandomList(10,5,true);
+commonlib.echo(result);
+				</summary>
+				<parameter name="source_num"/>
+				<parameter name="goal_num"/>
+				<parameter name="bSort"/>
+			</function>
+			<function line="728" name="GetRandomIndex">
+				<summary>function commonlib.GetRandomIndex(range,excludeindex)
+在一个范围内随机选取一定的数目
+goal_num = math.min(source_num,goal_num);
+返回一个table: result = {1,3,7}
+
+local result = commonlib.GetRandomList(10,5,true);
+commonlib.echo(result);
+产生一个随机数
+   @param range:随机的范围 大于等于0的整数
+   @param excludeindex:不包含的整数
+				</summary>
+				<parameter name="range">随机的范围 大于等于0的整数
+				</parameter>
+				<parameter name="excludeindex">不包含的整数
+				</parameter>
+			</function>
+			<function line="764" name="module">
+				<summary>function commonlib.module(modname, ...)
+define a module, replace the global environment _G with that of the table.
+this function is same as commonlib.createtable, except that the global environment _G with that of the table.
+   @param modname: namespace for module
+   @return the module created
+				</summary>
+				<parameter name="modname">namespace for module
+				</parameter>
+				<returns>return module created
+				</returns>
+			</function>
+			<function line="775" name="split">
+				<summary>function commonlib.split(str,delimiter)
+define a module, replace the global environment _G with that of the table.
+this function is same as commonlib.createtable, except that the global environment _G with that of the table.
+   @param modname: namespace for module
+   @return the module created
+see all environment
+
+	local result = commonlib.split("a,b,c,d",",");
+	echo(result);
+				</summary>
+				<parameter name="str"/>
+				<parameter name="delimiter"/>
+				<returns>return module created
+see all environment
+
+	local result = commonlib.split("a,b,c,d",",");
+	echo(result);
+				</returns>
+			</function>
+			<function line="80" name="multi_inherit" src="script/ide/oo.lua">
+				<summary>function commonlib.multi_inherit(...)
+multiple inheritance
+see. http://www.lua.org/pil/16.3.html
+				</summary>
+			</function>
+			<function line="116" name="inherit" src="script/ide/oo.lua">
+				<summary>function commonlib.inherit(baseClass, new_class, ctor)
+create a new class inheriting from a baseClass.
+the new class has new(), _super, isa() function.
+   @param baseClass: the base class from which to inherit the new one. it can be nil if there is no base class.
+   @param new_class: nil or a raw table.
+   @param ctor: nil or the constructor function(o) end, one may init dynamic table fields in it. One can also define new_class:ctor() at a later time. 
+note: inside ctor function, parent class virtual functions are not available,since meta table of parent is not set yet.
+   @return the new class is created. One can later create and instance of the new class by calling its new function(). 
+				</summary>
+				<parameter name="baseClass">the base class from which to inherit the new one. it can be nil if there is no base class.
+				</parameter>
+				<parameter name="new_class">nil or a raw table.
+				</parameter>
+				<parameter name="ctor">nil or the constructor function(o) end, one may init dynamic table fields in it. One can also define new_class:ctor() at a later time. 
+note: inside ctor function, parent class virtual functions are not available,since meta table of parent is not set yet.
+				</parameter>
+				<returns>return new class is created. One can later create and instance of the new class by calling its new function(). 
+				</returns>
+			</function>
+			<function line="229" name="add_interface" src="script/ide/oo.lua">
+				<summary>function commonlib.add_interface(target_class, interface_class)
+this function can be called multiple times for the same target_class with different interface_class
+It just copies all string_key, value pair from interface_class to target_class except for ctor and those that already exist in target_class.
+This is faster than multiple inheritance or single inheritance because the target_class contains all interface functions on its own meta table.
+   @note: interface_class's ctor function is NOT called in target_class's ctor, one has to do it manually if required.
+   @param target_class: new class to which the interface functions are copied to.
+   @param interface_class: base interface class table. please note that this table must be fully loaded when this function is called. 
+				</summary>
+				<parameter name="target_class">new class to which the interface functions are copied to.
+				</parameter>
+				<parameter name="interface_class">base interface class table. please note that this table must be fully loaded when this function is called. 
+				</parameter>
+			</function>
+			<function line="244" name="enable__gc" src="script/ide/oo.lua">
+				<summary>function commonlib.enable__gc(target_class, gc_function)
+lua 5.1 does not support __gc for table object. it only supports __gc for userdata.
+this function can be called to enable __gc function to be called when object is garbage collected
+when target_class is garbage collected. see also `commonlib.setmetatable__gc`
+   @param target_class: the table instance to which we will track garbage collection.
+   @param gc_function: if nil, target_class.__gc is used. otherwise this function is used.
+				</summary>
+				<parameter name="target_class">the table instance to which we will track garbage collection.
+				</parameter>
+				<parameter name="gc_function">if nil, target_class.__gc is used. otherwise this function is used.
+				</parameter>
+			</function>
+		</table>
+		<table name="table" src="script/ide/commonlib.lua">
+			<function line="419" name="resize">
+				<summary>function table.resize(t, size, v)
+resize a table to a new size. It ensures that all elements are nil.
+   @param t: table to resize
+   @param size: the new size
+   @param v: the item value;
+				</summary>
+				<parameter name="t">table to resize
+				</parameter>
+				<parameter name="size">the new size
+				</parameter>
+				<parameter name="v">the item value;
+				</parameter>
+			</function>
+		</table>
+		<table name="utf8" src="script/ide/commonlib.lua">
+			<function line="537" name="len">
+				<summary>function utf8.len(unicode_string)
+return the number of characters in UTF8 encoding.
+more info at: http://lua-users.org/wiki/LuaUnicode
+				</summary>
+				<parameter name="unicode_string"/>
+			</function>
+			<function line="543" name="sub">
+				<summary>function utf8.sub(ustring, nFrom, nTo)
+similar to string.sub(), except that nFrom, nTo refers to characters, instead of byte
+				</summary>
+				<parameter name="ustring"/>
+				<parameter name="nFrom"/>
+				<parameter name="nTo"/>
+			</function>
+		</table>
+		<table name="Encoding" src="script/ide/Encoding.lua">
+			<function line="34" name="Utf8ToDefault">
+				<summary>function Encoding.Utf8ToDefault(text)
+
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="38" name="DefaultToUtf8">
+				<summary>function Encoding.DefaultToUtf8(text)
+
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="46" name="SortCSVString">
+				<summary>function Encoding.SortCSVString(fields)
+sort commar separated vector (CSV) string alphabetically
+   @param fields: string such as "C,B,A", or a table containing string arrays such as {"C", "B", "A"}
+   @return return a new CSV string "A,B,C"
+				</summary>
+				<parameter name="fields">string such as "C,B,A", or a table containing string arrays such as {"C", "B", "A"}
+				</parameter>
+				<returns>return a new CSV string "A,B,C"
+				</returns>
+			</function>
+			<function line="69" name="EncodeStr">
+				<summary>function Encoding.EncodeStr(s)
+sort commar separated vector (CSV) string alphabetically
+   @param fields: string such as "C,B,A", or a table containing string arrays such as {"C", "B", "A"}
+   @return return a new CSV string "A,B,C"
+				</summary>
+				<parameter name="s"/>
+				<returns>return a new CSV string "A,B,C"
+				</returns>
+			</function>
+			<function line="80" name="EncodeHTMLInnerText">
+				<summary>function Encoding.EncodeHTMLInnerText(s)
+
+				</summary>
+				<parameter name="s"/>
+			</function>
+			<function line="91" name="HasXMLEscapeChar">
+				<summary>function Encoding.HasXMLEscapeChar(s)
+
+				</summary>
+				<parameter name="s"/>
+			</function>
+			<function line="222" name="split">
+				<summary>function Encoding.split(data, eol, width)
+---------------------------------------------------------------------------
+Break a string in lines of equal size
+Input 
+data: string to be broken 
+eol: end of line marker
+width: width of output string lines
+Returns
+string broken in lines
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="data"/>
+				<parameter name="eol"/>
+				<parameter name="width"/>
+			</function>
+			<function line="240" name="base64">
+				<summary>function Encoding.base64(s, single)
+---------------------------------------------------------------------------
+Encodes a string into its base64 representation
+Input 
+s: binary string to be encoded
+single: single line output?
+Returns
+string with corresponding base64 representation
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="s"/>
+				<parameter name="single"/>
+			</function>
+			<function line="261" name="unbase64">
+				<summary>function Encoding.unbase64(s)
+---------------------------------------------------------------------------
+Decodes a string from its base64 representation
+Input 
+s: base64 string
+Returns
+decoded binary string
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="s"/>
+			</function>
+			<function line="287" name="PasswordEncodeWithMac">
+				<summary>function Encoding.PasswordEncodeWithMac(text)
+encode with mac address. 
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="295" name="PasswordDecodeWithMac">
+				<summary>function Encoding.PasswordDecodeWithMac(text)
+return nil if mac address does not match with the local one. 
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="316" name="EncodeServerData">
+				<summary>function Encoding.EncodeServerData(input)
+used in poweritem api ChangeItem.
+   @param input:either string or table.
+   @return the server data string or nil.
+				</summary>
+				<parameter name="input">either string or table.
+				</parameter>
+				<returns>return server data string or nil.
+				</returns>
+			</function>
+			<function line="329" name="DecodeServerData">
+				<summary>function Encoding.DecodeServerData(input)
+
+				</summary>
+				<parameter name="input"/>
+			</function>
+			<function line="342" name="EncodeServerDataString">
+				<summary>function Encoding.EncodeServerDataString(input)
+
+				</summary>
+				<parameter name="input"/>
+			</function>
+			<function line="351" name="url_decode">
+				<summary>function Encoding.url_decode(str)
+Decode an URL-encoded string
+(Note that you should only decode a URL string after splitting it; this allows you to correctly process quoted "?" characters in the query string or base part, for instance.) 
+				</summary>
+				<parameter name="str"/>
+			</function>
+			<function line="360" name="url_encode">
+				<summary>function Encoding.url_encode(str)
+URL-encode a string
+				</summary>
+				<parameter name="str"/>
+			</function>
+		</table>
+		<table name="Private" src="script/ide/Encoding.lua">
+			<function line="145" name="t2f">
+				<summary>function Private.t2f(a,b,c)
+---------------------------------------------------------------------------
+Converts a three byte sequence into its four character base64 
+representation
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="a"/>
+				<parameter name="b"/>
+				<parameter name="c"/>
+			</function>
+			<function line="162" name="f2t">
+				<summary>function Private.f2t(a,b,c,d)
+---------------------------------------------------------------------------
+Converts a four character base64 representation into its three byte
+sequence
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="a"/>
+				<parameter name="b"/>
+				<parameter name="c"/>
+				<parameter name="d"/>
+			</function>
+			<function line="176" name="to64pad">
+				<summary>function Private.to64pad(s)
+---------------------------------------------------------------------------
+Creates a base64 representation of an incomplete last block
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="s"/>
+			</function>
+			<function line="196" name="from64pad">
+				<summary>function Private.from64pad(s)
+---------------------------------------------------------------------------
+Decodes the base64 representation of an incomplete last block
+---------------------------------------------------------------------------
+				</summary>
+				<parameter name="s"/>
+			</function>
+		</table>
+		<table name="Timer" src="script/ide/timer.lua">
+			<function line="75" name="new">
+				<summary>function Timer:new(o)
+a new timer class with infinite time. 
+				</summary>
+				<parameter name="o"/>
+			</function>
+			<function line="87" name="GetNextTimerID">
+				<summary>function Timer.GetNextTimerID()
+get the next timer id
+				</summary>
+			</function>
+			<function line="97" name="Change">
+				<summary>function Timer:Change(dueTime,period)
+change the timer
+   @param dueTime The amount of time to delay before the invoking the callback method specified in milliseconds
+Specify zero (0) to restart the timer immediately. Specify nil to prevent the timer from restarting.
+   @param period The time interval between invocations of the callback method in milliseconds. 
+Specify nil to disable periodic signaling. 
+				</summary>
+				<parameter name="dueTime">The amount of time to delay before the invoking the callback method specified in milliseconds
+Specify zero (0) to restart the timer immediately. Specify nil to prevent the timer from restarting.
+				</parameter>
+				<parameter name="period">The time interval between invocations of the callback method in milliseconds. 
+Specify nil to disable periodic signaling. 
+				</parameter>
+			</function>
+			<function line="110" name="Enable">
+				<summary>function Timer:Enable()
+call this function to enable the timer if not 
+				</summary>
+			</function>
+			<function line="119" name="Tick">
+				<summary>function Timer:Tick(nTickCount)
+this function is called by the timer manager to process the time. 
+set the tick count. it will return true, if the timer is activated. 
+call this function regularly with new tick count.
+   @param nTickCount: it should be ::GetTickCount() in millisecond. if nil, we will call the system ::GetTickCount() to get the current tick count.
+   @return true if timer is activated. 
+				</summary>
+				<parameter name="nTickCount">it should be ::GetTickCount() in millisecond. if nil, we will call the system ::GetTickCount() to get the current tick count.
+				</parameter>
+				<returns>return if timer is activated. 
+				</returns>
+			</function>
+			<function line="139" name="GetDelta">
+				<summary>function Timer:GetDelta(max_delta)
+get the delta in time since last tick.
+   @param max_delta: if the delta is bigger than this value we will return max_delta rather than the big value. 
+if this is nil, it will be 2 times of self.period
+				</summary>
+				<parameter name="max_delta">if the delta is bigger than this value we will return max_delta rather than the big value. 
+if this is nil, it will be 2 times of self.period
+				</parameter>
+			</function>
+			<function line="153" name="Activate">
+				<summary>function Timer:Activate()
+activate the call back. 
+				</summary>
+			</function>
+			<function line="161" name="IsEnabled">
+				<summary>function Timer:IsEnabled()
+whether the timer is going to be called at least once in the future. 
+NOTE: this may not be accurate if scene is reset. 
+				</summary>
+			</function>
+		</table>
+		<table name="TimerManager" src="script/ide/timer.lua">
+			<function line="191" name="Start">
+				<summary>function TimerManager.Start()
+create a global timer for all sub timers. 
+				</summary>
+			</function>
+			<function line="200" name="Stop">
+				<summary>function TimerManager.Stop()
+
+				</summary>
+			</function>
+			<function line="205" name="Clear">
+				<summary>function TimerManager.Clear()
+clear all timers
+				</summary>
+			</function>
+			<function line="215" name="AddTimer">
+				<summary>function TimerManager.AddTimer(timer)
+call this function to either add a timer to the pool or change the timer settings. 
+it will automatically set timer.enabled to true.
+   @param timer: the timer object
+				</summary>
+				<parameter name="timer">the timer object
+				</parameter>
+			</function>
+			<function line="236" name="RemoveTimer">
+				<summary>function TimerManager.RemoveTimer(timer)
+remove the given timer by id
+				</summary>
+				<parameter name="timer"/>
+			</function>
+			<function line="242" name="DumpTimerCount">
+				<summary>function TimerManager.DumpTimerCount()
+dump timer info. 
+				</summary>
+			</function>
+			<function line="257" name="OnTimer">
+				<summary>function TimerManager.OnTimer()
+the global ParaEngine high resolution timer. 
+				</summary>
+			</function>
+			<function line="295" name="GetCurrentTime">
+				<summary>function TimerManager.GetCurrentTime()
+get the current time in millisecond. This may be faster than ParaGlobal_timeGetTime() since it is updated only at rendering frame rate.
+   @note the resolution of the timer is same as the scripting frame move rate.
+				</summary>
+			</function>
+			<function line="302" name="SetInterval">
+				<summary>function TimerManager.SetInterval(func, milliSecond)
+wait a specified number of milliseconds, and then execute a specified function, 
+and it will continue to execute the function, once at every given time-interval.
+   @return the timer object which can be used to call ClearInterval
+				</summary>
+				<parameter name="func"/>
+				<parameter name="milliSecond"/>
+				<returns>return timer object which can be used to call ClearInterval
+				</returns>
+			</function>
+			<function line="308" name="ClearInterval">
+				<summary>function TimerManager.ClearInterval(timer)
+
+				</summary>
+				<parameter name="timer"/>
+			</function>
+			<function line="315" name="SetTimeout">
+				<summary>function TimerManager.SetTimeout(func, milliSecond)
+create a timer object that will timeout once and call func.
+   @param milliSecond: default to 1000ms (1 second)
+   @return the timer object. 
+				</summary>
+				<parameter name="func"/>
+				<parameter name="milliSecond">default to 1000ms (1 second)
+				</parameter>
+				<returns>return timer object. 
+				</returns>
+			</function>
+			<function line="321" name="ClearTimeout">
+				<summary>function TimerManager.ClearTimeout(timeoutVariable)
+
+				</summary>
+				<parameter name="timeoutVariable"/>
+			</function>
+		</table>
+		<table name="NPL" src="script/ide/NPLExtension.lua">
+			<function line="41" name="GetURL">
+				<summary>function NPL.GetURL(url, callbackFunc, option)
+return the content of a given url. 
+e.g.  echo(NPL.GetURL("www.paraengine.com"))
+   @param url: url string or a options table of {url=string, form={key=value}, headers={key=value, "line strings"}, json=bool, qs={}}
+if .json is true, code will be decoded as json.
+if .qs is query string table
+   @param callbackFunc: a function(err, msg, data) end, 
+where msg is the raw HTTP message {header, code=0, rcode=200, data}
+if nil, the function will not return until result is returned(sync call).
+   @param option: mostly nil. "-I" for headers only
+   @return: return nil if callbackFunc is a function. or the string content in sync call. 
+				</summary>
+				<parameter name="url">url string or a options table of {url=string, form={key=value}, headers={key=value, "line strings"}, json=bool, qs={}}
+if .json is true, code will be decoded as json.
+if .qs is query string table
+				</parameter>
+				<parameter name="callbackFunc">a function(err, msg, data) end, 
+where msg is the raw HTTP message {header, code=0, rcode=200, data}
+if nil, the function will not return until result is returned(sync call).
+				</parameter>
+				<parameter name="option">mostly nil. "-I" for headers only
+				</parameter>
+				<returns>return return nil if callbackFunc is a function. or the string content in sync call. 
+				</returns>
+			</function>
+			<function line="50" name="activate_with_timeout">
+				<summary>function NPL.activate_with_timeout(timeout_seconds, ...)
+this function just repeatedly calls NPL.activate() until either the message is successfully sent out or timeout_seconds is reached. 
+Internally, it will wait 0.1, 0.2, 0.4, 0.8, ... between unsuccessfull activation.
+   @param timeout_seconds: the number of seconds to wait. if 0, it will only try once.
+   @return the last NPL.activate call result
+				</summary>
+				<parameter name="timeout_seconds">the number of seconds to wait. if 0, it will only try once.
+				</parameter>
+				<returns>return last NPL.activate call result
+				</returns>
+			</function>
+			<function line="73" name="activate_async_with_timeout">
+				<summary>function NPL.activate_async_with_timeout(timeout_seconds, filename, msg)
+This function is same as NPL.activate() except that if it failed. It will start a timer and send the message again and again until timeout_seconds passed. 
+this function just repeatedly calls NPL.activate() until either the message is successfully sent out or timeout_seconds is reached. 
+Internally, it will wait 0.1, 0.2, 0.4, 0.8, ... between unsuccessfull activation.
+   @param timeout_seconds: the number of seconds to wait. if 0, it will only try once.
+   @return the last NPL.activate call result
+				</summary>
+				<parameter name="timeout_seconds">the number of seconds to wait. if 0, it will only try once.
+				</parameter>
+				<parameter name="filename"/>
+				<parameter name="msg"/>
+				<returns>return last NPL.activate call result
+				</returns>
+			</function>
+			<function line="109" name="ResetAllCookies">
+				<summary>function NPL.ResetAllCookies()
+name, value pairs or tables. 
+nil means never expires. 
+reset all cookies for all urls to empty.
+				</summary>
+			</function>
+			<function line="118" name="SetCookie">
+				<summary>function NPL.SetCookie(url, cookie)
+set cookies for a given url.
+   @param url: it is usually a web service or web page url string.
+   @param cookies: it should be nil or a cookie table. Usually it is a table with 
+{Data={user_id="GUID", session_key="GUID", app_key="GUID", counter=functor}, ExpireTime=nil }
+counter will be supported later on, which will automatically increase by one or use the current system time in milliseconds. 
+				</summary>
+				<parameter name="url">it is usually a web service or web page url string.
+				</parameter>
+				<parameter name="cookie"/>
+			</function>
+			<function line="127" name="AddCookieVariable">
+				<summary>function NPL.AddCookieVariable(url, name, value, ExpireTime)
+add a cookie variable to a given URL.
+   @param url: it is usually a web service or web page url string.
+   @param name: string such as "session_key", "user_id"
+   @param value: string or value
+   @param ExpireTime: can be nil or a value. It will only be set if ExpireTime is smaller than the current cookie's expire time. 
+				</summary>
+				<parameter name="url">it is usually a web service or web page url string.
+				</parameter>
+				<parameter name="name">string such as "session_key", "user_id"
+				</parameter>
+				<parameter name="value">string or value
+				</parameter>
+				<parameter name="ExpireTime">can be nil or a value. It will only be set if ExpireTime is smaller than the current cookie's expire time. 
+				</parameter>
+			</function>
+			<function line="143" name="GetCookie">
+				<summary>function NPL.GetCookie(url)
+get the cookies table by url. it may return nil if the cookie does not exist. 
+				</summary>
+				<parameter name="url"/>
+			</function>
+			<function line="151" name="MergeCookieWithMsg">
+				<summary>function NPL.MergeCookieWithMsg(msg, cookie)
+if msg={user_id="GUID1", somefields="XXX"} and cookies={user_id="GUID2", session_key="GUID", app_key="GUID",}, the msg will become
+{user_id="GUID1", somefields="XXX", session_key="GUID", app_key="GUID",} after this function returns.
+   @param msg: in/out msg table.
+   @param cookie: it can be nil, it is usually the cookies table returned from NPL.GetCookie(url)
+				</summary>
+				<parameter name="msg">in/out msg table.
+				</parameter>
+				<parameter name="cookie">it can be nil, it is usually the cookies table returned from NPL.GetCookie(url)
+				</parameter>
+			</function>
+			<function line="163" name="CallWebservice">
+				<summary>function NPL.CallWebservice(URL, msg)
+call a web service with data cookie support. One can bind a cookie object with a given URL. The cookie object will to copied to the msg data before sending
+   @param URL: url of the web service
+   @param msg: an NPL table to be sent. If there is a cookie object, it will be copied to data before sending. such as the user_id, session_id, app_key, counter, etc. 
+				</summary>
+				<parameter name="URL">url of the web service
+				</parameter>
+				<parameter name="msg">an NPL table to be sent. If there is a cookie object, it will be copied to data before sending. such as the user_id, session_id, app_key, counter, etc. 
+				</parameter>
+			</function>
+			<function line="169" name="GetSrcUserName">
+				<summary>function NPL.GetSrcUserName()
+retrieve the user name from the current packet's source name. return "" if no username is found.
+				</summary>
+			</function>
+			<function line="188" name="SyncFile">
+				<summary>function NPL.SyncFile(FileUrl, DestFolder, ScriptCallBack, DownloaderName)
+sync a file with a remote server
+This function is very similar to NPL.AsyncDownload() except that FileUrl may contain CRC code
+and that if will not perform the actual download if the DestFolder is a file with the right CRC
+e.g.
+NPL.SyncFile("http://www.kids3dmovie.com/uploads/LiXizhi/auto2.jpg?CRC32=507094163", "temp\\renamed.jpg", "DownloadCallback()", "test1");
+   @param FileUrl: it may be a URL that ends with ?CRC32=number, such as http://www.kids3dmovie.com/test.jpg?CRC32=1234
+   @param ScriptCallBack: a gobal variable called 
+msg = {DownloadState=""|"complete"|"terminated", totalFileSize=number, currentFileSize=number, PercentDone=number} is the input. msg may be nil if any error occurs.
+   @return:  1 it is downloading; 2 downloading is done because a file already exist with the currect CRC32 code
+				</summary>
+				<parameter name="FileUrl">it may be a URL that ends with ?CRC32=number, such as http://www.kids3dmovie.com/test.jpg?CRC32=1234
+				</parameter>
+				<parameter name="DestFolder"/>
+				<parameter name="ScriptCallBack">a gobal variable called 
+msg = {DownloadState=""|"complete"|"terminated", totalFileSize=number, currentFileSize=number, PercentDone=number} is the input. msg may be nil if any error occurs.
+				</parameter>
+				<parameter name="DownloaderName"/>
+				<returns>return 1 it is downloading; 2 downloading is done because a file already exist with the currect CRC32 code
+				</returns>
+			</function>
+			<function line="231" name="DeleteAllDownloadTempFiles">
+				<summary>function NPL.DeleteAllDownloadTempFiles()
+all temp file due to NPL.SyncFile() is deleted. Perhaps, this function should be called once several weeks
+				</summary>
+			</function>
+			<function line="235" name="SyncFileCallBack">
+				<summary>function NPL.SyncFileCallBack(DestFolder, tempfile)
+
+				</summary>
+				<parameter name="DestFolder"/>
+				<parameter name="tempfile"/>
+			</function>
+			<function line="251" name="CheckLoad">
+				<summary>function NPL.CheckLoad(filename)
+this is same as NPL.load, except that it only load local script file without the "(gl)" prefix. 
+and it will check the file existence in both source folder and bin folder before loading the file. 
+if file is not found in the first place, NPL.load() is not called at all. and the function will return nil.
+   @return : true if loaded. 
+				</summary>
+				<parameter name="filename"/>
+				<returns>return true if loaded. 
+				</returns>
+			</function>
+			<function line="259" name="DoesFileExist">
+				<summary>function NPL.DoesFileExist(filename)
+if a given script or other file exist. it will also check precompiled file
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="266" name="LoadPublicFilesFromXML">
+				<summary>function NPL.LoadPublicFilesFromXML(filename)
+load public NPL file to id map from XML file.
+   @param filename: if nil, it defaults to config/NPLPublicFiles.xml
+				</summary>
+				<parameter name="filename">if nil, it defaults to config/NPLPublicFiles.xml
+				</parameter>
+			</function>
+		</table>
+		<table name="ParaScene" src="script/ide/ParaEngineExtension.lua">
+			<function line="19" name="GetCharacter">
+				<summary>function ParaScene.GetCharacter(charName)
+it first searches the global object, if not found, it will search the OPC list.
+always check if the object is valid() upon receive.
+				</summary>
+				<parameter name="charName"/>
+			</function>
+			<function line="43" name="GetSceneState">
+				<summary>function ParaScene.GetSceneState()
+return the cached scene state attribute 
+				</summary>
+			</function>
+			<function line="64" name="GetAttributeObject">
+				<summary>function ParaScene.GetAttributeObject(name)
+optimize C++ API function by caching the table
+				</summary>
+				<parameter name="name"/>
+			</function>
+			<function line="94" name="CaptureSceneState">
+				<summary>function ParaScene.CaptureSceneState(options)
+capture the current scene state to be restored later on. 
+e.g. 
+local state = ParaScene.CaptureSceneState()
+-- change scene state and render ...
+ParaScene.RestoreSceneState(state);
+
+options: a table or nil. if nil, it will capture everything.
+   @return: return the captured scene state 
+				</summary>
+				<parameter name="options"/>
+				<returns>return return the captured scene state 
+				</returns>
+			</function>
+			<function line="126" name="RestoreSceneState">
+				<summary>function ParaScene.RestoreSceneState(state)
+restore scene state
+				</summary>
+				<parameter name="state"/>
+			</function>
+		</table>
+		<table name="ParaCamera" src="script/ide/ParaEngineExtension.lua">
+			<function line="53" name="GetAttributeObject">
+				<summary>function ParaCamera.GetAttributeObject()
+optimize C++ API function by caching the table
+				</summary>
+			</function>
+			<function line="181" name="SetLookAtPos">
+				<summary>function ParaCamera.SetLookAtPos(x, y, z)
+set the look at position of the camera. It uses an invisible avatar as the camera look at position. 
+after calling this function, please call ParaCamera.SetEyePos(facing, height, angle) to change the camera eye position. 
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="z"/>
+			</function>
+			<function line="187" name="GetLookAtPos">
+				<summary>function ParaCamera.GetLookAtPos()
+
+				</summary>
+			</function>
+			<function line="192" name="GetEyePos">
+				<summary>function ParaCamera.GetEyePos()
+it returns polar coordinate system.
+   @return camobjDist, LifeupAngle, CameraRotY
+				</summary>
+				<returns>return , LifeupAngle, CameraRotY
+				</returns>
+			</function>
+			<function line="198" name="GetDummyObject">
+				<summary>function ParaCamera.GetDummyObject()
+create/get the dummy camera object for the camera look position. 
+				</summary>
+			</function>
+			<function line="218" name="SetEyePos">
+				<summary>function ParaCamera.SetEyePos(camobjDist, LifeupAngle, CameraRotY)
+set the camera eye position by camera object distance, life up angle and rotation around the y axis. One must call ParaCamera.SetLookAtPos() before calling this function. 
+e.g.ParaCamera.SetEyePos(5, 1.3, 0.4);
+				</summary>
+				<parameter name="camobjDist"/>
+				<parameter name="LifeupAngle"/>
+				<parameter name="CameraRotY"/>
+			</function>
+			<function line="228" name="SwitchOrthoView">
+				<summary>function ParaCamera.SwitchOrthoView(orthoWidth, orthoHeight)
+switch to orthographic camera view, where the near and far objects are of the same size.
+   @param orthoWidth: the width of the orthographic view volumn.
+   @param orthoHeight: the height of the orthographic view volumn.
+				</summary>
+				<parameter name="orthoWidth">the width of the orthographic view volumn.
+				</parameter>
+				<parameter name="orthoHeight">the height of the orthographic view volumn.
+				</parameter>
+			</function>
+			<function line="249" name="SwitchPerspectiveView">
+				<summary>function ParaCamera.SwitchPerspectiveView()
+switch to perspective view
+				</summary>
+			</function>
+		</table>
+		<table name="ParaEngine" src="script/ide/ParaEngineExtension.lua">
+			<function line="78" name="GetAttributeObject">
+				<summary>function ParaEngine.GetAttributeObject()
+optimize C++ API function by caching the table
+				</summary>
+			</function>
+		</table>
+		<table name="ParaAsset" src="script/ide/ParaEngineExtension.lua">
+			<function line="260" name="GetRemoteTexture">
+				<summary>function ParaAsset.GetRemoteTexture(url)
+
+An internal ResourceStore (local server) called "_default_" is used to serve http textures. 
+An internal time is also used so that we can sequence downloader threads. 
+				</summary>
+				<parameter name="url"/>
+			</function>
+			<function line="269" name="GetRemoteTexture_callback">
+				<summary>function ParaAsset.GetRemoteTexture_callback(entry)
+
+				</summary>
+				<parameter name="entry"/>
+			</function>
+			<function line="279" name="ClearTextureCache">
+				<summary>function ParaAsset.ClearTextureCache()
+clear all cached textures. 
+				</summary>
+			</function>
+			<function line="296" name="SyncRemoteTexture">
+				<summary>function ParaAsset.SyncRemoteTexture(FileUrl)
+
+This function is only used internally. It is called automatically when the ParaEngine Core detects that a texture is a remote texture.
+   @note: One shall never call this function explicitly. In scripting interface, we can call ParaAsset.LoadRemoteTexture() instead
+Load a texture from remote file. It first checks if the file is available from the local texture cache,
+if yes, it will immediately use the local copy, before refreshing from the network. In either case, a thread is 
+used to synchronize with the remote server. The only exception is that the filename contains a CRC32 parameter, 
+where the remote sync is skipped if CRC match.
+				</summary>
+				<parameter name="FileUrl"/>
+			</function>
+			<function line="309" name="SyncRemoteTexture_callback">
+				<summary>function ParaAsset.SyncRemoteTexture_callback(FileUrl, DestFolder)
+
+				</summary>
+				<parameter name="FileUrl"/>
+				<parameter name="DestFolder"/>
+			</function>
+			<function line="325" name="LoadRemoteTexture">
+				<summary>function ParaAsset.LoadRemoteTexture(filename, loadingtexture)
+Load a remote texture explicitly. This function differs from the original ParaAsset.LoadTexture() that
+it allows you to specify a loadingtexture to display while the texture is being downloaded.
+   @param filename: http texture
+	note3: crc32 code can be appended to file name, so that the same file does not need to be downloaded multiple times if local and server version match. such as "http://www.paraengine.com/images/index_12.png?CRC32=0".
+   @param loadingtexture: while filename is being downloaded, this texture will be used.
+   @return: texture is returned.
+				</summary>
+				<parameter name="filename">http texture
+	note3: crc32 code can be appended to file name, so that the same file does not need to be downloaded multiple times if local and server version match. such as "http://www.paraengine.com/images/index_12.png?CRC32=0".
+				</parameter>
+				<parameter name="loadingtexture">while filename is being downloaded, this texture will be used.
+				</parameter>
+				<returns>return texture is returned.
+				</returns>
+			</function>
+		</table>
+		<table name="CmdParser" src="script/ide/System/Util/CmdParser.lua">
+			<function line="33" name="ParseInt">
+				<summary>function CmdParser.ParseInt(cmd_text)
+return integer or float, cmd_text_remain
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="48" name="ParseDeltaInt">
+				<summary>function CmdParser.ParseDeltaInt(cmd_text)
+e.g. "~0.1"
+return integer or float, cmd_text_remain
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="61" name="ParseText">
+				<summary>function CmdParser.ParseText(cmd_text, text)
+parse a given text
+   @param text:such as "home", must not contain regular expression letters. 
+				</summary>
+				<parameter name="cmd_text"/>
+				<parameter name="text">such as "home", must not contain regular expression letters. 
+				</parameter>
+			</function>
+			<function line="70" name="ParseString">
+				<summary>function CmdParser.ParseString(cmd_text)
+parse any string value without white space. 
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="79" name="ParseWord">
+				<summary>function CmdParser.ParseWord(cmd_text)
+parse any word value without white space. 
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="88" name="ParseFormated">
+				<summary>function CmdParser.ParseFormated(cmd_text, strFmt)
+
+   @param strFmt: regular expression such as "%S+", "%w+", etc. 
+				</summary>
+				<parameter name="cmd_text"/>
+				<parameter name="strFmt">regular expression such as "%S+", "%w+", etc. 
+				</parameter>
+			</function>
+			<function line="99" name="ParseOption">
+				<summary>function CmdParser.ParseOption(cmd_text)
+parse option that begins with -, return the option name
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="108" name="ParseOptions">
+				<summary>function CmdParser.ParseOptions(cmd_text)
+return options: -[options]
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="123" name="ParseBool">
+				<summary>function CmdParser.ParseBool(cmd_text)
+1|0 on|off true|false are all supported
+				</summary>
+				<parameter name="cmd_text"/>
+			</function>
+			<function line="135" name="ParseNumberList">
+				<summary>function CmdParser.ParseNumberList(cmd_text, list, separator)
+
+   @param cmd_text: "1|2|3" will return {1,2,3}
+"1|~|3" will return {1,false,3}
+   @param separator: default to "|," which is "|" or ",". one can also specify "|,%s"
+return a table array of numbers
+				</summary>
+				<parameter name="cmd_text">"1|2|3" will return {1,2,3}
+"1|~|3" will return {1,false,3}
+				</parameter>
+				<parameter name="list"/>
+				<parameter name="separator">default to "|," which is "|" or ",". one can also specify "|,%s"
+return a table array of numbers
+				</parameter>
+			</function>
+			<function line="172" name="ParseStringList">
+				<summary>function CmdParser.ParseStringList(cmd_text, list)
+
+   @param cmd_text: "str1|2|str3" will return {"str1","2","str3"}
+return a table of |or, sperated list
+				</summary>
+				<parameter name="cmd_text">"str1|2|str3" will return {"str1","2","str3"}
+return a table of |or, sperated list
+				</parameter>
+				<parameter name="list"/>
+			</function>
+			<function line="195" name="ParseServerData">
+				<summary>function CmdParser.ParseServerData(cmd_text)
+item's serverdata or tagData in xml format
+currently, this must be the last parameter.
+   @param cmd_text: "{table parameters}"
+   @return serverDataTable, cmd_remaining_text
+				</summary>
+				<parameter name="cmd_text">"{table parameters}"
+				</parameter>
+				<returns>return , cmd_remaining_text
+				</returns>
+			</function>
+			<function line="208" name="ParseColor">
+				<summary>function CmdParser.ParseColor(cmd_text, default_value)
+parse: #rgb like "#ffffff"
+   @return the string "#ffffff"
+				</summary>
+				<parameter name="cmd_text"/>
+				<parameter name="default_value"/>
+				<returns>return string "#ffffff"
+				</returns>
+			</function>
+			<function line="218" name="ParseTable">
+				<summary>function CmdParser.ParseTable(cmd_text, default_value)
+parse: NPL table string {attr={filename=""}}
+   @return table, remaining_text;
+				</summary>
+				<parameter name="cmd_text"/>
+				<parameter name="default_value"/>
+				<returns>return , remaining_text;
+				</returns>
+			</function>
+		</table>
+		<table name="Event" src="script/ide/System/Core/Event.lua">
+			<function line="29" name="ctor">
+				<summary>function Event:ctor()
+
+				</summary>
+			</function>
+			<function line="32" name="init">
+				<summary>function Event:init(event_type)
+
+				</summary>
+				<parameter name="event_type"/>
+			</function>
+			<function line="41" name="new_static">
+				<summary>function Event:new_static(event_type)
+get a singleton event by its types
+event will be set to unaccepeted. 
+				</summary>
+				<parameter name="event_type"/>
+			</function>
+			<function line="60" name="use_static_new">
+				<summary>function Event:use_static_new()
+static function: after calling this, Event:new() will no longer create new object, but return the singleton class object instead. 
+this is useful, if you send event without paramaters and without nested calls that depends on self:accept(). 
+				</summary>
+			</function>
+			<function line="64" name="GetType">
+				<summary>function Event:GetType() 
+
+				</summary>
+			</function>
+			<function line="68" name="GetHandlerFuncName">
+				<summary>function Event:GetHandlerFuncName()
+
+				</summary>
+			</function>
+			<function line="72" name="accept">
+				<summary>function Event:accept()
+
+				</summary>
+			</function>
+			<function line="76" name="ignore">
+				<summary>function Event:ignore()
+
+				</summary>
+			</function>
+			<function line="80" name="setAccepted">
+				<summary>function Event:setAccepted(accepted) 
+
+				</summary>
+				<parameter name="accepted"/>
+			</function>
+			<function line="84" name="isAccepted">
+				<summary>function Event:isAccepted() 
+
+				</summary>
+			</function>
+			<function line="89" name="spontaneous">
+				<summary>function Event:spontaneous() 
+whether it is sent spontneously instead of posted. 
+				</summary>
+			</function>
+			<function line="94" name="OnTick">
+				<summary>function Event:OnTick(deltaTime)
+return true if event should be removed. 
+				</summary>
+				<parameter name="deltaTime"/>
+			</function>
+			<function line="98" name="tostring">
+				<summary>function Event:tostring()
+
+				</summary>
+			</function>
+		</table>
+		<table name="EventTickFunc" src="script/ide/System/Core/Event.lua">
+			<function line="109" name="ctor">
+				<summary>function EventTickFunc:ctor()
+
+				</summary>
+			</function>
+			<function line="116" name="init">
+				<summary>function EventTickFunc:init(ms_delay_time, sender, slot)
+
+   @param ms_delay_time: in ms seconds.
+   @param sender: nil or a class object.
+   @param slot: the slot function. 
+				</summary>
+				<parameter name="ms_delay_time">in ms seconds.
+				</parameter>
+				<parameter name="sender">nil or a class object.
+				</parameter>
+				<parameter name="slot">the slot function. 
+				</parameter>
+			</function>
+			<function line="123" name="OnTick">
+				<summary>function EventTickFunc:OnTick(deltaTime)
+
+				</summary>
+				<parameter name="deltaTime"/>
+			</function>
+		</table>
+		<table name="TimerEvent" src="script/ide/System/Core/Event.lua">
+			<function line="139" name="ctor">
+				<summary>function TimerEvent:ctor()
+
+				</summary>
+			</function>
+			<function line="143" name="init">
+				<summary>function TimerEvent:init(timerId)
+
+				</summary>
+				<parameter name="timerId"/>
+			</function>
+			<function line="147" name="timerId">
+				<summary>function TimerEvent:timerId() 
+
+				</summary>
+			</function>
+		</table>
+		<table name="ToolBase" src="script/ide/System/Core/ToolBase.lua">
+			<function line="66" name="ctor">
+				<summary>function ToolBase:ctor()
+
+				</summary>
+			</function>
+			<function line="70" name="Destroy">
+				<summary>function ToolBase:Destroy()
+
+				</summary>
+			</function>
+			<function line="102" name="isAncestorOf">
+				<summary>function ToolBase:isAncestorOf(child)
+Returns true if this object is a parent, (or grandparent and so on
+to any level), of the given child; otherwise returns false.
+				</summary>
+				<parameter name="child"/>
+			</function>
+			<function line="117" name="InitSingleton">
+				<summary>function ToolBase:InitSingleton()
+static function: to use the class itself as a singleton object. 
+this function can be called many times, only the first time succeed. 
+Once called, it will disable new() method for object instantiation.  
+				</summary>
+			</function>
+			<function line="129" name="GetEvents">
+				<summary>function ToolBase:GetEvents()
+get event system. 
+				</summary>
+			</function>
+			<function line="141" name="ChangeTimer">
+				<summary>function ToolBase:ChangeTimer(dueTime, period)
+change the timer
+   @param dueTime The amount of time to delay before the invoking the callback method specified in milliseconds
+Specify zero (0) to restart the timer immediately. Specify nil to prevent the timer from restarting.
+   @param period The time interval between invocations of the callback method in milliseconds. 
+Specify nil to disable periodic signaling. 
+				</summary>
+				<parameter name="dueTime">The amount of time to delay before the invoking the callback method specified in milliseconds
+Specify zero (0) to restart the timer immediately. Specify nil to prevent the timer from restarting.
+				</parameter>
+				<parameter name="period">The time interval between invocations of the callback method in milliseconds. 
+Specify nil to disable periodic signaling. 
+				</parameter>
+			</function>
+			<function line="148" name="KillTimer">
+				<summary>function ToolBase:KillTimer()
+
+				</summary>
+			</function>
+			<function line="155" name="GetEventList">
+				<summary>function ToolBase:GetEventList()
+get event list. 
+				</summary>
+			</function>
+			<function line="167" name="ScheduleFunctionCall">
+				<summary>function ToolBase:ScheduleFunctionCall(ms_delay_time, sender, slot)
+
+   @param ms_delay_time: in ms seconds.
+   @param sender: nil or a class object or anonymous function.
+   @param slot: the slot function. if nil, the sender can be an anonymous function. 
+				</summary>
+				<parameter name="ms_delay_time">in ms seconds.
+				</parameter>
+				<parameter name="sender">nil or a class object or anonymous function.
+				</parameter>
+				<parameter name="slot">the slot function. if nil, the sender can be an anonymous function. 
+				</parameter>
+			</function>
+			<function line="185" name="OnTickEvents">
+				<summary>function ToolBase:OnTickEvents(deltaTime_ms)
+private function:
+				</summary>
+				<parameter name="deltaTime_ms"/>
+			</function>
+			<function line="203" name="OnTick">
+				<summary>function ToolBase:OnTick()
+timer function callback:
+				</summary>
+			</function>
+			<function line="212" name="GetConnection">
+				<summary>function ToolBase:GetConnection(signal, bCreateIfNotExist)
+getting connection list of a signal function. 
+this is like axon in human brain.
+   @param signal: function or string of function name.
+   @param bCreateIfNotExist: default to nil.
+   @return a list of synapses on the signal(axon).
+				</summary>
+				<parameter name="signal">function or string of function name.
+				</parameter>
+				<parameter name="bCreateIfNotExist">default to nil.
+				</parameter>
+				<returns>return list of synapses on the signal(axon).
+				</returns>
+			</function>
+			<function line="247" name="Connect">
+				<summary>function ToolBase.Connect(sender, signal, receiver, slot, connection_type)
+static function: make automatic connection. If the sender is self pointer, it can be used as member function.
+   @param connection_type: such as "UniqueConnection", if nil, default to "AutoConnection"
+   @param sender: the sender class object.
+   @param signal: a member function (or name) on the sender.
+   @param receiver:the receiver class object. it can also be anonymous function in which case this should be the last parameter.
+   @param slot: a member function (or name) on the receiver to connect to. 
+				</summary>
+				<parameter name="sender">the sender class object.
+				</parameter>
+				<parameter name="signal">a member function (or name) on the sender.
+				</parameter>
+				<parameter name="receiver">the receiver class object. it can also be anonymous function in which case this should be the last parameter.
+				</parameter>
+				<parameter name="slot">a member function (or name) on the receiver to connect to. 
+				</parameter>
+				<parameter name="connection_type">such as "UniqueConnection", if nil, default to "AutoConnection"
+				</parameter>
+			</function>
+			<function line="269" name="ConnectImp">
+				<summary>function ToolBase.ConnectImp(sender, signal, receiver, slot, connection_type)
+implementation without parameter validation. 
+				</summary>
+				<parameter name="sender"/>
+				<parameter name="signal"/>
+				<parameter name="receiver"/>
+				<parameter name="slot"/>
+				<parameter name="connection_type"/>
+			</function>
+			<function line="305" name="DisconnectHelper">
+				<summary>function ToolBase:DisconnectHelper(connection, receiver, slot, disconnectType)
+remove synapse from connection. 
+				</summary>
+				<parameter name="connection"/>
+				<parameter name="receiver"/>
+				<parameter name="slot"/>
+				<parameter name="disconnectType"/>
+			</function>
+			<function line="327" name="Disconnect">
+				<summary>function ToolBase.Disconnect(sender, signal, receiver, slot, disconnectType)
+
+   @param signal: if nil, it will remove all signal connections.
+   @param disconnectType: "DisconnectOne" or "DisconnectAll", default to all. 
+				</summary>
+				<parameter name="sender"/>
+				<parameter name="signal">if nil, it will remove all signal connections.
+				</parameter>
+				<parameter name="receiver"/>
+				<parameter name="slot"/>
+				<parameter name="disconnectType">"DisconnectOne" or "DisconnectAll", default to all. 
+				</parameter>
+			</function>
+			<function line="361" name="DisconnectSenders">
+				<summary>function ToolBase:DisconnectSenders()
+disconnect from all senders
+this function is mostly used in destructor to automatically break incoming connections.
+				</summary>
+			</function>
+			<function line="378" name="DisconnectSender">
+				<summary>function ToolBase:DisconnectSender(srcSender)
+disconnect all connections from a given sender
+				</summary>
+				<parameter name="srcSender"/>
+			</function>
+			<function line="404" name="sender">
+				<summary>function ToolBase:sender()
+Returns a pointer to the object that sent the signal, if called in
+a slot activated by a signal; otherwise it returns 0. The pointer
+is valid only during the execution of the slot that calls this
+function from this object's thread context.
+
+The pointer returned by this function becomes invalid if the
+sender is destroyed, or if the slot is disconnected from the
+sender's signal.
+   @warning This function violates the object-oriented principle of
+modularity. However, getting access to the sender might be useful
+when many signals are connected to a single slot.
+				</summary>
+			</function>
+			<function line="413" name="Activate">
+				<summary>function ToolBase.Activate(sender, signal, ...)
+static or member function: activate a given signal, all connected slots will be called.
+   @param sender: usually self. if used as a member function. 
+				</summary>
+				<parameter name="sender">usually self. if used as a member function. 
+				</parameter>
+				<parameter name="signal"/>
+			</function>
+			<function line="428" name="ConnectNotify">
+				<summary>function ToolBase:ConnectNotify(signal)
+This virtual function is called when something has been connected
+to a signal in this object. 
+warning This function violates the object-oriented principle of
+modularity. However, it might be useful for optimizing access to expensive resources.
+				</summary>
+				<parameter name="signal"/>
+			</function>
+			<function line="434" name="DisconnectNotify">
+				<summary>function ToolBase:DisconnectNotify(signal)
+This virtual function is called when something has been disconnected from a signal in this object.
+warning This function violates the object-oriented principle of
+modularity. However, it might be useful for optimizing access to expensive resources.
+				</summary>
+				<parameter name="signal"/>
+			</function>
+			<function line="437" name="GetChildren">
+				<summary>function ToolBase:GetChildren()
+
+				</summary>
+			</function>
+			<function line="444" name="SetParent">
+				<summary>function ToolBase:SetParent(parent)
+
+				</summary>
+				<parameter name="parent"/>
+			</function>
+			<function line="448" name="setParent_helper">
+				<summary>function ToolBase:setParent_helper(parent)
+
+				</summary>
+				<parameter name="parent"/>
+			</function>
+			<function line="467" name="deleteChildren">
+				<summary>function ToolBase:deleteChildren()
+
+				</summary>
+			</function>
+			<function line="511" name="dumpObjectInfo">
+				<summary>function ToolBase:dumpObjectInfo()
+Dumps information about signal connections, etc. for this object to the log.
+				</summary>
+			</function>
+			<function line="557" name="installEventFilter">
+				<summary>function ToolBase:installEventFilter(obj)
+Installs an event filter obj on this object. filter is like the hook chain
+An event filter is an object that receives all events that are
+sent to this object. The filter can either stop the event or
+forward it to this object. The event filter obj receives
+events via its eventFilter() function. The eventFilter() function
+must return true if the event should be filtered, (i.e. stopped);
+otherwise it must return false.
+If multiple event filters are installed on a single object, the
+filter that was installed last is activated first.
+				</summary>
+				<parameter name="obj"/>
+			</function>
+			<function line="575" name="removeEventFilter">
+				<summary>function ToolBase:removeEventFilter(obj)
+Removes an event filter object obj from this object. The
+request is ignored if such an event filter has not been installed.
+All event filters for this object are automatically removed when
+this object is destroyed.
+It is always safe to remove an event filter, even during event
+filter activation (i.e. from the eventFilter() function).
+				</summary>
+				<parameter name="obj"/>
+			</function>
+			<function line="594" name="filterEvent">
+				<summary>function ToolBase:filterEvent(object, event)
+filter the event
+   @return true if event is stopped by one of the filtered objects. 
+				</summary>
+				<parameter name="object"/>
+				<parameter name="event"/>
+				<returns>return if event is stopped by one of the filtered objects. 
+				</returns>
+			</function>
+			<function line="615" name="eventFilter">
+				<summary>function ToolBase:eventFilter(object, event)
+virtual function: 
+Filters events if this object has been installed as an event
+filter for the watched object.
+In your reimplementation of this function, if you want to filter
+the event out, i.e. stop it being handled further, return
+true; otherwise return false.
+   @sa installEventFilter()
+				</summary>
+				<parameter name="object"/>
+				<parameter name="event"/>
+			</function>
+			<function line="180" name="Property" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase.Property(class_def, name, default_value, getterName, setterName, notifySignal)
+define a property with overridable get/set function. 
+e.g.  YourClass:Property(property_name, ...);
+   @param class_def: the class table (not instance).
+   @param name: First letter is usually in capital.  (it can also be property table. )
+such as  {name="visible", set="setVisible", get="isVisible", default=nil, sig=nil, type="bool", desc=nil, }
+{"visible", false, "isVisible", "setVisible"}
+{"Enabled", false, auto=true}
+   @param getterName: if nil, default to "Get"..name.
+   @param setterName: if nil, default to "Set"..name.
+   @param notifySignal: the signal to fire when property changed. default to nil. 
+				</summary>
+				<parameter name="class_def">the class table (not instance).
+				</parameter>
+				<parameter name="name">First letter is usually in capital.  (it can also be property table. )
+such as  {name="visible", set="setVisible", get="isVisible", default=nil, sig=nil, type="bool", desc=nil, }
+{"visible", false, "isVisible", "setVisible"}
+{"Enabled", false, auto=true}
+				</parameter>
+				<parameter name="default_value"/>
+				<parameter name="getterName">if nil, default to "Get"..name.
+				</parameter>
+				<parameter name="setterName">if nil, default to "Set"..name.
+				</parameter>
+				<parameter name="notifySignal">the signal to fire when property changed. default to nil. 
+				</parameter>
+			</function>
+			<function line="204" name="Signal" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase.Signal(class_def, name)
+define a signal
+e.g. YourClass:Signal("OnXXXChanged", ...);
+   @param ...: parameter list is only used for documentation purpose. 
+				</summary>
+				<parameter name="class_def"/>
+				<parameter name="name"/>
+			</function>
+			<function line="218" name="AddField" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase.AddField(class_def, name, property)
+
+				</summary>
+				<parameter name="class_def"/>
+				<parameter name="name"/>
+				<parameter name="property"/>
+			</function>
+			<function line="234" name="IsValid" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:IsValid()
+
+				</summary>
+			</function>
+			<function line="240" name="findPlug" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:findPlug(name)
+find and return a given attribute plug object. 
+this is a public helper function. 
+				</summary>
+				<parameter name="name"/>
+			</function>
+			<function line="244" name="GetFieldNum" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:GetFieldNum()
+
+				</summary>
+			</function>
+			<function line="248" name="GetFieldIndex" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:GetFieldIndex(name)
+
+				</summary>
+				<parameter name="name"/>
+			</function>
+			<function line="252" name="GetFieldName" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:GetFieldName(valueIndex)
+
+				</summary>
+				<parameter name="valueIndex"/>
+			</function>
+			<function line="259" name="GetFieldType" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:GetFieldType(nIndex)
+
+				</summary>
+				<parameter name="nIndex"/>
+			</function>
+			<function line="268" name="SetFieldInternal" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:SetFieldInternal(name, value)
+same as SetField, except that some implementation may not send signals like valueChanged even data is modified. 
+it will automatically fallback to SetField if not such implementation is provided by the attribute object.  
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="272" name="SetField" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:SetField(name, value)
+
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="286" name="GetField" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:GetField(name, defaultValue)
+
+				</summary>
+				<parameter name="name"/>
+				<parameter name="defaultValue"/>
+			</function>
+			<function line="306" name="GetAttributeObject" src="script/ide/System/Core/ToolBase_p.lua">
+				<summary>function ToolBase:GetAttributeObject()
+
+				</summary>
+			</function>
+		</table>
+		<table name="SignalConnections" src="script/ide/System/Core/ToolBase_p.lua">
+			<function line="21" name="ctor">
+				<summary>function SignalConnections:ctor()
+
+Title: private classes 
+Author(s): LiXizhi
+Date: 2014/11/25
+Desc: This function should only be included by ToolBase.lua
+use the lib:
+------------------------------------------------------------
+NPL.load("(gl)script/ide/System/Core/ToolBase_p.lua");
+local ConnectionSynapse = commonlib.gettable("System.Core.ConnectionSynapse");
+local SignalConnections = commonlib.gettable("System.Core.SignalConnections");
+------------------------------------------------------------
+----------------------------------------------
+signal connections.
+----------------------------------------------
+				</summary>
+			</function>
+			<function line="25" name="Get">
+				<summary>function SignalConnections:Get(signal)
+
+				</summary>
+				<parameter name="signal"/>
+			</function>
+			<function line="29" name="Set">
+				<summary>function SignalConnections:Set(signal, axon_connection)
+
+				</summary>
+				<parameter name="signal"/>
+				<parameter name="axon_connection"/>
+			</function>
+			<function line="33" name="pairs">
+				<summary>function SignalConnections:pairs()
+
+				</summary>
+			</function>
+			<function line="37" name="CleanConnectionLists">
+				<summary>function SignalConnections:CleanConnectionLists()
+
+				</summary>
+			</function>
+		</table>
+		<table name="ConnectionSynapse" src="script/ide/System/Core/ToolBase_p.lua">
+			<function line="55" name="ctor">
+				<summary>function ConnectionSynapse:ctor()
+
+				</summary>
+			</function>
+			<function line="58" name="IsConnectedTo">
+				<summary>function ConnectionSynapse:IsConnectedTo(receiver, slot)
+
+				</summary>
+				<parameter name="receiver"/>
+				<parameter name="slot"/>
+			</function>
+			<function line="63" name="Activate">
+				<summary>function ConnectionSynapse:Activate(...)
+invoke the slot
+				</summary>
+			</function>
+		</table>
+		<table name="painter" src="script/ide/System/Core/PainterContext.lua">
+			<function line="32" name="ctor">
+				<summary>function painter:ctor()
+
+				</summary>
+			</function>
+			<function line="36" name="rect">
+				<summary>function painter:rect()
+TODO:
+				</summary>
+			</function>
+			<function line="41" name="region">
+				<summary>function painter:region()
+TODO:
+				</summary>
+			</function>
+			<function line="45" name="init">
+				<summary>function painter:init(parentWindow)
+
+				</summary>
+				<parameter name="parentWindow"/>
+			</function>
+			<function line="50" name="GetWindow">
+				<summary>function painter:GetWindow()
+
+				</summary>
+			</function>
+			<function line="54" name="Begin">
+				<summary>function painter:Begin(paintDevice)
+
+				</summary>
+				<parameter name="paintDevice"/>
+			</function>
+			<function line="58" name="End">
+				<summary>function painter:End()
+
+				</summary>
+			</function>
+			<function line="62" name="Flush">
+				<summary>function painter:Flush()
+
+				</summary>
+			</function>
+			<function line="66" name="Save">
+				<summary>function painter:Save()
+
+				</summary>
+			</function>
+			<function line="70" name="Restore">
+				<summary>function painter:Restore()
+
+				</summary>
+			</function>
+			<function line="91" name="SetCompositionMode">
+				<summary>function painter:SetCompositionMode(mode)
+
+CompositionMode_SourceBlend= 0,
+CompositionMode_SourceOver= 1,
+CompositionMode_DestinationOver = 2,
+CompositionMode_Clear = 3,
+CompositionMode_Source = 4,
+CompositionMode_Destination = 5,
+CompositionMode_SourceIn,
+CompositionMode_DestinationIn,
+CompositionMode_SourceOut,
+CompositionMode_DestinationOut,
+CompositionMode_SourceAtop,
+CompositionMode_DestinationAtop,
+CompositionMode_Xor,
+CompositionMode_Plus,
+CompositionMode_PlusSourceBlend,
+				</summary>
+				<parameter name="mode"/>
+			</function>
+			<function line="95" name="GetCompositionMode">
+				<summary>function painter:GetCompositionMode()
+
+				</summary>
+			</function>
+			<function line="102" name="SetFont">
+				<summary>function painter:SetFont(font)
+set current font
+   @param font: {family="System", size=10, bold=true}
+or it can be string "System;14;" or "System;14;bold"
+				</summary>
+				<parameter name="font">{family="System", size=10, bold=true}
+or it can be string "System;14;" or "System;14;bold"
+				</parameter>
+			</function>
+			<function line="110" name="SetPen">
+				<summary>function painter:SetPen(pen)
+set current pen
+   @param pen: { width=1, brush = {color="#00000000", texture="filename or texture asset"}, }
+or it can be {width=1, color="#000000", texture="filename or texture asset"}
+or it can be pen color "#ff000000" or "255 255 255" or DWORD
+				</summary>
+				<parameter name="pen">{ width=1, brush = {color="#00000000", texture="filename or texture asset"}, }
+or it can be {width=1, color="#000000", texture="filename or texture asset"}
+or it can be pen color "#ff000000" or "255 255 255" or DWORD
+				</parameter>
+			</function>
+			<function line="117" name="SetBrush">
+				<summary>function painter:SetBrush(brush)
+set current brush (texture and color)
+   @param brush: { color="#00000000", texture="filename or texture asset"} 
+or it can be pen color "#ff000000" or "255 255 255" or DWORD
+				</summary>
+				<parameter name="brush">{ color="#00000000", texture="filename or texture asset"} 
+or it can be pen color "#ff000000" or "255 255 255" or DWORD
+				</parameter>
+			</function>
+			<function line="121" name="SetBrushOrigin">
+				<summary>function painter:SetBrushOrigin(x, y)
+
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+			</function>
+			<function line="127" name="SetBackground">
+				<summary>function painter:SetBackground(brush)
+set current background brush
+   @param brush: { color="#00000000", texture="filename or texture asset"}
+				</summary>
+				<parameter name="brush">{ color="#00000000", texture="filename or texture asset"}
+				</parameter>
+			</function>
+			<function line="132" name="SetOpacity">
+				<summary>function painter:SetOpacity(fOpacity)
+between [0,1]
+				</summary>
+				<parameter name="fOpacity"/>
+			</function>
+			<function line="136" name="SetClipRegion">
+				<summary>function painter:SetClipRegion(x, y, w, h)
+
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="w"/>
+				<parameter name="h"/>
+			</function>
+			<function line="140" name="SetClipping">
+				<summary>function painter:SetClipping(enable)
+
+				</summary>
+				<parameter name="enable"/>
+			</function>
+			<function line="144" name="HasClipping">
+				<summary>function painter:HasClipping()
+
+				</summary>
+			</function>
+			<function line="152" name="SetTransform">
+				<summary>function painter:SetTransform(trans, combine)
+Sets the world transformation matrix.
+If combine is true, the specified matrix is combined with the current matrix; otherwise it replaces the current matrix.
+				</summary>
+				<parameter name="trans"/>
+				<parameter name="combine"/>
+			</function>
+			<function line="156" name="GetTransform">
+				<summary>function painter:GetTransform(out)
+
+				</summary>
+				<parameter name="out"/>
+			</function>
+			<function line="160" name="Scale">
+				<summary>function painter:Scale(sx, sy)
+
+				</summary>
+				<parameter name="sx"/>
+				<parameter name="sy"/>
+			</function>
+			<function line="164" name="Shear">
+				<summary>function painter:Shear(sh, sv)
+
+				</summary>
+				<parameter name="sh"/>
+				<parameter name="sv"/>
+			</function>
+			<function line="168" name="Rotate">
+				<summary>function painter:Rotate(a)
+
+				</summary>
+				<parameter name="a"/>
+			</function>
+			<function line="172" name="Translate">
+				<summary>function painter:Translate(dx, dy)
+
+				</summary>
+				<parameter name="dx"/>
+				<parameter name="dy"/>
+			</function>
+			<function line="176" name="DrawPoint">
+				<summary>function painter:DrawPoint(x, y)
+
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+			</function>
+			<function line="180" name="DrawLine">
+				<summary>function painter:DrawLine(x1, y1, x2, y2)
+
+				</summary>
+				<parameter name="x1"/>
+				<parameter name="y1"/>
+				<parameter name="x2"/>
+				<parameter name="y2"/>
+			</function>
+			<function line="188" name="DrawTriangleList">
+				<summary>function painter:DrawTriangleList(triangles, nTriangleCount, nIndexOffset)
+draw triangle List
+   @param triangles: array of triangle vertices {{0,1,0}, {1,0,0}, {0,0,1}, ...},
+   @param nTriangleCount: triangle count, default to #triangleList/ 3
+   @param nIndexOffset: start index offset. default to 0.
+				</summary>
+				<parameter name="triangles">array of triangle vertices {{0,1,0}, {1,0,0}, {0,0,1}, ...},
+				</parameter>
+				<parameter name="nTriangleCount">triangle count, default to #triangleList/ 3
+				</parameter>
+				<parameter name="nIndexOffset">start index offset. default to 0.
+				</parameter>
+			</function>
+			<function line="197" name="DrawLineList">
+				<summary>function painter:DrawLineList(lineList, nlineCount, nIndexOffset)
+draw line List
+   @param lineList: array of line vertices {{0,1,0}, {1,0,1},  ...},
+   @param nlineCount: line count, default to #lineList/ 2
+   @param nIndexOffset: start index offset. default to 0.
+				</summary>
+				<parameter name="lineList">array of line vertices {{0,1,0}, {1,0,1},  ...},
+				</parameter>
+				<parameter name="nlineCount">line count, default to #lineList/ 2
+				</parameter>
+				<parameter name="nIndexOffset">start index offset. default to 0.
+				</parameter>
+			</function>
+			<function line="202" name="DrawRect">
+				<summary>function painter:DrawRect(left, top, width, height)
+
+				</summary>
+				<parameter name="left"/>
+				<parameter name="top"/>
+				<parameter name="width"/>
+				<parameter name="height"/>
+			</function>
+			<function line="210" name="DrawTexture">
+				<summary>function painter:DrawTexture(x, y, w, h, pTexture, sx, sy, sw, sh)
+
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="w"/>
+				<parameter name="h"/>
+				<parameter name="pTexture"/>
+				<parameter name="sx"/>
+				<parameter name="sy"/>
+				<parameter name="sw"/>
+				<parameter name="sh"/>
+			</function>
+			<function line="219" name="DrawText">
+				<summary>function painter:DrawText(x, y, w, h, sText, textOption)
+
+   @param w, h: if h is nil, w is the sText
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="w">, h: if h is nil, w is the sText
+				</parameter>
+				<parameter name="h"/>
+				<parameter name="sText"/>
+				<parameter name="textOption"/>
+			</function>
+			<function line="229" name="DrawTextScaled">
+				<summary>function painter:DrawTextScaled(x, y, text, scale)
+helper function:
+   @param scale: text scale. if nil or 1, it is same as DrawText()
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="text"/>
+				<parameter name="scale">text scale. if nil or 1, it is same as DrawText()
+				</parameter>
+			</function>
+			<function line="269" name="DrawTextScaledEx">
+				<summary>function painter:DrawTextScaledEx(x, y, width, height, text, alignment, scale)
+Set the text align and other text displaying formats
+   @param alignment: It can be any combination of the following values.
+DT_BOTTOM (0x00000008)
+Justifies the text to the bottom of the rectangle. This value must be combined with DT_SINGLELINE.
+DT_CALCRECT (0x00000400)
+Determines the width and height of the rectangle. If there are multiple lines of text, ID3DXFont::DrawText uses the width of the rectangle pointed to by the pRect parameter and extends the base of the rectangle to bound the last line of text. If there is only one line of text, ID3DXFont::DrawText modifies the right side of the rectangle so that it bounds the last character in the line. In either case, ID3DXFont::DrawText returns the height of the formatted text but does not draw the text.
+DT_CENTER (0x00000001)
+Centers text horizontally in the rectangle.
+DT_EXPANDTABS (0x00000040)
+Expands tab characters. The default number of characters per tab is eight.
+DT_LEFT (0x00000000)
+Aligns text to the left.
+DT_NOCLIP (0x00000100)
+Draws without clipping. ID3DXFont::DrawText is somewhat faster when DT_NOCLIP is used.
+DT_RIGHT (0x00000002)
+Aligns text to the right.
+DT_RTLREADING
+Displays text in right-to-left reading order for bi-directional text when a Hebrew or Arabic font is selected. The default reading order for all text is left-to-right.
+DT_SINGLELINE (0x00000020)
+Displays text on a single line only. Carriage returns and line feeds do not break the line.
+DT_TOP (0x00000000)
+Top-justifies text.
+DT_VCENTER (0x00000004)
+Centers text vertically (single line only).
+DT_WORDBREAK (0x00000010)
+Breaks words. Lines are automatically broken between words if a word would extend past the edge of the rectangle specified by the pRect parameter. A carriage return/line feed sequence also breaks the line.
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="width"/>
+				<parameter name="height"/>
+				<parameter name="text"/>
+				<parameter name="alignment">It can be any combination of the following values.
+DT_BOTTOM (0x00000008)
+Justifies the text to the bottom of the rectangle. This value must be combined with DT_SINGLELINE.
+DT_CALCRECT (0x00000400)
+Determines the width and height of the rectangle. If there are multiple lines of text, ID3DXFont::DrawText uses the width of the rectangle pointed to by the pRect parameter and extends the base of the rectangle to bound the last line of text. If there is only one line of text, ID3DXFont::DrawText modifies the right side of the rectangle so that it bounds the last character in the line. In either case, ID3DXFont::DrawText returns the height of the formatted text but does not draw the text.
+DT_CENTER (0x00000001)
+Centers text horizontally in the rectangle.
+DT_EXPANDTABS (0x00000040)
+Expands tab characters. The default number of characters per tab is eight.
+DT_LEFT (0x00000000)
+Aligns text to the left.
+DT_NOCLIP (0x00000100)
+Draws without clipping. ID3DXFont::DrawText is somewhat faster when DT_NOCLIP is used.
+DT_RIGHT (0x00000002)
+Aligns text to the right.
+DT_RTLREADING
+Displays text in right-to-left reading order for bi-directional text when a Hebrew or Arabic font is selected. The default reading order for all text is left-to-right.
+DT_SINGLELINE (0x00000020)
+Displays text on a single line only. Carriage returns and line feeds do not break the line.
+DT_TOP (0x00000000)
+Top-justifies text.
+DT_VCENTER (0x00000004)
+Centers text vertically (single line only).
+DT_WORDBREAK (0x00000010)
+Breaks words. Lines are automatically broken between words if a word would extend past the edge of the rectangle specified by the pRect parameter. A carriage return/line feed sequence also breaks the line.
+				</parameter>
+				<parameter name="scale"/>
+			</function>
+			<function line="287" name="DrawRectTexture">
+				<summary>function painter:DrawRectTexture(x, y, width, height, texture)
+helper function:
+   @param texture: if nil or "" or "Texture/whitedot.png", it will render with current pen color. 
+otherwise it can also be single or 9-tiled texture
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="width"/>
+				<parameter name="height"/>
+				<parameter name="texture">if nil or "" or "Texture/whitedot.png", it will render with current pen color. 
+otherwise it can also be single or 9-tiled texture
+				</parameter>
+			</function>
+			<function line="301" name="SetMatrixMode">
+				<summary>function painter:SetMatrixMode(nMode)
+similar to glMatrixMode() in opengl.
+   @param nMode:  0 is world, 1 is view, 2 is projection. default to 0. 
+				</summary>
+				<parameter name="nMode">0 is world, 1 is view, 2 is projection. default to 0. 
+				</parameter>
+			</function>
+			<function line="305" name="GetMatrixMode">
+				<summary>function painter:GetMatrixMode()
+
+				</summary>
+			</function>
+			<function line="310" name="PushMatrix">
+				<summary>function painter:PushMatrix()
+similar to glPushMatrix() in opengl.
+				</summary>
+			</function>
+			<function line="315" name="PopMatrix">
+				<summary>function painter:PopMatrix()
+similar to glPopMatrix() in opengl.
+				</summary>
+			</function>
+			<function line="320" name="LoadCurrentMatrix">
+				<summary>function painter:LoadCurrentMatrix()
+retrieve the current matrix. 
+				</summary>
+			</function>
+			<function line="325" name="LoadIdentityMatrix">
+				<summary>function painter:LoadIdentityMatrix()
+load identity matrix 
+				</summary>
+			</function>
+			<function line="330" name="LoadBillboardMatrix">
+				<summary>function painter:LoadBillboardMatrix()
+load billboard matrix, so that everything rendered (including text) always face the camera.
+				</summary>
+			</function>
+			<function line="336" name="LoadMatrix">
+				<summary>function painter:LoadMatrix(mat)
+we use row-major matrix
+   @param mat: both 4*3 or 4*4 matrix are fine
+				</summary>
+				<parameter name="mat">both 4*3 or 4*4 matrix are fine
+				</parameter>
+			</function>
+			<function line="341" name="MultiplyMatrix">
+				<summary>function painter:MultiplyMatrix(mat)
+multiply the current matrix with the specified matrix. we use row-major matrix 
+				</summary>
+				<parameter name="mat"/>
+			</function>
+			<function line="347" name="TranslateMatrix">
+				<summary>function painter:TranslateMatrix(x, y, z)
+multiply the current matrix by a translation matrix 
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="z"/>
+			</function>
+			<function line="354" name="RotateMatrix">
+				<summary>function painter:RotateMatrix(angle, x, y, z)
+multiply the current matrix by a rotation matrix 
+				</summary>
+				<parameter name="angle"/>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="z"/>
+			</function>
+			<function line="360" name="ScaleMatrix">
+				<summary>function painter:ScaleMatrix(x, y, z)
+multiply the current matrix by a scaling matrix 
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="z"/>
+			</function>
+			<function line="367" name="GetScaling">
+				<summary>function painter:GetScaling()
+get current scaling.
+   @return x,y,z of current scaling. 
+				</summary>
+				<returns>return ,y,z of current scaling. 
+				</returns>
+			</function>
+			<function line="373" name="GetCurrentMatrix">
+				<summary>function painter:GetCurrentMatrix()
+get current matrix
+   @return a new Matrix4
+				</summary>
+				<returns>return new Matrix4
+				</returns>
+			</function>
+			<function line="379" name="EnableAutoLineWidth">
+				<summary>function painter:EnableAutoLineWidth(bEnable)
+if enabled, the minimum line width is 1 pixel for 3d lines.
+   @param bEnable: if nil or true, it means true
+				</summary>
+				<parameter name="bEnable">if nil or true, it means true
+				</parameter>
+			</function>
+		</table>
+		<table name="Attribute" src="script/ide/System/Core/Attribute.lua">
+			<function line="28" name="ctor">
+				<summary>function Attribute:ctor()
+
+				</summary>
+			</function>
+			<function line="33" name="init">
+				<summary>function Attribute:init(attr, name)
+
+   @param attr: the attribute object
+   @param name: field name string. 
+				</summary>
+				<parameter name="attr">the attribute object
+				</parameter>
+				<parameter name="name">field name string. 
+				</parameter>
+			</function>
+			<function line="39" name="IsValid">
+				<summary>function Attribute:IsValid()
+
+				</summary>
+			</function>
+			<function line="46" name="GetAttributeObject">
+				<summary>function Attribute:GetAttributeObject()
+get the underlying attribute object. 
+				</summary>
+			</function>
+			<function line="55" name="GetObject">
+				<summary>function Attribute:GetObject()
+get the underlying object 
+				</summary>
+			</function>
+			<function line="61" name="GetName">
+				<summary>function Attribute:GetName()
+
+				</summary>
+			</function>
+			<function line="65" name="GetIndex">
+				<summary>function Attribute:GetIndex()
+
+				</summary>
+			</function>
+			<function line="73" name="GetType">
+				<summary>function Attribute:GetType()
+
+				</summary>
+			</function>
+			<function line="81" name="IsFieldReadOnly">
+				<summary>function Attribute:IsFieldReadOnly()
+
+				</summary>
+			</function>
+			<function line="87" name="GetSchematics">
+				<summary>function Attribute:GetSchematics()
+
+				</summary>
+			</function>
+			<function line="95" name="GetSchematicsType">
+				<summary>function Attribute:GetSchematicsType()
+
+				</summary>
+			</function>
+			<function line="103" name="Call">
+				<summary>function Attribute:Call()
+call field by name. This function is only valid when The field type is void. 
+It simply calls the function associated with the field name.
+				</summary>
+			</function>
+			<function line="111" name="Reset">
+				<summary>function Attribute:Reset()
+Reset the field to its initial or default value. 
+				</summary>
+			</function>
+			<function line="118" name="InvokeEditor">
+				<summary>function Attribute:InvokeEditor(sParameters)
+Invoke an (external) editor for a given field. This is usually for NPL script field
+				</summary>
+				<parameter name="sParameters"/>
+			</function>
+			<function line="125" name="GetValue">
+				<summary>function Attribute:GetValue(output)
+
+				</summary>
+				<parameter name="output"/>
+			</function>
+			<function line="133" name="SetValue">
+				<summary>function Attribute:SetValue(input)
+
+				</summary>
+				<parameter name="input"/>
+			</function>
+			<function line="141" name="SetValueInternal">
+				<summary>function Attribute:SetValueInternal(input)
+same as SetValue, except that some implementation may not send signals like valueChanged even data is modified. 
+it will automatically fallback to SetValue if not such implementation is provided by the attribute object.  
+				</summary>
+				<parameter name="input"/>
+			</function>
+		</table>
+		<table name="AttributeObject" src="script/ide/System/Core/AttributeObject.lua">
+			<function line="55" name="ctor">
+				<summary>function AttributeObject:ctor()
+
+				</summary>
+			</function>
+			<function line="58" name="GetAttributeObject">
+				<summary>function AttributeObject:GetAttributeObject()
+
+				</summary>
+			</function>
+			<function line="62" name="QueryObject">
+				<summary>function AttributeObject:QueryObject()
+
+				</summary>
+			</function>
+			<function line="68" name="findPlug">
+				<summary>function AttributeObject:findPlug(name)
+find and return a given attribute plug object. 
+this is a public helper function. 
+				</summary>
+				<parameter name="name"/>
+			</function>
+			<function line="75" name="equals">
+				<summary>function AttributeObject:equals(obj)
+return true, if this object is the same as the given object.
+				</summary>
+				<parameter name="obj"/>
+			</function>
+			<function line="81" name="GetChild">
+				<summary>function AttributeObject:GetChild(sName)
+get child attribute object. this can be regarded as an intrusive data model of a given object. 
+once you get an attribute object, you can use this model class to access all data in the hierarchy.
+				</summary>
+				<parameter name="sName"/>
+			</function>
+			<function line="85" name="GetChildAt">
+				<summary>function AttributeObject:GetChildAt(nRowIndex, nColumnIndex)
+
+   @param nColumnIndex: nil to default to 0;
+				</summary>
+				<parameter name="nRowIndex"/>
+				<parameter name="nColumnIndex">nil to default to 0;
+				</parameter>
+			</function>
+			<function line="89" name="GetChildCount">
+				<summary>function AttributeObject:GetChildCount(nColumnIndex)
+
+   @param nColumnIndex: if nil, default to 0. 
+				</summary>
+				<parameter name="nColumnIndex">if nil, default to 0. 
+				</parameter>
+			</function>
+			<function line="94" name="GetColumnCount">
+				<summary>function AttributeObject:GetColumnCount()
+we support multi-dimensional child object. by default objects have only one column. 
+				</summary>
+			</function>
+			<function line="99" name="IsValid">
+				<summary>function AttributeObject:IsValid()
+check if the object is valid
+				</summary>
+			</function>
+			<function line="103" name="GetClassID">
+				<summary>function AttributeObject:GetClassID()
+
+				</summary>
+			</function>
+			<function line="107" name="GetClassName">
+				<summary>function AttributeObject:GetClassName()
+class name
+				</summary>
+			</function>
+			<function line="112" name="GetClassDescription">
+				<summary>function AttributeObject:GetClassDescription()
+class description
+				</summary>
+			</function>
+			<function line="123" name="SetOrder">
+				<summary>function AttributeObject:SetOrder(order)
+
+				</summary>
+				<parameter name="order"/>
+			</function>
+			<function line="127" name="GetOrder">
+				<summary>function AttributeObject:GetOrder()
+get which order fields are saved.
+				</summary>
+			</function>
+			<function line="131" name="GetFieldNum">
+				<summary>function AttributeObject:GetFieldNum()
+get the total number of field.
+				</summary>
+			</function>
+			<function line="135" name="GetFieldName">
+				<summary>function AttributeObject:GetFieldName(nIndex)
+get the total number of field.
+get field at the specified index. "" will be returned if index is out of range.
+				</summary>
+				<parameter name="nIndex"/>
+			</function>
+			<function line="142" name="GetFieldIndex">
+				<summary>function AttributeObject:GetFieldIndex(sFieldname)
+get field index of a given field name. -1 will be returned if name not found.
+   @param sFieldname
+   @return index or -1
+				</summary>
+				<parameter name="sFieldname">
+				</parameter>
+				<returns>return or -1
+				</returns>
+			</function>
+			<function line="150" name="GetFieldType">
+				<summary>function AttributeObject:GetFieldType(nIndex)
+get the field type as string
+   @param nIndex : index of the field
+   @return one of the following type may be returned 
+"void" "bool" "string" "int" "float" "float_float" "float_float_float" "double" "vector2" "vector3" "vector4" "enum" "deprecated" ""
+				</summary>
+				<parameter name="nIndex">index of the field
+				</parameter>
+				<returns>return of the following type may be returned 
+"void" "bool" "string" "int" "float" "float_float" "float_float_float" "double" "vector2" "vector3" "vector4" "enum" "deprecated" ""
+				</returns>
+			</function>
+			<function line="157" name="IsFieldReadOnly">
+				<summary>function AttributeObject:IsFieldReadOnly(nIndex)
+whether the field is read only. a field is ready only if and only if it has only a get method.
+   @param nIndex : index of the field
+   @return true if it is ready only or field does not exist
+				</summary>
+				<parameter name="nIndex">index of the field
+				</parameter>
+				<returns>return if it is ready only or field does not exist
+				</returns>
+			</function>
+			<function line="164" name="GetFieldSchematics">
+				<summary>function AttributeObject:GetFieldSchematics(nIndex)
+Get Field Schematics string
+   @param nIndex: index of the field
+   @return "" will be returned if index is out of range
+				</summary>
+				<parameter name="nIndex">index of the field
+				</parameter>
+				<returns>return "" will be returned if index is out of range
+				</returns>
+			</function>
+			<function line="175" name="GetSchematicsType">
+				<summary>function AttributeObject:GetSchematicsType(nIndex)
+parse the schema type from the schema string.
+   @return : simple schema type. it may be any of the following value. 
+unspecified: ""
+color3	":rgb" 
+file	":file" 
+script	":script"
+integer	":int"
+				</summary>
+				<parameter name="nIndex"/>
+				<returns>return simple schema type. it may be any of the following value. 
+unspecified: ""
+color3	":rgb" 
+file	":file" 
+script	":script"
+integer	":int"
+				</returns>
+			</function>
+			<function line="189" name="GetField">
+				<summary>function AttributeObject:GetField(sFieldname, output)
+get field by name.
+e.g. suppose att is the attribute object.
+local bGloble = att:GetField("global", true);
+local facing = att:GetField("facing", 0);
+local pos = att:GetField("position", {0,0,0});
+pos[1] = pos[1]+100;pos[2] = 0;pos[3] = 10;
+   @param sFieldname: field name
+   @param output: default value. if field type is vectorN, output is a table with N items.
+   @return: return the field result. If field not found, output will be returned. 
+if field type is vectorN, return a table with N items.Please note table index start from 1
+				</summary>
+				<parameter name="sFieldname">field name
+				</parameter>
+				<parameter name="output">default value. if field type is vectorN, output is a table with N items.
+				</parameter>
+				<returns>return return the field result. If field not found, output will be returned. 
+if field type is vectorN, return a table with N items.Please note table index start from 1
+				</returns>
+			</function>
+			<function line="200" name="SetField">
+				<summary>function AttributeObject:SetField(sFieldname, input)
+set field by name 
+e.g. suppose att is the attribute object.
+att:SetField("facing", 3.14);
+att:SetField("position", {100,0,0});
+   @param sFieldname: field name
+   @param input: input value. if field type is vectorN, input is a table with N items.--
+				</summary>
+				<parameter name="sFieldname">field name
+				</parameter>
+				<parameter name="input">input value. if field type is vectorN, input is a table with N items.--
+				</parameter>
+			</function>
+			<function line="206" name="CallField">
+				<summary>function AttributeObject:CallField(sFieldname)
+call field by name. This function is only valid when The field type is void. 
+It simply calls the function associated with the field name.
+				</summary>
+				<parameter name="sFieldname"/>
+			</function>
+			<function line="209" name="PrintObject">
+				<summary>function AttributeObject:PrintObject(file)
+
+				</summary>
+				<parameter name="file"/>
+			</function>
+			<function line="215" name="ResetField">
+				<summary>function AttributeObject:ResetField(nFieldID)
+Reset the field to its initial or default value.
+   @param nFieldID : field ID
+   @return true if value is set; false if value not set. 
+				</summary>
+				<parameter name="nFieldID">field ID
+				</parameter>
+				<returns>return if value is set; false if value not set. 
+				</returns>
+			</function>
+			<function line="222" name="InvokeEditor">
+				<summary>function AttributeObject:InvokeEditor(nFieldID, sParameters)
+Invoke an (external) editor for a given field. This is usually for NPL script field
+   @param nFieldID : field ID
+   @param sParameters : the parameter passed to the editor
+   @return true if editor is invoked, false if failed or field has no editor. 
+				</summary>
+				<parameter name="nFieldID">field ID
+				</parameter>
+				<parameter name="sParameters">the parameter passed to the editor
+				</parameter>
+				<returns>return if editor is invoked, false if failed or field has no editor. 
+				</returns>
+			</function>
+			<function line="239" name="GetDynamicField">
+				<summary>function AttributeObject:GetDynamicField(sFieldnameOrIndex, output)
+get field by name or index.
+e.g. suppose att is the attribute object.
+local bGloble = att:GetField("URL", nil);
+local facing = att:GetField("Title", "default one");
+   @param sFieldname: field name string or number index
+   @param output: default value. if field type is vectorN, output is a table with N items.
+   @return: return the field result. If field not found, output will be returned. 
+if field type is vectorN, return a table with N items.Please note table index start from 1
+				</summary>
+				<parameter name="sFieldnameOrIndex"/>
+				<parameter name="output">default value. if field type is vectorN, output is a table with N items.
+				</parameter>
+				<returns>return return the field result. If field not found, output will be returned. 
+if field type is vectorN, return a table with N items.Please note table index start from 1
+				</returns>
+			</function>
+			<function line="245" name="GetDynamicFieldNameByIndex">
+				<summary>function AttributeObject:GetDynamicFieldNameByIndex(nIndex)
+get field name by index
+				</summary>
+				<parameter name="nIndex"/>
+			</function>
+			<function line="249" name="GetDynamicFieldCount">
+				<summary>function AttributeObject:GetDynamicFieldCount()
+how many dynamic field this object currently have.
+				</summary>
+			</function>
+			<function line="258" name="SetDynamicField">
+				<summary>function AttributeObject:SetDynamicField(sFieldname, input)
+set field by name 
+e.g. suppose att is the attribute object.
+att:SetDynamicField("URL", 3.14);
+att:SetDynamicField("Title", {100,0,0});
+   @param sFieldname: field name
+   @param input: input value. can be value or string type--
+				</summary>
+				<parameter name="sFieldname">field name
+				</parameter>
+				<parameter name="input">input value. can be value or string type--
+				</parameter>
+			</function>
+			<function line="262" name="RemoveAllDynamicFields">
+				<summary>function AttributeObject:RemoveAllDynamicFields()
+remove all dynamic fields
+				</summary>
+			</function>
+			<function line="267" name="AddDynamicField">
+				<summary>function AttributeObject:AddDynamicField(sName, dwType)
+add dynamic field and return field index
+   @return field index or -1
+				</summary>
+				<parameter name="sName"/>
+				<parameter name="dwType"/>
+				<returns>return index or -1
+				</returns>
+			</function>
+		</table>
+		<table name="Screen" src="script/ide/System/Windows/Screen.lua">
+			<function line="19" name="ctor">
+				<summary>function Screen:ctor()
+
+				</summary>
+			</function>
+			<function line="22" name="GetGUIRoot">
+				<summary>function Screen:GetGUIRoot()
+
+				</summary>
+			</function>
+			<function line="29" name="GetWidth">
+				<summary>function Screen:GetWidth()
+
+				</summary>
+			</function>
+			<function line="33" name="GetHeight">
+				<summary>function Screen:GetHeight()
+
+				</summary>
+			</function>
+		</table>
+		<table name="Window" src="script/ide/System/Windows/Window.lua">
+			<function line="45" name="ctor">
+				<summary>function Window:ctor()
+
+				</summary>
+			</function>
+			<function line="54" name="Show">
+				<summary>function Window:Show(name_or_params, parent, alignment, left, top, width, height)
+show and bind to a new ParaUI control object to receive events from.
+   @param name_or_params: name or params {}
+   @param parent: if nil, it is the root GUI object.
+   @param left,top, width, height: if nil, we will render at full size of parent.  
+				</summary>
+				<parameter name="name_or_params">name or params {}
+				</parameter>
+				<parameter name="parent">if nil, it is the root GUI object.
+				</parameter>
+				<parameter name="alignment"/>
+				<parameter name="left">,top, width, height: if nil, we will render at full size of parent.  
+				</parameter>
+				<parameter name="top"/>
+				<parameter name="width"/>
+				<parameter name="height"/>
+			</function>
+			<function line="72" name="RefreshUrlComponent">
+				<summary>function Window:RefreshUrlComponent()
+
+				</summary>
+			</function>
+			<function line="79" name="ShowWithParams">
+				<summary>function Window:ShowWithParams(params)
+
+   @param params: {url="", alignment, x,y,width, height, allowDrag,zorder }
+				</summary>
+				<parameter name="params">{url="", alignment, x,y,width, height, allowDrag,zorder }
+				</parameter>
+			</function>
+			<function line="127" name="CloseWindow">
+				<summary>function Window:CloseWindow(bDestroy)
+
+   @param bDestroy: if true, it will destroy the window, otherwise it will just hide it.
+				</summary>
+				<parameter name="bDestroy">if true, it will destroy the window, otherwise it will just hide it.
+				</parameter>
+			</function>
+			<function line="135" name="GetNativeWindow">
+				<summary>function Window:GetNativeWindow()
+
+				</summary>
+			</function>
+			<function line="140" name="SetSizeToUsedSize">
+				<summary>function Window:SetSizeToUsedSize()
+set the window's size to be the layout's used size
+				</summary>
+			</function>
+			<function line="151" name="destroy_sys">
+				<summary>function Window:destroy_sys()
+virtual: if this element is a native window, destroy it. 
+				</summary>
+			</function>
+			<function line="159" name="create_sys">
+				<summary>function Window:create_sys(native_window, initializeWindow, destroyOldWindow)
+bind to native window.
+				</summary>
+				<parameter name="native_window"/>
+				<parameter name="initializeWindow"/>
+				<parameter name="destroyOldWindow"/>
+			</function>
+			<function line="228" name="handleGeometryChangeEvent">
+				<summary>function Window:handleGeometryChangeEvent()
+
+				</summary>
+			</function>
+			<function line="232" name="isWindow">
+				<summary>function Window:isWindow()
+
+				</summary>
+			</function>
+			<function line="237" name="handleMouseEvent">
+				<summary>function Window:handleMouseEvent(event)
+
+   @param event_type: "mousePressEvent", "mouseMoveEvent", "mouseWheelEvent", "mouseReleaseEvent"
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="262" name="handleMouseEnterLeaveEvent">
+				<summary>function Window:handleMouseEnterLeaveEvent(mouse_event)
+
+   @param event_type: "mouseEnterEvent", "mouseLeaveEvent"
+				</summary>
+				<parameter name="mouse_event"/>
+			</function>
+			<function line="286" name="UpdateGeometry_Sys">
+				<summary>function Window:UpdateGeometry_Sys()
+update geometry according to native ParaUI object
+				</summary>
+			</function>
+			<function line="295" name="setGeometry_sys">
+				<summary>function Window:setGeometry_sys(ax, ay, aw, ah)
+
+				</summary>
+				<parameter name="ax"/>
+				<parameter name="ay"/>
+				<parameter name="aw"/>
+				<parameter name="ah"/>
+			</function>
+			<function line="332" name="show_sys">
+				<summary>function Window:show_sys()
+
+				</summary>
+			</function>
+			<function line="336" name="hide_sys">
+				<summary>function Window:hide_sys()
+
+				</summary>
+			</function>
+			<function line="340" name="setVisible_sys">
+				<summary>function Window:setVisible_sys(visible)
+
+				</summary>
+				<parameter name="visible"/>
+			</function>
+			<function line="347" name="EnableSelfPaint">
+				<summary>function Window:EnableSelfPaint(bSelfPaint)
+set whether the window will paint on its own render target. default is false. 
+				</summary>
+				<parameter name="bSelfPaint"/>
+			</function>
+			<function line="355" name="repaint">
+				<summary>function Window:repaint()
+force repaint in the next frame.
+				</summary>
+			</function>
+			<function line="368" name="SetFocus_sys">
+				<summary>function Window:SetFocus_sys()
+set key focus to the window. 
+				</summary>
+			</function>
+			<function line="382" name="update">
+				<summary>function Window:update()
+Updates the widget unless updates are disabled or the widget is hidden.
+This function does not cause an immediate repaint; instead it schedules a paint in the next frame.
+				</summary>
+			</function>
+			<function line="387" name="markDirty">
+				<summary>function Window:markDirty()
+causing a repaint
+				</summary>
+			</function>
+			<function line="394" name="handleRender">
+				<summary>function Window:handleRender()
+handle ondraw callback from system ParaUI object. 
+				</summary>
+			</function>
+			<function line="400" name="SetAutoClearBackground">
+				<summary>function Window:SetAutoClearBackground(bEnabled)
+whether to automatically clear the background to fully transparent when doing self paint on its own render target.
+				</summary>
+				<parameter name="bEnabled"/>
+			</function>
+			<function line="410" name="SetMouseCaptureEnabled">
+				<summary>function Window:SetMouseCaptureEnabled(bEnabled)
+Sets whether mouse capture should be enabled or not
+If the return value is true, the window receives all mouse events until SetMouseGrabEnabled(false) is
+called; other windows get no mouse events at all. Keyboard events are not affected.
+				</summary>
+				<parameter name="bEnabled"/>
+			</function>
+			<function line="417" name="IsMouseCaptureEnabled">
+				<summary>function Window:IsMouseCaptureEnabled()
+
+				</summary>
+			</function>
+			<function line="421" name="handleActivateEvent">
+				<summary>function Window:handleActivateEvent(isActivate)
+
+				</summary>
+				<parameter name="isActivate"/>
+			</function>
+			<function line="430" name="handleDestroy_sys">
+				<summary>function Window:handleDestroy_sys()
+native windows have been forcibly closed. 
+				</summary>
+			</function>
+			<function line="445" name="windowDestroyEvent">
+				<summary>function Window:windowDestroyEvent()
+virtual called when native window is destroyed. 
+				</summary>
+			</function>
+			<function line="451" name="mapToGlobal">
+				<summary>function Window:mapToGlobal(pos)
+convert to global position
+   @return the returned Point is temporary, do not hold it for long
+				</summary>
+				<parameter name="pos"/>
+				<returns>return returned Point is temporary, do not hold it for long
+				</returns>
+			</function>
+			<function line="457" name="mapFromGlobal">
+				<summary>function Window:mapFromGlobal(pos)
+convert from global to local pos.
+   @return the returned Point is temporary, do not hold it for long
+				</summary>
+				<parameter name="pos"/>
+				<returns>return returned Point is temporary, do not hold it for long
+				</returns>
+			</function>
+			<function line="461" name="setCompositionPoint_sys">
+				<summary>function Window:setCompositionPoint_sys(p)
+
+				</summary>
+				<parameter name="p"/>
+			</function>
+			<function line="467" name="paintEvent">
+				<summary>function Window:paintEvent(painter)
+
+				</summary>
+				<parameter name="painter"/>
+			</function>
+			<function line="471" name="mousePressEvent">
+				<summary>function Window:mousePressEvent(event)
+virtual: 
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="482" name="mouseMoveEvent">
+				<summary>function Window:mouseMoveEvent(event)
+
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="503" name="mouseReleaseEvent">
+				<summary>function Window:mouseReleaseEvent(event)
+
+				</summary>
+				<parameter name="event"/>
+			</function>
+		</table>
+		<table name="UIElement" src="script/ide/System/Windows/UIElement.lua">
+			<function line="86" name="ctor">
+				<summary>function UIElement:ctor()
+
+				</summary>
+			</function>
+			<function line="94" name="init">
+				<summary>function UIElement:init(parent)
+init and return the object. 
+If you add a child widget to an already visible widget you must
+explicitly show the child to make it visible.
+				</summary>
+				<parameter name="parent"/>
+			</function>
+			<function line="99" name="SetParent">
+				<summary>function UIElement:SetParent(parent)
+
+				</summary>
+				<parameter name="parent"/>
+			</function>
+			<function line="116" name="ApplyCss">
+				<summary>function UIElement:ApplyCss(css)
+virtual: apply css style
+				</summary>
+				<parameter name="css"/>
+			</function>
+			<function line="131" name="isAncestorOf">
+				<summary>function UIElement:isAncestorOf(child)
+Returns true if this object is a parent, (or grandparent and so on
+to any level), of the given child, and both objects are within
+the same window; otherwise returns false.
+				</summary>
+				<parameter name="child"/>
+			</function>
+			<function line="143" name="isWindow">
+				<summary>function UIElement:isWindow()
+
+				</summary>
+			</function>
+			<function line="148" name="GetWindow">
+				<summary>function UIElement:GetWindow()
+the native window object at the root of parent.
+				</summary>
+			</function>
+			<function line="152" name="parentWidget">
+				<summary>function UIElement:parentWidget()
+
+				</summary>
+			</function>
+			<function line="156" name="isHidden">
+				<summary>function UIElement:isHidden() 
+
+				</summary>
+			</function>
+			<function line="160" name="isVisible">
+				<summary>function UIElement:isVisible()
+
+				</summary>
+			</function>
+			<function line="166" name="hide">
+				<summary>function UIElement:hide()
+A hidden widget will only become visible when show() is called on
+it. It will not be automatically shown when the parent is shown.
+				</summary>
+			</function>
+			<function line="170" name="hide_sys">
+				<summary>function UIElement:hide_sys()
+
+				</summary>
+			</function>
+			<function line="174" name="show">
+				<summary>function UIElement:show()
+Shows the widget and its child widgets.
+				</summary>
+			</function>
+			<function line="180" name="show_recursive">
+				<summary>function UIElement:show_recursive()
+Makes the widget visible in the isVisible() meaning of the word.
+It is only called for toplevels or widgets with visible parents.
+				</summary>
+			</function>
+			<function line="197" name="show_sys">
+				<summary>function UIElement:show_sys()
+
+				</summary>
+			</function>
+			<function line="200" name="show_helper">
+				<summary>function UIElement:show_helper()
+
+				</summary>
+			</function>
+			<function line="224" name="createRecursively">
+				<summary>function UIElement:createRecursively()
+
+				</summary>
+			</function>
+			<function line="236" name="create">
+				<summary>function UIElement:create(window, initializeWindow, destroyOldWindow)
+
+   @param window: native window object
+				</summary>
+				<parameter name="window">native window object
+				</parameter>
+				<parameter name="initializeWindow"/>
+				<parameter name="destroyOldWindow"/>
+			</function>
+			<function line="244" name="create_sys">
+				<summary>function UIElement:create_sys()
+
+				</summary>
+			</function>
+			<function line="247" name="aboutToDestroy">
+				<summary>function UIElement:aboutToDestroy()
+
+				</summary>
+			</function>
+			<function line="250" name="deactivateWidgetCleanup">
+				<summary>function UIElement:deactivateWidgetCleanup()
+
+				</summary>
+			</function>
+			<function line="261" name="destroy_sys">
+				<summary>function UIElement:destroy_sys()
+virtual: if this element is a native window, destroy it. 
+				</summary>
+			</function>
+			<function line="265" name="destroy">
+				<summary>function UIElement:destroy(destroyWindow)
+
+   @param destroyWindow: default to true. true to destroy system level window.
+				</summary>
+				<parameter name="destroyWindow">default to true. true to destroy system level window.
+				</parameter>
+			</function>
+			<function line="288" name="isCreated">
+				<summary>function UIElement:isCreated()
+
+				</summary>
+			</function>
+			<function line="292" name="setVisible">
+				<summary>function UIElement:setVisible(visible)
+
+				</summary>
+				<parameter name="visible"/>
+			</function>
+			<function line="355" name="focusNextPrevChild">
+				<summary>function UIElement:focusNextPrevChild(bNext)
+TODO:
+				</summary>
+				<parameter name="bNext"/>
+			</function>
+			<function line="361" name="event">
+				<summary>function UIElement:event(event)
+called whenever an event comes. Subclass can overwrite this function.
+   @param handlerName: "sizeEvent", "paintEvent", "mouseDownEvent", "mouseUpEvent", etc.
+   @param event: the event object. 
+				</summary>
+				<parameter name="event">the event object. 
+				</parameter>
+			</function>
+			<function line="379" name="sizeEvent">
+				<summary>function UIElement:sizeEvent(event)
+The resize event is called whenever the window is resized in the windowing system,
+either directly through the windowing system acknowledging a setGeometry() or resize() request,
+or indirectly through the user resizing the window manually.
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="383" name="logEvent">
+				<summary>function UIElement:logEvent(event)
+just for printing log. 
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="388" name="repaint">
+				<summary>function UIElement:repaint()
+force repaint in the next frame.
+				</summary>
+			</function>
+			<function line="398" name="update">
+				<summary>function UIElement:update()
+Updates the widget unless updates are disabled or the widget is hidden.
+This function does not cause an immediate repaint; instead it schedules a paint event for processing 
+when system returns to the main event loop. This permits us to optimize for more speed and less 
+flicker than a call to repaint() does. Calling update() several times normally results in just one paintEvent() call.
+				</summary>
+			</function>
+			<function line="411" name="isActiveWindow">
+				<summary>function UIElement:isActiveWindow()
+
+				</summary>
+			</function>
+			<function line="415" name="focusPolicy">
+				<summary>function UIElement:focusPolicy()
+
+				</summary>
+			</function>
+			<function line="419" name="setFocusPolicy">
+				<summary>function UIElement:setFocusPolicy(policy)
+
+				</summary>
+				<parameter name="policy"/>
+			</function>
+			<function line="429" name="focusWidget">
+				<summary>function UIElement:focusWidget()
+Returns the last child of this widget that setFocus had been
+called on.  For top level widgets this is the widget that will get
+focus in case this window gets activated
+				</summary>
+			</function>
+			<function line="433" name="setFocus_sys">
+				<summary>function UIElement:setFocus_sys()
+
+				</summary>
+			</function>
+			<function line="441" name="hasFocus">
+				<summary>function UIElement:hasFocus()
+whether this widget has the keyboard input focus
+By default, this property is false.
+				</summary>
+			</function>
+			<function line="447" name="setFocus">
+				<summary>function UIElement:setFocus(reason)
+set key focus to the UIElement.
+   @param reason: nil
+				</summary>
+				<parameter name="reason">nil
+				</parameter>
+			</function>
+			<function line="464" name="updateFocusChild">
+				<summary>function UIElement:updateFocusChild()
+updates focus_child on parent widgets to point into this widget
+				</summary>
+			</function>
+			<function line="487" name="clearFocus">
+				<summary>function UIElement:clearFocus()
+
+				</summary>
+			</function>
+			<function line="499" name="Update">
+				<summary>function UIElement:Update()
+Updates the widget unless updates are disabled or the widget is hidden.
+This function does not cause an immediate repaint; instead it schedules a paint in the next frame.
+				</summary>
+			</function>
+			<function line="506" name="GetStyle">
+				<summary>function UIElement:GetStyle()
+get the style object
+				</summary>
+			</function>
+			<function line="512" name="updatesEnabled">
+				<summary>function UIElement:updatesEnabled()
+we can temporarily disable updates for complex UI element and render them at lower frame rate. 
+				</summary>
+			</function>
+			<function line="517" name="Render">
+				<summary>function UIElement:Render(painterContext)
+render the widget and all its child objects to the current device context. 
+				</summary>
+				<parameter name="painterContext"/>
+			</function>
+			<function line="529" name="prepareToRender">
+				<summary>function UIElement:prepareToRender()
+
+				</summary>
+			</function>
+			<function line="538" name="drawWidget">
+				<summary>function UIElement:drawWidget(painterContext, offset)
+draw with offset and its child recursively
+   @param offset: Point of offset. 
+				</summary>
+				<parameter name="painterContext"/>
+				<parameter name="offset">Point of offset. 
+				</parameter>
+			</function>
+			<function line="571" name="paintEvent">
+				<summary>function UIElement:paintEvent(painter)
+virtual: render everything here
+   @param painter: painterContext
+				</summary>
+				<parameter name="painter">painterContext
+				</parameter>
+			</function>
+			<function line="577" name="setMouseTracking">
+				<summary>function UIElement:setMouseTracking(enable)
+
+				</summary>
+				<parameter name="enable"/>
+			</function>
+			<function line="581" name="hasMouseTracking">
+				<summary>function UIElement:hasMouseTracking()
+
+				</summary>
+			</function>
+			<function line="586" name="mousePressEvent">
+				<summary>function UIElement:mousePressEvent(mouse_event)
+virtual: 
+				</summary>
+				<parameter name="mouse_event"/>
+			</function>
+			<function line="595" name="mouseMoveEvent">
+				<summary>function UIElement:mouseMoveEvent(mouse_event)
+virtual: 
+If mouse tracking is switched off, mouse move events only occur if
+a mouse button is pressed while the mouse is being moved. If mouse
+tracking is switched on, mouse move events occur even if no mouse button is pressed.
+				</summary>
+				<parameter name="mouse_event"/>
+			</function>
+			<function line="599" name="mouseReleaseEvent">
+				<summary>function UIElement:mouseReleaseEvent(mouse_event)
+virtual: 
+				</summary>
+				<parameter name="mouse_event"/>
+			</function>
+			<function line="602" name="mouseWheelEvent">
+				<summary>function UIElement:mouseWheelEvent(mouse_event)
+virtual: 
+virtual: 
+				</summary>
+				<parameter name="mouse_event"/>
+			</function>
+			<function line="605" name="keyPressEvent">
+				<summary>function UIElement:keyPressEvent(key_event)
+virtual: 
+virtual: 
+virtual: 
+				</summary>
+				<parameter name="key_event"/>
+			</function>
+			<function line="608" name="keyReleaseEvent">
+				<summary>function UIElement:keyReleaseEvent(key_event)
+virtual: 
+virtual: 
+virtual: 
+virtual: 
+				</summary>
+				<parameter name="key_event"/>
+			</function>
+			<function line="612" name="mouseEnterEvent">
+				<summary>function UIElement:mouseEnterEvent(event)
+virtual: An event is sent to the widget when the mouse cursor enters the widget.
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="616" name="mouseLeaveEvent">
+				<summary>function UIElement:mouseLeaveEvent(event)
+virtual: A leave event is sent to the widget when the mouse cursor leaves the widget.
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="620" name="focusInEvent">
+				<summary>function UIElement:focusInEvent(event)
+virtual: 
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="624" name="focusOutEvent">
+				<summary>function UIElement:focusOutEvent(event)
+virtual: 
+				</summary>
+				<parameter name="event"/>
+			</function>
+			<function line="629" name="childAt">
+				<summary>function UIElement:childAt(point)
+
+   @param p: 
+Returns the visible child object at the position x, y in the local coordinate system, or nil if no visible child.
+				</summary>
+				<parameter name="point"/>
+			</function>
+			<function line="633" name="childAt_helper">
+				<summary>function UIElement:childAt_helper(point)
+
+				</summary>
+				<parameter name="point"/>
+			</function>
+			<function line="643" name="childAtRecursiveHelper">
+				<summary>function UIElement:childAtRecursiveHelper(p)
+private:
+   @param p: point in local coordinate system. 
+				</summary>
+				<parameter name="p">point in local coordinate system. 
+				</parameter>
+			</function>
+			<function line="666" name="pointInsideRectAndMask">
+				<summary>function UIElement:pointInsideRectAndMask(p)
+
+				</summary>
+				<parameter name="p"/>
+			</function>
+			<function line="671" name="setAttribute">
+				<summary>function UIElement:setAttribute(name, bEnabled)
+
+   @param bEnabled: if nil, it is true.
+				</summary>
+				<parameter name="name"/>
+				<parameter name="bEnabled">if nil, it is true.
+				</parameter>
+			</function>
+			<function line="680" name="testAttribute">
+				<summary>function UIElement:testAttribute(name)
+
+				</summary>
+				<parameter name="name"/>
+			</function>
+			<function line="685" name="setGeometry">
+				<summary>function UIElement:setGeometry(ax, ay, aw, ah)
+set the rect
+				</summary>
+				<parameter name="ax"/>
+				<parameter name="ay"/>
+				<parameter name="aw"/>
+				<parameter name="ah"/>
+			</function>
+			<function line="697" name="move">
+				<summary>function UIElement:move(x, y)
+move to a given position
+if the widget is a window, the position is that of the widget on the desktop
+Calling move() or setGeometry() inside moveEvent() can lead to infinite recursion
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+			</function>
+			<function line="711" name="resize">
+				<summary>function UIElement:resize(aw, ah)
+set size
+				</summary>
+				<parameter name="aw"/>
+				<parameter name="ah"/>
+			</function>
+			<function line="720" name="rect">
+				<summary>function UIElement:rect()
+client rect. left, top is always 0,0.
+   @note: the returned rect is temporary, do not keep for long. 
+				</summary>
+			</function>
+			<function line="725" name="pos">
+				<summary>function UIElement:pos()
+return left top point
+				</summary>
+			</function>
+			<function line="730" name="geometry">
+				<summary>function UIElement:geometry()
+left, top is relative to its parent. 
+				</summary>
+			</function>
+			<function line="734" name="width">
+				<summary>function UIElement:width()
+
+				</summary>
+			</function>
+			<function line="738" name="height">
+				<summary>function UIElement:height()
+
+				</summary>
+			</function>
+			<function line="743" name="x">
+				<summary>function UIElement:x()
+the x coordinate relative to its parent
+				</summary>
+			</function>
+			<function line="748" name="y">
+				<summary>function UIElement:y()
+the y coordinate relative to its parent
+				</summary>
+			</function>
+			<function line="753" name="setX">
+				<summary>function UIElement:setX(x)
+
+				</summary>
+				<parameter name="x"/>
+			</function>
+			<function line="757" name="setY">
+				<summary>function UIElement:setY(y)
+
+				</summary>
+				<parameter name="y"/>
+			</function>
+			<function line="762" name="IsMouseCaptured">
+				<summary>function UIElement:IsMouseCaptured()
+if the mouse is captured to this element or not.
+				</summary>
+			</function>
+			<function line="767" name="CaptureMouse">
+				<summary>function UIElement:CaptureMouse()
+Captures the mouse to this element.
+				</summary>
+			</function>
+			<function line="780" name="ReleaseMouseCapture">
+				<summary>function UIElement:ReleaseMouseCapture()
+Releases the mouse capture.
+				</summary>
+			</function>
+			<function line="790" name="sendSizeEvents">
+				<summary>function UIElement:sendSizeEvents()
+
+				</summary>
+			</function>
+			<function line="803" name="sendPendingSizeEvents">
+				<summary>function UIElement:sendPendingSizeEvents(recursive, disableUpdates)
+
+				</summary>
+				<parameter name="recursive"/>
+				<parameter name="disableUpdates"/>
+			</function>
+			<function line="832" name="updateGeometry">
+				<summary>function UIElement:updateGeometry()
+Notifies the layout system that this widget has changed and may need to change geometry.
+				</summary>
+			</function>
+			<function line="838" name="GetLayout">
+				<summary>function UIElement:GetLayout()
+Returns the layout manager that is installed on this widget, or nil if no layout manager is installed.
+The layout manager sets the geometry of the widget's children that have been added to the layout.
+				</summary>
+			</function>
+			<function line="844" name="SetLayout">
+				<summary>function UIElement:SetLayout(layout)
+Sets the layout manager for this widget to a layout.
+An alternative to calling this function is to pass this widget to the layout's init function.
+				</summary>
+				<parameter name="layout"/>
+			</function>
+			<function line="851" name="updateGeometry_helper">
+				<summary>function UIElement:updateGeometry_helper(forceUpdate)
+
+				</summary>
+				<parameter name="forceUpdate"/>
+			</function>
+			<function line="866" name="underMouse">
+				<summary>function UIElement:underMouse()
+
+				</summary>
+			</function>
+			<function line="873" name="mapToGlobal">
+				<summary>function UIElement:mapToGlobal(pos)
+convert to global position
+   @return the returned Point is temporary, do not hold it for long
+				</summary>
+				<parameter name="pos"/>
+				<returns>return returned Point is temporary, do not hold it for long
+				</returns>
+			</function>
+			<function line="890" name="mapFromGlobal">
+				<summary>function UIElement:mapFromGlobal(pos)
+convert from global to local pos.
+   @return the returned Point is temporary, do not hold it for long
+				</summary>
+				<parameter name="pos"/>
+				<returns>return returned Point is temporary, do not hold it for long
+				</returns>
+			</function>
+			<function line="907" name="mapToParent">
+				<summary>function UIElement:mapToParent(pos)
+Translates the widget coordinate \a pos to a coordinate in the parent widget.
+Same as mapToGlobal() if the widget has no parent.
+				</summary>
+				<parameter name="pos"/>
+			</function>
+			<function line="915" name="mapFromParent">
+				<summary>function UIElement:mapFromParent(pos)
+Translates the parent widget coordinate \a pos to widget coordinates.
+Same as mapFromGlobal() if the widget has no parent.
+				</summary>
+				<parameter name="pos"/>
+			</function>
+			<function line="923" name="mapTo">
+				<summary>function UIElement:mapTo(parent, pos) 
+Translates the widget coordinate \a pos to the coordinate system
+of \a parent. The \a parent must not be nil and must be a parent of the calling widget.
+				</summary>
+				<parameter name="parent"/>
+				<parameter name="pos"/>
+			</function>
+			<function line="938" name="mapFrom">
+				<summary>function UIElement:mapFrom(parent, pos) 
+Translates the widget coordinate \a pos from the coordinate system
+of \a parent to this widget's coordinate system. The \a parent
+must not be nil and must be a parent of the calling widget.
+				</summary>
+				<parameter name="parent"/>
+				<parameter name="pos"/>
+			</function>
+			<function line="950" name="topLevelWidget">
+				<summary>function UIElement:topLevelWidget()
+
+				</summary>
+			</function>
+			<function line="954" name="LoadComponent">
+				<summary>function UIElement:LoadComponent(url)
+
+				</summary>
+				<parameter name="url"/>
+			</function>
+			<function line="958" name="setMouseTracking">
+				<summary>function UIElement:setMouseTracking(enable)
+
+				</summary>
+				<parameter name="enable"/>
+			</function>
+			<function line="962" name="hasMouseTracking">
+				<summary>function UIElement:hasMouseTracking()
+
+				</summary>
+			</function>
+			<function line="966" name="GetTooltip">
+				<summary>function UIElement:GetTooltip()
+
+				</summary>
+			</function>
+			<function line="973" name="SetTooltip">
+				<summary>function UIElement:SetTooltip(tooltip)
+If you want to control a tooltip's behavior, you can intercept the
+event() function and catch the Event::ToolTip event (e.g., if you
+want to customize the area for which the tooltip should be shown).
+				</summary>
+				<parameter name="tooltip"/>
+			</function>
+			<function line="977" name="toolTipEvent">
+				<summary>function UIElement:toolTipEvent(event)
+
+				</summary>
+				<parameter name="event"/>
+			</function>
+		</table>
+		<table name="Keyboard" src="script/ide/System/Windows/Keyboard.lua">
+			<function line="17" name="ctor">
+				<summary>function Keyboard:ctor()
+
+				</summary>
+			</function>
+			<function line="20" name="IsAltKeyPressed">
+				<summary>function Keyboard:IsAltKeyPressed()
+
+				</summary>
+			</function>
+			<function line="24" name="IsCtrlKeyPressed">
+				<summary>function Keyboard:IsCtrlKeyPressed()
+
+				</summary>
+			</function>
+			<function line="28" name="IsShiftKeyPressed">
+				<summary>function Keyboard:IsShiftKeyPressed()
+
+				</summary>
+			</function>
+		</table>
+		<table name="Mouse" src="script/ide/System/Windows/Mouse.lua">
+			<function line="21" name="ctor">
+				<summary>function Mouse:ctor()
+
+				</summary>
+			</function>
+			<function line="25" name="GetCapture">
+				<summary>function Mouse:GetCapture()
+Gets the element that has captured the mouse. 
+				</summary>
+			</function>
+			<function line="32" name="Capture">
+				<summary>function Mouse:Capture(element)
+When an element captures the mouse, it receives mouse input whether or not the cursor is within its borders.
+To release mouse capture, call Capture passing nil as the element to capture.
+   @param element: if nil, it means release mouse capture. 
+				</summary>
+				<parameter name="element">if nil, it means release mouse capture. 
+				</parameter>
+			</function>
+			<function line="37" name="LeftButton">
+				<summary>function Mouse:LeftButton()
+Gets the state of the left button of the mouse. true if pressed. 
+				</summary>
+			</function>
+			<function line="42" name="RightButton">
+				<summary>function Mouse:RightButton()
+Gets the state of the right button of the mouse. true if pressed. 
+				</summary>
+			</function>
+			<function line="47" name="DirectlyOver">
+				<summary>function Mouse:DirectlyOver()
+Gets the element the mouse pointer is directly over.
+				</summary>
+			</function>
+			<function line="52" name="pos">
+				<summary>function Mouse:pos()
+get Point object. 
+				</summary>
+			</function>
+			<function line="58" name="GetMousePosition">
+				<summary>function Mouse:GetMousePosition()
+return x, y in GUI screen coordinate
+				</summary>
+			</function>
+		</table>
+		<table name="BufferPicking" src="script/ide/System/Scene/BufferPicking.lua">
+			<function line="25" name="ctor">
+				<summary>function BufferPicking:ctor()
+
+				</summary>
+			</function>
+			<function line="29" name="CreatePickingBuffer_sys">
+				<summary>function BufferPicking:CreatePickingBuffer_sys()
+
+				</summary>
+			</function>
+			<function line="39" name="Pick">
+				<summary>function BufferPicking:Pick(x, y, width, height, nViewportId)
+pick by a point in the viewport. 
+Tip: to pick a thin line, one may consider picking by a small rect region.
+   @param x, y: if nil, it is the current mouse position.
+   @param width, height: if nil, 1,1
+   @param nViewportId: viewport index, if -1 it means the current viewport.
+   @return array of picking result. if nil means nothing is picked.
+				</summary>
+				<parameter name="x">, y: if nil, it is the current mouse position.
+				</parameter>
+				<parameter name="y"/>
+				<parameter name="width">, height: if nil, 1,1
+				</parameter>
+				<parameter name="height"/>
+				<parameter name="nViewportId">viewport index, if -1 it means the current viewport.
+				</parameter>
+				<returns>return of picking result. if nil means nothing is picked.
+				</returns>
+			</function>
+			<function line="55" name="GetPickingResult">
+				<summary>function BufferPicking:GetPickingResult()
+return an array of unique picking id in the last pick call. it may return nil if nothing is picked
+				</summary>
+			</function>
+			<function line="67" name="GetPickingCount">
+				<summary>function BufferPicking:GetPickingCount()
+return the number of objects picked. 
+				</summary>
+			</function>
+			<function line="73" name="GetPickingID">
+				<summary>function BufferPicking:GetPickingID(nIndex)
+get the picked item id of the given picking item. if no data at the index return 0.
+   @param nIndex: if -1, it will use m_currentPickIndex;
+				</summary>
+				<parameter name="nIndex">if -1, it will use m_currentPickIndex;
+				</parameter>
+			</function>
+			<function line="81" name="ClearPickingResult">
+				<summary>function BufferPicking:ClearPickingResult()
+clear last picking result 
+				</summary>
+			</function>
+			<function line="85" name="SetPickLeftTop">
+				<summary>function BufferPicking:SetPickLeftTop(x, y)
+
+				</summary>
+				<parameter name="x"/>
+				<parameter name="y"/>
+			</function>
+			<function line="90" name="GetPickLeftTop">
+				<summary>function BufferPicking:GetPickLeftTop()
+
+				</summary>
+			</function>
+			<function line="95" name="SetPickWidthHeight">
+				<summary>function BufferPicking:SetPickWidthHeight(w,h)
+
+				</summary>
+				<parameter name="w"/>
+				<parameter name="h"/>
+			</function>
+			<function line="100" name="GetPickWidthHeight">
+				<summary>function BufferPicking:GetPickWidthHeight()
+
+				</summary>
+			</function>
+			<function line="105" name="GetPickIndex">
+				<summary>function BufferPicking:GetPickIndex()
+
+				</summary>
+			</function>
+			<function line="108" name="SetPickIndex">
+				<summary>function BufferPicking:SetPickIndex(nIndex)
+
+				</summary>
+				<parameter name="nIndex"/>
+			</function>
+			<function line="114" name="IsResultDirty">
+				<summary>function BufferPicking:IsResultDirty()
+
+				</summary>
+			</function>
+			<function line="118" name="SetResultDirty">
+				<summary>function BufferPicking:SetResultDirty(bDirty)
+
+				</summary>
+				<parameter name="bDirty"/>
+			</function>
+			<function line="123" name="GetViewport">
+				<summary>function BufferPicking:GetViewport()
+in which viewport to pick. default to -1, which is the default one. 
+				</summary>
+			</function>
+			<function line="128" name="SetViewport">
+				<summary>function BufferPicking:SetViewport(nViewportIndex)
+in which viewport to pick. if -1, it is the default one. 
+				</summary>
+				<parameter name="nViewportIndex"/>
+			</function>
+		</table>
+		<table name="OverlayPicking" src="script/ide/System/Scene/Overlays/OverlayPicking.lua">
+			<function line="25" name="ctor">
+				<summary>function OverlayPicking:ctor()
+
+				</summary>
+			</function>
+			<function line="29" name="CreatePickingBuffer_sys">
+				<summary>function OverlayPicking:CreatePickingBuffer_sys()
+
+				</summary>
+			</function>
+			<function line="33" name="ResetPickingName">
+				<summary>function OverlayPicking:ResetPickingName()
+
+				</summary>
+			</function>
+			<function line="37" name="GetPickingCount">
+				<summary>function OverlayPicking:GetPickingCount()
+
+				</summary>
+			</function>
+			<function line="43" name="GetPickingResult">
+				<summary>function OverlayPicking:GetPickingResult()
+
+				</summary>
+			</function>
+			<function line="59" name="GetNextPickingName">
+				<summary>function OverlayPicking:GetNextPickingName()
+find next color int value that should be used for the picking color for next unique pickable item.
+				</summary>
+			</function>
+			<function line="65" name="GetActivePickingName">
+				<summary>function OverlayPicking:GetActivePickingName()
+picking name from the last picking result.
+				</summary>
+			</function>
+			<function line="71" name="SetActivePickingName">
+				<summary>function OverlayPicking:SetActivePickingName(name)
+usually called automatically. remove the alpha channel.
+set the name of last picking result.
+				</summary>
+				<parameter name="name"/>
+			</function>
+		</table>
+		<table name="ShapesDrawer" src="script/ide/System/Scene/Overlays/ShapesDrawer.lua">
+			<function line="41" name="DrawCube">
+				<summary>function ShapesDrawer.DrawCube(painter, x,y,z, radius, bFakeCube)
+8 triangles
+12 triangles
+draw a cube by specifying its center and radius(half length)
+   @param bFakeCube: if true (default), we will emulate a cube by drawing only 8 triangles, instead of 12. when no shading
+				</summary>
+				<parameter name="painter"/>
+				<parameter name="x"/>
+				<parameter name="y"/>
+				<parameter name="z"/>
+				<parameter name="radius"/>
+				<parameter name="bFakeCube">if true (default), we will emulate a cube by drawing only 8 triangles, instead of 12. when no shading
+				</parameter>
+			</function>
+			<function line="57" name="DrawLine">
+				<summary>function ShapesDrawer.DrawLine(painter, from_x,from_y,from_z, to_x, to_y, to_z)
+draw a line
+				</summary>
+				<parameter name="painter"/>
+				<parameter name="from_x"/>
+				<parameter name="from_y"/>
+				<parameter name="from_z"/>
+				<parameter name="to_x"/>
+				<parameter name="to_y"/>
+				<parameter name="to_z"/>
+			</function>
+			<function line="86" name="DrawCircle">
+				<summary>function ShapesDrawer.DrawCircle(painter, cx,cy,cz, radius, axis, bFill, segment, fromAngle, toAngle, center_offset)
+draw a circle perpendicular to a specified axis with center and radius
+   @param axis: "x", "y", "z". perpendicular to which axis
+   @param bFill: if true (default to nil), we will fill the circle with current brush
+   @param segment: if nil, we will automatically determine segment by radius.
+   @param fromAngle: default to 0;
+   @param toAngle: default to 2*math.pi;
+   @param center_offset: default to 0.
+				</summary>
+				<parameter name="painter"/>
+				<parameter name="cx"/>
+				<parameter name="cy"/>
+				<parameter name="cz"/>
+				<parameter name="radius"/>
+				<parameter name="axis">"x", "y", "z". perpendicular to which axis
+				</parameter>
+				<parameter name="bFill">if true (default to nil), we will fill the circle with current brush
+				</parameter>
+				<parameter name="segment">if nil, we will automatically determine segment by radius.
+				</parameter>
+				<parameter name="fromAngle">default to 0;
+				</parameter>
+				<parameter name="toAngle">default to 2*math.pi;
+				</parameter>
+				<parameter name="center_offset">default to 0.
+				</parameter>
+			</function>
+			<function line="136" name="DrawArrowHead">
+				<summary>function ShapesDrawer.DrawArrowHead(painter, cx,cy,cz, axis, radius, length, segment)
+draw arrow head 
+				</summary>
+				<parameter name="painter"/>
+				<parameter name="cx"/>
+				<parameter name="cy"/>
+				<parameter name="cz"/>
+				<parameter name="axis"/>
+				<parameter name="radius"/>
+				<parameter name="length"/>
+				<parameter name="segment"/>
+			</function>
+		</table>
+		<table name="AutoCamera" src="script/ide/System/Scene/Cameras/AutoCamera.lua">
+			<function line="20" name="ctor">
+				<summary>function AutoCamera:ctor()
+
+				</summary>
+			</function>
+			<function line="23" name="GetViewProjMatrix">
+				<summary>function AutoCamera:GetViewProjMatrix()
+
+				</summary>
+			</function>
+			<function line="27" name="GetViewMatrix">
+				<summary>function AutoCamera:GetViewMatrix()
+
+				</summary>
+			</function>
+			<function line="31" name="GetProjMatrix">
+				<summary>function AutoCamera:GetProjMatrix()
+
+				</summary>
+			</function>
+		</table>
+		<table name="Cameras" src="script/ide/System/Scene/Cameras/Cameras.lua">
+			<function line="19" name="GetCurrent">
+				<summary>function Cameras:GetCurrent()
+default to autocamera if no camera is set. 
+				</summary>
+			</function>
+			<function line="23" name="SetCurrent">
+				<summary>function Cameras:SetCurrent(cam)
+
+				</summary>
+				<parameter name="cam"/>
+			</function>
+		</table>
+		<table name="request" src="script/apps/WebServer/npl_request.lua">
+			<function line="44" name="ctor">
+				<summary>function request:ctor()
+
+				</summary>
+			</function>
+			<function line="49" name="GetResponse">
+				<summary>function request:GetResponse()
+get the response object. 
+				</summary>
+			</function>
+			<function line="54" name="GetNid">
+				<summary>function request:GetNid()
+get the nid where the request is from. 
+				</summary>
+			</function>
+			<function line="58" name="errorEvent">
+				<summary>function request:errorEvent(msg)
+
+				</summary>
+				<parameter name="msg"/>
+			</function>
+			<function line="70" name="tostring">
+				<summary>function request:tostring()
+
+				</summary>
+			</function>
+			<function line="74" name="redirect">
+				<summary>function request:redirect(d)
+
+				</summary>
+				<parameter name="d"/>
+			</function>
+			<function line="81" name="url">
+				<summary>function request:url()
+original request url
+				</summary>
+			</function>
+			<function line="85" name="parse_url">
+				<summary>function request:parse_url()
+
+				</summary>
+			</function>
+			<function line="97" name="GetMsg">
+				<summary>function request:GetMsg()
+headers actually is the raw message containing everything.
+just incase one wants to clone the request and forward it to some other threads or network process. 
+				</summary>
+			</function>
+			<function line="103" name="getparams">
+				<summary>function request:getparams()
+get url parameters: both url post/get are supported
+return a table of name, value pairs
+				</summary>
+			</function>
+			<function line="121" name="IsJsonBody">
+				<summary>function request:IsJsonBody()
+
+				</summary>
+			</function>
+			<function line="130" name="GetHost">
+				<summary>function request:GetHost()
+get host name from header. usually checking for the http origin for cross-domain request or not. 
+				</summary>
+			</function>
+			<function line="135" name="GetMethod">
+				<summary>function request:GetMethod()
+in headers  'GET', 'HEAD', 'POST', 'PUT', 'OPTIONS' etc
+				</summary>
+			</function>
+			<function line="141" name="header">
+				<summary>function request:header(name)
+get the value of given header
+   @param name: "method", "Host", or any of other custom header fields
+				</summary>
+				<parameter name="name">"method", "Host", or any of other custom header fields
+				</parameter>
+			</function>
+			<function line="148" name="get">
+				<summary>function request:get(name)
+get a given url get/post param by name
+   @param name: if name is nil or 'json', we will return table object passed in from headers.body (json http post)
+if you post data as json, you can also access json encoded html body directly with key name. 
+				</summary>
+				<parameter name="name">if name is nil or 'json', we will return table object passed in from headers.body (json http post)
+if you post data as json, you can also access json encoded html body directly with key name. 
+				</parameter>
+			</function>
+			<function line="160" name="getpeername">
+				<summary>function request:getpeername()
+get ip address as string
+				</summary>
+			</function>
+			<function line="167" name="discard">
+				<summary>function request:discard()
+drop this request, so that nothing is sent to client at the moment. 
+we use this function to delegate a request from one thread to another in npl script handler
+				</summary>
+			</function>
+			<function line="172" name="send">
+				<summary>function request:send(address)
+send/route the request to another processor: possibly another npl file in another thread or another machine. 
+				</summary>
+				<parameter name="address"/>
+			</function>
+			<function line="181" name="get_cookie">
+				<summary>function request:get_cookie(name)
+get cookies or a given cookie entry value by name
+   @param name: if nil, entire cookies table is returned. if string, only cookies value of the given name is returned. 
+				</summary>
+				<parameter name="name">if nil, entire cookies table is returned. if string, only cookies value of the given name is returned. 
+				</parameter>
+			</function>
+			<function line="203" name="clear_cookie">
+				<summary>function request:clear_cookie()
+clear all cookies in case of rpc request, etc. 
+				</summary>
+			</function>
+			<function line="226" name="NormalizeHeaders">
+				<summary>function request:NormalizeHeaders(headers)
+from case insensitive to case sensitive. 
+				</summary>
+				<parameter name="headers"/>
+			</function>
+			<function line="246" name="init">
+				<summary>function request:init(msg)
+request can be reused by calling this function. 
+the request object is returned if succeed.
+				</summary>
+				<parameter name="msg"/>
+			</function>
+		</table>
+		<table name="response" src="script/apps/WebServer/npl_response.lua">
+			<function line="57" name="ctor">
+				<summary>function response:ctor()
+
+				</summary>
+			</function>
+			<function line="62" name="init">
+				<summary>function response:init(req)
+response can be reused by calling this function. 
+				</summary>
+				<parameter name="req"/>
+			</function>
+			<function line="72" name="send_xml">
+				<summary>function response:send_xml(xml, return_code, headers)
+make a xml rpc response
+   @param xml: xml/html root node or text.
+   @param return_code: nil if default to "ok"(200)
+				</summary>
+				<parameter name="xml">xml/html root node or text.
+				</parameter>
+				<parameter name="return_code">nil if default to "ok"(200)
+				</parameter>
+				<parameter name="headers"/>
+			</function>
+			<function line="87" name="send_json">
+				<summary>function response:send_json(json, return_code, headers)
+make a json response
+   @param return_code: nil if default to "ok"(200)
+				</summary>
+				<parameter name="json"/>
+				<parameter name="return_code">nil if default to "ok"(200)
+				</parameter>
+				<parameter name="headers"/>
+			</function>
+			<function line="98" name="SetReturnCode">
+				<summary>function response:SetReturnCode(return_code)
+
+				</summary>
+				<parameter name="return_code"/>
+			</function>
+			<function line="107" name="nocache_headers">
+				<summary>function response:nocache_headers()
+Set the headers to prevent caching for the different browsers.
+Different browsers support different nocache headers, so several
+headers must be sent so that all of them get the point that no
+caching should occur.
+				</summary>
+			</function>
+			<function line="115" name="set_header">
+				<summary>function response:set_header(h, v)
+it will replace value
+				</summary>
+				<parameter name="h"/>
+				<parameter name="v"/>
+			</function>
+			<function line="123" name="add_header">
+				<summary>function response:add_header(h, v)
+there can be duplicated names 
+				</summary>
+				<parameter name="h"/>
+				<parameter name="v"/>
+			</function>
+			<function line="144" name="SetContent">
+				<summary>function response:SetContent(text)
+if one calls SetContent instead of send(), any previously buffered send text will be ignored. 
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="153" name="send">
+				<summary>function response:send(text, bUseEmptyArray)
+send response and finish the request now.
+   @param bUseEmptyArray: by default, empty table is serialized to json as object {}. 
+calling this function will be serialized to json as array[]
+   @param pure HTML text or json table
+				</summary>
+				<parameter name="text"/>
+				<parameter name="bUseEmptyArray">by default, empty table is serialized to json as object {}. 
+calling this function will be serialized to json as array[]
+				</parameter>
+			</function>
+			<function line="164" name="status">
+				<summary>function response:status(code)
+set return code and return response object.
+				</summary>
+				<parameter name="code"/>
+			</function>
+			<function line="176" name="sendsome">
+				<summary>function response:sendsome(text)
+cache string and send it until finish() is called.
+it is optimized to call send() many times during a single request.
+   @param text: string or a table of text lines. 
+				</summary>
+				<parameter name="text">string or a table of text lines. 
+				</parameter>
+			</function>
+			<function line="211" name="isContentTypePlainText">
+				<summary>function response:isContentTypePlainText(contentType)
+
+				</summary>
+				<parameter name="contentType"/>
+			</function>
+			<function line="220" name="send_response">
+				<summary>function response:send_response()
+sends prebuilt content to the client
+if possible, sets Content-Length: header field
+uses:
+self.content : content data to send
+sets:
+self.keep_alive : if possible to keep using the same connection
+				</summary>
+			</function>
+			<function line="310" name="send_headers">
+				<summary>function response:send_headers()
+sends the response headers directly to client 
+uses:
+self.sent_headers : if true, headers are already sent, does nothing
+self.statusline : response status, if nil, sends 200 OK
+self.headers : table of header fields to send
+				</summary>
+			</function>
+			<function line="338" name="send_data">
+				<summary>function response:send_data(data)
+sends content directly to client. sends headers first, if not
+   @param data : content data to send
+				</summary>
+				<parameter name="data">content data to send
+				</parameter>
+			</function>
+			<function line="383" name="set_cookie">
+				<summary>function response:set_cookie(name, value)
+
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="394" name="redirect">
+				<summary>function response:redirect(path)
+
+				</summary>
+				<parameter name="path"/>
+			</function>
+			<function line="398" name="delete_cookie">
+				<summary>function response:delete_cookie(name, path)
+
+				</summary>
+				<parameter name="name"/>
+				<parameter name="path"/>
+			</function>
+			<function line="404" name="discard">
+				<summary>function response:discard()
+drop this request, so that nothing is sent to client at the moment. 
+we use this function to delegate a request from one thread to another in npl script handler
+				</summary>
+			</function>
+			<function line="409" name="SetOnFinished">
+				<summary>function response:SetOnFinished(callbackFunc)
+set on finished callback
+				</summary>
+				<parameter name="callbackFunc"/>
+			</function>
+			<function line="414" name="SetFinished">
+				<summary>function response:SetFinished()
+call this to actually make this request finished.  It will invoke OnFinished callback. 
+				</summary>
+			</function>
+			<function line="424" name="finish">
+				<summary>function response:finish()
+call this function to actually send cached response to client.
+this function is automatically called when page handler is finished. 
+Please note, calling finish() between Begin() and End() has no effect. 
+				</summary>
+			</function>
+			<function line="434" name="Begin">
+				<summary>function response:Begin()
+we will enter asynchronous mode, and the response is sent when self:End() is called. 
+Please note, it is up to you, to call End() function. Forgetting doing so, the client will no longer receive any response from current connection. 
+For example, in the page handler, we may wait for another async http call, before calling End().
+				</summary>
+			</function>
+			<function line="440" name="End">
+				<summary>function response:End(bIgnoreFinish)
+finish and send the asynchronous response.
+   @param bIgnoreFinish: if true, we will not call finish to send the actual response. default to nil.
+				</summary>
+				<parameter name="bIgnoreFinish">if true, we will not call finish to send the actual response. default to nil.
+				</parameter>
+			</function>
+			<function line="449" name="GetNid">
+				<summary>function response:GetNid()
+
+				</summary>
+			</function>
+			<function line="453" name="GetAddress">
+				<summary>function response:GetAddress()
+
+				</summary>
+			</function>
+			<function line="461" name="CloseAfterSend">
+				<summary>function response:CloseAfterSend()
+
+				</summary>
+			</function>
+			<function line="466" name="sendInternal">
+				<summary>function response:sendInternal(text)
+private: 
+				</summary>
+				<parameter name="text"/>
+			</function>
+		</table>
+		<table name="npl_page_env" src="script/apps/WebServer/npl_page_env.lua">
+			<function line="75" name="new">
+				<summary>function npl_page_env:new(request, response)
+expose: request, response, echo and print to npl script. 
+				</summary>
+				<parameter name="request"/>
+				<parameter name="response"/>
+			</function>
+			<function line="101" name="push_page">
+				<summary>function npl_page_env:push_page(page)
+internal function: never call this in page code
+				</summary>
+				<parameter name="page"/>
+			</function>
+			<function line="106" name="pop_page">
+				<summary>function npl_page_env:pop_page(page)
+internal function: never call this in page code
+				</summary>
+				<parameter name="page"/>
+			</function>
+			<function line="121" name="print">
+				<summary>function npl_page_env.print(...)
+same as self.echo(string.format(...))
+				</summary>
+			</function>
+			<function line="137" name="nplinfo">
+				<summary>function npl_page_env.nplinfo()
+similar to phpinfo()
+output everything about the environment and the request including all request headers.
+				</summary>
+			</function>
+			<function line="152" name="exit">
+				<summary>function npl_page_env.exit(msg)
+similar to php.exit()
+Output a message and terminate the current script
+   @param msg: output this message. usually nil. 
+				</summary>
+				<parameter name="msg">output this message. usually nil. 
+				</parameter>
+			</function>
+			<function line="170" name="dirname">
+				<summary>function npl_page_env.dirname(filename)
+similar to php.dirname() however with the trailing /
+get the directory name of the given file with the trailing /.
+   @param filename: if nil, self.__FILE__ is used. 
+				</summary>
+				<parameter name="filename">if nil, self.__FILE__ is used. 
+				</parameter>
+			</function>
+			<function line="213" name="getfilepath">
+				<summary>function npl_page_env.getfilepath(filename)
+
+   @param filename: file path, relative or absolute. 
+begin with './', relative to current file
+begin with '/', relative to web root directory
+begin with '../../../', up several directory to current file
+no "/" in filename, relative to current file
+otherwise, filename is absolute path. 
+				</summary>
+				<parameter name="filename">file path, relative or absolute. 
+begin with './', relative to current file
+begin with '/', relative to web root directory
+begin with '../../../', up several directory to current file
+no "/" in filename, relative to current file
+otherwise, filename is absolute path. 
+				</parameter>
+			</function>
+			<function line="224" name="file_exists">
+				<summary>function npl_page_env.file_exists(filename)
+Checks whether a file exists
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="279" name="include">
+				<summary>function npl_page_env.include(filename, bReload)
+similar to php.include: http://php.net/manual/en/function.include.php
+The include statement includes and evaluates the specified file and return its result if any.
+the included file share the same global environment as the caller. Unlike php, if you include another file 
+inside a function, upvalues are NOT shared due to the lexical scoping nature of lua. 
+Please note that exit() call will fallthrough all nested include and terminate the request.
+e.g.
+include(dirname(__FILE__).."test_include.page");
+include("test_include.page");  -- identical to above
+   @param filename: if no parent directory is specified, we will assume it is from the containing file's parent directory. 
+if filename begins with "/", it will append the web root directory.
+   @param bReload: true to reload the file. default to nil. files will be loaded only once.
+   @return: result of the included function. 
+				</summary>
+				<parameter name="filename">if no parent directory is specified, we will assume it is from the containing file's parent directory. 
+if filename begins with "/", it will append the web root directory.
+				</parameter>
+				<parameter name="bReload">true to reload the file. default to nil. files will be loaded only once.
+				</parameter>
+				<returns>return result of the included function. 
+				</returns>
+			</function>
+			<function line="292" name="include_once">
+				<summary>function npl_page_env.include_once(filename)
+same as include(), expect that this function only takes effect on first call for a given env.
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="314" name="include_pagecode">
+				<summary>function npl_page_env.include_pagecode(code, filename)
+include a given page code.
+   @param code: the actual code string to include.
+   @param filename: nil to default to current file. only used for displaying error
+				</summary>
+				<parameter name="code">the actual code string to include.
+				</parameter>
+				<parameter name="filename">nil to default to current file. only used for displaying error
+				</parameter>
+			</function>
+			<function line="324" name="site_url">
+				<summary>function npl_page_env.site_url(filename, scheme)
+return the site url like http://localhost:8080/
+				</summary>
+				<parameter name="filename"/>
+				<parameter name="scheme"/>
+			</function>
+			<function line="333" name="site_config">
+				<summary>function npl_page_env.site_config(name)
+
+   @param name: if nil, the root config table is returned. 
+				</summary>
+				<parameter name="name">if nil, the root config table is returned. 
+				</parameter>
+			</function>
+			<function line="346" name="addheader">
+				<summary>function npl_page_env.addheader(name, value)
+add header, only possible when header is not sent yet. 
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="356" name="setheader">
+				<summary>function npl_page_env.setheader(name, value)
+set header (replace previously set values), only possible when header is not sent yet. 
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="366" name="log">
+				<summary>function npl_page_env.log(...)
+simple log any object, same as echo. 
+				</summary>
+			</function>
+			<function line="375" name="sanitize">
+				<summary>function npl_page_env.sanitize(text)
+Sanitizes all HTML tags
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="389" name="json_encode">
+				<summary>function npl_page_env.json_encode(value, bUseEmptyArray)
+Returns a string containing the JSON representation of value.
+   @param bUseEmptyArray: by default, empty table is serialized to json as object {}. 
+calling this function will be serialized to json as array []
+				</summary>
+				<parameter name="value"/>
+				<parameter name="bUseEmptyArray">by default, empty table is serialized to json as object {}. 
+calling this function will be serialized to json as array []
+				</parameter>
+			</function>
+			<function line="398" name="json_decode">
+				<summary>function npl_page_env.json_decode(value)
+json decode
+				</summary>
+				<parameter name="value"/>
+			</function>
+			<function line="407" name="xml_encode">
+				<summary>function npl_page_env.xml_encode(value)
+Returns a string containing the Xml representation of value. 
+				</summary>
+				<parameter name="value"/>
+			</function>
+			<function line="422" name="get_file_text">
+				<summary>function npl_page_env.get_file_text(filename)
+get file text
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="452" name="yield">
+				<summary>function npl_page_env.yield(bExitOnError)
+yield control until all async jobs are completed
+   @param bExitOnError: if true, this function will handle error
+   @return err, msg: err is true if there is error. 
+				</summary>
+				<parameter name="bExitOnError">if true, this function will handle error
+				</parameter>
+				<returns>return , msg: err is true if there is error. 
+				</returns>
+			</function>
+			<function line="482" name="gettable">
+				<summary>function npl_page_env.gettable(tabNames)
+similar to commonlib.gettable(tabNames) but in page scope.
+   @param tabNames: table names like "models.users"
+				</summary>
+				<parameter name="tabNames">table names like "models.users"
+				</parameter>
+			</function>
+			<function line="493" name="createtable">
+				<summary>function npl_page_env.createtable(tabNames, init_params)
+similar to commonlib.createtable(tabNames) but in page scope.
+   @param tabNames: table names like "models.users"
+				</summary>
+				<parameter name="tabNames">table names like "models.users"
+				</parameter>
+				<parameter name="init_params"/>
+			</function>
+			<function line="499" name="inherit">
+				<summary>function npl_page_env.inherit(baseClass, new_class, ctor)
+same as commonlib.inherit()
+				</summary>
+				<parameter name="baseClass"/>
+				<parameter name="new_class"/>
+				<parameter name="ctor"/>
+			</function>
+		</table>
+		<table name="env_imp" src="script/apps/WebServer/npl_page_env.lua">
+			<function line="112" name="echo">
+				<summary>function env_imp:echo(text)
+handy function to output using current request context
+   @param text: string or number or nil or boolean. 
+				</summary>
+				<parameter name="text">string or number or nil or boolean. 
+				</parameter>
+			</function>
+			<function line="116" name="print">
+				<summary>function env_imp:print(...)
+
+				</summary>
+			</function>
+			<function line="126" name="nplinfo">
+				<summary>function env_imp:nplinfo()
+
+				</summary>
+			</function>
+			<function line="142" name="exit">
+				<summary>function env_imp:exit(msg)
+
+				</summary>
+				<parameter name="msg"/>
+			</function>
+			<function line="161" name="dirname">
+				<summary>function env_imp:dirname(filename)
+
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="175" name="getfilepath">
+				<summary>function env_imp:getfilepath(filename)
+
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="218" name="file_exists">
+				<summary>function env_imp:file_exists(filename)
+
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="230" name="add_include_file">
+				<summary>function env_imp:add_include_file(filename)
+private: add file to be already included
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="243" name="has_include_file">
+				<summary>function env_imp:has_include_file(filename)
+private: return true if file is already included in the environment. 
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="247" name="include">
+				<summary>function env_imp:include(filename, bReload)
+
+				</summary>
+				<parameter name="filename"/>
+				<parameter name="bReload"/>
+			</function>
+			<function line="284" name="include_once">
+				<summary>function env_imp:include_once(filename)
+
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="297" name="include_pagecode">
+				<summary>function env_imp:include_pagecode(code, filename)
+
+				</summary>
+				<parameter name="code"/>
+				<parameter name="filename"/>
+			</function>
+			<function line="319" name="site_url">
+				<summary>function env_imp:site_url(filename, scheme)
+
+				</summary>
+				<parameter name="filename"/>
+				<parameter name="scheme"/>
+			</function>
+			<function line="328" name="site_config">
+				<summary>function env_imp:site_config(name)
+
+				</summary>
+				<parameter name="name"/>
+			</function>
+			<function line="341" name="addheader">
+				<summary>function env_imp:addheader(name, value)
+
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="351" name="setheader">
+				<summary>function env_imp:setheader(name, value)
+
+				</summary>
+				<parameter name="name"/>
+				<parameter name="value"/>
+			</function>
+			<function line="361" name="log">
+				<summary>function env_imp:log(...)
+
+				</summary>
+			</function>
+			<function line="370" name="sanitize">
+				<summary>function env_imp:sanitize(text)
+
+				</summary>
+				<parameter name="text"/>
+			</function>
+			<function line="382" name="json_encode">
+				<summary>function env_imp:json_encode(value, bUseEmptyArray)
+
+				</summary>
+				<parameter name="value"/>
+				<parameter name="bUseEmptyArray"/>
+			</function>
+			<function line="393" name="json_decode">
+				<summary>function env_imp:json_decode(value)
+
+				</summary>
+				<parameter name="value"/>
+			</function>
+			<function line="402" name="xml_encode">
+				<summary>function env_imp:xml_encode(value)
+
+				</summary>
+				<parameter name="value"/>
+			</function>
+			<function line="411" name="get_file_text">
+				<summary>function env_imp:get_file_text(filename)
+
+				</summary>
+				<parameter name="filename"/>
+			</function>
+			<function line="427" name="yield">
+				<summary>function env_imp:yield(bExitOnError)
+
+				</summary>
+				<parameter name="bExitOnError"/>
+			</function>
+			<function line="440" name="restore_page_env">
+				<summary>function env_imp:restore_page_env()
+
+				</summary>
+			</function>
+			<function line="462" name="resume">
+				<summary>function env_imp:resume(err, msg)
+resume from where jobs are paused last.
+   @param err: if there is error, this is true, otherwise it is nil.
+   @param msg: error message in case err=true
+				</summary>
+				<parameter name="err">if there is error, this is true, otherwise it is nil.
+				</parameter>
+				<parameter name="msg">error message in case err=true
+				</parameter>
+			</function>
+			<function line="476" name="gettable">
+				<summary>function env_imp:gettable(tabNames)
+
+				</summary>
+				<parameter name="tabNames"/>
+			</function>
+			<function line="487" name="createtable">
+				<summary>function env_imp:createtable(tabNames, init_params)
+
+				</summary>
+				<parameter name="tabNames"/>
+				<parameter name="init_params"/>
+			</function>
+		</table>
+	</tables>
+	<globals/>
+	<variables>
+		<variable name="mathlib" type="mathlib"/>
+		<variable name="algorithm" type="algorithm"/>
+		<variable name="commonlib" type="commonlib"/>
+		<variable name="table" type="table"/>
+		<variable name="utf8" type="utf8"/>
+		<variable name="Encoding" type="Encoding"/>
+		<variable name="Private" type="Private"/>
+		<variable name="Timer" type="Timer"/>
+		<variable name="TimerManager" type="TimerManager"/>
+		<variable name="NPL" type="NPL"/>
+		<variable name="ParaScene" type="ParaScene"/>
+		<variable name="ParaCamera" type="ParaCamera"/>
+		<variable name="ParaEngine" type="ParaEngine"/>
+		<variable name="ParaAsset" type="ParaAsset"/>
+		<variable name="CmdParser" type="CmdParser"/>
+		<variable name="Event" type="Event"/>
+		<variable name="EventTickFunc" type="EventTickFunc"/>
+		<variable name="TimerEvent" type="TimerEvent"/>
+		<variable name="ToolBase" type="ToolBase"/>
+		<variable name="SignalConnections" type="SignalConnections"/>
+		<variable name="ConnectionSynapse" type="ConnectionSynapse"/>
+		<variable name="painter" type="painter"/>
+		<variable name="Attribute" type="Attribute"/>
+		<variable name="AttributeObject" type="AttributeObject"/>
+		<variable name="Screen" type="Screen"/>
+		<variable name="Window" type="Window"/>
+		<variable name="UIElement" type="UIElement"/>
+		<variable name="Keyboard" type="Keyboard"/>
+		<variable name="Mouse" type="Mouse"/>
+		<variable name="BufferPicking" type="BufferPicking"/>
+		<variable name="OverlayPicking" type="OverlayPicking"/>
+		<variable name="ShapesDrawer" type="ShapesDrawer"/>
+		<variable name="AutoCamera" type="AutoCamera"/>
+		<variable name="Cameras" type="Cameras"/>
+		<variable name="request" type="request"/>
+		<variable name="response" type="response"/>
+		<variable name="npl_page_env" type="npl_page_env"/>
+		<variable name="env_imp" type="env_imp"/>
+	</variables>
+</doc>

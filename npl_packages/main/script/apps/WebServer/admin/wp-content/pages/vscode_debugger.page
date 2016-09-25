@@ -1,0 +1,64 @@
+<?npl
+--[[
+Title: vscode_debugger.page
+Author: leio
+Date: 2016/4/18
+
+
+NPL.load("(gl)script/ide/Debugger/HTTPDebugger.lua");
+local HTTPDebugger = commonlib.gettable("commonlib.Debugger.HTTPDebugger")
+commonlib.Debugger.HTTPDebugger.Start("127.0.0.1",8099,true);
+]]
+if(is_ajax())then
+	local action = request:get("action") or "";
+	NPL.load("(gl)script/ide/Debugger/HTTPDebugger.lua");
+	local HTTPDebugger = commonlib.gettable("commonlib.Debugger.HTTPDebugger");
+    local targetFile = "script/ide/Debugger/HTTPDebugger.lua";
+	if(action == "attach")then
+		NPL.activate(targetFile, {filename="attach"});
+	end
+	if(action == "pause")then
+		NPL.activate(targetFile, {filename="pause"});
+	end
+	if(action == "stepover")then
+		NPL.activate(targetFile, {filename="over"});
+	end
+	if(action == "stepinto")then
+		NPL.activate(targetFile, {filename="step"});
+	end
+	if(action == "stepout")then
+		NPL.activate(targetFile, {filename="out"});
+	end
+    if(action == "stop")then
+		NPL.activate(targetFile, {filename="Detach"});
+	end
+	if(action == "continue")then
+		NPL.activate(targetFile, {filename="continue"});
+	end
+	if(action == "evaluate")then
+		NPL.activate(targetFile, {filename="exec", code=request:get("code")});
+	end
+	if(action == "listbreakpoint")then
+		NPL.activate(targetFile, {filename="listb"});
+	end
+	if(action == "addbreakpoint")then
+		NPL.activate(targetFile, {filename="setb", code={filename=request:get("filename"), line=tonumber(request:get("line"))}});
+	end
+	if(action == "removebreakpoint")then
+		NPL.activate(targetFile, {filename="delb", code={filename=request:get("filename"), line=tonumber(request:get("line"))}});
+	end
+	if(action == "poll_msg")then
+		local output = {msgs={}};
+		local output_queue = HTTPDebugger.GetOutputMsgList();
+		local msg = output_queue:first();
+		while (msg) do
+			output.msgs[#(output.msgs)+1] = msg;
+            msg = output_queue:remove(msg);
+		end
+        wp_send_json(output, true);
+	else
+		echo("rsp:"..action);
+	end
+    return;
+end
+?>

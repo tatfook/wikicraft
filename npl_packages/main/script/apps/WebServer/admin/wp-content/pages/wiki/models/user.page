@@ -1,0 +1,234 @@
+<?npl
+--[[
+Title: user profile
+Author: LiXizhi
+Date: 2016/7/28
+]]
+include_once("./abstract/base.page");
+include_once("./stats.page");
+
+local user = inherit(models.abstract.base, gettable("models.user"));
+
+user.db_name = "User";
+
+function user:ctor()
+	self:addfield("email", "string", false, 30); -- private email, can be used to login
+	self:addfield("password", "string", false, 256); -- hashed password
+	self:addfield("github", "number", false); -- github id
+	self:addfield("github_token", "table", false); -- github access token
+	self:addfield("displayName", "string", false, 30);
+	self:addfield("picture", "string", false, 200); -- picture url
+	self:addfield("publicemail", "string", false, 30);
+	self:addfield("bio", "string", false, 300);
+	self:addfield("company", "string", false, 30);
+	self:addfield("url", "string", false, 150);
+	self:addfield("location", "string", false, 50);
+	self:addfield("joindate", "string", false, 30);
+	self:addfield("isadmin", "boolean", false);
+end
+
+-- return minimum infor about the user
+-- return {_id, displayName, picture, joindate, location, }
+function user:api_getminiprofile(params)
+	if(not params._id) then
+		-- `_id` is automatically injected if no other field is found. 
+		self:ensureAuthenticated();
+		params._id = request.userid;
+	end
+	local data = user._super.get(self, params);
+	if(type(data) == "table") then
+		-- never return password
+		return {_id=data._id, joindate=data.joindate, location=data.location, displayName = data.displayName, picture = data.picture};
+	end
+end
+
+function user:get(params)
+	if(not params._id) then
+		-- `_id` is automatically injected if no other field is found. 
+		self:ensureAuthenticated();
+		params._id = request.userid;
+	end
+	local data = user._super.get(self, params);
+	if(type(data) == "table") then
+		-- never return password
+		data.password = nil;
+		-- hide non-owner fields
+		if(data._id ~= request.userid) then
+			data.email = nil;
+			data.github_token = nil;
+		end
+	end
+	return data;
+end
+
+-- virtual: 
+function user:update(params)
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	if(query) then
+		-- following field is forbidden to change by the user. 
+		query.github = nil;
+		query.email = nil;
+		query.password = nil;
+		query.github_token = nil;
+
+		self:db():updateOne({_id = request.userid}, query, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end
+
+function user:delete()
+	self:ensureAuthenticated();
+	self:db():findById(request.userid, resume);
+	local err, user = yield(true);
+	db.deletedUser:insertOne(nil, user, resume);
+	yield();
+	self:db():deleteOne({_id = request.userid}, resume);
+	local err, data = yield(true); 
+	return data;
+end
+
+-- change password
+function user:api_changepw(params)
+	self:ensureAuthenticated();
+	local oldpassword = params.oldpassword;
+	if(params.newpassword) then
+		local newpassword = params.newpassword;
+		if(newpassword and #newpassword>=6 and #newpassword<100) then
+			newpassword = self:encode_password(newpassword);
+			oldpassword = self:encode_password(oldpassword);
+			
+			self:db():findById(request.userid, resume);
+			local err, user = yield();
+			if(user and (not user.password or user.password == oldpassword)) then
+				self:db():updateOne({_id = request.userid, password = newpassword,}, resume);
+				local err, user = yield();
+				if (not user) then
+					response:status(500); return { message = err };
+				else
+					return { success = true };
+				end
+			else
+				response:status(404); return {message="invalid password"};
+			end
+		else
+			response:status(404); return {message="invalid new password"};
+		end
+	end
+end
+
+-- set email if user has never set it before
+function user:api_setemail(params)
+	self:ensureAuthenticated();
+	local email = self:validate_email(params.email);
+	if(not email) then
+		response:status(409);
+		return { message = 'Email format incorrect' };	
+	end
+	self:db():findById(request.userid, resume);
+	local err, user = yield();
+	if(user and (user.email or "") == "") then
+		self:db():findOne({email = email}, resume)
+		local err, existingUser = yield();
+		if(existingUser) then
+			response:status(409); 
+			return { message = 'Email is already taken' };
+		end
+		user.email = email;
+		self:db():updateOne({_id = request.userid}, user, resume);
+		local err, data = yield(true); 
+		return {email = email};
+	end
+end
+
+function user:api_login(params)
+	local err, query = self:validateQuery(params);
+	if(err) then
+		return;
+	end
+	local email = query.email;
+	local password = query.password;
+
+	if(not email or not password or #email < 3 or #password <6) then
+		response:status(409); return { message = 'Email or password wrong' };
+	end
+	email = string.lower(email);
+	password = self:encode_password(password);
+	
+	self:db():findOne({email = email}, resume);
+	local err, user = yield();
+
+	if(not user or (user.password or "") == "") then
+		response:status(409); return { message = 'Email or password wrong' };
+	else
+		if(user.password ~= password) then
+			response:status(409); return { message = 'Email or password wrong' };
+		else
+			return { token = createJWT(user)};
+		end
+	end
+end
+
+function user:encode_password(password)
+	return ParaMisc.md5(password or "");
+end
+
+function user:create(params)
+	return self:api_register(params);
+end
+
+-- @return email or nil
+function user:validate_email(email)
+	if(not email or not email:match("^[%w%._%-]+@[%w%.%-]+%.[%a]+$") or #email>50) then
+		return;
+	end
+	email = string.lower(email);
+	return email;
+end
+
+function user:api_register(params)
+	local err, params = self:validateQuery(params);
+	if(err) then
+		return;
+	end
+	self:db():findOne({email = params.email}, resume)
+	local err, existingUser = yield();
+	if(existingUser) then
+		response:status(409); 
+		return { message = 'Email is already taken' };
+	else
+		local displayName = params.displayName;		
+		local password = params.password;
+		local email = self:validate_email(params.email);
+		if(not email) then
+			response:status(409);
+			return { message = 'Email format incorrect' };	
+		end
+		-- validate password 
+		if(type(password)~="string" or #password < 6 or #password>100) then
+			response:status(409); 
+			return { message = 'Password too weak' };	
+		end
+		if(type(displayName)~="string" or #displayName < 3 or #displayName>30) then
+			response:status(409); 
+			return { message = 'name too long or short' };	
+		end
+		password = self:encode_password(password);
+
+		self:db():insertOne({email = email}, {
+			displayName = displayName, 
+			password = password,
+			email = email,
+			joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+		}, resume);
+
+		local err, user = yield();
+		if (not user) then
+			response:status(500); return { message = err };
+		else
+			models.stats:new():addUser(user._id, true);
+			return { token = createJWT(user) };
+		end
+	end
+end

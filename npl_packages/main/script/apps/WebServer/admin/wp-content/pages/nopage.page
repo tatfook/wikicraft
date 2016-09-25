@@ -1,0 +1,11 @@
+<?npl
+--[[
+Title: when no page is found
+Author: LiXizhi
+Date: 2016/5/29
+]]
+
+WIKI_WEBROOT="/wp-content/pages/wiki/";
+
+include("./wiki/routes.page")
+?>

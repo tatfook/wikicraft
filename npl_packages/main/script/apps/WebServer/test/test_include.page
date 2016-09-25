@@ -1,0 +1,6 @@
+<?npl
+
+echo("<p>this is from included file: "..(some_global_var or "").."</p>");
+
+-- can also has return value. 
+return "<p>from test_include.page</p>";

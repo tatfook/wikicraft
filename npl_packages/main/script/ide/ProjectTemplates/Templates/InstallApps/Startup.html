@@ -1,0 +1,69 @@
+﻿<!-- "script/ide/ProjectTemplates/Templates/InstallApps/Startup.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NPL file</title>
+</head>
+<body>
+<pe:mcml>
+<script src="Startup.lua">
+ProjectTemplates.InstallApps.OnInit();
+</script>
+<form name="installappForm">
+<input type="hidden" name="fileName" value="app_main"/>
+<input type="hidden" name="fileType" value=".lua"/>
+<input type="hidden" name="filepath" value="temp"/>
+<input type="hidden" name="instance_name" value="test"/>
+<div class="darkbox" style="padding:5px;height:74px;" width="100%">
+    <input type="button" class="defaultbutton"  style="width:64px;height:64px;margin-left:4px;margin-top:2px;background:Texture/3DMapSystem/AppIcons/Intro_64.dds;" />
+    <div style="float:left;font-weight:bold;color:#FFFFFF;font-size:14px;margin-top:10px;margin-left:10px">
+        <div>App name:<strong name="app_name">test</strong></div>
+        <div>Install folder:<strong name="install_Path">temp</strong></div>
+    </div>
+</div>
+  <div class="box" style="float:left;margin-top:5px;padding:5px;width:180px;height:330px;">
+    <input type="radio" name="pageindex" value="1" onclick="ProjectTemplates.InstallApps.OnClickPageIndex" checked="checked"/>step 1: Overview<br/>
+	<input type="radio" name="pageindex" value="2" onclick="ProjectTemplates.InstallApps.OnClickPageIndex"/>step 2: File Info<br/>
+	<input type="radio" name="pageindex" value="3" onclick="ProjectTemplates.InstallApps.OnClickPageIndex"/>step 3: Others<br/>
+  </div>
+  <div class="box" style="float:left;margin-left:5px;margin-top:5px;height:330px;" width="100%">
+      <pe:container style="position:relative;background:;" name="editor_1">
+        <div style="margin:10px;float:left;">
+        <h3>创建一个帕拉巫应用程序</h3>
+        <p>ParaWorld App将生成IP.xml和app_main.lua两个文件</p>
+        <b>请点击下一步</b>
+      </div>
+      </pe:container>
+      
+      <pe:container style="position:relative;visible:false;background:;" name="editor_2" >
+         <div style="width:80px;float:left;text-align:right">Package:</div><input name="package" type="text" style="width:400"/>
+         <br />
+         <div style="margin-left:80px;color:#0066FF;">like this: Package.sub</div>
+         <div style="width:80px;float:left;text-align:right">Title:</div><input name="title" type="text" style="width:400"/>
+         <br />
+         <div style="width:80px;float:left;text-align:right">Author:</div><input name="author" type="text" style="width:400"/>
+         <br />
+         <div style="width:80px;float:left;text-align:right">Date:</div><input name="date_txt"  type="text" style="width:400" />
+         <br />
+         <div style="width:80px;float:left;text-align:right">Description:</div><textarea name="description" rows="4"  style="width:400;"></textarea>
+      </pe:container>
+      
+      <pe:container style="position:relative;visible:false;background:;" name="editor_3" >
+        <div style="margin:10px;float:left;">
+        <div><input name="autoInsertDB" type="checkbox" />是否自动插入数据库</div>
+        <div><input name="isLoaded" type="checkbox" />是否直接加载</div>
+        </div>
+      </pe:container>
+      
+  </div>
+  <div style="margin-left:5px;margin-top:5px;width:640px;height:auto">                     
+    <input type="submit" style="margin-left:380px;width:60px;height:auto;" value="Previous" name="pre_btn" onclick="ProjectTemplates.InstallApps.btn_click" />
+    <input class="defaultbutton" type="submit" style="margin-left:5px;width:60px;height:auto;" value="Next" name="next_btn" onclick="ProjectTemplates.InstallApps.btn_click" />
+    <input type="submit" style="margin-left:5px;width:60px;height:auto;" value="Finish" name="finish_btn" onclick="ProjectTemplates.InstallApps.btn_click" />
+    <input type="submit" style="margin-left:5px;width:60px;height:auto;" value="Cancel" name="cancel_btn" onclick="ProjectTemplates.InstallApps.btn_click" />
+  </div>
+</form>  
+</pe:mcml> 
+</body>
+</html>

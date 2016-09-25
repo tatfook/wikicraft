@@ -1,0 +1,100 @@
+<!--script/ide/IPCBinding/EntitySamplePlaceableTemplate.entity.xml-->
+<pe:mcml>
+  <script type="text/npl" src="">
+  </script>
+  <pe:entity_template name="SamplePlaceable" namespace="PETools.EntityTemplates.Buildin" 
+             display_name="SamplePlaceable"
+             worldfilter="" singleton="false"
+             classfile="script/ide/IPCBinding/EntityBase.lua" 
+             classname="PETools.EntityTemplates.Samples.SamplePlaceable"
+             baseclass="IPCBinding.EntityBase"
+             codefile="[worldpath]/entity/samples/SamplePlaceable_[worldname]_[mesh_name]_[uid].xml"
+             codefile_xpath ="/pe:mcml/pe:samples/SamplePlaceable"
+             serializer="IPCBinding.EntityHelperSerializer"
+             editor_attribute='[NPLCommand("goto", func_name="goto")]'
+             new_instance_form="EntitySamplePlaceableTemplate.newinstance.html"
+             func_create="create_new_instance"
+             func_createfrom=""
+             func_remove=""
+             func_delete=""
+             func_save=""
+             func_select=""
+             func_deselect=""
+             >
+    <functions>
+      <function name="create_new_instance">
+        <![CDATA[
+        return function(template, params, callback)
+          local entity_class = template.class;
+          if (entity_class) then
+            local instance = entity_class:new();
+            instance.uid = ParaGlobal.GenerateUniqueID();
+            -- instance.uid = "1234567_testing_only";
+            local x,y,z = ParaScene.GetPlayer():GetPosition();
+            instance.position = {x, y, z}
+            instance.radius = 2;
+            instance.facing = 0;
+            instance.mesh_obj = "character/common/tag/tag.x";
+            instance.mesh_name = params.mesh_name or "MyName";
+            instance.color = {255,0,0};
+            instance.UIColor = "";
+            instance.MyStringList = "value1"
+            commonlib.log("new entity instance created: uid %s", instance.uid);
+            if(callback) then
+              callback(instance);
+            end
+          end
+        end
+        ]]>
+       </function>
+       <function name="goto">
+        <![CDATA[
+        return function(instance)
+          if (instance) then
+            local pos = instance.position;
+            ParaScene.GetPlayer():SetPosition(pos[1], pos[2], pos[3]);
+          end
+        end
+        ]]>
+       </function>
+    </functions>
+    <!-- this is only used for description purposes, real properties are extracted from classfile -->
+    <properties>
+      <!-- we can specify an editor style to use for displaying and modifying the property. 
+      the most commonly used style is editor and editor-center. where editor can be point/circle. and the editor-center can be a vector3 property name on the instance. 
+      --> 
+      <property name="position" type="table" desc=""
+                category="entity positions"
+                converter ="PETools.World.TypeConverter.NumberArrayListConverter"
+                value_serializer = "array"
+                xpath="[@position]"
+                style="editor:point;editor-model-center:[position];editor-model-headontext:[uid];editor-model-mesh:[mesh_obj];editor-model-facing:[facing];editor-model-scaling:[radius]"  
+                get_func='return function(self) return self.position end' 
+                set_func='return function(self, value) self.position=value end'/>
+      <property name="radius" type="number" desc=""
+                xpath="radius[@value]"
+                style="editor:circle;editor-model-center:[position];" />
+      <property name="facing" type="number" desc=""
+                xpath="facing"
+                style="editor:facing;editor-model-center:[position];"/>
+      <property name="mesh_obj" type="string" desc=""
+                category="mesh_obj"
+                xpath="mesh[@obj_filename]"
+                editor_attribute='[FileSelector(InitialDirectory="model/",Filter="ParaXFile(*.x)|*.x|All files (*.*)|*.*",UseQuickSearchDialog=true)]'
+                editor ="PETools.World.Controls.FileSelectorUIEditor"
+                />
+      <property name="mesh_name" type="string" desc=""
+                category="mesh_obj"
+                xpath="mesh[@name]"
+                />
+      <property name="color" type="table" desc=""
+                converter ="PETools.World.TypeConverter.NumberArrayListConverter"
+                />
+      <!--A drop down list box will be displayed with predefined values-->
+      <property name="MyStringList" type="string" desc="Drop down string enumeration sample"
+                editor_attribute='[StringList("value1,value2,value3", AllowCustomEdit=false)]'
+                converter ="PETools.World.TypeConverter.StringListConverter"
+                />
+    </properties>
+  </pe:entity_template>
+</pe:mcml>

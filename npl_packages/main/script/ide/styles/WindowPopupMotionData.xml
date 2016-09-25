@@ -1,0 +1,22 @@
+<!--Author:LiXizhi 
+Date: 2008.5.8
+Desc: Used by ide/MessageBox to popup dialog box-->
+<Motion duration="10" xmlns="fl.motion.*" xmlns:geom="flash.geom.*" xmlns:filters="flash.filters.*">
+  <source>
+    <Source frameRate="24" x="0" y="0" scaleX="1" scaleY="1" rotation="0" elementType="movie clip" symbolName="">
+      <dimensions>
+        <geom:Rectangle left="0" top="0" width="64" height="64"/>
+      </dimensions>
+      <transformationPoint>
+        <geom:Point x="0.5" y="0.5"/>
+      </transformationPoint>
+    </Source>
+  </source>
+
+  <Keyframe index="0" tweenSnap="true" scaleX="0.1" scaleY="0.1" tweenSync="true">
+    <tweens>
+      <SimpleEase ease="0.6"/>
+    </tweens>
+  </Keyframe>
+  <Keyframe index="9" scaleX="1" scaleY="1"/>
+</Motion>

@@ -1,0 +1,247 @@
+<?npl
+--[[
+Title: base class of all models
+Author: LiXizhi
+Date: 2016/6/28
+Desc: model converts from database rows to objects. 
+virtual functions: get, create, delete, update
+]]
+include_once("../../auth/api.page");
+
+local base = inherit(nil, gettable("models.abstract.base"));
+base.db_name = "unnamed";
+base.default_max_string_length = 500;
+
+function base:ctor()
+	self:addfield("_id", "number", true);
+end
+
+function base:getfields()
+	local fields = rawget(self, "fields");
+	if(not fields) then
+		fields = {};
+		self.fields = fields;
+	end
+	return fields;
+end
+
+--@param uniqueIndex: boolean, whether it is unique index. 
+--@param default_value: default value can be nil.
+--@param max_length: max length of the string or table after serialized to string.
+-- if ommited it is self.default_max_string_length
+function base:addfield(name, type, uniqueIndex, max_length, default_value)
+	local fields = self:getfields();
+	fields[name] = {name=name, type=type, uniqueIndex=uniqueIndex, max_length=max_length, default_value = default_value};
+end
+
+function base:hasIndex(name)
+	return self:getfields()[name]~=nil;
+end
+
+-- get unique query in key, value params
+-- @param params: all key, value pairs
+-- @param bForceAll: if true, we will return nil if any unique key is not present in params
+-- return query table containing only unique key value pairs.
+function base:getUniqueQuery(params, bForceAll)
+	local query = {};
+	local fields = self:getfields();
+	for name, _ in pairs(params) do
+		if(fields[name].uniqueIndex) then
+			if(params[name]) then
+				query[name] = params[name];
+			elseif(bForceAll) then
+				return nil;
+			end
+		end
+	end
+	return query;
+end
+
+-- @param params: query parameters table.
+-- @return the first found index name in query parameter. 
+function base:findUnqiueIndexName(params)
+	if(not params) then
+		return;
+	end
+	if(params._id) then
+		return "_id";
+	end
+	local fields = self:getfields();
+	for name, _ in pairs(params) do
+		if(fields[name] and fields[name].uniqueIndex) then
+			return name;
+		end
+	end
+end
+
+-- @param params: query parameters table.
+-- @return err, query: if there is error, err is true. otherwise it is nil. query contains a validated table.
+function base:validateQuery(params)
+	local query = {};
+	if(not params) then
+		return nil, query;
+	end
+	local fields = self:getfields();
+	local err;
+	for name, value in pairs(params) do
+		if(name == "_unset") then
+			local _unset = {};
+			if(type(value) == "table") then
+				for name, v in pairs(value) do
+					if(type(name) == "string") then
+						v = name;
+					end
+					if(v and fields[v]) then
+						_unset[#_unset+1] = v;
+					end
+				end
+			end
+			query._unset = _unset;
+		elseif(fields[name]) then
+			local field_type = fields[name].type;
+			if(field_type == "number") then
+				value = tonumber(value);
+			elseif(field_type == "string") then
+				if(type(value) ~= "string") then
+					value = tostring(value);
+				end
+				local max_length = fields[name].max_length or self.default_max_string_length;
+				if(#value > max_length) then
+					value = value:sub(1, max_length);
+					err = true;
+				end
+			elseif(field_type == "table") then
+				local max_length = fields[name].max_length or self.default_max_string_length;
+				
+				if(type(value) == "table") then
+					local strValue = commonlib.serialize_compact2(value);
+					if(#strValue > max_length) then
+						value = nil;
+						err = true;
+					end
+				elseif(type(value) == "string") then
+					if(#value < max_length) then
+						value = NPL.LoadTableFromString(value);
+					else
+						value = nil;
+						err = true;
+					end
+				else
+					value = nil;
+					err = true;
+				end
+			else
+				value = nil;
+			end
+			query[name] = value;
+		end
+	end
+	return err, query;
+end
+
+-- in-place validate data of a single row returned from the database
+-- @param data: row table returned from database. 
+-- @return data, invalid_fields:  modified data or nil.
+function base:validateRow(data)
+	if(type(data)~="table") then
+		return;
+	end
+	local fields = self:getfields();
+	local invalid_fields;
+	for name, value in pairs(data) do
+		local new_value = value;
+		if(fields[name]) then
+			local field_type = fields[name].type;
+			if(field_type == "number") then
+				new_value = tonumber(value);
+			elseif(field_type == "string") then
+				if(type(value) ~= "string") then
+					new_value = tostring(value);
+				end
+			elseif(field_type == "table") then
+				if(type(value) == "string") then
+					new_value = NPL.LoadTableFromString(value);
+				elseif(type(value) ~= "table") then
+					new_value = nil
+				end
+			end
+			if(value) then
+				if(new_value~=value) then
+					data[name] = new_value;
+				end
+			else
+				invalid_fields = invalid_fields or {};
+				invalid_fields[#invalid_fields+1] = name;
+			end
+		end
+	end
+	if(invalid_fields) then
+		-- remove non-exist fields
+		for i, name in ipairs(invalid_fields) do
+			data[name] = nil;
+		end
+		-- also remove non-exist fields from database, this will auto-fix schema
+		local name = self:findUnqiueIndexName(data);
+		if(name) then
+			self:db():updateOne({[name] = data[name]}, {_unset=invalid_fields}, resume);
+			local err = yield(true); 
+		end
+	end
+	return data, invalid_fields;
+end
+
+function base:db()
+	return db[self.db_name];
+end
+
+function base:ensureAuthenticated()
+	ensureAuthenticated();
+end
+
+function base:get(params)
+	local err, query = self:validateQuery(params);
+	local name = self:findUnqiueIndexName(query);
+	if(name) then
+		self:db():findOne({[name] = query[name]}, resume);
+		local err, data = yield(true); 
+		if(not err) then
+			data = self:validateRow(data);
+		end
+		return data;
+	end
+end
+
+function base:delete(params)
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	local name = self:findUnqiueIndexName(query);
+	if(name) then
+		self:db():deleteOne({[name] = query[name]}, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end
+
+function base:create(params)
+	self:ensureAuthenticated();
+	params._id = nil;
+	local err, query = self:validateQuery(params);
+	if(query) then
+		-- TODO: check uniqueness
+		self:db():insertOne(nil, query, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end
+
+function base:update(params)
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	local id = query._id;
+	if(id) then
+		query._id = nil;
+		self:db():updateOne({_id = id}, query, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end

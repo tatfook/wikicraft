@@ -1,0 +1,33 @@
+<!--script/ide/IPCBinding/EntitySampleTemplate.entity.xml-->
+<pe:mcml>
+  <script type="text/npl" src="">
+  </script>
+  <!-- 
+  name: Entity Type Name
+  worldfilter: if no worldfilter is provided, it defaults to current world
+  -->
+  <pe:entity_template name="EntitySampleTemplate" namespace="PETools.World" display_name="EntitySampleTemplate" 
+             worldfilter=".*" singleton="true"
+             classfile="script/ide/IPCBinding/EntityBase.lua" 
+             classname="IPCBinding.Sample.EntitySampleTemplate"
+             baseclass="IPCBinding.EntityBase"                                  
+             func_create="IPCBinding.EntityBase.IDECreateNewInstance"
+             func_createfrom="IPCBinding.EntityBase.IDECreateFromExisting"
+             func_remove=""
+             func_delete=""
+             func_save=""
+             func_select=""
+             func_deselect=""
+             >
+    <CreationTemplate>
+      <!-- mcml to display when user request to create an object -->
+      <form name="creation">
+      </form>
+    </CreationTemplate>
+    <!-- this is only used for description purposes, real properties are extracted from classfile -->
+    <properties>
+      <property name="name1" type="string" desc="enter name1" get_func='return function(self) return "name1 from getter" end' set_func='return function(self, value) log(value.." is set\n") end'/>
+      <property name="name2" type="number" desc="enter name2" get_func='return function(self) return 2 end' set_func='return function(self, value) log(value.." is set\n") end'/>
+    </properties>
+  </pe:entity_template>
+</pe:mcml>

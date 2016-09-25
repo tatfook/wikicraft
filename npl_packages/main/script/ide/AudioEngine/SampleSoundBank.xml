@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--script/ide/AudioEngine/SampleSoundBank.xml-->
+<pe:mcml>
+  <!--if no stream or loop attribute is specified on AudioSource node inside the SoundBank, 
+  the one on the parent SoundBank attribute will be used. All properties can be overriden by child AudioSource nodes. 
+  stream: true to stream content from file, false to load to memory at one time. 
+  loop: true to loop play by default. 
+  inmemory: if true, the audio will still be in memory after stopped or out of range. So the next time, it can be played fast. 
+  delayload: if true, we will not preload to memory for non-streaming sound. instead, we will load on first use. 
+  --> 
+  <SoundBank name="MyStreamBank" stream="true" loop="true" inmemory="false" delayload="true">
+    <AudioSource name="bg_theme_alien" file="Audio/cAudioTheme1.ogg" />
+    <AudioSource name="bg_theme_short" file="Audio/Example2.wav" stream="false" inmemory="true"/>
+
+    <AudioSource name="forest" file="Audio/ambForest.ogg" stream="true" inmemory="true"/>
+    <AudioSource name="grassland" file="Audio/ambGrassland.ogg" stream="true" inmemory="true"/>
+    <AudioSource name="ocean" file="Audio/ambOcean.ogg" stream="true" inmemory="true"/>
+
+    <AudioSource name="blacksmith" file="Audio/blacksmith.ogg" stream="true" inmemory="true" mindistance="1" maxdistance="40"/>
+    
+  </SoundBank>
+  <SoundBank name="MyUISoundBank" stream="false" loop="false" inmemory="false" delayload="true">
+    <AudioSource name="btn1" file="Audio/Kids/Button01.wav" inmemory="true"/>
+    <AudioSource name="btn2" file="Audio/Kids/Button02.wav" />
+    <AudioSource name="btn3" file="Audio/Kids/Button03.wav" />
+    <AudioSource name="btn4" file="Audio/Kids/Button04.wav" />
+    <AudioSource name="btn5" file="Audio/Kids/Button05.wav" />
+  </SoundBank>
+  <SoundBank name="MyEnvironmentSoundBank" stream="false" loop="false" inmemory="true" delayload="true">
+    <AudioSource name="river" file="Audio/Kids/Water.wav" loop="true" inmemory="true"/>
+  </SoundBank>
+  <SoundBank name="My3DSoundBank" stream="false" loop="false" inmemory="false" delayload="true">
+    <AudioSource name="ThrowBall" file="Audio/Example.wav" loop="false" mindistance="1" maxdistance="30"/>
+    <AudioSource name="FireWork" file="Audio/Example2.wav" loop="false" mindistance="1" maxdistance="50"/>
+
+    <AudioSource name ="fire" file="Audio/fire.ogg" loop="false"/>
+    <AudioSource name ="spring" file="Audio/spring.ogg" loop="false" mindistance="1" maxdistance="60"/>
+    <AudioSource name ="bird" file="Audio/bird.ogg" loop="false"/>
+    <AudioSource name="Dirt" file="Audio/Haqi/SoundEffect/footstepDirt.ogg" loop="false" />
+    <AudioSource name="Grass" file="Audio/mFootSmallGrassA.ogg" loop="false" />
+    <AudioSource name="Stone" file="Audio/mFootSmallStoneA.ogg" loop="false" />
+    <AudioSource name="water" file="Audio/footstepWater.ogg" loop="false" />
+  </SoundBank>
+</pe:mcml>

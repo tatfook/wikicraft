@@ -1,0 +1,226 @@
+<?npl
+--[[
+Title: 
+Author: leio
+Date: 2016/3/7
+Desc: 
+]]
+
+
+function wp_authenticate(username,password)
+	local user = apply_filters( 'authenticate', nil, username, password );
+	if(not user)then
+		user = WP_Error:new():init('authentication_failed', ('<strong>ERROR</strong>: Invalid username or incorrect password.'));
+	end
+	local ignore_codes = {'empty_username', 'empty_password'};
+	if(is_wp_error(user) and (not in_array(user:get_error_code(), ignore_codes)))then
+		do_action( 'wp_login_failed', username );
+	end
+	return user;
+end
+function get_user_by(field, value )
+	local userdata = WP_User.get_data_by( field, value );
+	if(not userdata)then
+		return false;
+	end
+	local user = WP_User:new()
+	user:init(userdata);
+	return user;
+end
+function wp_check_password(password, hash, user_id)
+	local password_hash = ParaMisc.md5(password);
+	if(password_hash == hash)then
+		return true;
+	end
+end
+function wp_set_auth_cookie(user_id, remember, secure, token)
+	local expiration;
+	local expire;
+	if(remember)then
+		expiration = ParaGlobal.timeGetTime() + 14 * DAY_IN_SECONDS;
+		expire = expiration + ( 12 * HOUR_IN_SECONDS );
+	else
+		expiration = ParaGlobal.timeGetTime() + 2 * DAY_IN_SECONDS;
+		expire = 0;
+		end
+	local auth_cookie_name = AUTH_COOKIE;
+	local scheme = "auth";
+	if(token == "")then
+	    local manager = WP_Session_Tokens.get_instance( user_id );
+	    token   = manager:create( expiration ); 
+	end
+	local auth_cookie = wp_generate_auth_cookie( user_id, expiration, scheme, token );
+	local logged_in_cookie = wp_generate_auth_cookie( user_id, expiration, 'logged_in', token );
+    response:set_cookie(auth_cookie_name,auth_cookie);
+    response:set_cookie(LOGGED_IN_COOKIE,logged_in_cookie);
+end
+function wp_generate_password( length , special_chars , extra_special_chars)
+    length = length or 12;
+	local chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	if ( special_chars )then
+	    chars = chars .. '!@#$%^&*()';
+    end
+	if ( extra_special_chars ) then
+	    chars = chars  .. '-_ []{}<>~`+=,.;:/?|';
+    end
+	local password = '';
+	local i;
+	for i = 1,length do
+        local index = math.random(string.len(chars));
+	    password = password .. string.sub(chars, index, index+1);
+    end
+    return password;
+end
+function wp_generate_auth_cookie( user_id, expiration, scheme , token)
+    scheme = scheme or "auth";
+    token = token or "";
+    local user = get_userdata(user_id);
+    if(not user)then
+        return "";
+    end
+    if(token == "")then
+	    local manager = WP_Session_Tokens.get_instance( user_id );
+	    token   = manager:create( expiration ); 
+    end
+    local pass_frag = string.sub(user.data.user_pass, 8, 8+4);
+    local key = wp_hash( user.data.user_login .. '|' .. pass_frag .. '|' .. expiration .. '|' .. token, scheme );
+    local algo = 'sha1';
+    local hash = hash_hmac( algo, user.data.user_login .. '|' .. expiration .. '|' .. token, key );
+
+	local cookie = user.data.user_login .. '|' .. expiration .. '|' .. token .. '|' .. hash;
+    return cookie;
+end
+
+function wp_hash(data, scheme) 
+    local s = scheme .. "__" .. data;
+	local hash = ParaMisc.md5(s);
+    return hash;
+end
+function hash_hmac(algo, data, key, raw_output) 
+    local s = key .. "__" .. data;
+	local hash = ParaMisc.md5(s);
+    return hash;
+end
+function get_userdata( user_id ) 
+	return get_user_by( 'id', user_id );
+end
+function wp_parse_auth_cookie(cookie, scheme )
+    local cookie_name = "";
+    if(not cookie or cookie == "")then
+        if(scheme == "auth")then
+            cookie_name = AUTH_COOKIE;
+        elseif(scheme == "logged_in")then
+            cookie_name = LOGGED_IN_COOKIE;
+        else
+            cookie_name = AUTH_COOKIE;
+			scheme = 'auth';
+        end
+        cookie = request:get_cookie(cookie_name)
+        if(not cookie)then
+            return
+        end
+    end
+	
+    local element;
+    local arr = {};
+	for element in string.gmatch(cookie, "[^|]+") do
+        table.insert(arr,element);
+    end
+    if(#arr ~= 4)then
+        return
+    end
+    local result = {};
+    result["username"] = arr[1];
+    result["expiration"] = tonumber(arr[2]);
+    result["token"] = arr[3];
+    result["hmac"] = arr[4];
+    result["scheme"] = scheme;
+    return result;
+end
+function wp_validate_auth_cookie(cookie, scheme )
+    local cookie_elements = wp_parse_auth_cookie(cookie, scheme);
+    if ( not cookie_elements  )then
+        return
+    end
+    local scheme = cookie_elements['scheme'];
+	local username = cookie_elements['username'];
+	local hmac = cookie_elements['hmac'];
+	local token = cookie_elements['token'];
+	local expired = cookie_elements['expiration'];
+    local expiration = cookie_elements['expiration'];
+    if(expired < ParaGlobal.timeGetTime())then
+        --return
+    end
+    local user = get_user_by('login', username);
+    if(not user)then
+        return
+    end
+    local pass_frag = string.sub(user.data.user_pass, 8, 8+4);
+
+	local key = wp_hash( username .. '|' .. pass_frag .. '|' .. expiration .. '|' .. token, scheme );
+
+	local algo = 'sha1';
+	local hash = hash_hmac( algo, username .. '|' .. expiration .. '|' .. token, key );
+    if(hash ~= hmac)then
+        return
+    end
+    local manager = WP_Session_Tokens.get_instance( user.data.ID );
+
+    if(not manager:verify( token ))then
+        return
+    end
+    return user.data.ID;
+end
+function get_currentuserinfo()
+    if(global_current_user)then
+        if(is_wp_user_instance(global_current_user))then
+            return
+        end
+        global_current_user = nil;
+    end
+    local user_id = apply_filters( 'determine_current_user', false );
+    if(not user_id)then
+        wp_set_current_user( 0 );
+        return
+    end
+    wp_set_current_user( user_id );
+end
+function wp_get_current_user()
+	get_currentuserinfo();
+	return global_current_user;
+end
+function wp_set_current_user(id, name )
+    if(global_current_user)then
+        if(is_wp_user_instance(global_current_user) and id and global_current_user.data.ID == id)then
+            return global_current_user;
+        end
+    end
+    global_current_user = WP_User:new()
+	global_current_user:load(id,name);
+    setup_userdata( global_current_user.data.ID );
+    return global_current_user;
+end
+function auth_redirect()
+    local scheme = 'logged_in';
+
+    if (wp_validate_auth_cookie( '',  scheme) ) then
+        return
+    end
+    local redirect = set_url_scheme(string.format("http://%s%s",request:GetHost(),request:url()));
+    local login_url = wp_login_url(redirect, true);
+    wp_redirect(login_url);
+    exit();
+end
+function wp_redirect(location, status)
+    if(not location)then    
+        return
+    end
+    local headers = wp_get_nocache_headers();
+
+	response:set_header('Location', location);
+
+	for name, field_value in pairs(headers) do
+		addheader(name, field_value);
+	end
+    return true;
+end

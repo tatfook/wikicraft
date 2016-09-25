@@ -1,0 +1,91 @@
+<?npl
+--[[
+Title: each userid has multiple rows in the table
+Author: LiXizhi
+Date: 2016/7/28
+Desc: all get/update/delete operations use `_id` as key. 
+Only the owner can `update/delete` record; anyone can get by `userid`.
+]]
+include_once("base.page");
+
+local multi_user_base = inherit(models.abstract.base, gettable("models.abstract.multi_user_base"));
+-- max items per user
+multi_user_base.max_items_per_user = 10;
+
+function multi_user_base:ctor()
+	-- non-unique user id
+	self:addfield("userid", "number", false);
+end
+
+function multi_user_base:getUserId()
+	return request.userid;
+end
+
+function multi_user_base:get(params)
+	local err, query = self:validateQuery(params or {});
+	local name = self:findUnqiueIndexName(query);
+	if(name) then
+		self:db():findOne(query, resume);
+		local err, data = yield(true); 
+		if(not err) then
+			data = self:validateRow(data);
+		end
+		return {data};
+	else
+		if(not query.userid) then
+			self:ensureAuthenticated();
+		end
+		self:db():find({userid=query.userid or request.userid}, resume);
+		local err, data = yield(); 
+		if(not err and data) then
+			for _, row in ipairs(data) do
+				row = self:validateRow(row);
+			end
+		end
+		return data;
+	end
+end
+
+-- creation must be done explicitly. 
+function multi_user_base:create(params)
+	self:ensureAuthenticated();
+	params.userid = request.userid;
+	params._id = nil;
+	
+	local err, params = self:validateQuery(params);
+	if(params) then
+		local query = self:getUniqueQuery(params, true);
+		if(query) then
+			self:db():find({userid=request.userid}, resume);
+			local err, data = yield(); 
+			if(not err) then
+				if(not data or #data < self.max_items_per_user) then
+					self:db():insertOne(query, params, resume);
+					local err, data = yield(true); 
+					return data;
+				end
+			end
+		end
+	end
+end
+
+function multi_user_base:update(params)
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	local name = self:findUnqiueIndexName(query);
+	if(name) then
+		self:db():updateOne({[name]=query[name], {"userid", request.userid}}, query, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end
+
+function multi_user_base:delete(query)
+	self:ensureAuthenticated();
+	local name = self:findUnqiueIndexName(query);
+	if(name) then
+		self:db():deleteOne({[name]=query[name], {"userid", request.userid}}, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end

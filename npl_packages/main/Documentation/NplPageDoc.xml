@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+  <globals>
+    <!--npl core -->
+    <function name="echo">
+      <summary>print any table or value to log.txt. In npl web page file, this will output to http response stream</summary>
+      <parameter name="value">any object</parameter>
+      <parameter name="bCheckRecursiveTable">default to nil. </parameter>
+    </function>
+    
+    <!--npl web server admin framework wp api -->
+    <function name="wp_enqueue_script">
+      <summary>
+        function wp_enqueue_script(name, url_path)
+      </summary>
+    </function>
+    <function name="wp_enqueue_style">
+      <summary>
+        function wp_enqueue_style(name, url_path)
+      </summary>
+    </function>
+    <function name="pagename">
+      <summary>
+        function pagename()
+        Returns the page name
+      </summary>
+    </function>
+    <function name="is_ajax">
+      <summary>
+        function is_ajax()
+        
+        whether the page request is a ajax call.
+      </summary>
+    </function>
+    <function name="add_action">
+      <summary>
+        function add_action(name, callbackfunc)
+        
+        add a filter to wp web page
+      </summary>
+      <parameter name="name">
+        the name should begin with "wp_ajax_".
+        for example, "wp_ajax_attach" maps to "/ajax/debugger?action=attach"
+      </parameter>
+    </function>
+    
+    <!--npl web server npl_page_env globals-->
+    <function name="print">
+      <summary>
+        function print(...)
+        same as self.echo(string.format(...))
+      </summary>
+    </function>
+    <function name="nplinfo">
+      <summary>
+        function nplinfo()
+        similar to phpinfo()
+        output everything about the environment and the request including all request headers.
+      </summary>
+    </function>
+    <function name="exit">
+      <summary>
+        function exit(msg)
+        similar to php.exit()
+        Output a message and terminate the current script
+        @param msg: output this message. usually nil.
+      </summary>
+      <parameter name="msg">
+        output this message. usually nil.
+      </parameter>
+    </function>
+    <function name="dirname">
+      <summary>
+        function dirname(filename)
+        similar to php.dirname() however with the trailing /
+        get the directory name of the given file with the trailing /.
+        @param filename: if nil, self.__FILE__ is used.
+      </summary>
+      <parameter name="filename">
+        if nil, self.__FILE__ is used.
+      </parameter>
+    </function>
+    <function name="getfilepath">
+      <summary>
+        function getfilepath(filename)
+
+        @param filename: file path, relative or absolute.
+        begin with './', relative to current file
+        begin with '/', relative to web root directory
+        begin with '../../../', up several directory to current file
+        no "/" in filename, relative to current file
+        otherwise, filename is absolute path.
+      </summary>
+      <parameter name="filename">
+        file path, relative or absolute.
+        begin with './', relative to current file
+        begin with '/', relative to web root directory
+        begin with '../../../', up several directory to current file
+        no "/" in filename, relative to current file
+        otherwise, filename is absolute path.
+      </parameter>
+    </function>
+    <function name="file_exists">
+      <summary>
+        function file_exists(filename)
+        Checks whether a file exists
+      </summary>
+      <parameter name="filename"/>
+    </function>
+    <function name="include">
+      <summary>
+        function include(filename, bReload)
+        similar to php.include: http://php.net/manual/en/function.include.php
+        The include statement includes and evaluates the specified file and return its result if any.
+        the included file share the same global environment as the caller. Unlike php, if you include another file
+        inside a function, upvalues are NOT shared due to the lexical scoping nature of lua.
+        Please note that exit() call will fallthrough all nested include and terminate the request.
+        e.g.
+        include(dirname(__FILE__).."test_include.page");
+        include("test_include.page");  -- identical to above
+        @param filename: if no parent directory is specified, we will assume it is from the containing file's parent directory.
+        if filename begins with "/", it will append the web root directory.
+        @param bReload: true to reload the file. default to nil. files will be loaded only once.
+        @return: result of the included function.
+      </summary>
+      <parameter name="filename">
+        if no parent directory is specified, we will assume it is from the containing file's parent directory.
+        if filename begins with "/", it will append the web root directory.
+      </parameter>
+      <parameter name="bReload">
+        true to reload the file. default to nil. files will be loaded only once.
+      </parameter>
+      <returns>
+        return result of the included function.
+      </returns>
+    </function>
+    <function name="include_once">
+      <summary>
+        function include_once(filename)
+        same as include(), expect that this function only takes effect on first call for a given env.
+      </summary>
+      <parameter name="filename"/>
+    </function>
+    <function name="include_pagecode">
+      <summary>
+        function include_pagecode(code, filename)
+        include a given page code.
+        @param code: the actual code string to include.
+        @param filename: nil to default to current file. only used for displaying error
+      </summary>
+      <parameter name="code">
+        the actual code string to include.
+      </parameter>
+      <parameter name="filename">
+        nil to default to current file. only used for displaying error
+      </parameter>
+    </function>
+    <function name="site_url">
+      <summary>
+        function site_url(filename, scheme)
+        return the site url like http://localhost:8080/
+      </summary>
+      <parameter name="filename"/>
+      <parameter name="scheme"/>
+    </function>
+    <function name="site_config">
+      <summary>
+        function site_config(name)
+
+        @param name: if nil, the root config table is returned.
+      </summary>
+      <parameter name="name">
+        if nil, the root config table is returned.
+      </parameter>
+    </function>
+    <function name="addheader">
+      <summary>
+        function addheader(name, value)
+        add header, only possible when header is not sent yet.
+      </summary>
+      <parameter name="name"/>
+      <parameter name="value"/>
+    </function>
+    <function name="setheader">
+      <summary>
+        function setheader(name, value)
+        set header (replace previously set values), only possible when header is not sent yet.
+      </summary>
+      <parameter name="name"/>
+      <parameter name="value"/>
+    </function>
+    <function name="log">
+      <summary>
+        function log(...)
+        simple log any object, same as echo.
+      </summary>
+    </function>
+    <function name="sanitize">
+      <summary>
+        function sanitize(text)
+        Sanitizes all HTML tags
+      </summary>
+      <parameter name="text"/>
+    </function>
+    <function name="json_encode">
+      <summary>
+        function json_encode(value, bUseEmptyArray)
+        Returns a string containing the JSON representation of value.
+        @param bUseEmptyArray: by default, empty table is serialized to json as object {}.
+        calling this function will be serialized to json as array []
+      </summary>
+      <parameter name="value"/>
+      <parameter name="bUseEmptyArray">
+        by default, empty table is serialized to json as object {}.
+        calling this function will be serialized to json as array []
+      </parameter>
+    </function>
+    <function name="json_decode">
+      <summary>
+        function json_decode(value)
+        json decode
+      </summary>
+      <parameter name="value"/>
+    </function>
+    <function name="xml_encode">
+      <summary>
+        function xml_encode(value)
+        Returns a string containing the Xml representation of value.
+      </summary>
+      <parameter name="value"/>
+    </function>
+    <function name="get_file_text">
+      <summary>
+        function get_file_text(filename)
+        get file text
+      </summary>
+      <parameter name="filename"/>
+    </function>
+    <function name="yield">
+      <summary>
+        function yield(bExitOnError)
+        yield control until all async jobs are completed
+        @param bExitOnError: if true, this function will handle error
+        @return err, msg: err is true if there is error.
+      </summary>
+      <parameter name="bExitOnError">
+        if true, this function will handle error
+      </parameter>
+      <returns>
+        return , msg: err is true if there is error.
+      </returns>
+    </function>
+    <function name="gettable">
+      <summary>
+        function gettable(tabNames)
+        similar to commonlib.gettable(tabNames) but in page scope.
+        @param tabNames: table names like "models.users"
+      </summary>
+      <parameter name="tabNames">
+        table names like "models.users"
+      </parameter>
+    </function>
+    <function name="createtable">
+      <summary>
+        function createtable(tabNames, init_params)
+        similar to commonlib.createtable(tabNames) but in page scope.
+        @param tabNames: table names like "models.users"
+      </summary>
+      <parameter name="tabNames">
+        table names like "models.users"
+      </parameter>
+      <parameter name="init_params"/>
+    </function>
+    <function name="inherit">
+      <summary>
+        function inherit(baseClass, new_class, ctor)
+        same as commonlib.inherit()
+      </summary>
+      <parameter name="baseClass"/>
+      <parameter name="new_class"/>
+      <parameter name="ctor"/>
+    </function>
+  </globals>
+</doc>
+

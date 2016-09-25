@@ -1,0 +1,65 @@
+<!-- "script/ide/styles/ThinFrameMessageBox.html" -->
+<html>
+<body>
+<pe:mcml>
+<script type="text/npl" src="script/ide/MessageBox.lua" refresh="false"><![CDATA[
+]]></script>
+<div width="400" style="background:url(Texture/Aries/Inventory/PurchaseItem/frame_bg_32bits.png#0 0 55 332:23 23 33 23)">
+  <div width="100%" style="margin-left:10px;margin-right:18px;margin-top:12px;margin-bottom:18px;background:url(Texture/Aries/Inventory/PurchaseItem/content_bg_32bits.png#0 0 256 240:22 20 22 20)">
+    <div style="margin-left:20px;margin:10px;margin-right:25px;margin-bottom:15px">
+        <pe:if condition='<%=type(_guihelper.values.icon)=="string"%>'>
+            <img style="margin-right:5px;width:24px;height:24px;" src='<%=_guihelper.values.icon%>'/>
+        </pe:if>
+        <pe:if condition='<%=type(_guihelper.values.icon)=="table"%>'>
+            <img style="margin-right:5px;width:24px;height:24px;" src='<%=_guihelper.values.icon.src%>'animstyle='<%=_guihelper.values.icon.animstyle%>'/>
+        </pe:if>
+        <pe:if condition='<%=type(_guihelper.values.icon)=="number"%>'>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Asterisk%>'><img style="margin-right:5px;background:url(Texture/Aries/Friends/ChatWnd_Smiley.png# 0 0 24 24);width:24px;height:24px;" /></pe:if>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Error%>'><img style="margin-right:5px;background:url(Texture/3DMapSystem/Creator/Objects/error.png);width:24px;height:24px;" /></pe:if>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Exclamation%>'><img style="margin-right:5px;background:url(Texture/Aries/Friends/FriendsWnd_BuddyIcon_Online.png);width:24px;height:24px;" /></pe:if>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Warning%>'><img style="margin-right:5px;background:url(Texture/Aries/Friends/ChatWnd_Smiley.png# 0 0 24 24);width:24px;height:24px;" /></pe:if>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Information%>'><img style="margin-right:5px;background:url(Texture/3DMapSystem/common/info.png);width:24px;height:24px;" /></pe:if>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Stop%>'><img style="margin-right:5px;background:url(Texture/Aries/Friends/ChatWnd_Smiley.png# 0 0 24 24);width:24px;height:24px;" /></pe:if>
+            <pe:if condition='<%=_guihelper.values.icon==_guihelper.MessageBoxIcon.Question%>'><img style="margin-right:5px;background:url(Texture/3DMapSystem/common/Help.png);width:24px;height:24px;" /></pe:if>
+        </pe:if>
+        <div style="float:left">
+            <!-- tricky: always reference content like below. It allows MCML code that needs page:Refresh to work inside content.-->
+            <script refresh="false" IsInitialized='<%=_guihelper.values.IsInitialized%>'>
+                document.write(_guihelper.values.content);
+            </script>
+        </div>
+    </div>
+    <pe:if condition='<%=_guihelper.values.buttons~=_guihelper.MessageBoxButtons.Nothing%>'>
+    <div style="margin-left:20px;margin-bottom:10px;">
+      <pe:if condition='<%=_guihelper.values.buttons==_guihelper.MessageBoxButtons.OKCancel%>'>
+          <input type="button" name="OK" text="确定" style="margin-left:30px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+          <input type="button" name="Cancel" text="取消" style="margin-left:50px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+      </pe:if>
+      <pe:if condition='<%=_guihelper.values.buttons==_guihelper.MessageBoxButtons.OK%>'>
+        <input type="button" name="OK" text="确定" style="margin-left:100px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+      </pe:if>
+      <pe:if condition='<%=_guihelper.values.buttons==_guihelper.MessageBoxButtons.YesNo%>'>
+        <input type="button" name="Yes" text="是" style="margin-left:30px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+        <input type="button" name="No" text="否" style="margin-left:50px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+      </pe:if>
+      <pe:if condition='<%=_guihelper.values.buttons==_guihelper.MessageBoxButtons.YesNoCancel%>'>
+        <input type="button" name="Yes" text="是" style="margin-left:5px;width:100px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+        <input type="button" name="No" text="否" style="margin-left:5px;width:100px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+        <input type="button" name="Cancel" text="取消" style="margin-left:25px;width:100px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+      </pe:if>
+      <pe:if condition='<%=_guihelper.values.buttons==_guihelper.MessageBoxButtons.AbortRetryIgnore%>'>
+        <input type="button" name="Abort" text="终止" style="margin-left:5px;width:100px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+        <input type="button" name="Retry" text="重试" style="margin-left:5px;width:100px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+        <input type="button" name="Ignore" text="忽略" style="margin-left:25px;width:100px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+      </pe:if>
+      <pe:if condition='<%=_guihelper.values.buttons==_guihelper.MessageBoxButtons.RetryCancel%>'>
+        <input type="button" name="Retry" text="重试" style="margin-left:30px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+        <input type="button" name="Cancel" text="取消" style="margin-left:50px;width:120px;height:48px;background:url(Texture/Aries/Profile/Profession_Empty.png# 0 0 48 48:23 0 23 0)" onclick="_guihelper.OnMessageBoxClick()"/>
+      </pe:if>
+    </div>
+    </pe:if>
+  </div>
+</div>
+</pe:mcml> 
+</body>
+</html>

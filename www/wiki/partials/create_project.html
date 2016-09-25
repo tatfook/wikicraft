@@ -1,0 +1,29 @@
+﻿<div style="position:absolute;top:5px;right:10px;">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+</div>
+<div class="modal-header">
+    <h2>创建你的作品网站</h2>
+</div>
+<div class="modal-body">
+    <form name="form" class="wiki-form">
+        <h4>步骤1: 网站起名</h4>
+        <div class="form-group" ng-class="{ 'has-error': form.name.$dirty && !form.name.$valid }">
+            <input type="text" name="name" placeholder="输入网站名称，请用英文" ng-minlength="3" ng-maxlength="30" class="form-control" ng-model="proj.name" required />
+            <span ng-show="errorMsg" class="help-block bg-danger">{{errorMsg}}</span>
+            <span ng-show="form.name.$dirty && !form.name.$valid" class="help-block">网站名称至少3个字</span>
+            <div ng-if="proj.name">访问地址: {{origin + "/" + proj.name}}</div>
+        </div>
+        <h4>步骤2: 选择一个网站模板</h4>
+        <div ng-repeat="template in templates">
+            <div uib-tooltip="{{template.desc}}" ng-click="SelectTemplate($index)" class="img-rounded" ng-style="{'background-color':template.bgcolor, 'color': template.color,  border: ($index==template_index ? '2px solid #000' : '') }" style="float:left;width:90px;height:90px;margin:10px;padding-top:10px;text-align:center;cursor:pointer">
+                <div>{{template.title}}</div>
+                <div ng-if="$index==template_index" style="margin-top:10px;">
+                    <a class="btn btn-sm btn-default" ng-href="{{template.url}}" target="_blank">预览</a>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary btn-block" ng-click="CreateProject()" ng-disabled="!form.$valid || loading" ng-class="{loading: loading}">完成</button>
+        </div>
+    </form>
+</div>

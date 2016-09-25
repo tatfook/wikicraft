@@ -1,0 +1,69 @@
+﻿<!-- "script/ide/Animation/test/movieScript.xml"-->
+<pe:mcml>
+  <pe:container name="container" alignment="_fi"   style="float:left;;height:64px;background:url(Texture/whitedot.png);background-color:0 0 0;">
+    <div style="margin:15px">
+      <span  name="txt" style="text-align:left;font-weight:bold;color:#ffffff;font-size:17px">歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词歌词</span>
+    </div>
+  </pe:container>
+
+  <pe:storyboard name="Storyboard1" repeatCount = "1">
+    <pe:point3DAnimationUsingKeyFrames TargetName="object_editor" TargetProperty="ParaCamera_SetEyePos">
+      <pe:discretePoint3DKeyFrame KeyTime="00:00" Value="0,30,0"  SimpleEase="-1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:13" Value="0,10,0"  SimpleEase="-1"/>
+      <pe:linearPoint3DKeyFrame KeyTime="00:14" Value="0,10,1.6" SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:16" Value="0,10,-1.6" SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:17" Value="0,10,0"  />
+    </pe:point3DAnimationUsingKeyFrames>
+    <pe:point3DAnimationUsingKeyFrames TargetName="object_editor" TargetProperty="ParaCamera_SetLookAtPos">
+      <pe:linearPoint3DKeyFrame KeyTime="00:00" Value="359,30,1000"  SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:10" Value="359,30,500"  SimpleEase="1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:10.5" Value="359,30,285" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:12" Value="359,10,285"  SimpleEase="1"/>
+      <pe:linearPoint3DKeyFrame KeyTime="00:13" Value="390,10,285"  SimpleEase="1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:17.5" Value="390,10,285"  />
+      <pe:linearPoint3DKeyFrame KeyTime="04:07.17" Value="800,10,285"  SimpleEase="1"/>
+    </pe:point3DAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="container;txt" TargetProperty="visible">
+      <pe:discreteStringKeyFrame KeyTime="04:07.17" Value="false" />
+    </pe:stringAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="container" TargetProperty="curtain">
+      <pe:discreteStringKeyFrame KeyTime="00:00" Value="-1"/>
+      <pe:discreteStringKeyFrame KeyTime="00:10" Value="1"/>
+      <pe:discreteStringKeyFrame KeyTime="00:17" Value="2"/>
+    </pe:stringAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="txt" TargetProperty="text">
+      <pe:stringAnimationUsingKeyFrames_Value>
+        <![CDATA[
+[offset:1000]
+[00:03.13]歌曲名：安静
+[00:04.65]词曲：周杰伦
+[00:05.63]动画将于音乐，歌词同步
+[00:07]主演：刘德华
+[00:08]主演：张曼玉
+[00:09]导演：胡戈
+[00:12]动画将于音乐，歌词同步
+
+[02:27.54][00:27.76]只剩下钢琴陪我谈了一天
+[02:32.83][00:33.19]睡着的大提琴 安静的旧旧的
+
+[02:40.55][00:41.06]我想你已表现的非常明白
+[02:46.03][00:46.48]我懂我也知道 你没有舍不得
+
+[02:53.77][00:54.88]你说你也会难过我不相信
+[03:00.61][01:00.82]牵着你陪着我 也只是曾经
+[03:06.43][01:06.99]希望他是真的比我还要爱你
+[03:13.08][01:14.95]我才会逼自己离开
+
+[03:21.04][01:21.31]你要我说多难堪 我根本不想分开
+[03:27.35][01:28.05]为什么还要我用微笑来带过
+[03:34.15][01:34.28]我没有这种天份 包容你也接受他
+[03:40.71][01:40.87]不用担心的太多 我会一直好好过
+[03:47.51][01:47.58]你已经远远离开 我也会慢慢走开
+[03:54.07][01:54.15]为什么我连分开都迁就着你
+[04:00.84][02:00.91]我真的没有天份 安静的没这么快
+[04:07.17][02:07.80]我会学着放弃你 是因为我太爱你
+]]>
+      </pe:stringAnimationUsingKeyFrames_Value>
+    </pe:stringAnimationUsingKeyFrames>
+  </pe:storyboard>
+</pe:mcml>

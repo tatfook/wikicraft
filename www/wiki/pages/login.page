@@ -1,0 +1,8 @@
+﻿<div class="padding:10px" >
+	<div ng-if="!isAuthenticated()">
+		<a class="btn btn-primary" ng-click="login()">点击登录Paracraft</a>
+	</div>
+	<div ng-if="isAuthenticated()">
+		您已经登录
+	</div>
+</div>

@@ -1,0 +1,43 @@
+<!--script/ide/Motion/AnimativeMenu/MotionLib/tipmenu_closebtn.xml-->
+<Motion duration="165" xmlns="fl.motion.*" xmlns:geom="flash.geom.*" xmlns:filters="flash.filters.*">
+  <source>
+    <Source frameRate="33" x="496.3" y="311.35" scaleX="1" scaleY="1" rotation="0" elementType="movie clip" symbolName="Symbol 1">
+      <dimensions>
+        <geom:Rectangle left="-8" top="-8" width="16" height="16"/>
+      </dimensions>
+      <transformationPoint>
+        <geom:Point x="0.5" y="0.5"/>
+      </transformationPoint>
+    </Source>
+  </source>
+
+  <Keyframe index="0" tweenSnap="true" tweenSync="true">
+    <color>
+      <Color alphaMultiplier="0"/>
+    </color>
+    <tweens>
+      <SimpleEase ease="0"/>
+    </tweens>
+  </Keyframe>
+
+  <Keyframe index="14">
+    <color>
+      <Color alphaMultiplier="0.8"/>
+    </color>
+  </Keyframe>
+
+  <Keyframe index="99" tweenSnap="true" tweenSync="true">
+    <color>
+      <Color alphaMultiplier="0.8"/>
+    </color>
+    <tweens>
+      <SimpleEase ease="0"/>
+    </tweens>
+  </Keyframe>
+
+  <Keyframe index="164">
+    <color>
+      <Color alphaMultiplier="0"/>
+    </color>
+  </Keyframe>
+</Motion>

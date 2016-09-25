@@ -1,0 +1,25 @@
+﻿<?npl
+wp_enqueue_script("subscribersController", WIKI_WEBROOT.."controllers/subscribersController.js");
+?>
+<div class="col-sm-12" ng-controller="SubscribersCtrl">
+    <div>
+        <h2 class="mt-2 mb-2">
+            共{{users.length || 0}}人订阅了作品`{{getSiteName()}}`
+        </h2>
+        <div class="col-sm-4 mt-2" ng-repeat="user in getUsersInPage()">
+            <a class="pull-left" ng-href="/wiki/profile#?userid={{getUser($index)._id}}">
+                <wiki-identicon userid="user._id" size="72" imageurl="user.picture"></wiki-identicon>
+            </a>
+            <div style="padding-left:10px;float:left;" >
+                <a ng-href="/wiki/profile#?userid={{user._id}}"><big>{{user.displayName}}</big></a><br />
+                <span style="font-size:11px;color:#808080" class="mt-1">
+                    <div ng-show="user.joindate" tooltip-placement="bottom" uib-tooltip="注册日期"><i class="glyphicon glyphicon-time"></i> {{user.joindate}}</div>
+                    <div ng-show="user.location" ><i class="glyphicon glyphicon-home"></i> {{user.location}}</div>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2 mb-2 col-sm-12">
+        <ul uib-pagination items-per-page="items_per_page" boundary-links="true" total-items="users.length || 0" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+    </div>
+</div>

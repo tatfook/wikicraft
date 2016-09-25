@@ -1,0 +1,17 @@
+<?npl
+--[[
+Title: build in website data source
+Author: LiXizhi
+Date: 2016/5/30
+Desc: 
+]]
+
+-- mapping from lower cased website name to its data source
+buildin_website = buildin_website or {
+	["nplruntime"] = {url="LiXizhi/NPLRuntime/wiki", host="github"},
+	["npl"] = {url="LiXizhi/NPLRuntime/wiki", host="github"},
+	["paracraft"] = {url="LiXizhi/Paracraft/wiki", host="github"},
+	["wiki"] = {url="NPLPackages/wiki/wiki", host="github"},
+}
+
+return buildin_website;

@@ -1,0 +1,8 @@
+<!-- "script/ide/KeyboardShortcut/commands.xml" -->
+<Items>
+	<Item name="selected.all" key="Ctrl+A" />
+  <Item name="a" key="" />
+  <Item name="ag" key="" />
+  <Item name="dd" key="" />
+  <Item name="ax" key="" />
+</Items>

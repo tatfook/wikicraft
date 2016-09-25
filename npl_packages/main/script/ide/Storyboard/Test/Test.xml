@@ -1,0 +1,48 @@
+<!--"script/ide/Storyboard/Test/Test.xml"-->
+<Storyboard>
+  <LayerManager>
+    <KeyFrames TargetName="test_obj_1">
+      <KeyFrame KeyTime="00:00:00" SimpleEase="-1">
+        <Target X="0" Y="0" Z="0" Scaling="0.1"/>
+      </KeyFrame>
+        <KeyFrame KeyTime="00:00:0.5">
+          <Target X="0" Y="0" Z="0" Scaling="1"/>
+      </KeyFrame>
+      <KeyFrame KeyTime="00:00:2">
+        <Target X="0" Y="0" Z="2" Scaling="1"/>
+      </KeyFrame> 
+    </KeyFrames>
+    <KeyFrames TargetName="test_obj_2">
+      <KeyFrame KeyTime="00:00:00" SimpleEase="-1">
+        <Target X="0" Y="0" Z="0" Scaling="0.1"/>
+      </KeyFrame>
+      <KeyFrame KeyTime="00:00:0.5">
+        <Target X="0" Y="0" Z="0" Scaling="1"/>
+      </KeyFrame>
+      <KeyFrame KeyTime="00:00:2">
+        <Target X="2" Y="0" Z="0" Scaling="1"/>
+      </KeyFrame>
+    </KeyFrames>
+  </LayerManager>
+  <LayerManager>
+    <KeyFrames TargetName="test_obj_3">
+      <KeyFrame KeyTime="00:00:00" SimpleEase="-1">
+        <Target X="0" Y="0" Z="0" />
+      </KeyFrame>
+      <KeyFrame KeyTime="00:00:4">
+        <Target X="0" Y="2" Z="0" />
+      </KeyFrame>
+    </KeyFrames>
+    <KeyFrames TargetName="test_obj_4">
+      <KeyFrame KeyTime="00:00:00" SimpleEase="0">
+        <Target X="0" Y="0" Z="0" />
+      </KeyFrame>
+      <KeyFrame KeyTime="00:00:0.5" SimpleEase="-1">
+        <Target X="2" Y="3" Z="2"/>
+      </KeyFrame>
+      <KeyFrame KeyTime="00:00:1" SimpleEase="0">
+        <Target X="4" Y="0" Z="4"/>
+      </KeyFrame>
+    </KeyFrames>
+  </LayerManager>
+</Storyboard>

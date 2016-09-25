@@ -1,0 +1,109 @@
+<?npl
+--[[
+Title: serve files in current working directory
+Author: LiXizhi
+Date: 2016/3/16
+Usage: 
+  open?file=[filename]&[refresh|reload]&title=string
+  
+@param filename: is relative to current working directory. if no file extension, .page is appended. 
+other supported file extensions: page, txt, html.
+if filename is not specified, we will try to display index.page under current directory, if no such a file, we will list all files in current directory.
+@param refresh|reload: if specified, we will force reload the input `filename`
+@param title: title text to display if any, default to filename
+]]
+WP_CURRENT_DIR = "";
+
+-------------------------------------
+-- serve file: in WP_CURRENT_DIR
+-------------------------------------
+local filename = request:get("file");
+if(filename) then
+  local ext = filename:match("%.(%w+)$");
+  if(not ext) then
+    filename = filename..".page"
+  elseif(ext == "page" or ext == "txt" or ext == "html")then
+    filename = filename;
+  else
+    echo(format("file extension not allowed: %s", filename));
+    return;
+  end
+  filename = filename:gsub("^/", "");
+  filename = WP_CURRENT_DIR..filename;
+  if(file_exists(filename)) then
+    if(not is_ajax()) then
+      -- replace page path 
+      wp_query.m_page_path = filename;
+      echo(format('<div class="title">%s <a href="%s" style="float:right">[reload]</a></div>\n', 
+        request:get("title") or filename, request:url():gsub("&reload", "").."&reload" ))
+    end
+    local bReload = request:get("refresh")~=nil or request:get("reload")~=nil;
+    include(filename, bReload);
+  else
+    echo(format("file not found: %s", filename));
+  end
+  return;
+end
+
+-------------------------------------
+-- if no files to serve, list all files in directory
+-------------------------------------
+if(is_ajax()) then
+  add_action('wp_ajax_get_files', function()
+    local output = {}
+    local curPath = (request:get("id") or "");
+    curPath = curPath:gsub("#","/");
+    local path = WP_CURRENT_DIR..curPath;
+    if(curPath ~= "") then
+      curPath = curPath.."/"
+    end
+    NPL.load("(gl)script/ide/Files.lua");
+    
+    local result = commonlib.Files.Find({}, path, 0, 500, "*.*");
+    for _, item in ipairs(result) do
+      if(item.filesize == 0) then
+        item.state = "closed"; -- this is a folder
+        item.id = (curPath..(item.filename or "")):gsub("/", "#");
+        output[#output+1] = item;
+      end
+    end
+    for _, item in ipairs(result) do
+      if(item.filesize ~= 0) then
+        item.id = (curPath..(item.filename or "")):gsub("/", "#");
+        output[#output+1] = item;
+      end
+    end
+    wp_send_json(output);
+  end)
+  return;
+end
+?>
+<?npl 
+local default_index_page = WP_CURRENT_DIR.."index.page";
+if(file_exists(default_index_page)) then
+  include(default_index_page);
+else
+?>
+<div class="title">Open File Page</div>
+<p>
+  To display a page file in current directory. Use
+  <pre><code><?npl echo(site_url())?>open?file=[filename]</code></pre>
+</p>
+<p>Double click a row to open the file:</p>
+<table id="curdir" title="Current Directory: <?npl echo(WP_CURRENT_DIR); ?>" class="easyui-treegrid"
+  url="ajax/open?action=get_files"
+  rownumbers="true" idField="id" treeField="filename" remoteSort="false" singleSelect="true"
+  data-options='onDblClickRow:function(row){window.location = ("open?file=" + row.id.replace("#", "/"));}'
+  >
+  <thead>
+    <tr>
+      <th field="filename" width="50%" sortable="true">Name</th>
+      <th field="filesize" sortable="true">size</th>
+      <th field="createdate" sortable="true">Create Date</th>
+      <th field="writedate" sortable="true">Write Date</th>
+    </tr>
+  </thead>
+</table>
+<script type="text/javascript">
+</script>
+<?npl end ?>

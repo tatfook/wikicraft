@@ -1,0 +1,14 @@
+--[[
+Title: %$title%
+Author(s): %$author%
+Date: %$date%
+Desc: %$desc% 
+Use Lib:
+-------------------------------------------------------
+NPL.load("(gl)%$location%/%$name%.lua");
+-------------------------------------------------------
+]]
+
+local %$name% = {};
+commonlib.setfield("%$name%", %$name%)
+

@@ -1,0 +1,96 @@
+<?npl
+--[[
+Title: package maker
+Author: LiXizhi
+Date: 2016/4/12
+]]
+if(is_ajax()) then
+    NPL.load("(gl)script/kids/3DMapSystemApp/Assets/PackageMakerPage.lua");
+	local PackageMakerPage = commonlib.gettable("Map3DSystem.App.Assets.PackageMakerPage");
+    local fullpath = request:get("filename");
+    add_action('wp_ajax_get_file', function()
+		local output = {};
+		local file = ParaIO.open(fullpath, "r");
+        if(file:IsValid()) then
+            output.content = file:GetText();
+            file:close();
+        else
+            output.result = "file not found";
+        end
+        
+		wp_send_json(output);
+	end)
+    add_action('wp_ajax_cleanup', function()
+		local output = {};
+		wp_send_json(output);
+	end)
+    add_action('wp_ajax_compile', function()
+		local output = {};
+		wp_send_json(output);
+	end)
+    add_action('wp_ajax_make', function()
+		local output = {};
+		wp_send_json(output);
+	end)
+    return;
+end
+
+wp_enqueue_script("ace", "/wp-includes/js/ace/ace.js");
+wp_enqueue_script("angular", "/wp-includes/js/angular/angular.min.js");
+?>
+<script>
+    angular.module('PackageMaker', [])
+    .controller('PackageMakerController', function ($scope, $http) {
+        $scope.filename = (location.search.split('filename=')[1] || '').split('&')[0];
+        $scope.filenames = ["packages/redist/main_commonlib.txt", "packages/redist/main_mobile_res-1.0.txt", "packages/redist/main_script_complete_mobile-1.0.txt", "packages/redist/main_script-1.0.txt"];
+        $scope.content = "";
+
+        $scope.reload = function () {
+            var url = "ajax/package_maker?action=get_file&filename="
+                + encodeURIComponent($scope.filename);
+            
+            $http.get(url).then(function (response) {
+                $scope.content = response.data.content;
+                $scope.last_message = response.data.result || "file loaded";
+            });
+        }
+        $scope.compile = function () {
+            $http.get("ajax/package_maker?action=compile").then(function (response) { });
+        }
+        $scope.cleanup = function () {
+            $http.get("ajax/package_maker?action=cleanup").then(function (response) { });
+        }
+        $scope.make = function () {
+            var url = "ajax/package_maker?action=make&filename="
+                + encodeURIComponent($scope.filename);
+            $http.get(url).then(function (response) {
+                $scope.content = response.data.content;
+                $scope.last_message = response.data.result || "success";
+            });
+        }
+        if ($scope.filename != null) {
+            $scope.reload();
+        }
+    });
+</script>
+<h1>Package Maker</h1>
+<div ng-app="PackageMaker" ng-controller="PackageMakerController as PackageMaker" style="margin-top:10px;" class="form-horizontal" >
+    <div>
+        <input type="text" ng-model="filename" placeholder="file name" list="filenames">
+        <button ng-click="reload()"><i class="glyphicon glyphicon-refresh"></i>reload</button>
+        <button ng-click="save()"><i class="glyphicon glyphicon-upload"></i>save</button>
+        <span style="color:green">{{last_message}}</span>
+    </div>
+    <div style="margin-top:10px">
+        <textarea ng-model="content" rows="20" style="width:100%" placeholder="content"></textarea>
+    </div>
+    <div style="margin-top:10px">
+        <button ng-click="cleanup()">Clean up</button>
+        <button ng-click="compile()">Compile</button>
+        <button ng-click="make()">Make</button>
+    </div>
+    <datalist id="filenames">
+        <option ng-repeat="c in filenames">{{c}}</option>
+    </datalist>
+</div>
+

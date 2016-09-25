@@ -1,0 +1,41 @@
+<!-- "script/ide/MotionEx/StaticMoviePreloaderPage.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+<pe:mcml>
+<script refresh="true" type="text/npl" ><![CDATA[
+local page = document:GetPageCtrl();
+NPL.load("(gl)script/ide/MotionEx/StaticMoviePreloaderPage.lua");
+local StaticMoviePreloaderPage = commonlib.gettable("MotionEx.StaticMoviePreloaderPage");
+StaticMoviePreloaderPage.OnInit();
+local p = StaticMoviePreloaderPage.file_loader:GetPercent();
+p = math.floor(p*10000)/100;
+
+function get_percent()
+    if(StaticMoviePreloaderPage.file_loader)then
+        local s = string.format("下载进度:%.2f%%",p);
+        return s;
+    end
+    return "100%"
+end
+page:SetValue("progressbar",p);
+]]></script>
+<div style="width:5000px;height:5000px;background:url(texture/bg_black.png);">
+<div style="position:relative;margin-left:2200px;margin-top:2480px;">
+<pe:progressbar name="progressbar" 
+                    Minimum = "0" Maximum = "100" Value = "0" Step = "1"
+                    background = "Texture/Aries/Common/ThemeTeen/progressbar/bar_gray_32bits.png;0 0 16 16: 7 7 7 7" 
+                    blockimage = "Texture/Aries/Common/ThemeTeen/progressbar/bar_32bits.png;0 0 16 16: 7 7 7 7" 
+                    style="width:600px;height:16px;"
+                    />
+</div>
+<div style="position:relative;color:#ffffff;width:200px;margin-left:2400px;margin-top:2500px;text-align:center;"><%=get_percent() %></div>
+<div style="position:relative;color:#a59d9d;width:200px;margin-left:2400px;margin-top:2518px;text-align:center;">Esc键跳过下载</div>
+</div>
+</pe:mcml> 
+</body>
+</html>

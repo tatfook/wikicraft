@@ -1,0 +1,55 @@
+﻿<!-- "script/ide/Animation/test/storyboardPlayer_test.xml"-->
+  <pe:storyboards xmlns:pe="www.paraengine.com/pe">
+  <pe:storyboard name="Storyboard1" repeatCount = "1">
+    <pe:point3DAnimationUsingKeyFrames TargetName="object_editor" TargetProperty="ParaCamera_SetEyePos">
+      <pe:discretePoint3DKeyFrame KeyTime="00:00" Value="0,30,0"  SimpleEase="-1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:13" Value="0,10,0"  SimpleEase="-1"/>
+      <pe:linearPoint3DKeyFrame KeyTime="00:14" Value="0,10,1.6" SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:16" Value="0,10,-1.6" SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:17" Value="0,10,0"  />
+    </pe:point3DAnimationUsingKeyFrames>
+    <pe:point3DAnimationUsingKeyFrames TargetName="object_editor" TargetProperty="ParaCamera_SetLookAtPos">
+      <pe:linearPoint3DKeyFrame KeyTime="00:00" Value="359,30,1000"  SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:10" Value="359,30,500"  SimpleEase="1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:10.5" Value="359,30,285" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:12" Value="359,10,285"  SimpleEase="1"/>
+      <pe:linearPoint3DKeyFrame KeyTime="00:13" Value="390,10,285"  SimpleEase="1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:17.5" Value="390,10,285"  />
+      <pe:linearPoint3DKeyFrame KeyTime="00:20" Value="800,10,285"  SimpleEase="1"/>
+    </pe:point3DAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="container" TargetProperty="visible">
+      <pe:discreteStringKeyFrame KeyTime="00:20" Value="false" />
+    </pe:stringAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="container" TargetProperty="curtain">
+      <pe:discreteStringKeyFrame KeyTime="00:00" Value="-1"/>
+      <pe:discreteStringKeyFrame KeyTime="00:10" Value="1"/>
+      <pe:discreteStringKeyFrame KeyTime="00:17" Value="2"/>
+    </pe:stringAnimationUsingKeyFrames> 
+  </pe:storyboard>
+  <pe:storyboard name="Storyboard2" repeatCount = "1">
+    <pe:point3DAnimationUsingKeyFrames TargetName="object_editor" TargetProperty="ParaCamera_SetEyePos">
+      <pe:discretePoint3DKeyFrame KeyTime="00:00" Value="0,30,0"  SimpleEase="-1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:13" Value="0,10,0"  SimpleEase="-1"/>
+      <pe:linearPoint3DKeyFrame KeyTime="00:14" Value="0,10,1.6" SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:16" Value="0,10,-1.6" SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:17" Value="0,10,0"  />
+    </pe:point3DAnimationUsingKeyFrames>
+    <pe:point3DAnimationUsingKeyFrames TargetName="object_editor" TargetProperty="ParaCamera_SetLookAtPos">
+      <pe:linearPoint3DKeyFrame KeyTime="00:00" Value="359,30,1000"  SimpleEase="1" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:10" Value="359,30,500"  SimpleEase="1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:10.5" Value="359,30,285" />
+      <pe:linearPoint3DKeyFrame KeyTime="00:12" Value="359,10,285"  SimpleEase="1"/>
+      <pe:linearPoint3DKeyFrame KeyTime="00:13" Value="390,10,285"  SimpleEase="1"/>
+      <pe:discretePoint3DKeyFrame KeyTime="00:17.5" Value="390,10,285"  />
+      <pe:linearPoint3DKeyFrame KeyTime="00:20" Value="800,10,285"  SimpleEase="1"/>
+    </pe:point3DAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="container" TargetProperty="visible">
+      <pe:discreteStringKeyFrame KeyTime="00:20" Value="false" />
+    </pe:stringAnimationUsingKeyFrames>
+    <pe:stringAnimationUsingKeyFrames TargetName="container" TargetProperty="curtain">
+      <pe:discreteStringKeyFrame KeyTime="00:00" Value="-1"/>
+      <pe:discreteStringKeyFrame KeyTime="00:10" Value="1"/>
+      <pe:discreteStringKeyFrame KeyTime="00:17" Value="2"/>
+    </pe:stringAnimationUsingKeyFrames>
+  </pe:storyboard>
+</pe:storyboards>

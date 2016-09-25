@@ -1,0 +1,10 @@
+<?npl
+--[[
+Title: table database
+Author: LiXizhi
+Date: 2016/5/26
+]]
+if(db) then
+	return;
+end
+db = TableDatabase:new():connect("database/npl/", function() end);

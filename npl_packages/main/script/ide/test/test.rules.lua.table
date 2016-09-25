@@ -1,0 +1,40 @@
+--[[
+Title: test rule file
+Author(s):  LiXizhi
+Date: 2008/5/21
+Desc: 
+use the lib:
+------------------------------------------------------------
+NPL.load("(gl)script/ide/test/test.rules.lua");
+------------------------------------------------------------
+]]
+{
+	-- an optional regular expression. If this is present, the value must match this test string, in order for any output replaceables to be applied. 
+	replaceables_test = "%%",
+
+	-- output path replaceables, multiples replaceables may appear in the same output
+	replaceables = {
+		["%%v3%%"] = "character/Animation/v3/",
+		["%%common%%"] = "character/Animation/v3/",
+	},
+	
+	-- an optional regular expression. If this is present, the input must match this test string, in order for any general rules to be applied. 
+	general_test = nil,
+	
+	-- general rules are evaluated in the order given below
+	general = {
+		[".*car$"] = "%common%开车.x",
+		[".*motorbike$"] = "%common%骑机车.x",
+		[".*bike$"] = "%common%骑自行车.x",
+		[".*ship$"] = "%common%开车.x",
+		[".*F1$"] = "%common%开F1.x",
+	},
+	
+	-- special rules are strict mapping using hash find.
+	special = {
+		["coolmotobike"] = "%common%开F1.x",
+		["huaban"] = "%common%欢迎.x",
+		["huabanche"] = "%common%欢迎.x",
+		["bicycle"] = {"%common%骑自行车.x", [4] = "%common%骑自行车_run.x", [13] = "%common%骑自行车_back.x"}
+	},
+}

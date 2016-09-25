@@ -1,0 +1,25 @@
+﻿-- LiXizhi, 2015.7.23
+-- everything in this file is reparsed when running /docgen command
+
+---------------------------
+-- paracraft related
+---------------------------
+script/apps/Aries/Creator/Game/block_engine.lua
+script/apps/Aries/Creator/Game/game_logic.lua
+script/apps/Aries/Creator/Game/Commands/CmdParser.lua
+script/apps/Aries/Creator/Game/Commands/CommandManager.lua
+script/apps/Aries/Creator/Game/Entity/EntityManager.lua
+script/apps/Aries/Creator/Game/Entity/Entity.lua
+script/apps/Aries/Creator/Game/Items/ItemClient.lua
+script/apps/Aries/Creator/Game/Items/Item.lua
+script/apps/Aries/Creator/Game/Items/ItemStack.lua
+script/apps/Aries/Creator/Game/blocks/block_types.lua
+script/apps/Aries/Creator/Game/blocks/block.lua
+script/apps/Aries/Creator/Game/Common/Files.lua
+script/apps/Aries/Creator/Game/World/World.lua
+script/apps/Aries/Creator/Game/SceneContext/SelectionManager.lua
+script/apps/Aries/Creator/Game/SceneContext/BaseContext.lua
+
+
+
+

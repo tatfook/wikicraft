@@ -1,0 +1,120 @@
+﻿<!-- "script/ide/MotionEx/CameraMotions/CameraMotionPage.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+<pe:mcml>
+<script refresh="true" type="text/npl" ><![CDATA[
+NPL.load("(gl)script/ide/MotionEx/MotionFactory.lua");
+NPL.load("(gl)script/ide/MotionEx/CameraMotions/CameraMotionPage.lua");
+
+local MotionFactory = commonlib.gettable("MotionEx.MotionFactory");
+local CameraMotionPage = commonlib.gettable("MotionEx.CameraMotionPage");
+CameraMotionPage.OnInit();
+local page = document:GetPageCtrl();
+local player_name = "test";
+local player = MotionFactory.GetPlayer(player_name)
+
+player:AddEventListener("play",function()
+	page:SetValue("state","play");
+    CameraMotionPage.DoPlay();
+    local max_value = player:GetSpace();
+    local time_str = commonlib.timehelp.MillToTimeStr(max_value)
+    page:SetValue("totaltime",time_str);
+end,{});
+player:AddEventListener("stop",function()
+	page:SetValue("state","stop");
+end,{});
+player:AddEventListener("end",function()
+	page:SetValue("state","end");
+end,{});
+player:AddEventListener("update",function(funcHolder,event)
+	page:SetValue("state","update");
+    local time_str = commonlib.timehelp.MillToTimeStr(event.time)
+	page:SetValue("runtime",time_str);
+    CameraMotionPage.Update(event.time);
+end,{});
+
+function doPlay()
+   CameraMotionPage.DoPlayFromFile();
+end
+function doPause()
+    CameraMotionPage.DoPause()
+end
+function doResume()
+    CameraMotionPage.DoResume()
+end
+function doStop()
+   CameraMotionPage.DoStop()
+end
+function doEnd()
+  CameraMotionPage.DoEnd()
+end
+function doGoto()
+    local time_str = page:GetValue("runtime");
+    player:GoToByTimeStr(time_str)
+end
+function doPre()
+    CameraMotionPage.DoPre()
+end
+function doNext()
+    CameraMotionPage.DoNext()
+end
+function createSliderbar(params)
+    CameraMotionPage.CreateSliderbar(params);
+end
+function doHide()
+    CameraMotionPage.HidePage();
+end
+]]></script>
+<div style="margin:10px;width:600px;height:400px;background:texture/whitedot.png">
+<input type="button" value="隐藏" onclick="doHide()" />
+<br />
+camera motion file:
+<select name="_path">
+    <option selected="true">temp/cameras/camera_1.xml</option>
+    <option>temp/cameras/camera_2.xml</option>
+    <option>temp/cameras/camera_3.xml</option>
+    <option>temp/cameras/camera_4.xml</option>
+    <option>temp/cameras/camera_5.xml</option>
+    <option>temp/cameras/camera_6.xml</option>
+    <option>temp/cameras/camera_7.xml</option>
+    <option>temp/cameras/camera_8.xml</option>
+    <option>temp/cameras/camera_9.xml</option>
+    <option>temp/cameras/camera_10.xml</option>
+    <option >script/ide/MotionEx/CameraMotions/CameraMotion_1.xml</option>
+    <option>script/ide/MotionEx/CameraMotions/CameraMotion_2.xml</option>
+    <option>script/ide/MotionEx/CameraMotions/CameraMotion_3.xml</option>
+    <option>config/Aries/Cameras/SceneLoading.xml</option>
+</select>
+<br />
+origin: <input type="text" name="origin" value="{ CameraObjectDistance = 0, CameraLiftupAngle = 0, CameraRotY = 0,}" />
+<br />
+state:<input type="text" name="state"  />
+<br />
+runtime:<input type="text" name="runtime"  />
+<br />
+totaltime:<input type="text" name="totaltime"  />
+<br />
+<pe:custom oncreate="createSliderbar" style="height:26px;"/>
+<br />
+
+<div >
+<input style="margin-left:10px;" type="button" value="play" onclick="doPlay" />
+<input style="margin-left:10px;" type="button" value="pause" onclick="doPause" />
+<input style="margin-left:10px;" type="button" value="resume" onclick="doResume" />
+<input style="margin-left:10px;" type="button" value="stop" onclick="doStop" />
+<input style="margin-left:10px;" type="button" value="end" onclick="doEnd" />
+<input style="margin-left:10px;" type="button" value="goto" onclick="doGoto" />
+</div>
+<br />
+<input style="margin-left:10px;" type="button" value="pre 50" onclick="doPre" />
+<input style="margin-left:10px;" type="button" value="next 50" onclick="doNext" />
+<br />
+</div>
+</pe:mcml> 
+</body>
+</html>

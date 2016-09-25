@@ -1,0 +1,40 @@
+﻿-- LiXizhi, 2015.7.23
+-- everything in this file is reparsed when running `/docgen Documentation/npl_package_main.docgen.txt` command
+
+---------------------------
+-- core ide
+---------------------------
+script/ide/mathlib.lua
+script/ide/MessageBox.lua
+script/ide/gui_helper.lua
+script/ide/commonlib.lua
+script/ide/oo.lua
+script/ide/Encoding.lua
+script/ide/timer.lua
+script/ide/NPLExtension.lua
+script/ide/ParaEngineExtension.lua
+script/ide/System/Util/CmdParser.lua
+script/ide/System/Core/Event.lua
+script/ide/System/Core/ToolBase.lua
+script/ide/System/Core/ToolBase_p.lua
+script/ide/System/Core/PainterContext.lua
+script/ide/System/Core/Attribute.lua
+script/ide/System/Core/AttributeObject.lua
+script/ide/System/Windows/Screen.lua
+script/ide/System/Windows/Window.lua
+script/ide/System/Windows/UIElement.lua
+script/ide/System/Windows/Keyboard.lua
+script/ide/System/Windows/Mouse.lua
+script/ide/System/Scene/BufferPicking.lua
+script/ide/System/Scene/Overlays/OverlayPicking.lua
+script/ide/System/Scene/Overlays/ShapesDrawer.lua
+script/ide/System/Scene/Cameras/AutoCamera.lua
+script/ide/System/Scene/Cameras/Cameras.lua
+
+
+---------------------------
+-- Web server api
+---------------------------
+script/apps/WebServer/npl_request.lua
+script/apps/WebServer/npl_response.lua
+script/apps/WebServer/npl_page_env.lua

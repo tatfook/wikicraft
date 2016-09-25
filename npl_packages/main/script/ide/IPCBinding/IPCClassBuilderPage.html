@@ -1,0 +1,68 @@
+﻿<!-- "script/ide/IPCBinding/IPCClassBuilderPage.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+<pe:mcml>
+<script refresh="true" type="text/npl" ><![CDATA[
+NPL.load("(gl)script/ide/IPCBinding/IPCClassBuilder.lua");
+ local page = document:GetPageCtrl();
+
+function outputFile()
+    local npl_path = Page:GetValue("npl_path");
+    local csharp_path = Page:GetValue("csharp_path");
+    if(npl_path and csharp_path)then
+        local s;
+        if(string.match(npl_path, "%.lua$")) then
+            if(npl_path == csharp_path)then return end
+            local file = ParaIO.open(npl_path, "r");
+	        if(file:IsValid()) then
+		        s = file:GetText();
+		        file:close();
+	        end
+            if(s)then
+	            ParaIO.CreateDirectory(csharp_path);
+	            local file = ParaIO.open(csharp_path, "w");
+	            s = IPCBinding.IPCClassBuilder.ParseClass(s);
+	            if(file:IsValid()) then
+		            file:WriteString(s);
+		            file:close();
+		            _guihelper.MessageBox("生成成功！");
+	            end
+	        end
+        else
+            NPL.load("(gl)script/ide/IPCBinding/EntityView.lua");
+            local entity_file = npl_path;
+            IPCBinding.EntityView.GenerateIDEFileFromTemplateFile(entity_file);
+            _guihelper.MessageBox("生成成功！");
+        end
+    end
+end
+
+function OnClickGenBuildinTemplate()
+    NPL.load("(gl)script/ide/IPCBinding/EntityHelper.lua");
+    IPCBinding.EntityHelper.GenerateBuildinTemplates("script/PETools/Buildin/")
+    _guihelper.MessageBox("template files generated to script/PETools/Buildin/");
+end
+
+]]></script>
+<div style="margin:10px;">
+Source NPL or XML entity template file：
+<select name="npl_path">
+    <option selected="true">script/ide/IPCBinding/Test/TestBindableObject.lua</option>
+    <option>script/ide/IPCBinding/EntitySampleTemplate.entity.xml</option>
+    <option>script/ide/IPCBinding/EntitySamplePlaceableTemplate.entity.xml</option>
+</select>
+<br />
+Output C# file: <input type="text" name="csharp_path" value="script/ide/IPCBinding/Test/TestBindableObject.cs" />
+<br />
+<input type="button" value="generate" onclick="outputFile" />
+<br />
+<input type="button" value="generate buildin templates" onclick="OnClickGenBuildinTemplate" />
+</div>
+</pe:mcml> 
+</body>
+</html>

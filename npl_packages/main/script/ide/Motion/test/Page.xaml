@@ -1,0 +1,187 @@
+﻿<Canvas
+	xmlns="http://schemas.microsoft.com/client/2007"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Width="800" Height="600"
+	Background="White"
+	x:Name="Page"
+	>
+  <Canvas.Resources>
+
+    <Storyboard x:Name="Storyboard1">
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_1" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_2" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.7000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_3" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.4000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_1" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="122"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_2" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.7000000" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="-279"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_3" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.4000000" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="281"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_1" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="108"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_3" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="-200"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_2" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="-199"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_2" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="90"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_1" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="90"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_3" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.3000000" Value="90"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.6000000" Value="208"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.9000000" Value="434"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.2000000" Value="210"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.6000000" Value="85"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.9000000" Value="-68"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.2000000" Value="-174"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="0"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.6000000" Value="2.531"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.9000000" Value="1.281"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.2000000" Value="0.625"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="1"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.6000000" Value="2.531"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.9000000" Value="1.281"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.2000000" Value="0.656"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+    <Storyboard x:Name="Storyboard2">
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_3" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0.8"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0.1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0.2"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_1" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0.5"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_2" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="0.9"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01" Value="0.5"/>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+    <Storyboard x:Name="Storyboard3">
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_0" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="106"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_1" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="206"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_2" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="180"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.0000000" Value="360"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="CommonCtrl_Motion_motion_test_xaml_button_3" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:00.5000000" Value="270"/>
+        <SplineDoubleKeyFrame KeyTime="00:00:01.0000000" Value="360"/>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+  </Canvas.Resources>
+  <Image Width="64" Height="64" Canvas.Left="71" Canvas.Top="363" Source="paraworld.png" x:Name="CommonCtrl_Motion_motion_test_xaml_button_3" RenderTransformOrigin="0.5,0.5">
+    <Image.RenderTransform>
+      <TransformGroup>
+        <ScaleTransform ScaleX="1" ScaleY="1"/>
+        <SkewTransform AngleX="0" AngleY="0"/>
+        <RotateTransform Angle="0"/>
+        <TranslateTransform X="0" Y="0"/>
+      </TransformGroup>
+    </Image.RenderTransform>
+  </Image>
+  <Image Width="64" Height="64" Canvas.Left="231" Canvas.Top="54" Source="paraworld.png" RenderTransformOrigin="0.5,0.5" x:Name="CommonCtrl_Motion_motion_test_xaml_button_1">
+    <Image.RenderTransform>
+      <TransformGroup>
+        <ScaleTransform ScaleX="1" ScaleY="1"/>
+        <SkewTransform AngleX="0" AngleY="0"/>
+        <RotateTransform Angle="0"/>
+        <TranslateTransform X="0" Y="0"/>
+      </TransformGroup>
+    </Image.RenderTransform>
+  </Image>
+  <Image Width="64" Height="64" Canvas.Left="631" Canvas.Top="363" Source="paraworld.png" RenderTransformOrigin="0.5,0.5" x:Name="CommonCtrl_Motion_motion_test_xaml_button_2">
+    <Image.RenderTransform>
+      <TransformGroup>
+        <ScaleTransform ScaleX="1" ScaleY="1"/>
+        <SkewTransform AngleX="0" AngleY="0"/>
+        <RotateTransform Angle="0"/>
+        <TranslateTransform X="0" Y="0"/>
+      </TransformGroup>
+    </Image.RenderTransform>
+  </Image>
+  <Image Width="64" Height="64" Canvas.Left="98" Canvas.Top="208" Source="paraworld.png" x:Name="CommonCtrl_Motion_motion_test_xaml_button_0" RenderTransformOrigin="0.5,0.5">
+    <Image.RenderTransform>
+      <TransformGroup>
+        <ScaleTransform ScaleX="1" ScaleY="1"/>
+        <SkewTransform AngleX="0" AngleY="0"/>
+        <RotateTransform Angle="0"/>
+        <TranslateTransform X="0" Y="0"/>
+      </TransformGroup>
+    </Image.RenderTransform>
+  </Image>
+</Canvas>

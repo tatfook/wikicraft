@@ -1,0 +1,168 @@
+<?npl
+--[[
+Title: obsoleted: markdown parser
+Author: leio
+Date: 2016/5/10
+Desc: 
+
+wiki page raw url 
+"https://raw.githubusercontent.com/wiki/LiXizhi/Paracraft/Home.md"
+
+default name test
+http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/ParaCraft/wiki
+full name test
+http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/ParaCraft/wiki/MovieBlockTutorials
+sidebar test
+http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/ParaCraft/wiki/_Sidebar
+video test
+http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/ParaCraft/wiki/vt_intro
+
+--]]
+--tag parser
+--function replacer_1
+--[[电影方块教学课程|MovieBlockTutorials]]
+--			to [电影方块教学课程](http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/ParaCraft/wiki/MovieBlockTutorials)
+--function replacer_2
+--[电影方块教学课程](MovieBlockTutorials)
+--			to [电影方块教学课程](http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/ParaCraft/wiki/MovieBlockTutorials)
+--function replace_video
+--[video](http://static.video.qq.com/TPout.swf?vid=h0141tey4qr)
+--			to <span class="flashplayer"><embed src="http://static.video.qq.com/TPout.swf?vid=l01276tvc8i" type="application/x-shockwave-flash"></embed></span>
+--function replace_otherdomain
+--[[NPL编程手册|https://github.com/LiXizhi/NPLRuntime/wiki]]
+--			to [NPL编程手册](http://localhost:8099/markdown?wiki=https://github.com/LiXizhi/NPLRuntime/wiki)
+
+wp_enqueue_script("ace", "/wp-includes/js/ace/ace.js");
+wp_enqueue_script("angular", "/wp-includes/js/angular/angular.min.js");
+wp_enqueue_script("jqueryui", "/wp-includes/js/jquery/jquery-ui.min.js"); 
+wp_enqueue_style("jqueryui_css", "/wp-includes/js/jquery/jquery-ui.min.css");
+wp_enqueue_script("markdown-it", "/wp-includes/js/markdown-it/markdown-it.min.js");
+?>
+<script>
+function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+var origin = window.location.origin;
+var github_home = "https://github.com";
+var author;
+var repository;
+var wiki = getUrlParameter("wiki");
+var source = getRawUrl(wiki);
+var sidebar = getRawUrl(getSidebarUrl());
+function getSidebarUrl(){
+	return github_home + "/" + author + "/" + repository + "/wiki/_Sidebar";
+}
+function replaceMarkdown(data){
+	if(!data){
+		return
+	}
+	function replacer_1(match,p1,p2,offset,string){
+		var wiki = origin + "/markdown?wiki=" + getPageUrl(p2);
+		var s = "[" + p1 + "](" + wiki + ")";
+		return s;
+	}
+	
+	var re = /\[\[([a-zA-Z0-9\u4E00-\u9FA5\uF900-\uFA2D]+)\|(\w+)\]\]/g;
+	var newstr = data.replace(re, replacer_1);
+
+	function replacer_2(match,p1,p2,offset,string){
+		console.log(p1);
+		var wiki = origin + "/markdown?wiki=" + getPageUrl(p2);
+		var s = "[" + p1 + "](" + wiki + ")";
+		return s;
+	}
+	
+	re = /\[([a-zA-Z0-9\u4E00-\u9FA5\uF900-\uFA2D]+)\]\((\w+)\)/g;
+	newstr = newstr.replace(re, replacer_2);
+
+
+	//[video](http://static.video.qq.com/TPout.swf?vid=l01276tvc8i)
+	function replace_video(match,p1,url,offset,string){
+		var s = "<span class=\"flashplayer\"><embed src=\"" + url + "\"" + " type=\"application/x-shockwave-flash\"></embed></span>"
+		return s;
+	}
+	re = /\[(\w+)\]\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/ig;
+	newstr = newstr.replace(re, replace_video);
+
+	function replace_otherdomain(match,name,url,offset,string){
+		url = origin + "/markdown?wiki=" + url;
+		var wiki = "[" + name + "](" + url + ")";
+		return wiki;
+	}
+	re = /\[\[([a-zA-Z0-9\u4E00-\u9FA5\uF900-\uFA2D]+)\|((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\]\]/ig;
+	newstr = newstr.replace(re, replace_otherdomain);
+	return newstr
+}
+function getRawUrl(wiki){
+	var rowTitle = "https://raw.githubusercontent.com";
+	var url;
+	function replacer(match,p1,p2,p3,p4,offset,string){
+		author = p2;
+		repository = p3;
+		if(!p4){
+			p4 = "Home";
+			url = rowTitle + "/wiki/" + p2 + "/" + p3 + "/" + p4 + ".md";
+
+		}else
+		{
+			url = rowTitle + "/wiki/" + p2 + "/" + p3 + "/" + p4 + ".md";
+		}
+	}
+	var re = /(\w+)\/(\w+)\/(\w+)\/wiki\/?(\w*)/
+	wiki.replace(re, replacer);
+
+	return url
+}
+// no changes: https://github.com/LiXizhi/NPLRuntime/wiki 
+function getPageUrl(pageName){
+	if(!pageName){
+		pageName = "Home";
+	}
+	if(pageName.includes("http")){
+		return pageName;
+	}
+	return github_home + "/" + author + "/" + repository + "/wiki/" + pageName;
+}
+
+var md = window.markdownit('commonmark');
+angular.module('MarkdownParser', [])
+ .controller('MarkdownController', function ($scope, $http) {
+
+	$scope.load = function(url,container_name){
+		$http({
+		  method: 'GET',
+		  url: url,
+		}).then(function successCallback(response) { 
+			if(response.status == 200){
+				var s = replaceMarkdown(response.data);
+				s = md.render(s);
+				$(container_name).html(s);
+			}else{
+				$(container_name).html("<p>error</p>");
+			}
+		  }, function errorCallback(response) {
+				$(container_name).html("<p>load failed.</p>");
+		  });
+	}
+	$scope.load(sidebar,".sidebar-html");
+	$scope.load(source,".result-html");
+});
+</script>
+<div ng-app="MarkdownParser" ng-controller="MarkdownController">
+<div class="row">
+	<div class="col-md-4 sidebar-html"></div>
+	<div class="col-md-8 result-html"></div>
+</div>
+</div>
+

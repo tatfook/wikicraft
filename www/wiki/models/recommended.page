@@ -1,0 +1,12 @@
+<?npl
+--[[
+Title: get recommended list based on category
+Author: LiXizhi
+Date: 2016/6/28
+]]
+include_once("./abstract/per_user_base.page");
+
+local recommended = inherit(models.abstract.per_user_base, gettable("models.recommended"));
+
+recommended.db_name = "recommended";
+

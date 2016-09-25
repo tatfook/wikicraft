@@ -1,0 +1,65 @@
+<!-- "script/ide/Display3D/Example/SceneCanvasExample.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>HomeDetail, by Leio, 2009/11/4</title>
+</head>
+<body>
+<pe:mcml>
+<script type="text/npl" refresh="true"><![CDATA[
+NPL.load("(gl)script/ide/Display3D/Example/SceneCanvasExample.lua");
+CommonCtrl.Display3D.SceneCanvasExample.SetPage();
+
+]]></script>
+<div style="width:300px;">
+鼠标事件
+<br />
+<input type="text" name = "txt_info"  />
+<br />
+stage事件
+<br />
+<input type="text" name = "stage_txt_info"  />
+<br />
+选中事件
+<br />
+<input type="text" name = "selected_txt_info"  />
+<br />
+ 取消选中事件
+ <br />
+<input type="text" name = "unselected_txt_info"  />
+<br />
+ 编辑模式
+ <br />
+<input type="text" name = "mode_txt_info"  />
+picked object
+ <br />
+<input type="text" name = "pickobj_txt_info"  />
+<br />
+<input type="button" value = "浏览模式" tooltip="取消选中所有的前提下" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoViewState"  />
+<input type="button" value = "编辑模式" tooltip="取消选中所有的前提下" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoEditState"  />
+<br />
+<input type="button" value = "左旋转" tooltip="在Edit前提下" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoFacing_Left()"  />
+<input type="button" value = "右旋转" tooltip="在Edit前提下" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoFacing_Right()"  />
+<input type="button" value = "拖拽" tooltip = "选中后拖拽" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoStartDrag"  />
+<br />
+<input type="button" value = "向上" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoUp()"  />
+<input type="button" value = "向下" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoDown()"  />
+<br />
+<input type="button" value = "创建普通物体" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoBuildNode"  />
+<input type="button" value = "创建花圃" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoBuildGridNode"  />
+<br />
+<input type="button" value = "种下"  onclick = "CommonCtrl.Display3D.SceneCanvasExample.PutNodeInSeedGrid"  />
+<br />
+<input type="button" value = "销毁" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoDestroyNode"  />
+<br />
+<input type="button" value = "清空拖拽的迷你场景" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoClearMirrorNode"  />
+<br />
+<input type="button" value = "可见" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoVisible"  />
+<input type="button" value = "不可见" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoUnVisible"  />
+<br />
+<input type="button" value = "可见/不可见" tooltip="" onclick = "CommonCtrl.Display3D.SceneCanvasExample.DoAllVisible"  />
+</div>
+</pe:mcml> 
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?npl
+--[[
+Title: main page
+Author: LiXizhi
+Date: 2015/6/10
+Desc: load environment and template
+]]
+
+if(WP_USE_MINI_LOADER) then
+	-- we will only load minimum framework with helper functions and default ajax
+	ABSPATH = dirname(__FILE__);
+	WPINC = "wp-includes";
+	WP_CONTENT_DIR = ABSPATH .. "wp-content";
+
+	include_once(ABSPATH .. WPINC .. '/functions.page' );
+	include_once(ABSPATH .. WPINC .. '/plugin.page');
+	include_once(ABSPATH .. WPINC .. '/query.page');
+	include_once(ABSPATH .. WPINC .. '/general-template.page');
+	include_once(ABSPATH .. WPINC .. '/http.page');
+	-- Query object
+	wp_query = WP_Query:new();
+	wp();
+else
+	include_once("wp-load.page");
+
+	wp();
+
+	if(not is_admin()) then
+		echo("You do not have permission to access NPL code wiki. Please make sure that you are in a writable world.");
+		exit();
+	end
+
+	include_once( ABSPATH .. WPINC .. '/template-loader.page' );
+end
+
+

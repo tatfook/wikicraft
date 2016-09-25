@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>NPL server page test. </title>
+</head>
+<body>
+<p class="title">
+	<?npl
+		echo "Hi, I'm a NPL script!";
+	?>
+</p>
+<?
+-- connect to TableDatabase (a NoSQL db engine written in NPL)
+db = TableDatabase:new():connect("database/npl/", function() end);
+
+db.TestUser:findOne({name="user1"}, resume);
+local err, user = yield(); -- async wait when job is done
+
+if(not user) then
+	-- insert 5 records to database asynchronously.
+	local finishedCount = 0;
+	for i=1, 5 do
+		db.TestUser:insertOne({name=("user"..i)}, {name=("user"..i), password="1"}, function(err, data)
+			finishedCount = finishedCount + 1;
+			if(finishedCount == 5) then
+				resume();
+			end
+		end);
+	end
+	yield(); -- async wait when job is done
+
+	echo("<p>we just created "..finishedCount.." users in `./database/npl/TestUser.db`</p>")
+else
+	echo("<p>users already exist in database, print them</p>")
+end
+
+-- fetch all users from database asynchronously.
+db.TestUser:find({}, function(err, users)  resume(err, users); end);
+err, users = yield(); -- async wait when job is done
+?>
+
+<?npl for i, user in ipairs(users) do ?>
+	i = <?=i?>, name=<? echo(user.name) ?> <br/>
+<?npl end ?>
+
+<p>
+	1.  <?npl echo 'if you want to serve NPL code in XHTML or XML documents, use these tags'; ?>
+</p>
+<p>
+	2.  <? echo 'this code is within short tags'; ?>
+    Code within these tags <?= 'some text' ?> is a shortcut for this code <? echo 'some text' ?>
+</p>
+<p>
+	3.  <% echo 'You may optionally use ASP-style tags'; %>
+</p>
+
+<% nplinfo(); %>
+
+<% print("<p>filename: %s, dirname: %s</p>", __FILE__, dirname(__FILE__)); %>
+
+<%
+some_global_var = "this is global variable";
+
+-- include file in same directory
+include("test_include.page");
+-- include file relative to web root directory. however this will not print, because we use include_once, and the file is already included before.
+include_once("/test_include.page");
+-- include file using disk file path
+local result = include(dirname(__FILE__).."test_include.page");
+
+-- we can also get the result from included file
+echo(result);
+%>
+
+</body>
+</html>
+
+<% 
+--assert(false, "uncomment to test runtime error");
+
+function test_exit()
+	exit(); 
+end
+test_exit();
+assert(false, "can not reach here");
+%>
+

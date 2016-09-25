@@ -1,0 +1,92 @@
+<?npl
+--[[
+Title: all pages owned by a project
+Author: LiXizhi
+Date: 2016/8/23
+]]
+include_once("./project.page");
+
+local project_pages = inherit(models.abstract.base, gettable("models.project_pages"));
+
+project_pages.db_name = "project_pages";
+-- max length of pages
+project_pages.max_length = 10000;
+
+function project_pages:ctor()
+	-- unique name
+	self:addfield("name", "string", true, 30);
+	-- commar separated string of page name
+	self:addfield("pages", "string", nil);
+end
+
+-- return {name, pages=page name string}
+function project_pages:get(params)
+	local proj = project_pages._super.get(self, params);
+	if(proj and proj.pages) then
+		return proj;
+	end
+end
+
+function project_pages:create(params)
+end
+
+function project_pages:update(params)
+end
+
+function project_pages:delete(params)
+end
+
+-- protected: 
+-- @return true if added;
+function project_pages:addPage(project_name, pagename)
+	if(not pagename or not project_name) then
+		return
+	end
+	local proj = self:get({name=project_name});
+	if(proj) then
+		local pages = proj.pages;
+		if(pages:match(tostring(pagename)..",")) then
+			return true;
+		end
+		-- add to project
+		if(#pages > self.max_length) then
+			return false, "max_length reached";
+		else
+			pages = (tostring(pagename)..",")..pages;
+		end
+		local err, data = self:db():updateOne({name = project_name}, {pages = pages}, resume)
+		if(data) then
+			return true;
+		end
+	else
+		local pages = (tostring(pagename)..",");
+		local err, data = self:db():insertOne(nil, {name = project_name, pages = pages, }, resume);
+		if(data) then
+			return true;
+		end
+	end
+end
+
+-- protected: 
+-- @return true if removed
+function project_pages:removePage(project_name, pagename)
+	if(not pagename or not project_name) then
+		return
+	end
+	local proj = self:get({name=proj_name});
+	if(proj) then
+		local pages = proj.pages;
+		-- remove user from project
+		local new_pages = pages:gsub(tostring(pagename)..",", "");
+		if(new_pages ~= pages) then
+			local res = project_pages._super.update(self, {name = project_name, pages = new_pages})
+			if(res) then
+				return true;
+			end
+		else
+			return true;
+		end
+	else
+		return true;
+	end
+end

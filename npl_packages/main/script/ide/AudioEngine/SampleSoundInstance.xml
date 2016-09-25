@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--script/ide/AudioEngine/SampleSoundInstance.xml-->
+<pe:mcml>
+  <SoundInstances name="MyGameWorldSounds">
+    <instance position="255,0,255" mindistance="1" maxdistance="20" source="bg_theme_short" loop="true"/>
+    <instance position="257,0,257" mindistance="1" maxdistance="20" source="btn1" loop="true"/>
+  </SoundInstances>
+</pe:mcml>

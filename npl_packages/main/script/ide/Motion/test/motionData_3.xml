@@ -1,0 +1,33 @@
+<Motion duration="30" xmlns="fl.motion.*" xmlns:geom="flash.geom.*" xmlns:filters="flash.filters.*">
+  <source>
+    <Source frameRate="12" x="128" y="64" scaleX="1" scaleY="1" rotation="0" elementType="movie clip" symbolName="">
+      <dimensions>
+        <geom:Rectangle left="-128" top="-64" width="256" height="128"/>
+      </dimensions>
+      <transformationPoint>
+        <geom:Point x="0.5" y="0.5"/>
+      </transformationPoint>
+    </Source>
+  </source>
+
+  <Keyframe index="0" tweenSnap="true" tweenSync="true">
+    <tweens>
+      <SimpleEase ease="0"/>
+    </tweens>
+  </Keyframe>
+
+  <Keyframe index="15" tweenSnap="true" tweenSync="true">
+    <color>
+      <Color brightness="-1"/>
+    </color>
+    <tweens>
+      <SimpleEase ease="0"/>
+    </tweens>
+  </Keyframe>
+
+  <Keyframe index="29">
+    <color>
+      <Color/>
+    </color>
+  </Keyframe>
+</Motion>

@@ -1,0 +1,161 @@
+<?npl
+--[[
+Title: stats of the website 
+Author: LiXizhi
+Date: 2016/9/6
+Desc: anyone can get only the server can set. following are known rows.
+- "siteinfo": { projectcount=number, usercount=number, }
+- "recent_projects": { array of project names}
+- "recent_users": { array of userid}
+- "lastmodified_projects": { array of project names}
+]]
+include_once("./abstract/base.page");
+
+local stats = inherit(models.abstract.base, gettable("models.stats"));
+
+stats.db_name = "stats";
+-- max items per user
+stats.max_items_per_user = 10;
+
+function stats:ctor()
+	-- stats name
+	self:addfield("name", "string", true, 30);
+	-- stats count
+	self:addfield("count", "number");
+	-- stats data table: any data related to the stats. Using arrays is better. 
+	self:addfield("datatable", "table", false, 200000);
+end
+
+-- anyone can get stats
+function stats:get(params)
+	return stats._super.get(self, params);
+end
+
+function stats:create(params)
+end
+
+function stats:update(params)
+end
+
+function stats:delete(params)
+end
+
+-- create or get the row of given stats. 
+-- @return {name, count, datatable}
+function stats:createget(name)
+	self:db():findOne({name = name}, resume);
+	local err, data = yield(true); 
+	if(not err) then
+		if(not data) then
+			data = {
+				name = name,
+				count = 0,
+				datatable = {},
+			}
+
+			self:db():insertOne(nil, data, resume);
+			err, data = yield(true); 
+		end
+		if(data) then
+			data = self:validateRow(data);
+		end
+	end
+	return data;
+end
+
+-- update the site info
+-- @param opCmd: if nil, it will simply set the data field. 
+-- if "increase", it will increase the value as number
+-- @return siteinfo or nil
+function stats:updateSiteInfo(name, value, opCmd)
+	local siteinfo = self:createget("siteinfo")
+	if(siteinfo and siteinfo.datatable) then
+		if(opCmd == "increase") then
+			value = tonumber(value) or 0;
+			local oldValue = siteinfo.datatable[name];
+			if(type(oldValue) == "number") then
+				value = oldValue + value;
+			end
+		end
+		siteinfo.datatable[name] = value;
+		
+		return self:updateRow("siteinfo", siteinfo);
+	end
+end
+
+function stats:updateRow(name, row)
+	if(row) then
+		local lastname = row.name;
+		row.name = nil;
+		self:db():updateOne({name=name}, row, resume);
+		row.name = lastname;
+		local err, data = yield(true); 
+		return data;
+	end
+end
+
+-- call this when a project is succesfully created. 
+-- @param bIsAdding: true to add, false to remove
+-- @return proj object or nil. 
+function stats:addProject(proj_name, bIsAdding)
+	self:updateSiteInfo("projectcount", bIsAdding and 1 or -1, "increase");
+	local recent_projects = self:createget("recent_projects")
+	if(recent_projects) then
+		local data = recent_projects.datatable;
+		for i, name in ipairs(data) do
+			if(name == proj_name) then
+				if(bIsAdding) then
+					return true;
+				else
+					commonlib.removeArrayItem(data, i);
+					break;
+				end
+			end
+		end
+		if(#data >= 100) then
+			commonlib.removeArrayItem(data, 1);
+		end
+		if(bIsAdding) then
+			data[#data+1] = proj_name;
+		end
+		self:updateRow("recent_projects", recent_projects);
+		return true;
+	end
+end
+
+-- call this when a project is succesfully created. 
+-- @return true or nil 
+function stats:addUser(userid)
+	self:updateSiteInfo("usercount", 1, "increase");
+	local recent_users = self:createget("recent_users")
+	if(recent_users) then
+		local data = recent_users.datatable;
+		if(#data >= 100) then
+			commonlib.removeArrayItem(data, 1);
+		end
+		data[#data+1] = userid;
+		self:updateRow("recent_users", recent_users);
+		return true;
+	end
+end
+
+-- please only call this function when project is modified after one week from creation date
+-- this will filter out dead project. 
+-- @return true or nil
+function stats:addLastModifiedProject(proj_name)
+	local lastmodified_projects = self:createget("lastmodified_projects")
+	if(lastmodified_projects) then
+		local data = lastmodified_projects.datatable;
+		for i, name in ipairs(data) do
+			if(name == proj_name) then
+				return true;
+			end
+		end
+		if(#data >= 100) then
+			commonlib.removeArrayItem(data, 1);
+		end
+		data[#data+1] = proj_name;
+		self:updateRow("lastmodified_projects", lastmodified_projects);
+		return true;
+	end
+end

@@ -1,0 +1,92 @@
+﻿<?npl
+--[[
+Title: oauth handler for `satellizer oauth framework`
+Author: LiXizhi
+Date: 2016/5/10
+]]
+include_once("api.page");
+local config = include("config.page");
+	
+local accessTokenUrl = 'https://github.com/login/oauth/access_token';
+local userApiUrl = 'https://api.github.com/user';
+local params = {
+	code = request:get("code"),
+	client_id = request:get("clientId"),
+	client_secret = config.GITHUB_SECRET,
+	redirect_uri = request:get("redirectUri"),
+};
+
+response:Begin();
+-- Step 1. Exchange authorization code for access token.
+util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
+	local accessToken = util.parse_str(data);
+	-- accessToken == {scope="user:email",access_token="25b6511fb14eacd48106ab16261dd01bdb1fe54e",token_type="bearer",}	
+	if(accessToken and accessToken.error) then
+		response:send(accessToken);
+		return;
+	end
+
+	local headers = { ['User-Agent'] = 'Satellizer' };
+
+	-- Step 2. Retrieve profile information about the current user.
+	util.GetUrl({ url = userApiUrl, qs = accessToken, headers = headers, json = true }, function(err, msg, profile)
+		
+		if(not profile) then
+			LOG.std(nil, "debug", "github", msg);
+			return response:status(400):send({ message= 'Failed to fetch github profile' });
+		end
+
+		if(request:header('Authorization')) then
+			-- Step 3a. Link user accounts.
+			db.User:findOne({ github = profile.id }, function(err, existingUser)
+				if (existingUser) then
+					-- refresh access token
+					if(not commonlib.partialcompare(accessToken, existingUser.github_token)) then
+						local err, user = db.User:updateOne({_id = existingUser._id}, {github_token=accessToken}, resume);
+					end
+					return response:status(409):send({ message = 'There is already a GitHub account that belongs to you' });
+				end
+				local token = request:header('Authorization'):match("%s+(%S+)");
+				local payload, err = decodeJWT(token);
+				db.User:findById(payload.id, function(err, user)
+					if (not user) then
+						return response:status(400):send({ message= 'User not found' });
+					end
+					user.github = profile.id;
+					user.picture = user.picture or profile.avatar_url;
+					user.displayName = user.displayName or profile.name;
+					user.github_token = accessToken;
+					db.User:updateOne(user, function(err, user)
+						local token = createJWT(user);
+						response:send({ token = token });
+					end)
+				end);
+			end);
+		else
+			-- Step 3b. Create a new user account or return an existing one.
+			db.User:findOne({ github = profile.id }, function(err, existingUser)
+				if (existingUser) then
+					if(not commonlib.partialcompare(accessToken, existingUser.github_token)) then
+						local err, user = db.User:updateOne({_id = existingUser._id}, {github_token=accessToken}, resume);
+					end
+					local token, err = createJWT(existingUser);
+					response:send({ token = token });
+					return;
+				end
+				db.User:insertOne({github = profile.id}, {
+					github = profile.id,
+					picture = profile.avatar_url,
+					displayName = profile.name,
+					github_token = accessToken,
+					joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+				}, function(err, user) 
+					local token = createJWT(user);
+					include_once("../models/stats.page");
+					models.stats:new():addUser(user._id, true);
+					response:send({ token = token });
+				end);
+			end);
+		end
+	end);
+end);
+

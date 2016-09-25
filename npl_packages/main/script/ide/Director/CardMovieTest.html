@@ -1,0 +1,112 @@
+﻿<!-- "script/ide/Director/CardMovieTest.html" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Leio, 2012/9/27</title>
+</head>
+<body>
+<pe:mcml>
+<script type="text/npl" refresh="true"><![CDATA[
+local page = document:GetPageCtrl();
+local BroadcastHelper = commonlib.gettable("CommonCtrl.BroadcastHelper");
+NPL.load("(gl)script/ide/Director/CardMovieHelper.lua");
+local CardMovieHelper = commonlib.gettable("Director.CardMovieHelper");
+function GoalActived()
+    CardMovieHelper.GoalActived(nil,function()
+        BroadcastHelper.PushLabel({label = "GoalActived播放完毕",});
+    end);
+end
+function GotItem()
+    local runtime_datasource = {
+	    gsid= 23135,--物品描述
+	    start_x = 0,
+	    start_y = 0,
+	    end_x = 400,
+	    end_y = 400,
+	    version = "item",
+    }
+    CardMovieHelper.GotItem(runtime_datasource,function()
+        BroadcastHelper.PushLabel({label = "GotItem播放完毕",});
+    end);
+end
+function SendCard()
+    local runtime_datasource = {
+	    [1] = {gsid = 23135, },
+	    [2] = {gsid = 23135, },
+	    [3] = {gsid = 23135, },
+	    --[4] = {gsid = nil, },
+	    [5] = {gsid = 23135, },
+	    [6] = {gsid = 23135, },
+	    [7] = {gsid = 23135, },
+	    [8] = {gsid = 23135, },
+    }
+    CardMovieHelper.PlayCardByState(nil,"SendCard",runtime_datasource,function()
+        BroadcastHelper.PushLabel({label = "SendCard播放完毕",});
+    end);
+end
+function RemoveCard()
+    local runtime_datasource = {
+	    [7] = {gsid = 23135, },
+    }
+    CardMovieHelper.PlayCardByState(nil,"RemoveCard",runtime_datasource,function()
+        BroadcastHelper.PushLabel({label = "RemoveCard播放完毕",});
+    end);
+end
+function HideCard()
+    local runtime_datasource = {
+	    [1] = {gsid = 23135, }, 
+	    [2] = {gsid = 23135, },
+	    [3] = nil,
+	    [4] = {gsid = 23135, },
+	    [5] = nil,
+	    [6] = nil,
+	    [7] = {gsid = 23135, },
+	    [8] = {gsid = 23135, },
+    }
+    CardMovieHelper.PlayCardByState(nil,"HideCard",runtime_datasource,function()
+        BroadcastHelper.PushLabel({label = "HideCard播放完毕",});
+    end);
+end
+function RecoverCard()
+    local oldcards_datasource = {
+	    [1] = {gsid = 23135, }, 
+	    [2] = {gsid = 23135, },
+	    [3] = nil,
+	    [4] = {gsid = 23135, },
+	    [5] = nil,
+	    [6] = nil,
+	    [7] = {gsid = 23135, },
+	    [8] = {gsid = 23135, },
+    }
+    local newcards_datasource = {
+	    [3] = {gsid = 23135, },
+	    [5] = {gsid = 23135, },
+	    [6] ={gsid = 23135, },
+    }
+    CardMovieHelper.RecoverCard(oldcards_datasource,newcards_datasource,function()
+        BroadcastHelper.PushLabel({label = "RecoverCard播放完毕",});
+    end);
+end
+
+]]></script>
+    <div>
+        <input style="margin-left:5px;" type="button" value="目标激活" onclick="GoalActived"/>
+        <br />
+        <input style="margin-left:5px;" type="button" value="获得物品" onclick="GotItem"/>
+        <br />
+        <input style="margin-left:5px;" type="button" value="发牌" onclick="SendCard"/>
+        <input style="margin-left:5px;" type="button" value="出牌/弃牌" onclick="RemoveCard"/>
+        <input style="margin-left:5px;" type="button" value="hide" onclick="HideCard"/>
+        <input style="margin-left:5px;" type="button" value="recover" onclick="RecoverCard"/>
+    </div>
+    <div>
+       
+        <br />
+        <input type="button" onclick="DoPlay" value="play"/>
+        <input type="button" onclick="DoStop" value="stop"/>
+    </div>
+   
+</pe:mcml> 
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?npl
+
+local url = request:url();
+local pagename = url:match("^/*([^%?]+)");
+
+if(file_exists(pagename..".page")) then
+	include(pagename..".page");
+	return
+end
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>NPL server page test. </title>
+</head>
+<body>
+<h1>NPL server page test. </h1>
+<p class="title">
+	<?=pagename?> does not exist
+</p>
+<p>
+	try <a href="/helloworld" >helloworld</a> and 
+	<a href="/helloworld.lua" >helloworld.lua</a>,
+</p>
+</body>
+</html>
+

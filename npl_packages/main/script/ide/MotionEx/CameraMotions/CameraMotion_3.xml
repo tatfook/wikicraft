@@ -1,0 +1,30 @@
+<!--script/ide/MotionEx/CameraMotions/CameraMotion_3.xml-->
+<Motion>
+  <MotionLine>
+    <UID></UID>
+    <Target></Target>
+    <!--更新的类型 -->
+    <Type>aries_camera</Type>
+    <!--场景名称，空为大场景-->
+    <Scene></Scene>
+    <Origin>{ CameraObjectDistance = 0, CameraLiftupAngle = 0, CameraRotY = 0,}</Origin>
+    <Desc>camrea motion line</Desc>
+    <KeyFrames>
+      <KeyFrame>
+        <KeyTime>00:00:00</KeyTime>
+        <Value>{ CameraObjectDistance = 8, CameraRotY = 0,}</Value>
+        <FrameType></FrameType>
+      </KeyFrame>
+      <KeyFrame>
+        <KeyTime>00:00:00.5</KeyTime>
+        <Value>{ CameraObjectDistance = 3, CameraRotY = 3.14,}</Value>
+        <FrameType>easeInOutExpo</FrameType>
+      </KeyFrame>
+      <KeyFrame>
+        <KeyTime>00:00:01</KeyTime>
+        <Value>{ CameraObjectDistance = 8, CameraRotY = 0,}</Value>
+        <FrameType>easeInOutExpo</FrameType>
+      </KeyFrame>
+    </KeyFrames>
+  </MotionLine>
+</Motion>

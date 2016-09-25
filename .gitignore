@@ -1,0 +1,12 @@
+assets.log
+log.txt
+database/
+log/
+obj/
+Properties/
+*.out
+*.log
+.vs/
+*.user
+*.ffs_gui
+*.ffs_db
