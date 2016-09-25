@@ -21,6 +21,11 @@ WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
 WIKI_ROOT = dirname(__FILE__);
 
 local ajax_path = path:match("^/?api/wiki/(.+)");
+
+--log({path});
+--log({WIKI_ROOT});
+--log({ajax_path});
+
 if(ajax_path) then	
 	-- Allow for cross-domain requests (from the frontend). 
 	send_origin_headers();
@@ -29,7 +34,8 @@ if(ajax_path) then
 	send_nosniff_header();
 	nocache_headers();	
 
-	local modelname, params = ajax_path:match("^models/([%w_]+)/?(.*)")
+	local modelname, params = ajax_path:match("^models/([%w_]+)/?(.*)");
+	
 	if(modelname) then
 		local modelfilename = "./models/"..modelname..".page";
 		if(not file_exists(modelfilename)) then
@@ -85,9 +91,11 @@ if(ajax_path) then
 	return;
 else
 	-- dynamic page has no cache headers
+	--log("nocache_headers");
 	response:nocache_headers();
 end
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">

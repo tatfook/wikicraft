@@ -112,16 +112,19 @@ function RenderServerWikiScript()
 	if(not siteName or not pageName) then
 		local siteName_ = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+");
 		isSingleSite = false;
+		
 		if(siteName_ and siteName_~="www") then
 			isSingleSite = true;
 			siteName = siteName_;
-			pageName = request:url():match("^/?([^/]*)");	
+			pageName = request:url():match("^/?([^/]*)");
 		else
 			local url = commonlib.Encoding.url_decode(request:url());
 			siteName, pageName = url:match("^/?([^/]+)/?([^/]*)");	
 			if(not siteName) then
 				siteName, pageName = "wiki", "home"
 			end
+
+			--log({siteName, pageName});
 		end
 	end
 	-- siteName = siteName or "wiki";
@@ -132,6 +135,7 @@ function RenderServerWikiScript()
 			curSite.siteName = siteName;
 			curSite.pageName = pageName;
 			curSite.isSingleSite = isSingleSite;
+			
 			echo(format("<script>window.siteInfo = %s;</script>", json_encode(curSite)));
 		end
 	end
@@ -149,6 +153,7 @@ function RenderServerWikiContent()
 			echo("<script>window.skipClientWiki = true;</script>")
 		end
 	end
+
 	if(pageName and pageName:match("^_")) then
 		local filename = WP_CONTENT_DIR .. '/pages/wiki/pages/special/' .. pageName:gsub("^_", "") .. ".page";
 		if(file_exists(filename)) then
