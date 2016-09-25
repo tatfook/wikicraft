@@ -293,7 +293,6 @@ angular.module('MyApp')
     $scope.makeLayout();
     if (!window.skipClientWiki && WikiPage.siteExists()) {
         // load all pages
-        alert("OK!!!");
         $scope.load(WikiPage.getPageUrl(), idPage);
         $scope.load(WikiPage.getSidebarUrl(), idSidebar);
     }

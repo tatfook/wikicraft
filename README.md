@@ -1,5 +1,4 @@
 # Wikicraft Web Site
-#No.3586_NPL
 
 ### Install Dependencies
 Run following to install all required NPL packages
