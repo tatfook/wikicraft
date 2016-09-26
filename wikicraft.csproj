@@ -81,6 +81,7 @@
     <None Include="www\dev\edit.page" />
     <None Include="www\dev\test.page" />
     <None Include="www\index.page" />
+    <None Include="www\wiki\assets\packages.less" />
     <None Include="www\wiki\auth\api.page" />
     <None Include="www\wiki\auth\clientconfig.page" />
     <None Include="www\wiki\auth\config.page" />
@@ -103,6 +104,8 @@
     <None Include="www\wiki\models\user_stars.page" />
     <None Include="www\wiki\pages\home.page" />
     <None Include="www\wiki\pages\login.page" />
+    <None Include="www\wiki\pages\packages_npl.page" />
+    <None Include="www\wiki\pages\packages_paracraft.page" />
     <None Include="www\wiki\pages\profile.page" />
     <None Include="www\wiki\pages\projects.page" />
     <None Include="www\wiki\pages\settings.page" />

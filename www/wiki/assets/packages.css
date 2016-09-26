@@ -1,0 +1,105 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url('/wiki/assets/icomoon.woff2') format('woff');
+}
+body {
+  font-family: 'Microsoft YaHei UI', 'Source Sans Pro', 'Lucida Grande', sans-serif;
+}
+.packages .head-line {
+  height: 115px;
+  width: 100%;
+  text-align: center;
+  line-height: 115px;
+  font-size: 36px;
+}
+.packages .head-line .red {
+  color: #BD2600;
+}
+.packages .packages-total {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-justify-content: space-between;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  max-width: 900px;
+  margin: 10px auto 10px auto;
+  justify-content: space-between;
+}
+.packages .packages-total .stat {
+  position: relative;
+  margin: 20px 20px 20px 0;
+  padding-left: 46px;
+  font-family: "icomoon", 'Microsoft YaHei UI';
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.packages .packages-total .stat::before {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  font-size: 30px;
+  margin-right: 10px;
+  margin-top: 2px;
+  color: rgba(0, 0, 0, 0.8);
+}
+.packages .packages-total .stat strong {
+  display: block;
+  font-family: Consolas;
+  color: #000;
+  font-size: 16px;
+}
+.packages .packages-total .stat-icon-package::before {
+  content: "\e618";
+  top: -5px;
+  font-size: 36px;
+}
+.packages .packages-total .stat-icon-24hours::before {
+  content: "\e609";
+  top: -3px;
+  left: 0;
+  font-size: 30px;
+}
+.packages .packages-total .stat-icon-7days::before {
+  content: "\e608";
+  top: -3px;
+  left: 0;
+  font-size: 30px;
+}
+.packages .packages-total .stat-icon-1months::before {
+  content: "\e60a";
+  top: -3px;
+  left: 0;
+  font-size: 30px;
+}
+.packages .packages-show {
+  padding-bottom: 20px;
+  margin-top: 20px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+}
+.packages .packages-show .packages-show-title {
+  font-size: 22px;
+  color: #BD2600;
+  text-align: center;
+}
+.packages .packages-show .packages-columar {
+  -webkit-columns: 3;
+  -moz-columns: 3;
+  columns: 3;
+  -webkit-column-gap: 40px;
+  -moz-column-gap: 40px;
+  column-gap: 40px;
+}
+.packages .packages-show .packages-columar li {
+  column-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+  page-break-inside: avoid;
+  padding: 5px;
+  padding-bottom: 20px;
+}
