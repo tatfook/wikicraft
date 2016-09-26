@@ -1,1 +1,46 @@
-<?="packages_npl"?>
+<?npl
+wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
+?>
+<div ng-non-bindable class="wikitop">
+    <div class="packages"></div>    
+</div>
+
+<div class="packages">
+	<div class="head-line">
+        <span class="red">npl</span> package manager 
+    </div>
+
+    <div class="packages-total">
+        <div class="stat stat-icon-package">
+            <strong>345</strong>
+            total packages
+        </div>
+        <div class="stat stat-icon-24hours">
+            <strong>345</strong>
+            total packages
+        </div>
+        <div class="stat stat-icon-7days">
+            <strong>345</strong>
+            total packages
+        </div>
+        <div class="stat stat-icon-1months">
+            <strong>345</strong>
+            total packages
+        </div>
+    </div>
+
+    <div class="packages-show">
+        <div class="packages-show-title">
+            npl packages people install a lot
+        </div>
+        <ul class="packages-columar">
+            <li>
+                <div class="packages-weight">
+                    <a><img src=""/></a>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
