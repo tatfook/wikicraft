@@ -18,6 +18,7 @@
     $scope.account = {};
 
     $scope.$watch(Account.getUser, function (newValue, oldValue) {
+        console.log(newValue);
         $scope.user = angular.copy(newValue);
     });
 	$scope.changePassword = function (oldpassword, newpassword) {

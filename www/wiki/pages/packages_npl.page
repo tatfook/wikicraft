@@ -1,11 +1,8 @@
 <?npl
 wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
+wp_enqueue_script("packagesNplController", WIKI_WEBROOT.."controllers/packagesNplController.js");
 ?>
-<div ng-non-bindable class="wikitop">
-    <div class="packages"></div>    
-</div>
-
-<div class="packages">
+<div class="packages" ng-controller="packagesNplController">
 	<div class="head-line">
         <span class="red">npl</span> package manager 
     </div>
@@ -36,8 +33,10 @@ wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
         <ul class="packages-columar">
             <li>
                 <div class="packages-weight">
-                    <a><img src=""/></a>
-
+                    <a>
+						<wiki-identicon userid="1" size="256"></wiki-identicon>
+					</a>
+					{{abc}}
                 </div>
             </li>
         </ul>

@@ -29,6 +29,7 @@ angular.module('MyApp')
                 }
                 else {
                     $scope.data = "data:image/png;base64," + (new Identicon(hash, $scope.size || 24, 0)).toString();
+                    console.log((new Identicon(hash, $scope.size || 24, 0)).toString());
                 }
             });
         }]
