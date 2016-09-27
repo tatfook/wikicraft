@@ -5,11 +5,38 @@ wp_enqueue_script("packagesNplController", WIKI_WEBROOT.."controllers/packagesNp
 
 <div class="packages-install" ng-controller="packagesNplInstallController">
     <div class="install-infor">
-        <h2>NPL CAD</h2>
+        <h2>
+            NPL CAD
+            <div class="verify">verify</div>
+        </h2>
         <p>packages description</p>
 
         <div class="infor-main">
-
+            <div class="infor-logo">
+                <wiki-identicon userid="1" size="215"></wiki-identicon>
+            </div>
+            <div class="infor-details">
+                <div class="item">
+                    <label>创作者</label>
+                    <div>Hello World</div>
+                </div>
+                <div class="item">
+                    <label>版本</label>
+                    <div>1.0</div>
+                </div>
+                <div class="item">
+                    <label>上次更新时间</label>
+                    <div>2016/9/26</div>
+                </div>
+                <div class="item">
+                    <label>安装次数</label>
+                    <div>3154</div>
+                </div>
+                <div class="button">
+                    <button class="install-now">立即安装</button>
+                    <button class="favorite">添加到收藏夹</button>
+                </div>
+            </div>
         </div>
     </div>
 

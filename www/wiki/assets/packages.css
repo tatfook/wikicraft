@@ -5,6 +5,18 @@
 body {
   font-family: 'Microsoft YaHei UI', 'Source Sans Pro', 'Lucida Grande', sans-serif;
 }
+.verify {
+  width: 56px;
+  height: 28px;
+  background-color: #66FF99;
+  font-size: 16px;
+  font-weight: normal;
+  color: #FFF;
+  text-align: center;
+  line-height: 28px;
+  border-radius: 5px;
+  display: inline-block;
+}
 .packages .head-line {
   height: 115px;
   width: 100%;
@@ -162,14 +174,65 @@ body {
   text-decoration: underline;
 }
 .packages-install {
-  padding-top: 50px;
+  padding-top: 45px;
 }
 .packages-install .install-infor {
   width: 100%;
   border-bottom: 2px solid rgba(0, 0, 0, 0.08);
   margin-bottom: 50px;
 }
+.packages-install .install-infor > h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+.packages-install .install-infor > p {
+  font-size: 22px;
+  color: #666666;
+}
 .packages-install .install-infor .infor-main {
   height: 272px;
   margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+.packages-install .install-infor .infor-main .infor-details {
+  width: 52%;
+  height: 100%;
+  position: relative;
+}
+.packages-install .install-infor .infor-main .infor-details .item {
+  margin-bottom: 10px;
+}
+.packages-install .install-infor .infor-main .infor-details .item label {
+  float: left;
+  margin: 0px;
+  font-size: 14px;
+}
+.packages-install .install-infor .infor-main .infor-details .item > div {
+  margin-left: 265px;
+}
+.packages-install .install-infor .infor-main .infor-details .button {
+  position: absolute;
+  bottom: 0px;
+  font-weight: 600;
+}
+.packages-install .install-infor .infor-main .infor-details .button .install-now {
+  width: 160px;
+  height: 40px;
+  background-color: #0099FF;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+}
+.packages-install .install-infor .infor-main .infor-details .button .favorite {
+  width: 145px;
+  height: 40px;
+  background-color: #FFCC00;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+.packages-install .install-infor .infor-main .infor-logo {
+  float: right;
 }
