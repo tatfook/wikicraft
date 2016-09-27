@@ -33,13 +33,170 @@ wp_enqueue_script("packagesNplController", WIKI_WEBROOT.."controllers/packagesNp
         <ul class="packages-columar">
             <li>
                 <div class="packages-weight">
-                    <a>
-						<wiki-identicon userid="1" size="256"></wiki-identicon>
+                    <a class="package-logo">
+						<wiki-identicon userid="1" size="70"></wiki-identicon>
 					</a>
-					{{abc}}
+					<div class="packages-details">
+                        <h3><a class="name" href="/wiki/packages_npl_install">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/wiki/package_npl_install">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="packages-weight">
+                    <a class="package-logo">
+                        <wiki-identicon userid="1" size="70"></wiki-identicon>
+                    </a>
+                    <div class="packages-details">
+                        <h3><a class="name" href="/package/browserify">browserify</a></h3>
+                        <div class="description">
+                            browser-side require() the node way
+                        </div>
+                        <div class="author">
+                            <a class="version">10.3.3</a>
+                            by ABC
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
+    </div>
+
+    <div class="getting-start">
+        <div class="getting-start-title">
+            getting start
+        </div>
+
+        <h1>installing npl package</h1>
+        <p>
+            You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
+        </p>
+        <a>Download npl</a>
     </div>
 </div>
 

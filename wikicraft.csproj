@@ -58,6 +58,7 @@
     <Content Include="www\wiki\controllers\angular-identicon.js" />
     <Content Include="www\wiki\controllers\githubService.js" />
     <Content Include="www\wiki\controllers\packagesNplController.js" />
+    <Content Include="www\wiki\controllers\packagesNplInstallController.js" />
     <Content Include="www\wiki\controllers\profileController.js" />
     <Content Include="www\wiki\controllers\projectsController.js" />
     <Content Include="www\wiki\controllers\settingsController.js" />
@@ -106,7 +107,9 @@
     <None Include="www\wiki\pages\home.page" />
     <None Include="www\wiki\pages\login.page" />
     <None Include="www\wiki\pages\packages_npl.page" />
+    <None Include="www\wiki\pages\packages_npl_install.page" />
     <None Include="www\wiki\pages\packages_paracraft.page" />
+    <None Include="www\wiki\pages\packages_paracraft_install.page" />
     <None Include="www\wiki\pages\profile.page" />
     <None Include="www\wiki\pages\projects.page" />
     <None Include="www\wiki\pages\settings.page" />

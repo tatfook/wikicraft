@@ -77,15 +77,15 @@ body {
   left: 0;
   font-size: 30px;
 }
-.packages .packages-show {
-  padding-bottom: 20px;
-  margin-top: 20px;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
-}
 .packages .packages-show .packages-show-title {
   font-size: 22px;
   color: #BD2600;
   text-align: center;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
 }
 .packages .packages-show .packages-columar {
   -webkit-columns: 3;
@@ -94,6 +94,8 @@ body {
   -webkit-column-gap: 40px;
   -moz-column-gap: 40px;
   column-gap: 40px;
+  list-style: none;
+  padding: 0px;
 }
 .packages .packages-show .packages-columar li {
   column-break-inside: avoid;
@@ -102,4 +104,72 @@ body {
   page-break-inside: avoid;
   padding: 5px;
   padding-bottom: 20px;
+}
+.packages .packages-show .packages-columar li .packages-weight {
+  padding-left: 80px;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo {
+  display: block;
+  margin-bottom: -75px;
+  margin-left: -80px;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a {
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.8);
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a:hover {
+  color: #cb3837;
+  text-decoration: none;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details div.description,
+.packages .packages-show .packages-columar li .packages-weight .packages-details div.author {
+  font-size: 15px;
+  margin: 0;
+  max-width: 100%;
+  color: rgba(0, 0, 0, 0.6);
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details .author .version {
+  color: rgba(0, 0, 0, 0.6);
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details .author .version:hover {
+  color: #cb3837;
+  text-decoration: none;
+}
+.packages .getting-start .getting-start-title {
+  font-size: 22px;
+  color: #BD2600;
+  text-align: center;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.packages .getting-start h1 {
+  display: block;
+  margin: 0;
+  padding: 20px 0 10px 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+  color: #cb3837;
+  text-decoration: none;
+}
+.packages .getting-start a {
+  color: #BD2600;
+}
+.packages .getting-start a:hover {
+  text-decoration: underline;
+}
+.packages-install {
+  padding-top: 50px;
+}
+.packages-install .install-infor {
+  width: 100%;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 50px;
+}
+.packages-install .install-infor .infor-main {
+  height: 272px;
+  margin-bottom: 20px;
 }

@@ -1,0 +1,25 @@
+﻿<?npl
+wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
+wp_enqueue_script("packagesNplController", WIKI_WEBROOT.."controllers/packagesNplInstallController.js");
+?>
+
+<div class="packages-install" ng-controller="packagesNplInstallController">
+    <div class="install-infor">
+        <h2>NPL CAD</h2>
+        <p>packages description</p>
+
+        <div class="infor-main">
+
+        </div>
+    </div>
+
+    <div class="install-wiki">
+        <pre>
+            NPL CAD 是paracraft的Mod插件。 目的是让用户可以
+
+            • 通过编程的方式进行CAD建模
+            • 学习计算机编程语言
+            • CAD模型可3D打印，或导入到Paracraft世界中变成bmax模型
+        </pre>
+    </div>
+</div>
