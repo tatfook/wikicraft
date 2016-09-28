@@ -59,6 +59,7 @@
     <Content Include="www\wiki\controllers\githubService.js" />
     <Content Include="www\wiki\controllers\packagesNplController.js" />
     <Content Include="www\wiki\controllers\packagesNplInstallController.js" />
+    <Content Include="www\wiki\controllers\packagesProjectsController.js" />
     <Content Include="www\wiki\controllers\profileController.js" />
     <Content Include="www\wiki\controllers\projectsController.js" />
     <Content Include="www\wiki\controllers\settingsController.js" />
@@ -69,6 +70,7 @@
     <Content Include="www\wiki\controllers\userStarsController.js" />
     <Content Include="www\wiki\controllers\wikiController.js" />
     <Content Include="www\wiki\partials\create_project.html" />
+    <Content Include="www\wiki\partials\packages_project_create.html" />
     <Content Include="www\wiki\partials\page_popup.html" />
     <Content Include="www\wiki\partials\site_popup.html" />
     <Content Include="www\wiki\partials\userRepos.html" />
@@ -110,6 +112,7 @@
     <None Include="www\wiki\pages\packages_npl_install.page" />
     <None Include="www\wiki\pages\packages_paracraft.page" />
     <None Include="www\wiki\pages\packages_paracraft_install.page" />
+    <None Include="www\wiki\pages\packages_projects.page" />
     <None Include="www\wiki\pages\profile.page" />
     <None Include="www\wiki\pages\projects.page" />
     <None Include="www\wiki\pages\settings.page" />

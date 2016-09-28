@@ -1,0 +1,102 @@
+﻿<?npl
+wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
+wp_enqueue_script("packagesProjectsController", WIKI_WEBROOT.."controllers/packagesProjectsController.js");
+?>
+
+<div class="packages-projects" ng-controller="packagesProjectsController">
+   <div class="user-infor">
+       <wiki-identicon userid="1" size="234"></wiki-identicon>
+       <h3>Hello World</h3>
+       <label>Email@gmail.com</label>
+       <button>Edit profile</button>
+   </div>
+
+   <div class="projects">
+       <div class="tabs">
+           <a class="active" href="#">NPL</a>
+           <a href="#">Paracraft</a>
+
+           <div ng-click="ShowCreateProjectDialog()" class="project-create">+</div>
+       </div>
+
+       <div class="projects-list">
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+           <div class="item">
+              <div class="project-infor">
+                  <h4>Wikicraft</h4>
+                  <p>browser-side require() the node way</p>
+              </div>
+              <div class="project-operation">
+                   <span>10.3.3</span>
+                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+              </div>
+           </div>
+       </div>
+   </div>
+</div>
