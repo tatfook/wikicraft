@@ -1,0 +1,46 @@
+<?npl
+--[[
+Title: projects of a user
+Author: Big
+Date: 2016/9/29
+]]
+
+include_once("./abstract/multi_user_base.page");
+include_once("./stats.page");
+
+local packages = inherit(models.abstract.multi_user_base, gettable("models.packages"));
+
+packages.db_name = "packages";
+
+function packages:ctor()
+	
+end
+
+function packages:get(params)
+	--log({"params"});
+	data = {};
+
+	self:db():find({}, 
+		function(err, rows) 
+			data = rows
+			log({"rows",rows});
+			resume();
+		end
+	);
+	yield();
+
+	log({"data",data});
+	return data;
+end
+
+function packages:api_createPackage(params)
+	 log({"create_package"});
+
+	 self:db():insertOne(nil, {name="1", email="1@1"},
+	  function(err, data)
+		echo(data)
+	  end
+	 );
+	 return;
+end
+

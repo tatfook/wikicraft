@@ -261,19 +261,27 @@ body {
   display: block;
   line-height: 28px;
 }
-.packages-projects .user-infor button {
+.packages-projects .user-infor a.edit-profile {
   width: 100%;
   height: 40px;
   font-size: 16px;
+  line-height: 40px;
+  text-align: center;
   color: white;
   font-weight: 600;
   background-color: #66FFFF;
   border: none;
   border-radius: 5px;
   outline: none;
+  display: block;
+  cursor: pointer;
 }
-.packages-projects .user-infor button:active {
+.packages-projects .user-infor a.edit-profile:active {
   opacity: .8;
+}
+.packages-projects .user-infor a.edit-profile:hover,
+.packages-projects .user-infor a.edit-profile:focus {
+  text-decoration: none;
 }
 .packages-projects .projects {
   float: right;
@@ -325,8 +333,14 @@ body {
 .packages-projects .projects .projects-list .item .project-infor {
   float: left;
 }
-.packages-projects .projects .projects-list .item .project-infor h4 {
+.packages-projects .projects .projects-list .item .project-infor a {
   font-size: 18px;
+  display: block;
+  color: #000;
+}
+.packages-projects .projects .projects-list .item .project-infor a:hover,
+.packages-projects .projects .projects-list .item .project-infor a:focus {
+  text-decoration: none;
 }
 .packages-projects .projects .projects-list .item .project-infor p {
   font-size: 14px;
@@ -345,7 +359,7 @@ body {
   width: 750px;
 }
 .modal-dialog .project_create {
-  height: 365px;
+  height: 395px;
 }
 .modal-dialog .project_create h1 {
   text-align: center;
@@ -367,7 +381,19 @@ body {
   margin-left: 140px;
 }
 .modal-dialog .project_create .form .item > div input {
-  width: 250px;
+  width: 320px;
+}
+.modal-dialog .project_create .form .item > div textarea {
+  width: 320px;
+  height: 69px;
+  resize: none;
+}
+.modal-dialog .project_create .form .item:nth-child(2) {
+  height: 80px;
+}
+.modal-dialog .project_create .fetch-infor {
+  text-align: center;
+  display: block;
 }
 .modal-dialog .project_create button {
   width: 140px;

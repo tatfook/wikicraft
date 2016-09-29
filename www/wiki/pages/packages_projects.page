@@ -5,16 +5,16 @@ wp_enqueue_script("packagesProjectsController", WIKI_WEBROOT.."controllers/packa
 
 <div class="packages-projects" ng-controller="packagesProjectsController">
    <div class="user-infor">
-       <wiki-identicon userid="1" size="234"></wiki-identicon>
-       <h3>Hello World</h3>
-       <label>Email@gmail.com</label>
-       <button>Edit profile</button>
+       <wiki-identicon userid="user._id" size="234" imageurl="user.picture"></wiki-identicon>
+       <h3>{{user.displayName}}</h3>
+       <label>{{user.email}}</label>
+       <a href="/wiki/settings" class="edit-profile">Edit profile</a>
    </div>
 
    <div class="projects">
        <div class="tabs">
-           <a class="active" href="#">NPL</a>
-           <a href="#">Paracraft</a>
+           <a ng-class="{'active': tabsActive == 1}" href="#" ng-click="setTabs(1)">NPL</a>
+           <a ng-class="{'active': tabsActive == 2}" href="#" ng-click="setTabs(2)">Paracraft</a>
 
            <div ng-click="ShowCreateProjectDialog()" class="project-create">+</div>
        </div>
@@ -22,13 +22,13 @@ wp_enqueue_script("packagesProjectsController", WIKI_WEBROOT.."controllers/packa
        <div class="projects-list">
            <div class="item">
               <div class="project-infor">
-                  <h4>Wikicraft</h4>
+                  <a href="/wiki/packages_npl_install">Wikicraft</a>
                   <p>browser-side require() the node way</p>
               </div>
               <div class="project-operation">
                    <span>10.3.3</span>
-                   <a href="#"><img src="/wiki/assets/images/u68.png"/></a>
-                   <a href="#"><img src="/wiki/assets/images/u76.png"/></a>
+                   <a href="#" ng-click="ShowModifyProjectDialog()"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#" ng-click="DeleteProject()"><img src="/wiki/assets/images/u76.png"/></a>
               </div>
            </div>
            <div class="item">

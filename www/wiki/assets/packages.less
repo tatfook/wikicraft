@@ -313,19 +313,27 @@ body{
             line-height: 28px;
         }
 
-        button{
+        a.edit-profile{
             width: 100%;
             height: 40px;
             font-size: 16px;
+            line-height: 40px;
+            text-align: center;
             color: white;
             font-weight: 600;
             background-color: #66FFFF;
             border: none;
             border-radius: 5px;
             outline: none;
+            display: block;
+            cursor: pointer;
 
             &:active{
                 opacity: .8;
+            }
+
+            &:hover,&:focus{
+                text-decoration: none;
             }
         }
     }
@@ -386,8 +394,14 @@ body{
                 .project-infor{
                     float: left;
 
-                    h4{
+                    a{
                         font-size: 18px;
+                        display: block;
+                        color: #000;
+
+                        &:hover,&:focus{
+                            text-decoration: none;
+                        }
                     }
 
                     p{
@@ -414,7 +428,7 @@ body{
     width: 750px;
 
     .project_create{
-        height: 365px;
+        height: 395px;
         
         h1{
             text-align: center;
@@ -438,10 +452,25 @@ body{
                     margin-left: 140px;
 
                     input{
-                        width: 250px;
+                        width: 320px;
+                    }
+
+                    textarea{
+                        width: 320px;
+                        height: 69px;
+                        resize: none;
                     }
                 }
             }
+
+            .item:nth-child(2){
+                height: 80px;
+            }
+        }
+
+        .fetch-infor{
+            text-align: center;
+            display: block;
         }
 
         button{

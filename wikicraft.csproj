@@ -71,6 +71,7 @@
     <Content Include="www\wiki\controllers\wikiController.js" />
     <Content Include="www\wiki\partials\create_project.html" />
     <Content Include="www\wiki\partials\packages_project_create.html" />
+    <Content Include="www\wiki\partials\packages_project_modify.html" />
     <Content Include="www\wiki\partials\page_popup.html" />
     <Content Include="www\wiki\partials\site_popup.html" />
     <Content Include="www\wiki\partials\userRepos.html" />
@@ -98,6 +99,7 @@
     <None Include="www\wiki\models\abstract\base.page" />
     <None Include="www\wiki\models\abstract\multi_user_base.page" />
     <None Include="www\wiki\models\abstract\per_user_base.page" />
+    <None Include="www\wiki\models\packages.page" />
     <None Include="www\wiki\models\page.page" />
     <None Include="www\wiki\models\project.page" />
     <None Include="www\wiki\models\project_pages.page" />
