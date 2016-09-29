@@ -1,9 +1,16 @@
 <div class="project_create">
-    <h1>Create your new project</h1>
+    <h1>Create your new {{projectTypeName}}</h1>
     <div class="form">
         <div class="item">
+            <label>Project type</label>
+            <div>
+                <input type="radio" ng-model="projectType" value="a"/>npl package &nbsp;&nbsp;
+                <input type="radio" ng-model="projectType" value="b"/>paracraft mod
+            </div>
+        </div>
+        <div class="item">
             <label>Project name</label>
-            <div><input value="" ng-model="projectName"/></div>
+            <div><input type="text" value="" ng-model="projectName"/></div>
         </div>
         <div class="item">
             <label>Description</label>
@@ -11,10 +18,9 @@
         </div>
         <div class="item">
             <label>Git URL</label>
-            <div><input value="" ng-model="projectGitURL"/></div>
+            <div><input type="text" value="" ng-model="projectGitURL"/></div>
         </div>
     </div>
-    <small class="fetch-infor"><strong>Icon:</strong> <a href="#">This line</a></small>
-    <small class="fetch-infor"><strong>Wiki:</strong> <a href="#">This line</a></small>
+    <small class="fetch-infor"><strong>Please upload `icon.png` and `README.md` in your git repositary. </strong></small>
     <button ng-click="confirm()">Confirm</button>
 </div>

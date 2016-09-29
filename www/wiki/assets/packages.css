@@ -359,7 +359,7 @@ body {
   width: 750px;
 }
 .modal-dialog .project_create {
-  height: 395px;
+  height: 435px;
 }
 .modal-dialog .project_create h1 {
   text-align: center;
@@ -380,7 +380,7 @@ body {
 .modal-dialog .project_create .form .item > div {
   margin-left: 140px;
 }
-.modal-dialog .project_create .form .item > div input {
+.modal-dialog .project_create .form .item > div input[type='text'] {
   width: 320px;
 }
 .modal-dialog .project_create .form .item > div textarea {
@@ -388,12 +388,13 @@ body {
   height: 69px;
   resize: none;
 }
-.modal-dialog .project_create .form .item:nth-child(2) {
+.modal-dialog .project_create .form .item:nth-child(3) {
   height: 80px;
 }
 .modal-dialog .project_create .fetch-infor {
   text-align: center;
   display: block;
+  margin-top: 10px;
 }
 .modal-dialog .project_create button {
   width: 140px;

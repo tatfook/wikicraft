@@ -34,13 +34,13 @@ function packages:get(params)
 end
 
 function packages:api_createPackage(params)
-	 log({"create_package"});
-
-	 self:db():insertOne(nil, {name="1", email="1@1"},
-	  function(err, data)
-		echo(data)
-	  end
-	 );
+	 log({"params",params});
+	 
+	 --self:db():insertOne(nil, {name="1", email="1@1"},
+	  --function(err, data)
+		--echo(data)
+	  --end
+	 --);
 	 return;
 end
 
