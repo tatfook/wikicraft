@@ -2,6 +2,21 @@ angular.module('MyApp')
 .controller('packagesProjectsController', function ($scope, $uibModal, Account, $http) {
     Account.setRequireSignin(true);
 
+    $http({
+        method: 'POST',
+        url: '/api/wiki/models/packages',
+        data: {
+            projectType: $scope.projectType
+        }
+    })
+    .then(function (response) {
+        console.log(response);
+    },
+    function (response) {
+
+    });
+
+
     $scope.$watch(Account.getUser, function (newValue, oldValue) {
         $scope.user = angular.copy(newValue);
     });
@@ -75,13 +90,14 @@ angular.module('MyApp')
         });
 
         $http.post('/api/wiki/models/packages/createPackage', {
-            projectName: $scope.projectName,
-            projectDesc: $scope.projectDesc,
-            projectGitURL: $scope.projectGitURL,
-            projectType: $scope.projectType
+            projectName   : $scope.projectName,
+            projectDesc   : $scope.projectDesc,
+            projectGitURL : $scope.projectGitURL,
+            projectType   : $scope.projectType,
+            UserId        : $scope.user._id
         })
         .then(function (response) {
-
+            console.log(response);
         }, function (error) {});
     }
 
@@ -114,7 +130,4 @@ angular.module('MyApp')
     $scope.setTabs = function (params) {
         $scope.tabsActive = params;
     }
-
-
-
 })

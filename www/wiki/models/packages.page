@@ -17,11 +17,16 @@ function packages:ctor()
 end
 
 function packages:get(params)
-	--log({"params"});
+	log({"params"});
+
+	if(params.projectType) then
+		return {result = -1, msg = "projectType is not set"};
+	end
+
 	data = {};
 
-	self:db():find({}, 
-		function(err, rows) 
+	self:db():find({_id = {gt=-1, limit=10, skip=0},projectType = params.projectType}, 
+		function(err, rows)
 			data = rows
 			log({"rows",rows});
 			resume();
@@ -34,13 +39,22 @@ function packages:get(params)
 end
 
 function packages:api_createPackage(params)
-	 log({"params",params});
-	 
-	 --self:db():insertOne(nil, {name="1", email="1@1"},
-	  --function(err, data)
-		--echo(data)
-	  --end
-	 --);
-	 return;
+	self:db():insertOne(nil, 
+		{
+			projectName     = params.projectName, 
+			projectDesc     = params.projectDesc,
+			projectType     = params.projectType,
+			projectGitURL   = params.projectGitURL,
+			userId          = params.UserId
+		 },
+		function(err, data)
+			log({"data",data});
+			return {result = "-1",msg = "Create fail!"};
+		end
+		);
+
+	return {result = "1",msg = "Create Successful!"};
 end
+
+
 
