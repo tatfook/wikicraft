@@ -17,17 +17,17 @@ function packages:ctor()
 end
 
 function packages:get(params)
-	log({"params"});
+	log({"params.projectType",params.projectType});
 
-	if(params.projectType) then
+	if(not params.projectType) then
 		return {result = -1, msg = "projectType is not set"};
 	end
 
 	data = {};
 
-	self:db():find({_id = {gt=-1, limit=10, skip=0},projectType = params.projectType}, 
+	self:db():find({_id = {gt=-1, limit=10, skip=0} ,projectType = params.projectType}, 
 		function(err, rows)
-			data = rows
+			data = rows;
 			log({"rows",rows});
 			resume();
 		end
@@ -45,7 +45,8 @@ function packages:api_createPackage(params)
 			projectDesc     = params.projectDesc,
 			projectType     = params.projectType,
 			projectGitURL   = params.projectGitURL,
-			userId          = params.UserId
+			userId          = params.UserId,
+			version			= '0.0.1'
 		 },
 		function(err, data)
 			log({"data",data});
@@ -54,6 +55,11 @@ function packages:api_createPackage(params)
 		);
 
 	return {result = "1",msg = "Create Successful!"};
+end
+
+function packages:api_modifyPackage(params)
+
+	return;
 end
 
 

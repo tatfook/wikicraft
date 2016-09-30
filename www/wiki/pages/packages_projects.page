@@ -13,22 +13,22 @@ wp_enqueue_script("packagesProjectsController", WIKI_WEBROOT.."controllers/packa
 
    <div class="projects">
        <div class="tabs">
-           <a ng-class="{'active': tabsActive == 1}" href="#" ng-click="setTabs(1)">NPL</a>
-           <a ng-class="{'active': tabsActive == 2}" href="#" ng-click="setTabs(2)">Paracraft</a>
+           <a ng-class="{'active': projectType == 'a'}" href="#" ng-click="setTabs('a')">NPL</a>
+           <a ng-class="{'active': projectType == 'b'}" href="#" ng-click="setTabs('b')">Paracraft</a>
 
            <div ng-click="ShowCreateProjectDialog()" class="project-create">+</div>
        </div>
 
        <div class="projects-list">
-           <div class="item">
+           <div class="item" ng-repeat="item in items">
               <div class="project-infor">
-                  <a href="/wiki/packages_npl_install">Wikicraft</a>
-                  <p>browser-side require() the node way</p>
+                  <a ng-href="/wiki/packages_npl_install/?id={{item._id}}">{{item.projectName}}</a>
+                  <p>{{item.projectDesc}}</p>
               </div>
               <div class="project-operation">
                    <span>10.3.3</span>
-                   <a href="#" ng-click="ShowModifyProjectDialog()"><img src="/wiki/assets/images/u68.png"/></a>
-                   <a href="#" ng-click="DeleteProject()"><img src="/wiki/assets/images/u76.png"/></a>
+                   <a href="#" ng-click="ShowModifyProjectDialog(item._id)"><img src="/wiki/assets/images/u68.png"/></a>
+                   <a href="#" ng-click="DeleteProject(item._id)"><img src="/wiki/assets/images/u76.png"/></a>
               </div>
            </div>
        </div>
