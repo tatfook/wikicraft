@@ -1,0 +1,89 @@
+<?npl
+--[[
+Title: database manager 
+Author: wuxiangan
+Date: 2016/9/24
+Desc: 
+]]
+
+include_once("./abstract/base.page");
+
+NPL.load("(gl)script/ide/System/Database/TableDatabase.lua");
+NPL.load("(gl)script/apps/WebServer/mem_cache.lua");
+
+
+local db_manager = inherit(models.abstract.base, gettable("models.db_manager"));
+
+local TableDatabase = commonlib.gettable("System.Database.TableDatabase");
+local obj_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance();
+
+-- this will start both db client and db server if not.
+--local db_handle = TableDatabase:new():connect("database/npl/", function() end);
+
+-- db_handle:EnableSyncMode(true);
+function db_manager:get(params)
+	local db_handle = TableDatabase:new():connect(self:api_getDBPath(), function() end);
+	local tableName = params.tableName;
+	local operation = params.operation;
+	local query = params.query;
+	local update = params.update;
+	local table = db_handle:collection(tableName);
+
+	if (operation == "select") then
+		table:find(query, function(err,rows) resume(err,rows) end);
+	elseif (operation == "insert") then
+		table:insertOne(query, update, function(err, rows) resume(err, rows) end);
+	elseif (operation == "update") then
+		table:updateOne(query, update, function(err, rows) resume(err, rows) end);
+	elseif (operation == "delete") then
+		table:deleteOne(query, resume);
+	else
+		return "parament error";
+	end
+
+	err, rows = yield();
+	log(err);
+	return rows;
+
+end
+
+function db_manager:api_tableIndexes(params)
+	local db_handle = TableDatabase:new():connect(self:api_getDBPath(), function() end);
+	local tableName = params.tableName;
+	local table = db_handle:collection(tableName);
+	table:exec("SELECT name as indexName FROM indexes;", function(err, rows) resume(err, rows) end)
+	-- table:find({}, function(err,rows) resume(err,rows) end);
+	err, rows = yield();
+	log(err);
+	return rows;
+end
+
+function db_manager:api_setDBPath(params) 
+	local dbPath = params.dbPath;
+	obj_cache:set("db_path", dbPath);
+	db_handle = TableDatabase:new():connect(dbPath, function() end);
+end
+
+function db_manager:api_getDBPath()
+	return  obj_cache:get("db_path") or "database/npl/";
+end
+
+function db_manager:api_tables(params) 
+	local tableNames = {};
+	local databaseDir = self:api_getDBPath();
+	local files = commonlib.Files.Find(nil, databaseDir, 0, 500, "*.db", nil);
+	for i, file in ipairs(files) do
+		tableNames[#tableNames+1] = string.match(file.filename,"(.*)%.");
+	end
+	return tableNames;
+end 
+
+--[[
+function db_manager:api_test(params)
+	local db_handle = TableDatabase:new():connect(self:api_getDBPath(), function() end);
+	db_handle.TestUser:find({_id={gt=3}}, function(err, rows) resume(err,rows) end);
+	err, rows = yield();
+	return rows;
+end
+
+]]--

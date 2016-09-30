@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
+<script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<!-- 引入 Bootstrap -->
+<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<title>TableDB查询器</title>
+</head>
+
+<body>
+<div>
+    <div ng-app="DBManager" ng-controller="DBManagerCtrl">
+        <div>
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="control-label col-md-5">DB路径设置: </label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" ng-model="dbPath" placeholder="数据库文件所在目录"/>
+                    </div>
+                    <button class="btn" ng-click="setDBPath()">设置</button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-5">请选择表:</label>
+                    <div class="col-md-2">
+                        <select class="form-control" ng-model="selectedTable"
+                                ng-options="table for table in tables"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-5">操作:</label>
+                    <div class="col-md-2">
+                        <select class="form-control" ng-model="selectedOperation">
+                            <option ng-repeat="x in operations" value="{{x.value}}">{{x.display}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-5">参数</label>
+                    <div class="col-md-1">
+                        <input type="text" class="form-control" ng-model="key" placeholder="key">
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" class="form-control" ng-model="value" placeholder="value">
+                    </div>
+                    <div class="col-md-1"><button class="btn"  ng-click="addParam()">添加</button></div>
+                </div>
+                <div class="form-group" ng-repeat="param in params">
+                    <label class="control-label col-md-5">{{"参数"+($index+1)+": "}}</label>
+                    <div class="col-md-1">
+                        <input type="text" class="form-control" ng-model="param.key">
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" class="form-control"ng-model="param.value">
+                    </div>
+                    <div class="col-md-1"><button class="btn"  ng-click="deleteParam(param)">删除</button></div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-5 col-md-2">
+                        <button class="btn form-control" style="background: gainsboro" ng-click="select()">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div>
+            <div class="col-md-offset-5 col-md-2"><h4>结果：</h4></div>
+            <table class="table table-striped">
+                <tr ng-repeat="record in tableRecord">
+                    <td ng-if="isEdit">
+                        <button class="btn" ng-click="modify(record)">修改</button>
+                        <button class="btn" ng-click="delete(record)">删除</button>
+                    </td>
+                    <td ng-repeat="field in record"><span>{{field.key}}:<input ng-model="field.value"/></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = angular.module("DBManager", []);
+    var urlPrefix = '/api/wiki/models/';
+    //var urlPrefix = 'http://localhost:8099/api/wiki/models/';
+    app.controller("DBManagerCtrl", function ($scope, $http) {
+        $scope.operations = [{value: "select", display: '查询'}, {
+            value: "insert",
+            display: '添加'
+        }, {
+            value: "selectIndex",
+            display: '查询索引'
+        }/*, {value:"update",display:'修改'}, {value:"delete", display:'删除'}*/];
+        $scope.selectedOperation = "select";
+        $scope.isEdit = true;
+        $scope.selectedTable = "";
+        $scope.tables = [];
+        $scope.params = [];
+        $scope.output = undefined;
+
+        $scope.getTables = function () {
+            $http({url: urlPrefix + 'db_manager/tables', method: "POST"}).then(function (response) {
+                $scope.tables = response.data;
+            }).catch(function (response) {
+                console.log("http request error")
+            });
+        }
+        $scope.getTables();
+
+        $http({url: urlPrefix + 'db_manager/getDBPath', method: "POST"}).then(function (response) {
+            $scope.dbPath = response.data;
+        }).catch(function (response) {
+            console.log("http request error")
+        });
+
+        $scope.setDBPath = function () {
+            $http({url: urlPrefix + 'db_manager/setDBPath', method: "POST", data: {dbPath: $scope.dbPath}});
+            $scope.getTables();
+        }
+
+        $scope.select = function () {
+            /*
+             if ($scope.selectedOperation == "selectIndex") {
+             return $scope.selectIndex();
+             }*/
+            if ($scope.selectedOperation == "insert") {
+                return $scope.insert();
+            }
+            var params = {operation: "select", tableName: $scope.selectedTable, query: {}, update: {}}
+            for (i = 0; i < $scope.params.length; i++) {
+                params["query"][$scope.params[i].key] = getJsonObject($scope.params[i].value);
+            }
+            var url = urlPrefix + 'db_manager';
+            $scope.isEdit = true;
+            if ($scope.selectedOperation == "selectIndex") {
+                params.operation = "selectIndex";
+                url = urlPrefix + 'db_manager/tableIndexes';
+                $scope.isEdit = false;
+            }
+            $http({url: url, method: "POST", data: params})
+                    .then(function (response) {
+                        //console.log(response.data);
+                        $scope.tableRecord = response.data.map(function (record) {
+                            return $scope.objectToArray(record);
+                        });
+                    }).catch(function (response) {
+                console.log("http request error")
+            });
+        }
+
+        $scope.selectIndex = function () {
+            var params = {operation: "selectIndex", tableName: $scope.selectedTable, query: {}, update: {}}
+            $http({url: urlPrefix + 'db_manager', method: "POST", data: params}).then(function (response) {
+                console.log(response.data);
+                $scope.indexes = response.data;
+            }).catch(function (response) {
+                console.log("http request error")
+            });
+        }
+
+        $scope.insert = function () {
+            var params = {operation: "insert", tableName: $scope.selectedTable, query: {}, update: {}}
+            for (i = 0; i < $scope.params.length; i++) {
+                params["update"][$scope.params[i].key] = getJsonObject($scope.params[i].value);
+            }
+            $http({url: urlPrefix + 'db_manager', method: "POST", data: params});
+            $scope.selectedOperation = "select";
+            $scope.params = [];
+            $scope.select();
+        }
+        $scope.update = function (record) {
+            var params = {operation: "update", tableName: $scope.selectedTable, query: {}, update: {}}
+            for (i = 0; i < record.length; i++) {
+                params["update"][record[i].key] = record[i].value;
+                if (record[i].key == "_id") {
+                    params["query"][record[i].key] = record[i].value;
+                }
+            }
+            $http({url: urlPrefix + 'db_manager', method: "POST", data: params});
+            $scope.select();
+        }
+
+        $scope.delete = function (record) {
+            var recordObj = $scope.arrayToObject(record);
+            var params = {operation: "delete", tableName: $scope.selectedTable, query: {}}
+            params["query"]["_id"] = recordObj._id;
+            $http({url: urlPrefix + 'db_manager', method: "POST", data: params});
+            $scope.select();
+        }
+
+        $scope.addParam = function () {
+            $scope.params.push({key: $scope.key, value: $scope.value});
+            $scope.key = "";
+            $scope.value = "";
+        }
+
+        $scope.deleteParam = function (param) {
+            let params = [];
+            for (i = 0; i < $scope.params.length; i++) {
+                if ($scope.params[i].key == param.key && $scope.params[i].value == param.value) {
+                    continue;
+                } else {
+                    params.push($scope.params[i]);
+                }
+            }
+            $scope.params = params;
+        }
+
+        $scope.objectToArray = function (obj) {
+            var arr = [];
+            for (key in obj) {
+                arr.push({key: key, value: obj[key], _id: obj._id});
+            }
+            return arr;
+        }
+
+        $scope.arrayToObject = function (arr) {
+            var obj = {};
+            for (i = 0; i < arr.length; i++) {
+                obj[arr[i].key] = arr[i].value;
+            }
+            return obj;
+        }
+
+        function getJsonObject(str) {
+            try{
+                return JSON.parse(str);
+            } catch(e) {
+                return str;
+            }
+        }
+    });
+</script>
+</body>
+</html> 
