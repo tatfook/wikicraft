@@ -58,7 +58,7 @@
     <Content Include="www\wiki\controllers\angular-identicon.js" />
     <Content Include="www\wiki\controllers\githubService.js" />
     <Content Include="www\wiki\controllers\packagesNplController.js" />
-    <Content Include="www\wiki\controllers\packagesNplInstallController.js" />
+    <Content Include="www\wiki\controllers\packagesInstallController.js" />
     <Content Include="www\wiki\controllers\packagesProjectsController.js" />
     <Content Include="www\wiki\controllers\profileController.js" />
     <Content Include="www\wiki\controllers\projectsController.js" />
@@ -100,6 +100,7 @@
     <None Include="www\wiki\models\abstract\multi_user_base.page" />
     <None Include="www\wiki\models\abstract\per_user_base.page" />
     <None Include="www\wiki\models\packages.page" />
+    <None Include="www\wiki\models\packages_stats.page" />
     <None Include="www\wiki\models\page.page" />
     <None Include="www\wiki\models\project.page" />
     <None Include="www\wiki\models\project_pages.page" />

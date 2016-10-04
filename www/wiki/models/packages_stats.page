@@ -1,0 +1,298 @@
+<?npl
+--[[
+Title: package stats
+Author: Big
+Date: 2016/102
+]]
+
+include_once("./abstract/base.page");
+
+local packages_stats = inherit(models.abstract.base, gettable("models.packages_stats"));
+
+packages_stats.db_name = 'packages_stats';
+
+function packages_stats:ctor()
+	
+end
+
+function packages_stats:recordCreate()
+	log({"create"});
+	newQuantity = 0;
+
+	self:db():findOne({statsType = "packageStats"},
+		function(err, response)
+			log({"response",response});
+			if(response == nil) then
+
+				self:db():insertOne(nil,{
+					statsType = 'packageStats',
+					quantity  = 1;
+				},
+				function(err,data)
+					--log(data);
+					resume();
+				end
+				);
+			else
+				newQuantity = response.quantity + 1;
+
+				self:db():updateOne(
+					{
+						statsType = "packageStats"
+					},{
+						quantity  = newQuantity; 
+					},
+					function(err,data)
+						resume();
+					end
+				);
+			end
+		end
+	);
+	yield();
+
+	return true;
+end
+
+function packages_stats:recordDelete()
+	log({"delete"});
+
+	self:db():findOne({statsType = "packageStats"},
+		function(err, response)
+			log({"response",response});
+			if(response ~= nil) then
+				newQuantity = response.quantity - 1;
+
+				self:db():updateOne(
+					{
+						statsType = "packageStats"
+					},{
+						quantity  = newQuantity; 
+					},
+					function(err,data)
+						resume();
+					end
+				);
+			end
+		end
+	);
+	yield();
+
+	return true;
+end
+
+function packages_stats:recordDownload()
+	local today = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+
+	local year,month,day = today:match("^([%d]+)-([%d]+)-([%d]+)$");
+
+	self:db():findOne({statsType="dayDownload"},
+		function(err, response)
+			log({"err",err});
+			log({'response',response,})
+			if (response == nil) then
+				self:db():insertOne({
+					statsType = 'dayDownload',
+					quantity  = 1,
+					today = today,
+				},
+				function(err,response)
+					log({response});
+					resume();
+				end
+				);
+			else
+				if(response.today == today) then
+					self:db():updateOne({
+						statsType = "dayDownload",
+						today = today,
+					},
+					{
+						quantity = response.quantity+1
+					},
+					function(err,response)
+						resume();
+					end
+					);
+				else
+					self:db():deleteOne({
+						statsType = "dayDownload",
+					},
+					function(err,count)
+						if(count == 1) then
+							self:db():insertOne({
+								statsType = 'dayDownload',
+								quantity  = 1,
+								today = today,
+							},
+							function(err,response)
+								log({response});
+								resume();
+							end
+							);
+						else
+							returnData = {result=-1,msg="Delete dayDownload fail"};
+						end
+					end
+					);
+				end
+			end
+		end
+	);
+	yield();
+
+	self:db():findOne({statsType = "monthDownload"},
+		function(err, response)
+			if (response == nil) then
+				self:db():insertOne({
+					statsType = 'monthDownload',
+					quantity  = 1,
+					month = year..'-'..month,
+				},
+				function(err,response)
+					log({response});
+					resume();
+				end
+				);
+			else
+				if(response.month ==  year..'-'..month) then
+					self:db():updateOne({
+						statsType = "monthDownload",
+						month = year..'-'..month,
+					},
+					{
+						quantity = response.quantity+1
+					},
+					function(err,response)
+						resume();
+					end
+					);
+				else
+					self:db():deleteOne({
+						statsType = "monthDownload",
+					},
+					function(err,count)
+						if(count == 1) then
+							self:db():insertOne({
+								statsType = 'monthDownload',
+								quantity  = 1,
+								month = year..'-'..month,
+							},
+							function(err,response)
+								log({response});
+								resume();
+							end
+							);
+						else
+							returnData = {result=-1,msg="Delete monthDownload fail"};
+						end
+					end
+					);
+				end
+			end
+		end
+	);
+	yield();
+
+	self:db():findOne({statsType = "yearDownload"},
+		function(err, response)
+			if (response == nil) then
+				self:db():insertOne({
+					statsType = 'yearDownload',
+					quantity  = 1,
+					year = year,
+				},
+				function(err,response)
+					log({response});
+					resume();
+				end
+				);
+			else
+				if(response.year == year) then
+					self:db():updateOne({
+						statsType = "yearDownload",
+						year = year,
+					},
+					{
+						quantity = response.quantity+1,
+					},
+					function(err,response)
+						resume();
+					end
+					);
+				else
+					self:db():deleteOne({
+						statsType = "yearDownload",
+					},
+					function(err,count)
+						if(count == 1) then
+							self:db():insertOne({
+								statsType = 'yearDownload',
+								quantity  = 1,
+								year = year,
+							},
+							function(err,response)
+								log({response});
+								resume();
+							end
+							);
+						else
+							returnData = {result=-1,msg="Delete yearDownload fail"};
+						end
+					end
+					);
+				end
+			end
+		end
+	);
+	yield();
+
+	return true;
+end
+
+function packages_stats:getStats(param)
+	local returnData = {};
+	local data = self:validate_statsType(param);
+	log({"getStatsdata",data});
+	if (not data) then
+		return {result=-1,msg="statsType is not set"};
+	end
+
+	self:db():findOne(
+		{statsType = data},
+		function(err,response)
+			log({"getStats",response})
+
+			if (response == nil) then
+				returnData = {statsType = "nil"};
+				resume();
+			else
+				returnData = response;
+				resume();
+			end
+		end
+	);
+
+	yield();
+	log({"returnData",returnData})
+	return returnData;
+end
+
+function packages_stats:validate_statsType(param)
+	if(param.statsType == "packageStats") then
+		return 'packageStats';
+
+	elseif(param.statsType == "dayDownload") then
+		return 'dayDownload';
+
+	elseif(param.statsType == 'monthDownload') then
+		return 'monthDownload';
+
+	elseif(param.statsType == 'yearDownload') then
+		return 'yearDownload';
+
+	else
+		return false;
+	end
+end
+

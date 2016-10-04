@@ -5,8 +5,8 @@
 body {
   font-family: 'Microsoft YaHei UI', 'Source Sans Pro', 'Lucida Grande', sans-serif;
 }
-.verify {
-  width: 56px;
+.verified {
+  width: 70px;
   height: 28px;
   background-color: #66FF99;
   font-size: 16px;
@@ -16,6 +16,33 @@ body {
   line-height: 28px;
   border-radius: 5px;
   display: inline-block;
+}
+.packages .my-projects:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.packages .my-projects a {
+  display: block;
+  float: right;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #CC0000;
+  color: #FFF;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+.packages .my-projects a:hover {
+  text-decoration: none;
+}
+.packages .my-projects a:active {
+  opacity: .8;
 }
 .packages .head-line {
   height: 115px;
@@ -118,12 +145,36 @@ body {
   padding-bottom: 20px;
 }
 .packages .packages-show .packages-columar li .packages-weight {
-  padding-left: 80px;
+  padding-left: 65px;
 }
 .packages .packages-show .packages-columar li .packages-weight .package-logo {
   display: block;
-  margin-bottom: -75px;
-  margin-left: -80px;
+  margin-bottom: -82px;
+  margin-left: -65px;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo:hover {
+  text-decoration: none;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo .verified {
+  width: 50px;
+  height: 23px;
+  background-color: #66FF99;
+  font-size: 12px;
+  font-weight: normal;
+  color: #FFF;
+  text-align: center;
+  line-height: 23px;
+  border-radius: 5px;
+  display: block;
+  margin-top: 5px;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details h3 {
+  padding-bottom: 10px;
 }
 .packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a {
   font-size: 20px;
@@ -235,6 +286,9 @@ body {
 }
 .packages-install .install-infor .infor-main .infor-logo {
   float: right;
+}
+.packages-install .install-infor .infor-main .infor-logo img {
+  width: 215px;
 }
 .packages-projects {
   width: 1170px;
@@ -355,48 +409,64 @@ body {
   font-size: 14px;
   padding: 0 5px 0 5px;
 }
+.packages-projects .projects .pagination {
+  width: 100%;
+  height: auto;
+}
+.packages-projects .projects .pagination ul {
+  display: block;
+  padding-left: 0;
+  margin: 0px auto;
+  border-radius: 4px;
+  width: 330px;
+  height: 30px;
+  margin-top: 20px;
+}
 .modal-dialog {
   width: 750px;
 }
-.modal-dialog .project_create {
+.modal-dialog .packages_from_modify {
+  height: 380px!important;
+}
+.modal-dialog .packages_from {
   height: 435px;
 }
-.modal-dialog .project_create h1 {
+.modal-dialog .packages_from h1 {
   text-align: center;
   padding: 30px 0 30px 0;
   font-weight: 600;
 }
-.modal-dialog .project_create .form {
+.modal-dialog .packages_from .form {
   padding-left: 120px;
 }
-.modal-dialog .project_create .form .item {
+.modal-dialog .packages_from .form .item {
   height: 40px;
 }
-.modal-dialog .project_create .form .item label {
+.modal-dialog .packages_from .form .item label {
   float: left;
   font-size: 16px;
   font-weight: normal;
 }
-.modal-dialog .project_create .form .item > div {
+.modal-dialog .packages_from .form .item > div {
   margin-left: 140px;
 }
-.modal-dialog .project_create .form .item > div input[type='text'] {
+.modal-dialog .packages_from .form .item > div input[type='text'] {
   width: 320px;
 }
-.modal-dialog .project_create .form .item > div textarea {
+.modal-dialog .packages_from .form .item > div textarea {
   width: 320px;
   height: 69px;
   resize: none;
 }
-.modal-dialog .project_create .form .item:nth-child(3) {
+.modal-dialog .packages_from .form .item:nth-child(3) {
   height: 80px;
 }
-.modal-dialog .project_create .fetch-infor {
+.modal-dialog .packages_from .fetch-infor {
   text-align: center;
   display: block;
   margin-top: 10px;
 }
-.modal-dialog .project_create button {
+.modal-dialog .packages_from button {
   width: 140px;
   height: 40px;
   margin: 0 auto;

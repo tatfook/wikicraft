@@ -1,34 +1,59 @@
 <?npl
 --[[
-Title: projects of a user
+Title: packages
 Author: Big
-Date: 2016/9/29
+Date: 2016/10/1
 ]]
 
 include_once("./abstract/multi_user_base.page");
-include_once("./stats.page");
+include_once("./packages_stats.page");
 
 local packages = inherit(models.abstract.multi_user_base, gettable("models.packages"));
 
 packages.db_name = "packages";
 
 function packages:ctor()
-	
+	--package name
+	self:addfield("projectName", "string", true, 30);
+	--package description
+	self:addfield("projectDesc", "string", true, 150);
+	--npl package or paracraft mod
+	self:addfield("projectType", "string", true, 1);
+	--github reponsity
+	self:addfield("projectGitURL", "string", true, 300);
+	--user name
+	self:addfield("displayName", "string", true, 50);
 end
 
 function packages:get(params)
-	log({"params.projectType",params.projectType});
+	self:ensureAuthenticated();
 
 	if(not params.projectType) then
 		return {result = -1, msg = "projectType is not set"};
 	end
 
+	--if(not params.order) then
+		--return {result = -1, msg = "order is not set"};
+	--end
+
+	if(not params.page) then
+		params.page   = 1;
+	end
+
+	if(not params.amount) then
+		params.amount = 4;
+	end
+
+	local skip  = params.page == 1 and 0 or params.page*params.amount-params.amount
+	local limit = params.amount;
+
 	data = {};
 
-	self:db():find({_id = {gt=-1, limit=10, skip=0} ,projectType = params.projectType}, 
-		function(err, rows)
-			data = rows;
-			log({"rows",rows});
+	--log({"self:getUserId()",self:getUserId()})
+
+	self:db():find({["+projectType+userId"] = {params.projectType,self:getUserId(),limit=limit,skip=skip}}, 
+		function(err, response)
+			data = response;
 			resume();
 		end
 	);
@@ -39,28 +64,99 @@ function packages:get(params)
 end
 
 function packages:api_createPackage(params)
+	returnData = {};
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	log({"query",query});
+
 	self:db():insertOne(nil, 
 		{
-			projectName     = params.projectName, 
-			projectDesc     = params.projectDesc,
-			projectType     = params.projectType,
-			projectGitURL   = params.projectGitURL,
-			userId          = params.UserId,
-			version			= '0.0.1'
+			projectName     = query.projectName, 
+			projectDesc     = query.projectDesc,
+			projectType     = query.projectType,
+			projectGitURL   = query.projectGitURL,
+			projectUpdate	= ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+			userId          = self:getUserId(),
+			displayName     = query.displayName,
+			version			= '0.0.1',
+			installTimes	= 0
 		 },
 		function(err, data)
 			log({"data",data});
-			return {result = "-1",msg = "Create fail!"};
-		end
-		);
+			if(data) then
+				returnData = {result = "1",msg = "Create Successful!"}
+			else
+				returnData = {result = "-1",msg = "Create fail!"};
+			end
 
-	return {result = "1",msg = "Create Successful!"};
+			resume();
+		end
+	);
+	yield();
+
+	models.packages_stats:new():recordCreate();
+	return returnData;
+end
+
+function packages:api_getOnePackage(params)
+	data = {};
+
+	self:db():findOne({_id=params.packageId},
+		function(err, response)
+			data = response;
+			resume();
+		end
+	);
+	yield();
+
+	return data;
 end
 
 function packages:api_modifyPackage(params)
+	data = {};
 
-	return;
+	--log({"modifyPackageParams",params})
+	self:db():updateOne(
+		{_id = params.packageId},
+		{projectName=params.projectName, projectDesc=params.projectDesc, version=params.version},
+		function(err, response)
+			data = response;
+			resume();
+		  --log({"modifyPackage",data}) 
+		end
+	);
+	yield();
+
+	return data;
 end
 
+function packages:api_deletePackage(params)
+	returnData = {};
 
+	self:db():deleteOne(
+		{_id=params.packageId},
+		function(err, count)
+			if(count == 1) then
+				returnData = {result=1,msg="Delete package success"};
+			else
+				returnData = {result=-1,msg="Delete package fail"};
+			end
 
+			resume();
+		end
+	);
+	yield();
+
+	models.packages_stats:new():recordDelete();
+	return returnData;
+end
+
+function packages:api_download(param)
+	models.packages_stats:new():recordDownload();
+
+	return {result="1",msg="download successful"};
+end
+
+function packages:api_getStats(param)
+	return models.packages_stats:new():getStats(param);
+end

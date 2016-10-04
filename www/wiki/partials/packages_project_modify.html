@@ -1,31 +1,9 @@
-<div class="project_create">
-    <h1>Modify your project infor</h1>
+<div class="packages_from packages_from_modify">
+    <h1>Modify your {{projectTypeName}}</h1>
     <div class="form">
         <div class="item">
-            <label>Project name</label>
-            <div><input value=""/></div>
-        </div>
-        <div class="item">
-            <label>Description</label>
-            <div><input value="" /></div>
-        </div>
-        <div class="item">
-            <label>Git URL</label>
-            <div><input value="" /></div>
-        </div>
-    </div>
-    <button>Confirm</button>
-</div>
-
-<div class="project_create">
-    <h1>Create your new {{projectTypeName}}</h1>
-    <div class="form">
-        <div class="item">
-            <label>Project type</label>
-            <div>
-                <input type="radio" ng-model="projectType" value="a" />npl package &nbsp;&nbsp;
-                <input type="radio" ng-model="projectType" value="b" />paracraft mod
-            </div>
+            <label>Version</label>
+            <div><input type="text" value="" ng-model="version" /></div>
         </div>
         <div class="item">
             <label>Project name</label>
@@ -35,11 +13,6 @@
             <label>Description</label>
             <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
         </div>
-        <div class="item">
-            <label>Git URL</label>
-            <div><input type="text" value="" ng-model="projectGitURL" /></div>
-        </div>
     </div>
-    <small class="fetch-infor"><strong>Please upload `icon.png` and `README.md` in your git repositary. </strong></small>
     <button ng-click="confirm()">Confirm</button>
 </div>
