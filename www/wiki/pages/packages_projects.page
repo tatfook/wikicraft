@@ -13,8 +13,8 @@ wp_enqueue_script("packagesProjectsController", WIKI_WEBROOT.."controllers/packa
 
    <div class="projects">
        <div class="tabs">
-           <a ng-class="{'active': projectType == 'a'}" href="#" ng-click="setTabs('a')">NPL</a>
-           <a ng-class="{'active': projectType == 'b'}" href="#" ng-click="setTabs('b')">Paracraft</a>
+           <a ng-class="{'active': projectType == 'a'}" href="javascript:;" ng-click="setTabs('a')">NPL</a>
+           <a ng-class="{'active': projectType == 'b'}" href="javascript:;" ng-click="setTabs('b')">Paracraft</a>
 
            <div ng-click="ShowCreateProjectDialog()" class="project-create">+</div>
        </div>

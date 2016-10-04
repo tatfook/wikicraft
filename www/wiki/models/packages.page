@@ -67,7 +67,7 @@ function packages:api_createPackage(params)
 	returnData = {};
 	self:ensureAuthenticated();
 	local err, query = self:validateQuery(params);
-	log({"query",query});
+	--log({"query",query});
 
 	self:db():insertOne(nil, 
 		{
@@ -86,7 +86,7 @@ function packages:api_createPackage(params)
 			if(data) then
 				returnData = {result = "1",msg = "Create Successful!"}
 			else
-				returnData = {result = "-1",msg = "Create fail!"};
+				return {result = "-1",msg = "Create fail!"};
 			end
 
 			resume();
@@ -94,7 +94,7 @@ function packages:api_createPackage(params)
 	);
 	yield();
 
-	models.packages_stats:new():recordCreate();
+	models.packages_stats:new():recordCreate(query.projectType);
 	return returnData;
 end
 
@@ -133,26 +133,62 @@ end
 function packages:api_deletePackage(params)
 	returnData = {};
 
+	if(not params.packageId) then
+		return {result=-1,msg="packageId is not set"};
+	end
+
+	local projectType = "";
+
+	self:db():findOne(
+		{_id=params.packageId},
+		function(err,response)
+			projectType = response.projectType;
+		end
+	);
+
 	self:db():deleteOne(
 		{_id=params.packageId},
 		function(err, count)
 			if(count == 1) then
 				returnData = {result=1,msg="Delete package success"};
+				resume();
 			else
-				returnData = {result=-1,msg="Delete package fail"};
+				return {result=-1,msg="Delete package fail"};
 			end
-
-			resume();
 		end
 	);
 	yield();
 
-	models.packages_stats:new():recordDelete();
+	models.packages_stats:new():recordDelete(projectType);
 	return returnData;
 end
 
-function packages:api_download(param)
-	models.packages_stats:new():recordDownload();
+function packages:api_download(params)
+	if(not params.projectType) then
+		return {result=-1,msg="projectType is not set"};
+	end
+
+	if(not params.packageId) then
+		return {result=-1,msg="packageId is not set"};
+	end
+
+	self:db():findOne(
+		{_id = params.packageId},
+		function(err,response)
+			local installTimes = response.installTimes+1;
+			self:db():updateOne(
+				{_id = params.packageId},
+				{installTimes=installTimes},
+				function(err,response)
+					resume();
+				end
+			);
+		end
+	);
+
+	yield();
+
+	models.packages_stats:new():recordDownload(params.projectType);
 
 	return {result="1",msg="download successful"};
 end

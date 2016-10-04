@@ -57,7 +57,7 @@
     <Content Include="www\wiki\auth\register.html" />
     <Content Include="www\wiki\controllers\angular-identicon.js" />
     <Content Include="www\wiki\controllers\githubService.js" />
-    <Content Include="www\wiki\controllers\packagesNplController.js" />
+    <Content Include="www\wiki\controllers\packagesController.js" />
     <Content Include="www\wiki\controllers\packagesInstallController.js" />
     <Content Include="www\wiki\controllers\packagesProjectsController.js" />
     <Content Include="www\wiki\controllers\profileController.js" />

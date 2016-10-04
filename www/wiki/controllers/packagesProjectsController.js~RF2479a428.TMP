@@ -1,11 +1,20 @@
 angular.module('MyApp')
 .factory('packagesService', function () {
+    var newPackages = {
+        status: 0,
+        type: ''
+    };
+
     var packageId = 0;
     var page = 1;
-    var projectsType = "";
-    var forceUpdatePagin = 0;
 
     return {
+        getNewPackages: function () {
+            return newPackages;
+        },
+        setNewPackages: function (_newPackages) {
+            newPackages = _newPackages;
+        },
         getModifyPackageId: function () {
             return packageId;
         },
@@ -21,14 +30,8 @@ angular.module('MyApp')
         getProjectsType: function () {
             return projectsType;
         },
-        setProjectsType: function (_projectsType) {
-            projectsType = _projectsType;
-        },
-        getForceUpdatePagin: function () {
-            return forceUpdatePagin;
-        },
-        setForceUpdatePagin: function (_forceUpdatePagin) {
-            forceUpdatePagin = _forceUpdatePagin;
+        setProjectsType: function () {
+
         }
     };
 })
@@ -41,23 +44,21 @@ angular.module('MyApp')
         }
     }
 })
-.controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location) {
+.controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService) {
     Account.setRequireSignin(true);
-
-    var absUrl = $location.absUrl();
-
-    if ($location.url() == "/npl") {
-        $scope.projectType = 'a';
-    } else if ($location.url() == "/paracraft") {
-        $scope.projectType = 'b';
-    } else {
-        $scope.projectType = 'a';
-    }
-
-    packagesService.setProjectsType($scope.projectType);
 
     $scope.$watch(Account.getUser, function (newValue, oldValue) {
         $scope.user = angular.copy(newValue);
+    });
+
+    $scope.$watch(packagesService.getNewPackages, function (newValue, oldValue) {
+        if (newValue.status == 1) {
+            $scope.projectType = newValue.type;
+            $scope.getProjects();
+
+            var _newPackages = {status:0,type:''}
+            packagesService.setNewPackages(_newPackages);
+        }
     });
 
     $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
@@ -65,6 +66,7 @@ angular.module('MyApp')
         $scope.getProjects();
     });
 
+    $scope.projectType  = 'a';
     $scope.items        = [];
     $scope.page         = 1;
 
@@ -91,15 +93,7 @@ angular.module('MyApp')
             templateUrl: WIKI_WEBROOT + "partials/packages_project_create.html",
             controller: "packagesProjectsCreateController",
         }).result.then(function (params) {
-            alert(params.msg);
-            if ($scope.projectType == params.projectType) {
-                packagesService.setForceUpdatePagin(1);
-            } else {
-                $scope.projectType = params.projectType;
-                packagesService.setProjectsType($scope.projectType);
-            }
-
-            $scope.getProjects();
+            alert(params);
         }, function (text, error) {
 
         });
@@ -133,8 +127,6 @@ angular.module('MyApp')
                 alert(response.data.msg);
 
                 if (response.data.result == 1) {
-                    $scope.page = 1;
-                    packagesService.setForceUpdatePagin(1);
                     $scope.getProjects();
                 }
             }, function (response) {
@@ -145,16 +137,6 @@ angular.module('MyApp')
 
     $scope.setTabs = function (params) {
         $scope.projectType = params;
-        
-        if (params == "a") {
-            $location.url("/npl");
-            packagesService.setProjectsType("a");
-        } else if (params == "b") {
-            $location.url("/paracraft");
-            packagesService.setProjectsType("b");
-        }
-
-        $scope.page = 1;
         $scope.getProjects();
     }
 
@@ -234,10 +216,10 @@ angular.module('MyApp')
             })
             .then(function (response) {
                 if (response.data.result == 1) {
-                    returnData = {};
-                    returnData.msg = response.data.msg;
-                    returnData.projectType = $scope.projectType;
-                    $uibModalInstance.close(returnData);
+                    //$scope.$emit('updateItems', 'OKOKOK!');
+                    var _newPackages = { status: 1, type: $scope.projectType }
+                    packagesService.setNewPackages(_newPackages);
+                    $uibModalInstance.close(response.data.msg);
                 }
             }, function (error) { });
 
@@ -310,39 +292,27 @@ angular.module('MyApp')
     }
 })
 .controller('Pagination', function ($scope, $log, $http, packagesService) {
-    $scope.$watch(packagesService.getProjectsType, function (newValue, oldValue) {
-        $scope.projectType = newValue;
-        $scope.getPackageStats();
+    $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
+        $scope.page = newValue;
+        $scope.getProjects();
     });
 
-    $scope.$watch(packagesService.getForceUpdatePagin, function (newValue, oldValue) {
-        $scope.getPackageStats();
-        packagesService.setForceUpdatePagin(0)
-    })
-
     //packagestats
-    $scope.getPackageStats = function () {
-        $http({
-            method: 'POST',
-            url: '/api/wiki/models/packages/getStats',
-            data: {
-                statsType: "packageStats",
-                projectType: $scope.projectType
-            }
-        })
-        .then(function (response) {
-            if (response.data.statsType != 'nil') {
-                $scope.totalItems = response.data.quantity;
-            } else {
-                $scope.totalItems = 0;
-            }
-
+    $http({
+        method: 'POST',
+        url: '/api/wiki/models/packages/getStats',
+        data: {
+            statsType:   "packageStats",
+            projectType: "a"
+        }
+    })
+    .then(function (response) {
+        if (response.data.statsType != 'nil') {
+            $scope.totalItems = response.data.quantity;
             $scope.itemsPerPage = 4;
             $scope.currentPage = 1;
-        }, function (response) { });
-    }
-
-    $scope.getPackageStats();
+        }
+    }, function (response) { });
 
     //$scope.setPage = function (pageNo) {
     //    $scope.currentPage = pageNo;

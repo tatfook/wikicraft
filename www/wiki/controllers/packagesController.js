@@ -1,16 +1,21 @@
 angular.module('MyApp')
-.controller('packagesNplController', function ($scope, $http) {
+.controller('packagesController', function ($scope, $http, packagesPageService) {
     $scope.packages = [];
     $scope.packagesStats = 0;
     $scope.dayDownload   = 0;
     $scope.monthDownload = 0;
-    $scope.yearDownload  = 0;
+    $scope.yearDownload = 0;
+
+    var projectType = packagesPageService.getPageName() == 'npl'?"a":"b";
 
     //packagestats
     $http({
         method: 'POST',
         url: '/api/wiki/models/packages/getStats',
-        data: { statsType: "packageStats" }
+        data: {
+            statsType: "packageStats",
+            projectType: projectType
+        }
     })
     .then(function (response) {
         if (response.data.statsType != 'nil') {
@@ -22,7 +27,10 @@ angular.module('MyApp')
     $http({
         method: 'POST',
         url: '/api/wiki/models/packages/getStats',
-        data: { statsType: "dayDownload" }
+        data: {
+            statsType: "dayDownload",
+            projectType: projectType
+        }
     })
     .then(function (response) {
         if (response.data.statsType != 'nil') {
@@ -34,7 +42,10 @@ angular.module('MyApp')
     $http({
         method: 'POST',
         url: '/api/wiki/models/packages/getStats',
-        data: { statsType: "monthDownload" }
+        data: {
+            statsType: "monthDownload",
+            projectType: projectType
+        }
     })
     .then(function (response) {
         if (response.data.statsType != 'nil') {
@@ -46,7 +57,10 @@ angular.module('MyApp')
     $http({
         method: 'POST',
         url: '/api/wiki/models/packages/getStats',
-        data: { statsType: "yearDownload" }
+        data: {
+            statsType: "yearDownload",
+            projectType: projectType
+        }
     })
     .then(function (response) {
         if (response.data.statsType != 'nil') {
@@ -59,8 +73,8 @@ angular.module('MyApp')
         method: 'POST',
         url: '/api/wiki/models/packages',
         data: {
-            projectType: "a",
-            top: 20 
+            projectType: projectType,
+            amount: 20 
         }
     })
     .then(function (response) {

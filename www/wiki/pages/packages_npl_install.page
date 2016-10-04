@@ -1,4 +1,20 @@
-﻿<?npl
+﻿<script>
+    angular.module('MyApp')
+    .factory("packagesPageService", function () {
+        var pageName = 'npl';
+
+        var packagesPage = {
+            getPageName: function () {
+                return pageName;
+            }
+        }
+
+        return packagesPage;
+    });
+</script>
+
+
+<?npl
 wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
 wp_enqueue_script("packagesInstallController", WIKI_WEBROOT.."controllers/packagesInstallController.js");
 ?>

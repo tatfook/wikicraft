@@ -1,5 +1,5 @@
 ﻿angular.module('MyApp')
-.controller('packagesInstallController', function ($scope, $http, $location) {
+.controller('packagesInstallController', function ($scope, $http, $location, packagesPageService) {
     var absUrl = $location.absUrl();
 
     function UrlSearch() {
@@ -141,10 +141,20 @@
         }
     }
 
+    if (packagesPageService.getPageName() == 'npl') {
+        $scope.projectType = "a"
+    } else if (packagesPageService.getPageName() == 'paracraft') {
+        $scope.projectType = "b";
+    }
+
     $scope.install = function () {
         $http({
-            methon: 'POST',
-            url: '/api/wiki/models/packages/download'
+            method: "POST",
+            url: '/api/wiki/models/packages/download',
+            data: {
+                packageId : Request.id,
+                projectType: $scope.projectType
+            }
         })
         .then(function (response) {
             if (response.data.result == 1) {

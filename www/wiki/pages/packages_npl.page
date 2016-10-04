@@ -1,15 +1,31 @@
+<script>
+    angular.module('MyApp')
+    .factory("packagesPageService", function () {
+        var pageName = 'npl';
+
+        var packagesPage = {
+            getPageName: function () {
+                return pageName;
+            }
+        }
+
+        return packagesPage;
+    });
+</script>
+
 <?npl
 wp_enqueue_style("packages_style", WIKI_WEBROOT.."assets/packages.css");
-wp_enqueue_script("packagesNplController", WIKI_WEBROOT.."controllers/packagesNplController.js");
+wp_enqueue_script("packagesController", WIKI_WEBROOT.."controllers/packagesController.js");
 ?>
-<div class="packages" ng-controller="packagesNplController">
+
+<div class="packages" ng-controller="packagesController">
     <div class="my-projects">
-        <a href="/wiki/packages_projects">My npl packages</a>
+        <a href="/wiki/packages_projects#/npl">My npl packages</a>
     </div>
 	<div class="head-line">
         <span class="red">npl</span> package manager 
     </div>
-
+    
     <div class="packages-total">
         <div class="stat stat-icon-package">
             <strong>{{packagesStats}}</strong>
