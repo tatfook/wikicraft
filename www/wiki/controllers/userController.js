@@ -7,6 +7,7 @@ angular.module('MyApp')
 .factory('Account', function ($http, $auth, $rootScope) {
     var user;
     var requireSignin = false;
+
     return {
         setUser: function (user_) {
             user = user_;

@@ -1,0 +1,18 @@
+<div class="packages_from packages_from_modify">
+    <h1>Modify your {{projectTypeName}}</h1>
+    <div class="form">
+        <div class="item">
+            <label>Version</label>
+            <div><input type="text" value="" ng-model="version" /></div>
+        </div>
+        <div class="item">
+            <label>Project name</label>
+            <div><input type="text" value="" ng-model="projectName" /></div>
+        </div>
+        <div class="item">
+            <label>Description</label>
+            <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
+        </div>
+    </div>
+    <button ng-click="confirm()">Confirm</button>
+</div>
