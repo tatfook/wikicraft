@@ -1,5 +1,5 @@
 ﻿<?npl
-wp_enqueue_script("statsController", "/wp-content/pages/wiki/controllers/statsController.js");
+wp_enqueue_script("statsController", WIKI_WEBROOT.."controllers/statsController.js");
 ?>
 <div class="col-sm-12 mt-4" ng-controller="statsController">
 	<div class="row">

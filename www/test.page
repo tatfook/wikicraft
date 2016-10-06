@@ -1,0 +1,13 @@
+<?
+
+for i=1,4
+do
+?>
+	<?=format("Hello World! %d",i)?>
+<?
+	
+end
+
+?>
+
+

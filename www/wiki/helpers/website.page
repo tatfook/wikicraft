@@ -135,6 +135,7 @@ function RenderServerWikiScript()
 			echo(format("<script>window.siteInfo = %s;</script>", json_encode(curSite)));
 		end
 	end
+	echo(format("<script>WIKI_WEBROOT = \"%s\";</script>", WIKI_WEBROOT));
 end
 
 -- server side cached content for google agent and special wiki/* pages, etc. 
@@ -142,14 +143,14 @@ end
 -- @note: `[name]/_XXX` is mapped to predefined pages at `wiki/pages/special/_XXX.page`
 function RenderServerWikiContent()
 	if(GetSiteName() == "wiki") then
-		local filename = WP_CONTENT_DIR .. '/pages/wiki/pages/' .. GetPageName() .. ".page";
+		local filename = WIKI_ROOT .. 'pages/' .. GetPageName() .. ".page";
 		if(file_exists(filename)) then
 			include(filename);
 			echo("<script>window.skipClientWiki = true;</script>")
 		end
 	end
 	if(pageName and pageName:match("^_")) then
-		local filename = WP_CONTENT_DIR .. '/pages/wiki/pages/special/' .. pageName:gsub("^_", "") .. ".page";
+		local filename = WIKI_ROOT .. 'pages/special/' .. pageName:gsub("^_", "") .. ".page";
 		if(file_exists(filename)) then
 			include(filename);
 			echo("<script>window.skipClientWiki = true;</script>")

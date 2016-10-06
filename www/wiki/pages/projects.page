@@ -1,6 +1,6 @@
 ﻿<?npl
-wp_enqueue_script("githubService", "/wp-content/pages/wiki/controllers/githubService.js");
-wp_enqueue_script("projectsController", "/wp-content/pages/wiki/controllers/projectsController.js");
+wp_enqueue_script("githubService", WIKI_WEBROOT.."controllers/githubService.js");
+wp_enqueue_script("projectsController", WIKI_WEBROOT.."controllers/projectsController.js");
 ?>
 <div class="col-sm-12" ng-controller="projectsController as projCtrl">
     <div style="text-align:center" class="mt-2">

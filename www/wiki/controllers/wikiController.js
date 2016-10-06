@@ -165,7 +165,7 @@ angular.module('MyApp')
     }
     WikiPage.showPagePopup = function () {
         $uibModal.open({
-            templateUrl: "/wp-content/pages/wiki/partials/page_popup.html",
+            templateUrl: WIKI_WEBROOT + "partials/page_popup.html",
             controller: "PagePopupCtrl",
             size: "sm",
             //appendTo: angular.element(document).find('asidepage'),
@@ -176,7 +176,7 @@ angular.module('MyApp')
     }
     WikiPage.showSitePopup = function () {
         $uibModal.open({
-            templateUrl: "/wp-content/pages/wiki/partials/site_popup.html",
+            templateUrl: WIKI_WEBROOT + "partials/site_popup.html",
             controller: "SitePopupCtrl",
             size: "sm",
             //appendTo: angular.element(document).find('asidesite'),

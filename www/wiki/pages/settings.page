@@ -1,6 +1,6 @@
 ﻿<?npl
-wp_enqueue_script("githubService", "/wp-content/pages/wiki/controllers/githubService.js");
-wp_enqueue_script("settingsController", "/wp-content/pages/wiki/controllers/settingsController.js");
+wp_enqueue_script("githubService", WIKI_WEBROOT.."controllers/githubService.js");
+wp_enqueue_script("settingsController", WIKI_WEBROOT.."controllers/settingsController.js");
 ?>
 <div class="col-sm-12" ng-controller="settingsController">
     <ul class="setting nav nav-tabs">

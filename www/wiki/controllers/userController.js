@@ -7,6 +7,7 @@ angular.module('MyApp')
 .factory('Account', function ($http, $auth, $rootScope) {
     var user;
     var requireSignin = false;
+
     return {
         setUser: function (user_) {
             user = user_;
@@ -237,7 +238,7 @@ angular.module('MyApp')
 	}
 	$scope.login = function () {
 	    $uibModal.open({
-	        templateUrl: "/wp-content/pages/wiki/auth/login.html",
+	        templateUrl: WIKI_WEBROOT+ "auth/login.html",
 	        controller: "ModalLoginCtrl",
 	    }).result.then(function (provider) {
 	        if (provider == "login") {
@@ -260,7 +261,7 @@ angular.module('MyApp')
 	};
 	$scope.register = function () {
 	    $uibModal.open({
-	        templateUrl: "/wp-content/pages/wiki/auth/register.html",
+	        templateUrl: WIKI_WEBROOT + "auth/register.html",
 	        controller: "ModalRegisterCtrl",
 	    }).result.then(function (text) {
 	        if (text == "login")
