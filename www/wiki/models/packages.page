@@ -193,6 +193,10 @@ function packages:api_download(params)
 	return {result="1",msg="download successful"};
 end
 
-function packages:api_getStats(param)
-	return models.packages_stats:new():getStats(param);
+function packages:api_getPackagesStats(param)
+	return models.packages_stats:new():packagesStats(param);
+end
+
+function packages:api_getDownloadStats(param)
+	return models.packages_stats:new():downloadStats(param);
 end
