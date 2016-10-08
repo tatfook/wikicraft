@@ -1,4 +1,12 @@
 ﻿<?npl
+--[[
+Title: run any NPL code from web page
+Author: big
+Date: 2016/10/8
+Desc: 
+]]
+
+
 wp_enqueue_script("jqueryui", "/wp-includes/js/jquery/jquery-ui.min.js"); 
 wp_enqueue_script("bootstrap", "/wp-includes/js/bootstrap/js/bootstrap.min.js");
 wp_enqueue_script("angular", "/wp-includes/js/angular/angular.min.js");
@@ -7,7 +15,6 @@ wp_enqueue_script("localInstallController","/wp-includes/js/plugin/localInstallC
 wp_enqueue_style("plugin", "/wp-admin/css/plugin.css");
 PAGE_NO_SIDE_BAR = true;
 ?>
-
 <div class="plugin" ng-app="plugin" ng-controller="localInstallController">
 	<h1>
         Do you want to install the following <br/> plugin to your local computer?
