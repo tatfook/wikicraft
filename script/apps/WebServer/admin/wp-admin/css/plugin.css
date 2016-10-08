@@ -1,0 +1,57 @@
+.plugin {
+  width: 100%;
+  height: 465px;
+  margin: 0 auto;
+}
+.plugin h1 {
+  font-size: 32px;
+  color: #CC3300;
+  text-align: center;
+  margin-top: 28px;
+}
+.plugin .infor-details {
+  width: 32.5%;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 88px;
+  font-size: 18px;
+}
+.plugin .infor-details:after {
+  display: block;
+  content: "";
+  clear: both;
+}
+.plugin .infor-details .item {
+  margin-bottom: 10px;
+}
+.plugin .infor-details .item label {
+  float: left;
+  margin: 0px;
+  font-size: 14px;
+}
+.plugin .infor-details .item > div {
+  margin-left: 265px;
+}
+.plugin .button {
+  width: 385px;
+  margin: 0 auto;
+}
+.plugin .button button {
+  width: 140px;
+  height: 40px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  color: #FFF;
+  outline: none;
+  margin-top: 70px;
+  border-radius: 5px;
+}
+.plugin .button button:nth-child(1) {
+  background-color: #00FFFF;
+  margin-right: 100px;
+}
+.plugin .button button:nth-child(2) {
+  background-color: #CCCCCC;
+}
