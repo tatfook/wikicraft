@@ -9154,20 +9154,20 @@
 
         // reset lines mapping cache on content update
         scrollMap = null;
-
-        try {
-            if (source) {
-                // serialize state - source and options
-                permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
-                        source: source,
-                        defaults: _.omit(defaults, 'highlight')
-                    }), '-_.!~', false);
-            } else {
-                permalink.href = '';
-            }
-        } catch (__) {
-            permalink.href = '';
-        }
+        //
+        //try {
+        //    if (source) {
+        //        // serialize state - source and options
+        //        permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
+        //                source: source,
+        //                defaults: _.omit(defaults, 'highlight')
+        //            }), '-_.!~', false);
+        //    } else {
+        //        permalink.href = '';
+        //    }
+        //} catch (__) {
+        //    permalink.href = '';
+        //}
     }
 
 // Build offsets for each line (lines can be wrapped)
@@ -9359,7 +9359,7 @@
             });
         }
 
-        loadPermalink();
+        //loadPermalink();
 
         // Activate tooltips
         $('._tip').tooltip({ container: 'body' });
@@ -9398,7 +9398,7 @@
         setResultView(defaults._view);
 
         mdInit();
-        permalink = document.getElementById('permalink');
+        //permalink = document.getElementById('permalink');
 
         // Setup listeners
         $('.source').on('keyup paste cut mouseup', _.debounce(updateResult, 300, { maxWait: 500 }));

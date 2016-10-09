@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>WIKI EDIT</title>
+    <meta charset="UTF-8">
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/jquery/1.11.1/jquery.min.js"></script>
@@ -16,7 +17,7 @@
     <link rel="stylesheet" href="./lib/css/index.css">
     <script src="./lib/js/index.js"></script>
 </head>
-<body>
+<body class="opt_linkify opt_typographer opt__highlight result-as-html">
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -153,96 +154,28 @@
     </div>
 </nav>
 
+<br/>
+
+
 <div class="full-height">
     <div class="row full-height">
         <div id="treeview" class="col-xs-2 full-height nopadding nomargin"></div>
         <div class="col-xs-5 full-height nopadding nomargin">
-            <pre id="editor" class="soruce full-height"></pre>
+                <div class="demo-control"><a href="#" class="source-clear">clear</a></div>
+                <textarea id="txtSource" class="source full-height"></textarea>
+                <pre id="editor" class="full-height"></pre>
         </div>
-        <section class="col-xs-5 full-height">
-            <!--<div class="demo-control">-->
-                <!--<a href="#" data-result-as="html">html</a>-->
-                <!--<a href="#" data-result-as="src">source</a>-->
-                <!--<a href="#" data-result-as="debug">debug</a>-->
-            <!--</div>-->
-            <div class="result-html full-height nopadding nomargin noborder"></div>
-            <pre class="hljs result-src full-height nopadding nomargin noborder">
-                <code class="result-src-content full-height"></code>
-            </pre>
-            <pre class="hljs result-debug full-height nopadding nomargin noborder">
-                <code class="result-debug-content full-height"></code>
-            </pre>
+        <section class="col-xs-5 full-height" style="padding-left: 0;">
+                <div class="demo-control"><a href="#" data-result-as="html">html</a><a href="#" data-result-as="src">source</a><a href="#" data-result-as="debug">debug</a></div>
+                <div class="result-html full-height"></div>
+                <pre class="hljs result-src full-height"><code class="result-src-content full-height"></code></pre>
+                <pre class="hljs result-debug full-height"><code class="result-debug-content full-height"></code></pre>
         </section>
 
     </div>
 </div>
 
 <script src="./lib/js/ace.js"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/tomorrow");
-    editor.session.setMode("ace/mode/html");
-    editor.setAutoScrollEditorIntoView(true);
-
-
-    var defaultData = [
-        {
-            text: 'Parent 1',
-            href: '#parent1',
-            tags: ['4'],
-            nodes: [
-                {
-                    text: 'Child 1',
-                    href: '#child1',
-                    tags: ['2'],
-                    nodes: [
-                        {
-                            text: 'Grandchild 1',
-                            href: '#grandchild1',
-                            tags: ['0']
-                        },
-                        {
-                            text: 'Grandchild 2',
-                            href: '#grandchild2',
-                            tags: ['0']
-                        }
-                    ]
-                },
-                {
-                    text: 'Child 2',
-                    href: '#child2',
-                    tags: ['0']
-                }
-            ]
-        },
-        {
-            text: 'Parent 2',
-            href: '#parent2',
-            tags: ['0']
-        },
-        {
-            text: 'Parent 3',
-            href: '#parent3',
-            tags: ['0']
-        },
-        {
-            text: 'Parent 4',
-            href: '#parent4',
-            tags: ['0']
-        },
-        {
-            text: 'Parent 5',
-            href: '#parent5'  ,
-            tags: ['0']
-        }
-    ];
-
-    $('#treeview').treeview({
-        color: "#428bca",
-        showBorder: false,
-        data: defaultData
-    });
-</script>
-
+<script src="./lib/js/edit.npl.js"></script>
 </body>
 </html>
