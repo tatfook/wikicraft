@@ -1,5 +1,17 @@
 ﻿angular.module('MyApp')
-.controller('packagesInstallController', function ($scope, $http, $location, packagesPageService) {
+.factory('packagesInstallService', function () {
+    var giturl = '';
+
+    return {
+        setGiturl : function(_giturl){
+            this.giturl = _giturl;
+        },
+        getGiturl: function () {
+            return this.giturl;
+        }
+    }
+})
+.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, packagesPageService, packagesInstallService) {
     var absUrl = $location.absUrl();
 
     function UrlSearch() {
@@ -30,13 +42,13 @@
             }
         })
         .then(function (response) {
-            $scope.projectName   = response.data.projectName;
-            $scope.projectDesc   = response.data.projectDesc;
+            $scope.projectName = response.data.projectName;
+            $scope.projectDesc = response.data.projectDesc;
             $scope.projectGitURL = response.data.projectGitURL;
             $scope.projectUpdate = response.data.projectUpdate;
-            $scope.installTimes  = response.data.installTimes;
-            $scope.version       = response.data.version;
-            $scope.displayName   = response.data.displayName;
+            $scope.installTimes = response.data.installTimes;
+            $scope.version = response.data.version;
+            $scope.displayName = response.data.displayName;
 
             $scope.getGit();
             //$scope.getPackageUserInfor(response.data.userId);
@@ -53,7 +65,7 @@
         $http({
             method: 'POST',
             url: '/api/wiki/models/user/getminiprofile',
-            data: {'_id':userId}
+            data: { '_id': userId }
         })
         .then(function (response) {
             $scope.displayName = response.data.displayName;
@@ -116,7 +128,7 @@
         });
     }
 
-    $scope.addFavorite = function() {
+    $scope.addFavorite = function () {
         var url = window.location;
         var title = document.title;
         var ua = navigator.userAgent.toLowerCase();
@@ -148,18 +160,45 @@
     }
 
     $scope.install = function () {
-        $http({
-            method: "POST",
-            url: '/api/wiki/models/packages/download',
-            data: {
-                packageId : Request.id,
-                projectType: $scope.projectType
+        $http(
+            {
+                method: 'GET',
+                url: 'http://127.0.0.1:8099/localInstall#?giturl=' + $scope.projectGitURL,
+                headers: {
+                    'Authorization': undefined,
+                }, // remove auth header for this request
+                skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
             }
-        })
+        )
         .then(function (response) {
-            if (response.data.result == 1) {
-                alert(response.data.msg);
-            }
-        }, function (response) { });
+            $http({
+                method: "POST",
+                url: '/api/wiki/models/packages/download',
+                data: {
+                    packageId: Request.id,
+                    projectType: $scope.projectType
+                }
+            })
+            .then(function (response) {
+                if (response.data.result == 1) {
+                    packagesInstallService.setGiturl('127.0.0.1:8099/localInstall#?giturl='+$scope.projectGitURL);
+
+                    $uibModal.open({
+                        templateUrl: WIKI_WEBROOT + "partials/local_install_dialog.html",
+                        controller: 'localInstallDialogController',
+                        size: 'lg'
+                    }).result.then(function (params) {
+
+                    }, function (params) { })
+                }
+            }, function (response) { });
+        }, function (response) {
+            alert("local service is not start");
+        });
     }
+})
+.controller('localInstallDialogController', function ($scope, packagesInstallService, $sce) {
+    var url = packagesInstallService.getGiturl();
+
+    $scope.giturl = $sce.trustAsResourceUrl("http://" + url)
 });

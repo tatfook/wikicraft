@@ -71,6 +71,7 @@
     <Content Include="www\wiki\controllers\userStarsController.js" />
     <Content Include="www\wiki\controllers\wikiController.js" />
     <Content Include="www\wiki\partials\create_project.html" />
+    <Content Include="www\wiki\partials\local_install_dialog.html" />
     <Content Include="www\wiki\partials\packages_project_create.html" />
     <Content Include="www\wiki\partials\packages_project_modify.html" />
     <Content Include="www\wiki\partials\page_popup.html" />

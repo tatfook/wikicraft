@@ -1,10 +1,48 @@
 ﻿<?npl
 --[[
-Title: run any NPL code from web page
+Title: download the zip form github
 Author: big
-Date: 2016/10/8
+Date: 2016/10/9
 Desc: 
 ]]
+
+addheader('Access-Control-Allow-Origin', '*'); 
+
+NPL.load("(gl)script/ide/System/Plugins/PluginLoader.lua");
+local PluginLoader = commonlib.gettable("System.Plugins.PluginLoader");
+local loader = PluginLoader:new();
+log({"loader",loader}); 
+--NPL.load("(gl)script/ide/System/Plugins/PluginManager.lua");
+--local PluginManager = commonlib.gettable("System.Plugins.PluginManager");
+--local manager = PluginManager.CreateGetInstance("Paracraft");
+
+--echo(manager:GetLoader():RebuildModuleList())  --> list of installed plugins
+--manager:GetLoader():LoadAllPlugins() --> load plugins, see PluginLoader for details
+
+
+if(is_ajax()) then
+	add_action('wp_ajax_downloadzip',function()
+		local url = request:get('url');
+
+		log({"url",url});
+
+		loader:InstallFromZipBinary("test", "some data here");
+		loader:InstallFromUrl(
+			"https://github.com/tatfook/NPLCAD/archive/master.zip", 
+			function(bSucceed, msg)
+				log({"msg",msg}); 
+			end
+		);
+
+		--echo(manager:GetLoader():RebuildModuleList());
+
+		--loader = loader:init(manager, "Mod/");
+		--local list = loader:RebuildModuleList()
+		--loader:LoadAllPlugins();
+
+	end);
+	return;
+end
 
 
 wp_enqueue_script("jqueryui", "/wp-includes/js/jquery/jquery-ui.min.js"); 
