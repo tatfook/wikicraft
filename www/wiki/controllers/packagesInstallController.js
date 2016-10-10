@@ -181,14 +181,20 @@
             })
             .then(function (response) {
                 if (response.data.result == 1) {
-                    packagesInstallService.setGiturl('127.0.0.1:8099/localInstall#?giturl='+$scope.projectGitURL);
+                    packagesInstallService.setGiturl(
+                        '127.0.0.1:8099/localInstall#?'
+                        + 'giturl='      + $scope.projectGitURL
+                        + '&projectName=' + $scope.projectName
+                        + '&displayName=' + $scope.displayName
+                        + '&version='     + $scope.version
+                    );
 
                     $uibModal.open({
                         templateUrl: WIKI_WEBROOT + "partials/local_install_dialog.html",
                         controller: 'localInstallDialogController',
                         size: 'lg'
                     }).result.then(function (params) {
-
+                        //alert(params);
                     }, function (params) { })
                 }
             }, function (response) { });
@@ -197,8 +203,12 @@
         });
     }
 })
-.controller('localInstallDialogController', function ($scope, packagesInstallService, $sce) {
+.controller('localInstallDialogController', function ($scope, packagesInstallService, $sce, $uibModalInstance) {
     var url = packagesInstallService.getGiturl();
 
-    $scope.giturl = $sce.trustAsResourceUrl("http://" + url)
+    $scope.giturl = $sce.trustAsResourceUrl("http://" + url);
+
+    $scope.close = function () {
+        $uibModalInstance.close();
+    }
 });

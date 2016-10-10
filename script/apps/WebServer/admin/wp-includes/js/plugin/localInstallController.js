@@ -1,7 +1,11 @@
 angular.module('plugin', ['ui.bootstrap'])
 .controller('localInstallController', function ($scope, $http,$location)
 {
-    console.log($location.search());
+    var params = $location.search();
+
+    $scope.projectName = params.projectName;
+    $scope.version     = params.version;
+    $scope.author      = params.displayName;
 
     $scope.install = function () {
         $http({

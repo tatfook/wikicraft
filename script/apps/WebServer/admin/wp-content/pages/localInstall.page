@@ -7,7 +7,7 @@ Desc:
 ]]
 
 NPL.load("(gl)script/ide/System/Core/ToolBase.lua");
-NPL.load("(gl)script/kids/3DMapSystemApp/localserver/localserver.lua");
+NPL.load("(gl)script/ide/System/localserver/localserver.lua");
 
 addheader('Access-Control-Allow-Origin', '*'); 
 
@@ -35,6 +35,8 @@ function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
 		if(callbackFunc) then
 			callbackFunc(true, filename)
 		end
+
+		log({"success"});
 	end
 
 	local function OnFail(msg)
@@ -42,6 +44,8 @@ function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
 		if(callbackFunc) then
 			callbackFunc(false, msg);
 		end
+
+		log({"fail"});
 	end
 	
 	local ls = System.localserver.CreateStore(nil, 1);
@@ -52,7 +56,8 @@ function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
 	end
 	self.isFetching = true;
 
-	local res = ls:GetFile(System.localserver.CachePolicy:new(cachePolicy or "access plus 5 days"),
+	local res = ls:GetFile(
+		System.localserver.CachePolicy:new(cachePolicy or "access plus 5 days"),
 		src,
 		function (entry)
 			if(dest) then
@@ -65,7 +70,7 @@ function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
 				else
 					LOG.std(nil, "info", "PluginLoader", "failed copy file from %s to %s", src, dest);
 					OnFail("failed to copy file to dest folder. The file may be in use.");
-				end	
+				end
 			else
 				LOG.std(nil, "info", "PluginLoader", "successfully downloaded file to %s", entry.payload.cached_filepath);
 				OnSucceeded(entry.payload.cached_filepath);
@@ -74,7 +79,9 @@ function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
 		nil,
 		function (msg, url)
 			local text;
+
 			self.DownloadState = self.DownloadState;
+
 			if(msg.DownloadState == "") then
 				text = "Downloading ..."
 				if(msg.totalFileSize) then
@@ -88,11 +95,15 @@ function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
 				text = "Download terminated";
 				OnFail(text);
 			end
+
 			if(text) then
-				echo(text); -- TODO: display in UI?
+				log({"text",text}); -- TODO: display in UI?
 			end
+
+			log({"msg",msg,"url",url});
 		end
 	);
+
 	if(not res) then
 		OnFail("Duplicated download");
 	end
@@ -116,11 +127,12 @@ function localInstall:DownloadZip(url, callbackFunc, refreshMode)
 
 			local content_length = msg.header:match("Content%-Length: (%d+)");
 			log({"content_length",content_length});
+
 			if(content_length) then
 				local local_filesize = ParaIO.GetFileSize(dest);
 				log({"local_filesize",local_filesize});
 
-				if(local_filesize == content_length) then
+				if(local_filesize == tonumber(content_length)) then
 
 					-- we will only compare file size: since github/master does not provide "Last-Modified: " header.
 					LOG.std(nil, "info", "PluginLoader", "remote plugin size not changed, previously downloaded one %s is used", dest);
@@ -150,13 +162,21 @@ if(is_ajax()) then
 			log({"url",url});
 
 			install:DownloadZip(
-				"https://github.com/tatfook/NPLCAD/archive/master.zip", 
+				url, 
 				function(bSucceed, msg)
 					log({"msg",msg}); 
 				end
 			);
 		end
 	);
+
+	add_action(
+		'wp_ajax_currentDownload',
+		function()
+			
+
+		end
+	)
 	return;
 end
 
@@ -177,15 +197,15 @@ PAGE_NO_SIDE_BAR = true;
     <div class="infor-details">
         <div class="item">
             <label>Package name</label>
-            <div>displayName</div>
+            <div>{{projectName}}</div>
         </div>
         <div class="item">
             <label>Author</label>
-            <div>version</div>
+            <div>{{author}}</div>
         </div>
         <div class="item">
             <label>Version</label>
-            <div>projectUpdate</div>
+            <div>{{version}}</div>
         </div>
     </div>
     
