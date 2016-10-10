@@ -151,6 +151,12 @@ function localInstall:DownloadZip(url, callbackFunc, refreshMode)
 
 end
 
+function localInstall:currentDownload()
+	
+
+
+end
+
 local install = localInstall:new();
 
 if(is_ajax()) then
