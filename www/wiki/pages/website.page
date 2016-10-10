@@ -1,0 +1,49 @@
+<div ng-controller="websiteCtrl">
+    <div>
+        <div>
+            <div class="pull-left" style="margin-left: 40px">
+                <h3><b>网站管理</b></h3>
+            </div>
+            <div class="pull-right" style="margin: 30px">
+                <button class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>新建网站</button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div style="display: flex; justify-content: center; ">
+            <div ng-show="websites.length==0" class="text-info">
+                马上拥有你的个人作品网站，永久免费
+            </div>
+            <div ng-show="websites.length>=max_free_count">
+                每个用户最多可创建{{max_free_count}}个免费个人作品网站
+            </div>
+        </div>
+    </div>
+
+    <div style="margin: 30px">
+        <table class="table table-hover table-striped">
+            <caption style="text-align: center"><h4>我的站点</h4></caption>
+            <thead>
+            <tr>
+                <td>站点名称</td>
+                <td>类型</td>
+                <td>访问地址</td>
+                <td>协同人员</td>
+                <td>创建时间</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="website in websites">
+                <td>{{website.name}}</td>
+                <td>{{website.categoryName}}</td>
+                <td>{{website.url}</td>
+                <td>{{website.teamwork}}</td>
+                <td>
+                    <button class="btn"><span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn"><span class="glyphicon glyphicon-remove"></span></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<?npl
+--[[
+Title: website template
+Author: wuxiangan
+Date: 2016/10/10
+]]
+include_once("./abstract/base.page");
+
+local website_template = inherit(models.abstract.base, gettable("models.website_template"));
+
+website_template.db_name = "website_template";
+
+function website_template:ctor()
+	self:addfield("name", "string", false, 60);   -- 模板名
+	-- self:addfield("category_id", "number", false);
+	self:addfield("content", "string", "1200");   -- 模板内容
+end
+
+

@@ -1,0 +1,31 @@
+<?npl
+--[[
+Title: website of a user
+Author: wuxiangan
+Date: 2016/10/10
+]]
+include_once("./abstract/multi_user_base.page");
+include_once("./stats.page");
+
+local website = inherit(models.abstract.multi_user_base, gettable("models.website"));
+
+website.db_name = "website";
+-- max items per user
+website.max_items_per_user = 10;
+
+function website:ctor()
+	self:addfield("name", "string", true, 30);
+	self:addfield("desc", "string");
+	self:addfield("url","string", true, 100);
+	self:addfield("tag","string", false, 300);
+	self:addfield("categoryId","number", false, nil, 1);
+	self:addfield("categoryName","string", false, 32);
+	self:addfield("keywords", "string", false, 100);
+	self:addfield("teamwork", "string", false, 100);
+	self:addfield("store", "string", false, 200);
+	self:addfield("fork", "string", false, 200);
+	self:addfield("createtime", "string", false, 64);
+	self:addfield("updatetime", "string", false, 64);
+	self:addfield("stars", "number");
+	self:addfield("private", "number");
+end
