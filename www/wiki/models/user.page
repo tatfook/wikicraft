@@ -17,7 +17,10 @@ function user:ctor()
 	self:addfield("github", "number", false); -- github id
 	self:addfield("github_token", "table", false); -- github access token
 	self:addfield("displayName", "string", false, 30);
+    self:addfield("idcard", "string", false, 30);-- personal or group's identify
+    self:addfield("birthday", "string", false, 30); 
 	self:addfield("picture", "string", false, 200); -- picture url
+    self:addfield("sex", "boolean", false)  --true male;false female
 	self:addfield("publicemail", "string", false, 30);
 	self:addfield("bio", "string", false, 300);
 	self:addfield("company", "string", false, 30);
@@ -25,6 +28,20 @@ function user:ctor()
 	self:addfield("location", "string", false, 50);
 	self:addfield("joindate", "string", false, 30);
 	self:addfield("isadmin", "boolean", false);
+    --[[
+     Add By: zhoujun
+     Date: 2016/10/11
+     Desc:add some fields
+     ]]
+    self:addfield("islock ", "boolean", false); --lock account
+    self:addfield("isdel ", "boolean", false); -- physic del or logic del
+    self:addfield("authphone ", "string", false,30); -- maybe after auth,there will not to be nil
+    self:addfield("authmail ", "string", false,30); -- the same to the phone
+    self:addfield("registerip ", "string", false,30); 
+    self:addfield("registerorigin ", "string", false,30); --lead to register
+    self:addfield("last_login_time ", "string", false, 30);
+    self:addfield("last_loginout_time ", "string", false, 30);
+
 end
 
 -- return minimum infor about the user
