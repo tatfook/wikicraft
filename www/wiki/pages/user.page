@@ -1,0 +1,35 @@
+﻿<?npl
+wp_enqueue_script("userController", WIKI_WEBROOT.."controllers/userController.js");
+?>
+<div class="templatemo-container">
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 black-bg left-container">
+			<div class="tm-left-inner-container">
+				<ul class="nav nav-stacked templatemo-nav">
+				  <li><a href="index.html" class="active"><i class="fa fa-home fa-medium"></i>我的资料</a></li>
+				  <li><a href="#"><i class="fa fa-shopping-cart fa-medium"></i>账号安全</a></li>
+				  <li><a href="#"><i class="fa fa-send-o fa-medium"></i>我的收藏</a></li>
+				  <li><a href="#"><i class="fa fa-comments-o fa-medium"></i>我的历史</a></li>
+				  <li><a href="#"><i class="fa fa-gears fa-medium"></i>我的粉丝</a></li>
+				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>实名验证</a></li>
+				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>邀请注册</a></li>
+				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>VIP</a></li>
+				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>数据源</a></li>
+				</ul>
+			</div>
+		</div> <!-- left section -->
+        
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 white-bg right-container">
+			
+			<div class="tm-right-inner-container">
+			     <!--my information-->
+				 <!--account security-->
+				 <!--my collections-->
+				 <!--my fans-->
+				 <!--authentication -->
+				 <!--register by invite-->
+				 <!--VIP-->
+				 <!--datasource-->
+								
+			</div>	
+		</div> <!-- right section -->
+	</div>	
