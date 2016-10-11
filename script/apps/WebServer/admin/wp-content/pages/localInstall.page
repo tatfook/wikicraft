@@ -6,183 +6,39 @@ Date: 2016/10/9
 Desc: 
 ]]
 
-NPL.load("(gl)script/ide/System/Core/ToolBase.lua");
-NPL.load("(gl)script/ide/System/localserver/localserver.lua");
+NPL.load("(gl)script/ide/System/Plugins/PluginManager.lua");
 
 addheader('Access-Control-Allow-Origin', '*'); 
 
-local localInstall = commonlib.inherit(commonlib.gettable("System.Core.ToolBase"));
-
-localInstall:Property({"PluginFolder", "Mod/", auto=true, desc="default plugin folder"});
-
-function localInstall:ctor()
-	
-end
-
-function localInstall:ComputeLocalFileName(url)
-	local filename = self:GetPluginFolder()..url:gsub("[%W%s]+", "_"):gsub("_zip$", ".zip");
-
-	if(not filename:match("%.zip$")) then
-		filename = filename..".zip";
-	end
-
-	return filename;
-end
-
-function localInstall:StartDownloader(src, dest, callbackFunc, cachePolicy)
-	local function OnSucceeded(filename)
-		self.isFetching = false;
-		if(callbackFunc) then
-			callbackFunc(true, filename)
-		end
-
-		log({"success"});
-	end
-
-	local function OnFail(msg)
-		self.isFetching = false;
-		if(callbackFunc) then
-			callbackFunc(false, msg);
-		end
-
-		log({"fail"});
-	end
-	
-	local ls = System.localserver.CreateStore(nil, 1);
-	
-	if(self.isFetching) then
-		OnFail("a previous download is not finished");
-		return;
-	end
-	self.isFetching = true;
-
-	local res = ls:GetFile(
-		System.localserver.CachePolicy:new(cachePolicy or "access plus 5 days"),
-		src,
-		function (entry)
-			if(dest) then
-				if(ParaIO.CopyFile(entry.payload.cached_filepath, dest, true)) then
-					local cached_filepath = entry.payload.cached_filepath;
-					ParaIO.DeleteFile(cached_filepath);
-					--  download complete
-					LOG.std(nil, "info", "PluginLoader", "successfully downloaded file from %s to %s", src, dest);
-					OnSucceeded(dest);
-				else
-					LOG.std(nil, "info", "PluginLoader", "failed copy file from %s to %s", src, dest);
-					OnFail("failed to copy file to dest folder. The file may be in use.");
-				end
-			else
-				LOG.std(nil, "info", "PluginLoader", "successfully downloaded file to %s", entry.payload.cached_filepath);
-				OnSucceeded(entry.payload.cached_filepath);
-			end
-		end,
-		nil,
-		function (msg, url)
-			local text;
-
-			self.DownloadState = self.DownloadState;
-
-			if(msg.DownloadState == "") then
-				text = "Downloading ..."
-				if(msg.totalFileSize) then
-					self.totalFileSize = msg.totalFileSize;
-					self.currentFileSize = msg.currentFileSize;
-					text = string.format("Downloading: %d/%dKB", math.floor(msg.currentFileSize/1024), math.floor(msg.totalFileSize/1024));
-				end
-			elseif(msg.DownloadState == "complete") then
-				text = "Download completed!";
-			elseif(msg.DownloadState == "terminated") then
-				text = "Download terminated";
-				OnFail(text);
-			end
-
-			if(text) then
-				log({"text",text}); -- TODO: display in UI?
-			end
-
-			log({"msg",msg,"url",url});
-		end
-	);
-
-	if(not res) then
-		OnFail("Duplicated download");
-	end
-end
-
-function localInstall:DownloadZip(url, callbackFunc, refreshMode)
-	refreshMode  = refreshMode  or "auto";
-	callbackFunc = callbackFunc or echo;
-
-	-- destination file path
-	local dest = self:ComputeLocalFileName(url);
-	log({"dest",dest});
-	-- get http headers only
-	System.os.GetUrl(url, function(err, msg)
-		if(msg.rcode ~= 200 or not msg.header) then
-
-			LOG.std(nil, "info", "PluginLoader", "remote plugin can not be fetched from %s, a previous downloaded one at %s is used", url, dest);
-			callbackFunc(true, dest);
-
-		else
-
-			local content_length = msg.header:match("Content%-Length: (%d+)");
-			log({"content_length",content_length});
-
-			if(content_length) then
-				local local_filesize = ParaIO.GetFileSize(dest);
-				log({"local_filesize",local_filesize});
-
-				if(local_filesize == tonumber(content_length)) then
-
-					-- we will only compare file size: since github/master does not provide "Last-Modified: " header.
-					LOG.std(nil, "info", "PluginLoader", "remote plugin size not changed, previously downloaded one %s is used", dest);
-					callbackFunc(true, dest);
-
-				else
-					
-					LOG.std(nil, "info", "PluginLoader", "remote(%d) and local(%d) file size differs", content_length, local_filesize);
-					self:StartDownloader(url, dest, callbackFunc);
-
-				end
-			end
-
-		end
-	end, "-I");
-
-end
-
-function localInstall:currentDownload()
-	
-
-
-end
-
-local install = localInstall:new();
+local PluginManager = commonlib.gettable("System.Plugins.PluginManager");
+local manager = PluginManager.CreateGetInstance("Paracraft");
+--echo(manager:GetLoader():RebuildModuleList())  --> list of installed plugins
+--manager:GetLoader():LoadAllPlugins() --> load plugins, see PluginLoader for details
 
 if(is_ajax()) then
 	add_action(
 		'wp_ajax_downloadzip',
 		function()
 			local url = request:get('url');
-
-			log({"url",url});
-
-			install:DownloadZip(
+			url = 'https://github.com/LiXizhi/ParaCraftSDK.git';
+			
+			manager:GetLoader():InstallFromUrl(
 				url, 
 				function(bSucceed, msg)
 					log({"msg",msg}); 
 				end
 			);
+			echo("rrrrrrr");
 		end
 	);
 
 	add_action(
-		'wp_ajax_currentDownload',
+		'wp_ajax_GetCurrentDownload',
 		function()
-			
-
+			wp_send_json(manager:GetLoader():GetDownloadInfo());
 		end
-	)
+	);
+
 	return;
 end
 
