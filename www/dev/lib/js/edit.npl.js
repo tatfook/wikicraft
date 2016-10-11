@@ -12,7 +12,13 @@ editor.setAutoScrollEditorIntoView(true);
 //});
 editor.getSession().on('change', function(e) {
     // e.type, etc
-    $('#txtSource').val(editor.getValue());
+    var source = editor.getValue();
+    $('#txtSource').val(source);
+
+    // only to update permalink
+    $('.result-html').html(mdHtml.render(source));
+
+    event.preventDefault();
 });
 
 $('.source-clear').on('click', function () {

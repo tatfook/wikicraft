@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wikicraft", "wikicraft.csproj", "{ABA4D99F-E00E-4E6C-AF4D-BE7BE091C438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPLPackageMain", "..\npl_packages\main\NPLPackageMain.csproj", "{038D1911-B26A-4000-9171-19B267901C5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPLPackageMain", "npl_packages\main\NPLPackageMain.csproj", "{09FA02CB-98DC-46D3-9D5B-C83AB92F8E1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{ABA4D99F-E00E-4E6C-AF4D-BE7BE091C438}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA4D99F-E00E-4E6C-AF4D-BE7BE091C438}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA4D99F-E00E-4E6C-AF4D-BE7BE091C438}.Release|Any CPU.Build.0 = Release|Any CPU
-		{038D1911-B26A-4000-9171-19B267901C5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{038D1911-B26A-4000-9171-19B267901C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{038D1911-B26A-4000-9171-19B267901C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{038D1911-B26A-4000-9171-19B267901C5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09FA02CB-98DC-46D3-9D5B-C83AB92F8E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09FA02CB-98DC-46D3-9D5B-C83AB92F8E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09FA02CB-98DC-46D3-9D5B-C83AB92F8E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09FA02CB-98DC-46D3-9D5B-C83AB92F8E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

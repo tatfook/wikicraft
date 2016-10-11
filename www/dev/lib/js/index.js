@@ -9415,6 +9415,7 @@
 
         $('.source-clear').on('click', function (event) {
             $('.source').val('');
+            editor.setValue('');
             updateResult();
             event.preventDefault();
         });
