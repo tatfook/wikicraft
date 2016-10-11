@@ -5,26 +5,33 @@
                 <h4>Step {{step}} </h4>
             </div>
             <div class="panel-body">
-                <form role="form" class="form-horizontal">
+                <form role="form" class="form-horizontal" name="websiteForm">
                     <div ng-if="step == 1">
                         <div class="form-group">
-                            <label class="control-label col-md-4">站点名称</label>
+                            <label class="control-label col-md-4">站点名称 *</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control " ng-model="website.name"/>
+                                <input type="text" class="form-control " ng-blur="checkWebsiteName()" ng-model="website.name" name="name" required/>
+                            </div>
+                            <div style="color:red;padding: auto;display: inline" ng-show="websiteNameErrMsg || (websiteForm.name.$dirty && websiteForm.name.$invalid)">
+                                <span ng-show="websiteForm.name.$error.required">站点名为必填字段</span>
+                                <span>{{websiteNameErrMsg}}</span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-4">描述</label>
                             <div class="col-md-4">
-                                <textarea class="form-control" rows="3"></textarea>
+                                <textarea class="form-control" rows="3" ng-model="website.desc"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-4">独立域名</label>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" class="form-control " ng-model="website.domain"/>
+                                    <input type="text" class="form-control " ng-blur="checkWebsiteDomain()" ng-model="website.domain"/>
                                     <span class="input-group-addon"><b>.wikicraft.cn</b></span>
+                                </div>
+                                <div style="color:red;padding: auto;display: inline" ng-show="websiteDomainErrMsg">
+                                    <span>{{websiteDomainErrMsg}}</span>
                                 </div>
                             </div>
                         </div>
@@ -34,75 +41,64 @@
                         <div class="col-md-offset-2 col-md-4">
                             <div>常用标签</div>
                             <div style="border: 1px solid #f2dede; padding: 10px 20px">
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
-                                <button class="btn" style="margin: 5px">tag1</button>
+                                <button class="btn" style="margin: 5px" ng-click="addTag(tag)" ng-repeat="tag in commonTags">{{tag}}</button>
                             </div>
                         </div>
                         <div class="col-md-offset-1 col-md-4">
                             <div>本站标签</div>
-                            <div>
-                                <input type="text" ng-model="tag">
-                                <button class="btn">添加</button>
+                            <div class="form-group">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="tag">
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-default" ng-click="addTag(tag)">添加</button>
+                                </div>
                             </div>
                             <div style="border: 1px solid #f2dede; padding: 10px 20px">
-                                <div class="btn-group" style="margin: 5px" ng-repeat="tagName in tags">
-                                    <button class="btn">{{tagName}}</button>
-                                    <button class="btn"><span class="glyphicon glyphicon-remove"></span></button>
+                                <div class="btn-group" style="margin: 5px" ng-repeat="tag in tags">
+                                    <button class="btn">{{tag}}</button>
+                                    <button class="btn" ng-click="removeTag(tag)"><span class="glyphicon glyphicon-remove"></span></button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div ng-if="step == 3" class="row">
+                    <div ng-if="step == 3" >
                         <div class="col-md-offset-2 col-md-8"  style="display:flex; border: 1px solid">
-                            <div class="col-md-3" style="border-right: 1px solid; margin-right: 0px">
+                            <div style="border-right: 1px solid; width: 20%; margin-right: 0px">
                                 <div style="display: flex; justify-content: center; margin: 20px" ng-repeat="category in categories">
-                                    <button class="btn">{{category.name}}</button>
+                                    <button class="btn" ng-click="selectCategory(category)">{{category.name}}&nbsp;&nbsp;<span ng-if="website.categoryId == category._id" class="glyphicon glyphicon-ok"></span></button>
                                 </div>
                             </div>
-                            <div class="col-md-offset-1 col-md-7" >
-                                <div style="display:inline-block; width: 80px; height: 80px; background-color: #00AAAA; margin: 10px;">图书</div>
-                                <div style="display:inline-block; width: 80px; height: 80px; background-color: #00AAAA; margin: 10px;">图书</div>
-                                <div style="display:inline-block; width: 80px; height: 80px; background-color: #00AAAA; margin: 10px;">图书</div>
-                                <div style="display:inline-block; width: 80px; height: 80px; background-color: #00AAAA; margin: 10px;">图书</div>
-                                <div style="display:inline-block; width: 80px; height: 80px; background-color: #00AAAA; margin: 10px;">图书</div>
+                            <div style="width: 80%;" >
+                                <a ng-click="selectTemplate(template)" ng-repeat="template in templates" style="display: inline-block; width: 30%; margin: 10px" >
+                                    <div ng-if="website.templateId != template._id" style="position:relative; width: 100%" >
+                                        <div style="position: relative; height: 80px; width: 100%">
+                                            <div ng-bind-html="template.content"></div>
+                                        </div>
+                                        <div><h6>{{template.name}}</h6></div>
+                                    </div>
+                                    <div ng-if="website.templateId == template._id" style="position:relative; width: 100%; border: 2px solid black" >
+                                        <div style="position: relative; height: 80px; width: 100%;;">
+                                            <div ng-bind-html="template.content"></div>
+                                        </div>
+                                        <div><h6>{{template.name}}</h6></div>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     <div ng-if="step == 4" class="row">
-                        <div style="margin: 20px; border: 1px solid" class="col-md-3">
-                            <h4>深蓝</h4>
+                        <div style=" margin: 20px; border: 1px solid;" class="col-md-3" ng-repeat="style in styles">
                             <div>
-                                <button class="btn">应用</button>
-                                <button class="btn">预览</button>
+                                <h6>{{style.name}}</h6>
                             </div>
-                        </div>
-                        <div style="margin: 20px; border: 1px solid" class="col-md-3">
-                            <h4>深蓝</h4>
-                            <div>
-                                <button class="btn">应用</button>
-                                <button class="btn">预览</button>
+                            <div style="position:relative; height: 80px">
+                                <div ng-bind-html="style.content"></div>
                             </div>
-                        </div>
-                        <div style="margin: 20px; border: 1px solid" class="col-md-3">
-                            <h4>深蓝</h4>
                             <div>
-                                <button class="btn">应用</button>
-                                <button class="btn">预览</button>
-                            </div>
-                        </div>
-                        <div style="margin: 20px; border: 1px solid" class="col-md-3">
-                            <h4>深蓝</h4>
-                            <div>
-                                <button class="btn">应用</button>
+                                <button class="btn" ng-click="selectStyle(style)">应用<span ng-if="website.styleId == style._id" class="glyphicon glyphicon-ok"></span></button>
                                 <button class="btn">预览</button>
                             </div>
                         </div>
@@ -116,13 +112,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" style="margin-top: 20px">
-                        <div ng-if="step<5" style="display: flex; justify-content: center">
-                            <button class="btn"><span class="glyphicon glyphicon-step-backward"></span>上一步</button>
-                            <button class="btn"><span class="glyphicon glyphicon-step-forward"></span>下一步</button>
-                        </div>
-                        <div ng-if="step==5" style="display: flex; justify-content: center">
-                            <button class="btn"><span class="glyphicon glyphicon-ok"></span>完成</button>
+                    <div class="col-md-12">
+                        <div class="form-group " style="margin-top: 20px">
+                            <div ng-if="step<5" style="display: flex; justify-content: center">
+                                <button class="btn btn-default" ng-click="prevStep()"><span class="glyphicon glyphicon-step-backward"></span>上一步</button>
+                                <button class="btn btn-default" ng-disabled="nextStepEnable" ng-click="nextStep()"><span class="glyphicon glyphicon-step-forward"></span>{{step == 4 ? "提交" : "下一步"}}</button>
+                            </div>
+                            <div ng-if="step==5" style="display: flex; justify-content: center">
+                                <button class="btn btn-default" ng-click="nextStep()"><span class="glyphicon glyphicon-ok"></span>完成</button>
+                            </div>
+                            <div class="text-danger" style="display: flex; justify-content: center;">{{errMsg}}</div>
                         </div>
                     </div>
                 </form>

@@ -15,17 +15,45 @@ website.max_items_per_user = 10;
 
 function website:ctor()
 	self:addfield("name", "string", true, 30);
-	self:addfield("desc", "string");
+	self:addfield("desc", "string", false, 120);
+	self:addfield("domain", "string", false, 30);
 	self:addfield("url","string", true, 100);
-	self:addfield("tag","string", false, 300);
+	self:addfield("tags","string", false, 300);
 	self:addfield("categoryId","number", false, nil, 1);
 	self:addfield("categoryName","string", false, 32);
+	self:addfield("templateId","number", false, nil, 1);
+	self:addfield("templateName","string", false, 32);
+	self:addfield("styleId","number", false, nil, 1);
+	self:addfield("styleName","string", false, 32);
 	self:addfield("keywords", "string", false, 100);
 	self:addfield("teamwork", "string", false, 100);
 	self:addfield("store", "string", false, 200);
 	self:addfield("fork", "string", false, 200);
-	self:addfield("createtime", "string", false, 64);
-	self:addfield("updatetime", "string", false, 64);
+	self:addfield("createDate", "string", false, 64);
+	self:addfield("updateDate", "string", false, 64);
 	self:addfield("stars", "number");
 	self:addfield("private", "number");
 end
+
+function website:get(params)
+	self:db():find(params, resume);
+	local err, data = yield();
+	return data;
+end
+
+function website:create(params) 
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	return self._super.create(self, params);
+end
+
+function website:delete(params) 
+	self._super.delete(self, params);
+	return self:get();
+end
+
+function website:update(params) 
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	self._super.update(self, params);
+	return self:get();
+end
+
