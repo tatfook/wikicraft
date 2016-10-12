@@ -1,23 +1,32 @@
-angular.module('plugin', ['ui.bootstrap'])
-.controller('localInstallController', function ($scope, $http,$location)
-{
+﻿angular.module('plugin', ['ui.bootstrap'])
+.controller('localInstallController', function ($scope, $http, $location) {
     var params = $location.search();
 
     $scope.projectName = params.projectName;
-    $scope.version     = params.version;
-    $scope.author      = params.displayName;
+    $scope.version = params.version;
+    $scope.author = params.displayName;
 
     $scope.install = function () {
-        $http({
-            method: 'POST',
-            url: '/ajax/localInstall?action=downloadzip',
-            data: {
-                url: 'https://github.com/onedou/DOC/archive/master.zip',
-            }
-        })
-        .then(function (response) {
-            console.log(response);
-        }, function (response) { });
+        $(".start").text("");
+        $(".process").css({ "display": "block" ,"width":"1%"});
+
+        //$http({
+        //    method: 'POST',
+        //    url: '/ajax/localInstall?action=downloadzip',
+        //    data: {
+        //        url: 'https://github.com/onedou/DOC/archive/master.zip',
+        //    }
+        //})
+        //.then(function (response) {
+            
+        //    $(".process").text("Download complete!")
+
+        //    setTimeout(function () {
+        //        //alert("安装完成:)，请关闭对话框");
+        //    }, 1000);
+
+        //    console.log(response);
+        //}, function (response) { });
     }
 
     //$scope.install = function () {
