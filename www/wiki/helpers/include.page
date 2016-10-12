@@ -1,0 +1,9 @@
+<?npl
+
+wp_enqueue_script("util", WIKI_WEBROOT.."helpers/util.js");  -- js 帮助函数
+
+-- websiteControl
+wp_enqueue_script("websiteController", WIKI_WEBROOT .. "controllers/websiteController.js")
+
+
+?>

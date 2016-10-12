@@ -1,0 +1,28 @@
+<?npl
+--[[
+Title: all pages owned by a website
+Author: wuxiangan
+Date: 2016/10/12
+]]
+
+include_once("./abstract/base.page");
+
+local website_pages = inherit(models.abstract.base, gettable("models.website_pages"));
+
+website_pages.db_name = "website_pages";
+-- max length of pages
+-- website_pages.max_length = 10000;
+
+function website_pages:ctor()
+	self:addfield("name", "string", false, 32);  -- 页面名
+	self:addfield("websiteId", 'number', false); -- 所属站点id
+	self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
+	self:addfield("content", "string", false, 100000);  -- 具体页面内容
+end
+
+function website_pages:delete(params)
+	self:db():deleteOne(params)
+end
+
+
+

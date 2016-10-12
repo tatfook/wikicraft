@@ -9,6 +9,7 @@
             </div>
             <div class="clearfix"></div>
         </div>
+		<!--
         <div style="display: flex; justify-content: center; ">
             <div ng-show="websites.length==0" class="text-info">
                 马上拥有你的个人作品网站，永久免费
@@ -17,6 +18,7 @@
                 每个用户最多可创建{{max_free_count}}个免费个人作品网站
             </div>
         </div>
+		-->
     </div>
 
     <div style="margin: 30px">
@@ -39,7 +41,7 @@
             <tr ng-repeat="website in websites">
                 <td>{{website.name}}</td>
                 <td>{{website.desc}}</td>
-                <td>{{website.domain}}</td>
+                <td>{{website.domain ? (website.domain + '.wikicraft.cn') : ""}}</td>
                 <td>{{website.categoryName}}</td>
                 <td>{{website.templateName}}</td>
                 <td>{{website.styleName}}</td>
