@@ -7,8 +7,24 @@
     $scope.author = params.displayName;
 
     $scope.install = function () {
-        $(".start").text("");
-        $(".process").css({ "display": "block" ,"width":"1%"});
+        $(".start").text("0% 0/1234 KB").attr("disabled","disabled");
+        $(".process").css({ "display": "block", "width": "0%" });
+
+        setTimeout(function () {
+            $(".start").text("30% 222/1234 KB");
+            $(".process").css({ "display": "block", "width": "30%" });
+        }, 2000);
+
+        setTimeout(function () {
+            $(".start").text("60% 888/1234 KB");
+            $(".process").css({ "display": "block", "width": "60%" });
+        }, 5000);
+
+        setTimeout(function () {
+            $(".start").text("Download complete!").css("background-color", "#00ffbd");
+            $(".process").css({ "opacity": "0", "width": "100%" });
+            $(".button span").css("display", "block");
+        }, 8000);
 
         //$http({
         //    method: 'POST',

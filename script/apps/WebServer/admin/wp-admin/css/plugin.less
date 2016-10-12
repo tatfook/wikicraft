@@ -59,25 +59,27 @@
                 background-color: #00FFFF;
                 margin-top: 70px;
                 font-weight: 600;
-                color: #005585;
-
-                @animate: animate 3s linear infinite;
-                -webkit-animation: @animate;
-                -moz-animation: @animate;
-                -ms-animation: @animate;
-                -o-animation: @animate;
-                animation: @animate;
+                color: #000000;
+                transition: background-color 1s;
             }
 
             &.process{
-                background-color: #00ffbd;
+                background-color: #05bbbb;
                 margin-top: -45px;
-                position: relative;
-                z-index: 1;
+                /*position: relative;
+                z-index: 1;*/
                 color: #025a48;
                 font-weight: 600;
                 display:none;
                 overflow: hidden;
+                transition: opacity 1s,width 1s;
+
+                /*@animate: animate 3s linear infinite;
+                -webkit-animation: @animate;
+                -moz-animation: @animate;
+                -ms-animation: @animate;
+                -o-animation: @animate;
+                animation: @animate;*/
             }
 
         }
@@ -110,12 +112,12 @@
 
 .animate() {
     0% {
-        opacity: 1
+        opacity: 1;
     }
     50% {
-        opacity: .3
+        opacity: .3;
     }
     100% {
-        opacity: 1
+        opacity: 1;
     }
 }

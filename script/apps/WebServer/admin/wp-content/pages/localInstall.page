@@ -76,7 +76,7 @@ PAGE_NO_SIDE_BAR = true;
     
     <div class="button">
         <button class="start" ng-click="install()">Yes</button>
-        <button class="process" disabled="disabled">nil</button>
+        <button class="process" disabled="disabled"></button>
         <span> Press close button at right top corner</span>
         <!--<button ng-click="cancel()">Cancel</button>-->
     </div>
