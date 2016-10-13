@@ -3,11 +3,99 @@
  */
 
 app.controller('mainCtrl', function ($scope,$state, $sce) {
+	console.log("mainCtrl");
 });
 
-app.controller('indexCtrl', function ($scope,$state, $sce) {
-    //$state.go('index.index');
-    $state.go('index.project');
+app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
+	var hostname = window.location.hostname;
+    var pathname = window.location.pathname;
+
+    var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+    var pagename = '/index';
+
+    if (sitename) {
+        sitename = sitename[1];
+        pagename = pathname;
+    } else {
+        sitename = pathname.match(/^\/?([^\/]+)(.*)/);  // 这里不会返回null
+        pagename = sitename[2] || pagename;
+        sitename = sitename[1]
+    }
+    
+	console.log("indexCtrl");
+    if (sitename == "wiki") {
+        $state.go('index.' + pagename.substring(1,pagename.length));
+    } else {
+        ctrlShareObj.pageContentUrl = '/' + sitename + pagename;
+        $state.go('custom');
+    }
+
+//    $state.go('index.project');
+});
+
+app.controller('customCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
+	console.log(ctrlShareObj);
+	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
+	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsitePageByUrl', {url:ctrlShareObj.pageContentUrl}, function(data){
+        $scope.websitePage = data  || defaultPage;
+        $scope.pageContent = $sce.trustAsHtml($scope.websitePage.content);
+	});
+});
+
+app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShareObj) {
+    $scope.websites = [];
+    $scope.websitePages = [];
+    $scope.style = {}
+    var website = ctrlShareObj.website || {};
+    $scope.websitePage = {name:'', url:'/'+ website.name + '/', websiteName:website.name, websiteId:website._id, content: ""};  // 从websitePages选择一页编辑，或新增， 注意新增或修改提交页时需这些信息
+
+    init();
+
+    function init() {
+        // 获取用户站点列表
+        /*
+        $http.post('http://localhost:8099/api/wiki/models/website',{userid:1}).then(function (response) {
+            $scope.websites = response.data;
+        }).catch(function (response) {
+            console.log(response.data);
+        });
+        */
+        // 获取网站所有页面
+        $http.post('http://localhost:8099/api/wiki/models/website_pages',{websiteName:website.name}).then(function (response) {
+            $scope.websitePages = response.data.data;
+        }).catch(function (response) {
+            console.log(response.data);
+        });
+        // 获取网站模板样式  页面内容嵌套在模板内部 编辑不需模板吧？？ 预览时你也可以获取自行嵌套
+        /*
+        $http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id:website.styleId}).then(function (response) {
+            $scope.style = response.data;  // 模板代码style.content
+        })
+        */
+    }
+
+    $scope.submit = function () {
+        var isEdit =false;
+        $scope.websitePage.url ='/' + $scope.websitePage.websiteName + '/' +  $scope.websitePage.name;
+        console.log($scope.websitePage);
+        if (isEdit == false) { // 新增
+            $http.put('http://localhost:8099/api/wiki/models/website_pages/new',$scope.websitePage).then(function (response) {
+                console.log(response.data.data);
+				$scope.websitePage.name = "";
+				$scope.websitePage.content = "";
+            }).catch(function (response) {
+                console.log(response.data);
+            });
+        } else {  // 修改
+            $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
+                console.log(response.data.data);
+				$scope.websitePage.name = "";
+				$scope.websitePage.content = "";
+            }).catch(function (response) {
+                console.log(response.data);
+            });
+        }
+    }
 });
 
 app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareObj) {
@@ -26,14 +114,20 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
         });
     }
 
-    $scope.goCreateProjectPage = function () {
-        ctrlShareObj.website = undefined;
-        $state.go('index.createProject');
+	$scope.goEditWebsitePagePage = function (website) {
+        ctrlShareObj.website = website;
+        console.log(ctrlShareObj.website);
+        $state.go('index.editWebsitePage');
     }
 
-    $scope.goEditProjectPage = function (website) {
+    $scope.goCreateWebsitePage = function () {
+        ctrlShareObj.website = undefined;
+        $state.go('index.createWebsite');
+    }
+
+    $scope.goEditWebsitePage = function (website) {
         ctrlShareObj.website = website;
-        $state.go('index.createProject');
+        $state.go('index.createWebsite');
     }
 
     $scope.deleteWebsite = function(id) {

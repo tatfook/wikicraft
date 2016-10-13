@@ -5,7 +5,7 @@
                 <h3><b>网站管理</b></h3>
             </div>
             <div class="pull-right" style="margin: 30px">
-                <button class="btn btn-default" ng-click="goCreateProjectPage()"><span class="glyphicon glyphicon-plus"></span>新建网站</button>
+                <button class="btn btn-default" ng-click="goCreateWebsitePage()"><span class="glyphicon glyphicon-plus"></span>新建网站</button>
             </div>
             <div class="clearfix"></div>
         </div>
@@ -48,8 +48,8 @@
                 <td>{{website.tags}}</td>
                 <td>{{website.createDate}}</td>
                 <td>
-                    <button class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
-                    <button class="btn btn-default" ng-click="goEditProjectPage(website)"><span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn btn-default" ng-click="goEditWebsitePagePage(website)"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button class="btn btn-default" ng-click="goEditWebsitePage(website)"><span class="glyphicon glyphicon-edit"></span></button>
                     <button class="btn btn-default" ng-click="deleteWebsite(website._id)"><span class="glyphicon glyphicon-remove"></span></button>
                 </td>
             </tr>

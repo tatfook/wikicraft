@@ -39,14 +39,27 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }).state('index.index', {
         url: 'index',
         templateUrl: templatePath + 'main.html',
-    }).state('index.project', {
-        url: 'project',
-        templateUrl: templatePath + 'project.html',
-    }).state('index.createProject', {
-        url: 'createProject',
-        templateUrl: templatePath + 'createProject.html',
+    }).state('index.website', {
+        url: 'website',
+        templateUrl: templatePath + 'website.html',
+    }).state('index.createWebsite', {
+        url: 'createWebsite',
+        templateUrl: templatePath + 'create_website.html',
     }).state('index.preview', {
         url:'preview',
         templateUrl:templatePath + 'preview.html',
+    }).state('index.editWebsitePage', {
+        url:'editWebsitePage',
+        templateUrl:templatePath + 'editWebsitePage.html',
+    });
+
+
+	$stateProvider.state('custom', {
+        url:'/custom',
+        views:{
+            'default':{
+                templateUrl:templatePath + 'custom.html'
+            },
+        },
     });
 });
