@@ -1,17 +1,34 @@
 ﻿angular.module('plugin', ['ui.bootstrap'])
-.controller('localInstallController', function ($scope, $http, $location) {
+.controller('localInstallController', function ($scope, $http, $location, $interval,$timeout) {
     var params = $location.search();
 
     $scope.projectName = params.projectName;
     $scope.version = params.version;
     $scope.author = params.displayName;
+    $scope.giturl = params.giturl;
+
+    $scope.seconds = 5;
+    //var countDownInterval = setInterval(function () {
+    //    //$scope.seconds = $scope.seconds-1;
+    //    console.log($scope.seconds);
+    //}, 1000);
+
+    $interval(function () {
+        $scope.seconds--;
+        //console.log($scope.seconds);
+    },1000,5)
+
+    $timeout(function () {
+        $scope.install();
+        $(".start").text("Starting......");
+    }, 5000);
 
     $scope.install = function () {
         $http({
             method: 'POST',
             url: '/ajax/localInstall?action=downloadzip',
             data: {
-                url: 'https://github.com/onedou/DOC/archive/master.zip',
+                url: $scope.giturl,
             }
         })
         .then(function (response) {
@@ -27,7 +44,7 @@
                 $(".start").text("0% 0/" + $scope.packageTotal + " KB").attr("disabled", "disabled");
                 $(".process").css({ "display": "block", "width": "0%" });
 
-                $scope.getCurrentDownload();
+                //$scope.getCurrentDownload();
             }
 
         }, function (response) { });

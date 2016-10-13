@@ -20,17 +20,18 @@ if(is_ajax()) then
 		'wp_ajax_downloadzip',
 		function()
 			local url = request:get('url');
-			url = 'https://github.com/LiXizhi/ParaCraftSDK.git';
-			
-			manager:GetLoader():InstallFromUrl(
-				url, 
-				function(bSucceed, msg)
-					resume();
-					log({"msg",msg}); 
-				end
-			);
+			--url = 'https://github.com/LiXizhi/ParaCraftSDK.git';
+			url = url..'/archive/master.zip';
+			echo(url);
+			--manager:GetLoader():InstallFromUrl(
+				--url, 
+				--function(bSucceed, msg)
+					--resume();
+					--log({"msg",msg}); 
+				--end
+			--);
 
-			yield();
+			--yield();
 		end
 	);
 
@@ -80,7 +81,7 @@ PAGE_NO_SIDE_BAR = true;
         </div>
     </div>
     <div class="quene">
-        <div>AAAAA is downloading 30% 123/999 KB</div>
+        <!--<div>AAAAA is downloading 30% 123/999 KB</div>
         <div>BBB is waiting</div>
         <div>CCC is waiting</div>
         <div>AAA is complete!</div>
@@ -89,10 +90,10 @@ PAGE_NO_SIDE_BAR = true;
         <div>BBB is complete!</div>
         <div>Starting download CCC</div>
         <div>CCC is downloading 25% 123/999 KB</div>
-        <div>CCC is complete!</div>
+        <div>CCC is complete!</div>-->
     </div>
     <div class="button">
-        <button class="start" ng-click="install()">Yes</button>
+        <button class="start" ng-click="install()" disabled="disable">After {{seconds}}s will start</button>
         <button class="process" disabled="disabled"></button>
         <span> Press close button at right top corner</span>
         <!--<button ng-click="cancel()">Cancel</button>-->
