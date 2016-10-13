@@ -38,7 +38,35 @@ if(is_ajax()) then
 	add_action(
 		'wp_ajax_getDownloadQueue',
 		function()
-			
+			wp_send_json(
+				{
+					waitCount=0,
+					waitPackages={
+						{
+							projectName="AAAA",
+							currentDownload=123,
+							totalDownload=8888
+						},
+						{
+							projectName="BBBB",
+							currentDownload=789
+							totalDownload=9984
+						}
+					},
+					isYourTurn=0
+				}
+			);
+		end
+	)
+
+	add_action(
+		'wp_ajax_setDownloadQueue',
+		function()
+			local projectName = request.get("projectName");
+
+			queueId = manager:GetLoader():SetDownloadQueue(projectName);
+
+			wp_send_json({queueId=queueId})
 		end
 	)
 
@@ -81,8 +109,8 @@ PAGE_NO_SIDE_BAR = true;
         </div>
     </div>
     <div class="quene">
-        <!--<div>AAAAA is downloading 30% 123/999 KB</div>
-        <div>BBB is waiting</div>
+        <div>Thanks for download.</div>
+        <!--<div>BBB is waiting</div>
         <div>CCC is waiting</div>
         <div>AAA is complete!</div>
         <div>Starting download BBB</div>

@@ -26,28 +26,53 @@
     $scope.install = function () {
         $http({
             method: 'POST',
-            url: '/ajax/localInstall?action=downloadzip',
+            url: '/ajax/localInstall?action=getDownloadQueue',
             data: {
                 url: $scope.giturl,
             }
         })
         .then(function (response) {
-
-            var lock = true;
-
-            if (lock) {
-                alert("Some packages is downing,please wait it finish");
-
+ 
+            if (response.data.waitCount == 0) {
+                $scope.startDownload();
             } else {
-                $scope.packageTotal = 0;
-
-                $(".start").text("0% 0/" + $scope.packageTotal + " KB").attr("disabled", "disabled");
-                $(".process").css({ "display": "block", "width": "0%" });
-
-                //$scope.getCurrentDownload();
+                if (response.data.isYourTurn == 1) {
+                    $scope.startDownload();
+                } else {
+                    $timeout(function () {
+                        $scope.install();
+                    }, 1000);
+                }
             }
 
+            //var lock = true;
+
+            //if (lock) {
+            //    alert("Some packages is downing,please wait it finish");
+
+            //} else {
+            //    $scope.packageTotal = 0;
+
+            //    $(".start").text("0% 0/" + $scope.packageTotal + " KB").attr("disabled", "disabled");
+            //    $(".process").css({ "display": "block", "width": "0%" });
+
+            //    $scope.getCurrentDownload();
+            //}
+
         }, function (response) { });
+    }
+
+    $scope.startDownload = function(){
+        $http({
+            method: 'POST',
+            url: '/ajax/localInstall?action=downloadzip',
+            data: {
+                url: $scope.giturl,
+            }
+        })
+        .then(function () {
+
+        }, function () { });
     }
 
     $scope.getCurrentDownload = function () {
@@ -76,19 +101,4 @@
         }, function (response) { });
 
     }
-
-    //$scope.install = function () {
-    //    $http({
-    //            method: 'GET',
-    //            url: 'https://github.com/onedou/DOC/archive/master.zip',
-    //            headers: {
-    //                'Authorization': undefined,
-    //            }, // remove auth header for this request
-    //            skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
-    //    })
-    //    .then(function (response) {
-    //        console.log(response);
-    //    },
-    //    function (response) { })
-    //}
 })

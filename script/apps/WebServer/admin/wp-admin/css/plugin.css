@@ -39,11 +39,11 @@
   float: right;
 }
 .plugin .quene {
-  overflow-y: hidden;
-  /*overflow-y: auto;*/
+  /*overflow-y: hidden;*/
+  overflow-y: auto;
   width: 52.5%;
-  border: none;
-  /*border: solid 1px #000;*/
+  /*border: none;*/
+  border: solid 1px #000;
   font-size: 13px;
   margin: 0 auto;
   padding: 5px;
