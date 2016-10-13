@@ -8,37 +8,45 @@ include_once(WIKI_ROOT.."helpers/website.page");
 RenderServerWikiScript();
 wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
 include(WIKI_ROOT.."auth/clientconfig.page");
+wp_enqueue_script("uc_leftmenu", WIKI_WEBROOT.."assets/lib/js/ucenter.js");
 wp_enqueue_style("uc_style", WIKI_WEBROOT.."assets/lib/css/uc_style.css");
 ?>
- <div class="templatemo-container">
- 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 black-bg left-container">
-		<div class="tm-left-inner-container">
-				<ul class="nav nav-stacked templatemo-nav">
-				  <li><a href="index.html" class="active"><i class="fa fa-home fa-medium"></i>我的资料</a></li>
-			  <li><a href="#"><i class="fa fa-shopping-cart fa-medium"></i>账号安全</a></li>
-				  <li><a href="#"><i class="fa fa-send-o fa-medium"></i>我的收藏</a></li>
-				  <li><a href="#"><i class="fa fa-comments-o fa-medium"></i>我的历史</a></li>
-				  <li><a href="#"><i class="fa fa-gears fa-medium"></i>我的粉丝</a></li>
-				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>实名验证</a></li>
-				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>邀请注册</a></li>
-				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>VIP</a></li>
-				  <li><a href="#"><i class="fa fa-envelope-o fa-medium"></i>数据源</a></li>
+ <div id="leftmenu" class="left_menu">
+ 		<!-- left section -->
+		<div class="left_menu_uc">
+				<ul>
+				  <li id="lm1" onclick="setTab('lm',1,9)" class="hover"><i class="fa fa-home fa-medium"></i>我的资料</li>
+			      <li id="lm2" onclick="setTab('lm',2,9)"><i class="fa fa-shopping-cart fa-medium"></i>账号安全</li>
+				  <li id="lm3" onclick="setTab('lm',3,9)"><i class="fa fa-send-o fa-medium"></i>我的收藏</li>
+				  <li id="lm4" onclick="setTab('lm',4,9)"><i class="fa fa-comments-o fa-medium"></i>我的历史</li>
+				  <li id="lm5" onclick="setTab('lm',5,9)"><i class="fa fa-gears fa-medium"></i>我的粉丝</li>
+				  <li id="lm6" onclick="setTab('lm',6,9)"><i class="fa fa-envelope-o fa-medium"></i>实名验证</li>
+				  <li id="lm7" onclick="setTab('lm',7,9)"><i class="fa fa-envelope-o fa-medium"></i>邀请注册</li>
+				  <li id="lm8" onclick="setTab('lm',8,9)"><i class="fa fa-envelope-o fa-medium"></i>VIP</li>
+				  <li id="lm9" onclick="setTab('lm',9,9)"><i class="fa fa-envelope-o fa-medium"></i>数据源</li>
 				</ul>
 			</div>
-		</div> <!-- left section -->
-        
-		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 white-bg right-container">
-			
-			<div class="tm-right-inner-container">
+	  	<!-- right section -->	
+			<div class="l_contentbox">
 			     <!--my information-->
+				 <div id="lm_1" ></div>
 				 <!--account security-->
+				 <div id="lm_2" style="display:none"></div>
 				 <!--my collections-->
+				 <div id="lm_3" style="display:none"></div>
+				 <!--my history-->
+				 <div id="lm_4" style="display:none"></div>
 				 <!--my fans-->
+				 <div id="lm_5" style="display:none"></div>
 				 <!--authentication -->
+				 <div id="lm_6" style="display:none"></div>
 				 <!--register by invite-->
+				 <div id="lm_7" style="display:none"></div>
 				 <!--VIP-->
+				 <div id="lm_8" style="display:none"></div>
 				 <!--datasource-->
+				 <div id="lm_9" style="display:none"></div>
 								
 			</div>	
-		</div> <!-- right section -->
+		 
 	</div>
