@@ -9,27 +9,85 @@ RenderServerWikiScript();
 wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
 include(WIKI_ROOT.."auth/clientconfig.page");
 wp_enqueue_script("uc_leftmenu", WIKI_WEBROOT.."assets/lib/js/ucenter.js");
+wp_enqueue_script("js_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.js");
+wp_enqueue_script("js_sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.js");
 wp_enqueue_style("uc_style", WIKI_WEBROOT.."assets/lib/css/uc_style.css");
+wp_enqueue_style("css_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.css");
+wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
 ?>
  <div id="leftmenu" class="left_menu">
  		<!-- left section -->
 		<div class="left_menu_uc">
 				<ul>
-				  <li id="lm1" onclick="setTab('lm',1,9)" class="hover"><i class="fa fa-home fa-medium"></i>我的资料</li>
-			      <li id="lm2" onclick="setTab('lm',2,9)"><i class="fa fa-shopping-cart fa-medium"></i>账号安全</li>
-				  <li id="lm3" onclick="setTab('lm',3,9)"><i class="fa fa-send-o fa-medium"></i>我的收藏</li>
-				  <li id="lm4" onclick="setTab('lm',4,9)"><i class="fa fa-comments-o fa-medium"></i>我的历史</li>
-				  <li id="lm5" onclick="setTab('lm',5,9)"><i class="fa fa-gears fa-medium"></i>我的粉丝</li>
-				  <li id="lm6" onclick="setTab('lm',6,9)"><i class="fa fa-envelope-o fa-medium"></i>实名验证</li>
-				  <li id="lm7" onclick="setTab('lm',7,9)"><i class="fa fa-envelope-o fa-medium"></i>邀请注册</li>
-				  <li id="lm8" onclick="setTab('lm',8,9)"><i class="fa fa-envelope-o fa-medium"></i>VIP</li>
-				  <li id="lm9" onclick="setTab('lm',9,9)"><i class="fa fa-envelope-o fa-medium"></i>数据源</li>
+				  <li id="lm1" onclick="setTab('lm',1,9)" class="hover">我的资料</li>
+			      <li id="lm2" onclick="setTab('lm',2,9)">账号安全</li>
+				  <li id="lm3" onclick="setTab('lm',3,9)">我的收藏</li>
+				  <li id="lm4" onclick="setTab('lm',4,9)">我的历史</li>
+				  <li id="lm5" onclick="setTab('lm',5,9)">我的粉丝</li>
+				  <li id="lm6" onclick="setTab('lm',6,9)">实名验证</li>
+				  <li id="lm7" onclick="setTab('lm',7,9)">邀请注册</li>
+				  <li id="lm8" onclick="setTab('lm',8,9)">VIP</li>
+				  <li id="lm9" onclick="setTab('lm',9,9)">数据源</li>
 				</ul>
 			</div>
 	  	<!-- right section -->	
 			<div class="l_contentbox">
 			     <!--my information-->
-				 <div id="lm_1" ></div>
+				 <div id="lm_1" >
+				 <div class="panel panel-default">
+	
+	                 <div class="pbody">
+		                 <div class="upimg">
+		<div class="uprow">
+			<div id="crop-avatar" class="col-md-6">
+				<div class="avatar-view" title="点击编辑头像">
+			    	<img src="<?=WIKI_WEBROOT..'assets/lib/images/logo.jpg'?>" alt="Logo">
+			    </div>
+			</div>
+		</div>
+	</div>
+
+                        <div id="baseinfo">
+					       <ul>
+                            <li><span>昵称：</span> <input type="text" class="text-control" placeholder="Username"></li>
+                         </ul>
+						 <ul>
+                            <li><span>性别：</span>
+                            <input type="radio">男&nbsp;&nbsp;
+							<input type="radio">女&nbsp;&nbsp;
+							<input type="radio">保密</li>
+                         </ul>
+						  <ul>
+						<li>
+						<span>所在地：</span>
+						         <select class="text-control"> 
+                                   <option>江苏省</option> 
+                                 
+                                 </select>
+						         <select class="text-control"> 
+                                   <option>苏州市</option> 
+                                 
+                                 </select>
+						        <select class="text-control"> 
+                                   <option>工业园区</option> 
+                                 
+                              </select>
+                         </li>
+                        </ul>
+						 <ul>
+                            <li><span class="aligntext">个人简介：</span>
+                            <textarea rows="6"></textarea></li>
+                         </ul>
+						  <ul>
+                            <li style="martin-left:20px"><button type="button" class="btn btn-primary" 
+                                 data-toggle="button">保存
+                            </button></li>
+                         </ul>
+
+					 </div>
+	                </div>
+                 </div>
+				 </div>
 				 <!--account security-->
 				 <div id="lm_2" style="display:none"></div>
 				 <!--my collections-->
@@ -49,4 +107,52 @@ wp_enqueue_style("uc_style", WIKI_WEBROOT.."assets/lib/css/uc_style.css");
 								
 			</div>	
 		 
+
 	</div>
+	
+<div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<form class="avatar-form" action="" enctype="multipart/form-data" method="post">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal" type="button">&times;</button>
+					<h4 class="modal-title" id="avatar-modal-label">Change Logo Picture</h4>
+				</div>
+				<div class="modal-body">
+					<div class="avatar-body">
+						<div class="avatar-upload">
+							<input class="avatar-src" name="avatar_src" type="hidden">
+							<input class="avatar-data" name="avatar_data" type="hidden">
+							<label for="avatarInput">图片上传</label>
+							<input class="avatar-input" id="avatarInput" name="avatar_file" type="file"></div>
+						<div class="row">
+							<div class="col-md-9">
+								<div class="avatar-wrapper"></div>
+							</div>
+							<div class="col-md-3">
+								<div class="avatar-preview preview-lg"></div>
+								<div class="avatar-preview preview-md"></div>
+								<div class="avatar-preview preview-sm"></div>
+							</div>
+						</div>
+						<div class="row avatar-btns">
+							<div class="col-md-9">
+								<div class="btn-group">
+									<button class="btn" data-method="rotate" data-option="-90" type="button" title="Rotate -90 degrees"><i class="fa fa-undo"></i> 向左旋转</button>
+								</div>
+								<div class="btn-group">
+									<button class="btn" data-method="rotate" data-option="90" type="button" title="Rotate 90 degrees"><i class="fa fa-repeat"></i> 向右旋转</button>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-success btn-block avatar-save" type="submit"><i class="fa fa-save"></i> 保存修改</button>
+							</div>
+						</div>
+					</div>
+				</div>
+  		</form>
+  	</div>
+     </div>
+   </div>
+
+    <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
