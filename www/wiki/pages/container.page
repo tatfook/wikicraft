@@ -1,0 +1,3 @@
+<div ng-controller="mainCtrl" class="col-md-12" style="height:100%;"> 
+	<div ui-view="default"></div>
+</div>

@@ -2,51 +2,15 @@
  * Created by wuxiangan on 2016/9/26.
  */
 
-
-app.controller('mainCtrl', function ($scope, $rootScope,$state) {
-    $rootScope.isLogin = true;
-    $rootScope.user = {username:"逍遥"}
-    $rootScope.goLoginPage=function () {
-        $state.go('index.login');
-    }
-    $rootScope.goRegisterPage=function () {
-        $state.go('index.register');
-    }
-    $rootScope.logout = function () {
-        $rootScope.isLogin = false;
-        $rootScope.goLoginPage();
-    }
-    $scope.debug = "hello world";
+app.controller('mainCtrl', function ($scope,$state, $sce) {
 });
 
-app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state, userinfo) {
-    $scope.goMyProject = function () {
-        $state.go('index.project');
-    }
+app.controller('indexCtrl', function ($scope,$state, $sce) {
+    //$state.go('index.index');
+    $state.go('index.project');
 });
 
-app.controller('loginCtrl', function ($scope,$state) {
-    $scope.login=function () {
-        console.log("login");
-        $state.go('index.login');
-    }
-});
-
-app.controller('registerCtrl', function ($scope,$state) {
-
-});
-
-app.controller('indexCtrl', function ($scope,$state, $sce,userinfo) {
-    $scope.content = $sce.trustAsHtml("<style>#test {color:red;}</style> <div id='test'>hello world</div>");
-
-
-    $state.go('index.index');
-    $scope.testClick = function () {
-        $state.go('test');
-    }
-});
-
-app.controller('websiteCtrl', function ($scope,$state,$http, userinfo) {
+app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareObj) {
     $scope.websites = [];
     $scope.max_free_count = 3;
 
@@ -54,21 +18,21 @@ app.controller('websiteCtrl', function ($scope,$state,$http, userinfo) {
 
     function getWebsistes() {
         // 获取项目列表
-        $http.post(config.apiUrlPrefix+'website',{userid:userinfo.userid}).then(function (response) {
+        $http.post(config.apiUrlPrefix+'website',{userid:Account._id}).then(function (response) {
             $scope.websites = response.data;
-            userinfo.websites = $scope.websites;
+            ctrlShareObj.websites = $scope.websites;
         }).catch(function (response) {
             console.log(response.data);
         });
     }
 
     $scope.goCreateProjectPage = function () {
-        userinfo.website = {};
+        ctrlShareObj.website = undefined;
         $state.go('index.createProject');
     }
 
     $scope.goEditProjectPage = function (website) {
-        userinfo.website = website;
+        ctrlShareObj.website = website;
         $state.go('index.createProject');
     }
 
@@ -81,9 +45,9 @@ app.controller('websiteCtrl', function ($scope,$state,$http, userinfo) {
     }
 });
 
-app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, userinfo) {
-    $scope.website = userinfo.website || {};
-    $scope.editWebsite = userinfo.website ? true : false;
+app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
+    $scope.website = ctrlShareObj.website || {};
+    $scope.editWebsite = ctrlShareObj.website ? true : false;
     $scope.websiteNameErrMsg = "";
     $scope.websiteDomainErrMsg = "";
     $scope.errMsg = "";
@@ -203,7 +167,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, useri
     $scope.checkWebsiteDomain = function () {
         $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
         if ($scope.website.domain && $scope)
-        $http.post(config.apiUrlPrefix+'website', {domain:$scope.website.domain + ".wikicraft.cn"}).then(function (response) {
+        $http.post(config.apiUrlPrefix+'website', {domain:$scope.website.domain}).then(function (response) {
             if (response.data && response.data.length > 0) {
                 $scope.websiteDomainErrMsg = $scope.website.domain + "已存在，请换个名字";
             } else {
@@ -252,15 +216,15 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, useri
         $scope.step--;
         $scope.nextStepEnable = false;
     }
+
+
+    $scope.goPreviewPage = function (style) {
+        ctrlShareObj.style = style;
+        window.open(config.previewUrl);
+    }
 });
-/*
- controller('LoginCtrl', function ($scope) {
-    $scope.username="xiaoyao";
-    $scope.email="765485868@qq.com";
-    $scope.phone="18702759796";
-    $scope.password="wuxiangan";
+
+app.controller('previewCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
+    $scope.style = ctrlShareObj.style || {};
 });
-.controller('IndexHeaderCtrl', function ($scope) {
-    
-});
- */
+

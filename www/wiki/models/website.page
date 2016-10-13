@@ -5,7 +5,8 @@ Author: wuxiangan
 Date: 2016/10/10
 ]]
 include_once("./abstract/multi_user_base.page");
-include_once("./stats.page");
+include_once("./website_pages.page");
+-- include_once("./website_template_style.page");
 
 local website = inherit(models.abstract.multi_user_base, gettable("models.website"));
 
@@ -43,17 +44,47 @@ end
 
 function website:create(params) 
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
-	return self._super.create(self, params);
+	local site = self._super.create(self, params);
+
+--[[
+	local template_style = models.website_template_style:new();
+	local website_pages = models.website_pages:new();
+	
+	local style = template_style:get({_id=site.styleId})[1]; -- 获取样式模板内容作为首页
+
+	local index_page = {
+		name="index",
+		websiteId=site._id,
+		contentType="html",
+		content=style.content,
+	}
+	website_pages:create(index_page);
+]]-- 
+	
+	return site
 end
 
 function website:delete(params) 
+	local site = self:get(params)[1];
+	if not site  then
+		return self:get();
+	end
 	self._super.delete(self, params);
+	local website_pages = models.website_pages:new();
+	-- 删除该网站上所有页
+	website_pages:delete({websiteId=site._id});
+
 	return self:get();
 end
 
 function website:update(params) 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	
+	-- local site = self:get(params)[1];
+	-- if (params.styleId != site.styleId) -- 样式模板改变
+	
 	self._super.update(self, params);
+
 	return self:get();
 end
 
