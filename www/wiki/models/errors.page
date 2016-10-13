@@ -1,0 +1,37 @@
+<?npl
+--[[
+Title: base class of all models
+Author: wuxiangan
+Date: 2016/10/13
+Desc: define error code and message 
+]]
+
+--local errors = inherit(nil, gettable("models.errors"));
+
+errors = {};
+errors.SUCCESS={id=0,message="success",};
+errors.SERVER_INNER_ERROR = {id=1,message="server inner error",}
+errors.REQUEST_PARAMS_ERROR = {id=2,message="request params error",}
+
+function errors:New(message) 
+	return {
+		id=-1,
+		message=message,
+	};
+end 
+
+function errors:IsOk(error) 
+	return error.id == 0;
+end
+
+function errors:Wrap(err, data) 
+	if err then 
+		return {
+			error=self:New(err),
+			data=nil,
+		};
+	end
+	
+	return {error=errors.SUCCESS, data=data};
+end
+
