@@ -32,6 +32,9 @@
 .plugin .infor-details .item > div {
   margin-left: 265px;
 }
+.plugin .quene {
+  overflow-y: scroll;
+}
 .plugin .button {
   width: 385px;
   margin: 0 auto;

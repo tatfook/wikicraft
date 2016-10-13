@@ -35,11 +35,9 @@ if(is_ajax()) then
 	);
 
 	add_action(
-		'',
+		'wp_ajax_getDownloadQueue',
 		function()
 			
-
-
 		end
 	)
 
@@ -63,9 +61,9 @@ wp_enqueue_style("plugin", "/wp-admin/css/plugin.css");
 PAGE_NO_SIDE_BAR = true;
 ?>
 <div class="plugin" ng-app="plugin" ng-controller="localInstallController">
-	<h1>
+	<!--<h1>
         Do you want to install the following <br/> plugin to your local computer?
-	</h1>
+	</h1>-->
 
     <div class="infor-details">
         <div class="item">
@@ -81,7 +79,18 @@ PAGE_NO_SIDE_BAR = true;
             <div>{{version}}</div>
         </div>
     </div>
-    
+    <div class="quene">
+        <div>AAAAA is downloading 30% 123/999 KB</div>
+        <div>BBB is waiting</div>
+        <div>CCC is waiting</div>
+        <div>AAA is complete!</div>
+        <div>Starting download BBB</div>
+        <div>BBB is downloading 25% 123/999 KB</div>
+        <div>BBB is complete!</div>
+        <div>Starting download CCC</div>
+        <div>CCC is downloading 25% 123/999 KB</div>
+        <div>CCC is complete!</div>
+    </div>
     <div class="button">
         <button class="start" ng-click="install()">Yes</button>
         <button class="process" disabled="disabled"></button>
