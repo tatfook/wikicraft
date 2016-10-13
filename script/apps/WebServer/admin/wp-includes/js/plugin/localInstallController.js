@@ -7,42 +7,57 @@
     $scope.author = params.displayName;
 
     $scope.install = function () {
-        $(".start").text("0% 0/1234 KB").attr("disabled","disabled");
-        $(".process").css({ "display": "block", "width": "0%" });
+        $http({
+            method: 'POST',
+            url: '/ajax/localInstall?action=downloadzip',
+            data: {
+                url: 'https://github.com/onedou/DOC/archive/master.zip',
+            }
+        })
+        .then(function (response) {
 
-        setTimeout(function () {
-            $(".start").text("30% 222/1234 KB");
-            $(".process").css({ "display": "block", "width": "30%" });
-        }, 2000);
+            var lock = true;
 
-        setTimeout(function () {
-            $(".start").text("60% 888/1234 KB");
-            $(".process").css({ "display": "block", "width": "60%" });
-        }, 5000);
+            if (lock) {
+                alert("Some packages is downing,please wait it finish");
 
-        setTimeout(function () {
-            $(".start").text("Download complete!").css("background-color", "#00ffbd");
-            $(".process").css({ "opacity": "0", "width": "100%" });
-            $(".button span").css("display", "block");
-        }, 8000);
+            } else {
+                $scope.packageTotal = 0;
 
-        //$http({
-        //    method: 'POST',
-        //    url: '/ajax/localInstall?action=downloadzip',
-        //    data: {
-        //        url: 'https://github.com/onedou/DOC/archive/master.zip',
-        //    }
-        //})
-        //.then(function (response) {
-            
-        //    $(".process").text("Download complete!")
+                $(".start").text("0% 0/" + $scope.packageTotal + " KB").attr("disabled", "disabled");
+                $(".process").css({ "display": "block", "width": "0%" });
 
-        //    setTimeout(function () {
-        //        //alert("安装完成:)，请关闭对话框");
-        //    }, 1000);
+                $scope.getCurrentDownload();
+            }
 
-        //    console.log(response);
-        //}, function (response) { });
+        }, function (response) { });
+    }
+
+    $scope.getCurrentDownload = function () {
+        $http({
+            method: "GET",
+            url: "",
+            data: {
+
+            }
+        })
+        .then(function (response) {
+            var status = '';
+            var currentTotal = 0;
+
+            var percent = currentTotal/$scope.packageTotal*100;
+
+            if (status == 'complete') {
+                $(".start").text("Download complete!").css("background-color", "#00ffbd");
+                $(".process").css({ "opacity": "0", "width": percent+"%" });
+                $(".button span").css("display", "block");
+            } else {
+                $(".start").text(percent + "%" + currentTotal + "/" + $scope.packageTotal + " KB");
+                $(".process").css({ "display": "block", "width": percent + "%" });
+            }
+
+        }, function (response) { });
+
     }
 
     //$scope.install = function () {

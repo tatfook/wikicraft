@@ -31,9 +31,17 @@ if(is_ajax()) then
 			);
 
 			yield();
-			echo("rrrrrrr");
 		end
 	);
+
+	add_action(
+		'',
+		function()
+			
+
+
+		end
+	)
 
 	add_action(
 		'wp_ajax_GetCurrentDownload',
