@@ -34,14 +34,18 @@
         .then(function (response) {
  
             if (response.data.waitCount == 0) {
+
                 $scope.startDownload();
+
             } else {
                 if (response.data.isYourTurn == 1) {
                     $scope.startDownload();
-                } else {
+                } else if (response.data.isYourTurn == 0) {
                     $timeout(function () {
                         $scope.install();
                     }, 1000);
+                } else {
+                    return alert("status error!");
                 }
             }
 
@@ -70,7 +74,13 @@
                 url: $scope.giturl,
             }
         })
-        .then(function () {
+        .then(function (response) {
+
+            if (response.data.status) {
+                $scope.getCurrentDownload();
+            } else {
+                return alert("error status!");
+            }
 
         }, function () { });
     }
@@ -78,24 +88,46 @@
     $scope.getCurrentDownload = function () {
         $http({
             method: "GET",
-            url: "",
+            url: "/ajax/localInstall?action=GetCurrentDownload",
             data: {
 
             }
         })
         .then(function (response) {
-            var status = '';
-            var currentTotal = 0;
+            if (response.data.status == -1 || response.data.status == 0) {
 
-            var percent = currentTotal/$scope.packageTotal*100;
+                var currentFileSize = response.data.currentFileSize;
+                var totalFileSize   = response.data.totalFileSize;
 
-            if (status == 'complete') {
-                $(".start").text("Download complete!").css("background-color", "#00ffbd");
-                $(".process").css({ "opacity": "0", "width": percent+"%" });
-                $(".button span").css("display", "block");
-            } else {
-                $(".start").text(percent + "%" + currentTotal + "/" + $scope.packageTotal + " KB");
+                var percent = (currentFileSize / totalFileSize) * 100;
+
+                console.log(currentFileSize, totalFileSize, percent);
+
+                if (isNaN(NaN) || percent == Infinity) {
+                    percent = 0;
+                } else {
+                    percent = parseInt(percent);
+                }
+
+                console.log(currentFileSize, totalFileSize, percent);
+
+                $(".start").text(percent + "%" + currentFileSize + "/" + totalFileSize + " KB");
                 $(".process").css({ "display": "block", "width": percent + "%" });
+
+                $timeout(function () {
+                    $scope.getCurrentDownload();
+                }, 1000);
+                
+            } else if (response.data.status == 1) {
+
+                $(".start").text("Download complete!").css("background-color", "#00ffbd");
+                $(".process").css({ "opacity": "0", "width": "100%" });
+                $(".button span").css("display", "block");
+
+            } else {
+
+                return alert("error status!");
+
             }
 
         }, function (response) { });

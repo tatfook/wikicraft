@@ -20,18 +20,17 @@ if(is_ajax()) then
 		'wp_ajax_downloadzip',
 		function()
 			local url = request:get('url');
-			--url = 'https://github.com/LiXizhi/ParaCraftSDK.git';
-			url = url..'/archive/master.zip';
-			echo(url);
-			--manager:GetLoader():InstallFromUrl(
-				--url, 
-				--function(bSucceed, msg)
-					--resume();
-					--log({"msg",msg}); 
-				--end
-			--);
 
-			--yield();
+			url = url..'/archive/master.zip';
+			
+			manager:GetLoader():InstallFromUrl(
+				url, 
+				function(bSucceed, msg)
+					log({"msg",msg}); 
+				end
+			);
+
+			wp_send_json({status=1,msg="Start Download"});
 		end
 	);
 
@@ -49,7 +48,7 @@ if(is_ajax()) then
 						},
 						{
 							projectName="BBBB",
-							currentDownload=789
+							currentDownload=789,
 							totalDownload=9984
 						}
 					},
