@@ -89,21 +89,85 @@ wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
                  </div>
 				 </div>
 				 <!--account security-->
-				 <div id="lm_2" style="display:none"></div>
+				 <div id="lm_2" style="display:none">
+				 		 <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 
+				 
+				 
+				 
+				 </div>
 				 <!--my collections-->
-				 <div id="lm_3" style="display:none"></div>
+				 <div id="lm_3" style="display:none">
+				 
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 </div>
 				 <!--my history-->
-				 <div id="lm_4" style="display:none"></div>
+				 <div id="lm_4" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 
+				 
+				 
+				 
+				 
+				 </div>
 				 <!--my fans-->
-				 <div id="lm_5" style="display:none"></div>
+				 <div id="lm_5" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 
+				 </div>
 				 <!--authentication -->
-				 <div id="lm_6" style="display:none"></div>
+				 <div id="lm_6" style="display:none">
+				 
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 </div>
 				 <!--register by invite-->
-				 <div id="lm_7" style="display:none"></div>
+				 <div id="lm_7" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div></div>
 				 <!--VIP-->
-				 <div id="lm_8" style="display:none"></div>
+				 <div id="lm_8" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div></div>
 				 <!--datasource-->
-				 <div id="lm_9" style="display:none"></div>
+				 <div id="lm_9" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 
+				 
+				 
+				 
+				 
+				 
+				 </div>
 								
 			</div>	
 		 

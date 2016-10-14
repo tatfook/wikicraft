@@ -350,7 +350,7 @@ body {
     font: 14px "Î¢ÈíÑÅºÚ";
    
 }
-.pbody{padding:1px;height:300px}
+.pbody{padding:1px;height:750px}
  
  #upimg { background:white ; width: 40%; float: left }
 .uprow {
@@ -358,7 +358,7 @@ body {
     margin-left: 26px;
 }
  
- #baseinfo { background: white; width: 60% ; margin-left:400px }
+ #baseinfo { background: white; width: 60% ; margin-left:300px }
  #baseinfo ul li {
 
         display:inline-block;
