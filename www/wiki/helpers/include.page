@@ -1,9 +1,8 @@
 <?npl
 
 wp_enqueue_script("util", WIKI_WEBROOT.."helpers/util.js");  -- js 帮助函数
-
--- websiteControl
-wp_enqueue_script("websiteController", WIKI_WEBROOT .. "controllers/websiteController.js")
-
+wp_enqueue_script("route", WIKI_WEBROOT.."helpers/route.js");  -- 前端路由
+wp_enqueue_script("factory", WIKI_WEBROOT.."helpers/factory.js");  -- 依赖注入
+wp_enqueue_script("controller", WIKI_WEBROOT.."helpers/controller.js");  -- 依赖注入
 
 ?>

@@ -20,7 +20,6 @@ wp_enqueue_script("highlight", "/wp-includes/js/highlight/highlight.pack.js");
 
 -- following is wiki angular app code, app.js must be included first followed by controllers.
 wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
-include_once(WIKI_ROOT.."helpers/include.page")              -- 前端js加载页,避免在此累积
 
 include(WIKI_ROOT.."auth/clientconfig.page");
 wp_enqueue_script("authController", WIKI_WEBROOT.."controllers/userController.js");

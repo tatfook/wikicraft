@@ -13,18 +13,18 @@ errors.SUCCESS={id=0,message="success",};
 errors.SERVER_INNER_ERROR = {id=1,message="server inner error",}
 errors.REQUEST_PARAMS_ERROR = {id=2,message="request params error",}
 
-function errors:New(message) 
+function errors:new(message) 
 	return {
 		id=-1,
 		message=message,
 	};
 end 
 
-function errors:IsOk(error) 
+function errors:isOk(error) 
 	return error.id == 0;
 end
 
-function errors:Wrap(err, data) 
+function errors:wrap(err, data) 
 	if err then 
 		return {
 			error=self:New(err),

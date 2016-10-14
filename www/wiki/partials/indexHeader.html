@@ -1,0 +1,39 @@
+<div ng-controller="indexHeaderCtrl" style="border: 1px solid; padding: 10px 20px">
+    <form class="form-inline row" role="form">
+        <div class="col-md-4" style="display: flex">
+            <div class="form-group has-feedback">
+                <button type="button" class="btn btn-default">创作站</button>
+                <button type="button" class="btn btn-default">内容站</button>
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                <input type="search"/>
+            </div>
+        </div>
+        <div ng-if="!isLogin" class="col-md-offset-6 col-md-2">
+            <button type="button" class="btn btn-default">VIP</button>
+            <button type="button" ng-click="goLoginPage()" class="btn btn-default">登录</button>
+            <button type="button" ng-click="goRegisterPage()" class="btn btn-default">注册</button>
+        </div>
+
+        <div ng-if="isLogin" class="col-md-offset-6 col-md-2">
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="dropdownMenu" data-toggle="dropdown">{{user.username}}<span class="caret"></span></button>
+                <ui class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="#">个人中心</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" ui-sref="index.website">我的作品</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="#">订阅</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" ng-click="logout()">退出登录 </a>
+                    </li>
+                </ui>
+            </div>
+        </div>
+    </form>
+</div>
+

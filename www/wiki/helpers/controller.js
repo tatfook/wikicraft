@@ -2,14 +2,24 @@
  * Created by wuxiangan on 2016/9/26.
  */
 
-app.controller('mainCtrl', function ($scope,$state, $sce) {
-	console.log("mainCtrl");
-});
+app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj) {
+    $rootScope.isLogin = true;
+    $rootScope.user = {username:"逍遥"}
+    $rootScope.goLoginPage=function () {
+        $state.go('index.login');
+    }
+    $rootScope.goRegisterPage=function () {
+        $state.go('index.register');
+    }
+    $rootScope.logout = function () {
+        $rootScope.isLogin = false;
+        $rootScope.goLoginPage();
+    }
+    console.log("mainCtrl");
 
-app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
 	var hostname = window.location.hostname;
     var pathname = window.location.pathname;
-
+    var hash = window.location.href;
     var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
     var pagename = '/index';
 
@@ -21,24 +31,43 @@ app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
-    
-	console.log("indexCtrl");
+    /*
+    hash = hash.replace('#/','');
+    if (hash && hash.length) {
+        $state.go('index.'+hash);
+    }
+    $state.go('index.test');
+    */
+    //return ;
     if (sitename == "wiki") {
         $state.go('index.' + pagename.substring(1,pagename.length));
     } else {
         ctrlShareObj.pageContentUrl = '/' + sitename + pagename;
+		ctrlShareObj.sitename = sitename;
+		ctrlShareObj.pagename = pagename;
         $state.go('custom');
     }
+});
 
-//    $state.go('index.project');
+app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
+});
+
+app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
+	console.log("indexCtrl");
 });
 
 app.controller('customCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
-	console.log(ctrlShareObj);
 	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
-	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsitePageByUrl', {url:ctrlShareObj.pageContentUrl}, function(data){
+	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByUrl', {url:ctrlShareObj.pageContentUrl}, function(data){
         $scope.websitePage = data  || defaultPage;
-        $scope.pageContent = $sce.trustAsHtml($scope.websitePage.content);
+		if (data) {
+			var styleContent = data.style.content;
+			var pageContent = data.page.content;
+			var content = styleContent.replace('__PageContent__', pageContent);
+			$('#__StyleTemplateContent__').html(content);
+		} else {
+			$('#__StyleTemplateContent__').html(defaultPage.content);
+		}
 	});
 });
 
@@ -106,14 +135,15 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
 
     function getWebsistes() {
         // 获取项目列表
-        $http.post(config.apiUrlPrefix+'website',{userid:Account._id}).then(function (response) {
-            $scope.websites = response.data;
-            ctrlShareObj.websites = $scope.websites;
-        }).catch(function (response) {
-            console.log(response.data);
+        util.http($http,'POST', config.apiUrlPrefix+'website',{userid:Account._id}, function (data) {
+            $scope.websites = data;
         });
     }
-
+/*
+	$scope.goWebsitePage = function(website) {
+		window.location.href = window.location.host + '/' + website.name;
+	}
+*/
 	$scope.goEditWebsitePagePage = function (website) {
         ctrlShareObj.website = website;
         console.log(ctrlShareObj.website);
@@ -131,10 +161,8 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
     }
 
     $scope.deleteWebsite = function(id) {
-        $http({method:"DELETE", url:config.apiUrlPrefix+'website', params:{_id:id}}).then(function (response) {
-            $scope.websites = response.data;
-        }).catch(function (response) {
-            console.log(response.data);
+        util.http($http, "DELETE", config.apiUrlPrefix+'website', {_id:id}, function (data) {
+            $scope.websites = data;
         });
     }
 });
@@ -150,13 +178,13 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
     $scope.categories = [];//[{name:'个人网站'},{name:'作品网站'},{name:'组织网站'}];
     $scope.subCategories = [];
     $scope.step = 1;
-    $scope.nextStepEnable = !$scope.website.name;
+    $scope.nextStepDisabled = !$scope.website.name;
 
     init();
 
     function init() {
-        $http.get(config.apiUrlPrefix+'website_category').then(function (response) {
-            $scope.categories = response.data;
+        util.http($http, 'POST', config.apiUrlPrefix+'website_category',{}, function (data) {
+            $scope.categories = data;
             for (var i = 0; $scope.categories && i < $scope.categories.length; i++){
                 var cateory  = $scope.categories[i];
                 for (var j = 0; j < cateory.templates.length; j++) {
@@ -169,7 +197,6 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
                 }
                 if ($scope.website.categoryId == $scope.categories[i]._id) {
                     $scope.templates = $scope.categories[i].templates;
-                    break;
                 }
             }
 
@@ -179,8 +206,15 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
                     break;
                 }
             }
-        }).catch(function (response) {
-            console.log(response.data);
+
+            $scope.templates = $scope.categories[0].templates;
+            $scope.styles = $scope.templates[0].styles;
+            $scope.website.categoryId = $scope.categories[0]._id;
+            $scope.website.categoryName = $scope.categories[0].name;
+            $scope.website.templateId = $scope.templates[0]._id;
+            $scope.website.templateName = $scope.templates[0].name;
+            $scope.website.styleId = $scope.styles[0]._id;
+            $scope.website.styleName = $scope.styles[0].name;
         });
     }
 
@@ -192,31 +226,36 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
             url += '/new';
         }
 
-        $http.put(url, $scope.website).then(function (response) {
-            console.log(response.data);
+        util.http($http, 'PUT', url, $scope.website, function (data) {
             $scope.step++;
-        }).catch(function (response) {
-            console.log(response.data);
         });
     }
 
     $scope.selectCategory = function (category) {
         $scope.templates = category.templates;
+        $scope.styles = category.templates[0].styles;
         $scope.website.categoryId = category._id;
         $scope.website.categoryName = category.name;
+        $scope.website.templateId = $scope.templates[0]._id;
+        $scope.website.templateName = $scope.templates[0].name;
+        $scope.website.styleId = $scope.styles[0]._id;
+        $scope.website.styleName = $scope.styles[0].name;
+        $scope.nextStepDisabled = false;
     }
 
     $scope.selectTemplate = function (template) {
         $scope.styles = template.styles;
         $scope.website.templateId = template._id;
         $scope.website.templateName = template.name;
-        $scope.nextStepEnable = false;
+        $scope.website.styleId = $scope.styles[0]._id;
+        $scope.website.styleName = $scope.styles[0].name;
+        $scope.nextStepDisabled = false;
     }
 
     $scope.selectStyle = function (style) {
         $scope.website.styleId = style._id;
         $scope.website.styleName = style.name;
-        $scope.nextStepEnable = false;
+        $scope.nextStepDisabled = false;
     }
 
     $scope.addTag = function (tagName) {
@@ -237,38 +276,41 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
     }
 
     $scope.checkWebsiteName = function () {
-        $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-        if (!$scope.website.name) {
+        if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
+            $scope.nextStepDisabled = $scope.websiteDomainErrMsg;
+            $scope.websiteNameErrMsg = "";
             return;
         }
-        $http.post(config.apiUrlPrefix+'website', {name:$scope.website.name}).then(function (response) {
-            if (response.data && response.data.length > 0) {
-                if ($scope.website._id != response.data[0]._id) {
-                    $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
-                }
+
+        $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
+
+        util.http($http, 'POST', config.apiUrlPrefix+'website', {name:$scope.website.name}, function (data) {
+            if (data && data.length > 0 && $scope.website._id != data[0]._id) {
+                $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
+                $scope.nextStepDisabled = true;
             } else {
                 $scope.websiteNameErrMsg = "";
+                $scope.nextStepDisabled = $scope.websiteDomainErrMsg;
             }
-        }).catch(function (response) {
-           console.log(response.data);
         });
-
-        if (!$scope.websiteNameErrMsg) {
-            $scope.nextStepEnable = false;
-        }
     }
 
     $scope.checkWebsiteDomain = function () {
+        if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
+            $scope.nextStepDisabled = $scope.websiteNameErrMsg;
+            $scope.websiteDomainErrMsg = "";
+            return;
+        }
+
         $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
-        if ($scope.website.domain && $scope)
-        $http.post(config.apiUrlPrefix+'website', {domain:$scope.website.domain}).then(function (response) {
-            if (response.data && response.data.length > 0) {
+        util.http($http, 'POST', config.apiUrlPrefix+'website', {domain:$scope.website.domain}, function (data) {
+            if (data && data.length > 0 && $scope.website._id != data[0]._id) {
                 $scope.websiteDomainErrMsg = $scope.website.domain + "已存在，请换个名字";
+                $scope.nextStepDisabled = true;
             } else {
                 $scope.websiteDomainErrMsg = "";
+                $scope.nextStepDisabled = $scope.websiteNameErrMsg;
             }
-        }).catch(function (response) {
-            console.log(response.data);
         });
     }
 
@@ -287,13 +329,13 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
             if ($scope.website.tags) {
 
             }
-            $scope.nextStepEnable = !$scope.website.templateId;
+            $scope.nextStepDisabled = !$scope.website.templateId;
         } else if ($scope.step == 3) {
             if (!$scope.website.templateId) {
                 $scope.errMsg = "请选择站点类型和模板";
                 return ;
             }
-            $scope.nextStepEnable = !$scope.website.styleId;
+            $scope.nextStepDisabled = !$scope.website.styleId;
         } else if ($scope.step == 4) {
             if (!$scope.website.styleId) {
                 $scope.errMsg = "请选择模板样式";
@@ -301,24 +343,34 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
             createWebsiteRequest();
             return;
         } else {
-            $state.go('index.project');
+            $state.go('index.website');
         }
         $scope.step++;
     }
 
     $scope.prevStep = function () {
         $scope.step--;
-        $scope.nextStepEnable = false;
+        $scope.nextStepDisabled = false;
     }
 
 
     $scope.goPreviewPage = function (style) {
-        ctrlShareObj.style = style;
-        window.open(config.previewUrl);
+        var url = window.location.href;
+        var hash = window.location.hash;
+        window.open(url.replace(hash, '') + '?' + style._id + '#/preview');
     }
 });
 
-app.controller('previewCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
-    $scope.style = ctrlShareObj.style || {};
+app.controller('previewCtrl', function ($scope, $http, $sce) {
+    var styleId = window.location.search.replace('?','');
+    styleId = parseInt(styleId);
+    util.http($http, 'POST', config.apiUrlPrefix+'website_template_style/getWebsiteTemplateStyleById',{_id:styleId}, function (data) {
+        $scope.style = data;
+        if (data.content) {
+            $scope.content = $sce.trustAsHtml(data.content);
+        } else {
+            $scope.content = $sce.trustAsHtml('<div>--------something wrong-----------</div>');
+        }
+    })
 });
 

@@ -78,17 +78,21 @@
                             </div>
                             <div style="width: 80%;" >
                                 <a ng-click="selectTemplate(template)" ng-repeat="template in templates" style="display: inline-block; width: 30%; margin: 10px" >
-                                    <div ng-if="website.templateId != template._id" style="position:relative; width: 100%" >
+                                    <div ng-if="website.templateId != template._id" style="position:relative; width: 100%; border: 2px solid #f2dede;" >
                                         <div style="position: relative; height: 80px; width: 100%">
                                             <div ng-bind-html="template.content"></div>
                                         </div>
-                                        <div><h6>{{template.name}}</h6></div>
+                                        <div style="display: flex; justify-content: center">
+                                            <h6>{{template.name}}</h6>
+                                        </div>
                                     </div>
                                     <div ng-if="website.templateId == template._id" style="position:relative; width: 100%; border: 2px solid black" >
                                         <div style="position: relative; height: 80px; width: 100%;;">
                                             <div ng-bind-html="template.content"></div>
                                         </div>
-                                        <div><h6>{{template.name}}</h6></div>
+                                        <div style="display: flex; justify-content: center">
+                                            <h6>{{template.name}}</h6>
+                                        </div>
                                     </div>
                                 </a>
                             </div>
@@ -97,10 +101,10 @@
 
                     <div ng-if="step == 4" class="row">
                         <div style=" margin: 20px; border: 1px solid;" class="col-md-3" ng-repeat="style in styles">
-                            <div>
+                            <div style="display: flex; justify-content: center">
                                 <h6>{{style.name}}</h6>
                             </div>
-                            <div style="position:relative; height: 80px">
+                            <div style="position:relative; height: 80px;border: 1px solid #f2dede">
                                 <div ng-bind-html="style.content"></div>
                             </div>
                             <div>
@@ -122,7 +126,7 @@
                         <div class="form-group " style="margin-top: 20px">
                             <div ng-if="step<5" style="display: flex; justify-content: center">
 								<button class="btn btn-default" ng-if="step > 1" ng-click="prevStep()"><span class="glyphicon glyphicon-step-backward"></span>上一步</button>
-                                <button class="btn btn-default" ng-disabled="nextStepEnable" ng-click="nextStep()"><span class="glyphicon glyphicon-step-forward"></span>{{step == 4 ? "提交" : "下一步"}}</button>
+                                <button class="btn btn-default" ng-disabled="nextStepDisabled" ng-click="nextStep()"><span class="glyphicon glyphicon-step-forward"></span>{{step == 4 ? "提交" : "下一步"}}</button>
                             </div>
                             <div ng-if="step==5" style="display: flex; justify-content: center">
                                 <button class="btn btn-default" ng-click="nextStep()"><span class="glyphicon glyphicon-ok"></span>完成</button>

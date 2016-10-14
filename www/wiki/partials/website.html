@@ -39,18 +39,18 @@
             </thead>
             <tbody>
             <tr ng-repeat="website in websites">
-                <td>{{website.name}}</td>
+                <td><a href='{{"/" + website.name}}' target="_blank">{{website.name}}</a></td>
                 <td>{{website.desc}}</td>
-                <td>{{website.domain ? (website.domain + '.wikicraft.cn') : ""}}</td>
+                <td><a href='{{website.domain ? (website.domain + ".wikicraft.cn") : ""}}' target="_blank">{{website.domain ? (website.domain + '.wikicraft.cn') : ""}}</a></td>
                 <td>{{website.categoryName}}</td>
                 <td>{{website.templateName}}</td>
                 <td>{{website.styleName}}</td>
                 <td>{{website.tags}}</td>
                 <td>{{website.createDate}}</td>
                 <td>
-                    <button class="btn btn-default" ng-click="goEditWebsitePagePage(website)"><span class="glyphicon glyphicon-plus"></span></button>
-                    <button class="btn btn-default" ng-click="goEditWebsitePage(website)"><span class="glyphicon glyphicon-edit"></span></button>
-                    <button class="btn btn-default" ng-click="deleteWebsite(website._id)"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button class="btn btn-default" data-toggle="tooltip" title="编辑网站页面" ng-click="goEditWebsitePagePage(website)"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button class="btn btn-default" data-toggle="tooltip" title="修改站点" ng-click="goEditWebsitePage(website)"><span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn btn-default" data-toggle="tooltip" title="删除站点" ng-click="deleteWebsite(website._id)"><span class="glyphicon glyphicon-remove"></span></button>
                 </td>
             </tr>
             </tbody>
