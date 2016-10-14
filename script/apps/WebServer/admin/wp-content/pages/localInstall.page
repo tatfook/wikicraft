@@ -22,13 +22,6 @@ if(is_ajax()) then
 			local url = request:get('url');
 
 			url = url..'/archive/master.zip';
-			
-			manager:GetLoader():InstallFromUrl(
-				url, 
-				function(bSucceed, msg)
-					log({"msg",msg}); 
-				end
-			);
 
 			wp_send_json({status=1,msg="Start Download"});
 		end
@@ -37,8 +30,39 @@ if(is_ajax()) then
 	add_action(
 		'wp_ajax_getDownloadQueue',
 		function()
+			local url = request:get('url');
+
+			local judge = false;
+			local desc  = '';
+
+			manager:GetLoader():InstallFromUrl(
+				url, 
+				function(bStatus, bDesc)
+					judge = bStatus;
+					desc  = bDesc;
+
+					resume();
+				end
+			);
+
+			yield();
+
+			if(judge) then
+				manager:GetLoader():StartDownloader(url, dest, 
+					function(bStatus, bDesc)
+						
+					end
+				);
+
+				local status = 1;
+			else
+				local status = 0;
+			end
+
+			--local 
 			wp_send_json(
 				{
+					status = status,
 					waitCount=0,
 					waitPackages={
 						{

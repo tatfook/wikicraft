@@ -101,15 +101,15 @@
 
                 var percent = (currentFileSize / totalFileSize) * 100;
 
-                console.log(currentFileSize, totalFileSize, percent);
+                //console.log(currentFileSize, totalFileSize, percent)
 
-                if (isNaN(NaN) || percent == Infinity) {
+                if (isNaN(percent) || percent == Infinity) {
                     percent = 0;
                 } else {
                     percent = parseInt(percent);
                 }
 
-                console.log(currentFileSize, totalFileSize, percent);
+                //console.log(currentFileSize, totalFileSize, percent);
 
                 $(".start").text(percent + "%" + currentFileSize + "/" + totalFileSize + " KB");
                 $(".process").css({ "display": "block", "width": percent + "%" });
