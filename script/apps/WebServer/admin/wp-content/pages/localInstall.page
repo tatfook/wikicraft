@@ -15,6 +15,25 @@ local manager = PluginManager.CreateGetInstance("Paracraft");
 --echo(manager:GetLoader():RebuildModuleList())  --> list of installed plugins
 --manager:GetLoader():LoadAllPlugins() --> load plugins, see PluginLoader for details
 
+function localInstall:InstallFromUrl()
+	local judge  = false;
+	local dest   = '';
+
+	manager:GetLoader():InstallFromUrl(
+		url, 
+		function(bStatus, bDest)
+			log({bStatus,bDest});
+
+			judge = bStatus;
+			dest  = bDest;
+
+			resume();
+		end
+	);
+
+	yield();
+end
+
 if(is_ajax()) then
 	add_action(
 		'wp_ajax_downloadzip',
@@ -28,55 +47,58 @@ if(is_ajax()) then
 	);
 
 	add_action(
-		'wp_ajax_getDownloadQueue',
+		'wp_ajax_downloadQueue',
 		function()
 			local url = request:get('url');
+			local projectName = request:get('projectName');
 
-			local judge = false;
-			local desc  = '';
+			url = url..'/archive/master.zip';
 
-			manager:GetLoader():InstallFromUrl(
-				url, 
-				function(bStatus, bDesc)
-					judge = bStatus;
-					desc  = bDesc;
+			local downloadQueue = manager:GetLoader():GetDownloadQueue();
 
-					resume();
+			if(downloadQueue['downloadStatus'] == 1) then
+				downloadQueue['waitCount']++
+
+			else
+				if(downloadQueue['waitCount'] == 0) then
+					localInstall:InstallFromUrl();
+					downloadQueue['downloadStatus'] = 1;--设置下载中
+				else
+
 				end
-			);
+			end
 
-			yield();
+			local status = 0;
 
 			if(judge) then
+
 				manager:GetLoader():StartDownloader(url, dest, 
-					function(bStatus, bDesc)
+					function(bStatus, bDest)
 						
 					end
 				);
 
-				local status = 1;
+				status = 1;
 			else
-				local status = 0;
+				status = 0;
 			end
 
-			--local 
 			wp_send_json(
 				{
 					status = status,
 					waitCount=0,
+					isYourTurn=0,
 					waitPackages={
 						{
 							projectName="AAAA",
-							currentDownload=123,
-							totalDownload=8888
+							packagesId = 1,
 						},
 						{
 							projectName="BBBB",
-							currentDownload=789,
-							totalDownload=9984
+							packagesId = 2,
+							
 						}
-					},
-					isYourTurn=0
+					}
 				}
 			);
 		end

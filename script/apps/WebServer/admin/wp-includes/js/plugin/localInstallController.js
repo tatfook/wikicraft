@@ -8,14 +8,9 @@
     $scope.giturl = params.giturl;
 
     $scope.seconds = 5;
-    //var countDownInterval = setInterval(function () {
-    //    //$scope.seconds = $scope.seconds-1;
-    //    console.log($scope.seconds);
-    //}, 1000);
 
     $interval(function () {
         $scope.seconds--;
-        //console.log($scope.seconds);
     },1000,5)
 
     $timeout(function () {
@@ -26,7 +21,7 @@
     $scope.install = function () {
         $http({
             method: 'POST',
-            url: '/ajax/localInstall?action=getDownloadQueue',
+            url: '/ajax/localInstall?action=downloadQueue',
             data: {
                 url: $scope.giturl,
             }
@@ -34,8 +29,12 @@
         .then(function (response) {
  
             if (response.data.waitCount == 0) {
-
-                $scope.startDownload();
+                if (response.data.status == 1) {
+                    $scope.startDownload();
+                } else {
+                    $(".start").text("packages is not update");
+                    $(".button span").css("display", "block");
+                }
 
             } else {
                 if (response.data.isYourTurn == 1) {
@@ -48,20 +47,6 @@
                     return alert("status error!");
                 }
             }
-
-            //var lock = true;
-
-            //if (lock) {
-            //    alert("Some packages is downing,please wait it finish");
-
-            //} else {
-            //    $scope.packageTotal = 0;
-
-            //    $(".start").text("0% 0/" + $scope.packageTotal + " KB").attr("disabled", "disabled");
-            //    $(".process").css({ "display": "block", "width": "0%" });
-
-            //    $scope.getCurrentDownload();
-            //}
 
         }, function (response) { });
     }
@@ -125,9 +110,7 @@
                 $(".button span").css("display", "block");
 
             } else {
-
                 return alert("error status!");
-
             }
 
         }, function (response) { });
