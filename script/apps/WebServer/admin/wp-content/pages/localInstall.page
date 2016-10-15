@@ -15,7 +15,7 @@ local manager = PluginManager.CreateGetInstance("Paracraft");
 --echo(manager:GetLoader():RebuildModuleList())  --> list of installed plugins
 --manager:GetLoader():LoadAllPlugins() --> load plugins, see PluginLoader for details
 
-function localInstall:InstallFromUrl()
+local function InstallFromUrl(url)
 	local judge  = false;
 	local dest   = '';
 
@@ -32,6 +32,8 @@ function localInstall:InstallFromUrl()
 	);
 
 	yield();
+
+	return judge,dest;
 end
 
 if(is_ajax()) then
@@ -49,26 +51,43 @@ if(is_ajax()) then
 	add_action(
 		'wp_ajax_downloadQueue',
 		function()
-			local url = request:get('url');
+			local url		  = request:get('url');
 			local projectName = request:get('projectName');
+			local packagesId  = request:get('packagesId');
 
-			url = url..'/archive/master.zip';
+			url			 = url..'/archive/master.zip';
+			local status = 0;--package是否可以下载，以前是否下载过
+			local judge	 = false;--package是否可以下载，以前是否下载过 布尔值
+			local isYourTurn = 0;--是否轮到此包下载
 
 			local downloadQueue = manager:GetLoader():GetDownloadQueue();
 
-			if(downloadQueue['downloadStatus'] == 1) then
-				downloadQueue['waitCount']++
+			if(downloadQueue['waitCount'] ~= 0 or downloadQueue['downloadStatus'] == 1) then --
+				downloadQueue['waitCount'] = downloadQueue['waitCount'] + 1;
 
+				local newDownloadPackage = {
+					projectName = projectName,
+					packagesId	= packagesId
+				}
+
+				test = table.getn(downloadQueue['waitPackages']);
+
+				log({"test",test});
 			else
 				if(downloadQueue['waitCount'] == 0) then
-					localInstall:InstallFromUrl();
+					judge,dest = InstallFromUrl(url);
 					downloadQueue['downloadStatus'] = 1;--设置下载中
+					isYourTurn = 1;
 				else
-
+					if(downloadQueue['waitPackages'][0]['packagesId'] == packagesId) then
+						judge,dest = InstallFromUrl(url);
+						downloadQueue['downloadStatus'] = 1;
+						isYourTurn = 1;
+					end
 				end
 			end
 
-			local status = 0;
+			manager:GetLoader():SetDownloadQueue(downloadQueue);
 
 			if(judge) then
 
@@ -85,33 +104,12 @@ if(is_ajax()) then
 
 			wp_send_json(
 				{
-					status = status,
-					waitCount=0,
-					isYourTurn=0,
-					waitPackages={
-						{
-							projectName="AAAA",
-							packagesId = 1,
-						},
-						{
-							projectName="BBBB",
-							packagesId = 2,
-							
-						}
-					}
+					status		 = status,--package是否可以下载，以前是否下载过
+					waitCount	 = downloadQueue['waitCount'],
+					isYourTurn	 = isYourTurn,
+					waitPackages = downloadQueue['waitPackages']
 				}
 			);
-		end
-	)
-
-	add_action(
-		'wp_ajax_setDownloadQueue',
-		function()
-			local projectName = request.get("projectName");
-
-			queueId = manager:GetLoader():SetDownloadQueue(projectName);
-
-			wp_send_json({queueId=queueId})
 		end
 	)
 

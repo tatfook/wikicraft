@@ -6,6 +6,7 @@
     $scope.version = params.version;
     $scope.author = params.displayName;
     $scope.giturl = params.giturl;
+    $scope.packagesId = params.packagesId;
 
     $scope.seconds = 5;
 
@@ -24,28 +25,26 @@
             url: '/ajax/localInstall?action=downloadQueue',
             data: {
                 url: $scope.giturl,
+                projectName: $scope.projectName,
+                packagesId: $scope.packagesId
             }
         })
         .then(function (response) {
- 
-            if (response.data.waitCount == 0) {
+
+            if (response.data.isYourTurn == 1) {
                 if (response.data.status == 1) {
-                    $scope.startDownload();
+                    $scope.getCurrentDownload();
                 } else {
                     $(".start").text("packages is not update");
                     $(".button span").css("display", "block");
                 }
 
+            } else if (response.data.isYourTurn == 0) {
+                $timeout(function () {
+                    $scope.install();
+                }, 1000);
             } else {
-                if (response.data.isYourTurn == 1) {
-                    $scope.startDownload();
-                } else if (response.data.isYourTurn == 0) {
-                    $timeout(function () {
-                        $scope.install();
-                    }, 1000);
-                } else {
-                    return alert("status error!");
-                }
+                return alert("status error!");
             }
 
         }, function (response) { });

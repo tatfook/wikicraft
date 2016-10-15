@@ -186,7 +186,8 @@
                         + 'giturl='      + $scope.projectGitURL
                         + '&projectName=' + $scope.projectName
                         + '&displayName=' + $scope.displayName
-                        + '&version='     + $scope.version
+                        + '&version=' + $scope.version
+                        + '&packagesId=' + Request.id
                     );
 
                     $uibModal.open({
