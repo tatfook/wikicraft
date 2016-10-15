@@ -1,0 +1,7 @@
+<?npl
+include_once(WIKI_ROOT.."helpers/include.page")              -- 前端js加载页,避免在此累积
+?>
+
+<div ng-controller="mainCtrl" class="col-md-12" style="height:100%;"> 
+	<div ui-view="default"></div>
+</div>

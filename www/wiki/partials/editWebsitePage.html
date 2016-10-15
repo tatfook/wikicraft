@@ -1,0 +1,24 @@
+<div ng-controller="editWebsitePageCtrl">
+    <div>
+        <div>站点页面资源管理器</div>
+        <div>
+            <form role="form">
+                <div class="form-group">
+                    <label class="control-label">页面名：</label>
+                    <div>
+                        <input type="text" class="form-control" ng-model="websitePage.name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">页面代码：</label>
+                    <div>
+                        <textarea ng-model="websitePage.content" rows="10" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-default" class="form-control" ng-click="submit()">新增页面</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

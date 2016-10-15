@@ -1,0 +1,56 @@
+<div style="padding: 30px 0px" ng-controller="loginCtrl">
+    <div class="row">
+        <div class="col-md-offset-5 col-md-2" style="display: flex; justify-content: center">
+            <h2>登录</h2>
+        </div>
+    </div>
+    <div>
+        <form name="LoginForm" class="form-horizontal" role="form" novalidate>
+            <div class="form-group row">
+                <label for="email" class="col-md-offset-4 col-md-1 control-label">email：</label>
+                <div class="col-md-2">
+                    <input type="email" class="form-control" name="email" ng-model="user.email" required>
+                </div>
+                <div style="color:red;padding: auto;display: inline" ng-show="LoginForm.email.$dirty && LoginForm.email.$invalid">
+                    <span ng-show="LoginForm.email.$error.required">Email是必须的。</span>
+                    <span ng-show="LoginForm.email.$invalid">邮箱不合法</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password" class="col-md-offset-4 col-md-1 control-label">密码：</label>
+                <div class="col-md-2">
+                    <input type="password" class="form-control" name="password" ng-model="user.password" required>
+                </div>
+                <div style="color:red;padding: auto;display: inline" ng-show="LoginForm.password.$dirty && LoginForm.password.$invalid">
+                    <span ng-show="LoginForm.password.$error.required">密码是必须的。</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-offset-5 col-md-2">
+                    <input type="checkbox"> 记住密码</input>
+                    <a class="col-md-offset-5">找回密码</a>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-offset-5 col-md-2" style="display: flex; justify-content: center">
+                    <button type="submit" ng-click="login()" class="btn btn-default" style="width: 120px; margin-top: 20px"
+                            ng-disabled="
+                        (LoginForm.email.$dirty && LoginForm.email.$invalid) || (LoginForm.password.$dirty && LoginForm.password.$invalid) ||
+                        LoginForm.email.$error.required || LoginForm.password.$error.required">登录
+                    </button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-offset-5 col-md-2">
+                    <a ng-click="goRegisterPage()">没有账号，点击注册</a>
+                    <div style="margin-top: 10px">
+                        <div>第三方账号登录：</div>
+                        <div>
+                            <a>github</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

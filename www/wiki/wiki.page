@@ -12,6 +12,7 @@ RenderServerWikiScript();
 wp_enqueue_script("angular", "/wp-includes/js/angular/angular.min.js");
 wp_enqueue_script("angular-route", "/wp-includes/js/angular/angular-route.min.js");
 wp_enqueue_script("angular-ui", "/wp-includes/js/angular/ui-bootstrap-tpls-1.3.3.min.js");
+wp_enqueue_script("highlight", "/wp-includes/js/angular-ui-router/release/angular-ui-router.min.js");  -- 前端路由
 wp_enqueue_script("satellizer", "/wp-includes/js/oauth/satellizer.min.js");
 wp_enqueue_script("markdown-it", "/wp-includes/js/markdown-it/markdown-it.min.js");
 wp_enqueue_style("highlight", "/wp-includes/js/highlight/default.css");
@@ -19,6 +20,7 @@ wp_enqueue_script("highlight", "/wp-includes/js/highlight/highlight.pack.js");
 
 -- following is wiki angular app code, app.js must be included first followed by controllers.
 wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
+
 include(WIKI_ROOT.."auth/clientconfig.page");
 wp_enqueue_script("authController", WIKI_WEBROOT.."controllers/userController.js");
 wp_enqueue_script("wikiController", WIKI_WEBROOT.."controllers/wikiController.js");
@@ -88,6 +90,9 @@ wp_enqueue_style("wiki_style", WIKI_WEBROOT.."assets/wiki.css");
                                 <li role="separator" class="divider"></li>
                                 <li>
                                     <a href="/wiki/projects">我的作品...</a>
+                                </li>
+                                <li>
+                                    <a href="/wiki/website#/website">我的站点...</a>
                                 </li>
 								<li>
                                     <a href="/wiki/userstars">我的订阅...</a>

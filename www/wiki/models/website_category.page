@@ -29,13 +29,20 @@ function website_category:categoryArrayToTree(parentId ,array)
 end
 	
 function website_category:get(params) 
-	self:db():find({}, resume);
+	self:db():find(params, resume);
 	local err, data = yield(true);
+	
+	if err then 
+		return errors.wrap(err, data);
+	end
+	
 	local template = models.website_template:new();
 
 	for key, value in pairs(data) do
-		value.templates = template:get({categoryId=value._id});
+		value.templates = template:get({categoryId=value._id}).data;
 	end
 
-	return self:categoryArrayToTree(0,data);
+	data = self:categoryArrayToTree(0,data);
+	
+	return {error=errors.SUCCESS, data=data};
 end

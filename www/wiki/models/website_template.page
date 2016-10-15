@@ -29,11 +29,15 @@ function website_template:get(params)
 	self:db():find(params, resume);
 	local err, data = yield();
 	
+	if err then 
+		return errors.wrap(err, data);
+	end
+
 	local template_style = models.website_template_style:new();
 
 	for key, value in pairs(data) do
-		value.styles = template_style:get({templateId=value._id});		
+		value.styles = template_style:get({templateId=value._id}).data;		
 	end
 
-	return data;
+	return {error=errors.SUCCESS, data=data};
 end
