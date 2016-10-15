@@ -16,16 +16,16 @@ local manager = PluginManager.CreateGetInstance("Paracraft");
 --manager:GetLoader():LoadAllPlugins() --> load plugins, see PluginLoader for details
 
 local function InstallFromUrl(url)
-	local judge  = false;
-	local dest   = '';
+	local status  = false;
+	local dest    = '';
 
 	manager:GetLoader():InstallFromUrl(
 		url, 
 		function(bStatus, bDest)
-			log({bStatus,bDest});
+			log({"aaaaaa",bStatus,bDest});
 
-			judge = bStatus;
-			dest  = bDest;
+			status = bStatus;
+			dest   = bDest;
 
 			resume();
 		end
@@ -33,55 +33,64 @@ local function InstallFromUrl(url)
 
 	yield();
 
-	return judge,dest;
+	return status,dest;
 end
 
 if(is_ajax()) then
-	add_action(
-		'wp_ajax_downloadzip',
-		function()
-			local url = request:get('url');
-
-			url = url..'/archive/master.zip';
-
-			wp_send_json({status=1,msg="Start Download"});
-		end
-	);
-
 	add_action(
 		'wp_ajax_downloadQueue',
 		function()
 			local url		  = request:get('url');
 			local projectName = request:get('projectName');
-			local packagesId  = request:get('packagesId');
+			local packagesId  = tonumber(request:get('packagesId'));
 
-			url			 = url..'/archive/master.zip';
-			local status = 0;--package是否可以下载，以前是否下载过
-			local judge	 = false;--package是否可以下载，以前是否下载过 布尔值
-			local isYourTurn = 0;--是否轮到此包下载
+			url				  = url..'/archive/master.zip';
+			local status	  = -1;--package是否可以下载，以前是否下载过
+			local dest		  = '';
+			local isYourTurn  = 0;--是否轮到此包下载
 
 			local downloadQueue = manager:GetLoader():GetDownloadQueue();
 
-			if(downloadQueue['waitCount'] ~= 0 or downloadQueue['downloadStatus'] == 1) then --
-				downloadQueue['waitCount'] = downloadQueue['waitCount'] + 1;
+			if(downloadQueue['waitCount'] == 0 and downloadQueue['downloadStatus'] == 0) then
+				status,dest = InstallFromUrl(url);
 
-				local newDownloadPackage = {
-					projectName = projectName,
-					packagesId	= packagesId
-				}
+				downloadQueue['downloadStatus']     = 1;--设置下载中
+				downloadQueue['currentPackagesId']  = packagesId;
+				downloadQueue['currentProjectName'] = projectName;
 
-				test = table.getn(downloadQueue['waitPackages']);
+				isYourTurn = 1;
 
-				log({"test",test});
 			else
-				if(downloadQueue['waitCount'] == 0) then
-					judge,dest = InstallFromUrl(url);
-					downloadQueue['downloadStatus'] = 1;--设置下载中
-					isYourTurn = 1;
-				else
-					if(downloadQueue['waitPackages'][0]['packagesId'] == packagesId) then
-						judge,dest = InstallFromUrl(url);
-						downloadQueue['downloadStatus'] = 1;
+				if( downloadQueue.currentPackagesId ~= packagesId ) then
+					local waitPackages = downloadQueue.waitPackages;
+					if( #waitPackages == 0 or waitPackages[1]['packagesId'] ~= packagesId or downloadQueue.downloadStatus == 1) then
+					local isAdd = true;
+
+					log({"#waitPackages",#waitPackages})
+					for i=1,#waitPackages do
+						if(downloadQueue['waitPackages'][i]['packagesId'] == packagesId) then
+							isAdd = false;
+							break;
+						end
+					end
+
+					if(isAdd) then
+						downloadQueue['waitCount'] = downloadQueue['waitCount'] + 1;
+
+						local newDownloadPackage = {
+							projectName = projectName,
+							packagesId	= packagesId
+						}
+
+						waitPackages[#waitPackages + 1] = newDownloadPackage;
+						log({"newDownloadPackage",newDownloadPackage});
+						log({"downloadQueue",downloadQueue});
+						end
+					else
+						status,dest = InstallFromUrl(url);
+						downloadQueue['downloadStatus']     = 1;
+						downloadQueue['currentPackagesId']  = packagesId;
+						downloadQueue['currentProjectName'] = projectName;
 						isYourTurn = 1;
 					end
 				end
@@ -89,25 +98,25 @@ if(is_ajax()) then
 
 			manager:GetLoader():SetDownloadQueue(downloadQueue);
 
-			if(judge) then
-
-				manager:GetLoader():StartDownloader(url, dest, 
+			if(isYourTurn == 1 and status) then
+				manager:GetLoader():StartDownloader(url, dest,
 					function(bStatus, bDest)
-						
 					end
 				);
-
-				status = 1;
-			else
-				status = 0;
+				log({"DDDDD"});
 			end
+
+			local currentDownloadInfo = manager:GetLoader():GetDownloadInfo()
 
 			wp_send_json(
 				{
-					status		 = status,--package是否可以下载，以前是否下载过
-					waitCount	 = downloadQueue['waitCount'],
-					isYourTurn	 = isYourTurn,
-					waitPackages = downloadQueue['waitPackages']
+					status				= status,--package是否可以下载，以前是否下载过
+					waitCount			= downloadQueue['waitCount'],
+					currentPackagesId	= downloadQueue['currentPackagesId'],
+					currentProjectName	= downloadQueue['currentProjectName'],
+					currentDownloadInfo = currentDownloadInfo,
+					isYourTurn			= isYourTurn,
+					waitPackages		= downloadQueue['waitPackages']
 				}
 			);
 		end
@@ -152,16 +161,24 @@ PAGE_NO_SIDE_BAR = true;
         </div>
     </div>
     <div class="quene">
-        <div>Thanks for download.</div>
-        <!--<div>BBB is waiting</div>
-        <div>CCC is waiting</div>
-        <div>AAA is complete!</div>
-        <div>Starting download BBB</div>
-        <div>BBB is downloading 25% 123/999 KB</div>
-        <div>BBB is complete!</div>
-        <div>Starting download CCC</div>
-        <div>CCC is downloading 25% 123/999 KB</div>
-        <div>CCC is complete!</div>-->
+        <h4>Thanks for download.</h4>
+		<br>
+		<h4 style="margin-top: -8px;">[Current Download]</h4>
+        <div>
+			 <b>{{currentProjectName}}</b>
+		</div>
+		<br>
+		<h4>[Waiting download packages]</h4>
+		<div ng-repeat="package in waitPackages track by $index">
+			<b>
+			   #{{$index+1}} &nbsp;&nbsp;&nbsp;
+			   Project name:{{package.projectName}} &nbsp;&nbsp;&nbsp;
+			   Package id:{{package.packagesId}}
+			</b>
+			<b ng-if="waitPackagesIsEmpty">
+				Not yet!
+			</b>
+		</div>
     </div>
     <div class="button">
         <button class="start" ng-click="install()" disabled="disable">After {{seconds}}s will start</button>

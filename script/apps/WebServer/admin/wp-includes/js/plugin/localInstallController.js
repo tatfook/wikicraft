@@ -9,10 +9,12 @@
     $scope.packagesId = params.packagesId;
 
     $scope.seconds = 5;
+    $scope.currentProjectName = 'Not Yet!';
+    $scope.waitPackages = [];
 
     $interval(function () {
         $scope.seconds--;
-    },1000,5)
+    },1000,5);
 
     $timeout(function () {
         $scope.install();
@@ -30,43 +32,43 @@
             }
         })
         .then(function (response) {
+            $scope.currentProjectName = response.data.currentProjectName;
+
+            $scope.waitPackagesIsEmpty = true;
+            for (var i in response.data.waitPackages) {
+                $scope.waitPackagesIsEmpty = false;
+                break;
+            }
+
+            if (!$scope.waitPackagesIsEmpty) {
+                $scope.waitPackages = response.data.waitPackages;
+            }
 
             if (response.data.isYourTurn == 1) {
                 if (response.data.status == 1) {
                     $scope.getCurrentDownload();
-                } else {
+                } else if (response.data.status == 0) {
                     $(".start").text("packages is not update");
+                    $(".button span").css("display", "block");
+                } else if (response.data.status == -1) {
+                    $(".start").text("service is not available now,please try again later");
                     $(".button span").css("display", "block");
                 }
 
+            } else if (response.data.currentPackagesId == $scope.packagesId) {
+                $scope.getCurrentDownload();
+                //alert('continue');
             } else if (response.data.isYourTurn == 0) {
+                console.log(response.data);
+
                 $timeout(function () {
                     $scope.install();
                 }, 1000);
             } else {
-                return alert("status error!");
+                return alert("error!");
             }
 
         }, function (response) { });
-    }
-
-    $scope.startDownload = function(){
-        $http({
-            method: 'POST',
-            url: '/ajax/localInstall?action=downloadzip',
-            data: {
-                url: $scope.giturl,
-            }
-        })
-        .then(function (response) {
-
-            if (response.data.status) {
-                $scope.getCurrentDownload();
-            } else {
-                return alert("error status!");
-            }
-
-        }, function () { });
     }
 
     $scope.getCurrentDownload = function () {
@@ -95,7 +97,7 @@
 
                 //console.log(currentFileSize, totalFileSize, percent);
 
-                $(".start").text(percent + "%" + currentFileSize + "/" + totalFileSize + " KB");
+                $(".start").text(percent + "%" + parseInt(currentFileSize / 1024) + "/" + parseInt(totalFileSize / 1024) + " KB");
                 $(".process").css({ "display": "block", "width": percent + "%" });
 
                 $timeout(function () {
