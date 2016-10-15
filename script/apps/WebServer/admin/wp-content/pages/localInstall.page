@@ -15,14 +15,15 @@ local manager = PluginManager.CreateGetInstance("Paracraft");
 --echo(manager:GetLoader():RebuildModuleList())  --> list of installed plugins
 --manager:GetLoader():LoadAllPlugins() --> load plugins, see PluginLoader for details
 
-local function InstallFromUrl(url)
+local function InstallFromUrl(url,downloadQueue)
 	local status  = false;
 	local dest    = '';
 
+	downloadQueue.lock = 1;
+	manager:GetLoader():SetDownloadQueue(downloadQueue);
 	manager:GetLoader():InstallFromUrl(
 		url, 
 		function(bStatus, bDest)
-			log({"aaaaaa",bStatus,bDest});
 
 			status = bStatus;
 			dest   = bDest;
@@ -33,6 +34,8 @@ local function InstallFromUrl(url)
 
 	yield();
 
+	downloadQueue.lock = 0;
+	manager:GetLoader():SetDownloadQueue(downloadQueue);
 	return status,dest;
 end
 
@@ -45,30 +48,37 @@ if(is_ajax()) then
 			local packagesId  = tonumber(request:get('packagesId'));
 
 			url				  = url..'/archive/master.zip';
-			local status	  = -1;--package是否可以下载，以前是否下载过
+			local status	  = -5;--package是否可以下载，以前是否下载过
 			local dest		  = '';
 			local isYourTurn  = 0;--是否轮到此包下载
 
 			local downloadQueue = manager:GetLoader():GetDownloadQueue();
 
+			if(downloadQueue.lock == 1) then
+				wp_send_json(
+					{
+						lock = 1;
+					}
+				);
+				return;
+			end
+
 			if(downloadQueue['waitCount'] == 0 and downloadQueue['downloadStatus'] == 0) then
-				status,dest = InstallFromUrl(url);
+				status,dest = InstallFromUrl(url,downloadQueue);
 
 				downloadQueue['downloadStatus']     = 1;--设置下载中
 				downloadQueue['currentPackagesId']  = packagesId;
 				downloadQueue['currentProjectName'] = projectName;
 
 				isYourTurn = 1;
-
 			else
 				if( downloadQueue.currentPackagesId ~= packagesId ) then
 					local waitPackages = downloadQueue.waitPackages;
 					if( #waitPackages == 0 or waitPackages[1]['packagesId'] ~= packagesId or downloadQueue.downloadStatus == 1) then
 					local isAdd = true;
 
-					log({"#waitPackages",#waitPackages})
 					for i=1,#waitPackages do
-						if(downloadQueue['waitPackages'][i]['packagesId'] == packagesId) then
+						if(waitPackages[i]['packagesId'] == packagesId) then
 							isAdd = false;
 							break;
 						end
@@ -87,7 +97,7 @@ if(is_ajax()) then
 						log({"downloadQueue",downloadQueue});
 						end
 					else
-						status,dest = InstallFromUrl(url);
+						status,dest = InstallFromUrl(url,downloadQueue);
 						downloadQueue['downloadStatus']     = 1;
 						downloadQueue['currentPackagesId']  = packagesId;
 						downloadQueue['currentProjectName'] = projectName;
@@ -96,17 +106,40 @@ if(is_ajax()) then
 				end
 			end
 
-			manager:GetLoader():SetDownloadQueue(downloadQueue);
+			if(isYourTurn == 1 and status == 1) then
+				local waitPackages = downloadQueue.waitPackages;
+				for i=1,#waitPackages do
+					if(waitPackages[i]['packagesId'] == packagesId) then
+						commonlib.removeArrayItem(waitPackages,i);
+						break;
+					end
+				end
 
-			if(isYourTurn == 1 and status) then
+				manager:GetLoader():SetDownloadInfo({status=-1,currentFileSize=0,totalFileSize=0});
+
 				manager:GetLoader():StartDownloader(url, dest,
 					function(bStatus, bDest)
 					end
 				);
-				log({"DDDDD"});
+
+			elseif(status == -1 or status == 0) then
+
+				local waitPackages = downloadQueue.waitPackages;
+				for i=1,#waitPackages do
+					if(waitPackages[i]['packagesId'] == packagesId) then
+						commonlib.removeArrayItem(waitPackages,i);
+						break;
+					end
+				end
+
+				downloadQueue.downloadStatus	 = 0;
+				downloadQueue.currentPackagesId  = 0;
+				downloadQueue.currentProjectName = 'Not yet!';
+
 			end
 
-			local currentDownloadInfo = manager:GetLoader():GetDownloadInfo()
+			local currentDownloadInfo = manager:GetLoader():GetDownloadInfo();
+			manager:GetLoader():SetDownloadQueue(downloadQueue);
 
 			wp_send_json(
 				{
@@ -119,6 +152,8 @@ if(is_ajax()) then
 					waitPackages		= downloadQueue['waitPackages']
 				}
 			);
+
+			return;
 		end
 	)
 
@@ -163,7 +198,7 @@ PAGE_NO_SIDE_BAR = true;
     <div class="quene">
         <h4>Thanks for download.</h4>
 		<br>
-		<h4 style="margin-top: -8px;">[Current Download]</h4>
+		<h4 style="margin-top: -8px;">[Current download]</h4>
         <div>
 			 <b>{{currentProjectName}}</b>
 		</div>
@@ -175,10 +210,11 @@ PAGE_NO_SIDE_BAR = true;
 			   Project name:{{package.projectName}} &nbsp;&nbsp;&nbsp;
 			   Package id:{{package.packagesId}}
 			</b>
-			<b ng-if="waitPackagesIsEmpty">
-				Not yet!
-			</b>
 		</div>
+
+		<b ng-if="waitPackagesIsEmpty">
+			Not yet!
+		</b>
     </div>
     <div class="button">
         <button class="start" ng-click="install()" disabled="disable">After {{seconds}}s will start</button>

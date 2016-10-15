@@ -9,7 +9,8 @@
     $scope.packagesId = params.packagesId;
 
     $scope.seconds = 5;
-    $scope.currentProjectName = 'Not Yet!';
+    $scope.currentProjectName = 'Not yet!';
+    $scope.waitPackagesIsEmpty = true;
     $scope.waitPackages = [];
 
     $interval(function () {
@@ -32,14 +33,20 @@
             }
         })
         .then(function (response) {
+            if (response.data.lock == 1) {
+                $timeout(function () {
+                    $scope.install();
+                }, 1000);
+                return;
+            }
+
             $scope.currentProjectName = response.data.currentProjectName;
 
-            $scope.waitPackagesIsEmpty = true;
             for (var i in response.data.waitPackages) {
                 $scope.waitPackagesIsEmpty = false;
                 break;
             }
-
+            
             if (!$scope.waitPackagesIsEmpty) {
                 $scope.waitPackages = response.data.waitPackages;
             }
@@ -97,7 +104,7 @@
 
                 //console.log(currentFileSize, totalFileSize, percent);
 
-                $(".start").text(percent + "%" + parseInt(currentFileSize / 1024) + "/" + parseInt(totalFileSize / 1024) + " KB");
+                $(".start").text(percent + "%      " + parseInt(currentFileSize / 1024) + "/" + parseInt(totalFileSize / 1024) + " KB");
                 $(".process").css({ "display": "block", "width": percent + "%" });
 
                 $timeout(function () {
