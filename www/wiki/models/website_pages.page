@@ -1,0 +1,195 @@
+<?npl
+--[[
+Title: all pages owned by a website
+Author: wuxiangan
+Date: 2016/10/12
+]]
+
+include_once("./abstract/base.page");
+include_once("./website_template_style.page");
+include_once("./website.page");
+
+--local errors = models.errors:new();
+local website_pages = inherit(models.abstract.base, gettable("models.website_pages"));
+
+website_pages.db_name = "website_pages";
+-- max length of pages
+website_pages.max_length = 10000;
+
+function website_pages:ctor()
+	self:addfield("name", "string", false, 32);  -- 页面名
+	self:addfield("url", "string", true, 120);  -- 页面url
+	self:addfield("websiteId", 'number', false); -- 所属站点id
+	self:addfield("websiteName", 'string', false); -- 所属站点名
+	self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
+	self:addfield("content", "string", false, 100000);  -- 具体页面内容
+end
+
+function website_pages:delete(params)
+	self:db():deleteOne(params, resume);
+	local err, data = yield();
+	
+	if err then 
+		return {error=errors:new(err), data=data};
+	end
+
+	return {error=errors.SUCCESS, data=data};
+end
+
+
+function website_pages:get(params)
+	self:db():find(params, resume);
+	local err, data = yield();
+
+	if err then 
+		return {error=errors:new(err), data= nil};
+	end
+
+	return {error=errors.SUCCESS, data=data};
+end
+
+function website_pages:api_getWebsitePageByUrl(params) 
+	if not params.url then
+		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
+	end
+
+	self:db():findOne({url=params.url}, resume)	
+	local err, data = yield()
+	if err then
+		return {error=errors:new(err), data=nil};
+	end	
+
+	return {error=errors.SUCCESS, data=data};
+end
+
+function website_pages:api_getWebsiteStylePageByUrl(params)
+	if not params.url then
+		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
+	end
+	
+	log(params);
+	-- 获取页面内容代码
+	self:db():findOne({url=params.url}, resume)	
+	local err, page = yield()
+	if err or (not page) then
+		return {error=errors:new(err), data=page};
+	end	
+
+	log(page);
+	
+	-- 获取站点
+	local website = models.website:new();
+	website:db():findOne({name=page.websiteName}, resume);
+	local err, site = yield();
+	if err or (not site)then
+		return {error=errors:new(err), data=nil};
+	end
+
+	log(site);
+	-- 获取样式代码
+	local template_style = models.website_template_style:new();	
+	template_style:db():findOne({_id=site.styleId}, resume);
+	local err, style = yield();
+	if err or (not style) then
+		return errors:wrap(err, style);
+	end	
+	
+	return {error=errors.SUCCESS, data ={style=style, page=page}};		
+end
+
+function website_pages:create(params) 
+	local data = self:api_getWebsitePageByUrl(params);
+	
+	if data.data then 
+		self:db():updateOne({url=params.url}, params, resume);
+	else 
+		self:db():insertOne(nil, params, resume);
+	end	
+	local err, data = yield()
+	
+	if err then
+		return {error=errors:new(err), data=nil};
+	end
+	
+	return {error=errors.SUCCESS,data=data};
+end
+
+
+function website_pages:api_getAllPageByUid(params) 
+	if not params.userid then
+		return {error=errors.REQUEST_PARAMS_ERROR, nil};
+	end
+		
+	local website = models.website:new();
+	local sites = website:get({userid=tonumber(params.userid)});
+
+	if not errors:isOk(sites.error) then
+		return sites;
+	end
+	
+	sites = sites.data;
+	local pageTree = {}
+	for key, site in pairs(sites) do
+		local pageArray = self:get({websiteName=site.name}).data;
+		pageTree = self:getPageTreeByPageArray(pageArray, pageTree);
+	end
+	
+	return {error=errors.SUCCESS, data=pageTree};
+end
+
+function website_pages:getPathArray(array,path, start)
+	array = array or {};
+	start = start or 1;
+    local s, e, v = path:find('/([^/]+)', start);
+    if s == nil then 
+        return array;
+    end 
+
+    array[#array+1] = v;
+
+    return self:getPathArray(array, path, e+1);
+end
+
+function website_pages:getPageTreeByPageArray(pageArray, pageTree)
+	pageTree = pageTree or {};
+	for key, page in pairs(pageArray) do
+		local array = self:getPathArray({}, page.url, 1);				
+		tree = pageTree;
+		for i=1, #array , 1 do
+			if i == #array then
+				tree[array[i]] = page;
+				page._isLeaf = true;
+			else
+				if not tree[array[i]] then 
+					tree[array[i]] = {_isLeaf=false};
+				end
+				tree = tree[array[i]];
+			end
+		end
+	end
+	return pageTree;
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

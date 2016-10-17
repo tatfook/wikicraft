@@ -7,6 +7,7 @@ Desc: model converts from database rows to objects.
 virtual functions: get, create, delete, update
 ]]
 include_once("../../auth/api.page");
+include_once("../errors.page");
 
 local base = inherit(nil, gettable("models.abstract.base"));
 base.db_name = "unnamed";

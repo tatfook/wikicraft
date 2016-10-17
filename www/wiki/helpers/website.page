@@ -10,9 +10,11 @@ if(not db) then
 end
 include_once(WIKI_ROOT.."config/buildin.page");
 include_once(WIKI_ROOT.."models/project.page");
+include_once(WIKI_ROOT.."models/website_pages.page");
 
 -- current project
 local current_proj = {};
+local is_buildin_site = false;
 
 -- current website {url="", host="", stars=number, is_stared=boolean}
 local curSite;
@@ -50,7 +52,11 @@ local function fetchWebsite(sitename)
 					site.host = "github";
 				end
 			end
+		else
+			site = {name=sitename, userid=1};
 		end
+	else
+		is_buildin_site = true;
 	end
 	curSite = site;
 	return site;
@@ -147,13 +153,26 @@ function RenderServerWikiContent()
 		if(file_exists(filename)) then
 			include(filename);
 			echo("<script>window.skipClientWiki = true;</script>")
+			return;
+		end
+		if(pageName and pageName:match("^_")) then
+			local filename = WIKI_ROOT .. 'pages/special/' .. pageName:gsub("^_", "") .. ".page";
+			if(file_exists(filename)) then
+				include(filename);
+				echo("<script>window.skipClientWiki = true;</script>")
+				return;
+			end
 		end
 	end
-	if(pageName and pageName:match("^_")) then
-		local filename = WIKI_ROOT .. 'pages/special/' .. pageName:gsub("^_", "") .. ".page";
+	
+	-- 本地数据源
+	if (not is_buildin_site) or (GetSiteName() == "wiki") then 
+		local filename = WIKI_ROOT .. 'pages/container.page';
 		if(file_exists(filename)) then
 			include(filename);
 			echo("<script>window.skipClientWiki = true;</script>")
+			return;
 		end
-	end
+	end 
 end
+
