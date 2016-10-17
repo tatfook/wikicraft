@@ -1,0 +1,156 @@
+.plugin {
+  width: 100%;
+  height: 465px;
+  margin: 0 auto;
+}
+.plugin h1 {
+  font-size: 32px;
+  color: #CC3300;
+  text-align: center;
+  margin-top: 28px;
+}
+.plugin .infor-details {
+  width: 52.5%;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 28px;
+  font-size: 20px;
+}
+.plugin .infor-details:after {
+  display: block;
+  content: "";
+  clear: both;
+}
+.plugin .infor-details .item {
+  margin-bottom: 10px;
+}
+.plugin .infor-details .item:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.plugin .infor-details .item label {
+  float: left;
+  margin: 0px;
+  font-size: 18px;
+}
+.plugin .infor-details .item > div {
+  /*margin-left: 265px;*/
+  float: right;
+}
+.plugin .quene {
+  /*overflow-y: hidden;*/
+  overflow-y: auto;
+  width: 52.5%;
+  /*border: none;*/
+  border: solid 1px #000;
+  font-size: 13px;
+  margin: 0 auto;
+  padding: 5px;
+  height: 180px;
+  margin-top: 20px;
+}
+.plugin .button {
+  width: 385px;
+  margin: 0 auto;
+  display: block;
+}
+.plugin .button button {
+  width: 100%;
+  height: 45px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  color: #FFF;
+  outline: none;
+  border-radius: 5px;
+  display: block;
+}
+.plugin .button button.start {
+  background-color: #00FFFF;
+  margin-top: 50px;
+  font-weight: 600;
+  color: #000000;
+  transition: background-color 1s;
+}
+.plugin .button button.process {
+  background-color: #05bbbb;
+  margin-top: -45px;
+  /*position: relative;
+                z-index: 1;*/
+  color: #025a48;
+  font-weight: 600;
+  display: none;
+  overflow: hidden;
+  transition: opacity 1s,width 1s;
+  /*@animate: animate 3s linear infinite;
+                -webkit-animation: @animate;
+                -moz-animation: @animate;
+                -ms-animation: @animate;
+                -o-animation: @animate;
+                animation: @animate;*/
+}
+.plugin .button span {
+  text-align: center;
+  width: 100%;
+  display: none;
+  margin-top: 10px;
+  color: #007d5f;
+  position: relative;
+}
+@-webkit-keyframes animate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes animate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-ms-keyframes animate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes animate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes animate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
