@@ -3,7 +3,7 @@
  */
 
 app.config(function ($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/');
+    //$urlRouterProvider.otherwise('/');
     var templatePath = config.pageUrlPrefix;
     $stateProvider.state('index', {
         url: '/',

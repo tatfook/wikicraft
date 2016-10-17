@@ -23,6 +23,11 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj) {
     var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
     var pagename = '/index';
 
+	// 排除IP访问
+	if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+		sitename = undefined;
+	}
+
     if (sitename) {
         sitename = sitename[1];
         pagename = pathname;
@@ -90,11 +95,13 @@ app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShare
         });
         */
         // 获取网站所有页面
+		/*
         $http.post('http://localhost:8099/api/wiki/models/website_pages',{websiteName:website.name}).then(function (response) {
             $scope.websitePages = response.data.data;
         }).catch(function (response) {
             console.log(response.data);
         });
+		*/
         // 获取网站模板样式  页面内容嵌套在模板内部 编辑不需模板吧？？ 预览时你也可以获取自行嵌套
         /*
         $http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id:website.styleId}).then(function (response) {
@@ -108,7 +115,7 @@ app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShare
         $scope.websitePage.url ='/' + $scope.websitePage.websiteName + '/' +  $scope.websitePage.name;
         console.log($scope.websitePage);
         if (isEdit == false) { // 新增
-            $http.put('http://localhost:8099/api/wiki/models/website_pages/new',$scope.websitePage).then(function (response) {
+            $http.put(config.apiUrlPrefix+'website_pages/new',$scope.websitePage).then(function (response) {
                 console.log(response.data.data);
 				$scope.websitePage.name = "";
 				$scope.websitePage.content = "";
@@ -116,7 +123,7 @@ app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShare
                 console.log(response.data);
             });
         } else {  // 修改
-            $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
+            $http.put(config.apiUrlPrefix+'website_pages',$scope.websitePage).then(function (response) {
                 console.log(response.data.data);
 				$scope.websitePage.name = "";
 				$scope.websitePage.content = "";
