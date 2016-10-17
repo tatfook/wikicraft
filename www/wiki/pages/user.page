@@ -93,19 +93,83 @@ wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
 				 		 <div class="panel panel-default">
 	
 	                 <div class="pbody">
+					<form class="form-horizontal" role="form">
+                    <fieldset>
+                        <legend>修改密码</legend>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_host">旧密码</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_host" type="password" placeholder="请输入"/>
+                          </div>
+                           </div>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_username">新密码</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_username" type="password" placeholder="请输入"/>
+                          </div>
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_username">确认密码</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_username" type="password" placeholder="请确认"/>
+                          </div>
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for=""></label>
+						  <div class="col-sm-4">
+                             <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">修改
+                            </button>
+                          </div>
+                        
+                       </div>
+                    </fieldset>     
+                    <fieldset>
+                         <legend>安全验证</legend>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="yz_mail">验证邮箱</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="yz_mail" type="text" placeholder=""/>
+                          </div>
+						  <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">验证
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for="yz_tel">验证手机</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="yz_tel" type="text" placeholder=""/>
+                          </div>
+                          <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">验证
+                       </div>
+                    </fieldset>
+                  
+                  </form>
 					 </div>
-					 </div>
-				 
-				 
-				 
-				 
-				 </div>
+					   </div>
+				 	    </div>
 				 <!--my collections-->
 				 <div id="lm_3" style="display:none">
 				 
 				  <div class="panel panel-default">
 	
 	                 <div class="pbody">
+					     <div class="row clearfix">
+		<div class="col-md-6 column">
+		</div>
+		<div class="col-md-6 column">
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-6 column">
+		</div>
+		<div class="col-md-6 column">
+		</div>
+	</div>      
+
 					 </div>
 					 </div>
 				 </div>
