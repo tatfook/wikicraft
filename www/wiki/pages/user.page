@@ -12,8 +12,10 @@ wp_enqueue_script("uc_leftmenu", WIKI_WEBROOT.."assets/lib/js/ucenter.js");
 wp_enqueue_script("js_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.js");
 wp_enqueue_script("js_sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.js");
 wp_enqueue_style("uc_style", WIKI_WEBROOT.."assets/lib/css/uc_style.css");
+wp_enqueue_style("h_style", WIKI_WEBROOT.."assets/lib/css/style.css");
 wp_enqueue_style("css_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.css");
 wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
+
 ?>
  <div id="leftmenu" class="left_menu">
  		<!-- left section -->
@@ -156,28 +158,63 @@ wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
 				 
 				  <div class="panel panel-default">
 	
-	                 <div class="pbody">
-					     <div class="row clearfix">
-		<div class="col-md-6 column">
-		</div>
-		<div class="col-md-6 column">
-		</div>
-	</div>
-	<div class="row clearfix">
-		<div class="col-md-6 column">
-		</div>
-		<div class="col-md-6 column">
-		</div>
-	</div>      
+	                 <div class="pbody"  >
+					 <!-- for loop-->
 
+					<div id="content" class="row-fluid">
+                      <div class="col-md-5" style="border:1px solid #000">
+                        <div class="row">
+                           <div class="col-xs-4"><img src="" alt="image with rounded corners"> </div>
+                           <div class="col-xs-8">《title》<br>作者：<br>说明：</div>
+    
+                        </div>
+                      </div>
+                            <div class="col-md-5 col-md-offset-2" style="border:1px solid #000">
+                               <div class="row">
+                                  <div class="col-xs-4"><img src="" alt="image with rounded corners"> </div>
+                                  <div class="col-xs-8">《title》<br>作者：<br>说明：</div>
+    
+                            </div>
+                           </div>
+                        </div>
+	               <!--end loop-->
 					 </div>
 					 </div>
 				 </div>
 				 <!--my history-->
 				 <div id="lm_4" style="display:none">
-				  <div class="panel panel-default">
+				  <div class="panel panel-default" >
+				           
+	                       
+	                 <div class="pbody" style="position:absolute; width:100%; height:100%; overflow:auto">
+					 		  <section id="cd-timeline" class="cd-container">
+	                        <div class="cd-timeline-block">
+		                       <div class="cd-timeline-img cd-picture">
+			                     <img src="" alt="">
+		                       </div>
+
+		                     <div class="cd-timeline-content">
+			                   <h2>test1</h2>
+			                   <p>test</p>
+			                      <a href="#" class="cd-read-more" target="_blank">详情</a>
+			                   <span class="cd-date">2016-10-12</span>
+		                    </div>
+	                        </div>
+	                     <div class="cd-timeline-block">
+		                    <div class="cd-timeline-img cd-movie">
+		                      	<img src="" alt="">
+		                     </div>
+
+		                   <div class="cd-timeline-content">
+			                    <h2>test2</h2>
+			               <p>test2</p>
+			                <a href="#" class="cd-read-more" target="_blank">详情</a>
+			               <span class="cd-date">2016-10-13</span>
+		                 </div>
+	                   </div>
 	
-	                 <div class="pbody">
+                     </section>
+			
 					 </div>
 					 </div>
 				 
@@ -223,6 +260,60 @@ wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
 				  <div class="panel panel-default">
 	
 	                 <div class="pbody">
+
+					 <form class="form-horizontal" role="form">
+                    <fieldset>
+                        <legend>绑定数据源</legend>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_host">github账号：</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_host" type="text" placeholder="请输入"/>
+                          </div>
+                           </div>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_username">github密码：</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_username" type="password" placeholder="请输入"/>
+                          </div>
+                        
+                       </div>
+					  
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for=""></label>
+						  <div class="col-sm-4">
+                             <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">绑定
+                            </button>
+                          </div>
+                        
+                       </div>
+                    </fieldset>     
+                    <fieldset>
+                         <legend>已绑定数据源</legend>
+                       
+                            <table class="table table-striped">
+ 
+                           <thead>
+                               <tr>
+                                 <th>账号</th>
+                                 <th>设为默认</th>
+      
+                               </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                <td>exejun1986@163.com</td>
+                               <td><button type="button" class="btn btn-primary" 
+                                 data-toggle="button">设为默认</td>
+      
+                             </tr>
+   
+                               </tbody>
+                          </table>
+                       </div>
+					    
+                         </fieldset>
+                     </form>
 					 </div>
 					 </div>
 				 
