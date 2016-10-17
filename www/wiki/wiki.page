@@ -17,6 +17,7 @@ wp_enqueue_script("markdown-it", "/wp-includes/js/markdown-it/markdown-it.min.js
 wp_enqueue_style("highlight", "/wp-includes/js/highlight/default.css");
 wp_enqueue_script("highlight", "/wp-includes/js/highlight/highlight.pack.js");
 
+wp_enqueue_script("angular-ui-router", WIKI_WEBROOT .. "plugins/angular-ui-router/release/angular-ui-router.min.js");  -- 前端路由
 -- following is wiki angular app code, app.js must be included first followed by controllers.
 wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
 
