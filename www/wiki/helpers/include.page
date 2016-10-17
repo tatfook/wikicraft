@@ -1,5 +1,8 @@
 <?npl
+-- js库
+wp_enqueue_script("angular-ui-router", WIKI_ROOT .. "plugins/angular-ui-router/release/angular-ui-router.min.js");  -- 前端路由
 
+-- self js file
 wp_enqueue_script("util", WIKI_WEBROOT.."helpers/util.js");  -- js 帮助函数
 wp_enqueue_script("route", WIKI_WEBROOT.."helpers/route.js");  -- 前端路由
 wp_enqueue_script("factory", WIKI_WEBROOT.."helpers/factory.js");  -- 依赖注入
