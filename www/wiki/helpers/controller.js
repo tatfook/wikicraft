@@ -212,15 +212,17 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
                     break;
                 }
             }
-
-            $scope.templates = $scope.categories[0].templates;
-            $scope.styles = $scope.templates[0].styles;
-            $scope.website.categoryId = $scope.categories[0]._id;
-            $scope.website.categoryName = $scope.categories[0].name;
-            $scope.website.templateId = $scope.templates[0]._id;
-            $scope.website.templateName = $scope.templates[0].name;
-            $scope.website.styleId = $scope.styles[0]._id;
-            $scope.website.styleName = $scope.styles[0].name;
+			
+			if ($scope.editWebsite == false) {  // 创建时默认选择第一个
+				$scope.templates = $scope.categories[0].templates;
+				$scope.styles = $scope.templates[0].styles;
+				$scope.website.categoryId = $scope.categories[0]._id;
+				$scope.website.categoryName = $scope.categories[0].name;
+				$scope.website.templateId = $scope.templates[0]._id;
+				$scope.website.templateName = $scope.templates[0].name;
+				$scope.website.styleId = $scope.styles[0]._id;
+				$scope.website.styleName = $scope.styles[0].name;
+			}
         });
     }
 
