@@ -139,10 +139,9 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
     $scope.max_free_count = 3;
 
     getWebsistes();
-
     function getWebsistes() {
         // 获取项目列表
-        util.http($http,'POST', config.apiUrlPrefix+'website',{userid:Account._id}, function (data) {
+        util.http($http,'POST', config.apiUrlPrefix+'website',{userid:Account.getUser()._id || -1}, function (data) {
             $scope.websites = data;
         });
     }
