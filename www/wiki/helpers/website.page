@@ -116,7 +116,12 @@ end
 -- calculate website name and page name from current url
 function RenderServerWikiScript()
 	if(not siteName or not pageName) then
+		local host = request:GetHost() or "";
 		local siteName_ = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+");
+		-- 排除IP地址访问
+		if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) then
+			siteName_ = nil
+		end
 		isSingleSite = false;
 		if(siteName_ and siteName_~="www") then
 			isSingleSite = true;
