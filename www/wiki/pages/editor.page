@@ -77,7 +77,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
     </div>
 </div>
 
-<nav class="navbar navbar-static-top" role="navigation"  ng-controller="editorController">
+<nav class="navbar navbar-static-top" role="navigation" ng-controller="editorController">
     <div class="container-fluid">
         <div>
             <ul class="nav navbar-nav nav-pills">
@@ -85,7 +85,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
                 <li class="toolbar-page-code"><a href="#">代码</a></li>
                 <li class="active toolbar-page-slide"><a href="#">拆分</a></li>
                 <li class="toolbar-page-design"><a href="#">设计</a></li>
-                <li class="disabled"><a href="#"  id="editorUrl">http://wikicraft.cn/mybook/index</a></li>
+                <li class="disabled" ><a href="#">{{websitePage.url}}</a></li>
                 <li class="toolbar-page-copyurl"><a class="btn btn-default btn-sm navbar-btn" href="#">复制网址</a></li>
                 <li class="toolbar-page-preview"><a class="btn btn-default btn-sm navbar-btn" href="#">预览</a></li>
             </ul>
