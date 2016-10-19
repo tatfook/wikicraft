@@ -90,13 +90,9 @@ function website_pages:api_getWebsiteStylePageByUrl(params)
 	log(site);
 	-- 获取样式代码
 	local template_style = models.website_template_style:new();	
-	template_style:db():findOne({_id=site.styleId}, resume);
-	local err, style = yield();
-	if err or (not style) then
-		return errors:wrap(err, style);
-	end	
+	style = template_style:api_getWebsiteTemplateStyleById({_id=site.styleId});
 	
-	return {error=errors.SUCCESS, data ={style=style, page=page}};		
+	return {error=errors.SUCCESS, data ={style=style.data, page=page}};		
 end
 
 function website_pages:create(params) 
@@ -116,6 +112,18 @@ function website_pages:create(params)
 	return {error=errors.SUCCESS,data=data};
 end
 
+function website_pages:api_getWebsiteAllPageByWebsiteName(params)
+	if not params.websiteName then
+		return {error=errors.REQUEST_PARAMS_ERROR, nil};
+	end
+		
+	local pageTree = {}
+	local pageArray = self:get({websiteName=params.websiteName}).data;
+	pageTree = self:getPageTreeByPageArray(pageArray, pageTree);
+	
+	pageTree = self:getArrayTree(pageTree)
+	return {error=errors.SUCCESS, data=pageTree};
+end
 
 function website_pages:api_getAllPageByUid(params) 
 	if not params.userid then
@@ -136,6 +144,7 @@ function website_pages:api_getAllPageByUid(params)
 		pageTree = self:getPageTreeByPageArray(pageArray, pageTree);
 	end
 	
+	pageTree = self:getArrayTree(pageTree)
 	return {error=errors.SUCCESS, data=pageTree};
 end
 
@@ -173,8 +182,21 @@ function website_pages:getPageTreeByPageArray(pageArray, pageTree)
 end
 
 
-
-
+function website_pages:getArrayTree(objectTree) 
+	local pages = {}
+	
+	for key, value in pairs(objectTree) do
+		if key ~= "_isLeaf" then
+			if value._isLeaf then
+				pages[#pages+1] = value
+			else
+				pages[#pages+1] = {name=key, _isLeaf=false, pages=self:getArrayTree(value)}
+			end
+		end
+	end
+	
+	return pages
+end
 
 
 
