@@ -1,11 +1,8 @@
 ﻿<div ng-non-bindable class="wikitop">
-    <div class="cont<dainer" style="position:relative;z-index:2">
+    <div class="container" style="position:relative;z-index:2">
         <div class="row" style="position:absolute;width:100%">
             <div class="col-sm-12 mt-2 carousel-frontpage" >
-     
-	 
-	 
-	  属于每一个人的作品网站</h1>
+                <h1>创造属于每一个人的作品网站</h1>
             </div>
         </div>
     </div>
