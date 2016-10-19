@@ -179,6 +179,5 @@
 <script src="./lib/js/ace.js"></script>
 <script src="./lib/js/npl.editor.js"></script>
 
-<!--<script src="./lib/js/edit.npl.js"></script>-->
 </body>
 </html>
