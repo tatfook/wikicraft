@@ -16,6 +16,7 @@ wp_enqueue_style("uc_style", WIKI_WEBROOT.."assets/lib/css/uc_style.css");
 wp_enqueue_style("h_style", WIKI_WEBROOT.."assets/lib/css/style.css");
 wp_enqueue_style("css_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.css");
 wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
+wp_enqueue_script("userCollectionController", WIKI_WEBROOT.."controllers/userCollectionController.js");
 
 ?>
  <div id="leftmenu" class="left_menu">
@@ -200,29 +201,19 @@ wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
 				  <div class="panel panel-default">
 
 	                 <div class="pbody"  >
-					 	  <div   style="height:5%"><span>`{{isOwner() ? "您" : getUser().displayName}}`共收藏{{projects.length || 0}}个作品</span> </div>
-					 <!-- for loop-->
-                       
-					<div id="content" class="row-fluid">
-                      <div class="col-md-4 col-md-offset-1" style="border:1px solid #000">
-                        <div class="row">
-                           <div class="col-xs-4"><img src="" alt="image with rounded corners"> </div>
-                           <div class="col-xs-8">《title》<br>作者：<br>说明：</div>
-    
-                        </div>
-                      </div>
-                            <div class="col-md-4 col-md-offset-2" style="border:1px solid #000">
-                               <div class="row">
-                                  <div class="col-xs-4"><img src="" alt="image with rounded corners"> </div>
-                                  <div class="col-xs-8">《title》<br>作者：<br>说明：</div>
-    
-                            </div>
+					 	  <div   style="height:5%"><big>`{{isOwner() ? "您" : getUser().displayName}}`共收藏{{projects.length || 0}}个作品</big> </div>
+					                        
+					         <div id="content" class="row-fluid" ng-bind-html="getProjectsInPageFormat()">
+                           
+	               
+					        </div>
+                           <div class="mt-2 mb-2 col-sm-12" float:"right">
+                                <ul uib-pagination items-per-page="items_per_page" boundary-links="true" total-items="projects.length || 0" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
                            </div>
-						         <div class="col-md-1"></div>
-                        </div>
-	               <!--end loop-->
 					 </div>
-					 </div>
+                         
+				 </div>
+
 				 </div>
 				 <!--my history-->
 				 <div id="lm_4" style="display:none">
