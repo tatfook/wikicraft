@@ -2,14 +2,22 @@
  * Created by wuxiangan on 2016/10/10.
  */
 
-/*
 app.factory('Account', function () {
     return {
-        _id:1,
-        username:'逍遥',
-    };
+        user:{
+            _id:1,
+            username:'逍遥',
+        },
+        getUser: function () {
+            return this.user;
+        },
+        
+        setUser: function (_user) {
+            this.user = _user;
+        }
+    }
 });
-*/
+
 app.factory('ctrlShareObj', function ($http) {
     var obj = {};
 
@@ -104,6 +112,7 @@ app.factory('projectStorageProvider', function ($http) {
 
     // 获得filelist   非递归可能有bug 取决js异步对统一变量访问是否是隔离的
     github.getTree = function (treeSha, recursive, cb, out, level, prefix) {
+        var repo = github.getRepo("wikicraftDataSource");
         level = level || [];
         if (treeSha == undefined) {
             treeSha = 'master';
@@ -117,7 +126,7 @@ app.factory('projectStorageProvider', function ($http) {
             treeSha += '?recursive=1';
         }
 
-        github.repo.getTree(treeSha, function (error, result, request) {
+        repo.getTree(treeSha, function (error, result, request) {
             if (error) {
                 console.log(error);
                 cb(error, out, request);
@@ -153,7 +162,8 @@ app.factory('projectStorageProvider', function ($http) {
 
     // 回滚文件
     github.rollbackFile = function (commitSha, path, message, cb) {
-        github.repo.getContents(commitSha, path, true, function (error, result, request) {
+        var repo = github.getRepo("wikicraftDataSource");
+        repo.getContents(commitSha, path, true, function (error, result, request) {
             if (error) {
                 cb || cb(error, result, request);
                 return;
@@ -165,7 +175,8 @@ app.factory('projectStorageProvider', function ($http) {
 
     // 删除文件
     github.deleteFile = function (path, cb) {
-        github.repo.deleteFile('master', path, function (error, result, request) {
+        var repo = github.getRepo("wikicraftDataSource");
+        repo.deleteFile('master', path, function (error, result, request) {
            innerServer.deleteFile(path, function (data) {
                cb && cb(error, data, request);
            })

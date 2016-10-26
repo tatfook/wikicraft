@@ -1,0 +1,167 @@
+<div ng-controller="userCenterCtrl">
+    <div style="display:flex; justify-content: center; margin-top: 30px;">
+        <div style=" border-top: 1px solid grey">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#userCenterBaseInfo" data-toggle="tab">我的资料</a></li>
+                <li><a href="#userCenterAccountSafe" data-toggle="tab">账号安全</a></li>
+                <li><a href="#userCenterMyFavorite" data-toggle="tab">我的收藏</a></li>
+                <li><a href="#userCenterMyHistory" data-toggle="tab">我的历史</a></li>
+                <li><a href="#userCenterMyFans" data-toggle="tab">我的粉丝</a></li>
+                <li><a href="#userCenterRealAuth" data-toggle="tab">实名验证</a></li>
+                <li><a href="#userCenterInviteRegister" data-toggle="tab">邀请注册</a></li>
+                <li><a href="#userCenterVIP" data-toggle="tab">VIP</a></li>
+                <li><a href="#userCenterDataSource" data-toggle="tab">数据源</a></li>
+            </ul>
+        </div>
+        <div class="tab-content"  style="min-width: 800px; border-top: 1px solid grey">
+            <div class="tab-pane fade in active" id="userCenterBaseInfo">
+                <div class="panel panel-default">
+                    <div class="panel-heading">我的资料</div>
+                    <div class="panel-body" style="display: flex">
+                        <div>
+                            <div style="display: flex; justify-content: center">
+                                <img src='/wiki/assets/images/defaultPortrait.jpg' id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 10px">
+                                <input type="file" accept='image/*' class="btn" id="uploadPortraitBtn">
+                            </div>
+                        </div>
+                        <div>
+                            <form role="form" class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">昵称：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="user.username">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">性别：</label>
+                                    <div class="col-md-8">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="sex" value="M" ng-model="user.sex">男
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="sex" value="F" ng-model="user.sex">女
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="sex" value="secret" ng-model="user.sex">保密
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">位置：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="user.location">
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="control-label col-md-4">个人简介：</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" rows="4" ng-model="user.comment"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-8">
+                                        <button class="btn btn-default" ng-click="modifyUserBaseInfo()">提交</button>
+                                        <span style="color:red;" class="glyphicon " ng-class='{"glyphicon-ok":modifyUserInfoOk==1,"glyphicon-remove":modifyUserInfoOk==2}'>{{tipInfo}}</span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterAccountSafe">
+                <div class="panel panel-default">
+                    <div class="panel-heading">修改密码</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">旧密码</label>
+                                <div class="col-md-6">
+                                    <input type="password" class="form-control" ng-model="passwordObj.oldPassword">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">新密码</label>
+                                <div class="col-md-6">
+                                    <input type="password" class="form-control" ng-model="passwordObj.newPassword1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">确认新密码</label>
+                                <div class="col-md-6">
+                                    <input type="password" class="form-control" ng-model="passwordObj.newPassword2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-6">
+                                    <button class="btn btn-default" ng-click="modifyPassword">修改</button>
+                                    <span style="color: red" class="glyphicon " ng-class='{"glyphicon-ok":modifyPasswordOk==1,"glyphicon-remove":modifyPasswordOk==2}'>{{tipInfo}}</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">安全验证</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">验证邮箱</label>
+                                <div class="col-md-6">
+                                    <input type="email" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-default">验证</button>
+                                    <span class="glyphicon " ng-class='{"glyphicon-ok":checkEamilOk,"glyphicon-remove":!checkEamilOk}'></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-3">验证手机</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-default">验证</button>
+                                    <span class="glyphicon " ng-class='{"glyphicon-ok":checkPhoneOk,"glyphicon-remove":!checkPhoneOk}'></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterMyFavorite">
+                <div>我的收藏</div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterMyHistory">
+                <div>我的历史</div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterMyFans">
+                <div>我的粉丝</div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterRealAuth">
+                <div>实名认证</div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterInviteRegister">
+                <div>邀请注册</div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterVIP">
+                <div>VIP</div>
+            </div>
+
+            <div class="tab-pane fade in" id="userCenterDataSource">
+                <div>数据源</div>
+            </div>
+
+        </div>
+    </div>
+</div>

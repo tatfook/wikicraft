@@ -16,7 +16,7 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         $rootScope.goLoginPage();
     }
     console.log("mainCtrl");
-
+/*
 	var hostname = window.location.hostname;
     var pathname = window.location.pathname;
     var hash = window.location.href;
@@ -36,6 +36,7 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
+	*/
     /*
     hash = hash.replace('#/','');
     if (hash && hash.length) {
@@ -49,7 +50,6 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
     //$state.go('custom')
 
     // 初始化数据源
-    /*
     const github = projectStorageProvider.getDataSource('github');
     github.init({
         username: '765485868@qq.com',
@@ -58,8 +58,8 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         $state.go('index.test');
     });
     return ;
-    */
-    if (sitename == "wiki") {
+    /*
+	if (sitename == "wiki") {
         $state.go('index.' + pagename.substring(1,pagename.length));
     } else {
         ctrlShareObj.pageContentUrl = sitename + pagename;
@@ -67,13 +67,52 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
 		ctrlShareObj.pagename = pagename;
         $state.go('custom');
     }
+	*/
 });
 
 app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
 });
 
-app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
-	console.log("indexCtrl");
+app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile, ctrlShareObj) {
+    /*
+    ctrlShareObj.sitename='test';
+    config.templateObject = {
+        $scope:$scope,
+        $http:$http,
+        ctrlShareObj:ctrlShareObj,
+    };
+
+    function getTree(data) {
+        var tree = [];
+        if (!data) {
+            return tree;
+        }
+        for(var i = 0; i < data.length; i++) {
+            tree.push({
+                text:data[i].name,
+                nodes:data[i].pages ? getTree(data[i].pages) : undefined,
+            });
+        }
+        return tree;
+    }
+    var main = function () {
+        var $scope  = config.templateObject.$scope;
+        var $http = config.templateObject.$http;
+        var ctrlShareObject = config.templateObject.ctrlShareObj;
+        util.http($http, "POST", config.apiUrlPrefix+'website_pages/getWebsiteAllPageByWebsiteName', {websiteName:ctrlShareObject.sitename}, function (data) {
+            var tree = getTree(data);
+            console.log(tree);
+            $('#tree').treeview({data: getTree(data)});
+        });
+    };
+    main();
+    */
+});
+
+
+app.controller('indexCtrl', function ($scope,$state, $sce, $auth, ctrlShareObj,projectStorageProvider) {
+    console.log("indexCtrl");
+    const github = projectStorageProvider.getDataSource('github');
 });
 
 
@@ -250,15 +289,15 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
         ctrlShareObj.pageContentUrl = websiteName + '/index';
         ctrlShareObj.sitename = websiteName;
         ctrlShareObj.pagename = 'index';
-        //$state.go('custom');
-	window.location.href= '/' + websiteName;
+        $state.go('custom');
+	//window.location.href= '/' + websiteName;
     }
 
 	$scope.goEditWebsitePagePage = function (website) {
         ctrlShareObj.website = website;
         console.log(ctrlShareObj.website);
         $state.go('index.editWebsitePage');
-		//window.location.href='/wiki/editor';
+        //window.location.href="/wiki/editor";
     }
 
     $scope.goCreateWebsitePage = function () {
