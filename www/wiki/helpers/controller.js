@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/9/26.
  */
 
-app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj) {
+app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, projectStorageProvider) {
     $rootScope.isLogin = true;
     $rootScope.user = {username:"逍遥"}
     $rootScope.goLoginPage=function () {
@@ -41,13 +41,28 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj) {
     if (hash && hash.length) {
         $state.go('index.'+hash);
     }
-    $state.go('index.test');
+
     */
-    //return ;
+    //$state.go('index.userCenter');
+    //ctrlShareObj.pageContentUrl = '/test/index';
+    //ctrlShareObj.sitename = "test";
+    //$state.go('custom')
+
+    // 初始化数据源
+    /*
+    const github = projectStorageProvider.getDataSource('github');
+    github.init({
+        username: '765485868@qq.com',
+        password: 'wxa765485868',
+    }, function (error) {
+        $state.go('index.test');
+    });
+    return ;
+    */
     if (sitename == "wiki") {
         $state.go('index.' + pagename.substring(1,pagename.length));
     } else {
-        ctrlShareObj.pageContentUrl = '/' + sitename + pagename;
+        ctrlShareObj.pageContentUrl = sitename + pagename;
 		ctrlShareObj.sitename = sitename;
 		ctrlShareObj.pagename = pagename;
         $state.go('custom');
@@ -61,9 +76,76 @@ app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
 	console.log("indexCtrl");
 });
 
+
+app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShareObj,projectStorageProvider) {
+    const github = projectStorageProvider.getDataSource('github');
+    console.log("gitVersionCtrl");
+    $scope.dtStartOpened = false;
+    $scope.dtEndOpened = false;
+    $scope.filelist = [];
+    $scope.commits = [];
+    // 获得git文件列表
+    github.getTree('master', false, function (error, result, request) {
+        var filelist = []
+        for(var i = 0; result && i < result.length; i++) {
+            /*
+            if (result[i].type == 'tree') {
+                continue;
+            }
+            */
+            filelist.push({path:result[i].path});
+        }
+        $scope.filelist = filelist;
+    });
+
+    $scope.dtStartOpen = function () {
+        $scope.dtStartOpened = !$scope.dtStartOpened;
+    }
+    $scope.dtEndOpen = function () {
+        $scope.dtEndOpened = !$scope.dtEndOpened;
+    }
+
+    $scope.submit = function () {
+        var params = {
+            sha:$scope.sha,
+            path:$scope.path,
+            author:undefined,
+            since:$scope.dtStart && ($scope.dtStart.toLocaleDateString().replace(/\//g,'-') +'T00:00:00Z'),
+            until:$scope.dtEnd && ($scope.dtEnd.toLocaleDateString().replace(/\//g,'-') +'T23:59:59Z'),
+        };
+        console.log(params);
+        github.listCommits(params, function (error, result, request) {
+            console.log(result);
+            $scope.commits = result || [];
+        });
+    }
+    
+    $scope.viewCommit = function (commit) {
+        window.open(commit.html_url);
+    }
+    
+    $scope.rollbackFile = function (commit) {
+        github.getSingleCommit(commit.sha, function (error, result, request) {
+            if (error) {
+                console.log(error);
+                return;
+            }
+            console.log(result);
+            // 回滚文件
+            for(var i = 0; i < result.files.length; i++) {
+                github.rollbackFile(commit.sha, result.files[i].filename, 'rollback file: ' + result.files[i].filename)
+            }
+        });
+    }
+    // 路径过滤
+    $scope.pathSelected =function ($item, $model) {
+        $scope.path = $item.path;
+    }
+});
+
 app.controller('customCtrl', function ($scope, $state, $http, $compile, ctrlShareObj) {
 	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
-	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByUrl', {url:ctrlShareObj.pageContentUrl}, function(data){
+	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByPath', {path:ctrlShareObj.pageContentUrl}, function(data){
         $scope.websitePage = data  || defaultPage;
 		if (data) {
 			//var styleContent = data.style.content;
@@ -84,13 +166,18 @@ app.controller('customCtrl', function ($scope, $state, $http, $compile, ctrlShar
 	});
 });
 
-app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShareObj) {
+app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShareObj, projectStorageProvider) {
+    const github = projectStorageProvider.getDataSource('github');
+    $scope.websitePage = {};
+    $scope.submit = function () {
+        github.saveFile(ctrlShareObj.website.name + '/' + $scope.websitePage.name, $scope.websitePage.content, $scope.message);
+    }
+    /*
     $scope.websites = [];
     $scope.websitePages = [];
     $scope.style = {}
     var website = ctrlShareObj.website || {};
-    $scope.websitePage = {name:'', url:'/'+ website.name + '/', websiteName:website.name, websiteId:website._id, content: ""};  // 从websitePages选择一页编辑，或新增， 注意新增或修改提交页时需这些信息
-
+*/
     init();
 
     function init() {
@@ -117,10 +204,10 @@ app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShare
         })
         */
     }
-
+/*
     $scope.submit = function () {
         var isEdit =false;
-        $scope.websitePage.url ='/' + $scope.websitePage.websiteName + '/' +  $scope.websitePage.name;
+        $scope.websitePage.path = $scope.websitePage.websiteName + '/' +  $scope.websitePage.name;
         console.log($scope.websitePage);
         if (isEdit == false) { // 新增
             $http.put(config.apiUrlPrefix+'website_pages/new',$scope.websitePage).then(function (response) {
@@ -140,6 +227,7 @@ app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShare
             });
         }
     }
+*/
 });
 
 app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareObj) {
@@ -158,6 +246,14 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
 		window.location.href = window.location.host + '/' + website.name;
 	}
 */
+    $scope.goWebsiteIndexPage = function(websiteName) {
+        ctrlShareObj.pageContentUrl = websiteName + '/index';
+        ctrlShareObj.sitename = websiteName;
+        ctrlShareObj.pagename = 'index';
+        //$state.go('custom');
+	window.location.href= '/' + websiteName;
+    }
+
 	$scope.goEditWebsitePagePage = function (website) {
         ctrlShareObj.website = website;
         console.log(ctrlShareObj.website);

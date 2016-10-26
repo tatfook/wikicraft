@@ -27,7 +27,7 @@ util.http = function($http, method, url, params, callback) {
         console.log(data);
         if (data.error.id == 0) {
             console.log(data.data);
-            callback(data.data);
+            callback && callback(data.data);
         } else {
             console.log(data);
         }
