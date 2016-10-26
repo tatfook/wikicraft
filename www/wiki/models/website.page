@@ -34,6 +34,9 @@ function website:ctor()
 	self:addfield("updateDate", "string", false, 64);
 	self:addfield("stars", "number");
 	self:addfield("private", "number");
+
+	self:addfield("visitNum", "number");
+	self:addfield("pageNum", "number");
 end
 
 function website:get(params)
