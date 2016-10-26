@@ -1,0 +1,54 @@
+<?npl
+--[[
+Title: user profile
+Author: wuxiangan
+Date: 2016/10/24
+]]
+include_once("./abstract/base.page")
+include_once("./wxa_user.page")
+include_once("./website.page")
+
+local wxa_user_favorite = inherit(models.abstract.base, gettable("models.wxa_user_favorite"))
+
+wxa_user_favorite.db_name = "wxa_user_favorite";
+
+function wxa_user_favorite:ctor() 
+	self:addfield("userId", "number", false)
+	self:addfield("type", "string", false) -- user  website
+	self:addfield("favoriteId", "number", false) -- userId websiteId
+end
+
+
+function wxa_user_favorite:get(params) 
+	if not params.userId then
+		return {error:errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+	
+	self:db():find(params, resume)
+	local err, data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	userDB = models.wxa_user:new()
+	websiteDB = models.website:new()
+	local err, data, db = nil, nil, nil
+	for _, value in pairs(data) do
+		if value.type == "user" then
+			db = userDB
+		elseif value.type == "website" then
+			db = websiteDB
+		else
+			db = nil
+			log("favorite type erroor")
+		end		
+		while db do
+			err, data = userDB:db():findOne({_id=value.favoriteId}, resume) 	
+			value[value.type] = data
+			break
+		end
+	end
+	
+	return {error=errors.SUCCESS, data=data}
+end

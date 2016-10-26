@@ -1,0 +1,61 @@
+<script type="text/javascript">
+    var $scope  = undefined;
+    var $http = undefined;
+    var ctrlShareObject = undefined;
+    function getTree(data) {
+        var tree = [];
+        for(var i = 0; i < data.length; i++) {
+            tree.push({
+                text:data[i].name,
+                state: {
+                    selected: data[i].name == $scope.websitePage.page.name,
+                },
+                extraInfo:data[i],
+                nodes:data[i].pages ? getTree(data[i].pages) : undefined,
+            });
+        }
+        return tree;
+    }
+    var main = function () {
+        $scope  = config.templateObject.$scope;
+        $http = config.templateObject.$http;
+        ctrlShareObject = config.templateObject.ctrlShareObj;
+
+        if (!$scope) {
+            return;
+        }
+        $('#__PageContent__').html($scope.websitePage.page.content);
+        util.http($http, "POST", config.apiUrlPrefix+'website_pages/getWebsiteAllPageByWebsiteName', {websiteName:ctrlShareObject.sitename}, function (data) {
+            var tree = data ? getTree(data) : undefined;
+            console.log(tree);
+            $('#tree').treeview({data: tree});
+            $('#tree').on('nodeSelected', function(event, data) {
+                if (!data.extraInfo._isLeaf) {
+                    return;
+                }
+                $('#__PageContent__').html(data.extraInfo.content)
+            });
+        });
+    };
+
+    if (config.templateObject.executeTemplateScript) {
+        main();
+    }
+</script>
+
+<div>
+    <div style="display: flex; justify-content: space-between">
+        <div style="flex-grow: 1;">
+            <div id="__PageContent__"></div>
+        </div>
+        <div style="min-width: 20%;border-left: 1px solid lightgrey; margin-right: 10px">
+            <div id="tree"></div>
+            <div ng-if="isPreview">
+                <ul>
+                    <li>Page1</li>
+                    <li>Page2</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

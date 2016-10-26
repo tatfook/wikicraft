@@ -18,11 +18,13 @@ website_pages.max_length = 10000;
 
 function website_pages:ctor()
 	self:addfield("name", "string", false, 32);  -- 页面名
-	self:addfield("url", "string", true, 120);  -- 页面url
-	self:addfield("websiteId", 'number', false); -- 所属站点id
+	self:addfield("path", "string", true, 120);  -- 页面路径
+	-- self:addfield("websiteId", 'number', false); -- 所属站点id
 	self:addfield("websiteName", 'string', false); -- 所属站点名
 	self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
 	self:addfield("content", "string", false, 100000);  -- 具体页面内容
+	-- sha hash: sha1("blob "+"filesize"+"\0"+"content");
+	self:addfield("sha", "string", false, 128);  -- 内容哈希值
 end
 
 function website_pages:delete(params)
@@ -48,12 +50,12 @@ function website_pages:get(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
-function website_pages:api_getWebsitePageByUrl(params) 
-	if not params.url then
+function website_pages:api_getWebsitePageByPath(params) 
+	if not params.path then
 		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
 	end
 
-	self:db():findOne({url=params.url}, resume)	
+	self:db():findOne({path=params.path}, resume)	
 	local err, data = yield()
 	if err then
 		return {error=errors:new(err), data=nil};
@@ -62,21 +64,18 @@ function website_pages:api_getWebsitePageByUrl(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
-function website_pages:api_getWebsiteStylePageByUrl(params)
-	if not params.url then
+function website_pages:api_getWebsiteStylePageByPath(params)
+	if not params.path then
 		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
 	end
 	
-	log(params);
 	-- 获取页面内容代码
-	self:db():findOne({url=params.url}, resume)	
+	self:db():findOne({path=params.path}, resume)	
 	local err, page = yield()
 	if err or (not page) then
 		return {error=errors:new(err), data=page};
 	end	
 
-	log(page);
-	
 	-- 获取站点
 	local website = models.website:new();
 	website:db():findOne({name=page.websiteName}, resume);
@@ -85,23 +84,18 @@ function website_pages:api_getWebsiteStylePageByUrl(params)
 		return {error=errors:new(err), data=nil};
 	end
 
-	log(site);
 	-- 获取样式代码
 	local template_style = models.website_template_style:new();	
-	template_style:db():findOne({_id=site.styleId}, resume);
-	local err, style = yield();
-	if err or (not style) then
-		return errors:wrap(err, style);
-	end	
+	style = template_style:api_getWebsiteTemplateStyleById({_id=site.styleId});
 	
-	return {error=errors.SUCCESS, data ={style=style, page=page}};		
+	return {error=errors.SUCCESS, data ={style=style.data, page=page}};		
 end
 
 function website_pages:create(params) 
-	local data = self:api_getWebsitePageByUrl(params);
+	local data = self:api_getWebsitePageByPath(params);
 	
 	if data.data then 
-		self:db():updateOne({url=params.url}, params, resume);
+		self:db():updateOne({path=params.path}, params, resume);
 	else 
 		self:db():insertOne(nil, params, resume);
 	end	
@@ -114,6 +108,18 @@ function website_pages:create(params)
 	return {error=errors.SUCCESS,data=data};
 end
 
+function website_pages:api_getWebsiteAllPageByWebsiteName(params)
+	if not params.websiteName then
+		return {error=errors.REQUEST_PARAMS_ERROR, nil};
+	end
+		
+	local pageTree = {}
+	local pageArray = self:get({websiteName=params.websiteName}).data;
+	pageTree = self:getPageTreeByPageArray(pageArray, pageTree);
+	
+	pageTree = self:getArrayTree(pageTree)
+	return {error=errors.SUCCESS, data=pageTree};
+end
 
 function website_pages:api_getAllPageByUid(params) 
 	if not params.userid then
@@ -134,13 +140,14 @@ function website_pages:api_getAllPageByUid(params)
 		pageTree = self:getPageTreeByPageArray(pageArray, pageTree);
 	end
 	
+	pageTree = self:getArrayTree(pageTree)
 	return {error=errors.SUCCESS, data=pageTree};
 end
 
-function website_pages:getPathArray(array,path, start)
+function website_pages:getPathArray(array, path, start)
 	array = array or {};
 	start = start or 1;
-    local s, e, v = path:find('/([^/]+)', start);
+    local s, e, v = path:find('/?([^/]+)', start);
     if s == nil then 
         return array;
     end 
@@ -153,7 +160,7 @@ end
 function website_pages:getPageTreeByPageArray(pageArray, pageTree)
 	pageTree = pageTree or {};
 	for key, page in pairs(pageArray) do
-		local array = self:getPathArray({}, page.url, 1);				
+		local array = self:getPathArray({}, page.path, 1);				
 		tree = pageTree;
 		for i=1, #array , 1 do
 			if i == #array then
@@ -171,8 +178,21 @@ function website_pages:getPageTreeByPageArray(pageArray, pageTree)
 end
 
 
-
-
+function website_pages:getArrayTree(objectTree) 
+	local pages = {}
+	
+	for key, value in pairs(objectTree) do
+		if key ~= "_isLeaf" then
+			if value._isLeaf then
+				pages[#pages+1] = value
+			else
+				pages[#pages+1] = {name=key, _isLeaf=false, pages=self:getArrayTree(value)}
+			end
+		end
+	end
+	
+	return pages
+end
 
 
 

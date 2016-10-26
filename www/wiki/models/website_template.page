@@ -8,22 +8,16 @@ include_once("./abstract/base.page");
 include_once("./website_template_style.page");
 
 local website_template = inherit(models.abstract.base, gettable("models.website_template"));
+local website_template_dir = WIKI_ROOT .. "partials/website_template/";
 
 website_template.db_name = "website_template";
 
 function website_template:ctor()
 	self:addfield("name", "string", false, 60);   -- 模板名
+	self:addfield("filename", "string", false, 120);   -- 模板名
 	self:addfield("categoryId", "number", false); -- 分类ID
 	self:addfield("content", "string", false, 1200);   -- 模板内容
 end
-
---[[
-function website_template:getTemplateByCategoryId(categoryId) 
-	self:db():find({categoryId=categoryId}, resume);
-	local err, data = yield();
-	return data or {};
-end
-]]--
 
 function website_template:get(params)
 	self:db():find(params, resume);
@@ -36,8 +30,32 @@ function website_template:get(params)
 	local template_style = models.website_template_style:new();
 
 	for key, value in pairs(data) do
+		self:loadTemplateContent(value);	
 		value.styles = template_style:get({templateId=value._id}).data;		
 	end
 
 	return {error=errors.SUCCESS, data=data};
+end
+
+
+function website_template:loadTemplateContent(data) 
+	if (not data) or (not data.filename) or data.filename:len() == 0 then
+		return
+	end
+	file = ParaIO.open(website_template_dir .. data.filename, "r")
+	if not file then
+		log("template file lose!!!")
+		return 
+	end
+
+	data.content = "" 
+	local line = nil
+	
+	repeat
+		line = file:readline()
+		data.content = data.content .. (line or "")
+	until (line == nil)
+	
+	file:close()
+	return	
 end
