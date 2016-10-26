@@ -7,4 +7,4 @@ curl -H "Content-Type: application/json" -X PUT  --data '{"name":"作品网站",
 curl -H "Content-Type: application/json" -X PUT  --data '{"name":"组织网站", "parentId":"0"}'  "${serverAddr}/api/wiki/models/website_category/new"
 #curl -H "Content-Type: application/json" -X PUT  --data '{"name":"教学网站", "parentId":"0"}'  "${serverAddr}/api/wiki/models/website_category/new"
 
-curl -H "Content-Type: application/json" -X GET  "localhost:8099/api/wiki/models/website_category"
+#curl -H "Content-Type: application/json" -X GET  "localhost:8099/api/wiki/models/website_category"

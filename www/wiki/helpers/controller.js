@@ -61,14 +61,22 @@ app.controller('indexCtrl', function ($scope,$state, $sce, ctrlShareObj) {
 	console.log("indexCtrl");
 });
 
-app.controller('customCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
+app.controller('customCtrl', function ($scope, $state, $http, $compile, ctrlShareObj) {
 	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
 	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByUrl', {url:ctrlShareObj.pageContentUrl}, function(data){
         $scope.websitePage = data  || defaultPage;
 		if (data) {
-			var styleContent = data.style.content;
-			var pageContent = data.page.content;
-			var content = styleContent.replace('__PageContent__', pageContent);
+			//var styleContent = data.style.content;
+			//var pageContent = data.page.content;
+			//var content = styleContent.replace('__PageContent__', pageContent);
+            var content = $compile(data.style.content)($scope);
+            config.templateObject = {
+                $scope:$scope,
+                $http:$http,
+                $compile:$compile,
+                ctrlShareObj:ctrlShareObj,
+                executeTemplateScript:true,
+            };
 			$('#__StyleTemplateContent__').html(content);
 		} else {
 			$('#__StyleTemplateContent__').html(defaultPage.content);
@@ -154,6 +162,7 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
         ctrlShareObj.website = website;
         console.log(ctrlShareObj.website);
         $state.go('index.editWebsitePage');
+		//window.location.href='/wiki/editor';
     }
 
     $scope.goCreateWebsitePage = function () {
@@ -185,7 +194,8 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
     $scope.subCategories = [];
     $scope.step = 1;
     $scope.nextStepDisabled = !$scope.website.name;
-
+    $scope.isPreview = true;
+    config.templateObject = {executeTemplateScript:false};
     init();
 
     function init() {
