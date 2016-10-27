@@ -24,6 +24,8 @@ function packages:ctor()
 	self:addfield("projectGitURL", "string", true, 300);
 	--user name
 	self:addfield("displayName", "string", true, 50);
+	--is verified
+	self:addfiled("isVerified","string",true,10);
 end
 
 function packages:get(params)
