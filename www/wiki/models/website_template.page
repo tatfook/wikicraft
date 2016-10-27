@@ -8,7 +8,7 @@ include_once("./abstract/base.page");
 include_once("./website_template_style.page");
 
 local website_template = inherit(models.abstract.base, gettable("models.website_template"));
-local website_template_dir = WIKI_ROOT .. "partials/website_template/";
+local website_template_dir = WIKI_ROOT .. "html/templates/";
 
 website_template.db_name = "website_template";
 

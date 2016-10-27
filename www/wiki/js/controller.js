@@ -16,7 +16,6 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         $rootScope.goLoginPage();
     }
     console.log("mainCtrl");
-/*
 	var hostname = window.location.hostname;
     var pathname = window.location.pathname;
     var hash = window.location.href;
@@ -36,38 +35,30 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
-	*/
     /*
     hash = hash.replace('#/','');
     if (hash && hash.length) {
         $state.go('index.'+hash);
     }
-
     */
-    //$state.go('index.userCenter');
-    //ctrlShareObj.pageContentUrl = '/test/index';
-    //ctrlShareObj.sitename = "test";
-    //$state.go('custom')
 
     // 初始化数据源
+	var actionName = 'index.test';
+	if (sitename != "wiki" && sitename != "wiki_new") {
+        ctrlShareObj.pageContentUrl = sitename + pagename;
+		ctrlShareObj.sitename = sitename;
+		ctrlShareObj.pagename = pagename;
+        //$state.go('custom');
+		actionName = 'custom';
+    }
+	console.log(actionName);
     const github = projectStorageProvider.getDataSource('github');
     github.init({
         username: '765485868@qq.com',
         password: 'wxa765485868',
     }, function (error) {
-        $state.go('index.test');
+        $state.go(actionName);
     });
-    return ;
-    /*
-	if (sitename == "wiki") {
-        $state.go('index.' + pagename.substring(1,pagename.length));
-    } else {
-        ctrlShareObj.pageContentUrl = sitename + pagename;
-		ctrlShareObj.sitename = sitename;
-		ctrlShareObj.pagename = pagename;
-        $state.go('custom');
-    }
-	*/
 });
 
 app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
@@ -124,14 +115,9 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
     $scope.filelist = [];
     $scope.commits = [];
     // 获得git文件列表
-    github.getTree('master', false, function (error, result, request) {
+    github.getTree('master', true, function (error, result, request) {
         var filelist = []
         for(var i = 0; result && i < result.length; i++) {
-            /*
-            if (result[i].type == 'tree') {
-                continue;
-            }
-            */
             filelist.push({path:result[i].path});
         }
         $scope.filelist = filelist;
@@ -154,8 +140,14 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
         };
         console.log(params);
         github.listCommits(params, function (error, result, request) {
-            console.log(result);
-            $scope.commits = result || [];
+            result = result || [];
+            var commits = [];
+            for (var i = 0; i < result.length; i++) {
+                commits.push({sha:result[i].sha, message:result[i].commit.message, date:result[i].commit.committer.date, html_url:result[i].html_url});
+            }
+            console.log(commits);
+            $scope.commits = commits;
+            $scope.$apply();
         });
     }
     
