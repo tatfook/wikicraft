@@ -21,9 +21,13 @@ wp_enqueue_script("packagesInstallController", WIKI_WEBROOT.."controllers/packag
 
 <div class="packages-install" ng-controller="packagesInstallController">
     <div class="install-infor">
+        <div ng-show="isadmin" class="set-verify">
+                <input type="checkbox" ng-model="isVerified" name="set_verified"/>
+                Verify setting
+		</div>
         <h2>
             {{projectName}}
-            <div class="verified">verified</div>
+            <div ng-show="isVerified" class="verified">verified</div>
         </h2>
         <p>{{projectDesc}}</p>
 

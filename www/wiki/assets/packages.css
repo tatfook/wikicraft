@@ -17,6 +17,15 @@ body {
   border-radius: 5px;
   display: inline-block;
 }
+.set-verify {
+  font-size: 14px;
+  color: black;
+  font-weight: normal;
+  margin-top: 10px;
+}
+.set-verify input {
+  vertical-align: sub;
+}
 .packages .my-projects:after {
   display: block;
   content: '';
@@ -235,6 +244,7 @@ body {
 .packages-install .install-infor > h2 {
   font-size: 24px;
   font-weight: 600;
+  height: 30px;
 }
 .packages-install .install-infor > p {
   font-size: 22px;

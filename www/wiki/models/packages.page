@@ -7,6 +7,7 @@ Date: 2016/10/1
 
 include_once("./abstract/multi_user_base.page");
 include_once("./packages_stats.page");
+include_once("./user.page");
 
 local packages = inherit(models.abstract.multi_user_base, gettable("models.packages"));
 
@@ -193,10 +194,33 @@ function packages:api_download(params)
 	return {result="1",msg="download successful"};
 end
 
-function packages:api_getPackagesStats(param)
-	return models.packages_stats:new():packagesStats(param);
+function packages:api_getPackagesStats(params)
+	return models.packages_stats:new():packagesStats(params);
 end
 
-function packages:api_getDownloadStats(param)
-	return models.packages_stats:new():downloadStats(param);
+function packages:api_getDownloadStats(params)
+	return models.packages_stats:new():downloadStats(params);
+end
+
+function packages:setVerify(packagesId,isVerified)
+	self:db():updateOne({_id=packagesId},{isVerified=isVerified},resume);
+	local err,response = yield(true);
+
+	if(not err) then
+		return {error = 1 ,msg="set successful"};
+	else
+		return {error = -1,msg="set fail"};
+	end
+end
+
+function packages:api_verifyPackages(params)
+	local userParams = {};
+	userParams._id = self:getUserId();
+	local userResponse = models.user:new():get(userParams);
+	
+	if(userResponse.isadmin == "true") then
+		return self:setVerify(params.packagesId,params.isVerified);
+	else
+		return {error = -1,msg = "Illegal operation"};
+	end
 end
