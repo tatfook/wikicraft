@@ -65,39 +65,6 @@ app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
 });
 
 app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile, ctrlShareObj) {
-    /*
-    ctrlShareObj.sitename='test';
-    config.templateObject = {
-        $scope:$scope,
-        $http:$http,
-        ctrlShareObj:ctrlShareObj,
-    };
-
-    function getTree(data) {
-        var tree = [];
-        if (!data) {
-            return tree;
-        }
-        for(var i = 0; i < data.length; i++) {
-            tree.push({
-                text:data[i].name,
-                nodes:data[i].pages ? getTree(data[i].pages) : undefined,
-            });
-        }
-        return tree;
-    }
-    var main = function () {
-        var $scope  = config.templateObject.$scope;
-        var $http = config.templateObject.$http;
-        var ctrlShareObject = config.templateObject.ctrlShareObj;
-        util.http($http, "POST", config.apiUrlPrefix+'website_pages/getWebsiteAllPageByWebsiteName', {websiteName:ctrlShareObject.sitename}, function (data) {
-            var tree = getTree(data);
-            console.log(tree);
-            $('#tree').treeview({data: getTree(data)});
-        });
-    };
-    main();
-    */
 });
 
 
@@ -176,13 +143,11 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
 
 app.controller('customCtrl', function ($scope, $state, $http, $compile, ctrlShareObj) {
 	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
+    var startScript = '<script type="text/javascript">$("#__PageContent__").html(config.templateObject.$scope.websitePage.page.content); config.templateObject.main && config.templateObject.main();</script>';
 	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByPath', {path:ctrlShareObj.pageContentUrl}, function(data){
         $scope.websitePage = data  || defaultPage;
 		if (data) {
-			//var styleContent = data.style.content;
-			//var pageContent = data.page.content;
-			//var content = styleContent.replace('__PageContent__', pageContent);
-            var content = $compile(data.style.content)($scope);
+            var content = $compile(data.style.content + startScript)($scope);
             config.templateObject = {
                 $scope:$scope,
                 $http:$http,
