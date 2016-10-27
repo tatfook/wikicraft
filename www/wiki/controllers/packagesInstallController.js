@@ -11,7 +11,18 @@
         }
     }
 })
-.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, packagesPageService, packagesInstallService) {
+.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesPageService, packagesInstallService) {
+    $scope.isadmin    = false;
+    $scope.isVerified = null;
+
+    $scope.$watch(Account.getUser, function (newValue, oldValue) {
+        $scope.user = angular.copy(newValue);
+
+        if ($scope.user != undefined && $scope.user.isadmin != undefined) {
+            $scope.isadmin = eval($scope.user.isadmin);
+        }
+    });
+
     var absUrl = $location.absUrl();
 
     function UrlSearch() {
@@ -42,13 +53,14 @@
             }
         })
         .then(function (response) {
-            $scope.projectName = response.data.projectName;
-            $scope.projectDesc = response.data.projectDesc;
+            $scope.projectName   = response.data.projectName;
+            $scope.projectDesc   = response.data.projectDesc;
             $scope.projectGitURL = response.data.projectGitURL;
             $scope.projectUpdate = response.data.projectUpdate;
-            $scope.installTimes = response.data.installTimes;
-            $scope.version = response.data.version;
-            $scope.displayName = response.data.displayName;
+            $scope.installTimes  = response.data.installTimes;
+            $scope.version       = response.data.version;
+            $scope.displayName   = response.data.displayName;
+            $scope.isVerified    = eval(response.data.isVerified);
 
             $scope.getGit();
             //$scope.getPackageUserInfor(response.data.userId);
@@ -203,6 +215,27 @@
             alert("local service is not start");
         });
     }
+
+    $scope.$watch('isVerified', function (newValue, oldValue) {
+
+        if (oldValue != null && newValue != oldValue) {
+
+            $http({
+                method: "POST",
+                url: "/api/wiki/models/packages/verifyPackages",
+                data: {
+                    "packagesId": Request.id,
+                    "isVerified": newValue.toString()
+                }
+            })
+            .then(function (response) {
+                if (response.data.error == -1) {
+                    $scope.isVerified = oldValue;
+                };
+            }).then(function (response) { });
+        }
+
+    });
 })
 .controller('localInstallDialogController', function ($scope, packagesInstallService, $sce, $uibModalInstance) {
     var url = packagesInstallService.getGiturl();
