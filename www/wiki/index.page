@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>wikicraft</title>
+    <!-- plugin css -->
+    <link href="/wiki/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/wiki/plugins/ui-select/select.css" rel="stylesheet" >
+
+    <!-- plugin js -->
+    <script src="/wiki/plugins/jquery/jquery.min.js"></script>
+    <script src="/wiki/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/wiki/plugins/angular/angular.min.js"></script>
+    <script src="/wiki/plugins/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="/wiki/plugins/angular-ui-router/angular-ui-router.min.js"></script>
+    <script src="/wiki/plugins/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+    <script src="/wiki/plugins/satellizer/satellizer.min.js"></script>
+    <script src="/wiki/plugins/angular-file-upload/angular-file-upload.min.js"></script>
+    <script src="/wiki/plugins/github-api/GitHub.bundle.min.js"></script>
+    <script src="/wiki/plugins/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="/wiki/plugins/ui-select/select.js"></script>
+
+    <!-- self js -->
+    <script src="/wiki/js/util.js"></script>
+    <script src="/wiki/js/app.js"></script>
+    <script src="/wiki/js/config.js"></script>
+    <script src="/wiki/js/factory.js"></script>
+    <script src="/wiki/js/controller.js"></script>
+    <script src="/wiki/js/userController.js"></script>
+</head>
+<body>
+<div ng-app="MyApp" ng-controller="mainCtrl">
+    <div ui-view="default"></div>
+</div>
+
+</body>
+</html>

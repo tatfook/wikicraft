@@ -4,6 +4,26 @@ Title: wiki page
 Author: LiXizhi
 Date: 2016/5/10
 ]]
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
+<title><?npl wp_title(); ?></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">      
+<?npl
+wp_enqueue_script("jquery", "/wp-includes/js/jquery/jquery.min.js", nil, "1.11.1"); 
+wp_enqueue_style("bootstrap", "/wp-includes/js/bootstrap/css/bootstrap.min.css");
+wp_enqueue_style("sensitive_style", "/wp-content/themes/sensitive/css/style.css"); 
+wp_enqueue_script("bootstrap", "/wp-includes/js/bootstrap/js/bootstrap.min.js");
+?>
+</head>
+<body>
+
+<?npl
+
 include_once("./auth/api.page");
 include_once(WIKI_ROOT.."helpers/website.page");
 RenderServerWikiScript();
@@ -17,9 +37,13 @@ wp_enqueue_script("markdown-it", "/wp-includes/js/markdown-it/markdown-it.min.js
 wp_enqueue_style("highlight", "/wp-includes/js/highlight/default.css");
 wp_enqueue_script("highlight", "/wp-includes/js/highlight/highlight.pack.js");
 
-wp_enqueue_script("angular-ui-router", WIKI_WEBROOT .. "plugins/angular-ui-router/release/angular-ui-router.min.js"); 
-wp_enqueue_script("angular-ui-router", WIKI_WEBROOT .. "plugins/bootstrap-treeview-1.2.0/dist/bootstrap-treeview.min.js");  
-wp_enqueue_script("angular-ui-router", WIKI_WEBROOT .. "plugins/github-api/dist/GitHub.bundle.min.js");  
+-- wp_enqueue_style("ui-select-style", WIKI_WEBROOT .. "plugins/ui-select/dist/select.css");
+-- wp_enqueue_script("angular-ui-router", WIKI_WEBROOT .. "plugins/angular-ui-router/release/angular-ui-router.min.js"); 
+-- wp_enqueue_script("bootstrap-treeview", WIKI_WEBROOT .. "plugins/bootstrap-treeview-1.2.0/dist/bootstrap-treeview.min.js");  
+-- wp_enqueue_script("github-api", WIKI_WEBROOT .. "plugins/github-api/dist/GitHub.bundle.min.js");  
+-- wp_enqueue_script("angular-sanitize", WIKI_WEBROOT .. "plugins/angular-sanitize/angular-sanitize.min.js");  
+-- wp_enqueue_script("ui-select", WIKI_WEBROOT .. "plugins/ui-select/dist/select.js");  
+-- wp_enqueue_script("angular-file-upload", WIKI_WEBROOT .. "plugins/angular-file-upload/dist/angular-file-upload.min.js");  
 
 -- following is wiki angular app code, app.js must be included first followed by controllers.
 wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
@@ -95,7 +119,7 @@ wp_enqueue_style("wiki_style", WIKI_WEBROOT.."assets/wiki.css");
                                     <a href="/wiki/projects">我的作品...</a>
                                 </li>
                                 <li>
-                                    <a href="/wiki/website#/website">我的站点...</a>
+                                    <a href="/wiki_new">新版官网...</a>
                                 </li>
 								<li>
                                     <a href="/wiki/userstars">我的订阅...</a>
@@ -160,3 +184,6 @@ wp_enqueue_style("wiki_style", WIKI_WEBROOT.."assets/wiki.css");
         </div>
     </div>
 </div>
+
+</body>
+</html>

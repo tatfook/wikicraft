@@ -24,10 +24,21 @@ local ajax_path = path:match("^/?api/wiki/(.+)");
 if(ajax_path) then	
 	-- Allow for cross-domain requests (from the frontend). 
 	send_origin_headers();
+	-- cross-domain request allow
+	addheader('Access-Control-Allow-Origin','*');  -- debug use
+	addheader('Access-Control-Allow-Methods',"GET, POST, PUT, DELETE");  -- debug use
+	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With"); -- debug use
+
 	addheader( 'Content-Type', 'text/html'); 
 	addheader( 'X-Robots-Tag', 'noindex'); 
 	send_nosniff_header();
 	nocache_headers();	
+
+	-- debug use start
+	if request:GetMethod() == "OPTIONS" then 
+		return response:send("OPTIONS", true);
+	end
+	-- end
 
 	local modelname, params = ajax_path:match("^models/([%w_]+)/?(.*)")
 	if(modelname) then
@@ -88,21 +99,21 @@ else
 	response:nocache_headers();
 end
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
-<head>
- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
-<title><?npl wp_title(); ?></title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">      
+
 <?npl
-wp_enqueue_script("jquery", "/wp-includes/js/jquery/jquery.min.js", nil, "1.11.1"); 
-wp_enqueue_style("bootstrap", "/wp-includes/js/bootstrap/css/bootstrap.min.css");
-wp_enqueue_style("sensitive_style", "/wp-content/themes/sensitive/css/style.css"); 
-wp_enqueue_script("bootstrap", "/wp-includes/js/bootstrap/js/bootstrap.min.js");
+local host = request:GetHost() or ""
+local sitename = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+")
+-- 排除IP地址访问
+if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
+	sitename = nil
+end
+if sitename == nil then 
+	local url = commonlib.Encoding.url_decode(request:url())
+	sitename = url:match("^/?([^/]+)")	
+end
+if sitename == nil or sitename == "wiki" then
+	include(WIKI_ROOT.."wiki.page")
+else
+	include(WIKI_ROOT .. "index.page")
+end
 ?>
-</head>
-<body>
-<? include(WIKI_ROOT.."wiki.page") ?>
-</body>
-</html>
