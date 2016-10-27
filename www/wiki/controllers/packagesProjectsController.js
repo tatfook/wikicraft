@@ -324,7 +324,7 @@ angular.module('MyApp')
     $scope.getPackageStats = function () {
         $http({
             method: 'POST',
-            url: '/api/wiki/models/packages/getStats',
+            url: '/api/wiki/models/packages/getPackagesStats',
             data: {
                 statsType: "packageStats",
                 projectType: $scope.projectType

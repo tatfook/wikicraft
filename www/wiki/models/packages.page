@@ -25,7 +25,7 @@ function packages:ctor()
 	--user name
 	self:addfield("displayName", "string", true, 50);
 	--is verified
-	self:addfiled("isVerified","string",true,10);
+	self:addfield("isVerified","string",true,10);
 end
 
 function packages:get(params)
@@ -54,15 +54,10 @@ function packages:get(params)
 
 	--log({"self:getUserId()",self:getUserId()})
 
-	self:db():find({["+projectType+userId"] = {params.projectType,self:getUserId(),limit=limit,skip=skip}}, 
-		function(err, response)
-			data = response;
-			resume();
-		end
-	);
-	yield();
+	self:db():find({["+projectType+userId-projectUpdate"] = {params.projectType,self:getUserId(),limit=limit,skip=skip}}, resume);
+	
+	local err,data = yield(true);
 
-	log({"data",data});
 	return data;
 end
 
@@ -82,7 +77,8 @@ function packages:api_createPackage(params)
 			userId          = self:getUserId(),
 			displayName     = query.displayName,
 			version			= '0.0.1',
-			installTimes	= 0
+			installTimes	= 0,
+			isVerified		= "false"
 		 },
 		function(err, data)
 			log({"data",data});
