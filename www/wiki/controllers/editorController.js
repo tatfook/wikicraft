@@ -3,15 +3,20 @@
  */
 
 angular.module('MyApp')
-.controller('editorController', function  ($scope, $state, $http, ctrlShareObj) {
+.controller('editorController', function  ($scope, $http, $location) {
+
+    var absUrl = $location.absUrl();
+
+    return;
+
     $scope.websites = [];
     $scope.websitePages = [];
     $scope.style = {}
     var website = ctrlShareObj.website;
     $scope.websitePage = {name:'pageName', url:'/'+ website.name + '/pageName', websiteName:website.name, websiteId:website._id, content: "<div>hello world</div>"};  // 从websitePages选择一页编辑，或新增， 注意新增或修改提交页时需这些信息
 
-    init();
 
+    init();
     function init() {
         // 获取用户站点列表
         /*
