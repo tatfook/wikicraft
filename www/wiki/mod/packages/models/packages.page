@@ -65,14 +65,20 @@ function packages:api_createPackage(params)
 	returnData = {};
 	self:ensureAuthenticated();
 	local err, query = self:validateQuery(params);
-	--log({"query",query});
 
-	self:db():insertOne(nil, 
+	if(query.projectReleases == "") then
+		query.projectReleases = query.projectGitURL+'/archive/master.zip';
+	end
+
+	log({"query",query});
+
+	self:db():insertOne(nil,
 		{
-			projectName     = query.projectName, 
+			projectName     = query.projectName,
 			projectDesc     = query.projectDesc,
 			projectType     = query.projectType,
 			projectGitURL   = query.projectGitURL,
+			projectReleases = query.projectReleases,
 			projectUpdate	= ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 			userId          = self:getUserId(),
 			displayName     = query.displayName,
@@ -81,7 +87,7 @@ function packages:api_createPackage(params)
 			isVerified		= "false"
 		 },
 		function(err, data)
-			log({"data",data});
+			--log({"data",data});
 			if(data) then
 				returnData = {result = "1",msg = "Create Successful!"}
 			else

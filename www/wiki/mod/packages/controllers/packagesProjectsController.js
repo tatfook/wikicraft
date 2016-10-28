@@ -164,11 +164,12 @@ angular.module('MyApp')
     //});
 })
 .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
-    $scope.projectName      = '';
-    $scope.projectDesc      = '';
-    $scope.projectGitURL    = '';
-    $scope.projectType      = 'a';
-    $scope.projectTypeName  = '';
+    $scope.projectName     = '';
+    $scope.projectDesc     = '';
+    $scope.projectGitURL   = '';
+    $scope.projectType     = 'a';
+    $scope.projectTypeName = '';
+    $scope.projectReleases = '';
 
     $scope.$watch(Account.getUser, function (newValue, oldValue) {
         $scope.user = angular.copy(newValue);
@@ -182,55 +183,63 @@ angular.module('MyApp')
         }
     });
 
+    $scope.$watch('projectGitURL', function (newValue, oldValue) {
+
+        if (newValue != '') {
+            $("#project-releases").attr("placeholder", newValue + '/archive/master.zip');
+        }
+
+    });
+
     $scope.confirm = function () {
         var gitRaw = "https://raw.githubusercontent.com";
 
         try {
-            var gitRoot = $scope.projectGitURL.split("//");
+            var gitRoot      = $scope.projectGitURL.split("//");
             var gitRootStart = gitRoot[1].indexOf("/");
-            var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
+            var gitRoot      = gitRaw + gitRoot[1].substring(gitRootStart);
         } catch (err) {
             return alert("url format error");
         }
-        
-        var getIcon   = gitRoot + '/master/icon.png'
-        var getREADME = gitRoot + '/master/README.md'
+
+        var getIcon   = gitRoot + '/master/icon.png';
+        var getREADME = gitRoot + '/master/README.md';
 
         $http({
-            method: 'GET',
-            url: getREADME,
-            headers: {
+            method  : 'GET',
+            url     : getREADME,
+            headers : {
                 'Authorization': undefined,
             }, // remove auth header for this request
-            skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
-            transformResponse: [function (data) {
+            skipAuthorization : true, // this is added by our satellizer module, so disable it for cross site requests.
+            transformResponse : [function (data) {
                 return data; // never transform to json, return as it is
             }],
         })
-        .then(function (response) { },
-        function (response) {
-            return alert("You need to upload README.md in your git repositary");
+        .then(function (response) {},
+            function (response) {
+                return alert("You need to upload README.md in your git repositary");
         });
 
         $http({
-            method: 'GET',
-            url: getIcon,
-            headers: {
+            method  : 'GET',
+            url     : getIcon,
+            headers : {
                 'Authorization': undefined,
             }, // remove auth header for this request
-            skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
-            transformResponse: [function (data) {
+            skipAuthorization : true, // this is added by our satellizer module, so disable it for cross site requests.
+            transformResponse : [function (data) {
                 return data; // never transform to json, return as it is
             }],
         })
         .then(function (response) {
-
-            $http.post('/api/mod/packages/models/packages/createPackage', {
-                projectName: $scope.projectName,
-                projectDesc: $scope.projectDesc,
-                projectGitURL: $scope.projectGitURL,
-                projectType: $scope.projectType,
-                displayName: $scope.user.displayName
+            $http.post('/api/wiki/models/packages/createPackage', {
+                projectName     : $scope.projectName,
+                projectDesc     : $scope.projectDesc,
+                projectGitURL   : $scope.projectGitURL,
+                projectReleases : $scope.projectReleases,
+                projectType     : $scope.projectType,
+                displayName     : $scope.user.displayName
             })
             .then(function (response) {
                 if (response.data.result == 1) {

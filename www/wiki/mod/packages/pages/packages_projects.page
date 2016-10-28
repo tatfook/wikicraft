@@ -12,12 +12,14 @@ wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packag
    </div>
 
    <div class="projects">
-       <div class="tabs">
-           <a ng-class="{'active': projectType == 'a'}" href="javascript:;" ng-click="setTabs('a')">NPL</a>
-           <a ng-class="{'active': projectType == 'b'}" href="javascript:;" ng-click="setTabs('b')">Paracraft</a>
+		<div class="tabs">
+			<a ng-class="{'active': projectType == 'a'}" href="javascript:;" ng-click="setTabs('a')">NPL</a>
+			<a ng-class="{'active': projectType == 'b'}" href="javascript:;" ng-click="setTabs('b')">Paracraft</a>
 
-           <div ng-click="ShowCreateProjectDialog()" class="project-create">+</div>
-       </div>
+			<div ng-click="ShowCreateProjectDialog()" class="project-create">
+				<button class="createNewPackages">+新建</button>
+			</div>
+		</div>
 
         <div class="projects-list">
             <div class="item" ng-repeat="item in items">

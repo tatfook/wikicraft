@@ -356,6 +356,19 @@ body {
   height: 53px;
   border-bottom: 2px solid #E7E7E7;
 }
+.packages-projects .projects .tabs .createNewPackages {
+  border: none;
+  width: 100px;
+  height: 30px;
+  font-size: 13px;
+  vertical-align: middle;
+  line-height: 26px;
+  border-radius: 3px;
+  outline: none;
+  background: #ffa6a6;
+  color: #FFF;
+  font-weight: 600;
+}
 .packages-projects .projects .tabs a {
   font-size: 18px;
   line-height: 51px;
@@ -439,7 +452,7 @@ body {
   height: 380px!important;
 }
 .modal-dialog .packages_from {
-  height: 435px;
+  height: 485px;
 }
 .modal-dialog .packages_from h1 {
   text-align: center;

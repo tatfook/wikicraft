@@ -10,15 +10,19 @@
         </div>
         <div class="item">
             <label>Project name</label>
-            <div><input type="text" value="" ng-model="projectName"/></div>
+            <div><input type="text" ng-model="projectName"/></div>
         </div>
         <div class="item">
             <label>Description</label>
-            <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
+            <div><textarea ng-model="projectDesc" ng-class="description"></textarea></div>
         </div>
         <div class="item">
             <label>Git URL</label>
-            <div><input type="text" value="" ng-model="projectGitURL"/></div>
+            <div><input type="text" ng-model="projectGitURL" placeholder="http://github.com/tatfook/NPLCAD"/></div>
+        </div>
+        <div class="item">
+            <label>Download URL</label>
+            <div><input type="text" ng-model="projectReleases" id="project-releases" placeholder="http://github.com/tatfook/NPLCAD/archive/master.zip" /></div>
         </div>
     </div>
     <small class="fetch-infor"><strong>Please upload `icon.png` and `README.md` in your git repositary. </strong></small>
