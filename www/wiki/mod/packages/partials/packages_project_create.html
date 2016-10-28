@@ -1,0 +1,26 @@
+<div class="packages_from">
+    <h1>Create your new {{projectTypeName}}</h1>
+    <div class="form">
+        <div class="item">
+            <label>Project type</label>
+            <div>
+                <input type="radio" ng-model="projectType" value="a"/>npl package &nbsp;&nbsp;
+                <input type="radio" ng-model="projectType" value="b"/>paracraft mod
+            </div>
+        </div>
+        <div class="item">
+            <label>Project name</label>
+            <div><input type="text" value="" ng-model="projectName"/></div>
+        </div>
+        <div class="item">
+            <label>Description</label>
+            <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
+        </div>
+        <div class="item">
+            <label>Git URL</label>
+            <div><input type="text" value="" ng-model="projectGitURL"/></div>
+        </div>
+    </div>
+    <small class="fetch-infor"><strong>Please upload `icon.png` and `README.md` in your git repositary. </strong></small>
+    <button ng-click="confirm()">Confirm</button>
+</div>

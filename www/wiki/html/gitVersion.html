@@ -12,7 +12,7 @@
                         <div>
                             <ui-select ng-model="seleected" ng-disabled on-select="pathSelected($item, $model)">
                                 <ui-select-match placeholder="文件过滤(选填)">{{$select.selected.path}}</ui-select-match>
-                                <ui-select-choices repeat="file in (filelist | filter: $select.search)">
+                                <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index">
                                     <span ng-bind="file.path"></span>
                                 </ui-select-choices>
                             </ui-select>
@@ -73,10 +73,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="commit in commits">
+                <tr ng-repeat="commit in commits track by $index">
                     <td>{{commit.sha}}</td>
-                    <td>{{commit.commit.message}}</td>
-                    <td>{{commit.commit.committer.date}}</td>
+                    <td>{{commit.message}}</td>
+                    <td>{{commit.date}}</td>
                     <td>
                         <button class="btn btn-default" ng-click="viewCommit(commit)" data-toggle="tooltip" title="查看修改"><span class="glyphicon glyphicon-eye-open"></span></button>
                         <button class="btn btn-default" ng-click="rollbackFile(commit)" data-toggle="tooltip" title="回滚到此版本"><span class="glyphicon glyphicon-repeat"></span></button>

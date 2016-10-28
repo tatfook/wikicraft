@@ -1,51 +1,37 @@
 <?npl
 --[[
-Title: routing ajax/html requests
+Title: routing wiki module page/api request
 Author: LiXizhi
-Date: 2016/6/29
+Date: 2016/10/27
 Desc: redirect AJAX URL to model functions
 Reference: http://guides.rubyonrails.org/routing.html
 
-Mapping of CRUD AJAX operations: 
-- PUT "/api/wiki/models/user/new" --> wiki/models/user:create()
-- GET "/api/wiki/models/user" --> wiki/models/user:get()
-- PUT "/api/wiki/models/user" --> wiki/models/user:update()
-- DELETE "/api/wiki/models/user" --> wiki/models/user:delete()
-- XXX "/api/wiki/models/user/[anyfunc]" --> wiki/models/user:api_[anyfunc]()
-
-Everything else is mapped to `wiki.page` as standard html file.
+/wiki/mod/[name]/[pagename] --> wiki/mod/[name]/pages/[pagename].page (normal web page)
+/api/mod/[name]/models/[modelname] --> wiki/mod/[name]/models/[modelname].page (models api)
+/api/mod/[name]/[modelname] --> wiki/mod/[name]/models/[modelname].page (page ajax)
 ]]
 local path = pagename() or "";
--- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
-WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
-WIKI_ROOT = dirname(__FILE__);
+local modname, isAPI;
+isAPI, modname, path = path:match("^/?(%w+)/mod/([^/]+)(.*)");
+if(not modname) then
+	return
+end
 
-local ajax_type, ajax_path = path:match("^/?api/(%w+)/(.+)");
-if(ajax_type == "mod") then
-	include_once("./mod/routes.page");
-	return;
-elseif(ajax_type == "wiki") then	
+-- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
+MOD_WEBROOT = WIKI_WEBROOT.."mod/"..modname .. "/";
+MOD_ROOT = dirname(__FILE__)..modname.."/";
+
+if(isAPI == "api") then	
 	-- Allow for cross-domain requests (from the frontend). 
 	send_origin_headers();
-	-- cross-domain request allow
-	addheader('Access-Control-Allow-Origin','*');  -- debug use
-	addheader('Access-Control-Allow-Methods',"GET, POST, PUT, DELETE");  -- debug use
-	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With"); -- debug use
-
 	addheader( 'Content-Type', 'text/html'); 
 	addheader( 'X-Robots-Tag', 'noindex'); 
 	send_nosniff_header();
 	nocache_headers();	
 
-	-- debug use start
-	if request:GetMethod() == "OPTIONS" then 
-		return response:send("OPTIONS", true);
-	end
-	-- end
-
-	local modelname, params = ajax_path:match("^models/([%w_]+)/?(.*)")
+	local modelname, params = path:match("^/?models/([%w_]+)/?(.*)")
 	if(modelname) then
-		local modelfilename = "./models/"..modelname..".page";
+		local modelfilename = MOD_ROOT.."models/"..modelname..".page";
 		if(not file_exists(modelfilename)) then
 			return response:status(404):send({message="invalid model"});
 		end
@@ -94,29 +80,32 @@ elseif(ajax_type == "wiki") then
 		end
 	else
 		-- only allow ajax in wiki folder
-		include( "./"..ajax_path..".page" );
+		path = path:match("^/?([^/]*)");
+		if(not path or path == "") then
+			path = "index";
+		end
+		local filename = MOD_ROOT.."pages/"..path..".page";
+		if(file_exists(filename)) then
+			include(filename);
+		else
+			echo("invalid path");
+		end
 	end
 	return;
 else
 	-- dynamic page has no cache headers
 	response:nocache_headers();
 end
+
+path = path:match("^/?([^/]*)");
+if(not path or path == "") then
+	path = "index";
+end
+local filename = MOD_ROOT.."pages/"..path..".page";
+if(file_exists(filename)) then
+	echo("<script>window.skipClientWiki = true;</script>")
+	echo(format("<script>window.MOD_WEBROOT = \"%s\";</script>", MOD_WEBROOT));
+	include(filename);
+end
 ?>
 
-<?npl
-local host = request:GetHost() or ""
-local sitename = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+")
--- 排除IP地址访问
-if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
-	sitename = nil
-end
-if sitename == nil then 
-	local url = commonlib.Encoding.url_decode(request:url())
-	sitename = url:match("^/?([^/]+)")	
-end
-if sitename == nil or sitename == "wiki" then
-	include(WIKI_ROOT.."wiki.page")
-else
-	include(WIKI_ROOT .. "index.page")
-end
-?>

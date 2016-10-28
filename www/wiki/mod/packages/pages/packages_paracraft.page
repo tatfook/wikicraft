@@ -1,0 +1,87 @@
+<script>
+    angular.module('MyApp')
+    .factory("packagesPageService", function () {
+        var pageName = 'paracraft';
+
+        var packagesPage = {
+            getPageName: function () {
+                return pageName;
+            }
+        }
+
+        return packagesPage;
+    });
+</script>
+
+<?npl
+wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
+wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesController.js");
+?>
+
+<div class="packages" ng-controller="packagesController">
+    <div class="my-projects">
+        <a href="/wiki/mod/packages/packages_projects#/paracraft">My paracraft mod</a>
+    </div>
+
+	<div class="head-line">
+        <span class="red">paracraft</span> package manager 
+    </div>
+
+    <div class="packages-total">
+        <div class="stat stat-icon-package">
+            <strong>{{packagesStats}}</strong>
+            total packages
+        </div>
+        <div class="stat stat-icon-24hours">
+            <strong>{{dayDownload}}</strong>
+            downloads in the last day
+        </div>
+        <div class="stat stat-icon-7days">
+            <strong>{{monthDownload}}</strong>
+            downloads in the last month
+        </div>
+        <div class="stat stat-icon-1months">
+            <strong>{{yearDownload}}</strong>
+            downloads in the last year
+        </div>
+    </div>
+
+    <div class="packages-show">
+        <div class="packages-show-title">
+            npl packages people install a lot
+        </div>
+        <ul class="packages-columar">
+            <li ng-repeat="package in packages">
+                <div class="packages-weight">
+                    <a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_paracraft_install/?id={{package._id}}">
+						<img ng-src="{{package.gitIcon}}" />
+                        <div class="verified">verified</div>
+					</a>
+					<div class="packages-details">
+                        <h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_paracraft_install/?id={{package._id}}">{{package.projectName}}</a></h3>
+                        <div class="description">
+                            {{package.projectDesc}}
+                        </div>
+                        <div class="author">
+                            <a class="version">{{package.version}}</a>
+                            by {{package.displayName}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="getting-start">
+        <div class="getting-start-title">
+            getting start
+        </div>
+
+        <h1>installing paracraft package</h1>
+        <p>
+            You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
+        </p>
+        <a>Download npl</a>
+    </div>
+</div>
+

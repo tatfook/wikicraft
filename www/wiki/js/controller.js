@@ -16,7 +16,6 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         $rootScope.goLoginPage();
     }
     console.log("mainCtrl");
-/*
 	var hostname = window.location.hostname;
     var pathname = window.location.pathname;
     var hash = window.location.href;
@@ -36,77 +35,36 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
-	*/
     /*
     hash = hash.replace('#/','');
     if (hash && hash.length) {
         $state.go('index.'+hash);
     }
-
     */
-    //$state.go('index.userCenter');
-    //ctrlShareObj.pageContentUrl = '/test/index';
-    //ctrlShareObj.sitename = "test";
-    //$state.go('custom')
 
     // 初始化数据源
+	var actionName = 'index.test';
+	if (sitename != "wiki" && sitename != "wiki_new") {
+        ctrlShareObj.pageContentUrl = sitename + pagename;
+		ctrlShareObj.sitename = sitename;
+		ctrlShareObj.pagename = pagename;
+        //$state.go('custom');
+		actionName = 'custom';
+    }
+	console.log(actionName);
     const github = projectStorageProvider.getDataSource('github');
     github.init({
         username: '765485868@qq.com',
         password: 'wxa765485868',
     }, function (error) {
-        $state.go('index.test');
+        $state.go(actionName);
     });
-    return ;
-    /*
-	if (sitename == "wiki") {
-        $state.go('index.' + pagename.substring(1,pagename.length));
-    } else {
-        ctrlShareObj.pageContentUrl = sitename + pagename;
-		ctrlShareObj.sitename = sitename;
-		ctrlShareObj.pagename = pagename;
-        $state.go('custom');
-    }
-	*/
 });
 
 app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
 });
 
 app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile, ctrlShareObj) {
-    /*
-    ctrlShareObj.sitename='test';
-    config.templateObject = {
-        $scope:$scope,
-        $http:$http,
-        ctrlShareObj:ctrlShareObj,
-    };
-
-    function getTree(data) {
-        var tree = [];
-        if (!data) {
-            return tree;
-        }
-        for(var i = 0; i < data.length; i++) {
-            tree.push({
-                text:data[i].name,
-                nodes:data[i].pages ? getTree(data[i].pages) : undefined,
-            });
-        }
-        return tree;
-    }
-    var main = function () {
-        var $scope  = config.templateObject.$scope;
-        var $http = config.templateObject.$http;
-        var ctrlShareObject = config.templateObject.ctrlShareObj;
-        util.http($http, "POST", config.apiUrlPrefix+'website_pages/getWebsiteAllPageByWebsiteName', {websiteName:ctrlShareObject.sitename}, function (data) {
-            var tree = getTree(data);
-            console.log(tree);
-            $('#tree').treeview({data: getTree(data)});
-        });
-    };
-    main();
-    */
 });
 
 
@@ -124,14 +82,9 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
     $scope.filelist = [];
     $scope.commits = [];
     // 获得git文件列表
-    github.getTree('master', false, function (error, result, request) {
+    github.getTree('master', true, function (error, result, request) {
         var filelist = []
         for(var i = 0; result && i < result.length; i++) {
-            /*
-            if (result[i].type == 'tree') {
-                continue;
-            }
-            */
             filelist.push({path:result[i].path});
         }
         $scope.filelist = filelist;
@@ -154,8 +107,14 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
         };
         console.log(params);
         github.listCommits(params, function (error, result, request) {
-            console.log(result);
-            $scope.commits = result || [];
+            result = result || [];
+            var commits = [];
+            for (var i = 0; i < result.length; i++) {
+                commits.push({sha:result[i].sha, message:result[i].commit.message, date:result[i].commit.committer.date, html_url:result[i].html_url});
+            }
+            console.log(commits);
+            $scope.commits = commits;
+            $scope.$apply();
         });
     }
     
@@ -184,13 +143,11 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
 
 app.controller('customCtrl', function ($scope, $state, $http, $compile, ctrlShareObj) {
 	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
+    var startScript = '<script type="text/javascript">$("#__PageContent__").html(config.templateObject.$scope.websitePage.page.content); config.templateObject.main && config.templateObject.main();</script>';
 	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByPath', {path:ctrlShareObj.pageContentUrl}, function(data){
         $scope.websitePage = data  || defaultPage;
 		if (data) {
-			//var styleContent = data.style.content;
-			//var pageContent = data.page.content;
-			//var content = styleContent.replace('__PageContent__', pageContent);
-            var content = $compile(data.style.content)($scope);
+            var content = $compile(data.style.content + startScript)($scope);
             config.templateObject = {
                 $scope:$scope,
                 $http:$http,
