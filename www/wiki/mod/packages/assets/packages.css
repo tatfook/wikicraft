@@ -1,0 +1,485 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url('/wiki/assets/icomoon.woff2') format('woff');
+}
+body {
+  font-family: 'Microsoft YaHei UI', 'Source Sans Pro', 'Lucida Grande', sans-serif;
+}
+.verified {
+  width: 70px;
+  height: 28px;
+  background-color: #66FF99;
+  font-size: 16px;
+  font-weight: normal;
+  color: #FFF;
+  text-align: center;
+  line-height: 28px;
+  border-radius: 5px;
+  display: inline-block;
+}
+.set-verify {
+  font-size: 14px;
+  color: black;
+  font-weight: normal;
+  margin-top: 10px;
+}
+.set-verify input {
+  vertical-align: sub;
+}
+.packages .my-projects:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.packages .my-projects a {
+  display: block;
+  float: right;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #CC0000;
+  color: #FFF;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+.packages .my-projects a:hover {
+  text-decoration: none;
+}
+.packages .my-projects a:active {
+  opacity: .8;
+}
+.packages .head-line {
+  height: 115px;
+  width: 100%;
+  text-align: center;
+  line-height: 115px;
+  font-size: 36px;
+}
+.packages .head-line .red {
+  color: #BD2600;
+}
+.packages .packages-total {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-justify-content: space-between;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  max-width: 1170px;
+  margin: 10px auto 10px auto;
+  justify-content: space-between;
+}
+.packages .packages-total .stat {
+  position: relative;
+  margin: 20px 20px 20px 0;
+  padding-left: 46px;
+  font-family: "icomoon", 'Microsoft YaHei UI';
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.packages .packages-total .stat::before {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  font-size: 30px;
+  margin-right: 10px;
+  margin-top: 2px;
+  color: rgba(0, 0, 0, 0.8);
+}
+.packages .packages-total .stat strong {
+  display: block;
+  font-family: Consolas;
+  color: #000;
+  font-size: 16px;
+}
+.packages .packages-total .stat-icon-package::before {
+  content: "\e618";
+  top: -5px;
+  font-size: 36px;
+}
+.packages .packages-total .stat-icon-24hours::before {
+  content: "\e609";
+  top: -3px;
+  left: 0;
+  font-size: 30px;
+}
+.packages .packages-total .stat-icon-7days::before {
+  content: "\e608";
+  top: -3px;
+  left: 0;
+  font-size: 30px;
+}
+.packages .packages-total .stat-icon-1months::before {
+  content: "\e60a";
+  top: -3px;
+  left: 0;
+  font-size: 30px;
+}
+.packages .packages-show .packages-show-title {
+  font-size: 22px;
+  color: #BD2600;
+  text-align: center;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.packages .packages-show .packages-columar {
+  -webkit-columns: 3;
+  -moz-columns: 3;
+  columns: 3;
+  -webkit-column-gap: 40px;
+  -moz-column-gap: 40px;
+  column-gap: 40px;
+  list-style: none;
+  padding: 0px;
+}
+.packages .packages-show .packages-columar li {
+  column-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+  page-break-inside: avoid;
+  padding: 5px;
+  padding-bottom: 20px;
+}
+.packages .packages-show .packages-columar li .packages-weight {
+  padding-left: 65px;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo {
+  display: block;
+  margin-bottom: -82px;
+  margin-left: -65px;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo:hover {
+  text-decoration: none;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+.packages .packages-show .packages-columar li .packages-weight .package-logo .verified {
+  width: 50px;
+  height: 23px;
+  background-color: #66FF99;
+  font-size: 12px;
+  font-weight: normal;
+  color: #FFF;
+  text-align: center;
+  line-height: 23px;
+  border-radius: 5px;
+  display: block;
+  margin-top: 5px;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details h3 {
+  padding-bottom: 10px;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a {
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.8);
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a:hover {
+  color: #cb3837;
+  text-decoration: none;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details div.description,
+.packages .packages-show .packages-columar li .packages-weight .packages-details div.author {
+  font-size: 15px;
+  margin: 0;
+  max-width: 100%;
+  color: rgba(0, 0, 0, 0.6);
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details .author .version {
+  color: rgba(0, 0, 0, 0.6);
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details .author .version:hover {
+  color: #cb3837;
+  text-decoration: none;
+}
+.packages .getting-start .getting-start-title {
+  font-size: 22px;
+  color: #BD2600;
+  text-align: center;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.packages .getting-start h1 {
+  display: block;
+  margin: 0;
+  padding: 20px 0 10px 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+  color: #cb3837;
+  text-decoration: none;
+}
+.packages .getting-start a {
+  color: #BD2600;
+}
+.packages .getting-start a:hover {
+  text-decoration: underline;
+}
+.packages-install {
+  padding-top: 45px;
+}
+.packages-install .install-infor {
+  width: 100%;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 50px;
+}
+.packages-install .install-infor > h2 {
+  font-size: 24px;
+  font-weight: 600;
+  height: 30px;
+}
+.packages-install .install-infor > p {
+  font-size: 22px;
+  color: #666666;
+}
+.packages-install .install-infor .infor-main {
+  height: 272px;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+.packages-install .install-infor .infor-main .infor-details {
+  width: 52%;
+  height: 100%;
+  position: relative;
+}
+.packages-install .install-infor .infor-main .infor-details .item {
+  margin-bottom: 10px;
+}
+.packages-install .install-infor .infor-main .infor-details .item label {
+  float: left;
+  margin: 0px;
+  font-size: 14px;
+}
+.packages-install .install-infor .infor-main .infor-details .item > div {
+  margin-left: 265px;
+}
+.packages-install .install-infor .infor-main .infor-details .button {
+  position: absolute;
+  bottom: 0px;
+  font-weight: 600;
+}
+.packages-install .install-infor .infor-main .infor-details .button .install-now {
+  width: 160px;
+  height: 40px;
+  background-color: #0099FF;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+}
+.packages-install .install-infor .infor-main .infor-details .button .favorite {
+  width: 145px;
+  height: 40px;
+  background-color: #FFCC00;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+.packages-install .install-infor .infor-main .infor-logo {
+  float: right;
+}
+.packages-install .install-infor .infor-main .infor-logo img {
+  width: 215px;
+}
+.packages-projects {
+  width: 1170px;
+  padding-top: 35px;
+}
+.packages-projects::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+.packages-projects .user-infor {
+  float: left;
+  width: 20%;
+}
+.packages-projects .user-infor h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin-top: 24px;
+}
+.packages-projects .user-infor label {
+  font-size: 14px;
+  font-weight: normal;
+  display: block;
+  line-height: 28px;
+}
+.packages-projects .user-infor a.edit-profile {
+  width: 100%;
+  height: 40px;
+  font-size: 16px;
+  line-height: 40px;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  background-color: #66FFFF;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  display: block;
+  cursor: pointer;
+}
+.packages-projects .user-infor a.edit-profile:active {
+  opacity: .8;
+}
+.packages-projects .user-infor a.edit-profile:hover,
+.packages-projects .user-infor a.edit-profile:focus {
+  text-decoration: none;
+}
+.packages-projects .projects {
+  float: right;
+  min-height: 500px;
+  width: 76%;
+}
+.packages-projects .projects .tabs {
+  height: 53px;
+  border-bottom: 2px solid #E7E7E7;
+}
+.packages-projects .projects .tabs a {
+  font-size: 18px;
+  line-height: 51px;
+  padding: 0 4px 0 4px;
+  color: #cccccc;
+  display: inline-block;
+  font-weight: 600;
+}
+.packages-projects .projects .tabs a:hover,
+.packages-projects .projects .tabs a:active,
+.packages-projects .projects .tabs a:focus {
+  text-decoration: none;
+}
+.packages-projects .projects .tabs a.active {
+  border-bottom: 2px solid #00FFFF;
+  color: #000;
+}
+.packages-projects .projects .tabs .project-create {
+  display: inline-block;
+  float: right;
+  font-size: 28px;
+  line-height: 53px;
+  cursor: pointer;
+}
+.packages-projects .projects .tabs .project-create:hover {
+  opacity: .8;
+}
+.packages-projects .projects .projects-list .item {
+  height: 111px;
+  width: 100%;
+  border-bottom: 1px solid #E7E7E7;
+  padding-top: 30px;
+}
+.packages-projects .projects .projects-list .item::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+.packages-projects .projects .projects-list .item .project-infor {
+  float: left;
+}
+.packages-projects .projects .projects-list .item .project-infor a {
+  font-size: 18px;
+  display: block;
+  color: #000;
+}
+.packages-projects .projects .projects-list .item .project-infor a:hover,
+.packages-projects .projects .projects-list .item .project-infor a:focus {
+  text-decoration: none;
+}
+.packages-projects .projects .projects-list .item .project-infor p {
+  font-size: 14px;
+  margin: 0px;
+}
+.packages-projects .projects .projects-list .item .project-operation {
+  float: right;
+  padding-top: 18px;
+}
+.packages-projects .projects .projects-list .item .project-operation span,
+.packages-projects .projects .projects-list .item .project-operation a {
+  font-size: 14px;
+  padding: 0 5px 0 5px;
+}
+.packages-projects .projects .pagination {
+  width: 100%;
+  height: auto;
+}
+.packages-projects .projects .pagination ul {
+  display: block;
+  padding-left: 0;
+  margin: 0px auto;
+  border-radius: 4px;
+  width: 330px;
+  height: 30px;
+  margin-top: 20px;
+}
+.modal-dialog {
+  width: 750px;
+}
+.modal-dialog .packages_from_modify {
+  height: 380px!important;
+}
+.modal-dialog .packages_from {
+  height: 435px;
+}
+.modal-dialog .packages_from h1 {
+  text-align: center;
+  padding: 30px 0 30px 0;
+  font-weight: 600;
+}
+.modal-dialog .packages_from .form {
+  padding-left: 120px;
+}
+.modal-dialog .packages_from .form .item {
+  height: 40px;
+}
+.modal-dialog .packages_from .form .item label {
+  float: left;
+  font-size: 16px;
+  font-weight: normal;
+}
+.modal-dialog .packages_from .form .item > div {
+  margin-left: 140px;
+}
+.modal-dialog .packages_from .form .item > div input[type='text'] {
+  width: 320px;
+}
+.modal-dialog .packages_from .form .item > div textarea {
+  width: 320px;
+  height: 69px;
+  resize: none;
+}
+.modal-dialog .packages_from .form .item:nth-child(3) {
+  height: 80px;
+}
+.modal-dialog .packages_from .fetch-infor {
+  text-align: center;
+  display: block;
+  margin-top: 10px;
+}
+.modal-dialog .packages_from button {
+  width: 140px;
+  height: 40px;
+  margin: 0 auto;
+  display: block;
+  margin-top: 40px;
+}

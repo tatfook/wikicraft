@@ -1,0 +1,224 @@
+<?npl
+--[[
+Title: packages
+Author: Big
+Date: 2016/10/1
+]]
+
+include_once(WIKI_ROOT.."models/abstract/multi_user_base.page");
+include_once(WIKI_ROOT.."models/user.page");
+include_once("./packages_stats.page");
+
+local packages = inherit(models.abstract.multi_user_base, gettable("models.packages"));
+
+packages.db_name = "packages";
+
+function packages:ctor()
+	--package name
+	self:addfield("projectName", "string", true, 30);
+	--package description
+	self:addfield("projectDesc", "string", true, 150);
+	--npl package or paracraft mod
+	self:addfield("projectType", "string", true, 1);
+	--github reponsity
+	self:addfield("projectGitURL", "string", true, 300);
+	--user name
+	self:addfield("displayName", "string", true, 50);
+	--is verified
+	self:addfield("isVerified","string",true,10);
+end
+
+function packages:get(params)
+	--self:ensureAuthenticated();
+
+	if(not params.projectType) then
+		return {result = -1, msg = "projectType is not set"};
+	end
+
+	--if(not params.order) then
+		--return {result = -1, msg = "order is not set"};
+	--end
+
+	if(not params.page) then
+		params.page   = 1;
+	end
+
+	if(not params.amount) then
+		params.amount = 4;
+	end
+
+	local skip  = params.page == 1 and 0 or params.page*params.amount-params.amount
+	local limit = params.amount;
+
+	data = {};
+
+	--log({"self:getUserId()",self:getUserId()})
+
+	self:db():find({["+projectType+userId-projectUpdate"] = {params.projectType,self:getUserId(),limit=limit,skip=skip}}, resume);
+	
+	local err,data = yield(true);
+
+	return data;
+end
+
+function packages:api_createPackage(params)
+	returnData = {};
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	--log({"query",query});
+
+	self:db():insertOne(nil, 
+		{
+			projectName     = query.projectName, 
+			projectDesc     = query.projectDesc,
+			projectType     = query.projectType,
+			projectGitURL   = query.projectGitURL,
+			projectUpdate	= ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+			userId          = self:getUserId(),
+			displayName     = query.displayName,
+			version			= '0.0.1',
+			installTimes	= 0,
+			isVerified		= "false"
+		 },
+		function(err, data)
+			log({"data",data});
+			if(data) then
+				returnData = {result = "1",msg = "Create Successful!"}
+			else
+				return {result = "-1",msg = "Create fail!"};
+			end
+
+			resume();
+		end
+	);
+	yield();
+
+	models.packages_stats:new():recordCreate(query.projectType);
+	return returnData;
+end
+
+function packages:api_getOnePackage(params)
+	data = {};
+
+	self:db():findOne({_id=params.packageId},
+		function(err, response)
+			data = response;
+			resume();
+		end
+	);
+	yield();
+
+	return data;
+end
+
+function packages:api_modifyPackage(params)
+	data = {};
+
+	--log({"modifyPackageParams",params})
+	self:db():updateOne(
+		{_id = params.packageId},
+		{projectName=params.projectName, projectDesc=params.projectDesc, version=params.version},
+		function(err, response)
+			data = response;
+			resume();
+		  --log({"modifyPackage",data}) 
+		end
+	);
+	yield();
+
+	return data;
+end
+
+function packages:api_deletePackage(params)
+	returnData = {};
+
+	if(not params.packageId) then
+		return {result=-1,msg="packageId is not set"};
+	end
+
+	local projectType = "";
+
+	self:db():findOne(
+		{_id=params.packageId},
+		function(err,response)
+			projectType = response.projectType;
+		end
+	);
+
+	self:db():deleteOne(
+		{_id=params.packageId},
+		function(err, count)
+			if(count == 1) then
+				returnData = {result=1,msg="Delete package success"};
+				resume();
+			else
+				return {result=-1,msg="Delete package fail"};
+			end
+		end
+	);
+	yield();
+
+	models.packages_stats:new():recordDelete(projectType);
+	return returnData;
+end
+
+function packages:api_download(params)
+	if(not params.projectType) then
+		return {result=-1,msg="projectType is not set"};
+	end
+
+	if(not params.packageId) then
+		return {result=-1,msg="packageId is not set"};
+	end
+
+	self:db():findOne(
+		{_id = params.packageId},
+		function(err,response)
+			local installTimes = response.installTimes+1;
+			self:db():updateOne(
+				{_id = params.packageId},
+				{installTimes=installTimes},
+				function(err,response)
+					resume();
+				end
+			);
+		end
+	);
+
+	yield();
+
+	models.packages_stats:new():recordDownload(params.projectType);
+
+	return {result="1",msg="download successful"};
+end
+
+function packages:api_getPackagesStats(params)
+	return models.packages_stats:new():packagesStats(params);
+end
+
+function packages:api_getDownloadStats(params)
+	return models.packages_stats:new():downloadStats(params);
+end
+
+function packages:setVerify(packagesId,isVerified)
+	self:db():updateOne({_id=packagesId},{isVerified=isVerified},resume);
+	local err,response = yield(true);
+
+	if(not err) then
+		return {error = 1 ,msg="set successful"};
+	else
+		return {error = -1,msg="set fail"};
+	end
+end
+
+function packages:api_verifyPackages(params)
+	local userParams = {};
+	userParams._id = self:getUserId();
+	local userResponse = models.user:new():get(userParams);
+	
+	if(userResponse.isadmin == "true") then
+		return self:setVerify(params.packagesId,params.isVerified);
+	else
+		return {error = -1,msg = "Illegal operation"};
+	end
+end

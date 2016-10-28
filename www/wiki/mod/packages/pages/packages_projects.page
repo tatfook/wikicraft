@@ -1,0 +1,39 @@
+﻿<?npl
+wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
+wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packagesProjectsController.js");
+?>
+
+<div class="packages-projects" ng-controller="packagesProjectsController">
+   <div class="user-infor">
+       <wiki-identicon userid="user._id" size="234" imageurl="user.picture"></wiki-identicon>
+       <h3>{{user.displayName}}</h3>
+       <label>{{user.email}}</label>
+       <a href="/wiki/settings" class="edit-profile">Edit profile</a>
+   </div>
+
+   <div class="projects">
+       <div class="tabs">
+           <a ng-class="{'active': projectType == 'a'}" href="javascript:;" ng-click="setTabs('a')">NPL</a>
+           <a ng-class="{'active': projectType == 'b'}" href="javascript:;" ng-click="setTabs('b')">Paracraft</a>
+
+           <div ng-click="ShowCreateProjectDialog()" class="project-create">+</div>
+       </div>
+
+        <div class="projects-list">
+            <div class="item" ng-repeat="item in items">
+                <div class="project-infor">
+                    <a ng-href="/wiki/mod/packages/{{item.projectType | getProjectTypeName }}/?id={{item._id}}">{{item.projectName}}</a>
+                    <p>{{item.projectDesc}}</p>
+                </div>
+                <div class="project-operation">
+                    <span>{{item.version}}</span>
+                    <a href="#" ng-click="ShowModifyProjectDialog(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u68.png"/></a>
+                    <a href="#" ng-click="DeleteProject(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u76.png"/></a>
+                </div>
+            </div>
+        </div>
+        <div ng-controller="Pagination" class="pagination">
+            <ul uib-pagination boundary-links="true" items-per-page="itemsPerPage" ng-change="pageChanged()" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+       </div>
+    </div>
+</div>

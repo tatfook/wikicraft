@@ -1,0 +1,255 @@
+<?npl
+--[[
+Title: package stats
+Author: Big
+Date: 2016/102
+]]
+
+include_once(WIKI_ROOT.."models/abstract/base.page");
+
+local packages_stats = inherit(models.abstract.base, gettable("models.packages_stats"));
+
+packages_stats.db_name = 'packages_stats';
+
+function packages_stats:ctor()
+	
+end
+
+function packages_stats:recordCreate(projectType)
+	log({"create"});
+	newQuantity = 0;
+
+	self:db():findOne({["+statsType+projectType"] = {"packageStats",projectType}},
+		function(err, response)
+			log({"response",response});
+			if(response == nil) then
+
+				self:db():insertOne(nil,{
+					statsType   = 'packageStats',
+					projectType = projectType,
+					quantity    = 1;
+				},
+				function(err,data)
+					--log(data);
+					resume();
+				end
+				);
+			else
+				newQuantity = response.quantity + 1;
+
+				self:db():updateOne(
+					{
+						["+statsType+projectType"] = {"packageStats",projectType}
+					},{
+						quantity  = newQuantity; 
+					},
+					function(err,data)
+						resume();
+					end
+				);
+			end
+		end
+	);
+	yield();
+
+	return true;
+end
+
+function packages_stats:recordDelete(projectType)
+	log({"delete",projectType});
+
+	self:db():findOne({["+statsType+projectType"] = {"packageStats",projectType}},
+		function(err, response)
+			log({"response",response});
+			if(response ~= nil) then
+				newQuantity = response.quantity - 1;
+
+				self:db():updateOne(
+					{
+						["+statsType+projectType"] = {"packageStats",projectType},
+					},{
+						quantity  = newQuantity; 
+					},
+					function(err,data)
+						resume();
+					end
+				);
+			end
+		end
+	);
+	yield();
+
+	return true;
+end
+
+function packages_stats:recordDownload(projectType)
+	local today = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+
+	local year,month,day = today:match("^([%d]+)-([%d]+)-([%d]+)$");
+	
+	if(projectType == "a") then
+		projectType = "npl";
+	elseif(projectType == "b") then
+		projectType = "paracraft";
+	end
+
+	--log({projectType..year..month..day});
+	self:db():findOne({statsType = projectType..year..month..day},resume);
+	local err,todayResponse = yield(true);
+
+	if(not err) then
+		if (todayResponse == nil) then
+			self:db():insertOne({
+				statsType = projectType..year..month..day,
+				quantity  = 1,
+			},resume);
+
+			local err,todayInsertResponse = yield(true);
+		else
+			local todayId = todayResponse._id;
+			--log({"day",todayId,todayResponse})
+			self:db():updateOne({
+				_id = todayId
+			},
+			{
+				quantity = todayResponse.quantity+1
+			},resume);
+
+			local err,todayUpdateResponse = yield(true);
+		end
+	end
+
+	--log({projectType..year..month});
+	self:db():findOne({statsType = projectType..year..month},resume);
+	local err,monthResponse = yield(true);
+
+	if(not err) then
+		if (monthResponse == nil) then
+			self:db():insertOne({
+				statsType = projectType..year..month,
+				quantity  = 1,
+			},resume);
+
+			local err,monthInsertResponse = yield(true);
+		else
+			local monthId = monthResponse._id;
+			--log({"month",monthId,monthResponse})
+			self:db():updateOne({
+				_id = monthId
+			},
+			{
+				quantity = monthResponse.quantity+1
+			},resume);
+
+			local err,monthUpdateResponse = yield(true);
+		end
+	end
+
+	--log({projectType..year});
+	self:db():findOne({statsType = projectType..year},resume);
+	local err,yearResponse = yield(true);
+
+	if(not err) then
+		if (yearResponse == nil) then
+			self:db():insertOne({
+				statsType = projectType..year,
+				quantity  = 1,
+			},resume);
+
+			local err,yearInsertResponse = yield(true);
+		else
+			local yearId = yearResponse._id;
+			--log({"year",yearId,yearResponse})
+			self:db():updateOne({
+				_id = yearId
+			},
+			{
+				quantity = yearResponse.quantity+1
+			},resume);
+
+			local err,yearUpdateResponse = yield(true);
+		end
+	end
+
+	return true;
+end
+
+function packages_stats:packagesStats(param)
+	local returnData = {};
+	local stats = self:validate_packagesStats(param);
+	log({"stats",stats});
+
+	if (not stats) then
+		return {result=-1,msg="statsType or projectType is not set"};
+	end
+
+	self:db():findOne(
+		{["+statsType+projectType"] = {stats.statsType,stats.projectType}},
+		function(err,response)
+			log({"getStats",response})
+
+			if (response == nil) then
+				returnData = {statsType = "nil"};
+				resume();
+			else
+				returnData = response;
+				resume();
+			end
+		end
+	);
+
+	yield();
+	log({"returnData",returnData})
+	return returnData;
+end
+
+function packages_stats:validate_packagesStats(param)
+	local stats = {};
+
+	if(param.statsType == "packageStats") then
+		stats.statsType = 'packageStats';
+	end
+
+	if(param.projectType == "a") then
+		stats.projectType = "a"
+	elseif(param.projectType == "b") then
+		stats.projectType = "b"
+	else
+		return false;
+	end
+
+	return stats;
+end
+
+function packages_stats:downloadStats(params)
+	local today			 = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	local year,month,day = today:match("^([%d]+)-([%d]+)-([%d]+)$");
+	local statsType		 = "";
+
+	if(params.pageName ~= "npl" and params.pageName ~= "paracraft") then
+		return {statsType="nil",msg="pageName is not set or worng"};
+	end
+
+	if(params.getType == "day") then
+		statsType = params.pageName..year..month..day;
+	elseif(params.getType == "month") then
+		statsType = params.pageName..year..month;
+	elseif(params.getType == "year") then
+		statsType = params.pageName..year;
+	else
+		return {statsType="nil",msg="pageName is not set or worng"};
+	end
+
+	self:db():findOne({statsType = statsType},resume);
+	local err,response = yield(true);
+
+	if(not err) then
+		if(response == nil) then
+			return {statsType="nil"};
+		else
+			return response;
+		end
+	else
+		return {statsType="nil"};
+	end
+end
