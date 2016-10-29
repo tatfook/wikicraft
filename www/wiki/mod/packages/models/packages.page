@@ -22,6 +22,8 @@ function packages:ctor()
 	self:addfield("projectType", "string", true, 1);
 	--github reponsity
 	self:addfield("projectGitURL", "string", true, 300);
+	--releases url
+	self:addfield("projectReleases", "string", true, 300);
 	--user name
 	self:addfield("displayName", "string", true, 50);
 	--is verified
@@ -67,10 +69,10 @@ function packages:api_createPackage(params)
 	local err, query = self:validateQuery(params);
 
 	if(query.projectReleases == "") then
-		query.projectReleases = query.projectGitURL+'/archive/master.zip';
+		query.projectReleases = query.projectGitURL..'/archive/master.zip';
 	end
 
-	log({"query",query});
+	log({"----------------------------------------query",query});
 
 	self:db():insertOne(nil,
 		{

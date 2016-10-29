@@ -233,7 +233,7 @@ angular.module('MyApp')
             }],
         })
         .then(function (response) {
-            $http.post('/api/wiki/models/packages/createPackage', {
+            $http.post('/api/mod/packages/models/packages/createPackage', {
                 projectName     : $scope.projectName,
                 projectDesc     : $scope.projectDesc,
                 projectGitURL   : $scope.projectGitURL,
