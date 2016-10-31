@@ -19,14 +19,16 @@ wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesContro
 ?>
 
 <div class="packages" ng-controller="packagesController">
+    <div class="packages-tab">
+        <a href="/wiki/mod/packages/packages_npl">NPL</a>
+        <a href="/wiki/mod/packages/packages_paracraft">Paracraft</a>
+    </div>
     <div class="my-projects">
         <a href="/wiki/mod/packages/packages_projects#/paracraft">My paracraft mod</a>
     </div>
-
 	<div class="head-line">
         <span class="red">paracraft</span> package manager 
     </div>
-
     <div class="packages-total">
         <div class="stat stat-icon-package">
             <strong>{{packagesStats}}</strong>

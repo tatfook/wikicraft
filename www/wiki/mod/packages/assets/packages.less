@@ -32,6 +32,28 @@ body{
 }
 
 .packages{
+    .packages-tabs{
+        float: left;
+        height: 30px;
+        width: auto;
+        background-color: #333;
+
+        // a:nth-child(1){
+        //     display: block;
+        //     float: left;
+        //     width: 100px;
+        //     height: 100%;
+        // }
+
+        // a:nth-child(2){
+        //     display: block;
+        //     float: right;
+        //     width: 100px;
+        //     height: 100%;
+        // }
+
+    }
+
     .my-projects{
         &:after{
             display:block;
@@ -284,6 +306,15 @@ body{
 .packages-install{
     padding-top: 45px;
 
+    .infor-logo{
+        float:left;
+        margin-top: -85px;
+
+        img{
+            width: 66px;
+        }
+    }
+
     .install-infor{
         width: 100%;
         border-bottom: 2px solid rgba(0,0,0,0.08);
@@ -298,6 +329,10 @@ body{
         & > p{
             font-size: 22px;
             color: #666666;
+        }
+
+        & > h2,& > p{
+            padding-left: 80px;
         }
 
         .infor-main{
@@ -339,24 +374,36 @@ body{
                         border-radius: 5px;
                     }
 
-                    .favorite{
+                    .download-now{
                         width: 145px;
                         height: 40px;
-                        background-color: #FFCC00;
-                        color: #FFF;
+                        background-color: #CCC;
+                        color: #000;
                         border: none;
                         border-radius: 5px;
                         margin-left: 5px;
+                        display: inline-block;
+                        text-align: center;
+                        line-height: 40px;
+                    }
+
+                    .github{
+                        width: 145px;
+                        height: 40px;
+                        background-color: #CCC;
+                        color: #000;
+                        border: none;
+                        border-radius: 5px;
+                        margin-left: 5px;
+                        display: inline-block;
+                        text-align: center;
+                        line-height: 40px;
+
+                        svg{
+                            vertical-align: sub;
+                        }
                     }
                  }
-            }
-
-            .infor-logo{
-                float:right;
-
-                img{
-                    width: 215px;
-                }
             }
         }
     }

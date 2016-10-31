@@ -53,18 +53,18 @@
             }
         })
         .then(function (response) {
-            $scope.projectName   = response.data.projectName;
-            $scope.projectDesc   = response.data.projectDesc;
-            $scope.projectGitURL = response.data.projectGitURL;
-            $scope.projectUpdate = response.data.projectUpdate;
-            $scope.installTimes  = response.data.installTimes;
-            $scope.version       = response.data.version;
-            $scope.displayName   = response.data.displayName;
-            $scope.isVerified    = eval(response.data.isVerified);
+            $scope.projectName     = response.data.projectName;
+            $scope.projectDesc     = response.data.projectDesc;
+            $scope.projectGitURL   = response.data.projectGitURL;
+            $scope.projectReleases = response.data.projectReleases;
+            $scope.projectUpdate   = response.data.projectUpdate;
+            $scope.installTimes    = response.data.installTimes;
+            $scope.version         = response.data.version;
+            $scope.displayName     = response.data.displayName;
+            $scope.isVerified      = eval(response.data.isVerified);
 
             $scope.getGit();
             //$scope.getPackageUserInfor(response.data.userId);
-
         },
         function (response) {
 
@@ -140,30 +140,30 @@
         });
     }
 
-    $scope.addFavorite = function () {
-        var url = window.location;
-        var title = document.title;
-        var ua = navigator.userAgent.toLowerCase();
-        if (ua.indexOf("360se") > -1) {
-            alert("由于360浏览器功能限制，请按 Ctrl+D 手动收藏！");
-        }
-        else if (ua.indexOf("msie 8") > -1) {
-            window.external.AddToFavoritesBar(url, title); //IE8
-        }
-        else if (document.all) {
-            try {
-                window.external.addFavorite(url, title);
-            } catch (e) {
-                alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!');
-            }
-        }
-        else if (window.sidebar) {
-            window.sidebar.addPanel(title, url, "");
-        }
-        else {
-            alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!');
-        }
-    }
+    // $scope.addFavorite = function () {
+    //     var url = window.location;
+    //     var title = document.title;
+    //     var ua = navigator.userAgent.toLowerCase();
+    //     if (ua.indexOf("360se") > -1) {
+    //         alert("由于360浏览器功能限制，请按 Ctrl+D 手动收藏！");
+    //     }
+    //     else if (ua.indexOf("msie 8") > -1) {
+    //         window.external.AddToFavoritesBar(url, title); //IE8
+    //     }
+    //     else if (document.all) {
+    //         try {
+    //             window.external.addFavorite(url, title);
+    //         } catch (e) {
+    //             alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!');
+    //         }
+    //     }
+    //     else if (window.sidebar) {
+    //         window.sidebar.addPanel(title, url, "");
+    //     }
+    //     else {
+    //         alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!');
+    //     }
+    // }
 
     if (packagesPageService.getPageName() == 'npl') {
         $scope.projectType = "a"

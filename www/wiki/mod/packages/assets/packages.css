@@ -26,6 +26,12 @@ body {
 .set-verify input {
   vertical-align: sub;
 }
+.packages .packages-tabs {
+  float: left;
+  height: 30px;
+  width: auto;
+  background-color: #333;
+}
 .packages .my-projects:after {
   display: block;
   content: '';
@@ -236,6 +242,13 @@ body {
 .packages-install {
   padding-top: 45px;
 }
+.packages-install .infor-logo {
+  float: left;
+  margin-top: -85px;
+}
+.packages-install .infor-logo img {
+  width: 66px;
+}
 .packages-install .install-infor {
   width: 100%;
   border-bottom: 2px solid rgba(0, 0, 0, 0.08);
@@ -249,6 +262,10 @@ body {
 .packages-install .install-infor > p {
   font-size: 22px;
   color: #666666;
+}
+.packages-install .install-infor > h2,
+.packages-install .install-infor > p {
+  padding-left: 80px;
 }
 .packages-install .install-infor .infor-main {
   height: 272px;
@@ -285,20 +302,32 @@ body {
   border: none;
   border-radius: 5px;
 }
-.packages-install .install-infor .infor-main .infor-details .button .favorite {
+.packages-install .install-infor .infor-main .infor-details .button .download-now {
   width: 145px;
   height: 40px;
-  background-color: #FFCC00;
-  color: #FFF;
+  background-color: #CCC;
+  color: #000;
   border: none;
   border-radius: 5px;
   margin-left: 5px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
 }
-.packages-install .install-infor .infor-main .infor-logo {
-  float: right;
+.packages-install .install-infor .infor-main .infor-details .button .github {
+  width: 145px;
+  height: 40px;
+  background-color: #CCC;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
 }
-.packages-install .install-infor .infor-main .infor-logo img {
-  width: 215px;
+.packages-install .install-infor .infor-main .infor-details .button .github svg {
+  vertical-align: sub;
 }
 .packages-projects {
   width: 1170px;
