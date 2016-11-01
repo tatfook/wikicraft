@@ -35,22 +35,37 @@ body{
     .packages-tabs{
         float: left;
         height: 30px;
+        line-height: 30px;
         width: auto;
         background-color: #333;
 
-        // a:nth-child(1){
-        //     display: block;
-        //     float: left;
-        //     width: 100px;
-        //     height: 100%;
-        // }
+        a{
+            color: #FFF;
+            text-decoration: none;
+        }
 
-        // a:nth-child(2){
-        //     display: block;
-        //     float: right;
-        //     width: 100px;
-        //     height: 100%;
-        // }
+        a.active{
+            display: block;
+            background-color: #777;
+        }
+
+        a:hover{
+            opacity: .8;
+        }
+
+        a:nth-child(1){
+            float: left;
+            width: 100px;
+            height: 100%;
+            text-align: center;
+        }
+
+        a:nth-child(2){
+            float: right;
+            width: 100px;
+            height: 100%;
+            text-align: center;
+        }
 
     }
 

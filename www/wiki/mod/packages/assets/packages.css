@@ -29,8 +29,32 @@ body {
 .packages .packages-tabs {
   float: left;
   height: 30px;
+  line-height: 30px;
   width: auto;
   background-color: #333;
+}
+.packages .packages-tabs a {
+  color: #FFF;
+  text-decoration: none;
+}
+.packages .packages-tabs a.active {
+  display: block;
+  background-color: #777;
+}
+.packages .packages-tabs a:hover {
+  opacity: .8;
+}
+.packages .packages-tabs a:nth-child(1) {
+  float: left;
+  width: 100px;
+  height: 100%;
+  text-align: center;
+}
+.packages .packages-tabs a:nth-child(2) {
+  float: right;
+  width: 100px;
+  height: 100%;
+  text-align: center;
 }
 .packages .my-projects:after {
   display: block;
