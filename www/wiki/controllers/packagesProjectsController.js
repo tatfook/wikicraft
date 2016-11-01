@@ -169,6 +169,7 @@ angular.module('MyApp')
     $scope.projectGitURL    = '';
     $scope.projectType      = 'a';
     $scope.projectTypeName  = '';
+    $scopt.projectReleases  = '';
 
     $scope.$watch(Account.getUser, function (newValue, oldValue) {
         $scope.user = angular.copy(newValue);
@@ -180,6 +181,10 @@ angular.module('MyApp')
         } else if (newValue == 'b') {
             $scope.projectTypeName = 'paracraft mod';
         }
+    });
+
+    $scope.$watch('projectGitURL', function (newValue, oldValue) {
+        console.log(newValue);
     });
 
     $scope.confirm = function () {
@@ -226,11 +231,12 @@ angular.module('MyApp')
         .then(function (response) {
 
             $http.post('/api/wiki/models/packages/createPackage', {
-                projectName: $scope.projectName,
-                projectDesc: $scope.projectDesc,
-                projectGitURL: $scope.projectGitURL,
-                projectType: $scope.projectType,
-                displayName: $scope.user.displayName
+                projectName     : $scope.projectName,
+                projectDesc     : $scope.projectDesc,
+                projectGitURL   : $scope.projectGitURL,
+                projectReleases : $scopt.projectReleases,
+                projectType     : $scope.projectType,
+                displayName     : $scope.user.displayName
             })
             .then(function (response) {
                 if (response.data.result == 1) {
@@ -324,7 +330,7 @@ angular.module('MyApp')
     $scope.getPackageStats = function () {
         $http({
             method: 'POST',
-            url: '/api/wiki/models/packages/getStats',
+            url: '/api/wiki/models/packages/getPackagesStats',
             data: {
                 statsType: "packageStats",
                 projectType: $scope.projectType

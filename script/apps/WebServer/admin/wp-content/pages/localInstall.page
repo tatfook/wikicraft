@@ -47,8 +47,7 @@ if(is_ajax()) then
 			local projectName = request:get('projectName');
 			local packagesId  = tonumber(request:get('packagesId'));
 
-			url				  = url..'/archive/master.zip';
-			local status	  = -5;--package是否可以下载，以前是否下载过
+			local status	       = -5;--package是否可以下载，以前是否下载过
 			local dest		  = '';
 			local isYourTurn  = 0;--是否轮到此包下载
 
@@ -180,8 +179,8 @@ PAGE_NO_SIDE_BAR = true;
 	<!--<h1>
         Do you want to install the following <br/> plugin to your local computer?
 	</h1>-->
-
-    <div class="infor-details">
+	<img ng-src="{{gitIcon}}">
+     <div class="infor-details">
         <div class="item">
             <label>Package name</label>
             <div>{{projectName}}</div>

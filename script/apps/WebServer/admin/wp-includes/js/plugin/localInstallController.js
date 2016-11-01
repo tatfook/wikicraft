@@ -5,7 +5,8 @@
     $scope.projectName = params.projectName;
     $scope.version = params.version;
     $scope.author = params.displayName;
-    $scope.giturl = params.giturl;
+    $scope.projectReleases = params.projectReleases;
+    $scope.gitIcon = params.gitIcon;
     $scope.packagesId = params.packagesId;
 
     $scope.seconds = 5;
@@ -27,7 +28,7 @@
             method: 'POST',
             url: '/ajax/localInstall?action=downloadQueue',
             data: {
-                url: $scope.giturl,
+                url: $scope.projectReleases,
                 projectName: $scope.projectName,
                 packagesId: $scope.packagesId
             }
@@ -60,6 +61,10 @@
                 } else if (response.data.status == -1) {
                     $(".start").text("service is not available now,please try again later");
                     $(".button span").css("display", "block");
+                    
+                    if(confirm("reply?")){
+                        $scope.install()
+                    }
                 }
 
             } else if (response.data.currentPackagesId == $scope.packagesId) {
@@ -82,9 +87,7 @@
         $http({
             method: "GET",
             url: "/ajax/localInstall?action=GetCurrentDownload",
-            data: {
-
-            }
+            data: {}
         })
         .then(function (response) {
             if (response.data.status == -1 || response.data.status == 0) {

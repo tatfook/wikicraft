@@ -1,0 +1,89 @@
+<div ng-controller="gitVersionCtrl">
+    <div class="panel panel-default" style="width: 60%; margin: 20px auto">
+        <div class="panel-heading">
+            站点版本管理
+        </div>
+        <div class="panel-body">
+            <form role="form" class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-2">文件路径：</label>
+                    <div class="col-md-8">
+                        <!--input type="text" class="form-control" ng-model="path"-->
+                        <div>
+                            <ui-select ng-model="seleected" ng-disabled on-select="pathSelected($item, $model)">
+                                <ui-select-match placeholder="文件过滤(选填)">{{$select.selected.path}}</ui-select-match>
+                                <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index">
+                                    <span ng-bind="file.path"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">起始sha：</label>
+                    <div class="col-md-8">
+                        <input placeholder="sha过滤(选填)" type="text" class="form-control" ng-model="sha">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">起始日期：</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
+                                   ng-model="dtStart" is-open="dtStartOpened" popup-placement="bottom-right"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="dtStartOpen()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">终止日期：</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
+                                   ng-model="dtEnd" is-open="dtEndOpened" popup-placement="bottom-right"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="dtEndOpen()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        <button class="btn btn-default" ng-click="submit()">查询</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="margin: 20px;">
+            <table class="table table-bordered">
+                <div style="display: flex;justify-content: center; color: darkgray">提交记录</div>
+                <thead>
+                <tr>
+                    <th>SHA</th>
+                    <th>备注</th>
+                    <th>日期</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="commit in commits track by $index">
+                    <td>{{commit.sha}}</td>
+                    <td>{{commit.message}}</td>
+                    <td>{{commit.date}}</td>
+                    <td>
+                        <button class="btn btn-default" ng-click="viewCommit(commit)" data-toggle="tooltip" title="查看修改"><span class="glyphicon glyphicon-eye-open"></span></button>
+                        <button class="btn btn-default" ng-click="rollbackFile(commit)" data-toggle="tooltip" title="回滚到此版本"><span class="glyphicon glyphicon-repeat"></span></button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
