@@ -32,142 +32,121 @@ angular.module('MyApp')
         }
     };
 })
-.filter('getProjectTypeName', function () {
-    return function (input) {
-        if (input == 'a') {
-            return "packages_npl_install";
-        } else if (input == 'b') {
-            return "packages_paracraft_install";
-        }
-    }
-})
-.controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location) {
+.controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location ,$rootScope) {
     Account.setRequireSignin(true);
 
-    var absUrl = $location.absUrl();
+    $rootScope.$on('$locationChangeSuccess', function () {
+        if ($location.path() == "/npl") {
+            $scope.projectType = 'npl';
+        } else if ($location.path() == "/paracraft") {
+            $scope.projectType = 'paracraft';
+        } else {
+            $scope.projectType = 'paracraft';
+        }
 
-    if ($location.url() == "/npl") {
-        $scope.projectType = 'npl';
-    } else if ($location.url() == "/paracraft") {
-        $scope.projectType = 'paracraft';
-    } else {
-        $scope.projectType = 'npl';
-    }
+        if($scope.projectType == 'npl'){
+            $scope.editProfile = 'Edit profile';
+            $scope.create = 'Create';
+        }else if($scope.projectType == 'paracraft'){
+            $scope.editProfile = '个人设置';
+            $scope.create = '新建';
+        }
 
-    packagesService.setProjectsType($scope.projectType);
+        packagesService.setProjectsType($scope.projectType);
 
-    $scope.$watch(Account.getUser, function (newValue, oldValue) {
-        $scope.user = angular.copy(newValue);
-    });
-
-    $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
-        $scope.page = newValue;
-        $scope.getProjects();
-    });
-
-    $scope.items        = [];
-    $scope.page         = 1;
-
-    $scope.getProjects = function () {
-        $http({
-            method: 'POST',
-            url: '/api/mod/packages/models/packages',
-            data: {
-                projectType: $scope.projectType,
-                page: $scope.page,
-                amount: 4
-            }
-        })
-        .then(function (response) {
-            $scope.items = response.data
-        },
-        function (response) {});
-    }
-
-    $scope.getProjects();
-
-    $scope.ShowCreateProjectDialog = function () {
-        $uibModal.open({
-            templateUrl: MOD_WEBROOT + "partials/packages_project_create.html",
-            controller: "packagesProjectsCreateController",
-        }).result.then(function (params) {
-            alert(params.msg);
-            if ($scope.projectType == params.projectType) {
-                packagesService.setForceUpdatePagin(1);
-            } else {
-                $scope.projectType = params.projectType;
-                packagesService.setProjectsType($scope.projectType);
-            }
-
-            $scope.getProjects();
-        }, function (text, error) {
-
+        $scope.$watch(Account.getUser, function (newValue, oldValue) {
+            $scope.user = angular.copy(newValue);
         });
-    };
 
-    $scope.ShowModifyProjectDialog = function (packageId) {
-        packagesService.setModifyPackageID(packageId);
-
-        $uibModal.open({
-            templateUrl: MOD_WEBROOT + "partials/packages_project_modify.html",
-            controller: "packagesProjectsModifyController",
-        }).result.then(function (params) {
-            alert(params.msg)
-            $scope.projectType = params.projectType;
+        $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
+            $scope.page = newValue;
             $scope.getProjects();
-        }, function (text, error) {
-
         });
-    }
 
-    $scope.DeleteProject = function (packageId) {
-        if (confirm("Are you sure delete this project?")) {
+        $scope.items = [];
+        $scope.page  = 1;
+
+        $scope.getProjects = function () {
             $http({
-                method: "POST",
-                url: "/api/mod/packages/models/packages/deletePackage",
+                method: 'POST',
+                url: '/api/mod/packages/models/packages',
                 data: {
-                    packageId: packageId
+                    projectType: $scope.projectType,
+                    page: $scope.page,
+                    amount: 4
                 }
             })
             .then(function (response) {
-                alert(response.data.msg);
+                $scope.items = response.data
+            },
+            function (response) {});
+        }
 
-                if (response.data.result == 1) {
-                    $scope.page = 1;
+        $scope.getProjects();
+
+        $scope.ShowCreateProjectDialog = function () {
+            $uibModal.open({
+                templateUrl: MOD_WEBROOT + "partials/packages_project_create.html",
+                controller: "packagesProjectsCreateController",
+            }).result.then(function (params) {
+                alert(params.msg);
+                if ($scope.projectType == params.projectType) {
                     packagesService.setForceUpdatePagin(1);
-                    $scope.getProjects();
+                } else {
+                    $scope.projectType = params.projectType;
+                    packagesService.setProjectsType($scope.projectType);
                 }
-            }, function (response) {
-                
+
+                $scope.getProjects();
+            }, function (text, error) {
+
+            });
+        };
+
+        $scope.ShowModifyProjectDialog = function (packageId) {
+            packagesService.setModifyPackageID(packageId);
+
+            $uibModal.open({
+                templateUrl: MOD_WEBROOT + "partials/packages_project_modify.html",
+                controller: "packagesProjectsModifyController",
+            }).result.then(function (params) {
+                alert(params.msg)
+                $scope.projectType = params.projectType;
+                $scope.getProjects();
+            }, function (text, error) {
+
             });
         }
-    }
 
-    $scope.setTabs = function (params) {
-        $scope.projectType = params;
-        
-        if (params == "a") {
-            $location.url("/npl");
-            packagesService.setProjectsType("a");
-        } else if (params == "b") {
-            $location.url("/paracraft");
-            packagesService.setProjectsType("b");
+        $scope.DeleteProject = function (packageId) {
+            if (confirm("Are you sure delete this project?")) {
+                $http({
+                    method: "POST",
+                    url: "/api/mod/packages/models/packages/deletePackage",
+                    data: {
+                        packageId: packageId
+                    }
+                })
+                .then(function (response) {
+                    alert(response.data.msg);
+
+                    if (response.data.result == 1) {
+                        $scope.page = 1;
+                        packagesService.setForceUpdatePagin(1);
+                        $scope.getProjects();
+                    }
+                }, function (response) {
+                    
+                });
+            }
         }
-
-        $scope.page = 1;
-        $scope.getProjects();
-    }
-
-    //$scope.$on('updateItems', function (event,msg) {
-    //    console.log(msg);
-    //    //$scope.getProjects();
-    //});
+    });
 })
 .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
-    $scope.projectName     = '';
-    $scope.projectDesc     = '';
-    $scope.projectGitURL   = '';
-    $scope.projectType     = 'a';
+    $scope.projectName = '';
+    $scope.projectDesc = '';
+    $scope.projectGitURL = '';
+    $scope.projectType = packagesService.getProjectsType();
     $scope.projectTypeName = '';
     $scope.projectReleases = '';
 
@@ -176,28 +155,28 @@ angular.module('MyApp')
     });
 
     $scope.$watch('projectType', function (newValue, oldValue) {
-        if (newValue == 'a') {
+        if (newValue == 'npl') {
             $scope.projectTypeName = 'npl package';
-        } else if (newValue == 'b') {
-            $scope.projectTypeName = 'paracraft mod';
+        } else if (newValue == 'paracraft') {
+            $scope.projectTypeName = 'paracraft模块';
         }
     });
 
     $scope.$watch('projectGitURL', function (newValue, oldValue) {
-
         if (newValue != '') {
-            $("#project-releases").attr("placeholder", newValue + '/archive/master.zip');
+            $(".project-releases").attr("placeholder", newValue + '/archive/master.zip');
+        }else{
+            $(".project-releases").attr("placeholder", 'http://github.com/tatfook/NPLCAD/archive/master.zip');
         }
-
     });
 
     $scope.confirm = function () {
         var gitRaw = "https://raw.githubusercontent.com";
 
         try {
-            var gitRoot      = $scope.projectGitURL.split("//");
+            var gitRoot       = $scope.projectGitURL.split("//");
             var gitRootStart = gitRoot[1].indexOf("/");
-            var gitRoot      = gitRaw + gitRoot[1].substring(gitRootStart);
+            var gitRoot       = gitRaw + gitRoot[1].substring(gitRootStart);
         } catch (err) {
             return alert("url format error");
         }
@@ -257,14 +236,14 @@ angular.module('MyApp')
     }
 })
 .controller('packagesProjectsModifyController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
-    $scope.projectName     = '';
-    $scope.projectDesc     = '';
-    $scope.projectGitURL   = '';
-    $scope.version         = '';
+    $scope.projectName = '';
+    $scope.projectDesc = '';
+    $scope.projectGitURL = '';
+    $scope.version = '';
     $scope.projectTypeName = '';
-    $scope.projectType     = '';
+    $scope.projectType = '';
 
-    $scope.packageId     = 0;
+    $scope.packageId = 0;
 
     $scope.$watch(packagesService.getModifyPackageId, function (newValue, oldValue) {
         if (newValue != 0) {
@@ -283,11 +262,11 @@ angular.module('MyApp')
                 $scope.projectGitURL = response.data.projectGitURL;
                 $scope.version       = response.data.version;
 
-                if (response.data.projectType == "a") {
-                    $scope.projectType = "a";
+                if (response.data.projectType == "npl") {
+                    $scope.projectType = "npl";
                     $scope.projectTypeName = "npl package"
-                } else if (response.data.projectType == "b") {
-                    $scope.projectType = "b";
+                } else if (response.data.projectType == "paracraft") {
+                    $scope.projectType = "paracraft";
                     $scope.projectTypeName = "paracraft mod"
                 }
             },
@@ -353,16 +332,8 @@ angular.module('MyApp')
 
     $scope.getPackageStats();
 
-    //$scope.setPage = function (pageNo) {
-    //    $scope.currentPage = pageNo;
-    //};
-
     $scope.pageChanged = function () {
         packagesService.setPage($scope.currentPage);
         //alert('Page changed to: ' + $scope.currentPage);
     };
-
-    //$scope.maxSize = 5;
-    //$scope.bigTotalItems = 175;
-    //$scope.bigCurrentPage = 1;
 });

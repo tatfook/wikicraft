@@ -6,8 +6,8 @@
 
 	<div ng-if="projectType == 'npl'" class="packages">
 	    <div class="packages-tabs">
-	        <a class="active" href="/wiki/mod/packages/index#/npl">NPL</a>
-	        <a href="/wiki/mod/packages/packages_paracraft">Paracraft</a>
+	        <a class="active" href="#/npl">NPL</a>
+	        <a href="#/paracraft">Paracraft</a>
 	    </div>
 	    <div class="my-projects">
 	        <a href="/wiki/mod/packages/packages_projects#/npl">My npl packages</a>
@@ -36,29 +36,29 @@
 	    </div>
 
 	    <div class="packages-show">
-	        <div class="packages-show-title">
-	            npl packages people install a lot
-	        </div>
-	        <ul class="packages-columar">
-	            <li ng-repeat="package in packages">
-	                <div class="packages-weight">
-	                    <a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install/#/npl?id={{package._id}}">
+			<div class="packages-show-title">
+				npl packages people install a lot
+			</div>
+			<ul class="packages-columar">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">
 							<img ng-src="{{package.gitIcon}}" />
-	                        <div class="verified">verified</div>
+							<div class="verified">verified</div>
 						</a>
 						<div class="packages-details">
-	                        <h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install/#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
-	                        <div class="description">
-	                            {{package.projectDesc}}
-	                        </div>
-	                        <div class="author">
-	                            <a class="version">{{package.version}}</a>
-	                            by {{package.displayName}}
-	                        </div>
-	                    </div>
-	                </div>
-	            </li>
-	        </ul>
+							<h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
 	    </div>
 
 	    <div class="getting-start">
@@ -76,7 +76,7 @@
 
 	<div ng-if="projectType == 'paracraft'" class="packages">
 	    <div class="packages-tabs">
-	        <a href="/wiki/mod/packages/packages_npl">NPL</a>
+	        <a href="/wiki/mod/packages/index#/npl">NPL</a>
 	        <a class="active" href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
 	    </div>
 	    <div class="my-projects">
@@ -101,29 +101,29 @@
 	    </div>
 
 	    <div class="packages-show">
-	        <div class="packages-show-title">
-	            大家都喜欢下载这些包
-	        </div>
-	        <ul class="packages-columar">
-	            <li ng-repeat="package in packages">
-	                <div class="packages-weight">
-	                    <a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install/?id={{package._id}}">
+			<div class="packages-show-title">
+				大家都喜欢下载这些包
+			</div>
+			<ul class="packages-columar">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
 							<img ng-src="{{package.gitIcon}}" />
-	                        <div class="verified">已认证</div>
+							<div class="verified">已认证</div>
 						</a>
 						<div class="packages-details">
-	                        <h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install/?id={{package._id}}">{{package.projectName}}</a></h3>
-	                        <div class="description">
-	                            {{package.projectDesc}}
-	                        </div>
-	                        <div class="author">
-	                            <a class="version">{{package.version}}</a>
-	                            by {{package.displayName}}
-	                        </div>
-	                    </div>
-	                </div>
-	            </li>
-	        </ul>
+							<h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
 	    </div>
 
 	    <div class="getting-start">
@@ -131,7 +131,7 @@
 	            开始
 	        </div>
 
-	        <h1>installing paracraft package</h1>
+	        <h1>安装paracraft包</h1>
 	        <p>
 	            You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
 	        </p>
