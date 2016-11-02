@@ -72,7 +72,7 @@ function packages:api_createPackage(params)
 		query.projectReleases = query.projectGitURL..'/archive/master.zip';
 	end
 
-	log({"----------------------------------------query",query});
+	-- log({"----------------------------------------query",query});
 
 	self:db():insertOne(nil,
 		{
@@ -179,21 +179,18 @@ function packages:api_download(params)
 		return {result=-1,msg="packageId is not set"};
 	end
 
-	self:db():findOne(
-		{_id = params.packageId},
-		function(err,response)
-			local installTimes = response.installTimes+1;
-			self:db():updateOne(
-				{_id = params.packageId},
-				{installTimes=installTimes},
-				function(err,response)
-					resume();
-				end
-			);
-		end
-	);
+	self:db():findOne({_id = params.packageId},resume);
 
-	yield();
+	local err,response = yield(true);
+
+	if(not err) then
+		
+		local installTimes = response.installTimes+1;
+
+		self:db():updateOne({_id = params.packageId},{installTimes=installTimes},resume);
+		local err,response = yield(true);
+
+	end
 
 	models.packages_stats:new():recordDownload(params.projectType);
 

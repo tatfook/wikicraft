@@ -24,40 +24,36 @@ wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesContro
         <a class="active" href="/wiki/mod/packages/packages_paracraft">Paracraft</a>
     </div>
     <div class="my-projects">
-        <a href="/wiki/mod/packages/packages_projects#/paracraft">My paracraft mod</a>
+        <a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
     </div>
 	<div class="head-line">
-        <span class="red">paracraft</span> package manager 
+        <span class="red">paracraft</span> 包管理器 
     </div>
     <div class="packages-total">
         <div class="stat stat-icon-package">
-            <strong>{{packagesStats}}</strong>
-            total packages
+            <strong>共有{{packagesStats}}个包</strong>
         </div>
         <div class="stat stat-icon-24hours">
-            <strong>{{dayDownload}}</strong>
-            downloads in the last day
+            <strong>昨天下载{{dayDownload}}次</strong>
         </div>
         <div class="stat stat-icon-7days">
-            <strong>{{monthDownload}}</strong>
-            downloads in the last month
+            <strong>上月下载{{monthDownload}}次</strong>
         </div>
         <div class="stat stat-icon-1months">
-            <strong>{{yearDownload}}</strong>
-            downloads in the last year
+            <strong>上年下载{{yearDownload}}次</strong>
         </div>
     </div>
 
     <div class="packages-show">
         <div class="packages-show-title">
-            npl packages people install a lot
+            大家都喜欢下载这些包
         </div>
         <ul class="packages-columar">
             <li ng-repeat="package in packages">
                 <div class="packages-weight">
                     <a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_paracraft_install/?id={{package._id}}">
 						<img ng-src="{{package.gitIcon}}" />
-                        <div class="verified">verified</div>
+                        <div class="verified">已认证</div>
 					</a>
 					<div class="packages-details">
                         <h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_paracraft_install/?id={{package._id}}">{{package.projectName}}</a></h3>
@@ -76,14 +72,14 @@ wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesContro
 
     <div class="getting-start">
         <div class="getting-start-title">
-            getting start
+            开始
         </div>
 
         <h1>installing paracraft package</h1>
         <p>
             You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
         </p>
-        <a>Download npl</a>
+        <a>下载Paracraft</a>
     </div>
 </div>
 
