@@ -47,11 +47,11 @@ angular.module('MyApp')
     var absUrl = $location.absUrl();
 
     if ($location.url() == "/npl") {
-        $scope.projectType = 'a';
+        $scope.projectType = 'npl';
     } else if ($location.url() == "/paracraft") {
-        $scope.projectType = 'b';
+        $scope.projectType = 'paracraft';
     } else {
-        $scope.projectType = 'a';
+        $scope.projectType = 'npl';
     }
 
     packagesService.setProjectsType($scope.projectType);

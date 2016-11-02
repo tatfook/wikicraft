@@ -1,13 +1,21 @@
 angular.module('MyApp')
-.controller('packagesController', function ($scope, $http, packagesPageService) {
+.controller('packagesController', function ($scope, $http, $location) {
     $scope.packages = [];
     $scope.packagesStats = 0;
     $scope.dayDownload   = 0;
     $scope.monthDownload = 0;
     $scope.yearDownload  = 0;
 
-    var pageName = packagesPageService.getPageName();
-    var projectType = pageName == 'npl' ? "a" : "b";
+    if ($location.url() == "/npl") {
+        $scope.projectType = 'npl';
+    } else if ($location.url() == "/paracraft") {
+        $scope.projectType = 'paracraft';
+    } else {
+        $scope.projectType = 'npl';
+    }
+
+    // var pageName = packagesPageService.getPageName();
+    // var projectType = pageName == 'npl' ? "a" : "b";
 
     //packagestats
     $http({
@@ -15,7 +23,7 @@ angular.module('MyApp')
         url: '/api/mod/packages/models/packages/getPackagesStats',
         data: {
             statsType: "packageStats",
-            projectType: projectType
+            projectType: $scope.projectType
         }
     })
     .then(function (response) {
@@ -30,7 +38,7 @@ angular.module('MyApp')
         url: '/api/mod/packages/models/packages/getDownloadStats',
         data: {
             getType: "day",
-            pageName: pageName
+            projectType: $scope.projectType
         }
     })
     .then(function (response) {
@@ -45,7 +53,7 @@ angular.module('MyApp')
         url: '/api/mod/packages/models/packages/getDownloadStats',
         data: {
             getType: "month",
-            pageName: pageName
+            projectType: $scope.projectType
         }
     })
     .then(function (response) {
@@ -60,7 +68,7 @@ angular.module('MyApp')
         url: '/api/mod/packages/models/packages/getDownloadStats',
         data: {
             getType: "year",
-            pageName: pageName
+            projectType: $scope.projectType
         }
     })
     .then(function (response) {
@@ -74,7 +82,7 @@ angular.module('MyApp')
         method: 'POST',
         url: '/api/mod/packages/models/packages',
         data: {
-            projectType: projectType,
+            projectType: $scope.projectType,
             amount: 20 
         }
     })
