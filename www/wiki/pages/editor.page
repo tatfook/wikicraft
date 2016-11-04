@@ -24,6 +24,8 @@ wp_enqueue_script("codemirror_addon_matchesonscrollbar", "/wp-includes/js/codemi
 wp_enqueue_style("codemirror_addon_matchesonscrollbar_style", "/wp-includes/js/codemirror/addon/search/matchesonscrollbar.css");
 wp_enqueue_script("codemirror_addon_jumptoline", "/wp-includes/js/codemirror/addon/search/jump-to-line.js");
 wp_enqueue_script("codemirror_addon_annotatescrollbar", "/wp-includes/js/codemirror/addon/scroll/annotatescrollbar.js");
+wp_enqueue_script("codemirror_addon_fullscreen", "/wp-includes/js/codemirror/addon/display/fullscreen.js");
+wp_enqueue_style("codemirror_addon_fullscreen_style", "/wp-includes/js/codemirror/addon/display/fullscreen.css");
 
 wp_enqueue_script("editorController", WIKI_WEBROOT.."controllers/editorController.js");
 wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
@@ -46,8 +48,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
             <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_headline(1)">H1</button>
             <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_headline(2)">H2</button>
             <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_headline(3)">H3</button>
-            <button type="button" class="btn btn-default btn-sm">编号</button>
-            <!--<br/>-->
+            <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_identifier()">编号</button>
             <button type="button" class="btn btn-default btn-sm">加粗</button>
             <button type="button" class="btn btn-default btn-sm">斜体</button>
             <button type="button" class="btn btn-default btn-sm">下划线</button>
@@ -94,7 +95,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
         </div>
     </div>
 
-    <nav class="navbar navbar-static-top" role="navigation">
+    <nav class="navbar" role="navigation">
         <div class="container-fluid">
             <div>
                 <ul class="nav navbar-nav nav-pills">
@@ -144,6 +145,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
     var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
         mode: 'markdown',
         lineNumbers: true,
+        lineWrapping: true,
         theme: "default",
         viewportMargin: Infinity,
         extraKeys: {
@@ -152,6 +154,12 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
             Tab: function(cm) {
                 var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
                 cm.replaceSelection(spaces);
+            },
+            "F11": function(cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function(cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
             }
         }
     });

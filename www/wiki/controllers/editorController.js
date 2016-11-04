@@ -159,6 +159,7 @@ angular.module('MyApp')
         });
     };
 
+    //保存页面
     $scope.cmd_savepage = function () {
 
         //var el = document.getElementById("editor");
@@ -168,7 +169,7 @@ angular.module('MyApp')
         if($scope.websitePage){// 修改
             $scope.websitePage.content = content;
             $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
-                console.log(response.data);
+                //console.log(response.data);
                 alert('修改成功');
             }).catch(function (response) {
                 console.log(response.data);
@@ -186,28 +187,73 @@ angular.module('MyApp')
         }
     }
 
+    //撤销
     $scope.cmd_undo = function () {
         editor.undo();
     }
 
+    //重做
     $scope.cmd_redo = function () {
         editor.redo();
     }
 
+    //查找
     $scope.cmd_find = function () {
         CodeMirror.commands.findPersistent(editor);
     }
 
+    //替换
     $scope.cmd_replace = function () {
         CodeMirror.commands.replace(editor);
     }
 
-    $scope.cmd_headline = function (level) {
-        var line = editor.getCursor().line;
-        if(line > 0){
-            var lineHandle = editor.getLineHandle(line);
-            console.log(lineHandle);
-            lineHandle.text = '## ' + lineHandle.text;
+    //标题    H1：Hn
+    $scope.cmd_headline = function (level){
+        var preChar='';
+        while(level>0){
+            preChar += '#';
+            level--;
+        }
+        preChar += ' ';
+
+        var cursor = editor.getCursor();
+        var content = editor.getLine(cursor.line);
+
+        var iSpace = 0;
+        var chrCmp = '';
+        for(var i=0;i<content.length;i++){
+            chrCmp = content.substr(i,1);
+            if( chrCmp == '#'){
+                continue;
+            }else{
+                if(chrCmp == ' '){
+                    iSpace = i+1;
+                }
+                break;
+            }
+        }
+        editor.replaceRange(preChar,CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,iSpace));
+        return;
+    }
+
+    //编号
+    $scope.cmd_identifier = function () {
+        if(editor.somethingSelected()){
+            var sel = editor.getSelection();
+            var srcStr = '~identifier~' + sel.replace(/\n/g,"\n~identifier~");
+
+            var id = 1;
+            var desStr = srcStr.replace("~identifier~",id+'. ');
+            while(desStr.indexOf("~identifier~")>=0){
+                id++;
+                desStr = desStr.replace("~identifier~",id+'. ');
+            }
+
+            editor.replaceSelection(desStr);
+        }else{
+            var cursor = editor.getCursor();
+            editor.replaceRange('1. ',CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,0));
         }
     }
+
 })
