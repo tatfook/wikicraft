@@ -185,6 +185,7 @@
                         + '&displayName=' + $scope.displayName
                         + '&version=' + $scope.version
                         + '&packagesId=' + request.id
+                        + '&projectType=' + $scope.projectType
                     );
 
                     $uibModal.open({
