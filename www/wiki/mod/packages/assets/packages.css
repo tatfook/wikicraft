@@ -26,6 +26,36 @@ body {
 .set-verify input {
   vertical-align: sub;
 }
+.packages .packages-tabs {
+  float: left;
+  height: 30px;
+  line-height: 30px;
+  width: auto;
+  background-color: #999;
+}
+.packages .packages-tabs a {
+  color: #FFF;
+  text-decoration: none;
+}
+.packages .packages-tabs a.active {
+  display: block;
+  background-color: #333;
+}
+.packages .packages-tabs a:hover {
+  opacity: .8;
+}
+.packages .packages-tabs a:nth-child(1) {
+  float: left;
+  width: 100px;
+  height: 100%;
+  text-align: center;
+}
+.packages .packages-tabs a:nth-child(2) {
+  float: right;
+  width: 100px;
+  height: 100%;
+  text-align: center;
+}
 .packages .my-projects:after {
   display: block;
   content: '';
@@ -144,6 +174,7 @@ body {
   column-gap: 40px;
   list-style: none;
   padding: 0px;
+  min-height: 240px;
 }
 .packages .packages-show .packages-columar li {
   column-break-inside: avoid;
@@ -155,6 +186,7 @@ body {
 }
 .packages .packages-show .packages-columar li .packages-weight {
   padding-left: 65px;
+  height: 100px;
 }
 .packages .packages-show .packages-columar li .packages-weight .package-logo {
   display: block;
@@ -236,6 +268,13 @@ body {
 .packages-install {
   padding-top: 45px;
 }
+.packages-install .infor-logo {
+  float: left;
+  margin-top: -85px;
+}
+.packages-install .infor-logo img {
+  width: 66px;
+}
 .packages-install .install-infor {
   width: 100%;
   border-bottom: 2px solid rgba(0, 0, 0, 0.08);
@@ -249,6 +288,10 @@ body {
 .packages-install .install-infor > p {
   font-size: 22px;
   color: #666666;
+}
+.packages-install .install-infor > h2,
+.packages-install .install-infor > p {
+  padding-left: 80px;
 }
 .packages-install .install-infor .infor-main {
   height: 272px;
@@ -285,20 +328,32 @@ body {
   border: none;
   border-radius: 5px;
 }
-.packages-install .install-infor .infor-main .infor-details .button .favorite {
+.packages-install .install-infor .infor-main .infor-details .button .download-now {
   width: 145px;
   height: 40px;
-  background-color: #FFCC00;
-  color: #FFF;
+  background-color: #CCC;
+  color: #000;
   border: none;
   border-radius: 5px;
   margin-left: 5px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
 }
-.packages-install .install-infor .infor-main .infor-logo {
-  float: right;
+.packages-install .install-infor .infor-main .infor-details .button .github {
+  width: 145px;
+  height: 40px;
+  background-color: #CCC;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
 }
-.packages-install .install-infor .infor-main .infor-logo img {
-  width: 215px;
+.packages-install .install-infor .infor-main .infor-details .button .github svg {
+  vertical-align: sub;
 }
 .packages-projects {
   width: 1170px;
@@ -355,6 +410,19 @@ body {
 .packages-projects .projects .tabs {
   height: 53px;
   border-bottom: 2px solid #E7E7E7;
+}
+.packages-projects .projects .tabs .createNewPackages {
+  border: none;
+  width: 100px;
+  height: 30px;
+  font-size: 13px;
+  vertical-align: middle;
+  line-height: 26px;
+  border-radius: 3px;
+  outline: none;
+  background: #ffa6a6;
+  color: #FFF;
+  font-weight: 600;
 }
 .packages-projects .projects .tabs a {
   font-size: 18px;
@@ -439,7 +507,7 @@ body {
   height: 380px!important;
 }
 .modal-dialog .packages_from {
-  height: 435px;
+  height: 485px;
 }
 .modal-dialog .packages_from h1 {
   text-align: center;

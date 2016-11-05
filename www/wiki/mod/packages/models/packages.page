@@ -19,9 +19,11 @@ function packages:ctor()
 	--package description
 	self:addfield("projectDesc", "string", true, 150);
 	--npl package or paracraft mod
-	self:addfield("projectType", "string", true, 1);
+	self:addfield("projectType", "string", true, 20);
 	--github reponsity
 	self:addfield("projectGitURL", "string", true, 300);
+	--releases url
+	self:addfield("projectReleases", "string", true, 300);
 	--user name
 	self:addfield("displayName", "string", true, 50);
 	--is verified
@@ -65,14 +67,20 @@ function packages:api_createPackage(params)
 	returnData = {};
 	self:ensureAuthenticated();
 	local err, query = self:validateQuery(params);
-	--log({"query",query});
 
-	self:db():insertOne(nil, 
+	if(query.projectReleases == "") then
+		query.projectReleases = query.projectGitURL..'/archive/master.zip';
+	end
+
+	-- log({"----------------------------------------query",query});
+
+	self:db():insertOne(nil,
 		{
-			projectName     = query.projectName, 
+			projectName     = query.projectName,
 			projectDesc     = query.projectDesc,
 			projectType     = query.projectType,
 			projectGitURL   = query.projectGitURL,
+			projectReleases = query.projectReleases,
 			projectUpdate	= ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 			userId          = self:getUserId(),
 			displayName     = query.displayName,
@@ -80,20 +88,22 @@ function packages:api_createPackage(params)
 			installTimes	= 0,
 			isVerified		= "false"
 		 },
-		function(err, data)
-			log({"data",data});
-			if(data) then
-				returnData = {result = "1",msg = "Create Successful!"}
-			else
-				return {result = "-1",msg = "Create fail!"};
-			end
-
-			resume();
-		end
+		 resume
 	);
-	yield();
 
-	models.packages_stats:new():recordCreate(query.projectType);
+	local err,response = yield(true);
+
+	if(not err) then
+		local err = models.packages_stats:new():recordCreate(query.projectType);
+		if(not err) then
+			returnData = {result = "1",msg = "Create Successful!"};
+		else
+			returnData = {result = "-1",msg = "Create fail!"};
+		end
+	else
+		returnData = {result = "-1",msg = "Create fail!"};
+	end
+
 	return returnData;
 end
 
@@ -171,21 +181,18 @@ function packages:api_download(params)
 		return {result=-1,msg="packageId is not set"};
 	end
 
-	self:db():findOne(
-		{_id = params.packageId},
-		function(err,response)
-			local installTimes = response.installTimes+1;
-			self:db():updateOne(
-				{_id = params.packageId},
-				{installTimes=installTimes},
-				function(err,response)
-					resume();
-				end
-			);
-		end
-	);
+	self:db():findOne({_id = params.packageId},resume);
 
-	yield();
+	local err,response = yield(true);
+
+	if(not err) then
+		
+		local installTimes = response.installTimes+1;
+
+		self:db():updateOne({_id = params.packageId},{installTimes=installTimes},resume);
+		local err,response = yield(true);
+
+	end
 
 	models.packages_stats:new():recordDownload(params.projectType);
 

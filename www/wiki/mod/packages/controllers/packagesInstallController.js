@@ -11,7 +11,7 @@
         }
     }
 })
-.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesPageService, packagesInstallService) {
+.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesInstallService) {
     $scope.isadmin    = false;
     $scope.isVerified = null;
 
@@ -23,48 +23,57 @@
         }
     });
 
-    var absUrl = $location.absUrl();
-
-    function UrlSearch() {
-        var name, value;
-        var str = location.href; //取得整个地址栏
-        var num = str.indexOf("?");
-        str = str.substr(num + 1); //取得所有参数   stringvar.substr(start [, length ]
-
-        var arr = str.split("&"); //各个参数放到数组里
-        for (var i = 0; i < arr.length; i++) {
-            num = arr[i].indexOf("=");
-            if (num > 0) {
-                name = arr[i].substring(0, num);
-                value = arr[i].substr(num + 1);
-                this[name] = value;
-            }
-        }
+    if ($location.path() == "/npl") {
+        $scope.projectType = 'npl';
+    } else if ($location.path() == "/paracraft") {
+        $scope.projectType = 'paracraft';
+    } else{
+        $scope.projectType = '';
     }
 
-    var Request = new UrlSearch();
+    if($scope.projectType == 'npl'){
+        $scope.authorDesc = 'Author';
+        $scope.versionDesc = 'Version';
+        $scope.updateDateDesc = 'Update date';
+        $scope.installTimesDesc = 'Install times';
+        $scope.installNow = 'Install now';
+        $scope.download = 'Download';
+        $scope.code = 'Github';
+    }else if($scope.projectType == 'paracraft'){
+        $scope.authorDesc = '创作者';
+        $scope.versionDesc = '版本';
+        $scope.updateDateDesc = '上次更新时间';
+        $scope.installTimesDesc = '安装次数';
+        $scope.installNow = '立即安装';
+        $scope.download = '直接下载';
+        $scope.code = '源码';
+    }else{
+        location.href="/wiki/mod/packages";
+    }
 
-    if (Request.id != undefined && !isNaN(Request.id)) {
+    var request = $location.search();
+
+    if (request.id != undefined && !isNaN(request.id)) {
         $http({
             method: 'POST',
             url: '/api/mod/packages/models/packages/getOnePackage',
             data: {
-                packageId: Request.id
+                packageId: request.id
             }
         })
         .then(function (response) {
-            $scope.projectName   = response.data.projectName;
-            $scope.projectDesc   = response.data.projectDesc;
-            $scope.projectGitURL = response.data.projectGitURL;
-            $scope.projectUpdate = response.data.projectUpdate;
-            $scope.installTimes  = response.data.installTimes;
-            $scope.version       = response.data.version;
-            $scope.displayName   = response.data.displayName;
-            $scope.isVerified    = eval(response.data.isVerified);
+            $scope.projectName     = response.data.projectName;
+            $scope.projectDesc     = response.data.projectDesc;
+            $scope.projectGitURL   = response.data.projectGitURL;
+            $scope.projectReleases = response.data.projectReleases;
+            $scope.projectUpdate   = response.data.projectUpdate;
+            $scope.installTimes    = response.data.installTimes;
+            $scope.version         = response.data.version;
+            $scope.displayName     = response.data.displayName;
+            $scope.isVerified      = eval(response.data.isVerified);
 
             $scope.getGit();
             //$scope.getPackageUserInfor(response.data.userId);
-
         },
         function (response) {
 
@@ -140,36 +149,11 @@
         });
     }
 
-    $scope.addFavorite = function () {
-        var url = window.location;
-        var title = document.title;
-        var ua = navigator.userAgent.toLowerCase();
-        if (ua.indexOf("360se") > -1) {
-            alert("由于360浏览器功能限制，请按 Ctrl+D 手动收藏！");
-        }
-        else if (ua.indexOf("msie 8") > -1) {
-            window.external.AddToFavoritesBar(url, title); //IE8
-        }
-        else if (document.all) {
-            try {
-                window.external.addFavorite(url, title);
-            } catch (e) {
-                alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!');
-            }
-        }
-        else if (window.sidebar) {
-            window.sidebar.addPanel(title, url, "");
-        }
-        else {
-            alert('您的浏览器不支持,请按 Ctrl+D 手动收藏!');
-        }
-    }
-
-    if (packagesPageService.getPageName() == 'npl') {
-        $scope.projectType = "a"
-    } else if (packagesPageService.getPageName() == 'paracraft') {
-        $scope.projectType = "b";
-    }
+    // if (packagesPageService.getPageName() == 'npl') {
+    //     $scope.projectType = "a"
+    // } else if (packagesPageService.getPageName() == 'paracraft') {
+    //     $scope.projectType = "b";
+    // }
 
     $scope.install = function () {
         $http(
@@ -187,7 +171,7 @@
                 method: "POST",
                 url: '/api/mod/packages/models/packages/download',
                 data: {
-                    packageId: Request.id,
+                    packageId: request.id,
                     projectType: $scope.projectType
                 }
             })
@@ -195,11 +179,13 @@
                 if (response.data.result == 1) {
                     packagesInstallService.setGiturl(
                         '127.0.0.1:8099/localInstall#?'
-                        + 'giturl='      + $scope.projectGitURL
+                        + 'projectReleases=' + $scope.projectReleases
+                        + '&gitIcon=' + $scope.gitIcon
                         + '&projectName=' + $scope.projectName
                         + '&displayName=' + $scope.displayName
                         + '&version=' + $scope.version
-                        + '&packagesId=' + Request.id
+                        + '&packagesId=' + request.id
+                        + '&projectType=' + $scope.projectType
                     );
 
                     $uibModal.open({

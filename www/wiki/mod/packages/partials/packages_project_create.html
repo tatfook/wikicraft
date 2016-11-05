@@ -1,26 +1,61 @@
-<div class="packages_from">
+<div class="packages_from" ng-show="projectType == 'npl'">
     <h1>Create your new {{projectTypeName}}</h1>
     <div class="form">
         <div class="item">
             <label>Project type</label>
             <div>
-                <input type="radio" ng-model="projectType" value="a"/>npl package &nbsp;&nbsp;
-                <input type="radio" ng-model="projectType" value="b"/>paracraft mod
+                <input type="radio" ng-model="projectType" value="npl"/>npl package &nbsp;&nbsp;
+                <input type="radio" ng-model="projectType" value="paracraft"/>paracraft mod
             </div>
         </div>
         <div class="item">
             <label>Project name</label>
-            <div><input type="text" value="" ng-model="projectName"/></div>
+            <div><input type="text" ng-model="projectName"/></div>
         </div>
         <div class="item">
             <label>Description</label>
-            <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
+            <div><textarea ng-model="projectDesc" ng-class="description"></textarea></div>
         </div>
         <div class="item">
             <label>Git URL</label>
-            <div><input type="text" value="" ng-model="projectGitURL"/></div>
+            <div><input type="text" ng-model="projectGitURL" placeholder="http://github.com/tatfook/NPLCAD"/></div>
+        </div>
+        <div class="item">
+            <label>Download URL</label>
+            <div><input type="text" ng-model="projectReleases" class="project-releases" placeholder="http://github.com/tatfook/NPLCAD/archive/master.zip" /></div>
         </div>
     </div>
     <small class="fetch-infor"><strong>Please upload `icon.png` and `README.md` in your git repositary. </strong></small>
     <button ng-click="confirm()">Confirm</button>
+</div>
+
+<div class="packages_from" ng-show="projectType == 'paracraft'">
+    <h1>创建你的新{{projectTypeName}}</h1>
+    <div class="form">
+        <div class="item">
+            <label>项目类型</label>
+            <div>
+                <input type="radio" ng-model="projectType" value="npl"/>npl package &nbsp;&nbsp;
+                <input type="radio" ng-model="projectType" value="paracraft"/>paracraft mod
+            </div>
+        </div>
+        <div class="item">
+            <label>项目名称</label>
+            <div><input type="text" ng-model="projectName"/></div>
+        </div>
+        <div class="item">
+            <label>描述</label>
+            <div><textarea ng-model="projectDesc" ng-class="description"></textarea></div>
+        </div>
+        <div class="item">
+            <label>Git URL</label>
+            <div><input type="text" ng-model="projectGitURL" placeholder="http://github.com/tatfook/NPLCAD"/></div>
+        </div>
+        <div class="item">
+            <label>下载 URL</label>
+            <div><input type="text" ng-model="projectReleases" class="project-releases" placeholder="http://github.com/tatfook/NPLCAD/archive/master.zip" /></div>
+        </div>
+    </div>
+    <small class="fetch-infor"><strong>请上传 `icon.png` 和 `README.md` 文件到你的代码仓</strong></small>
+    <button ng-click="confirm()">确定</button>
 </div>

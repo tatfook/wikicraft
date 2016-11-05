@@ -1,3 +1,142 @@
 ﻿<?npl
+	wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
+	wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesController.js");
+?>
+<div ng-controller="packagesController">
 
-include("packages_npl.page")
+	<div ng-if="projectType == 'npl'" class="packages">
+	    <div class="packages-tabs">
+	        <a class="active" href="#/npl">NPL</a>
+	        <a href="#/paracraft">Paracraft</a>
+	    </div>
+	    <div class="my-projects">
+	        <a href="/wiki/mod/packages/packages_projects#/npl">My npl packages</a>
+	    </div>
+		<div class="head-line">
+	        <span class="red">npl</span> package manager 
+	    </div>
+	    
+	    <div class="packages-total">
+	        <div class="stat stat-icon-package">
+	            <strong>{{packagesStats}}</strong>
+	            total packages
+	        </div>
+	        <div class="stat stat-icon-24hours">
+	            <strong>{{dayDownload}}</strong>
+	            downloads in the last day
+	        </div>
+	        <div class="stat stat-icon-7days">
+	            <strong>{{monthDownload}}</strong>
+	            downloads in the last month
+	        </div>
+	        <div class="stat stat-icon-1months">
+	            <strong>{{yearDownload}}</strong>
+	            downloads in the last year
+	        </div>
+	    </div>
+
+	    <div class="packages-show">
+			<div class="packages-show-title">
+				npl packages people install a lot
+			</div>
+			<ul class="packages-columar">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">
+							<img ng-src="{{package.gitIcon}}" />
+							<div class="verified">verified</div>
+						</a>
+						<div class="packages-details">
+							<h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+	    </div>
+
+	    <div class="getting-start">
+	        <div class="getting-start-title">
+	            getting start
+	        </div>
+
+	        <h1>installing npl package</h1>
+	        <p>
+	            You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
+	        </p>
+	        <a>Download npl</a>
+	    </div>
+	</div>
+
+	<div ng-if="projectType == 'paracraft'" class="packages">
+	    <div class="packages-tabs">
+	        <a href="/wiki/mod/packages/index#/npl">NPL</a>
+	        <a class="active" href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+	    </div>
+	    <div class="my-projects">
+	        <a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
+	    </div>
+		<div class="head-line">
+	        <span class="red">paracraft</span> 包管理器 
+	    </div>
+	    <div class="packages-total">
+	        <div class="stat stat-icon-package">
+	            <strong>共有{{packagesStats}}个包</strong>
+	        </div>
+	        <div class="stat stat-icon-24hours">
+	            <strong>昨天下载{{dayDownload}}次</strong>
+	        </div>
+	        <div class="stat stat-icon-7days">
+	            <strong>上月下载{{monthDownload}}次</strong>
+	        </div>
+	        <div class="stat stat-icon-1months">
+	            <strong>上年下载{{yearDownload}}次</strong>
+	        </div>
+	    </div>
+
+	    <div class="packages-show">
+			<div class="packages-show-title">
+				大家都喜欢下载这些包
+			</div>
+			<ul class="packages-columar">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
+							<img ng-src="{{package.gitIcon}}" />
+							<div class="verified">已认证</div>
+						</a>
+						<div class="packages-details">
+							<h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+	    </div>
+
+	    <div class="getting-start">
+	        <div class="getting-start-title">
+	            开始
+	        </div>
+
+	        <h1>安装paracraft包</h1>
+	        <p>
+	            You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
+	        </p>
+	        <a>下载Paracraft</a>
+	    </div>
+	</div>
+
+</div>
