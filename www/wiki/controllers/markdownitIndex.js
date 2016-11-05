@@ -9134,7 +9134,7 @@
     }
 
     function updateResult() {
-        var source = $('.source').val();
+        var source = editor.getValue();
 
         // Update only active view to avoid slowdowns
         // (debug & src view with highlighting are a bit slow)
@@ -9154,20 +9154,20 @@
 
         // reset lines mapping cache on content update
         scrollMap = null;
-        //
-        //try {
-        //    if (source) {
-        //        // serialize state - source and options
-        //        permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
-        //                source: source,
-        //                defaults: _.omit(defaults, 'highlight')
-        //            }), '-_.!~', false);
-        //    } else {
-        //        permalink.href = '';
-        //    }
-        //} catch (__) {
-        //    permalink.href = '';
-        //}
+
+        try {
+            if (source) {
+                // serialize state - source and options
+                permalink.href = '#md3=' + mdurl.encode(JSON.stringify({
+                        source: source,
+                        defaults: _.omit(defaults, 'highlight')
+                    }), '-_.!~', false);
+            } else {
+                permalink.href = '';
+            }
+        } catch (__) {
+            //permalink.href = '';
+        }
     }
 
 // Build offsets for each line (lines can be wrapped)
@@ -9326,20 +9326,20 @@
 
         // copy config to defaults, but only if key exists
         // and value has the same type
-        //_.forOwn(opts, function (val, key) {
-        //    if (!_.has(defaults, key)) { return; }
-        //
-        //    // Legacy, for old links
-        //    if (key === '_src') {
-        //        defaults._view = val ? 'src' : 'html';
-        //        return;
-        //    }
-        //
-        //    if ((_.isBoolean(defaults[key]) && _.isBoolean(val)) ||
-        //        (_.isString(defaults[key]) && _.isString(val))) {
-        //        defaults[key] = val;
-        //    }
-        //});
+        _.forOwn(opts, function (val, key) {
+            if (!_.has(defaults, key)) { return; }
+
+            // Legacy, for old links
+            if (key === '_src') {
+                defaults._view = val ? 'src' : 'html';
+                return;
+            }
+
+            if ((_.isBoolean(defaults[key]) && _.isBoolean(val)) ||
+                (_.isString(defaults[key]) && _.isString(val))) {
+                defaults[key] = val;
+            }
+        });
 
         // sanitize for sure
         if ([ 'html', 'src', 'debug' ].indexOf(defaults._view) === -1) {
@@ -9359,7 +9359,7 @@
             });
         }
 
-        //loadPermalink();
+        loadPermalink();
 
         // Activate tooltips
         $('._tip').tooltip({ container: 'body' });
@@ -9398,23 +9398,25 @@
         setResultView(defaults._view);
 
         mdInit();
-        //permalink = document.getElementById('permalink');
+        permalink = document.getElementById('permalink');
+
 
         // Setup listeners
-        $('.source').on('keyup paste cut mouseup', updateResult );
+        editor.on('change',updateResult);
 
-        $('.source').on('touchstart mouseover', function () {
-            $('.result-html').off('scroll');
-            $('.source').on('scroll', syncResultScroll);
-        });
-
-        $('.result-html').on('touchstart mouseover', function () {
-            $('.source').off('scroll');
-            $('.result-html').on('scroll', syncSrcScroll);
-        });
+        //$('.source').on('keyup paste cut mouseup', updateResult );
+        //
+        //$('.source').on('touchstart mouseover', function () {
+        //    $('.result-html').off('scroll');
+        //    $('.source').on('scroll', syncResultScroll);
+        //});
+        //
+        //$('.result-html').on('touchstart mouseover', function () {
+        //    $('.source').off('scroll');
+        //    $('.result-html').on('scroll', syncSrcScroll);
+        //});
 
         $('.source-clear').on('click', function (event) {
-            $('.source').val('');
             editor.setValue('');
             updateResult();
             event.preventDefault();
