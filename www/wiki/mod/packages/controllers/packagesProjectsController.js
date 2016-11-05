@@ -47,9 +47,11 @@ angular.module('MyApp')
         if($scope.projectType == 'npl'){
             $scope.editProfile = 'Edit profile';
             $scope.create = 'Create';
+            $scope.deleteDesc = "Are you sure delete this project?";
         }else if($scope.projectType == 'paracraft'){
             $scope.editProfile = '个人设置';
             $scope.create = '新建';
+            $scope.deleteDesc = "是否确定删除你的项目？";
         }
 
         packagesService.setProjectsType($scope.projectType);
@@ -119,7 +121,7 @@ angular.module('MyApp')
         }
 
         $scope.DeleteProject = function (packageId) {
-            if (confirm("Are you sure delete this project?")) {
+            if (confirm($scope.deleteDesc)) {
                 $http({
                     method: "POST",
                     url: "/api/mod/packages/models/packages/deletePackage",
@@ -239,9 +241,21 @@ angular.module('MyApp')
     $scope.projectName = '';
     $scope.projectDesc = '';
     $scope.projectGitURL = '';
+    $scope.projectType = packagesService.getProjectsType();
     $scope.version = '';
     $scope.projectTypeName = '';
-    $scope.projectType = '';
+
+    if ($scope.projectType == "npl") {
+        $scope.projectTypeName = "Modify your npl package";
+        $scope.versionDesc = "Version";
+        $scope.projectNameDesc = "Project name";
+        $scope.descriptionDesc = "Description";
+    } else if ($scope.projectType == "paracraft") {
+        $scope.projectTypeName = "修改 Paracraft 模块信息";
+        $scope.versionDesc = "版本";
+        $scope.projectNameDesc = "项目";
+        $scope.descriptionDesc = "描述"
+    }
 
     $scope.packageId = 0;
 
@@ -260,15 +274,7 @@ angular.module('MyApp')
                 $scope.projectName   = response.data.projectName;
                 $scope.projectDesc   = response.data.projectDesc;
                 $scope.projectGitURL = response.data.projectGitURL;
-                $scope.version       = response.data.version;
-
-                if (response.data.projectType == "npl") {
-                    $scope.projectType = "npl";
-                    $scope.projectTypeName = "npl package"
-                } else if (response.data.projectType == "paracraft") {
-                    $scope.projectType = "paracraft";
-                    $scope.projectTypeName = "paracraft mod"
-                }
+                $scope.version        = response.data.version;
             },
             function (response) {
 
