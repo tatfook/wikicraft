@@ -45,6 +45,7 @@ if(is_ajax()) then
 		function()
 			local url		  = request:get('url');
 			local projectName = request:get('projectName');
+			local projectType = request:get('projectType');
 			local packagesId  = tonumber(request:get('packagesId'));
 
 			local status	       = -5;--package是否可以下载，以前是否下载过
@@ -133,7 +134,13 @@ if(is_ajax()) then
 
 				downloadQueue.downloadStatus	 = 0;
 				downloadQueue.currentPackagesId  = 0;
-				downloadQueue.currentProjectName = 'Not yet!';
+				-- downloadQueue.currentProjectName = 'Not yet!';
+
+				if(projectType == 'npl') then
+					downloadQueue.currentProjectName = 'Not yet!';
+				elseif(projectType == 'paracraft') then
+					downloadQueue.currentProjectName = '还没有!';
+				end
 
 			end
 
@@ -182,43 +189,43 @@ PAGE_NO_SIDE_BAR = true;
 	<img ng-src="{{gitIcon}}">
      <div class="infor-details">
         <div class="item">
-            <label>Package name</label>
+            <label>{{language.packageNameDesc}}</label>
             <div>{{projectName}}</div>
         </div>
         <div class="item">
-            <label>Author</label>
+            <label>{{language.authorDesc}}</label>
             <div>{{author}}</div>
         </div>
         <div class="item">
-            <label>Version</label>
+            <label>{{language.versionDesc}}</label>
             <div>{{version}}</div>
         </div>
     </div>
     <div class="quene">
-        <h4>Thanks for download.</h4>
+        <h4>{{language.thanks}}</h4>
 		<br>
-		<h4 style="margin-top: -8px;">[Current download]</h4>
-        <div>
+		<h4 style="margin-top: -8px;">[{{language.current}}]</h4>
+		<div>
 			 <b>{{currentProjectName}}</b>
 		</div>
 		<br>
-		<h4>[Waiting download packages]</h4>
+		<h4>[{{language.waiting}}]</h4>
 		<div ng-repeat="package in waitPackages track by $index">
 			<b>
 			   #{{$index+1}} &nbsp;&nbsp;&nbsp;
-			   Project name:{{package.projectName}} &nbsp;&nbsp;&nbsp;
-			   Package id:{{package.packagesId}}
+			   {{language.projectNameDesc}}:{{package.projectName}} &nbsp;&nbsp;&nbsp;
+			   {{language.packageId}}:{{package.packagesId}}
 			</b>
 		</div>
 
 		<b ng-if="waitPackagesIsEmpty">
-			Not yet!
+			{{language.notYet}}
 		</b>
     </div>
     <div class="button">
-        <button class="start" ng-click="install()" disabled="disable">After {{seconds}}s will start</button>
+        <button class="start" ng-click="install()" disabled="disable">{{language.countDownA+seconds+language.countDownB}}</button>
         <button class="process" disabled="disabled"></button>
-        <span> Press close button at right top corner</span>
+        <span>{{language.tryAgain}}</span>
         <!--<button ng-click="cancel()">Cancel</button>-->
     </div>
 </div>

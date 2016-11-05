@@ -1,4 +1,4 @@
-﻿angular.module('plugin', ['ui.bootstrap'])
+angular.module('plugin', ['ui.bootstrap'])
 .controller('localInstallController', function ($scope, $http, $location, $interval,$timeout) {
     var params = $location.search();
 
@@ -8,11 +8,59 @@
     $scope.projectReleases = params.projectReleases;
     $scope.gitIcon = params.gitIcon;
     $scope.packagesId = params.packagesId;
+    $scope.projectType = params.projectType;
 
     $scope.seconds = 5;
-    $scope.currentProjectName = 'Not yet!';
     $scope.waitPackagesIsEmpty = true;
     $scope.waitPackages = [];
+
+    $scope.language = {};
+
+    var language_chinese = {
+        "starting":"开始中",
+        "notUpdate":"软件包未有更新",
+        "serviceNotAvailable":"网络似乎出现了一些问题，请稍后再试",
+        "complete":"完成！",
+        "packageNameDesc":"项目名称",
+        "authorDesc":"作者",
+        "versionDesc":"版本",
+        "thanks":"谢谢你的下载",
+        "current":"当前下载",
+        "waiting":"正在下载",
+        "projectNameDesc":"项目名称",
+        "packageId":"包ID",
+        "notYet":"还没有！",
+        "countDownA":"",
+        "countDownB":"秒后开始",
+        "tryAgain":"请按右上角的按钮关闭对话框",
+        "reply":"重试？"
+    };
+
+    var language_english = {
+        "starting":"Staring",
+        "notUpdate":"packages is not update",
+        "serviceNotAvailable":"service is not available now,please try again later",
+        "complete":"Download complete!",
+        "packageNameDesc":"Package name",
+        "authorDesc":"Author",
+        "versionDesc":"version",
+        "thanks":"Thanks for download.",
+        "current":"Current download",
+        "waiting":"Waiting download packages",
+        "projectNameDesc":"Project name",
+        "packageId":"Package id",
+        "notYet":"Not yet!",
+        "countDownA":"After ",
+        "countDownB":"s will start",
+        "tryAgain":"Press close button at right top corner",
+        "reply":"reply?"
+    };
+
+    if($scope.projectType == 'npl'){
+        $scope.language = language_english;
+    }else if($scope.projectType == 'paracraft'){
+        $scope.language = language_chinese;
+    }
 
     $interval(function () {
         $scope.seconds--;
@@ -20,7 +68,7 @@
 
     $timeout(function () {
         $scope.install();
-        $(".start").text("Starting......");
+        $(".start").text($scope.language.starting+"......");
     }, 5000);
 
     $scope.install = function () {
@@ -30,7 +78,8 @@
             data: {
                 url: $scope.projectReleases,
                 projectName: $scope.projectName,
-                packagesId: $scope.packagesId
+                packagesId: $scope.packagesId,
+                projectType: $scope.projectType
             }
         })
         .then(function (response) {
@@ -56,10 +105,10 @@
                 if (response.data.status == 1) {
                     $scope.getCurrentDownload();
                 } else if (response.data.status == 0) {
-                    $(".start").text("packages is not update");
+                    $(".start").text($scope.language.notUpdate);
                     $(".button span").css("display", "block");
                 } else if (response.data.status == -1) {
-                    $(".start").text("service is not available now,please try again later");
+                    $(".start").text($scope.language.serviceNotAvailable);
                     $(".button span").css("display", "block");
                     
                     if(confirm("reply?")){
@@ -116,7 +165,7 @@
                 
             } else if (response.data.status == 1) {
 
-                $(".start").text("Download complete!").css("background-color", "#00ffbd");
+                $(".start").text($scope.language.complete).css("background-color", "#00ffbd");
                 $(".process").css({ "opacity": "0", "width": "100%" });
                 $(".button span").css("display", "block");
 
