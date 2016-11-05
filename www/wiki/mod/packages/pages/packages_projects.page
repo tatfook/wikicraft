@@ -29,8 +29,8 @@ wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packag
                 </div>
                 <div class="project-operation">
                     <span>{{item.version}}</span>
-                    <a href="#" ng-click="ShowModifyProjectDialog(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u68.png"/></a>
-                    <a href="#" ng-click="DeleteProject(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u76.png"/></a>
+                    <a href="javascript:;" ng-click="ShowModifyProjectDialog(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u68.png"/></a>
+                    <a href="javascript:;" ng-click="DeleteProject(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u76.png"/></a>
                 </div>
             </div>
         </div>
