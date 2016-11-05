@@ -19,40 +19,27 @@ function packages_stats:recordCreate(projectType)
 	-- log({"create"});
 	newQuantity = 0;
 
-	self:db():findOne({["+statsType+projectType"] = {"packageStats",projectType}},
-		function(err, response)
-			log({"response",response});
-			if(response == nil) then
+	self:db():findOne({["+statsType+projectType"] = {"packageStats",projectType}},resume);
+	local err,response = yield(true);
 
-				self:db():insertOne(nil,{
-					statsType   = 'packageStats',
-					projectType = projectType,
-					quantity    = 1;
-				},
-				function(err,data)
-					--log(data);
-					resume();
-				end
-				);
-			else
-				newQuantity = response.quantity + 1;
+	if(not err) then
+		if(response == nil) then
+			self:db():insertOne(nil,{
+				statsType   = 'packageStats',
+				projectType = projectType,
+				quantity    = 1;
+			},resume);
 
-				self:db():updateOne(
-					{
-						["+statsType+projectType"] = {"packageStats",projectType}
-					},{
-						quantity  = newQuantity; 
-					},
-					function(err,data)
-						resume();
-					end
-				);
-			end
+			local err,response = yield(true);
+		else
+			newQuantity = response.quantity + 1;
+
+			self:db():updateOne({["+statsType+projectType"] = {"packageStats",projectType}},{quantity  = newQuantity},resume);
+			local err,response = yield(true);
 		end
-	);
-	yield();
+	end
 
-	return true;
+	return err;
 end
 
 function packages_stats:recordDelete(projectType)
@@ -184,41 +171,33 @@ function packages_stats:packagesStats(param)
 	end
 
 	self:db():findOne(
-		{["+statsType+projectType"] = {stats.statsType,stats.projectType}},
-		function(err,response)
-			log({"getStats",response})
+		{["+statsType+projectType"] = {stats.statsType,stats.projectType}},resume);
 
-			if (response == nil) then
-				returnData = {statsType = "nil"};
-				resume();
-			else
-				returnData = response;
-				resume();
-			end
+	local err,response = yield(true);
+	
+	if(not err) then
+		if (response == nil) then
+			returnData = {result=-1,msg="nil"};
+		else
+			returnData = response;
 		end
-	);
+	else
+		returnData = {result=-1,msg="nil"};
+	end
 
-	yield();
-	log({"returnData",returnData})
 	return returnData;
 end
 
 function packages_stats:validate_packagesStats(param)
-	local stats = {};
-
-	if(param.statsType == "packageStats") then
-		stats.statsType = 'packageStats';
-	end
-
-	if(param.projectType == "a") then
-		stats.projectType = "a"
-	elseif(param.projectType == "b") then
-		stats.projectType = "b"
-	else
+	if(param.statsType ~= "packageStats") then
 		return false;
 	end
 
-	return stats;
+	if(param.projectType ~= "npl" and param.projectType ~= "paracraft") then
+		return false;
+	end
+
+	return param;
 end
 
 function packages_stats:downloadStats(params)

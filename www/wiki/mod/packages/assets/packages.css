@@ -174,6 +174,7 @@ body {
   column-gap: 40px;
   list-style: none;
   padding: 0px;
+  min-height: 240px;
 }
 .packages .packages-show .packages-columar li {
   column-break-inside: avoid;
@@ -185,6 +186,7 @@ body {
 }
 .packages .packages-show .packages-columar li .packages-weight {
   padding-left: 65px;
+  height: 100px;
 }
 .packages .packages-show .packages-columar li .packages-weight .package-logo {
   display: block;

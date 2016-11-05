@@ -11,7 +11,7 @@
         }
     }
 })
-.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesPageService, packagesInstallService) {
+.controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesInstallService) {
     $scope.isadmin    = false;
     $scope.isVerified = null;
 
@@ -23,41 +23,42 @@
         }
     });
 
-    var absUrl = $location.absUrl();
-
-    if ($location.url() == "/npl") {
+    if ($location.path() == "/npl") {
         $scope.projectType = 'npl';
-    } else if ($location.url() == "/paracraft") {
+    } else if ($location.path() == "/paracraft") {
         $scope.projectType = 'paracraft';
-    } else {
-        $scope.projectType = 'npl';
+    } else{
+        $scope.projectType = '';
     }
 
-    // function UrlSearch() {
-    //     var name, value;
-    //     var str = location.href; //取得整个地址栏
-    //     var num = str.indexOf("?");
-    //     str = str.substr(num + 1); //取得所有参数   stringvar.substr(start [, length ]
+    if($scope.projectType == 'npl'){
+        $scope.authorDesc = 'Author';
+        $scope.versionDesc = 'Version';
+        $scope.updateDateDesc = 'Update date';
+        $scope.installTimesDesc = 'Install times';
+        $scope.installNow = 'Install now';
+        $scope.download = 'Download';
+        $scope.code = 'Github';
+    }else if($scope.projectType == 'paracraft'){
+        $scope.authorDesc = '创作者';
+        $scope.versionDesc = '版本';
+        $scope.updateDateDesc = '上次更新时间';
+        $scope.installTimesDesc = '安装次数';
+        $scope.installNow = '立即安装';
+        $scope.download = '直接下载';
+        $scope.code = '源码';
+    }else{
+        location.href="/wiki/mod/packages";
+    }
 
-    //     var arr = str.split("&"); //各个参数放到数组里
-    //     for (var i = 0; i < arr.length; i++) {
-    //         num = arr[i].indexOf("=");
-    //         if (num > 0) {
-    //             name = arr[i].substring(0, num);
-    //             value = arr[i].substr(num + 1);
-    //             this[name] = value;
-    //         }
-    //     }
-    // }
+    var request = $location.search();
 
-    // var Request = new UrlSearch();
-
-    if (Request.id != undefined && !isNaN(Request.id)) {
+    if (request.id != undefined && !isNaN(request.id)) {
         $http({
             method: 'POST',
             url: '/api/mod/packages/models/packages/getOnePackage',
             data: {
-                packageId: Request.id
+                packageId: request.id
             }
         })
         .then(function (response) {
@@ -170,7 +171,7 @@
                 method: "POST",
                 url: '/api/mod/packages/models/packages/download',
                 data: {
-                    packageId: Request.id,
+                    packageId: request.id,
                     projectType: $scope.projectType
                 }
             })
@@ -183,7 +184,7 @@
                         + '&projectName=' + $scope.projectName
                         + '&displayName=' + $scope.displayName
                         + '&version=' + $scope.version
-                        + '&packagesId=' + Request.id
+                        + '&packagesId=' + request.id
                     );
 
                     $uibModal.open({
