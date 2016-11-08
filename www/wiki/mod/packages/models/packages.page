@@ -18,6 +18,8 @@ function packages:ctor()
 	self:addfield("projectName", "string", true, 30);
 	--package description
 	self:addfield("projectDesc", "string", true, 150);
+	--package description
+	self:addfield("version", "string", true, 10);
 	--npl package or paracraft mod
 	self:addfield("projectType", "string", true, 20);
 	--github reponsity
@@ -72,19 +74,23 @@ function packages:api_createPackage(params)
 		query.projectReleases = query.projectGitURL..'/archive/master.zip';
 	end
 
+	if(query.version == "") then
+		query.version = "0.0.1"
+	end
+
 	-- log({"----------------------------------------query",query});
 
 	self:db():insertOne(nil,
 		{
 			projectName     = query.projectName,
 			projectDesc     = query.projectDesc,
+			version		    = query.version,
 			projectType     = query.projectType,
 			projectGitURL   = query.projectGitURL,
 			projectReleases = query.projectReleases,
 			projectUpdate	= ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 			userId          = self:getUserId(),
 			displayName     = query.displayName,
-			version			= '0.0.1',
 			installTimes	= 0,
 			isVerified		= "false"
 		 },

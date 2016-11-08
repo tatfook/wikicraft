@@ -210,7 +210,7 @@
                 method: "POST",
                 url: "/api/mod/packages/models/packages/verifyPackages",
                 data: {
-                    "packagesId": Request.id,
+                    "packagesId": request.id,
                     "isVerified": newValue.toString()
                 }
             })

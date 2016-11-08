@@ -44,7 +44,7 @@
 					<div class="packages-weight">
 						<a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">
 							<img ng-src="{{package.gitIcon}}" />
-							<div class="verified">verified</div>
+							<div ng-show="package.isVerified == 'true'" class="verified">verified</div>
 						</a>
 						<div class="packages-details">
 							<h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
@@ -109,7 +109,7 @@
 					<div class="packages-weight">
 						<a class="package-logo" target="_blank" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
 							<img ng-src="{{package.gitIcon}}" />
-							<div class="verified">已认证</div>
+							<div ng-show="package.isVerified == 'true'" class="verified">已认证</div>
 						</a>
 						<div class="packages-details">
 							<h3><a class="name" target="_blank" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>

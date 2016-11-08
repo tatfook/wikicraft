@@ -147,6 +147,7 @@ angular.module('MyApp')
 .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
     $scope.projectName = '';
     $scope.projectDesc = '';
+    $scope.version = '';
     $scope.projectGitURL = '';
     $scope.projectType = packagesService.getProjectsType();
     $scope.projectTypeName = '';
@@ -217,6 +218,7 @@ angular.module('MyApp')
             $http.post('/api/mod/packages/models/packages/createPackage', {
                 projectName     : $scope.projectName,
                 projectDesc     : $scope.projectDesc,
+                version         : $scope.version,
                 projectGitURL   : $scope.projectGitURL,
                 projectReleases : $scope.projectReleases,
                 projectType     : $scope.projectType,
