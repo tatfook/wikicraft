@@ -103,8 +103,7 @@ angular.module('MyApp')
                     case 'page':
                         $scope.websitePage = $scope.websitePages[tags[1]];
                         editor.setValue($scope.websitePage.content);
-                        $('#websiteUrl').empty();
-                        $('#websiteUrl').append($scope.websitePage.url);
+                        $('#btUrl').val($scope.websitePage.url);
                         break;
                     default:
                         console.log('tag error');
@@ -254,6 +253,25 @@ angular.module('MyApp')
             var cursor = editor.getCursor();
             editor.replaceRange('1. ',CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,0));
         }
+        editor.focus();
+    }
+
+    //加粗
+    $scope.cmd_bold = function () {
+        if(editor.somethingSelected()){
+            var sel = editor.getSelection();
+            var desStr = '**' + sel.replace(/\n/g,"**\n**") + '**';
+            editor.replaceSelection(desStr);
+        }else{
+            var cursor = editor.getCursor();
+            var content = editor.getLine(cursor.line);
+
+            editor.replaceRange('**',CodeMirror.Pos(cursor.line,content.length),CodeMirror.Pos(cursor.line,content.length));
+            editor.replaceRange('**',CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,0));
+
+            editor.setCursor(CodeMirror.Pos(cursor.line,content.length + 2));
+        }
+        editor.focus();
     }
 
 })

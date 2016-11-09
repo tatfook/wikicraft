@@ -8129,6 +8129,7 @@
             if (marker !== 0x3D/* = */) { return false; }
 
             scanned = state.scanDelims(state.pos, true);
+
             len = scanned.length;
             ch = String.fromCharCode(marker);
 
@@ -8944,6 +8945,268 @@
     module.exports = urlParse;
 
 },{}],73:[function(require,module,exports){
+    // Process wikicrafts   [\order](your parameter such as 'title:"标题')
+    'use strict';
+    const SYNTAX_CHARS = "@[]()".split("");
+    module.exports = function wikicraft_plugin(md,options) {
+
+        function advanceToSymbol(state, endLine, symbol, pointer) {
+            var maxPos = null;
+            var symbolLine = pointer.line;
+            var symbolIndex = state.src.indexOf(symbol, pointer.pos);
+
+            if (symbolIndex === -1) return false;
+
+            maxPos = state.eMarks[pointer.line];
+            while (symbolIndex >= maxPos) {
+                ++symbolLine;
+                maxPos = state.eMarks[symbolLine];
+
+                if (symbolLine >= endLine) return false;
+            }
+
+            pointer.prevPos = pointer.pos;
+            pointer.pos = symbolIndex;
+            pointer.line = symbolLine;
+            return true;
+        }
+        function tokenizer(state, startLine, endLine, silent) {
+            var order,paramete
+            var startPos = state.bMarks[startLine] + state.tShift[startLine];
+            var maxPos = state.eMarks[startLine];
+
+            var pointer = { line: startLine, pos: startPos };
+
+            // must be at start of input or the previous line must be blank.
+            if (startLine !== 0) {
+                var prevLineStartPos = state.bMarks[startLine - 1] + state.tShift[startLine - 1];
+                var prevLineMaxPos = state.eMarks[startLine - 1];
+                if (prevLineMaxPos > prevLineStartPos) return false;
+            }
+
+            // line should be at least 6 chars - "@[x]()"
+            if (maxPos - startPos < 6) return false;
+
+
+            if (state.src.charCodeAt(startPos) !== 0x40/* @ */) { return false; }
+            if (state.src.charCodeAt(startPos + 1) !== 0x5B/* \ */) { return false; }
+
+            for (pointer.pos = startPos + 2; pointer.pos < maxPos; pointer.pos++) {
+                if (state.src.charCodeAt(pointer.pos) === 0x20) { return false; }
+                if (state.src.charCodeAt(pointer.pos) === 0x5D /* ] */) {
+                    break;
+                }
+            }
+
+            if (pointer.pos === startPos + 2) { return false; } // no empty wikicraft labels
+            if (pointer.pos + 1 >= maxPos || state.src.charCodeAt(++pointer.pos) !== 0x28 /* ( */) { return false; }
+            pointer.pos++;
+
+            if (!advanceToSymbol(state, endLine, ")", pointer)) return false;
+            pointer.pos++;
+
+            // Do not recognize as block element when there is trailing text.
+            var trailingText = state.src
+                .substr(pointer.pos, maxPos - pointer.pos)
+                .trim();
+            if (trailingText !== "") return false;
+
+            console.log("trailingText:");
+            console.log(trailingText);
+
+            // Block image must be at end of input or the next line must be blank.
+            if (endLine !== pointer.line + 1) {
+                var nextLineStartPos = state.bMarks[pointer.line + 1] + state.tShift[pointer.line + 1];
+                var nextLineMaxPos = state.eMarks[pointer.line + 1];
+                if (nextLineMaxPos > nextLineStartPos) return false;
+            }
+
+            if (pointer.line >= endLine) return false;
+
+            if (!silent) {
+                var token;
+
+                //if (this.options.outputContainer) {
+                    token = state.push("block-wikicraft_open", 'wikicraft', 1);
+                    token.map = [ pointer.line, pointer.line + 1 ];
+
+                    //if (this.options.containerClassName) {
+                    //    token.attrSet("class", "wikicraft-editor");
+                    //}
+                //}
+
+                token = state.push("inline", "", 0);
+                token.content = state.src.substr(startPos, pointer.pos - startPos);
+                token.map = [ startLine, pointer.line + 1 ];
+                token.children = [];
+
+                //if (this.options.outputContainer) {
+                //    state.push("block-wikicraft_close", 'wikicraft', -1);
+                //}
+
+                state.line = pointer.line + 1;
+            }
+
+            return true;
+        }
+        md.block.ruler.before('fence', 'block-wikicraft', tokenizer, { alt: [ "paragraph", "reference", "blockquote", "list" ] });
+    };
+},{}],74:[function(require,module,exports){
+    // Process @[youtube](youtubeVideoID)
+    // Process @[vimeo](vimeoVideoID)
+    // Process @[vine](vineVideoID)
+    // Process @[prezi](preziID)
+
+    'use strict';
+
+    var yt_regex = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+    function youtube_parser (url) {
+        var match = url.match(yt_regex);
+        return match && match[7].length === 11 ? match[7] : url;
+    }
+
+    /*eslint-disable max-len */
+    var vimeo_regex = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
+    /*eslint-enable max-len */
+    function vimeo_parser (url) {
+        var match = url.match(vimeo_regex);
+        return match && typeof match[3] === 'string' ? match[3] : url;
+    }
+
+    var vine_regex = /^http(?:s?):\/\/(?:www\.)?vine\.co\/v\/([a-zA-Z0-9]{1,13}).*/;
+    function vine_parser (url) {
+        var match = url.match(vine_regex);
+        return match && match[1].length === 11 ? match[1] : url;
+    }
+
+    var prezi_regex = /^https:\/\/prezi.com\/(.[^/]+)/;
+    function prezi_parser(url) {
+        var match = url.match(prezi_regex);
+        return match ? match[1] : url;
+    }
+
+    var EMBED_REGEX = /@\[([a-zA-Z].+)\]\([\s]*(.*?)[\s]*[\)]/im;
+
+    function video_embed(md, options) {
+        function video_return(state, silent) {
+            var serviceEnd,
+                serviceStart,
+                token,
+                oldPos = state.pos;
+
+            if (state.src.charCodeAt(oldPos) !== 0x40/* @ */ ||
+                state.src.charCodeAt(oldPos + 1) !== 0x5B/* [ */) {
+                return false;
+            }
+
+            var match = EMBED_REGEX.exec(state.src);
+
+            if (!match || match.length < 3) {
+                return false;
+            }
+
+            var service = match[1];
+            var videoID = match[2];
+            var serviceLower = service.toLowerCase();
+
+            if (serviceLower === 'youtube') {
+                videoID = youtube_parser(videoID);
+            } else if (serviceLower === 'vimeo') {
+                videoID = vimeo_parser(videoID);
+            } else if (serviceLower === 'vine') {
+                videoID = vine_parser(videoID);
+            } else if (serviceLower === 'prezi') {
+                videoID = prezi_parser(videoID);
+            } else if (!options[serviceLower]) {
+                return false;
+            }
+
+            // If the videoID field is empty, regex currently make it the close parenthesis.
+            if (videoID === ')') {
+                videoID = '';
+            }
+
+            serviceStart = oldPos + 2;
+            serviceEnd = md.helpers.parseLinkLabel(state, oldPos + 1, false);
+
+            //
+            // We found the end of the link, and know for a fact it's a valid link;
+            // so all that's left to do is to call tokenizer.
+            //
+            if (!silent) {
+                state.pos = serviceStart;
+                state.posMax = serviceEnd;
+                state.service = state.src.slice(serviceStart, serviceEnd);
+                var newState = new state.md.inline.State(service, state.md, state.env, []);
+                newState.md.inline.tokenize(newState);
+
+                token = state.push('video', '');
+                token.videoID = videoID;
+                token.service = service;
+                token.level = state.level;
+            }
+
+            state.pos = state.pos + state.src.indexOf(')', state.pos);
+            state.posMax = state.tokens.length;
+            return true;
+        }
+
+        return video_return;
+    }
+
+    function video_url(service, videoID, options) {
+        switch (service) {
+            case 'youtube':
+                return '//www.youtube.com/embed/' + videoID;
+            case 'vimeo':
+                return '//player.vimeo.com/video/' + videoID;
+            case 'vine':
+                return '//vine.co/v/' + videoID + '/embed/' + options.vine.embed;
+            case 'prezi':
+                return 'https://prezi.com/embed/' + videoID +
+                    '/?bgcolor=ffffff&amp;lock_to_path=0&amp;autoplay=0&amp;autohide_ctrls=0&amp;' +
+                    'landing_data=bHVZZmNaNDBIWnNjdEVENDRhZDFNZGNIUE43MHdLNWpsdFJLb2ZHanI5N1lQVHkxSHFxazZ0UUNCRHloSXZROHh3PT0&amp;' +
+                    'landing_sign=1kD6c0N6aYpMUS0wxnQjxzSqZlEB8qNFdxtdjYhwSuI';
+        }
+    }
+
+    function tokenize_video(md, options) {
+        function tokenize_return(tokens, idx) {
+            var videoID = md.utils.escapeHtml(tokens[idx].videoID);
+            var service = md.utils.escapeHtml(tokens[idx].service).toLowerCase();
+            return videoID === '' ? '' :
+            '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" id="' +
+            service + 'player" type="text/html" width="' + (options[service].width) +
+            '" height="' + (options[service].height) +
+            '" src="' + options.url(service, videoID, options) +
+            '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+        }
+
+        return tokenize_return;
+    }
+
+    var defaults = {
+        url: video_url,
+        youtube: { width: 640, height: 390 },
+        vimeo: { width: 500, height: 281 },
+        vine: { width: 600, height: 600, embed: 'simple' },
+        prezi: { width: 550, height: 400 }
+    };
+
+    module.exports = function video_plugin(md, options) {
+        if (options) {
+            Object.keys(defaults).forEach(function(key) {
+                if (typeof options[key] === 'undefined') {
+                    options[key] = defaults[key];
+                }
+            });
+        } else {
+            options = defaults;
+        }
+        md.renderer.rules.video = tokenize_video(md, options);
+        md.inline.ruler.before('emphasis', 'video', video_embed(md, options));
+    };
+},{}],75:[function(require,module,exports){
     'use strict';
 
     /*eslint-env browser*/
@@ -9068,6 +9331,9 @@
         $('body').removeClass('result-as-debug');
         $('body').addClass('result-as-' + val);
         defaults._view = val;
+
+        $('.toolbar-page-view').removeClass('active');
+        $('.toolbar-page-'+val).addClass('active');
     }
 
     function mdInit() {
@@ -9084,7 +9350,9 @@
                 .use(require('markdown-it-ins'))
                 .use(require('markdown-it-mark'))
                 .use(require('markdown-it-sub'))
-                .use(require('markdown-it-sup'));
+                .use(require('markdown-it-sup'))
+                .use(require('markdown-it-wikicraft'))
+                .use(require('markdown-it-video'));
             mdSrc = window.markdownit(defaults)
                 .use(require('markdown-it-abbr'))
                 .use(require('markdown-it-container'), 'warning')
@@ -9094,7 +9362,9 @@
                 .use(require('markdown-it-ins'))
                 .use(require('markdown-it-mark'))
                 .use(require('markdown-it-sub'))
-                .use(require('markdown-it-sup'));
+                .use(require('markdown-it-sup'))
+                .use(require('markdown-it-wikicraft'))
+                .use(require('markdown-it-video'));
         }
 
         // Beautify output of parser for html content
@@ -9106,6 +9376,9 @@
             return window.twemoji.parse(token[idx].content);
         };
 
+        //mdHtml.renderer.rules.emoji = function(token, idx) {
+        //    return '<span class="emoji emoji_' + token[idx].markup + '"></span>';
+        //}
 
         //
         // Inject line numbers for sync scroll. Notes:
@@ -9400,7 +9673,6 @@
         mdInit();
         permalink = document.getElementById('permalink');
 
-
         // Setup listeners
         editor.on('change',updateResult);
 
@@ -9440,4 +9712,4 @@
         updateResult();
     });
 
-},{"highlight.js/lib//languages/asciidoc":6,"highlight.js/lib/highlight.js":1,"highlight.js/lib/languages/actionscript":2,"highlight.js/lib/languages/apache":3,"highlight.js/lib/languages/arduino":4,"highlight.js/lib/languages/armasm":5,"highlight.js/lib/languages/avrasm":7,"highlight.js/lib/languages/bash":8,"highlight.js/lib/languages/clojure":9,"highlight.js/lib/languages/cmake":10,"highlight.js/lib/languages/coffeescript":11,"highlight.js/lib/languages/cpp":12,"highlight.js/lib/languages/css":13,"highlight.js/lib/languages/diff":14,"highlight.js/lib/languages/django":15,"highlight.js/lib/languages/dockerfile":16,"highlight.js/lib/languages/fortran":17,"highlight.js/lib/languages/glsl":18,"highlight.js/lib/languages/go":19,"highlight.js/lib/languages/groovy":20,"highlight.js/lib/languages/handlebars":21,"highlight.js/lib/languages/haskell":22,"highlight.js/lib/languages/ini":23,"highlight.js/lib/languages/java":24,"highlight.js/lib/languages/javascript":25,"highlight.js/lib/languages/json":26,"highlight.js/lib/languages/less":27,"highlight.js/lib/languages/lisp":28,"highlight.js/lib/languages/livescript":29,"highlight.js/lib/languages/lua":30,"highlight.js/lib/languages/makefile":31,"highlight.js/lib/languages/matlab":32,"highlight.js/lib/languages/mipsasm":33,"highlight.js/lib/languages/nginx":34,"highlight.js/lib/languages/objectivec":35,"highlight.js/lib/languages/perl":36,"highlight.js/lib/languages/php":37,"highlight.js/lib/languages/python":38,"highlight.js/lib/languages/ruby":39,"highlight.js/lib/languages/rust":40,"highlight.js/lib/languages/scala":41,"highlight.js/lib/languages/scheme":42,"highlight.js/lib/languages/scss":43,"highlight.js/lib/languages/smalltalk":44,"highlight.js/lib/languages/stylus":45,"highlight.js/lib/languages/swift":46,"highlight.js/lib/languages/tcl":47,"highlight.js/lib/languages/tex":48,"highlight.js/lib/languages/typescript":49,"highlight.js/lib/languages/verilog":50,"highlight.js/lib/languages/vhdl":51,"highlight.js/lib/languages/xml":52,"highlight.js/lib/languages/yaml":53,"markdown-it-abbr":54,"markdown-it-container":55,"markdown-it-deflist":56,"markdown-it-emoji":57,"markdown-it-footnote":63,"markdown-it-ins":64,"markdown-it-mark":65,"markdown-it-sub":66,"markdown-it-sup":67,"mdurl":71}]},{},[73]);
+},{"highlight.js/lib//languages/asciidoc":6,"highlight.js/lib/highlight.js":1,"highlight.js/lib/languages/actionscript":2,"highlight.js/lib/languages/apache":3,"highlight.js/lib/languages/arduino":4,"highlight.js/lib/languages/armasm":5,"highlight.js/lib/languages/avrasm":7,"highlight.js/lib/languages/bash":8,"highlight.js/lib/languages/clojure":9,"highlight.js/lib/languages/cmake":10,"highlight.js/lib/languages/coffeescript":11,"highlight.js/lib/languages/cpp":12,"highlight.js/lib/languages/css":13,"highlight.js/lib/languages/diff":14,"highlight.js/lib/languages/django":15,"highlight.js/lib/languages/dockerfile":16,"highlight.js/lib/languages/fortran":17,"highlight.js/lib/languages/glsl":18,"highlight.js/lib/languages/go":19,"highlight.js/lib/languages/groovy":20,"highlight.js/lib/languages/handlebars":21,"highlight.js/lib/languages/haskell":22,"highlight.js/lib/languages/ini":23,"highlight.js/lib/languages/java":24,"highlight.js/lib/languages/javascript":25,"highlight.js/lib/languages/json":26,"highlight.js/lib/languages/less":27,"highlight.js/lib/languages/lisp":28,"highlight.js/lib/languages/livescript":29,"highlight.js/lib/languages/lua":30,"highlight.js/lib/languages/makefile":31,"highlight.js/lib/languages/matlab":32,"highlight.js/lib/languages/mipsasm":33,"highlight.js/lib/languages/nginx":34,"highlight.js/lib/languages/objectivec":35,"highlight.js/lib/languages/perl":36,"highlight.js/lib/languages/php":37,"highlight.js/lib/languages/python":38,"highlight.js/lib/languages/ruby":39,"highlight.js/lib/languages/rust":40,"highlight.js/lib/languages/scala":41,"highlight.js/lib/languages/scheme":42,"highlight.js/lib/languages/scss":43,"highlight.js/lib/languages/smalltalk":44,"highlight.js/lib/languages/stylus":45,"highlight.js/lib/languages/swift":46,"highlight.js/lib/languages/tcl":47,"highlight.js/lib/languages/tex":48,"highlight.js/lib/languages/typescript":49,"highlight.js/lib/languages/verilog":50,"highlight.js/lib/languages/vhdl":51,"highlight.js/lib/languages/xml":52,"highlight.js/lib/languages/yaml":53,"markdown-it-abbr":54,"markdown-it-container":55,"markdown-it-deflist":56,"markdown-it-emoji":57,"markdown-it-footnote":63,"markdown-it-ins":64,"markdown-it-mark":65,"markdown-it-sub":66,"markdown-it-sup":67,"mdurl":71,"markdown-it-wikicraft":73,"markdown-it-video":74}]},{},[75]);
