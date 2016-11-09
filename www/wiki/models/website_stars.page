@@ -4,99 +4,56 @@ Title: stars owned by a website
 Author: wuxiangan
 Date: 2016/10/16
 ]]
-include_once("./website.page");
+include_once("./website.page")
 
-local website_stars = inherit(models.abstract.base, gettable("models.website_stars"));
-
-website_stars.db_name = "website_stars";
--- we will only keep the most recent self.max_stars, however the actual star count can be millions
-website_stars.max_stars = 100;
--- max text length
-local max_length = 5000;
+local website_stars = inherit(models.abstract.base, gettable("models.website_stars"))
+website_stars.db_name = "website_stars"
 
 function website_stars:ctor()
-	-- unique name
-	self:addfield("websiteName", "string", true, 30);
-	-- commar separated string of userid that has stared this website
-	-- please note, we will only keep the most recent self.max_stars
-	self:addfield("stars", "string", nil);
+	self:addfield("websiteName", "string", false, 30)
+	self:addfield("userId", "number", nil)
 end
 
--- return {name, stars=userid string}
 function website_stars:get(params)
-	local proj = website_stars._super.get(self, params);
-	if(proj and proj.stars) then
-		--local users = {};
-		--for userid in proj.stars:gmatch("%d+") do
-			--users[#users+1] = tonumber(userid);
-		--end
-		--return next(users) and users;
-		return proj;
-	end
+	self:db():find(params, resume)
+
+	if err then
+		return errors:wrap(err, data)
+	end	
+
+	return {error=errors.SUCCESS, data=data}
 end
 
 function website_stars:create(params)
+	self:db():findOne(params, resume)
+	local err ,data = yield()
+	
+	if data then
+		return {error=errors.SUCCESS, data=data}
+	end
+
+	self:db():insertOne(nil, params, resume)
+	local err ,data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end	
+
+	return {error=errors.SUCCESS, data=data}
 end
 
 function website_stars:update(params)
+	-- no update 
 end
 
 function website_stars:delete(params)
+	self:db():delete(params, resume)
+	local err, data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end	
+
+	return {error=errors.SUCCESS, data=data}
 end
 
--- protected: 
--- @return true if added;
-function website_stars:addUser(project_name, user_id)
-	if(not user_id or not project_name) then
-		return
-	end
-	local proj = self:get({name=project_name});
-	if(proj) then
-		local stars = proj.stars;
-		if(stars:match(tostring(user_id)..",")) then
-			return true;
-		end
-		-- add to project
-		if(#stars > max_length) then
-			-- add to front, pop the last.
-			stars = stars:gsub("[%d]+,$", "");
-			stars = (tostring(user_id)..",")..stars;
-		else
-			stars = (tostring(user_id)..",")..stars;
-		end
-		local err, data = self:db():updateOne({name = project_name}, {stars = stars}, resume)
-		if(data) then
-			return true;
-		end
-	else
-		local stars = (tostring(user_id)..",");
-		local err, data = self:db():insertOne(nil, {name = project_name, stars = stars, }, resume);
-		if(data) then
-			return true;
-		end
-	end
-end
-
--- protected: 
--- @return true if removed
-function website_stars:removeUser(project_name, user_id)
-	if(not user_id or not project_name) then
-		return
-	end
-	local proj = self:get({name=proj_name});
-	if(proj) then
-		local stars = proj.stars;
-		-- remove user from project
-		local new_stars = stars:gsub(tostring(user_id)..",", "");
-		if(new_stars ~= stars) then
-			local res = website_stars._super.update(self, {name = project_name, stars = new_stars})
-			if(res) then
-				return true;
-			end
-		else
-			return true;
-		end
-	else
-		return true;
-	end
-end

@@ -25,8 +25,8 @@ body,
 .result-html {
     padding: 2px 10px;
     overflow: auto;
-    background-color: #fff;
-    border: 1px solid #eee;
+    /*background-color: #fff;*/
+    /*border: 1px solid #eee;*/
     /*border: 1px solid #ccc;*/
     /*border-radius: 4px;*/
 }
@@ -50,6 +50,7 @@ body,
 }
 .result-as-src .result-src {
     display: block;
+    border-radius: 0;
 }
 .result-as-src .result-html,
 .result-as-src .result-debug {
@@ -64,21 +65,16 @@ body,
 }
 .demo-control {
     position: absolute;
-    right: 15px;
+    right: 5px;
     top: -17px;
-    border-radius: 6px 6px 0 0;
+    border-radius: 3px 3px 0 0;
     font-size: 12px;
-    background-color: #ddd;
+    /*background-color: #ddd;*/
 }
 .demo-control a {
-    padding: 0 20px;
+    padding: 5px 20px;
 }
-.demo-control a:first-child {
-    padding-left: 30px;
-}
-.demo-control a:last-child {
-    padding-right: 30px;
-}
+
 .hljs {
     padding: 9.5px;
 }
@@ -141,12 +137,11 @@ body,
     width: auto;
 }
 
-.navbar{
-    margin-bottom: 0px;
-}
-
 .btn-toolbar{
-    margin:10px;
+    margin-top:5px;
+    margin-bottom:5px;
+    margin-left:10px;
+    margin-right:10px;
 }
 
 .nopadding{
@@ -176,3 +171,27 @@ body,
     font-size: 14px;
     height: auto;
 }
+
+.container{
+    width: auto;
+}
+
+.list-group-item {
+    padding: 3px 8px;
+}
+
+.list-group-item:first-child {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.list-group-item:last-child {
+    margin-bottom: 0;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.well{
+    margin-bottom: auto;
+}
+

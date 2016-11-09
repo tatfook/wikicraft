@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <!--内容-->
+        <div class="col-md-9">
+            <!-- __PageContent__页面内容占位符, 被页面内容替换-->
+            __PageContent__
+
+            <!-- 预览或编辑时显示内容 -->
+            <div ng-if="isPreview">
+                页面主体
+            </div>
+        </div>
+
+        <!--右侧栏-->
+        <div class="col-md-3">
+            <!--wiki 页面导航模块-->
+            <!-- [PageNavTree]() -->
+
+            <!-- 预览或编辑时显示内容 -->
+            <div ng-if="isPreview">
+                右侧栏内容
+            </div>
+        </div>
+    </div>
+</div>

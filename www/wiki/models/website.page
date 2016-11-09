@@ -16,10 +16,12 @@ website.max_items_per_user = 10;
 
 function website:ctor()
 	self:addfield("name", "string", true, 30);
+	self:addfield("userId", "number", false)
 	self:addfield("desc", "string", false, 120);
 	self:addfield("domain", "string", false, 30);
 	self:addfield("url","string", true, 100);
 	self:addfield("tags","string", false, 300);
+	self:addfield("logoUrl", "string", false, 120);
 	self:addfield("categoryId","number", false, nil, 1);
 	self:addfield("categoryName","string", false, 32);
 	self:addfield("templateId","number", false, nil, 1);
@@ -33,8 +35,8 @@ function website:ctor()
 	self:addfield("createDate", "string", false, 64);
 	self:addfield("updateDate", "string", false, 64);
 	self:addfield("stars", "number");
-	self:addfield("private", "number");
-
+	self:addfield("private", "number");	
+	self:addfield("memberCount", "number");
 	self:addfield("visitNum", "number");
 	self:addfield("pageNum", "number");
 end
@@ -82,4 +84,32 @@ function website:update(params)
 	self._super.update(self, params);
 	return self:get();
 end
+
+function website:api_getWebsiteByName(params)
+	if not params.name then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
+	end
+
+	self:findOne(params, resume)
+	local err, data = yield()
+	
+	if err then
+		return errors.wrap(err, data)
+	end
+
+	return {error=errors.SUCCESS, data}
+end
+
+-- 获得用户项目列表
+function website:getWebsiteListByUserId(userId) 
+	if not userId then 
+		return nil
+	end
+
+	self:db():find({userId=userId}, resume)
+	local err , data = yield()
+
+	return data	
+end
+
 

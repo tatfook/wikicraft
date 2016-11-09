@@ -53,7 +53,7 @@
     margin-bottom: 0px;
 }
 .wiki-content{
-    margin-top:5px;
+    /*margin-top:5px;*/
 }
 .wiki-page{
 }
@@ -95,7 +95,7 @@
 }
 .wiki img{
     max-width: 100%;
-    height: auto;
+    /*height: auto;*/
 }
 .loginbox {
     color: #355368;

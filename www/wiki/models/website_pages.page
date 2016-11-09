@@ -194,9 +194,21 @@ function website_pages:getArrayTree(objectTree)
 	return pages
 end
 
+-- params: in websiteName
+function website_pages:api_getWebsitePageList(params)
+	if not params.websiteName then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
 
+	self:db():find({websiteName=params.websiteName}, resume)
+	local err, data = yield()
+	
+	if err then
+		return errors:wrap(err, data)
+	end
 
-
+	return {error=errors.SUCCESS, data=data}
+end
 
 
 

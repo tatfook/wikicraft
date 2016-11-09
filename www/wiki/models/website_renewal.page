@@ -1,0 +1,93 @@
+<?npl
+--[[
+Title: website renewal model
+Author: wuxiangan
+Date: 2016/11/07
+]]
+
+--NPL.load("(gl)script/ide/DateTime.lua")
+--local timehelp = commonlib.timehelp
+
+include_once("./abstract/base.page");
+
+local website_renewal = inherit(models.abstract.base, gettable("models.website_renewal"))
+website_renewal.db_name="website_renewal"
+
+function website_renewal:ctor()
+	self:addfield("name", "string", true, 30)   -- 所属者 组织名, 个人创建的其它站点归属个人站下
+	self:addfield("websiteId", "string")      -- 组织内作品的ID
+
+	self:addfield("createDate", "string", false, 64);
+	self:addfield("updateDate", "string", false, 64);
+end
+
+-- 获取最近更新的数量
+function website_renewal:api_getRenewalCount(params)
+	local startDate = params.startDate or ""
+	if params.name then
+		self:db():count({["+name-updateDate"]={params.name,gt=startDate}}, resume)
+	else
+		self:db():count({["-updateDate"]={gt=startDate}}, resume)
+	end
+
+	local err, data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	return {error=errors.SUCCESS, data=data}
+end
+
+-- 获取最近更新
+function website_renewal:get(params)
+	local page = params.page or 1
+	local pageSize = params.pageSize  or 10
+	local skip = (page - 1) * pageSize
+	local startDate = params.startDate or ""
+	if params.name then
+		self:db():find({["+name-updateDate"]={params.name,gt=startDate, skip=skip, limit=pageSize}}, resume)
+	else
+		self:db():find({["-updateDate"]={gt=startDate, skip=skip, limit=pageSize}}, resume)
+	end
+	local err, data = yield()
+	
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	return {error=errors.SUCCESS, data=data}
+end	
+
+-- 更新一个站点
+function website_renewal:update(params)	
+	if (not params.name) or (not params.websiteId) then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	--local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	local currentDate = '2016-12-03'
+	self:db():updateOne(params,{updateDate=currentDate}, resume)
+	local err, data = yield()
+	
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	return {error=errors.SUCCESS, data=data}
+end
+
+function website_renewal:create(params) 
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = params.createDate
+
+	self:db():insertOne(nil, params, resume)
+	local err, data = yield()
+	
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	return {error=errors.SUCCESS, data=data}
+end
+
