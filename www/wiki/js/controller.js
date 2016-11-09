@@ -253,8 +253,8 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareO
 	$scope.goEditWebsitePagePage = function (website) {
         ctrlShareObj.website = website;
         console.log(ctrlShareObj.website);
-        $state.go('index.editWebsitePage');
-        //window.location.href="/wiki/editor";
+        //$state.go('index.editWebsitePage');
+        window.location.href="/wiki/editor";
     }
 
     $scope.goCreateWebsitePage = function () {

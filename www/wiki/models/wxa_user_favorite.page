@@ -19,7 +19,7 @@ function wxa_user_favorite:ctor()
 end
 
 
-function wxa_user_favorite:get(params) 
+function wxa_user_favorite:api_getFavoriteByUserId(params) 
 	if not params.userId then
 		return {error:errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
@@ -52,3 +52,32 @@ function wxa_user_favorite:get(params)
 	
 	return {error=errors.SUCCESS, data=data}
 end
+
+
+-- 获取单个项目的关注人列表
+function wxa_user_favorite:api_getWebsiteFans(params)
+	if not params.websiteId then
+		return {error:errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+	
+	local page = params.page or 1
+	local pageSize = params.pageSize or 10
+	local skip = (page - 1) * pageSize
+	 
+	self:db():find({_id={gt=-1, limit=pageSize, offset=skip}, type="website", favoriteId=params.websiteId}, resume)
+	loccal err, data = yield()
+	
+	local userList = {}
+	local userDB = models.wxa_user:new()
+	for _,value in pairs(data) do
+		userDB:db():findOne({_id=value.userId}, resume)
+		local err, user = yield()
+		userList[#userList+1] = user
+	end
+
+	return {error=errors.SUCCESS, data = userList}	
+end
+
+
+
+
