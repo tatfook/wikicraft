@@ -39,6 +39,7 @@
         $scope.installNow = 'Install now';
         $scope.download = 'Download';
         $scope.code = 'Github';
+        $scope.verified = 'verified';
     }else if($scope.projectType == 'paracraft'){
         $scope.authorDesc = '创作者';
         $scope.versionDesc = '版本';
@@ -47,6 +48,7 @@
         $scope.installNow = '立即安装';
         $scope.download = '直接下载';
         $scope.code = '源码';
+        $scope.verified = '已认证';
     }else{
         location.href="/wiki/mod/packages";
     }
