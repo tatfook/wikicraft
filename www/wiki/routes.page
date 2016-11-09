@@ -21,10 +21,11 @@ WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
 WIKI_ROOT = dirname(__FILE__);
 
 local ajax_type, ajax_path = path:match("^/?api/(%w+)/(.+)");
+
 if(ajax_type == "mod") then
 	include_once("./mod/routes.page");
 	return;
-elseif(ajax_type == "wiki") then	
+elseif(ajax_type == "wiki") then
 	-- Allow for cross-domain requests (from the frontend). 
 	send_origin_headers();
 	-- cross-domain request allow
@@ -32,13 +33,13 @@ elseif(ajax_type == "wiki") then
 	addheader('Access-Control-Allow-Methods',"GET, POST, PUT, DELETE");  -- debug use
 	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With"); -- debug use
 
-	addheader( 'Content-Type', 'text/html'); 
-	addheader( 'X-Robots-Tag', 'noindex'); 
+	addheader( 'Content-Type', 'text/html');
+	addheader( 'X-Robots-Tag', 'noindex');
 	send_nosniff_header();
-	nocache_headers();	
+	nocache_headers();
 
 	-- debug use start
-	if request:GetMethod() == "OPTIONS" then 
+	if request:GetMethod() == "OPTIONS" then
 		return response:send("OPTIONS", true);
 	end
 	-- end

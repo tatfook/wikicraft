@@ -32,6 +32,43 @@ body{
 }
 
 .packages{
+    .packages-tabs{
+        float: left;
+        height: 30px;
+        line-height: 30px;
+        width: auto;
+        background-color: #999;
+
+        a{
+            color: #FFF;
+            text-decoration: none;
+        }
+
+        a.active{
+            display: block;
+            background-color: #333;
+        }
+
+        a:hover{
+            opacity: .8;
+        }
+
+        a:nth-child(1){
+            float: left;
+            width: 100px;
+            height: 100%;
+            text-align: center;
+        }
+
+        a:nth-child(2){
+            float: right;
+            width: 100px;
+            height: 100%;
+            text-align: center;
+        }
+
+    }
+
     .my-projects{
         &:after{
             display:block;
@@ -168,6 +205,7 @@ body{
             column-gap: 40px;
             list-style: none;
             padding: 0px;
+            min-height: 240px;
 
             li{
                 column-break-inside: avoid;
@@ -179,6 +217,7 @@ body{
 
                 .packages-weight{
                     padding-left: 65px;
+                    height: 100px;
 
                     .package-logo{
                         display:block;
@@ -284,6 +323,15 @@ body{
 .packages-install{
     padding-top: 45px;
 
+    .infor-logo{
+        float:left;
+        margin-top: -85px;
+
+        img{
+            width: 66px;
+        }
+    }
+
     .install-infor{
         width: 100%;
         border-bottom: 2px solid rgba(0,0,0,0.08);
@@ -298,6 +346,10 @@ body{
         & > p{
             font-size: 22px;
             color: #666666;
+        }
+
+        & > h2,& > p{
+            padding-left: 80px;
         }
 
         .infor-main{
@@ -339,31 +391,43 @@ body{
                         border-radius: 5px;
                     }
 
-                    .favorite{
+                    .download-now{
                         width: 145px;
                         height: 40px;
-                        background-color: #FFCC00;
-                        color: #FFF;
+                        background-color: #CCC;
+                        color: #000;
                         border: none;
                         border-radius: 5px;
                         margin-left: 5px;
+                        display: inline-block;
+                        text-align: center;
+                        line-height: 40px;
+                    }
+
+                    .github{
+                        width: 145px;
+                        height: 40px;
+                        background-color: #CCC;
+                        color: #000;
+                        border: none;
+                        border-radius: 5px;
+                        margin-left: 5px;
+                        display: inline-block;
+                        text-align: center;
+                        line-height: 40px;
+
+                        svg{
+                            vertical-align: sub;
+                        }
                     }
                  }
-            }
-
-            .infor-logo{
-                float:right;
-
-                img{
-                    width: 215px;
-                }
             }
         }
     }
 }
 
 .packages-projects{
-    width: 1170px;
+    max-width: 1170px;
     padding-top: 35px;
 
     &::after{
@@ -423,6 +487,20 @@ body{
         .tabs{
             height: 53px;
             border-bottom: 2px solid #E7E7E7;
+
+            .createNewPackages{
+                border: none;
+				width: 100px;
+				height: 30px;
+				font-size: 13px;
+				vertical-align: middle;
+				line-height: 26px;
+				border-radius: 3px;
+				outline: none;
+                background: #ffa6a6;
+                color: #FFF;
+                font-weight: 600;
+            }
 
             a{
                 font-size: 18px;
@@ -524,7 +602,7 @@ body{
     }
 
     .packages_from{
-        height: 435px;
+        height: 485px;
         
         h1{
             text-align: center;

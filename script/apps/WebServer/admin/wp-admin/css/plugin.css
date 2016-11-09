@@ -1,7 +1,11 @@
 .plugin {
   width: 100%;
-  height: 465px;
+  height: 545px;
   margin: 0 auto;
+  text-align: center;
+}
+.plugin > img {
+  width: 70px;
 }
 .plugin h1 {
   font-size: 32px;
@@ -39,16 +43,15 @@
   float: right;
 }
 .plugin .quene {
-  /*overflow-y: hidden;*/
   overflow-y: auto;
   width: 52.5%;
-  /*border: none;*/
   border: solid 1px #000;
   font-size: 13px;
   margin: 0 auto;
   padding: 5px;
   height: 180px;
   margin-top: 20px;
+  text-align: left;
 }
 .plugin .button {
   width: 385px;
