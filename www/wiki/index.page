@@ -8,6 +8,7 @@
     <!-- plugin css -->
     <link href="/wiki/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/wiki/plugins/ui-select/select.css" rel="stylesheet" >
+	<link href="/wiki/plugins/cropper/cropper.min.css">
 
     <!-- plugin js -->
     <script src="/wiki/plugins/jquery/jquery.min.js"></script>
@@ -21,14 +22,19 @@
     <script src="/wiki/plugins/github-api/GitHub.bundle.min.js"></script>
     <script src="/wiki/plugins/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="/wiki/plugins/ui-select/select.js"></script>
+	<script src="/wiki/plugins/ace/ace.js"></script>
+    <script src="/wiki/plugins/markdown-it/markdown-it.min.js"></script>
+    <script src="/wiki/plugins/cropper/cropper.min.js"></script>
 
     <!-- self js -->
     <script src="/wiki/js/util.js"></script>
     <script src="/wiki/js/app.js"></script>
     <script src="/wiki/js/config.js"></script>
     <script src="/wiki/js/factory.js"></script>
+	<script src="/wiki/js/moduleParser.js"></script>
     <script src="/wiki/js/controller.js"></script>
     <script src="/wiki/js/userController.js"></script>
+	<script src="/wiki/js/editorController.js"></script>
 </head>
 <body>
 <div ng-app="MyApp" ng-controller="mainCtrl">

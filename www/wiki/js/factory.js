@@ -18,13 +18,11 @@ app.factory('Account', function () {
     }
 });
 
-app.factory('ctrlShareObj', function ($http) {
-    var obj = {};
-
-    return obj;
+app.factory('SelfData', function () {
+    return {};
 });
 
-app.factory('projectStorageProvider', function ($http) {
+app.factory('ProjectStorageProvider', function ($http) {
     // github 数据源
     var github = {
         repoName:'wikicraftDataSource',

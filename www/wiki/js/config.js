@@ -45,22 +45,20 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }).state('index.gitVersion', {
         url:'gitVersion',
         templateUrl:templatePath + 'gitVersion.html',
+    }).state('index.editor', {
+        url:'editor',
+        templateUrl:templatePath + 'editor.html',
+    }).state('index.userpage', {
+        url:'userpage',
+        templateUrl:templatePath + 'userpage.html',
     });
+
 
     $stateProvider.state('user', {
         url:'/user',
         views:{
             'default':{
                 templateUrl:templatePath + 'user.html'
-            },
-        },
-    });
-
-    $stateProvider.state('custom', {
-        url:'/custom',
-        views:{
-            'default':{
-                templateUrl:templatePath + 'custom.html'
             },
         },
     });

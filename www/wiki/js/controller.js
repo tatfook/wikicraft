@@ -2,7 +2,11 @@
  * Created by wuxiangan on 2016/9/26.
  */
 
-app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, projectStorageProvider) {
+app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile, Account, SelfData, ProjectStorageProvider) {
+    /*配置一些全局服务*/
+    util.setAngularServices({$http:$http, $state:$state, $compile:$compile});
+    util.setSelfServices({Account:Account, ProjectStorageProvider:ProjectStorageProvider, SelfData: SelfData});
+
     $rootScope.isLogin = true;
     $rootScope.user = {username:"逍遥"}
     $rootScope.goLoginPage=function () {
@@ -20,7 +24,7 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
     var pathname = window.location.pathname;
     var hash = window.location.href;
     var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
-    var pagename = '/index';
+    var pagename = 'index';
 
 	// 排除IP访问
 	if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
@@ -29,9 +33,11 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
 
     if (sitename) {
         sitename = sitename[1];
-        pagename = pathname;
+        pagename = pathname.match(/^\/?([^\/]+)/);
+        pagename = pagename ? pagename[1] : 'index';
     } else {
-        sitename = pathname.match(/^\/?([^\/]+)(.*)/);  // 这里不会返回null
+        sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
+		console.log(sitename);
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
@@ -41,17 +47,18 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
         $state.go('index.'+hash);
     }
     */
-
+    SelfData.sitename = sitename;
+    SelfData.pagename = pagename;
     // 初始化数据源
-	var actionName = 'index.test';
+	var actionName = 'index.website';
+    var selfData = util.getSelfServices().selfData;
 	if (sitename != "wiki" && sitename != "wiki_new") {
-        ctrlShareObj.pageContentUrl = sitename + pagename;
-		ctrlShareObj.sitename = sitename;
-		ctrlShareObj.pagename = pagename;
-        //$state.go('custom');
-		actionName = 'custom';
+        SelfData.pageUrl = sitename + '/' + pagename;
+        actionName = "index.userpage";
     }
 	console.log(actionName);
+	$state.go(actionName);
+	return ;
     const github = projectStorageProvider.getDataSource('github');
     github.init({
         username: '765485868@qq.com',
@@ -64,18 +71,31 @@ app.controller('mainCtrl', function ($scope, $rootScope, $state, ctrlShareObj, p
 app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
 });
 
-app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile, ctrlShareObj) {
+app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile) {
+    var md = window.markdownit({html:true});
+    var result = md.render('# markdown-it rulezz!  <div>hello world</div><script></script>');
+    console.log(result);
+});
+
+app.controller('userpageCtrl', function ($scope, $state, $http, $compile) {
+    util.setScope($scope);
+    // 获取页面
+    var moduleParser = new ModuleParser($scope);
+    util.http('POST', config.apiUrlPrefix+'website_pages/getWebsitePageByPath', {path:util.getSelfServices().SelfData.pageUrl}, function(data){
+        // 获取页面中模板
+        var pageContent = data ? data.content : '<div>用户页丢失!!!</div>';
+        moduleParser.render(pageContent);
+    });
 });
 
 
-app.controller('indexCtrl', function ($scope,$state, $sce, $auth, ctrlShareObj,projectStorageProvider) {
-    console.log("indexCtrl");
-    const github = projectStorageProvider.getDataSource('github');
+app.controller('indexCtrl', function ($scope,$state, $sce, $auth) {
+
 });
 
 
-app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShareObj,projectStorageProvider) {
-    const github = projectStorageProvider.getDataSource('github');
+app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth,ProjectStorageProvider) {
+    const github = ProjectStorageProvider.getDataSource('github');
     console.log("gitVersionCtrl");
     $scope.dtStartOpened = false;
     $scope.dtEndOpened = false;
@@ -141,142 +161,58 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth, ctrlShar
     }
 });
 
-app.controller('customCtrl', function ($scope, $state, $http, $compile, ctrlShareObj) {
-	var defaultPage = {content:'<div>网站没有内容,请添加页面</div>'}
-    var startScript = '<script type="text/javascript">$("#__PageContent__").html(config.templateObject.$scope.websitePage.page.content); config.templateObject.main && config.templateObject.main();</script>';
-	util.http($http, 'POST', config.apiUrlPrefix+'website_pages/getWebsiteStylePageByPath', {path:ctrlShareObj.pageContentUrl}, function(data){
-        $scope.websitePage = data  || defaultPage;
-		if (data) {
-            var content = $compile(data.style.content + startScript)($scope);
-            config.templateObject = {
-                $scope:$scope,
-                $http:$http,
-                $compile:$compile,
-                ctrlShareObj:ctrlShareObj,
-                executeTemplateScript:true,
-            };
-			$('#__StyleTemplateContent__').html(content);
-		} else {
-			$('#__StyleTemplateContent__').html(defaultPage.content);
-		}
-	});
-});
-
-app.controller('editWebsitePageCtrl', function ($scope, $state, $http, ctrlShareObj, projectStorageProvider) {
-    const github = projectStorageProvider.getDataSource('github');
-    $scope.websitePage = {};
-    $scope.submit = function () {
-        github.saveFile(ctrlShareObj.website.name + '/' + $scope.websitePage.name, $scope.websitePage.content, $scope.message);
-    }
-    /*
-    $scope.websites = [];
-    $scope.websitePages = [];
-    $scope.style = {}
-    var website = ctrlShareObj.website || {};
-*/
-    init();
-
-    function init() {
-        // 获取用户站点列表
-        /*
-        $http.post('http://localhost:8099/api/wiki/models/website',{userid:1}).then(function (response) {
-            $scope.websites = response.data;
-        }).catch(function (response) {
-            console.log(response.data);
-        });
-        */
-        // 获取网站所有页面
-		/*
-        $http.post('http://localhost:8099/api/wiki/models/website_pages',{websiteName:website.name}).then(function (response) {
-            $scope.websitePages = response.data.data;
-        }).catch(function (response) {
-            console.log(response.data);
-        });
-		*/
-        // 获取网站模板样式  页面内容嵌套在模板内部 编辑不需模板吧？？ 预览时你也可以获取自行嵌套
-        /*
-        $http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id:website.styleId}).then(function (response) {
-            $scope.style = response.data;  // 模板代码style.content
-        })
-        */
-    }
-/*
-    $scope.submit = function () {
-        var isEdit =false;
-        $scope.websitePage.path = $scope.websitePage.websiteName + '/' +  $scope.websitePage.name;
-        console.log($scope.websitePage);
-        if (isEdit == false) { // 新增
-            $http.put(config.apiUrlPrefix+'website_pages/new',$scope.websitePage).then(function (response) {
-                console.log(response.data.data);
-				$scope.websitePage.name = "";
-				$scope.websitePage.content = "";
-            }).catch(function (response) {
-                console.log(response.data);
-            });
-        } else {  // 修改
-            $http.put(config.apiUrlPrefix+'website_pages',$scope.websitePage).then(function (response) {
-                console.log(response.data.data);
-				$scope.websitePage.name = "";
-				$scope.websitePage.content = "";
-            }).catch(function (response) {
-                console.log(response.data);
-            });
-        }
-    }
-*/
-});
-
-app.controller('websiteCtrl', function ($scope,$state,$http, Account, ctrlShareObj) {
+app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) {
     $scope.websites = [];
     $scope.max_free_count = 3;
 
     getWebsistes();
     function getWebsistes() {
         // 获取项目列表
-        util.http($http,'POST', config.apiUrlPrefix+'website',{userid:Account.getUser()._id || -1}, function (data) {
+        util.http('POST', config.apiUrlPrefix+'website',{userid:Account.getUser()._id || -1}, function (data) {
             $scope.websites = data;
         });
     }
-/*
-	$scope.goWebsitePage = function(website) {
-		window.location.href = window.location.host + '/' + website.name;
-	}
-*/
+
+    // 访问网站
     $scope.goWebsiteIndexPage = function(websiteName) {
-        ctrlShareObj.pageContentUrl = websiteName + '/index';
-        ctrlShareObj.sitename = websiteName;
-        ctrlShareObj.pagename = 'index';
-        $state.go('custom');
-	//window.location.href= '/' + websiteName;
+        SelfData.pageUrl = websiteName + '/index';
+        SelfData.sitename = websiteName;
+        SelfData.pagename = 'index';
+        //$state.go('index.userpage');
+	    window.location.href= '/' + websiteName;
     }
 
+    // 编辑网站页面
 	$scope.goEditWebsitePagePage = function (website) {
         ctrlShareObj.website = website;
         console.log(ctrlShareObj.website);
-        //$state.go('index.editWebsitePage');
-        window.location.href="/wiki/editor";
+        $state.go('index.editor');
+        //window.location.href="/wiki/editor";
     }
 
+    //  创建网站
     $scope.goCreateWebsitePage = function () {
-        ctrlShareObj.website = undefined;
+        SelfData.website = undefined;
         $state.go('index.createWebsite');
     }
 
+    // 编辑网站
     $scope.goEditWebsitePage = function (website) {
-        ctrlShareObj.website = website;
+        SelfData.website = website;
         $state.go('index.createWebsite');
     }
 
+    // 删除网站
     $scope.deleteWebsite = function(id) {
-        util.http($http, "DELETE", config.apiUrlPrefix+'website', {_id:id}, function (data) {
+        util.http("DELETE", config.apiUrlPrefix+'website', {_id:id}, function (data) {
             $scope.websites = data;
         });
     }
 });
 
-app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlShareObj) {
-    $scope.website = ctrlShareObj.website || {};
-    $scope.editWebsite = ctrlShareObj.website ? true : false;
+app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfData) {
+    $scope.website = SelfData.website || {};
+    $scope.editWebsite = SelfData.website ? true : false;
     $scope.websiteNameErrMsg = "";
     $scope.websiteDomainErrMsg = "";
     $scope.errMsg = "";
@@ -291,7 +227,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
     init();
 
     function init() {
-        util.http($http, 'POST', config.apiUrlPrefix+'website_category',{}, function (data) {
+        util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
             $scope.categories = data;
             for (var i = 0; $scope.categories && i < $scope.categories.length; i++){
                 var cateory  = $scope.categories[i];
@@ -336,7 +272,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
             url += '/new';
         }
 
-        util.http($http, 'PUT', url, $scope.website, function (data) {
+        util.http('PUT', url, $scope.website, function (data) {
             $scope.step++;
         });
     }
@@ -394,7 +330,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
 
         $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
 
-        util.http($http, 'POST', config.apiUrlPrefix+'website', {name:$scope.website.name}, function (data) {
+        util.http('POST', config.apiUrlPrefix+'website', {name:$scope.website.name}, function (data) {
             if (data && data.length > 0 && $scope.website._id != data[0]._id) {
                 $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
                 $scope.nextStepDisabled = true;
@@ -413,7 +349,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
         }
 
         $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
-        util.http($http, 'POST', config.apiUrlPrefix+'website', {domain:$scope.website.domain}, function (data) {
+        util.http('POST', config.apiUrlPrefix+'website', {domain:$scope.website.domain}, function (data) {
             if (data && data.length > 0 && $scope.website._id != data[0]._id) {
                 $scope.websiteDomainErrMsg = $scope.website.domain + "已存在，请换个名字";
                 $scope.nextStepDisabled = true;
@@ -469,18 +405,27 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, ctrlS
         var hash = window.location.hash;
         window.open(url.replace(hash, '') + '?' + style._id + '#/preview');
     }
+
+    // 访问网站
+    $scope.goWebsiteIndexPage = function(websiteName) {
+        SelfData.pageUrl = websiteName + '/index';
+        SelfData.sitename = websiteName;
+        SelfData.pagename = 'index';
+        //$state.go('index.userpage');
+        window.location.href= '/' + websiteName;
+    }
 });
 
-app.controller('previewCtrl', function ($scope, $http, $sce) {
+app.controller('previewCtrl', function ($scope) {
     var styleId = window.location.search.replace('?','');
     styleId = parseInt(styleId);
-    util.http($http, 'POST', config.apiUrlPrefix+'website_template_style/getWebsiteTemplateStyleById',{_id:styleId}, function (data) {
-        $scope.style = data;
-        if (data.content) {
-            $scope.content = $sce.trustAsHtml(data.content);
-        } else {
-            $scope.content = $sce.trustAsHtml('<div>--------something wrong-----------</div>');
-        }
+    util.setScope($scope);
+    // 获取页面
+    var moduleParser = new ModuleParser($scope);
+    util.http('POST', config.apiUrlPrefix+'website_template_style/getIndexPage', {styleId:styleId}, function(data){
+        // 获取页面中模板
+        var pageContent = data;
+        moduleParser.render(pageContent);
     })
 });
 

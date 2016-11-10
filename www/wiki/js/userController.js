@@ -9,6 +9,12 @@ app.controller('userCenterCtrl', function ($scope, $http, Account, FileUploader)
     $scope.modifyUserInfoOk = 0;
     $scope.modifyPasswordOk = 0;
 
+    function clearTipMsg() {
+        $scope.tipInfo = "";
+        $scope.modifyUserInfoOk = 0;
+        $scope.modifyPasswordOk = 0;
+    }
+
     $('#uploadPortraitBtn').change(function (e) {
         var fileReader = new FileReader();
         fileReader.onload = function(){
@@ -37,5 +43,16 @@ app.controller('userCenterCtrl', function ($scope, $http, Account, FileUploader)
             $scope.tipInfo = "两次新密码不一致";
             $scope.modifyPasswordOk = false;
         }
+    }
+
+    $scope.clickBaseInfo = function () {
+        clearTipMsg();
+    }
+    $scope.clickAccountSafe = function () {
+        clearTipMsg();
+    }
+    $scope.clickMyFavorite = function() {
+        clearTipMsg()
+        console.log("hello world!!!");
     }
 });

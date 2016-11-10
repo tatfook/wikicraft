@@ -18,10 +18,10 @@ website_pages.max_length = 10000;
 
 function website_pages:ctor()
 	self:addfield("name", "string", false, 32);  -- 页面名
-	self:addfield("path", "string", true, 120);  -- 页面路径
+	self:addfield("path", "string", true, 120);  -- 页面路径   websiteName/pageName
 	-- self:addfield("websiteId", 'number', false); -- 所属站点id
 	self:addfield("websiteName", 'string', false); -- 所属站点名
-	self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
+	-- self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
 	self:addfield("content", "string", false, 100000);  -- 具体页面内容
 	-- sha hash: sha1("blob "+"filesize"+"\0"+"content");
 	self:addfield("sha", "string", false, 128);  -- 内容哈希值

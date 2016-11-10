@@ -14,9 +14,10 @@ website_template.db_name = "website_template";
 
 function website_template:ctor()
 	self:addfield("name", "string", false, 60);   -- 模板名
-	self:addfield("filename", "string", false, 120);   -- 模板名
 	self:addfield("categoryId", "number", false); -- 分类ID
-	self:addfield("content", "string", false, 1200);   -- 模板内容
+	self:addfield("logoUrl", "string", false)     -- logo
+	-- self:addfield("content", "string", false, 1200);   -- 模板内容   wiki template command
+	self:addfield("filename", "string", false, 120);   -- 模板名
 end
 
 function website_template:get(params)
@@ -30,7 +31,7 @@ function website_template:get(params)
 	local template_style = models.website_template_style:new();
 
 	for key, value in pairs(data) do
-		self:loadTemplateContent(value);	
+		-- self:loadTemplateContent(value);	
 		value.styles = template_style:get({templateId=value._id}).data;		
 	end
 

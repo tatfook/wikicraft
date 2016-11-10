@@ -1,10 +1,10 @@
-<div ng-controller="userCenterCtrl">
-    <div style="display:flex; justify-content: center; margin-top: 30px;">
+<div ng-controller="userCenterCtrl" class="container">
+    <div style="display:flex; justify-content: center; margin: 30px 0px">
         <div style=" border-top: 1px solid grey">
-            <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#userCenterBaseInfo" data-toggle="tab">我的资料</a></li>
-                <li><a href="#userCenterAccountSafe" data-toggle="tab">账号安全</a></li>
-                <li><a href="#userCenterMyFavorite" data-toggle="tab">我的收藏</a></li>
+            <ul class="nav nav-tabs nav-stacked">
+                <li class="active"><a href="#userCenterBaseInfo" data-toggle="tab" ng-click="clickBaseInfo()">我的资料</a></li>
+                <li><a href="#userCenterAccountSafe" data-toggle="tab" ng-click="clickAccountSaft()">账号安全</a></li>
+                <li><a href="#userCenterMyFavorite" data-toggle="tab" ng-click="clickMyFavorite()">我的收藏</a></li>
                 <li><a href="#userCenterMyHistory" data-toggle="tab">我的历史</a></li>
                 <li><a href="#userCenterMyFans" data-toggle="tab">我的粉丝</a></li>
                 <li><a href="#userCenterRealAuth" data-toggle="tab">实名验证</a></li>
@@ -13,29 +13,29 @@
                 <li><a href="#userCenterDataSource" data-toggle="tab">数据源</a></li>
             </ul>
         </div>
-        <div class="tab-content"  style="min-width: 800px; border-top: 1px solid grey">
+        <div class="tab-content"  style="flex-grow: 1; border-top: 1px solid grey; flex-grow: 1">
             <div class="tab-pane fade in active" id="userCenterBaseInfo">
                 <div class="panel panel-default">
                     <div class="panel-heading">我的资料</div>
                     <div class="panel-body" style="display: flex">
                         <div>
                             <div style="display: flex; justify-content: center">
-                                <img src='/wiki/assets/images/defaultPortrait.jpg' id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
+                                <img src='imgs/09-014623_68.jpg' id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
                             </div>
                             <div style="display: flex; justify-content: center; margin: 10px">
                                 <input type="file" accept='image/*' class="btn" id="uploadPortraitBtn">
                             </div>
                         </div>
-                        <div>
+                        <div style="flex-grow: 1;">
                             <form role="form" class="form-horizontal">
                                 <div class="form-group">
-                                    <label class="control-label col-md-4">昵称：</label>
+                                    <label class="control-label col-md-3">昵称：</label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" ng-model="user.username">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-4">性别：</label>
+                                    <label class="control-label col-md-3">性别：</label>
                                     <div class="col-md-8">
                                         <label class="radio-inline">
                                             <input type="radio" name="sex" value="M" ng-model="user.sex">男
@@ -49,19 +49,19 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-4">位置：</label>
+                                    <label class="control-label col-md-3">位置：</label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" ng-model="user.location">
                                     </div>
                                 </div>
                                 <div class="form-group ">
-                                    <label class="control-label col-md-4">个人简介：</label>
+                                    <label class="control-label col-md-3">个人简介：</label>
                                     <div class="col-md-8">
                                         <textarea class="form-control" rows="4" ng-model="user.comment"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-md-offset-4 col-md-8">
+                                    <div class="col-md-offset-3 col-md-8">
                                         <button class="btn btn-default" ng-click="modifyUserBaseInfo()">提交</button>
                                         <span style="color:red;" class="glyphicon " ng-class='{"glyphicon-ok":modifyUserInfoOk==1,"glyphicon-remove":modifyUserInfoOk==2}'>{{tipInfo}}</span>
                                     </div>
@@ -135,15 +135,66 @@
             </div>
 
             <div class="tab-pane fade in" id="userCenterMyFavorite">
-                <div>我的收藏</div>
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">作品</div>
+                        <div class="panel-body">
+                            <div style="display: flex; flex-wrap: wrap">
+                                <div>
+                                    <img src='imgs/09-014623_68.jpg' class="img-rounded", style="width: 80px; height: 80px">
+                                    <p>逍遥</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">作者</div>
+                    <div class="panel-body">
+                        <div style="display: flex; flex-wrap: wrap">
+                            <div style="display: flex; border: 1px solid silver; padding: 10px">
+                                <div>
+                                    <img src='imgs/09-014623_68.jpg' class="img-rounded", style="width: 80px; height: 80px">
+                                </div>
+                                <div style="margin-left: 10px">
+                                    <div>【测试】</div>
+                                    <div>作者:逍遥</div>
+                                    <div>简介:xxxxxxx</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade in" id="userCenterMyHistory">
-                <div>我的历史</div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">我的历史</div>
+                    <div class="panel-body">
+                        <div style="margin: 20px; border: 1px solid silver;padding: 10px">
+                            <h4>TEST</h4>
+                            <p>test</p>
+                            <a>详情</a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade in" id="userCenterMyFans">
-                <div>我的粉丝</div>
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">我的粉丝</div>
+                        <div class="panel-body">
+                            <div style="display: flex; flex-wrap: wrap">
+                                <div>
+                                    <img src='imgs/09-014623_68.jpg' class="img-rounded", style="width: 80px; height: 80px">
+                                    <div>逍遥</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade in" id="userCenterRealAuth">
@@ -151,7 +202,24 @@
             </div>
 
             <div class="tab-pane fade in" id="userCenterInviteRegister">
-                <div>邀请注册</div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">邀请注册</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">好友EMail：</label>
+                                <div class="col-md-8">
+                                    <input type="email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-8">
+                                    <button class="btn btn-default">邀请</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade in" id="userCenterVIP">
@@ -159,9 +227,57 @@
             </div>
 
             <div class="tab-pane fade in" id="userCenterDataSource">
-                <div>数据源</div>
-            </div>
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">绑定数据源</div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">github账号：</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">github密码：</label>
+                                    <div class="col-md-6">
+                                        <input type="password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-6">
+                                        <button class="btn btn-default">绑定</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="panel panel-default">
+                    <div class="panel-heading">已绑定数据源</div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>账号</th>
+                                <th>设为默认</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    765485868@qq.com
+                                </td>
+                                <td>
+                                    <button class="btn btn-default">设为默认</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
