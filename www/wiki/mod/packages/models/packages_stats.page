@@ -12,7 +12,7 @@ local packages_stats = inherit(models.abstract.base, gettable("models.packages_s
 packages_stats.db_name = 'packages_stats';
 
 function packages_stats:ctor()
-	
+	self:addfield("", "string", true, 0);
 end
 
 function packages_stats:recordCreate(projectType)

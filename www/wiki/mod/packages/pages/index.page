@@ -83,26 +83,26 @@
 	        <a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
 	    </div>
 		<div class="head-line">
-	        <span class="red">paracraft</span> 包管理器 
+	        <span class="red">Paracraft</span> Mod扩展包管理器 
 	    </div>
 	    <div class="packages-total">
 	        <div class="stat stat-icon-package">
 	            <strong>共有{{packagesStats}}个包</strong>
 	        </div>
 	        <div class="stat stat-icon-24hours">
-	            <strong>昨天下载{{dayDownload}}次</strong>
+	            <strong>今日下载{{dayDownload}}次</strong>
 	        </div>
 	        <div class="stat stat-icon-7days">
-	            <strong>上月下载{{monthDownload}}次</strong>
+	            <strong>本月下载{{monthDownload}}次</strong>
 	        </div>
 	        <div class="stat stat-icon-1months">
-	            <strong>上年下载{{yearDownload}}次</strong>
+	            <strong>本年下载{{yearDownload}}次</strong>
 	        </div>
 	    </div>
 
 	    <div class="packages-show">
 			<div class="packages-show-title">
-				大家都喜欢下载这些包
+				大家喜欢下载这些扩展包
 			</div>
 			<ul class="packages-columar">
 				<li ng-repeat="package in packages">
@@ -131,11 +131,11 @@
 	            开始
 	        </div>
 
-	        <h1>安装paracraft包</h1>
+	        <h1>如何安装paracraft扩展包?</h1>
 	        <p>
-	            You can redistribute NPLRuntime side-by-side with your scripts and resource files on windows/linux/iOS, etc. However, this section is only about installing NPL runtime to your development computer and setting up a recommended coding environment for NPL.
+	            启动Paracraft, 点击`Mod加载...`, 将下载的`zip文件`文件直接Copy到`./Mod目录`, 并启用对应的Mod。开发者可以使用ParacraftSDK和NPL语言开发自己扩展包。
 	        </p>
-	        <a>下载Paracraft</a>
+	        <a href="http://www.paracraft.cn">下载Paracraft</a> | <a href="https://github.com/LiXizhi/ParaCraftSDK">Paracraft SDK开发包</a>
 	    </div>
 	</div>
 
