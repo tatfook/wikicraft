@@ -11,7 +11,7 @@
 		</div>
         <h2>
             {{projectName}}
-            <div ng-show="isVerified" class="verified">verified</div>
+            <div ng-show="isVerified" class="verified">{{verified}}</div>
         </h2>
         <p>{{projectDesc}}</p>
         <div class="infor-logo">

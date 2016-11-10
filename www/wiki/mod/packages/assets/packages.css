@@ -186,12 +186,13 @@ body {
 }
 .packages .packages-show .packages-columar li .packages-weight {
   padding-left: 65px;
-  height: 100px;
+  height: 90px;
 }
 .packages .packages-show .packages-columar li .packages-weight .package-logo {
   display: block;
-  margin-bottom: -82px;
+  /*margin-bottom: -82px;*/
   margin-left: -65px;
+  position: relative;
 }
 .packages .packages-show .packages-columar li .packages-weight .package-logo:hover {
   text-decoration: none;
@@ -213,6 +214,10 @@ body {
   border-radius: 5px;
   display: block;
   margin-top: 5px;
+  position: absolute;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details {
+  margin-top: -60px;
 }
 .packages .packages-show .packages-columar li .packages-weight .packages-details h3 {
   padding-bottom: 10px;
