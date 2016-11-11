@@ -1,0 +1,41 @@
+
+<div>
+    <form name="userForm" ng-submit="website_new(userForm.$valid)" novalidate>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">x</button>
+        <h3>新建页</h3>
+    </div>
+    <div class="modal-body">
+        <div  class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div style="padding-right: 15px; border-right: 2px solid #eee;">
+                        <h4>站点</h4>
+                        <ul class="nav nav-pills nav-stacked">
+                            <li ng-repeat="wb in websites" ng-class="{active: wb.name == website.name}">
+                                <a href="#" ng-click="website_select(wb)"><i class="fa fa-globe"></i> {{wb.name}}</a>
+                            </li>
+                            <li>
+                                <a ng-href="/wiki/projects" href="/wiki/websites"><i class="fa fa-globe"></i>站点管理</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- NAME -->
+                    <div class="form-group">
+                        <label>页面名</label>
+                        <input type="text" name="name" class="form-control" ng-model="websitePage.name" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <!--<button class="btn"  data-dismiss="modal">取消</button>-->
+        <button type="button" class="btn" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="btn btn-primary">确定</button>
+    </div>
+    </form>
+</div>

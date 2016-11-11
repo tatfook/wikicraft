@@ -3,10 +3,82 @@
  */
 
 angular.module('MyApp')
-.controller('editorController', function  ($scope, $http, $uibModal, $location) {
-    $scope.websites = [];           //站点列表
+.controller('pageCtrl', function ($scope, $rootScope, $http, $uibModalInstance) {
+
+    $scope.websites = {};           //站点列表
+    $scope.websitePages =  {};       //页面列表
+
     $scope.website = {};            //当前选中站点
+    $scope.websitePage = {};        //当前选中页面
+
+    $scope.style = {}
+
+    $scope.website_select = function (wb) {
+        $scope.website =  wb;
+        $http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id: $scope.website.styleId}).then(function (response) {
+            $scope.style = response.data;  // 模板代码style.content
+        })
+    }
+
+     //初始化
+    function init() {
+        $scope.websites = $rootScope.websites;           //站点列表
+        $scope.websitePages =  $rootScope.websitePages;       //页面列表
+
+        if(  $rootScope.website ){
+            for(var i=0;i< $scope.websites.length;i++){
+                if($scope.websites[i]._id == $rootScope.website._id){
+                    $scope.website_select($scope.websites[i]);
+                    break;
+                }
+            }
+        }
+    }
+
+    $scope.cancel = function () {
+        //$uibModalInstance.close();
+        $uibModalInstance.dismiss('cancel');
+    }
+
+    $scope.website_new = function(){
+        if( $scope.website.name === undefined ) {
+            alert('请选择站点');
+            return false;
+        }
+
+        if( $scope.websitePage.name === undefined ||  $scope.websitePage.name.length == 0 ) {
+            alert('请填写页面名');
+            return false;
+        }
+
+        $scope.websitePage.url = '/'+ $scope.website.name + '/' + $scope.websitePage.name;
+        $scope.websitePage.websiteName = $scope.website.name;
+        $scope.websitePage.websiteId =  $scope.website._id;
+        $scope.websitePage.content = $scope.style.data[0].content;
+
+        $http.put('http://localhost:8099/api/wiki/models/website_pages/new',$scope.websitePage).then(function (response) {
+            console.log(response.data);
+
+            $rootScope.websitePage = response.data.data;
+            $rootScope.website = $scope.website;
+
+            $uibModalInstance.close("new");
+        }).catch(function (response) {
+            console.log(response.data);
+            alert('新建页面失败');
+        });
+    }
+
+    init();
+
+
+})
+.controller('editorController', function  ($scope, $rootScope, $http, $location, $uibModal) {
+
+    $scope.websites = [];           //站点列表
     $scope.websitePages = [];       //页面列表
+
+    $scope.website = {};            //当前选中站点
     $scope.websitePage = {};        //当前选中页面
 
     init();
@@ -26,6 +98,7 @@ angular.module('MyApp')
                         $scope.websitePages.push(pages[j]);
                     }
                     if(i == $scope.websites.length){
+                        initRoot();
                         initTree();
                     }
                 }).catch(function (response) {
@@ -36,44 +109,32 @@ angular.module('MyApp')
             console.log(response.data);
         });
         return;
-
-        //// 获取网站所有页面
-        //$http.post('http://localhost:8099/api/wiki/models/website_pages',{websiteName:website.name}).then(function (response) {
-        //    $scope.websitePages = response.data.data;
-        //    console.log($scope.websitePages);
-        //}).catch(function (response) {
-        //    console.log(response.data);
-        //});
-
-        // 获取网站模板样式  页面内容嵌套在模板内部 编辑不需模板吧？？ 预览时你也可以获取自行嵌套
-        /*
-         $http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id:website.styleId}).then(function (response) {
-         $scope.style = response.data;  // 模板代码style.content
-         })
-         */
     }
 
-    //初始化目录树
-    function initTree(){
-        var ws;
-        var wp;
-        var node;
+    function initRoot(){
+        $rootScope.websites = $scope.websites;
+        $rootScope.websitePages =  $scope.websitePages;
 
-        //console.log( 'initTree' );
-        //console.log( $scope.websites);
-        //console.log( $scope.websitePages);
+        if($rootScope.website != undefined) $scope.website = $rootScope.website;                    //当前选中站点
+        if($rootScope.websitePage != undefined) $scope.websitePage = $rootScope.websitePage;      //当前选中页面
+    }
+
+    function getTree(){
+        var ws = {};
+        var wp = {};
+        var node = '';
 
         var treeData = "[";
         for(var i=0;i< $scope.websites.length;i++) {
             ws = $scope.websites[i];
             //console.log(ws);        //"icon": "glyphicon glyphicon-stop","selectedIcon": "glyphicon glyphicon-stop",
-            treeData += '{"text":"' + ws.name + '","tags": ["site","' +i+'"],__nodes__},';
+            treeData += '{"text":"' + ws.name + '","icon":"fa fa-globe","selectable":false,"tags": ["site","' + ws._id +'"],__nodes__},';
             node = '';
             for(var j=0;j<  $scope.websitePages.length;j++){
                 wp =  $scope.websitePages[j];
                 //console.log(wp);
-                if(ws.name == wp.websiteName){
-                    node += '{"text": "' + wp.name + '","tags": ["page","'+j+'"]},';
+                if(ws._id == wp.websiteId){
+                    node += '{"text": "' + wp.name + '","icon":"fa fa-file-o",  "selectedIcon": "fa fa-file-text-o", "tags": ["page","'+ wp._id +'","'+ ws._id +'"]},';
                 }
             }
             node = node.replace(/(.*)[,，]$/, '$1');
@@ -87,21 +148,52 @@ angular.module('MyApp')
 
         treeData = treeData.replace(/(.*)[,，]$/, '$1');
         treeData += "]";
+        return treeData;
+    }
 
+    function getWebsite(id){
+        for(var i=0;i< $scope.websites.length;i++) {
+            ws = $scope.websites[i];
+            if(ws._id == id){
+                return ws;
+            }
+        }
+        return null;
+    }
+
+    function getWebsitePage(id){
+        for(var j=0;j<  $scope.websitePages.length;j++){
+            wp =  $scope.websitePages[j];
+            if(wp._id == id){
+                return wp;
+            }
+        }
+        return null;
+    }
+
+
+
+    //初始化目录树  data:  $.parseJSON(getTree()),
+    function initTree(){
         $('#treeview').treeview({
             color: "#428bca",
             showBorder: false,
-            data:  $.parseJSON(treeData),
+            enableLinks: true,
+            data: getTree(),
             onNodeSelected: function(event, data) {
                 var tags = data.tags;
-
                 switch(tags[0]){
                     case 'site':
-                        $scope.website =  $scope.websites[tags[1]];
+                        $scope.website =  getWebsite(tags[1]);
+                        $rootScope.website =  $scope.website;
                         //console.log($scope.website);
                         break;
                     case 'page':
-                        $scope.websitePage = $scope.websitePages[tags[1]];
+                        $scope.websitePage =  getWebsitePage(tags[1]);
+                        $scope.website =  getWebsite(tags[2]);
+                        $rootScope.websitePage =  $scope.websitePage;
+                        $rootScope.website =  $scope.website;
+
                         editor.setValue($scope.websitePage.content);
                         $('#btUrl').val($scope.websitePage.url);
                         break;
@@ -134,29 +226,38 @@ angular.module('MyApp')
         return;
     }
 
-    $scope.login = function () {
+    $scope.cmd_newpage = function () {
         $uibModal.open({
-            templateUrl: WIKI_WEBROOT+ "auth/login.html",
-            controller: "ModalLoginCtrl",
-        }).result.then(function (provider) {
-            if (provider == "login") {
-                $scope.register();
-            }
-            else {
-                // $scope.actiontip('登录成功:' + provider + '!', null, "success");
+            templateUrl: WIKI_WEBROOT+ "html/newWebsitePage.html",
+            controller: "pageCtrl",
+        }).result.then(function (provider){
+            //console.log(provider);
+            if (provider == "new") {
+                console.log('cmd_newpage success');
+                $scope.websitePages.push($rootScope.websitePage);
+                $scope.websitePage = $rootScope.websitePage;
+                $scope.website =  $rootScope.website;
+
+                initTree();
+                //
+                //$websiteNode = $('#treeview').treeview("search",[ $scope.website.name, {exactMatch: true }]);
+                //$('#treeview').treeview("addNode", [$websiteNode[0].nodeId, { node:{
+                //    text:$scope.websitePage.name,
+                //    icon:"fa fa-file-o",
+                //    selectedIcon:"fa fa-file-text-o",
+                //    tags:["newpage",$scope.websitePage._id,$scope.websitePage.websiteId]
+                //}}]);
+                //$rootScope.websiteNode = $scope.website;
+                //$rootScope.websitePage = response.data;
+            }else {
+                // $scope.actiontip('创建成功:' + provider + '!', null, "success");
             }
         }, function (text, error) {
-            if (error && error.error) {
-                // Popup error - invalid redirect_uri, pressed cancel button, etc.
-                $scope.actiontip(error.error, -1, "error");
-            } else if (error && error.data) {
-                // HTTP response error from server
-                $scope.actiontip(error.data.message || "some error!", -1, "error");
-            }
-            else
-                $scope.actiontip("登录失败了, 请重新尝试", 5, "error");
+            console.log('text:'+text);
+            console.log('error:'+error);
+            return;
         });
-    };
+    }
 
     //保存页面
     $scope.cmd_savepage = function () {
@@ -165,21 +266,13 @@ angular.module('MyApp')
         //var content = el.env.editor.getValue();
         var content = editor.getValue();
 
-        if($scope.websitePage){// 修改
+        if( $scope.websitePage._id == undefined ){// 新增
+            console.log('save temp file');
+        }else{  //修改
             $scope.websitePage.content = content;
             $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
                 //console.log(response.data);
                 alert('修改成功');
-            }).catch(function (response) {
-                console.log(response.data);
-            });
-        }else{// 新增
-            $scope.actiontip('this is a tips', -1, "error");
-            return;
-
-            $http.put('http://localhost:8099/api/wiki/models/website_pages/new',$scope.websitePage).then(function (response) {
-                console.log(response.data);
-                alert('保存成功');
             }).catch(function (response) {
                 console.log(response.data);
             });
@@ -272,6 +365,9 @@ angular.module('MyApp')
             editor.setCursor(CodeMirror.Pos(cursor.line,content.length + 2));
         }
         editor.focus();
+    }
+    $scope.cmd_console = function () {
+        console.log('this is cmd_console');
     }
 
 })

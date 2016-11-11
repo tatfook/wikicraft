@@ -28,17 +28,19 @@ wp_enqueue_script("codemirror_addon_annotatescrollbar", "/wp-includes/js/codemir
 wp_enqueue_script("codemirror_addon_fullscreen", "/wp-includes/js/codemirror/addon/display/fullscreen.js");
 wp_enqueue_style("codemirror_addon_fullscreen_style", "/wp-includes/js/codemirror/addon/display/fullscreen.css");
 
-wp_enqueue_script("editorController", WIKI_WEBROOT.."controllers/editorController.js");
+wp_enqueue_script("editor_controller", WIKI_WEBROOT.."controllers/editorController.js");
 wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
 ?>
 
-<div ng-controller="editorController">
+<div id="wikiEditor" ng-controller="editorController">
     <div id="toolbarview" class="well well-sm nopadding" style="z-index:99;">
         <div class="btn-toolbar" role="toolbar">
+
             <div class="btn-group">
-                <button type="button" class="btn btn-default" title="新建页"><i class="fa fa-file-o"></i></button>
-                <button type="button" class="btn btn-default"  ng-click="cmd_savepage()" title="保存"><i class="fa fa-save"></i> </button>
+                <button type="button" class="btn btn-default"  ng-click="cmd_newpage()" title="新建页（Alt-N）"><i class="fa fa-file-o"></i></button>
+                <button type="button" class="btn btn-default"  ng-click="cmd_savepage()" title="保存（Alt-S）"><i class="fa fa-save"></i> </button>
             </div>
+
             <div class= "btn-group">
                 <button type="button" class="btn btn-default"  ng-click="cmd_undo()" title="撤销（Ctrl-Z）"><i class="fa fa-undo"></i></button>
                 <button type="button" class="btn btn-default"  ng-click="cmd_redo()" title="重做（Ctrl-Y）"><i class="fa fa-repeat"></i></button>
@@ -48,7 +50,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
 
             <div class= "btn-group ">
                 <button type="button" class="btn btn-default" title="加粗"  ng-click="cmd_bold()"><i class="fa fa-bold"></i> </button>
-                <button type="button" class="btn btn-default" title="斜体"><i class="fa fa-italic"></i></button>
+                <button type="button" class="btn btn-default" title="斜体" ng-click="toggleHelp()"><i class="fa fa-italic"></i></button>
                 <button type="button" class="btn btn-default" title="下划线"><i class="fa fa-underline"></i></button>
                 <button type="button" class="btn btn-default" title="删除线"><i class="fa fa-strikethrough"></i></button>
                 <button type="button" class="btn btn-default" title="上标"><i class="fa fa-superscript"></i></button>
@@ -91,23 +93,27 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
             </div>
         </div>
         <div class="btn-toolbar" role="toolbar">
+
             <div class= "btn-group">
                 <button type="button" class="btn btn-default toolbar-page-file active" title="文件"><i class="fa fa-folder-open-o"></i>&nbsp;文件</button>
             </div>
+
             <div class= "btn-group">
                 <button type="button" class="btn btn-default toolbar-page-code" title="代码"><i class="fa fa-file-code-o"></i>&nbsp;代码</button>
                 <button type="button" class="btn btn-default toolbar-page-slide active" title="拆分"><i class="fa fa-columns"></i>&nbsp;拆分</button>
                 <button type="button" class="btn btn-default toolbar-page-design" title="设计"><i class="fa fa-eye"></i>&nbsp;设计</button>
             </div>
+
             <div class= "btn-group">
                 <button type="button" class="btn btn-default toolbar-page-view toolbar-page-html" title="HTML" data-result-as="html"><i class="fa fa-html5"></i>&nbsp;HTML</button>
                 <button type="button" class="btn btn-default toolbar-page-view toolbar-page-src" title="源代码" data-result-as="src"><i class="fa fa-file-text-o"></i>&nbsp;源代码</button>
             </div>
-            <!--<div class= "btn-group " style="margin-left: 50px;">-->
-                <!--<button id="btUrl" type="button" class="btn btn-link toolbar-page-preview" title="URL" style="min-width: 100px;">/</button>-->
-                <!--<button type="button" class="btn btn-default toolbar-page-copyurl" title="复制网址">复制网址</button>-->
-                <!--<button type="button" class="btn btn-default toolbar-page-preview" title="预览">预览</button>-->
-            <!--</div>-->
+
+            <div class= "btn-group">
+                <input id="btUrl" class="btn btn-link toolbar-page-preview" title="URL" style="min-width: 100px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
+                <button type="button" class="btn btn-default toolbar-page-copyurl" title="复制网址">复制网址</button>
+                <button type="button" class="btn btn-default toolbar-page-preview" title="预览">预览</button>
+            </div>
 
             <div class= "btn-group  pull-right">
                 <button type="button" class="btn btn-default" title="版本"><i class="fa fa-history"></i>&nbsp;版本</button>
@@ -115,17 +121,6 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
                 <button type="button" class="btn btn-default" title="知识库"><i class="fa fa-question-circle-o"></i>&nbsp;知识库</button>
             </div>
 
-            <div class="col-xs-6	col-sm-6 col-md-4 col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default toolbar-page-copyurl" type="button" title="复制网址">复制网址</button>
-                    </span>
-                    <input id="btUrl" type="text" class="form-control" disabled="disabled">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default toolbar-page-preview" type="button" title="预览">预览</button>
-                    </div>
-                </div><!-- /input-group -->
-            </div><!-- /.col-lg-6 -->
         </div>
     </div>
 
@@ -142,8 +137,6 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
         </section>
     </div>
 </div>
-
-
 
 <script>
     /**
@@ -168,7 +161,15 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
             },
             "Esc": function(cm) {
                 if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-            }
+            },
+            "Alt-S": function(cm) {
+                var $scope=angular.element('#wikiEditor').scope();
+                $scope.cmd_savepage();
+            },
+            "Alt-N": function(cm) {
+                var $scope=angular.element('#wikiEditor').scope();
+                $scope.cmd_newpage();
+            },
         }
     });
 
@@ -363,20 +364,24 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
         }
     });
 
+
+
     $(function() {
         var startPos = $('.well').offset().top;
         $.event.add(window, "scroll", function() {
             var p = $(window).scrollTop();
-            if( p > startPos){
+            if( p > startPos + 20 ){
                 $('.well').css('position', 'fixed');
                 $('.well').css('top','0px');
+                $('.well').css('left','0px');
+                $('.well').css('right','0px');
 
-                $('.treeview').css('top',p + $('#toolbarview').height() - startPos);
+//                $('.treeview').css('top',p + $('#toolbarview').height() - startPos);
             }else{
                 $('.well').css('position','static');
                 $('.well').css('top','');
 
-                $('.treeview').css('top','0px');
+//                $('.treeview').css('top','0px');
             }
         });
     });

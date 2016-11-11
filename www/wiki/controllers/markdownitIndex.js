@@ -8947,7 +8947,7 @@
 },{}],73:[function(require,module,exports){
     // Process wikicrafts   [\order](your parameter such as 'title:"标题')
     'use strict';
-    const SYNTAX_CHARS = "@[]()".split("");
+    const SYNTAX_CHARS = "[\]()".split("");
     module.exports = function wikicraft_plugin(md,options) {
 
         function advanceToSymbol(state, endLine, symbol, pointer) {
