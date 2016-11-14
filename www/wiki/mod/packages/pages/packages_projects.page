@@ -2,13 +2,12 @@
 wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
 wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packagesProjectsController.js");
 ?>
-
 <div class="packages-projects" ng-controller="packagesProjectsController">
    <div class="user-infor">
        <wiki-identicon userid="user._id" size="234" imageurl="user.picture"></wiki-identicon>
        <h3>{{user.displayName}}</h3>
        <label>{{user.email}}</label>
-       <a href="/wiki/settings" class="edit-profile">{{editProfile}}</a>
+       <a href="/wiki/settings" class="edit-profile">1111111{{editProfile}}</a>
    </div>
 
    <div class="projects">
