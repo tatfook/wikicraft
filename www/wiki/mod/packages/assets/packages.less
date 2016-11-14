@@ -1,10 +1,11 @@
 @font-face {
     font-family: 'icomoon';
-    src: url('/wiki/assets/icomoon.woff2') format('woff');
+    src: url('icomoon.woff2') format('woff');
 }
 
 body{
     font-family: 'Microsoft YaHei UI','Source Sans Pro', 'Lucida Grande', sans-serif;
+    min-width: 375px;
 }
 
 .verified{
@@ -31,77 +32,97 @@ body{
     }
 }
 
-.packages{
-    .packages-tabs{
+.packages-tabs{
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    width: auto;
+    background-color: #999;
+
+    a{
+        color: #FFF;
+        text-decoration: none;
+    }
+
+    a.active{
+        display: block;
+        background-color: #333;
+    }
+
+    a:hover{
+        opacity: .8;
+    }
+
+    a:nth-child(1){
         float: left;
+        width: 100px;
+        height: 100%;
+        text-align: center;
+    }
+
+    a:nth-child(2){
+        float: right;
+        width: 100px;
+        height: 100%;
+        text-align: center;
+    }
+
+}
+
+.packages-tabs-sm{
+    display:block;
+
+    a:nth-child(1){
+        width: 45px;
+    }
+
+    a:nth-child(2){
+        width: 80px;
+    }
+}
+
+.my-projects{
+    &:after{
+        display:block;
+        content:'';
+        clear: both;
+    }
+
+    a{
+        display: block;
+        float: right;
+        width: 150px;
         height: 30px;
         line-height: 30px;
-        width: auto;
-        background-color: #999;
+        background-color: #e87f7f;
+        color: #FFF;
+        text-align: center;
+        font-weight: 600;
+        font-size: 13px;
+        border: none;
+        padding: 0;
+        margin: 0;
+        outline: none;
 
-        a{
-            color: #FFF;
-            text-decoration: none;
+        &:hover{
+            text-decoration:none;
         }
 
-        a.active{
-            display: block;
-            background-color: #333;
-        }
-
-        a:hover{
+        &:active{
             opacity: .8;
         }
-
-        a:nth-child(1){
-            float: left;
-            width: 100px;
-            height: 100%;
-            text-align: center;
-        }
-
-        a:nth-child(2){
-            float: right;
-            width: 100px;
-            height: 100%;
-            text-align: center;
-        }
-
     }
 
-    .my-projects{
-        &:after{
-            display:block;
-            content:'';
-            clear: both;
-        }
-
-        a{
-            display: block;
-            float: right;
-            width: 150px;
-            height: 30px;
-            line-height: 30px;
-            background-color: #CC0000;
-            color: #FFF;
-            text-align: center;
-            font-weight: 600;
-            font-size: 13px;
-            border: none;
-            padding: 0;
-            margin: 0;
-            outline: none;
-
-            &:hover{
-                text-decoration:none;
-            }
-
-            &:active{
-                opacity: .8;
-            }
-        }
+    a.active{
+        background-color: #CC0000;
     }
+}
 
+.my-projects-sm{
+
+}
+
+.packages{
     .head-line{
         height: 115px;
         width:100%;
@@ -112,6 +133,11 @@ body{
         .red{
             color: #BD2600;
         }
+    }
+
+    .head-line-sm{
+        font-size: 25px;
+        height: 95px;
     }
 
     .packages-total{
@@ -196,6 +222,10 @@ body{
             font-weight: 600;
         }
 
+        .packages-show-title-sm{
+            font-size: 20px;
+        }
+
         .packages-columar{
             -webkit-columns: 3;
             -moz-columns: 3;
@@ -255,8 +285,6 @@ body{
                         margin-top: -60px;
 
                         h3{
-                            padding-bottom: 10px;
-
                             & > a{
                                 &:hover{
                                     color: #cb3837;
@@ -285,6 +313,34 @@ body{
                                 }
                             }
                         }
+
+                        .downloads{
+                            font-size: 15px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .packages-columar-sm{
+            -webkit-columns: 1;
+            -moz-columns: 1;
+            columns: 1;
+
+            li{
+                .packages-weight{
+                    display: block;
+
+                    .packages-details{
+                       h3{
+                           &>a{
+                               font-size:15px;
+                           }
+                       }
+
+                       div.description,div.author,div.downloads{
+                            font-size: 12px;
+                       }
                     }
                 }
             }
@@ -322,11 +378,23 @@ body{
             color: #BD2600;
         }
     }
+
+    .getting-start-sm{
+        .getting-start-title{
+            font-size: 20px;
+        }
+
+        h1{
+             font-size: 18px;
+        }
+
+        p{
+            font-size: 15px;
+        }
+    }
 }
 
 .packages-install{
-    padding-top: 45px;
-
     .infor-logo{
         float:left;
         margin-top: -85px;
@@ -337,6 +405,7 @@ body{
     }
 
     .install-infor{
+        padding-top: 45px;
         width: 100%;
         border-bottom: 2px solid rgba(0,0,0,0.08);
         margin-bottom: 50px;
@@ -357,10 +426,11 @@ body{
         }
 
         .infor-main{
-            height:272px;
+            height:auto;
             margin-bottom: 20px;
             padding-top: 20px;
             padding-bottom: 40px;
+            position: relative;
 
             .infor-details{
                 width: 52%;
@@ -380,51 +450,110 @@ body{
                         margin-left: 265px;
                     }
                 }
+            }
 
-                .button{
-                    position: absolute;
-                    bottom: 0px;
-                    font-weight: 600;
+            .button{
+                position: absolute;
+                bottom: -50px;
+                font-weight: 600;
 
-                    .install-now{
-                        width: 160px;
-                        height: 40px;
-                        background-color: #0099FF;
-                        color: #FFF;
-                        border: none;
-                        border-radius: 5px;
+                .install-now{
+                    width: 160px;
+                    height: 40px;
+                    background-color: #0099FF;
+                    color: #FFF;
+                    border: none;
+                    border-radius: 5px;
+                }
+
+                .download-now{
+                    width: 145px;
+                    height: 40px;
+                    background-color: #CCC;
+                    color: #000;
+                    border: none;
+                    border-radius: 5px;
+                    margin-left: 5px;
+                    display: inline-block;
+                    text-align: center;
+                    line-height: 40px;
+                }
+
+                .github{
+                    width: 145px;
+                    height: 40px;
+                    background-color: #CCC;
+                    color: #000;
+                    border: none;
+                    border-radius: 5px;
+                    margin-left: 5px;
+                    display: inline-block;
+                    text-align: center;
+                    line-height: 40px;
+
+                    svg{
+                        vertical-align: sub;
                     }
+                }
+            }
+        }
+    }
 
-                    .download-now{
-                        width: 145px;
-                        height: 40px;
-                        background-color: #CCC;
-                        color: #000;
-                        border: none;
-                        border-radius: 5px;
-                        margin-left: 5px;
-                        display: inline-block;
-                        text-align: center;
-                        line-height: 40px;
+    .install-infor-sm{
+        padding-top: 5px;
+        .infor-main{
+            .infor-details{
+                width: 100%;
+
+                .item{
+                    & > div{
+                        margin-left: 125px;
                     }
+                }
+            }
 
-                    .github{
-                        width: 145px;
-                        height: 40px;
-                        background-color: #CCC;
-                        color: #000;
-                        border: none;
-                        border-radius: 5px;
-                        margin-left: 5px;
-                        display: inline-block;
-                        text-align: center;
-                        line-height: 40px;
+            .button{
+                width: 100%;
+                bottom: -10px;
 
-                        svg{
-                            vertical-align: sub;
-                        }
+                .install-now{
+                    width: 31%;
+                    height: 40px;
+                    background-color: #0099FF;
+                    color: #FFF;
+                    border: none;
+                    border-radius: 5px;
+                }
+
+                .download-now{
+                    width: 31%;
+                    height: 40px;
+                    background-color: #CCC;
+                    color: #000;
+                    border: none;
+                    border-radius: 5px;
+                    margin-left: 5px;
+                    display: inline-block;
+                    text-align: center;
+                    line-height: 40px;
+                }
+
+                .github{
+                    width: 31%;
+                    height: 40px;
+                    background-color: #CCC;
+                    color: #000;
+                    border: none;
+                    border-radius: 5px;
+                    margin-left: 5px;
+                    display: inline-block;
+                    text-align: center;
+                    line-height: 40px;
+
+                    svg{
+                        vertical-align: sub;
                     }
-                 }
+                }
             }
         }
     }
@@ -432,12 +561,16 @@ body{
 
 .packages-projects{
     max-width: 1170px;
-    padding-top: 35px;
+    /*padding-top: 35px;*/
 
     &::after{
         display: block;
         content: "";
         clear: both;
+    }
+
+    .packages-tabs{
+        margin-bottom: 15px;
     }
 
     .user-infor{
@@ -550,6 +683,12 @@ body{
                 border-bottom: 1px solid #E7E7E7;
                 padding-top: 30px;
 
+                .project-icon{
+                    float: left;
+                    width: 50px;
+                    margin-right: 10px;
+                }
+
                 .project-infor{
                     float: left;
 
@@ -569,6 +708,13 @@ body{
                     }
                 }
 
+                .project-downloads{
+                    float: left;
+                    font-size: 14px;
+                    margin-top: 26px;
+                    margin-left: 10px;
+                }
+
                 .project-operation{
                     float: right;
                     padding-top:18px;
@@ -584,28 +730,33 @@ body{
         .pagination{
             width: 100%;
             height: auto;
+            text-align: center;
 
             ul{
-                display: block;
+                display: inline-block;
                 padding-left: 0;
                 margin: 0px auto;
                 border-radius: 4px;
-                width: 330px;
+                width: auto;
                 height: 30px;
                 margin-top: 20px;
             }
         }
     }
+
+    .projects-sm{
+        width: 100%;
+    }
 }
 
 .modal-dialog{
-    width: 750px;
+    /*width: 750px;*/
 
-    .packages_from_modify{
-        height: 380px!important;
+    .packages-from-modify{
+        height: 430px!important;
     }
 
-    .packages_from{
+    .packages-from{
         height: 485px;
         
         h1{
@@ -658,6 +809,53 @@ body{
             margin: 0 auto;
             display: block;
             margin-top: 40px;
+        }
+    }
+
+    .packages-from-sm{
+        h1{
+            font-size: 21px;
+        }
+
+       .form{
+            padding-left: 5px;
+
+            .item:nth-child(1){
+                height: 60px;
+            }
+
+            .item{
+                height: 40px;
+
+                label{
+                    font-size: 14px;
+                }
+
+                &>div{
+                    margin-left: 105px;
+
+                    input[type='text']{
+                        width: 235px;
+                        font-size: 13px;
+                    }
+
+                    textarea{
+                        width: 235px;
+                    }
+                }
+            }
+
+            .item:nth-child(3){
+                height: 80px;
+            }
+        }
+
+        .fetch-infor{
+            font-size: 12.5px;
+        }
+
+        button{
+            margin-top: 5px;
         }
     }
 }

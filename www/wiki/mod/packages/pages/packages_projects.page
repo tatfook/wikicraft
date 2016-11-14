@@ -3,15 +3,30 @@ wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
 wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packagesProjectsController.js");
 ?>
 
-<div class="packages-projects" ng-controller="packagesProjectsController">
-   <div class="user-infor">
+<div class="packages-projects col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-controller="packagesProjectsController">
+    <div class="packages-tabs hidden-xs hidden-sm">
+	    <a href="/wiki/mod/packages/index#/npl">NPL</a>
+	    <a href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+	</div>
+	<div class="my-projects hidden-xs hidden-sm">
+	    <a class="active" href="javascript:;">{{myProjects}}</a>
+	</div>
+    <div class="packages-tabs packages-tabs-sm hidden-md hidden-lg">
+	    <a href="/wiki/mod/packages/index#/npl">NPL</a>
+	    <a href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+	</div>
+	<div class="my-projects my-projects-sm hidden-md hidden-lg">
+	    <a class="active" href="javascript:;">{{myProjects}}</a>
+	</div>
+
+   <div class="user-infor hidden-xs hidden-sm">
        <wiki-identicon userid="user._id" size="234" imageurl="user.picture"></wiki-identicon>
        <h3>{{user.displayName}}</h3>
        <label>{{user.email}}</label>
        <a href="/wiki/settings" class="edit-profile">{{editProfile}}</a>
    </div>
 
-   <div class="projects">
+   <div class="projects hidden-xs hidden-sm">
 		<div class="tabs">
 			<a ng-class="{'active': projectType == 'npl'}" href="#/npl">NPL</a>
 			<a ng-class="{'active': projectType == 'paracraft'}" href="#/paracraft">Paracraft</a>
@@ -23,10 +38,41 @@ wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packag
 
         <div class="projects-list">
             <div class="item" ng-repeat="item in items">
+                <div class="project-icon"><img ng-src="{{item.gitIcon}}"></div>
                 <div class="project-infor">
                     <a ng-href="/wiki/mod/packages/packages_install/#/{{projectType}}?id={{item._id}}">{{item.projectName}}</a>
                     <p>{{item.projectDesc}}</p>
                 </div>
+                <div class="project-downloads">{{downloadsA}}{{item.installTimes}}{{downloadsB}}</div>
+                <div class="project-operation">
+                    <span>{{item.version}}</span>
+                    <a href="javascript:;" ng-click="ShowModifyProjectDialog(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u68.png"/></a>
+                    <a href="javascript:;" ng-click="DeleteProject(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u76.png"/></a>
+                </div>
+            </div>
+        </div>
+        <div ng-controller="Pagination" class="pagination">
+            <ul uib-pagination boundary-links="true" items-per-page="itemsPerPage" ng-change="pageChanged()" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+       </div>
+    </div>
+   <div class="projects projects-sm hidden-md hidden-lg">
+		<div class="tabs">
+			<a ng-class="{'active': projectType == 'npl'}" href="#/npl">NPL</a>
+			<a ng-class="{'active': projectType == 'paracraft'}" href="#/paracraft">Paracraft</a>
+
+			<div ng-click="ShowCreateProjectDialog()" class="project-create">
+				<button class="createNewPackages">+{{create}}</button>
+			</div>
+		</div>
+
+        <div class="projects-list">
+            <div class="item" ng-repeat="item in items">
+                <div class="project-icon"><img ng-src="{{item.gitIcon}}"></div>
+                <div class="project-infor">
+                    <a ng-href="/wiki/mod/packages/packages_install/#/{{projectType}}?id={{item._id}}">{{item.projectName}}</a>
+                    <p>{{item.projectDesc}}</p>
+                </div>
+                <div class="project-downloads">{{downloadsA}}{{item.installTimes}}{{downloadsB}}</div>
                 <div class="project-operation">
                     <span>{{item.version}}</span>
                     <a href="javascript:;" ng-click="ShowModifyProjectDialog(item._id)"><img src="<?=MOD_WEBROOT?>assets/images/u68.png"/></a>

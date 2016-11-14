@@ -1,9 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src: url('/wiki/assets/icomoon.woff2') format('woff');
+  src: url('icomoon.woff2') format('woff');
 }
 body {
   font-family: 'Microsoft YaHei UI', 'Source Sans Pro', 'Lucida Grande', sans-serif;
+  min-width: 375px;
 }
 .verified {
   width: 70px;
@@ -26,48 +27,57 @@ body {
 .set-verify input {
   vertical-align: sub;
 }
-.packages .packages-tabs {
+.packages-tabs {
   float: left;
   height: 30px;
   line-height: 30px;
   width: auto;
   background-color: #999;
 }
-.packages .packages-tabs a {
+.packages-tabs a {
   color: #FFF;
   text-decoration: none;
 }
-.packages .packages-tabs a.active {
+.packages-tabs a.active {
   display: block;
   background-color: #333;
 }
-.packages .packages-tabs a:hover {
+.packages-tabs a:hover {
   opacity: .8;
 }
-.packages .packages-tabs a:nth-child(1) {
+.packages-tabs a:nth-child(1) {
   float: left;
   width: 100px;
   height: 100%;
   text-align: center;
 }
-.packages .packages-tabs a:nth-child(2) {
+.packages-tabs a:nth-child(2) {
   float: right;
   width: 100px;
   height: 100%;
   text-align: center;
 }
-.packages .my-projects:after {
+.packages-tabs-sm {
+  display: block;
+}
+.packages-tabs-sm a:nth-child(1) {
+  width: 45px;
+}
+.packages-tabs-sm a:nth-child(2) {
+  width: 80px;
+}
+.my-projects:after {
   display: block;
   content: '';
   clear: both;
 }
-.packages .my-projects a {
+.my-projects a {
   display: block;
   float: right;
   width: 150px;
   height: 30px;
   line-height: 30px;
-  background-color: #CC0000;
+  background-color: #e87f7f;
   color: #FFF;
   text-align: center;
   font-weight: 600;
@@ -77,11 +87,14 @@ body {
   margin: 0;
   outline: none;
 }
-.packages .my-projects a:hover {
+.my-projects a:hover {
   text-decoration: none;
 }
-.packages .my-projects a:active {
+.my-projects a:active {
   opacity: .8;
+}
+.my-projects a.active {
+  background-color: #CC0000;
 }
 .packages .head-line {
   height: 115px;
@@ -92,6 +105,10 @@ body {
 }
 .packages .head-line .red {
   color: #BD2600;
+}
+.packages .head-line-sm {
+  font-size: 25px;
+  height: 95px;
 }
 .packages .packages-total {
   position: relative;
@@ -165,6 +182,9 @@ body {
   margin-bottom: 20px;
   font-weight: 600;
 }
+.packages .packages-show .packages-show-title-sm {
+  font-size: 20px;
+}
 .packages .packages-show .packages-columar {
   -webkit-columns: 3;
   -moz-columns: 3;
@@ -219,9 +239,6 @@ body {
 .packages .packages-show .packages-columar li .packages-weight .packages-details {
   margin-top: -60px;
 }
-.packages .packages-show .packages-columar li .packages-weight .packages-details h3 {
-  padding-bottom: 10px;
-}
 .packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a {
   font-size: 20px;
   color: rgba(0, 0, 0, 0.8);
@@ -243,6 +260,25 @@ body {
 .packages .packages-show .packages-columar li .packages-weight .packages-details .author .version:hover {
   color: #cb3837;
   text-decoration: none;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details .downloads {
+  font-size: 15px;
+}
+.packages .packages-show .packages-columar-sm {
+  -webkit-columns: 1;
+  -moz-columns: 1;
+  columns: 1;
+}
+.packages .packages-show .packages-columar-sm li .packages-weight {
+  display: block;
+}
+.packages .packages-show .packages-columar-sm li .packages-weight .packages-details h3 > a {
+  font-size: 15px;
+}
+.packages .packages-show .packages-columar-sm li .packages-weight .packages-details div.description,
+.packages .packages-show .packages-columar-sm li .packages-weight .packages-details div.author,
+.packages .packages-show .packages-columar-sm li .packages-weight .packages-details div.downloads {
+  font-size: 12px;
 }
 .packages .getting-start .getting-start-title {
   font-size: 22px;
@@ -270,8 +306,14 @@ body {
 .packages .getting-start a:hover {
   text-decoration: underline;
 }
-.packages-install {
-  padding-top: 45px;
+.packages .getting-start-sm .getting-start-title {
+  font-size: 20px;
+}
+.packages .getting-start-sm h1 {
+  font-size: 18px;
+}
+.packages .getting-start-sm p {
+  font-size: 15px;
 }
 .packages-install .infor-logo {
   float: left;
@@ -281,6 +323,7 @@ body {
   width: 66px;
 }
 .packages-install .install-infor {
+  padding-top: 45px;
   width: 100%;
   border-bottom: 2px solid rgba(0, 0, 0, 0.08);
   margin-bottom: 50px;
@@ -299,10 +342,11 @@ body {
   padding-left: 80px;
 }
 .packages-install .install-infor .infor-main {
-  height: 272px;
+  height: auto;
   margin-bottom: 20px;
   padding-top: 20px;
   padding-bottom: 40px;
+  position: relative;
 }
 .packages-install .install-infor .infor-main .infor-details {
   width: 52%;
@@ -320,12 +364,12 @@ body {
 .packages-install .install-infor .infor-main .infor-details .item > div {
   margin-left: 265px;
 }
-.packages-install .install-infor .infor-main .infor-details .button {
+.packages-install .install-infor .infor-main .button {
   position: absolute;
-  bottom: 0px;
+  bottom: -50px;
   font-weight: 600;
 }
-.packages-install .install-infor .infor-main .infor-details .button .install-now {
+.packages-install .install-infor .infor-main .button .install-now {
   width: 160px;
   height: 40px;
   background-color: #0099FF;
@@ -333,7 +377,7 @@ body {
   border: none;
   border-radius: 5px;
 }
-.packages-install .install-infor .infor-main .infor-details .button .download-now {
+.packages-install .install-infor .infor-main .button .download-now {
   width: 145px;
   height: 40px;
   background-color: #CCC;
@@ -345,7 +389,7 @@ body {
   text-align: center;
   line-height: 40px;
 }
-.packages-install .install-infor .infor-main .infor-details .button .github {
+.packages-install .install-infor .infor-main .button .github {
   width: 145px;
   height: 40px;
   background-color: #CCC;
@@ -357,17 +401,68 @@ body {
   text-align: center;
   line-height: 40px;
 }
-.packages-install .install-infor .infor-main .infor-details .button .github svg {
+.packages-install .install-infor .infor-main .button .github svg {
+  vertical-align: sub;
+}
+.packages-install .install-infor-sm {
+  padding-top: 5px;
+}
+.packages-install .install-infor-sm .infor-main .infor-details {
+  width: 100%;
+}
+.packages-install .install-infor-sm .infor-main .infor-details .item > div {
+  margin-left: 125px;
+}
+.packages-install .install-infor-sm .infor-main .button {
+  width: 100%;
+  bottom: -10px;
+}
+.packages-install .install-infor-sm .infor-main .button .install-now {
+  width: 31%;
+  height: 40px;
+  background-color: #0099FF;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+}
+.packages-install .install-infor-sm .infor-main .button .download-now {
+  width: 31%;
+  height: 40px;
+  background-color: #CCC;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
+}
+.packages-install .install-infor-sm .infor-main .button .github {
+  width: 31%;
+  height: 40px;
+  background-color: #CCC;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
+}
+.packages-install .install-infor-sm .infor-main .button .github svg {
   vertical-align: sub;
 }
 .packages-projects {
   max-width: 1170px;
-  padding-top: 35px;
+  /*padding-top: 35px;*/
 }
 .packages-projects::after {
   display: block;
   content: "";
   clear: both;
+}
+.packages-projects .packages-tabs {
+  margin-bottom: 15px;
 }
 .packages-projects .user-infor {
   float: left;
@@ -467,6 +562,11 @@ body {
   content: "";
   clear: both;
 }
+.packages-projects .projects .projects-list .item .project-icon {
+  float: left;
+  width: 50px;
+  margin-right: 10px;
+}
 .packages-projects .projects .projects-list .item .project-infor {
   float: left;
 }
@@ -483,6 +583,12 @@ body {
   font-size: 14px;
   margin: 0px;
 }
+.packages-projects .projects .projects-list .item .project-downloads {
+  float: left;
+  font-size: 14px;
+  margin-top: 26px;
+  margin-left: 10px;
+}
 .packages-projects .projects .projects-list .item .project-operation {
   float: right;
   padding-top: 18px;
@@ -495,64 +601,102 @@ body {
 .packages-projects .projects .pagination {
   width: 100%;
   height: auto;
+  text-align: center;
 }
 .packages-projects .projects .pagination ul {
-  display: block;
+  display: inline-block;
   padding-left: 0;
   margin: 0px auto;
   border-radius: 4px;
-  width: 330px;
+  width: auto;
   height: 30px;
   margin-top: 20px;
 }
+.packages-projects .projects-sm {
+  width: 100%;
+}
 .modal-dialog {
-  width: 750px;
+  /*width: 750px;*/
 }
-.modal-dialog .packages_from_modify {
-  height: 380px!important;
+.modal-dialog .packages-from-modify {
+  height: 430px!important;
 }
-.modal-dialog .packages_from {
+.modal-dialog .packages-from {
   height: 485px;
 }
-.modal-dialog .packages_from h1 {
+.modal-dialog .packages-from h1 {
   text-align: center;
   padding: 30px 0 30px 0;
   font-weight: 600;
 }
-.modal-dialog .packages_from .form {
+.modal-dialog .packages-from .form {
   padding-left: 120px;
 }
-.modal-dialog .packages_from .form .item {
+.modal-dialog .packages-from .form .item {
   height: 40px;
 }
-.modal-dialog .packages_from .form .item label {
+.modal-dialog .packages-from .form .item label {
   float: left;
   font-size: 16px;
   font-weight: normal;
 }
-.modal-dialog .packages_from .form .item > div {
+.modal-dialog .packages-from .form .item > div {
   margin-left: 140px;
 }
-.modal-dialog .packages_from .form .item > div input[type='text'] {
+.modal-dialog .packages-from .form .item > div input[type='text'] {
   width: 320px;
 }
-.modal-dialog .packages_from .form .item > div textarea {
+.modal-dialog .packages-from .form .item > div textarea {
   width: 320px;
   height: 69px;
   resize: none;
 }
-.modal-dialog .packages_from .form .item:nth-child(3) {
+.modal-dialog .packages-from .form .item:nth-child(3) {
   height: 80px;
 }
-.modal-dialog .packages_from .fetch-infor {
+.modal-dialog .packages-from .fetch-infor {
   text-align: center;
   display: block;
   margin-top: 10px;
 }
-.modal-dialog .packages_from button {
+.modal-dialog .packages-from button {
   width: 140px;
   height: 40px;
   margin: 0 auto;
   display: block;
   margin-top: 40px;
+}
+.modal-dialog .packages-from-sm h1 {
+  font-size: 21px;
+}
+.modal-dialog .packages-from-sm .form {
+  padding-left: 5px;
+}
+.modal-dialog .packages-from-sm .form .item:nth-child(1) {
+  height: 60px;
+}
+.modal-dialog .packages-from-sm .form .item {
+  height: 40px;
+}
+.modal-dialog .packages-from-sm .form .item label {
+  font-size: 14px;
+}
+.modal-dialog .packages-from-sm .form .item > div {
+  margin-left: 105px;
+}
+.modal-dialog .packages-from-sm .form .item > div input[type='text'] {
+  width: 235px;
+  font-size: 13px;
+}
+.modal-dialog .packages-from-sm .form .item > div textarea {
+  width: 235px;
+}
+.modal-dialog .packages-from-sm .form .item:nth-child(3) {
+  height: 80px;
+}
+.modal-dialog .packages-from-sm .fetch-infor {
+  font-size: 12.5px;
+}
+.modal-dialog .packages-from-sm button {
+  margin-top: 5px;
 }

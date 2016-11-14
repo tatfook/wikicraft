@@ -14,6 +14,7 @@ rem install function here
 :InstallPackage
 if exist "%1\README.md" (
     pushd %1
+	git reset --hard
     git pull
     popd
 ) else (

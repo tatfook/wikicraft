@@ -35,7 +35,6 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="log.txt" />
-    <Content Include="script\apps\WebServer\admin\wp-includes\js\plugin\localInstallController.js" />
     <Content Include="www\dev\lib\css\index.css" />
     <Content Include="www\dev\lib\img\u617.png" />
     <Content Include="www\dev\lib\js\ace.js" />
@@ -70,6 +69,8 @@
     <Content Include="www\wiki\controllers\userReposController.js" />
     <Content Include="www\wiki\controllers\userStarsController.js" />
     <Content Include="www\wiki\controllers\wikiController.js" />
+    <Content Include="www\wiki\mod\packages\assets\images\u68.png" />
+    <Content Include="www\wiki\mod\packages\assets\images\u76.png" />
     <Content Include="www\wiki\mod\packages\assets\packages.css" />
     <Content Include="www\wiki\mod\packages\assets\u68.png" />
     <Content Include="www\wiki\mod\packages\assets\u76.png" />
@@ -88,8 +89,6 @@
   <ItemGroup>
     <None Include="license.md" />
     <None Include="README.md" />
-    <None Include="script\apps\WebServer\admin\wp-admin\css\plugin.less" />
-    <None Include="script\apps\WebServer\admin\wp-content\pages\localInstall.page" />
     <None Include="start.bat" />
     <None Include="update_packages.bat" />
     <None Include="wikicraft.lua" />
@@ -118,6 +117,7 @@
     <None Include="www\wiki\models\stats.page" />
     <None Include="www\wiki\models\user.page" />
     <None Include="www\wiki\models\user_stars.page" />
+    <None Include="www\wiki\mod\packages\assets\icomoon.woff2" />
     <None Include="www\wiki\mod\packages\assets\packages.less" />
     <None Include="www\wiki\mod\packages\models\packages.page" />
     <None Include="www\wiki\mod\packages\models\packages_stats.page" />

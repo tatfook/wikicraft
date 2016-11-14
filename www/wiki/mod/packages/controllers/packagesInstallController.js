@@ -25,8 +25,10 @@
 
     if ($location.path() == "/npl") {
         $scope.projectType = 'npl';
+        $scope.myProjects = 'My npl packages';
     } else if ($location.path() == "/paracraft") {
         $scope.projectType = 'paracraft';
+        $scope.myProjects = '我的paracraft模块';
     } else{
         $scope.projectType = '';
     }
@@ -157,6 +159,23 @@
     //     $scope.projectType = "b";
     // }
 
+    $scope.downloadCountAndOpen = function () {
+        $http({
+            method: "POST",
+            url: '/api/mod/packages/models/packages/download',
+            data: {
+                packageId: request.id,
+                projectType: $scope.projectType
+            }
+        })
+        .then(function (response) {
+            if (response.data.result == 1) {
+                window.location.href = $scope.projectReleases;
+            }
+        }, function (response) { });
+        return false;
+    }
+
     $scope.install = function () {
         $http(
             {
@@ -181,13 +200,14 @@
                 if (response.data.result == 1) {
                     packagesInstallService.setGiturl(
                         '127.0.0.1:8099/localInstall#?'
-                        + 'projectReleases=' + $scope.projectReleases
-                        + '&gitIcon=' + $scope.gitIcon
-                        + '&projectName=' + $scope.projectName
-                        + '&displayName=' + $scope.displayName
-                        + '&version=' + $scope.version
-                        + '&packagesId=' + request.id
-                        + '&projectType=' + $scope.projectType
+                        + 'projectReleases=' + encodeURIComponent($scope.projectReleases)
+                        + '&gitIcon=' + encodeURIComponent($scope.gitIcon)
+                        + '&projectName=' + encodeURIComponent($scope.projectName)
+                        + '&displayName=' + encodeURIComponent($scope.displayName)
+                        + '&version=' + encodeURIComponent($scope.version)
+                        + '&packagesId=' + encodeURIComponent(request.id)
+                        + '&projectType=' + encodeURIComponent($scope.projectType)
+                        + '&homepage=' + encodeURIComponent(window.location.href)
                     );
 
                     $uibModal.open({
@@ -200,7 +220,7 @@
                 }
             }, function (response) { });
         }, function (response) {
-            alert("local service is not start");
+            alert("`直接安装`需要您启动Paracraft客户端并打开`Mod加载`界面，但是没有检测到正在运行的Paracraft客户端, 请`直接下载`或启动后重试");
         });
     }
 

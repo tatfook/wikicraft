@@ -12,11 +12,22 @@ local packages_stats = inherit(models.abstract.base, gettable("models.packages_s
 packages_stats.db_name = 'packages_stats';
 
 function packages_stats:ctor()
-	
+	self:addfield("","string",false,0);
+end
+
+function packages_stats:get()
+end
+
+function packages_stats:delete()
+end
+
+function packages_stats:create()
+end
+
+function packages_stats:update()
 end
 
 function packages_stats:recordCreate(projectType)
-	-- log({"create"});
 	newQuantity = 0;
 
 	self:db():findOne({["+statsType+projectType"] = {"packageStats",projectType}},resume);
@@ -43,11 +54,8 @@ function packages_stats:recordCreate(projectType)
 end
 
 function packages_stats:recordDelete(projectType)
-	-- log({"delete",projectType});
-
 	self:db():findOne({["+statsType+projectType"] = {"packageStats",projectType}},
 		function(err, response)
-			-- log({"response",response});
 			if(response ~= nil) then
 				newQuantity = response.quantity - 1;
 
@@ -74,13 +82,12 @@ function packages_stats:recordDownload(projectType)
 	
 	local year,month,day = today:match("^([%d]+)-([%d]+)-([%d]+)$");
 	
-	if(projectType == "a") then
-		projectType = "npl";
-	elseif(projectType == "b") then
-		projectType = "paracraft";
-	end
+	--if(projectType == "a") then
+		--projectType = "npl";
+	--elseif(projectType == "b") then
+		--projectType = "paracraft";
+	--end
 
-	--log({projectType..year..month..day});
 	self:db():findOne({statsType = projectType..year..month..day},resume);
 	local err,todayResponse = yield(true);
 
@@ -94,7 +101,7 @@ function packages_stats:recordDownload(projectType)
 			local err,todayInsertResponse = yield(true);
 		else
 			local todayId = todayResponse._id;
-			--log({"day",todayId,todayResponse})
+
 			self:db():updateOne({
 				_id = todayId
 			},
@@ -106,7 +113,6 @@ function packages_stats:recordDownload(projectType)
 		end
 	end
 
-	--log({projectType..year..month});
 	self:db():findOne({statsType = projectType..year..month},resume);
 	local err,monthResponse = yield(true);
 
@@ -120,7 +126,7 @@ function packages_stats:recordDownload(projectType)
 			local err,monthInsertResponse = yield(true);
 		else
 			local monthId = monthResponse._id;
-			--log({"month",monthId,monthResponse})
+
 			self:db():updateOne({
 				_id = monthId
 			},
@@ -132,7 +138,6 @@ function packages_stats:recordDownload(projectType)
 		end
 	end
 
-	--log({projectType..year});
 	self:db():findOne({statsType = projectType..year},resume);
 	local err,yearResponse = yield(true);
 
@@ -146,7 +151,7 @@ function packages_stats:recordDownload(projectType)
 			local err,yearInsertResponse = yield(true);
 		else
 			local yearId = yearResponse._id;
-			--log({"year",yearId,yearResponse})
+
 			self:db():updateOne({
 				_id = yearId
 			},
@@ -164,7 +169,6 @@ end
 function packages_stats:packagesStats(param)
 	local returnData = {};
 	local stats = self:validate_packagesStats(param);
-	-- log({"stats",stats});
 
 	if (not stats) then
 		return {result=-1,msg="statsType or projectType is not set"};
@@ -205,16 +209,16 @@ function packages_stats:downloadStats(params)
 	local year,month,day = today:match("^([%d]+)-([%d]+)-([%d]+)$");
 	local statsType		 = "";
 
-	if(params.pageName ~= "npl" and params.pageName ~= "paracraft") then
+	if(params.projectType ~= "npl" and params.projectType ~= "paracraft") then
 		return {statsType="nil",msg="pageName is not set or worng"};
 	end
 
 	if(params.getType == "day") then
-		statsType = params.pageName..year..month..day;
+		statsType = params.projectType..year..month..day;
 	elseif(params.getType == "month") then
-		statsType = params.pageName..year..month;
+		statsType = params.projectType..year..month;
 	elseif(params.getType == "year") then
-		statsType = params.pageName..year;
+		statsType = params.projectType..year;
 	else
 		return {statsType="nil",msg="pageName is not set or worng"};
 	end

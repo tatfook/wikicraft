@@ -17,19 +17,19 @@ function packages:ctor()
 	--package name
 	self:addfield("projectName", "string", true, 30);
 	--package description
-	self:addfield("projectDesc", "string", true, 150);
+	self:addfield("projectDesc", "string", false, 150);
 	--package description
-	self:addfield("version", "string", true, 10);
+	self:addfield("version", "string", false, 10);
 	--npl package or paracraft mod
-	self:addfield("projectType", "string", true, 20);
-	--github reponsity
-	self:addfield("projectGitURL", "string", true, 300);
+	self:addfield("projectType", "string", false, 20);
+	--github repositary
+	self:addfield("projectGitURL", "string", false, 300);
 	--releases url
-	self:addfield("projectReleases", "string", true, 300);
+	self:addfield("projectReleases", "string", false, 300);
 	--user name
 	self:addfield("displayName", "string", true, 50);
 	--is verified
-	self:addfield("isVerified","string",true,10);
+	self:addfield("isVerified","string",false,10);
 end
 
 function packages:get(params)
@@ -65,6 +65,15 @@ function packages:get(params)
 	return data;
 end
 
+function packages:delete()
+end
+
+function packages:create()
+end
+
+function packages:update()
+end
+
 function packages:api_createPackage(params)
 	returnData = {};
 	self:ensureAuthenticated();
@@ -77,8 +86,6 @@ function packages:api_createPackage(params)
 	if(query.version == "") then
 		query.version = "0.0.1"
 	end
-
-	-- log({"----------------------------------------query",query});
 
 	self:db():insertOne(nil,
 		{
@@ -130,10 +137,14 @@ end
 function packages:api_modifyPackage(params)
 	data = {};
 
-	--log({"modifyPackageParams",params})
 	self:db():updateOne(
 		{_id = params.packageId},
-		{projectName=params.projectName, projectDesc=params.projectDesc, version=params.version},
+		{projectName     = params.projectName,
+		 projectDesc     = params.projectDesc,
+		 projectGitURL   = params.projectGitURL,
+		 projectUpdate	= ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+		 projectReleases = params.projectReleases,
+		 version         = params.version},
 		function(err, response)
 			data = response;
 			resume();

@@ -1,4 +1,4 @@
-<div class="packages_from packages_from_modify">
+<div class="packages-from packages-from-modify hidden-xs hidden-sm">
     <h1>{{projectTypeName}}</h1>
     <div class="form">
         <div class="item">
@@ -12,6 +12,40 @@
         <div class="item">
             <label>{{descriptionDesc}}</label>
             <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
+        </div>
+        <div class="item">
+            <label>{{projectGitURLDesc}}</label>
+            <div><input type="text" value="" ng-model="projectGitURL" /></div>
+        </div>
+        <div class="item">
+            <label>{{projectReleasesDesc}}</label>
+            <div><input type="text" value="" ng-model="projectReleases" /></div>
+        </div>
+    </div>
+    <button ng-click="confirm()">Confirm</button>
+</div>
+<div class="packages-from packages-from-sm packages-from-modify hidden-md hidden-lg">
+    <h1>{{projectTypeName}}</h1>
+    <div class="form">
+        <div class="item">
+            <label>{{versionDesc}}</label>
+            <div><input type="text" value="" ng-model="version" /></div>
+        </div>
+        <div class="item">
+            <label>{{projectNameDesc}}</label>
+            <div><input type="text" value="" ng-model="projectName" /></div>
+        </div>
+        <div class="item">
+            <label>{{descriptionDesc}}</label>
+            <div><textarea ng-class="description" ng-model="projectDesc"></textarea></div>
+        </div>
+        <div class="item">
+            <label>{{projectGitURLDesc}}</label>
+            <div><input type="text" value="" ng-model="projectGitURL" /></div>
+        </div>
+        <div class="item">
+            <label>{{projectReleasesDesc}}</label>
+            <div><input type="text" value="" ng-model="projectReleases" /></div>
         </div>
     </div>
     <button ng-click="confirm()">Confirm</button>
