@@ -184,10 +184,9 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
 
     // 编辑网站页面
 	$scope.goEditWebsitePagePage = function (website) {
-        ctrlShareObj.website = website;
-        console.log(ctrlShareObj.website);
-        $state.go('index.editor');
-        //window.location.href="/wiki/editor";
+        SelfData.website = website;
+        //$state.go('index.editor');
+        window.location.href="/wiki/editor";
     }
 
     //  创建网站
