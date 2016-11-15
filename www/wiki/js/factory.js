@@ -70,6 +70,21 @@ app.factory('ProjectStorageProvider', function ($http) {
         return github.github.getRepo(github.username, repo);
     }
 
+    // 上传图片 图片默认都放在根目录下的images目录下
+    github.uploadImage = function (filename, content, cb) {
+        var repo = github.getRepo("wikicraftDataSource");
+        if (filename[0] == '/') {
+            filename = 'images' + filename;
+        } else {
+            filename = "images/" + filename;
+        }
+
+        repo.writeFile('master', filename, content, "upload image: " + filename, {}, function (error, result, request) {
+            console.log("--------------------");
+            cb && cb(error, result, request);
+        });
+    }
+
     // 保存文件
     github.saveFile = function (path, content, message, cb) {
         //github.repo.writeFile('master', path, content, message, {}, cb);

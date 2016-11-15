@@ -36,9 +36,9 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }).state('index.preview', {
         url:'preview',
         templateUrl:templatePath + 'preview.html',
-    }).state('index.editWebsitePage', {
-        url:'editWebsitePage',
-        templateUrl:templatePath + 'editWebsitePage.html',
+    }).state('index.editWebsite', {
+        url:'editWebsite',
+        templateUrl:templatePath + 'editWebsite.html',
     }).state('index.userCenter', {
         url:'userCenter',
         templateUrl:templatePath + 'userCenter.html',
