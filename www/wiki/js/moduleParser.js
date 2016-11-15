@@ -7,8 +7,8 @@ function ModuleParser($scope){
     this.$scope = $scope;
     this.$compile = util.getAngularServices().$compile;
     this.moduleList = [];
-    // 解析模块命令
 
+    // 解析模块命令
     this.parse = function(pageContent) {
         this.moduleList = [];
 

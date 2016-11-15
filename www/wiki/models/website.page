@@ -7,6 +7,7 @@ Date: 2016/10/10
 include_once("./abstract/multi_user_base.page");
 include_once("./website_pages.page");
 include_once("./website_template_style.page");
+include_once("./website_template_config.page");
 
 local website = inherit(models.abstract.multi_user_base, gettable("models.website"));
 
@@ -17,7 +18,7 @@ website.max_items_per_user = 10;
 function website:ctor()
 	self:addfield("name", "string", true, 30);
 	self:addfield("userId", "number", false)
-	self:addfield("desc", "string", false, 120);
+	self:addfield("desc", "string", false, 240);
 	self:addfield("domain", "string", false, 30);
 	self:addfield("url","string", true, 100);
 	self:addfield("tags","string", false, 300);
@@ -61,9 +62,11 @@ function website:create(params)
 	end
 
 	-- create index page by template content 	
-	local website_pages_db = models.website_pages:new();
-	local template_style_db = models.website_template_style:new()
-	local data = template_style_db:api_getIndexPage({styleId=params.styleId})
+	local website_pages_db = models.website_pages:new()
+	-- local template_style_db = models.website_template_style:new()
+	-- local data = template_style_db:api_getIndexPage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
+	local template_config_db = models.website_template_config:new()
+	local data = template_config_db:api_getTemplatePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
 	
 	local page = {name="index"}
 	page.path = params.name .. '/' .. page.name
@@ -122,5 +125,24 @@ function website:getWebsiteListByUserId(userId)
 
 	return data	
 end
+
+-- 通过站点名获得站点
+function website:api_getByName(params)
+	if not params.websiteName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+	end
+
+	self:db():findOne({name=params.websiteName}, resume)
+	local err, data = yield()
+	
+	return errors:wrap(err, data)		
+end
+
+
+
+
+
+
+
 
 

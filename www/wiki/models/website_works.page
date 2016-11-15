@@ -1,0 +1,75 @@
+<?npl
+--[[
+Title: org member
+Author: wuxiangan
+Date: 2016/11/07
+]]
+
+include_once("./abstract/base.page");
+include_once("./website.page");
+
+local website_works = inherit(models.abstract.base, gettable("models.website_works"))
+website_works.db_name="website_works"
+
+function website_works:ctor()
+	self:addfield("websiteId", "number")      -- 组织名
+	self:addfield("worksId", "string")        -- 组织内作品的ID
+
+	self:addfield("createDate", "string", false, 64);
+	self:addfield("updateDate", "string", false, 64);
+end
+
+
+-- 获取组织成员
+function website_works:api_getCountByWebsiteId(params)
+	if not params.websiteId then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	self:db():count({["+websiteId"]={params.websiteId}}, resume)
+	local err, data = yield()
+	
+	return errors:wrap(err, data)
+end
+
+
+-- 获取成员列表
+function website_works:api_getByWebsiteId(params)
+	if not params.websiteId then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+	
+	local skip, limit = util:pagination(params)	
+
+	self:db():find({["+websiteId"]={params.websiteId,limit=limit, skip=skip}}, resume)
+	local err, data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end
+	
+	-- TODO 获取userDB对象
+	local websiteDB = models.website:new()
+	local siteInfoList = {}
+	for _, obj in ipairs(data) do
+		websiteDB:db():findOne([_id=obj.worksId], resume)
+		err, siteInfo = yield()
+		siteInfoList[#siteInfoList+1] = siteInfo	
+	end
+	
+	return {error=errors.SUCCESS, data=siteInfoList}
+end
+
+function website_works:create(params) 
+	if (not params.websiteId) or (not params.worksId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+	end
+
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = params.createDate
+
+	self:db():insertOne({websiteId=params.websiteId, worksId=params.worksId}, params, resume)
+	local err, data = yield()
+	
+	return errors:wrap(err, data)
+end

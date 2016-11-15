@@ -6,12 +6,13 @@ Date: 2016/10/13
 Desc: define error code and message 
 ]]
 
---local errors = inherit(nil, gettable("models.errors"));
+--local errors = inherit(nil, gettable("models.errors"))
 
-errors = {};
-errors.SUCCESS={id=0,message="success",};
+errors = {}
+errors.SUCCESS={id=0,message="success",}
 errors.SERVER_INNER_ERROR = {id=1,message="server inner error",}
 errors.REQUEST_PARAMS_ERROR = {id=2,message="request params error",}
+errors.NOT_FOUND = {id=3, message="not found",}
 
 function errors:new(message) 
 	return {
@@ -25,13 +26,17 @@ function errors:isOk(error)
 end
 
 function errors:wrap(err, data) 
-	if err then 
-		return {
-			error=self:New(err),
-			data=nil,
-		};
+--[[
+		if type(err) == "string" then 
+			return {error=self:New(err),data=nil,}
+		elseif type(err) == "table" then
+			return {error=err, data=nil}
+		end
+		return {error=errors.SUCCESS, data=data}
+--]]
+	if not err then
+		err = errors.SUCCESS
 	end
-	
-	return {error=errors.SUCCESS, data=data};
+	return {error=err, data=data}
 end
 
