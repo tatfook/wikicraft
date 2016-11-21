@@ -13,7 +13,7 @@ wp_enqueue_script("bootstrap-treeview", WIKI_WEBROOT.."plugins/bootstrap-treevie
 wp_enqueue_script("codemirror",  WIKI_WEBROOT.."plugins/codemirror/lib/codemirror.js");
 wp_enqueue_style("codemirror_style",  WIKI_WEBROOT.."plugins/codemirror/lib/codemirror.css");
 wp_enqueue_script("codemirror_mode_markdown", WIKI_WEBROOT.."plugins/codemirror/mode/markdown/markdown.js");
-wp_enqueue_script("codemirror_addon_dialog", WIKI_WEBROOT.."js//codemirror/addon/dialog/dialog.js");
+wp_enqueue_script("codemirror_addon_dialog", WIKI_WEBROOT.."plugins/codemirror/addon/dialog/dialog.js");
 wp_enqueue_style("codemirror_addon_dialog_style", WIKI_WEBROOT.."plugins/codemirror/addon/dialog/dialog.css");
 wp_enqueue_script("codemirror_addon_continuelist", WIKI_WEBROOT.."plugins/codemirror/addon/edit/continuelist.js");
 wp_enqueue_script("codemirror_addon_searchcursor", WIKI_WEBROOT.."plugins/codemirror/addon/search/searchcursor.js");
