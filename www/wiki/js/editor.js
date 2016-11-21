@@ -356,3 +356,66 @@ function midDiv(DivId,left) {
 }
 
 editor.focus();
+
+editor.on("paste",function(editor,e){
+    if(!(e.clipboardData&&e.clipboardData.items)){
+        alert("该浏览器不支持操作");
+        return;
+    }
+    for (var i = 0, len = e.clipboardData.items.length; i < len; i++) {
+        var item = e.clipboardData.items[i];
+        // console.log(item.kind+":"+item.type);
+        if (item.kind === "string") {
+            item.getAsString(function (str) {
+                // str 是获取到的字符串
+                console.log('get str');
+                console.log(str);
+            })
+        } else if (item.kind === "file") {
+            var pasteFile = item.getAsFile();
+            // pasteFile就是获取到的文件
+            console.log(pasteFile);
+            fileUpload(pasteFile);
+        }
+    }
+});
+
+editor.on("drop",function(editor,e){
+    // console.log(e.dataTransfer.files[0]);
+    if(!(e.dataTransfer&&e.dataTransfer.files)){
+        alert("该浏览器不支持操作");
+        return;
+    }
+    for(var i=0;i<e.dataTransfer.files.length;i++){
+        console.log(e.dataTransfer.files[i]);
+        fileUpload(e.dataTransfer.files[i]);
+    }
+    e.preventDefault();
+});
+
+//文件上传
+function fileUpload(fileObj){
+    console.log('fileUpload');
+    console.log(fileObj);
+    return;
+    var data = new FormData();
+    data.append("file",fileObj);
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", "/upload", true);
+    xhr.onreadystatechange = function(){
+        if (xhr.readyState == 4){
+            alert(xhr.responseText);
+        }
+    };
+    xhr.send(data);
+}
+
+//阻止浏览器默认打开拖拽文件的行为
+window.addEventListener("drop",function(e){
+    e = e || event;
+    e.preventDefault();
+    if (e.target.tagName == "textarea") {  // check wich element is our target
+        e.preventDefault();
+    }
+},false);
+
