@@ -362,13 +362,9 @@ angular.module('MyApp')
 
     //保存页面
     $scope.cmd_savepage = function () {
-
-        //var el = document.getElementById("editor");
-        //var content = el.env.editor.getValue();
         var content = editor.getValue();
-
         if( ! isEmptyObject($scope.websitePage)){//修改
-            //    $scope.websitePage.content = content;
+            $scope.websitePage.content = content;
             $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
                 //console.log(response.data);
                 alert('修改成功');
