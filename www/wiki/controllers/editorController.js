@@ -91,16 +91,13 @@ angular.module('MyApp')
     }
     init();
 })
-.controller('editorController', function  ($scope, $rootScope, $http, $location, $uibModal) {
+.controller('editorController', function  ($scope, $rootScope, $http, $location, $uibModal, github, Account) {
 
     $scope.websites = [];           //站点列表
     $scope.websitePages = [];       //页面列表
 
     $scope.website = {};            //当前选中站点
     $scope.websitePage = {};        //当前选中页面
-
-    init();
-    command();
 
     function isEmptyObject(obj) {
         for (var key in obj) {
@@ -111,8 +108,12 @@ angular.module('MyApp')
 
     //初始化
     function init() {
+        if(!Account.isAuthenticated()){
+            return;
+        }
+
         // 获取用户站点列表
-        $http.post('http://localhost:8099/api/wiki/models/website',{userid:1}).then( function (response) {
+        $http.post('http://localhost:8099/api/wiki/models/website',{userid:Account.getUser()._id}).then( function (response) {
             $scope.websites = response.data.data;
 
             for(var i=0;i< $scope.websites.length;i++){
@@ -134,6 +135,53 @@ angular.module('MyApp')
             console.log(response.data);
         });
         return;
+    }
+
+    function initGithub(){
+        console.log(Account.getUser());
+        return;
+
+        var token = github.getAccessToken();
+        console.log('github token');
+        console.log(token);
+
+        var user = github.getUserInfo();
+        console.log('github user');
+        console.log(github.user);
+
+        var repos = github.getRepos();
+        console.log('github repos');
+        console.log(github.userRepos);
+
+        return;
+
+        if(isEmptyObject($scope.githubUser)){
+            $scope.github = new GitHub({
+                username: 'zhkarl',
+                password: 'putian123xx'
+            });
+        }else{
+            $scope.github = new GitHub({
+                username: $scope.githubUser.username,
+                password: $scope.githubUser.password
+            });
+        }
+
+        var repo = $scope.github.getRepo();
+        console.log('github repo');
+        console.log(repo);
+
+        //console.log($scope.gh);
+        var me = $scope.github.getUser();
+        me.listNotifications(function(err, notifications) {
+            // do some stuff
+            console.log('github user');
+            console.log(err);
+            console.log(notifications);
+        });
+
+
+
     }
 
     function initRoot(){
@@ -314,13 +362,9 @@ angular.module('MyApp')
 
     //保存页面
     $scope.cmd_savepage = function () {
-
-        //var el = document.getElementById("editor");
-        //var content = el.env.editor.getValue();
         var content = editor.getValue();
-
         if( ! isEmptyObject($scope.websitePage)){//修改
-            //    $scope.websitePage.content = content;
+            $scope.websitePage.content = content;
             $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
                 //console.log(response.data);
                 alert('修改成功');
@@ -619,5 +663,10 @@ angular.module('MyApp')
             }
         }
     }
+
+    $scope.$on('onUserProfile', function (event, user) {
+        init();
+        command();
+    });
 
 })

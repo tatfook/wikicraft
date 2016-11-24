@@ -8,6 +8,7 @@ virtual functions: get, create, delete, update
 ]]
 include_once("../../auth/api.page");
 include_once("../errors.page");
+include_once("../util.page");
 
 local base = inherit(nil, gettable("models.abstract.base"));
 base.db_name = "unnamed";

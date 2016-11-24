@@ -7,8 +7,8 @@ function ModuleParser($scope){
     this.$scope = $scope;
     this.$compile = util.getAngularServices().$compile;
     this.moduleList = [];
-    // 解析模块命令
 
+    // 解析模块命令
     this.parse = function(pageContent) {
         this.moduleList = [];
 
@@ -41,6 +41,10 @@ function ModuleParser($scope){
         // 压入动态请求的脚本
         util.push(this);
         newPageContent += '<script type="text/javascript">var obj = util.pop();console.log(obj); obj && obj.renderModule && obj.renderModule();</script>'
+
+        // 在返回之前加上markdown-it解析
+        //var md = window.markdownit({html:true});
+        //newPageContent = md.render(newPageContent);
 
         return newPageContent ;
     };
@@ -90,7 +94,7 @@ function ModuleParser($scope){
         this.$http.get(config.modulePageUrlPrefix + tplModule.moduleUrl + suffix + ".html").then(function (response) {
             var tplContent = response.data;
             var tplPageContent = tplContent.replace('__PageContent__', pageContent);
-            tplPageContent = self.parse(tplPageContent);
+            tplPageContent = self.parse(tplPageContent);  // 模块嵌套模块
             //console.log(tplPageContent);
             tplPageContent = self.$compile(tplPageContent)(self.$scope);
             $('#__StyleTemplateContent__').html(tplPageContent);

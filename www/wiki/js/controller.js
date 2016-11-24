@@ -184,10 +184,9 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
 
     // 编辑网站页面
 	$scope.goEditWebsitePagePage = function (website) {
-        ctrlShareObj.website = website;
-        console.log(ctrlShareObj.website);
-        $state.go('index.editor');
-        //window.location.href="/wiki/editor";
+        SelfData.website = website;
+        //$state.go('index.editor');
+        window.location.href="/wiki/editor";
     }
 
     //  创建网站
@@ -210,7 +209,8 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
     }
 });
 
-app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfData) {
+app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfData, ProjectStorageProvider) {
+    const github = ProjectStorageProvider.getDataSource('github');
     $scope.website = SelfData.website || {};
     $scope.editWebsite = SelfData.website ? true : false;
     $scope.websiteNameErrMsg = "";
@@ -224,10 +224,21 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
     $scope.nextStepDisabled = !$scope.website.name;
     $scope.isPreview = true;
     config.templateObject = {executeTemplateScript:false};
+    var logoContent = undefined;
     init();
-
+/*
+    $('#uploadImageBtn').change(function (e) {
+        var fileReader = new FileReader();
+        fileReader.onload = function(){
+            $('#websiteLogo').attr('src',fileReader.result);
+            logoContent = fileReader.result;
+        };
+        fileReader.readAsDataURL(e.target.files[0]);
+    });
+*/
     function init() {
-        util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
+        //util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
+        util.http('POST', config.apiUrlPrefix+'website_template_config',{}, function (data) {
             $scope.categories = data;
             for (var i = 0; $scope.categories && i < $scope.categories.length; i++){
                 var cateory  = $scope.categories[i];

@@ -1,0 +1,131 @@
+<?npl
+--[[
+Title: website template_config
+Desc: 由于暂时模板较少，直接用配置文件方式代替数据库，数据库实现见website_category, website_template, website_template_style
+Author: wuxiangan
+Date: 2016/10/15
+]]
+
+include_once("./abstract/base.page")
+local website_template_config = inherit(models.abstract.base, gettable("models.website_template_config"))
+website_template_config.db_name="website_template_config"
+local website_template_style_dir = WIKI_ROOT .. "html/templates/"
+
+
+local template_config = {
+	-- 分类列表
+	{
+		_id=1,
+		name="作品网站",
+		-- 模板列表
+		templates={
+			{
+				_id=1,
+				name="图书模板",
+				categoryId=1,
+				logoUrl="",
+				filename="",
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="图书样式",
+						templateId=1,
+						logoUrl="",
+						filename="book.html",
+					},
+				},
+			},
+		},
+	},
+	{
+		_id=2,
+		name="组织网站",
+		templates={
+			{
+				_id=1,
+				name="组织模板",
+				categoryId=2,
+				logoUrl="/wiki/assets/imgs/Organization.jpg",
+				filename="",
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="组织样式",
+						templateId=1,
+						logoUrl="/wiki/assets/imgs/Organization.jpg",
+						filename="organization.html",
+					},
+				},
+			},
+
+		},
+	},
+	{
+		_id=3,
+		name="比赛网站",
+		templates={
+			{
+				_id=1,
+				name="3D大赛模板",
+				categoryId=3,
+				logoUrl="",
+				filename="",
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="3D大赛样式",
+						templateId=1,
+						logoUrl="",
+						filename="game.html",
+					},
+				},
+			},
+		},
+	},
+}
+
+function website_template_config:get()
+	return errors:wrap(nil, template_config)
+end
+
+function website_template_config:api_getTemplatePage(params)
+	if (not params.categoryId) or (not params.templateId) or (not params.styleId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+	end
+	
+	local categoryId, templateId, styleId = tonumber(params.categoryId), tonumber(params.templateId), tonumber(params.styleId)
+	if (not categoryId) or (not templateId) or (not styleId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+	end
+
+	local tpls = template_config[categoryId] and template_config[categoryId].templates
+	local styles = tpls and tpls[templateId] and tpls[templateId].styles
+	local style = styles and styles[styleId]
+	local filename = style and style.filename
+
+	if (not filename) or (filename:len() == 0) then
+		return errors:wrap(errors.NOT_FOUND, nil)
+	end
+	
+	file = ParaIO.open(website_template_style_dir .. filename, "r")
+	if not file then
+		log("template file lose!!!")
+		return {error=errors.SUCCESS, data=""}
+	end
+
+	local content = "" 
+	local line = nil
+	
+	repeat
+		line = file:readline()
+		content = content .. (line or "") .. "\r\n"
+	until (line == nil)
+	
+	file:close()
+	
+	return {error=errors.SUCCESS, data=content}
+end
+

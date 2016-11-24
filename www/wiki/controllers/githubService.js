@@ -1,6 +1,8 @@
 ﻿angular.module('MyApp')
 .factory('github', function ($http, $auth, Account) {
     var github = {};
+    var githubApi = "https://api.github.com/";
+
     return {
         getAccessToken: function () {
             return Account.getUser().github_token;
@@ -15,17 +17,26 @@
             }
         },
         getUserInfo: function () {
-            $http.get('https://api.github.com/user', this.getRequestConfig()).then(function (response) {
+
+            $http.get(githubApi + 'user', this.getRequestConfig()).then(function (response) {
                 github.user = response.data;
                 alert(JSON.stringify(response.data));
             }).catch(function (response) {
                 alert(JSON.stringify(response));
             });
         },
-
-		//added by LiZhiqiang
+        getUsername: function (callback) {
+            var uri = githubApi + 'user?access_token=' + $auth.getToken();
+            $http.get(uri).then(function (response) {
+                if (callback) {
+                    callback(response.data);
+                }
+            });
+        },
+	
+	//added by LiZhiqiang
         getRepos: function () {
-			$http.get('https://api.github.com/user/repos', this.getRequestConfig()).then(function (response) {
+		$http.get(githubApi + 'user/repos', this.getRequestConfig()).then(function (response) {
                 github.userRepos = response.data;
                 alert(JSON.stringify(response.data));
             }).catch(function (response) {
@@ -36,7 +47,7 @@
 		newRepos: function (reposName) {
 			$http({
 				method: 'POST',
-				url: 'https://api.github.com/user/repos',
+				url: githubApi + 'user/repos',
 				data: {
 					'name': reposName,
 					'description': 'new repository'
@@ -51,7 +62,7 @@
         },
 
 		delRepos: function(reposName){
-			var uri = 'https://api.github.com/repos/'+reposName;
+			var uri = githubApi + 'repos/'+reposName;
 			$http.delete(uri, this.getRequestConfig()).then(function(response){
 				//json 数据减少相应的字段
 				//github.userRepos = github.userRepos - response.data;
@@ -64,7 +75,7 @@
 		//上传文件，参数为用户数据(json格式)， reposName, fileName, fileContent
 		upload: function(user, reposName, fileName, fileContent){
 			var owner = user.login;
-			var uri = 'https://api.github.com/repos/'+owner+'/'+reposName+'/contents/'+fileName;
+			var uri = githubApi + 'repos/'+owner+'/'+reposName+'/contents/'+fileName;
 			$http({
 				method: 'PUT',
 				url: uri,
