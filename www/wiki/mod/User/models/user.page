@@ -1,0 +1,28 @@
+<?npl
+--[[
+Title: packages
+Author: xiaoyao
+Date: 2016/11/16
+]]
+
+NPL.load("(gl)script/ide/DateTime.lua")
+include_once(WIKI_ROOT.."models/abstract/base.page")
+include_once(WIKI_ROOT.."models/website_member.page")
+include_once(WIKI_ROOT.."models/website_works.page")
+include_once(WIKI_ROOT.."models/website_renewal.page")
+
+local timehelp = commonlib.timehelp
+local website_member_db = models.website_member:new()
+local website_works_db = models.website_works:new()
+local website_renewal_db = models.website_renewal:new()
+
+local user=inherit(models.abstract.base, gettable("models.user"))
+
+user.db_name = "user_module"
+
+function user:ctor() 
+end
+
+function user:get(params)
+	return website_member_db:api_getByWebsiteId(params)
+end

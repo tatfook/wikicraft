@@ -2,11 +2,12 @@
  * Created by wuxiangan on 2016/10/10.
  */
 
-app.factory('Account', function () {
+app.factory('Account', function ($auth, $rootScope) {
     return {
         user:{
             _id:1,
             username:'逍遥',
+            loaded:false,
         },
         getUser: function () {
             return this.user;
@@ -14,7 +15,61 @@ app.factory('Account', function () {
         
         setUser: function (_user) {
             this.user = _user;
-        }
+            if (this.user) {
+                this.user.loaded = true;
+            }
+            this.send("onUserProfile", this.user);
+        },
+
+        send: function(msg, data) {
+            $rootScope.$broadcast(msg, data);
+        },
+
+        isLoaded: function () {
+            if (this.user && this.user.loaded) {
+                return true;
+            }
+            return false;
+        },
+
+        isAuthenticated: function () {
+            return $auth.isAuthenticated();
+        },
+        getProfile: function () {
+            var self = this;
+            util.http("POST", config.apiUrlPrefix + "user/getById",{}, function (data) {
+                self.setUser(data);
+            });
+        },
+        updateProfile: function (profileData) {
+            var self = this;
+            util.http('PUT', config.apiUrlPrefix + 'user', profileData, function (data) {
+                self.setUser(data);
+            });
+        },
+        linkGithub: function () {
+            if ($auth.isAuthenticated()) {
+                var self = this;
+                if (self.user) {
+                    $auth.authenticate("github").then(function () {
+                            self.getProfile();
+                        })
+                        .catch(function (error) {
+                            alert(error.data && error.data.message);
+                        });
+                }
+            }
+        },
+        unlinkGithub: function () {
+            if ($auth.isAuthenticated()) {
+                if (user && (user.github && user.github != 0)) {
+                    var userData = angular.copy(user);
+                    delete userData.github;
+                    userData._unset = ["githubId"];
+                    this.updateProfile(userData);
+                }
+            }
+        },
     }
 });
 

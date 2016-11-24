@@ -39,9 +39,9 @@ angular.module('MyApp')
 
     $scope.website_select = function (wb) {
         $scope.website =  wb;
-        $http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id: $scope.website.styleId}).then(function (response) {
-            $scope.style = response.data;  // 模板代码style.content
-        })
+        //$http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id: $scope.website.styleId}).then(function (response) {
+        //    $scope.style = response.data;  // 模板代码style.content
+        //})
     }
 
      //初始化
@@ -77,7 +77,7 @@ angular.module('MyApp')
         $scope.websitePage.url = '/'+ $scope.website.name + '/' + $scope.websitePage.name;
         $scope.websitePage.websiteName = $scope.website.name;
         $scope.websitePage.websiteId =  $scope.website._id;
-        $scope.websitePage.content = $scope.style.data[0].content;
+        $scope.websitePage.content = ""; // $scope.style.data[0].content;
 
         $http.put('http://localhost:8099/api/wiki/models/website_pages/new',$scope.websitePage).then(function (response) {
             $rootScope.websitePage = response.data.data;
@@ -113,7 +113,7 @@ angular.module('MyApp')
         }
 
         // 获取用户站点列表
-        $http.post('http://localhost:8099/api/wiki/models/website',{userid:Account.getUser()._id}).then( function (response) {
+        $http.post('http://localhost:8099/api/wiki/models/website',{userId:Account.getUser()._id}).then( function (response) {
             $scope.websites = response.data.data;
 
             for(var i=0;i< $scope.websites.length;i++){

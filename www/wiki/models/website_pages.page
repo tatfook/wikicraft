@@ -18,7 +18,7 @@ website_pages.max_length = 10000;
 
 function website_pages:ctor()
 	self:addfield("name", "string", false, 32);  -- 页面名
-	self:addfield("path", "string", true, 120);  -- 页面路径   websiteName/pageName
+	self:addfield("url", "string", true, 120);  -- 页面路径   /websiteName/pageName
 	-- self:addfield("websiteId", 'number', false); -- 所属站点id
 	self:addfield("websiteName", 'string', false); -- 所属站点名
 	-- self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
@@ -50,12 +50,12 @@ function website_pages:get(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
-function website_pages:api_getWebsitePageByPath(params) 
-	if not params.path then
+function website_pages:api_getWebsitePageByUrl(params) 
+	if not params.url then
 		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
 	end
 
-	self:db():findOne({path=params.path}, resume)	
+	self:db():findOne({url=params.url}, resume)	
 	local err, data = yield()
 	if err then
 		return {error=errors:new(err), data=nil};
@@ -64,13 +64,13 @@ function website_pages:api_getWebsitePageByPath(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
-function website_pages:api_getWebsiteStylePageByPath(params)
-	if not params.path then
+function website_pages:api_getWebsiteStylePageByUrl(params)
+	if not params.url then
 		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
 	end
 	
 	-- 获取页面内容代码
-	self:db():findOne({path=params.path}, resume)	
+	self:db():findOne({url=params.url}, resume)	
 	local err, page = yield()
 	if err or (not page) then
 		return {error=errors:new(err), data=page};
@@ -92,10 +92,10 @@ function website_pages:api_getWebsiteStylePageByPath(params)
 end
 
 function website_pages:create(params) 
-	local data = self:api_getWebsitePageByPath(params);
+	local data = self:api_getWebsitePageByUrl(params);
 	
 	if data.data then 
-		self:db():updateOne({path=params.path}, params, resume);
+		self:db():updateOne({url=params.url}, params, resume);
 	else 
 		self:db():insertOne(nil, params, resume);
 	end	
@@ -144,23 +144,23 @@ function website_pages:api_getAllPageByUid(params)
 	return {error=errors.SUCCESS, data=pageTree};
 end
 
-function website_pages:getPathArray(array, path, start)
+function website_pages:getUrlArray(array, url, start)
 	array = array or {};
 	start = start or 1;
-    local s, e, v = path:find('/?([^/]+)', start);
+    local s, e, v = url:find('/?([^/]+)', start);
     if s == nil then 
         return array;
     end 
 
     array[#array+1] = v;
 
-    return self:getPathArray(array, path, e+1);
+    return self:getUrlArray(array, url, e+1);
 end
 
 function website_pages:getPageTreeByPageArray(pageArray, pageTree)
 	pageTree = pageTree or {};
 	for key, page in pairs(pageArray) do
-		local array = self:getPathArray({}, page.path, 1);				
+		local array = self:getUrlArray({}, page.url, 1);				
 		tree = pageTree;
 		for i=1, #array , 1 do
 			if i == #array then
@@ -210,9 +210,37 @@ function website_pages:api_getWebsitePageList(params)
 	return {error=errors.SUCCESS, data=data}
 end
 
+-- 访问页面
+function website_pages:api_visitPage(params)
+	if not params.url then
+		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
+	end
+	
+	-- 获取页面内容代码
+	self:db():findOne({url=params.url}, resume)	
+	local err, page = yield()
+	if err or (not page) then
+		return {error=errors:new(err), data=page};
+	end	
 
+	-- 获取站点, 浏览数加1
+	local website = models.website:new();
+	website:api_addVisitNum(page.websiteName)		
 
+	return {error=errors.SUCCESS, data=page};		
+end
 
+-- 获得站点页数
+function website_pages:api_getCountByWebsiteName(params)
+	if not params.websiteName then 
+		return {error=errors.REQUEST_PARAMS_ERROR}
+	end
+	
+	self:db():count({["websiteName"]={params.websiteName}}, resume)
+	local err, data = yield()
+
+	return {error=errors.SUCCESS, data=count}
+end
 
 
 

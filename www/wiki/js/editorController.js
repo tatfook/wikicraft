@@ -23,7 +23,7 @@ app.controller('editorCtrl', function ($scope, $http, Account, projectStoragePro
         editor.setAutoScrollEditorIntoView(true);
 
         // 初始化pageTree
-        util.http($http, "POST", config.apiUrlPrefix+'website_pages/getAllPageByUid', {userid:Account.getUser()._id}, function (data) {
+        util.http($http, "POST", config.apiUrlPrefix+'website_pages/getAllPageByUid', {userId:Account.getUser()._id}, function (data) {
             var getTree = function(data) {
                 var tree = [];
                 for(var i = 0; i < data.length; i++) {

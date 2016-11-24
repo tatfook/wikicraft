@@ -45,7 +45,6 @@ function ModuleParser($scope){
         // 在返回之前加上markdown-it解析
         //var md = window.markdownit({html:true});
         //newPageContent = md.render(newPageContent);
-
         return newPageContent ;
     };
 

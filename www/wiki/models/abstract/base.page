@@ -197,7 +197,7 @@ function base:db()
 end
 
 function base:ensureAuthenticated()
-	ensureAuthenticated();
+	return ensureAuthenticated();
 end
 
 function base:get(params)

@@ -1,0 +1,44 @@
+<style>
+    #search::-moz-placeholder{
+        color:silver;
+        text-align: center;
+    }
+</style>
+<div ng-controller="indexHeaderCtrl" style="width: 1920px">
+    <div id="header" style="display: flex; align-items: center; background: url('imgs/navBackground.png'); height: 134px">
+        <button  class="btn" ng-click="goHomePage()" style="margin-left: 110px; background: none; font-size: 30px;color: #777777;">首页</button>
+        <button  class="btn" ng-click="goPersonalPage()" style="margin-left: 90px; background: none; font-size: 30px;color: #777777;">个人首页</button>
+        <input id="search" type="search" placeholder="搜索 SEARCH" style="background: url('imgs/searchBG.png'); height: 43px; width: 418px; border-radius: 15px; margin-left: 220px; font-size: 27px">
+        <button class="btn" style="background: none;"><img src="imgs/searchBtn.png"></button>
+
+        <div ng-show="!isLogin">
+            <div style="display: flex; justify-content: space-around; width: 800px; margin-left: 20px">
+                <button class="btn" style="background: none; font-size: 30px;color: #777777;">成为VIP</button>
+                <button ng-click="goLoginPage()" class="btn" style="background: none; font-size: 30px;color: #777777;">账户登录</button>
+                <button ng-click="goRegisterPage()" class="btn" style="background: none; font-size: 30px;color: #777777;">用户注册</button>
+            </div>
+        </div>
+
+        <div ng-show="isLogin">
+            <div class="dropdown" style="margin-left: 600px">
+                <button type="button" class="btn dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" style="background: none; font-size: 30px">{{user.username || "wikicraft"}}<span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="font-size: 30px">
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" ui-sref="index.userCenter">个人中心</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" ui-sref="index.website">我的作品</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" ui-sref="index.gitVersion">版本管理</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" ng-click="logout()">退出登录 </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+

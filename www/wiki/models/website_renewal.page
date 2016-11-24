@@ -13,18 +13,18 @@ local website_renewal = inherit(models.abstract.base, gettable("models.website_r
 website_renewal.db_name="website_renewal"
 
 function website_renewal:ctor()
-	self:addfield("name", "string", true, 30)   -- 所属者 组织名, 个人创建的其它站点归属个人站下
-	self:addfield("websiteId", "number")      -- 组织内作品的ID
+	self:addfield("websiteId", "string", true, 30)   -- 所属者 组织名, 个人创建的其它站点归属个人站下
+	self:addfield("worksId", "number")      -- 组织内作品的ID
 
 	self:addfield("createDate", "string", false, 64);
 	self:addfield("updateDate", "string", false, 64);
 end
 
 -- 获取最近更新的数量
-function website_renewal:api_getRenewalCount(params)
+function website_renewal:api_getCount(params)
 	local startDate = params.startDate or ""
-	if params.name then
-		self:db():count({["+name-updateDate"]={params.name,gt=startDate}}, resume)
+	if params.websiteId then
+		self:db():count({["+websiteId-updateDate"]={params.websiteId,gt=startDate}}, resume)
 	else
 		self:db():count({["-updateDate"]={gt=startDate}}, resume)
 	end
@@ -40,32 +40,24 @@ end
 
 -- 获取最近更新
 function website_renewal:get(params)
-	local page = params.page or 1
-	local pageSize = params.pageSize  or 10
-	local skip = (page - 1) * pageSize
+	local skip, limit = util:pagination(params)
 	local startDate = params.startDate or ""
-	if params.name then
-		self:db():find({["+name-updateDate"]={params.name,gt=startDate, skip=skip, limit=pageSize}}, resume)
+	if params.websiteId then
+		self:db():find({["+websiteId-updateDate"]={params.websiteId,gt=startDate, skip=skip, limit=limit}}, resume)
 	else
-		self:db():find({["-updateDate"]={gt=startDate, skip=skip, limit=pageSize}}, resume)
+		self:db():find({["-updateDate"]={gt=startDate, skip=skip, limit=limit}}, resume)
 	end
-	local err, data = yield()
-	
-	if err then
-		return errors:wrap(err, data)
-	end
-
-	return {error=errors.SUCCESS, data=data}
+	return errors:wrap(err, data)
 end	
 
--- 更新一个站点
+-- 当更新站点页面时调用此方法，更新一个站点
 function website_renewal:update(params)	
-	if (not params.name) or (not params.websiteId) then
+	if (not params.websiteId) or (not params.worksId) then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
-	--local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	local currentDate = '2016-12-03'
+	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	-- local currentDate = '2016-12-05'
 	self:db():updateOne(params,{updateDate=currentDate}, resume)
 	local err, data = yield()
 	

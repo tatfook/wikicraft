@@ -51,6 +51,9 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }).state('index.userpage', {
         url:'userpage',
         templateUrl:templatePath + 'userpage.html',
+    }).state('index.home', {
+        url:"home",
+        templateUrl:templatePath + 'home.html'
     });
 
 
