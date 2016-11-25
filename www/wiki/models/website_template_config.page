@@ -25,6 +25,7 @@ local template_config = {
 				categoryId=1,
 				logoUrl="",
 				filename="",
+				layoutTpl='',
 				-- 样式列表
 				styles={
 					{
@@ -33,6 +34,7 @@ local template_config = {
 						templateId=1,
 						logoUrl="",
 						filename="book.html",
+						layoutTpl='',
 					},
 				},
 			},
@@ -48,6 +50,7 @@ local template_config = {
 				categoryId=2,
 				logoUrl="/wiki/assets/imgs/Organization.jpg",
 				filename="",
+				layoutTpl='',
 				-- 样式列表
 				styles={
 					{
@@ -56,6 +59,7 @@ local template_config = {
 						templateId=1,
 						logoUrl="/wiki/assets/imgs/Organization.jpg",
 						filename="organization.html",
+						layoutTpl='',
 					},
 				},
 			},
@@ -72,6 +76,7 @@ local template_config = {
 				categoryId=3,
 				logoUrl="",
 				filename="",
+				layoutTpl='',
 				-- 样式列表
 				styles={
 					{
@@ -80,6 +85,7 @@ local template_config = {
 						templateId=1,
 						logoUrl="",
 						filename="game.html",
+						layoutTpl='',
 					},
 				},
 			},
@@ -91,7 +97,31 @@ function website_template_config:get()
 	return errors:wrap(nil, template_config)
 end
 
+function website_template_config:getPersonalPage()
+	local filename = "personal.html"
+	file = ParaIO.open(website_template_style_dir .. filename, "r")
+	if not file then
+		log("template file lose!!!")
+		return {error=errors.SUCCESS, data=""}
+	end
+
+	local content = "" 
+	local line = nil
+	
+	repeat
+		line = file:readline()
+		content = content .. (line or "") .. "\r\n"
+	until (line == nil)
+	
+	file:close()
+	
+	return {error=errors.SUCCESS, data=content}
+end
+
 function website_template_config:api_getTemplatePage(params)
+	if params.categoryId == 0 then 
+		return self:getPersonalPage()
+	end
 	if (not params.categoryId) or (not params.templateId) or (not params.styleId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end

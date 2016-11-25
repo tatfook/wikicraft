@@ -1,0 +1,90 @@
+<?npl
+--[[
+Title: user profile
+Author: wuxiangan
+Date: 2016/11/01
+]]
+include_once("./abstract/base.page")
+include_once("./users.page")
+include_once("./website.page")
+
+local user_fans = inherit(models.abstract.base, gettable("models.user_fans"))
+
+user_fans.db_name = "user_fans";
+
+function user_fans:ctor() 
+	self:addfield("userId", "number", false)
+	self:addfield("websiteId","number", false)
+	self:addfield("fansUserId", "number", false) -- fans userId 
+end
+
+function user_fans:create(params)
+	local err, params = self:validateQuery(params)
+	if err then 
+		return errors:wrap(err)
+	end
+
+	local query = util:formatQuery(params)
+	self:db():insertOne(query, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+function user_fans:get(params)
+	local err, params = self:validateQuery(params)
+	if err then 
+		return errors:wrap(err)
+	end
+
+	local query = util:formatQuery(params)
+	self:db():find(query, resume)
+	return errors:wrap(yield())	
+end
+
+-- 获得用户的粉丝
+function user_fans:api_getFansByUserId(params) 
+	if not params.userId then 
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	local skip, limit = util:pagination(params)	
+	self:db():find({["+userId"]=params.userId, skip=skip, limit=limit}, resume)
+	local err, data = yield()
+
+	if err then
+		return errors.wrap(err, data)
+	end
+	
+	fansList = {}
+	local userDB = models.users:new()
+	for _, value in pairs(data) do
+		fansList[#fansList + 1] = userDB:api_getById({userId=value.fansUserId}).data
+	end
+
+	return {error=errors.SUCCESS, data=fansList}
+end
+
+-- 获得用户的收藏
+function user_fans:api_getFavoriteByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local skip, limit = util:pagination(params)	
+	self:db():find({["+fansUserId"]=params.userId, skip=skip, limit=limit}, resume)
+	local err, data = yield()
+	
+	if err or (not data) then
+		return errors:wrap(err or errors.NOT_FOUND, nil)
+	end
+	
+	local websiteDB = models.website:new()
+	local websiteList = {}
+	for _, obj in pairs(data) do
+		websiteList[#websiteList+1] = websiteDB:api_getById({websiteId=obj.websiteId}).data				
+	end
+	return errors:wrap(nil, websiteList)
+end
+
+
+

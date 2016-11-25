@@ -1,0 +1,214 @@
+<style>
+    #username::-moz-placeholder{color:white;}
+    #email::-moz-placeholder{color:white;}
+    #cellphone::-moz-placeholder{color:white;}
+    #password::-moz-placeholder{color:white;}
+</style>
+<div ng-controller="homeCtrl" style="width: 1920px">
+    <!-- Carousel -->
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+        </ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <div class="item active" style="position: relative">
+                <img src="/wiki/assets/imgs/hello.jpg" alt="First slide" class="img-responsive" style="height: 857px; width: 100%">
+                <div style="position: absolute; top:106px; left: 1180px; font-size: 27px" class="register">
+                    <div class="input-group">
+                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerUsername.png"></span>
+                        <input id="username" type="text" ng-model="username" class="form-control" placeholder="用户名" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
+                    </div>
+                    <div class="input-group" style="margin-top: 20px">
+                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerEmail.png"></span>
+                        <input id="email" type="email" ng-model="email" class="form-control" placeholder="注册邮箱" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
+                    </div>
+                    <div class="input-group" style="margin-top: 20px">
+                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerPhone.png"></span>
+                        <input id="cellphone" type="text" ng-model="cellphone" class="form-control" placeholder="手机号码" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
+                    </div>
+                    <div class="input-group" style="margin-top: 20px">
+                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerPassword.png"></span>
+                        <input id="password" type="password" ng-model="password" class="form-control" placeholder="密码" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
+                    </div>
+                    <div style="margin-top: 45px; width: 530px; height: 91px">
+                        <button ng-click="register()" class="btn btn-default" style="background: url('/wiki/assets/imgs/registerButton.png'); width: 100%; height: 100%; font-size: 27px; color: white">注册</button>
+                    </div>
+                    <div style="margin-top: 20px;width: 530px; color:red; font-size: 25px">
+                        {{errMsg}}
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="/wiki/assets/imgs/paracraft.jpg" alt="Second slide" class="img-responsive" style="height: 857px;width: 100%">
+            </div>
+        </div>
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div><!-- /carousel -->
+
+    <!--数据统计-->
+    <div style="position: relative">
+        <img src="/wiki/assets/imgs/statistic.png" alt="statistic">
+        <div style="position: absolute; top: 110px; left: 250px;">
+            <div style="font-size: 40px; color: white; text-align: center">111</div>
+            <div style="font-size: 30px; color: white; text-align: center">网站数量</div>
+        </div>
+
+        <div style="position: absolute; top: 110px; left: 680px;">
+            <div style="font-size: 40px; color: white; text-align: center">222</div>
+            <div style="font-size: 30px; color: white; text-align: center">作品数量</div>
+        </div>
+
+        <div style="position: absolute; top: 110px; left: 1115px;">
+            <div style="font-size: 40px; color: white; text-align: center">111</div>
+            <div style="font-size: 30px; color: white; text-align: center">名人数量</div>
+        </div>
+
+        <div style="position: absolute; top: 110px; left: 1550px;">
+            <div style="font-size: 40px; color: white; text-align: center">111</div>
+            <div style="font-size: 30px; color: white; text-align: center">本周更新</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="display: flex; flex-direction: column; align-items: center">
+            <h6>●</h6>
+            <h6>●</h6>
+            <h6>●</h6>
+            <h6>●</h6>
+            <h2>欢迎加入WikiCraft</h2>
+            <div class="intro">我们致力于为个人，老师，企业提供免费，可靠的作品创作与分享平台</div>
+        </div>
+    </div>
+
+    <div style="position: relative"><img src="/wiki/assets/imgs/feature.png" alt="feature"></div>
+    <div><img src="/wiki/assets/imgs/use.png" alt="use"></div>
+    <div><img src="/wiki/assets/imgs/personal.png" alt="personal"></div>
+    <div><img src="/wiki/assets/imgs/teacher.png" alt="teacher"></div>
+    <div><img src="/wiki/assets/imgs/enterprise.png" alt="enterprise"></div>
+    <!--div><img src="/wiki/assets/imgs/works.png" alt="works"></div-->
+    <div style="background-color: white; height: 1160px;">
+        <div style="margin-left: 130px; margin-right: 130px; display: flex; margin-top: 105px">
+            <img src="/wiki/assets/imgs/worksshow.png">
+            <div style="margin-left: 1175px; width: 345px; display: flex; justify-content: space-between; align-items: flex-end">
+                <button class="btn" style="font-size: 23px; background: none;">最近更新</button>
+                <button class="btn" style="font-size: 23px; background: none;">最多播放</button>
+                <button class="btn" style="font-size: 23px; background: none;">最多好评</button>
+            </div>
+        </div>
+        <div style="height: 340px; display: flex; margin-top: 20px">
+            <div style="margin-left: 130px; width: 1660px;height: 100%; display: flex;justify-content: space-between;">
+                <div style="position: relative">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative">
+                    <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; height: 100%; justify-content: center; width: 130px">
+                <a class="btn"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            </div>
+        </div>
+
+        <div style="margin-left: 130px; margin-right: 130px; display: flex;margin-top: 120px;">
+            <img src="/wiki/assets/imgs/mingrentang.png">
+            <div style="margin-left: 1175px; width: 345px; display: flex; justify-content: space-between; align-items: flex-end">
+                <button class="btn" style="font-size: 23px; background: none;">名人认证</button>
+                <button class="btn" style="font-size: 23px; background: none;">排行榜</button>
+                <button class="btn" style="font-size: 23px; background: none;">更多</button>
+            </div>
+        </div>
+        <div style="height: 340px; display: flex; margin-top: 20px">
+            <div style="margin-left: 130px; width: 1660px;height: 100%; display: flex;justify-content: space-between;">
+                <div style="position: relative">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative">
+                    <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; height: 100%; justify-content: center; width: 130px">
+                <a class="btn"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            </div>
+        </div>
+    </div>
+    <div><img src="/wiki/assets/imgs/activity.png" alt="activity"></div>
+</div>

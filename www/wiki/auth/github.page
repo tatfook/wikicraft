@@ -38,11 +38,11 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 
 		if(request:header('Authorization')) then
 			-- Step 3a. Link user accounts.
-			db.User:findOne({ github = profile.id }, function(err, existingUser)
+			db.user:findOne({ githubId = profile.id }, function(err, existingUser)
 				if (existingUser) then
 					-- refresh access token
-					if(not commonlib.partialcompare(accessToken, existingUser.github_token)) then
-						local err, user = db.User:updateOne({_id = existingUser._id}, {github_token=accessToken}, resume);
+					if(not commonlib.partialcompare(accessToken, existingUser.githubToken)) then
+						db.User:updateOne({_id = existingUser._id}, {githubToken=accessToken}, resume);
 					end
 					return response:status(409):send({ message = 'There is already a GitHub account that belongs to you' });
 				end
@@ -52,10 +52,10 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					if (not user) then
 						return response:status(400):send({ message= 'User not found' });
 					end
-					user.github = profile.id;
-					user.picture = user.picture or profile.avatar_url;
-					user.displayName = user.displayName or profile.name;
-					user.github_token = accessToken;
+					user.githubId = profile.id;
+					-- user.picture = user.picture or profile.avatar_url;
+					-- user.displayName = user.displayName or profile.name;
+					user.githubToken = accessToken;
 					db.User:updateOne(user, function(err, user)
 						local token = createJWT(user);
 						response:send({ token = token });
@@ -73,18 +73,21 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					response:send({ token = token });
 					return;
 				end
-				db.User:insertOne({github = profile.id}, {
-					github = profile.id,
-					picture = profile.avatar_url,
-					displayName = profile.name,
-					github_token = accessToken,
-					joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
-				}, function(err, user) 
-					local token = createJWT(user);
-					include_once("../models/stats.page");
-					models.stats:new():addUser(user._id, true);
-					response:send({ token = token });
-				end);
+				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
+				--[[
+					db.User:insertOne({github = profile.id}, {
+						github = profile.id,
+						picture = profile.avatar_url,
+						displayName = profile.name,
+						github_token = accessToken,
+						joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+					}, function(err, user) 
+						local token = createJWT(user);
+						include_once("../models/stats.page");
+						models.stats:new():addUser(user._id, true);
+						response:send({ token = token });
+					end);
+				]]
 			end);
 		end
 	end);

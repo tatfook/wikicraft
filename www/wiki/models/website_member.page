@@ -10,9 +10,11 @@ local website_member = inherit(models.abstract.base, gettable("models.website_me
 website_member.db_name = "website_member"
 
 function website_member:ctor()
+	-- (websiteId, userId) key
 	self:addfield("websiteId","number")    -- 站点ID
 	self:addfield("userId", "number")      -- 成员ID
-	-- self:addfield("role", "string")        -- 角色
+	-- 
+	self:addfield("role", "string")        -- 角色
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
 end
@@ -26,22 +28,15 @@ function website_member:create(params)
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = params.createDate
 
-	self:db():insertOne({websiteId=params.websiteId, userId=params.userId}, params, resume)
-	local err, data = yield()
-
-	if err then
-		return errors:wrap(err, data)
-	end
-
-	return {error=errors.SUCCESS, data=data}
+	self:db():insertOne({["+websiteId+userId"]={params.websiteId, params.userId}}, params, resume)
+	return errors:wrap(yield())
 end
 
 -- used to debug
 function website_member:get(params)
-	self:db():find(params, resume)
-	local err, data = yield()
-	
-	return errors:wrap(err, data)
+	local query = util:formatQuery(params)
+	self:db():find(query, resume)
+	return errors:wrap(yield())
 end
 
 -- 获得站点成员列表
@@ -51,8 +46,9 @@ function website_member:api_getByWebsiteId(params)
 	end
 
 	local skip, limit = util:pagination(params)
-		
-	self:db():find({"+websiteId"={params.websiteId, skip=skip, limit=limit}}, resume)
+	local query = util:formatQuery(params)
+	query["+websiteId"] = {params.websiteId, skip=skip, limit=limit}		
+	self:db():find(query, resume)
 	local err, data = yield()
 
 	for _, obj in ipairs(data) do
@@ -61,15 +57,34 @@ function website_member:api_getByWebsiteId(params)
 	return errors:wrap(err, data)		
 end
 
--- 获得成员数量
+-- 获得站点全部成员数量
 function website_member:api_getCountByWebsiteId(params) 
 	if not params.websiteId then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
-	self:db():count({["+websiteId"]={params.websiteId}}, resume)
-	local err, data = yield()
-	
-	return errors:wrap(err, data)
+	local query = util:formatQuery(params)
+	query["+websiteId"] = {params.websiteId}		
+
+	self:db():count(query, resume)
+	return errors:wrap(yield())
+end
+
+-- 删除站点成员
+function website_member:delete(params)
+	local query = util:formatQuery(params)
+	self:db():delete(query, resume)
+	return errors:wrap(yield())
+end
+
+-- 获得评委成员信息
+function website_member:getJudgeList(params)
+	params.role = const.WEBSITE_USER_ROLE_JUDGE
+	return self:api_getByWebsiteId(params)
+end
+
+-- 获取用户相关信息 辅助函数
+function website_member:getUserInfoList(data)
+	return data
 end
 

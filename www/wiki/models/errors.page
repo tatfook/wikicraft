@@ -26,17 +26,16 @@ function errors:isOk(error)
 end
 
 function errors:wrap(err, data) 
---[[
-		if type(err) == "string" then 
-			return {error=self:New(err),data=nil,}
-		elseif type(err) == "table" then
-			return {error=err, data=nil}
-		end
-		return {error=errors.SUCCESS, data=data}
---]]
 	if not err then
-		err = errors.SUCCESS
+		return {error=errors.SUCCESS, data=data}
 	end
-	return {error=err, data=data}
+
+	if type(err) == "string" then 
+		return {error=self:new(err),data=nil,}
+	elseif type(err) == "table" then
+		return {error=err, data=nil}
+	end
+
+	return {error=errors.SUCCESS, data=data}
 end
 

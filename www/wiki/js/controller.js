@@ -2,22 +2,17 @@
  * Created by wuxiangan on 2016/9/26.
  */
 
-app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile, Account, SelfData, ProjectStorageProvider) {
+app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile, $auth, Account, SelfData, ProjectStorageProvider) {
     /*配置一些全局服务*/
-    util.setAngularServices({$http:$http, $state:$state, $compile:$compile});
+    util.setAngularServices({$http:$http, $state:$state, $compile:$compile, $auth:$auth});
     util.setSelfServices({Account:Account, ProjectStorageProvider:ProjectStorageProvider, SelfData: SelfData});
 
-    $rootScope.isLogin = true;
-    $rootScope.user = {username:"逍遥"}
-    $rootScope.goLoginPage=function () {
-        $state.go('index.login');
-    }
-    $rootScope.goRegisterPage=function () {
-        $state.go('index.register');
-    }
-    $rootScope.logout = function () {
-        $rootScope.isLogin = false;
-        $rootScope.goLoginPage();
+    if (Account.isAuthenticated()) {
+        if (Account.isLoaded()) {
+            $scope.user = Account.getUser();
+        } else {
+            Account.getProfile();
+        }
     }
     console.log("mainCtrl");
 	var hostname = window.location.hostname;
@@ -37,7 +32,6 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
         pagename = pagename ? pagename[1] : 'index';
     } else {
         sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-		console.log(sitename);
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
@@ -50,10 +44,10 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
     SelfData.sitename = sitename;
     SelfData.pagename = pagename;
     // 初始化数据源
-	var actionName = 'index.website';
+	var actionName = 'index.home';
     var selfData = util.getSelfServices().selfData;
 	if (sitename != "wiki" && sitename != "wiki_new") {
-        SelfData.pageUrl = sitename + '/' + pagename;
+        SelfData.pageUrl = "/" + sitename + '/' + pagename;
         actionName = "index.userpage";
     }
 	console.log(actionName);
@@ -68,7 +62,105 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
     });
 });
 
-app.controller('indexHeaderCtrl', function ($scope, $rootScope, $state) {
+app.controller('indexHeaderCtrl', function ($scope, $state, $auth, Account) {
+    $scope.isLogin = Account.isAuthenticated();
+    $scope.user = Account.getUser();
+    
+    $scope.goLoginPage = function () {
+        $state.go("index.login");
+    }
+
+    $scope.goRegisterPage = function () {
+        $state.go("index.home");
+    }
+
+    $scope.goHomePage = function () {
+        $state.go("index.home");
+    }
+
+    $scope.goPersonalPage = function () {
+        window.location.href = "/" + $scope.user.username;
+    }
+    $scope.logout = function () {
+        $auth.logout();
+        $scope.isLogin = false;
+        $state.go("index.home");
+    }
+
+    $scope.$on("onUserProfile", function (event, user) {
+        $scope.user = user;
+    });
+
+    $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
+        $scope.isLogin = bAuthenticated;
+    });
+});
+
+app.controller('loginCtrl', function ($scope, $rootScope, $state, $auth, Account) {
+    //$scope.errMsg = "用户名或密码错误";
+    $scope.login = function () {
+        $scope.errMsg = "";
+        var params = {
+            email:util.stringTrim($scope.email),
+            password:util.stringTrim($scope.password),
+        };
+        if (!params.email || !params.password) {
+            $scope.errMsg = "用户名或密码错误";
+            return;
+        }
+        util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
+            $auth.setToken(data.token);
+            Account.setUser(data.userInfo);
+            console.log("登录成功");
+            $state.go("index.home");
+        }, function (error) {
+            $scope.errMsg = error.message;
+        });
+    }
+    
+    $scope.githubLogin = function () {
+        $auth.authenticate("github").then(function () {
+            console.log("登录成功");
+            Account.getProfile();
+            $state.go("index.home");
+        });
+    }
+});
+
+app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account) {
+    $scope.register = function(){
+        $scope.errMsg="";
+        var params = {
+            username:util.stringTrim($scope.username),
+            email:util.stringTrim($scope.email),
+            cellphone:util.stringTrim($scope.cellphone),
+            password:util.stringTrim($scope.password),
+        };
+        console.log(params);
+        if (!params.username || params.username.length == 0 || !params.password || params.password == 0){
+            $scope.errMsg = "用户名，密码为必填字段";
+            return ;
+        }
+        if (!params.username.match(/[\d\w_]{3,20}/)){
+            $scope.errMsg = "用户名格式错误，应由3-20数字或字母或下划线组成";
+            return;
+        }
+        if (!params.email) {
+            $scope.errMsg = "邮箱格式错误"
+            return;
+        }
+        if (params.password.length < 4 || params.password.length > 20) {
+            $scope.errMsg = "密码格式错误"
+        }
+        util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
+            console.log("注册成功")
+            $auth.setToken(data.token);
+            Account.setUser(data.userInfo);
+			window.location.href = "/" + data.userInfo.username;
+        },function (error) {
+            $scope.errMsg = error.message;
+        })
+    }
 });
 
 app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile) {
@@ -81,9 +173,11 @@ app.controller('userpageCtrl', function ($scope, $state, $http, $compile) {
     util.setScope($scope);
     // 获取页面
     var moduleParser = new ModuleParser($scope);
-    util.http('POST', config.apiUrlPrefix+'website_pages/getWebsitePageByPath', {path:util.getSelfServices().SelfData.pageUrl}, function(data){
+    util.http('POST', config.apiUrlPrefix+'website_pages/getWebsitePageByUrl', {url:util.getSelfServices().SelfData.pageUrl}, function(data){
         // 获取页面中模板
         var pageContent = data ? data.content : '<div>用户页丢失!!!</div>';
+        var md = window.markdownit({html:true});
+        pageContent = md.render(pageContent);
         moduleParser.render(pageContent);
     });
 });
@@ -168,7 +262,7 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
     getWebsistes();
     function getWebsistes() {
         // 获取项目列表
-        util.http('POST', config.apiUrlPrefix+'website',{userid:Account.getUser()._id || -1}, function (data) {
+        util.http('POST', config.apiUrlPrefix+'website',{userId:Account.getUser()._id || -1}, function (data) {
             $scope.websites = data;
         });
     }
@@ -209,7 +303,7 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
     }
 });
 
-app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfData, ProjectStorageProvider) {
+app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfData, ProjectStorageProvider, Account) {
     const github = ProjectStorageProvider.getDataSource('github');
     $scope.website = SelfData.website || {};
     $scope.editWebsite = SelfData.website ? true : false;
@@ -276,8 +370,9 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
     }
 
     function  createWebsiteRequest() {
-        console.log($scope.website);
+        $scope.website.userId = Account.getUser()._id;
         var url = config.apiUrlPrefix + "website";
+        console.log($scope.website);
 
         if (!$scope.editWebsite) {
             url += '/new';

@@ -5,19 +5,17 @@ Author: wuxiangan
 Date: 2016/10/24
 ]]
 include_once("./abstract/base.page")
-include_once("./wxa_user.page")
+include_once("./users.page")
 include_once("./website.page")
 
-local wxa_user_favorite = inherit(models.abstract.base, gettable("models.wxa_user_favorite"))
+local user_favorite = inherit(models.abstract.base, gettable("models.user_favorite"))
+user_favorite.db_name = "user_favorite";
 
-wxa_user_favorite.db_name = "wxa_user_favorite";
-
-function wxa_user_favorite:ctor() 
+function user_favorite:ctor() 
 	self:addfield("userId", "number", false)
 	self:addfield("type", "string", false) -- user  website
 	self:addfield("favoriteId", "number", false) -- userId websiteId
 end
-
 
 function wxa_user_favorite:api_getFavoriteByUserId(params) 
 	if not params.userId then

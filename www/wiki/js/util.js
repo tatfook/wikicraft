@@ -71,7 +71,7 @@ util.getCurrentDateString = function () {
 }
 
 // GET PUT POST DELETE
-util.http = function(method, url, params, callback) {
+util.http = function(method, url, params, callback, errorCallback) {
     var $http = this.angularServices.$http;
     var httpRespone = undefined;
 
@@ -89,9 +89,12 @@ util.http = function(method, url, params, callback) {
             callback && callback(data.data);
         } else {
             console.log(data);
+            errorCallback && errorCallback(data.error);
         }
     }).catch(function (response) {
         console.log(response.data);
+        // 网络错误
+        //errorCallback && errorCallback(response.data);
     });
 }
 

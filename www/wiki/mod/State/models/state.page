@@ -1,0 +1,44 @@
+<?npl
+--[[
+Title: packages
+Author: xiaoyao
+Date: 2016/11/16
+]]
+
+NPL.load("(gl)script/ide/DateTime.lua")
+include_once(WIKI_ROOT.."models/abstract/base.page")
+include_once(WIKI_ROOT.."models/website_member.page")
+include_once(WIKI_ROOT.."models/website_works.page")
+include_once(WIKI_ROOT.."models/website_renewal.page")
+
+local timehelp = commonlib.timehelp
+local website_member_db = models.website_member:new()
+local website_works_db = models.website_works:new()
+local website_renewal_db = models.website_renewal:new()
+
+local state=inherit(models.abstract.base, gettable("models.state"))
+
+state.db_name = "state"
+
+function state:ctor() 
+end
+
+function state:api_getOrganizationState(params)
+	if not params.websiteId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	-- 获取站点人员数量
+	allMemberCount = website_member_db:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	
+	-- 获得最近一周更新的数量
+	local currentDate, currentTiem = timehelp.GetLocalTime()
+	local startDate = timehelp.get_next_date_str(currentDate, -7, "%4d-%2d-%2d")
+	local weekRenewalCount = website_renewal_db:api_getCount({startDate=startDate, websiteId=params.websiteId}).data
+	
+	-- 获取全部作品数
+	local allWorksCount = website_works_db:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+
+	local data = {allMemberCount=allMemberCount, weekRenewalCount=weekRenewalCount, allWorksCount=allWorksCount}
+	return errors:wrap(nil, data)
+end 

@@ -4,12 +4,12 @@ Title: website of a user
 Author: wuxiangan
 Date: 2016/10/10
 ]]
-include_once("./abstract/multi_user_base.page");
+include_once("./abstract/base.page");
 include_once("./website_pages.page");
 include_once("./website_template_style.page");
 include_once("./website_template_config.page");
 
-local website = inherit(models.abstract.multi_user_base, gettable("models.website"));
+local website = inherit(models.abstract.base, gettable("models.website"));
 
 website.db_name = "website";
 -- max items per user
@@ -35,15 +35,21 @@ function website:ctor()
 	self:addfield("fork", "string", false, 200);
 	self:addfield("createDate", "string", false, 64);
 	self:addfield("updateDate", "string", false, 64);
-	self:addfield("stars", "number");
+	self:addfield("starCount", "number");
 	self:addfield("private", "number");	
 	self:addfield("memberCount", "number");
 	self:addfield("visitNum", "number");
 	self:addfield("pageNum", "number");
 end
 
+-- 获取站点
 function website:get(params)
-	self:db():find(params, resume);
+	local query = util:formatQuery(params)
+	query.name = params and params.name  -- primary key
+
+	log(query)
+
+	self:db():find(query, resume);
 	local err, data = yield();
 	
 	if err then
@@ -53,11 +59,18 @@ function website:get(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
+-- 创建站点
 function website:create(params) 
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
-	local site = self._super.create(self, params);	
-	
-	if not site then
+	local err, params = self:validateQuery(params)
+	if err then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({name=params.name}, params, resume);	
+	local err, site = yield()
+
+	if err then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
 	end
 
@@ -69,7 +82,7 @@ function website:create(params)
 	local data = template_config_db:api_getTemplatePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
 	
 	local page = {name="index"}
-	page.path = params.name .. '/' .. page.name
+	page.url = '/' ..  params.name .. '/' .. page.name
 	page.websiteName = params.name
 	page.content = data.data or ""
 	website_pages_db:create(page)
@@ -77,6 +90,7 @@ function website:create(params)
 	return {error=errors.SUCCESS, data=site}
 end
 
+-- 删除站点
 function website:delete(params) 
 	local site = self:get(params);
 	if (not site.data) or (not site.data[1]) then
@@ -93,37 +107,25 @@ function website:delete(params)
 	return self:get();
 end
 
+-- 更新站点
 function website:update(params) 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
-	self._super.update(self, params);
+	local err, params = self:validateQuery(params)
+	if err then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():updateOne({name=params.name}, params, resume);
+	local err, data = yield()
 	return self:get();
 end
 
-function website:api_getWebsiteByName(params)
-	if not params.name then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
-	end
-
-	self:findOne(params, resume)
-	local err, data = yield()
-	
-	if err then
-		return errors.wrap(err, data)
-	end
-
-	return {error=errors.SUCCESS, data}
-end
-
--- 获得用户项目列表
-function website:getWebsiteListByUserId(userId) 
-	if not userId then 
-		return nil
-	end
-
+-- 获得用户站点列表
+function website:api_getWebsiteListByUserId() 
+	local userId = self:ensureAuthenticated()
 	self:db():find({userId=userId}, resume)
-	local err , data = yield()
-
-	return data	
+	
+	return errors:wrap(yield())
 end
 
 -- 通过站点名获得站点
@@ -138,11 +140,43 @@ function website:api_getByName(params)
 	return errors:wrap(err, data)		
 end
 
+-- 通过站点ID获得站点
+function website:api_getById(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+	end
 
+	self:db():findOne({_id=params.websiteId}, resume)
 
+	return errors:wrap(yield())		
+end
 
+-- 增加访问计数
+function website:api_addVisitNum(params)
+	if not params.websiteName then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({name=page.websiteName}, resume);
+	local err, site = yield();
+	if not site then
+		return {error=errors.SERVER_INNER_ERROR, data=nil};
+	end
 
+	site.visitNum = site.visitNum + 1
+	self:update(site)
+		
+	return {error=errors.SUCCESS}		
+end
 
-
+-- 获得建站历史
+function website:api_getHistoryListByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	local skip, limit = util:pagination(params)	
+	self:db():find({["+userId-createDate"]={params.userId, skip=skip, limit=limit}}, resume)
+	return errors:wrap(yield())
+end
 
 

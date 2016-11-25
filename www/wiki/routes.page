@@ -31,7 +31,7 @@ elseif(ajax_type == "wiki") then
 	-- cross-domain request allow
 	addheader('Access-Control-Allow-Origin','*');  -- debug use
 	addheader('Access-Control-Allow-Methods',"GET, POST, PUT, DELETE");  -- debug use
-	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With"); -- debug use
+	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"); -- debug use
 
 	addheader( 'Content-Type', 'text/html');
 	addheader( 'X-Robots-Tag', 'noindex');
@@ -115,7 +115,7 @@ if sitename == nil then
 	local url = commonlib.Encoding.url_decode(request:url())
 	sitename = url:match("^/?([^/]+)")	
 end
-if sitename == nil or sitename == "wiki" then
+if sitename == nil or sitename == "wiki" or sitename == "api" then
 	include(WIKI_ROOT.."wiki.page")
 else
 	include(WIKI_ROOT .. "index.page")

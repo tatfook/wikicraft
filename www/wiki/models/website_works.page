@@ -14,52 +14,79 @@ website_works.db_name="website_works"
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 组织名
 	self:addfield("worksId", "string")        -- 组织内作品的ID
-
+	-- self:addfield("worksStarCount", "number") -- 作品被关注的数量
+	-- self:addfield("worksState", "string")     -- 热门 入围
+	self:addfield("worksFlag", "string")     -- 热门 入围
 	self:addfield("createDate", "string", false, 64);
 	self:addfield("updateDate", "string", false, 64);
 end
 
 
--- 获取组织成员
+-- 获取站点作品数量
 function website_works:api_getCountByWebsiteId(params)
 	if not params.websiteId then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
-
-	self:db():count({["+websiteId"]={params.websiteId}}, resume)
-	local err, data = yield()
 	
-	return errors:wrap(err, data)
+	local query = util:formatQuery(params)
+	query["+websiteId"] = {params.websiteId}
+	self:db():count(query, resume)
+	
+	return errors:wrap(yield())
 end
 
 
--- 获取成员列表
+-- 获取作品列表
 function website_works:api_getByWebsiteId(params)
 	if not params.websiteId then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 	
 	local skip, limit = util:pagination(params)	
+	local query = util:formatQuery(params)
+	query["+websiteId"]={params.websiteId, skip=skip, limit=limit}
 
-	self:db():find({["+websiteId"]={params.websiteId,limit=limit, skip=skip}}, resume)
+	self:db():find(query, resume)
 	local err, data = yield()
 
 	if err then
 		return errors:wrap(err, data)
 	end
 	
-	-- TODO 获取userDB对象
 	local websiteDB = models.website:new()
 	local siteInfoList = {}
 	for _, obj in ipairs(data) do
-		websiteDB:db():findOne([_id=obj.worksId], resume)
-		err, siteInfo = yield()
-		siteInfoList[#siteInfoList+1] = siteInfo	
+		siteInfoList[#siteInfoList+1] = websiteDB:api_getById({websiteId=obj.worksId}).data
 	end
 	
 	return {error=errors.SUCCESS, data=siteInfoList}
 end
 
+-- 获取入围作品的数量
+function website_works:api_getUpgradeCount(params)
+	params.worksFlag= const.WORKS_FLAG_UPGRADE	
+	return self:api_getCountByWebsiteId(params)
+end
+
+-- 获取入围作品
+function website_works:api_getUpgrade(params)
+	params.worksFlag= const.WORKS_FLAG_UPGRADE	
+	return self:api_getByWebsiteId(params)
+end
+
+-- 获取热门作品的数量
+function website_works:api_getUpgradeCount(params)
+	params.worksFlag= const.WORKS_FLAG_HOT	
+	return self:api_getCountByWebsiteId(params)
+end
+
+-- 获取热门作品
+function website_works:api_getUpgrade(params)
+	params.worksFlag= const.WORKS_FLAG_HOT	
+	return self:api_getByWebsiteId(params)
+end
+
+-- 创建站点作品
 function website_works:create(params) 
 	if (not params.websiteId) or (not params.worksId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
@@ -68,8 +95,39 @@ function website_works:create(params)
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = params.createDate
 
-	self:db():insertOne({websiteId=params.websiteId, worksId=params.worksId}, params, resume)
-	local err, data = yield()
+	self:db():insertOne(["+websiteId+worksId"]={params.websiteId, params.worksId}, params, resume)
 	
-	return errors:wrap(err, data)
+	return errors:wrap(yield())
 end
+
+-- 获取最近加入的作品
+function website_works:getLatest(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local startDate = params.startDate or ""
+	local skip, limit = util:pagination(params)
+	self:db():find({["+websiteId-createDate"]={params.websiteId, gt=startDate}}, resume)
+	local err, date = yield()
+	
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	data = self:getWebsiteInfoList(data)	
+	return errors:wrap(nil, data)
+end
+
+-- 获取站点详细信息 辅助函数
+function website_works:getWebsiteInfoList(data) 
+	local website_db = models.website:new()
+	local siteInfoList = {}
+	for _, obj in ipairs(data) do
+		siteInfoList[#siteInfoList+1] = website_db:api_getById({websiteId=obj.worksId}).data
+	end
+	
+	return siteInfoList
+end
+
+
