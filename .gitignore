@@ -13,3 +13,4 @@ Properties/
 *.ffs_db
 *.rp
 *.suo
+/packages

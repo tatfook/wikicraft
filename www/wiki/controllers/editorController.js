@@ -669,4 +669,6 @@ angular.module('MyApp')
         command();
     });
 
+    var mdwiki = markdownwiki({ container_name: '.result-html' });
+    mdwiki.bindToCodeMirrorEditor(editor);
 })
