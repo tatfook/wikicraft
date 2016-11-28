@@ -5,8 +5,13 @@ Author: KarlWu
 Date: 2016/10/17
 ]]
 
-wp_enqueue_script("markdown-it-twemoji", "//cdn.bootcss.com/twemoji/2.2.1/twemoji.min.js");
-wp_enqueue_script("markdown-it-index", WIKI_WEBROOT.."controllers/markdownitIndex.js");
+-- TODO: buddle and minify following wiki related files
+wp_enqueue_script("highlight", WIKI_WEBROOT.."plugins/highlight/highlight.pack.js");
+wp_enqueue_style("highlight", WIKI_WEBROOT.."plugins/highlight/default.css");
+wp_enqueue_script("markdown-it", WIKI_WEBROOT.."plugins/markdown-it/markdown-it.min.js");
+wp_enqueue_script("markdown-it_wikicmd", WIKI_WEBROOT.."js/markdown/markdown-it-wikicmd.js");
+wp_enqueue_script("markdownwiki", WIKI_WEBROOT.."js/markdown/markdownwiki.js");
+
 
 wp_enqueue_script("bootstrap-treeview", WIKI_WEBROOT.."plugins/bootstrap-treeview/bootstrap-treeview.min.js");
 

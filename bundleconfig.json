@@ -1,0 +1,10 @@
+[
+  {
+    "outputFileName": "www/wiki/js/markdown/markdownwiki.min.js",
+    "inputFiles": [
+      "www/wiki/js/markdown/markdownwiki.js",
+      "www/wiki/js/markdown/markdown-it-wikicmd.js",
+      "www/wiki/plugins/highlight/highlight.pack.js"
+    ]
+  }
+]

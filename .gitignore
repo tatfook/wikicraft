@@ -12,3 +12,5 @@ Properties/
 *.ffs_gui
 *.ffs_db
 *.rp
+*.suo
+/packages
