@@ -99,6 +99,7 @@ function user:deleteById(params)
 	return errors:wrap()
 end
 
+-- 更改密码
 function user:api_changepw(params)
 	local userId = self:ensureAuthenticated()
 	if (not params.oldpassword) or (not params.newpassword) then
@@ -125,6 +126,7 @@ function user:api_changepw(params)
 	return errors:wrap(yield())
 end
 
+-- 发邮件
 function user:api_setemail(params)
 	if (not params._id) or (not params.email) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -138,6 +140,7 @@ function user:api_setemail(params)
 	return errors:wrap(yield())
 end
 
+-- 登录
 function user:api_login(params) 
 	if (not params.email) or (not params.password) then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}	
@@ -156,9 +159,11 @@ function user:api_login(params)
 	return {error=errors.SUCCESS, data={token=createJWT(data), userInfo=data}}
 end
 	
+-- 注册
 function user:api_register(params)
 	local err, params = self:validateQuery(params)
-	if err then 
+	-- 用户名 密码 邮箱为必填项
+	if err or (not params.email) or (not params.username) or (not params.password) then 
 		return errors:wrap(err)
 	end
 	
@@ -197,7 +202,11 @@ end
 -- 通过用户ID获得用户信息
 function user:api_getById(params)
 	local userId = self:ensureAuthenticated()
-	userId = params.userId or userId
+	if not params.userId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	userId = params.userId
 
 	self:db():findOne({_id=userId}, resume)
 	local err, data = yield()
@@ -223,6 +232,11 @@ function user:api_getById(params)
 	return {error=errors.SUCCESS, data=userInfo}
 end
 
-
+-- 获得用户数量
+function user:api_getCount(params)
+	self:db():count({}, resume)
+	
+	return errors:wrap(yield())
+end
 
 

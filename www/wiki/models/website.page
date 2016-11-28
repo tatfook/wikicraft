@@ -165,6 +165,7 @@ end
 -- 获得用户站点列表  TODO:用户建站数量做限制，故暂不分页
 function website:api_getWebsiteListByUserId(params) 
 	local userId = self:ensureAuthenticated()
+	userId = params.userId or userId
 	self:db():find({userId=userId}, resume)
 	
 	return errors:wrap(yield())
@@ -218,6 +219,13 @@ function website:api_getHistoryListByUserId(params)
 	end
 	local skip, limit = util:pagination(params)	
 	self:db():find({["+userId-createDate"]={params.userId, skip=skip, limit=limit}}, resume)
+	return errors:wrap(yield())
+end
+
+-- 获得站点数量
+function website:api_getCount(params)
+	self:db():count({}, resume)
+	
 	return errors:wrap(yield())
 end
 

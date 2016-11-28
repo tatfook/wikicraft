@@ -4,8 +4,8 @@ Author: wuxiangan
 Date: 2016/11/07
 ]]
 
---NPL.load("(gl)script/ide/DateTime.lua")
---local timehelp = commonlib.timehelp
+NPL.load("(gl)script/ide/DateTime.lua")
+local timehelp = commonlib.timehelp
 
 include_once("./abstract/base.page");
 
@@ -18,6 +18,14 @@ function website_renewal:ctor()
 
 	self:addfield("createDate", "string", false, 64);
 	self:addfield("updateDate", "string", false, 64);
+end
+
+-- 获取最近一周内更新
+function website_renewal:api_getWeekCount(params)
+	local currentDate, currentTiem = timehelp.GetLocalTime()
+	local startDate = timehelp.get_next_date_str(currentDate, -7, "%4d-%2d-%2d")
+	
+	return self:api_getCount({startDate=startDate})
 end
 
 -- 获取最近更新的数量
