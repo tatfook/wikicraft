@@ -93,21 +93,22 @@ local template_config = {
 	},
 }
 
+-- 获取模板分类
 function website_template_config:get()
 	return errors:wrap(nil, template_config)
 end
 
-function website_template_config:getPersonalPage()
-	local filename = "personal.html"
-	file = ParaIO.open(website_template_style_dir .. filename, "r")
-	if not file then
-		log("template file lose!!!")
-		return {error=errors.SUCCESS, data=""}
-	end
-
+-- 获取文件内容
+function website_template_config:getFileContent(filename) 
 	local content = "" 
 	local line = nil
-	
+
+	local file = ParaIO.open(website_template_style_dir .. filename, "r")
+	if not file then
+		log("template file lose!!!")
+		return content 
+	end
+
 	repeat
 		line = file:readline()
 		content = content .. (line or "") .. "\r\n"
@@ -115,11 +116,29 @@ function website_template_config:getPersonalPage()
 	
 	file:close()
 	
-	return {error=errors.SUCCESS, data=content}
+	return content	
 end
 
+-- 获取个人站点模板内容
+function website_template_config:getPersonalPage()
+	local filename = "personal.html"
+	local content = self:getFileContent(filename)
+
+	return errors:wrap(nil, content)
+end
+
+-- 通过模板文件获得模板内容  用于预览
+function website_template_config:api_getTemplatePageByFilename(params)
+	if not params.filename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	return errors:wrap(nil, self:getFileContent(params.filename))
+end
+
+-- 获取模板页
 function website_template_config:api_getTemplatePage(params)
-	if params.categoryId == 0 then 
+	if not params.categoryId or params.categoryId == 0 then 
 		return self:getPersonalPage()
 	end
 	if (not params.categoryId) or (not params.templateId) or (not params.styleId) then
@@ -140,22 +159,8 @@ function website_template_config:api_getTemplatePage(params)
 		return errors:wrap(errors.NOT_FOUND, nil)
 	end
 	
-	file = ParaIO.open(website_template_style_dir .. filename, "r")
-	if not file then
-		log("template file lose!!!")
-		return {error=errors.SUCCESS, data=""}
-	end
+	local content = self:getFileContent(filename)	
 
-	local content = "" 
-	local line = nil
-	
-	repeat
-		line = file:readline()
-		content = content .. (line or "") .. "\r\n"
-	until (line == nil)
-	
-	file:close()
-	
 	return {error=errors.SUCCESS, data=content}
 end
 

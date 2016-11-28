@@ -11,49 +11,61 @@ include_once("./website.page")
 local user_favorite = inherit(models.abstract.base, gettable("models.user_favorite"))
 user_favorite.db_name = "user_favorite";
 
+userDB = models.user:new()
+websiteDB = models.website:new()
+
 function user_favorite:ctor() 
 	self:addfield("userId", "number", false)
-	self:addfield("type", "string", false) -- user  website
+	self:addfield("favoriteUserId", "number", false) -- 被收藏的用户ID
+	self:addfield("favoriteType", "number", false) -- 0 - user 1 - website
 	self:addfield("favoriteId", "number", false) -- userId websiteId
 end
 
-function wxa_user_favorite:api_getFavoriteByUserId(params) 
-	if not params.userId then
-		return {error:errors.REQUEST_PARAMS_ERROR, data=nil}
-	end
+-- 获得用户收藏的用户
+function user_favorite:api_getFavoriteUserListByUserId(params) 
+	local userId = self:ensureAuthenticated()
+	userId = params.userId or userId
 	
-	self:db():find(params, resume)
+	local skip, limit = util:pagination(params)
+	self:db():find({["+userId"]={userId, skip=skip, limit=limit},{"favoriteType", const.FAVORITE_TYPE_USER}}, resume)
 	local err, data = yield()
 
-	if err then
+	if err or (not data) then
 		return errors:wrap(err, data)
 	end
 
-	userDB = models.wxa_user:new()
-	websiteDB = models.website:new()
-	local err, data, db = nil, nil, nil
+	local userList = {}
 	for _, value in pairs(data) do
-		if value.type == "user" then
-			db = userDB
-		elseif value.type == "website" then
-			db = websiteDB
-		else
-			db = nil
-			log("favorite type erroor")
-		end		
-		while db do
-			err, data = userDB:db():findOne({_id=value.favoriteId}, resume) 	
-			value[value.type] = data
-			break
-		end
+		userList[#userList + 1] = userDB:api_getById({userId=value.favoriteId}).data
 	end
 	
-	return {error=errors.SUCCESS, data=data}
+	return {error=errors.SUCCESS, data=userList}
 end
 
 
+-- 获得用户收藏的作品
+function user_favorite:api_getFavoriteWebsiteListByUserId(params) 
+	local userId = self:ensureAuthenticated()
+	userId = params.userId or userId
+	
+	local skip, limit = util:pagination(params)
+	self:db():find({["+userId"]={userId, skip=skip, limit=limit},{"favoriteType", const.FAVORITE_TYPE_WEBSITE}}, resume)
+	local err, data = yield()
+
+	if err or (not data) then
+		return errors:wrap(err, data)
+	end
+
+	local websiteList = {}
+	for _, value in pairs(data) do
+		websiteList[#websiteList+1] = websiteDB:api_getById({websiteId=value.favoriteId}).data 	
+	end
+	
+	return {error=errors.SUCCESS, data=websiteList}
+end
+
 -- 获取单个项目的关注人列表
-function wxa_user_favorite:api_getWebsiteFans(params)
+function user_favorite:api_getWebsiteFans(params)
 	if not params.websiteId then
 		return {error:errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
@@ -62,20 +74,30 @@ function wxa_user_favorite:api_getWebsiteFans(params)
 	local pageSize = params.pageSize or 10
 	local skip = (page - 1) * pageSize
 	 
-	self:db():find({_id={gt=-1, limit=pageSize, offset=skip}, type="website", favoriteId=params.websiteId}, resume)
+	self:db():find({_id={gt=-1, limit=pageSize, offset=skip}, {"favoriteType", const.FAVORITE_TYPE_WEBSITE}, {"favoriteId",params.websiteId}}, resume)
 	loccal err, data = yield()
 	
 	local userList = {}
-	local userDB = models.wxa_user:new()
 	for _,value in pairs(data) do
-		userDB:db():findOne({_id=value.userId}, resume)
-		local err, user = yield()
-		userList[#userList+1] = user
+		userList[#userList+1] = userDB:api_getById({userId=value.userId})
 	end
 
 	return {error=errors.SUCCESS, data = userList}	
 end
 
+-- 获得用户站点的粉丝
+function user_favorite:getFansListByUserId(params)
+	local userId = self:ensureAuthenticated()
+	userId = params.userId or userId
+	
+	if not params.websiteId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	local skip, limit = util:pagination(params)
+	self:db():find(["+websiteId"]={params.websiteId, skip=skip, limit=limit}, resume)
+	
+	
+end
 
 

@@ -47,8 +47,6 @@ function website:get(params)
 	local query = util:formatQuery(params)
 	query.name = params and params.name  -- primary key
 
-	log(query)
-
 	self:db():find(query, resume);
 	local err, data = yield();
 	
@@ -84,6 +82,7 @@ function website:create(params)
 	local page = {name="index"}
 	page.url = '/' ..  params.name .. '/' .. page.name
 	page.websiteName = params.name
+	page.websiteId = site._id
 	page.content = data.data or ""
 	website_pages_db:create(page)
 			
@@ -107,6 +106,49 @@ function website:delete(params)
 	return self:get();
 end
 
+-- 删除一个站点
+function website:deleteById(id)
+	log(id)
+	self:db():deleteOne(
+		{_id=id}, 
+		function(err, data)
+			local website_pages_model = models.website_pages:new()
+			-- 删除该网站上所有页
+			website_pages_model:db():delete({websiteId=id})
+		end)
+	
+	return nil
+end
+
+-- 删除一个站点 outer api
+function website:api_deleteById(params)
+	local userId = self:ensureAuthenticated()
+	local websiteId = tonumber(params.websiteId) 
+
+	if not params.websiteId or (not websiteId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:deleteById(websiteId)
+
+	return self:get({userId=userId})
+end
+
+-- 删除用户的所有站点
+function website:deleteUserWebsite(userId)
+	local data = self:api_getWebsiteListByUserId().data
+	
+	if not data then 
+		return 
+	end
+
+	for _, obj in pairs(data) do
+		self:deleteById(obj._id)
+	end
+	
+	return nil
+end
+
 -- 更新站点
 function website:update(params) 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
@@ -120,8 +162,8 @@ function website:update(params)
 	return self:get();
 end
 
--- 获得用户站点列表
-function website:api_getWebsiteListByUserId() 
+-- 获得用户站点列表  TODO:用户建站数量做限制，故暂不分页
+function website:api_getWebsiteListByUserId(params) 
 	local userId = self:ensureAuthenticated()
 	self:db():find({userId=userId}, resume)
 	

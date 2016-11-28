@@ -36,6 +36,10 @@ end
 
 const={}
 
+-- 收藏
+const.FAVORITE_TYPE_USER = 0
+const.FAVORITE_TYPE_WEBSITE = 1
+
 -- 作品状态
 const.WORKS_STATE_NOPASS=0  -- 未审核
 const.WORKS_STATE_PASS=1    -- 审核

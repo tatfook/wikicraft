@@ -80,32 +80,43 @@ function user:create(params)
 end
 
 function user:delete(params)
-	if not params._id then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
+	local userId = self:ensureAuthenticated()
 
-	self:db():deleteOne({_id=params._id}, resume)
+	self:db():deleteOne({_id=userId}, resume)
 	return errors:wrap(yield())
 end
 
+-- 
+function user:deleteById(params) 
+	local userId = self:ensureAuthenticated()
+
+	self:db():deleteOne(
+		{_id=userId}, 
+		function(err,data) 
+			websiteDB:deleteUserWebsite(userId)
+		end)
+	
+	return errors:wrap()
+end
 
 function user:api_changepw(params)
-	if (not params._id) or (not params.oldpassword) or (not params.newpassword) then
+	local userId = self:ensureAuthenticated()
+	if (not params.oldpassword) or (not params.newpassword) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({_id=params._id}, resume)
-	local err, data = yield()
+	self:db():findOne({_id=userId}, resume)
+	local err, user = yield()
 	
-	if not data then 
+	if not user then 
 		return errors:wrap(errors.NOT_FOUND)
 	end
 	
 	local oldpassword = self:encodePassword(params.oldpassword)
 	local newpassword = self:encodePassword(params.newpassword)
-	
+
 	if user.password ~= oldpassword then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+		return errors:wrap("密码错误")
 	end
 
 	user.password = newpassword
@@ -185,10 +196,10 @@ end
 
 -- 通过用户ID获得用户信息
 function user:api_getById(params)
-	self:ensureAuthenticated()
-	params.userId = request.userid
+	local userId = self:ensureAuthenticated()
+	userId = params.userId or userId
 
-	self:db():findOne({_id=params.userId}, resume)
+	self:db():findOne({_id=userId}, resume)
 	local err, data = yield()
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
