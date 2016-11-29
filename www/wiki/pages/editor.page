@@ -30,14 +30,12 @@ wp_enqueue_script("codemirror_addon_annotatescrollbar", WIKI_WEBROOT.."plugins/c
 wp_enqueue_script("codemirror_addon_fullscreen", WIKI_WEBROOT.."plugins/codemirror/addon/display/fullscreen.js");
 wp_enqueue_style("codemirror_addon_fullscreen_style", WIKI_WEBROOT.."plugins/codemirror/addon/display/fullscreen.css");
 
-wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-awesome.min.css");
-
 wp_enqueue_script("github_bundle", WIKI_WEBROOT.."plugins/github-api/GitHub.bundle.min.js");
-wp_enqueue_script("github_service", WIKI_WEBROOT.."controllers/githubService.js");
 
+wp_enqueue_script("storage_pro", WIKI_WEBROOT.."js/ProjectStorageProvider.js");
 wp_enqueue_script("editor_controller", WIKI_WEBROOT.."controllers/editorController.js");
 wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
-
+wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-awesome.min.css");
 
 ?>
 
@@ -127,6 +125,13 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
                 <button type="button" class="btn btn-default btn-sm toolbar-page-version" title="版本"><i class="fa fa-history"></i>&nbsp;版本</button>
                 <button type="button" class="btn btn-default btn-sm toolbar-page-hotkey" title="热键表"><i class="fa fa-keyboard-o"></i>&nbsp;热键</button>
                 <button type="button" class="btn btn-default btn-sm toolbar-page-knowledge" title="知识库"><i class="fa fa-question-circle-o"></i>&nbsp;知识库</button>
+            </div>
+        </div>
+        <div class="progress progress-striped active" ng-show="progressbar.show">
+            <div class="progress-bar progress-bar-success" role="progressbar"
+                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 0%;">
+                <span class="sr-only">{{progressbar.percent}}%</span>
             </div>
         </div>
     </div>

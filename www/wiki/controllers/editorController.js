@@ -91,13 +91,20 @@ angular.module('MyApp')
     }
     init();
 })
-.controller('editorController', function  ($scope, $rootScope, $http, $location, $uibModal, github, Account) {
+.controller('editorController', function  ($scope, $rootScope, $http, $location, $uibModal, Account,ProjectStorageProvider) {
 
     $scope.websites = [];           //站点列表
     $scope.websitePages = [];       //页面列表
 
     $scope.website = {};            //当前选中站点
     $scope.websitePage = {};        //当前选中页面
+
+    $scope.githubSource = {};
+
+    $scope.progressbar = {
+        show:false,
+        percent:0
+    };
 
     function isEmptyObject(obj) {
         for (var key in obj) {
@@ -106,14 +113,14 @@ angular.module('MyApp')
         return true;
     }
 
-    //初始化
+    //初始化，读取用户站点列表及页面列表
     function init() {
         if(!Account.isAuthenticated()){
             return;
         }
 
         // 获取用户站点列表
-        $http.post('http://localhost:8099/api/wiki/models/website',{userId:Account.getUser()._id}).then( function (response) {
+        $http.post('http://localhost:8099/api/wiki/models/website',{userid:Account.getUser()._id}).then( function (response) {
             $scope.websites = response.data.data;
 
             for(var i=0;i< $scope.websites.length;i++){
@@ -126,6 +133,7 @@ angular.module('MyApp')
                     if(i == $scope.websites.length){
                         initRoot();
                         initTree();
+                        initGithub();
                     }
                 }).catch(function (response) {
                     console.log(response.data);
@@ -137,53 +145,76 @@ angular.module('MyApp')
         return;
     }
 
-    function initGithub(){
-        console.log(Account.getUser());
-        return;
-
-        var token = github.getAccessToken();
-        console.log('github token');
-        console.log(token);
-
-        var user = github.getUserInfo();
-        console.log('github user');
-        console.log(github.user);
-
-        var repos = github.getRepos();
-        console.log('github repos');
-        console.log(github.userRepos);
-
-        return;
-
-        if(isEmptyObject($scope.githubUser)){
-            $scope.github = new GitHub({
-                username: 'zhkarl',
-                password: 'putian123xx'
-            });
-        }else{
-            $scope.github = new GitHub({
-                username: $scope.githubUser.username,
-                password: $scope.githubUser.password
-            });
+    function progressing(step){
+        if(  $scope.progressbar.percent == 0){
+            $scope.progressbar.show = true;
         }
-
-        var repo = $scope.github.getRepo();
-        console.log('github repo');
-        console.log(repo);
-
-        //console.log($scope.gh);
-        var me = $scope.github.getUser();
-        me.listNotifications(function(err, notifications) {
-            // do some stuff
-            console.log('github user');
-            console.log(err);
-            console.log(notifications);
-        });
-
-
-
+        $scope.progressbar.percent = $scope.progressbar.percent + step;
+        $(".progress-bar").css("width", $scope.progressbar.percent+"%");
     }
 
+    function githubWS(sha){
+        for(var i=0;i< $scope.websites.length;i++) {
+            if(sha.length == 0){
+                $scope.websites[i].github = false;
+                return;
+            }
+            for(var j=0; j<sha.length;j++){
+                if(sha[j].type == "dir" && sha[j].name == $scope.websites[i].name){
+                    break;
+                }
+            }
+            if(j<sha.length){
+                $scope.websites[i].github = true;
+            }else{
+                $scope.websites[i].github = false;
+            }
+            if($scope.websites[i].github){
+                $scope.githubSource.repo.getSha('',$scope.websites[i].name,function(error, result, request){
+                    githubWP($scope.websites[i],sha);
+                });
+            }
+        }
+    }
+
+    function githubWP(ws,sha){
+        for(var i=0;i< $scope.websitePages.length;i++) {
+            if(ws._id == wp.websiteId || ws.name == wp.websiteName) {
+                if(sha.length == 0){
+                    $scope.websitePages[i].github = false;
+                    continue;
+                }
+                for (var j = 0; j < sha.length; j++) {
+                    if (sha[j].type == "file" && sha[j].name == $scope.websitePages[i].name) {
+                        break;
+                    }
+                }
+                if (j < sha.length) {
+                    $scope.websitePages[i].github = true;
+                } else {
+                    $scope.websitePages[i].github = false;
+                }
+            }
+        }
+    }
+
+    //初始化github
+    function initGithub(){
+        var token = Account.getUser().github_token;
+        if(!token){
+            return;
+        }
+        $scope.githubSource = ProjectStorageProvider.getDataSource('github');
+        $scope.githubSource.init(token,function(){
+            $scope.githubSource.repo.getSha('','',function(error, result, request){
+                if(!error) {
+                    githubWS(result);
+                }
+            });
+        });
+    }
+
+    //设置全局变量
     function initRoot(){
         $rootScope.websites = $scope.websites;
         $rootScope.websitePages =  $scope.websitePages;
@@ -211,8 +242,7 @@ angular.module('MyApp')
                 if(wp.del != undefined && wp.del == 1){
                     continue;
                 }
-                //console.log(wp);
-                if(ws._id == wp.websiteId){
+                if(ws._id == wp.websiteId || ws.name == wp.websiteName){
                     node += '{"text": "' + wp.name + '","icon":"fa fa-file-o",  "selectedIcon": "fa fa-file-text-o", "tags": ["page","'+ wp._id +'","'+ ws._id +'"]},';
                 }
             }

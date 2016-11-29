@@ -345,7 +345,10 @@ $(function() {
 //    });
 
 $('.btn').on('click',function(){
-    editor.focus();
+    var unfocus = $(this).data('unfocus');
+    if(unfocus == undefined || unfocus == '0'){
+        editor.focus();
+    }
 });
 
 function midDiv(DivId,left) {
