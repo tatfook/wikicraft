@@ -78,6 +78,7 @@ angular.module('MyApp')
         $scope.websitePage.websiteName = $scope.website.name;
         $scope.websitePage.websiteId =  $scope.website._id;
         $scope.websitePage.content = ""; // $scope.style.data[0].content;
+		$scope.websitePage.userId = $scope.website.userId
 
         $http.put('http://localhost:8099/api/wiki/models/website_pages/new',$scope.websitePage).then(function (response) {
             $rootScope.websitePage = response.data.data;
