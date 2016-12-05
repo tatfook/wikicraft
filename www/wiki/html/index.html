@@ -1,5 +1,11 @@
 <div style="display: flex; flex-direction: column; align-content: space-between;" ng-controller="indexCtrl">
     <div ui-view="header"></div>
+    <div ng-controller="messageCtrl" class="container">
+        <div id="messageTipId" class="alert" style="display: none">
+            <a href="#" class="close" ng-click="hide()">&times;</a>
+            <div id="messageTipConentId"></div>
+        </div>
+    </div>
     <div ui-view></div>
     <div ui-view="footer"></div>
 </div>

@@ -5,8 +5,8 @@
                 <li class="active"><a href="#userCenterBaseInfo" data-toggle="tab" ng-click="clickBaseInfo()">我的资料</a></li>
                 <li><a href="#userCenterAccountSafe" data-toggle="tab" ng-click="clickAccountSaft()">账号安全</a></li>
                 <li><a href="#userCenterMyFavorite" data-toggle="tab" ng-click="clickMyFavorite()">我的收藏</a></li>
-                <li><a href="#userCenterMyHistory" data-toggle="tab">我的历史</a></li>
-                <li><a href="#userCenterMyFans" data-toggle="tab">我的粉丝</a></li>
+                <li><a href="#userCenterMyHistory" data-toggle="tab" ng-click="clickMyHistory()">我的历史</a></li>
+                <li><a href="#userCenterMyFans" data-toggle="tab" ng-click="clickMyFans()">我的粉丝</a></li>
                 <li><a href="#userCenterRealAuth" data-toggle="tab">实名验证</a></li>
                 <li><a href="#userCenterInviteRegister" data-toggle="tab">邀请注册</a></li>
                 <li><a href="#userCenterVIP" data-toggle="tab">VIP</a></li>
@@ -20,7 +20,7 @@
                     <div class="panel-body" style="display: flex">
                         <div>
                             <div style="display: flex; justify-content: center">
-                                <img src='imgs/09-014623_68.jpg' id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
+                                <img src='/wiki/assets/imgs/ManPortrait.jpg' id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
                             </div>
                             <div style="display: flex; justify-content: center; margin: 10px">
                                 <input type="file" accept='image/*' class="btn" id="uploadPortraitBtn">
@@ -38,13 +38,13 @@
                                     <label class="control-label col-md-3">性别：</label>
                                     <div class="col-md-8">
                                         <label class="radio-inline">
-                                            <input type="radio" name="sex" value="M" ng-model="user.sex">男
+                                            <input type="radio" name="sex" value="M" ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}" >男
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="sex" value="F" ng-model="user.sex">女
+                                            <input type="radio" name="sex" value="F" ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}">女
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="sex" value="secret" ng-model="user.sex">保密
+                                            <input type="radio" name="sex" value="N" ng-model="user.sex" checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}">保密
                                         </label>
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-6">
-                                    <button class="btn btn-default" ng-click="modifyPassword">修改</button>
+                                    <button class="btn btn-default" ng-click="modifyPassword()">修改</button>
                                     <span style="color: red" class="glyphicon " ng-class='{"glyphicon-ok":modifyPasswordOk==1,"glyphicon-remove":modifyPasswordOk==2}'>{{tipInfo}}</span>
                                 </div>
                             </div>
@@ -140,10 +140,14 @@
                         <div class="panel-heading">作品</div>
                         <div class="panel-body">
                             <div style="display: flex; flex-wrap: wrap">
-                                <div>
-                                    <img src='imgs/09-014623_68.jpg' class="img-rounded", style="width: 80px; height: 80px">
-                                    <p>逍遥</p>
+                                <div ng-repeat="user in favoriteUserList" style="margin-left: 10px">
+                                    <img ng-src='{{user.portrait || "/wiki/assets/imgs/test.jpg"}}' class="img-rounded", style="width: 80px; height: 80px">
+                                    <p>{{user.username}}</p>
                                 </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <a>上一页</a>
+                                <a>下一页</a>
                             </div>
                         </div>
                     </div>
@@ -153,14 +157,14 @@
                     <div class="panel-heading">作者</div>
                     <div class="panel-body">
                         <div style="display: flex; flex-wrap: wrap">
-                            <div style="display: flex; border: 1px solid silver; padding: 10px">
+                            <div ng-repeat="site in favoriteWebsiteList" style="display: flex; border: 1px solid silver; padding: 10px; margin: 10px">
                                 <div>
-                                    <img src='imgs/09-014623_68.jpg' class="img-rounded", style="width: 80px; height: 80px">
+                                    <img ng-src='{{site.logoUrl || "/wiki/assets/imgs/test.jpg"}}' class="img-rounded", style="width: 80px; height: 80px">
                                 </div>
                                 <div style="margin-left: 10px">
-                                    <div>【测试】</div>
-                                    <div>作者:逍遥</div>
-                                    <div>简介:xxxxxxx</div>
+                                    <div>{{site.name}}</div>
+                                    <div>作者:{{site.userInfo && site.userInfo.username}}</div>
+                                    <div>简介:{{site.desc}}</div>
                                 </div>
                             </div>
                         </div>
@@ -172,10 +176,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">我的历史</div>
                     <div class="panel-body">
-                        <div style="margin: 20px; border: 1px solid silver;padding: 10px">
-                            <h4>TEST</h4>
-                            <p>test</p>
-                            <a>详情</a>
+                        <div ng-repeat="site in websiteList" style="margin: 20px; border: 1px solid silver;padding: 10px">
+                            <h4>{{site.name}}</h4>
+                            <p>{{site.desc}}</p>
+                            <div style="display: flex; justify-content: space-between;">
+                                <a>详情</a>
+                                <span>{{site.createDate}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,10 +193,18 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">我的粉丝</div>
                         <div class="panel-body">
+                            <div style="padding: 10px; display: flex; border-bottom: 1px solid silver">
+                                <span>作品选择: </span>
+                                <select ng-change="selectFansWebsite(fansWebsiteId)" ng-model="fansWebsiteId" style="width: 120px">
+                                    <option value="0">全部</option>
+                                    <option ng-repeat="site in websiteList" value="{{site._id}}">{{site.name}}</option>
+                                </select>
+                                <span style="margin-left: 20px">粉丝数量:{{fans.total}}</span>
+                            </div>
                             <div style="display: flex; flex-wrap: wrap">
-                                <div>
-                                    <img src='imgs/09-014623_68.jpg' class="img-rounded", style="width: 80px; height: 80px">
-                                    <div>逍遥</div>
+                                <div ng-repeat="user in fans.fansList" style="margin: 10px">
+                                    <img ng-src='{{user.protrait || "/wiki/assets/imgs/test.jpg"}}' class="img-rounded", style="width: 80px; height: 80px">
+                                    <div>{{user.username}}</div>
                                 </div>
                             </div>
                         </div>

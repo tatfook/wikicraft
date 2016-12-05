@@ -55,26 +55,23 @@
     </div><!-- /carousel -->
 
     <!--数据统计-->
-    <div style="position: relative">
-        <img src="/wiki/assets/imgs/statistic.png" alt="statistic">
-        <div style="position: absolute; top: 110px; left: 250px;">
-            <div style="font-size: 40px; color: white; text-align: center">111</div>
+    <div style="display: flex; align-items: center; justify-content: space-around; background-color: #4f4f4f; height: 380px">
+        <div style="width: 310px; height: 310px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 40px; color: white; text-align: center">{{wikicraft.siteCount}}</div>
             <div style="font-size: 30px; color: white; text-align: center">网站数量</div>
+            <div style="display: flex;justify-content: center; margin-top: 10px"><img src="/wiki/assets/imgs/homeSiteNum.png" ></div>
         </div>
 
-        <div style="position: absolute; top: 110px; left: 680px;">
-            <div style="font-size: 40px; color: white; text-align: center">222</div>
-            <div style="font-size: 30px; color: white; text-align: center">作品数量</div>
-        </div>
-
-        <div style="position: absolute; top: 110px; left: 1115px;">
-            <div style="font-size: 40px; color: white; text-align: center">111</div>
+        <div style="width: 310px; height: 310px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 40px; color: white; text-align: center">{{wikicraft.userCount}}</div>
             <div style="font-size: 30px; color: white; text-align: center">名人数量</div>
+            <div style="display: flex;justify-content: center; margin-top: 10px"><img src="/wiki/assets/imgs/homeUserNum.png" ></div>
         </div>
 
-        <div style="position: absolute; top: 110px; left: 1550px;">
-            <div style="font-size: 40px; color: white; text-align: center">111</div>
+        <div style="width: 310px; height: 310px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 40px; color: white; text-align: center">{{wikicraft.renewalCount}}</div>
             <div style="font-size: 30px; color: white; text-align: center">本周更新</div>
+            <div style="display: flex;justify-content: center; margin-top: 10px"><img src="/wiki/assets/imgs/homeWeekRenewal.png" ></div>
         </div>
     </div>
 
@@ -95,65 +92,43 @@
     <div><img src="/wiki/assets/imgs/teacher.png" alt="teacher"></div>
     <div><img src="/wiki/assets/imgs/enterprise.png" alt="enterprise"></div>
     <!--div><img src="/wiki/assets/imgs/works.png" alt="works"></div-->
-    <div style="background-color: white; height: 1160px;">
-        <div style="margin-left: 130px; margin-right: 130px; display: flex; margin-top: 105px">
+    <div style="background-color: white;">
+        <div style="margin-left: 130px; margin-right: 130px; display: flex;height: 105px; align-items: flex-end">
             <img src="/wiki/assets/imgs/worksshow.png">
             <div style="margin-left: 1175px; width: 345px; display: flex; justify-content: space-between; align-items: flex-end">
-                <button class="btn" style="font-size: 23px; background: none;">最近更新</button>
-                <button class="btn" style="font-size: 23px; background: none;">最多播放</button>
-                <button class="btn" style="font-size: 23px; background: none;">最多好评</button>
+                <button class="btn" style="font-size: 23px; background: none;" ng-click="lastRenewal()">最近更新</button>
+                <button class="btn" style="font-size: 23px; background: none;" ng-click="mostVisit()">最多播放</button>
+                <button class="btn" style="font-size: 23px; background: none;" ng-click="mostBestComment()">最多好评</button>
             </div>
         </div>
-        <div style="height: 340px; display: flex; margin-top: 20px">
-            <div style="margin-left: 130px; width: 1660px;height: 100%; display: flex;justify-content: space-between;">
-                <div style="position: relative">
-                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                        </div>
-                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="position: relative">
-                    <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
-                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                        </div>
-                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="position: relative">
-                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                        </div>
-                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                        </div>
-                    </div>
-                </div>
+        <div style="height: 460px; display: flex; margin-top: 20px">
+            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getWorksList(siteParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
-            <div style="display: flex; align-items: center; height: 100%; justify-content: center; width: 130px">
-                <a class="btn"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            <div style="width: 1660px;height: 100%;">
+                <div style="display: flex;">
+                    <div style="position: relative; display: inline-block; height: 460px" ng-repeat="site in siteObj.siteList" ng-style="{'margin-left':$index%3==0 ? '0px' : '70px'}">
+                        <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
+                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                                <div style="font-size: 29px; color: white;">{{site.name}}</div>
+                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
+                            </div>
+                            <div ng-style={"height":"80px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                                <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--div style="height: 120px; border-bottom: 2px solid silver"></div-->
+            </div>
+            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getWorksList(siteParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
 
-        <div style="margin-left: 130px; margin-right: 130px; display: flex;margin-top: 120px;">
+        <div style="margin-left: 130px; margin-right: 130px; display: flex;">
             <img src="/wiki/assets/imgs/mingrentang.png">
             <div style="margin-left: 1175px; width: 345px; display: flex; justify-content: space-between; align-items: flex-end">
                 <button class="btn" style="font-size: 23px; background: none;">名人认证</button>
@@ -161,52 +136,33 @@
                 <button class="btn" style="font-size: 23px; background: none;">更多</button>
             </div>
         </div>
-        <div style="height: 340px; display: flex; margin-top: 20px">
-            <div style="margin-left: 130px; width: 1660px;height: 100%; display: flex;justify-content: space-between;">
-                <div style="position: relative">
-                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                        </div>
-                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="position: relative">
-                    <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
-                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                        </div>
-                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="position: relative">
-                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                        </div>
-                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                        </div>
-                    </div>
-                </div>
+        <div style="height: 460px; display: flex; margin-top: 20px">
+            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getUserList(userParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
-            <div style="display: flex; align-items: center; height: 100%; justify-content: center; width: 130px">
-                <a class="btn"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            <div style="width: 1660px;height: 100%;">
+                <div style="display: flex;">
+                    <div style="position: relative; display: flex" ng-repeat="user in userObj.userList">
+                        <div>
+                            <img ng-src="{{user.portrait || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
+                            <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                                <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                                    <div style="font-size: 29px; color: white;">{{user.username}}</div>
+                                    <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.desc}}</div>
+                                </div>
+                                <div ng-style={"height":"80px","background-color":getRandomColor($index+4),"display":"flex","align-items":"center"}>
+                                    <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                                    <span style="font-size: 25px; margin-left: 10px; color: white;">{{user.favoriteCount}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="$index != 2" style="width: 70px; height: 100%"></div>
+                    </div>
+                </div>
+                <!--div style="height: 120px; border-bottom: 2px solid silver"></div-->
+            </div>
+            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getUserList(userParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
     </div>

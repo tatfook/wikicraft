@@ -3,13 +3,54 @@
  */
 
 var util = {
+    colorList:["rgb(145,185,114)","rgb(185,150,114)","rgb(185,114,178)","rgb(185,127,114)","rgb(114,185,160)","rgb(114,134,185)"],
     stack:[],   // 堆栈操作模拟
     id:0,       // ID产生器 局部唯一性
+    urlObj:{},
 };
 
 util.getId = function () {
     this.id = this.id > 1000000 ? 0 : this.id+1;
     return this.id;
+}
+// 获取一个随机颜色
+util.getRandomColor = function (index) {
+    index = index || 0;
+    index %= this.colorList.length;
+    return this.colorList[index];
+}
+
+// 将字符串url解析成{sitename, pagename}对象
+util.praseUrl = function () {
+    var hostname = window.location.hostname;
+    var pathname = window.location.pathname;
+    var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+    var pagename = 'index';
+
+    // 排除IP访问
+    if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+        sitename = undefined;
+    }
+
+    if (sitename) {
+        sitename = sitename[1];
+        pagename = pathname.match(/^\/?([^\/]+)/);
+        pagename = pagename ? pagename[1] : 'index';
+    } else {
+        sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
+        pagename = sitename[2] || pagename;
+        sitename = sitename[1]
+    }
+
+    return {sitename:sitename, pagename:pagename};
+}
+
+util.setUrlObj = function (urlObj) {
+    this.urlObj = urlObj;
+}
+
+util.getUrlObj = function () {
+    return this.urlObj;
 }
 
 util.setAngularServices = function(angularServices) {
@@ -83,19 +124,27 @@ util.http = function(method, url, params, callback, errorCallback) {
     }
     httpRespone.then(function (response) {
         var data = response.data;
-        console.log(data);
+        //console.log(data);
         if (data.error.id == 0) {
-            console.log(data.data);
+            //console.log(data.data);
             callback && callback(data.data);
         } else {
             console.log(data);
             errorCallback && errorCallback(data.error);
         }
     }).catch(function (response) {
-        console.log(response.data);
+        console.log(response);
         // 网络错误
         //errorCallback && errorCallback(response.data);
     });
+}
+
+util.post = function (url, params, callback, errorCallback) {
+    this.http("POST", url, params, callback, errorCallback);
+}
+
+util.get = function (url, params, callback, errorCallback) {
+    this.http("GET", url, params, callback, errorCallback);
 }
 
 util.stringToJson = function (str) {
@@ -106,4 +155,17 @@ util.stringToJson = function (str) {
 
     }
     return obj;
+}
+
+util.pagination = function (page, params, pageCount) {
+    params.page = params.page || 0;
+    page = page || 1;
+    pageCount = pageCount || 1000000; // 页总数设置无线大
+
+    if (params.page == page || page < 1 || page > pageCount) {
+        return false;              // 不翻页
+    }
+    params.page = page;
+
+    return true;
 }

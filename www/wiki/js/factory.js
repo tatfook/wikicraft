@@ -77,6 +77,44 @@ app.factory('SelfData', function () {
     return {};
 });
 
+app.factory("Message", function () {
+    var message={
+        timeout:5000,
+        slideDownTimeout:1000,
+        slideUpTimeout:2000,
+    };
+    //$('#messageTipId').slideToggle();
+    message.show = function (type, content) {
+        if (type != "success" && type != "info" && type != "warning" && type !="danger") {
+            type = "info";
+        }
+        $('#messageTipId').removeClass('alert alert-success alert-info alert-warning alert-danger');
+        $('#messageTipId').addClass('alert alert-' + type);
+        $('#messageTipConentId').html(content);
+        $('#messageTipId').slideDown(message.slideDownTimeout);
+        setTimeout(function () {
+            $('#messageTipId').slideUp(message.slideUpTimeout);
+        }, message.timeout);
+    };
+    message.success = function (content) {
+        this.show('success', content);
+    }
+    message.info = function (content) {
+        this.show('info', content);
+    }
+    message.warning = function (content) {
+        this.show('warning', content);
+    }
+    message.danger = function (content) {
+        this.show('danger', content);
+    }
+    message.hide = function () {
+        $('#messageTipId').slideUp(message.slideUpTimeout);
+    }
+
+    return message;
+});
+
 app.factory('ProjectStorageProvider', function ($http) {
     // github 数据源
     var github = {
@@ -128,14 +166,19 @@ app.factory('ProjectStorageProvider', function ($http) {
     // 上传图片 图片默认都放在根目录下的images目录下
     github.uploadImage = function (filename, content, cb) {
         var repo = github.getRepo("wikicraftDataSource");
-        if (filename[0] == '/') {
-            filename = 'images' + filename;
+        var date = new Date();
+
+        if (filename && filename.length > 0 && filename[0] == '/') {
+            filename = '.images' + filename;
         } else {
-            filename = "images/" + filename;
+            filename = ".images/" + filename;
+        }
+
+        if (filename[filename.length-1] == '/') {
+            filename += date.getTime();
         }
 
         repo.writeFile('master', filename, content, "upload image: " + filename, {}, function (error, result, request) {
-            console.log("--------------------");
             cb && cb(error, result, request);
         });
     }

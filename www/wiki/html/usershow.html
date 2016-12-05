@@ -1,0 +1,20 @@
+<div ng-controller="siteshowCtrl">
+    <div style="width: 1920px; padding: 0px 130px;">
+        <div style="display: flex; justify-content: space-between;">
+            <a>上一页</a>
+            <a>下一页</a>
+        </div>
+        <div style="padding-bottom: 120px">
+            <div style="display: inline-block; align-items: center; width: 550px; margin: 15px 0px; position: relative;" ng-repeat="user in userList">
+                <div ng-show="$index % 3 == 0" style="position: absolute; width:1660px;top:-15px; border-top: 1px solid silver"></div>
+                <div style="display: flex; align-items: center">
+                    <img ng-src="{{user.portrait || '/wiki/assets//wiki/assets/imgs/ManPortrait.jpg'}}" class="img-circle" style="height: 100px">
+                    <div style="margin-left: 20px">
+                        <div style="font-size: 31px">{{user.username}}</div>
+                        <div style="font-size: 18px">{{user.desc}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

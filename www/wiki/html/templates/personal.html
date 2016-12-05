@@ -1,59 +1,30 @@
 <script>
-    // 显示全部作品
-    function showWorksList() {
-        $('#worksListNavId').toggle();
-    }
-    // 去网站管理页
-    function websiteManger() {
-        var $state = util.getAngularServices().$state;
-        $state.go("index.website");
-    }
-    // 页面编辑页面
-    function websitePageManager() {
-        window.location.href = "/wiki/editor";
-    }
-    // 初始化操作
-    function init() {
-        var $scope = util.getAngularServices().$scope;
-        var Account = util.getSelfServices().Account;
 
-        // 设置用户信息
-        $scope.user = Account.getUser();
-
-        // 获得作品列表
-        util.http("POST", config.apiUrlPrefix + "website",{}, function (data) {
-            $scope.websiteList = data || [];
-        });
-
-        // 获取state x信息
-        //util.http("POST")
-    }
-    init();
 </script>
 
-<div class="mod_header">
+<div class="mod_header" ng-controller="personalSiteCtrl">
     <!-- 个人主页头部 -->
     <div style="position: relative; width: 1920px; height: 900px;">
         <img src="/wiki/assets/imgs/personalHeaderBG1.png">
-        <img src="/wiki/assets/imgs/personalPortrait.png" style="position: absolute; top: 243px; left: 723px; width: 453px; height: 453px">
+        <img ng-src="{{userinfo.portrait || '/wiki/assets/imgs/personalPortrait.png'}}" style="position: absolute; top: 243px; left: 723px; width: 453px; height: 453px">
         <div style="background-color: rgb(255,248,233); height: 415px">
             <div style="position:absolute; left: 205px; top: 570px; font-size: 40px; color: rgb(100,130,189)">
-                <div>坐标 深圳</div>
-                <div>注册于 20161012</div>
+                <div>坐标 {{userinfo.location}}</div>
+                <div>注册于 {{userinfo.joindate}}</div>
             </div>
             <div style="position: absolute; top: 760px; text-align: center; width: 100%; font-size: 36px">
-                个性签名  我是一个热爱生活的人
+                个性签名  {{userinfo.signature}}
             </div>
-            <div style="position: absolute; left: 1255px; top: 560px;">
-                <a class="btn" style="border-radius: 50%"><img src="/wiki/assets/imgs/subscribe.png"></a>
+            <div ng-show="user._id != userinfo._id" style="position: absolute; left: 1255px; top: 560px;">
+                <a class="btn" style="border-radius: 50%" ng-click="attention()"><img src="/wiki/assets/imgs/subscribe.png"></a>
             </div>
         </div>
 
         <!-- 个人导航 -->
         <div style="position: absolute; left: 1330px; top: 0px; margin: 0px 30px; width: 530px; display: flex; justify-content: space-between">
-            <button class="btn" onclick="websitePageManager()" style="font-size: 30px; background: none; color: white">网页编辑</button>
-            <button class="btn" onclick="websiteManger()" style="font-size: 30px; background: none; color: white">网站管理</button>
-            <button class="btn" onclick="showWorksList()" style="font-size: 30px; background: none; color: white">全部作品</button>
+            <button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 30px; background: none; color: white">网页编辑</button>
+            <button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 30px; background: none; color: white">网站管理</button>
+            <button class="btn" ng-click="showWorksList()" style="font-size: 30px; background: none; color: white">全部作品</button>
         </div>
 
         <div id="worksListNavId" style="position: absolute; left: 1470px; top:120px; width: 410px; height:710px; background-color: rgba(0,0,0,0.3); font-size: 36px; color: white">
@@ -72,15 +43,15 @@
     <div class="mod_state">
         <div style="display: flex; justify-content: space-between; font-size: 26px; padding: 0px 370px; width: 1920px; height: 230px; background-color: rgb(208,224,238); align-items: center">
             <div style="display: flex; flex-direction: column; align-items: center">
-                <div style="font-size: 50px; color: red">23</div>
+                <div style="font-size: 50px; color: red">{{userinfo.websiteCount}}</div>
                 <div>我的作品</div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center">
-                <div style="font-size: 50px; color: red">1780</div>
+                <div style="font-size: 50px; color: red">{{userinfo.favoriteCount}}</div>
                 <div>我的关注</div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center">
-                <div style="font-size: 50px; color: red">1290</div>
+                <div style="font-size: 50px; color: red">{{userinfo.fansCount}}</div>
                 <div>我的粉丝</div>
             </div>
         </div>
@@ -91,61 +62,31 @@
         <div style="height: 145px; margin:0px 130px; display: flex; justify-content: space-between; align-items: center">
             <div style="font-size: 50px">最近更新</div>
             <div style="font-size: 30px; align-self: flex-end">
-                <a>更多</a>
+                <a ng-click="goAllRenewalList()">更多</a>
             </div>
         </div>
-        <div style="height: 480px; display: flex; margin-top: 20px">
-            <div style="display: flex; align-items: center; height: 360px; justify-content: center; width: 130px">
-                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksPrev.png"></a>
+        <div style="height: 460px; display: flex; margin-top: 20px">
+            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getRenewalList(renewalParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
             <div style="width: 1660px;height: 100%;">
-                <div style="display: flex;">
-                    <div style="position: relative">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
+                <div style="position: relative; display: inline-block; height: 460px" ng-repeat="site in renewalObj.siteList" ng-style='{"margin-left": $index % 3 == 0 ? "0px": "65px"}'>
+                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">{{site.name}}</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
                         </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
+                        <div ng-style={"height":"80px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
                         </div>
                     </div>
                 </div>
-                <div style="height: 120px; border-bottom: 2px solid silver"></div>
+                <div style="width: 100%; border-bottom: 2px solid silver"></div>
             </div>
-            <div style="display: flex; align-items: center; height: 360px; justify-content: center; width: 130px">
-                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getRenewalList(renewalParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
     </div>
@@ -155,107 +96,31 @@
         <div style="height: 145px; margin:0px 130px; display: flex; justify-content: space-between; align-items: center">
             <div style="font-size: 50px">我的收藏</div>
             <div style="font-size: 30px; align-self: flex-end">
-                <a>更多</a>
+                <a ng-click="goAllFavoriteList()">更多</a>
             </div>
         </div>
         <div style="height: 960px; display: flex; margin-top: 20px">
             <div style="display: flex; align-items: center; height: 840px; justify-content: center; width: 130px">
-                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksPrev.png"></a>
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getFavoriteList(favoriteParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
             <div style="width: 1660px;height: 100%;">
-                <div style="display: flex">
-                    <div style="position: relative">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
+                <div style="position: relative; display: inline-block; height: 460px" ng-repeat="site in favoriteObj.siteList" ng-style='{"margin-left": $index % 3 == 0 ? "0px": "65px"}'>
+                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">{{site.name}}</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
                         </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
+                        <div ng-style={"height":"80px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
                         </div>
                     </div>
                 </div>
-                <div style="height: 120px; width: 100%; border-bottom: 0px solid silver"></div>
-
-                <div style="display: flex">
-                    <div style="position: relative">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="height: 120px; width: 100%; border-bottom: 2px solid silver"></div>
+                <div style="width: 100%; border-bottom: 2px solid silver"></div>
             </div>
             <div style="display: flex; align-items: center; height: 840px; justify-content: center; width: 130px">
-                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksNext.png"></a>
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getFavoriteList(favoriteParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
     </div>
@@ -265,61 +130,31 @@
         <div style="height: 145px; margin:0px 130px; display: flex; justify-content: space-between; align-items: center">
             <div style="font-size: 50px">全部作品</div>
             <div style="font-size: 30px; align-self: flex-end">
-                <a>更多</a>
+                <a ng-click="goAllSiteList()">更多</a>
             </div>
         </div>
         <div style="height: 460px; display: flex; margin-top: 20px">
             <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
-                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksPrev.png"></a>
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getAllSiteList(allSiteParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
             <div style="width: 1660px;height: 100%;">
-                <div style="display: flex;">
-                    <div style="position: relative">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
+                <div style="position: relative; display: inline-block; height: 460px" ng-repeat="site in allSiteObj.siteList" ng-style='{"margin-left": $index % 3 == 0 ? "0px": "65px"}'>
+                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">{{site.name}}</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
                         </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="position: relative; margin-left: 65px;">
-                        <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 360px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">60年的鲜花</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
-                            </div>
-                            <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
-                            </div>
+                        <div ng-style={"height":"80px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
                         </div>
                     </div>
                 </div>
-                <div style="height: 120px; border-bottom: 2px solid silver"></div>
+                <div style="width: 100%; border-bottom: 2px solid silver"></div>
             </div>
             <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
-                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksNext.png"></a>
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getAllSiteList(allSiteParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
     </div>

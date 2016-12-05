@@ -54,16 +54,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }).state('index.home', {
         url:"home",
         templateUrl:templatePath + 'home.html'
-    });
-
-
-    $stateProvider.state('user', {
-        url:'/user',
-        views:{
-            'default':{
-                templateUrl:templatePath + 'user.html'
-            },
-        },
+    }).state('index.siteshow', {
+        url:"siteshow",
+        templateUrl:templatePath + 'siteshow.html',
+    }).state('index.worksApply', {
+        url:"worksApply",
+        templateUrl:templatePath + 'worksApply.html',
     });
 });
 

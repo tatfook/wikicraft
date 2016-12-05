@@ -1,0 +1,179 @@
+<div ng-controller="editWebsiteCtrl" class="container">
+    <div style="display: flex">
+        <div>
+            <ul class="nav nav-tabs nav-stacked">
+                <li class="active"><a href="#EditWebsiteBasicSetUp" data-toggle="tab">基本设置</a></li>
+                <li><a href="#EditWebsiteAdvancedSetUp" data-toggle="tab">高级设置</a></li>
+                <li><a href="#EditWebsiteMemberManager" data-toggle="tab" ng-click="memberManager()">成员管理</a></li>
+                <li><a href="#EditWebsiteWorksManager" data-toggle="tab" ng-click="worksManager()">作品管理</a></li>
+            </ul>
+        </div>
+
+        <div class="tab-content" style="flex-grow: 1;">
+            <div class="tab-pane fade in active" id="EditWebsiteBasicSetUp">
+                <div class="pane panel-default">
+                    <div class="form-group">
+                        <label class="control-label">网站LOGO:</label>
+                        <div style="display: flex; justify-content: center">
+                            <img src='/wiki/assets/imgs/ManPortrait.jpg' id='websiteLogo' style="width: 80px; height: 80px">
+                            <input type="file" accept='image/*' class="btn" id="uploadPictureBtn" style="align-self: flex-end">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">站点描述:</label>
+                        <textarea rows="2" ng-model="website.desc" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">站点TAG:</label>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <input type="text" ng-model="tag" class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="form-control btn btn-default" ng-click="addTag(tag)" >添加</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="btn-group" style="margin: 5px" ng-repeat="tag in tags">
+                            <button class="btn">{{tag}}</button>
+                            <button class="btn" ng-click="removeTag(tag)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default" ng-click="modifyWebsite()">修改</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade in" id="EditWebsiteAdvancedSetUp">
+                <div class="pane panel-default">
+                    <div class="panel-heading">
+                        高级设置
+                    </div>
+                    <div>
+                        高级设置
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade in" id="EditWebsiteMemberManager">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        成员管理
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>用户ID</th>
+                                <th>用户名</th>
+                                <th>角色</th>
+                                <th>角色设定</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="user in userRoleObj.userList">
+                                <td>{{user._id}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{getRoleName(user.roleInfo.roleId)}}</td>
+                                <td>
+                                    <select ng-model="user.roleInfo.roleUIIndex" ng-change="roleSelect(user)">
+                                        <option ng-repeat="role in roleList" value="{{$index}}">{{role.name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="pane panel-default">
+                    <div class="panel-heading">
+                        成员申请
+                    </div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>用户ID</th>
+                                <th>用户名</th>
+                                <th>加入许可</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="user in userObj.userList">
+                                <td>{{user._id}}</td>
+                                <td>{{user.username}}</td>
+                                <td>
+                                    <button class="btn btn-default" ng-click="agreeMember(user._id)">同意</button>
+                                    <button class="btn btn-default" ng-click="refuseMember(user._id)">拒绝</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade in" id="EditWebsiteWorksManager">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        作品分类
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>作品ID</th>
+                                <th>作品名</th>
+                                <th>分类</th>
+                                <th>设置分类</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="site in worksObj.siteList">
+                                <td>{{site._id}}</td>
+                                <td>{{site.name}}</td>
+                                <td>{{getClassifyName(site.classifyInfo.worksFlag)}}</td>
+                                <td>
+                                    <select ng-change="classifySelect(site)" ng-model="site.classifyInfo.worksFlag">
+                                        <option ng-repeat="classifyName in classifyList" value="{{$index}}">{{classifyName}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pane panel-default">
+                    <div class="panel-heading">
+                        作品申请
+                    </div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>作品ID</th>
+                                <th>作品名</th>
+                                <th>加入许可</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="site in siteObj.siteList">
+                                <td>{{site._id}}</td>
+                                <td>{{site.name}}</td>
+                                <td>
+                                    <button class="btn btn-default" ng-click="agreeWorks(site._id)">同意</button>
+                                    <button class="btn btn-default" ng-click="refuseWorks(site._id)">拒绝</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
