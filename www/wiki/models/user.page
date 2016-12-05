@@ -10,11 +10,12 @@ include_once("./website.page")
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
 
-local websiteDB = models.website:new()
 
 function user:ctor()
 	self:addfield("username", "string", false, 30)
 	self:addfield("nickname", "string", false, 30)
+	self:addfield("signature", "string")
+	self:addfield("desc", "string", false)
 	self:addfield("email", "string", false, 30) -- private email, can be used to login
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- hashed password
@@ -26,7 +27,10 @@ function user:ctor()
 	self:addfield("company", "string", false, 30)
 	self:addfield("location", "string", false, 50)
 	self:addfield("joindate", "string", false, 30)
-	self:addfield("isadmin", "boolean", false);
+	self:addfield("administrator", "boolean", false);
+	self:addfield("favoriteCount", "number")   -- 收藏量
+	self:addfield("fansCount", "number")  -- 粉丝数量
+	self:addfield("websiteCount", "number") -- 作品数量
 end
 
 function user:encodePassword(password)
@@ -34,11 +38,7 @@ function user:encodePassword(password)
 end
 
 function user:get(params) 
-	if not params._id then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}	
-	end
-	
-	self:db():findOne({_id=params._id}, resume)
+	self:db():find({}, resume)
 	local err, data = yield()
 	
 	if err then
@@ -69,34 +69,24 @@ function user:update(params)
 	return errors:wrap(yield())
 end
 
-function user:create(params) 
-	local err, query = self:validateQuery(params)
-	if err or (not query._id) then 
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():insertOne(nil, params, resume)
-	return errors:wrap(yield())
-end
-
-function user:delete(params)
+-- 用户注销账号 
+function user:api_deleteById(params) 
+	-- 只能删除自己
 	local userId = self:ensureAuthenticated()
+
+	local websiteDB = models.website:new()
+	websiteDB:deleteUserWebsite(userId)
 
 	self:db():deleteOne({_id=userId}, resume)
-	return errors:wrap(yield())
+	yield() 
+	
+	return 
 end
 
--- 
-function user:deleteById(params) 
-	local userId = self:ensureAuthenticated()
-
-	self:db():deleteOne(
-		{_id=userId}, 
-		function(err,data) 
-			websiteDB:deleteUserWebsite(userId)
-		end)
-	
-	return errors:wrap()
+-- 更新用户信息
+function user:updateUserInfo(userId, params)
+	self:db():updateOne({_id=userId}, params, resume)
+	yield()
 end
 
 -- 更改密码
@@ -167,6 +157,7 @@ function user:api_register(params)
 		return errors:wrap(err)
 	end
 	
+	local websiteDB = models.website:new()
 	-- 查找用户名是否可用
 	if websiteDB:api_getByName({websiteName=params.username}).data then
 		return errors:wrap(errors:new("用户名已存在"))
@@ -187,6 +178,10 @@ function user:api_register(params)
 		email = params.email,
 		cellphone = params.cellphone,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+		administrator = 0,
+		favoriteCount=0,
+		fansCount=0,
+		websiteCount=0,
 	}, resume)
 	local err, userInfo = yield()
 	if err then 
@@ -194,7 +189,15 @@ function user:api_register(params)
 	end
 
 	-- 创建个人站点
-	websiteDB:create({name=params.username,userId=userInfo._id, desc="个人站点", categoryId=0, categoryName="个人站点"})
+	websiteDB:create({
+		name=params.username,
+		userId=userInfo._id, 
+		username=params.username, 
+		desc="个人站点", 
+		categoryId=0, 
+		categoryName="个人站点",
+		favoriteCount=0,
+	})
 
 	return errors:wrap(nil, {token=createJWT(userInfo), userInfo=userInfo})
 end
@@ -214,22 +217,26 @@ function user:api_getById(params)
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
 
-	-- 精简信息
-	local userInfo = {
-		_id=data._id,
-		username=data.username,
-		email=data.email,
-		cellphone=data.cellphone,
-		sex=data.sex,
-		githubId=data.githubId,
-		githubToken=data.githubToken,
-		portrait=data.portrait,
-		comment=data.comment,
-		company=data.company,
-		location=data.location,
-		joindate=data.joindate,		
-	}
-	return {error=errors.SUCCESS, data=userInfo}
+	return errors:wrap(nil, data)
+	--[[
+		-- 精简信息
+		local userInfo = {
+			_id=data._id,
+			username=data.username,
+			email=data.email,
+			cellphone=data.cellphone,
+			sex=data.sex,
+			githubId=data.githubId,
+			githubToken=data.githubToken,
+			portrait=data.portrait,
+			comment=data.comment,
+			company=data.company,
+			location=data.location,
+			joindate=data.joindate,		
+		}
+		return {error=errors.SUCCESS, data=userInfo}
+
+	]]
 end
 
 -- 获得用户数量
@@ -239,4 +246,85 @@ function user:api_getCount(params)
 	return errors:wrap(yield())
 end
 
+-- 获得收藏数排序的用户列表
+function user:api_getFavoriteSortList(params)
+	local skip, limit = util:pagination(params)	
+	
+	local count = self:api_getCount().data
+	self:db():find({["-favoriteCount"]={gt=-1, skip=skip, limit=limit}}, resume)
+	local err, data = yield()
 
+	if err then 
+		return errors:wrap(err)
+	end
+	
+	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), userList=data})
+end
+
+-- 获得用户信息和站点通过站点名
+function user:api_getUserAndSiteBySitename(params)
+	if not params.sitename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local websiteDB = models.website:new()
+	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename}).data
+	if not siteinfo then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+	
+	local userinfo = self:api_getById({userId=siteinfo.userId}).data
+	if not userinfo then
+		return  errors:wrap(errros.NOT_FOUND)
+	end
+
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
+end
+
+-- 修改用户的站点数量
+function user:updateWebsiteCount(userId, count)
+	local user = self:api_getById({userId=userId}).data
+
+	if not user then
+		log("user not exist, userId:", userId)
+		return
+	end
+
+	user.websiteCount = user.websiteCount or 0	
+	self:db():updateOne({_id=userId}, {websiteCount=user.websiteCount+count}, resume)
+	yield()
+	
+	return 
+end
+
+-- 修改用户的收藏数量
+function user:updateFavoriteCount(userId, count)
+	local user = self:api_getById({userId=userId}).data
+
+	if not user then
+		log("user not exist, userId:", userId)
+		return
+	end
+
+	user.favoriteCount = user.favoriteCount or 0
+	self:db():updateOne({_id=userId}, {favoriteCount=user.favoriteCount+count}, resume)
+	yield()
+	
+	return 
+end
+
+-- 修改用户的粉丝数量
+function user:updateFansCount(userId, count)
+	local user = self:api_getById({userId=userId}).data
+
+	if not user then
+		log("user not exist, userId:", userId)
+		return
+	end
+	
+	user.fansCount = user.fansCount or 0		
+	self:db():updateOne({_id=userId}, {fansCount=user.fansCount+count}, resume)
+	yield()
+	
+	return 
+end

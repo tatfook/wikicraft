@@ -11,8 +11,24 @@ function util:pagination(params)
 	local page = params.page or 1
 	local pageSize = params.pageSize  or 10
 	local skip = (page - 1) * pageSize
+	
+	params.page = nil
+	params.pageSize = nil
+
 	return skip, pageSize
 end
+
+-- 获得页数
+function util:getPageCount(total, pageSize)
+	local m, n = math.modf(total/pageSize)
+	
+	if n == 0 then
+		return m
+	end
+
+	return m + 1
+end
+
 
 -- 格式化查询条件 转换成TableDB所需格式
 function util:formatQuery(query) 
@@ -22,7 +38,9 @@ function util:formatQuery(query)
 
 	local result = {}
 	for key, value in pairs(query) do
-		if key == "_id" then
+		if key == "page" or key == "pageSize" then
+			-- continue
+		elseif key == "_id" then
 			result["_id"] = tonumber(value)
 		else 
 			if type(key) == "string" and (type(value) == "string" or type(value) == "number") then
@@ -45,17 +63,18 @@ const.WORKS_STATE_NOPASS=0  -- 未审核
 const.WORKS_STATE_PASS=1    -- 审核
 
 -- 作品标记
-const.WORKS_FLAG_UPGRADE="0" -- 入围
-const.WORKS_FLAG_HOT="1"     -- 热门
+const.WORKS_FLAG_NORMAL=0 -- 普通
+const.WORKS_FLAG_UPGRADE=1 -- 入围
+const.WORKS_FLAG_HOT=2     -- 热门
 
 -- 站点申请类型
-const.APPLY_TYPE_MEMBER="0"     -- 成员申请
-const.APPLY_TYPE_WORKS="1"      -- 作品申请
+const.APPLY_TYPE_MEMBER=0     -- 成员申请
+const.APPLY_TYPE_WORKS=1      -- 作品申请
 
 
 
 -- 站点用户角色
-const.WEBSITE_USER_ROLE_ADMIN="0"   -- 拥有者
-const.WEBSITE_USER_ROLE_MANAGER="1" -- 管理员
-const.WEBSITE_USER_ROLE_NORMAL="2"  -- 普通用户
-const.WEBSITE_USER_ROLE_JUDGE="10"   -- 裁判
+const.WEBSITE_USER_ROLE_ADMIN=0   -- 拥有者
+const.WEBSITE_USER_ROLE_MANAGER=1 -- 管理员
+const.WEBSITE_USER_ROLE_NORMAL=2  -- 普通用户
+const.WEBSITE_USER_ROLE_JUDGE=10  -- 裁判

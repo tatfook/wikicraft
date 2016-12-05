@@ -4,42 +4,48 @@ Title: website of a user
 Author: wuxiangan
 Date: 2016/10/10
 ]]
-include_once("./abstract/base.page");
-include_once("./website_pages.page");
-include_once("./website_template_style.page");
-include_once("./website_template_config.page");
+include_once("./abstract/base.page")
+include_once("./website_pages.page")
+include_once("./user.page")
+include_once("./website_member.page")
+include_once("./website_renewal.page")
+include_once("./website_works.page")
+include_once("./website_template_style.page")
+include_once("./website_template_config.page")
 
-local website = inherit(models.abstract.base, gettable("models.website"));
+local website = inherit(models.abstract.base, gettable("models.website"))
 
-website.db_name = "website";
+website.db_name = "website"
 -- max items per user
-website.max_items_per_user = 10;
+website.max_items_per_user = 10
 
 function website:ctor()
-	self:addfield("name", "string", true, 30);
+	self:addfield("name", "string", true, 30)
 	self:addfield("userId", "number", false)
-	self:addfield("desc", "string", false, 240);
-	self:addfield("domain", "string", false, 30);
-	self:addfield("url","string", true, 100);
-	self:addfield("tags","string", false, 300);
-	self:addfield("logoUrl", "string", false, 120);
-	self:addfield("categoryId","number", false, nil, 1);
-	self:addfield("categoryName","string", false, 32);
-	self:addfield("templateId","number", false, nil, 1);
-	self:addfield("templateName","string", false, 32);
-	self:addfield("styleId","number", false, nil, 1);
-	self:addfield("styleName","string", false, 32);
-	self:addfield("keywords", "string", false, 100);
-	self:addfield("teamwork", "string", false, 100);
-	self:addfield("store", "string", false, 200);
-	self:addfield("fork", "string", false, 200);
-	self:addfield("createDate", "string", false, 64);
-	self:addfield("updateDate", "string", false, 64);
-	self:addfield("starCount", "number");
-	self:addfield("private", "number");	
-	self:addfield("memberCount", "number");
-	self:addfield("visitNum", "number");
-	self:addfield("pageNum", "number");
+	self:addfield("username", "string", false)
+	self:addfield("desc", "string", false, 240)
+	self:addfield("domain", "string", false, 30)
+	self:addfield("url","string", true, 100)
+	self:addfield("tags","string", false, 300)
+	self:addfield("logoUrl", "string", false, 120)
+	self:addfield("categoryId","number", false, nil, 1)
+	self:addfield("categoryName","string", false, 32)
+	self:addfield("templateId","number", false, nil, 1)
+	self:addfield("templateName","string", false, 32)
+	self:addfield("styleId","number", false, nil, 1)
+	self:addfield("styleName","string", false, 32)
+	self:addfield("keywords", "string", false, 100)
+	self:addfield("teamwork", "string", false, 100)
+	self:addfield("store", "string", false, 200)
+	self:addfield("fork", "string", false, 200)
+	self:addfield("createDate", "string", false, 64)
+	self:addfield("updateDate", "string", false, 64)
+	self:addfield("private", "number")	
+	self:addfield("favoriteCount", "number")
+	self:addfield("visitCount", "number")
+	self:addfield("pageCount", "number")
+	--self:addfield("memberCount", "number")
+	--self:addfield("worksCount", "number")
 end
 
 -- 获取站点
@@ -47,30 +53,56 @@ function website:get(params)
 	local query = util:formatQuery(params)
 	query.name = params and params.name  -- primary key
 
-	self:db():find(query, resume);
-	local err, data = yield();
+	self:db():find(query, resume)
+	local err, data = yield()
 	
 	if err then
-		return errors:wrap(err, data);
+		return errors:wrap(err, data)
 	end
 
-	return {error=errors.SUCCESS, data=data};
+	return {error=errors.SUCCESS, data=data}
+end
+
+-- 获得用户的个人站点
+function website:api_getPersonalSiteByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({userId=params.userId, {"categoryId",0}}, resume)
+	
+	return errors:wrap(yield())
 end
 
 -- 创建站点
 function website:create(params) 
-	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	local err, params = self:validateQuery(params)
-	if err then 
+	if err or (not params.userId) or (not params.name) then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({name=params.name}, params, resume);	
+	params.favoriteCount = 0
+	params.visitCount = 0
+	params.pageCount = 1
+	params.memberCount = 1
+
+	self:db():insertOne({name=params.name}, params, resume)	
 	local err, site = yield()
 
 	if err then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
 	end
+
+	-- 用户网站数量加1
+	local userDB = models.user:new()
+	userDB:updateWebsiteCount(site.userId, 1)
+	-- 不是个人网站则将网站添加到个人站点下
+	local websiteWorksDB = models.website_works:new()
+	local personalSite = self:api_getPersonalSiteByUserId({userId=params.userId}).data
+	if personalSite and personalSite._id ~= site._id then
+		websiteWorksDB:create({websiteId=personalSite._id, worksId=site._id, worksFlag=util.WORKS_FLAG_NORMAL}) 
+	end		
 
 	-- create index page by template content 	
 	local website_pages_db = models.website_pages:new()
@@ -84,6 +116,7 @@ function website:create(params)
 	page.websiteName = params.name
 	page.websiteId = site._id
 	page.content = data.data or ""
+	page.userId = params.userId
 	website_pages_db:create(page)
 			
 	return {error=errors.SUCCESS, data=site}
@@ -91,19 +124,19 @@ end
 
 -- 删除站点
 function website:delete(params) 
-	local site = self:get(params);
+	local site = self:get(params)
 	if (not site.data) or (not site.data[1]) then
-		return self:get();
+		return self:get()
 	end
 	
 	site = site.data[1]
 
-	self._super.delete(self, params);
-	local website_pages = models.website_pages:new();
+	self._super.delete(self, params)
+	local website_pages = models.website_pages:new()
 	-- 删除该网站上所有页
-	website_pages:db():delete({websiteName=site.name});
+	website_pages:db():delete({websiteName=site.name})
 
-	return self:get();
+	return self:get()
 end
 
 -- 删除一个站点
@@ -131,6 +164,10 @@ function website:api_deleteById(params)
 		
 	self:deleteById(websiteId)
 
+	-- 用户站点数量-1
+	userDB = models.user:new()
+	userDB:updateWebsiteCount(site.userId, -1)
+
 	return self:get({userId=userId})
 end
 
@@ -151,19 +188,73 @@ end
 
 -- 更新站点
 function website:update(params) 
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd");
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	local err, params = self:validateQuery(params)
 	if err then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():updateOne({name=params.name}, params, resume);
+	self:db():updateOne({name=params.name}, params, resume)
 	local err, data = yield()
-	return self:get();
+	return self:get()
+end
+
+-- 更新站点
+function website:api_updateWebsite(params) 
+	--[[
+	local userId = self:ensureAuthenticated()
+	if userId ~= params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	]]
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	local err, params = self:validateQuery(params)
+	if err then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.name = nil   -- 防止名字被改
+
+	self:db():updateOne({_id=params._id}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 获得用户的网站数量
+function website:api_getCountByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():count({["+userId"]={params.userId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 获取用户站点列表 
+function website:api_getByUserId(params) 
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local total = self:api_getCountByUserId(params).data
+	if not total then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	local skip, limit = util:pagination(params)
+	self:db():find({["+userId"]={params.userId,skip=skip, limit=limit}}, resume)
+	local err, data = yield()
+
+	if err or (not data) then
+		return errors:wrap(err or errors.NOT_FOUND)
+	end
+
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), siteList=data})
 end
 
 -- 获得用户站点列表  TODO:用户建站数量做限制，故暂不分页
-function website:api_getWebsiteListByUserId(params) 
+function website:api_getAllByUserId(params) 
 	local userId = self:ensureAuthenticated()
 	userId = params.userId or userId
 	self:db():find({userId=userId}, resume)
@@ -200,10 +291,10 @@ function website:api_addVisitNum(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({name=page.websiteName}, resume);
-	local err, site = yield();
+	self:db():findOne({name=page.websiteName}, resume)
+	local err, site = yield()
 	if not site then
-		return {error=errors.SERVER_INNER_ERROR, data=nil};
+		return {error=errors.SERVER_INNER_ERROR, data=nil}
 	end
 
 	site.visitNum = site.visitNum + 1
@@ -228,5 +319,54 @@ function website:api_getCount(params)
 	
 	return errors:wrap(yield())
 end
+
+-- 获得收藏数量排序的网站列表
+function website:api_getFavoriteSortList(params)
+	local skip, limit = util:pagination(params)	
+	
+	local count = self:api_getCount().data
+	self:db():find({["-favoriteCount"]={gt=-1, skip=skip, limit=limit}}, resume)
+	local err, data = yield()
+
+	if err then 
+		return errors:wrap(err)
+	end
+	
+	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
+end
+
+-- 获得访问排序列表
+function website:api_getVisitSortList(params)
+	local skip, limit = util:pagination(params)	
+	
+	local count = self:api_getCount().data
+	self:db():find({["-visitCount"]={gt=-1, skip=skip, limit=limit}}, resume)
+	local err, data = yield()
+
+	if err then 
+		return errors:wrap(err)
+	end
+	
+	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
+end
+
+-- 获得网站统计信息
+function website:api_getStatics(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteMemberDB = models.website_member:new()
+	local websiteRenewalDB = models.website_renewal:new()
+	local websiteWorksDB = models.website_works:new()
+
+	local allMemberCount =  websiteMemberDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	local weekRenewalCount =  websiteRenewalDB:api_getWeekCount({websiteId=params.websiteId}).data
+	local allWorksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	local upgradeWorksCount = websiteWorksDB:api_getUpgradeCountByWebsiteId({websiteId=params.websiteId}).data
+	
+	return errors:wrap(nil, {allMemberCount=allMemberCount, weekRenewalCount=weekRenewalCount, allWorksCount=allWorksCount, upgradeWorksCount=upgradeWorksCount})
+end
+
 
 

@@ -5,6 +5,7 @@ Date: 2016/11/14
 ]]
 
 include_once("./abstract/base.page")
+include_once("./user.page")
 
 local website_member = inherit(models.abstract.base, gettable("models.website_member"))
 website_member.db_name = "website_member"
@@ -14,7 +15,7 @@ function website_member:ctor()
 	self:addfield("websiteId","number")    -- 站点ID
 	self:addfield("userId", "number")      -- 成员ID
 	-- 
-	self:addfield("role", "string")        -- 角色
+	self:addfield("roleId", "number")        -- 角色
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
 end
@@ -32,11 +33,50 @@ function website_member:create(params)
 	return errors:wrap(yield())
 end
 
+-- 更新
+function website_member:api_updateById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.updateDate = params.createDate
+	self:db():updateOne({_id=params._id}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- used to debug
 function website_member:get(params)
 	local query = util:formatQuery(params)
 	self:db():find(query, resume)
 	return errors:wrap(yield())
+end
+
+-- 获得数量
+function website_member:api_getCount(query)
+	self:db():count(query, resume)
+    local err, data = yield()
+
+	return errors:wrap(err, data or 0)
+end
+
+-- 获得列表
+function website_member:api_get(query)
+	self:db():find(query, resume)
+	local err, data = yield()
+
+	if err or (not data) then
+		return errors:wrap(err or errors.NOT_FOUND)
+	end
+
+	local userDB = models.user:new()
+	local userList = {}
+	for _, obj in pairs(data) do
+		userList[#userList+1] = userDB:api_getById({userId=obj.userId}).data
+		userList[#userList].roleInfo = obj
+	end
+	
+	return errors:wrap(nil, userList)
 end
 
 -- 获得站点成员列表
@@ -45,16 +85,14 @@ function website_member:api_getByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
-	local skip, limit = util:pagination(params)
-	local query = util:formatQuery(params)
-	query["+websiteId"] = {params.websiteId, skip=skip, limit=limit}		
-	self:db():find(query, resume)
-	local err, data = yield()
+	local query = {["+websiteId"]={params.websiteId}}
+	local total = self:api_getCount(query).data
 
-	for _, obj in ipairs(data) do
-		-- 获得用户相关信息	
-	end
-	return errors:wrap(err, data)		
+	local skip, limit = util:pagination(params)
+	query = {["+websiteId"]={params.websiteId, skip=skip, limit=limit}}
+	local userList = self:api_get(query).data
+
+	return errors:wrap(err, {total=total, pageCount=util:getPageCount(total,limit), userList=userList})		
 end
 
 -- 获得站点全部成员数量
@@ -63,10 +101,8 @@ function website_member:api_getCountByWebsiteId(params)
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
-	local query = util:formatQuery(params)
-	query["+websiteId"] = {params.websiteId}		
+	self:db():count({["+websiteId"] = {params.websiteId}}, resume)
 
-	self:db():count(query, resume)
 	return errors:wrap(yield())
 end
 
@@ -78,13 +114,15 @@ function website_member:delete(params)
 end
 
 -- 获得评委成员信息
-function website_member:getJudgeList(params)
+function website_member:api_getJudgeListByWebsiteId(params)
 	params.role = const.WEBSITE_USER_ROLE_JUDGE
-	return self:api_getByWebsiteId(params)
-end
+	local query = {["+websiteId+roleId"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE}}
+	local total = self:api_getCount(query).data
+	
+	local skip, limit = util:pagination(params)
+	query = {["+websiteId+roleId"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE, skip=skip, limit=limit}}
+	local userList = self:api_get(query).data
 
--- 获取用户相关信息 辅助函数
-function website_member:getUserInfoList(data)
-	return data
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit), userList=userList})
 end
 

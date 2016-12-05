@@ -6,6 +6,8 @@ Date: 2016/10/13
 Desc: define error code and message 
 ]]
 
+NPL.load("(gl)script/ide/debug.lua")
+
 --local errors = inherit(nil, gettable("models.errors"))
 
 errors = {}
@@ -22,12 +24,21 @@ function errors:new(message)
 end 
 
 function errors:isOk(error) 
-	return error.id == 0;
+	return error.id == 0
+end
+
+function errors:isError(error)
+	return error.id ~= 0
 end
 
 function errors:wrap(err, data) 
 	if not err then
 		return {error=errors.SUCCESS, data=data}
+	end
+	
+	if err then 
+		log(commonlib.debugstack())
+		log(err)
 	end
 
 	if type(err) == "string" then 
