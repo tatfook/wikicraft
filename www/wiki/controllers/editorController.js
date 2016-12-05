@@ -133,7 +133,6 @@ angular.module('MyApp')
                     }
                     if(i == $scope.websites.length){
                         initRoot();
-                        initTree();
                         initGithub();
                     }
                 }).catch(function (response) {
@@ -154,39 +153,82 @@ angular.module('MyApp')
         $(".progress-bar").css("width", $scope.progressbar.percent+"%");
     }
 
+    function githubSha(){
+        //console.log('@githubSha');
+        $scope.githubSource.repo.getSha('','',function(error, result, request){
+            if(!error) {
+                githubWS(result);
+            }
+        });
+    }
+
+    //website
     function githubWS(sha){
+        var webGithub = 0;
+        var webResponse = 0;
         for(var i=0;i< $scope.websites.length;i++) {
             if(sha.length == 0){
-                $scope.websites[i].github = false;
-                return;
+                $scope.websites[i].github = false;      //no github
+                continue;
             }
             for(var j=0; j<sha.length;j++){
                 if(sha[j].type == "dir" && sha[j].name == $scope.websites[i].name){
-                    break;
+                    break;      //find website from github by "dir"
                 }
             }
             if(j<sha.length){
                 $scope.websites[i].github = true;
+                webGithub++;
             }else{
                 $scope.websites[i].github = false;
             }
-            if($scope.websites[i].github){
-                $scope.githubSource.repo.getSha('',$scope.websites[i].name,function(error, result, request){
-                    githubWP($scope.websites[i],sha);
-                });
+        }
+
+        if(webGithub > 0){
+            for(var i=0;i< $scope.websites.length;i++) {
+                if($scope.websites[i].github){
+                    var ws = $scope.websites[i];
+                    $scope.githubSource.repo.getSha('',ws.name,function(error, result, request){
+                        githubWP(ws,result);
+                        webResponse++;
+                        if(webResponse >= webGithub){
+                            initTree();
+                        }
+                    });
+                }
             }
+        }else{
+            initTree();
         }
     }
 
+    //页面
     function githubWP(ws,sha){
+        //console.log('@debug githubWP');
+        //console.log(ws);
+        //console.log(sha);
+
+        var wp = {};
         for(var i=0;i< $scope.websitePages.length;i++) {
+            wp = $scope.websitePages[i];
             if(ws._id == wp.websiteId || ws.name == wp.websiteName) {
                 if(sha.length == 0){
                     $scope.websitePages[i].github = false;
                     continue;
                 }
                 for (var j = 0; j < sha.length; j++) {
-                    if (sha[j].type == "file" && sha[j].name == $scope.websitePages[i].name) {
+                    if (sha[j].type == "file" && sha[j].name == wp.name) {
+                        $scope.websitePages[i].github = true;
+
+                        //file_sha = hex_sha1(wp.content);
+                        //console.log('@debug githubWP sha')
+                        //console.log(file_sha);
+                        //console.log(sha[j].sha);
+                        //if ( sha[j].sha == file_sha ){
+                        //    $scope.websitePages[i].sha = true;
+                        //}else{
+                        //    $scope.websitePages[i].sha = false;
+                        //}
                         break;
                     }
                 }
@@ -201,17 +243,14 @@ angular.module('MyApp')
 
     //初始化github
     function initGithub(){
-        var token = Account.getUser().github_token;
+        var token = Account.getUser().github_token;     //github token
         if(!token){
+            initTree();
             return;
         }
         $scope.githubSource = ProjectStorageProvider.getDataSource('github');
         $scope.githubSource.init(token,function(){
-            $scope.githubSource.repo.getSha('','',function(error, result, request){
-                if(!error) {
-                    githubWS(result);
-                }
-            });
+            githubSha();
         });
     }
 
@@ -228,15 +267,24 @@ angular.module('MyApp')
     }
 
     function getTree(){
+
+        //console.log('@getTree');
+        //console.log($scope.websitePages);
+
         var ws = {};
         var wp = {};
         var node = '';
+
+        var wsIcon = '';
+        var wpIcon = '';
+        var wpSelIcon = '';
 
         var treeData = "[";
         for(var i=0;i< $scope.websites.length;i++) {
             ws = $scope.websites[i];
             //console.log(ws);        //"icon": "glyphicon glyphicon-stop","selectedIcon": "glyphicon glyphicon-stop",
-            treeData += '{"text":"' + ws.name + '","icon":"fa fa-globe","selectable":false,"tags": ["site","' + ws._id +'"],__nodes__},';
+            (ws.github) ? wsIcon = 'fa fa-github-alt' : wsIcon='fa fa-globe';
+            treeData += '{"text":"' + ws.name + '","icon":"'+ wsIcon + '","selectable":false,"tags": ["site","' + ws._id +'"],__nodes__},';
             node = '';
             for(var j=0;j<  $scope.websitePages.length;j++){
                 wp =  $scope.websitePages[j];
@@ -244,7 +292,11 @@ angular.module('MyApp')
                     continue;
                 }
                 if(ws._id == wp.websiteId || ws.name == wp.websiteName){
-                    node += '{"text": "' + wp.name + '","icon":"fa fa-file-o",  "selectedIcon": "fa fa-file-text-o", "tags": ["page","'+ wp._id +'","'+ ws._id +'"]},';
+                    (wp.github) ? wpIcon = 'fa fa-github-alt' : wpIcon='fa fa-file-o';
+                    (wp.github) ? wpSelIcon = 'fa fa-github' : wpSelIcon='fa fa-pencil-square-o';
+                    node += '{"text": "' + wp.name + '","icon":"'+ wpIcon + '",  "selectedIcon": "' + wpSelIcon + '",';
+                    //if( wp._id == $scope.websitePage._id ) node += '"state": "{selected:true}",';
+                    node += '"tags": ["page","'+ wp._id +'","'+ ws._id +'"]},';
                 }
             }
             node = node.replace(/(.*)[,，]$/, '$1');
@@ -298,6 +350,7 @@ angular.module('MyApp')
 
     //初始化目录树  data:  $.parseJSON(getTree()),
     function initTree(){
+        //console.log('@initTree');
         $('#treeview').treeview({
             color: "#428bca",
             showBorder: false,
@@ -341,6 +394,9 @@ angular.module('MyApp')
                 switch (cmd.substring(1)){
                     case 'new':
                         console.log('command:new');
+                        break;
+                    case 'ws':
+                        console.lgo('command:ws');
                         break;
                     default:
                         console.log('command:undefined!'+ cmd );
@@ -398,7 +454,20 @@ angular.module('MyApp')
             $scope.websitePage.content = content;
             $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
                 //console.log(response.data);
-                alert('修改成功');
+                if(!isEmptyObject($scope.githubSource)){
+                    console.log('@save websitpage to github');
+                    var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name
+                    $scope.githubSource.repo.writeFile('master', path, $scope.websitePage.content, 'wikicraft commit message', function(error, result, request){
+                        if(!error){
+                            githubSha();
+                            console.log(hex_sha1($scope.websitePage.content));
+                            console.log(result);
+                        }
+                    });
+
+                }else{
+                    alert('文件已保存到服务器');
+                }
             }).catch(function (response) {
                 console.log(response.data);
             });
@@ -609,7 +678,7 @@ angular.module('MyApp')
     //水平分割线
     $scope.cmd_horizontal = function () {
         var cursor = editor.getCursor();
-        editor.replaceRange('\n---',CodeMirror.Pos(cursor.line+1,0),CodeMirror.Pos(cursor.line+1,0));
+        editor.replaceRange('---\n',CodeMirror.Pos(cursor.line+1,0),CodeMirror.Pos(cursor.line+1,0));
         editor.setCursor(CodeMirror.Pos(cursor.line+1,3));
         editor.focus();
     }
@@ -695,6 +764,19 @@ angular.module('MyApp')
         }
     }
 
+    $scope.cmd_version = function(){
+        if (!isEmptyObject($scope.websitePage)) {
+            if(!isEmptyObject($scope.githubSource)){
+                $scope.githubSource.listCommits('',function(error, result, request){
+                    if(!error){
+                        console.log(result);
+                    }
+                });
+            }
+
+        }
+    }
+
     $scope.$on('onUserProfile', function (event, user) {
         init();
         command();
@@ -702,4 +784,151 @@ angular.module('MyApp')
 
     var mdwiki = markdownwiki({ container_name: '.result-html' });
     mdwiki.bindToCodeMirrorEditor(editor);
+
+    /*
+     *
+     * Configurable variables.
+     *
+     */
+    var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase */
+    var chrsz = 8; /* bits per input character. 8 - ASCII; 16 - Unicode */
+    /*
+     *
+     * The main function to calculate message digest
+     *
+     */
+    function hex_sha1(s){
+        return binb2hex(core_sha1(AlignSHA1(s)));
+    }
+    /*
+     *
+     * Perform a simple self-test to see if the VM is working
+     *
+     */
+    function sha1_vm_test(){
+        return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+    }
+    /*
+     *
+     * Calculate the SHA-1 of an array of big-endian words, and a bit length
+     *
+     */
+    function core_sha1(blockArray){
+        var x = blockArray; // append padding
+        var w = Array(80);
+        var a = 1732584193;
+        var b = -271733879;
+        var c = -1732584194;
+        var d = 271733878;
+        var e = -1009589776;
+        for (var i = 0; i < x.length; i += 16) // 每次处理512位 16*32
+        {
+            var olda = a;
+            var oldb = b;
+            var oldc = c;
+            var oldd = d;
+            var olde = e;
+            for (var j = 0; j < 80; j++) // 对每个512位进行80步操作
+            {
+                if (j < 16)
+                    w[j] = x[i + j];
+                else
+                    w[j] = rol(w[j - 3] ^ w[j - 8] ^ w[j - 14] ^ w[j - 16], 1);
+                var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)), safe_add(safe_add(e, w[j]), sha1_kt(j)));
+                e = d;
+                d = c;
+                c = rol(b, 30);
+                b = a;
+                a = t;
+            }
+            a = safe_add(a, olda);
+            b = safe_add(b, oldb);
+            c = safe_add(c, oldc);
+            d = safe_add(d, oldd);
+            e = safe_add(e, olde);
+        }
+        return new Array(a, b, c, d, e);
+    }
+    /*
+     *
+     * Perform the appropriate triplet combination function for the current
+     * iteration
+     *
+     * 返回对应F函数的值
+     *
+     */
+    function sha1_ft(t, b, c, d){
+        if (t < 20)
+            return (b & c) | ((~ b) & d);
+        if (t < 40)
+            return b ^ c ^ d;
+        if (t < 60)
+            return (b & c) | (b & d) | (c & d);
+        return b ^ c ^ d; // t<80
+    }
+    /*
+     *
+     * Determine the appropriate additive constant for the current iteration
+     *
+     * 返回对应的Kt值
+     *
+     */
+    function sha1_kt(t){
+        return (t < 20) ? 1518500249 : (t < 40) ? 1859775393 : (t < 60) ? -1894007588 : -899497514;
+    }
+    /*
+     *
+     * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+     *
+     * to work around bugs in some JS interpreters.
+     *
+     * 将32位数拆成高16位和低16位分别进行相加，从而实现 MOD 2^32 的加法
+     *
+     */
+    function safe_add(x, y){
+        var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+        var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+        return (msw << 16) | (lsw & 0xFFFF);
+    }
+    /*
+     *
+     * Bitwise rotate a 32-bit number to the left.
+     *
+     * 32位二进制数循环左移
+     *
+     */
+    function rol(num, cnt){
+        return (num << cnt) | (num >>> (32 - cnt));
+    }
+    /*
+     *
+     * The standard SHA1 needs the input string to fit into a block
+     *
+     * This function align the input string to meet the requirement
+     *
+     */
+    function AlignSHA1(str){
+        var nblk = ((str.length + 8) >> 6) + 1, blks = new Array(nblk * 16);
+        for (var i = 0; i < nblk * 16; i++)
+            blks[i] = 0;
+        for (i = 0; i < str.length; i++)
+            blks[i >> 2] |= str.charCodeAt(i) << (24 - (i & 3) * 8);
+        blks[i >> 2] |= 0x80 << (24 - (i & 3) * 8);
+        blks[nblk * 16 - 1] = str.length * 8;
+        return blks;
+    }
+    /*
+     *
+     * Convert an array of big-endian words to a hex string.
+     *
+     */
+    function binb2hex(binarray){
+        var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+        var str = "";
+        for (var i = 0; i < binarray.length * 4; i++) {
+            str += hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF) +
+                hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
+        }
+        return str;
+    }
 })

@@ -300,7 +300,8 @@ $('.toolbar-page-preview').on('click',function(){
 });
 
 $('.toolbar-page-version').on('click',function(){
-    console.log('toolbar-page-version');
+    var $scope=angular.element('#wikiEditor').scope();
+    $scope.cmd_version();
 });
 
 $('.toolbar-page-hotkey').on('click',function(){
