@@ -74,20 +74,18 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					return;
 				end
 				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
-				--[[
-					db.User:insertOne({github = profile.id}, {
-						github = profile.id,
-						picture = profile.avatar_url,
-						displayName = profile.name,
-						github_token = accessToken,
+					db.User:insertOne({githubId = profile.id}, {
+						githubId = profile.id,
+						portrait = profile.avatar_url,
+						username = profile.name,
+						githubToken = accessToken,
 						joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 					}, function(err, user) 
 						local token = createJWT(user);
-						include_once("../models/stats.page");
-						models.stats:new():addUser(user._id, true);
+						--include_once("../models/stats.page");
+						--models.stats:new():addUser(user._id, true);
 						response:send({ token = token });
 					end);
-				]]
 			end);
 		end
 	end);
