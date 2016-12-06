@@ -6,7 +6,7 @@ var util = {
     colorList:["rgb(145,185,114)","rgb(185,150,114)","rgb(185,114,178)","rgb(185,127,114)","rgb(114,185,160)","rgb(114,134,185)"],
     stack:[],   // 堆栈操作模拟
     id:0,       // ID产生器 局部唯一性
-    urlObj:{},
+    lastUrlObj:{}, // 记录最近一次URL信息
 };
 
 util.getId = function () {
@@ -45,11 +45,11 @@ util.praseUrl = function () {
     return {sitename:sitename, pagename:pagename};
 }
 
-util.setUrlObj = function (urlObj) {
+util.setLastUrlObj = function (urlObj) {
     this.urlObj = urlObj;
 }
 
-util.getUrlObj = function () {
+util.getLastUrlObj = function () {
     return this.urlObj;
 }
 

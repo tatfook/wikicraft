@@ -5,8 +5,8 @@
 app.factory('Account', function ($auth, $rootScope) {
     return {
         user:{
-            _id:1,
-            username:'逍遥',
+            //_id:1,
+            //username:'逍遥',
             loaded:false,
         },
         getUser: function () {
@@ -19,6 +19,7 @@ app.factory('Account', function ($auth, $rootScope) {
                 this.user.loaded = true;
             }
             this.send("onUserProfile", this.user);
+			$rootScope.user = this.user; // 用户信息让每个控制都拥有
         },
 
         send: function(msg, data) {
@@ -35,10 +36,25 @@ app.factory('Account', function ($auth, $rootScope) {
         isAuthenticated: function () {
             return $auth.isAuthenticated();
         },
+
+		githubAuthenticate: function() {
+			self = this;
+			$auth.authenticate("github").then(function (response) {
+				$auth.setToken(response.data.token);
+				self.setUser(response.data.userInfo);
+				console.log("github认证成功!!!")
+			}, function(){
+				console.log("github认证失败!!!")
+			});
+		},
+
         getProfile: function () {
             var self = this;
-            util.http("POST", config.apiUrlPrefix + "user/getById",{}, function (data) {
+            util.http("POST", config.apiUrlPrefix + "user/getProfile",{}, function (data) {
                 self.setUser(data);
+				if (!data.githubToken) {
+					self.githubAuthenticate();
+				}
             });
         },
         updateProfile: function (profileData) {
@@ -115,7 +131,7 @@ app.factory("Message", function () {
     return message;
 });
 
-app.factory('ProjectStorageProvider', function ($http) {
+app.factory('ProjectStorageProvider', function ($http, $state, $auth) {
     // github 数据源
     var github = {
         repoName:'wikicraftDataSource',

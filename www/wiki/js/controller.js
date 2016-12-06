@@ -15,6 +15,7 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
         }
     }
     console.log("mainCtrl");
+	// 解析URL
 	var hostname = window.location.hostname;
     var pathname = window.location.pathname;
     var hash = window.location.href;
@@ -35,16 +36,12 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
-    //SelfData.sitename = sitename;
-    //SelfData.pagename = pagename;
-    SelfData.sitename = 'xiaoyao';
-    SelfData.pagename = 'index';
-    return $state.go("index.editWebsite");
+    SelfData.sitename = sitename;
+    SelfData.pagename = pagename;
+	SelfData.pageurl = "/" + sitename + '/' + pagename;
     // 初始化数据源
 	var actionName = 'index.home';
-    var selfData = util.getSelfServices().selfData;
 	if (sitename != "wiki" && sitename != "wiki_new") {
-        SelfData.pageUrl = "/" + sitename + '/' + pagename;
         actionName = "index.userpage";
     }
 	console.log(actionName);
@@ -57,6 +54,48 @@ app.controller('messageCtrl', function ($scope, Message) {
     $scope.hide = function () {
         Message.hide();
     };
+});
+
+app.controller('commentCtrl', function ($scope, Account) {
+    $scope.user = Account.getUser();
+    $scope.isAuthenticated = Account.isAuthenticated();
+    //$scope.tipInfo = "登录后才能评论!!!";
+    //$scope.comment = {pageId:$scope.pageinfo._id, websiteId:$scope.siteinfo._id, userId:$scope.user._id};
+    $scope.comment = {pageId:1, websiteId:1, userId:1};
+
+    $scope.submitComment = function () {
+        $scope.isAuthenticated = true;
+        if (!$scope.isAuthenticated) {
+            alert("登陆后才能评论!!!")
+            return ;
+        }
+        $scope.comment.content = util.stringTrim($scope.comment.content);
+        if (!$scope.comment.content || $scope.comment.content.length == 0) {
+            return ;
+        }
+        util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
+            console.log(data);
+            $scope.getCommentList();
+        });
+    }
+
+    $scope.getCommentList = function () {
+        util.post(config.apiUrlPrefix + 'website_comment/getByPageId',{pageId:1}, function (data) {
+            $scope.commentObj = data;
+        });
+    }
+    
+    $scope.deleteComment = function (comment) {
+        util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
+            $scope.getCommentList();
+        })
+    }
+
+    function init() {
+        $scope.getCommentList();
+    }
+
+    init();
 });
 
 app.controller('indexHeaderCtrl', function ($scope, $state, $auth, Account) {
@@ -91,37 +130,6 @@ app.controller('indexHeaderCtrl', function ($scope, $state, $auth, Account) {
     $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
         $scope.isLogin = bAuthenticated;
     });
-});
-
-app.controller('loginCtrl', function ($scope, $rootScope, $state, $auth, Account) {
-    //$scope.errMsg = "用户名或密码错误";
-    $scope.login = function () {
-        $scope.errMsg = "";
-        var params = {
-            email:util.stringTrim($scope.email),
-            password:util.stringTrim($scope.password),
-        };
-        if (!params.email || !params.password) {
-            $scope.errMsg = "用户名或密码错误";
-            return;
-        }
-        util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
-            $auth.setToken(data.token);
-            Account.setUser(data.userInfo);
-            console.log("登录成功");
-            $state.go("index.home");
-        }, function (error) {
-            $scope.errMsg = error.message;
-        });
-    }
-    
-    $scope.githubLogin = function () {
-        $auth.authenticate("github").then(function () {
-            console.log("登录成功");
-            Account.getProfile();
-            $state.go("index.home");
-        });
-    }
 });
 
 app.controller('siteshowCtrl', function ($scope, SelfData) {
@@ -162,7 +170,7 @@ app.controller('usershowCtrl', function ($scope, SelfData) {
             return ;
         }
 
-        var url = $scope.requestUrl || config.apiUrlPrefix + "website_member/getByWebsiteId"; // 获得最近更新
+        var url = $scope.requestUrl || config.apiUrlPrefix + "user/getByWebsiteId"; // 获得最近更新
 
         util.http("POST", url, $scope.requestParams, function (data) {
             $scope.userObj = data;
@@ -205,6 +213,40 @@ app.controller("worksApplyCtrl", function ($scope, $state, Account, SelfData) {
         });
     }
 
+    init();
+});
+
+app.controller("worksSiteCtrl", function ($scope, $state, SelfData){
+    $scope.favoriteParams = {page:1, pageSize:6};
+    $scope.favoriteObj = {};
+
+    $scope.getRandomColor = function (index) {
+        return util.getRandomColor(index);
+    }
+
+    // 更多我的收藏
+    $scope.goAllFavoriteList = function () {
+        SelfData.requestUrl =  config.apiUrlPrefix + "website/getFavoriteSortList";
+        SelfData.requestParams = $scope.favoriteParams;
+        $state.go("index.siteshow");
+    }
+
+    $scope.getFavoriteList = function (page) {
+        $scope.favoriteParams.page = page ? (page > 0 ? page : 1) : $scope.favoriteParams.page;
+
+        if ($scope.favoriteObj.pageCount && $scope.favoriteParams.page > $scope.favoriteObj.pageCount) {
+            $scope.favoriteParams.page = $scope.favoriteObj.pageCount
+        }
+        var url = $scope.favoriteParams.url || config.apiUrlPrefix + "website/getFavoriteSortList"; // 获得最近更新
+
+        util.http("POST", url, $scope.favoriteParams, function (data) {
+            $scope.favoriteObj = data;
+        });
+    }
+
+    function init() {
+        $scope.getFavoriteList()
+    }
     init();
 });
 
@@ -525,7 +567,7 @@ app.controller('personalSiteCtrl', function ($scope, $state, Account, SelfData) 
     init();
 });
 
-app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account) {
+app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account, SelfData) {
     $scope.siteParams = {page:1, pageSize:3};
     $scope.userParams = {page:1, pageSize:3};
     $scope.userObj = {};
@@ -533,6 +575,20 @@ app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account)
 
     $scope.getRandomColor = function (index) {
         return util.getRandomColor(index);
+    }
+
+    // 更多我的收藏
+    $scope.goAllWorksList = function () {
+        SelfData.requestUrl =  config.apiUrlPrefix + "website/getFavoriteSortList";
+        SelfData.requestParams = $scope.siteParams;
+        $state.go("index.siteshow");
+    }
+
+    // 更多我的收藏
+    $scope.goAllUserList = function () {
+        SelfData.requestUrl = config.apiUrlPrefix + "user/getFavoriteSortList";
+        SelfData.requestParams = $scope.userParams;
+        $state.go("index.usershow");
     }
 
     $scope.getWorksList = function (page) {
@@ -600,6 +656,11 @@ app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account)
             console.log("注册成功")
             $auth.setToken(data.token);
             Account.setUser(data.userInfo);
+			if (!data.userInfo.githubToken) {
+				Account.githubAuthenticate();
+			} else {
+				$state.go("index.home");
+			}
         },function (error) {
             $scope.errMsg = error.message;
         });
@@ -614,32 +675,6 @@ app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile
     console.log(result);
 });
 
-app.controller('userpageCtrl', function ($scope, $rootScope, $state, $http, $compile, Account, SelfData) {
-    $scope.user = Account.getUser();
-
-    util.setScope($scope);
-    // 获取页面
-    var moduleParser = new ModuleParser($scope);
-    var sitename = SelfData.sitename;
-
-    init();
-
-    function init() {
-        // 获得用户信息
-        util.http("POST", config.apiUrlPrefix + "user/getUserAndSiteBySitename", {sitename:sitename}, function (data) {
-            $rootScope.userinfo = data.userinfo;
-            $rootScope.siteinfo = data.siteinfo;
-            util.http('POST', config.apiUrlPrefix+'website_pages/getWebsitePageByUrl', {url:util.getSelfServices().SelfData.pageUrl}, function(data){
-            //$http.get('http://localhost:63342/html/wikicraft/src/html/templates/game.html').then(function (response) {
-                // 获取页面中模板
-	        var pageContent = data ? data.content : '<div>用户页丢失!!!</div>';
-	        var md = window.markdownit({html:true});
-	        pageContent = md.render(pageContent);
-	        moduleParser.render(pageContent);
-            });
-        });
-    }
-});
 
 
 app.controller('indexCtrl', function ($scope,$state, $sce, $auth) {

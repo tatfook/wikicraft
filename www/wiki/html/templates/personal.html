@@ -1,7 +1,3 @@
-<script>
-
-</script>
-
 <div class="mod_header" ng-controller="personalSiteCtrl">
     <!-- 个人主页头部 -->
     <div style="position: relative; width: 1920px; height: 900px;">
@@ -30,10 +26,12 @@
         <div id="worksListNavId" style="position: absolute; left: 1470px; top:120px; width: 410px; height:710px; background-color: rgba(0,0,0,0.3); font-size: 36px; color: white">
             <div style="margin-left: 50px; margin-top: 70px">
                 <ul>
-                    <!--li ng-repeat="website in websiteList"><a style="color: white;" href="{{'/' + website.name}}">{{website.name}}</a></li-->
+                    <li ng-repeat="website in websiteList"><a style="color: white;" href="{{'/' + website.name}}">{{website.name}}</a></li>
+					<!--
                     <li><a style="color: white">个人站点</a></li>
                     <li><a style="color: white">组织网站</a></li>
                     <li><a style="color: white">比赛网站</a></li>
+					-->
                 </ul>
             </div>
         </div>

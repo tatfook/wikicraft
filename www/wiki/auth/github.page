@@ -19,6 +19,7 @@ local params = {
 response:Begin();
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
+	log("github step 1")
 	local accessToken = util.parse_str(data);
 	-- accessToken == {scope="user:email",access_token="25b6511fb14eacd48106ab16261dd01bdb1fe54e",token_type="bearer",}	
 	if(accessToken and accessToken.error) then
@@ -30,7 +31,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 
 	-- Step 2. Retrieve profile information about the current user.
 	util.GetUrl({ url = userApiUrl, qs = accessToken, headers = headers, json = true }, function(err, msg, profile)
-		
+		log("github step 2")
 		if(not profile) then
 			LOG.std(nil, "debug", "github", msg);
 			return response:status(400):send({ message= 'Failed to fetch github profile' });
@@ -38,17 +39,22 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 
 		if(request:header('Authorization')) then
 			-- Step 3a. Link user accounts.
-			db.user:findOne({ githubId = profile.id }, function(err, existingUser)
-				if (existingUser) then
+			log("github step 3")
+			db.user:findOne({ githubId = profile.id }, function(err, user)
+				log("=========")
+				if (user) then
 					-- refresh access token
-					if(not commonlib.partialcompare(accessToken, existingUser.githubToken)) then
-						db.User:updateOne({_id = existingUser._id}, {githubToken=accessToken}, resume);
+					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
+						db.user:updateOne({_id = user._id}, {githubToken=accessToken});
 					end
-					return response:status(409):send({ message = 'There is already a GitHub account that belongs to you' });
+					user.githubToken = accessToken
+					local token, err = createJWT(user);
+					response:send({ token = token, userInfo=user });
+					-- return response:status(409):send({ message = 'There is already a GitHub account that belongs to you' });
 				end
 				local token = request:header('Authorization'):match("%s+(%S+)");
 				local payload, err = decodeJWT(token);
-				db.User:findById(payload.id, function(err, user)
+				db.user:findOne({_id=payload.id}, function(err, user)
 					if (not user) then
 						return response:status(400):send({ message= 'User not found' });
 					end
@@ -56,25 +62,25 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					-- user.picture = user.picture or profile.avatar_url;
 					-- user.displayName = user.displayName or profile.name;
 					user.githubToken = accessToken;
-					db.User:updateOne(user, function(err, user)
+					db.user:updateOne(user, function(err, user)
 						local token = createJWT(user);
-						response:send({ token = token });
+						response:send({ token = token, userInfo=user});
 					end)
 				end);
 			end);
 		else
 			-- Step 3b. Create a new user account or return an existing one.
-			db.User:findOne({ github = profile.id }, function(err, existingUser)
+			db.user:findOne({ github = profile.id }, function(err, existingUser)
 				if (existingUser) then
-					if(not commonlib.partialcompare(accessToken, existingUser.github_token)) then
-						local err, user = db.User:updateOne({_id = existingUser._id}, {github_token=accessToken}, resume);
+					if(not commonlib.partialcompare(accessToken, existingUser.githubToken)) then
+						db.User:updateOne({_id = existingUser._id}, {githubToken=accessToken});
 					end
 					local token, err = createJWT(existingUser);
 					response:send({ token = token });
 					return;
 				end
 				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
-					db.User:insertOne({githubId = profile.id}, {
+					db.user:insertOne({githubId = profile.id}, {
 						githubId = profile.id,
 						portrait = profile.avatar_url,
 						username = profile.name,

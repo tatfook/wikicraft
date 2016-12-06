@@ -35,7 +35,10 @@
     <script src="/wiki/js/controller.js"></script>
     <script src="/wiki/js/userController.js"></script>
 	<script src="/wiki/js/editorController.js"></script>
+	<script src="/wiki/js/userpageController.js"></script>
+	<script src="/wiki/js/authController.js"></script>
 </head>
+
 <body>
 <div ng-app="MyApp" ng-controller="mainCtrl">
     <div ui-view="default"></div>

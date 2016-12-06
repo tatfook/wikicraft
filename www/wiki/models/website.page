@@ -44,8 +44,8 @@ function website:ctor()
 	self:addfield("favoriteCount", "number")
 	self:addfield("visitCount", "number")
 	self:addfield("pageCount", "number")
-	--self:addfield("memberCount", "number")
-	--self:addfield("worksCount", "number")
+	self:addfield("memberCount", "number")
+	self:addfield("worksCount", "number")
 end
 
 -- 获取站点
@@ -69,7 +69,7 @@ function website:api_getPersonalSiteByUserId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({userId=params.userId, {"categoryId",0}}, resume)
+	self:db():findOne({["+userId+categoryId"]={params.userId, 0}}, resume)
 	
 	return errors:wrap(yield())
 end

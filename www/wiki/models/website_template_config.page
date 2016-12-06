@@ -33,7 +33,7 @@ local template_config = {
 						name="图书样式",
 						templateId=1,
 						logoUrl="",
-						filename="book.html",
+						filename="works.html",
 						layoutTpl='',
 					},
 				},

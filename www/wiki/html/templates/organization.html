@@ -1,4 +1,4 @@
-<div style="width: 1920px;background-color: rgb(255,244,216);">
+<div ng-controller="organizationSiteCtrl" style="width: 1920px;background-color: rgb(255,244,216);">
     <div style=" height: 905px; position: relative">
         <img src="/wiki/assets/imgs/OrgHeaderBackground.jpg">
         <div style="position: absolute; top: 580px; left: 200px;">
@@ -20,7 +20,8 @@
         </div>
 
         <div style="position: absolute; left: 1255px; top: 560px">
-            <a ng-click="memberApply()"><img src='/wiki/assets/imgs/AddUser.jpg' class="img-circle" , style="width: 160px; height: 160px"></a>
+            <!--a ng-click="memberApply()"><img src='/wiki/assets/imgs/AddUser.jpg' class="img-circle" style="width: 160px; height: 160px"></a-->
+			<button ng-click="memberApply()" style="background: none; border-radius: 50%" class="btn"><img src='/wiki/assets/imgs/AddUser.jpg' class="img-circle" style="width: 160px; height: 160px"></button>
         </div>
     </div>
 
