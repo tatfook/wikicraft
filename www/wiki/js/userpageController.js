@@ -15,7 +15,7 @@ app.controller('userpageCtrl', function ($scope, $rootScope, $state, $http, $com
 		util.post(config.apiUrlPrefix + "website_pages/getWebsitePageByUrl", {url:SelfData.pageurl}, function(data){
 			$scope.pageinfo = data
 			var pageContent = data ? data.content : '<div>用户页丢失!!!</div>';
-			// pageContent = md.render(pageContent);
+			pageContent = md.render(pageContent);
 			moduleParser.render(pageContent);
 		});
 	}
