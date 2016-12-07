@@ -17,39 +17,41 @@
         </div>
 
         <!-- 个人导航 -->
-        <div style="position: absolute; left: 1330px; top: 0px; margin: 0px 30px; width: 530px; display: flex; justify-content: space-between">
-            <button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 30px; background: none; color: white">网页编辑</button>
-            <button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 30px; background: none; color: white">网站管理</button>
-            <button class="btn" ng-click="showWorksList()" style="font-size: 30px; background: none; color: white">全部作品</button>
-        </div>
+		<div ng-show="user._id==userinfo._id">
+			<div style="position: absolute; left: 1330px; top: 0px; margin: 0px 30px; width: 530px; display: flex; justify-content: space-between">
+				<button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 30px; background: none; color: white">网页编辑</button>
+				<button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 30px; background: none; color: white">网站管理</button>
+				<button class="btn" ng-click="showWorksList()" style="font-size: 30px; background: none; color: white">全部作品</button>
+			</div>
 
-        <div id="worksListNavId" style="position: absolute; left: 1470px; top:120px; width: 410px; height:710px; background-color: rgba(0,0,0,0.3); font-size: 36px; color: white">
-            <div style="margin-left: 50px; margin-top: 70px">
-                <ul>
-                    <li ng-repeat="website in websiteList"><a style="color: white;" href="{{'/' + website.name}}">{{website.name}}</a></li>
-					<!--
-                    <li><a style="color: white">个人站点</a></li>
-                    <li><a style="color: white">组织网站</a></li>
-                    <li><a style="color: white">比赛网站</a></li>
-					-->
-                </ul>
-            </div>
-        </div>
+			<div id="worksListNavId" style="position: absolute; left: 1470px; top:120px; width: 410px; height:710px; background-color: rgba(0,0,0,0.3); font-size: 36px; color: white">
+				<div style="margin-left: 50px; margin-top: 70px">
+					<ul>
+						<li ng-repeat="website in websiteList"><a style="color: white;" href="{{'/' + website.name}}">{{website.name}}</a></li>
+						<!--
+						<li><a style="color: white">个人站点</a></li>
+						<li><a style="color: white">组织网站</a></li>
+						<li><a style="color: white">比赛网站</a></li>
+						-->
+					</ul>
+				</div>
+			</div>
+		</div>
     </div>
 
     <!-- 数据统计 -->
     <div class="mod_state">
         <div style="display: flex; justify-content: space-between; font-size: 26px; padding: 0px 370px; width: 1920px; height: 230px; background-color: rgb(208,224,238); align-items: center">
             <div style="display: flex; flex-direction: column; align-items: center">
-                <div style="font-size: 50px; color: red">{{userinfo.websiteCount}}</div>
+                <div style="font-size: 50px; color: red">{{statics.websiteCount}}</div>
                 <div>我的作品</div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center">
-                <div style="font-size: 50px; color: red">{{userinfo.favoriteCount}}</div>
+                <div style="font-size: 50px; color: red">{{statics.favoriteCount}}</div>
                 <div>我的关注</div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center">
-                <div style="font-size: 50px; color: red">{{userinfo.fansCount}}</div>
+                <div style="font-size: 50px; color: red">{{statics.fansCount}}</div>
                 <div>我的粉丝</div>
             </div>
         </div>

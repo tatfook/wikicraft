@@ -11,8 +11,6 @@ include_once("./website.page")
 local user_favorite = inherit(models.abstract.base, gettable("models.user_favorite"))
 user_favorite.db_name = "user_favorite";
 
-userDB = models.user:new()
-websiteDB = models.website:new()
 
 function user_favorite:ctor() 
 	self:addfield("userId", "number", false)
@@ -28,6 +26,7 @@ function user_favorite:api_create(params)
 	
 	return errors:wrap(yield())
 end
+
 
 -- 创建用户收藏
 function user_favorite:create(params)
@@ -61,10 +60,10 @@ function user_favorite:api_favoriteUser(params)
 	end
 	
 	-- 修改用户收藏的数量
-	local userDB = models.user:new()
-	userDB:updateFavoriteCount(params.userId, 1)	
+	--local userDB = models.user:new()
+	--userDB:updateFavoriteCount(params.userId, 1)	
 	-- 被收藏的用户粉丝数+1
-	userDB:updateFansCount(params.favoriteUserId, 1)
+	--userDB:updateFansCount(params.favoriteUserId, 1)
 
 	return errors:wrap()
 end
@@ -109,6 +108,7 @@ function user_favorite:api_getFavoriteUserListByUserId(params)
 	end
 
 	local userList = {}
+	local userDB = models.user:new()
 	for _, value in pairs(data) do
 		userList[#userList + 1] = userDB:api_getById({userId=value.favoriteId}).data
 		log(userList[#userList+1])
@@ -149,6 +149,8 @@ function user_favorite:api_getFavoriteWebsiteListByUserId(params)
 	end
 
 	local websiteList = {}
+	local userDB = models.user:new()
+	local websiteDB = models.website:new()
 	for _, value in pairs(data) do
 		local site = websiteDB:api_getById({websiteId=value.favoriteId}).data
 		site.userInfo = userDB:api_getById({userId=value.favoriteUserId}).data
@@ -160,6 +162,7 @@ end
 
 -- 获得用户的粉丝数
 function user_favorite:api_getFansCountByUserId(params)
+	local query = {}
 	local indexName = "+favoriteUserId+favoriteType+favoriteId"
 	if not params.userId then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -173,7 +176,7 @@ function user_favorite:api_getFansCountByUserId(params)
 	else
 		-- 同一用户收藏多个作品重复统计则屏蔽此行
 		-- 当收藏作品时需产生一条收藏用户的记录
-		query[#query+1] = params.const.FAVORITE_TYPE_USER
+		query[#query+1] = const.FAVORITE_TYPE_USER
 	end
 	self:db():count({[indexName] = query}, resume)
 	
@@ -210,6 +213,7 @@ function user_favorite:api_getFansListByUserId(params)
 	end
 
 	local userList = {}
+	local userDB = models.user:new()
 	for _,value in pairs(data) do
 		userList[#userList+1] = userDB:api_getById({userId=value.userId}).data
 	end
@@ -221,4 +225,30 @@ function user_favorite:api_getFansListByUserId(params)
 
 	return {error=errors.SUCCESS, data = {total = total, pageCount=util:getPageCount(total, limit), fansList=userList}}	
 end
+
+-- 获得站点被收藏的数量
+function user_favorite:api_getCountByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():count({["+favoriteType+favoriteId"]={const.FAVORITE_TYPE_WEBSITE,params.websiteId}}, resume)
+	return errors:wrap(yield())
+end
+
+-- 删除用户的收藏和被收藏
+function user_favorite:api_deleteByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({["+userId"]={params.userId}}, resume)
+	local err, data = yield()
+	
+	self:db():delete({["+favoriteUserId"]={params.userId}}, resume)
+	local err, data = yield()
+
+	return errors:wrap()
+end
+
 

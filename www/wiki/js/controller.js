@@ -7,6 +7,7 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
     util.setAngularServices({$http:$http, $state:$state, $compile:$compile, $auth:$auth});
     util.setSelfServices({Account:Account, ProjectStorageProvider:ProjectStorageProvider, SelfData: SelfData, Message:Message});
 
+	$rootScope.user = Account.getUser();
     if (Account.isAuthenticated()) {
         if (Account.isLoaded()) {
             $scope.user = Account.getUser();
@@ -134,14 +135,15 @@ app.controller('indexHeaderCtrl', function ($scope, $state, $auth, Account) {
 
 app.controller('siteshowCtrl', function ($scope, SelfData) {
     $scope.requestUrl = SelfData.requestUrl;
-    $scope.requestParams = SelfData.requestParams || {pageSize:12};
+    $scope.requestParams = SelfData.requestParams || {};
+	$scope.requestParams.pageSize = 12;
+	$scope.requestParams.page = 0;
 
     function init() {
         $scope.getSiteList();
     }
 
     $scope.getSiteList = function (page) {
-
         if (!util.pagination(page, $scope.requestParams, $scope.siteObj && $scope.siteObj.pageCount)) {
             return ;
         }
@@ -160,6 +162,7 @@ app.controller('usershowCtrl', function ($scope, SelfData) {
     $scope.requestUrl = SelfData.requestUrl;
     $scope.requestParams = SelfData.requestParams || {};
     $scope.requestParams.pageSize = 12;
+    $scope.requestParams.page = 0;
 
     function init() {
         $scope.getUserList();
@@ -349,115 +352,11 @@ app.controller("gameSiteCtrl", function ($scope, $state, SelfData) {
     init();
 });
 
-app.controller("organizationSiteCtrl", function ($scope, $state, SelfData) {
-    $scope.renewalParams = {pageSize:3,websiteId:$scope.siteinfo._id};
-    $scope.hotWorksParams = {pageSize:3,websiteId:$scope.siteinfo._id, worksFlag:2};
-    $scope.allSiteParams = {pageSize:3,websiteId:$scope.siteinfo._id};
-    $scope.userParams = {pageSize:6,websiteId:$scope.siteinfo._id};
-
-    $scope.memberApply = function () {
-        // 自己不能关注自己
-        if ($scope.user._id == $scope.userinfo._id) {
-            return ;
-        }
-
-        // 发送关注请求
-        var params = {
-            applyId:$scope.userinfo._id,
-            websiteId: $scope.siteinfo._id,
-        };
-        util.http("POST", config.apiUrlPrefix + "website_apply/memberApply", params, function (data) {
-            console.log(data);  // 申请成功
-        });
-    }
-
-    // 随机颜色
-    $scope.getRandomColor = function (index) {
-        return util.getRandomColor(index);
-    }
-
-    // 更多最近更新
-    $scope.goAllRenewalList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "website_renewal";
-        SelfData.requestParams = $scope.renewalParams;
-        $state.go("index.siteshow");
-    }
-
-    // 更多我的收藏
-    $scope.goAllHotWorksList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId";
-        SelfData.requestParams = $scope.hotWorksParams;
-        $state.go("index.siteshow");
-    }
-
-    // 更多全部作品
-    $scope.goAllSiteList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "website/getByUserId";
-        SelfData.requestParams = $scope.allSiteParams;
-        $state.go("index.siteshow");
-    }
-
-    // 获得等多用户列表
-    $scope.getAllUserList = function () {
-        // TODO
-    }
-    // 获得最近更新
-    $scope.getRenewalList = function (page) {
-        if (!util.pagination(page, $scope.renewalParams, $scope.renewalObj && $scope.renewalObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-        util.http("POST", config.apiUrlPrefix + "website_renewal", $scope.renewalParams, function (data) {
-            $scope.renewalObj = data;
-        });
-    }
-
-    // 获得我的收藏
-    $scope.getFavoriteList = function (page) {
-        if (!util.pagination(page, $scope.hotWorksParams, $scope.hotWorksObj && $scope.hotWorksObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-
-        // 获取热门作品
-        util.http("POST", config.apiUrlPrefix + "website_works/getByWebsiteId", $scope.hotWorksParams, function (data) {
-            $scope.hotWorksObj = data;
-        });
-    }
-
-    // 获得全部作品
-    $scope.getAllSiteList = function (page) {
-        if (!util.pagination(page, $scope.allSiteParams, $scope.allSiteObj && $scope.allSiteObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-        // 获取全部作品列表
-        util.http("POST", config.apiUrlPrefix + "website_works/getByWebsiteId", $scope.allSiteParams, function (data) {
-            $scope.allSiteObj = data;
-        });
-    }
-
-    // 获得网站成员列表
-    $scope.getUserList = function (page) {
-        if (!util.pagination(page, $scope.userParams, $scope.userObj && $scope.userObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-        // 获取全部作品列表
-        util.http("POST", config.apiUrlPrefix + "website_member/getByWebsiteId", $scope.userParams, function (data) {
-            $scope.userObj = data;
-        });
-    }
-    function init() {
-        // 获取想管统计信息
-        util.http("POST", config.apiUrlPrefix + 'website/getStatics', {websiteId:$scope.siteinfo._id}, function (data) {
-           $scope.statics = data || {};
-        });
-
-        $scope.getRenewalList()
-    }
-    
-    init();
-});
 
 app.controller('personalSiteCtrl', function ($scope, $state, Account, SelfData) {
     $scope.user = Account.getUser();
+	$scope.isAuth = Account.isAuthenticated();
+
     var sitename = SelfData.sitename;
     $scope.renewalParams = {pageSize:3,websiteId: $scope.siteinfo._id};
     $scope.favoriteParams = {pageSize:3,userId:$scope.userinfo._id};
@@ -499,7 +398,7 @@ app.controller('personalSiteCtrl', function ($scope, $state, Account, SelfData) 
     // 更多全部作品
     $scope.goAllSiteList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website/getByUserId";
-        SelfData.requestParams = $scope.allSiteParamsl
+        SelfData.requestParams = $scope.allSiteParams;
         $state.go("index.siteshow");
     }
 
@@ -555,10 +454,13 @@ app.controller('personalSiteCtrl', function ($scope, $state, Account, SelfData) 
     
 
     function init() {
-        util.http("POST", config.apiUrlPrefix + "website",{}, function (data) {
+        util.http("POST", config.apiUrlPrefix + "website",{userId:$scope.userinfo._id}, function (data) {
             $scope.websiteList = data || [];
         });
 
+        util.http("POST", config.apiUrlPrefix + "user/getStatics",{userId:$scope.userinfo._id}, function (data) {
+            $scope.statics = data || [];
+        });
         $scope.getRenewalList();
         $scope.getFavoriteList();
         $scope.getAllSiteList();
@@ -761,12 +663,14 @@ app.controller('editWebsiteCtrl', function ($scope, $state, ProjectStorageProvid
     $scope.agreeMember = function (applyId) {
         util.post(config.apiUrlPrefix + 'website_apply/agreeMember',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
             $scope.userObj = data;
+			$scope.memberManager();
         });
     }
 
     $scope.refuseMember = function (applyId) {
         util.post(config.apiUrlPrefix + 'website_apply/refuseMember',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
             $scope.userObj = data;
+			$scope.memberManager();
         })
     }
 

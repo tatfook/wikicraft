@@ -37,6 +37,7 @@
 	<script src="/wiki/js/editorController.js"></script>
 	<script src="/wiki/js/userpageController.js"></script>
 	<script src="/wiki/js/authController.js"></script>
+	<script src="/wiki/js/organizationController.js"></script>
 </head>
 
 <body>

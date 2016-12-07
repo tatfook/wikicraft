@@ -29,7 +29,7 @@
     <div style="background-color: rgb(246,221,199); height: 230px; font-size: 50px">
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">
             <div>
-                <div style="text-align: center; color: red">{{statics.allWorksCount}}</div>
+                <div style="text-align: center; color: red">{{statics.memberCount}}</div>
                 <div >全部成员</div>
             </div>
         </div>
@@ -41,7 +41,7 @@
         </div>
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">
             <div>
-                <div style="text-align: center; color: red">{{statics.allMemberCount}}</div>
+                <div style="text-align: center; color: red">{{statics.worksCount}}</div>
                 <div>全部作品</div>
             </div>
         </div>
@@ -159,7 +159,7 @@
             </div>
         </div>
         <div style="padding-bottom: 120px">
-            <div style="display: inline-block; align-items: center; width: 550px; margin: 15px 0px; position: relative;" ng-repeat="user in userList">
+            <div style="display: inline-block; align-items: center; width: 550px; margin: 15px 0px; position: relative;" ng-repeat="user in userObj.userList">
                 <div ng-show="$index % 3 == 0" style="position: absolute; width:1660px;top:-15px; border-top: 1px solid silver"></div>
                 <div style="display: flex; align-items: center">
                     <img ng-src="{{user.portrait || '/wiki/assets/imgs/ManPortrait.jpg'}}" class="img-circle" style="height: 100px">

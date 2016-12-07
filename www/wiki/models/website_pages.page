@@ -40,6 +40,17 @@ function website_pages:delete(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
+-- 删除站点所有页
+function website_pages:api_deleteByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
+	return errors:wrap(yield())
+end
+
+
 -- 创建修改记录
 function website_pages:api_upsert(params)
 	local userId = self:ensureAuthenticated() -- 此函数只能是授权用户操作自己的页面
@@ -266,13 +277,19 @@ function website_pages:api_getCountByWebsiteName(params)
 		return {error=errors.REQUEST_PARAMS_ERROR}
 	end
 	
-	self:db():count({["websiteName"]={params.websiteName}}, resume)
-	local err, data = yield()
-
-	return {error=errors.SUCCESS, data=count}
+	self:db():count({["+websiteName"]={params.websiteName}}, resume)
+	return errors:wrap(yield())
 end
 
-
+-- 获得站点页数
+function website_pages:api_getCountByWebsiteId(params)
+	if not params.websiteId then 
+		return {error=errors.REQUEST_PARAMS_ERROR}
+	end
+	
+	self:db():count({["+websiteName"]={params.websiteId}}, resume)
+	return errors:wrap(yield())
+end
 
 
 

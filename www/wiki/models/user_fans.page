@@ -8,6 +8,7 @@ include_once("./abstract/base.page")
 include_once("./users.page")
 include_once("./website.page")
 
+-- 暂时不用
 local user_fans = inherit(models.abstract.base, gettable("models.user_fans"))
 
 user_fans.db_name = "user_fans";

@@ -21,6 +21,17 @@ function website_works:ctor()
 	self:addfield("updateDate", "string", false, 64);
 end
 
+-- 通过websiteId删除
+function website_works:api_deleteByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
 
 -- 获取数量
 function website_works:api_getCount(query)

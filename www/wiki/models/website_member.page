@@ -20,6 +20,17 @@ function website_member:ctor()
 	self:addfield("updateDate", "string", false, 64)
 end
 
+-- 通过websiteID删除
+function website_member:api_deleteByWebsiteId(params) 
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- 添加成员
 function website_member:create(params) 
 	if (not params.websiteId) or (not params.userId) then

@@ -51,6 +51,10 @@ app.factory('Account', function ($auth, $rootScope) {
         getProfile: function () {
             var self = this;
             util.http("POST", config.apiUrlPrefix + "user/getProfile",{}, function (data) {
+				if (!data) {
+					return 
+				}
+
                 self.setUser(data);
 				if (!data.githubToken) {
 					self.githubAuthenticate();

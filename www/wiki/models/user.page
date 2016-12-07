@@ -6,6 +6,7 @@ Date: 2016/10/21
 ]]
 include_once("./abstract/base.page")
 include_once("./website.page")
+include_once("./user_favorite.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
@@ -72,21 +73,30 @@ end
 -- 用户注销账号 
 function user:api_deleteById(params) 
 	-- 只能删除自己
-	local userId = self:ensureAuthenticated()
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	local userId = params.userId -- debug
+	-- local userId = self:ensureAuthenticated()
+
+	-- 删除用户所有站点
 	local websiteDB = models.website:new()
 	websiteDB:deleteUserWebsite(userId)
+	-- 删除用户所有收藏
+	local userFavoriteDB = models.user_favorite:new()
+	userFavoriteDB:api_deleteByUserId({userId=params.userId})
 
 	self:db():deleteOne({_id=userId}, resume)
-	yield() 
+	local err, data = yield() 
 	
-	return 
+	return errors:wrap() 
 end
 
 -- 更新用户信息
 function user:updateUserInfo(userId, params)
 	self:db():updateOne({_id=userId}, params, resume)
-	yield()
+	local err, data = yield()
 end
 
 -- 更改密码
@@ -187,6 +197,8 @@ function user:api_register(params)
 	if err then 
 		return errors:wrap(err,data)
 	end
+	
+	request.userid = userInfo._id
 
 	-- 创建个人站点
 	websiteDB:create({
@@ -211,7 +223,6 @@ function user:api_getProfile()
 end
 -- 通过用户ID获得用户信息
 function user:api_getById(params)
-	local userId = self:ensureAuthenticated()
 	if not params.userId then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -335,3 +346,24 @@ function user:updateFansCount(userId, count)
 	
 	return 
 end
+
+-- 获取用户统计信息
+function user:api_getStatics(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteDB = models.website:new()
+	local userFavoriteDB = models.user_favorite:new()
+
+	local websiteCount = websiteDB:api_getCountByUserId({userId=params.userId}).data
+	local favoriteCount = userFavoriteDB:api_getFavoriteWebsiteCountByUserId({userId=params.userId}).data
+	local fansCount = userFavoriteDB:api_getFansCountByUserId({userId=params.userId}).data
+
+	self:db():updateOne({_id=params.userId},{favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount}, resume)
+	local err, data = yield()
+
+	return errors:wrap(nil, {favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount})	
+end
+
+

@@ -22,7 +22,7 @@ app.controller('userpageCtrl', function ($scope, $rootScope, $state, $http, $com
 
     function init() {
         // 获得用户信息
-		if (!$scope.userinfo || !$scope.siteinfo || urlObj.sitename != SelfData.sitename) {
+		if (!$scope.userinfo || !$scope.siteinfo || !urlObj || urlObj.sitename != SelfData.sitename) {
 			util.http("POST", config.apiUrlPrefix + "user/getUserAndSiteBySitename", {sitename:sitename}, function (data) {
 				$rootScope.userinfo = data.userinfo;
 				$rootScope.siteinfo = data.siteinfo;

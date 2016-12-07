@@ -5,9 +5,11 @@ Author: wuxiangan
 Date: 2016/10/10
 ]]
 include_once("./abstract/base.page")
-include_once("./website_pages.page")
 include_once("./user.page")
+include_once("./user_favorite.page")
+include_once("./website_pages.page")
 include_once("./website_member.page")
+include_once("./website_apply.page")
 include_once("./website_renewal.page")
 include_once("./website_works.page")
 include_once("./website_template_style.page")
@@ -17,7 +19,7 @@ local website = inherit(models.abstract.base, gettable("models.website"))
 
 website.db_name = "website"
 -- max items per user
-website.max_items_per_user = 10
+-- website.max_items_per_user = 10
 
 function website:ctor()
 	self:addfield("name", "string", true, 30)
@@ -41,8 +43,8 @@ function website:ctor()
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
 	self:addfield("private", "number")	
-	self:addfield("favoriteCount", "number")
 	self:addfield("visitCount", "number")
+	self:addfield("favoriteCount", "number")
 	self:addfield("pageCount", "number")
 	self:addfield("memberCount", "number")
 	self:addfield("worksCount", "number")
@@ -140,22 +142,37 @@ function website:delete(params)
 end
 
 -- 删除一个站点
-function website:deleteById(id)
-	log(id)
-	self:db():deleteOne(
-		{_id=id}, 
-		function(err, data)
-			local website_pages_model = models.website_pages:new()
-			-- 删除该网站上所有页
-			website_pages_model:db():delete({websiteId=id})
-		end)
+function website:deleteById(websiteId)
+	-- 删除该网站上所有页
+	local websitePagesModel = models.website_pages:new()
+	websitePagesModel:api_deleteByWebsiteId({websiteId=websiteId})
+ 
+	-- 删除更新表中该站点数据
+	local websiteRenewalModel =	models.website_renewal:new()
+	websiteRenewalModel:api_deleteByWebsiteId({websiteId=websiteId})
+	websiteRenewalModel:api_deleteByWorksId({worksId=websiteId})
+
+	-- 删除该站点内所有作品
+	local websiteWorksModel = models.website_works:new()
+	websiteWorksModel:api_deleteByWebsiteId({websiteId=websiteId})
 	
-	return nil
+	-- 删除该站点内所有成员
+	local websiteMemberModel = models.website_member:new()
+	websiteMemberModel:api_deleteByWebsiteId({websiteId=websiteId})
+
+	-- 删除该站点内所有申请
+	local websiteApplyModel = models.website_apply:new()
+	websiteApplyModel:api_deleteByWebsiteId({websiteId=websiteId})
+
+	-- 删除站点
+	self:db():deleteOne({_id=websiteId}, resume)
+	return errors:wrap(yield())
 end
 
 -- 删除一个站点 outer api
 function website:api_deleteById(params)
 	local userId = self:ensureAuthenticated()
+	
 	local websiteId = tonumber(params.websiteId) 
 
 	if not params.websiteId or (not websiteId) then
@@ -164,16 +181,12 @@ function website:api_deleteById(params)
 		
 	self:deleteById(websiteId)
 
-	-- 用户站点数量-1
-	userDB = models.user:new()
-	userDB:updateWebsiteCount(site.userId, -1)
-
-	return self:get({userId=userId})
+	return self:api_getByUserId({userId=userId})
 end
 
 -- 删除用户的所有站点
 function website:deleteUserWebsite(userId)
-	local data = self:api_getWebsiteListByUserId().data
+	local data = self:api_getAllByUserId({userId=userId}).data
 	
 	if not data then 
 		return 
@@ -359,13 +372,22 @@ function website:api_getStatics(params)
 	local websiteMemberDB = models.website_member:new()
 	local websiteRenewalDB = models.website_renewal:new()
 	local websiteWorksDB = models.website_works:new()
+	local websitePagesDB = models.website_pages:new()
+	local userFavoriteDB = models.user_favorite:new()
 
-	local allMemberCount =  websiteMemberDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	-- 获得站点的收藏量
+	local favoriteCount = userFavoriteDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	local pageCount = websitePagesDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	local memberCount =  websiteMemberDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local weekRenewalCount =  websiteRenewalDB:api_getWeekCount({websiteId=params.websiteId}).data
-	local allWorksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
+	local worksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local upgradeWorksCount = websiteWorksDB:api_getUpgradeCountByWebsiteId({websiteId=params.websiteId}).data
 	
-	return errors:wrap(nil, {allMemberCount=allMemberCount, weekRenewalCount=weekRenewalCount, allWorksCount=allWorksCount, upgradeWorksCount=upgradeWorksCount})
+	-- 更新站点信息
+	self:db():updateOne({_id=params.websiteId}, {favoriteCount=favoriteCount, pageCount=pageCount, worksCount=worksCount, memberCount=memberCount}, resume)
+	local err, data = yield()
+
+	return errors:wrap(nil, {memberCount=memberCount, weekRenewalCount=weekRenewalCount, worksCount=worksCount, upgradeWorksCount=upgradeWorksCount, favoriteCount=favoriteCount, pageCount=pageCount})
 end
 
 
