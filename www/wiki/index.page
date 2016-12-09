@@ -1,3 +1,46 @@
+
+<?npl
+local wikiContentExist = false
+function RenderServerWikiContent() 
+	local host = request:GetHost() or ""
+	local sitename = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+")
+	-- 排除IP地址访问
+	if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
+		sitename = nil
+	end
+	if sitename and sitena ~= "www" then 
+		local pageName = request:url():match("^/?([^/]*)")
+	else
+		local url = commonlib.Encoding.url_decode(request:url())
+		sitename, pagename = url:match("^/?([^/]+)/?([^/]*)");	
+	end
+
+	if not pagename then
+		return 
+	end
+
+	if sitename == nil or sitename == "wiki" or sitename == "api" then
+		if pagename == "mod" then
+			wikiContentExist=true
+			include_once(WIKI_ROOT .. "mod/routes.page");
+		else
+			local filename = WIKI_ROOT .. 'pages/' .. pagename .. ".page";
+			if file_exists(filename) then
+				wikiContentExist=true
+				include(filename);
+			end
+		end
+		if pagename and pagename:match("^_") then
+			local filename = WIKI_ROOT .. 'pages/special/' .. pagename:gsub("^_", "") .. ".page";
+			if(file_exists(filename)) then
+				wikiContentExist=true
+				include(filename);
+			end
+		end
+	end
+end
+?>
+
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -32,18 +75,150 @@
     <script src="/wiki/js/config.js"></script>
     <script src="/wiki/js/factory.js"></script>
 	<script src="/wiki/js/moduleParser.js"></script>
-    <script src="/wiki/js/controller.js"></script>
+    <script src="/wiki/js/mainController.js"></script>
+    <script src="/wiki/js/headerController.js"></script>
     <script src="/wiki/js/userController.js"></script>
 	<script src="/wiki/js/editorController.js"></script>
-	<script src="/wiki/js/userpageController.js"></script>
+	<script src="/wiki/js/usersiteController.js"></script>
 	<script src="/wiki/js/authController.js"></script>
 	<script src="/wiki/js/organizationController.js"></script>
 </head>
 
 <body>
 <div ng-app="MyApp" ng-controller="mainCtrl">
-    <div ui-view="default"></div>
-</div>
+    <!--头部-->
+    <div ng-controller="headerCtrl">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+				<div class="navbar-header">
+					<a ng-click="goHomePage()" class="navbar-brand btn" style="color: grey;">
+						<span class="glyphicon">WIKICRAFT</span>
+					</a>
+				</div>
 
+				<div class="navbar-header">
+					<a ng-click="goPersonalPage()" class="navbar-brand btn" style="color: grey;">
+						<span class="glyphicon">个人主页</span>
+					</a>
+				</div>
+
+				<div>
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search">
+						</div>
+						<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+					</form>
+				</div>
+
+				<div ng-show="!isLogin" class="navbar-right" style="margin-right: 20px">
+					<div class="navbar-header">
+						<a class="navbar-brand btn" style="color: grey;">
+							<span class="glyphicon">成为VIP</span>
+						</a>
+					</div>
+
+					<div class="navbar-header ">
+						<a ng-click="goLoginPage()" class="navbar-brand btn" style="color: grey;">
+							<span class="glyphicon">用户登录</span>
+						</a>
+					</div>
+
+					<div class="navbar-header ">
+						<a ng-click="goRegisterPage()" class="navbar-brand btn" style="color: grey;">
+							<span class="glyphicon">用户注册</span>
+						</a>
+					</div>
+				</div>
+
+				<div ng-show="isLogin" class="navbar-right" style="margin-right: 20px">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a  href="#" class="dropdown-toggle" data-toggle="dropdown" >{{user.username || "逍遥"}}<span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li role="presentation">
+									<a role="menuitem" tabindex="-1" href="/#/userCenter">个人中心</a>
+								</li>
+								<li role="presentation">
+									<a role="menuitem" tabindex="-1" href="/#/website">我的作品</a>
+								</li>
+								<li role="presentation">
+									<a role="menuitem" tabindex="-1" href="/#/gitVersion">版本管理</a>
+								</li>
+								<li role="presentation" class="divider"></li>
+								<li role="presentation">
+									<a role="menuitem" tabindex="-1" ng-click="logout()">退出登录 </a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+        </nav>
+    </div>
+    <!--补填nav的高度-->
+    <div style="margin-top: 60px"></div>
+	
+	<!-- 信息提示 -->
+    <div ng-controller="messageCtrl" >
+        <div id="messageTipId" class="alert" style="display: none; position: fixed; right: 20%; width: 60%; z-index: 10;">
+            <a href="#" class="close" ng-click="hide()">&times;</a>
+            <div id="messageTipConentId"></div>
+        </div>
+    </div>
+
+    <!--页面主题内容-->
+    <div style="z-index: 1">
+        <!--官网内容体-->
+        <div ng-controller="wikiCtrl">
+			<div ng-show="IsRenderServerWikiContent">
+				<? RenderServerWikiContent() ?>
+			</div>
+			<div ng-show="!IsRenderServerWikiContent">
+	            <div ui-view></div>
+			</div>
+<!--
+			<? if wikiContentExist == false then ?>
+            <div ui-view></div>
+			<? end ?>
+-->
+        </div>
+
+        <!--用户站点内容体-->
+        <div ng-controller="usersiteCtrl">
+            <div id="__UserSitePageContent__"></div>
+        </div>
+    </div>
+
+	<!--底部-->
+    <div class="container" style="height: 540px">
+        <div style="margin-top: 145px; display: flex">
+            <div style="margin-left: 80px">
+                <img src="/wiki/assets/imgs/wikicraftLogo.png" class="img-responsive" style="width: 205px">
+            </div>
+
+            <div style="font-size: 16px; margin-left: 145px; display: flex">
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>关于:</p>
+                    <a>关于我们</a>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>支持:</p>
+                    <a>联系方式</a>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>合作伙伴:</p>
+                    <a>Paracraft</a>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>更新信息:</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 110px; text-align: center; font-size: 16px">
+            <p>备案号：</p>
+        </div>
+    </div>
+</div>
 </body>
 </html>

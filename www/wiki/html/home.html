@@ -4,9 +4,9 @@
     #cellphone::-moz-placeholder{color:white;}
     #password::-moz-placeholder{color:white;}
 </style>
-<div ng-controller="homeCtrl" style="width: 1920px">
+<div ng-controller="homeCtrl" class="container">
     <!-- Carousel -->
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div id="carousel-example-generic" class="carousel slide">
         <!-- Indicators -->
         <ol class="carousel-indicators">
             <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
@@ -14,35 +14,41 @@
         </ol>
         <!-- Wrapper for slides -->
         <div class="carousel-inner">
-            <div class="item active" style="position: relative">
-                <img src="/wiki/assets/imgs/hello.jpg" alt="First slide" class="img-responsive" style="height: 857px; width: 100%">
-                <div style="position: absolute; top:106px; left: 1180px; font-size: 27px" class="register">
-                    <div class="input-group">
-                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerUsername.png"></span>
-                        <input id="username" type="text" ng-model="username" class="form-control" placeholder="用户名" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
-                    </div>
-                    <div class="input-group" style="margin-top: 20px">
-                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerEmail.png"></span>
-                        <input id="email" type="email" ng-model="email" class="form-control" placeholder="注册邮箱" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
-                    </div>
-                    <div class="input-group" style="margin-top: 20px">
-                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerPhone.png"></span>
-                        <input id="cellphone" type="text" ng-model="cellphone" class="form-control" placeholder="手机号码" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
-                    </div>
-                    <div class="input-group" style="margin-top: 20px">
-                        <span style="width: 87px; height:75px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerPassword.png"></span>
-                        <input id="password" type="password" ng-model="password" class="form-control" placeholder="密码" style="background: url('/wiki/assets/imgs/registerText.png'); width: 440px; height: 75px; font-size: 27px;">
-                    </div>
-                    <div style="margin-top: 45px; width: 530px; height: 91px">
-                        <button ng-click="register()" class="btn btn-default" style="background: url('/wiki/assets/imgs/registerButton.png'); width: 100%; height: 100%; font-size: 27px; color: white">注册</button>
-                    </div>
-                    <div style="margin-top: 20px;width: 530px; color:red; font-size: 25px">
-                        {{errMsg}}
+            <div class="item active">
+                <div  style="position: relative">
+                    <img src="/wiki/assets/imgs/hello.jpg" alt="First slide" class="img-responsive">
+                    <div style="position: absolute; top:65px; width: 100%">
+                        <div class="row">
+                            <div class="col-lg-offset-7 col-lg-5" >
+                                <div class="input-group">
+                                    <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerUsername.png" ></span>
+                                    <input id="username" type="text" ng-model="username" class="form-control" placeholder="用户名" style="background: url('/wiki/assets/imgs/registerText.png'); width: 268px; height: 45px; font-size: 16px;">
+                                </div>
+                                <div class="input-group" style="margin-top: 12px">
+                                    <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerEmail.png"></span>
+                                    <input id="email" type="email" ng-model="email" class="form-control" placeholder="注册邮箱" style="background: url('/wiki/assets/imgs/registerText.png'); width: 268px; height: 45px; font-size: 16px;">
+                                </div>
+                                <div class="input-group" style="margin-top: 12px">
+                                    <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerPhone.png"></span>
+                                    <input id="cellphone" type="text" ng-model="cellphone" class="form-control" placeholder="手机号码" style="background: url('/wiki/assets/imgs/registerText.png'); width: 268px; height: 45px; font-size: 16px;">
+                                </div>
+                                <div class="input-group" style="margin-top: 12px">
+                                    <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img src="/wiki/assets/imgs/registerPassword.png"></span>
+                                    <input id="password" type="password" ng-model="password" class="form-control" placeholder="密码" style="background: url('/wiki/assets/imgs/registerText.png'); width: 268px; height: 45px; font-size: 16px;">
+                                </div>
+                                <div style="margin-top: 20px; width: 325px; height: 52px">
+                                    <button ng-click="register()" class="btn btn-default" style="background: none; width: 100%; height: 100%; font-size: 27px; color: white;">注册</button>
+                                </div>
+                                <div style="margin-top: 12px;width: 325px; color:red; font-size: 15px">
+                                    {{errMsg}}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="item">
-                <img src="/wiki/assets/imgs/paracraft.jpg" alt="Second slide" class="img-responsive" style="height: 857px;width: 100%">
+                <img src="/wiki/assets/imgs/paracraft.jpg" alt="Second slide" class="img-responsive">
             </div>
         </div>
         <!-- Controls -->
@@ -55,112 +61,111 @@
     </div><!-- /carousel -->
 
     <!--数据统计-->
-    <div style="display: flex; align-items: center; justify-content: space-around; background-color: #4f4f4f; height: 380px">
-        <div style="width: 310px; height: 310px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
-            <div style="font-size: 40px; color: white; text-align: center">{{wikicraft.siteCount}}</div>
-            <div style="font-size: 30px; color: white; text-align: center">网站数量</div>
+    <div style="display: flex; align-items: center; justify-content: space-around; background-color: #4f4f4f; height: 230px">
+        <div style="width: 190px; height: 190px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 24px; color: white; text-align: center">{{wikicraft.siteCount}}</div>
+            <div style="font-size: 18px; color: white; text-align: center">网站数量</div>
             <div style="display: flex;justify-content: center; margin-top: 10px"><img src="/wiki/assets/imgs/homeSiteNum.png" ></div>
         </div>
 
-        <div style="width: 310px; height: 310px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
-            <div style="font-size: 40px; color: white; text-align: center">{{wikicraft.userCount}}</div>
-            <div style="font-size: 30px; color: white; text-align: center">名人数量</div>
+        <div style="width: 190px; height: 190px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 24px; color: white; text-align: center">{{wikicraft.userCount}}</div>
+            <div style="font-size: 18px; color: white; text-align: center">名人数量</div>
             <div style="display: flex;justify-content: center; margin-top: 10px"><img src="/wiki/assets/imgs/homeUserNum.png" ></div>
         </div>
 
-        <div style="width: 310px; height: 310px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
-            <div style="font-size: 40px; color: white; text-align: center">{{wikicraft.renewalCount}}</div>
-            <div style="font-size: 30px; color: white; text-align: center">本周更新</div>
+        <div style="width: 190px; height: 190px; background-color: rgb(93,93,93); border-radius: 50%; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 24px; color: white; text-align: center">{{wikicraft.renewalCount}}</div>
+            <div style="font-size: 18px; color: white; text-align: center">本周更新</div>
             <div style="display: flex;justify-content: center; margin-top: 10px"><img src="/wiki/assets/imgs/homeWeekRenewal.png" ></div>
         </div>
     </div>
 
-    <div class="container">
+    <div>
         <div style="display: flex; flex-direction: column; align-items: center">
             <h6>●</h6>
             <h6>●</h6>
             <h6>●</h6>
             <h6>●</h6>
             <h2>欢迎加入WikiCraft</h2>
-            <div class="intro">我们致力于为个人，老师，企业提供免费，可靠的作品创作与分享平台</div>
+            <div>我们致力于为个人，老师，企业提供免费，可靠的作品创作与分享平台</div>
         </div>
     </div>
 
-    <div style="position: relative"><img src="/wiki/assets/imgs/feature.png" alt="feature"></div>
-    <div><img src="/wiki/assets/imgs/use.png" alt="use"></div>
-    <div><img src="/wiki/assets/imgs/personal.png" alt="personal"></div>
-    <div><img src="/wiki/assets/imgs/teacher.png" alt="teacher"></div>
-    <div><img src="/wiki/assets/imgs/enterprise.png" alt="enterprise"></div>
-    <!--div><img src="/wiki/assets/imgs/works.png" alt="works"></div-->
+    <div><img src="/wiki/assets/imgs/feature.png" alt="feature" class="img-responsive"></div>
+    <div><img src="/wiki/assets/imgs/use.png" alt="use" class="img-responsive"></div>
+    <div><img src="/wiki/assets/imgs/personal.png" alt="personal" class="img-responsive"></div>
+    <div><img src="/wiki/assets/imgs/teacher.png" alt="teacher" class="img-responsive"></div>
+    <div><img src="/wiki/assets/imgs/enterprise.png" alt="enterprise" class="img-responsive"></div>
     <div style="background-color: white;">
-        <div style="margin-left: 130px; margin-right: 130px; display: flex;height: 105px; align-items: flex-end">
-            <img src="/wiki/assets/imgs/worksshow.png">
-            <div style="margin-left: 1175px; width: 345px; display: flex; justify-content: flex-end; align-items: flex-end">
-                <button class="btn" style="font-size: 23px; background: none;" ng-click="goAllWorksList()">更多</button>
+        <div class="row">
+            <div class="col-lg-offset-1 col-lg-10" style="display: flex; justify-content: space-between; align-items: center; height: 90px">
+                <div style="font-size: 30px">作品长长廊</div>
+                <div style="font-size: 18px; align-self: flex-end">
+                    <a ng-click="goAllWorksList()">更多</a>
+                </div>
             </div>
         </div>
-        <div style="height: 460px; display: flex; margin-top: 20px">
-            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+        <div class="row">
+            <div class="col-lg-1"  style="display: flex; align-items: center; height: 205px; justify-content: center;">
                 <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getWorksList(siteParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
-            <div style="width: 1660px;height: 100%;">
-                <div style="display: flex;">
-                    <div style="position: relative; display: inline-block; height: 460px" ng-repeat="site in siteObj.siteList" ng-style="{'margin-left':$index%3==0 ? '0px' : '70px'}">
-                        <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
-                        <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                            <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                <div style="font-size: 29px; color: white;">{{site.name}}</div>
-                                <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-lg-4" style="position: relative; display: inline-block; height: 280px" ng-repeat="site in siteObj.siteList">
+                        <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 205px;">
+                        <div style="position: absolute; top: 125px; left: 15%; width: 70%;background-color: rgba(0,0,0,0.3);">
+                            <div style="height: 70px; padding-top: 15px; padding-left: 24px">
+                                <div style="font-size: 18px; color: white;">{{site.name}}</div>
+                                <div style="font-size: 10px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
                             </div>
-                            <div ng-style={"height":"80px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
-                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
                                 <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--div style="height: 120px; border-bottom: 2px solid silver"></div-->
             </div>
-            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+            <div class="col-lg-1" style="display: flex; align-items: center; height: 205px; justify-content: center;">
                 <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getWorksList(siteParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
 
-        <div style="margin-left: 130px; margin-right: 130px; display: flex;">
-            <img src="/wiki/assets/imgs/mingrentang.png">
-            <div style="margin-left: 1175px; width: 345px; display: flex; justify-content: flex-end; align-items: flex-end">
-                <button class="btn" style="font-size: 23px; background: none;" ng-click="goAllUserList()">更多</button>
+        <div class="row">
+            <div class="col-lg-offset-1 col-lg-10" style="display: flex; justify-content: space-between; align-items: center;height: 90px">
+                <div style="font-size: 30px">名人堂</div>
+                <div style="font-size: 18px; align-self: flex-end">
+                    <a ng-click="goAllUserList()">更多</a>
+                </div>
             </div>
         </div>
-        <div style="height: 460px; display: flex; margin-top: 20px">
-            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+        <div class="row">
+            <div class="col-lg-1"  style="display: flex; align-items: center; height: 205px; justify-content: center;">
                 <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getUserList(userParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
             </div>
-            <div style="width: 1660px;height: 100%;">
-                <div style="display: flex;">
-                    <div style="position: relative; display: flex" ng-repeat="user in userObj.userList">
-                        <div>
-                            <img ng-src="{{user.portrait || '/wiki/assets/imgs/test.jpg'}}" style="width: 505px; height: 340px;">
-                            <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
-                                <div style="height: 110px; padding-top: 25px; padding-left: 40px">
-                                    <div style="font-size: 29px; color: white;">{{user.username}}</div>
-                                    <div style="font-size: 18px; color: rgb(200,219,0);;">导演：{{site.desc}}</div>
-                                </div>
-                                <div ng-style={"height":"80px","background-color":getRandomColor($index+4),"display":"flex","align-items":"center"}>
-                                    <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
-                                    <span style="font-size: 25px; margin-left: 10px; color: white;">{{user.favoriteCount}}</span>
-                                </div>
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-lg-4" style="position: relative; height: 280px" ng-repeat="user in userObj.userList">
+                        <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 205px;">
+                        <div style="position: absolute; top: 125px; left: 15%; width: 70%; background-color: rgba(0,0,0,0.3);">
+                            <div style="height: 70px; padding-top: 15px; padding-left: 24px">
+                                <div style="font-size: 18px; color: white;">{{user.username}}</div>
+                                <div style="font-size: 10px; color: rgb(200,219,0);;">导演：{{user.desc}}</div>
+                            </div>
+                            <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                                <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
+                                <span style="font-size: 25px; margin-left: 10px; color: white;">{{user.favoriteCount}}</span>
                             </div>
                         </div>
-                        <div ng-if="$index != 2" style="width: 70px; height: 100%"></div>
                     </div>
                 </div>
-                <!--div style="height: 120px; border-bottom: 2px solid silver"></div-->
             </div>
-            <div style="display: flex; align-items: center; height: 340px; justify-content: center; width: 130px">
+            <div class="col-lg-1" style="display: flex; align-items: center; height: 205px; justify-content: center;">
                 <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getUserList(userParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
             </div>
         </div>
     </div>
-    <div><img src="/wiki/assets/imgs/activity.png" alt="activity"></div>
+    <div><img src="/wiki/assets/imgs/activity.png" alt="activity" class="img-responsive"></div>
+    <div><img src="/wiki/assets/imgs/homeParacraft.png" alt="paracraft" class="img-responsive"></div>
 </div>

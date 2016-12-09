@@ -33,21 +33,21 @@ app.controller("organizationSiteCtrl", function ($scope, $state, SelfData) {
     $scope.goAllRenewalList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website_renewal";
         SelfData.requestParams = $scope.renewalParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多我的收藏
     $scope.goAllHotWorksList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId";
         SelfData.requestParams = $scope.hotWorksParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多全部作品
-    $scope.goAllSiteList = function () {
+    $scope.goAllAllSiteList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website/getByUserId";
         SelfData.requestParams = $scope.allSiteParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 获得等多用户列表

@@ -105,19 +105,5 @@ end
 ?>
 
 <?npl
-local host = request:GetHost() or ""
-local sitename = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+")
--- 排除IP地址访问
-if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
-	sitename = nil
-end
-if sitename == nil then 
-	local url = commonlib.Encoding.url_decode(request:url())
-	sitename = url:match("^/?([^/]+)")	
-end
-if sitename == nil or sitename == "wiki" or sitename == "api" then
-	include(WIKI_ROOT.."wiki.page")
-else
-	include(WIKI_ROOT .. "index.page")
-end
+include(WIKI_ROOT .. "index.page")
 ?>

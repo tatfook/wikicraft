@@ -21,7 +21,7 @@ app.controller('loginCtrl', function ($scope, $rootScope, $state, $auth, Account
 			if (!data.userInfo.githubToken) {
 				Account.githubAuthenticate();
 			} 
-			$state.go("index.home");
+			$state.go("home");
         }, function (error) {
             $scope.errMsg = error.message;
         });
@@ -31,10 +31,10 @@ app.controller('loginCtrl', function ($scope, $rootScope, $state, $auth, Account
         $auth.authenticate("github").then(function () {
 			console.log("github认证成功!!!")
             Account.getProfile();
-            $state.go("index.home");
+            $state.go("home");
 		}, function(){
 			console.log("github认证失败!!!")
-            $state.go("index.home");
+            $state.go("home");
 		});
     }
 });

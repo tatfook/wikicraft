@@ -97,7 +97,7 @@ function ModuleParser($scope){
             tplPageContent = self.parse(tplPageContent);  // 模块嵌套模块
             //console.log(tplPageContent);
             tplPageContent = self.$compile(tplPageContent)(self.$scope);
-            $('#__StyleTemplateContent__').html(tplPageContent);
+            $('#__UserSitePageContent__').html(tplPageContent);
         });
     }
 }

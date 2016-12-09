@@ -21,7 +21,7 @@ util.getRandomColor = function (index) {
 }
 
 // 将字符串url解析成{sitename, pagename}对象
-util.praseUrl = function () {
+util.parseUrl = function () {
     var hostname = window.location.hostname;
     var pathname = window.location.pathname;
     var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
@@ -38,6 +38,9 @@ util.praseUrl = function () {
         pagename = pagename ? pagename[1] : 'index';
     } else {
         sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
+        if (sitename == undefined) {
+            return {};
+        }
         pagename = sitename[2] || pagename;
         sitename = sitename[1]
     }
@@ -46,11 +49,11 @@ util.praseUrl = function () {
 }
 
 util.setLastUrlObj = function (urlObj) {
-    this.urlObj = urlObj;
+    this.lastUrlObj = urlObj;
 }
 
 util.getLastUrlObj = function () {
-    return this.urlObj;
+    return this.lastUrlObj;
 }
 
 util.setAngularServices = function(angularServices) {

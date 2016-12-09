@@ -3,52 +3,34 @@
  */
 
 app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile, $auth, Account, SelfData, ProjectStorageProvider, Message) {
-    /*配置一些全局服务*/
-    util.setAngularServices({$http:$http, $state:$state, $compile:$compile, $auth:$auth});
-    util.setSelfServices({Account:Account, ProjectStorageProvider:ProjectStorageProvider, SelfData: SelfData, Message:Message});
+    function init() {
+        /*配置一些全局服务*/
+        util.setAngularServices({$http:$http, $state:$state, $compile:$compile, $auth:$auth});
+        util.setSelfServices({Account:Account, ProjectStorageProvider:ProjectStorageProvider, SelfData: SelfData, Message:Message});
 
-	$rootScope.user = Account.getUser();
-    if (Account.isAuthenticated()) {
-        if (Account.isLoaded()) {
-            $scope.user = Account.getUser();
-        } else {
-            Account.getProfile();
+        $rootScope.user = Account.getUser();
+        if (Account.isAuthenticated()) {
+            if (Account.isLoaded()) {
+                $scope.user = Account.getUser();
+            } else {
+                Account.getProfile();
+            }
         }
+        console.log("mainCtrl");
     }
-    console.log("mainCtrl");
-	// 解析URL
-	var hostname = window.location.hostname;
-    var pathname = window.location.pathname;
-    var hash = window.location.href;
-    var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
-    var pagename = 'index';
+    
+    init();
+});
 
-	// 排除IP访问
-	if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
-		sitename = undefined;
-	}
 
-    if (sitename) {
-        sitename = sitename[1];
-        pagename = pathname.match(/^\/?([^\/]+)/);
-        pagename = pagename ? pagename[1] : 'index';
-    } else {
-        sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-        pagename = sitename[2] || pagename;
-        sitename = sitename[1]
-    }
-    SelfData.sitename = sitename;
-    SelfData.pagename = pagename;
-	SelfData.pageurl = "/" + sitename + '/' + pagename;
-    // 初始化数据源
-	var actionName = 'index.home';
-	if (sitename != "wiki" && sitename != "wiki_new") {
-        actionName = "index.userpage";
-    }
-	console.log(actionName);
-	$state.go(actionName);
-	return ;
-  
+
+app.controller('wikiCtrl', function ($scope, $state, $auth, Account) {
+
+});
+app.controller('usersiteCtrl', function ($scope, $state, $auth, Account,Message) {
+});
+
+app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile, Message) {
 });
 
 app.controller('messageCtrl', function ($scope, Message) {
@@ -97,40 +79,6 @@ app.controller('commentCtrl', function ($scope, Account) {
     }
 
     init();
-});
-
-app.controller('indexHeaderCtrl', function ($scope, $state, $auth, Account) {
-    $scope.isLogin = Account.isAuthenticated();
-    $scope.user = Account.getUser();
-
-    $scope.goLoginPage = function () {
-        $state.go("index.login");
-    }
-
-    $scope.goRegisterPage = function () {
-        $state.go("index.home");
-    }
-
-    $scope.goHomePage = function () {
-        $state.go("index.home");
-    }
-
-    $scope.goPersonalPage = function () {
-        window.location.href = "/" + $scope.user.username;
-    }
-    $scope.logout = function () {
-        $auth.logout();
-        $scope.isLogin = false;
-        $state.go("index.home");
-    }
-
-    $scope.$on("onUserProfile", function (event, user) {
-        $scope.user = user;
-    });
-
-    $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
-        $scope.isLogin = bAuthenticated;
-    });
 });
 
 app.controller('siteshowCtrl', function ($scope, SelfData) {
@@ -231,7 +179,7 @@ app.controller("worksSiteCtrl", function ($scope, $state, SelfData){
     $scope.goAllFavoriteList = function () {
         SelfData.requestUrl =  config.apiUrlPrefix + "website/getFavoriteSortList";
         SelfData.requestParams = $scope.favoriteParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     $scope.getFavoriteList = function (page) {
@@ -261,7 +209,7 @@ app.controller("gameSiteCtrl", function ($scope, $state, SelfData) {
 
     // worksApply
     $scope.goWorksApplyPage = function () {
-        $state.go('index.worksApply');
+        $state.go('worksApply');
     }
 
     // 随机颜色
@@ -273,21 +221,21 @@ app.controller("gameSiteCtrl", function ($scope, $state, SelfData) {
     $scope.goAllUpgradeList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId";
         SelfData.requestParams = $scope.upgradeParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多我的收藏
     $scope.goAllLatestList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website_works/getLatestByWebsiteId";
         SelfData.requestParams = $scope.latestParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多全部作品
-    $scope.goAllSiteList = function () {
+    $scope.goAllAllSiteList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
         SelfData.requestParams = $scope.allSiteParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 获得等多用户列表
@@ -369,7 +317,7 @@ app.controller('personalSiteCtrl', function ($scope, $state, Account, SelfData) 
     }
     // 去网站管理页
     $scope.goWebsiteMangerPage = function() {
-        $state.go("index.website");
+        $state.go("website");
     }
     // 页面编辑页面
     $scope.goWebsitePageManagerPage = function() {
@@ -385,21 +333,21 @@ app.controller('personalSiteCtrl', function ($scope, $state, Account, SelfData) 
     $scope.goAllRenewalList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website_renewal";
         SelfData.requestParams = $scope.renewalParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多我的收藏
     $scope.goAllFavoriteList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId";
         SelfData.requestParams = $scope.favoriteParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多全部作品
-    $scope.goAllSiteList = function () {
+    $scope.goAllAllSiteList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "website/getByUserId";
         SelfData.requestParams = $scope.allSiteParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 获得最近更新
@@ -483,14 +431,14 @@ app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account,
     $scope.goAllWorksList = function () {
         SelfData.requestUrl =  config.apiUrlPrefix + "website/getFavoriteSortList";
         SelfData.requestParams = $scope.siteParams;
-        $state.go("index.siteshow");
+        $state.go("siteshow");
     }
 
     // 更多我的收藏
     $scope.goAllUserList = function () {
         SelfData.requestUrl = config.apiUrlPrefix + "user/getFavoriteSortList";
         SelfData.requestParams = $scope.userParams;
-        $state.go("index.usershow");
+        $state.go("usershow");
     }
 
     $scope.getWorksList = function (page) {
@@ -561,7 +509,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account,
 			if (!data.userInfo.githubToken) {
 				Account.githubAuthenticate();
 			} else {
-				$state.go("index.home");
+				$state.go("home");
 			}
         },function (error) {
             $scope.errMsg = error.message;
@@ -571,11 +519,7 @@ app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account,
     init();
 });
 
-app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile) {
-    var md = window.markdownit({html:true});
-    var result = md.render('# markdown-it rulezz!  <div>hello world</div><script></script>');
-    console.log(result);
-});
+
 
 
 
@@ -725,7 +669,7 @@ app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth,ProjectSt
     $scope.commits = [];
 
     if (!Account.isAuthenticated()) {
-        $state.go("index.login");
+        $state.go("login");
         return;
     }
     var user = Account.getUser();
@@ -815,27 +759,26 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
         SelfData.pageUrl = websiteName + '/index';
         SelfData.sitename = websiteName;
         SelfData.pagename = 'index';
-        //$state.go('index.userpage');
 	    window.location.href= '/' + websiteName;
     }
 
     // 编辑网站页面
 	$scope.goEditWebsitePagePage = function (website) {
         SelfData.website = website;
-        //$state.go('index.editor');
+        $state.go('editor');
         window.location.href="/wiki/editor";
     }
 
     //  创建网站
     $scope.goCreateWebsitePage = function () {
         SelfData.website = undefined;
-        $state.go('index.createWebsite');
+        $state.go('createWebsite');
     }
 
     // 编辑网站
     $scope.goEditWebsitePage = function (website) {
         SelfData.website = website;
-        $state.go('index.editWebsite');
+        $state.go('editWebsite');
     }
 
     // 删除网站
@@ -863,7 +806,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
     config.templateObject = {executeTemplateScript:false};
     var logoContent = undefined;
     init();
-/*
+
     $('#uploadImageBtn').change(function (e) {
         var fileReader = new FileReader();
         fileReader.onload = function(){
@@ -872,8 +815,15 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
         };
         fileReader.readAsDataURL(e.target.files[0]);
     });
-*/
+
     function init() {
+/*
+        if ($scope.website.logoUrl) {
+            $http.get("https://raw.githubusercontent.com/wxaxiaoyao/wikicraftDataSource/master/images/website/websiteLogo_1479116829615").then(function (response) {
+                $('#websiteLogo').attr('src',response.data);
+            });
+        }
+*/
         //util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
         util.http('POST', config.apiUrlPrefix+'website_template_config',{}, function (data) {
             $scope.categories = data;
@@ -922,10 +872,26 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
         if (!$scope.editWebsite) {
             url += '/new';
         }
-
         util.http('PUT', url, $scope.website, function (data) {
             $scope.step++;
         });
+/*
+        if (logoContent) {
+            var date = new Date();
+            var filename = 'website/logoContent' + date.getTime();
+            github.uploadImage(filename, logoContent, function (error, result, request) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    $scope.website.logoUrl = result.content.download_url;
+                }
+                // 修改logourl
+                util.http('PUT', config.apiUrlPrefix + "website", $scope.website, function (data) {
+                    $scope.step++;
+                });
+            });
+        }
+*/
     }
 
     $scope.selectCategory = function (category) {
@@ -1040,7 +1006,7 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
             createWebsiteRequest();
             return;
         } else {
-            $state.go('index.website');
+            $state.go('website');
         }
         $scope.step++;
     }
@@ -1054,28 +1020,28 @@ app.controller('createWebsiteCtrl', function ($scope, $state, $http, $sce, SelfD
     $scope.goPreviewPage = function (style) {
         var url = window.location.href;
         var hash = window.location.hash;
-        window.open(url.replace(hash, '') + '?' + style.filename + '#/preview');
+        window.open(url.replace(hash, '') + '?' + style.previewFilename + '#/preview');
     }
 
     // 访问网站
     $scope.goWebsiteIndexPage = function(websiteName) {
-        SelfData.pageUrl = websiteName + '/index';
-        SelfData.sitename = websiteName;
-        SelfData.pagename = 'index';
-        //$state.go('index.userpage');
-        window.location.href= '/' + websiteName;
+		window.location.href = '/' + websiteName;
     }
 });
 
 app.controller('previewCtrl', function ($scope) {
+	console.log("previewCtrl");
     var filename = window.location.search.replace('?','');
     util.setScope($scope);
-    // 获取页面
     var moduleParser = new ModuleParser($scope);
+	var md = window.markdownit({html:true});
+	
+    // 获取页面
     util.http('POST', config.apiUrlPrefix+'website_template_config/getTemplatePageByFilename', {filename:filename}, function(data){
         // 获取页面中模板
-        var pageContent = data;
-        moduleParser.render(pageContent);
+			var pageContent = data ? data : '<div>用户页丢失!!!</div>';
+			pageContent = md.render(pageContent);
+			moduleParser.render(pageContent);
     })
 });
 
