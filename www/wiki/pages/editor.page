@@ -45,9 +45,6 @@ wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-aweso
             <div class="btn-group">
                 <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）"><i class="fa fa-file-o"></i></button>
                 <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）"><i class="fa fa-save"></i> </button>
-            </div>
-
-            <div class= "btn-group">
                 <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_undo()" title="撤销（Ctrl+Z）"><i class="fa fa-undo"></i></button>
                 <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_redo()" title="重做（Ctrl+Y）"><i class="fa fa-repeat"></i></button>
                 <button type="button" class="btn btn-default btn-sm"  ng-click="cmd_find()" title="查找（Ctrl+F）"><i class="fa fa-search"></i></button>
@@ -102,18 +99,15 @@ wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-aweso
 
             <div class= "btn-group">
                 <button type="button" class="btn btn-default btn-sm toolbar-page-file active" title="文件"><i class="fa fa-folder-open-o"></i>&nbsp;文件</button>
-            </div>
-
-            <div class= "btn-group">
                 <button type="button" class="btn btn-default btn-sm toolbar-page-code" title="代码"><i class="fa fa-file-code-o"></i>&nbsp;代码</button>
                 <button type="button" class="btn btn-default btn-sm toolbar-page-slide active" title="拆分"><i class="fa fa-columns"></i>&nbsp;拆分</button>
                 <button type="button" class="btn btn-default btn-sm toolbar-page-design" title="预览"><i class="fa fa-eye"></i>&nbsp;预览</button>
             </div>
 
-            <div class= "btn-group">
-                <button type="button" class="btn btn-default btn-sm toolbar-page-view toolbar-page-html" title="HTML" data-result-as="html"><i class="fa fa-html5"></i>&nbsp;HTML</button>
-                <button type="button" class="btn btn-default btn-sm toolbar-page-view toolbar-page-src" title="源代码" data-result-as="src"><i class="fa fa-file-text-o"></i>&nbsp;源代码</button>
-            </div>
+            <!--<div class= "btn-group">-->
+                <!--<button type="button" class="btn btn-default btn-sm toolbar-page-view toolbar-page-html" title="HTML" data-result-as="html"><i class="fa fa-html5"></i>&nbsp;HTML</button>-->
+                <!--<button type="button" class="btn btn-default btn-sm toolbar-page-view toolbar-page-src" title="源代码" data-result-as="src"><i class="fa fa-file-text-o"></i>&nbsp;源代码</button>-->
+            <!--</div>-->
 
             <div class= "btn-group">
                 <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="min-width: 100px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
@@ -209,42 +203,6 @@ wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-aweso
     </div><!-- /.modal -->
 </div>
 
-<div class="modal fade" id="imageModal" tabindex="-1" role="dialog"  aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" style="text-align: center">插入图片</h4>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <label>您可以试试拖拽图片到编辑器中或直接粘贴图片网址</label>
-                </div>
-                <!--<ul class="nav nav-tabs">-->
-                    <!--<li><a href="#image_url" data-toggle="tab">网络地址</a></li>-->
-                    <!--<li class="active"><a href="#image_local" data-toggle="tab">本地上传</a></li>-->
-                    <!--<li><a href="#image_online" data-toggle="tab">在线管理</a></li>-->
-                <!--</ul>-->
-                <!--<ul class="tab-content">-->
-                    <!--<div class="tab-pane" id="image_url">-->
-
-                    <!--</div>-->
-                    <!--<div class="tab-pane active" id="image_local">-->
-                        <!---->
-                    <!--</div>-->
-                    <!--<div class="tab-pane" id="image_online">-->
-
-                    <!--</div>-->
-                <!--</ul>-->
-            </div>
-            <!--<div class="modal-footer">-->
-                <!--<button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>-->
-                <!--&lt;!&ndash; SUBMIT BUTTON &ndash;&gt;-->
-                <!--<button type="submit" class="btn btn-primary btn-fill">确定</button>-->
-            <!--</div>-->
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
-</div>
 
 <?npl
 wp_enqueue_script("editor_main_js", WIKI_WEBROOT.."js/editor.js");

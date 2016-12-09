@@ -391,7 +391,7 @@ editor.on("drop",function(editor,e){
         return;
     }
     for(var i=0;i<e.dataTransfer.files.length;i++){
-        console.log(e.dataTransfer.files[i]);
+        //console.log(e.dataTransfer.files[i]);
         fileUpload(e.dataTransfer.files[i]);
     }
     e.preventDefault();
@@ -399,19 +399,20 @@ editor.on("drop",function(editor,e){
 
 //文件上传
 function fileUpload(fileObj){
-    console.log('fileUpload');
-    console.log(fileObj);
+    var $scope=angular.element('#wikiEditor').scope();
+    $scope.cmd_image_upload(fileObj,function(error, result, request){
+        console.log(result);
+        console.log(result.content.download_url);
+        $.ajax({
+            type:'get',
+            url:result.content.download_url,
+            success:function(body,heads,status){
+                console.log('get img');
+                console.log(body);  //body就是内容了
+            }
+        });
+    });
     return;
-    var data = new FormData();
-    data.append("file",fileObj);
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", "/upload", true);
-    xhr.onreadystatechange = function(){
-        if (xhr.readyState == 4){
-            alert(xhr.responseText);
-        }
-    };
-    xhr.send(data);
 }
 
 //阻止浏览器默认打开拖拽文件的行为

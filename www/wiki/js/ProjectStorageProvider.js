@@ -83,7 +83,6 @@ app.factory('ProjectStorageProvider', function ($http) {
         }
 
         github.repo.writeFile('master', filename, content, "upload image: " + filename, {}, function (error, result, request) {
-            console.log("--------------------");
             cb && cb(error, result, request);
         });
     }

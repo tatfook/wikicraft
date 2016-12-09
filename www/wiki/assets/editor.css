@@ -173,6 +173,10 @@ body,
 }
 
 .container{
+    /*width: auto;*/
+}
+
+#wikimain{
     width: auto;
 }
 

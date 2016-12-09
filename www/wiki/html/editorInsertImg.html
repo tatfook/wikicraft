@@ -1,0 +1,43 @@
+<!--Created by Karlwu on 2016-12-18-->
+
+<div>
+    <form name="imgForm" role="form" ng-submit="img_insert()" novalidate>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+        <h4 class="modal-title">插入图片</h4>
+    </div>
+    <div class="modal-body">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#image_url" data-toggle="tab">网络地址</a></li>
+            <li><a href="#image_local" data-toggle="tab">本地上传</a></li>
+            <li><a href="#image_online" data-toggle="tab">在线管理</a></li>
+        </ul>
+        <ul class="tab-content">
+            <div class="tab-pane fade in active padding" id="image_url">
+                <p>
+                    <input id="url" type="text" class="form-control" name="url" ng-model="img.url" placeholder="http://...">
+                </p>
+            </div>
+            <div class="tab-pane fade padding" id="image_local">
+                <p>
+                    <input type="file"  id="file" accept="image/bmp,image/gif,image/jpeg,image/jpg,image/png,image/svg"/>
+                </p>
+            </div>
+            <div class="tab-pane fade padding" id="image_online">
+                <p>
+                    <ul class="thumbnails">
+                        <li class="thumbnail">
+                            <img data-src="" alt="" style="">
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="btn btn-primary btn-fill">确定</button>
+    </div>
+    </form>
+</div>

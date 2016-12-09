@@ -3,6 +3,18 @@
  */
 
 angular.module('MyApp')
+.controller('imgCtrl', function ($scope, $rootScope, $uibModalInstance) {
+    $scope.img = {url:'',txt:''};
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    }
+
+    $scope.img_insert = function(){
+        $rootScope.img = $scope.img;
+        $uibModalInstance.close("img");
+    }
+})
 .controller('linkCtrl', function ($scope, $rootScope, $uibModalInstance) {
     $scope.link = {url:'',txt:''};
 
@@ -243,15 +255,26 @@ angular.module('MyApp')
 
     //初始化github
     function initGithub(){
-        var token = Account.getUser().github_token;     //github token
-        if(!token){
-            initTree();
-            return;
+        var token = {};
+        var bGithub = false;
+
+        var user = Account.getUser().data;
+        for(var i=0;i<user.length;i++){
+            if(user[i].githubId){
+                token = user[i].githubToken;
+                if(token){
+                    bGithub = true;
+                    $scope.githubSource = ProjectStorageProvider.getDataSource('github');
+                    $scope.githubSource.init(token,function(){
+                        githubSha();
+                    });
+                }
+            }
         }
-        $scope.githubSource = ProjectStorageProvider.getDataSource('github');
-        $scope.githubSource.init(token,function(){
-            githubSha();
-        });
+
+        if(!bGithub){
+            initTree();
+        }
     }
 
     //设置全局变量
@@ -455,13 +478,10 @@ angular.module('MyApp')
             $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
                 //console.log(response.data);
                 if(!isEmptyObject($scope.githubSource)){
-                    console.log('@save websitpage to github');
-                    var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name
+                    var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
                     $scope.githubSource.repo.writeFile('master', path, $scope.websitePage.content, 'wikicraft commit message', function(error, result, request){
                         if(!error){
                             githubSha();
-                            console.log(hex_sha1($scope.websitePage.content));
-                            console.log(result);
                         }
                     });
 
@@ -605,6 +625,18 @@ angular.module('MyApp')
         editor.focus();
     }
 
+    //整行替换
+    function line_keyword(char, ch){
+        var cursor = editor.getCursor();
+        var content = editor.getLine(cursor.line);
+        editor.replaceRange(char,CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,content.length));
+        if(!ch){
+            ch = 0;
+        }
+        editor.setCursor(CodeMirror.Pos(cursor.line, ch));
+        editor.focus();
+    }
+
     //无序列表
     $scope.cmd_listul = function () {
         hol_keyword('+ ');
@@ -721,9 +753,68 @@ angular.module('MyApp')
 
     //图片
     $scope.cmd_image = function () {
-        $('#imageModal').modal({
-            keyboard: true
-        })
+        $uibModal.open({
+            templateUrl: WIKI_WEBROOT+ "html/editorInsertImg.html",
+            controller: "imgCtrl",
+        }).result.then(function (provider){
+            console.log(provider);
+            if (provider == "img") {
+                var img = $rootScope.img;
+                var wiki = '';
+                if(editor.somethingSelected()){
+                    wiki += '!['+editor.getSelection()+']';
+                }else{
+                    wiki += '![]';
+                }
+                wiki += '('+img.url+')';
+                editor.replaceSelection(wiki);
+                editor.focus();
+            }
+        }, function (text, error) {
+            console.log('text:'+text);
+            console.log('error:'+error);
+            return;
+        });
+    }
+
+    //图片上传
+    $scope.cmd_image_upload = function (fileObj, cb) {
+        if(!/image\/\w+/.test(fileObj.type)){
+            alert("这不是图片！");
+            return false;
+        }
+
+        if(isEmptyObject($scope.githubSource)){
+            alert('github账号尚未登录，图片无法上传');
+        }else{
+
+            var total = fileObj.size;
+            var loaded = 0;
+            var step = 1024 * 1024;
+            var times = 0;
+            var blob;
+
+            var fileReader = new FileReader();
+            fileReader.onloadstart = function(){
+                line_keyword('![](uploading...)', 2);
+            };
+            fileReader.onprogress = function(){
+                line_keyword('![](uploading....)', 2);
+            };
+            fileReader.onload=function(e){
+                //var filename = new Date().getTime() + '.' + fileObj.type.replace('image/','');
+                //console.log(filename);
+                //console.log(this.result);
+                var filename = new Date().getTime();
+                $scope.githubSource.uploadImage(filename,fileReader.result,function(error, result, request){
+                    line_keyword('![](wikicraft:'+filename+')', 2);
+                    if(cb){
+                        cb(error, result, request);
+                    }
+                });
+            }
+            fileReader.readAsDataURL(fileObj);
+        }
     }
 
     //代码
@@ -764,6 +855,7 @@ angular.module('MyApp')
         }
     }
 
+    //版本
     $scope.cmd_version = function(){
         if (!isEmptyObject($scope.websitePage)) {
             if(!isEmptyObject($scope.githubSource)){
