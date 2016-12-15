@@ -10,7 +10,7 @@ Reference: http://guides.rubyonrails.org/routing.html
 /api/mod/[name]/models/[modelname] --> wiki/mod/[name]/models/[modelname].page (models api)
 /api/mod/[name]/[modelname] --> wiki/mod/[name]/models/[modelname].page (page ajax)
 ]]
-local path = pagename() or "";
+local path = type(pagename) == "string" and pagename or (pagename() or "");
 local modname, isAPI;
 isAPI, modname, path = path:match("^/?(%w+)/mod/([^/]+)(.*)");
 if(not modname) then

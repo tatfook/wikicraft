@@ -161,8 +161,11 @@
     <Content Include="www\wiki\js\app.js" />
     <Content Include="www\wiki\js\config.js" />
     <Content Include="www\wiki\js\controller.js" />
+    <Content Include="www\wiki\js\editor.js" />
     <Content Include="www\wiki\js\editorController.js" />
     <Content Include="www\wiki\js\factory.js" />
+    <Content Include="www\wiki\js\headerController.js" />
+    <Content Include="www\wiki\js\mainController.js" />
     <Content Include="www\wiki\js\markdown\markdown-it-wikicmd.js" />
     <Content Include="www\wiki\js\markdown\markdownwiki.js" />
     <Content Include="www\wiki\js\markdown\markdownwiki.min.js">
@@ -198,6 +201,7 @@
     <Content Include="www\wiki\models\wxa_user_fans.page" />
     <Content Include="www\wiki\models\wxa_user_favorite.page" />
     <Content Include="www\wiki\mod\Header\OrgHeaderPreview.html" />
+    <Content Include="www\wiki\mod\main.js" />
     <Content Include="www\wiki\mod\packages\assets\icomoon.woff2" />
     <Content Include="www\wiki\mod\packages\assets\images\u68.png" />
     <Content Include="www\wiki\mod\packages\assets\images\u76.png" />
@@ -225,6 +229,7 @@
     <Content Include="www\wiki\mod\Template\TplWikiPreview.html" />
     <Content Include="www\wiki\mod\User\OrgUserListPreview.html" />
     <Content Include="www\wiki\mod\Website\WebsiteListNewPreview.html" />
+    <Content Include="www\wiki\mod\world\renderer.js" />
     <Content Include="www\wiki\pages\editor.page" />
     <Content Include="www\wiki\pages\home.page" />
     <Content Include="www\wiki\pages\login.page" />
@@ -1017,6 +1022,7 @@
     <Content Include="www\wiki\plugins\jquery\jquery.slim.min.js" />
     <Content Include="www\wiki\plugins\jquery\jquery.slim.min.map" />
     <Content Include="www\wiki\plugins\markdown-it\markdown-it.min.js" />
+    <Content Include="www\wiki\plugins\requirejs\require.js" />
     <Content Include="www\wiki\plugins\satellizer\satellizer.js" />
     <Content Include="www\wiki\plugins\satellizer\satellizer.js.map" />
     <Content Include="www\wiki\plugins\satellizer\satellizer.min.js" />

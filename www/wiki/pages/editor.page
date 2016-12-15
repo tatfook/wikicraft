@@ -207,3 +207,4 @@ wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-aweso
 <?npl
 wp_enqueue_script("editor_main_js", WIKI_WEBROOT.."js/editor.js");
 ?>
+<script data-main="<?=WIKI_WEBROOT?>mod/main" src="<?=WIKI_WEBROOT?>plugins/requirejs/require.js"></script>

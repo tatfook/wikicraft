@@ -65,8 +65,11 @@ end
     <script src="/wiki/plugins/github-api/GitHub.bundle.min.js"></script>
     <script src="/wiki/plugins/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="/wiki/plugins/ui-select/select.js"></script>
+	
+	<!-- removed by LiXizhi: remove js files from index, they should be included in individual page. 
 	<script src="/wiki/plugins/ace/ace.js"></script>
-    <script src="/wiki/plugins/markdown-it/markdown-it.min.js"></script>
+    <script src="/wiki/plugins/markdown-it/markdown-it.min.js"></script>-->
+
     <script src="/wiki/plugins/cropper/cropper.min.js"></script>
 
     <!-- self js -->

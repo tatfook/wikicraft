@@ -44,7 +44,7 @@ function markdownwiki(options) {
     }
 
     // private : internal markdown it renderer. 
-    var md = window.markdownit(options).use(window.mardownit_wikicmd_plugin);
+    var md = window.markdownit(options).use(window.markdownit_wikicmd_plugin);
 
     var mdwiki = {};
     var editor;
