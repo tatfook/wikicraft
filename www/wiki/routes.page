@@ -19,7 +19,6 @@ local path = pagename() or "";
 -- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
 WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
 WIKI_ROOT = dirname(__FILE__);
-
 local ajax_type, ajax_path = path:match("^/?api/(%w+)/(.+)");
 
 if(ajax_type == "mod") then
@@ -105,5 +104,61 @@ end
 ?>
 
 <?npl
-include(WIKI_ROOT .. "index.page")
+
+-- 解析URL
+function parseURL() 
+	local host = request:GetHost() or ""
+	local sitename = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+")
+	-- 排除IP地址访问
+	if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
+		sitename = nil
+	end
+	if sitename and sitena ~= "www" then 
+		local _pagename = request:url():match("^/?([^/]*)")
+	else
+		local url = commonlib.Encoding.url_decode(request:url())
+		sitename, _pagename = url:match("^/?([^/]+)/?([^/]*)");	
+	end
+
+	return sitename, _pagename
+end
+
+function RenderServerWikiContent() 
+	local sitename, _pagename = parseURL()
+	log(sitename)
+	log(_pagename)
+
+	if (not sitename) or (not _pagename) then
+		return 
+	end
+
+	log(sitename)
+	log(_pagename)
+	if sitename == nil or sitename == "wiki" or sitename == "api" then
+		if _pagename == "mod" then
+			include_once(WIKI_ROOT .. "mod/routes.page");
+		elseif _pagename == "module" then
+			include_once(WIKI_ROOT .. "module/routes.page");
+		else
+			local filename = WIKI_ROOT .. 'pages/' .. _pagename .. ".page";
+			if file_exists(filename) then
+				include(filename);
+			end
+		end
+		if _pagename and _pagename:match("^_") then
+			local filename = WIKI_ROOT .. 'pages/special/' .. _pagename:gsub("^_", "") .. ".page";
+			if(file_exists(filename)) then
+				include(filename);
+			end
+		end
+	end
+end
+
+local sitename, _pagename = parseURL()
+
+if _pagename == "module" then
+	include(WIKI_ROOT .. "module.page")  -- 为模块的话，用自己的框架页，默认框架包含头部和尾部，混合很难共用
+else
+	include(WIKI_ROOT .. "index.page")
+end
 ?>

@@ -1,0 +1,43 @@
+<?npl
+wp_enqueue_script("workslistCtrl", MOD_WEBROOT.."controllers/workslist.js");
+?>
+<div ng-controller="workslistCtrl">
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10" style="display: flex; justify-content: space-between; align-items: center; height: 90px">
+            <div style="font-size: 30px">{{title}}</div>
+            <div style="font-size: 18px; align-self: flex-end">
+                <a ng-click="getAllSiteList()">更多</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 workslistNav" >
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%" >
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getSiteList(requestParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="row workslist"  style="border-bottom: 1px solid silver">
+                <div class="col-md-4" style="position: relative; height: 280px;" ng-repeat="site in siteObj.siteList">
+                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 200px;">
+                    <div style="position: absolute; top: 120px; left: 15%; width: 70%;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 70px; padding-top: 15px; padding-left: 24px">
+                            <div style="font-size: 18px; color: white;">{{site.name}}</div>
+                            <div style="font-size: 14px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
+                        </div>
+                        <div ng-style='{"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}'>
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 workslistNav">
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%" >
+                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getSiteList(requestParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            </div>
+        </div>
+    </div>
+</div>
+

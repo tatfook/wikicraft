@@ -37,6 +37,18 @@ app.factory('Account', function ($auth, $rootScope) {
             return $auth.isAuthenticated();
         },
 
+		ensureAuthenticated: function(callback) {
+			if (!this.isAuthenticated()) {
+				window.location.href = "/#/login";
+				return;
+			}	
+			if (!this.user || !this.user.loaded) {
+				this.getProfile(callback);
+			} else {
+				callback && callback();
+			}
+		},
+
 		githubAuthenticate: function() {
 			self = this;
 			$auth.authenticate("github").then(function (response) {
@@ -48,7 +60,7 @@ app.factory('Account', function ($auth, $rootScope) {
 			});
 		},
 
-        getProfile: function () {
+        getProfile: function (callback) {
             var self = this;
             util.http("POST", config.apiUrlPrefix + "user/getProfile",{}, function (data) {
 				if (!data) {
@@ -57,8 +69,10 @@ app.factory('Account', function ($auth, $rootScope) {
 
                 self.setUser(data);
 				if (!data.githubToken) {
-					self.githubAuthenticate();
+					//self.githubAuthenticate();
 				}
+
+				callback && callback();
             });
         },
         updateProfile: function (profileData) {

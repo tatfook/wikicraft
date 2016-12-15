@@ -1,46 +1,4 @@
 
-<?npl
-local wikiContentExist = false
-function RenderServerWikiContent() 
-	local host = request:GetHost() or ""
-	local sitename = (request:GetHost() or ""):match("([%w]+)%.[%w]+%.[%w]+")
-	-- 排除IP地址访问
-	if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
-		sitename = nil
-	end
-	if sitename and sitena ~= "www" then 
-		local pageName = request:url():match("^/?([^/]*)")
-	else
-		local url = commonlib.Encoding.url_decode(request:url())
-		sitename, pagename = url:match("^/?([^/]+)/?([^/]*)");	
-	end
-
-	if not pagename then
-		return 
-	end
-
-	if sitename == nil or sitename == "wiki" or sitename == "api" then
-		if pagename == "mod" then
-			wikiContentExist=true
-			include_once(WIKI_ROOT .. "mod/routes.page");
-		else
-			local filename = WIKI_ROOT .. 'pages/' .. pagename .. ".page";
-			if file_exists(filename) then
-				wikiContentExist=true
-				include(filename);
-			end
-		end
-		if pagename and pagename:match("^_") then
-			local filename = WIKI_ROOT .. 'pages/special/' .. pagename:gsub("^_", "") .. ".page";
-			if(file_exists(filename)) then
-				wikiContentExist=true
-				include(filename);
-			end
-		end
-	end
-end
-?>
-
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -65,10 +23,12 @@ end
     <script src="/wiki/plugins/github-api/GitHub.bundle.min.js"></script>
     <script src="/wiki/plugins/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="/wiki/plugins/ui-select/select.js"></script>
-	
+
+	<!-- 用户页显示需解析md --->
+    <script src="/wiki/plugins/markdown-it/markdown-it.min.js"></script>
 	<!-- removed by LiXizhi: remove js files from index, they should be included in individual page. 
 	<script src="/wiki/plugins/ace/ace.js"></script>
-    <script src="/wiki/plugins/markdown-it/markdown-it.min.js"></script>-->
+	-->
 
     <script src="/wiki/plugins/cropper/cropper.min.js"></script>
 
@@ -78,6 +38,7 @@ end
     <script src="/wiki/js/config.js"></script>
     <script src="/wiki/js/factory.js"></script>
 	<script src="/wiki/js/moduleParser.js"></script>
+	<script src="/wiki/js/moduleIframeParser.js"></script>
     <script src="/wiki/js/mainController.js"></script>
     <script src="/wiki/js/headerController.js"></script>
     <script src="/wiki/js/userController.js"></script>
@@ -85,12 +46,13 @@ end
 	<script src="/wiki/js/usersiteController.js"></script>
 	<script src="/wiki/js/authController.js"></script>
 	<script src="/wiki/js/organizationController.js"></script>
+    <script src="/wiki/js/personalController.js"></script>
 </head>
 
 <body>
 <div ng-app="MyApp" ng-controller="mainCtrl">
     <!--头部-->
-    <div ng-controller="headerCtrl">
+    <div ng-if="!isSubModule" ng-controller="headerCtrl">
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
 				<div class="navbar-header">
@@ -114,7 +76,7 @@ end
 					</form>
 				</div>
 
-				<div ng-show="!isLogin" class="navbar-right" style="margin-right: 20px">
+				<div ng-show="!isLogin" class="navbar-right">
 					<div class="navbar-header">
 						<a class="navbar-brand btn" style="color: grey;">
 							<span class="glyphicon">成为VIP</span>
@@ -134,7 +96,7 @@ end
 					</div>
 				</div>
 
-				<div ng-show="isLogin" class="navbar-right" style="margin-right: 20px">
+				<div ng-show="isLogin" class="navbar-right">
 					<ul class="nav navbar-nav">
 						<li class="dropdown">
 							<a  href="#" class="dropdown-toggle" data-toggle="dropdown" >{{user.username || "逍遥"}}<span class="caret"></span></a>
@@ -180,11 +142,6 @@ end
 			<div ng-show="!IsRenderServerWikiContent">
 	            <div ui-view></div>
 			</div>
-<!--
-			<? if wikiContentExist == false then ?>
-            <div ui-view></div>
-			<? end ?>
--->
         </div>
 
         <!--用户站点内容体-->
@@ -194,32 +151,34 @@ end
     </div>
 
 	<!--底部-->
-    <div class="container" style="height: 540px">
-        <div style="margin-top: 145px; display: flex">
-            <div style="margin-left: 80px">
-                <img src="/wiki/assets/imgs/wikicraftLogo.png" class="img-responsive" style="width: 205px">
-            </div>
+    <div ng-if="!isSubModule" class="container" style="height: 540px;">
+        <div>
+            <div style="margin-top: 145px; display: flex">
+                <div style="margin-left: 80px">
+                    <img src="/wiki/assets/imgs/wikicraftLogo.png" class="img-responsive" style="width: 205px">
+                </div>
 
-            <div style="font-size: 16px; margin-left: 145px; display: flex">
-                <div style="display: flex; flex-direction: column; width: 150px">
-                    <p>关于:</p>
-                    <a>关于我们</a>
-                </div>
-                <div style="display: flex; flex-direction: column; width: 150px">
-                    <p>支持:</p>
-                    <a>联系方式</a>
-                </div>
-                <div style="display: flex; flex-direction: column; width: 150px">
-                    <p>合作伙伴:</p>
-                    <a>Paracraft</a>
-                </div>
-                <div style="display: flex; flex-direction: column; width: 150px">
-                    <p>更新信息:</p>
+                <div style="font-size: 16px; margin-left: 145px; display: flex">
+                    <div style="display: flex; flex-direction: column; width: 150px">
+                        <p>关于:</p>
+                        <a>关于我们</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; width: 150px">
+                        <p>支持:</p>
+                        <a>联系方式</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; width: 150px">
+                        <p>合作伙伴:</p>
+                        <a>Paracraft</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; width: 150px">
+                        <p>更新信息:</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div style="margin-top: 110px; text-align: center; font-size: 16px">
-            <p>备案号：</p>
+            <div style="margin-top: 110px; text-align: center; font-size: 16px">
+                <p>备案号：</p>
+            </div>
         </div>
     </div>
 </div>

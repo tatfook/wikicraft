@@ -19,7 +19,7 @@ app.controller('loginCtrl', function ($scope, $rootScope, $state, $auth, Account
             Account.setUser(data.userInfo);
             console.log("登录成功");
 			if (!data.userInfo.githubToken) {
-				Account.githubAuthenticate();
+				//Account.githubAuthenticate();
 			} 
 			$state.go("home");
         }, function (error) {

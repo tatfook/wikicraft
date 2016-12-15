@@ -1,0 +1,29 @@
+<?npl
+wp_enqueue_script("personalStaticsCtrl", MOD_WEBROOT.."controllers/personalStatics.js");
+?>
+
+<div ng-controller="personalStaticsCtrl">
+    <!-- 数据统计 -->
+    <div style="background-color: rgb(208,224,238);">
+        <div class="row" style="font-size: 16px; height: 140px; ">
+            <div class="col-md-4" style="height: 100%;" >
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%">
+                    <div style="font-size: 30px; color: red">{{statics.websiteCount || 0}}</div>
+                    <div>我的作品</div>
+                </div>
+            </div>
+            <div class="col-md-4" style="height: 100%;" >
+                <div  style="display: flex; flex-direction: column; align-items: center; justify-content:center; height: 100%">
+                    <div style="font-size: 30px; color: red">{{statics.favoriteCount || 0}}</div>
+                    <div>我的关注</div>
+                </div>
+            </div>
+            <div class="col-md-4" style="height: 100%;" >
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%">
+                    <div style="font-size: 30px; color: red">{{statics.fansCount || 0}}</div>
+                    <div>我的粉丝</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

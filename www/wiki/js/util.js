@@ -131,6 +131,7 @@ util.http = function(method, url, params, callback, errorCallback) {
         if (data.error.id == 0) {
             //console.log(data.data);
             callback && callback(data.data);
+            util.setParentIframeAutoHeight();
         } else {
             console.log(data);
             errorCallback && errorCallback(data.error);
@@ -155,7 +156,8 @@ util.stringToJson = function (str) {
     try {
         obj = JSON.parse(str);
     } catch (e) {
-
+        console.log(str);
+        console.log(e);
     }
     return obj;
 }
@@ -171,4 +173,31 @@ util.pagination = function (page, params, pageCount) {
     params.page = page;
 
     return true;
+}
+
+util.setParentIframeAutoHeight = function (minHeight) {
+    if (!window.IframeId) {
+        return ;
+    }
+    window.setTimeout(function () {
+        var iframe = window.parent.document.getElementById(window.IframeId);
+        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+        //console.log(iframe.contentWindow.document.body.scrollHeight);
+        //console.log(iframe.contentWindow.document.documentElement.scrollHeight);
+        //console.log(iframe.contentWindow.document.body.clientHeight);
+        //console.log(iframe.contentWindow.document.documentElement.clientHeight);
+    },1);
+    return ;
+}
+
+util.setIframeParams = function (obj) {
+    this.iframeParams = obj;
+}
+
+util.getIframeParams = function () {
+    return this.iframeParams || window.iframeParams || {};
+}
+
+util.isSubMoudle = function () {
+    return window.IframeId ? true : false;
 }

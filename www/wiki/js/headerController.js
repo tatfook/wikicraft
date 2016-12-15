@@ -3,7 +3,7 @@
  */
 
 app.controller('headerCtrl', function ($scope, $state, $auth, Account, Message) {
-    console.log("headerCtrl");
+    //console.log("headerCtrl");
     $scope.isLogin = Account.isAuthenticated();
     $scope.user = Account.getUser();
 

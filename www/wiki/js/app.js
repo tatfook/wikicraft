@@ -18,6 +18,6 @@ var config = {
 	apiUrlPrefix:'/api/wiki/models/',
 	pageUrlPrefix:'/wiki/html/',
     
-    modulePageUrlPrefix:'/wiki/mod',
-    moduleApiUrlPrefix:'http://localhost:8099/api/mod/',  // + moduleName + "/models/" + modelName + '[apiName]'
+    modulePageUrlPrefix:'/wiki/module',
+    moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
 };

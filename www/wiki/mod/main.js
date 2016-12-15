@@ -6,7 +6,6 @@
 requirejs.config({
     baseUrl: "../",
     paths: {
-        // "world" : "",
     }
 });
 

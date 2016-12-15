@@ -1,0 +1,5 @@
+<?npl
+
+local params = request:getparams()
+local params = NPL.LoadTableFromString(params.params)
+?>

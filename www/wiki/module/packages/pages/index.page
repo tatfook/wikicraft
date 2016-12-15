@@ -1,0 +1,216 @@
+﻿<?npl
+	wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
+	wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesController.js");
+?>
+<div ng-controller="packagesController" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+	<div ng-if="projectType == 'npl'" class="packages ">
+	    <div class="packages-tabs hidden-xs hidden-sm">
+	        <a class="active" href="#/npl">NPL</a>
+	        <a href="#/paracraft">Paracraft</a>
+	    </div>
+	    <div class="my-projects hidden-xs hidden-sm">
+	        <a href="/wiki/mod/packages/packages_projects#/npl">My npl packages</a>
+	    </div>
+        <div class="packages-tabs packages-tabs-sm hidden-md hidden-lg">
+	        <a class="active" href="#/npl">NPL</a>
+	        <a href="#/paracraft">Paracraft</a>
+	    </div>
+	    <div class="my-projects my-projects-sm hidden-md hidden-lg">
+	        <a href="/wiki/mod/packages/packages_projects#/npl">My npl packages</a>
+	    </div>
+
+		<div class="head-line hidden-xs hidden-sm">
+	        <span class="red">npl</span> package manager 
+	    </div>
+        <div class="head-line head-line-sm hidden-md hidden-lg">
+	        <span class="red">npl</span> package manager 
+	    </div>
+	    
+	    <div class="packages-total hidden-xs hidden-sm">
+	        <div class="stat stat-icon-package">
+	            <strong>{{packagesStats || 0}}</strong>
+	            total packages
+	        </div>
+	        <div class="stat stat-icon-24hours">
+	            <strong>{{dayDownload}}</strong>
+	            downloads in the last day
+	        </div>
+	        <div class="stat stat-icon-7days">
+	            <strong>{{monthDownload}}</strong>
+	            downloads in the last month
+	        </div>
+	        <div class="stat stat-icon-1months">
+	            <strong>{{yearDownload}}</strong>
+	            downloads in the last year
+	        </div>
+	    </div>
+
+	    <div class="packages-show">
+			<div class="packages-show-title hidden-xs hidden-sm">
+				npl packages people install a lot
+			</div>
+            <div class="packages-show-title packages-show-title-sm hidden-md hidden-lg">
+				npl packages people install a lot
+			</div>
+
+			<ul class="packages-columar hidden-xs hidden-sm">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">
+							<img ng-src="{{package.gitIcon}}" />
+							<div ng-show="package.isVerified == 'true'" class="verified">verified</div>
+						</a>
+						<div class="packages-details">
+							<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+                            <div class="downloads">Downloads:{{package.installTimes}}</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+            <ul class="packages-columar packages-columar-sm hidden-md hidden-lg">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
+							<img ng-src="{{package.gitIcon}}" />
+							<div ng-show="package.isVerified == 'true'" class="verified">verified</div>
+						</a>
+						<div class="packages-details">
+							<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+                            <div class="downloads">Downloads:{{package.installTimes}}</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+	    </div>
+
+	    <div class="getting-start">
+	        <div class="getting-start-title">
+	            getting started
+	        </div>
+	        <h1>installing npl packages</h1>
+	        <p>
+				NPL Packages are equivalent to search paths. It provides a way to release your software module to be used by someone else at development time.
+	            Please refer to <a href="https://github.com/LiXizhi/NPLRuntime/wiki/npl_packages">npl package doc</a> for how to install and load npl packages. 
+	        </p>
+	        <a href="https://github.com/LiXizhi/NPLRuntime/wiki">Download NPL</a>
+	    </div>
+	</div>
+
+	<div ng-if="projectType == 'paracraft'" class="packages">
+	    <div class="packages-tabs hidden-xs hidden-sm">
+	        <a href="/wiki/mod/packages/index#/npl">NPL</a>
+	        <a class="active" href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+	    </div>
+	    <div class="my-projects hidden-xs hidden-sm">
+	        <a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
+	    </div>
+        <div class="packages-tabs packages-tabs-sm hidden-md hidden-lg">
+	        <a href="/wiki/mod/packages/index#/npl">NPL</a>
+	        <a class="active" href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+	    </div>
+	    <div class="my-projects my-projects-sm hidden-md hidden-lg">
+	        <a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
+	    </div>
+
+		<div class="head-line hidden-xs hidden-sm">
+	        <span class="red">Paracraft</span> Mod扩展包管理器 
+	    </div>
+        <div class="head-line head-line-sm hidden-md hidden-lg">
+	        <span class="red">Paracraft</span> Mod扩展包管理器 
+	    </div>
+
+	    <div class="packages-total hidden-xs hidden-sm">
+	        <div class="stat stat-icon-package">
+	            <strong>共有{{packagesStats || 0}}个包</strong>
+	        </div>
+	        <div class="stat stat-icon-24hours">
+	            <strong>今日下载{{dayDownload}}次</strong>
+	        </div>
+	        <div class="stat stat-icon-7days">
+	            <strong>本月下载{{monthDownload}}次</strong>
+	        </div>
+	        <div class="stat stat-icon-1months">
+	            <strong>本年下载{{yearDownload}}次</strong>
+	        </div>
+	    </div>
+
+	    <div class="packages-show">
+			<div class="packages-show-title hidden-xs hidden-sm">
+				大家喜欢下载这些扩展包
+			</div>
+            <div class="packages-show-title packages-show-title-sm hidden-md hidden-lg">
+				大家喜欢下载这些扩展包
+			</div>
+			<ul class="packages-columar hidden-xs hidden-sm">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
+							<img ng-src="{{package.gitIcon}}" />
+							<div ng-show="package.isVerified == 'true'" class="verified">已认证</div>
+						</a>
+						<div class="packages-details">
+							<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+                            <div class="downloads">下载次数：{{package.installTimes}}</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+            <ul class="packages-columar packages-columar-sm hidden-md hidden-lg">
+				<li ng-repeat="package in packages">
+					<div class="packages-weight">
+						<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
+							<img ng-src="{{package.gitIcon}}" />
+							<div ng-show="package.isVerified == 'true'" class="verified">已认证</div>
+						</a>
+						<div class="packages-details">
+							<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+							<div class="description">
+								{{package.projectDesc}}
+							</div>
+							<div class="author">
+								<a class="version">{{package.version}}</a>
+								by {{package.displayName}}
+							</div>
+                            <div class="downloads">下载次数：{{package.installTimes}}</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+	    </div>
+	    <div class="getting-start">
+	        <div class="getting-start-title">
+	            开始
+	        </div>
+
+	        <h1>如何安装paracraft扩展包?</h1>
+	        <p>
+	            下载并启动Paracraft客户端, 点击`Mod加载...`, 将下载的`zip文件`直接Copy到`./Mod目录`, 并启用对应的Mod。<a href="https://github.com/LiXizhi/ParaCraftSDK/wiki/ParacraftPlugins">[详情...]</a><br/>
+				开发者可以使用ParacraftSDK和NPL语言开发扩展包。
+	        </p>
+	        <a href="http://www.paracraft.cn">下载Paracraft</a> | <a href="https://github.com/LiXizhi/ParaCraftSDK">Paracraft SDK开发包</a>
+	    </div>
+	</div>
+
+</div>
