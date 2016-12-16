@@ -133,7 +133,7 @@ angular.module('MyApp')
         }
 
         // 获取用户站点列表
-        $http.post('http://localhost:8099/api/wiki/models/website',{userid:Account.getUser()._id}).then( function (response) {
+        $http.post('http://localhost:8099/api/wiki/models/website',{userId:Account.getUser()._id}).then( function (response) {
             $scope.websites = response.data.data;
 
             for(var i=0;i< $scope.websites.length;i++){
@@ -258,6 +258,16 @@ angular.module('MyApp')
         var token = {};
         var bGithub = false;
 
+		var user = Account.getUser(); // 这已经是用户信息啦
+		if (user.githubToken) {
+			token = user.githubToken;
+			bGithub = true;
+			$scope.githubSource = ProjectStorageProvider.getDataSource('github');
+			$scope.githubSource.init(token,function(){
+				githubSha();
+			});
+		}
+		/*
         var user = Account.getUser().data;
         for(var i=0;i<user.length;i++){
             if(user[i].githubId){
@@ -271,7 +281,7 @@ angular.module('MyApp')
                 }
             }
         }
-
+		*/
         if(!bGithub){
             initTree();
         }
@@ -432,7 +442,8 @@ angular.module('MyApp')
 
     $scope.cmd_newpage = function () {
         $uibModal.open({
-            templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",
+            //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+			templateUrl:config.pageUrlPrefix + "editorNewPage.html",
             controller: "pageCtrl",
         }).result.then(function (provider){
             //console.log(provider);
