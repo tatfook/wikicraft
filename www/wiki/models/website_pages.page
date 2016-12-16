@@ -8,6 +8,7 @@ Date: 2016/10/12
 include_once("./abstract/base.page");
 include_once("./website_template_style.page");
 include_once("./website.page");
+include_once("./user.page");
 include_once("./website_renewal.page");
 
 --local errors = models.errors:new();
@@ -291,7 +292,34 @@ function website_pages:api_getCountByWebsiteId(params)
 	return errors:wrap(yield())
 end
 
+-- 获取用户页详细信息
+function website_pages:api_getDetailInfo(params)
+	if (not params.sitename) or (not params.pagename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteDB = models.website:new()
+	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename}).data
+	if not siteinfo then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+	
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=siteinfo.userId}).data
+	if not userinfo then
+		return  errors:wrap(errros.NOT_FOUND)
+	end
+	
+	local pageurl = "/" .. params.sitename .. "/" .. params.pagename
+	self:db():findOne({["+url"]={pageurl}}, resume)
+	local err, pageinfo = yield()
 
+	if err or (not pageinfo) then
+		return errors:wrap(err or errors.NOT_FOUND)
+	end
+
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo})
+end
 
 
 

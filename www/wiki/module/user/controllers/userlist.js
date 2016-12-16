@@ -5,8 +5,11 @@ app.controller("userlistCtrl", function ($scope) {
     $scope.requestParams = {pageSize:6, page:0, websiteId:$scope.siteinfo._id};
 
     $scope.getAllUserList = function () {
-        //SelfData.requestUrl = config.apiUrlPrefix + "website/getByUserId";
-        //SelfData.requestParams = $scope.allSiteParams;
+        var usershowObj = {};
+        usershowObj.requestUrl = $scope.requestUrl;
+        usershowObj.requestParams = $scope.requestParams;
+        usershowObj.title = $scope.title;
+        window.parent.sessionStorage.setItem("usershow", util.objectToJsonString(usershowObj));
         window.parent.location.href = "/#/usershow";
     }
 
@@ -26,7 +29,6 @@ app.controller("userlistCtrl", function ($scope) {
         moduleParams.type = moduleParams.type || "all";
 
         $scope.title = moduleParams.title || "成员信息";
-        console.log($scope.title);
 
         $scope.requestParams.pageSize = moduleParams.pageSize || 6;
         $scope.requestParams.websiteId = $scope.siteinfo._id;

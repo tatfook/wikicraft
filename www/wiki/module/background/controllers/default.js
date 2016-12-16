@@ -2,7 +2,6 @@
 app.controller("defaultBackgroundCtrl", function ($scope) {
     function init() {
         var moduleParams = window.moduleObj.moduleParams;
-        console.log($('#backgroundId'));
         if (moduleParams.color) {
             $('#backgroundId').css("background-color", moduleParams.color);
         }
@@ -19,7 +18,9 @@ app.controller("defaultBackgroundCtrl", function ($scope) {
             $('#backgroundId').css("height", moduleParams.height + "px");
         } else {                   // auto
             window.setInterval(function () {
-                var height = window.parent.document.body.scrollHeight;
+                var height = window.parent.document.getElementById("__UserSitePageContentContainer__").offsetHeight
+                //var height = window.parent.document.body.scrollHeight > 4000 ? 4000 : window.parent.document.body.scrollHeight;
+                //console.log(height);
                 $('#backgroundId').css("height", height + "px");
                 util.setParentIframeAutoHeight();
             }, 1000);

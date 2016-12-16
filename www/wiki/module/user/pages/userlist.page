@@ -8,7 +8,7 @@ wp_enqueue_script("userlistCtrl", MOD_WEBROOT.."controllers/userlist.js");
         <div class="col-md-offset-1 col-md-10" style="display: flex; justify-content: space-between; align-items: center;height: 90px">
             <div style="font-size: 30px">{{title}}</div>
             <div style="font-size: 18px; align-self: flex-end">
-                <a ng-click="goAllUserList()">更多</a>
+                <a ng-click="getAllUserList()">更多</a>
             </div>
         </div>
     </div>
@@ -26,5 +26,8 @@ wp_enqueue_script("userlistCtrl", MOD_WEBROOT.."controllers/userlist.js");
                 </div>
             </div>
         </div>
+    </div>
+
+    <div style="height: 120px">
     </div>
 </div>

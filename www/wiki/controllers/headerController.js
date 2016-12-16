@@ -1,5 +1,5 @@
 /**
- * Created by wuxiangan on 2016/12/8.
+ * Created by wuxiangan on 2016/12/15.
  */
 
 app.controller('headerCtrl', function ($scope, $state, $auth, Account, Message) {
@@ -20,11 +20,11 @@ app.controller('headerCtrl', function ($scope, $state, $auth, Account, Message) 
     }
 
     $scope.goPersonalPage = function () {
-		if (!$scope.isLogin) {
-			console.log("----");
-			Message.info("请先登录!!!");
-			return;
-		}
+        if (!$scope.isLogin) {
+            console.log("----");
+            Message.info("请先登录!!!");
+            return;
+        }
         window.location.href = "/" + $scope.user.username;
     }
     $scope.logout = function () {

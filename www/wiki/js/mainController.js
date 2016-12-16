@@ -3,21 +3,74 @@
  */
 
 app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile, $auth, Account, SelfData, ProjectStorageProvider, Message) {
-    function init() {
+    // 信息提示框
+    $("#messageTipCloseId").click(function () {
+        Message.hide();
+    });
+
+    // 加载内容信息
+    function initContentInfo() {
+        $rootScope.IsRenderServerWikiContent = false;
+        var moduleIframeParser = new ModuleIframeParser();
+        var md = window.markdownit({html:true});
+        var urlObj = util.parseUrl();
+
+        // 置空用户页面内容
+        moduleIframeParser.render("<div></div>");
+        if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
+            if (window.location.path != "/" && window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
+                window.location.href="/" + window.location.hash;
+            } else if (window.location.pathname == '/' && !window.location.hash) {     // wikicraft.cn  重定向/#/home
+                window.location.href="/#/home";
+            } else {                                                                           // /wiki/xxx    旧版本/wiki/xxx页
+                $rootScope.IsRenderServerWikiContent = true;
+            }
+            //console.log($rootScope.IsRenderServerWikiContent);
+            return ;
+        }
+        // 访问用户页
+        util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {sitename:urlObj.sitename, pagename:urlObj.pagename}, function (data) {
+            data = data || {};
+            // 这三种基本信息根化，便于用户页内模块公用
+            $rootScope.userinfo = data.userinfo;
+            $rootScope.siteinfo = data.siteinfo;
+            $rootScope.pageinfo = data.pageinfo;
+            var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
+            pageContent = md.render(pageContent);
+            var userpageObj = {user:$rootScope.user, userinfo:$rootScope.userinfo, siteinfo:$rootScope.siteinfo, pageinfo:$rootScope.pageinfo};
+            util.setIframeParams(userpageObj); //
+            sessionStorage.setItem("userpageObj", util.objectToJsonString(userpageObj));
+            moduleIframeParser.render(pageContent);
+        });
+
+        /*
+         $http.get('http://localhost:8099/wiki/html/templates/test.html').then(function (response) {
+         console.log(response.data);
+         var pageContent = response.data;
+         pageContent = md.render(pageContent);
+         util.setIframeParams({user:$rootScope.user, userinfo:$rootScope.userinfo, siteinfo:$rootScope.siteinfo, pageinfo:$rootScope.pageinfo});
+         moduleIframeParser.render(pageContent);
+         });
+         */
+    }
+    
+    // 初始化基本信息
+    function initBaseInfo() {
         /*配置一些全局服务*/
         util.setAngularServices({$http:$http, $state:$state, $compile:$compile, $auth:$auth});
         util.setSelfServices({Account:Account, ProjectStorageProvider:ProjectStorageProvider, SelfData: SelfData, Message:Message});
-
+        // iframe子模块信息初始化
         if (util.isSubMoudle()) {
             util.setParentIframeAutoHeight();
             var iframeParams = util.getIframeParams();
             //console.log(iframeParams);
+            iframeParams.user.loaded && Account.setUser(iframeParams.user);
             $rootScope.userinfo = iframeParams.userinfo;
             $rootScope.siteinfo = iframeParams.siteinfo;
             $rootScope.pageinfo = iframeParams.pageinfo;
             $rootScope.isSubModule = true;
         }
-        $rootScope.user = Account.getUser();
+        // 获取用户基本信息
         if (Account.isAuthenticated()) {
             if (Account.isLoaded()) {
                 $scope.user = Account.getUser();
@@ -27,26 +80,17 @@ app.controller('mainCtrl', function ($scope, $rootScope, $http, $state, $compile
         }
         //console.log("mainCtrl");
     }
-        
+    
+    function init() {
+        initBaseInfo();
+        initContentInfo();
+    }
 
+    //Account.ensureAuthenticated(init());
     init();
 });
 
-
-
-app.controller('wikiCtrl', function ($scope, $state, $auth, Account) {
-
-});
-app.controller('usersiteCtrl', function ($scope, $state, $auth, Account,Message) {
-});
-
 app.controller('testCtrl', function ($scope, $rootScope, $state, $http, $compile, Message) {
-});
-
-app.controller('messageCtrl', function ($scope, Message) {
-    $scope.hide = function () {
-        Message.hide();
-    };
 });
 
 app.controller('commentCtrl', function ($scope, Account) {
@@ -91,40 +135,65 @@ app.controller('commentCtrl', function ($scope, Account) {
     init();
 });
 
-app.controller('siteshowCtrl', function ($scope, SelfData) {
-    $scope.requestUrl = SelfData.requestUrl;
-    $scope.requestParams = SelfData.requestParams || {};
+app.controller('siteshowCtrl', function ($scope) {
+    var siteshowObj = sessionStorage.getItem("siteshow");
+    siteshowObj = util.jsonStringToObject(siteshowObj);
+    //console.log(siteshowObj);
+    $scope.title = siteshowObj.title;
+    $scope.requestUrl = siteshowObj.requestUrl;
+    $scope.requestParams = siteshowObj.requestParams || {};
 	$scope.requestParams.pageSize = 12;
 	$scope.requestParams.page = 0;
 
-    function init() {
-        $scope.getSiteList();
+    window.scrollTo(0,0);
+
+    // 随机颜色
+    $scope.getRandomColor = function (index) {
+        return util.getRandomColor(index);
     }
+
+    var height = (200 + Math.floor(($scope.requestParams.pageSize-1)/3) * 280) + "px";
+    $(".workslistNav").css("height",height);
+    height = Math.ceil($scope.requestParams.pageSize/3) * 280 + "px";
+    $(".workslist").css("height",height);
 
     $scope.getSiteList = function (page) {
         if (!util.pagination(page, $scope.requestParams, $scope.siteObj && $scope.siteObj.pageCount)) {
             return ;
         }
-
-        var url = $scope.requestUrl || config.apiUrlPrefix + "website/getFavoriteSortList"; // 获得最近更新
-
-        util.http("POST", url, $scope.requestParams, function (data) {
+        util.http("POST", $scope.requestUrl, $scope.requestParams, function (data) {
             $scope.siteObj = data;
         });
+    }
+
+    function init() {
+        $scope.getSiteList();
     }
 
     init();
 });
 
 app.controller('usershowCtrl', function ($scope, SelfData) {
-    $scope.requestUrl = SelfData.requestUrl;
-    $scope.requestParams = SelfData.requestParams || {};
-    $scope.requestParams.pageSize = 12;
+    var usershowObj = sessionStorage.getItem("usershow");
+    usershowObj = util.jsonStringToObject(usershowObj);
+    console.log(usershowObj);
+    $scope.title = usershowObj.title;
+    $scope.requestUrl = usershowObj.requestUrl;
+    $scope.requestParams = usershowObj.requestParams || {};
+    $scope.requestParams.pageSize = 9;
     $scope.requestParams.page = 0;
 
-    function init() {
-        $scope.getUserList();
+    window.scrollTo(0,0);
+
+    // 随机颜色
+    $scope.getRandomColor = function (index) {
+        return util.getRandomColor(index);
     }
+
+    var height = (200 + Math.floor(($scope.requestParams.pageSize-1)/3) * 280) + "px";
+    $(".workslistNav").css("height",height);
+    height = Math.ceil($scope.requestParams.pageSize/3) * 280 + "px";
+    $(".workslist").css("height",height);
 
     $scope.getUserList = function (page) {
         if (!util.pagination(page, $scope.requestParams, $scope.userObj && $scope.userObj.pageCount)) {
@@ -137,39 +206,49 @@ app.controller('usershowCtrl', function ($scope, SelfData) {
             $scope.userObj = data;
         });
     }
+
+    function init() {
+        $scope.getUserList();
+    }
+
     init();
 });
-app.controller("worksApplyCtrl", function ($scope, $state, Account, SelfData) {
+
+app.controller("worksApplyCtrl", function ($scope, $state, Account, Message) {
     $scope.user = Account.getUser();
     $scope.worksSelected = [];
     $scope.submitDisabled = "";
+
+    var userpageObj = sessionStorage.getItem("userpageObj");
+    userpageObj = util.jsonStringToObject(userpageObj);
+
     $scope.worksSelectChange = function () {
         console.log($scope.worksSelected);
         $scope.worksSelected.length ? $("#submitId").removeAttr("disabled") : $("#submitId").attr({"disabled":"disabled"});
-    }
+    };
 
     $scope.worksApply = function () {
-        console.log("hello world");
-        console.log($scope.user);
-        console.log($scope.siteinfo);
+        var websiteId = sessionStorage.getItem("workApplyWebsiteId");
         var applyIdList = [];
+
+        websiteId = parseInt(websiteId);
         for (i=0; i < $scope.worksSelected.length; i++) {
             applyIdList.push(parseInt($scope.worksSelected[i]));
         }
         var params = {
-            userId:$scope.user._id,
+            userId:userpageObj.user._id,
             applyIdList:applyIdList,
-            websiteId:$scope.siteinfo._id,
+            websiteId:websiteId,
         }
-        console.log(params);
         util.http("POST", config.apiUrlPrefix + 'website_apply/worksBatchApply', params, function (data) {
-
+            console.log("投稿成功");
+            Message.info("投稿成功");
         });
     }
 
     function init() {
         $("#submitId").attr({"disabled":"disabled"});
-        util.http("POST", config.apiUrlPrefix + "website/getAllByUserId", {userId:$scope.user._id}, function (data) {
+        util.http("POST", config.apiUrlPrefix + "website/getAllByUserId", {userId:userpageObj.user._id}, function (data) {
             $scope.siteList = data;
         });
     }
@@ -211,224 +290,15 @@ app.controller("worksSiteCtrl", function ($scope, $state, SelfData){
     init();
 });
 
-app.controller("gameSiteCtrl", function ($scope, $state, SelfData) {
-    $scope.upgradeParams = {pageSize:3,websiteId:$scope.siteinfo._id};
-    $scope.latestParams = {pageSize:3,websiteId:$scope.siteinfo._id};
-    $scope.allSiteParams = {pageSize:3,websiteId:$scope.siteinfo._id};
-    $scope.judgeParams = {pageSize:6,websiteId:$scope.siteinfo._id};
-
-    // worksApply
-    $scope.goWorksApplyPage = function () {
-        $state.go('worksApply');
-    }
-
-    // 随机颜色
-    $scope.getRandomColor = function (index) {
-        return util.getRandomColor(index);
-    }
-
-    // 更多入围作品
-    $scope.goAllUpgradeList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId";
-        SelfData.requestParams = $scope.upgradeParams;
-        $state.go("siteshow");
-    }
-
-    // 更多我的收藏
-    $scope.goAllLatestList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "website_works/getLatestByWebsiteId";
-        SelfData.requestParams = $scope.latestParams;
-        $state.go("siteshow");
-    }
-
-    // 更多全部作品
-    $scope.goAllAllSiteList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-        SelfData.requestParams = $scope.allSiteParams;
-        $state.go("siteshow");
-    }
-
-    // 获得等多用户列表
-    $scope.getAllUserList = function () {
-        // TODO
-    }
-    // 获得入围作品
-    $scope.getUpgradelList = function (page) {
-        if (!util.pagination(page, $scope.upgradeParams, $scope.upgradeObj && $scope.upgradeObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-        util.http("POST", config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId", $scope.upgradeParams, function (data) {
-            $scope.upgradeObj = data;
-        });
-    }
-
-    // 获得最新上传
-    $scope.getLatestList = function (page) {
-        if (!util.pagination(page, $scope.latestParams, $scope.latestObj && $scope.latestObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-
-        // 获取热门作品
-        util.http("POST", config.apiUrlPrefix + "website_works/getLatestByWebsiteId", $scope.latestParams, function (data) {
-            $scope.latestObj = data;
-        });
-    }
-
-    // 获得全部作品
-    $scope.getAllSiteList = function (page) {
-        if (!util.pagination(page, $scope.allSiteParams, $scope.allSiteObj && $scope.allSiteObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-        // 获取全部作品列表
-        util.http("POST", config.apiUrlPrefix + "website_works/getByWebsiteId", $scope.allSiteParams, function (data) {
-            $scope.allSiteObj = data;
-        });
-    }
-
-    // 获得网站成员列表
-    $scope.getJudgeList = function (page) {
-        if (!util.pagination(page, $scope.judgeParams, $scope.judgeObj && $scope.judgeObj.pageCount)) {
-            return; // 未翻页直接返回
-        }
-        // 获取全部作品列表
-        util.http("POST", config.apiUrlPrefix + "website_member/getJudgeListByWebsiteId", $scope.judgeParams, function (data) {
-            $scope.judgeObj = data;
-        });
-    }
-
-    function init() {
-        // 获取想管统计信息
-        util.http("POST", config.apiUrlPrefix + 'website/getStatics', {websiteId:$scope.siteinfo._id}, function (data) {
-            $scope.statics = data || {};
-        });
-
-        $scope.getUpgradelList();
-        $scope.getLatestList();
-        $scope.getAllSiteList();
-    }
-
-    init();
-});
-
-
-
-app.controller('homeCtrl', function ($scope, $rootScope, $state, $auth, Account, SelfData) {
-    $scope.siteParams = {page:1, pageSize:3};
-    $scope.userParams = {page:1, pageSize:3};
-    $scope.userObj = {};
-    $scope.siteObj = {};
-
-    $scope.getRandomColor = function (index) {
-        return util.getRandomColor(index);
-    }
-
-    // 更多我的收藏
-    $scope.goAllWorksList = function () {
-        SelfData.requestUrl =  config.apiUrlPrefix + "website/getFavoriteSortList";
-        SelfData.requestParams = $scope.siteParams;
-        $state.go("siteshow");
-    }
-
-    // 更多我的收藏
-    $scope.goAllUserList = function () {
-        SelfData.requestUrl = config.apiUrlPrefix + "user/getFavoriteSortList";
-        SelfData.requestParams = $scope.userParams;
-        $state.go("usershow");
-    }
-
-    $scope.getWorksList = function (page) {
-        $scope.siteParams.page = page ? (page > 0 ? page : 1) : $scope.siteParams.page;
-
-        if ($scope.siteObj.pageCount && $scope.siteParams.page > $scope.siteObj.pageCount) {
-            $scope.siteParams.page = $scope.siteObj.pageCount
-        }
-        var url = $scope.siteParams.url || config.apiUrlPrefix + "website/getFavoriteSortList"; // 获得最近更新
-
-        util.http("POST", url, $scope.siteParams, function (data) {
-            $scope.siteObj = data;
-        });
-    }
-
-    $scope.getUserList = function (page) {
-        $scope.userParams.page = page ? (page > 0 ? page : 1) : $scope.userParams.page;
-
-        if ($scope.userObj.pageCount && $scope.userParams.page > $scope.userObj.pageCount) {
-            $scope.userParams.page = $scope.userObj.pageCount
-        }
-
-        var url = $scope.userParams.url || config.apiUrlPrefix + "user/getFavoriteSortList"; // 获得最近更新
-
-        util.http("POST", url, $scope.userParams, function (data) {
-            $scope.userObj = data;
-        });
-    }
-
-    function init() {
-        // 获得网站统计信息
-        util.http("POST", config.apiUrlPrefix + "wikicraft/getStatics",{}, function (data) {
-            $scope.wikicraft = data || {}
-        });
-
-        $scope.getWorksList();
-        $scope.getUserList();
-    }
-
-    $scope.register = function(){
-        $scope.errMsg="";
-        var params = {
-            username:util.stringTrim($scope.username),
-            email:util.stringTrim($scope.email),
-            cellphone:util.stringTrim($scope.cellphone),
-            password:util.stringTrim($scope.password),
-        };
-        console.log(params);
-        if (!params.username || params.username.length == 0 || !params.password || params.password == 0){
-            $scope.errMsg = "用户名，密码为必填字段";
-            return ;
-        }
-        if (!params.username.match(/[\d\w_]{3,20}/)){
-            $scope.errMsg = "用户名格式错误，应由3-20数字或字母或下划线组成";
-            return;
-        }
-        if (!params.email) {
-            $scope.errMsg = "邮箱格式错误"
-            return;
-        }
-        if (params.password.length < 4 || params.password.length > 20) {
-            $scope.errMsg = "密码格式错误"
-        }
-        util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
-            console.log("注册成功")
-            $auth.setToken(data.token);
-            Account.setUser(data.userInfo);
-			if (!data.userInfo.githubToken) {
-				//Account.githubAuthenticate();
-			} else {
-				$state.go("home");
-			}
-        },function (error) {
-            $scope.errMsg = error.message;
-        });
-    }
-
-    init();
-});
-
-
-
-
-
-app.controller('indexCtrl', function ($scope,$state, $sce, $auth) {
-
-});
-
-app.controller('editWebsiteCtrl', function ($scope, $state, ProjectStorageProvider, SelfData) {
+app.controller('editWebsiteCtrl', function ($scope, $state, ProjectStorageProvider, SelfData, Account) {
     const github = ProjectStorageProvider.getDataSource('github');
     $scope.tags=["tag1","tag2"];
     $scope.classifyList = ["普通","入围","热门"];
     $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
 
-    var siteinfo = SelfData.website || {_id:1};
+    var siteinfo = sessionStorage.getItem("editWebsiteParams");
+    siteinfo = util.jsonStringToObject(siteinfo);
+    $scope.website = siteinfo;
 
     $('#uploadPictureBtn').change(function (e) {
         console.log("hello world")
@@ -536,23 +406,22 @@ app.controller('editWebsiteCtrl', function ($scope, $state, ProjectStorageProvid
     $scope.agreeWorks = function (applyId) {
         util.post(config.apiUrlPrefix + 'website_apply/agreeWorks',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
             $scope.siteObj = data;
+            $scope.worksManager();
         });
     }
     
     $scope.refuseWorks = function (applyId) {
         util.post(config.apiUrlPrefix + 'website_apply/refuseWorks',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
             $scope.siteObj = data;
-        })
-    }
+            $scope.worksManager();
 
-    function init() {
-        util.post(config.apiUrlPrefix + 'website/getById', {websiteId:1}, function (data) {
-            $scope.website = data;
-            $scope.tags = $scope.website.tags ? $scope.website.tags.split('|') : [];
         });
     }
 
-    init();
+    function init() {
+    }
+
+    //Account.ensureAuthenticated(init());
 });
 
 app.controller('gitVersionCtrl', function ($scope, $state, $sce, $auth,ProjectStorageProvider,Account) {
@@ -651,16 +520,12 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
 
     // 访问网站
     $scope.goWebsiteIndexPage = function(websiteName) {
-        SelfData.pageUrl = websiteName + '/index';
-        SelfData.sitename = websiteName;
-        SelfData.pagename = 'index';
 	    window.location.href= '/' + websiteName;
     }
 
     // 编辑网站页面
 	$scope.goEditWebsitePagePage = function (website) {
-        SelfData.website = website;
-        $state.go('editor');
+        sessionStorage.setItem("editWebsitePageParams", util.objectToJsonString(website));
         window.location.href="/wiki/editor";
     }
 
@@ -672,7 +537,7 @@ app.controller('websiteCtrl', function ($scope,$state,$http, Account, SelfData) 
 
     // 编辑网站
     $scope.goEditWebsitePage = function (website) {
-        SelfData.website = website;
+        sessionStorage.setItem("editWebsiteParams", util.objectToJsonString(website));
         $state.go('editWebsite');
     }
 

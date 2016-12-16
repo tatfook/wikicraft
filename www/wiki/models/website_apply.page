@@ -47,6 +47,14 @@ function website_apply:api_memberApply(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local websiteMemberDB = models.website_member:new()
+	websiteMemberDB:db():find({["+websiteId+userId"]={params.websiteId, params.applyId}}, resume)
+	local err, data = yield()
+	-- 已经存在不管
+	if data then
+		return errors:wrap(nil)
+	end	
+
 	params.applyType = const.APPLY_TYPE_MEMBER
 	
 	return self:createApply(params)
@@ -58,6 +66,14 @@ function website_apply:api_worksApply(params)
 	if (not params.websiteId) or (not params.applyId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	local websiteWorksDB = models.website_works:new()
+	websiteWorksDB:db():find({["+websiteId+worksId"] = {params.websiteId, params.applyId}}, resume)
+	local err, data = yield()
+	-- 已经存在不管
+	if data then
+		return errors:wrap(nil)
+	end	
 
 	params.applyType = const.APPLY_TYPE_WORKS
 	

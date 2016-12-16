@@ -5,15 +5,9 @@
 app.config(function ($stateProvider, $urlRouterProvider) {
     //$urlRouterProvider.otherwise('/');
     var templatePath = config.pageUrlPrefix;
-    $stateProvider.state('index', {
-        url: '/index',
-        templateUrl: templatePath + 'index.html',
-    }).state('login', {
+    $stateProvider.state('login', {
         url: '/login',
         templateUrl: templatePath + 'login.html',
-    }).state('register', {
-        url: '/register',
-        templateUrl: templatePath + 'register.html',
     }).state('test', {
         url: '/test',
         templateUrl: templatePath + 'test.html',
@@ -35,15 +29,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     }).state('gitVersion', {
         url:'/gitVersion',
         templateUrl:templatePath + 'gitVersion.html',
-    }).state('editor', {
-        url:'/editor',
-        templateUrl:templatePath + 'editor.html',
-    }).state('userpage', {
-        url:'/userpage',
-        templateUrl:templatePath + 'userpage.html',
     }).state('siteshow', {
         url:"/siteshow",
         templateUrl:templatePath + 'siteshow.html',
+    }).state('usershow', {
+        url:"/usershow",
+        templateUrl:templatePath + 'usershow.html',
     }).state('worksApply', {
         url:"/worksApply",
         templateUrl:templatePath + 'worksApply.html',

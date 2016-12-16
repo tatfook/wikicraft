@@ -7,7 +7,7 @@ wp_enqueue_script("organizationStaticsCtrl", MOD_WEBROOT.."controllers/organizat
     <div style="background-color: rgb(246,221,199); height: 140px; font-size: 30px">
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">
             <div>
-                <div style="text-align: center; color: red">{{statics.worksCount}}</div>
+                <div style="text-align: center; color: red">{{statics.memberCount}}</div>
                 <div >全部成员</div>
             </div>
         </div>
@@ -19,7 +19,7 @@ wp_enqueue_script("organizationStaticsCtrl", MOD_WEBROOT.."controllers/organizat
         </div>
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">
             <div>
-                <div style="text-align: center; color: red">{{statics.memberCount}}</div>
+                <div style="text-align: center; color: red">{{statics.worksCount}}</div>
                 <div>全部作品</div>
             </div>
         </div>

@@ -4,7 +4,7 @@
     #cellphone::-moz-placeholder{color:white;}
     #password::-moz-placeholder{color:white;}
 </style>
-<div ng-controller="homeCtrl" class="container">
+<div ng-controller="homeCtrl">
     <!-- Carousel -->
     <div id="carousel-example-generic" class="carousel slide">
         <!-- Indicators -->
@@ -151,7 +151,7 @@
                         <div style="position: absolute; top: 125px; left: 15%; width: 70%; background-color: rgba(0,0,0,0.3);">
                             <div style="height: 70px; padding-top: 15px; padding-left: 24px">
                                 <div style="font-size: 18px; color: white;">{{user.username}}</div>
-                                <div style="font-size: 10px; color: rgb(200,219,0);;">导演：{{user.desc}}</div>
+                                <div style="font-size: 10px; color: rgb(200,219,0);;">{{user.desc}}</div>
                             </div>
                             <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
                                 <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">

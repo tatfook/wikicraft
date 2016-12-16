@@ -151,7 +151,7 @@ util.get = function (url, params, callback, errorCallback) {
     this.http("GET", url, params, callback, errorCallback);
 }
 
-util.stringToJson = function (str) {
+util.jsonStringToObject = function (str) {
     var obj = {};
     try {
         obj = JSON.parse(str);
@@ -161,6 +161,12 @@ util.stringToJson = function (str) {
     }
     return obj;
 }
+
+util.objectToJsonString = function (obj) {
+    return JSON.stringify(obj);
+}
+
+
 
 util.pagination = function (page, params, pageCount) {
     params.page = params.page || 0;

@@ -391,4 +391,22 @@ function website:api_getStatics(params)
 end
 
 
+-- 获得用户信息和站点通过站点名
+function website:api_getUserAndSiteBySitename(params)
+	if not params.sitename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	local siteinfo = self:api_getByName({websiteName=params.sitename}).data
+	if not siteinfo then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+	
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=siteinfo.userId}).data
+	if not userinfo then
+		return  errors:wrap(errros.NOT_FOUND)
+	end
+
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
+end

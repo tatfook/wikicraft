@@ -4,8 +4,11 @@ app.controller("workslistCtrl", function ($scope) {
     $scope.requestParams = {pageSize:3, page:0, websiteId:$scope.siteinfo._id};
 
     $scope.getAllSiteList = function () {
-        //SelfData.requestUrl = config.apiUrlPrefix + "website/getByUserId";
-        //SelfData.requestParams = $scope.allSiteParams;
+        var siteshowObj = {};
+        siteshowObj.requestUrl = $scope.requestUrl;
+        siteshowObj.requestParams = $scope.requestParams;
+        siteshowObj.title = $scope.title;
+        window.parent.sessionStorage.setItem("siteshow", util.objectToJsonString(siteshowObj));
         window.parent.location.href = "/#/siteshow";
     }
 
@@ -35,7 +38,7 @@ app.controller("workslistCtrl", function ($scope) {
         $(".workslist").css("height",height);
         $scope.requestParams.pageSize = pageSize;
 
-        console.log(moduleParams);
+        //console.log(moduleParams);
         $scope.title = moduleParams.title || "全部作品";
         if (moduleParams.type == "all") {
             $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";

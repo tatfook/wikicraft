@@ -28,13 +28,13 @@ function ModuleIframeParser(){
             moduleTagId = '__' + temp + '_' + moduleId + '__';                         // 加个ID使通一模块可重复使用
             moduleContainerTagId = '__' + temp + '_'+ moduleId + '_container__';
             //moduleParams = mod[2];
-            moduleParams = util.stringToJson(mod[2]);
+            moduleParams = util.jsonStringToObject(mod[2]);
             //console.log(moduleParams);
             moduleName = moduleUrl.match(/\/([^\/]+)/)[1];
             if (moduleName == "template") {
                 continue;
             }
-            console.log(moduleName);
+            //console.log(moduleName);
             if (backgroundExist == false && moduleName == "background") {
                 backgroundStyle = 'position: absolute; left: 0px; right: 0px; z-index: -1;';
                 backgroundExist = true;
@@ -52,7 +52,7 @@ function ModuleIframeParser(){
 
         // 压入动态请求的脚本
         util.push(this);
-        newPageContent += '<script type="text/javascript">var obj = util.pop();console.log(obj); obj && obj.renderModule && obj.renderModule();</script>';
+        newPageContent += '<script type="text/javascript">var obj = util.pop(); obj && obj.renderModule && obj.renderModule();</script>';
 
         // 在返回之前加上markdown-it解析
         //var md = window.markdownit({html:true});
@@ -102,7 +102,7 @@ function ModuleIframeParser(){
             var tplContent = response.data;
             var tplPageContent = tplContent.replace('__PageContent__', pageContent);
             tplPageContent = self.parse(tplPageContent);  // 模块嵌套模块
-            console.log(tplPageContent);
+            //console.log(tplPageContent);
             //tplPageContent = self.$compile(tplPageContent)(self.$scope);
             $('#__UserSitePageContent__').html(tplPageContent);
         });

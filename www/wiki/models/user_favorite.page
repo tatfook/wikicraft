@@ -199,7 +199,7 @@ function user_favorite:api_getFansListByUserId(params)
 	else
 		-- 同一用户收藏多个作品重复统计则屏蔽此行
 		-- 当收藏作品时需产生一条收藏用户的记录
-		query[#query+1] = params.const.FAVORITE_TYPE_USER
+		query[#query+1] = const.FAVORITE_TYPE_USER
 	end
 
 	local skip, limit = util:pagination(params) 

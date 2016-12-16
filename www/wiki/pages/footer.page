@@ -1,0 +1,32 @@
+
+<!--底部-->
+<div class="container" style="height: 540px;">
+    <div>
+        <div style="margin-top: 145px; display: flex">
+            <div style="margin-left: 80px">
+                <img src="/wiki/assets/imgs/wikicraftLogo.png" class="img-responsive" style="width: 205px">
+            </div>
+
+            <div style="font-size: 16px; margin-left: 145px; display: flex">
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>关于:</p>
+                    <a>关于我们</a>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>支持:</p>
+                    <a>联系方式</a>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>合作伙伴:</p>
+                    <a>Paracraft</a>
+                </div>
+                <div style="display: flex; flex-direction: column; width: 150px">
+                    <p>更新信息:</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 110px; text-align: center; font-size: 16px">
+            <p>备案号：</p>
+        </div>
+    </div>
+</div>
