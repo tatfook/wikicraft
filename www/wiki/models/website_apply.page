@@ -51,7 +51,7 @@ function website_apply:api_memberApply(params)
 	websiteMemberDB:db():find({["+websiteId+userId"]={params.websiteId, params.applyId}}, resume)
 	local err, data = yield()
 	-- 已经存在不管
-	if data then
+	if data and data._id then
 		return errors:wrap(nil)
 	end	
 
@@ -71,7 +71,7 @@ function website_apply:api_worksApply(params)
 	websiteWorksDB:db():find({["+websiteId+worksId"] = {params.websiteId, params.applyId}}, resume)
 	local err, data = yield()
 	-- 已经存在不管
-	if data then
+	if data and data._id then
 		return errors:wrap(nil)
 	end	
 

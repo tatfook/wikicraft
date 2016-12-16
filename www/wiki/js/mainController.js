@@ -243,6 +243,7 @@ app.controller("worksApplyCtrl", function ($scope, $state, Account, Message) {
         util.http("POST", config.apiUrlPrefix + 'website_apply/worksBatchApply', params, function (data) {
             console.log("投稿成功");
             Message.info("投稿成功");
+            history.back();
         });
     }
 
