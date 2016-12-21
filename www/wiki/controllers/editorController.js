@@ -4,7 +4,7 @@
 
 angular.module('MyApp')
 .controller('imgCtrl', function ($scope, $rootScope, $uibModalInstance) {
-    $scope.img = {url:'',txt:''};
+    $scope.img = {url:'',txt:'',file:'',dat:'',nam:''};
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
@@ -13,6 +13,19 @@ angular.module('MyApp')
     $scope.img_insert = function(){
         $rootScope.img = $scope.img;
         $uibModalInstance.close("img");
+    }
+
+    $scope.read_file = function(files){
+        var file = files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e){
+            result.innerHTML = '<img src="'+this.result+'" alt="' + $scope.img.txt + '" width="100%" style="max-width: 200px;"/>'
+            $scope.img.dat=this.result;
+            $scope.img.nam=file.name;
+            $scope.img.url='';
+            console.log($scope.img);
+        }
     }
 })
 .controller('linkCtrl', function ($scope, $rootScope, $uibModalInstance) {
@@ -133,7 +146,7 @@ angular.module('MyApp')
         }
 
         // 获取用户站点列表
-        $http.post('http://localhost:8099/api/wiki/models/website',{userId:Account.getUser()._id}).then( function (response) {
+        $http.post('http://localhost:8099/api/wiki/models/website',{userid:Account.getUser()._id}).then( function (response) {
             $scope.websites = response.data.data;
 
             for(var i=0;i< $scope.websites.length;i++){
@@ -490,12 +503,12 @@ angular.module('MyApp')
                 //console.log(response.data);
                 if(!isEmptyObject($scope.githubSource)){
                     var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
-                    $scope.githubSource.repo.writeFile('master', path, $scope.websitePage.content, 'wikicraft commit message', function(error, result, request){
+                    $scope.githubSource.repo.writeFile('master', path, $scope.websitePage.content, 'wikicraft:'+ path, function(error, result, request){
                         if(!error){
-                            githubSha();
+                            //githubSha();
+                            alert('文件已保存到服务器及Github');
                         }
                     });
-
                 }else{
                     alert('文件已保存到服务器');
                 }
@@ -770,14 +783,27 @@ angular.module('MyApp')
         }).result.then(function (provider){
             console.log(provider);
             if (provider == "img") {
-                var img = $rootScope.img;
+                var url = $rootScope.img.url;
+                var txt = $rootScope.img.txt;
+                var dat = $rootScope.img.dat;
+                var nam = $rootScope.img.nam;
+
                 var wiki = '';
-                if(editor.somethingSelected()){
+                if(txt){
+                    wiki += '!['+txt+']';
+                }else if(editor.somethingSelected()){
                     wiki += '!['+editor.getSelection()+']';
                 }else{
                     wiki += '![]';
                 }
-                wiki += '('+img.url+')';
+
+                if(url){
+                    wiki += '('+ url +')';
+                }else{
+                    wiki += '('+ dat +')';
+                    
+                }
+
                 editor.replaceSelection(wiki);
                 editor.focus();
             }
@@ -786,6 +812,22 @@ angular.module('MyApp')
             console.log('error:'+error);
             return;
         });
+    }
+
+    /**
+     * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
+     * @param dataURI
+     * @returns {Blob}
+     */
+    function dataURItoBlob(dataURI) {
+        var byteString = atob(dataURI.split(',')[1]);
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], {type: mimeString});
     }
 
     //图片上传
@@ -798,33 +840,39 @@ angular.module('MyApp')
         if(isEmptyObject($scope.githubSource)){
             alert('github账号尚未登录，图片无法上传');
         }else{
+            //支持chrome IE10
+            if (window.FileReader) {
+                var fileReader = new FileReader();
+                fileReader.onloadstart = function(){
+                    console.log("onloadstart");
+                    line_keyword('![](uploading...0/'+fileObj.size+')', 2);
+                };
+                fileReader.onprogress = function(p){
+                    console.log("onprogress");
+                    line_keyword('![](uploading...'+p.loaded+'/'+fileObj.size+')', 2);
+                };
+                fileReader.onload=function(){
+                    console.log("load complete");
+                    line_keyword('![](uploading...'+fileObj.size+'/'+fileObj.size+')', 2);
 
-            var total = fileObj.size;
-            var loaded = 0;
-            var step = 1024 * 1024;
-            var times = 0;
-            var blob;
+                    var filename = fileObj.name;
+                    //var options = {
+                    //    encode:true
+                    //};
 
-            var fileReader = new FileReader();
-            fileReader.onloadstart = function(){
-                line_keyword('![](uploading...)', 2);
-            };
-            fileReader.onprogress = function(){
-                line_keyword('![](uploading....)', 2);
-            };
-            fileReader.onload=function(e){
-                //var filename = new Date().getTime() + '.' + fileObj.type.replace('image/','');
-                //console.log(filename);
-                //console.log(this.result);
-                var filename = new Date().getTime();
-                $scope.githubSource.uploadImage(filename,fileReader.result,function(error, result, request){
-                    line_keyword('![](wikicraft:'+filename+')', 2);
-                    if(cb){
-                        cb(error, result, request);
-                    }
-                });
+                    $scope.githubSource.uploadImage(filename, fileReader.result, {}, function (error, result, request) {
+                        //console.log(result);
+                        //line_keyword('![](wikicraft:' + $scope.githubSource.username + "/" + filename + ')', 2);
+                        line_keyword('![](' + fileReader.result + ')', 2);
+                        if (cb) {
+                            cb(error, result, request);
+                        }
+                    });
+                }
+                fileReader.readAsDataURL(fileObj);
+            }else{
+                alert('浏览器不支持');
             }
-            fileReader.readAsDataURL(fileObj);
         }
     }
 
@@ -868,15 +916,26 @@ angular.module('MyApp')
 
     //版本
     $scope.cmd_version = function(){
-        if (!isEmptyObject($scope.websitePage)) {
-            if(!isEmptyObject($scope.githubSource)){
-                $scope.githubSource.listCommits('',function(error, result, request){
-                    if(!error){
-                        console.log(result);
-                    }
-                });
-            }
+        if(!isEmptyObject($scope.githubSource)){
+            $scope.githubSource.listCommits('',function(error, result, request){
+                if(!error){
+                    console.log(result);
+                }
+            });
+        }
+    }
 
+    //目录树
+    $scope.cmd_tree = function() {
+        if (!isEmptyObject($scope.githubSource)) {
+            $scope.githubSource.getTree('master', true, function (error, result, request) {
+                var filelist = []
+                for (var i = 0; result && i < result.length; i++) {
+                    filelist.push({path: result[i].path});
+                }
+                $scope.filelist = filelist;
+                console.log(filelist);
+            });
         }
     }
 
