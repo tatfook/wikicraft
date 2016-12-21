@@ -1,0 +1,16 @@
+<?npl
+	if exist then
+		echo("test")
+	end
+?>
+<div>
+hello world
+</div>
+
+<? exist = true ?>
+
+<?npl
+	if exist then
+		echo("test")
+	end
+?>
