@@ -71,18 +71,17 @@ app.factory('ProjectStorageProvider', function ($http) {
         });
     }
 
-
-
-
     // 上传图片 图片默认都放在根目录下的images目录下
-    github.uploadImage = function (filename, content, cb) {
+    github.uploadImage = function (filename, content, options, cb) {
         if (filename[0] == '/') {
             filename = 'images' + filename;
         } else {
             filename = "images/" + filename;
         }
 
-        github.repo.writeFile('master', filename, content, "upload image: " + filename, {}, function (error, result, request) {
+        github.repo.writeFile('master', filename, content, "upload image: " + filename, options, function (error, result, request) {
+            //console.log("writeFile");
+            //console.log(result);
             cb && cb(error, result, request);
         });
     }

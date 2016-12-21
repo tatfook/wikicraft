@@ -401,15 +401,9 @@ editor.on("drop",function(editor,e){
 function fileUpload(fileObj){
     var $scope=angular.element('#wikiEditor').scope();
     $scope.cmd_image_upload(fileObj,function(error, result, request){
-        console.log(result);
         console.log(result.content.download_url);
-        $.ajax({
-            type:'get',
-            url:result.content.download_url,
-            success:function(body,heads,status){
-                console.log('get img');
-                console.log(body);  //body就是内容了
-            }
+        $.get(result.content.download_url, function(data){
+              console.log(data);
         });
     });
     return;
