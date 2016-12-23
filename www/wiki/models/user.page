@@ -14,7 +14,7 @@ user.db_name = "user"
 
 function user:ctor()
 	self:addfield("username", "string", false, 30)
-	self:addfield("nickname", "string", false, 30)
+	self:addfield("displayName", "string", false, 30)
 	self:addfield("signature", "string")
 	self:addfield("desc", "string", false)
 	self:addfield("email", "string", false, 30) -- private email, can be used to login
@@ -38,15 +38,38 @@ function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
 end
 
-function user:get(params) 
-	self:db():find({}, resume)
-	local err, data = yield()
-	
-	if err then
-		return errors:wrap(err, data)
+-- 旧接口兼容
+function user:api_getminiprofile(params)
+	if(not params._id) then
+		-- `_id` is automatically injected if no other field is found. 
+		self:ensureAuthenticated();
+		params._id = request.userid;
 	end
+	local data = user._super.get(self, params);
+	if(type(data) == "table") then
+		-- never return password
+		return {_id=data._id, joindate=data.joindate, location=data.location, displayName = data.displayName, picture = data.picture};
+	end
+end
 
-	return {error=errors.SUCCESS, data=data}
+-- 旧接口兼容
+function user:get(params)
+	if(not params._id) then
+		-- `_id` is automatically injected if no other field is found. 
+		self:ensureAuthenticated();
+		params._id = request.userid;
+	end
+	local data = user._super.get(self, params);
+	if(type(data) == "table") then
+		-- never return password
+		data.password = nil;
+		-- hide non-owner fields
+		if(data._id ~= request.userid) then
+			data.email = nil;
+			data.github_token = nil;
+		end
+	end
+	return data;
 end
 
 -- 更新用户信息

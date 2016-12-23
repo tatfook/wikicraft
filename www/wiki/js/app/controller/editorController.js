@@ -7,13 +7,15 @@ define([
     'jquery',
     'codemirror',
     'app',
+    'highlight',
     'markdown-it',
     '/wiki/js/markdown/markdown-it-wikicmd.js',
     '/wiki/js/markdown/markdownwiki.js',
     '/wiki/js/app/helper/editor.js',
     '/wiki/js/app/factory/ProjectStorageProvider.js',
     'bootstrap-treeview',
-], function ($, CodeMirror, app, markdownit, markdownit_wikicmd_plugin, markdownwiki, editor) {
+], function ($, CodeMirror, app, hljs, markdownit, markdownit_wikicmd_plugin, markdownwiki, editor) {
+    window.hljs = hljs;
     window.markdownit = markdownit;
     window.markdownit_wikicmd_plugin = markdownit_wikicmd_plugin;
     window.markdownwiki = markdownwiki;
@@ -688,7 +690,7 @@ define([
         //表格
         $scope.cmd_tabel = function () {
             $uibModal.open({
-                templateUrl: config.htmlPath + "html/editorInsertTable.html",
+                templateUrl: config.htmlPath + "editorInsertTable.html",
                 controller: "tableCtrl",
             }).result.then(function (provider) {
                 //console.log(provider);
@@ -756,7 +758,7 @@ define([
         //链接
         $scope.cmd_link = function () {
             $uibModal.open({
-                templateUrl: config.htmlPath + "html/editorInsertLink.html",
+                templateUrl: config.htmlPath + "editorInsertLink.html",
                 controller: "linkCtrl",
             }).result.then(function (provider) {
                 if (provider == "link") {
@@ -792,7 +794,7 @@ define([
         //图片
         $scope.cmd_image = function () {
             $uibModal.open({
-                templateUrl: config.htmlPath + "html/editorInsertImg.html",
+                templateUrl: config.htmlPath + "editorInsertImg.html",
                 controller: "imgCtrl",
             }).result.then(function (provider) {
                 console.log(provider);
