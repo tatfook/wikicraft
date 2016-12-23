@@ -1,7 +1,10 @@
 <?npl
     wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
-    wp_enqueue_script("packagesInstallController", MOD_WEBROOT.."controllers/packagesInstallController.js");
+--  wp_enqueue_script("packagesInstallController", MOD_WEBROOT.."controllers/packagesInstallController.js");
 ?>
+<script>
+    config.registerPreloadModule(config.modPath + 'packages/controllers/packagesInstallController.js');
+</script>
 
 <div class="packages-install col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-controller="packagesInstallController">
 	<div class="packages-tabs hidden-xs hidden-sm">

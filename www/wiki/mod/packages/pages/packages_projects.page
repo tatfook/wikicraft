@@ -1,7 +1,10 @@
 ﻿<?npl
 wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
-wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packagesProjectsController.js");
+--wp_enqueue_script("packagesProjectsController", MOD_WEBROOT.."controllers/packagesProjectsController.js");
 ?>
+<script>
+    config.registerPreloadModule(config.modPath + 'packages/controllers/packagesProjectsController.js');
+</script>
 
 <div class="packages-projects col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-controller="packagesProjectsController">
     <div class="packages-tabs hidden-xs hidden-sm">

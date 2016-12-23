@@ -8,32 +8,31 @@ Date: 2016/10/17
 -- TODO: buddle and minify following wiki related files
 wp_enqueue_script("highlight", WIKI_WEBROOT.."plugins/highlight/highlight.pack.js");
 wp_enqueue_style("highlight", WIKI_WEBROOT.."plugins/highlight/default.css");
-wp_enqueue_script("markdown-it", WIKI_WEBROOT.."plugins/markdown-it/markdown-it.min.js");
-wp_enqueue_script("markdown-it_wikicmd", WIKI_WEBROOT.."js/markdown/markdown-it-wikicmd.js");
-wp_enqueue_script("markdownwiki", WIKI_WEBROOT.."js/markdown/markdownwiki.js");
+-- wp_enqueue_script("markdown-it", WIKI_WEBROOT.."plugins/markdown-it/markdown-it.min.js");
+-- wp_enqueue_script("markdown-it_wikicmd", WIKI_WEBROOT.."js/markdown/markdown-it-wikicmd.js");
+-- wp_enqueue_script("markdownwiki", WIKI_WEBROOT.."js/markdown/markdownwiki.js");
 
+-- wp_enqueue_script("bootstrap-treeview", WIKI_WEBROOT.."plugins/bootstrap-treeview/bootstrap-treeview.min.js");
 
-wp_enqueue_script("bootstrap-treeview", WIKI_WEBROOT.."plugins/bootstrap-treeview/bootstrap-treeview.min.js");
-
-wp_enqueue_script("codemirror",  WIKI_WEBROOT.."plugins/codemirror/lib/codemirror.js");
+--wp_enqueue_script("codemirror",  WIKI_WEBROOT.."plugins/codemirror/lib/codemirror.js");
 wp_enqueue_style("codemirror_style",  WIKI_WEBROOT.."plugins/codemirror/lib/codemirror.css");
-wp_enqueue_script("codemirror_mode_markdown", WIKI_WEBROOT.."plugins/codemirror/mode/markdown/markdown.js");
-wp_enqueue_script("codemirror_addon_dialog", WIKI_WEBROOT.."plugins/codemirror/addon/dialog/dialog.js");
+--wp_enqueue_script("codemirror_mode_markdown", WIKI_WEBROOT.."plugins/codemirror/mode/markdown/markdown.js");
+--wp_enqueue_script("codemirror_addon_dialog", WIKI_WEBROOT.."plugins/codemirror/addon/dialog/dialog.js");
 wp_enqueue_style("codemirror_addon_dialog_style", WIKI_WEBROOT.."plugins/codemirror/addon/dialog/dialog.css");
-wp_enqueue_script("codemirror_addon_continuelist", WIKI_WEBROOT.."plugins/codemirror/addon/edit/continuelist.js");
-wp_enqueue_script("codemirror_addon_searchcursor", WIKI_WEBROOT.."plugins/codemirror/addon/search/searchcursor.js");
-wp_enqueue_script("codemirror_addon_search", WIKI_WEBROOT.."plugins/codemirror/addon/search/search.js");
-wp_enqueue_script("codemirror_addon_matchesonscrollbar", WIKI_WEBROOT.."plugins/codemirror/addon/search/matchesonscrollbar.js");
-wp_enqueue_style("codemirror_addon_matchesonscrollbar_style", WIKI_WEBROOT.."plugins/codemirror/addon/search/matchesonscrollbar.css");
-wp_enqueue_script("codemirror_addon_jumptoline", WIKI_WEBROOT.."plugins/codemirror/addon/search/jump-to-line.js");
-wp_enqueue_script("codemirror_addon_annotatescrollbar", WIKI_WEBROOT.."plugins/codemirror/addon/scroll/annotatescrollbar.js");
-wp_enqueue_script("codemirror_addon_fullscreen", WIKI_WEBROOT.."plugins/codemirror/addon/display/fullscreen.js");
+--wp_enqueue_script("codemirror_addon_continuelist", WIKI_WEBROOT.."plugins/codemirror/addon/edit/continuelist.js");
+--wp_enqueue_script("codemirror_addon_searchcursor", WIKI_WEBROOT.."plugins/codemirror/addon/search/searchcursor.js");
+--wp_enqueue_script("codemirror_addon_search", WIKI_WEBROOT.."plugins/codemirror/addon/search/search.js");
+--wp_enqueue_script("codemirror_addon_matchesonscrollbar", WIKI_WEBROOT.."plugins/codemirror/addon/search/matchesonscrollbar.js");
+--wp_enqueue_style("codemirror_addon_matchesonscrollbar_style", WIKI_WEBROOT.."plugins/codemirror/addon/search/matchesonscrollbar.css");
+--wp_enqueue_script("codemirror_addon_jumptoline", WIKI_WEBROOT.."plugins/codemirror/addon/search/jump-to-line.js");
+--wp_enqueue_script("codemirror_addon_annotatescrollbar", WIKI_WEBROOT.."plugins/codemirror/addon/scroll/annotatescrollbar.js");
+--wp_enqueue_script("codemirror_addon_fullscreen", WIKI_WEBROOT.."plugins/codemirror/addon/display/fullscreen.js");
 wp_enqueue_style("codemirror_addon_fullscreen_style", WIKI_WEBROOT.."plugins/codemirror/addon/display/fullscreen.css");
 
-wp_enqueue_script("github_bundle", WIKI_WEBROOT.."plugins/github-api/GitHub.bundle.min.js");
+--wp_enqueue_script("github_bundle", WIKI_WEBROOT.."plugins/github-api/GitHub.bundle.min.js");
 
-wp_enqueue_script("storage_pro", WIKI_WEBROOT.."js/ProjectStorageProvider.js");
-wp_enqueue_script("editor_controller", WIKI_WEBROOT.."controllers/editorController.js");
+-- wp_enqueue_script("storage_pro", WIKI_WEBROOT.."js/ProjectStorageProvider.js");
+-- wp_enqueue_script("editor_controller", WIKI_WEBROOT.."controllers/editorController.js");
 wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
 wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-awesome.min.css");
 
@@ -205,6 +204,24 @@ wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-aweso
 
 
 <?npl
-wp_enqueue_script("editor_main_js", WIKI_WEBROOT.."js/editor.js");
+-- wp_enqueue_script("editor_main_js", WIKI_WEBROOT.."js/editor.js");
 ?>
-<script data-main="<?=WIKI_WEBROOT?>mod/main" src="<?=WIKI_WEBROOT?>plugins/requirejs/require.js"></script>
+<!--script data-main="<?=WIKI_WEBROOT?>mod/main" src="<?=WIKI_WEBROOT?>plugins/requirejs/require.js"></script-->
+<script>
+    (function () {
+        var libPathPrefix = '/wiki/js/lib/';
+        var mdPathPrefix = '/wiki/js/markdown/';
+        require([
+            //'highlight',
+            libPathPrefix + 'markdown-it/markdown-it.min.js',
+            mdPathPrefix + 'markdown-it-wikicmd.js',
+            mdPathPrefix + 'markdownwiki.js',
+        ], function (markdownit, markdownit_wikicmd_plugin, markdownwiki) {
+            //window.hljs = hljs;
+            window.markdownit = markdownit;
+            window.markdownit_wikicmd_plugin = markdownit_wikicmd_plugin;
+            window.markdownwiki = markdownwiki;
+            require(['/wiki/controllers/editorController.js']);
+        });
+    })()
+</script>

@@ -1,7 +1,12 @@
 ﻿<?npl
 	wp_enqueue_style("packages_style", MOD_WEBROOT.."assets/packages.css");
-	wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesController.js");
+--	wp_enqueue_script("packagesController", MOD_WEBROOT.."controllers/packagesController.js");
 ?>
+
+<script>
+	config.registerPreloadModule(config.modPath + 'packages/controllers/packagesController.js');
+</script>
+
 <div ng-controller="packagesController" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
 	<div ng-if="projectType == 'npl'" class="packages ">

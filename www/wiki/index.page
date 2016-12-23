@@ -6,48 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>wikicraft</title>
-    <!-- plugin css -->
-    <link href="/wiki/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/wiki/plugins/ui-select/select.css" rel="stylesheet" >
-	<link href="/wiki/plugins/cropper/cropper.min.css">
 
-    <!-- plugin js -->
-    <script src="/wiki/plugins/jquery/jquery.min.js"></script>
-    <script src="/wiki/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/wiki/plugins/angular/angular.min.js"></script>
-    <script src="/wiki/plugins/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="/wiki/plugins/angular-ui-router/angular-ui-router.min.js"></script>
-    <script src="/wiki/plugins/bootstrap-treeview/bootstrap-treeview.min.js"></script>
-    <script src="/wiki/plugins/satellizer/satellizer.min.js"></script>
-    <script src="/wiki/plugins/angular-file-upload/angular-file-upload.min.js"></script>
-    <script src="/wiki/plugins/github-api/GitHub.bundle.min.js"></script>
-    <script src="/wiki/plugins/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="/wiki/plugins/ui-select/select.js"></script>
-    <!--script src="/wiki/plugins/requirejs/require.js"></script-->
-	<!-- 用户页显示需解析md --->
-    <script src="/wiki/plugins/markdown-it/markdown-it.min.js"></script>
-	<!-- removed by LiXizhi: remove js files from index, they should be included in individual page. 
-	<script src="/wiki/plugins/ace/ace.js"></script>
-	-->
+    <!-- lib css -->
+    <link href="/wiki/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <script src="/wiki/plugins/cropper/cropper.min.js"></script>
+    <!-- 全局配置 -->
+    <script src="/wiki/js/app/config.js"></script>
 
-    <!-- self js -->
-    <script src="/wiki/js/util.js"></script>
-    <script src="/wiki/js/app.js"></script>
-    <script src="/wiki/js/config.js"></script>
-    <script src="/wiki/js/factory.js"></script>
-	<script src="/wiki/js/moduleIframeParser.js"></script>
-    <script src="/wiki/js/mainController.js"></script>
-    <script src="/wiki/js/homeController.js"></script>
-    <script src="/wiki/js/userController.js"></script>
-	<script src="/wiki/js/authController.js"></script>
+
 </head>
 
 <body>
-<div ng-app="MyApp" ng-controller="mainCtrl">
-    <?npl include(WIKI_ROOT .. 'pages/header.page') ?>
-
+<div ng-controller="mainController">
+    <div ng-include="'/wiki/html/header.html'"></div>
     <!--页面主题内容-->
     <div style="z-index: 1">
         <!--官网内容体-->
@@ -65,8 +36,9 @@
             <div id="__UserSitePageContent__"></div>
         </div>
     </div>
-
-    <?npl include(WIKI_ROOT .. 'pages/footer.page') ?>
 </div>
+
+<!-- lib脚本 -->
+<script data-main="/wiki/js/main.js" src="/wiki/js/lib/requirejs/require.js"></script>
 </body>
 </html>

@@ -1,0 +1,27 @@
+<!-- 组织主页头部 -->
+<div class="container">
+	<div style="position: relative; height: 552px">
+		<img src='{{imgsPath + "OrgHeaderBackground.jpg"}}' class="img-responsive">
+		<div style="position: absolute; top: 350px; left: 120px;">
+			<div style="font-size: 24px; color: rgb(101,130,190)">
+				<div>
+					位置 {{userinfo.location}}
+				</div>
+				<div>
+					成立于 {{siteinfo.createDate}}
+				</div>
+			</div>
+		</div>
+		<div style="position: absolute; top: 145px;left: 425px; width: 275px">
+			<img ng-src="{{ siteinfo.logoUrl || imgsPath + 'OrgLogo.jpg'}}" class="img-circle img-responsive">
+		</div>
+
+		<div style="position: absolute; top: 465px; width:100%; display: flex; justify-content: center;font-size: 22px">
+			{{siteinfo.desc}}
+		</div>
+
+		<div style="position: absolute; left: 765px; top: 340px;">
+			<button ng-click="memberApply()" style="background: none; border-radius: 50%" class="btn"><img src='{{imgsPath + "AddUser.jpg"}}' class="img-circle" style="width: 100px; height: 100px"></button>
+		</div>
+	</div>
+</div>

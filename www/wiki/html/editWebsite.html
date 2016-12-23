@@ -1,4 +1,4 @@
-<div ng-controller="editWebsiteCtrl" class="container">
+<div>
     <div style="display: flex">
         <div>
             <ul class="nav nav-tabs nav-stacked">
@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <label class="control-label">网站LOGO:</label>
                         <div style="display: flex; justify-content: center">
-                            <img src='/wiki/assets/imgs/ManPortrait.jpg' id='websiteLogo' style="width: 80px; height: 80px">
+                            <img src='{{imgsPath + "ManPortrait.jpg"}}' id='websiteLogo' style="width: 80px; height: 80px">
                             <input type="file" accept='image/*' class="btn" id="uploadPictureBtn" style="align-self: flex-end">
                         </div>
                     </div>

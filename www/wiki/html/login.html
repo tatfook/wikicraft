@@ -12,9 +12,9 @@
     }
 </style>
 
-<div ng-controller="loginCtrl" >
+<div>
     <div style="position: relative">
-        <img src="/wiki/assets/imgs/loginBG.png" class="img-responsive">
+        <img ng-src='{{imgsPath + "loginBG.png"}}' class="img-responsive">
         <div style="position: absolute; top: 353px; left: 285px; color: white; font-size: 18px">
             <div style="display: flex">
                 <div>
@@ -32,7 +32,7 @@
             </div>
             <div style="margin-top: 65px; margin-left: 265px">
                 <div style="display: flex; align-items: center">
-                    <div>使用其它账号登录: <a style="color: white" ng-click="githubLogin()"><img src="/wiki/assets/imgs/githubLogo.png" style="width: 24px; height: 24px"> github</a></div>
+                    <div>使用其它账号登录: <a style="color: white" ng-click="githubLogin()"><img ng-src='{{imgsPath + "githubLogo.png"}}' style="width: 24px; height: 24px"> github</a></div>
                     <div style="margin-left: 40px"><a style="color: white" ui-sref="index.home">没有账号，点击申请</a></div>
                 </div>
             </div>
