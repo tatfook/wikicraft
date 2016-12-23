@@ -36,7 +36,7 @@ define(['app', 'require'], function (app, require) {
             var url = obj.url || ('/' + key);
             var templateUrl = obj.templateUrl || (templatePathPrefix + key + ".html");
             var controllerName = obj.controllerName || (key + 'Controller');
-            var controllerPath = obj.controllerPath || (controllerPathPrefix + controllerName);
+            var controllerPath = obj.controllerPath || (controllerPathPrefix + controllerName + '.js');
 
             $stateProvider.state(key, {
                 url:url,
