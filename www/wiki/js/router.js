@@ -11,8 +11,8 @@ define(['app', 'require'], function (app, require) {
         var routerMap = {
             'test':{
                 url:'/test',
-                templateUrl:templatePathPrefix + 'test.html',
-                controllerPath:controllerPathPrefix + 'testController',
+                templateUrl:templatePathPrefix + 'test.page',
+                controllerPath:controllerPathPrefix + 'testController.js',
                 controllerName:'testController',
             },
             'login':{},
@@ -29,6 +29,9 @@ define(['app', 'require'], function (app, require) {
             'siteshow':{},
             'usershow':{},
             'worksApply':{},
+
+            // temp
+            'game':{},
         };
 
         for (var key in routerMap) {

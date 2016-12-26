@@ -36,6 +36,8 @@
             <div id="__UserSitePageContent__"></div>
         </div>
     </div>
+
+    <div ng-include="'/wiki/html/footer.html'"></div>
 </div>
 
 <!-- lib脚本 -->

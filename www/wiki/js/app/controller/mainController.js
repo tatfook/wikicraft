@@ -7,8 +7,8 @@ define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdown
         console.log("mainController");
         // 初始化基本信息
         function initBaseInfo() {
-            $scope.imgsPath = config.imgsPath;
-
+            $rootScope.imgsPath = config.imgsPath;
+            console.log($rootScope.imgsPath);
             //配置一些全局服务
             util.setAngularServices({$rootScope:$rootScope, $http:$http, $state:$state, $compile:$compile, $auth:$auth});
             util.setSelfServices({config:config, storage:storage, Account:Account, Message:Message});
