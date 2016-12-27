@@ -5,7 +5,7 @@
 define(['app', 'storage', 'util'], function (app, storage, util) {
     console.log("accountFactory");
 
-    app.factory('Account', function ($auth, $rootScope) {
+    app.factory('Account', function ($auth, $rootScope, $uibModal) {
         return {
             user:{
                 //_id:1,
@@ -57,13 +57,35 @@ define(['app', 'storage', 'util'], function (app, storage, util) {
 
             githubAuthenticate: function() {
                 self = this;
-                $auth.authenticate("github").then(function (response) {
-                    $auth.setToken(response.data.token);
-                    self.setUser(response.data.userInfo);
-                    console.log("github认证成功!!!")
-                }, function(){
-                    console.log("github认证失败!!!")
+                app.registerController('modalGithubAuthCtrl', function ($scope, $uibModalInstance) {
+                    $scope.yes = function () {
+                        //console.log("yes");
+                        $uibModalInstance.close('yes');
+                    };
+                    $scope.no = function () {
+                        //console.log("no");
+                        $uibModalInstance.dismiss('no');
+
+                    }
                 });
+                $uibModal.open({
+                    templateUrl: config.htmlPath + 'githubAuth.html',
+                    controller: 'modalGithubAuthCtrl',
+                }).result.then(function (result) {
+                    //console.log(result);
+                    $auth.authenticate("github").then(function (response) {
+                        $auth.setToken(response.data.token);
+                        self.setUser(response.data.userInfo);
+                        console.log("github认证成功!!!")
+                    }, function(){
+                        console.log("github认证失败!!!")
+                    });
+                }, function (text, error) {
+                    //console.log('text:' + text);
+                    //console.log('error:' + error);
+                    return;
+                });
+                return ;
             },
 
             getProfile: function (callback) {
@@ -75,7 +97,7 @@ define(['app', 'storage', 'util'], function (app, storage, util) {
 
                     self.setUser(data);
                     if (!data.githubToken) {
-                        //self.githubAuthenticate();
+                        self.githubAuthenticate();
                     }
 
                     callback && callback();

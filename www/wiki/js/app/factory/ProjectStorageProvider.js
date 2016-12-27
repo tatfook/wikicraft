@@ -2,7 +2,7 @@
  * Created by karlwu on 2016-11-28.
  */
 
-define(['app'], function (app) {
+define(['app', 'github-api'], function (app, GitHub) {
     app.factory('ProjectStorageProvider', function ($http) {
         // github 数据源
         var github = {
@@ -33,7 +33,9 @@ define(['app'], function (app) {
         github.init = function (token, cb) {
             // token auth
             github.github = new GitHub({
-                token: token.access_token
+                //token: token.access_token,
+                username:"765485868@qq.com",
+                password:'wxa765485868',
             });
             github.user = github.getUser();
             github.getUser().getProfile(function (error, result, request) {

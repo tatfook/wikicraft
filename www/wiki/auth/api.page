@@ -31,6 +31,7 @@ end
 -- call this function to ensure we are authenticated in json request
 -- @return userid, the request.userid also contains the userid
 function ensureAuthenticated()
+	-- request.userid = 1 -- debug use
 	if(request.userid~=nil) then
 		if(not request.userid) then
 			response:status(401):send({ message = 'Auth failed' });	

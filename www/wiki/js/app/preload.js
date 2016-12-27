@@ -19,6 +19,7 @@
         // factory
         factoryPathPrefix + 'account.js',
         factoryPathPrefix + 'message.js',
+        factoryPathPrefix + 'ProjectStorageProvider.js',
     ];
     moduleList = moduleList.concat(config.preloadModuleList);
     //console.log(moduleList);

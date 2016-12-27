@@ -455,7 +455,7 @@ define([
                             console.log('command:new');
                             break;
                         case 'ws':
-                            console.lgo('command:ws');
+                            console.log('command:ws');
                             break;
                         default:
                             console.log('command:undefined!' + cmd);

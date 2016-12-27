@@ -138,8 +138,6 @@ function RenderServerWikiContent()
 	if sitename == nil or sitename == "wiki" or sitename == "api" then
 		if _pagename == "mod" then
 			include_once(WIKI_ROOT .. "mod/routes.page");
-		elseif _pagename == "module" then
-			include_once(WIKI_ROOT .. "module/routes.page");
 		else
 			local filename = WIKI_ROOT .. 'pages/' .. _pagename .. subpage .. ".page";
 			if file_exists(filename) then
@@ -155,11 +153,5 @@ function RenderServerWikiContent()
 	end
 end
 
-local sitename, _pagename = parseURL()
-
-if _pagename == "module" then
-	include(WIKI_ROOT .. "module.page")  -- 为模块的话，用自己的框架页，默认框架包含头部和尾部，混合很难共用
-else
-	include(WIKI_ROOT .. "index.page")
-end
+include(WIKI_ROOT .. "index.page")
 ?>
