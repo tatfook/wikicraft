@@ -32,8 +32,10 @@
         </div>
 
         <!--用户站点内容体-->
-        <div id="__UserSitePageContentContainer__">
-            <div id="__UserSitePageContent__"></div>
+        <div class="container">
+            <div id="__UserSitePageContentContainer__">
+                <div id="__UserSitePageContent__"></div>
+            </div>
         </div>
     </div>
 

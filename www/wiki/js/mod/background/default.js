@@ -1,4 +1,4 @@
-define(['jquery','app', 'util', 'config', 'storage'], function ($, app, util, config, storage) {
+define(['jquery','app', 'util', 'storage'], function ($, app, util, storage) {
     app.registerController("defaultBackgroundController", function ($scope, $auth, $interval, Account, Message) {
         function init() {
             var moduleParams = $scope.wikiBlockParams;

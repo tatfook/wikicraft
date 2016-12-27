@@ -49,6 +49,7 @@ define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdown
                 $rootScope.siteinfo = data.siteinfo;
                 $rootScope.pageinfo = data.pageinfo;
                 var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
+                /*
                 pageContent='<wiki-block path="/background/default" background-image="url(\'/wiki/assets/imgs/3DGameBG.jpg\')"></wiki-block>' +
                             '<wiki-block path="header/gameHeader"></wiki-block>' +
                             '<wiki-block path="game/gamedate" contribute-date="12.1-12.30" vote-date="1.1-1.10" result-date="1.12"></wiki-block>' +
@@ -58,9 +59,9 @@ define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdown
                             '<wiki-block path="works/workslist" title="全部作品" type="all"></wiki-block>' +
                             '<wiki-block path="user/userlist" title="评委成员" type="judge"></wiki-block>'+
                             '<div class="container"><img src="/wiki/assets/imgs/3DGameRule.jpg" class="img-responsive"></div>';
-
-                //var md = markdownit({html:true});
-                //pageContent = md.render(pageContent);
+                */
+                var md = markdownit({html:true});
+                pageContent = md.render(pageContent);
                 console.log(pageContent);
                 pageContent = $compile(pageContent)($scope);
                 $('#__UserSitePageContent__').html(pageContent)

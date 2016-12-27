@@ -21,6 +21,7 @@ define([
     app.controller('imgCtrl', function ($scope, $rootScope, $uibModalInstance) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
+<<<<<<< HEAD
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }
@@ -55,6 +56,48 @@ define([
         }
     }).controller('tableCtrl', function ($scope, $rootScope, $uibModalInstance) {
         $scope.table = {rows: 2, cols: 2, alignment: 0};
+=======
+angular.module('MyApp')
+.controller('imgCtrl', function ($scope, $rootScope, $uibModalInstance) {
+    $scope.img = {url:'',txt:'',file:'',dat:'',nam:''};
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    }
+
+    $scope.img_insert = function(){
+        $rootScope.img = $scope.img;
+        $uibModalInstance.close("img");
+    }
+
+    $scope.read_file = function(files){
+        var file = files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e){
+            result.innerHTML = '<img src="'+this.result+'" alt="' + $scope.img.txt + '" width="100%" style="max-width: 200px;"/>'
+            $scope.img.dat=this.result;
+            $scope.img.nam=file.name;
+            $scope.img.url='';
+            console.log($scope.img);
+        }
+    }
+})
+.controller('linkCtrl', function ($scope, $rootScope, $uibModalInstance) {
+    $scope.link = {url:'',txt:''};
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    }
+
+    $scope.link_insert = function(){
+        $rootScope.link = $scope.link;
+        $uibModalInstance.close("link");
+    }
+})
+.controller('tableCtrl', function ($scope, $rootScope, $uibModalInstance) {
+        $scope.table = {rows:2,cols:2,alignment:0};
+>>>>>>> 5546bd5384a4a1bdfb7355ee0197d44b94fa1298
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
@@ -150,10 +193,31 @@ define([
             return true;
         }
 
+<<<<<<< HEAD
         //初始化，读取用户站点列表及页面列表
         function init() {
             if (!Account.isAuthenticated()) {
                 return;
+=======
+        // 获取用户站点列表
+        $http.post('http://localhost:8099/api/wiki/models/website',{userid:Account.getUser()._id}).then( function (response) {
+            $scope.websites = response.data.data;
+
+            for(var i=0;i< $scope.websites.length;i++){
+                ws = $scope.websites[i];
+                $http.post('http://localhost:8099/api/wiki/models/website_pages',{websiteName:ws.name}).then(function (response) {
+                    pages = response.data.data;
+                    for(var j=0;j<pages.length;j++){
+                        $scope.websitePages.push(pages[j]);
+                    }
+                    if(i == $scope.websites.length){
+                        initRoot();
+                        initGithub();
+                    }
+                }).catch(function (response) {
+                    console.log(response.data);
+                });
+>>>>>>> 5546bd5384a4a1bdfb7355ee0197d44b94fa1298
             }
 
             // 获取用户站点列表
@@ -462,6 +526,7 @@ define([
                 }
             }
             return;
+<<<<<<< HEAD
         }
 
         $scope.cmd_newpage = function () {
@@ -500,6 +565,28 @@ define([
                     //}}]);
                     //$rootScope.websiteNode = $scope.website;
                     //$rootScope.websitePage = response.data;
+=======
+        });
+    }
+
+    //保存页面
+    $scope.cmd_savepage = function () {
+        var content = editor.getValue();
+        if( ! isEmptyObject($scope.websitePage)){//修改
+            $scope.websitePage.content = content;
+            $http.put('http://localhost:8099/api/wiki/models/website_pages',$scope.websitePage).then(function (response) {
+                //console.log(response.data);
+                if(!isEmptyObject($scope.githubSource)){
+                    var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
+                    $scope.githubSource.repo.writeFile('master', path, $scope.websitePage.content, 'wikicraft:'+ path, function(error, result, request){
+                        if(!error){
+                            //githubSha();
+                            alert('文件已保存到服务器及Github');
+                        }
+                    });
+                }else{
+                    alert('文件已保存到服务器');
+>>>>>>> 5546bd5384a4a1bdfb7355ee0197d44b94fa1298
                 }
             }, function (text, error) {
                 console.log('text:' + text);
@@ -841,6 +928,7 @@ define([
             for (var i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
+<<<<<<< HEAD
             return new Blob([ab], {type: mimeString});
         }
 
@@ -887,6 +975,46 @@ define([
                 } else {
                     alert('浏览器不支持');
                 }
+=======
+        }, function (text, error) {
+            console.log('text:'+text);
+            console.log('error:'+error);
+            return;
+        });
+    }
+
+    //图片
+    $scope.cmd_image = function () {
+        $uibModal.open({
+            templateUrl: WIKI_WEBROOT+ "html/editorInsertImg.html",
+            controller: "imgCtrl",
+        }).result.then(function (provider){
+            console.log(provider);
+            if (provider == "img") {
+                var url = $rootScope.img.url;
+                var txt = $rootScope.img.txt;
+                var dat = $rootScope.img.dat;
+                var nam = $rootScope.img.nam;
+
+                var wiki = '';
+                if(txt){
+                    wiki += '!['+txt+']';
+                }else if(editor.somethingSelected()){
+                    wiki += '!['+editor.getSelection()+']';
+                }else{
+                    wiki += '![]';
+                }
+
+                if(url){
+                    wiki += '('+ url +')';
+                }else{
+                    wiki += '('+ dat +')';
+                    
+                }
+
+                editor.replaceSelection(wiki);
+                editor.focus();
+>>>>>>> 5546bd5384a4a1bdfb7355ee0197d44b94fa1298
             }
         }
 
@@ -899,6 +1027,7 @@ define([
             var cursor = editor.getCursor();
             editor.setCursor(CodeMirror.Pos(cursor.line, cursor.ch - 3));
 
+<<<<<<< HEAD
             editor.focus();
         }
 
@@ -925,6 +1054,66 @@ define([
                         $scope.loading = false;
                     });
                 }
+=======
+    /**
+     * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
+     * @param dataURI
+     * @returns {Blob}
+     */
+    function dataURItoBlob(dataURI) {
+        var byteString = atob(dataURI.split(',')[1]);
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], {type: mimeString});
+    }
+
+    //图片上传
+    $scope.cmd_image_upload = function (fileObj, cb) {
+        if(!/image\/\w+/.test(fileObj.type)){
+            alert("这不是图片！");
+            return false;
+        }
+
+        if(isEmptyObject($scope.githubSource)){
+            alert('github账号尚未登录，图片无法上传');
+        }else{
+            //支持chrome IE10
+            if (window.FileReader) {
+                var fileReader = new FileReader();
+                fileReader.onloadstart = function(){
+                    console.log("onloadstart");
+                    line_keyword('![](uploading...0/'+fileObj.size+')', 2);
+                };
+                fileReader.onprogress = function(p){
+                    console.log("onprogress");
+                    line_keyword('![](uploading...'+p.loaded+'/'+fileObj.size+')', 2);
+                };
+                fileReader.onload=function(){
+                    console.log("load complete");
+                    line_keyword('![](uploading...'+fileObj.size+'/'+fileObj.size+')', 2);
+
+                    var filename = fileObj.name;
+                    //var options = {
+                    //    encode:true
+                    //};
+
+                    $scope.githubSource.uploadImage(filename, fileReader.result, {}, function (error, result, request) {
+                        //console.log(result);
+                        //line_keyword('![](wikicraft:' + $scope.githubSource.username + "/" + filename + ')', 2);
+                        line_keyword('![](' + fileReader.result + ')', 2);
+                        if (cb) {
+                            cb(error, result, request);
+                        }
+                    });
+                }
+                fileReader.readAsDataURL(fileObj);
+            }else{
+                alert('浏览器不支持');
+>>>>>>> 5546bd5384a4a1bdfb7355ee0197d44b94fa1298
             }
         }
 
@@ -938,6 +1127,7 @@ define([
                 });
             }
         }
+<<<<<<< HEAD
 
         //目录树
         $scope.cmd_tree = function () {
@@ -977,6 +1167,32 @@ define([
          */
         function hex_sha1(s) {
             return binb2hex(core_sha1(AlignSHA1(s)));
+=======
+    }
+
+    //版本
+    $scope.cmd_version = function(){
+        if(!isEmptyObject($scope.githubSource)){
+            $scope.githubSource.listCommits('',function(error, result, request){
+                if(!error){
+                    console.log(result);
+                }
+            });
+        }
+    }
+
+    //目录树
+    $scope.cmd_tree = function() {
+        if (!isEmptyObject($scope.githubSource)) {
+            $scope.githubSource.getTree('master', true, function (error, result, request) {
+                var filelist = []
+                for (var i = 0; result && i < result.length; i++) {
+                    filelist.push({path: result[i].path});
+                }
+                $scope.filelist = filelist;
+                console.log(filelist);
+            });
+>>>>>>> 5546bd5384a4a1bdfb7355ee0197d44b94fa1298
         }
 
         /*

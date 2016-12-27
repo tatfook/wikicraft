@@ -114,13 +114,13 @@ function parseURL()
 		sitename = nil
 	end
 	if sitename and sitena ~= "www" then 
-		local _pagename = request:url():match("^/?([^/]*)")
+		local _pagename, subpage = request:url():match("^/?([^/]*)(.*)")
 	else
 		local url = commonlib.Encoding.url_decode(request:url())
-		sitename, _pagename = url:match("^/?([^/]+)/?([^/]*)");	
+		sitename, _pagename, subpage = url:match("^/?([^/]+)/?([^/]*)(.*)");
 	end
 
-	return sitename, _pagename
+	return sitename, _pagename, subpage
 end
 
 function RenderServerWikiContent() 
@@ -134,13 +134,14 @@ function RenderServerWikiContent()
 
 	log(sitename)
 	log(_pagename)
+	log(subpage)
 	if sitename == nil or sitename == "wiki" or sitename == "api" then
 		if _pagename == "mod" then
 			include_once(WIKI_ROOT .. "mod/routes.page");
 		elseif _pagename == "module" then
 			include_once(WIKI_ROOT .. "module/routes.page");
 		else
-			local filename = WIKI_ROOT .. 'pages/' .. _pagename .. ".page";
+			local filename = WIKI_ROOT .. 'pages/' .. _pagename .. subpage .. ".page";
 			if file_exists(filename) then
 				include(filename);
 			end

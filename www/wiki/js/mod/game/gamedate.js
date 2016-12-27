@@ -1,5 +1,5 @@
 
-define(['app', 'config'], function (app, config) {
+define(['app'], function (app) {
     app.registerController("gamedateController", function ($scope) {
         $scope.htmlUrl = config.wikiModPath + 'game/pages/gamedate.page';
 

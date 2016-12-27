@@ -159,7 +159,7 @@ define([
             }
 
             // 获取用户站点列表
-            $http.post('http://localhost:8099/api/wiki/models/website', {userid: Account.getUser()._id}).then(function (response) {
+            $http.post('http://localhost:8099/api/wiki/models/website', {userId: Account.getUser()._id}).then(function (response) {
                 $scope.websites = response.data.data;
 
                 for (var i = 0; i < $scope.websites.length; i++) {

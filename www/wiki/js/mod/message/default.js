@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app','app/config'], function (app, config) {
+define(['app'], function (app) {
     app.registerController("defaultMessageController", function ($scope) {
         $scope.htmlUrl = config.wikiModuleConfig.htmlPath + 'message/html/test.html';
         $scope.hi

@@ -10,9 +10,9 @@ define(['require', 'app'], function (require, app) {
             template:'<div></div>',
             link: function ($scope, $element, $attrs) {
                 if ($attrs.path) {
-                    require([config.wikiModPath+$attrs.path], function (wikiModule) {
+                    require([config.wikiModPath+$attrs.path + '.js'], function (wikiModule) {
                         $scope.wikiBlockParams = $attrs; // 传递模块参数
-                        var content = wikiModule.render ? wikiModule.render($attrs) : '';
+                        var content = typeof wikiModule.render == 'function' ? wikiModule.render($attrs) : '';
                         content = $compile(content)($scope);
                         $element.replaceWith(content);
                         $scope.$apply();

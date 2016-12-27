@@ -1,5 +1,5 @@
 
-define(['app', 'util', 'config', 'storage'], function (app, util, config, storage) {
+define(['app', 'util', 'storage'], function (app, util, storage) {
     app.registerController("organizationHeaderController", function ($scope, $auth, Account, Message) {
         $scope.htmlUrl = config.wikiModPath + 'header/pages/organizationHeader.page';
         $scope.memberApply = function () {
