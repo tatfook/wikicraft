@@ -19,7 +19,6 @@ local params = {
 response:Begin();
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
-	log("github step 1")
 	local accessToken = util.parse_str(data);
 	-- accessToken == {scope="user:email",access_token="25b6511fb14eacd48106ab16261dd01bdb1fe54e",token_type="bearer",}	
 	if(accessToken and accessToken.error) then
@@ -30,7 +29,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 	local headers = { ['User-Agent'] = 'Satellizer' };
 
 	-- Step 2. Retrieve profile information about the current user.
-	util.GetUrl({ url = userApiUrl, qs = accessToken, headers = headers, json = true }, function(err, msg, profile)
+	util.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, function(err, msg, profile)
 		log("github step 2")
 		if(not profile) then
 			LOG.std(nil, "debug", "github", msg);
@@ -41,16 +40,15 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 			-- Step 3a. Link user accounts.
 			log("github step 3")
 			db.user:findOne({ githubId = profile.id }, function(err, user)
-				log("=========")
 				if (user) then
 					-- refresh access token
 					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
-						db.user:updateOne({_id = user._id}, {githubToken=accessToken});
+						db.user:updateOne({_id = user._id}, {githubToken=accessToken, githubName=profile.login});
 					end
 					user.githubToken = accessToken
+					user.githubName = profile.login
 					local token, err = createJWT(user);
 					response:send({ token = token, userInfo=user });
-					-- return response:status(409):send({ message = 'There is already a GitHub account that belongs to you' });
 				end
 				local token = request:header('Authorization'):match("%s+(%S+)");
 				local payload, err = decodeJWT(token);
@@ -59,8 +57,8 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 						return response:status(400):send({ message= 'User not found' });
 					end
 					user.githubId = profile.id;
-					-- user.picture = user.picture or profile.avatar_url;
-					-- user.displayName = user.displayName or profile.name;
+					user.portrait = user.portrait or profile.avatar_url;
+					user.githubName = profile.login;
 					user.githubToken = accessToken;
 					db.user:updateOne(user, function(err, user)
 						local token = createJWT(user);
@@ -70,27 +68,27 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 			end);
 		else
 			-- Step 3b. Create a new user account or return an existing one.
-			db.user:findOne({ github = profile.id }, function(err, existingUser)
+			db.user:findOne({ githubId = profile.id }, function(err, existingUser)
 				if (existingUser) then
-					if(not commonlib.partialcompare(accessToken, existingUser.githubToken)) then
-						db.User:updateOne({_id = existingUser._id}, {githubToken=accessToken});
+					-- refresh access token
+					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
+						db.user:updateOne({_id = user._id}, {githubToken=accessToken, githubName=profile.login});
 					end
-					local token, err = createJWT(existingUser);
-					response:send({ token = token });
-					return;
+					user.githubToken = accessToken
+					user.githubName = profile.login
+					local token, err = createJWT(user);
+					response:send({ token = token, userInfo=user });
 				end
 				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
 					db.user:insertOne({githubId = profile.id}, {
 						githubId = profile.id,
 						portrait = profile.avatar_url,
-						username = profile.name,
+						githubToken = profile.login,
 						githubToken = accessToken,
 						joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 					}, function(err, user) 
 						local token = createJWT(user);
-						--include_once("../models/stats.page");
-						--models.stats:new():addUser(user._id, true);
-						response:send({ token = token });
+						response:send({ token = token, userInfo=user });
 					end);
 			end);
 		end

@@ -23,6 +23,8 @@ function user:ctor()
 	self:addfield("sex", "string", false, 12)
 	self:addfield("githubId", "number", false) -- github id
 	self:addfield("githubToken", "table", false) -- github access token
+	self:addfield("githubName", "string", false) -- github access token
+
 	self:addfield("portrait", "string", false, 200) -- picture url
 	self:addfield("comment", "string", false, 300)
 	self:addfield("company", "string", false, 30)
