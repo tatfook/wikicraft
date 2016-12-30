@@ -5,20 +5,12 @@
 // 'bootstrap-treeview',
 define([
     'jquery',
-    'codemirror',
     'app',
-    'highlight',
-    'markdown-it',
-    '/wiki/js/markdown/markdown-it-wikicmd.js',
-    '/wiki/js/markdown/markdownwiki.js',
+    'markdownwiki',
+    'codemirror',
     '/wiki/js/app/helper/editor.js',
-    '/wiki/js/app/factory/ProjectStorageProvider.js',
     'bootstrap-treeview',
-], function ($, CodeMirror, app, hljs, markdownit, markdownit_wikicmd_plugin, markdownwiki, editor) {
-    window.hljs = hljs;
-    window.markdownit = markdownit;
-    window.markdownit_wikicmd_plugin = markdownit_wikicmd_plugin;
-    window.markdownwiki = markdownwiki;
+], function ($, app, markdownwiki, CodeMirror, editor) {
 
     app.controller('imgCtrl', function ($scope, $rootScope, $uibModalInstance) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
@@ -130,7 +122,7 @@ define([
             });
         }
         init();
-    }).controller('editorController', function ($scope, $rootScope, $http, $location, $uibModal, Account, ProjectStorageProvider) {
+    }).controller('editorController', function ($scope, $rootScope, $http, $location, $uibModal, Account, github) {
 
         $scope.websites = [];           //站点列表
         $scope.websitePages = [];       //页面列表
@@ -154,6 +146,7 @@ define([
 
         //初始化，读取用户站点列表及页面列表
         function init() {
+            console.log("editController init");
             if (!Account.isAuthenticated()) {
                 return;
             }
@@ -193,10 +186,8 @@ define([
 
         function githubSha() {
             //console.log('@githubSha');
-            $scope.githubSource.repo.getSha('', '', function (error, result, request) {
-                if (!error) {
-                    githubWS(result);
-                }
+            $scope.githubSource.getSha('', function (result) {
+                githubWS(result);
             });
         }
 
@@ -226,7 +217,7 @@ define([
                 for (var i = 0; i < $scope.websites.length; i++) {
                     if ($scope.websites[i].github) {
                         var ws = $scope.websites[i];
-                        $scope.githubSource.repo.getSha('', ws.name, function (error, result, request) {
+                        $scope.githubSource.getSha(ws.name, function (result) {
                             githubWP(ws, result);
                             webResponse++;
                             if (webResponse >= webGithub) {
@@ -281,33 +272,18 @@ define([
 
         //初始化github
         function initGithub() {
-            var token = {};
+            console.log("initGithub");
             var bGithub = false;
 
             var user = Account.getUser(); // 这已经是用户信息啦
             if (user.githubToken) {
-                token = user.githubToken;
                 bGithub = true;
-                $scope.githubSource = ProjectStorageProvider.getDataSource('github');
-                $scope.githubSource.init(token, function () {
+                $scope.githubSource = github;
+                $scope.githubSource.init(user.githubToken, user.githubName, undefined, function () {
                     githubSha();
                 });
             }
-            /*
-             var user = Account.getUser().data;
-             for(var i=0;i<user.length;i++){
-             if(user[i].githubId){
-             token = user[i].githubToken;
-             if(token){
-             bGithub = true;
-             $scope.githubSource = ProjectStorageProvider.getDataSource('github');
-             $scope.githubSource.init(token,function(){
-             githubSha();
-             });
-             }
-             }
-             }
-             */
+           
             if (!bGithub) {
                 initTree();
             }
@@ -519,11 +495,8 @@ define([
                     //console.log(response.data);
                     if (!isEmptyObject($scope.githubSource)) {
                         var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
-                        $scope.githubSource.repo.writeFile('master', path, $scope.websitePage.content, 'wikicraft:' + path, function (error, result, request) {
-                            if (!error) {
-                                //githubSha();
-                                alert('文件已保存到服务器及Github');
-                            }
+                        $scope.githubSource.repo.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
+                            alert('文件已保存到服务器及Github');
                         });
                     } else {
                         alert('文件已保存到服务器');
@@ -876,12 +849,12 @@ define([
                         //    encode:true
                         //};
 
-                        $scope.githubSource.uploadImage(filename, fileReader.result, {}, function (error, result, request) {
+                        $scope.githubSource.uploadImage(filename, fileReader.result, function (img_url) {
                             //console.log(result);
                             //line_keyword('![](wikicraft:' + $scope.githubSource.username + "/" + filename + ')', 2);
-                            line_keyword('![](' + fileReader.result + ')', 2);
+                            line_keyword('![](' + img_url + ')', 2);
                             if (cb) {
-                                cb(error, result, request);
+                                cb(img_url);
                             }
                         });
                     }
@@ -956,10 +929,12 @@ define([
         }
 
         $scope.$on('onUserProfile', function (event, user) {
+            console.log("onUserProfile change!!!");
             init();
             command();
         });
 
+        init();
         var mdwiki = markdownwiki({container_name: '.result-html'});
         mdwiki.bindToCodeMirrorEditor(editor);
 

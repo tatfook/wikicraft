@@ -26,6 +26,8 @@ define(['app', 'require'], function (app, require) {
             'editWebsite': {},
             'preview':{},
 
+            'gitVersion':{},
+
             'siteshow':{},
             'usershow':{},
             'worksApply':{},

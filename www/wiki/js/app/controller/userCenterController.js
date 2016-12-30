@@ -5,7 +5,7 @@
 define(['app', 'util', 'storage'], function (app, util, storage) {
     return function ($scope, $state, Account, Message) {
         //const github = ProjectStorageProvider.getDataSource('github');
-        $scope.user = Account.getUser();
+        $scope.user = Account.getUser() || {};
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         var userId = $scope.user._id;
@@ -35,11 +35,6 @@ define(['app', 'util', 'storage'], function (app, util, storage) {
             });
 
         }
-
-        // 监听用户配置信息
-        $scope.$on("onUserProfile", function (event, user) {
-            $scope.user = user;
-        });
 
         // 修改用户信息
         $scope.modifyUserBaseInfo = function () {

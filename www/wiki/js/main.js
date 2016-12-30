@@ -18,21 +18,26 @@
             'angular': libPathPrefix + 'angular/angular.min',
             'angular-ui-bootstrap': libPathPrefix + 'angular-ui-bootstrap/ui-bootstrap-tpls',
             'angular-ui-router': libPathPrefix + 'angular-ui-router/angular-ui-router.min',
+            'angular-ui-select': libPathPrefix + 'angular-ui-select/select.min',
+            'angular-sanitize': libPathPrefix + 'angular-sanitize/angular-sanitize.min',
             'bootstrap': libPathPrefix + "bootstrap/js/bootstrap.min",
             'satellizer': libPathPrefix + 'satellizer/satellizer.min',
             'bootstrap-treeview': libPathPrefix + 'bootstrap-treeview/bootstrap-treeview.min',
             'github-api': libPathPrefix + 'github-api/GitHub.bundle.min',
             'markdown-it':libPathPrefix + 'markdown-it/markdown-it.min',  // 已支持amd则不能喝<script>标签混合使用
-
             'highlight': libPathPrefix + 'highlight/highlight.pack', //不支持amd规范可用标签引入 或配置shim
+            'cropper': libPathPrefix + 'cropper/cropper.min',
+            'js-base64': libPathPrefix + 'js-base64/base64.min',
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
             'router':jsPathPrefix + 'router',
-            'config': appPathPrefix + 'config',
             'preload': appPathPrefix + 'preload',
+
+            // 辅助模块
             'storage': helperPathPrefix + 'storage',
             'util': helperPathPrefix + 'util',
+            'markdownwiki': helperPathPrefix + 'markdownwiki',
         },
         shim: {
             'angular': {
@@ -44,18 +49,31 @@
             'angular-ui-bootstrap':{
                 deps:['angular'],
             },
-            'bootstrap':{
-                deps:['jquery'],
+            'angular-ui-select':{
+                deps:['angular'],
+            },
+            'angular-sanitize':{
+                deps:['angular'],
             },
             'satellizer':{
                 deps:['angular'],
+            },
+            'bootstrap':{
+                deps:['jquery'],
+            },
+            'cropper':{
+                deps:['jquery'],
             },
             'bootstrap-treeview': {
                 deps:['bootstrap', 'jquery'],
             },
             'highlight':{
                 exports: 'hljs',
-            }
+            },
+            /*
+            'js-base64':{
+                exports:'base64',
+            }*/
         },
         packages: [
             {

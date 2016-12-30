@@ -2,33 +2,32 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','util', 'storage'], function (app, util, storage) {
-   return function ($scope, $state, Account) {
-       const github = ProjectStorageProvider.getDataSource('github');
-       console.log("gitVersionCtrl");
+define(['app','util'], function (app, util) {
+   return function ($scope, $state, Account,github) {
        $scope.dtStartOpened = false;
        $scope.dtEndOpened = false;
        $scope.filelist = [];
        $scope.commits = [];
 
-       if (!Account.isAuthenticated()) {
-           $state.go("login");
-           return;
-       }
+       Account.ensureAuthenticated();
+
        var user = Account.getUser();
-       github.init({
-           //username: '765485868@qq.com',
-           //password: 'wxa765485868',
-           token:user.githubToken,
-       }, function (error) {
+       github.init(user.githubToken, user.githubName, undefined, function () {
            init();
+       }, function (response) {
+           console.log(response);
+           console.log("github init failed!!!");
        });
+
        // 获得git文件列表
        function init() {
-           github.getTree('master', true, function (error, result, request) {
+           github.getTree(true, function (data) {
                var filelist = []
-               for(var i = 0; result && i < result.length; i++) {
-                   filelist.push({path:result[i].path});
+               for(var i = 0; i < data.tree.length; i++) {
+                   if (data.tree[i].type == "tree") {
+                       continue;
+                   }
+                   filelist.push({path:data.tree[i].path});
                }
                $scope.filelist = filelist;
            });
@@ -36,12 +35,15 @@ define(['app','util', 'storage'], function (app, util, storage) {
 
        $scope.dtStartOpen = function () {
            $scope.dtStartOpened = !$scope.dtStartOpened;
-       }
+       };
        $scope.dtEndOpen = function () {
            $scope.dtEndOpened = !$scope.dtEndOpened;
-       }
+       };
 
        $scope.submit = function () {
+           if (!$scope.path || $scope.path.length == 0) {
+               return ;
+           }
            var params = {
                sha:$scope.sha,
                path:$scope.path,
@@ -50,7 +52,7 @@ define(['app','util', 'storage'], function (app, util, storage) {
                until:$scope.dtEnd && ($scope.dtEnd.toLocaleDateString().replace(/\//g,'-') +'T23:59:59Z'),
            };
            console.log(params);
-           github.listCommits(params, function (error, result, request) {
+           github.listCommits(params, function (result) {
                result = result || [];
                var commits = [];
                for (var i = 0; i < result.length; i++) {
@@ -58,24 +60,28 @@ define(['app','util', 'storage'], function (app, util, storage) {
                }
                console.log(commits);
                $scope.commits = commits;
-               $scope.$apply();
+               //$scope.$apply();
            });
        }
 
        $scope.viewCommit = function (commit) {
            window.open(commit.html_url);
        }
-
+       
        $scope.rollbackFile = function (commit) {
-           github.getSingleCommit(commit.sha, function (error, result, request) {
-               if (error) {
-                   console.log(error);
-                   return;
-               }
-               console.log(result);
-               // 回滚文件
+           github.getSingleCommit(commit.sha, function (result) {
+               console.log(result.files);
                for(var i = 0; i < result.files.length; i++) {
-                   github.rollbackFile(commit.sha, result.files[i].filename, 'rollback file: ' + result.files[i].filename)
+                   (function (sha, filename) {
+                       github.rollbackFile(sha, filename, 'rollback file:' + filename, function () {
+                           console.log("rollback success");
+                           github.getFile(filename, function (data) {
+                              util.http('POST', config.apiUrlPrefix + 'website_pages/updateContentAndShaByUrl', {url:filename, content:data.content, sha:data.sha});
+                           });
+                       }, function () {
+                           console.log("rollback failed");
+                       });   
+                   })(commit.sha, result.files[i].filename)
                }
            });
        }

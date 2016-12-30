@@ -1,7 +1,7 @@
 <div>
     <div>
         <div style="display: flex; justify-content: center">
-            <img src='/wiki/assets/imgs/ManPortrait.jpg' id='portraitImg' class="img-responsive">
+            <wiki-image ng-src="{{src}}" id='portraitImg' class="img-responsive">
         </div>
         <div style="display: flex; justify-content: center; margin: 10px">
             <input type="file" accept='image/*' class="btn" id="uploadPortraitBtn">

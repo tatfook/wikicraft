@@ -89,6 +89,26 @@ function website_pages:api_upsert(params)
 	return errors:wrap(yield())
 end
 
+-- 修改页面内容
+function website_pages:api_updateContentAndShaByUrl(params) 
+	self:ensureAuthenticated()
+
+	if not params.url then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local result = self:api_getWebsitePageByUrl(params)
+	
+	if not result.data then
+		return result
+	end
+	
+	local pageinfo = result.data
+	pageinfo.content = params.content
+	pageinfo.sha = params.sha or pageinfo.sha
+	return self:api_upsert(pageinfo)
+end
+
 function website_pages:create(params) 
 	return self:api_upsert(params)
 end

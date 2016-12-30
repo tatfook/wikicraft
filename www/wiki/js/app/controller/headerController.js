@@ -16,15 +16,15 @@ define(['app'], function (app) {
 
         $scope.goLoginPage = function () {
             window.location.href="/#/login";
-        }
+        };
 
         $scope.goRegisterPage = function () {
             window.location.href="/#/home";
-        }
+        };
 
         $scope.goHomePage = function () {
             window.location.href="/#/home";
-        }
+        };
 
         $scope.goPersonalPage = function () {
             if (!$scope.isLogin) {
@@ -32,20 +32,22 @@ define(['app'], function (app) {
                 return;
             }
             window.location.href = "/" + $scope.user.username;
-        }
+        };
+
         $scope.logout = function () {
             $auth.logout();
             $scope.isLogin = false;
             window.location.href="/#/home";
-        }
+        };
 
         $scope.$on("onUserProfile", function (event, user) {
+            console.log('onUserProfile');
             $scope.user = user;
         });
-/*
+
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
+            console.log("isAuthenticated");
             $scope.isLogin = bAuthenticated;
         });
-        */
     });
 });

@@ -8,15 +8,15 @@ define(['app', 'util', 'storage'], function (app, util, storage) {
         }
         // 去网站管理页
         $scope.goWebsiteMangerPage = function() {
-            window.parent.location.href='/#/website';
+            window.location.href='/#/website';
         }
         // 页面编辑页面
         $scope.goWebsitePageManagerPage = function() {
-            window.parent.location.href = "/wiki/editor";
+            window.location.href = "/wiki/editor";
         }
         // 去站点
         $scope.goWebsitePage = function (websiteName) {
-            window.parent.location.href = '/' + websiteName;
+            window.location.href = '/' + websiteName;
         }
 
         $scope.attention = function () {

@@ -31,7 +31,7 @@ function markdownit_wikicmd_plugin(md, options) {
             if (cmdname) {
                 var modName = cmdname.match(wikiModNameRE)[1];
                 if (modName) {
-                    var content = token.content.replace(/[\r\n]/g, '')
+                    var content = token.content.replace(/[\r\n]/g, '');
                     var params = null;
                     try {
                         params = JSON.parse(content);
@@ -44,7 +44,7 @@ function markdownit_wikicmd_plugin(md, options) {
                     if (params == null && token.content) {
                         params = '"' + content.replace(/[\""]/g, '\\"') + '"';
                     }
-                    var script = '<script>renderWikiBlock(' + idx + ', "' + modName + `", "` + cmdname + '",' + params + ');</script>';
+                    var script = '<script>renderWikiBlock(' + idx + ', "' + modName + '", "' + cmdname + '",' + params + ');</script>';
                     return '<div class="col-sm-12" id="wikiblock_' + idx + '"></div>' + script;
                 }
             }
@@ -61,7 +61,7 @@ return markdownit_wikicmd_plugin;
 * Helper function to render a single block
 */
 function renderWikiBlock(block_index, modName, cmdName, params, isEditor) {
-    var rendererPath = "mod/" + modName + "/renderer";
+    var rendererPath = config.wikiModPath + modName + "/render.js";
     // async loading mod renderer. 
     requirejs([rendererPath], function (renderer) {
         var htmlResult;

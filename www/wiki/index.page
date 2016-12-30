@@ -9,11 +9,11 @@
 
     <!-- lib css -->
     <link href="/wiki/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/wiki/js/lib/angular-ui-select/select.min.css" rel="stylesheet">
+    <link href="/wiki/js/lib/cropper/cropper.min.css" rel="stylesheet">
 
     <!-- 全局配置 -->
     <script src="/wiki/js/app/config.js"></script>
-
-
 </head>
 
 <body>

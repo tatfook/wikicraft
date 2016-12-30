@@ -6,16 +6,6 @@
 define([
     'jquery',
     'codemirror',
-    //'codemirror/lib/codemirror.js',
-    //config.libPath + 'codemirror/mode/markdown/markdown.js',
-    //config.libPath + 'codemirror/addon/dialog/dialog.js',
-    //config.libPath + 'codemirror/addon/edit/continuelist.js',
-    //config.libPath + 'codemirror/addon/search/searchcursor.js',
-    //config.libPath + 'codemirror/addon/search/search.js',
-    //config.libPath + 'codemirror/addon/search/matchesonscrollbar.js',
-    //config.libPath + 'codemirror/addon/search/jump-to-line.js',
-    //config.libPath + 'codemirror/addon/scroll/annotatescrollbar.js',
-    //config.libPath + 'codemirror/addon/display/fullscreen.js',
 ], function ($, CodeMirror) {
     var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
         mode: 'markdown',
@@ -415,12 +405,7 @@ define([
 //文件上传
     function fileUpload(fileObj){
         var $scope=angular.element('#wikiEditor').scope();
-        $scope.cmd_image_upload(fileObj,function(error, result, request){
-            console.log(result.content.download_url);
-            $.get(result.content.download_url, function(data){
-                console.log(data);
-            });
-        });
+        $scope.cmd_image_upload(fileObj);
         return;
     }
 

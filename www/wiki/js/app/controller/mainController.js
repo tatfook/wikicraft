@@ -8,26 +8,15 @@ define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdown
         // 初始化基本信息
         function initBaseInfo() {
             $rootScope.imgsPath = config.imgsPath;
-            console.log($rootScope.imgsPath);
             //配置一些全局服务
             util.setAngularServices({$rootScope:$rootScope, $http:$http, $state:$state, $compile:$compile, $auth:$auth});
             util.setSelfServices({config:config, storage:storage, Account:Account, Message:Message});
 
-            Account.isLoaded();
-            if (Account.isAuthenticated()) {
-                if (Account.isLoaded()) {
-                   $scope.user = Account.getUser();
-                } else {
-                   Account.getProfile();
-                }
-            }
-            //console.log("mainCtrl");
         }
         // 加载内容信息
         function initContentInfo() {
             $rootScope.IsRenderServerWikiContent = false;
             var urlObj = util.parseUrl();
-
             console.log(urlObj);
             // 置空用户页面内容
             if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {

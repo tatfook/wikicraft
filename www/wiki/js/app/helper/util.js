@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define([], function () {
+define(['jquery'], function ($) {
     var util = {
         colorList:["rgb(145,185,114)","rgb(185,150,114)","rgb(185,114,178)","rgb(185,127,114)","rgb(114,185,160)","rgb(114,134,185)"],
         stack:[],   // 堆栈操作模拟
@@ -14,6 +14,18 @@ define([], function () {
         this.id = this.id > 1000000 ? 0 : this.id+1;
         return this.id;
     }
+
+    // $html
+    util.html = function(selector, htmlStr, $scope) {
+        var $compile = util.angularServices.$compile;
+        $scope = $scope || util.angularServices.$rootScope;
+        htmlStr = $compile(htmlStr||'')($scope)
+        $(selector).html(htmlStr);
+        setTimeout(function () {
+            $scope.$apply();
+        },1);
+    }
+
     // 获取一个随机颜色
     util.getRandomColor = function (index) {
         index = index || 0;
@@ -152,23 +164,6 @@ define([], function () {
     util.get = function (url, params, callback, errorCallback) {
         this.http("GET", url, params, callback, errorCallback);
     }
-
-    util.jsonStringToObject = function (str) {
-        var obj = {};
-        try {
-            obj = JSON.parse(str);
-        } catch (e) {
-            console.log(str);
-            console.log(e);
-        }
-        return obj;
-    }
-
-    util.objectToJsonString = function (obj) {
-        return JSON.stringify(obj);
-    }
-
-
 
     util.pagination = function (page, params, pageCount) {
         params.page = params.page || 0;

@@ -1,10 +1,10 @@
 /**
  * Created by wuxiangan on 2016/12/19.
  */
-
-define(['angular', 'angular-ui-router', 'angular-ui-bootstrap', 'satellizer'], function (angular) {
+///wiki/js/lib/angular-ui-select/select.min.js
+define(['angular', 'angular-ui-router', 'angular-ui-bootstrap', 'angular-ui-select', 'angular-sanitize', 'satellizer'], function (angular) {
     console.log("app");
-    var app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'satellizer']);
+    var app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize']);
     
     app.config(function ($controllerProvider, $authProvider) {
         // 提供动态注册控制器接口

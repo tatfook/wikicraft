@@ -7,7 +7,7 @@ define(['app', 'github-api'], function (app, GitHub) {
         // github 数据源
         var github = {
             repoName:'wikicraftDataSource'
-            //repoName:'NPLRuntime'
+            //repoName:'NPLRuntime
         };
 
         // 获得用户obj
@@ -31,6 +31,9 @@ define(['app', 'github-api'], function (app, GitHub) {
         //  github.username
         //  github.repo
         github.init = function (token, cb) {
+            if (github.github) {
+                return;  // 已初始化则返回
+            }
             // token auth
             github.github = new GitHub({
                 //token: token.access_token,
@@ -94,24 +97,8 @@ define(['app', 'github-api'], function (app, GitHub) {
             github.repo.writeFile('master', path, content, message, {}, function (error, result, request) {
                 if (error) {
                     cb && cb(error, result, request);
-                    return ;
+                    return;
                 }
-                // 提交到内部服务器  这块可放到外面写
-                var websiteName = result.content.path.match(/\/?([^\/]+)/);
-                websiteName = websiteName && websiteName[1];
-                var page = {
-                    sha:result.content.sha,
-                    path:result.content.path,
-                    name:result.content.name,
-                    content:content,
-                    contentType:'html',
-                    websiteName:websiteName,
-                }
-                console.log(page);
-                util.http($http, 'PUT', config.apiUrlPrefix + 'website_pages/new', page, function (data) {
-                    console.log(data);
-                    cb && cb(error, data, request);
-                })
             });
         };
         // 列出历史版本
@@ -174,8 +161,7 @@ define(['app', 'github-api'], function (app, GitHub) {
 
         // 回滚文件
         github.rollbackFile = function (commitSha, path, message, cb) {
-
-            github.repogetContents(commitSha, path, true, function (error, result, request) {
+            github.repo.getContents(commitSha, path, true, function (error, result, request) {
                 if (error) {
                     cb || cb(error, result, request);
                     return;
