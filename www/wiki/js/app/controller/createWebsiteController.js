@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'util', 'storage'], function (app, util, storage) {
-   return function ($scope, $state, $sce, Account) {
+define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+   var controller =  function ($scope, $state, $sce, Account) {
        //const github = ProjectStorageProvider.getDataSource('github');
        $scope.website = storage.sessionStorageGetItem("createWebsiteParams") || {};
        $scope.editWebsite = $scope.website._id ? true : false;
@@ -242,4 +242,8 @@ define(['app', 'util', 'storage'], function (app, util, storage) {
            window.location.href = '/' + websiteName;
        }
    };
+
+    controller.$inject = ['$scope', '$state', '$sce', 'Account'];
+
+    return controller;
 });

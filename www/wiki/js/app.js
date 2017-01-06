@@ -6,7 +6,7 @@ define(['angular', 'angular-ui-router', 'angular-ui-bootstrap', 'angular-ui-sele
     console.log("app");
     var app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize']);
     
-    app.config(function ($controllerProvider, $authProvider) {
+    app.config(['$controllerProvider', '$authProvider',function ($controllerProvider, $authProvider) {
         // 提供动态注册控制器接口
         app.registerController = function (name, constructor) {
             $controllerProvider.register(name, constructor);
@@ -20,7 +20,8 @@ define(['angular', 'angular-ui-router', 'angular-ui-bootstrap', 'angular-ui-sele
             // scope: ["public_repo", "delete_repo"],
             scope: ["public_repo"],
         });
-    });
-    
+    }]);
+
+    window.app = app;
     return app;
 });

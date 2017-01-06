@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','util', 'storage'], function (app, util, storage) {
-    return function ($scope, $state, Account) {
+define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
+    return ['$scope',function ($scope) {
         var usershowObj = sessionStorage.getItem("usershow");
         usershowObj = util.jsonStringToObject(usershowObj);
         console.log(usershowObj);
@@ -42,5 +42,5 @@ define(['app','util', 'storage'], function (app, util, storage) {
         }
 
         init();
-    }
+    }]
 });

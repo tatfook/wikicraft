@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'util', 'storage'], function (app, util, storage) {
-    return function ($scope, $state, Account) {
+define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+    return ['$scope', '$state', 'Account',function ($scope, $state, Account) {
         //const github = ProjectStorageProvider.getDataSource('github');
         $scope.tags=["tag1","tag2"];
         $scope.classifyList = ["普通","入围","热门"];
@@ -132,5 +132,5 @@ define(['app', 'util', 'storage'], function (app, util, storage) {
 
         function init() {
         }
-    }
+    }]
 });

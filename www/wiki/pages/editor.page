@@ -6,36 +6,8 @@ Date: 2016/10/17
 ]]
 
 -- TODO: buddle and minify following wiki related files
---wp_enqueue_script("highlight", WIKI_WEBROOT.."js/lib/highlight/highlight.pack.js");
-wp_enqueue_style("highlight", WIKI_WEBROOT.."js/lib/highlight/default.css");
--- wp_enqueue_script("markdown-it", WIKI_WEBROOT.."js/lib/markdown-it/markdown-it.min.js");
--- wp_enqueue_script("markdown-it_wikicmd", WIKI_WEBROOT.."js/markdown/markdown-it-wikicmd.js");
--- wp_enqueue_script("markdownwiki", WIKI_WEBROOT.."js/markdown/markdownwiki.js");
-
--- wp_enqueue_script("bootstrap-treeview", WIKI_WEBROOT.."js/lib/bootstrap-treeview/bootstrap-treeview.min.js");
-
---wp_enqueue_script("codemirror",  WIKI_WEBROOT.."js/lib/codemirror/lib/codemirror.js");
-wp_enqueue_style("codemirror_style",  WIKI_WEBROOT.."js/lib/codemirror/lib/codemirror.css");
---wp_enqueue_script("codemirror_mode_markdown", WIKI_WEBROOT.."js/lib/codemirror/mode/markdown/markdown.js");
---wp_enqueue_script("codemirror_addon_dialog", WIKI_WEBROOT.."js/lib/codemirror/addon/dialog/dialog.js");
-wp_enqueue_style("codemirror_addon_dialog_style", WIKI_WEBROOT.."js/lib/codemirror/addon/dialog/dialog.css");
---wp_enqueue_script("codemirror_addon_continuelist", WIKI_WEBROOT.."js/lib/codemirror/addon/edit/continuelist.js");
---wp_enqueue_script("codemirror_addon_searchcursor", WIKI_WEBROOT.."js/lib/codemirror/addon/search/searchcursor.js");
---wp_enqueue_script("codemirror_addon_search", WIKI_WEBROOT.."js/lib/codemirror/addon/search/search.js");
---wp_enqueue_script("codemirror_addon_matchesonscrollbar", WIKI_WEBROOT.."js/lib/codemirror/addon/search/matchesonscrollbar.js");
---wp_enqueue_style("codemirror_addon_matchesonscrollbar_style", WIKI_WEBROOT.."js/lib/codemirror/addon/search/matchesonscrollbar.css");
---wp_enqueue_script("codemirror_addon_jumptoline", WIKI_WEBROOT.."js/lib/codemirror/addon/search/jump-to-line.js");
---wp_enqueue_script("codemirror_addon_annotatescrollbar", WIKI_WEBROOT.."js/lib/codemirror/addon/scroll/annotatescrollbar.js");
---wp_enqueue_script("codemirror_addon_fullscreen", WIKI_WEBROOT.."js/lib/codemirror/addon/display/fullscreen.js");
-wp_enqueue_style("codemirror_addon_fullscreen_style", WIKI_WEBROOT.."js/lib/codemirror/addon/display/fullscreen.css");
-
---wp_enqueue_script("github_bundle", WIKI_WEBROOT.."js/lib/github-api/GitHub.bundle.min.js");
-
--- wp_enqueue_script("storage_pro", WIKI_WEBROOT.."js/ProjectStorageProvider.js");
--- wp_enqueue_script("editor_controller", WIKI_WEBROOT.."controllers/editorController.js");
-wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/editor.css");
-wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-awesome.min.css");
-
+-- 使用@import 导入其它样式文件,便于打包在一起，减少http请求
+wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/css/editor.css");
 ?>
 
 <div id="wikiEditor" ng-controller="editorController">
@@ -202,11 +174,6 @@ wp_enqueue_style("fontawesome", WIKI_WEBROOT.."assets/fontawesome/css/font-aweso
     </div><!-- /.modal -->
 </div>
 
-
-<?npl
--- wp_enqueue_script("editor_main_js", WIKI_WEBROOT.."js/editor.js");
-?>
-<!--script data-main="<?=WIKI_WEBROOT?>mod/main" src="<?=WIKI_WEBROOT?>js/lib/requirejs/require.js"></script-->
 <script>
     config.registerPreloadModule(config.jsAppControllerPath + 'editorController.js');
 </script>

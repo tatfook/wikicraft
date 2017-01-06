@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','util', 'storage'], function (app, util, storage) {
-    return function ($scope, $state, Account) {
+define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
+    return ['$scope', function ($scope) {
         console.log("previewCtrl");
         var filename = window.location.search.replace('?','');
         util.setScope($scope);
@@ -17,6 +17,5 @@ define(['app','util', 'storage'], function (app, util, storage) {
             pageContent = md.render(pageContent);
             moduleParser.render(pageContent);
         })
-    }
-
+    }];
 });

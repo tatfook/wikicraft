@@ -4,15 +4,15 @@
 
 define(['app', 'require'], function (app, require) {
     console.log("router");
-    app.config(function ($stateProvider, $urlRouterProvider, $controllerProvider) {
+    app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider',function ($stateProvider, $urlRouterProvider, $controllerProvider) {
         //$urlRouterProvider.otherwise('/');
         var templatePathPrefix = config.htmlPath;
-        var controllerPathPrefix = config.jsPath + 'app/controller/';
+        var controllerPathPrefix = 'controller/';
         var routerMap = {
             'test':{
                 url:'/test',
-                templateUrl:templatePathPrefix + 'test.page',
-                controllerPath:controllerPathPrefix + 'testController.js',
+                templateUrl:templatePathPrefix + 'test.html',
+                controllerPath:controllerPathPrefix + 'testController',
                 controllerName:'testController',
             },
             'login':{},
@@ -41,7 +41,7 @@ define(['app', 'require'], function (app, require) {
             var url = obj.url || ('/' + key);
             var templateUrl = obj.templateUrl || (templatePathPrefix + key + ".html");
             var controllerName = obj.controllerName || (key + 'Controller');
-            var controllerPath = obj.controllerPath || (controllerPathPrefix + controllerName + '.js');
+            var controllerPath = obj.controllerPath || (controllerPathPrefix + controllerName);
 
             $stateProvider.state(key, {
                 url:url,
@@ -64,5 +64,5 @@ define(['app', 'require'], function (app, require) {
                 return deferred.promise;
             }
         }
-    });
+    }]);
 });

@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','util', 'storage'], function (app, util, storage) {
-    return function ($scope, $state, Account) {
+define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
+    return ['$scope', '$state', 'Account',function ($scope, $state, Account) {
         $scope.user = Account.getUser();
         $scope.worksSelected = [];
         $scope.submitDisabled = "";
@@ -44,5 +44,5 @@ define(['app','util', 'storage'], function (app, util, storage) {
         }
 
         init();
-    }
+    }]
 });

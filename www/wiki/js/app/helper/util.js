@@ -19,7 +19,7 @@ define(['jquery'], function ($) {
     util.html = function(selector, htmlStr, $scope) {
         var $compile = util.angularServices.$compile;
         $scope = $scope || util.angularServices.$rootScope;
-        htmlStr = $compile(htmlStr||'')($scope)
+        htmlStr = $compile(htmlStr||'<div></div>')($scope)
         $(selector).html(htmlStr);
         setTimeout(function () {
             $scope.$apply();

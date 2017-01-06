@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','util'], function (app, util) {
-   return function ($scope, $state, Account,github) {
+define(['app','helper/util'], function (app, util) {
+   return ['$scope', '$state', 'Account', 'github', function ($scope, $state, Account,github) {
        $scope.dtStartOpened = false;
        $scope.dtEndOpened = false;
        $scope.filelist = [];
@@ -89,5 +89,5 @@ define(['app','util'], function (app, util) {
        $scope.pathSelected =function ($item, $model) {
            $scope.path = $item.path;
        }
-   }
+   }];
 });

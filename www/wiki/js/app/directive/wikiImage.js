@@ -3,7 +3,7 @@
  */
 
 define(['require', 'app'], function (require, app) {
-    app.directive('wikiImage', function ($http, github) {
+    app.directive('wikiImage', ['$http', 'github',function ($http, github) {
         return {
             restrict: 'EA',
             replace: true,
@@ -23,8 +23,8 @@ define(['require', 'app'], function (require, app) {
                 }
                 $scope.$watch(getSrc, getImages)
 
-                getImages(getSrc());
+                //getImages(getSrc());
             },
         };
-    });
+    }]);
 });

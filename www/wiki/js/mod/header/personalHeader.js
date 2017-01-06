@@ -36,6 +36,7 @@ define(['app', 'util', 'storage'], function (app, util, storage) {
                 favoriteWebsiteId: $scope.siteinfo._id,
                 userId:$scope.user._id,
             };
+            
             util.http("POST", config.apiUrlPrefix + "user_favorite/favoriteUser", params, function (data) {
                 Message.info("关注成功");
                 console.log(data);  // 申请成功

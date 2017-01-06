@@ -3,23 +3,20 @@
  */
 
 /*预加载模块*/
+
 (function () {
-    var controllerPathPrefix = config.jsAppControllerPath;
-    var directivePathPrefix = config.jsAppDirectivePath;
-    var factoryPathPrefix = config.jsAppFactoryPath;
     var moduleList = [
-        // controllers
-        controllerPathPrefix + 'mainController.js',
-        controllerPathPrefix +'headerController.js',
+        'controller/mainController',
+        'controller/headerController',
 
         // directives
-        directivePathPrefix + 'moduleDirective.js',
-        directivePathPrefix + 'wikiImage.js',
+        'directive/moduleDirective',
+        'directive/wikiImage',
 
         // factory
-        factoryPathPrefix + 'account.js',
-        factoryPathPrefix + 'message.js',
-        factoryPathPrefix + 'github.js',
+        'factory/account',
+        'factory/message',
+        'factory/github',
     ];
     moduleList = moduleList.concat(config.preloadModuleList);
     //console.log(moduleList);

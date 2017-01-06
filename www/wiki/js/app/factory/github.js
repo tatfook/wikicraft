@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/29.
  */
 
-define(['app','storage', 'js-base64'], function (app, storage) {
-    app.factory('github', function ($http) {
+define(['app','helper/storage', 'js-base64'], function (app, storage) {
+    app.factory('github', ['$http', function ($http) {
         var github = {
             inited:false,
             githubName:'',
@@ -208,5 +208,5 @@ define(['app','storage', 'js-base64'], function (app, storage) {
             },
 
         };
-    });
+    }]);
 });

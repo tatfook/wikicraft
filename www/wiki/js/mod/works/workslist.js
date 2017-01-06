@@ -11,8 +11,8 @@ define(['app', 'util', 'storage'], function (app, util, storage) {
             siteshowObj.requestUrl = $scope.requestUrl;
             siteshowObj.requestParams = $scope.requestParams;
             siteshowObj.title = $scope.title;
-            window.parent.sessionStorage.setItem("siteshow", util.objectToJsonString(siteshowObj));
-            window.parent.location.href = "/#/siteshow";
+            window.sessionStorage.setItem("siteshow", util.objectToJsonString(siteshowObj));
+            window.location.href = "/#/siteshow";
         }
 
         // 随机颜色

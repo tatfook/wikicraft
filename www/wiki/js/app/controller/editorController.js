@@ -6,13 +6,13 @@
 define([
     'jquery',
     'app',
-    'markdownwiki',
     'codemirror',
-    '/wiki/js/app/helper/editor.js',
+    'helper/markdownwiki',
+    'helper/editor',
     'bootstrap-treeview',
-], function ($, app, markdownwiki, CodeMirror, editor) {
-
-    app.controller('imgCtrl', function ($scope, $rootScope, $uibModalInstance) {
+], function ($, app, CodeMirror, markdownwiki, editor) {
+    console.log("editor controller!!!");
+    app.controller('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance',function ($scope, $rootScope, $uibModalInstance) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
@@ -36,7 +36,7 @@ define([
                 console.log($scope.img);
             }
         }
-    }).controller('linkCtrl', function ($scope, $rootScope, $uibModalInstance) {
+    }]).controller('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.link = {url: '', txt: ''};
 
         $scope.cancel = function () {
@@ -47,7 +47,7 @@ define([
             $rootScope.link = $scope.link;
             $uibModalInstance.close("link");
         }
-    }).controller('tableCtrl', function ($scope, $rootScope, $uibModalInstance) {
+    }]).controller('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.table = {rows: 2, cols: 2, alignment: 0};
 
         $scope.cancel = function () {
@@ -58,7 +58,7 @@ define([
             $rootScope.table = $scope.table;
             $uibModalInstance.close("table");
         }
-    }).controller('pageCtrl', function ($scope, $rootScope, $http, $uibModalInstance) {
+    }]).controller('pageCtrl', ['$scope', '$rootScope','$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
 
         $scope.websites = {};           //站点列表
         $scope.websitePages = {};       //页面列表
@@ -122,7 +122,7 @@ define([
             });
         }
         init();
-    }).controller('editorController', function ($scope, $rootScope, $http, $location, $uibModal, Account, github) {
+    }]).controller('editorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', function ($scope, $rootScope, $http, $location, $uibModal, Account, github) {
 
         $scope.websites = [];           //站点列表
         $scope.websitePages = [];       //页面列表
@@ -495,7 +495,7 @@ define([
                     //console.log(response.data);
                     if (!isEmptyObject($scope.githubSource)) {
                         var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
-                        $scope.githubSource.repo.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
+                        $scope.githubSource.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
                             alert('文件已保存到服务器及Github');
                         });
                     } else {
@@ -1094,5 +1094,5 @@ define([
             }
             return str;
         }
-    })
+    }])
 });

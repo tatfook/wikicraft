@@ -3,22 +3,27 @@
  */
 
 define(['app'], function (app) {
-    function registerController(cmdName, moduleParams) {
+    function registerController(wikiBlock) {
         app.registerController("testModuleController", function ($scope) {
-            console.log(moduleParams);
-            $scope.message = moduleParams;
+            console.log(wikiBlock);
             $scope.htmlUrl = config.wikiModPath + 'test/html/test.html';
+            $scope.modViewEdit = wikiBlock.viewEdit;
+            //$scope.content = wikiBlock.modParams.key;
 
-            $scope.ok = function () {
-                $scope.message = 10;
+            $scope.submit = function () {
+                console.log($scope);
+                console.log($scope.content);
+                wikiBlock.modParams.key = $scope.content;
+                console.log(wikiBlock.modParams);
+                wikiBlock.applyModParams(wikiBlock.modParams);
             }
         });
     }
     return {
-        render: function (cmdName, moduleParams) {
-            registerController(cmdName, moduleParams);
+        render: function (wikiBlock) {
+            registerController(wikiBlock);
 
-            return '<div ng-controller="testModuleController"><div>{{message}}</div><div ng-include="htmlUrl"></div></div>';
+            return '<div ng-controller="testModuleController"><div ng-include="htmlUrl"></div></div>';
         }
     }
 });

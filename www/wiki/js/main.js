@@ -5,7 +5,7 @@
 'use strict';
 
 (function (win) {
-    var pathPrefix = '/wiki/';
+    var pathPrefix = config.pathPrefix;
     var jsPathPrefix = pathPrefix + 'js/';
     var libPathPrefix = pathPrefix + 'js/lib/';
     var appPathPrefix = pathPrefix + 'js/app/';
@@ -23,21 +23,26 @@
             'bootstrap': libPathPrefix + "bootstrap/js/bootstrap.min",
             'satellizer': libPathPrefix + 'satellizer/satellizer.min',
             'bootstrap-treeview': libPathPrefix + 'bootstrap-treeview/bootstrap-treeview.min',
-            'github-api': libPathPrefix + 'github-api/GitHub.bundle.min',
+            //'github-api': libPathPrefix + 'github-api/GitHub.bundle.min',
+            //'cropper': libPathPrefix + 'cropper/cropper.min',
             'markdown-it':libPathPrefix + 'markdown-it/markdown-it.min',  // 已支持amd则不能喝<script>标签混合使用
             'highlight': libPathPrefix + 'highlight/highlight.pack', //不支持amd规范可用标签引入 或配置shim
-            'cropper': libPathPrefix + 'cropper/cropper.min',
             'js-base64': libPathPrefix + 'js-base64/base64.min',
+            'text': libPathPrefix + 'requirejs/text',
+            'domReady': libPathPrefix + 'requirejs/domReady',
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
             'router':jsPathPrefix + 'router',
             'preload': appPathPrefix + 'preload',
 
-            // 辅助模块
-            'storage': helperPathPrefix + 'storage',
-            'util': helperPathPrefix + 'util',
-            'markdownwiki': helperPathPrefix + 'markdownwiki',
+            // dir map
+            'controller': config.jsAppControllerPath,
+            'directive': config.jsAppDirectivePath,
+            'factory': config.jsAppFactoryPath,
+            'helper': config.jsAppHelperPath,
+            // html dir
+            'html': config.htmlPath,
         },
         shim: {
             'angular': {
@@ -86,8 +91,11 @@
         urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
     });
 
-    require(['angular', 'router', 'preload'], function (angular) {
-        angular.bootstrap(document, ['webapp']);
+    require(['domReady', 'angular', 'router', 'preload'], function (domReady, angular) {
+        domReady(function () {
+            angular.bootstrap(document, ['webapp']);
+        });
+
     });
 })(window);
 

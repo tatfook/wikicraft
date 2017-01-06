@@ -5,12 +5,13 @@
 /* 程序配置模块 */
 
 (function () {
+    //var pathPrefix = '/html/server/';
     var pathPrefix = '/wiki/';
     config = {
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
         // 图片路径
-        imgsPath: pathPrefix + 'imgs/',
+        imgsPath: pathPrefix + 'assets/imgs/',
 
         // js 路径
         jsPath: pathPrefix + 'js/',

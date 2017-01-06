@@ -2,9 +2,9 @@
  * Created by wuxiangan on 2016/12/15.
  */
 
-define(['app', 'util'], function (app, util) {
+define(['app', 'helper/util'], function (app, util) {
     // 动态加载
-    return function ($scope, $rootScope, $state, $auth, Account) {
+    return ['$scope', '$rootScope', '$state', '$auth', 'Account', function ($scope, $rootScope, $state, $auth, Account) {
         $scope.siteParams = {page: 1, pageSize: 3};
         $scope.userParams = {page: 1, pageSize: 3};
         $scope.userObj = {};
@@ -100,9 +100,9 @@ define(['app', 'util'], function (app, util) {
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
                 if (!data.userInfo.githubToken) {
-                    //Account.githubAuthenticate();
+                    Account.githubAuthenticate();
                 } else {
-                    $state.go("home");
+                    window.location.href ='/#/home';
                 }
             }, function (error) {
                 $scope.errMsg = error.message;
@@ -110,5 +110,5 @@ define(['app', 'util'], function (app, util) {
         }
 
         init();
-    }
+    }];
 });

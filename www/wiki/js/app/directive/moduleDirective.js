@@ -3,7 +3,7 @@
  */
 
 define(['require', 'app'], function (require, app) {
-    app.directive('wikiBlock', function ($compile) {
+    app.directive('wikiBlock', ['$compile',function ($compile) {
         return {
             restrict: 'E',
             replace: true,
@@ -20,5 +20,5 @@ define(['require', 'app'], function (require, app) {
                 }
             },
         };
-    });
+    }]);
 });

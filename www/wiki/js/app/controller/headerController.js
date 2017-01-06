@@ -3,7 +3,8 @@
  */
 
 define(['app'], function (app) {
-    app.controller('headerController', function ($scope, $state, $auth, Account, Message) {
+    app.controller('headerController',['$scope', '$state', '$auth', 'Account', 'Message', function ($scope, $state, auth, Account, Message) {
+        console.log(auth);
         console.log("headerController");
 
         // 信息提示框
@@ -49,5 +50,5 @@ define(['app'], function (app) {
             console.log("isAuthenticated");
             $scope.isLogin = bAuthenticated;
         });
-    });
+    }]);
 });

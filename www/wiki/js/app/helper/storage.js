@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['angular', 'storage'], function (angular, storage) {
+define(['angular'], function (angular) {
     var fakeStorage = {};
     fakeStorage.setItem = function (key,value) {
         fakeStorage.key = value;

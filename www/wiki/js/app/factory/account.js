@@ -2,9 +2,9 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'storage', 'util'], function (app, storage) {
+define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
     console.log("accountFactory");
-    app.factory('Account', function ($auth, $rootScope, $uibModal, github) {
+    app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github',function ($auth, $rootScope, $uibModal, github) {
         var account = {
             user:undefined,
             // 获取用户信息
@@ -85,7 +85,7 @@ define(['app', 'storage', 'util'], function (app, storage) {
 
         // 初始化github
         function initGithub(user) {
-            if (user.githubToken && !github.isInited()) {
+            if (user && user.githubToken && !github.isInited()) {
                 github.init(user.githubToken, user.githubName, undefined);
             }
         }
@@ -96,5 +96,5 @@ define(['app', 'storage', 'util'], function (app, storage) {
 
         init(account.getUser());
         return account;
-    });
+    }]);
 });

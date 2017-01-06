@@ -1,0 +1,3 @@
+<div ng-controller="testACtrl">
+    hello testA
+</div>

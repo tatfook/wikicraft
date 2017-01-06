@@ -3,7 +3,7 @@
  */
 
 define(['app'], function (app) {
-    app.factory("Message", function () {
+    app.factory("Message", [function () {
         var message={
             timeout:5000,
             slideDownTimeout:1000,
@@ -39,5 +39,5 @@ define(['app'], function (app) {
         }
 
         return message;
-    });
+    }]);
 });

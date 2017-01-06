@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'util'], function (app, util) {
-    return function ($scope, $state, $auth, Account) {
+define(['app', 'helper/util'], function (app, util) {
+    return ['$scope', '$state', '$auth', 'Account', function ($scope, $state, $auth, Account) {
         console.log("loginController");
         //$scope.errMsg = "用户名或密码错误";
         $scope.login = function () {
@@ -21,23 +21,23 @@ define(['app', 'util'], function (app, util) {
                 Account.setUser(data.userInfo);
                 console.log("登录成功");
                 if (!data.userInfo.githubToken) {
-                    //Account.githubAuthenticate();
+                    Account.githubAuthenticate();
                 }
-                $state.go("home");
+                window.location.href = '/#/home';
             }, function (error) {
                 $scope.errMsg = error.message;
             });
         }
 
         $scope.githubLogin = function () {
-            $auth.authenticate("github").then(function () {
-                console.log("github认证成功!!!")
-                Account.getProfile();
-                $state.go("home");
+            $auth.authenticate("github").then(function (response) {
+                console.log("github认证成功!!!");
+                $auth.setToken(response.data.token);
+                Account.setUser(response.data.userInfo);
+                window.location.href = '/#/home';
             }, function () {
-                console.log("github认证失败!!!")
-                $state.go("home");
+                console.log("github认证失败!!!");
             });
         }
-    }
+    }];
 });

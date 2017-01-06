@@ -2,32 +2,46 @@
  * Created by wuxiangan on 2016/12/19.
  */
 
-define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdownit, app, storage, util) {
-    app.controller('mainController', function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message) {
+define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'], function ($, app, markdownwiki, storage, util) {
+    app.controller('mainController', ['$scope','$rootScope','$state', '$http', '$auth', '$compile', 'Account', 'Message', function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message) {
         console.log("mainController");
         // 初始化基本信息
         function initBaseInfo() {
             $rootScope.imgsPath = config.imgsPath;
+            $rootScope.user = Account.getUser();
+            $rootScope.userinfo = $rootScope.user;
             //配置一些全局服务
             util.setAngularServices({$rootScope:$rootScope, $http:$http, $state:$state, $compile:$compile, $auth:$auth});
             util.setSelfServices({config:config, storage:storage, Account:Account, Message:Message});
-
         }
         // 加载内容信息
         function initContentInfo() {
-            $rootScope.IsRenderServerWikiContent = false;
+            $scope.IsRenderServerWikiContent = false;
+
             var urlObj = util.parseUrl();
             console.log(urlObj);
+            urlObj.sitename = 'wiki';
+            urlObj.pagename = "test";
             // 置空用户页面内容
             if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
+                console.log($('#SinglePageId').children().length);
+                $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
+                if ($scope.IsRenderServerWikiContent) {
+                    return ;
+                }
                 if (window.location.path != "/" && window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
                     window.location.href="/" + window.location.hash;
-                } else if (window.location.pathname == '/' && !window.location.hash) {     // wikicraft.cn  重定向/#/home
+                } else if ((window.location.pathname == '/' || window.location.pathname == '/wiki') && !window.location.hash) {     // wikicraft.cn  重定向/#/home
                     window.location.href="/#/home";
-                } else {                                                                           // /wiki/xxx    旧版本/wiki/xxx页
-                    $rootScope.IsRenderServerWikiContent = true;
+                } else { // /wiki/test
+                    var pageUrl = ['text!html/wiki/' + urlObj.pagename + '.html'];
+                    require(pageUrl, function (htmlContent) {
+                        console.log(htmlContent);
+                        $scope.IsRenderServerWikiContent = true;
+                        util.html('#SinglePageId', htmlContent, $scope);
+                    });
                 }
-                console.log($rootScope.IsRenderServerWikiContent);
+                console.log($scope.IsRenderServerWikiContent);
                 return ;
             }
             // 访问用户页
@@ -49,7 +63,7 @@ define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdown
                             '<wiki-block path="user/userlist" title="评委成员" type="judge"></wiki-block>'+
                             '<div class="container"><img src="/wiki/assets/imgs/3DGameRule.jpg" class="img-responsive"></div>';
                 */
-                var md = markdownit({html:true});
+                var md = markdownwiki({html:true});
                 pageContent = md.render(pageContent);
                 console.log(pageContent);
                 pageContent = $compile(pageContent)($scope);
@@ -64,5 +78,5 @@ define(['jquery','markdown-it', 'app', 'storage', 'util'], function ($, markdown
         }
 
         init();
-    });
+    }]);
 });

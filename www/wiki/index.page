@@ -9,8 +9,6 @@
 
     <!-- lib css -->
     <link href="/wiki/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/wiki/js/lib/angular-ui-select/select.min.css" rel="stylesheet">
-    <link href="/wiki/js/lib/cropper/cropper.min.css" rel="stylesheet">
 
     <!-- 全局配置 -->
     <script src="/wiki/js/app/config.js"></script>
@@ -23,7 +21,7 @@
     <div style="z-index: 1">
         <!--官网内容体-->
         <div class="container">
-			<div ng-show="IsRenderServerWikiContent">
+			<div id="SinglePageId" ng-show="IsRenderServerWikiContent">
 				<? RenderServerWikiContent() ?>
 			</div>
 			<div ng-show="!IsRenderServerWikiContent">
