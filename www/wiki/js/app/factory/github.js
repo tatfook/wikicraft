@@ -190,6 +190,9 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
                 this.getFile(path, cb, errcb);
             },
             uploadImage: function (path, content, cb, errcb) {
+                if (!path) {
+                    path =  'img_' + (new Date()).getTime();
+                }
                 path = 'images/' + path;
                 this.writeFile(path, content, 'upload image:'+ path, function(){
                     cb && cb('#'+path);
