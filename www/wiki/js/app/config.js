@@ -5,8 +5,12 @@
 /* 程序配置模块 */
 
 (function () {
-    //var pathPrefix = '/html/server/';
-    var pathPrefix = '/wiki/';
+    console.log(window.location.pathname);
+    var pathname = window.location.pathname;
+    var pathPrefix = pathname.substring(0, pathname.lastIndexOf('/') + 1) ;
+    pathPrefix = (pathPrefix == "/") ? '/wiki/' : pathPrefix;
+    console.log(pathPrefix);
+//var pathPrefix = '/wiki/';
     config = {
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
@@ -30,7 +34,7 @@
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
-        apiUrlPrefix:'/api/wiki/models/',
+        apiUrlPrefix:'http://localhost:8099/api/wiki/models/',
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // 路径配置 END

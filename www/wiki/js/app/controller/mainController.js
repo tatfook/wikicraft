@@ -14,14 +14,34 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             util.setAngularServices({$rootScope:$rootScope, $http:$http, $state:$state, $compile:$compile, $auth:$auth});
             util.setSelfServices({config:config, storage:storage, Account:Account, Message:Message});
         }
+
+        function renderHtmlText(pathname) {
+            var pageUrl = ['text!html' + pathname + '.html'];
+            require(pageUrl, function (htmlContent) {
+                console.log(htmlContent);
+                var scriptReg = /<script>[\s\S]*?<\/script>/g;
+                var scripts = htmlContent.match(scriptReg) || [];
+                htmlContent.replace(scriptReg, '');
+                console.log(scripts);
+                for (var i = 0; i < scripts.length; i++) {
+                    var scipt = scripts[i].match(/<script>([\s\S]*)<\/script>/)[1];
+                    console.log(scipt);
+                    eval(scipt);
+                }
+                console.log(htmlContent);
+                $scope.IsRenderServerWikiContent = true;
+                util.html('#SinglePageId', htmlContent, $scope);
+            });
+        }
+
         // 加载内容信息
         function initContentInfo() {
             $scope.IsRenderServerWikiContent = false;
 
             var urlObj = util.parseUrl();
             console.log(urlObj);
-            urlObj.sitename = 'wiki';
-            urlObj.pagename = "test";
+            //urlObj.sitename = 'testuser';
+            //urlObj.pagename = "test";
             // 置空用户页面内容
             if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
                 console.log($('#SinglePageId').children().length);
@@ -29,22 +49,21 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 if ($scope.IsRenderServerWikiContent) {
                     return ;
                 }
-                if (window.location.path != "/" && window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
-                    window.location.href="/" + window.location.hash;
-                } else if ((window.location.pathname == '/' || window.location.pathname == '/wiki') && !window.location.hash) {     // wikicraft.cn  重定向/#/home
-                    window.location.href="/#/home";
+                //console.log(window.location);
+                if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
+                    window.location.href="/" + window.location.search + window.location.hash;
+                } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
+                    window.location.href="/"+ window.location.search +"#/home";
                 } else { // /wiki/test
-                    var pageUrl = ['text!html/wiki/' + urlObj.pagename + '.html'];
-                    require(pageUrl, function (htmlContent) {
-                        console.log(htmlContent);
-                        $scope.IsRenderServerWikiContent = true;
-                        util.html('#SinglePageId', htmlContent, $scope);
-                    });
+                    //console.log("==========");
+                    renderHtmlText(window.location.pathname);
+                    //renderHtmlText('/wiki/test');
                 }
                 console.log($scope.IsRenderServerWikiContent);
                 return ;
             }
             // 访问用户页
+            console.log(config.apiUrlPrefix);
             util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {sitename:urlObj.sitename, pagename:urlObj.pagename}, function (data) {
                 data = data || {};
                 // 这三种基本信息根化，便于用户页内模块公用
@@ -52,22 +71,21 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 $rootScope.siteinfo = data.siteinfo;
                 $rootScope.pageinfo = data.pageinfo;
                 var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
-                /*
-                pageContent='<wiki-block path="/background/default" background-image="url(\'/wiki/assets/imgs/3DGameBG.jpg\')"></wiki-block>' +
-                            '<wiki-block path="header/gameHeader"></wiki-block>' +
-                            '<wiki-block path="game/gamedate" contribute-date="12.1-12.30" vote-date="1.1-1.10" result-date="1.12"></wiki-block>' +
-                            '<wiki-block path="statics/gameStatics"></wiki-block>' +
-                            '<wiki-block path="works/workslist" title="入围作品" type="upgrade"></wiki-block>' +
-                            '<wiki-block path="works/workslist" title="最新上传" type="latestNew" page-size="6"></wiki-block>' +
-                            '<wiki-block path="works/workslist" title="全部作品" type="all"></wiki-block>' +
-                            '<wiki-block path="user/userlist" title="评委成员" type="judge"></wiki-block>'+
-                            '<div class="container"><img src="/wiki/assets/imgs/3DGameRule.jpg" class="img-responsive"></div>';
-                */
+                //console.log(pageContent);
                 var md = markdownwiki({html:true});
+                /*
+                 require(['text!html/templates/test.html'], function (htmlContent) {
+                    pageContent = htmlContent;
+                    pageContent = md.render(pageContent);
+                    console.log(pageContent);
+                    pageContent = $compile(pageContent)($scope);
+                    $('#__UserSitePageContent__').html(pageContent)
+                });
+                 */
                 pageContent = md.render(pageContent);
                 console.log(pageContent);
                 pageContent = $compile(pageContent)($scope);
-                $('#__UserSitePageContent__').html(pageContent)
+                $('#__UserSitePageContent__').html(pageContent);
             });
 
         }

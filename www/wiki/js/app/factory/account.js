@@ -31,11 +31,12 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
             },
 
             // 确保认证，未认证跳转登录页
-            ensureAuthenticated: function() {
+            ensureAuthenticated: function(cb) {
                 if (!this.isAuthenticated()) {
                     window.location.href = "/#/login";
                     return;
                 }
+                cb && cb();
                 return true;
             },
 

@@ -1,4 +1,4 @@
-<div class="container">
+<div>
     <!-- 数据统计 -->
     <div style="background-color: rgb(246,221,199); height: 140px; font-size: 30px">
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">

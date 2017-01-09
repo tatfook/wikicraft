@@ -2,7 +2,7 @@
 <div>
 	<div style="position: relative;">
 		<img src='{{imgsPath + "personalHeaderBG1.png"}}' class="img-responsive">
-		<img ng-src="{{userinfo.portrait || imgsPath + 'personalPortrait.png'}}" style="position: absolute; top: 135px; left: 412px; width: 275px; height: 275px">
+		<img ng-src="{{userinfo.portrait || imgsPath + 'personalPortrait.png'}}" style="position: absolute; top: 135px; left: 412px; width: 275px; height: 275px" class="img-circle">
 		<div style="background-color: rgb(255,248,233); height: 253px">
 			<div style="position:absolute; left: 125px; top: 348px; font-size: 24px; color: rgb(100,130,189)">
 				<div>坐标 {{userinfo.location}}</div>
@@ -12,7 +12,7 @@
 				个性签名  {{userinfo.signature}}
 			</div>
 			<div ng-show="user._id != userinfo._id" style="position: absolute; left: 735px; top: 342px;">
-				<a class="btn" style="border-radius: 50%" ng-click="attention()"><img ng-src='{{imgsPath + "subscribe.png"}}' style="width: 95px; height: 95px;"></a>
+				<a class="btn" style="border-radius: 50%" ng-click="attention()"><img ng-src='{{imgsPath + "subscribe.png"}}' style="width: 95px; height: 95px"></a>
 			</div>
 		</div>
 

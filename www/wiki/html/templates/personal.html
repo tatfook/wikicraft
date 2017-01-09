@@ -1,171 +1,33 @@
-<div class="mod_header" ng-controller="personalSiteCtrl" style="background-color: rgb(255,248,232)">
-    <!-- 个人主页头部 -->
-    <div style="position: relative;">
-        <img src="/wiki/assets/imgs/personalHeaderBG1.png" class="img-responsive">
-        <img ng-src="{{userinfo.portrait || '/wiki/assets/imgs/personalPortrait.png'}}" style="position: absolute; top: 141px; left: 425px; width: 276px; height: 276px">
-        <div style="background-color: rgb(255,248,233); height: 253px">
-            <div style="position:absolute; left: 125px; top: 348px; font-size: 24px; color: rgb(100,130,189)">
-                <div>坐标 {{userinfo.location}}</div>
-                <div>注册于 {{userinfo.joindate}}</div>
-            </div>
-            <div style="position: absolute; top: 464px; text-align: center; width: 100%; font-size: 22px">
-                个性签名  {{userinfo.signature}}
-            </div>
-            <div ng-show="user._id != userinfo._id" style="position: absolute; left: 765px; top: 342px;">
-                <a class="btn" style="border-radius: 50%" ng-click="attention()"><img src="/wiki/assets/imgs/subscribe.png"></a>
-            </div>
-        </div>
+```@template/default
+{
+"backgroundColor":"rgb(255,248,232)"
+}
+```
 
-        <!-- 个人导航 -->
-		<div ng-show="user._id==userinfo._id">
-	        <div style="position: absolute; left: 810px; top: 0px; margin: 0px 20px; width: 300px; display: flex; justify-content: space-between">
-	            <button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 18px; background: none; color: white">网页编辑</button>
-	            <button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 18px; background: none; color: white">网站管理</button>
-	            <button class="btn" ng-click="showWorksList()" style="font-size: 18px; background: none; color: white">全部作品</button>
-	        </div>
+```@header/js/personalHeader
+```
 
-	        <div id="worksListNavId" style="position: absolute; left: 866px; top:70px; width: 250px; height:433px; background-color: rgba(0,0,0,0.3); font-size: 22px; color: white">
-	            <div style="margin-left: 30px; margin-top: 40px">
-	                <ul>
-	                    <li ng-repeat="website in websiteList"><a style="color: white;" href="{{'/' + website.name}}">{{website.name}}</a></li>
-	                    <!--li><a style="color: white">个人站点</a></li>
-	                    <li><a style="color: white">组织网站</a></li>
-	                    <li><a style="color: white">比赛网站</a></li-->
-	                </ul>
-	            </div>
-	        </div>
-		</div>
-    </div>
+```@statics/js/personalStatics
+```
 
-    <!-- 数据统计 -->
-    <div class="mod_state">
-        <div style="background-color: rgb(208,224,238);">
-            <div class="row" style="font-size: 16px; height: 140px; ">
-                <div class="col-lg-4" style="height: 100%;" >
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%">
-                        <div style="font-size: 30px; color: red">{{statics.websiteCount}}</div>
-                        <div>我的作品</div>
-                    </div>
-                </div>
-                <div class="col-lg-4" style="height: 100%;" >
-                    <div  style="display: flex; flex-direction: column; align-items: center; justify-content:center; height: 100%">
-                        <div style="font-size: 30px; color: red">{{statics.favoriteCount}}</div>
-                        <div>我的关注</div>
-                    </div>
-                </div>
-                <div class="col-lg-4" style="height: 100%;" >
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%">
-                        <div style="font-size: 30px; color: red">{{statics.fansCount}}</div>
-                        <div>我的粉丝</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+```@works/js/workslist
+{
+"title":"最近更新",
+"type":"latestUpdate"
+}
+```
 
-    <!-- 最近更新 -->
-    <div class="row">
-        <div class="col-lg-offset-1 col-lg-10" style="display: flex; justify-content: space-between; align-items: center; height: 90px">
-            <div style="font-size: 30px">最近更新</div>
-            <div style="font-size: 18px; align-self: flex-end">
-                <a ng-click="goAllRenewalList()">更多</a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-1"  style="display: flex; align-items: center; height: 200px; justify-content: center;">
-            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getRenewalList(renewalParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
-        </div>
-        <div class="col-lg-10">
-            <div class="row">
-                <div class="col-lg-4" style="position: relative; height: 280px;" ng-repeat="site in renewalObj.siteList">
-                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 205px;">
-                    <div style="position: absolute; top: 125px; left: 15%; width: 70%;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 70px; padding-top: 15px; padding-left: 24px">
-                            <div style="font-size: 18px; color: white;">{{site.name}}</div>
-                            <div style="font-size: 10px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
-                        </div>
-                        <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-1" style="display: flex; align-items: center; height: 205px; justify-content: center;">
-            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getRenewalList(renewalParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
-        </div>
-    </div>
+```@works/js/workslist
+{
+"title":"我的收藏",
+"type":"favorite",
+"pageSize":"6"
+}
+```
 
-    <!-- 我的收藏 -->
-    <div class="row">
-        <div class="col-lg-offset-1 col-lg-10" style="display: flex; justify-content: space-between; align-items: center; height: 90px">
-            <div style="font-size: 30px">我的收藏</div>
-            <div style="font-size: 18px; align-self: flex-end">
-                <a ng-click="goAllFavoriteList()">更多</a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-1"  style="display: flex; align-items: center; height: 485px; justify-content: center;">
-            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getFavoriteList(favoriteParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
-        </div>
-        <div class="col-lg-10">
-            <div class="row">
-                <div class="col-lg-4" style="position: relative; height: 280px" ng-repeat="site in favoriteObj.siteList">
-                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 200px;">
-                    <div style="position: absolute; top: 120px; left: 15%; width: 70%;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 70px; padding-top: 15px; padding-left: 24px">
-                            <div style="font-size: 18px; color: white;">{{site.name}}</div>
-                            <div style="font-size: 10px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
-                        </div>
-                        <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div ng-if="!favoriteObj.siteList || favoriteObj.siteList.length < 4" style="height: 280px; width: 100%"></div>
-        </div>
-        <div class="col-lg-1" style="display: flex; align-items: center; height: 485px; justify-content: center;">
-            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getFavoriteList(favoriteParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
-        </div>
-    </div>
-
-    <!-- 全部作品 -->
-    <div class="row">
-        <div class="col-lg-offset-1 col-lg-10" style="display: flex; justify-content: space-between; align-items: center; height: 90px">
-            <div style="font-size: 30px">全部作品</div>
-            <div style="font-size: 18px; align-self: flex-end">
-                <a ng-click="goAllAllSiteList()">更多</a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-1"  style="display: flex; align-items: center; height: 205px; justify-content: center;">
-            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getAllSiteList(allSiteParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
-        </div>
-        <div class="col-lg-10">
-            <div class="row">
-                <div class="col-lg-4" style="position: relative; height: 280px" ng-repeat="site in allSiteObj.siteList">
-                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 205px;">
-                    <div style="position: absolute; top: 125px; left: 15%; width: 70%;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 70px; padding-top: 15px; padding-left: 24px">
-                            <div style="font-size: 18px; color: white;">{{site.name}}</div>
-                            <div style="font-size: 10px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
-                        </div>
-                        <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
-                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-1" style="display: flex; align-items: center; height: 205px; justify-content: center;">
-            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getAllSiteList(allSiteParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
-        </div>
-    </div>
-</div>
+```@works/js/workslist
+{
+"title":"全部作品",
+"type":"all"
+}
+```

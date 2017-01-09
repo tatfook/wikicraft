@@ -1,10 +1,10 @@
 
 <!-- 组织主页头部 -->
-<div class="container">
+<div>
 	<!--头部-->
 	<div style="position: relative;">
-		<img src="/wiki/assets/imgs/3DGameHead.jpg" class="img-responsive">
-		<div style="position: absolute; left: 820px; top: 360px;">
+		<img ng-src="{{imgsPath + '3DGameHead.jpg'}}" class="img-responsive">
+		<div style="position: absolute; left: 800px; top: 360px;">
 			<button class="btn" style="width: 135px; height: 85px; border-radius: 18px; background-color: rgb(37,69,255); border: 0px; font-size: 21px; color: white">
 				比赛规则
 			</button>

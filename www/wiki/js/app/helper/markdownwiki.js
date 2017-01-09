@@ -252,14 +252,14 @@ define([
                         }
                         var script = '<script>renderWikiBlock("' + idx + '", "' + modName + '", "' + cmdname + '",' + params + ','
                             + JSON.stringify({mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]}) +');</script>';
-                        return '<div class="col-sm-12">' +
+                        return '<div>' +
                             '<div id="wikiblockContainer_'+ idx + '" style="position: relative">' +
                             '<div id="wikiblockHeader_'+ idx + '" style="position: absolute; left:0px; right:0px; display: none; z-index: 3">' +
                             '<div style="background-color: rgba(0,0,0,0.1); display: flex; justify-content: flex-end">' +
                             '<button class="btn" id="wikiblockEditBtn_'+idx+'"style="background: none; color: white">编辑</button>' +
                             '<button class="btn" id="wikiblockDeleteBtn_'+idx+'"style="background: none; color: white">删除</button>' +
                             '<button class="btn" id="wikiblockHideBtn_'+idx+'"style="background: none; color: white">隐藏</button>' +
-                            '</div>'+
+                            '</div>' +
                             '</div>' +
                             '<div id="wikiblockEdit_'+idx+'"></div>' +
                             '<div id="wikiblock_' + idx+ '"></div>' +

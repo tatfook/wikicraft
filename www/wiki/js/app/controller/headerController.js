@@ -3,8 +3,7 @@
  */
 
 define(['app'], function (app) {
-    app.controller('headerController',['$scope', '$state', '$auth', 'Account', 'Message', function ($scope, $state, auth, Account, Message) {
-        console.log(auth);
+    app.controller('headerController',['$scope', '$state', '$auth', 'Account', 'Message', function ($scope, $state, $auth, Account, Message) {
         console.log("headerController");
 
         // 信息提示框

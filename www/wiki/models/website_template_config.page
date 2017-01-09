@@ -60,8 +60,7 @@ local template_config = {
 						name="组织样式",
 						templateId=1,
 						logoUrl="/wiki/assets/imgs/Organization.jpg",
-						-- filename="organization.html",
-						filename="moduleOrganization.html",
+						filename="organization.html",
 						previewFilename="organizationPreview.html",
 						layoutTpl='',
 					},
@@ -88,8 +87,7 @@ local template_config = {
 						name="3D大赛样式",
 						templateId=1,
 						logoUrl="",
-						--filename="game.html",
-						filename="moduleGame.html",
+						filename="game.html",
 						previewFilename="gamePreview.html",
 						layoutTpl='',
 					},
@@ -122,13 +120,13 @@ function website_template_config:getFileContent(filename)
 	
 	file:close()
 	
+	log(content)
 	return content	
 end
 
 -- 获取个人站点模板内容
 function website_template_config:getPersonalPage()
-	-- local filename = "personal.html"
-	local filename = "modulePersonal.html"
+	local filename = "personal.html"
 	local content = self:getFileContent(filename)
 
 	return errors:wrap(nil, content)
@@ -136,6 +134,7 @@ end
 
 -- 通过模板文件获得模板内容  用于预览
 function website_template_config:api_getTemplatePageByFilename(params)
+	log(params)
 	if not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
