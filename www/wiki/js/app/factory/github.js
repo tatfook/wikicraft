@@ -124,6 +124,7 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
         return {
             github:github,
             init: function (githubToken, githubName, defaultRepoName, cb, errcb) {
+                //console.log(githubToken);
                 if (github.inited) {
                     cb && cb();
                     return;

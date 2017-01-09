@@ -43,6 +43,8 @@
             'helper': config.jsAppHelperPath,
             // html dir
             'html': config.htmlPath,
+            //'html':'/html/server/html',
+            'wikimod': config.wikiModPath,
         },
         shim: {
             'angular': {

@@ -100,7 +100,7 @@ define([
         }
         var idx = wikiBlockObj.idx;
         // 模块头部显示与隐藏
-        $('#wikiblockContainer_' + idx).on('mouseenter mouseleave', function (e) {
+        $('#wikiblockContainer_' + idx).on('mouseenter mouseleave mouseover mouseout', function (e) {
             var element = $(e.target);
             if (e.type == 'mouseenter') {
                 /*
@@ -109,9 +109,11 @@ define([
                  }
                  */
                 $('#wikiblockHeader_' + idx).fadeIn();
+                $('#wikiblockContainer_' + idx).css('border','1px solid silver');
                 wikiBlockObj.editor.setSelection({line:wikiBlockObj.innerParams.line_begin, ch:'\n'},{line:wikiBlockObj.innerParams.line_end, ch:'\n'});
             } else if (e.type == 'mouseleave') {
                 $('#wikiblockHeader_' + idx).fadeOut();
+                $('#wikiblockContainer_' + idx).css('border','0px');
                 wikiBlockObj.editor.setSelection({line:0});
             } else if(e.type == 'mouseover' && element.attr('wikimodparamskey')) {
                 wikiBlockObj.setSelection(element.attr('wikimodparamskey'));

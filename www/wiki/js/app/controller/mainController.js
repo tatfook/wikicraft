@@ -18,7 +18,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
         function renderHtmlText(pathname) {
             var pageUrl = ['text!html' + pathname + '.html'];
             require(pageUrl, function (htmlContent) {
-                console.log(htmlContent);
+                //console.log(htmlContent);
                 var scriptReg = /<script>[\s\S]*?<\/script>/g;
                 var scripts = htmlContent.match(scriptReg) || [];
                 htmlContent.replace(scriptReg, '');
@@ -44,7 +44,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             //urlObj.pagename = "test";
             // 置空用户页面内容
             if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
-                console.log($('#SinglePageId').children().length);
+                //console.log($('#SinglePageId').children().length);
                 $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
                 if ($scope.IsRenderServerWikiContent) {
                     return ;
@@ -59,7 +59,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                     renderHtmlText(window.location.pathname);
                     //renderHtmlText('/wiki/test');
                 }
-                console.log($scope.IsRenderServerWikiContent);
+                //console.log($scope.IsRenderServerWikiContent);
                 return ;
             }
             // 访问用户页
@@ -83,7 +83,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 });
                  */
                 pageContent = md.render(pageContent);
-                console.log(pageContent);
+                //console.log(pageContent);
                 pageContent = $compile(pageContent)($scope);
                 $('#__UserSitePageContent__').html(pageContent);
             });

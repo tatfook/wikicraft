@@ -13,7 +13,7 @@ define(['app','helper/markdownwiki', 'helper/util'], function (app, markdownwiki
         util.http('POST', config.apiUrlPrefix+'website_template_config/getTemplatePageByFilename', {filename:filename}, function(data){
             // 获取页面中模板
             var pageContent = data ? data : '<div>用户页丢失!!!</div>';
-            pageContent = md.render(pageContent);
+            //pageContent = md.render(pageContent);
             pageContent = $compile(pageContent)($scope);
             $('#__UserSitePageContent__').html(pageContent);
         })

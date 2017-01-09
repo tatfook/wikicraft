@@ -397,14 +397,18 @@ define([
                         case 'site':
                             $scope.website = getWebsite(tags[1]);
                             $rootScope.website = $scope.website;
+                            $rootScope.siteinfo = $scope.website; // wxa add 站点信息全局化，默认提供wiki mod使用
                             //console.log($scope.website);
                             break;
                         case 'page':
                             $scope.websitePage = getWebsitePage(tags[1]);
                             $scope.website = getWebsite(tags[2]);
 
-                            $rootScope.websitePage = $scope.websitePage;
+                            $rootScope.websitePage = $scope.websitePage; // wxa add 站点信息全局化，默认提供wiki mod使用
                             $rootScope.website = $scope.website;
+
+                            $rootScope.pageinfo = $scope.websitePage;
+                            $rootScope.siteinfo = $scope.website;
 
                             openPage();
 
