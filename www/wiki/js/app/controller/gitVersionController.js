@@ -24,7 +24,7 @@ define(['app','helper/util'], function (app, util) {
            github.getTree(true, function (data) {
                var filelist = []
                for(var i = 0; i < data.tree.length; i++) {
-                   if (data.tree[i].type == "tree") {
+                   if (data.tree[i].type == "tree" || data.tree[i].path.indexOf('images/') == 0) {
                        continue;
                    }
                    filelist.push({path:data.tree[i].path});

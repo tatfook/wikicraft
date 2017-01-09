@@ -73,6 +73,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
                 //console.log(pageContent);
                 var md = markdownwiki({html:true});
+
                 /*
                  require(['text!html/templates/test.html'], function (htmlContent) {
                     pageContent = htmlContent;
@@ -81,7 +82,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                     pageContent = $compile(pageContent)($scope);
                     $('#__UserSitePageContent__').html(pageContent)
                 });
-                 */
+                  */
                 pageContent = md.render(pageContent);
                 //console.log(pageContent);
                 pageContent = $compile(pageContent)($scope);
