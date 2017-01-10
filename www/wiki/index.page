@@ -8,7 +8,7 @@
     <title>wikicraft</title>
 
     <!-- lib css -->
-    <link href="/wiki/js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/wiki/assets/css/main.css" rel="stylesheet">
 
     <!-- 全局配置 -->
     <script src="/wiki/js/app/config.js"></script>

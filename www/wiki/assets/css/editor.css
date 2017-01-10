@@ -30,7 +30,7 @@ body,
     padding: 2px;
 }
 .result-html {
-    padding: 2px 10px;
+    /*padding: 2px 10px;*/
     overflow: auto;
     /*background-color: #fff;*/
     /*border: 1px solid #eee;*/
@@ -38,7 +38,7 @@ body,
     /*border-radius: 4px;*/
 }
 .result-html img {
-    max-width: 35%;
+    /*max-width: 35%;*/
 }
 .result-src,
 .result-debug {

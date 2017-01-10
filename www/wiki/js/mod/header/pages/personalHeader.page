@@ -1,8 +1,8 @@
 <!-- 个人主页头部 -->
 <div>
 	<div style="position: relative;">
-		<img src='{{imgsPath + "personalHeaderBG1.png"}}' class="img-responsive">
-		<img ng-src="{{userinfo.portrait || imgsPath + 'personalPortrait.png'}}" style="position: absolute; top: 142px; left: 428px; width: 275px; height: 275px" class="img-circle">
+		<img ng-src='{{imgsPath + "personalHeaderBG1.png"}}' class="img-responsive">
+		<img ng-src="{{userinfo.portrait || imgsPath + 'personalPortrait.png'}}" style="position: absolute; top: 142px; left: 427px; width: 275px; height: 275px" class="img-circle">
 		<div style="background-color: rgb(255,248,233); height: 253px">
 			<div style="position:absolute; left: 125px; top: 348px; font-size: 24px; color: rgb(100,130,189)">
 				<div>坐标 {{userinfo.location}}</div>
