@@ -111,7 +111,7 @@ define([
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
             $scope.websitePage.userId = $scope.website.userId
 
-            $http.put('http://localhost:8099/api/wiki/models/website_pages/new', $scope.websitePage).then(function (response) {
+            $http.put(config.apiUrlPrefix + 'website_pages/new', $scope.websitePage).then(function (response) {
                 $rootScope.websitePage = response.data.data;
                 $rootScope.website = $scope.website;
 
@@ -152,12 +152,12 @@ define([
             }
 
             // 获取用户站点列表
-            $http.post('http://localhost:8099/api/wiki/models/website', {userId: Account.getUser()._id}).then(function (response) {
+            $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
                 $scope.websites = response.data.data;
 
                 for (var i = 0; i < $scope.websites.length; i++) {
                     ws = $scope.websites[i];
-                    $http.post('http://localhost:8099/api/wiki/models/website_pages', {websiteName: ws.name}).then(function (response) {
+                    $http.post(config.apiUrlPrefix + 'website_pages', {websiteName: ws.name}).then(function (response) {
                         pages = response.data.data;
                         for (var j = 0; j < pages.length; j++) {
                             $scope.websitePages.push(pages[j]);
@@ -495,7 +495,7 @@ define([
             var content = editor.getValue();
             if (!isEmptyObject($scope.websitePage)) {//修改
                 $scope.websitePage.content = content;
-                $http.put('http://localhost:8099/api/wiki/models/website_pages', $scope.websitePage).then(function (response) {
+                $http.put(config.apiUrlPrefix + 'website_pages', $scope.websitePage).then(function (response) {
                     //console.log(response.data);
                     if (!isEmptyObject($scope.githubSource)) {
                         var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
