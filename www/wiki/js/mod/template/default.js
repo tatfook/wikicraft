@@ -23,7 +23,7 @@ define(['app', 'helper/util'], function (app, util) {
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="defaultTemplateController"><div ng-style="style">'+ wikiBlock.content +'</div></div>'
+            return '<div class="container"><div class="row" ng-controller="defaultTemplateController" ng-style="style"><div class="col-xs-12">'+ wikiBlock.content +'</div></div></div>';
         }
     }
 });

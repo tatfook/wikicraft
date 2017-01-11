@@ -1,10 +1,10 @@
 
 define(['app', 'helper/util'], function (app, util) {
     function registerController(wikiBlock) {
-        app.registerController("organizationHeaderController", function ($scope, $auth, Account, Message) {
+        app.registerController("organizationHeaderController", function ($scope, Account, Message) {
             $scope.htmlUrl = config.wikiModPath + 'header/pages/organizationHeader.page';
             $scope.memberApply = function () {
-                if (!Account.isLoaded()) {
+                if (!Account.isAuthenticated()) {
                     Message.info("请重新登录!!!");
                     return;
                 }

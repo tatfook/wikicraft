@@ -40,6 +40,11 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
                 return true;
             },
 
+            // logout
+            logout: function () {
+                $auth.logout();
+            },
+
             // github s授权认证
             githubAuthenticate: function() {
                 self = this;

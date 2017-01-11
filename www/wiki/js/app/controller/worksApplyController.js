@@ -8,16 +8,13 @@ define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
         $scope.worksSelected = [];
         $scope.submitDisabled = "";
 
-        var userpageObj = sessionStorage.getItem("userpageObj");
-        userpageObj = util.jsonStringToObject(userpageObj);
-
         $scope.worksSelectChange = function () {
             console.log($scope.worksSelected);
             $scope.worksSelected.length ? $("#submitId").removeAttr("disabled") : $("#submitId").attr({"disabled":"disabled"});
         };
 
         $scope.worksApply = function () {
-            var websiteId = sessionStorage.getItem("workApplyWebsiteId");
+            var websiteId = storage.sessionStorageGetItem("workApplyWebsiteId");
             var applyIdList = [];
 
             websiteId = parseInt(websiteId);
@@ -25,7 +22,7 @@ define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
                 applyIdList.push(parseInt($scope.worksSelected[i]));
             }
             var params = {
-                userId:userpageObj.user._id,
+                userId:$scope.user._id,
                 applyIdList:applyIdList,
                 websiteId:websiteId,
             }
@@ -38,7 +35,7 @@ define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
 
         function init() {
             $("#submitId").attr({"disabled":"disabled"});
-            util.http("POST", config.apiUrlPrefix + "website/getAllByUserId", {userId:userpageObj.user._id}, function (data) {
+            util.http("POST", config.apiUrlPrefix + "website/getAllByUserId", {userId:$scope.user._id}, function (data) {
                 $scope.siteList = data;
             });
         }

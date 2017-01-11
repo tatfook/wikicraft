@@ -1,7 +1,18 @@
-<div>
-    hello world
-</div>
+<?npl
 
-<script src="/wiki/js/test.js">
-    //
-</script>
+-- NPL.load("(gl)script/ide/System/os/os.lua");
+NPL.load("(gl)script/ide/System/os/GetUrl.lua");
+
+System.os.SendEmail(
+	{
+		url="smtp://mail.paraengine.com",
+		username="LiXizhi", password="1234567", 
+		from="lixizhi@paraengine.com", to="765485868@qq.com", 
+		subject = "title here",
+		body = "any body context here. can be very long",
+	}, 
+	function()
+	end);
+?>
+
+

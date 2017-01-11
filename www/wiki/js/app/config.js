@@ -5,13 +5,11 @@
 /* 程序配置模块 */
 
 (function () {
-    console.log(window.location.pathname);
-    var pathname = window.location.pathname;
-    var pathPrefix = pathname.substring(0, pathname.lastIndexOf('/') + 1) ;
-    pathPrefix = (pathPrefix == "/") ? '/wiki/' : pathPrefix;
-    console.log(pathPrefix);
-//var pathPrefix = '/wiki/';
+    var localEnv = false;
+    pathPrefix = localEnv ? '/html/server/' : '/wiki/';
     config = {
+        localEnv:localEnv,                                                 // 是否本地调试环境
+        frontEndRouteUrl: localEnv ? '/html/server/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
         // 图片路径
@@ -34,7 +32,7 @@
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
-        apiUrlPrefix:'/api/wiki/models/',
+        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : '/api/wiki/models/',
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // 路径配置 END

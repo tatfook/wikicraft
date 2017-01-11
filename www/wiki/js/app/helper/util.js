@@ -37,6 +37,11 @@ define(['jquery'], function ($) {
     util.parseUrl = function () {
         var hostname = window.location.hostname;
         var pathname = window.location.pathname;
+
+        if (!window.location.hash && config.localEnv && window.location.search.length > 1) {
+            pathname = window.location.search.substring(1);
+        }
+
         var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
         var pagename = 'index';
 
@@ -58,7 +63,7 @@ define(['jquery'], function ($) {
             sitename = sitename[1]
         }
 
-        return {sitename:sitename, pagename:pagename};
+        return {sitename:sitename, pagename:pagename, pathname:pathname};
     }
 
     util.setLastUrlObj = function (urlObj) {
@@ -203,6 +208,14 @@ define(['jquery'], function ($) {
 
     util.isSubMoudle = function () {
         return window.IframeId ? true : false;
+    }
+
+    util.goUserSite = function (url) {
+        if (config.localEnv) {
+            window.location.href = config.frontEndRouteUrl + '?' + url;
+        } else {
+            window.location.href = url;
+        }
     }
 
     return util;

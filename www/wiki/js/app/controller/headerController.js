@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app'], function (app) {
-    app.controller('headerController',['$scope', '$state', '$auth', 'Account', 'Message', function ($scope, $state, $auth, Account, Message) {
+define(['app', 'helper/util'], function (app, util) {
+    app.controller('headerController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         console.log("headerController");
 
         // 信息提示框
@@ -15,15 +15,27 @@ define(['app'], function (app) {
         $scope.user = Account.getUser();
 
         $scope.goLoginPage = function () {
-            window.location.href="/#/login";
+            window.location.href=config.frontEndRouteUrl + "#/login";
         };
 
         $scope.goRegisterPage = function () {
-            window.location.href="/#/home";
+            window.location.href=config.frontEndRouteUrl + "#/home";
         };
 
         $scope.goHomePage = function () {
-            window.location.href="/#/home";
+            window.location.href=config.frontEndRouteUrl + "#/home";
+        };
+
+        $scope.goUserCenterPage = function () {
+            window.location.href=config.frontEndRouteUrl + "#/userCenter";
+        };
+
+        $scope.goWebsitePage = function () {
+            window.location.href=config.frontEndRouteUrl + "#/website";
+        };
+
+        $scope.goGitVersionPage = function () {
+            window.location.href=config.frontEndRouteUrl + "#/gitVersion";
         };
 
         $scope.goPersonalPage = function () {
@@ -31,13 +43,13 @@ define(['app'], function (app) {
                 Message.info("请先登录!!!");
                 return;
             }
-            window.location.href = "/" + $scope.user.username;
+            util.goUserSite('/' + $scope.user.username);
         };
 
         $scope.logout = function () {
-            $auth.logout();
+            Account.logout();
             $scope.isLogin = false;
-            window.location.href="/#/home";
+            window.location.href= config.frontEndRouteUrl + "#/home";
         };
 
         $scope.$on("onUserProfile", function (event, user) {

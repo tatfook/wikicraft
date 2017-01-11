@@ -16,12 +16,11 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         // 访问网站
         $scope.goWebsiteIndexPage = function(websiteName) {
-            window.location.href= '/' + websiteName;
+            util.goUserSite('/' + websiteName);
         }
 
         // 编辑网站页面
         $scope.goEditWebsitePagePage = function (website) {
-            //storage.sessionStorageSetItem("editWebsitePageParams", website);
             window.location.href="/wiki/editor";
         }
 

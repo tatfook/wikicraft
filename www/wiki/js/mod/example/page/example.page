@@ -1,4 +1,5 @@
 <div ng-controller="exampleController">
+    <!-- 模块参数视图配置 -->
     <div ng-show="isViewEdit">
         <form class="form-horizontal" role="form">
             <div class="form-group">
@@ -20,12 +21,13 @@
             </div>
         </form>
     </div>
+    <!-- 模块视图 -->
     <div>
         <div>
-            <h2 wikimodparamskey="title">{{title}}</h2>
+            <h2 wikimodparamskey="title">{{title}}</h2>  <!-- wikimodparamskey="title"  当鼠标位于title上自动选中文本编辑器该参数行-->
         </div>
         <div>
-            <p wikimodparamskey="content">{{content}}</p>
+            <p wikimodparamskey="content">{{content}}</p> <!-- wikimodparamskey="content" 当鼠标位于content上自动选中文本编辑器该参数行-->
         </div>
     </div>
 </div>

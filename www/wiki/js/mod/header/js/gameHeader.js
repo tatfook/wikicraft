@@ -1,5 +1,5 @@
 
-define(['app'], function (app) {
+define(['app', 'helper/storage'], function (app, storage) {
     function registerController(wikiBlock) {
         app.registerController("gameHeaderController", function ($scope, $auth, Account, Message) {
             $scope.htmlUrl = config.wikiModPath + 'header/pages/gameHeader.page';
@@ -9,8 +9,8 @@ define(['app'], function (app) {
                     Message.info("登录后才能投稿!!!");
                     return;
                 }
-                window.sessionStorage.setItem("workApplyWebsiteId", $scope.siteinfo._id);
-                window.location.href = "/#/worksApply";
+                storage.sessionStorageSetItem("workApplyWebsiteId", $scope.siteinfo._id);
+                window.location.href = config.frontEndRouteUrl + "#/worksApply";
             }
         });
     }

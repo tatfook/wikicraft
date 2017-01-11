@@ -1,8 +1,8 @@
 <!-- 个人主页头部 -->
-<div>
+<div class="row">
 	<div style="position: relative;">
 		<img ng-src='{{imgsPath + "personalHeaderBG1.png"}}' class="img-responsive">
-		<img ng-src="{{userinfo.portrait || imgsPath + 'personalPortrait.png'}}" style="position: absolute; top: 142px; left: 427px; width: 275px; height: 275px" class="img-circle">
+		<img ng-src="{{userinfo.portrait || imgsPath + 'personalPortrait.png'}}" style="position: absolute; top: 150px; left: 442px; width: 275px; height: 275px" class="img-circle">
 		<div style="background-color: rgb(255,248,233); height: 253px">
 			<div style="position:absolute; left: 125px; top: 348px; font-size: 24px; color: rgb(100,130,189)">
 				<div>坐标 {{userinfo.location}}</div>
@@ -17,14 +17,14 @@
 		</div>
 
 		<!-- 个人导航 -->
-		<div ng-show="user._id==userinfo._id">
-			<div style="position: absolute; left: 780px; top: 0px; margin: 0px 20px; width: 300px; display: flex; justify-content: space-between">
+		<div ng-show="isSelfSite()">
+			<div style="position: absolute; right: 10px; top: 0px; margin: 0px 20px; width: 300px; display: flex; justify-content: space-between">
 				<button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 18px; background: none; color: white">网页编辑</button>
 				<button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 18px; background: none; color: white">网站管理</button>
 				<button class="btn" ng-click="showWorksList()" style="font-size: 18px; background: none; color: white">全部作品</button>
 			</div>
 
-			<div id="worksListNavId" style="position: absolute; left: 836px; top:70px; width: 250px; height:433px; background-color: rgba(0,0,0,0.3); font-size: 22px; color: white">
+			<div id="worksListNavId" style="position: absolute; right: 50px; top:70px; width: 250px; height:433px; background-color: rgba(0,0,0,0.3); font-size: 22px; color: white">
 				<div style="margin-left: 30px; margin-top: 40px">
 					<ul>
 						<li ng-repeat="website in websiteList"><a style="color: white;" ng-click="goWebsitePage(website.name)">{{website.name}}</a></li>

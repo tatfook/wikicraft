@@ -1,5 +1,5 @@
 
-define(['app', 'helper/util'], function (app, util) {
+define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
     function registerController(wikiBlock) {
         app.registerController("workslistController", function ($scope, $auth, Account, Message) {
             $scope.htmlUrl = config.wikiModPath + 'works/pages/workslist.page';
@@ -12,8 +12,8 @@ define(['app', 'helper/util'], function (app, util) {
                 siteshowObj.requestUrl = $scope.requestUrl;
                 siteshowObj.requestParams = $scope.requestParams;
                 siteshowObj.title = $scope.title;
-                window.sessionStorage.setItem("siteshow", util.objectToJsonString(siteshowObj));
-                window.location.href = "/#/siteshow";
+                storage.sessionStorageSetItem("siteshow", siteshowObj)
+                window.location.href = config.frontEndRouteUrl + "#/siteshow";
             }
 
             // 随机颜色

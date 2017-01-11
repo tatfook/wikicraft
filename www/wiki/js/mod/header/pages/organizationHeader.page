@@ -1,5 +1,5 @@
 <!-- 组织主页头部 -->
-<div>
+<div class="row">
 	<div style="position: relative; height: 552px">
 		<img src='{{imgsPath + "OrgHeaderBackground.jpg"}}' class="img-responsive">
 		<div style="position: absolute; top: 350px; left: 120px;">
@@ -12,7 +12,7 @@
 				</div>
 			</div>
 		</div>
-		<div style="position: absolute; top: 145px;left: 425px; width: 275px">
+		<div style="position: absolute; top: 145px;left: 450px; width: 275px">
 			<img ng-src="{{ siteinfo.logoUrl || imgsPath + 'OrgLogo.jpg'}}" class="img-circle img-responsive">
 		</div>
 
@@ -20,7 +20,7 @@
 			{{siteinfo.desc}}
 		</div>
 
-		<div style="position: absolute; left: 765px; top: 340px;">
+		<div ng-show="!isSelfSite()" style="position: absolute; left: 765px; top: 340px;">
 			<button ng-click="memberApply()" style="background: none; border-radius: 50%" class="btn"><img src='{{imgsPath + "AddUser.jpg"}}' class="img-circle" style="width: 100px; height: 100px"></button>
 		</div>
 	</div>

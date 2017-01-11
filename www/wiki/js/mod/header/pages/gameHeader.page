@@ -1,6 +1,6 @@
 
 <!-- 组织主页头部 -->
-<div>
+<div class="row">
 	<!--头部-->
 	<div style="position: relative;">
 		<img ng-src="{{imgsPath + '3DGameHead.jpg'}}" class="img-responsive">

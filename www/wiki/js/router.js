@@ -25,7 +25,8 @@ define(['app', 'require'], function (app, require) {
             'createWebsite':{},
             'editWebsite': {},
             'preview':{},
-
+            'wikiEditor':{},
+            
             'gitVersion':{},
 
             'siteshow':{},
@@ -58,7 +59,7 @@ define(['app', 'require'], function (app, require) {
                 var deferred = $q.defer();
                 require([controllerPath], function (controller) {
                     //console.log(controller);
-                    $controllerProvider.register(controllerName, controller);
+                    controller && $controllerProvider.register(controllerName, controller);
                     deferred.resolve();
                 });
                 return deferred.promise;

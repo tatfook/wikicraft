@@ -1,5 +1,5 @@
 
-define(['app', 'helper/util'], function (app, util) {
+define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
     function registerController(wikiBlock) {
         app.registerController("userlistController", function ($scope, $auth, Account, Message) {
             $scope.htmlUrl = config.wikiModPath + 'user/pages/userlist.page';
@@ -12,8 +12,8 @@ define(['app', 'helper/util'], function (app, util) {
                 usershowObj.requestUrl = $scope.requestUrl;
                 usershowObj.requestParams = $scope.requestParams;
                 usershowObj.title = $scope.title;
-                window.sessionStorage.setItem("usershow", util.objectToJsonString(usershowObj));
-                window.location.href = "/#/usershow";
+                storage.sessionStorageSetItem("usershow",usershowObj);
+                window.location.href = config.apiUrlPrefix + "#/usershow";
             }
 
             // 获得网站成员列表

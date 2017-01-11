@@ -30,7 +30,7 @@
         </div>
 
         <!--用户站点内容体-->
-        <div class="container">
+        <div class="container-fluid">
             <div id="__UserSitePageContentContainer__">
                 <div id="__UserSitePageContent__"></div>
             </div>

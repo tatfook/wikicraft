@@ -12,7 +12,7 @@ define(['require', 'app'], function (require, app) {
                 if ($attrs.path) {
                     require([config.wikiModPath+$attrs.path + '.js'], function (wikiModule) {
                         $scope.wikiBlockParams = $attrs; // 传递模块参数
-                        var content = typeof wikiModule.render == 'function' ? wikiModule.render($attrs) : '';
+                        var content = typeof wikiModule.render == 'function' ? wikiModule.render({modParams:$attrs}) : '';
                         content = $compile(content)($scope);
                         $element.replaceWith(content);
                         $scope.$apply();

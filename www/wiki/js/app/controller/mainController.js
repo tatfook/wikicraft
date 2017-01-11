@@ -10,6 +10,10 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             $rootScope.imgsPath = config.imgsPath;
             $rootScope.user = Account.getUser();
             $rootScope.userinfo = $rootScope.user;
+
+            $rootScope.isSelfSite = function () {
+                return $rootScope.user._id == $rootScope.userinfo._id;
+            }
             //配置一些全局服务
             util.setAngularServices({$rootScope:$rootScope, $http:$http, $state:$state, $compile:$compile, $auth:$auth});
             util.setSelfServices({config:config, storage:storage, Account:Account, Message:Message});
@@ -37,11 +41,8 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
         // 加载内容信息
         function initContentInfo() {
             $scope.IsRenderServerWikiContent = false;
-
             var urlObj = util.parseUrl();
             console.log(urlObj);
-            //urlObj.sitename = 'testuser';
-            //urlObj.pagename = "test";
             // 置空用户页面内容
             if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
                 //console.log($('#SinglePageId').children().length);
@@ -51,12 +52,12 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 }
                 //console.log(window.location);
                 if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
-                    window.location.href="/" + window.location.search + window.location.hash;
+                    window.location.href=config.frontEndRouteUrl + window.location.search + window.location.hash;
                 } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
-                    window.location.href="/"+ window.location.search +"#/home";
+                    window.location.href=config.frontEndRouteUrl + window.location.search +"#/home";
                 } else { // /wiki/test
                     //console.log("==========");
-                    renderHtmlText(window.location.pathname);
+                    renderHtmlText(urlObj.pathname);
                     //renderHtmlText('/wiki/test');
                 }
                 //console.log($scope.IsRenderServerWikiContent);

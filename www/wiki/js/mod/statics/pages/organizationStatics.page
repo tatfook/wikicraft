@@ -1,4 +1,4 @@
-<div>
+<div class="row">
     <!-- 数据统计 -->
     <div style="background-color: rgb(246,221,199); height: 140px; font-size: 30px">
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">
@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="col-md-4" style="display: flex; justify-content: center; height: 100%; align-items: center">
-            <div >
+            <div>
                 <div style="text-align: center; color: red">{{statics.weekRenewalCount}}</div>
                 <div>本周更新</div>
             </div>

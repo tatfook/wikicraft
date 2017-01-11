@@ -1,5 +1,5 @@
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+define(['app', 'helper/util'], function (app, util) {
     function registerController(wikiBlock) {
         app.registerController("personalHeaderController", function ($scope, $auth, Account, Message) {
             //console.log($scope);
@@ -10,7 +10,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             }
             // 去网站管理页
             $scope.goWebsiteMangerPage = function() {
-                window.location.href='/#/website';
+                window.location.href= config.frontEndRouteUrl + '#/website';
             }
             // 页面编辑页面
             $scope.goWebsitePageManagerPage = function() {
@@ -18,7 +18,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             }
             // 去站点
             $scope.goWebsitePage = function (websiteName) {
-                window.location.href = '/' + websiteName;
+                util.goUserSite('/' + websiteName);
             }
 
             $scope.attention = function () {

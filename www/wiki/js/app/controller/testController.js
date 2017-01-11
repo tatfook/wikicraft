@@ -11,6 +11,9 @@ define([
 ], function ($, app, CodeMirror, markdownwiki, util) {
     console.log("testCtrl");
     return function ($scope, $rootScope, Account) {
+        $scope.workslistHeight = '280px';
+        $scope.workslistNavHeight = '200px';
+        $scope.siteObj = {siteList:[{},{},{}]};
         var editor = CodeMirror.fromTextArea(document.getElementById('sourceCodeId'),{
             lineNumbers: true,
             mode:'markdown',
@@ -18,11 +21,10 @@ define([
             theme: "default",
             viewportMargin: Infinity,
         });
-        /*
 
          var mdwiki = markdownwiki({container_name:"#wikiblockId"});
         mdwiki.bindToCodeMirrorEditor(editor);
-
+        /*
          editor.on('change', function () {
          var result = editor.getValue();
          console.log(result);
@@ -51,7 +53,7 @@ define([
          $('#resultEditId').fadeOut();
          }
          */
-        //editor.setValue('```@header/js/personalHeader\n{\n\t"key":"hello world", \n\t"value":"test"\n}\n```');
+        editor.setValue('```@header/js/personalHeader\n{\n\t"key":"hello world", \n\t"value":"test"\n}\n```');
         editor.setSelection({line:2,ch:'\n'},{line:3,ch:'\n'});
         var value = editor.getRange({line:2,ch:'\n'},{line:4,ch:"\n"});
         value = value.split('\n');

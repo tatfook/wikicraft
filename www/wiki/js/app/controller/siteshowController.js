@@ -4,8 +4,7 @@
 
 define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
     return ['$scope',function ($scope) {
-        var siteshowObj = sessionStorage.getItem("siteshow");
-        siteshowObj = util.jsonStringToObject(siteshowObj);
+        var siteshowObj = storage.sessionStorageGetItem("siteshow");
         //console.log(siteshowObj);
         $scope.title = siteshowObj.title;
         $scope.requestUrl = siteshowObj.requestUrl;
