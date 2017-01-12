@@ -3,7 +3,6 @@
  */
 
 define([], function () {
-
     return function (mdwiki) {
         return {
             render: function () {

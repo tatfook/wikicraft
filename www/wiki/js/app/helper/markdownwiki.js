@@ -45,7 +45,7 @@ define([
 
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
-        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {module:{}};
+        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {module:{renderCount:0}};
         return mdwikiMap[mdwikiName];
     }
 
@@ -252,6 +252,7 @@ define([
                             };
                             return '<div></div>'
                         }
+                        idx = mdwikiObj.renderCount + '_' + idx;
                         var script = '<script>renderWikiBlock("' + idx + '", "' + modName + '", "' + cmdname + '",' + params + ','
                             + JSON.stringify({mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]}) +');</script>';
                         return '<div>' +
@@ -315,7 +316,9 @@ define([
         options.breaks = options.breaks == null ? false : options.breaks;
         // jquery container name where to output the md content. default to ".result-html"
         options.container_name = options.container_name == null ? '.result-html' : options.container_name;
-        // 视图更新间隔
+        // 是否使用模板
+        options.use_template = options.use_template == null ? true : options.use_template;
+        //console.log("use_template:", options.use_template);
 
         // code block highlighter
         if (options.highlight == null) {
@@ -345,10 +348,14 @@ define([
         // force render a given text
         mdwiki.render = function (text) {
             var htmlResult = md.render(text);
+            if (!options.use_template) {
+                return htmlResult;
+            }
             var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
             var html = '<div id="wikiblock_template"></div>';
             mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/default', modParams:{}};
             mdwikiObj.template.content = htmlResult;
+            mdwikiObj.renderCount++;
             return html + scipt;
         }
 

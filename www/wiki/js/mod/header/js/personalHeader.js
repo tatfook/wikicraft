@@ -14,7 +14,11 @@ define(['app', 'helper/util'], function (app, util) {
             }
             // 页面编辑页面
             $scope.goWebsitePageManagerPage = function() {
-                window.location.href = "/wiki/editor";
+                if (config.localEnv) {
+                    window.location.href = config.frontEndRouteUrl + '#/wikiEditor';
+                } else {
+                    window.location.href = "/wiki/editor";
+                }
             }
             // 去站点
             $scope.goWebsitePage = function (websiteName) {

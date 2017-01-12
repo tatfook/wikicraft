@@ -11,6 +11,7 @@
 
         // directives
         'directive/moduleDirective',
+        'directive/userpage',
         'directive/wikiImage',
 
         // factory

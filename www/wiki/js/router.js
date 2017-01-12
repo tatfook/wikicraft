@@ -15,6 +15,8 @@ define(['app', 'require'], function (app, require) {
                 controllerPath:controllerPathPrefix + 'testController',
                 controllerName:'testController',
             },
+            'testEditor':{},
+
             'login':{},
             'home':{},
 

@@ -10,6 +10,8 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             $rootScope.imgsPath = config.imgsPath;
             $rootScope.user = Account.getUser();
             $rootScope.userinfo = $rootScope.user;
+            $rootScope.frameHeaderExist = true;
+            $rootScope.frameFooterExist = true;
 
             $rootScope.isSelfSite = function () {
                 return $rootScope.user._id == $rootScope.userinfo._id;

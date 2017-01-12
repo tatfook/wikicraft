@@ -10,7 +10,7 @@ Date: 2016/10/17
 wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/css/editor.css");
 ?>
 
-<div id="wikiEditor" ng-controller="editorController">
+<div id="wikiEditor" class="row" ng-controller="editorController">
     <div id="toolbarview" class="well well-sm nopadding" style="z-index:99;">
         <div id="codeToolbar" class="btn-toolbar" role="toolbar">
             <div class="btn-group">
@@ -101,7 +101,7 @@ wp_enqueue_style("editor_style", WIKI_WEBROOT.."assets/css/editor.css");
         </div>
     </div>
 
-    <div class="row">
+    <div>
         <div id="treeview" class="col-xs-2 full-height nopadding nomargin"></div>
         <div id="srcview" class="col-xs-5 full-height nopadding nomargin">
             <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>

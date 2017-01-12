@@ -1,63 +1,103 @@
 /**
- * Created by wuxiangan on 2016/12/19.
+ * Created by wuxiangan on 2017/1/6.
  */
 
-define([
-    'jquery',
-    'app',
-    'codemirror',
-    'helper/markdownwiki',
-    'helper/util',
-], function ($, app, CodeMirror, markdownwiki, util) {
-    console.log("testCtrl");
-    return function ($scope, $rootScope, Account) {
-        $scope.workslistHeight = '280px';
-        $scope.workslistNavHeight = '200px';
-        $scope.siteObj = {siteList:[{},{},{}]};
-        var editor = CodeMirror.fromTextArea(document.getElementById('sourceCodeId'),{
-            lineNumbers: true,
-            mode:'markdown',
-            lineWrapping: true,
-            theme: "default",
-            viewportMargin: Infinity,
-        });
-
-         var mdwiki = markdownwiki({container_name:"#wikiblockId"});
-        mdwiki.bindToCodeMirrorEditor(editor);
-        /*
-         editor.on('change', function () {
-         var result = editor.getValue();
-         console.log(result);
-         result = mdwiki.render(result);
-         console.log(result);
-         util.html('#wikiblockId', result, $scope);
-         });
-         $('#resultOperEditBtnId').on('click', function () {
-         $('#resultEditId').fadeIn();
-         $('#resultOperId').fadeOut();
-         });
-
-         $('#resultContainer').on('mouseenter mouseleave', function (e) {
-         if (e.type == 'mouseenter') {
-         console.log("mouseenter");
-         $('#resultOperId').fadeIn();
-         } else if (e.type == 'mouseleave') {
-         console.log("mouseleave");
-         $('#resultOperId').fadeOut();
-         }
-         });
-
-         $scope.ok = function () {
-         console.log($scope.title);
-         editor.setValue('# ' + $scope.title);
-         $('#resultEditId').fadeOut();
-         }
-         */
-        editor.setValue('```@header/js/personalHeader\n{\n\t"key":"hello world", \n\t"value":"test"\n}\n```');
-        editor.setSelection({line:2,ch:'\n'},{line:3,ch:'\n'});
-        var value = editor.getRange({line:2,ch:'\n'},{line:4,ch:"\n"});
-        value = value.split('\n');
-        console.log(value);
-        editor.focus();
+define(['helper/util'], function (util) {
+    var defaultModParams = {
+        rows:[
+            {
+                class:'row',
+                style:{},
+                content:'header',
+            },
+            {
+                class:'row',
+                style:{},
+                cols:[
+                    {
+                        //class:"col-xs-2",
+                        style:{},
+                        content:"left",
+                    },
+                    {
+                        class:"col-xs-8",
+                        style:{},
+                        isMainContent: false,
+                        content:'middle',
+                        //contentUrl:"/templates/test",
+                    },
+                    {
+                        class:"col-xs-2",
+                        style:{},
+                        content:"right",
+                    },
+                ],
+            },
+            {
+                style:{},
+                content:'footer',
+            }
+        ],
+        content:'test',
+        contentUrl:'',
+        isMainContent: false,
+        class:'container',
+        style:{"background-color": "silver"},
+        frameHeaderExist:true,
+        frameFooterExist: false,
     };
+    return function ($scope, $rootScope) {
+        var content = "hello world";
+        $scope.path = '/templates/test';
+        $scope.modParams = defaultModParams;
+        $rootScope.frameHeaderExist = defaultModParams.frameHeaderExist;
+        $rootScope.frameFooterExist = defaultModParams.frameFooterExist;
+        var htmlContent = '';
+        // 最外层
+
+        //defaultModParams.class = defaultModParams.class || "row";
+        htmlContent += '<div ng-class="modParams.class" ng-style="modParams.style">';
+        if (defaultModParams.isMainContent) {
+            htmlContent+=content;
+        }
+
+        for (var i = 0; defaultModParams.rows && i < defaultModParams.rows.length; i++) {
+            var row = defaultModParams.rows[i];
+            //console.log(row);
+            var style = "modParams.rows[" + i + "].style";
+            var _class ="modParams.rows[" + i + "].class";
+            //row.class = row.class || 'col-xs-12';
+            htmlContent += '<div ng-class="' + _class  + '" ng-style="' + style +'">';
+            if (row.isMainContent) {
+                htmlContent += content;
+            } else if (typeof row.cols == "object" && row.cols.length > 0) {
+                //htmlContent += '<div class="row">';
+                for (var j = 0; j < row.cols.length; j++) {
+                    var col = row.cols[j];
+                    style = "modParams.rows[" + i + "].cols[" + j + "].style";
+                    _class = "modParams.rows[" + i + "].cols[" + j + "].class";
+                    //col.class = col.class || 'col-xs-1';
+                    if (col.isMainContent) {
+                        htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' + content + "</div>";
+                    } else if (col.content) {
+                        htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' + col.content + "</div>";
+                    } else if (col.contentUrl){
+                        htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' +  '<userpage url="'+ col.contentUrl + '"></userpage>' + "</div>";
+                    }
+                }
+                //htmlContent += '</div>';
+            } else {
+                if (row.content) {
+                    htmlContent += row.content;
+                } else if (row.contentUrl) {
+                    htmlContent += '<userpage url="'+ row.contentUrl + '"></userpage>';
+                }
+            }
+            htmlContent += '</div>'
+        }
+        htmlContent += '</div>';
+        console.log(htmlContent);
+        util.html('#userpage', htmlContent, $scope);
+    }
 });
+
