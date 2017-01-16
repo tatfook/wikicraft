@@ -256,7 +256,18 @@ function website_pages:getArrayTree(objectTree)
 	return pages
 end
 
--- params: in websiteName
+-- 通过用户ID获得所有页面
+function website_pages:api_getByUserId(params) 
+	-- local userId = self:ensureAuthenticated()
+	userId = params.userId or userId
+	log(userId)
+	self:db():find({userId=tonumber(userId)}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 通过站点名获得站点所有页
 function website_pages:api_getWebsitePageList(params)
 	if not params.websiteName then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}

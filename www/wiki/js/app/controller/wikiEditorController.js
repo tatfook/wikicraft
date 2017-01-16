@@ -7,8 +7,9 @@ define([
     'app',
     'codemirror',
     'helper/markdownwiki',
+    'helper/util',
     'bootstrap-treeview',
-], function ($, app, CodeMirror, markdownwiki) {
+], function ($, app, CodeMirror, markdownwiki, util) {
     console.log("wiki editor controller!!!");
     var editor;
 
@@ -566,35 +567,91 @@ define([
             return true;
         }
 
+        function getTreeData() {
+            var pageList = $scope.websitePages ||[];
+            var pageTree = {url:'', children:{}};
+            var treeData = [];
+            for (var i = 0; i < pageList.length; i++) {
+                var page = pageList[i];
+                var url = page.url;
+                url = url.trim();
+                var paths = page.url.split('/');
+                var treeNode = pageTree;
+                for (var j = 0; j < paths.length; j++) {
+                    var path = paths[j];
+                    if (!path){
+                        continue;
+                    }
+                    subTreeNode = treeNode.children[path] || {name:path, children:{}, url: treeNode.url + '/' + path, siteId:page.websiteId, siteName: page.websiteName, pageId:page._id};
+                    treeNode.children[paths[j]] = subTreeNode;
+                    treeNode.isLeaf = false;
+                    if (j == paths.length - 1) {
+                        subTreeNode.isLeaf = true;
+                        subTreeNode.sha = page.sha;
+                        //subTreeNode.content = page.content;
+                    }
+                    treeNode = subTreeNode;
+                }
+            }
+            var treeDataFn = function (treeNode, pageNode) {
+                treeNode = treeNode || {};
+                treeNode.text = pageNode.name;
+                treeNode.icon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github-alt' : 'fa fa-file-o';
+                treeNode.pageNode = pageNode;
+
+                if (pageNode.isLeaf) {
+                    treeNode.selectedIcon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github' : 'fa fa-file-o';
+                }
+                if (!pageNode.isLeaf) {
+                    treeNode.nodes = [];
+                    for (key in pageNode.children) {
+                        treeNode.nodes.push(treeDataFn(undefined,pageNode.children[key]));
+                    }
+                }
+
+                return treeNode;
+            };
+
+            for (key in pageTree.children) {
+                treeData.push(treeDataFn(undefined, pageTree.children[key]));
+            }
+
+            for (var i = 0; i < treeData.length; i++){
+                treeData[i].icon = 'fa fa-globe';
+            }
+            console.log(pageTree);
+            console.log(treeData);
+            return treeData;
+        }
+
+
         //初始化，读取用户站点列表及页面列表
         function init() {
             console.log("editController init");
             if (!Account.isAuthenticated()) {
                 return;
             }
+            var user = Account.getUser();
+            if (user.githubToken) {
+                github.init(user.githubToken, user.githubName);
+                $scope.githubSource = github;
+            }
+
+
             // console.log(config.apiUrlPrefix);
             // 获取用户站点列表
             $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
                 $scope.websites = response.data.data;
+                util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId',{userId:1}, function (data) {
+                    $scope.websitePages = data || [];
+                    initRoot();
+                    initTree();
+                });
 
-                for (var i = 0; i < $scope.websites.length; i++) {
-                    ws = $scope.websites[i];
-                    $http.post(config.apiUrlPrefix + 'website_pages', {websiteName: ws.name}).then(function (response) {
-                        pages = response.data.data;
-                        for (var j = 0; j < pages.length; j++) {
-                            $scope.websitePages.push(pages[j]);
-                        }
-                        if (i == $scope.websites.length) {
-                            initRoot();
-                            initGithub();
-                        }
-                    }).catch(function (response) {
-                        console.log(response.data);
-                    });
-                }
             }).catch(function (response) {
                 console.log(response.data);
             });
+
             return;
         }
 
@@ -604,111 +661,6 @@ define([
             }
             $scope.progressbar.percent = $scope.progressbar.percent + step;
             $(".progress-bar").css("width", $scope.progressbar.percent + "%");
-        }
-
-        function githubSha() {
-            //console.log('@githubSha');
-            $scope.githubSource.getSha('', function (result) {
-                githubWS(result);
-            });
-        }
-
-        //website
-        function githubWS(sha) {
-            var webGithub = 0;
-            var webResponse = 0;
-            for (var i = 0; i < $scope.websites.length; i++) {
-                if (sha.length == 0) {
-                    $scope.websites[i].github = false;      //no github
-                    continue;
-                }
-                for (var j = 0; j < sha.length; j++) {
-                    if (sha[j].type == "dir" && sha[j].name == $scope.websites[i].name) {
-                        break;      //find website from github by "dir"
-                    }
-                }
-                if (j < sha.length) {
-                    $scope.websites[i].github = true;
-                    webGithub++;
-                } else {
-                    $scope.websites[i].github = false;
-                }
-            }
-
-            if (webGithub > 0) {
-                for (var i = 0; i < $scope.websites.length; i++) {
-                    if ($scope.websites[i].github) {
-                        var ws = $scope.websites[i];
-                        $scope.githubSource.getSha(ws.name, function (result) {
-                            githubWP(ws, result);
-                            webResponse++;
-                            if (webResponse >= webGithub) {
-                                initTree();
-                            }
-                        });
-                    }
-                }
-            } else {
-                initTree();
-            }
-        }
-
-        //页面
-        function githubWP(ws, sha) {
-            //console.log('@debug githubWP');
-            //console.log(ws);
-            //console.log(sha);
-
-            var wp = {};
-            for (var i = 0; i < $scope.websitePages.length; i++) {
-                wp = $scope.websitePages[i];
-                if (ws._id == wp.websiteId || ws.name == wp.websiteName) {
-                    if (sha.length == 0) {
-                        $scope.websitePages[i].github = false;
-                        continue;
-                    }
-                    for (var j = 0; j < sha.length; j++) {
-                        if (sha[j].type == "file" && sha[j].name == wp.name) {
-                            $scope.websitePages[i].github = true;
-
-                            //file_sha = hex_sha1(wp.content);
-                            //console.log('@debug githubWP sha')
-                            //console.log(file_sha);
-                            //console.log(sha[j].sha);
-                            //if ( sha[j].sha == file_sha ){
-                            //    $scope.websitePages[i].sha = true;
-                            //}else{
-                            //    $scope.websitePages[i].sha = false;
-                            //}
-                            break;
-                        }
-                    }
-                    if (j < sha.length) {
-                        $scope.websitePages[i].github = true;
-                    } else {
-                        $scope.websitePages[i].github = false;
-                    }
-                }
-            }
-        }
-
-        //初始化github
-        function initGithub() {
-            console.log("initGithub");
-            var bGithub = false;
-
-            var user = Account.getUser(); // 这已经是用户信息啦
-            if (user.githubToken) {
-                bGithub = true;
-                $scope.githubSource = github;
-                $scope.githubSource.init(user.githubToken, user.githubName, undefined, function () {
-                    githubSha();
-                });
-            }
-
-            if (!bGithub) {
-                initTree();
-            }
         }
 
         //设置全局变量
@@ -721,53 +673,6 @@ define([
                 $scope.websitePage = $rootScope.websitePage;
                 openPage();
             }
-        }
-
-        function getTree() {
-
-            //console.log('@getTree');
-            //console.log($scope.websitePages);
-
-            var ws = {};
-            var wp = {};
-            var node = '';
-
-            var wsIcon = '';
-            var wpIcon = '';
-            var wpSelIcon = '';
-
-            var treeData = "[";
-            for (var i = 0; i < $scope.websites.length; i++) {
-                ws = $scope.websites[i];
-                //console.log(ws);        //"icon": "glyphicon glyphicon-stop","selectedIcon": "glyphicon glyphicon-stop",
-                (ws.github) ? wsIcon = 'fa fa-github-alt' : wsIcon = 'fa fa-globe';
-                treeData += '{"text":"' + ws.name + '","icon":"' + wsIcon + '","selectable":false,"tags": ["site","' + ws._id + '"],__nodes__},';
-                node = '';
-                for (var j = 0; j < $scope.websitePages.length; j++) {
-                    wp = $scope.websitePages[j];
-                    if (wp.del != undefined && wp.del == 1) {
-                        continue;
-                    }
-                    if (ws._id == wp.websiteId || ws.name == wp.websiteName) {
-                        (wp.github) ? wpIcon = 'fa fa-github-alt' : wpIcon = 'fa fa-file-o';
-                        (wp.github) ? wpSelIcon = 'fa fa-github' : wpSelIcon = 'fa fa-pencil-square-o';
-                        node += '{"text": "' + wp.name + '","icon":"' + wpIcon + '",  "selectedIcon": "' + wpSelIcon + '",';
-                        //if( wp._id == $scope.websitePage._id ) node += '"state": "{selected:true}",';
-                        node += '"tags": ["page","' + wp._id + '","' + ws._id + '"]},';
-                    }
-                }
-                node = node.replace(/(.*)[,，]$/, '$1');
-                if (node) {
-                    node = '"nodes":[' + node + ']';
-                    treeData = treeData.replace('__nodes__', node);
-                } else {
-                    treeData = treeData.replace(',__nodes__', '');
-                }
-            }
-
-            treeData = treeData.replace(/(.*)[,，]$/, '$1');
-            treeData += "]";
-            return treeData;
         }
 
         function getWebsite(id) {
@@ -812,32 +717,18 @@ define([
                 color: "#428bca",
                 showBorder: false,
                 enableLinks: true,
-                data: getTree(),
+                data: getTreeData(),
                 onNodeSelected: function (event, data) {
-                    var tags = data.tags;
-                    switch (tags[0]) {
-                        case 'site':
-                            $scope.website = getWebsite(tags[1]);
-                            $rootScope.website = $scope.website;
-                            $rootScope.siteinfo = $scope.website; // wxa add 站点信息全局化，默认提供wiki mod使用
-                            //console.log($scope.website);
-                            break;
-                        case 'page':
-                            $scope.websitePage = getWebsitePage(tags[1]);
-                            $scope.website = getWebsite(tags[2]);
-
-                            $rootScope.websitePage = $scope.websitePage; // wxa add 站点信息全局化，默认提供wiki mod使用
-                            $rootScope.website = $scope.website;
-
-                            $rootScope.pageinfo = $scope.websitePage;
-                            $rootScope.siteinfo = $scope.website;
-
-                            openPage();
-
-                            break;
-                        default:
-                            console.log('tag error');
-                            break;
+                    //console.log(data);
+                    //return;
+                    $scope.website = getWebsite(data.pageNode.siteId);
+                    $scope.websitePage = getWebsitePage(data.pageNode.pageId);
+                    $rootScope.websitePage = $scope.websitePage;
+                    $rootScope.website = $scope.website;
+                    $rootScope.pageinfo = $scope.websitePage; // wxa add 站点信息全局化，默认提供wiki mod使用
+                    $rootScope.siteinfo = $scope.website;
+                    if (data.pageNode.isLeaf) {
+                        openPage();
                     }
                     editor.focus();
                 }
