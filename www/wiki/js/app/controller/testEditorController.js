@@ -10,10 +10,40 @@ define([
     'helper/util',
 ], function ($, app, CodeMirror, markdownwiki, util) {
     console.log("testCtrl");
+    
+    function test() {
+        util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId',{userId:1}, function (data) {
+            var pageList = data || [];
+            var pageTree = {url:'', children:{}};
+
+            for (var i = 0; i < pageList.length; i++) {
+                var page = pageList[i];
+                var url = page.url;
+                url = url.trim();
+                var paths = page.url.split('/');
+                var treeNode = pageTree;
+                for (var j = 0; j < paths.length; j++) {
+                    var path = paths[j];
+                    if (!path){
+                        continue;
+                    }
+                    subTreeNode = treeNode.children[paths[j]] || {children:{}, url: treeNode.url + '/' + paths[j]};
+                    treeNode.children[paths[j]] = subTreeNode;
+                    treeNode.isLeaf = false;
+                    if (j == paths.length - 1) {
+                        subTreeNode.isLeaf = true;
+                        subTreeNode.sha = page.sha;
+                        //subTreeNode.content = page.content;
+                    }
+                    treeNode = subTreeNode;
+                }
+            }
+            console.log(pageTree);
+        });
+    }
+
     return function ($scope, $rootScope, Account) {
-        $scope.workslistHeight = '280px';
-        $scope.workslistNavHeight = '200px';
-        $scope.siteObj = {siteList:[{},{},{}]};
+        test();
         var editor = CodeMirror.fromTextArea(document.getElementById('sourceCodeId'),{
             lineNumbers: true,
             mode:'markdown',

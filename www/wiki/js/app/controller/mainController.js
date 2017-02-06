@@ -3,6 +3,8 @@
  */
 
 define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'], function ($, app, markdownwiki, storage, util) {
+    var md = markdownwiki({html:true});
+
     app.controller('mainController', ['$scope','$rootScope','$state', '$http', '$auth', '$compile', 'Account', 'Message', function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message) {
         console.log("mainController");
         // 初始化基本信息
@@ -36,6 +38,8 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 }
                 console.log(htmlContent);
                 $scope.IsRenderServerWikiContent = true;
+                htmlContent = md.render(htmlContent);
+                $('#__WikiPageContentContainer__').removeClass('container');
                 util.html('#SinglePageId', htmlContent, $scope);
             });
         }
@@ -46,6 +50,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             var urlObj = util.parseUrl();
             console.log(urlObj);
             // 置空用户页面内容
+            //urlObj.sitename = 'wiki';
             if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
                 //console.log($('#SinglePageId').children().length);
                 $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
@@ -58,9 +63,8 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
                     window.location.href=config.frontEndRouteUrl + window.location.search +"#/home";
                 } else { // /wiki/test
-                    //console.log("==========");
-                    renderHtmlText(urlObj.pathname);
-                    //renderHtmlText('/wiki/test');
+                    //renderHtmlText(urlObj.pathname);
+                    renderHtmlText('/wiki/test', md);
                 }
                 //console.log($scope.IsRenderServerWikiContent);
                 return ;
@@ -75,8 +79,6 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 $rootScope.pageinfo = data.pageinfo;
                 var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
                 //console.log(pageContent);
-                var md = markdownwiki({html:true});
-
                 /*
                  require(['text!html/templates/test.html'], function (htmlContent) {
                     pageContent = htmlContent;

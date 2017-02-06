@@ -15,7 +15,7 @@ define(['angular', 'angular-ui-router', 'angular-ui-bootstrap', 'angular-ui-sele
         // github 认证配置
         $authProvider.github({
             url: "/api/wiki/auth/github",
-            clientId: '44ed8acc9b71e36f47d8',
+            clientId: '7ca5d2185ce6d6f5be69',
             redirectUri: window.location.origin + '/wiki/login',
             // scope: ["public_repo", "delete_repo"],
             scope: ["public_repo"],

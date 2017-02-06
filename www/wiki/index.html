@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>wikicraft</title>
+
+    <!-- lib css -->
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <!-- 全局配置 -->
+    <script src="js/app/config.js"></script>
+</head>
+
+<body>
+<div ng-controller="mainController">
+    <div ng-show="frameHeaderExist">
+        <div ng-include="'html/header.html'"></div>
+    </div>
+
+    <!--页面主题内容-->
+    <div style="z-index: 1">
+        <!--官网内容体-->
+        <div id="__WikiPageContentContainer__" class="container">
+            <div id="SinglePageId" ng-show="IsRenderServerWikiContent">
+                <? RenderServerWikiContent() ?>
+            </div>
+            <div ng-show="!IsRenderServerWikiContent">
+                <div ui-view></div>
+            </div>
+        </div>
+
+        <!--用户站点内容体-->
+        <div class="container-fluid">
+            <div id="__UserSitePageContentContainer__">
+                <div id="__UserSitePageContent__"></div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="frameFooterExist">
+        <div ng-include="'html/footer.html'"></div>
+    </div>
+</div>
+
+<!-- lib脚本 -->
+<script data-main="js/main.js" src="js/lib/requirejs/require.js"></script>
+</body>
+</html>

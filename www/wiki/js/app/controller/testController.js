@@ -3,6 +3,11 @@
  */
 
 define(['helper/util'], function (util) {
+    return function ($scope, $rootScope, Account) {
+        
+    };
+
+    /*
     var defaultModParams = {
         rows:[
             {
@@ -99,5 +104,6 @@ define(['helper/util'], function (util) {
         console.log(htmlContent);
         util.html('#userpage', htmlContent, $scope);
     }
+    */
 });
 

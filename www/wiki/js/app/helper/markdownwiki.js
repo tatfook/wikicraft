@@ -347,6 +347,7 @@ define([
 
         // force render a given text
         mdwiki.render = function (text) {
+            mdwikiObj.template = undefined;
             var htmlResult = md.render(text);
             if (!options.use_template) {
                 return htmlResult;
