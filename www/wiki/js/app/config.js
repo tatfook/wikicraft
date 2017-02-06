@@ -5,7 +5,7 @@
 /* 程序配置模块 */
 
 (function () {
-    var localEnv = true;
+    var localEnv = false;
     pathPrefix = localEnv ? '/html/server/' : '/wiki/';
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
