@@ -120,7 +120,7 @@ function website_template_config:getFileContent(filename)
 	
 	file:close()
 	
-	log(content)
+	-- log(content)
 	return content	
 end
 
