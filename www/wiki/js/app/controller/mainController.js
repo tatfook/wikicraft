@@ -24,6 +24,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
         }
 
         function renderHtmlText(pathname) {
+            /*
             var pageUrl = ['text!html' + pathname + '.html'];
             require(pageUrl, function (htmlContent) {
                 //console.log(htmlContent);
@@ -39,6 +40,17 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 console.log(htmlContent);
                 $scope.IsRenderServerWikiContent = true;
                 htmlContent = md.render(htmlContent);
+                $('#__WikiPageContentContainer__').removeClass('container');
+                util.html('#SinglePageId', htmlContent, $scope);
+            });
+            */
+            pathname = pathname.replace('/wiki/','');
+            var pageUrl = 'controller/' + pathname + 'Controller';
+            //console.log(pageUrl);
+            require([pageUrl], function (htmlContent) {
+                //console.log(htmlContent);
+                $scope.IsRenderServerWikiContent = true;
+                //htmlContent = md.render(htmlContent);
                 $('#__WikiPageContentContainer__').removeClass('container');
                 util.html('#SinglePageId', htmlContent, $scope);
             });
@@ -63,14 +75,13 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
                     window.location.href=config.frontEndRouteUrl + window.location.search +"#/home";
                 } else { // /wiki/test
-                    //renderHtmlText(urlObj.pathname);
-                    renderHtmlText('/wiki/test', md);
+                    renderHtmlText(urlObj.pathname);
+                    //renderHtmlText('/wiki/test', md);
                 }
                 //console.log($scope.IsRenderServerWikiContent);
                 return ;
             }
             // 访问用户页
-            console.log(config.apiUrlPrefix);
             util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {sitename:urlObj.sitename, pagename:urlObj.pagename}, function (data) {
                 data = data || {};
                 // 这三种基本信息根化，便于用户页内模块公用
@@ -93,7 +104,6 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 pageContent = $compile(pageContent)($scope);
                 $('#__UserSitePageContent__').html(pageContent);
             });
-
         }
 
         function init() {

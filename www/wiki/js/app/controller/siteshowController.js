@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope',function ($scope) {
+define(['app','helper/util', 'helper/storage','text!html/siteshow.html'], function (app, util, storage, htmlContent) {
+    app.registerController('siteshowController', ['$scope',function ($scope) {
         var siteshowObj = storage.sessionStorageGetItem("siteshow");
         //console.log(siteshowObj);
         $scope.title = siteshowObj.title;
@@ -38,5 +38,7 @@ define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
         }
 
         init();
-    }]
+    }]);
+
+    return htmlContent;
 });

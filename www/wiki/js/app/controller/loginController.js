@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util'], function (app, util) {
-    return ['$scope', '$state', '$auth', 'Account', function ($scope, $state, $auth, Account) {
+define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
+    app.registerController('loginController', ['$scope', '$state', '$auth', 'Account', function ($scope, $state, $auth, Account) {
         console.log("loginController");
         //$scope.errMsg = "用户名或密码错误";
         $scope.login = function () {
@@ -39,5 +39,6 @@ define(['app', 'helper/util'], function (app, util) {
                 console.log("github认证失败!!!");
             });
         }
-    }];
+    }]);
+    return htmlContent;
 });

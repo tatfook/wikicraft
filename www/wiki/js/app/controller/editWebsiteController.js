@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope', '$state', 'Account',function ($scope, $state, Account) {
+define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], function (app, util, storage, htmlContent) {
+    app.registerController('editWebsiteController', ['$scope', '$state', 'Account',function ($scope, $state, Account) {
         //const github = ProjectStorageProvider.getDataSource('github');
         $scope.tags=["tag1","tag2"];
         $scope.classifyList = ["普通","入围","热门"];
@@ -132,5 +132,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         function init() {
         }
-    }]
+    }]);
+
+    return htmlContent;
 });

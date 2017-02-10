@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope', '$state', 'Account', 'Message', function ($scope, $state, Account, Message) {
+define(['app', 'helper/util', 'helper/storage', 'text!html/userCenter.html'], function (app, util, storage, htmlContent) {
+    app.registerController('userCenterController', ['$scope', '$state', 'Account', 'Message', function ($scope, $state, Account, Message) {
         //const github = ProjectStorageProvider.getDataSource('github');
         $scope.user = Account.getUser() || {};
         $scope.passwordObj = {};
@@ -100,5 +100,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 $scope.fans = data || {};
             });
         }
-    }]
+    }]);
+
+    return htmlContent;
 });

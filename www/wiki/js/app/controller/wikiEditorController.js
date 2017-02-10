@@ -8,8 +8,9 @@ define([
     'codemirror',
     'helper/markdownwiki',
     'helper/util',
+    'text!html/wikiEditor.html',
     'bootstrap-treeview',
-], function ($, app, CodeMirror, markdownwiki, util) {
+], function ($, app, CodeMirror, markdownwiki, util, htmlContent) {
     console.log("wiki editor controller!!!");
     var editor;
 
@@ -1411,5 +1412,7 @@ define([
             }
             return str;
         }
-    }])
+    }]);
+
+    return htmlContent;
 });

@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope', '$state', 'Account', function ($scope, $state, Account) {
+define(['app', 'helper/util', 'helper/storage', 'text!html/website.html'], function (app, util, storage, htmlContent) {
+    app.registerController('websiteController', ['$scope', '$state', 'Account', function ($scope, $state, Account) {
         console.log("websiteController");
         $scope.websites = [];
 
@@ -44,5 +44,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         }
 
         Account.ensureAuthenticated(init);
-    }];
+    }]);
+
+    return htmlContent;
 });

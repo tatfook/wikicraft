@@ -2,10 +2,13 @@
  * Created by wuxiangan on 2017/1/6.
  */
 
-define(['helper/util'], function (util) {
-    return function ($scope, $rootScope, Account) {
-        
-    };
+define(['app','text!html/test.html'], function (app, htmlContent) {
+    console.log("=========");
+    app.registerController("testController", ['$scope', function ($scope) {
+        $scope.message = "testController";
+    }]);
+
+    return htmlContent;
 
     /*
     var defaultModParams = {

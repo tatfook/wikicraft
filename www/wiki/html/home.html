@@ -4,7 +4,7 @@
     #cellphone::-moz-placeholder{color:white;}
     #password::-moz-placeholder{color:white;}
 </style>
-<div>
+<div ng-controller="homeController">
     <!-- Carousel -->
     <div id="carousel-example-generic" class="carousel slide">
         <!-- Indicators -->
@@ -28,10 +28,10 @@
                                     <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img ng-src='{{imgsPath + "registerEmail.png"}}'></span>
                                     <input id="email" type="email" ng-model="email" class="form-control" placeholder="注册邮箱" style="background-color: rgba(0,0,0,0); width: 268px; height: 45px; font-size: 16px;">
                                 </div>
-                                <div class="input-group" style="margin-top: 12px">
+                                <!--div class="input-group" style="margin-top: 12px">
                                     <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img ng-src='{{imgsPath + "registerPhone.png"}}'></span>
                                     <input id="cellphone" type="text" ng-model="cellphone" class="form-control" placeholder="手机号码" style="background-color: rgba(0,0,0,0); width: 268px; height: 45px; font-size: 16px;">
-                                </div>
+                                </div-->
                                 <div class="input-group" style="margin-top: 12px">
                                     <span style="width: 53px; height:45px; background: none" class="input-group-addon" ><img ng-src='{{imgsPath + "registerPassword.png"}}'></span>
                                     <input id="password" type="password" ng-model="password" class="form-control" placeholder="密码" style="background-color: rgba(0,0,0,0); width: 268px; height: 45px; font-size: 16px;">

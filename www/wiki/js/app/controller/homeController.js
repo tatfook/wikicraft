@@ -2,9 +2,9 @@
  * Created by wuxiangan on 2016/12/15.
  */
 
-define(['app', 'helper/util'], function (app, util) {
+define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlContent) {
     // 动态加载
-    return ['$scope', '$rootScope', '$state', '$auth', 'Account', function ($scope, $rootScope, $state, $auth, Account) {
+    app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', function ($scope, $rootScope, $state, $auth, Account) {
         $scope.siteParams = {page: 1, pageSize: 3};
         $scope.userParams = {page: 1, pageSize: 3};
         $scope.userObj = {};
@@ -110,5 +110,7 @@ define(['app', 'helper/util'], function (app, util) {
         }
 
         init();
-    }];
+    }]);
+
+    return htmlContent;
 });
