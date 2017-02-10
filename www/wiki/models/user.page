@@ -30,7 +30,7 @@ function user:ctor()
 	self:addfield("company", "string", false, 30)
 	self:addfield("location", "string", false, 50)
 	self:addfield("joindate", "string", false, 30)
-	self:addfield("administrator", "boolean", false);
+	self:addfield("isadmin", "boolean", false);
 	self:addfield("favoriteCount", "number")   -- 收藏量
 	self:addfield("fansCount", "number")  -- 粉丝数量
 	self:addfield("websiteCount", "number") -- 作品数量

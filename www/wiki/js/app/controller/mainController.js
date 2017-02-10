@@ -67,6 +67,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 //console.log($('#SinglePageId').children().length);
                 $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
                 if ($scope.IsRenderServerWikiContent) {
+                    console.log("server page !!!");
                     return ;
                 }
                 //console.log(window.location);

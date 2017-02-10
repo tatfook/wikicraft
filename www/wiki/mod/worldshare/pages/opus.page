@@ -1,0 +1,633 @@
+<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=3.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<style type="text/css">
+	.all-worlds{
+	    height: 44px;	
+	}
+
+	.all-worlds .isadmin{
+		display: inline-block;
+	}
+
+	.information,.menu,.about,.review,.recommend{
+		max-width: 845px;
+	}
+
+	.information{
+		/*height: 315px;*/
+		margin-top: 65px;
+		margin-bottom: 37px;
+		position: relative;
+	}
+
+	.information .cover,.information .desc{
+		float: left;
+	}
+
+	.information .cover{
+		width: 188px;
+		height: 238px;
+		background-color: #f3f3f3;
+	}
+
+	.information .cover div{
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	    height: 100%;
+	}
+
+	.information .cover div img{
+		height: 100%;
+	}
+
+	.information .desc{
+		width: auto;
+		margin-left: 100px;
+		color: #000;
+	}
+
+	.information .desc h1{
+		font-size: 32px;
+		font-weight: bold;
+	}
+
+	.information .desc .home-url{
+		font-size: 18px;
+		margin-left: 30%;
+		word-break: break-all;
+	}
+
+	.information .desc .username,.information .desc .blocks-total{
+		font-size: 14px;
+	}
+
+	.information .desc .username{
+		margin-top: 10px;
+	}
+
+	.information .share{
+		position: absolute;
+		right: 0;
+		bottom: 60px;
+		height: 35px;
+	}
+
+	.information .share a:first-child,.information .share a:nth-child(2){
+		margin-right: 15px;
+	}
+
+	.information .play{
+		position: absolute;
+		right: 0;
+		bottom: 0;
+	}
+
+	.information .play button{
+		width: 150px;
+		height: 40px;
+		border: solid 1px #000;
+	    border: solid 1px #000;
+		background: none;
+		border-radius: 8px;
+	}
+
+	.menu button{
+		height: 40px;
+		border: solid 1px #000;
+		background: none;
+		border-radius: 5px 5px 0px 0px;
+		padding:0 15px;
+		margin-right: -5px;
+	}
+
+	.about,.review{
+		max-width: 845px;
+		height: auto;
+		border: solid 1px #000;
+		margin-bottom: 35px;
+		padding: 10px;
+		margin-top: -1px;
+	}
+
+	.recommend{
+		max-width: 845px;
+		padding: 10px 15px;
+		border: solid 1px #000;
+		position: relative;
+	}
+
+	.recommend .r-title{
+		font-size: 18px;
+		font-weight: bold;
+	}
+
+	.recommend .opus-box{
+	    padding: 15px 54px;
+	}
+
+	.recommend .opus{
+		width: 245px;
+	    margin-bottom: 30px;
+		/*height: 363px;*/
+	}
+
+	.recommend .opus .opus-hover{
+		padding: 15px;
+		border: solid 1px rgba(0, 0, 0, 0);
+	}
+
+	.recommend .opus .opus-hover:hover{
+		border: solid 1px #000;
+	}
+
+	.recommend .opus .opus-hover .img{
+		width: 183px;
+		height: 238px;
+		background-color: #f3f3f3;
+	}
+
+	.recommend .opus .opus-hover .img div{
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	    height: 100%;
+	}
+
+	.recommend .opus .opus-hover .img div img{
+		height: 100%;
+	}
+
+	.recommend .opus .opus-hover .o-title,.recommend .o-infor{
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	.recommend .opus .opus-hover .o-title{
+		text-align: center;
+		padding:5px 0;
+	}
+
+	.recommend .opus .opus-hover .favorite{
+	    display: none;
+	    position: absolute;
+	    bottom: 25px;
+	    right: 30px;
+	}
+
+	.recommend .opus .opus-hover:hover .favorite{
+	    display: block;
+	    opacity: 0.5;
+	    cursor: pointer;
+	}
+
+	@media (max-width: 768px){
+		.information{
+			margin-top: -5px;
+		}
+
+		.information .cover{
+			width: 100%;
+		}
+
+		.information .cover,.information .desc{
+			float: none;
+		}
+
+		.information .desc{
+			margin-left: 0px;
+		}
+
+		.information .desc .home-url{
+			text-align: center;
+			margin-left: 0;
+		}
+
+		.information .desc h1{
+			font-size: 25px;
+			text-align: center;
+		}
+
+		.information .desc .username,.information .desc .blocks-total{
+			text-align: center;
+		}
+
+		.information .share,.information .play{
+			position: initial;
+			text-align: center;
+				margin-top: 15px;
+		}
+
+		.recommend .opus-box{
+		    padding: 15px 5px;
+		}
+
+		.recommend .opus-box .opus{
+			width: 100%;
+		}
+
+		.recommend .opus .opus-hover .img{
+			width: 100%;
+		}
+	}
+
+	@media (min-width: 768px){
+		.information .cover{
+			width: 188px;
+		}
+
+		.information .cover,.information .desc{
+			float: left;
+		}
+
+		.information .desc{
+			margin-left: 100px;
+		}
+
+		.information .desc .home-url{
+			margin-left: 30%;
+		}
+
+		.information .desc h1{
+			font-size: 32px;
+		}
+
+		.information .share,.information .play{
+			position: absolute;
+		}
+
+		.recommend .opus{
+			width: 320px;
+		}
+
+		.recommend .opus .opus-hover .img{
+			width: 258px;
+			height: 335px;
+		}
+
+	}
+
+	@media (min-width: 992px){
+		.recommend .opus{
+			width: 245px;
+		}
+
+		.recommend .opus .opus-hover .img{
+			width: 183px;
+			height: 238px;
+		}
+	}
+</style>
+
+<div ng-controller="opusController">
+	<div class="all-worlds">
+		<a class="btn btn-primary" href="/wiki/mod/worldshare/person/#?userid=">TA的所有世界</a>
+		<div class="isadmin" ng-show="isadmin">
+            是否推荐？<input type="checkbox" ng-model="isRecommend" name="">
+		</div>
+	</div>
+	<div class="information clearfix">
+		<div class="cover" ng-repeat="opus in preview">
+			<preview preview-src="opus.url"></preview>
+		</div>
+		<div class="desc">
+			<h1>《{{opusName}}》</h1>
+			<div class="home-url">{{homeUrl}}</div>
+			<div>
+				<div class="username">
+					作者：{{displayName}}
+				</div>
+			</div>
+		</div>
+		<div class="share">
+			<a ng-href="/wiki/mod/worldshare/share/#?opusId={{opusId}}"><img src="/wp-content/pages/wiki/mod/worldshare/assets/share.png"></a>
+			<a href="javascript:;"><img src="/wp-content/pages/wiki/mod/worldshare/assets/star.png"></a>
+			<a href="javascript:;" uib-tooltip-template="'qrcode.html'"><img src="/wp-content/pages/wiki/mod/worldshare/assets/phone.png"></a>
+		</div>
+		<div class="play">
+			<button>在Paracraft中浏览</button>
+		</div>
+	</div>
+	<div class="menu">
+		<button style="font-weight: bold">介绍</button>
+	</div>
+	<div class="about">
+		作者留下的介绍文字
+	</div>
+	<div class="recommend">
+		<h3 class="r-title">
+			更多推荐：
+		</h3>
+		<div class="row opus-box">
+			<div class="col-xs-12 col-sm-6 col-md-3 col-md-4 opus" ng-repeat="opus in recommendOpus">
+				<div class="opus-hover">
+					<div class="img">
+						<preview preview-src="opus.preview"></preview>
+					</div>
+					<div class="o-title">
+						《{{opus.worldsName}}》
+					</div>
+					<div class="o-infor">   
+						<div>作者：{{displayName}}</div>    
+						<div>收藏：{{opus.starTotals.quantity}}</div>
+					</div>
+					<img class="favorite" ng-style="opus.isMyStar?myStar:''" ng-click="setStar($index)" src="/wp-content/pages/wiki/mod/worldshare/assets/favorite.png">
+				</div>
+			</div>
+		</div>
+		<div ng-controller="recommendOpusPagination" class="pagination">
+			<ul uib-pagination boundary-links="true" items-per-page="itemsPerPage" ng-change="pageChanged()" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+		</div>
+	</div>
+</div>
+<script type="text/ng-template" id="qrcode.html">
+	<div style="width: 100px;height: 100px;">
+		<img style="width: 100px;height: 100px;" ng-src="http://qr.topscan.com/api.php?text={{homeUrlencode}}" />
+	</div>
+</script>
+<script type="text/javascript">
+	angular.module('MyApp')
+	.factory('opusService', function(){
+		var page;
+		var user;
+
+		return {
+			getPage: function(){
+				return page;
+			},
+			setPage: function(_page){
+				page = _page;
+			},
+			getUser: function(){
+				return user;
+			},
+			setUser: function(_user){
+				user = _user;
+			}
+		};
+	})
+	.controller('opusController', function ($scope, $http, $location, $rootScope, Account, opusService) {
+		var request = $location.search();
+
+		if(request.opusId){
+			$scope.opusId  = request.opusId;
+		}else{
+			history.go(-1);
+			return;
+		}
+
+		$scope.homeUrl       = $location.absUrl();
+		$scope.homeUrlencode = encodeURIComponent($scope.homeUrl);
+		$scope.preview       = [];
+		$scope.isRecommend   = null;
+		$scope.change        = 1;
+		$scope.myStar        = {};
+
+		$scope.$watch(Account.getUser, function (newValue, oldValue) {
+	        $scope.user = angular.copy(newValue);
+	        opusService.setUser($scope.user);
+
+	        if ($scope.user != undefined && $scope.user.isadmin != undefined) {
+            	$scope.isadmin = eval($scope.user.isadmin);
+        	}
+	    });
+
+	    var md;
+	    $scope.getMarkDownRenderer = function () {
+	        if (md == null) {
+	            md = window.markdownit({
+	                html: true, // Enable HTML tags in source
+	                linkify: true, // Autoconvert URL-like text to links
+	                typographer: true, // Enable some language-neutral replacement + quotes beautification
+	                breaks: false,        // Convert '\n' in paragraphs into <br>
+	                highlight: function (str, lang) {
+	                    if (lang && window.hljs.getLanguage(lang)) {
+	                        try {
+	                            return hljs.highlight(lang, str, true).value;
+	                        } catch (__) { }
+	                    }
+	                    return ''; // use external default escaping
+	                }
+	            });
+	        }
+	        return md;
+	    }
+
+		$http({
+            method: 'POST',
+            url: '/api/mod/worldshare/models/worlds/getOneOpus',
+            data: {
+            	"opusId":$scope.opusId,
+            }
+        })
+        .then(function (response) {
+            var data = response.data.data;
+
+            $scope.opusName    = data.worldsName;
+            $scope.displayName = data.displayName;
+
+            if(data.isRecommend && data.isRecommend != "false"){
+            	$scope.isRecommend = eval(data.isRecommend);
+            }
+
+            var readmeUrl = data.giturl.replace("github.com","raw.githubusercontent.com");
+            readmeUrl = readmeUrl + "/master/README.md"
+
+		    $http({
+	            method: 'GET',
+	            url: readmeUrl,
+	            headers: {
+	                'Authorization': undefined,
+	            }, // remove auth header for this request
+	            skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
+	            transformResponse: [function (data) {
+	                return data; // never transform to json, return as it is
+	            }],
+	        })
+	        .then(function (response) {
+	            var html = $scope.getMarkDownRenderer().render(response.data);
+	        	$('.about').html(html);
+	        },
+	        function (response) {
+	            return alert("You need to upload README.md in your git repositary");
+	        });
+
+	        var previewUrl        = data.giturl.replace("github.com","raw.githubusercontent.com");
+            previewUrl            = previewUrl + "/master/preview.jpg";
+            $scope.preview[0]     = {};
+            $scope.preview[0].url = previewUrl;
+        }, function (response) { });
+
+        var postData = {
+            "opusId" : $scope.opusId,
+            page: 1,
+            amount: 1
+        };
+
+        $scope.getRecommendOpus = function(){
+	        $http({
+	            method: 'POST',
+	            url: '/api/mod/worldshare/models/worlds/getRecommendOpus',
+	            data: postData,
+	        })
+	        .then(function (response) {
+	        	$scope.recommendOpus = response.data.data;
+
+	        	for(var i in $scope.recommendOpus){
+	        		var previewUrl = $scope.recommendOpus[i].giturl.replace("github.com","raw.githubusercontent.com");
+		            previewUrl = previewUrl + "/master/preview.jpg";
+
+	        		$scope.recommendOpus[i].preview = previewUrl;
+	        	}
+	        },function(response){});
+    	}
+
+    	$scope.getRecommendOpus();
+
+    	$scope.$watch(opusService.getPage,function(newValue , oldValue){
+	    	postData.page = newValue;
+	    	$scope.getRecommendOpus();
+	    });
+
+		$scope.$watch('isRecommend', function (newValue, oldValue) {
+	        if (oldValue != null && newValue != oldValue) {
+	            $http({
+	                method: "POST",
+	                url: "/api/mod/worldshare/models/worlds/recommendOpus",
+	                data: {
+	                    "opusId": $scope.opusId,
+	                    "isRecommend": newValue.toString()
+	                }
+	            })
+	            .then(function (response) {
+	                if (response.data.error == -1) {
+	                	console.log("set fail");
+	                    //$scope.isRecommend = oldValue;
+	                };
+	            }).then(function (response) { });
+	        }
+	    });
+
+		$scope.setStar = function(_id){
+			if($scope.recommendOpus[_id].isMyStar){
+				var method = "delete";
+			}else{
+				var method = "create";
+			}
+
+			$http({
+				method : "PUT",
+				url : "/api/mod/worldshare/models/worlds_star",
+				data: {
+					"method" : method,
+					"opusId" : $scope.recommendOpus[_id]._id,
+				}
+			})
+			.then(function (response){
+				if(response.data.error == 0){
+					if(method == "create"){
+						$scope.recommendOpus[_id].isMyStar = true;
+						var quantity = $scope.recommendOpus[_id].starTotals.quantity;
+						$scope.recommendOpus[_id].starTotals.quantity = quantity + 1
+					}else if(method == "delete"){
+						$scope.recommendOpus[_id].isMyStar = false;
+						var quantity = $scope.recommendOpus[_id].starTotals.quantity;
+						$scope.recommendOpus[_id].starTotals.quantity = quantity - 1
+					}
+				}else{
+					alert("设置失败");
+				}
+			}).then(function (response) { });
+		}
+
+		$scope.myStar = {
+			"display" : "block",
+			"opacity" : "1", 
+		};
+	})
+	.controller('recommendOpusPagination',function($scope, $http, opusService){
+		$scope.totalItems   = 0;
+		$scope.itemsPerPage = 1;
+        $scope.currentPage  = 1;
+
+        $scope.$watch(opusService.getUser, function (newValue, oldValue) {
+        	if(newValue != undefined){
+        		$scope.userid = newValue._id;
+        		$scope.getAllRecommendOpusStats();
+        	}
+        });
+
+	    $scope.getAllRecommendOpusStats = function(){
+	        $http({
+	            method: 'POST',
+	            url: '/api/mod/worldshare/models/worlds_stats/',
+	            data: {
+	                statsType: "worldsRecommendTotalsUser" + opusService.getUser()._id,
+	            }
+	        })
+	        .then(function (response){
+	            if(response.data.statsType != 'nil'){
+	                $scope.totalItems = response.data.quantity;
+	            }else{
+	                $scope.totalItems = 0;
+	            }
+	        }, function (response) {});
+
+	    }
+
+	    $scope.pageChanged = function(){
+	        opusService.setPage($scope.currentPage);
+	    };
+	})
+	.directive('preview',function($http){
+		return {
+	        restrict: "E",
+	        replace: true,
+	        scope: {
+	            src: "=previewSrc"
+	        },
+	        link: link,
+	        template: "<div>图片正在加载中</div>",
+    	};
+
+    	function link(scope, element, attrs){
+    		$http({
+        		"method"            : "GET",
+        		"url"               : scope.src,
+        		"skipAuthorization" : true,
+        		"headers"           : {
+        			'Authorization': undefined
+        		},
+        	})
+        	.then(function(response){
+        		// console.log(element.context);
+        		element.context.innerHTML = '<img src="' + scope.src + '" />';
+        	},function(response){
+        		// console.log(response);
+        		element.context.innerHTML = '<div><h3>暂无图片</h3></div>';
+        	});
+	    }
+	})
+
+	$(window).resize(function(){
+		autoSizeCover();
+		autoSizeOpus();
+	});
+
+	function autoSizeCover(){
+		if($(".cover").width() <= 768){
+			$(".cover").height($(".cover").width()*1.26); 
+		}
+	}
+
+	autoSizeCover();
+
+	function autoSizeOpus(){
+		if($(".recommend .opus .opus-hover .img").width() <= 768){
+			$(".recommend .opus .opus-hover .img").height($(".recommend .opus .opus-hover .img").width()*1.3); 
+		}
+	}
+
+	autoSizeOpus();
+</script>

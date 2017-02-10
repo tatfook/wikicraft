@@ -501,6 +501,15 @@ body{
 
     .install-infor-sm{
         padding-top: 5px;
+
+        & > p{
+            max-width: 95%;
+            overflow: hidden;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .infor-main{
             .infor-details{
                 width: 100%;
@@ -691,6 +700,7 @@ body{
 
                 .project-infor{
                     float: left;
+                    width: 54%;
 
                     a{
                         font-size: 18px;
@@ -705,14 +715,15 @@ body{
                     p{
                         font-size: 14px;
                         margin: 0px;
+                        width:100%; 
+                        white-space:nowrap;
+                        overflow:hidden;
+                        text-overflow:ellipsis;
                     }
                 }
 
                 .project-downloads{
-                    float: left;
                     font-size: 14px;
-                    margin-top: 26px;
-                    margin-left: 10px;
                 }
 
                 .project-operation{

@@ -1,0 +1,277 @@
+<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=3.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<style type="text/css">
+	.recently{
+		max-width: 710px;
+		border: solid 1px #000;
+		padding: 15px;
+		margin-bottom: 30px;
+	}
+
+	.recently .p-title{
+		font-size: 16px;
+		height: 30px;
+	}
+
+	.recently .content,.subjects .content{
+		padding:10px 10px;
+		padding-right:3.33px;
+	}
+
+	.recently .content .opus,.subjects .content .opus{
+		height: 260px;
+		font-size: 13px;
+		text-align: center;
+		padding: 0px 3.33px;
+	    margin-bottom: 5px;
+	}
+
+	@media (max-width: 768px){
+		.recently .content .opus,.subjects .content .opus{
+			height: 320px;
+		}
+	}
+
+	@media (min-width: 768px){
+		.recently .content .opus,.subjects .content .opus{
+			height: 524px;
+		}
+	}
+
+	@media (min-width: 992px){
+		.recently .content .opus,.subjects .content .opus{
+			height: 260px;
+		}
+	}
+
+	.recently .content .opus .cover,.subjects .content .opus .cover{
+		width: 100%;
+		height: 84.6%;
+		background-color: #f3f3f3;
+	}
+
+	.recently .content .opus .cover .ng-isolate-scope,.subjects .content .opus .cover .ng-isolate-scope{
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	}
+
+	.recently .content .opus .cover .ng-isolate-scope div,.subjects .content .opus .cover .ng-isolate-scope div{
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	}
+
+	.recently .content .opus .cover .ng-isolate-scope img,.subjects .content .opus .cover .ng-isolate-scope img{
+		height: 100%;
+	}
+
+	.recently .content .opus .desc,.subjects .content .opus .desc{
+		width: 100%;
+		height: 15.3%;
+		padding-top: 5px;
+	}
+
+	.recently .content .opus .desc span,.subjects .content .opus .desc span{
+		display: block;
+	}
+
+	.subjects{
+		width: 710px;
+		border: solid 1px #000;
+		padding: 15px;
+	}
+
+	.subjects .p-title{
+		font-size: 16px;
+	}
+
+	.subjects .content{
+		/*background-color: #5c1a93;*/
+	}
+
+
+	.p-title{
+		padding-top: 5px;
+		/*padding-left: 10px;*/
+		font-weight: 600;
+	}
+</style>
+<div ng-controller="personController">
+	<div class="recently">
+		<div class="p-title">
+			最近更新
+		</div>
+		<div class="row content">
+			<div ng-repeat="opus in recentlyOpus" class="col-xs-12 col-sm-6 col-md-3 col-md-4 opus">
+				<div class="cover">
+					<preview preview-src="opus.preview"></preview>
+				</div>
+				<div class="desc">
+					<a ng-href="/wiki/mod/worldshare/opus/#?opusId={{opus._id}}">{{opus.worldsName}}</a>
+					<span>{{opus.strDate}}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="subjects">
+		<div class="p-title">
+			全部作品/网站
+		</div>
+		<div class="row content">
+			<div ng-repeat="opus in allOpus" class="col-xs-12 col-sm-6 col-md-3 col-md-4 opus">
+				<div class="cover">
+					<preview preview-src="opus.preview"></preview>
+				</div>
+				<div class="desc">
+					<a ng-href="/wiki/mod/worldshare/opus/#?opusId={{opus._id}}">{{opus.worldsName}}</a>
+					<span>{{opus.strDate}}</span>
+				</div>
+			</div>
+		</div>
+		<div ng-controller="allOpusPagination" class="pagination">
+			<ul uib-pagination boundary-links="true" items-per-page="itemsPerPage" ng-change="pageChanged()" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(window).resize(function(){
+		if($(".opus").width() <= 768){
+			$(".opus").height($(".opus").width()*1.44); 
+		}
+	});
+
+	angular.module('MyApp')
+	.directive('preview',function($http){
+		return {
+	        restrict: "E",
+	        replace: true,
+	        scope: {
+	            src: "=previewSrc"
+	        },
+	        link: function(scope, element, attrs){
+	        	$http({
+	        		"method"            : "GET",
+	        		"url"               : scope.src,
+	        		"skipAuthorization" : true,
+	        		"headers"           : {
+	        			'Authorization': undefined
+	        		},
+	        	})
+	        	.then(function(response){
+	        		// console.log(element.context);
+	        		element.context.innerHTML = '<img src="' + scope.src + '" />';
+	        	},function(response){
+	        		// console.log(response);
+	        		element.context.innerHTML = '<div><h3>暂无图片</h3></div>';
+	        	})
+	        },
+	        template: "<div>图片正在加载中</div>",
+    	};
+	})
+	.factory('personService', function(){
+		var page;
+
+		return {
+			getPage: function(){
+				return page;
+			},
+			setPage: function(_page){
+				page = _page;
+			}
+		};
+	})
+	.controller('personController', function ($scope, $http, $location, $rootScope, personService) {
+		$scope.recentlyOpus = [];
+		$scope.allOpus 		= [];
+
+		$http({
+            method: 'POST',
+            url: '/api/mod/worldshare/models/worlds/',
+            data: {
+            	"amount" : 4,
+            	"sort"   : "modDate",
+            }
+        })
+        .then(function(response){
+            $scope.recentlyOpus = response.data;
+
+            for(i in $scope.recentlyOpus){
+            	var numberDate = $scope.recentlyOpus[i].modDate.split("-");
+            	var strDate = "更新时间：" + numberDate[0] + "年" + numberDate[1] + "月" + numberDate[2] + "日";
+
+            	$scope.recentlyOpus[i].strDate = strDate;
+
+            	var gitContentUrl = $scope.recentlyOpus[i].giturl.replace("github.com","raw.githubusercontent.com");
+            	$scope.recentlyOpus[i].preview = gitContentUrl + "/master/preview.jpg";
+            }
+        }, function(response){});
+
+        var postData = {
+            // projectType: $scope.projectType,
+            page: 1,
+            amount: 2
+        };
+
+        $scope.getAllOpus = function(){
+        	$http({
+	            method: 'POST',
+	            url: '/api/mod/worldshare/models/worlds/',
+	            data: postData
+	        })
+	        .then(function(response){
+	            $scope.allOpus = response.data;
+
+	            for(i in $scope.allOpus){
+	            	var numberDate = $scope.allOpus[i].modDate.split("-");
+	            	var strDate = "更新时间：" + numberDate[0] + "年" + numberDate[1] + "月" + numberDate[2] + "日";
+
+	            	$scope.allOpus[i].strDate = strDate;
+
+	            	var gitContentUrl = $scope.allOpus[i].giturl.replace("github.com","raw.githubusercontent.com");
+	            	$scope.allOpus[i].preview = gitContentUrl + "/master/preview.jpg";
+	            }
+
+	        }, function(response){});
+        }
+
+        $scope.$watch(personService.getPage, function (newValue, oldValue) {
+            postData.page = newValue;
+            $scope.getAllOpus();
+        });
+	})
+	.controller('allOpusPagination', function ($scope, $log, $http, personService) {
+		$scope.totalItems   = 0;
+		$scope.itemsPerPage = 2;
+        $scope.currentPage  = 1;
+
+	    $scope.getAllOpusStats = function(){
+	        $http({
+	            method: 'POST',
+	            url: '/api/mod/worldshare/models/worlds_stats/',
+	            data: {
+	                statsType: "worldsTotals",
+	            }
+	        })
+	        .then(function (response){
+	            if(response.data.statsType != 'nil'){
+	                $scope.totalItems = response.data.quantity;
+	            }else{
+	                $scope.totalItems = 0;
+	            }
+	        }, function (response) {});
+
+	    }
+
+	    $scope.getAllOpusStats();
+
+	    $scope.pageChanged = function(){
+	        personService.setPage($scope.currentPage);
+	    };
+	});
+</script>

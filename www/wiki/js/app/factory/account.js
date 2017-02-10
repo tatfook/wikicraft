@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
+define(['app', 'helper/storage', 'helper/util'], function (app, storage, util) {
     console.log("accountFactory");
     app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github',function ($auth, $rootScope, $uibModal, github) {
         var account = {
@@ -87,6 +87,41 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
                 });
                 return ;
             },
+
+            /*
+            isRequireSignin: function () {
+                return this.requireSignin;
+            },
+
+            setRequireSignin: function (bNeedSignin) {
+                this.requireSignin = bNeedSignin;
+            },
+            */
+
+            linkGithub: function () {
+                if (this.isAuthenticated()) {
+                    this.githubAuthenticate();
+                }
+            },
+            unlinkGithub: function () {
+                if (this.isAuthenticated()) {
+                    if (this.user && this.user.githubId && this.user.githubId != 0) {
+                        var userData = angular.copy(this.user);
+                        delete userData.githubId;
+                        userData._unset = ["githubId"];
+                        this.updateProfile(userData);
+                    }
+                }
+            },
+            updateProfile: function (profileData) {
+                var self = this;
+                util.http("PUT", config.apiUrlPrefix + "user", $scope.user, function (data) {
+                    self.setUser(data);
+                    Message.success("用户信息修改成功");
+                }, function () {
+                    Message.success("用户信息修改失败");
+                });
+            }
         }
 
         // 初始化github

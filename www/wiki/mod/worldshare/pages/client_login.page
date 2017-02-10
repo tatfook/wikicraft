@@ -1,0 +1,67 @@
+<?npl
+wp_enqueue_script("githubService", WIKI_WEBROOT.."controllers/githubService.js");
+?>
+
+<script>
+    angular.module('MyApp')
+	.controller("clientLogin", function ($scope, $location, Account, github) {
+		var param = $location.search();
+		var token = param.token;
+		var user  = {};
+
+		$scope.type = -1;
+
+		if(token != undefined){
+			localStorage.setItem("satellizer_token",token);
+			$scope.type = 1;
+
+			$scope.$watch(Account.getUser, function (newValue, oldValue) {
+				user = angular.copy(newValue);
+
+				if(user != undefined && user.hasOwnProperty("github")){
+					$scope.type = 2;
+				}
+		    });
+
+			$scope.linkGithub = function(){
+				if(user.hasOwnProperty("_id")){
+					Account.linkGithub();
+		        }
+			}
+		}
+	});
+</script>
+
+<style type="text/css">
+	.client-login{
+		min-height: 300px;
+	}
+
+	.client-login .go-on{
+	    margin: 0 auto;
+	    margin-top: 80px;
+	    height: 50px;
+    	padding: 0 20px;
+	    display: block;
+        background-color: #0099FF;
+	    color: #FFF;
+	    border: none;
+	    border-radius: 5px;
+	}
+
+	.client-login .desc{
+		margin-top: 50px;
+		text-align: center;
+	}
+
+</style>
+
+<div class="client-login" ng-controller="clientLogin">
+	<div ng-if="type == 1">
+		<button class="go-on" ng-click="linkGithub()">点击继续绑定Github</button>
+		<div class="desc">如果你没有Github账号，请根据指引注册。</div>
+	</div>
+	<div ng-if="type == 2">
+		<div class="desc">Github账号绑定成功，请返回Paracraft客户端。</div>
+	</div>
+</div>
