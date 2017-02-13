@@ -15,27 +15,33 @@ define(['app', 'helper/util'], function (app, util) {
         $scope.user = Account.getUser();
 
         $scope.goLoginPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/login";
+            window.location.href = "/wiki/login";
+            //window.location.href=config.frontEndRouteUrl + "#/login";
         };
 
         $scope.goRegisterPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/home";
+            window.location.href = "/wiki/home";
+            //window.location.href=config.frontEndRouteUrl + "#/home";
         };
 
         $scope.goHomePage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/home";
+            window.location.href = "/wiki/home";
+            //window.location.href=config.frontEndRouteUrl + "#/home";
         };
 
         $scope.goUserCenterPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/userCenter";
+            window.location.href = "/wiki/userCenter";
+            //window.location.href=config.frontEndRouteUrl + "#/userCenter";
         };
 
         $scope.goWebsitePage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/website";
+            window.location.href = "/wiki/website";
+            //window.location.href=config.frontEndRouteUrl + "#/website";
         };
 
         $scope.goGitVersionPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/gitVersion";
+            window.location.href = "/wiki/gitVersion";
+            //window.location.href=config.frontEndRouteUrl + "#/gitVersion";
         };
 
         $scope.goPersonalPage = function () {

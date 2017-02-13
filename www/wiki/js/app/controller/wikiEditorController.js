@@ -3,19 +3,19 @@
  */
 
 define([
-    'jquery',
     'app',
     'codemirror',
     'helper/markdownwiki',
     'helper/util',
     'text!html/wikiEditor.html',
     'bootstrap-treeview',
-], function ($, app, CodeMirror, markdownwiki, util, htmlContent) {
-    console.log("wiki editor controller!!!");
+], function (app, CodeMirror, markdownwiki, util, htmlContent) {
+    //console.log("wiki editor controller!!!");
     var editor;
 
     function initEditor() {
-        if (editor) {
+        //console.log("initEditor");
+        if (editor || (!document.getElementById("source"))) {
             return ;
         }
         editor = CodeMirror.fromTextArea(document.getElementById("source"), {
@@ -118,6 +118,9 @@ define([
                 },
             }
         });
+
+        var mdwiki = markdownwiki({container_name: '.result-html'});
+        mdwiki.bindToCodeMirrorEditor(editor);
 
         var showTreeview = true;
 
@@ -546,8 +549,7 @@ define([
         init();
     }]);
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', function ($scope, $rootScope, $http, $location, $uibModal, Account, github) {
-        initEditor();
-
+        console.log($('#source'));
         $scope.websites = [];           //站点列表
         $scope.websitePages = [];       //页面列表
 
@@ -570,7 +572,7 @@ define([
 
         function getTreeData() {
             var pageList = $scope.websitePages ||[];
-            var pageTree = {url:'', children:{}};
+            var pageTree = {url:'/' + $scope.user.username , children:{}};
             var treeData = [];
             for (var i = 0; i < pageList.length; i++) {
                 var page = pageList[i];
@@ -578,7 +580,7 @@ define([
                 url = url.trim();
                 var paths = page.url.split('/');
                 var treeNode = pageTree;
-                for (var j = 0; j < paths.length; j++) {
+                for (var j = 2; j < paths.length; j++) {
                     var path = paths[j];
                     if (!path){
                         continue;
@@ -632,6 +634,7 @@ define([
             if (!Account.isAuthenticated()) {
                 return;
             }
+
             var user = Account.getUser();
             if (user.githubToken) {
                 github.init(user.githubToken, user.githubName);
@@ -643,7 +646,7 @@ define([
             // 获取用户站点列表
             $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
                 $scope.websites = response.data.data;
-                util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId',{userId:1}, function (data) {
+                util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId',{userId:Account.getUser()._id}, function (data) {
                     $scope.websitePages = data || [];
                     initRoot();
                     initTree();
@@ -687,6 +690,7 @@ define([
         }
 
         function getWebsitePage(id) {
+            //console.log($scope.websitePages);
             for (var j = 0; j < $scope.websitePages.length; j++) {
                 wp = $scope.websitePages[j];
                 if (wp._id == id) {
@@ -698,6 +702,7 @@ define([
 
         function openPage() {
             var wp = $scope.websitePage;
+            console.log(editor);
             if (isEmptyObject(wp)) {
                 $scope.websitePage = {};
                 delete $rootScope.websitePage;
@@ -720,7 +725,7 @@ define([
                 enableLinks: true,
                 data: getTreeData(),
                 onNodeSelected: function (event, data) {
-                    //console.log(data);
+                    console.log(data);
                     //return;
                     $scope.website = getWebsite(data.pageNode.siteId);
                     $scope.websitePage = getWebsitePage(data.pageNode.pageId);
@@ -1253,8 +1258,6 @@ define([
         });
 
         init();
-        var mdwiki = markdownwiki({container_name: '.result-html'});
-        mdwiki.bindToCodeMirrorEditor(editor);
 
         /*
          *
@@ -1414,5 +1417,10 @@ define([
         }
     }]);
 
-    return htmlContent;
+    return {
+        htmlContent:htmlContent,
+        domReady:function () {
+            initEditor();
+        },
+    };
 });

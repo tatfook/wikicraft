@@ -47,12 +47,17 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             pathname = pathname.replace('/wiki/','');
             var pageUrl = 'controller/' + pathname + 'Controller';
             //console.log(pageUrl);
-            require([pageUrl], function (htmlContent) {
+            require([pageUrl], function (htmlObj) {
                 //console.log(htmlContent);
                 $scope.IsRenderServerWikiContent = true;
                 //htmlContent = md.render(htmlContent);
                 $('#__WikiPageContentContainer__').removeClass('container');
-                util.html('#SinglePageId', htmlContent, $scope);
+                if (typeof htmlObj == "string") {
+                    util.html('#SinglePageId', htmlObj, $scope);
+                } else if (typeof htmlObj == "object"){
+                    util.html('#SinglePageId', htmlObj.htmlContent, $scope);
+                    typeof htmlObj.domReady == "function" && htmlObj.domReady();
+                }
             });
         }
 
@@ -63,7 +68,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
             console.log(urlObj);
             // 置空用户页面内容
             //urlObj.sitename = 'wiki';
-            if (window.location.href.indexOf('#') >=0 || !urlObj.sitename || urlObj.sitename == "wiki") {
+            if (window.location.href.indexOf('#') >=0 || !urlObj.username || urlObj.username == "wiki") {
                 //console.log($('#SinglePageId').children().length);
                 $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
                 if ($scope.IsRenderServerWikiContent) {
