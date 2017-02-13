@@ -301,6 +301,11 @@ define([
         markdownit_wikicmd_fence(md, mdwikiName);
     }
 
+    // formt md text
+    function formatMDText(text) {
+        
+    }
+
     // 新建mdwiki编辑器
     function markdownwiki(options) {
         var mdwikiName = "mdwiki_" + mdwikiMap.count++;

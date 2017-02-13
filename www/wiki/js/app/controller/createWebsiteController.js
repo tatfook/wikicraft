@@ -161,8 +161,8 @@ define(['app', 'helper/util', 'helper/storage','text!html/createWebsite'], funct
 
            $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
 
-           util.http('POST', config.apiUrlPrefix+'website', {name:$scope.website.name}, function (data) {
-               if (data && data.length > 0 && $scope.website._id != data[0]._id) {
+           util.http('POST', config.apiUrlPrefix+'website/isExist', {username:$scope.user.username, sitename:$scope.website.name}, function (data) {
+               if (data && $scope.website._id != data._id) {
                    $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
                    $scope.nextStepDisabled = true;
                } else {

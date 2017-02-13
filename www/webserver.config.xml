@@ -92,6 +92,16 @@
         <!--how many seconds to expire user token-->
         <number name='token_expire'>3600000</number>
       </table>  
+	  <table name="email">
+          <!--email server url-->
+		  <string name='url'>smtp://smtp.sina.com</string>
+          <!--email username-->
+          <string name='username'>wxaxiaoyao@sina.com</string>
+          <!--email password-->
+          <string name='password'>wuxiangan</string>
+          <!--email from-->
+          <string name='from'>wxaxiaoyao@sina.com</string>
+	  </table>
     </table>
     <table name='paracraft.wiki'>
 	 <table name='wiki'>

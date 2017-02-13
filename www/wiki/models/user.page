@@ -4,6 +4,9 @@ Title: user profile
 Author: wuxiangan
 Date: 2016/10/21
 ]]
+
+-- NPL.load("(gl)script/ide/System/os/GetUrl.lua")
+
 include_once("./abstract/base.page")
 include_once("./website.page")
 include_once("./user_favorite.page")
@@ -153,6 +156,13 @@ end
 
 -- 发邮件
 function user:api_setemail(params)
+	par = {}
+	par.to = "765485868@qq.com"
+	par.subject = "wikicraft email confirm"
+	par.body = "<a href='localhost:8099/wiki/userFavoriteDB'>注册确认</a>"
+	util:SendEmail(par)
+	return "email"
+	--[[
 	if (not params._id) or (not params.email) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -163,6 +173,8 @@ function user:api_setemail(params)
 
 	self:db():updateOne({_id=params._id}, {email=email}, resume)
 	return errors:wrap(yield())
+
+	]]
 end
 
 -- 登录
@@ -194,7 +206,7 @@ function user:api_register(params)
 	
 	local websiteDB = models.website:new()
 	-- 查找用户名是否可用
-	if websiteDB:api_getByName({websiteName=params.username}).data then
+	if self:api_getByName({username=params.username}).data then
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 	
@@ -255,6 +267,42 @@ function user:api_getById(params)
 	userId = params.userId
 
 	self:db():findOne({_id=userId}, resume)
+	local err, data = yield()
+	if not data then
+		return errors:wrap(err or errors.NOT_FOUND, data)
+	end
+
+	return errors:wrap(nil, data)
+	--[[
+		-- 精简信息
+		local userInfo = {
+			_id=data._id,
+			username=data.username,
+			email=data.email,
+			cellphone=data.cellphone,
+			sex=data.sex,
+			githubId=data.githubId,
+			githubToken=data.githubToken,
+			portrait=data.portrait,
+			comment=data.comment,
+			company=data.company,
+			location=data.location,
+			joindate=data.joindate,		
+		}
+		return {error=errors.SUCCESS, data=userInfo}
+
+	]]
+end
+
+-- 通过用户名获得用户信息
+function user:api_getByName(params)
+	if not params.username then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	userId = params.userId
+
+	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, data = yield()
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)

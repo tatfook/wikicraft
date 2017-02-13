@@ -42,7 +42,8 @@ define(['jquery'], function ($) {
             pathname = window.location.search.substring(1);
         }
 
-        var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+        var username = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+        var sitename = '';
         var pagename = 'index';
 
         // 排除IP访问
@@ -50,20 +51,25 @@ define(['jquery'], function ($) {
             sitename = undefined;
         }
 
-        if (sitename) {
-            sitename = sitename[1];
-            pagename = pathname.match(/^\/?([^\/]+)/);
-            pagename = pagename ? pagename[1] : 'index';
-        } else {
-            sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-            if (sitename == undefined) {
+        if (username) {
+            username = username[1];
+            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
+            if (urlInfo == undefined) {
                 return {};
             }
-            pagename = sitename[2] || pagename;
-            sitename = sitename[1]
+            sitename = urlInfo[1];
+            pagename = urlInfo[2] || 'index';
+        } else {
+            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
+            if (urlInfo == undefined) {
+                return {};
+            }
+            username = urlInfo[1];
+            sitename = urlInfo[2];
+            pagename = urlInfo[3] || 'index';
         }
 
-        return {sitename:sitename, pagename:pagename, pathname:pathname};
+        return {username:username, sitename:sitename, pagename:pagename, pathname:pathname};
     }
 
     util.setLastUrlObj = function (urlObj) {

@@ -99,11 +99,13 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 console.log("注册成功")
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
+                window.location.href = '/' + data.userInfo.username + '/' + data.userInfo.username;
+                /*
                 if (!data.userInfo.githubToken) {
                     Account.githubAuthenticate();
                 } else {
                     window.location.href ='/#/home';
-                }
+                }*/
             }, function (error) {
                 $scope.errMsg = error.message;
             });

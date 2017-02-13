@@ -43,7 +43,7 @@ define(['app', 'helper/util'], function (app, util) {
                 Message.info("请先登录!!!");
                 return;
             }
-            util.goUserSite('/' + $scope.user.username);
+            util.goUserSite('/' + $scope.user.username + '/' + $scope.user.username);
         };
 
         $scope.logout = function () {

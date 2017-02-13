@@ -83,7 +83,7 @@ define(['jquery','app', 'helper/markdownwiki', 'helper/storage', 'helper/util'],
                 return ;
             }
             // 访问用户页
-            util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {sitename:urlObj.sitename, pagename:urlObj.pagename}, function (data) {
+            util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename}, function (data) {
                 data = data || {};
                 // 这三种基本信息根化，便于用户页内模块公用
                 $rootScope.userinfo = data.userinfo;

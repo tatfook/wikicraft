@@ -16,7 +16,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/website.html'], funct
 
         // 访问网站
         $scope.goWebsiteIndexPage = function(websiteName) {
-            util.goUserSite('/' + websiteName);
+            util.goUserSite('/' + $scope.user.username + '/'+ websiteName);
         }
 
         // 编辑网站页面

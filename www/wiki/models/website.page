@@ -22,7 +22,7 @@ website.db_name = "website"
 -- website.max_items_per_user = 10
 
 function website:ctor()
-	self:addfield("name", "string", true, 30)
+	self:addfield("name", "string", false, 30)
 	self:addfield("userId", "number", false)
 	self:addfield("username", "string", false)
 	self:addfield("desc", "string", false, 240)
@@ -114,7 +114,7 @@ function website:create(params)
 	local data = template_config_db:api_getTemplatePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
 	
 	local page = {name="index"}
-	page.url = '/' ..  params.name .. '/' .. page.name
+	page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
 	page.websiteName = params.name
 	page.websiteId = site._id
 	page.content = data.data or ""
@@ -410,3 +410,14 @@ function website:api_getUserAndSiteBySitename(params)
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
+
+-- 检查用户站点是否存在
+function website:api_isExist(params)
+	if (not params.sitename) or (not params.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({['+username+name']={params.username, params.sitename}}, resume)
+	
+	return errors:wrap(yield())
+end 

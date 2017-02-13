@@ -51,7 +51,27 @@ function util:formatQuery(query)
 	return result
 end
 
+-- 发送邮件
+function util:SendEmail(params, callback)
+	local emailConfig = wiki_config().email 
+	log(emailConfig)
+	par = {}
+	par.url = emailConfig.url
+	par.username = emailConfig.username
+	par.password = emailConfig.password
+	par.from = emailConfig.from
+	--par.to = "765485868@qq.com"
+	--par.subject = "wikicraft email confirm"
+	--par.body = "<a href='localhost:8099/wiki/userFavoriteDB'>注册确认</a>"
+	par.to = params.to
+	par.subject = params.subject
+	par.body = params.body
+	
+	callback = callback or (function(err, msg) log(msg) end)
+	System.os.SendEmail(par, callback)	
+end
 
+-- 自定义常量
 const={}
 
 -- 收藏

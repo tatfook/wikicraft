@@ -4,14 +4,13 @@
 
 define(['app', 'require'], function (app, require) {
     console.log("router");
-    app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider',function ($stateProvider, $urlRouterProvider, $controllerProvider) {
+    app.config(['$stateProvider', '$urlRouterProvider',function ($stateProvider, $urlRouterProvider) {
         //$urlRouterProvider.otherwise('/');
         var templatePathPrefix = config.htmlPath;
         var controllerPathPrefix = 'controller/';
         var routerMap = {
             'test':{
                 url:'/test',
-                templateUrl:templatePathPrefix + 'test.html',
                 controllerPath:controllerPathPrefix + 'testController',
                 controllerName:'testController',
             },
@@ -42,26 +41,26 @@ define(['app', 'require'], function (app, require) {
         for (var key in routerMap) {
             var obj = routerMap[key] || {};
             var url = obj.url || ('/' + key);
-            var templateUrl = obj.templateUrl || (templatePathPrefix + key + ".html");
             var controllerName = obj.controllerName || (key + 'Controller');
             var controllerPath = obj.controllerPath || (controllerPathPrefix + controllerName);
 
-            $stateProvider.state(key, {
+            var routeObj = {
                 url:url,
-                templateUrl:templateUrl,
+                templateUrl: templatePathPrefix + key + '.html',
                 controller:controllerName,
                 resolve:{
-                    resolveData: requireModule(controllerPath, controllerName),
+                    resolveData: requireModule(controllerPath, controllerName, routeObj),
                 },
-            });
+            };
+            $stateProvider.state(key, routeObj);
         };
 
-        function requireModule(controllerPath, controllerName) {
+        function requireModule(controllerPath, controllerName, routeObj) {
             return function ($q) {
                 var deferred = $q.defer();
-                require([controllerPath], function (controller) {
-                    //console.log(controller);
-                    controller && $controllerProvider.register(controllerName, controller);
+                require([controllerPath], function (htmlContent) {
+                    //console.log(htmlContent);
+                    //routeObj.template = htmlContent;
                     deferred.resolve();
                 });
                 return deferred.promise;
