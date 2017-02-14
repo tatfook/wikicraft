@@ -297,7 +297,7 @@ define([
 
     // md 语法重写
     function markdownit_rule_override(md, mdwikiName) {
-        markdownit_wikicmd_iamge(md, mdwikiName);
+        //markdownit_wikicmd_iamge(md, mdwikiName);
         markdownit_wikicmd_fence(md, mdwikiName);
     }
 

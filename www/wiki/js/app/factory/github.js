@@ -65,31 +65,31 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
 
         // content operations
         // actions: CREATE UPDATE READ DELETE
-        github.fileCURD = function (method, data, err, errcb) {
+        github.fileCURD = function (method, data, cb, errcb) {
             var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/contents/' + data.path;
-            github.httpRequest(method, url, data, err, errcb);
+            github.httpRequest(method, url, data, cb, errcb);
         };
         // writeFile
-        github.writeFile = function (data, err, errcb) {
+        github.writeFile = function (data, cb, errcb) {
             var self = this;
             self.getFile({path:data.path}, function (result) {
                 //console.log(result);
                 data.sha = result.sha;
-                self.fileCURD('PUT',data,err, errcb);
+                self.fileCURD('PUT',data,cb, errcb);
             }, function () {
-                self.fileCURD('PUT', data,err, errcb);
+                self.fileCURD('PUT', data,cb, errcb);
             });
         }
         // read file
-        github.getFile = function (data, err, errcb) {
-            this.fileCURD("GET", data, err, errcb);
+        github.getFile = function (data, cb, errcb) {
+            this.fileCURD("GET", data, cb, errcb);
         };
         // deleteFile
-        github.deleteFile = function (data, err, errcb) {
+        github.deleteFile = function (data, cb, errcb) {
             var self = this;
             self.getFile(data, function (result) {
                 data.sha = result.sha;
-                self.fileCURD("DELETE", data, err, errcb);
+                self.fileCURD("DELETE", data, cb, errcb);
             });
         };
         // rollbackFile
@@ -150,7 +150,7 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
                 // 会话期记录是否已存在数据源库，避免重复请求
                 if (!storage.sessionStorageGetItem('githubRepoExist')){
                     github.getRepos(getGithubName, function (response) {
-                        console.log(response);
+                        //console.log(response);
                         storage.sessionStorageSetItem('githubRepoExist', true);
                         github.createRepos(getGithubName, errcb);
                     });
@@ -194,8 +194,24 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
                     path =  'img_' + (new Date()).getTime();
                 }
                 path = 'images/' + path;
-                github.writeFile({path:path, message: 'upload image:'+ path, content: escape(Base64.encode(content))}, function(){
-                    cb && cb('#'+path);
+                /*data:image/png;base64,iVBORw0KGgoAAAANS*/
+                content = content.split(',');
+                if (content.length > 1) {
+                    var imgType = content[0];
+                    content = content[1];
+                    
+                    imgType = imgType.match(/image\/([\w]+)/)
+                    imgType = imgType && imgType[1];
+                    if (imgType) {
+                        path = path +  '.' + imgType;
+                    }
+                } else {
+                    content = content[0];
+                }
+                
+                github.writeFile({path:path, message: 'upload image:'+ path, content:content}, function(data){
+                    console.log(data);
+                    cb && cb(data.content.download_url);
                 }, errcb);
             },
             deleteFile: function (path, message, cb, errcb) {

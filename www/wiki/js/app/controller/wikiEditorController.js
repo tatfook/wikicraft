@@ -636,10 +636,15 @@ define([
             }
 
             var user = Account.getUser();
+
+            github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'});
+            $scope.githubSource = github;
+            console.log("===============");
+            /*
             if (user.githubToken) {
                 github.init(user.githubToken, user.githubName);
                 $scope.githubSource = github;
-            }
+            }*/
 
 
             // console.log(config.apiUrlPrefix);
@@ -1151,7 +1156,6 @@ define([
 
             if (isEmptyObject($scope.githubSource)) {
                 alert('github账号尚未登录，图片无法上传');
-                Account.githubAuthenticate();
             } else {
                 //支持chrome IE10
                 if (window.FileReader) {
@@ -1172,10 +1176,8 @@ define([
                         //var options = {
                         //    encode:true
                         //};
-
                         $scope.githubSource.uploadImage(filename, fileReader.result, function (img_url) {
                             //console.log(result);
-                            //line_keyword('![](wikicraft:' + $scope.githubSource.username + "/" + filename + ')', 2);
                             line_keyword('![](' + img_url + ')', 2);
                             if (cb) {
                                 cb(img_url);
