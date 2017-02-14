@@ -194,7 +194,7 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
                     path =  'img_' + (new Date()).getTime();
                 }
                 path = 'images/' + path;
-                this.writeFile(path, content, 'upload image:'+ path, function(){
+                github.writeFile({path:path, message: 'upload image:'+ path, content: escape(Base64.encode(content))}, function(){
                     cb && cb('#'+path);
                 }, errcb);
             },
