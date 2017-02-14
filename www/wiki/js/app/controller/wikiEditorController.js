@@ -1151,6 +1151,7 @@ define([
 
             if (isEmptyObject($scope.githubSource)) {
                 alert('github账号尚未登录，图片无法上传');
+                Account.githubAuthenticate();
             } else {
                 //支持chrome IE10
                 if (window.FileReader) {
