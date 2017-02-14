@@ -637,14 +637,13 @@ define([
 
             var user = Account.getUser();
 
-            github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'});
-            $scope.githubSource = github;
-            console.log("===============");
-            /*
+            //github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'});
+            //$scope.githubSource = github;
+
             if (user.githubToken) {
                 github.init(user.githubToken, user.githubName);
                 $scope.githubSource = github;
-            }*/
+            }
 
 
             // console.log(config.apiUrlPrefix);
