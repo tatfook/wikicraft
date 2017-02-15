@@ -18,6 +18,7 @@
             'angular': libPathPrefix + 'angular/angular.min',
             'angular-ui-bootstrap': libPathPrefix + 'angular-ui-bootstrap/ui-bootstrap-tpls',
             'angular-ui-router': libPathPrefix + 'angular-ui-router/angular-ui-router.min',
+            'angular-toggle-switch': libPathPrefix + 'angular-toggle-switch/angular-toggle-switch.min',
             'angular-ui-select': libPathPrefix + 'angular-ui-select/select.min',
             'angular-sanitize': libPathPrefix + 'angular-sanitize/angular-sanitize.min',
             'bootstrap': libPathPrefix + "bootstrap/js/bootstrap.min",
@@ -54,6 +55,9 @@
                 deps:['angular'],
             },
             'angular-ui-bootstrap':{
+                deps:['angular'],
+            },
+            'angular-toggle-switch':{
                 deps:['angular'],
             },
             'angular-ui-select':{

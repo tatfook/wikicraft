@@ -9,7 +9,7 @@
     <div class="modal-body">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#image_url" data-toggle="tab">网络地址</a></li>
-            <li><a href="#image_local" data-toggle="tab">本地上传</a></li>
+            <li><a href="#image_local" data-toggle="tab" ng-click="imageLocal()">本地上传</a></li>
             <li><a href="#image_online" data-toggle="tab">在线管理</a></li>
         </ul>
         <ul class="tab-content">
@@ -20,7 +20,7 @@
             </div>
             <div class="tab-pane fade padding" id="image_local">
                 <p>
-                    <input type="file"  id="file" accept="image/bmp,image/gif,image/jpeg,image/jpg,image/png,image/svg"/>
+                    <input type="file" accept="image/*" class="btn" id="uploadImageId"/>
                 </p>
             </div>
             <div class="tab-pane fade padding" id="image_online">

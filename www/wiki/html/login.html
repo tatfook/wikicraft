@@ -12,28 +12,30 @@
     }
 </style>
 
-<div ng-controller="loginController">
-    <div style="position: relative">
-        <img ng-src='{{imgsPath + "loginBG.png"}}' class="img-responsive">
-        <div style="position: absolute; top: 353px; left: 285px; color: white; font-size: 18px">
-            <div style="display: flex">
-                <div>
-                    <input id="email" type="email" ng-model="email" placeholder="账号" style="width: 405px; height: 65px; background: none; display: block;  border: 2px solid white; font-size: 18px">
-                    <input id="password" type="password" ng-model="password" placeholder="密码" style="width: 405px; height: 65px; background: none; display: block; margin-top: 27px; border: 2px solid white; font-size: 18px">
+<div ng-controller="loginController" class="container">
+    <div class="row">
+        <div style="position: relative">
+            <img ng-src='{{imgsPath + "loginBG.png"}}' class="img-responsive">
+            <div style="position: absolute; top: 353px; left: 285px; color: white; font-size: 18px">
+                <div style="display: flex">
+                    <div>
+                        <input id="email" type="email" ng-model="email" placeholder="账号" style="width: 405px; height: 65px; background: none; display: block;  border: 2px solid white; font-size: 18px">
+                        <input id="password" type="password" ng-model="password" placeholder="密码" style="width: 405px; height: 65px; background: none; display: block; margin-top: 27px; border: 2px solid white; font-size: 18px">
+                    </div>
+                    <div style="margin-left: 18px;">
+                        <input type="button" ng-click="login()" value="登录" style="width: 180px; height: 150px; background: none; font-size: 36px; color: white; border: 2px solid white">
+                    </div>
                 </div>
-                <div style="margin-left: 18px;">
-                    <input type="button" ng-click="login()" value="登录" style="width: 180px; height: 150px; background: none; font-size: 36px; color: white; border: 2px solid white">
+                <div style="color: red">{{errMsg}}</div>
+                <div style="margin-top: 15px; display: flex">
+                    <input type="checkbox" style="height: 21px; width: 21px"> 记住密码
+                    <div style="margin-left: 40px"><a style="color: white">找回密码</a></div>
                 </div>
-            </div>
-            <div style="color: red">{{errMsg}}</div>
-            <div style="margin-top: 15px; display: flex">
-                <input type="checkbox" style="height: 21px; width: 21px"> 记住密码
-                <div style="margin-left: 40px"><a style="color: white">找回密码</a></div>
-            </div>
-            <div style="margin-top: 65px; margin-left: 265px">
-                <div style="display: flex; align-items: center">
-                    <div>使用其它账号登录: <a style="color: white" ng-click="githubLogin()"><img ng-src='{{imgsPath + "githubLogo.png"}}' style="width: 24px; height: 24px"> github</a></div>
-                    <div style="margin-left: 40px"><a style="color: white" ui-sref="index.home">没有账号，点击申请</a></div>
+                <div style="margin-top: 65px; margin-left: 265px">
+                    <div style="display: flex; align-items: center">
+                        <div>使用其它账号登录: <a style="color: white" ng-click="githubLogin()"><img ng-src='{{imgsPath + "githubLogo.png"}}' style="width: 24px; height: 24px"> github</a></div>
+                        <div style="margin-left: 40px"><a style="color: white" ui-sref="index.home">没有账号，点击申请</a></div>
+                    </div>
                 </div>
             </div>
         </div>

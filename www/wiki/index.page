@@ -17,16 +17,17 @@
 <body>
 <div ng-controller="mainController">
     <div ng-include="'/wiki/html/header.html'"></div>
+
     <!--页面主题内容-->
     <div style="z-index: 1">
         <!--官网内容体-->
-        <div class="container">
-			<div id="SinglePageId" ng-show="IsRenderServerWikiContent">
-				<? RenderServerWikiContent() ?>
-			</div>
-			<div ng-show="!IsRenderServerWikiContent">
-	            <div ui-view></div>
-			</div>
+        <div id="__WikiPageContentContainer__">
+            <div id="SinglePageId" ng-show="IsRenderServerWikiContent">
+                <? RenderServerWikiContent() ?>
+            </div>
+            <div ng-show="!IsRenderServerWikiContent">
+                <div ui-view></div>
+            </div>
         </div>
 
         <!--用户站点内容体-->

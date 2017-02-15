@@ -24,17 +24,17 @@ define([
             $uibModalInstance.close("img");
         }
 
-        $scope.read_file = function (files) {
-            var file = files[0];
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function (e) {
-                result.innerHTML = '<img src="' + this.result + '" alt="' + $scope.img.txt + '" width="100%" style="max-width: 200px;"/>'
-                $scope.img.dat = this.result;
-                $scope.img.nam = file.name;
-                $scope.img.url = '';
-                console.log($scope.img);
-            }
+        $scope.imageLocal = function () {
+            $('#uploadImageId').change(function (e) {
+                var fileReader = new FileReader();
+                fileReader.onload = function () {
+                    console.log(github.isInited());
+                    github.isInited() && github.uploadImage(undefined, fileReader.result, function (url) {
+                        $scope.img.url = url;
+                    });
+                };
+                fileReader.readAsDataURL(e.target.files[0]);
+            });
         }
     }]).controller('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.link = {url: '', txt: ''};

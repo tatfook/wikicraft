@@ -17,7 +17,7 @@ define(['app', 'helper/util'], function (app, util) {
                 if (config.localEnv) {
                     window.location.href = config.frontEndRouteUrl + '#/wikiEditor';
                 } else {
-                    window.location.href = "/wiki/editor";
+                    window.location.href = "/wiki/wikiEditor";
                 }
             }
             // 去站点

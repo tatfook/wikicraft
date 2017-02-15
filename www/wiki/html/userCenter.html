@@ -1,16 +1,16 @@
-<div ng-controller="userCenterController">
+<div ng-controller="userCenterController" class="container">
     <div style="display:flex; justify-content: center; margin: 30px 0px">
         <div style=" border-top: 1px solid grey">
             <ul class="nav nav-tabs nav-stacked">
                 <li class="active"><a href="#userCenterBaseInfo" data-toggle="tab" ng-click="clickBaseInfo()">我的资料</a></li>
-                <li><a href="#userCenterAccountSafe" data-toggle="tab" ng-click="clickAccountSaft()">账号安全</a></li>
+                <li><a href="#userCenterAccountSafe" data-toggle="tab" ng-click="clickAccountSafe()">账号安全</a></li>
                 <li><a href="#userCenterMyFavorite" data-toggle="tab" ng-click="clickMyFavorite()">我的收藏</a></li>
                 <li><a href="#userCenterMyHistory" data-toggle="tab" ng-click="clickMyHistory()">我的历史</a></li>
                 <li><a href="#userCenterMyFans" data-toggle="tab" ng-click="clickMyFans()">我的粉丝</a></li>
                 <li><a href="#userCenterRealAuth" data-toggle="tab">实名验证</a></li>
                 <li><a href="#userCenterInviteRegister" data-toggle="tab">邀请注册</a></li>
                 <li><a href="#userCenterVIP" data-toggle="tab">VIP</a></li>
-                <li><a href="#userCenterDataSource" data-toggle="tab">数据源</a></li>
+                <li><a href="#userCenterDataSource" data-toggle="tab" ng-click="clickMyDataSource()">数据源</a></li>
             </ul>
         </div>
         <div class="tab-content"  style="flex-grow: 1; border-top: 1px solid grey;">
@@ -244,52 +244,15 @@
             <div class="tab-pane fade in" id="userCenterDataSource">
                 <div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">绑定数据源</div>
+                        <div class="panel-heading">数据源</div>
                         <div class="panel-body">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">github账号：</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control">
-                                    </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between">
+                                    <div>Github数据源</div>
+                                    <div><toggle-switch  ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch></div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">github密码：</label>
-                                    <div class="col-md-6">
-                                        <input type="password" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-offset-3 col-md-6">
-                                        <button class="btn btn-default">绑定</button>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">已绑定数据源</div>
-                    <div class="panel-body">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>账号</th>
-                                <th>设为默认</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    765485868@qq.com
-                                </td>
-                                <td>
-                                    <button class="btn btn-default">设为默认</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>

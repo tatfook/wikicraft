@@ -23,7 +23,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 if (!data.userInfo.githubToken) {
                     Account.githubAuthenticate();
                 }
-                window.location.href = '/#/home';
+                window.location.href = '/wiki/home';
             }, function (error) {
                 $scope.errMsg = error.message;
             });
@@ -34,7 +34,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 console.log("github认证成功!!!");
                 $auth.setToken(response.data.token);
                 Account.setUser(response.data.userInfo);
-                window.location.href = '/#/home';
+                window.location.href = '/wiki/home';
             }, function () {
                 console.log("github认证失败!!!");
             });

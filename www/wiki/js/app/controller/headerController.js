@@ -55,7 +55,8 @@ define(['app', 'helper/util'], function (app, util) {
         $scope.logout = function () {
             Account.logout();
             $scope.isLogin = false;
-            window.location.href= config.frontEndRouteUrl + "#/home";
+            //window.location.href= config.frontEndRouteUrl + "#/home";
+            window.location.href = "/wiki/home";
         };
 
         $scope.$on("onUserProfile", function (event, user) {

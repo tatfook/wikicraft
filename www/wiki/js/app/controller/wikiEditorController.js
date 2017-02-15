@@ -14,8 +14,9 @@ define([
     var editor;
 
     function initEditor() {
-        //console.log("initEditor");
+        console.log("initEditor");
         if (editor || (!document.getElementById("source"))) {
+            console.log("init editor failed");
             return ;
         }
         editor = CodeMirror.fromTextArea(document.getElementById("source"), {
@@ -121,6 +122,7 @@ define([
 
         var mdwiki = markdownwiki({container_name: '.result-html'});
         mdwiki.bindToCodeMirrorEditor(editor);
+        editor.focus();
 
         var showTreeview = true;
 
@@ -435,7 +437,7 @@ define([
 
         return editor;
     }
-    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
+    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance,github) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
@@ -447,17 +449,17 @@ define([
             $uibModalInstance.close("img");
         }
 
-        $scope.read_file = function (files) {
-            var file = files[0];
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function (e) {
-                result.innerHTML = '<img src="' + this.result + '" alt="' + $scope.img.txt + '" width="100%" style="max-width: 200px;"/>'
-                $scope.img.dat = this.result;
-                $scope.img.nam = file.name;
-                $scope.img.url = '';
-                console.log($scope.img);
-            }
+        $scope.imageLocal = function () {
+            $('#uploadImageId').change(function (e) {
+                var fileReader = new FileReader();
+                fileReader.onload = function () {
+                    console.log(github.isInited());
+                    github.isInited() && github.uploadImage(undefined, fileReader.result, function (url) {
+                        $scope.img.url = url;
+                    });
+                };
+                fileReader.readAsDataURL(e.target.files[0]);
+            });
         }
     }]);
     app.registerController('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
@@ -530,7 +532,7 @@ define([
                 return false;
             }
 
-            $scope.websitePage.url = '/' + $scope.website.name + '/' + $scope.websitePage.name;
+            $scope.websitePage.url = '/' + $scope.user.username + '/' + $scope.website.name + '/' + $scope.websitePage.name;
             $scope.websitePage.websiteName = $scope.website.name;
             $scope.websitePage.websiteId = $scope.website._id;
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
@@ -549,7 +551,7 @@ define([
         init();
     }]);
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', function ($scope, $rootScope, $http, $location, $uibModal, Account, github) {
-        console.log($('#source'));
+        console.log("wikiEditorController");
         $scope.websites = [];           //站点列表
         $scope.websitePages = [];       //页面列表
 
@@ -622,29 +624,25 @@ define([
             for (var i = 0; i < treeData.length; i++){
                 treeData[i].icon = 'fa fa-globe';
             }
-            console.log(pageTree);
-            console.log(treeData);
             return treeData;
         }
 
 
         //初始化，读取用户站点列表及页面列表
         function init() {
-            console.log("editController init");
             if (!Account.isAuthenticated()) {
                 return;
             }
 
             var user = Account.getUser();
-
-            //github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'});
-            //$scope.githubSource = github;
-
+/*
+            github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'},'wxaxiaoyao');
+            $scope.githubSource = github;
+*/
             if (user.githubToken) {
                 github.init(user.githubToken, user.githubName);
                 $scope.githubSource = github;
             }
-
 
             // console.log(config.apiUrlPrefix);
             // 获取用户站点列表
@@ -706,7 +704,6 @@ define([
 
         function openPage() {
             var wp = $scope.websitePage;
-            console.log(editor);
             if (isEmptyObject(wp)) {
                 $scope.websitePage = {};
                 delete $rootScope.websitePage;
@@ -1171,11 +1168,7 @@ define([
                         console.log("load complete");
                         line_keyword('![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
-                        var filename = fileObj.name;
-                        //var options = {
-                        //    encode:true
-                        //};
-                        $scope.githubSource.uploadImage(filename, fileReader.result, function (img_url) {
+                        $scope.githubSource.uploadImage(undefined, fileReader.result, function (img_url) {
                             //console.log(result);
                             line_keyword('![](' + img_url + ')', 2);
                             if (cb) {

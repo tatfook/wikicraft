@@ -100,6 +100,19 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/userCenter.html'], fu
                 $scope.fans = data || {};
             });
         }
+
+
+        // data source
+        $scope.clickMyDataSource = function () {
+            $scope.githubDS = ($scope.user.github && $scope.user.github) > 0 ? true : false;
+        }
+        $scope.githubDSChange = function () {
+            if ($scope.githubDS) {
+                Account.linkGithub();
+            } else {
+                Account.unlinkGithub();
+            }
+        }
     }]);
 
     return htmlContent;
