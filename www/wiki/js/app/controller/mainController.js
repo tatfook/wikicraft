@@ -70,7 +70,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 var urlObj = util.parseUrl();
                 console.log(urlObj);
                 // 置空用户页面内容
-                urlObj.username = 'wiki';
+                //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
                     $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
