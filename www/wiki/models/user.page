@@ -221,6 +221,7 @@ function user:api_register(params)
 	-- 创建用户
 	self:db():insertOne(nil, {
 		username = params.username,
+		displayName = params.username,
 		password = self:encodePassword(params.password),
 		email = params.email,
 		cellphone = params.cellphone,
