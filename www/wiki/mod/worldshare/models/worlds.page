@@ -102,7 +102,7 @@ function worlds:get(params)
 				for j=i+1,#compareResponse do
 					-- LOG.std(nil,"debug","response[j].value",{"BBBB",compareResponse[j]});
 
-					if(response[i].formatDate < compareResponse[j].formatDate) then
+					if(response[i].formatDate > compareResponse[j].formatDate) then
 						local new   = response[i];
 						-- LOG.std(nil,"debug","newnewnew",new);
 						response[i] = compareResponse[j];
@@ -347,6 +347,9 @@ function worlds:api_refresh(params)
 			params.method = "add";
 
 			models.worlds_stats:new():inside_update(params);
+
+			params.statsType = "worldsTotalsUser" .. userid;
+			models.worlds_stats:new():inside_update(params);
 		else
 			self:db():updateOne({["+userid+worldsName"] = {userid,query.worldsName}},
 								 {revision = query.revision},resume);
@@ -424,15 +427,15 @@ function worlds:backup()
 	end
 end
 
--- =转成2个-  +转成3个-  /转成4个- 
+-- =转成-p1p  +转成-p2p  /转成-p3p
 function worlds.base64(text)
 	if(text) then
 		text = EncodingS.base64(text);
-		text = text:gsub("[=]" ,"--");
-		text = text:gsub("[%+]","---");
-		text = text:gsub("[/]" ,"----");
+		text = text:gsub("[=]" ,"-p1p");
+		text = text:gsub("[%+]","-p2p");
+		text = text:gsub("[/]" ,"-p3p");
 
-		LOG.std(nil,"debug","text",text);
+		--LOG.std(nil,"debug","text",text);
 
 		return text;
 	else
@@ -442,9 +445,9 @@ end
 
 function worlds.unbase64(text)
 	if(text) then
-		text = text:gsub("[--]","=");
-		text = text:gsub("[---]","+");
-		text = text:gsub("[----]","/");
+		text = text:gsub("[-p1p]","=");
+		text = text:gsub("[-p2p]","+");
+		text = text:gsub("[-p3p]","/");
 
 		return EncodingS.unbase64(text);
 	else

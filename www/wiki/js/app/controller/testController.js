@@ -4,12 +4,16 @@
 
 define(['app',
     'codemirror',
-    'text!html/test.html'], function (app,CodeMirror, htmlContent) {
-
+    'text!html/test.html',
+], function (app,CodeMirror, htmlContent) {
+    /*
+     app.controller("testController", ['$scope', function ($scope) {
+        jQuery(document).ready(function($) {
+            console.log("===========");
+        });
+    }]);
+     */
     app.registerController("testController", ['$scope', function ($scope) {
-        $scope.change = function () {
-            console.log($scope.switchStatus);
-        }
     }]);
     
     function domReady() {

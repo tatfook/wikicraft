@@ -13,11 +13,27 @@ local worlds_stats = inherit(models.abstract.multi_user_base, gettable("models.w
 worlds_stats.db_name = 'worlds_stats';
 
 function worlds_stats:ctor()
-	self:addfield("statsType","string",false,30);
+	-- stats type
+	self:addfield("statsType", "string", false, 30);
+
+	---------- following is query only, not saved to columns ----------------
+	-- Is self stats?
+	self:addfield("isMine", "string", false, 10);
 end
 
 function worlds_stats:get(params)
 	local err, query = self:validateQuery(params);
+
+	if(query.isMine == "true") then
+		self:ensureAuthenticated();
+		userid = self:getUserId();
+
+		if(userid) then
+			query.statsType = query.statsType .. userid;
+		else
+			return {error = -1,msg = "user is not exist"};
+		end
+	end
 
 	if(not query.statsType) then
 		return {error = -1, msg="statsType is not set"};

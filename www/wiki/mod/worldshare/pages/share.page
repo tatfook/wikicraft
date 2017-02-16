@@ -59,79 +59,52 @@
 		width: 150px;
 	}
 </style>
-<div ng-controller="shareController" class="box">
-	<div class="left pull-left">
-		<div class="inner">
-			<div class="icon">
-				<!-- <img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-weibo.jpg">
-				<img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-qzone.jpg">
-				<img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-qq.jpg">
-				<img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-tieba.jpg"> -->
-				<!-- JiaThis Button BEGIN -->
-				<div class="jiathis_style_32x32">
-				<a class="jiathis_button_qzone"></a>
-				<a class="jiathis_button_tsina"></a>
-				<a class="jiathis_button_tqq"></a>
-				<a class="jiathis_button_weixin"></a>
-				<a class="jiathis_button_renren"></a>
-				<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+
+<div class="container">
+	<div ng-controller="shareController" class="box">
+		<div class="left pull-left">
+			<div class="inner">
+				<div class="icon">
+					<!-- <img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-weibo.jpg">
+                    <img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-qzone.jpg">
+                    <img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-qq.jpg">
+                    <img src="/wp-content/pages/wiki/mod/worldshare/assets/share-icon-tieba.jpg"> -->
+					<!-- JiaThis Button BEGIN -->
+					<div class="jiathis_style_32x32">
+						<a class="jiathis_button_qzone"></a>
+						<a class="jiathis_button_tsina"></a>
+						<a class="jiathis_button_tqq"></a>
+						<a class="jiathis_button_weixin"></a>
+						<a class="jiathis_button_renren"></a>
+						<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+					</div>
+				</div>
+				<div class="copy">
+					<h3>将世界贴到博客或者论坛</h3>
+					<input type="text" class="share-url" ng-model="shareUrl" name="" />
+					<button ng-click="copy()" uib-tooltip="已复制" class="zclip" tooltip-trigger="none" tooltip-is-open="isCopy" tooltip-placement="bottom">复制</button>
 				</div>
 			</div>
-			<div class="copy">
-				<h3>将世界贴到博客或者论坛</h3>
-				<input type="text" class="share-url" ng-model="shareUrl" name="" />
-				<button ng-click="copy()" uib-tooltip="已复制" class="zclip" tooltip-trigger="none" tooltip-is-open="isCopy" tooltip-placement="bottom">复制</button>
-			</div>
 		</div>
-	</div>
-	<div class="right pull-right">
-		<h3>扫一扫分享到微信</h3>
-		<div class="qrcode">
-			<img ng-src="http://qr.topscan.com/api.php?text={{shareUrlencode}}">
+		<div class="right pull-right">
+			<h3>扫一扫分享到微信</h3>
+			<div class="qrcode">
+				<img ng-src="http://qr.topscan.com/api.php?text={{shareUrlencode}}">
+			</div>
 		</div>
 	</div>
 </div>
-<script src="/wp-content/pages/wiki/mod/worldshare/assets/jquery.zeroclipboard.min.js"></script>
+
+<script src="/wiki/js/lib/jquery/jquery.min.js"></script>
+<script src="/wiki/mod/worldshare/assets/jquery.zeroclipboard.min.js"></script>
 <script type="text/javascript">
-	var jiathis_config = {};
-	angular.module('MyApp')
-	.controller('shareController', function ($scope, $http, $location, $rootScope, $timeout) {
-		var request = $location.search();
+	config.registerPreloadModule(config.modPath + 'worldshare/controllers/shareController.js');
 
-		if(request.opusId){
-			$scope.opusId  = request.opusId;
-		}else{
-			history.go(-1);
-			return;
-		}
-
-		$scope.shareUrl = "http://" + $location.host() + ":8099/wiki/mod/worldshare/opus/#?opusId=" + request.opusId;
-		$scope.shareUrlencode = encodeURIComponent($scope.shareUrl);
-
-		$scope.isCopy = false;
-
-		$scope.copy = function(){
-			$scope.isCopy = true;
-
-			$timeout(function(){
-				$scope.isCopy = false;
-			},3000);
-		}
-
-		jQuery(document).ready(function($) {
-			$("body").on("copy", ".zclip", function(/* ClipboardEvent */ e) {
-				e.clipboardData.clearData();
-				e.clipboardData.setData("text/plain", $(".share-url").val());
-				e.preventDefault();
-			});
+	jQuery(document).ready(function ($) {
+		$("body").on("copy", ".zclip", function (e) {
+			e.clipboardData.clearData();
+			e.clipboardData.setData("text/plain", $(".share-url").val());
+			e.preventDefault();
 		});
-
-		jiathis_config.url      = $scope.shareUrl;
-		jiathis_config.summary  = "AAAAAA";
-		jiathis_config.title    = "BBBBBB";
-		jiathis_config.shortUrl = false;
-		jiathis_config.hideMore = true;
-
-		$("body").append('<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"><//script>');
 	});
 </script>

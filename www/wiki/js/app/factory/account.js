@@ -132,6 +132,10 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage, util) {
         }
 
         function init(user) {
+            if (!user) {
+                return;
+            }
+            account.send('onUserProfile', user);
             initGithub(user)
         }
 

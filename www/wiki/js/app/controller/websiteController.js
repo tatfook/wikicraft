@@ -21,7 +21,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/website.html'], funct
 
         // 编辑网站页面
         $scope.goEditWebsitePagePage = function (website) {
-            window.location.href="/wiki/editor";
+            window.location.href="/wiki/wikiEditor";
         }
 
         //  创建网站
