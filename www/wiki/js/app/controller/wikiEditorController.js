@@ -712,7 +712,7 @@ define([
                 $('.toolbar-page-remove').attr("disabled", true);
             } else {
                 editor.setValue(wp.content);
-                $('#btUrl').val(wp.url);
+                $('#btUrl').val(window.location.origin + wp.url);
                 $('.toolbar-page-remove').attr("disabled", false);
             }
         }

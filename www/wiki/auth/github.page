@@ -83,7 +83,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					db.user:insertOne({githubId = profile.id}, {
 						githubId = profile.id,
 						portrait = profile.avatar_url,
-						githubToken = profile.login,
+						githubName = profile.login,
 						githubToken = accessToken,
 						joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 					}, function(err, user) 
