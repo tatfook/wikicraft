@@ -68,8 +68,8 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 			end);
 		else
 			-- Step 3b. Create a new user account or return an existing one.
-			db.user:findOne({ githubId = profile.id }, function(err, existingUser)
-				if (existingUser) then
+			db.user:findOne({ githubId = profile.id }, function(err, user)
+				if (user) then
 					-- refresh access token
 					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
 						db.user:updateOne({_id = user._id}, {githubToken=accessToken, githubName=profile.login});
