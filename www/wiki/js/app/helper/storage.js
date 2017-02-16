@@ -29,7 +29,13 @@ define(['angular'], function (angular) {
     }
 
     storage.localStorageGetItem = function (key) {
-        return angular.fromJson(storage.localStorage.getItem(key));
+        try {
+            return angular.fromJson(storage.localStorage.getItem(key));
+        } catch (e) {
+            console.log(e);
+            return undefined;
+        }
+        //return angular.fromJson(storage.localStorage.getItem(key));
     }
 
     storage.localStorageRemoveItem = function (key) {
@@ -45,7 +51,13 @@ define(['angular'], function (angular) {
     }
 
     storage.sessionStorageGetItem = function (key) {
-        return angular.fromJson(storage.sessionStorage.getItem(key));
+        try {
+            return angular.fromJson(storage.sessionStorage.getItem(key));
+        } catch (e) {
+            console.log(e);
+            return undefined;
+        }
+        //return angular.fromJson(storage.sessionStorage.getItem(key));
     }
 
     storage.sessionStorageRemoveItem = function (key) {
