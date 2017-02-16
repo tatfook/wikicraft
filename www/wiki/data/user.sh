@@ -2,9 +2,9 @@
 
 serverAddr="http://localhost:8099"
 
-curl -H "Content-Type: application/json" -X POST  --data '{"username":"xiaoyao", "password":"wuxiangan", "email":"765485868@qq.com"}'  "${serverAddr}/api/wiki/models/user/register"
+curl -H "Content-Type: application/json" -X POST  --data '{"username":"lixizhi", "password":"lixizhi", "email":"lixizhi@yeah.net"}'  "${serverAddr}/api/wiki/models/user/register"
 
-curl -H "Content-Type: application/json" -X POST  --data '{"username":"xiaoyao1", "password":"wuxiangan", "email":"111111111@qq.com"}'  "${serverAddr}/api/wiki/models/user/register"
+curl -H "Content-Type: application/json" -X POST  --data '{"username":"zhanglei", "password":"zhanglei", "email":"zhanglei@yeah.net"}'  "${serverAddr}/api/wiki/models/user/register"
 
 curl -H "Content-Type: application/json" -X POST  --data '{"username":"xiaoyao2", "password":"wuxiangan", "email":"111111112@qq.com"}'  "${serverAddr}/api/wiki/models/user/register"
 
