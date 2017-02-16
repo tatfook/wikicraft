@@ -80,6 +80,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					response:send({ token = token, userInfo=user });
 				end
 				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
+				--[[
 					db.user:insertOne({githubId = profile.id}, {
 						githubId = profile.id,
 						portrait = profile.avatar_url,
@@ -90,6 +91,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 						local token = createJWT(user);
 						response:send({ token = token, userInfo=user });
 					end);
+				]]
 			end);
 		end
 	end);
