@@ -104,7 +104,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/userCenter.html'], fu
 
         // data source
         $scope.clickMyDataSource = function () {
-            $scope.githubDS = ($scope.user.github && $scope.user.github) > 0 ? true : false;
+            $scope.githubDS = ($scope.user.githubId && $scope.user.githubId) > 0 ? true : false;
         }
         $scope.githubDSChange = function () {
             if ($scope.githubDS) {
