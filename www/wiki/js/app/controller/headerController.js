@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/util'], function (app, util) {
+define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
     app.controller('headerController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         console.log("headerController");
 
@@ -14,34 +14,34 @@ define(['app', 'helper/util'], function (app, util) {
         $scope.isLogin = Account.isAuthenticated();
         $scope.user = Account.getUser();
 
+        // 页面编辑页面
+        $scope.goWikiEditorPage = function() {
+            storage.sessionStorageSetItem("urlObj", util.parseUrl());
+            util.go("wikiEditor")
+        }
+
         $scope.goLoginPage = function () {
-            window.location.href = "/wiki/login";
-            //window.location.href=config.frontEndRouteUrl + "#/login";
+            util.go("login");
         };
 
         $scope.goRegisterPage = function () {
-            window.location.href = "/wiki/home";
-            //window.location.href=config.frontEndRouteUrl + "#/home";
+            util.go("home");
         };
 
         $scope.goHomePage = function () {
-            window.location.href = "/wiki/home";
-            //window.location.href=config.frontEndRouteUrl + "#/home";
+            util.go("home");
         };
 
         $scope.goUserCenterPage = function () {
-            window.location.href = "/wiki/userCenter";
-            //window.location.href=config.frontEndRouteUrl + "#/userCenter";
+            util.go("userCenter");
         };
 
         $scope.goWebsitePage = function () {
-            window.location.href = "/wiki/website";
-            //window.location.href=config.frontEndRouteUrl + "#/website";
+            util.go("website");
         };
 
         $scope.goGitVersionPage = function () {
-            window.location.href = "/wiki/gitVersion";
-            //window.location.href=config.frontEndRouteUrl + "#/gitVersion";
+            util.go("gitVersion");
         };
 
         $scope.goPersonalPage = function () {

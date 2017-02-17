@@ -8,6 +8,7 @@ define(['app', 'helper/util'], function (app, util) {
             $scope.showWorksList = function() {
                 $('#worksListNavId').toggle();
             }
+            
             // 去网站管理页
             $scope.goWebsiteMangerPage = function() {
                 window.location.href= config.frontEndRouteUrl + '#/website';
@@ -20,6 +21,7 @@ define(['app', 'helper/util'], function (app, util) {
                     window.location.href = "/wiki/wikiEditor";
                 }
             }
+
             // 去站点
             $scope.goWebsitePage = function (websiteName) {
                 util.goUserSite('/' + websiteName);

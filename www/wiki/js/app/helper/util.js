@@ -218,10 +218,20 @@ define(['jquery'], function ($) {
 
     util.goUserSite = function (url) {
         if (config.localEnv) {
-            window.location.href = config.frontEndRouteUrl + '?' + url;
+            window.open("http://localhost:8099" + url);
+            //window.location.href = "http://localhost:8099" + url;
         } else {
             window.location.href = url;
         }
+    }
+
+    util.go = function (pageName) {
+        if (config.localEnv) {
+            window.location.href = config.frontEndRouteUrl + '#/' + pageName;
+        } else {
+            window.location.href = "/wiki/" + pageName;
+        }
+
     }
 
     return util;

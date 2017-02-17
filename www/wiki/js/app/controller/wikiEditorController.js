@@ -7,17 +7,26 @@ define([
     'codemirror',
     'helper/markdownwiki',
     'helper/util',
+    'helper/storage',
     'text!html/wikiEditor.html',
+    'codemirror/addon/search/search',
+    'codemirror/addon/dialog/dialog',
+    'codemirror/addon/edit/continuelist',
+    'codemirror/addon/search/searchcursor',
+    'codemirror/addon/search/matchesonscrollbar',
+    'codemirror/addon/search/jump-to-line',
+    'codemirror/addon/scroll/annotatescrollbar',
+    'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, CodeMirror, markdownwiki, util, htmlContent) {
+], function (app, CodeMirror, markdownwiki, util, storage, htmlContent) {
     //console.log("wiki editor controller!!!");
     var editor;
 
-    function initEditor() {
+    function initEditor(Message) {
         console.log("initEditor");
         if (editor || (!document.getElementById("source"))) {
             console.log("init editor failed");
-            return ;
+            return;
         }
         editor = CodeMirror.fromTextArea(document.getElementById("source"), {
             mode: 'markdown',
@@ -27,6 +36,8 @@ define([
             viewportMargin: Infinity,
             extraKeys: {
                 "Alt-F": "findPersistent",
+                "Ctrl-F": "find",
+                "Ctrl-R": "replace",
                 "F11": function (cm) {
                     cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                 },
@@ -123,7 +134,7 @@ define([
         var mdwiki = markdownwiki({container_name: '.result-html'});
         mdwiki.bindToCodeMirrorEditor(editor);
 
-        editor.setSize('auto','600px');
+        editor.setSize('auto', '600px');
         editor.focus();
 
         var showTreeview = true;
@@ -302,10 +313,12 @@ define([
             }
 
             if (success) {
-                alert("网址已成功拷贝到剪切板!");
+                //alert("网址已成功拷贝到剪切板!");
+                Message.info("网址已成功拷贝到剪切板!");
             }
             else {
-                alert("您的浏览器不支持访问剪切板!");
+                //alert("您的浏览器不支持访问剪切板!");
+                Message.info("您的浏览器不支持访问剪切板!");
             }
         }
 
@@ -441,10 +454,9 @@ define([
     }
 
 
-
     function getTreeData(username, websitePages, isDir) {
-        var pageList = websitePages ||[];
-        var pageTree = {url:'/' + username , children:{}};
+        var pageList = websitePages || [];
+        var pageTree = {url: '/' + username, children: {}};
         var treeData = [];
         for (var i = 0; i < pageList.length; i++) {
             var page = pageList[i];
@@ -452,13 +464,20 @@ define([
             url = url.trim();
             var paths = page.url.split('/');
             var treeNode = pageTree;
-            var length = isDir ? paths.length - 1 :  paths.length;
+            var length = isDir ? paths.length - 1 : paths.length;
             for (var j = 2; j < length; j++) {
                 var path = paths[j];
-                if (!path){
+                if (!path) {
                     continue;
                 }
-                subTreeNode = treeNode.children[path] || {name:path, children:{}, url: treeNode.url + '/' + path, siteId:page.websiteId, siteName: page.websiteName, pageId:page._id};
+                subTreeNode = treeNode.children[path] || {
+                        name: path,
+                        children: {},
+                        url: treeNode.url + '/' + path,
+                        siteId: page.websiteId,
+                        siteName: page.websiteName,
+                        pageId: page._id
+                    };
                 treeNode.children[paths[j]] = subTreeNode;
                 treeNode.isLeaf = false;
                 if (j == paths.length - 1) {
@@ -481,7 +500,7 @@ define([
             if (!pageNode.isLeaf) {
                 treeNode.nodes = [];
                 for (key in pageNode.children) {
-                    treeNode.nodes.push(treeDataFn(undefined,pageNode.children[key]));
+                    treeNode.nodes.push(treeDataFn(undefined, pageNode.children[key]));
                 }
             }
 
@@ -492,14 +511,14 @@ define([
             treeData.push(treeDataFn(undefined, pageTree.children[key]));
         }
 
-        for (var i = 0; i < treeData.length; i++){
+        for (var i = 0; i < treeData.length; i++) {
             treeData[i].icon = 'fa fa-globe';
         }
         return treeData;
     }
 
 
-    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance,github) {
+    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
@@ -638,822 +657,845 @@ define([
 
         $scope.$watch('$viewContentLoaded', init);
     }]);
+
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message',
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message) {
-        console.log("wikiEditorController");
-        $scope.websites = [];           //站点列表
-        $scope.websitePages = [];       //页面列表
+            console.log("wikiEditorController");
+            $scope.websites = [];           //站点列表
+            $scope.websitePages = [];       //页面列表
 
-        $scope.website = {};            //当前选中站点
-        $scope.websitePage = {};        //当前选中页面
+            $scope.website = {};            //当前选中站点
+            $scope.websitePage = {};        //当前选中页面
 
-        $scope.githubSource = {};
+            $scope.githubSource = {};
 
-        $scope.progressbar = {
-            show: false,
-            percent: 0
-        };
+            $scope.progressbar = {
+                show: false,
+                percent: 0
+            };
 
-        function isEmptyObject(obj) {
-            for (var key in obj) {
-                return false;
-            }
-            return true;
-        }
-
-
-
-
-        //初始化，读取用户站点列表及页面列表
-        function init() {
-            if (!Account.isAuthenticated()) {
-                return;
-            }
-
-            var user = Account.getUser();
-/*
-            github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'},'wxaxiaoyao');
-            $scope.githubSource = github;
-*/
-            if (user.githubToken) {
-                github.init(user.githubToken, user.githubName);
-                $scope.githubSource = github;
-            }
-
-            // console.log(config.apiUrlPrefix);
-            // 获取用户站点列表
-            $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
-                $scope.websites = response.data.data;
-                util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId',{userId:Account.getUser()._id}, function (data) {
-                    $scope.websitePages = data || [];
-                    initRoot();
-                    initTree();
-                });
-
-            }).catch(function (response) {
-                console.log(response.data);
-            });
-
-            return;
-        }
-
-        function progressing(step) {
-            if ($scope.progressbar.percent == 0) {
-                $scope.progressbar.show = true;
-            }
-            $scope.progressbar.percent = $scope.progressbar.percent + step;
-            $(".progress-bar").css("width", $scope.progressbar.percent + "%");
-        }
-
-        //设置全局变量
-        function initRoot() {
-            $rootScope.websites = $scope.websites;
-            $rootScope.websitePages = $scope.websitePages;
-
-            if (!isEmptyObject($rootScope.website)) $scope.website = $rootScope.website;                    //当前选中站点
-            if (!isEmptyObject($rootScope.websitePage)) {
-                $scope.websitePage = $rootScope.websitePage;
-                openPage();
-            }
-        }
-
-        function getWebsite(id) {
-            for (var i = 0; i < $scope.websites.length; i++) {
-                ws = $scope.websites[i];
-                if (ws._id == id) {
-                    return ws;
+            function isEmptyObject(obj) {
+                for (var key in obj) {
+                    return false;
                 }
+                return true;
             }
-            return null;
-        }
 
-        function getWebsitePage(id) {
-            //console.log($scope.websitePages);
-            for (var j = 0; j < $scope.websitePages.length; j++) {
-                wp = $scope.websitePages[j];
-                if (wp._id == id) {
-                    return wp;
+
+            //初始化，读取用户站点列表及页面列表
+            function init() {
+                if (!Account.isAuthenticated()) {
+                    return;
                 }
-            }
-            return null;
-        }
 
-        function openPage() {
-            var wp = $scope.websitePage;
-            if (isEmptyObject(wp)) {
-                $scope.websitePage = {};
-                delete $rootScope.websitePage;
-                editor.setValue('');
-                $('#btUrl').val('');
-                $('.toolbar-page-remove').attr("disabled", true);
-            } else {
-                editor.setValue(wp.content);
-                $('#btUrl').val(window.location.origin + wp.url);
-                $('.toolbar-page-remove').attr("disabled", false);
-            }
-        }
+                initEditor(Message);
 
-        //初始化目录树  data:  $.parseJSON(getTree()),
-        function initTree() {
-            //console.log('@initTree');
-            $('#treeview').treeview({
-                color: "#428bca",
-                showBorder: false,
-                enableLinks: true,
-                data: getTreeData($scope.user.username, $scope.websitePages, false),
-                onNodeSelected: function (event, data) {
-                    console.log(data);
-                    //return;
-                    $scope.website = getWebsite(data.pageNode.siteId);
-                    $scope.websitePage = getWebsitePage(data.pageNode.pageId);
-                    $rootScope.websitePage = $scope.websitePage;
-                    $rootScope.website = $scope.website;
-                    $rootScope.pageinfo = $scope.websitePage; // wxa add 站点信息全局化，默认提供wiki mod使用
-                    $rootScope.siteinfo = $scope.website;
-                    if (data.pageNode.isLeaf) {
-                        openPage();
-                    }
-                    editor.focus();
+                var user = $scope.user;
+                var urlObj = storage.sessionStorageGetItem('urlObj');
+                var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
+                if (urlObj.username == $scope.user.username) {
+                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
                 }
-            });
-        }
-
-        //命令处理函数
-        function command() {
-            var strCmd = $location.$$path;
-            var arrCmd = strCmd.split('_');
-            var cmd = '';
-            for (var i = 0; i < arrCmd.length; i++) {
-                cmd = arrCmd[i];
-                if (cmd.substr(0, 1) == '&') {
-                    switch (cmd.substring(1)) {
-                        case 'new':
-                            console.log('command:new');
-                            break;
-                        case 'ws':
-                            console.log('command:ws');
-                            break;
-                        default:
-                            console.log('command:undefined!' + cmd);
-                            break;
-                    }
+                /*
+                 github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'},'wxaxiaoyao');
+                 $scope.githubSource = github;
+                 */
+                if (user.githubToken) {
+                    github.init(user.githubToken, user.githubName);
+                    $scope.githubSource = github;
                 }
-            }
-            return;
-        }
 
-        $scope.cmd_newpage = function () {
-            $uibModal.open({
-                //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                templateUrl: config.htmlPath + "editorNewPage.html",
-                controller: "pageCtrl",
-            }).result.then(function (provider) {
-                //console.log(provider);
-                if (provider == "page") {
-                    $scope.websitePages.push($rootScope.websitePage);
-                    $scope.websitePage = $rootScope.websitePage;
-                    $scope.website = $rootScope.website;
+                // console.log(config.apiUrlPrefix);
+                // 获取用户站点列表
+                $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
+                    $scope.websites = response.data.data;
+                    util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: Account.getUser()._id}, function (data) {
+                        $scope.websitePages = data || [];
 
-                    initTree();
-                    openPage();
-
-                    var selectableNodes = $('#treeview').treeview('search', [$scope.websitePage.name, {
-                        ignoreCase: false,
-                        exactMatch: true
-                    }]);
-                    $.each(selectableNodes, function (index, item) {
-                        if (item.tags[0] == $scope.websitePage.url) {
-                            $('#treeview').treeview('selectNode', [item, {silent: true}]);
+                        for (var i = 0; i < $scope.websitePages.length; i++) {
+                            if (url == $scope.websitePages[i].url) {
+                                $scope.website = getWebsite($scope.websitePages[i].websiteId);
+                                $scope.websitePage = $scope.websitePages[i];
+                                break;
+                            }
                         }
+                        initTree();
+                        initRoot();
                     });
-                    $('#treeview').treeview('clearSearch');
 
-                    //下面是addNode实现方式
-                    //$websiteNode = $('#treeview').treeview("search",[ $scope.website.name, {exactMatch: true }]);
-                    //$('#treeview').treeview("addNode", [$websiteNode[0].nodeId, { node:{
-                    //    text:$scope.websitePage.name,
-                    //    icon:"fa fa-file-o",
-                    //    selectedIcon:"fa fa-file-text-o",
-                    //    tags:["newpage",$scope.websitePage._id,$scope.websitePage.websiteId]
-                    //}}]);
-                    //$rootScope.websiteNode = $scope.website;
-                    //$rootScope.websitePage = response.data;
-                }
-            }, function (text, error) {
-                console.log('text:' + text);
-                console.log('error:' + error);
-                return;
-            });
-        }
-
-        //保存页面
-        $scope.cmd_savepage = function () {
-            var content = editor.getValue();
-            if (!isEmptyObject($scope.websitePage)) {//修改
-                $scope.websitePage.content = content;
-                $http.put(config.apiUrlPrefix + 'website_pages', $scope.websitePage).then(function (response) {
-                    //console.log(response.data);
-                    if (!isEmptyObject($scope.githubSource)) {
-                        var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
-                        $scope.githubSource.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
-                            //alert('文件已保存到服务器及Github');
-                            Message.info("文件已保存到服务器及Github");
-                        });
-                    } else {
-                        //alert('文件已保存到服务器');
-                        Message.info("文件已保存到服务器");
-                    }
                 }).catch(function (response) {
                     console.log(response.data);
                 });
-            } else {// 新增
-                console.log('save temp file');
+
+                return;
             }
-        }
 
-        //撤销
-        $scope.cmd_undo = function () {
-            editor.undo();
-        }
+            $scope.$watch('$viewContentLoaded', init);
 
-        //重做
-        $scope.cmd_redo = function () {
-            editor.redo();
-        }
 
-        //查找
-        $scope.cmd_find = function () {
-            CodeMirror.commands.findPersistent(editor);
-        }
-
-        //替换
-        $scope.cmd_replace = function () {
-            CodeMirror.commands.replace(editor);
-        }
-
-        //标题    H1：Hn
-        $scope.cmd_headline = function (level) {
-            var preChar = '';
-            while (level > 0) {
-                preChar += '#';
-                level--;
+            function progressing(step) {
+                if ($scope.progressbar.percent == 0) {
+                    $scope.progressbar.show = true;
+                }
+                $scope.progressbar.percent = $scope.progressbar.percent + step;
+                $(".progress-bar").css("width", $scope.progressbar.percent + "%");
             }
-            preChar += ' ';
 
-            var cursor = editor.getCursor();
-            var content = editor.getLine(cursor.line);
+            //设置全局变量
+            function initRoot() {
+                $rootScope.websites = $scope.websites;
+                $rootScope.websitePages = $scope.websitePages;
+                $rootScope.website = $scope.website;
+                $rootScope.websitePage = $scope.websitePage;
 
-            var iSpace = 0;
-            var chrCmp = '';
-            for (var i = 0; i < content.length; i++) {
-                chrCmp = content.substr(i, 1);
-                if (chrCmp == '#') {
-                    continue;
-                } else {
-                    if (chrCmp == ' ') {
-                        iSpace = i + 1;
-                    }
-                    break;
+                if (!isEmptyObject($rootScope.websitePage)) {
+                    openPage();
                 }
             }
-            editor.replaceRange(preChar, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, iSpace));
-            return;
-        }
 
-        function font_style(char) {
-            if (editor.somethingSelected()) {
-                var sel = editor.getSelection();
-                var desStr = char + sel.replace(/\n/g, char + "\n" + char) + char;
-                editor.replaceSelection(desStr);
-            } else {
+            function getWebsite(id) {
+                for (var i = 0; i < $scope.websites.length; i++) {
+                    ws = $scope.websites[i];
+                    if (ws._id == id) {
+                        return ws;
+                    }
+                }
+                return null;
+            }
+
+            function getWebsitePage(id) {
+                //console.log($scope.websitePages);
+                for (var j = 0; j < $scope.websitePages.length; j++) {
+                    wp = $scope.websitePages[j];
+                    if (wp._id == id) {
+                        return wp;
+                    }
+                }
+                return null;
+            }
+
+            function openPage(isNodeSelected) {
+                $rootScope.siteinfo = $rootScope.website;
+                $rootScope.pageinfo = $rootScope.websitePage;
+
+                var wp = $scope.websitePage;
+                if (isEmptyObject(wp)) {
+                    $scope.websitePage = {};
+                    delete $rootScope.websitePage;
+                    editor.setValue('');
+                    $('#btUrl').val('');
+                    $('.toolbar-page-remove').attr("disabled", true);
+                    return ;
+                }
+
+                editor.setValue(wp.content);
+                $('#btUrl').val(window.location.origin + wp.url);
+                $('.toolbar-page-remove').attr("disabled", false);
+
+                if (isNodeSelected) {
+                    return ;
+                }
+
+                var selectableNodes = $('#treeview').treeview('search', [$scope.websitePage.name, {
+                    ignoreCase: false,
+                    exactMatch: true
+                }]);
+
+                $.each(selectableNodes, function (index, item) {
+                    if (item.tags[0] == $scope.websitePage.url) {
+                        $('#treeview').treeview('selectNode', [item, {silent: true}]);
+                    }
+                });
+
+                $('#treeview').treeview('clearSearch');
+            }
+
+            //初始化目录树  data:  $.parseJSON(getTree()),
+            function initTree() {
+                //console.log('@initTree');
+                $('#treeview').treeview({
+                    color: "#428bca",
+                    showBorder: false,
+                    enableLinks: true,
+                    data: getTreeData($scope.user.username, $scope.websitePages, false),
+                    onNodeSelected: function (event, data) {
+                        console.log(data);
+                        //return;
+                        $scope.website = getWebsite(data.pageNode.siteId);
+                        $scope.websitePage = getWebsitePage(data.pageNode.pageId);
+                        $rootScope.websitePage = $scope.websitePage;
+                        $rootScope.website = $scope.website;
+                        if (data.pageNode.isLeaf) {
+                            openPage(true);
+                        }
+                        editor.focus();
+                    }
+                });
+            }
+
+            //命令处理函数
+            function command() {
+                var strCmd = $location.$$path;
+                var arrCmd = strCmd.split('_');
+                var cmd = '';
+                for (var i = 0; i < arrCmd.length; i++) {
+                    cmd = arrCmd[i];
+                    if (cmd.substr(0, 1) == '&') {
+                        switch (cmd.substring(1)) {
+                            case 'new':
+                                console.log('command:new');
+                                break;
+                            case 'ws':
+                                console.log('command:ws');
+                                break;
+                            default:
+                                console.log('command:undefined!' + cmd);
+                                break;
+                        }
+                    }
+                }
+                return;
+            }
+
+            $scope.cmd_newpage = function () {
+                $uibModal.open({
+                    //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                    templateUrl: config.htmlPath + "editorNewPage.html",
+                    controller: "pageCtrl",
+                }).result.then(function (provider) {
+                    //console.log(provider);
+                    if (provider == "page") {
+                        $scope.websitePages.push($rootScope.websitePage);
+                        $scope.websitePage = $rootScope.websitePage;
+                        $scope.website = $rootScope.website;
+
+                        initTree();
+                        openPage(false);
+
+
+
+                        //下面是addNode实现方式
+                        //$websiteNode = $('#treeview').treeview("search",[ $scope.website.name, {exactMatch: true }]);
+                        //$('#treeview').treeview("addNode", [$websiteNode[0].nodeId, { node:{
+                        //    text:$scope.websitePage.name,
+                        //    icon:"fa fa-file-o",
+                        //    selectedIcon:"fa fa-file-text-o",
+                        //    tags:["newpage",$scope.websitePage._id,$scope.websitePage.websiteId]
+                        //}}]);
+                        //$rootScope.websiteNode = $scope.website;
+                        //$rootScope.websitePage = response.data;
+                    }
+                }, function (text, error) {
+                    console.log('text:' + text);
+                    console.log('error:' + error);
+                    return;
+                });
+            }
+
+            //保存页面
+            $scope.cmd_savepage = function () {
+                var content = editor.getValue();
+                if (!isEmptyObject($scope.websitePage)) {//修改
+                    $scope.websitePage.content = content;
+                    $http.put(config.apiUrlPrefix + 'website_pages', $scope.websitePage).then(function (response) {
+                        //console.log(response.data);
+                        if (!isEmptyObject($scope.githubSource)) {
+                            var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
+                            $scope.githubSource.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
+                                //alert('文件已保存到服务器及Github');
+                                Message.info("文件已保存到服务器及Github");
+                            });
+                        } else {
+                            //alert('文件已保存到服务器');
+                            Message.info("文件已保存到服务器");
+                        }
+                    }).catch(function (response) {
+                        console.log(response.data);
+                    });
+                } else {// 新增
+                    console.log('save temp file');
+                }
+            }
+
+            //撤销
+            $scope.cmd_undo = function () {
+                editor.undo();
+            }
+
+            //重做
+            $scope.cmd_redo = function () {
+                editor.redo();
+            }
+
+            //查找
+            $scope.cmd_find = function () {
+                editor.execCommand("find");
+                CodeMirror.commands.find(editor);
+            }
+
+            //替换
+            $scope.cmd_replace = function () {
+                editor.execCommand("replace");
+                CodeMirror.commands.replace(editor);
+            }
+
+            //标题    H1：Hn
+            $scope.cmd_headline = function (level) {
+                var preChar = '';
+                while (level > 0) {
+                    preChar += '#';
+                    level--;
+                }
+                preChar += ' ';
+
                 var cursor = editor.getCursor();
                 var content = editor.getLine(cursor.line);
 
-                editor.replaceRange(char, CodeMirror.Pos(cursor.line, content.length), CodeMirror.Pos(cursor.line, content.length));
-                editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
-
-                editor.setCursor(CodeMirror.Pos(cursor.line, content.length + char.length));
-            }
-            editor.focus();
-        }
-
-        //加粗
-        $scope.cmd_bold = function () {
-            font_style('**');
-        }
-
-        //斜体
-        $scope.cmd_italic = function () {
-            font_style('*');
-        }
-
-        //下划线
-        $scope.cmd_underline = function () {
-        }
-
-        //下划线
-        $scope.cmd_strikethrough = function () {
-            font_style('~~');
-        }
-
-        //上标
-        $scope.cmd_superscript = function () {
-            font_style('^');
-        }
-
-        //下标
-        $scope.cmd_subscript = function () {
-            font_style('~');
-        }
-
-        //有序列表
-        $scope.cmd_listol = function () {
-            if (editor.somethingSelected()) {
-                var sel = editor.getSelection();
-                var srcStr = '~ol~' + sel.replace(/\n/g, "\n~ol~");
-
-                var id = 1;
-                var desStr = srcStr.replace("~ol~", id + '. ');
-                while (desStr.indexOf("~ol~") >= 0) {
-                    id++;
-                    desStr = desStr.replace("~ol~", id + '. ');
-                }
-
-                editor.replaceSelection(desStr);
-            } else {
-                var cursor = editor.getCursor();
-                editor.replaceRange('1. ', CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
-            }
-            editor.focus();
-        }
-
-        //行首关键字
-        function hol_keyword(char) {
-            if (editor.somethingSelected()) {
-                var sel = editor.getSelection();
-                var desStr = char + sel.replace(/\n/g, "\n" + char);
-                editor.replaceSelection(desStr);
-            } else {
-                var cursor = editor.getCursor();
-                editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
-            }
-            editor.focus();
-        }
-
-        //整行替换
-        function line_keyword(char, ch) {
-            var cursor = editor.getCursor();
-            var content = editor.getLine(cursor.line);
-            editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, content.length));
-            if (!ch) {
-                ch = 0;
-            }
-            editor.setCursor(CodeMirror.Pos(cursor.line, ch));
-            editor.focus();
-        }
-
-        //无序列表
-        $scope.cmd_listul = function () {
-            hol_keyword('+ ');
-        }
-
-        //引用内容
-        $scope.cmd_blockqote = function () {
-            hol_keyword('> ');
-        }
-
-        //表格
-        $scope.cmd_tabel = function () {
-            $uibModal.open({
-                templateUrl: config.htmlPath + "editorInsertTable.html",
-                controller: "tableCtrl",
-            }).result.then(function (provider) {
-                //console.log(provider);
-                if (provider == "table") {
-                    var table = $rootScope.table;
-                    //console.log(table);
-                    //| 0:0 | 1:0 |
-                    //| -- | -- |
-                    //| 0:2 | 1:2 |
-                    var wiki = '';
-                    for (var i = 0; i < table.rows; i++) {
-                        wiki += '\n';
-                        if (i == 1) {
-                            for (var j = 0; j < table.cols; j++) {
-                                switch (table.alignment) {
-                                    case 1:
-                                        wiki += '|:-- ';
-                                        break;
-                                    case 2:
-                                        wiki += '|:--:';
-                                        break;
-                                    case 3:
-                                        wiki += '| --:';
-                                        break;
-                                    default:
-                                        wiki += '| -- ';
-                                        break;
-                                }
-                            }
-                            wiki += '|\n';
+                var iSpace = 0;
+                var chrCmp = '';
+                for (var i = 0; i < content.length; i++) {
+                    chrCmp = content.substr(i, 1);
+                    if (chrCmp == '#') {
+                        continue;
+                    } else {
+                        if (chrCmp == ' ') {
+                            iSpace = i + 1;
                         }
-
-                        for (var j = 0; j < table.cols; j++) {
-                            wiki += '| ' + j + ':' + i + ' ';
-                        }
-                        wiki += '|';
+                        break;
                     }
-                    wiki += '\n';
+                }
+                editor.replaceRange(preChar, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, iSpace));
+                return;
+            }
 
+            function font_style(char) {
+                if (editor.somethingSelected()) {
+                    var sel = editor.getSelection();
+                    var desStr = char + sel.replace(/\n/g, char + "\n" + char) + char;
+                    editor.replaceSelection(desStr);
+                } else {
                     var cursor = editor.getCursor();
                     var content = editor.getLine(cursor.line);
-                    if (content.length > 0) {
-                        wiki += '\n';
-                    }
 
-                    editor.replaceRange(wiki, CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
-                    editor.setCursor(CodeMirror.Pos(cursor.line + 1, 0));
-                    editor.focus();
+                    editor.replaceRange(char, CodeMirror.Pos(cursor.line, content.length), CodeMirror.Pos(cursor.line, content.length));
+                    editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
+
+                    editor.setCursor(CodeMirror.Pos(cursor.line, content.length + char.length));
                 }
-            }, function (text, error) {
-                console.log('text:' + text);
-                console.log('error:' + error);
-                return;
-            });
-        }
-
-        //水平分割线
-        $scope.cmd_horizontal = function () {
-            var cursor = editor.getCursor();
-            editor.replaceRange('---\n', CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
-            editor.setCursor(CodeMirror.Pos(cursor.line + 1, 3));
-            editor.focus();
-        }
-
-        //链接
-        $scope.cmd_link = function () {
-            $uibModal.open({
-                templateUrl: config.htmlPath + "editorInsertLink.html",
-                controller: "linkCtrl",
-            }).result.then(function (provider) {
-                if (provider == "link") {
-                    var link = $rootScope.link;
-                    var wiki = '';
-                    if (editor.somethingSelected()) {
-                        wiki += '[' + editor.getSelection() + ']';
-                    } else {
-                        wiki += '[]';
-                    }
-                    wiki += '(' + link.url + ')';
-                    editor.replaceSelection(wiki);
-
-                    //var wiki = '[' + link.txt + '](' + link.url + ')\n';
-                    //var cursor = editor.getCursor();
-                    //var content = editor.getLine(cursor.line);
-                    //if(content.length>0){
-                    //    editor.replaceRange(wiki,CodeMirror.Pos(cursor.line+1,0),CodeMirror.Pos(cursor.line+1,0));
-                    //    editor.setCursor(CodeMirror.Pos(cursor.line+1,1));
-                    //}else{
-                    //    editor.replaceRange(wiki,CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,0));
-                    //    editor.setCursor(CodeMirror.Pos(cursor.line,1));
-                    //}
-                    editor.focus();
-                }
-            }, function (text, error) {
-                console.log('text:' + text);
-                console.log('error:' + error);
-                return;
-            });
-        }
-
-        //图片
-        $scope.cmd_image = function () {
-            $uibModal.open({
-                templateUrl: config.htmlPath + "editorInsertImg.html",
-                controller: "imgCtrl",
-            }).result.then(function (provider) {
-                console.log(provider);
-                if (provider == "img") {
-                    var url = $rootScope.img.url;
-                    var txt = $rootScope.img.txt;
-                    var dat = $rootScope.img.dat;
-                    var nam = $rootScope.img.nam;
-
-                    var wiki = '';
-                    if (txt) {
-                        wiki += '![' + txt + ']';
-                    } else if (editor.somethingSelected()) {
-                        wiki += '![' + editor.getSelection() + ']';
-                    } else {
-                        wiki += '![]';
-                    }
-
-                    if (url) {
-                        wiki += '(' + url + ')';
-                    } else {
-                        wiki += '(' + dat + ')';
-
-                    }
-
-                    editor.replaceSelection(wiki);
-                    editor.focus();
-                }
-            }, function (text, error) {
-                console.log('text:' + text);
-                console.log('error:' + error);
-                return;
-            });
-        }
-
-        /**
-         * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
-         * @param dataURI
-         * @returns {Blob}
-         */
-        function dataURItoBlob(dataURI) {
-            var byteString = atob(dataURI.split(',')[1]);
-            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-            var ab = new ArrayBuffer(byteString.length);
-            var ia = new Uint8Array(ab);
-            for (var i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            return new Blob([ab], {type: mimeString});
-        }
-
-        //图片上传
-        $scope.cmd_image_upload = function (fileObj, cb) {
-            if (!/image\/\w+/.test(fileObj.type)) {
-                alert("这不是图片！");
-                return false;
+                editor.focus();
             }
 
-            if (isEmptyObject($scope.githubSource)) {
-                alert('github账号尚未登录，图片无法上传');
-            } else {
-                //支持chrome IE10
-                if (window.FileReader) {
-                    var fileReader = new FileReader();
-                    fileReader.onloadstart = function () {
-                        console.log("onloadstart");
-                        line_keyword('![](uploading...0/' + fileObj.size + ')', 2);
-                    };
-                    fileReader.onprogress = function (p) {
-                        console.log("onprogress");
-                        line_keyword('![](uploading...' + p.loaded + '/' + fileObj.size + ')', 2);
-                    };
-                    fileReader.onload = function () {
-                        console.log("load complete");
-                        line_keyword('![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
+            //加粗
+            $scope.cmd_bold = function () {
+                font_style('**');
+            }
 
-                        $scope.githubSource.uploadImage(undefined, fileReader.result, function (img_url) {
-                            //console.log(result);
-                            line_keyword('![](' + img_url + ')', 2);
-                            if (cb) {
-                                cb(img_url);
-                            }
-                        });
+            //斜体
+            $scope.cmd_italic = function () {
+                font_style('*');
+            }
+
+            //下划线
+            $scope.cmd_underline = function () {
+            }
+
+            //下划线
+            $scope.cmd_strikethrough = function () {
+                font_style('~~');
+            }
+
+            //上标
+            $scope.cmd_superscript = function () {
+                font_style('^');
+            }
+
+            //下标
+            $scope.cmd_subscript = function () {
+                font_style('~');
+            }
+
+            //有序列表
+            $scope.cmd_listol = function () {
+                if (editor.somethingSelected()) {
+                    var sel = editor.getSelection();
+                    var srcStr = '~ol~' + sel.replace(/\n/g, "\n~ol~");
+
+                    var id = 1;
+                    var desStr = srcStr.replace("~ol~", id + '. ');
+                    while (desStr.indexOf("~ol~") >= 0) {
+                        id++;
+                        desStr = desStr.replace("~ol~", id + '. ');
                     }
-                    fileReader.readAsDataURL(fileObj);
+
+                    editor.replaceSelection(desStr);
                 } else {
-                    alert('浏览器不支持');
+                    var cursor = editor.getCursor();
+                    editor.replaceRange('1. ', CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
+                }
+                editor.focus();
+            }
+
+            //行首关键字
+            function hol_keyword(char) {
+                if (editor.somethingSelected()) {
+                    var sel = editor.getSelection();
+                    var desStr = char + sel.replace(/\n/g, "\n" + char);
+                    editor.replaceSelection(desStr);
+                } else {
+                    var cursor = editor.getCursor();
+                    editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
+                }
+                editor.focus();
+            }
+
+            //整行替换
+            function line_keyword(char, ch) {
+                var cursor = editor.getCursor();
+                var content = editor.getLine(cursor.line);
+                editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, content.length));
+                if (!ch) {
+                    ch = 0;
+                }
+                editor.setCursor(CodeMirror.Pos(cursor.line, ch));
+                editor.focus();
+            }
+
+            //无序列表
+            $scope.cmd_listul = function () {
+                hol_keyword('+ ');
+            }
+
+            //引用内容
+            $scope.cmd_blockqote = function () {
+                hol_keyword('> ');
+            }
+
+            //表格
+            $scope.cmd_tabel = function () {
+                $uibModal.open({
+                    templateUrl: config.htmlPath + "editorInsertTable.html",
+                    controller: "tableCtrl",
+                }).result.then(function (provider) {
+                    //console.log(provider);
+                    if (provider == "table") {
+                        var table = $rootScope.table;
+                        //console.log(table);
+                        //| 0:0 | 1:0 |
+                        //| -- | -- |
+                        //| 0:2 | 1:2 |
+                        var wiki = '';
+                        for (var i = 0; i < table.rows; i++) {
+                            wiki += '\n';
+                            if (i == 1) {
+                                for (var j = 0; j < table.cols; j++) {
+                                    switch (table.alignment) {
+                                        case 1:
+                                            wiki += '|:-- ';
+                                            break;
+                                        case 2:
+                                            wiki += '|:--:';
+                                            break;
+                                        case 3:
+                                            wiki += '| --:';
+                                            break;
+                                        default:
+                                            wiki += '| -- ';
+                                            break;
+                                    }
+                                }
+                                wiki += '|\n';
+                            }
+
+                            for (var j = 0; j < table.cols; j++) {
+                                wiki += '| ' + j + ':' + i + ' ';
+                            }
+                            wiki += '|';
+                        }
+                        wiki += '\n';
+
+                        var cursor = editor.getCursor();
+                        var content = editor.getLine(cursor.line);
+                        if (content.length > 0) {
+                            wiki += '\n';
+                        }
+
+                        editor.replaceRange(wiki, CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
+                        editor.setCursor(CodeMirror.Pos(cursor.line + 1, 0));
+                        editor.focus();
+                    }
+                }, function (text, error) {
+                    console.log('text:' + text);
+                    console.log('error:' + error);
+                    return;
+                });
+            }
+
+            //水平分割线
+            $scope.cmd_horizontal = function () {
+                var cursor = editor.getCursor();
+                editor.replaceRange('---\n', CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
+                editor.setCursor(CodeMirror.Pos(cursor.line + 1, 3));
+                editor.focus();
+            }
+
+            //链接
+            $scope.cmd_link = function () {
+                $uibModal.open({
+                    templateUrl: config.htmlPath + "editorInsertLink.html",
+                    controller: "linkCtrl",
+                }).result.then(function (provider) {
+                    if (provider == "link") {
+                        var link = $rootScope.link;
+                        var wiki = '';
+                        if (editor.somethingSelected()) {
+                            wiki += '[' + editor.getSelection() + ']';
+                        } else {
+                            wiki += '[]';
+                        }
+                        wiki += '(' + link.url + ')';
+                        editor.replaceSelection(wiki);
+
+                        //var wiki = '[' + link.txt + '](' + link.url + ')\n';
+                        //var cursor = editor.getCursor();
+                        //var content = editor.getLine(cursor.line);
+                        //if(content.length>0){
+                        //    editor.replaceRange(wiki,CodeMirror.Pos(cursor.line+1,0),CodeMirror.Pos(cursor.line+1,0));
+                        //    editor.setCursor(CodeMirror.Pos(cursor.line+1,1));
+                        //}else{
+                        //    editor.replaceRange(wiki,CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,0));
+                        //    editor.setCursor(CodeMirror.Pos(cursor.line,1));
+                        //}
+                        editor.focus();
+                    }
+                }, function (text, error) {
+                    console.log('text:' + text);
+                    console.log('error:' + error);
+                    return;
+                });
+            }
+
+            //图片
+            $scope.cmd_image = function () {
+                $uibModal.open({
+                    templateUrl: config.htmlPath + "editorInsertImg.html",
+                    controller: "imgCtrl",
+                }).result.then(function (provider) {
+                    console.log(provider);
+                    if (provider == "img") {
+                        var url = $rootScope.img.url;
+                        var txt = $rootScope.img.txt;
+                        var dat = $rootScope.img.dat;
+                        var nam = $rootScope.img.nam;
+
+                        var wiki = '';
+                        if (txt) {
+                            wiki += '![' + txt + ']';
+                        } else if (editor.somethingSelected()) {
+                            wiki += '![' + editor.getSelection() + ']';
+                        } else {
+                            wiki += '![]';
+                        }
+
+                        if (url) {
+                            wiki += '(' + url + ')';
+                        } else {
+                            wiki += '(' + dat + ')';
+
+                        }
+
+                        editor.replaceSelection(wiki);
+                        editor.focus();
+                    }
+                }, function (text, error) {
+                    console.log('text:' + text);
+                    console.log('error:' + error);
+                    return;
+                });
+            }
+
+            /**
+             * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
+             * @param dataURI
+             * @returns {Blob}
+             */
+            function dataURItoBlob(dataURI) {
+                var byteString = atob(dataURI.split(',')[1]);
+                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                var ab = new ArrayBuffer(byteString.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ab], {type: mimeString});
+            }
+
+            //图片上传
+            $scope.cmd_image_upload = function (fileObj, cb) {
+                if (!/image\/\w+/.test(fileObj.type)) {
+                    alert("这不是图片！");
+                    return false;
+                }
+
+                if (isEmptyObject($scope.githubSource)) {
+                    alert('github账号尚未登录，图片无法上传');
+                } else {
+                    //支持chrome IE10
+                    if (window.FileReader) {
+                        var fileReader = new FileReader();
+                        fileReader.onloadstart = function () {
+                            console.log("onloadstart");
+                            line_keyword('![](uploading...0/' + fileObj.size + ')', 2);
+                        };
+                        fileReader.onprogress = function (p) {
+                            console.log("onprogress");
+                            line_keyword('![](uploading...' + p.loaded + '/' + fileObj.size + ')', 2);
+                        };
+                        fileReader.onload = function () {
+                            console.log("load complete");
+                            line_keyword('![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
+
+                            $scope.githubSource.uploadImage(undefined, fileReader.result, function (img_url) {
+                                //console.log(result);
+                                line_keyword('![](' + img_url + ')', 2);
+                                if (cb) {
+                                    cb(img_url);
+                                }
+                            });
+                        }
+                        fileReader.readAsDataURL(fileObj);
+                    } else {
+                        alert('浏览器不支持');
+                    }
                 }
             }
-        }
 
-        //代码
-        $scope.cmd_code = function () {
-            var sel = editor.getSelection();
-            var desStr = '```' + sel + '```';
-            editor.replaceSelection(desStr);
+            //代码
+            $scope.cmd_code = function () {
+                var sel = editor.getSelection();
+                var desStr = '```' + sel + '```';
+                editor.replaceSelection(desStr);
 
-            var cursor = editor.getCursor();
-            editor.setCursor(CodeMirror.Pos(cursor.line, cursor.ch - 3));
+                var cursor = editor.getCursor();
+                editor.setCursor(CodeMirror.Pos(cursor.line, cursor.ch - 3));
 
-            editor.focus();
-        }
+                editor.focus();
+            }
 
-        //删除
-        $scope.cmd_remove = function () {
-            if (!isEmptyObject($scope.websitePage)) {
-                var retVal = confirm("你确定要删除页面:" + $scope.websitePage.name + "?");
-                if (retVal == true) {
-                    $scope.loading = true;
-                    $http.delete("/api/wiki/models/website_pages", {
-                        params: {_id: $scope.websitePage._id, name: $scope.websitePage.name},
-                    }).then(function (response) {
-                        $.each($scope.websitePages, function (index, item) {
-                            if (item._id == $scope.websitePage._id) {
-                                $scope.websitePages[index].del = 1;
-                            }
+            //删除
+            $scope.cmd_remove = function () {
+                if (!isEmptyObject($scope.websitePage)) {
+                    var retVal = confirm("你确定要删除页面:" + $scope.websitePage.name + "?");
+                    if (retVal == true) {
+                        $scope.loading = true;
+                        $http.delete("/api/wiki/models/website_pages", {
+                            params: {_id: $scope.websitePage._id, name: $scope.websitePage.name},
+                        }).then(function (response) {
+                            $.each($scope.websitePages, function (index, item) {
+                                if (item._id == $scope.websitePage._id) {
+                                    $scope.websitePages[index].del = 1;
+                                }
+                            });
+                            $scope.websitePage = {};
+                            initTree();
+                            openPage();
+                            $scope.loading = false;
+                        }).catch(function (response) {
+                            console.log(response.data);
+                            $scope.loading = false;
                         });
-                        $scope.websitePage = {};
-                        initTree();
-                        openPage();
-                        $scope.loading = false;
-                    }).catch(function (response) {
-                        console.log(response.data);
-                        $scope.loading = false;
+                    }
+                }
+            }
+
+            //版本
+            $scope.cmd_version = function () {
+                window.location.href = "/wiki/gitVersion";
+            }
+
+            //目录树
+            $scope.cmd_tree = function () {
+                if (!isEmptyObject($scope.githubSource)) {
+                    $scope.githubSource.getTree('master', true, function (error, result, request) {
+                        var filelist = []
+                        for (var i = 0; result && i < result.length; i++) {
+                            filelist.push({path: result[i].path});
+                        }
+                        $scope.filelist = filelist;
+                        console.log(filelist);
                     });
                 }
             }
-        }
 
-        //版本
-        $scope.cmd_version = function () {
-            if (!isEmptyObject($scope.githubSource)) {
-                $scope.githubSource.listCommits('', function (error, result, request) {
-                    if (!error) {
-                        console.log(result);
-                    }
-                });
-            }
-        }
+            $scope.$on('onUserProfile', function (event, user) {
+                console.log("onUserProfile change!!!");
+                init();
+                command();
+            });
 
-        //目录树
-        $scope.cmd_tree = function () {
-            if (!isEmptyObject($scope.githubSource)) {
-                $scope.githubSource.getTree('master', true, function (error, result, request) {
-                    var filelist = []
-                    for (var i = 0; result && i < result.length; i++) {
-                        filelist.push({path: result[i].path});
-                    }
-                    $scope.filelist = filelist;
-                    console.log(filelist);
-                });
-            }
-        }
-
-        $scope.$on('onUserProfile', function (event, user) {
-            console.log("onUserProfile change!!!");
             init();
-            command();
-        });
 
-        init();
+            /*
+             *
+             * Configurable variables.
+             *
+             */
+            var hexcase = 0;
+            /* hex output format. 0 - lowercase; 1 - uppercase */
+            var chrsz = 8;
+            /* bits per input character. 8 - ASCII; 16 - Unicode */
+            /*
+             *
+             * The main function to calculate message digest
+             *
+             */
+            function hex_sha1(s) {
+                return binb2hex(core_sha1(AlignSHA1(s)));
+            }
 
-        /*
-         *
-         * Configurable variables.
-         *
-         */
-        var hexcase = 0;
-        /* hex output format. 0 - lowercase; 1 - uppercase */
-        var chrsz = 8;
-        /* bits per input character. 8 - ASCII; 16 - Unicode */
-        /*
-         *
-         * The main function to calculate message digest
-         *
-         */
-        function hex_sha1(s) {
-            return binb2hex(core_sha1(AlignSHA1(s)));
-        }
+            /*
+             *
+             * Perform a simple self-test to see if the VM is working
+             *
+             */
+            function sha1_vm_test() {
+                return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+            }
 
-        /*
-         *
-         * Perform a simple self-test to see if the VM is working
-         *
-         */
-        function sha1_vm_test() {
-            return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
-        }
-
-        /*
-         *
-         * Calculate the SHA-1 of an array of big-endian words, and a bit length
-         *
-         */
-        function core_sha1(blockArray) {
-            var x = blockArray; // append padding
-            var w = Array(80);
-            var a = 1732584193;
-            var b = -271733879;
-            var c = -1732584194;
-            var d = 271733878;
-            var e = -1009589776;
-            for (var i = 0; i < x.length; i += 16) // 每次处理512位 16*32
-            {
-                var olda = a;
-                var oldb = b;
-                var oldc = c;
-                var oldd = d;
-                var olde = e;
-                for (var j = 0; j < 80; j++) // 对每个512位进行80步操作
+            /*
+             *
+             * Calculate the SHA-1 of an array of big-endian words, and a bit length
+             *
+             */
+            function core_sha1(blockArray) {
+                var x = blockArray; // append padding
+                var w = Array(80);
+                var a = 1732584193;
+                var b = -271733879;
+                var c = -1732584194;
+                var d = 271733878;
+                var e = -1009589776;
+                for (var i = 0; i < x.length; i += 16) // 每次处理512位 16*32
                 {
-                    if (j < 16)
-                        w[j] = x[i + j];
-                    else
-                        w[j] = rol(w[j - 3] ^ w[j - 8] ^ w[j - 14] ^ w[j - 16], 1);
-                    var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)), safe_add(safe_add(e, w[j]), sha1_kt(j)));
-                    e = d;
-                    d = c;
-                    c = rol(b, 30);
-                    b = a;
-                    a = t;
+                    var olda = a;
+                    var oldb = b;
+                    var oldc = c;
+                    var oldd = d;
+                    var olde = e;
+                    for (var j = 0; j < 80; j++) // 对每个512位进行80步操作
+                    {
+                        if (j < 16)
+                            w[j] = x[i + j];
+                        else
+                            w[j] = rol(w[j - 3] ^ w[j - 8] ^ w[j - 14] ^ w[j - 16], 1);
+                        var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)), safe_add(safe_add(e, w[j]), sha1_kt(j)));
+                        e = d;
+                        d = c;
+                        c = rol(b, 30);
+                        b = a;
+                        a = t;
+                    }
+                    a = safe_add(a, olda);
+                    b = safe_add(b, oldb);
+                    c = safe_add(c, oldc);
+                    d = safe_add(d, oldd);
+                    e = safe_add(e, olde);
                 }
-                a = safe_add(a, olda);
-                b = safe_add(b, oldb);
-                c = safe_add(c, oldc);
-                d = safe_add(d, oldd);
-                e = safe_add(e, olde);
+                return new Array(a, b, c, d, e);
             }
-            return new Array(a, b, c, d, e);
-        }
 
-        /*
-         *
-         * Perform the appropriate triplet combination function for the current
-         * iteration
-         *
-         * 返回对应F函数的值
-         *
-         */
-        function sha1_ft(t, b, c, d) {
-            if (t < 20)
-                return (b & c) | ((~b) & d);
-            if (t < 40)
-                return b ^ c ^ d;
-            if (t < 60)
-                return (b & c) | (b & d) | (c & d);
-            return b ^ c ^ d; // t<80
-        }
-
-        /*
-         *
-         * Determine the appropriate additive constant for the current iteration
-         *
-         * 返回对应的Kt值
-         *
-         */
-        function sha1_kt(t) {
-            return (t < 20) ? 1518500249 : (t < 40) ? 1859775393 : (t < 60) ? -1894007588 : -899497514;
-        }
-
-        /*
-         *
-         * Add integers, wrapping at 2^32. This uses 16-bit operations internally
-         *
-         * to work around bugs in some JS interpreters.
-         *
-         * 将32位数拆成高16位和低16位分别进行相加，从而实现 MOD 2^32 的加法
-         *
-         */
-        function safe_add(x, y) {
-            var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-            var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-            return (msw << 16) | (lsw & 0xFFFF);
-        }
-
-        /*
-         *
-         * Bitwise rotate a 32-bit number to the left.
-         *
-         * 32位二进制数循环左移
-         *
-         */
-        function rol(num, cnt) {
-            return (num << cnt) | (num >>> (32 - cnt));
-        }
-
-        /*
-         *
-         * The standard SHA1 needs the input string to fit into a block
-         *
-         * This function align the input string to meet the requirement
-         *
-         */
-        function AlignSHA1(str) {
-            var nblk = ((str.length + 8) >> 6) + 1, blks = new Array(nblk * 16);
-            for (var i = 0; i < nblk * 16; i++)
-                blks[i] = 0;
-            for (i = 0; i < str.length; i++)
-                blks[i >> 2] |= str.charCodeAt(i) << (24 - (i & 3) * 8);
-            blks[i >> 2] |= 0x80 << (24 - (i & 3) * 8);
-            blks[nblk * 16 - 1] = str.length * 8;
-            return blks;
-        }
-
-        /*
-         *
-         * Convert an array of big-endian words to a hex string.
-         *
-         */
-        function binb2hex(binarray) {
-            var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-            var str = "";
-            for (var i = 0; i < binarray.length * 4; i++) {
-                str += hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF) +
-                    hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
+            /*
+             *
+             * Perform the appropriate triplet combination function for the current
+             * iteration
+             *
+             * 返回对应F函数的值
+             *
+             */
+            function sha1_ft(t, b, c, d) {
+                if (t < 20)
+                    return (b & c) | ((~b) & d);
+                if (t < 40)
+                    return b ^ c ^ d;
+                if (t < 60)
+                    return (b & c) | (b & d) | (c & d);
+                return b ^ c ^ d; // t<80
             }
-            return str;
-        }
-    }]);
+
+            /*
+             *
+             * Determine the appropriate additive constant for the current iteration
+             *
+             * 返回对应的Kt值
+             *
+             */
+            function sha1_kt(t) {
+                return (t < 20) ? 1518500249 : (t < 40) ? 1859775393 : (t < 60) ? -1894007588 : -899497514;
+            }
+
+            /*
+             *
+             * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+             *
+             * to work around bugs in some JS interpreters.
+             *
+             * 将32位数拆成高16位和低16位分别进行相加，从而实现 MOD 2^32 的加法
+             *
+             */
+            function safe_add(x, y) {
+                var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+                var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+                return (msw << 16) | (lsw & 0xFFFF);
+            }
+
+            /*
+             *
+             * Bitwise rotate a 32-bit number to the left.
+             *
+             * 32位二进制数循环左移
+             *
+             */
+            function rol(num, cnt) {
+                return (num << cnt) | (num >>> (32 - cnt));
+            }
+
+            /*
+             *
+             * The standard SHA1 needs the input string to fit into a block
+             *
+             * This function align the input string to meet the requirement
+             *
+             */
+            function AlignSHA1(str) {
+                var nblk = ((str.length + 8) >> 6) + 1, blks = new Array(nblk * 16);
+                for (var i = 0; i < nblk * 16; i++)
+                    blks[i] = 0;
+                for (i = 0; i < str.length; i++)
+                    blks[i >> 2] |= str.charCodeAt(i) << (24 - (i & 3) * 8);
+                blks[i >> 2] |= 0x80 << (24 - (i & 3) * 8);
+                blks[nblk * 16 - 1] = str.length * 8;
+                return blks;
+            }
+
+            /*
+             *
+             * Convert an array of big-endian words to a hex string.
+             *
+             */
+            function binb2hex(binarray) {
+                var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+                var str = "";
+                for (var i = 0; i < binarray.length * 4; i++) {
+                    str += hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF) +
+                        hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
+                }
+                return str;
+            }
+        }]);
 
     return {
-        htmlContent:htmlContent,
-        domReady:function () {
-            initEditor();
+        htmlContent: htmlContent,
+        domReady: function () {
+            //initEditor();
         },
     };
 });
