@@ -9,11 +9,14 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
         $scope.userParams = {page: 1, pageSize: 3};
         $scope.userObj = {};
         $scope.siteObj = {};
-
+        $scope.isLogin = false; // false：注册  true：登录
         $scope.getRandomColor = function (index) {
             return util.getRandomColor(index);
         }
 
+        $scope.goLoginPage = function () {
+            $scope.isLogin = true;
+        }
         // 更多我的收藏
         $scope.goAllWorksList = function () {
             var siteshowObj = {};
@@ -99,7 +102,8 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 console.log("注册成功")
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
-                window.location.href = '/' + data.userInfo.username + '/' + data.userInfo.username;
+                //window.location.href = '/' + data.userInfo.username + '/' + data.userInfo.username;
+                window.location.href = '/wiki/website';
                 /*
                 if (!data.userInfo.githubToken) {
                     Account.githubAuthenticate();
