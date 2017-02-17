@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], function (app, util, storage, htmlContent) {
-    app.registerController('editWebsiteController', ['$scope', '$state', 'Account',function ($scope, $state, Account) {
+    app.registerController('editWebsiteController', ['$scope','github','Message',function ($scope, github, Message) {
         //const github = ProjectStorageProvider.getDataSource('github');
         $scope.tags=["tag1","tag2"];
         $scope.classifyList = ["普通","入围","热门"];
@@ -13,17 +13,16 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], f
         $scope.website = siteinfo;
 
         $('#uploadPictureBtn').change(function (e) {
-            console.log("hello world")
-            return ;
+            if (!github.isInited()) {
+                //alert("图片上传功能需要绑定数据源!!!");
+                Message.info("图片上传功能需要绑定数据源!!!");
+                return ;
+            }
             var fileReader = new FileReader();
             fileReader.onload = function(){
-                github.uploadImage("portrait", fileReader.reault, function (error, result, request) {
-                    if (error) {
-                        console.log("上传失败");
-                        return ;
-                    }
-                    $scope.website.logoUrl = result.content.download_url;
-                    $('#websiteLogo').attr('src',fileReader.result);
+                $('#websiteLogo').attr('src',fileReader.result);
+                github.uploadImage("websiteLogo", fileReader.result, function (url) {
+                    $scope.website.logoUrl = url;
                 });
             };
             fileReader.readAsDataURL(e.target.files[0]);
@@ -78,6 +77,9 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], f
         $scope.modifyWebsite = function () {
             util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                 $scope.website = data;
+                Message.info("站点配置修改成功!!!");
+            }, function () {
+                Message.warning("站点配置修改失败!!!");
             });
         }
 

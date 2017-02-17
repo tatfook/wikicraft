@@ -597,14 +597,6 @@ define([
             $scope.websites = $rootScope.websites;           //站点列表
             $scope.websitePages = $rootScope.websitePages;       //页面列表
 
-            if ($rootScope.website) {
-                for (var i = 0; i < $scope.websites.length; i++) {
-                    if ($scope.websites[i]._id == $rootScope.website._id) {
-                        $scope.website_select($scope.websites[i]);
-                        break;
-                    }
-                }
-            }
             initTree();
         }
 
@@ -817,6 +809,7 @@ define([
                     color: "#428bca",
                     showBorder: false,
                     enableLinks: true,
+                    levels:4,
                     data: getTreeData($scope.user.username, $scope.websitePages, false),
                     onNodeSelected: function (event, data) {
                         console.log(data);
