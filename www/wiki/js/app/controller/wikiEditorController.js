@@ -122,6 +122,8 @@ define([
 
         var mdwiki = markdownwiki({container_name: '.result-html'});
         mdwiki.bindToCodeMirrorEditor(editor);
+
+        editor.setSize('auto','600px');
         editor.focus();
 
         var showTreeview = true;
@@ -437,6 +439,66 @@ define([
 
         return editor;
     }
+
+
+
+    function getTreeData(username, websitePages, isDir) {
+        var pageList = websitePages ||[];
+        var pageTree = {url:'/' + username , children:{}};
+        var treeData = [];
+        for (var i = 0; i < pageList.length; i++) {
+            var page = pageList[i];
+            var url = page.url;
+            url = url.trim();
+            var paths = page.url.split('/');
+            var treeNode = pageTree;
+            var length = isDir ? paths.length - 1 :  paths.length;
+            for (var j = 2; j < length; j++) {
+                var path = paths[j];
+                if (!path){
+                    continue;
+                }
+                subTreeNode = treeNode.children[path] || {name:path, children:{}, url: treeNode.url + '/' + path, siteId:page.websiteId, siteName: page.websiteName, pageId:page._id};
+                treeNode.children[paths[j]] = subTreeNode;
+                treeNode.isLeaf = false;
+                if (j == paths.length - 1) {
+                    subTreeNode.isLeaf = true;
+                    subTreeNode.sha = page.sha;
+                    //subTreeNode.content = page.content;
+                }
+                treeNode = subTreeNode;
+            }
+        }
+        var treeDataFn = function (treeNode, pageNode) {
+            treeNode = treeNode || {};
+            treeNode.text = pageNode.name;
+            treeNode.icon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github-alt' : 'fa fa-file-o';
+            treeNode.pageNode = pageNode;
+            treeNode.tags = [pageNode.url];
+            if (pageNode.isLeaf) {
+                treeNode.selectedIcon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github' : 'fa fa-file-o';
+            }
+            if (!pageNode.isLeaf) {
+                treeNode.nodes = [];
+                for (key in pageNode.children) {
+                    treeNode.nodes.push(treeDataFn(undefined,pageNode.children[key]));
+                }
+            }
+
+            return treeNode;
+        };
+
+        for (key in pageTree.children) {
+            treeData.push(treeDataFn(undefined, pageTree.children[key]));
+        }
+
+        for (var i = 0; i < treeData.length; i++){
+            treeData[i].icon = 'fa fa-globe';
+        }
+        return treeData;
+    }
+
+
     app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance,github) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
@@ -487,19 +549,28 @@ define([
         }
     }]);
     app.registerController('pageCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
-        $scope.websites = {};           //站点列表
+        $scope.websites = {};            //站点列表
         $scope.websitePages = {};       //页面列表
-
-        $scope.website = {};            //当前选中站点
+        $scope.website = {};             //当前选中站点
         $scope.websitePage = {};        //当前选中页面
+        $scope.errInfo = "";             // 错误提示
+        var treeNode = undefined;       // 目录节点
 
-        $scope.style = {};      //模板
 
-        $scope.website_select = function (wb) {
-            $scope.website = wb;
-            //$http.post('http://localhost:8099/api/wiki/models/website_template_style', {_id: $scope.website.styleId}).then(function (response) {
-            //    $scope.style = response.data;  // 模板代码style.content
-            //})
+        //初始化目录树  data:  $.parseJSON(getTree()),
+        function initTree() {
+            //console.log('@initTree');
+            console.log($('#newPageTreeId'));
+            $('#newPageTreeId').treeview({
+                color: "#428bca",
+                showBorder: false,
+                enableLinks: true,
+                data: getTreeData($scope.user.username, $scope.websitePages, true),
+                onNodeSelected: function (event, data) {
+                    console.log(data);
+                    treeNode = data.pageNode;
+                }
+            });
         }
 
         //初始化
@@ -515,6 +586,7 @@ define([
                     }
                 }
             }
+            initTree();
         }
 
         $scope.cancel = function () {
@@ -522,21 +594,36 @@ define([
         }
 
         $scope.website_new = function () {
-            if ($scope.website.name === undefined || $scope.website.name.length == 0) {
-                alert('请选择站点');
+            if (!treeNode) {
+                $scope.errInfo = '请选择站点';
                 return false;
             }
 
             if ($scope.websitePage.name === undefined || $scope.websitePage.name.length == 0) {
-                alert('请填写页面名');
+                $scope.errInfo = '请填写页面名';
                 return false;
             }
 
-            $scope.websitePage.url = '/' + $scope.user.username + '/' + $scope.website.name + '/' + $scope.websitePage.name;
+            for (var i = 0; i < $scope.websites.length; i++) {
+                if (treeNode.siteId == $scope.websites[i]._id) {
+                    $scope.website = $scope.websites[i];
+                }
+            }
+
+            $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.name;
             $scope.websitePage.websiteName = $scope.website.name;
             $scope.websitePage.websiteId = $scope.website._id;
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
-            $scope.websitePage.userId = $scope.website.userId
+            $scope.websitePage.userId = $scope.website.userId;
+
+            for (var i = 0; i < $scope.websitePages.length; i++) {
+                var url1 = $scope.websitePages[i].url + '/';
+                var url2 = $scope.websitePage.url + '/';
+                if (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0) {
+                    $scope.errInfo = '页面名已存在';
+                    return false;
+                }
+            }
 
             $http.put(config.apiUrlPrefix + 'website_pages/new', $scope.websitePage).then(function (response) {
                 $rootScope.websitePage = response.data.data;
@@ -548,9 +635,11 @@ define([
                 alert('新建页面失败');
             });
         }
-        init();
+
+        $scope.$watch('$viewContentLoaded', init);
     }]);
-    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', function ($scope, $rootScope, $http, $location, $uibModal, Account, github) {
+    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message',
+        function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message) {
         console.log("wikiEditorController");
         $scope.websites = [];           //站点列表
         $scope.websitePages = [];       //页面列表
@@ -572,60 +661,7 @@ define([
             return true;
         }
 
-        function getTreeData() {
-            var pageList = $scope.websitePages ||[];
-            var pageTree = {url:'/' + $scope.user.username , children:{}};
-            var treeData = [];
-            for (var i = 0; i < pageList.length; i++) {
-                var page = pageList[i];
-                var url = page.url;
-                url = url.trim();
-                var paths = page.url.split('/');
-                var treeNode = pageTree;
-                for (var j = 2; j < paths.length; j++) {
-                    var path = paths[j];
-                    if (!path){
-                        continue;
-                    }
-                    subTreeNode = treeNode.children[path] || {name:path, children:{}, url: treeNode.url + '/' + path, siteId:page.websiteId, siteName: page.websiteName, pageId:page._id};
-                    treeNode.children[paths[j]] = subTreeNode;
-                    treeNode.isLeaf = false;
-                    if (j == paths.length - 1) {
-                        subTreeNode.isLeaf = true;
-                        subTreeNode.sha = page.sha;
-                        //subTreeNode.content = page.content;
-                    }
-                    treeNode = subTreeNode;
-                }
-            }
-            var treeDataFn = function (treeNode, pageNode) {
-                treeNode = treeNode || {};
-                treeNode.text = pageNode.name;
-                treeNode.icon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github-alt' : 'fa fa-file-o';
-                treeNode.pageNode = pageNode;
 
-                if (pageNode.isLeaf) {
-                    treeNode.selectedIcon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github' : 'fa fa-file-o';
-                }
-                if (!pageNode.isLeaf) {
-                    treeNode.nodes = [];
-                    for (key in pageNode.children) {
-                        treeNode.nodes.push(treeDataFn(undefined,pageNode.children[key]));
-                    }
-                }
-
-                return treeNode;
-            };
-
-            for (key in pageTree.children) {
-                treeData.push(treeDataFn(undefined, pageTree.children[key]));
-            }
-
-            for (var i = 0; i < treeData.length; i++){
-                treeData[i].icon = 'fa fa-globe';
-            }
-            return treeData;
-        }
 
 
         //初始化，读取用户站点列表及页面列表
@@ -724,7 +760,7 @@ define([
                 color: "#428bca",
                 showBorder: false,
                 enableLinks: true,
-                data: getTreeData(),
+                data: getTreeData($scope.user.username, $scope.websitePages, false),
                 onNodeSelected: function (event, data) {
                     console.log(data);
                     //return;
@@ -786,7 +822,7 @@ define([
                         exactMatch: true
                     }]);
                     $.each(selectableNodes, function (index, item) {
-                        if (item.tags[0] == "page" && item.tags[1] == $scope.websitePage._id) {
+                        if (item.tags[0] == $scope.websitePage.url) {
                             $('#treeview').treeview('selectNode', [item, {silent: true}]);
                         }
                     });
@@ -820,10 +856,12 @@ define([
                     if (!isEmptyObject($scope.githubSource)) {
                         var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
                         $scope.githubSource.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
-                            alert('文件已保存到服务器及Github');
+                            //alert('文件已保存到服务器及Github');
+                            Message.info("文件已保存到服务器及Github");
                         });
                     } else {
-                        alert('文件已保存到服务器');
+                        //alert('文件已保存到服务器');
+                        Message.info("文件已保存到服务器");
                     }
                 }).catch(function (response) {
                     console.log(response.data);
