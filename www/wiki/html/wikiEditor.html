@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div id="wikiEditor" ng-controller="wikiEditorController">
             <div id="toolbarview" class="well well-sm nopadding" style="z-index:99;">
@@ -58,9 +58,8 @@
                     </div>
                 </div>
                 <div class="btn-toolbar" role="toolbar">
-
                     <div class= "btn-group">
-                        <button type="button" class="btn btn-default btn-sm toolbar-page-file active" title="文件"><i class="fa fa-folder-open-o"></i>&nbsp;文件</button>
+                        <button type="button" class="btn btn-default btn-sm toolbar-page-file" title="文件"><i class="fa fa-folder-open-o"></i>&nbsp;文件</button>
                         <button type="button" class="btn btn-default btn-sm toolbar-page-code" title="代码"><i class="fa fa-file-code-o"></i>&nbsp;代码</button>
                         <button type="button" class="btn btn-default btn-sm toolbar-page-slide active" title="拆分"><i class="fa fa-columns"></i>&nbsp;拆分</button>
                         <button type="button" class="btn btn-default btn-sm toolbar-page-design" title="预览"><i class="fa fa-eye"></i>&nbsp;预览</button>
@@ -72,7 +71,7 @@
                     <!--</div>-->
 
                     <div class= "btn-group">
-                        <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="min-width: 100px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;overflow-x: visible">
+                        <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="width: 400px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
                         <button type="button" class="btn btn-default btn-sm toolbar-page-remove"  ng-click="cmd_remove()" title="删除页面" disabled="disabled"><i class="fa fa-remove"></i></button>
                         <button type="button" class="btn btn-default btn-sm toolbar-page-copyurl" title="复制网址"><i class="fa fa-external-link" ></i>&nbsp;复制网址</button>
                     </div>
@@ -92,14 +91,14 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" style="height: 650px">
                 <div id="treeview" class="col-xs-2 full-height nopadding nomargin"></div>
                 <div id="srcview" class="col-xs-5 full-height">
                     <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
                     <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
                 </div>
                 <section id="preview" class="col-xs-5 full-height">
-                    <div class="result-html full-height"></div>
+                    <div class="result-html full-height" ></div>
                     <pre class="hljs result-src full-height"><code class="result-src-content full-height"></code></pre>
                     <pre class="hljs result-debug full-height"><code class="result-debug-content full-height"></code></pre>
                 </section>

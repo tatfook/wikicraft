@@ -14,6 +14,8 @@ define(['app', 'helper/util'], function (app, util) {
                     "height": moduleParams.height || "100%" ,
                     'background-image': moduleParams.backgroundImage,
                 };
+
+                $scope.class = moduleParams.class;
             }
 
             init();
@@ -23,7 +25,8 @@ define(['app', 'helper/util'], function (app, util) {
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div class="container"><div class="row" ng-controller="defaultTemplateController" ng-style="style"><div class="col-xs-12">'+ wikiBlock.content +'</div></div></div>';
+            //return '<div class="container"><div class="row" ng-controller="defaultTemplateController" ng-style="style"><div class="col-xs-12">'+ wikiBlock.content +'</div></div></div>';
+            return '<div ng-controller="defaultTemplateController" ng-class="class" ng-style="style">'+ wikiBlock.content +'</div>'
         }
     }
 });
