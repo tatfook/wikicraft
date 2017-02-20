@@ -685,7 +685,7 @@ define([
                 var user = $scope.user;
                 var urlObj = storage.sessionStorageGetItem('urlObj');
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
-                if (urlObj.username == $scope.user.username) {
+                if (urlObj && urlObj.username == user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
                 }
                 /*
@@ -1055,7 +1055,7 @@ define([
 
             //无序列表
             $scope.cmd_listul = function () {
-                hol_keyword('+ ');
+                hol_keyword('- ');
             }
 
             //引用内容
@@ -1302,7 +1302,7 @@ define([
 
             //版本
             $scope.cmd_version = function () {
-                window.location.href = "/wiki/gitVersion";
+                util.go("gitVersion");
             }
 
             //目录树
