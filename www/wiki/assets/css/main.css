@@ -2,7 +2,9 @@
 @import "../../js/lib/angular-ui-select/select.min.css";
 @import "../../js/lib/angular-toggle-switch/style/default/angular-toggle-switch.css";
 @import "editor.css";
+@import "markdownit.css";
 
 a:hover {
     cursor: pointer;
 }
+
