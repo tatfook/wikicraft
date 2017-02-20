@@ -24,7 +24,7 @@ define(['app', 'helper/util'], function (app, util) {
 
             // 去站点
             $scope.goWebsitePage = function (websiteName) {
-                util.goUserSite('/' + websiteName);
+                util.goUserSite('/' + $scope.user.username + '/' + websiteName);
             }
 
             $scope.attention = function () {
