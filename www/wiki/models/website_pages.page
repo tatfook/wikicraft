@@ -41,6 +41,17 @@ function website_pages:delete(params)
 	return {error=errors.SUCCESS, data=data};
 end
 
+-- 删除页面
+function website_pages:deleteByPageId(params)
+	self:ensureAuthenticated()
+	if not params._id then
+		return errors.wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params._id}, resume)
+	return errors.wrap(yield())
+end
+
 -- 删除站点所有页
 function website_pages:api_deleteByWebsiteId(params)
 	if not params.websiteId then
@@ -260,8 +271,7 @@ end
 function website_pages:api_getByUserId(params) 
 	-- local userId = self:ensureAuthenticated()
 	userId = params.userId or userId
-	log(userId)
-	self:db():find({userId=tonumber(userId)}, resume)
+	self:db():find({["+userId"]={tonumber(userId)}}, resume)
 
 	return errors:wrap(yield())
 end
