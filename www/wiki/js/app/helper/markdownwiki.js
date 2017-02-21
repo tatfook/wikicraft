@@ -110,15 +110,15 @@ define([
                  */
                 $('#wikiblockHeader_' + idx).fadeIn();
                 $('#wikiblockContainer_' + idx).css('border','1px solid silver');
-                wikiBlockObj.editor.setSelection({line:wikiBlockObj.innerParams.line_begin, ch:'\n'},{line:wikiBlockObj.innerParams.line_end, ch:'\n'});
+                //wikiBlockObj.editor.setSelection({line:wikiBlockObj.innerParams.line_begin, ch:'\n'},{line:wikiBlockObj.innerParams.line_end, ch:'\n'});
             } else if (e.type == 'mouseleave') {
                 $('#wikiblockHeader_' + idx).fadeOut();
                 $('#wikiblockContainer_' + idx).css('border','0px');
-                wikiBlockObj.editor.setSelection({line:0});
+                //wikiBlockObj.editor.setSelection({line:0});
             } else if(e.type == 'mouseover' && element.attr('wikimodparamskey')) {
-                wikiBlockObj.setSelection(element.attr('wikimodparamskey'));
+                //wikiBlockObj.setSelection(element.attr('wikimodparamskey'));
             } else if (e.type == 'mouseout'){
-                wikiBlockObj.editor.setSelection({line:0});
+                //wikiBlockObj.editor.setSelection({line:0});
             }
         });
 
@@ -193,7 +193,7 @@ define([
                 for (var i = 0; i < value.length; i++) {
                     if (value[i].split(':')[0].indexOf(key) >= 0) {
                         start += i;
-                        this.editor.setSelection({line:start, ch:'\n'}, {line:start+1, ch:'\n'});
+                        //this.editor.setSelection({line:start, ch:'\n'}, {line:start+1, ch:'\n'});
                         break;
                     }
                 }
@@ -396,7 +396,8 @@ define([
                 var source = GetEditorText && GetEditorText();
                 var htmlResult = mdwiki.render(source);
                 //console.log(htmlResult);
-                util.html(options.container_name, htmlResult)
+                util.html(options.container_name, htmlResult);
+                options.renderCallback && options.renderCallback();
                 //$(options.container_name).html(htmlResult);
                 timer = undefined;
             }, 1000);
