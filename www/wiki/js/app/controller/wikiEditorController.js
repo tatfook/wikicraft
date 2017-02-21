@@ -36,474 +36,6 @@ define([
     //console.log("wiki editor controller!!!");
     var editor;
 
-    function initEditor(Message) {
-        console.log("initEditor");
-        if (editor || (!document.getElementById("source"))) {
-            console.log("init editor failed");
-            return;
-        }
-
-        function wikiCmdFold(cm, start) {
-            var line = cm.getLine(start.line);
-            if ((!line) || (!line.match(/^```[@\/]/)))
-                return undefined;
-            var end = start.line + 1;
-            var lastLineNo = cm.lastLine();
-            while (end < lastLineNo) {
-                line = cm.getLine(end)
-                if (line && line.match(/^```/))
-                    break;
-                end++;
-            }
-
-            return {
-                from: CodeMirror.Pos(start.line),
-                to: CodeMirror.Pos(end, cm.getLine(end).length)
-            };
-        }
-        CodeMirror.registerHelper("fold", "wikiCmdFold", wikiCmdFold);
-
-        editor = CodeMirror.fromTextArea(document.getElementById("source"), {
-            mode: 'markdown',
-            lineNumbers: true,
-            theme: "default",
-            viewportMargin: Infinity,
-            //绑定Vim
-            //keyMap:"vim",
-            //代码折叠
-            lineWrapping: true,
-
-            foldGutter: true,
-            foldOptions:{
-                rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.markdown,CodeMirror.fold.xml, CodeMirror.fold.wikiCmdFold),
-            },
-            gutters:["CodeMirror-linenumbers", "CodeMirror-foldgutter","CodeMirror-lint-markers"],
-            //全屏模式
-            //fullScreen:true,
-            //括号匹配
-            matchBrackets:true,
-            lint:true,
-            extraKeys: {
-                "Alt-F": "findPersistent",
-                "Ctrl-F": "find",
-                "Ctrl-R": "replace",
-                "F11": function (cm) {
-                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-                },
-                "Esc": function (cm) {
-                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-                },
-                "Ctrl-S": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_savepage();
-                },
-                "Shift-Ctrl-N": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_newpage();
-                },
-                "Ctrl-B": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_bold();
-                },
-                "Ctrl-I": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_italic();
-                },
-                "Ctrl--": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_strikethrough();
-                },
-                "Shift-Ctrl-[": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_superscript();
-                },
-                "Shift-Ctrl-]": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_subscript();
-                },
-                "Shift-Ctrl-1": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_headline(1);
-                },
-                "Shift-Ctrl-2": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_headline(2);
-                },
-                "Shift-Ctrl-3": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_headline(3);
-                },
-                "Shift-Ctrl-4": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_headline(4);
-                },
-                "Shift-Ctrl-5": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_headline(5);
-                },
-                "Shift-Ctrl-6": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_headline(6);
-                },
-                "Ctrl-.": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_listul();
-                },
-                "Ctrl-/": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_listol();
-                },
-                "Ctrl-]": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_blockqote();
-                },
-                "Shift-Ctrl-T": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_tabel();
-                },
-                "Ctrl-H": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_horizontal();
-                },
-                "Alt-L": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_link();
-                },
-                "Alt-P": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_image();
-                },
-                "Alt-C": function (cm) {
-                    var $scope = angular.element('#wikiEditor').scope();
-                    $scope.cmd_code();
-                },
-            }
-        });
-
-        var mdwiki = markdownwiki({container_name: '.result-html'});
-        mdwiki.bindToCodeMirrorEditor(editor);
-        console.log($('#wikiEditorContainer').css('height'));
-        editor.setSize('auto', '640px');
-        editor.focus();
-
-        var showTreeview = true;
-
-        function initView(activity) {
-
-            $("#srcview").removeClass('col-xs-12');
-            $("#srcview").removeClass('col-xs-10');
-            $("#srcview").removeClass('col-xs-5');
-            $("#srcview").removeClass('col-xs-6');
-
-            $("#preview").removeClass('col-xs-12');
-            $("#preview").removeClass('col-xs-10');
-            $("#preview").removeClass('col-xs-5');
-            $("#preview").removeClass('col-xs-6');
-
-            if (activity == true) {
-                $('.toolbar-page-slide').removeClass('active');
-                $('.toolbar-page-code').removeClass('active');
-                $('.toolbar-page-design').removeClass('active');
-            }
-
-            if ($("#treeview").is(":hidden")) {
-                if ($("#preview").is(":hidden")) {
-                    $("#srcview").addClass('col-xs-12');
-                } else {
-                    $("#srcview").addClass('col-xs-6');
-                }
-                if ($("#srcview").is(":hidden")) {
-                    $("#preview").addClass('col-xs-12');
-                } else {
-                    $("#preview").addClass('col-xs-6');
-                }
-            } else {
-                if ($("#preview").is(":hidden")) {
-                    $("#srcview").addClass('col-xs-10');
-                } else {
-                    $("#srcview").addClass('col-xs-5');
-                }
-                if ($("#srcview").is(":hidden")) {
-                    $("#preview").addClass('col-xs-10');
-                } else {
-                    $("#preview").addClass('col-xs-5');
-                }
-            }
-        }
-
-        $('.toolbar-page-file').on('click', function () {
-            if ($("#treeview").is(":hidden")) {
-                $('#treeview').show('fast', function () {
-                    initView(false);
-                    if ($("#treeview").is(":hidden")) {
-                        $('.toolbar-page-file').removeClass('active');
-                    } else {
-                        $('.toolbar-page-file').addClass('active');
-                    }
-                });
-            } else {
-                $('#treeview').hide('fast', function () {
-                    initView(false);
-                    if ($("#treeview").is(":hidden")) {
-                        $('.toolbar-page-file').removeClass('active');
-                    } else {
-                        $('.toolbar-page-file').addClass('active');
-                    }
-                });
-            }
-        });
-
-        $('.toolbar-page-code').on('click', function () {
-            $('#srcview').show();
-            $("#preview").hide('fast', function () {
-                initView(true);
-                $('.toolbar-page-code').addClass('active');
-                $('.toolbar-page-view').attr("disabled", true);
-                $('#codeToolbar button').attr("disabled", false);
-            });
-        });
-
-        $('.toolbar-page-slide').on('click', function () {
-            $('#srcview').show();
-            $("#preview").show('fast', function () {
-                initView(true);
-                $('.toolbar-page-slide').addClass('active');
-                $('.toolbar-page-view').attr("disabled", false);
-                $('#codeToolbar button').attr("disabled", false);
-            });
-        });
-
-        $('.toolbar-page-design').on('click', function () {
-            $('#preview').show();
-            $("#srcview").hide('fast', function () {
-                initView(true);
-                $('.toolbar-page-design').addClass('active');
-                $('.toolbar-page-view').attr("disabled", false);
-                $('#codeToolbar button').attr("disabled", true);
-
-            });
-        });
-
-//获取剪贴板数据方法
-        function getClipboardText(event) {
-            var clipboardData = event.clipboardData || window.clipboardData;
-            return clipboardData.getData("text");
-        };
-
-//设置剪贴板数据
-        function setClipboardText(event, value) {
-            if (event.clipboardData) {
-                return event.clipboardData.setData("text/plain", value);
-            } else if (window.clipboardData) {
-                return window.clipboardData.setData("text", value);
-            }
-        };
-
-        function CreateElementForExecCommand(textToClipboard) {
-            var forExecElement = document.createElement("div");
-            // place outside the visible area
-            forExecElement.style.position = "absolute";
-            forExecElement.style.left = "-10000px";
-            forExecElement.style.top = "-10000px";
-            // write the necessary text into the element and append to the document
-            forExecElement.textContent = textToClipboard;
-            document.body.appendChild(forExecElement);
-            // the contentEditable mode is necessary for the  execCommand method in Firefox
-            forExecElement.contentEditable = true;
-
-            return forExecElement;
-        }
-
-        function SelectContent(element) {
-            // first create a range
-            var rangeToSelect = document.createRange();
-            rangeToSelect.selectNodeContents(element);
-
-            // select the contents
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(rangeToSelect);
-        }
-
-        function CopyToClipboard(value) {
-            var textToClipboard = value;
-
-            var success = true;
-            if (window.clipboardData) { // Internet Explorer
-                window.clipboardData.setData("Text", textToClipboard);
-            }
-            else {
-                // create a temporary element for the execCommand method
-                var forExecElement = CreateElementForExecCommand(textToClipboard);
-
-                /* Select the contents of the element
-                 (the execCommand for 'copy' method works on the selection) */
-                SelectContent(forExecElement);
-
-                var supported = true;
-
-                // UniversalXPConnect privilege is required for clipboard access in Firefox
-                try {
-                    if (window.netscape && netscape.security) {
-                        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-                    }
-
-                    // Copy the selected content to the clipboard
-                    // Works in Firefox and in Safari before version 5
-                    success = document.execCommand("copy", false, null);
-                }
-                catch (e) {
-                    success = false;
-                }
-
-                // remove the temporary element
-                document.body.removeChild(forExecElement);
-            }
-
-            if (success) {
-                //alert("网址已成功拷贝到剪切板!");
-                Message.info("网址已成功拷贝到剪切板!");
-            }
-            else {
-                //alert("您的浏览器不支持访问剪切板!");
-                Message.info("您的浏览器不支持访问剪切板!");
-            }
-        }
-
-        $('.toolbar-page-copyurl').on('click', function () {
-            CopyToClipboard($('#btUrl').val());
-        });
-
-        $('.toolbar-page-preview').on('click', function () {
-            editor.focus();
-            var url = $('#btUrl').val();
-            if (url) {
-                window.open(url);
-            }
-
-        });
-
-        $('.toolbar-page-version').on('click', function () {
-            var $scope = angular.element('#wikiEditor').scope();
-            $scope.cmd_version();
-        });
-
-        $('.toolbar-page-hotkey').on('click', function () {
-            console.log('toolbar-page-hotkey');
-            $('#hotkeyModal').modal({
-                keyboard: true
-            })
-        });
-
-        $('.toolbar-page-knowledge').on('click', function () {
-            console.log('toolbar-page-knowledge');
-        });
-
-        $(function () {
-            var wellStartPos = $('.well').offset().top;
-
-            $.event.add(window, "scroll", function () {
-                var p = $(window).scrollTop();
-                if (p > wellStartPos) {
-                    $('.well').css('position', 'fixed');
-                    $('.well').css('top', '0px');
-                    $('.well').css('left', '0px');
-                    $('.well').css('right', '0px');
-
-//                $('.treeview').css('position', 'fixed');
-//                $('.treeview').css('top',p + $('#toolbarview').height());
-                } else {
-                    $('.well').css('position', 'static');
-                    $('.well').css('top', '');
-
-//                $('.treeview').css('position','static');
-//                $('.treeview').css('top','');
-                }
-            });
-        });
-
-//    editor.on("blur", function(){
-//        console.log('editor lost focus');
-//        setTimeout(function () {
-//            editor.focus();
-//        },500);
-//    });
-
-        $('.btn').on('click', function () {
-            var unfocus = $(this).data('unfocus');
-            if (unfocus == undefined || unfocus == '0') {
-                editor.focus();
-            }
-        });
-
-        function midDiv(DivId, left) {
-            var Div = $(DivId);
-            $(DivId).style.top = (document.documentElement.scrollTop + (document.documentElement.clientHeight - $(DivId).offsetHeight) / 2) + "px";
-//        $(DivId).style.left = (document.documentElement.scrollLeft + (document.documentElement.clientWidth - $(DivId).offsetWidth) / 2) + "px";
-            $(DivId).style.left = left;
-        }
-
-        editor.focus();
-
-        editor.on("paste", function (editor, e) {
-            if (!(e.clipboardData && e.clipboardData.items)) {
-                alert("该浏览器不支持操作");
-                return;
-            }
-            for (var i = 0, len = e.clipboardData.items.length; i < len; i++) {
-                var item = e.clipboardData.items[i];
-                // console.log(item.kind+":"+item.type);
-                if (item.kind === "string") {
-                    item.getAsString(function (str) {
-                        // str 是获取到的字符串
-                        console.log('get str');
-                        console.log(str);
-                    })
-                } else if (item.kind === "file") {
-                    var pasteFile = item.getAsFile();
-                    // pasteFile就是获取到的文件
-                    console.log(pasteFile);
-                    fileUpload(pasteFile);
-                }
-            }
-        });
-
-        editor.on("drop", function (editor, e) {
-            // console.log(e.dataTransfer.files[0]);
-            if (!(e.dataTransfer && e.dataTransfer.files)) {
-                alert("该浏览器不支持操作");
-                return;
-            }
-            for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                //console.log(e.dataTransfer.files[i]);
-                fileUpload(e.dataTransfer.files[i]);
-            }
-            e.preventDefault();
-        });
-
-//文件上传
-        function fileUpload(fileObj) {
-            console.log(fileObj);
-            var $scope = angular.element('#wikiEditor').scope();
-            console.log("================");
-            $scope.cmd_image_upload(fileObj);
-            return;
-        }
-
-//阻止浏览器默认打开拖拽文件的行为
-        window.addEventListener("drop", function (e) {
-            e = e || event;
-            e.preventDefault();
-            if (e.target.tagName == "textarea") {  // check wich element is our target
-                e.preventDefault();
-            }
-        }, false);
-
-
-        return editor;
-    }
-
-
     function getTreeData(username, websitePages, isDir) {
         var pageList = websitePages || [];
         var pageTree = {url: '/' + username, children: {}};
@@ -707,7 +239,7 @@ define([
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message',
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message) {
             console.log("wikiEditorController");
-            $rootScope.frameFooterExist =false;
+            $rootScope.frameFooterExist = false;
             $scope.websites = [];           //站点列表
             $scope.websitePages = [];       //页面列表
 
@@ -735,7 +267,7 @@ define([
                     return;
                 }
 
-                initEditor(Message);
+                initEditor();
 
                 var user = $scope.user;
                 var urlObj = storage.sessionStorageGetItem('urlObj');
@@ -746,7 +278,7 @@ define([
                 /*
                  github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'},'wxaxiaoyao');
                  $scope.githubSource = github;
-                */
+                 */
 
                 if (user.githubToken) {
                     github.init(user.githubToken, user.githubName);
@@ -833,7 +365,7 @@ define([
                     editor.setValue('');
                     $('#btUrl').val('');
                     $('.toolbar-page-remove').attr("disabled", true);
-                    return ;
+                    return;
                 }
                 //console.log(wp);
                 editor.setValue(wp.content);
@@ -845,7 +377,7 @@ define([
                 $('.toolbar-page-remove').attr("disabled", false);
 
                 if (isNodeSelected) {
-                    return ;
+                    return;
                 }
 
                 var selectableNodes = $('#treeview').treeview('search', [$scope.websitePage.name, {
@@ -869,19 +401,24 @@ define([
                     color: "#428bca",
                     showBorder: false,
                     enableLinks: true,
-                    levels:4,
+                    levels: 4,
                     data: getTreeData($scope.user.username, $scope.websitePages, false),
                     onNodeSelected: function (event, data) {
-                        console.log(data);
+                        //console.log(data);
                         //return;
-                        $scope.website = getWebsite(data.pageNode.siteId);
-                        $scope.websitePage = getWebsitePage(data.pageNode.pageId);
-                        $rootScope.websitePage = $scope.websitePage;
-                        $rootScope.website = $scope.website;
-                        if (data.pageNode.isLeaf) {
-                            openPage(true);
-                        }
-                        editor.focus();
+                        autoSave(function () {
+                            $scope.website = getWebsite(data.pageNode.siteId);
+                            $scope.websitePage = getWebsitePage(data.pageNode.pageId);
+                            $rootScope.websitePage = $scope.websitePage;
+                            $rootScope.website = $scope.website;
+                            if (data.pageNode.isLeaf) {
+                                openPage(true);
+                            }
+                            editor.focus();
+                        }, function () {
+                            Message.warning("自动保存失败");
+                            openPage(false);
+                        });
                     }
                 });
             }
@@ -924,7 +461,6 @@ define([
 
                         initTree();
                         openPage(false);
-
 
 
                         //下面是addNode实现方式
@@ -1386,170 +922,490 @@ define([
                 command();
             });
 
-            init();
+            // 渲染回调
+            function autoSave(cb, errcb) {
+                if (isEmptyObject($scope.websitePage)) {//修改
+                    return ;
+                }
+                var content = editor.getValue();
+                if (content == $scope.websitePage.content) {
+                    cb && cb();
+                    return ;
+                }
 
-            /*
-             *
-             * Configurable variables.
-             *
-             */
-            var hexcase = 0;
-            /* hex output format. 0 - lowercase; 1 - uppercase */
-            var chrsz = 8;
-            /* bits per input character. 8 - ASCII; 16 - Unicode */
-            /*
-             *
-             * The main function to calculate message digest
-             *
-             */
-            function hex_sha1(s) {
-                return binb2hex(core_sha1(AlignSHA1(s)));
+                $scope.websitePage.content = content;
+                util.post(config.apiUrlPrefix + 'website_pages', $scope.websitePage, cb, errcb);
             }
 
-            /*
-             *
-             * Perform a simple self-test to see if the VM is working
-             *
-             */
-            function sha1_vm_test() {
-                return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
-            }
+            function initEditor() {
+                console.log("initEditor");
+                if (editor || (!document.getElementById("source"))) {
+                    console.log("init editor failed");
+                    return;
+                }
 
-            /*
-             *
-             * Calculate the SHA-1 of an array of big-endian words, and a bit length
-             *
-             */
-            function core_sha1(blockArray) {
-                var x = blockArray; // append padding
-                var w = Array(80);
-                var a = 1732584193;
-                var b = -271733879;
-                var c = -1732584194;
-                var d = 271733878;
-                var e = -1009589776;
-                for (var i = 0; i < x.length; i += 16) // 每次处理512位 16*32
-                {
-                    var olda = a;
-                    var oldb = b;
-                    var oldc = c;
-                    var oldd = d;
-                    var olde = e;
-                    for (var j = 0; j < 80; j++) // 对每个512位进行80步操作
-                    {
-                        if (j < 16)
-                            w[j] = x[i + j];
-                        else
-                            w[j] = rol(w[j - 3] ^ w[j - 8] ^ w[j - 14] ^ w[j - 16], 1);
-                        var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)), safe_add(safe_add(e, w[j]), sha1_kt(j)));
-                        e = d;
-                        d = c;
-                        c = rol(b, 30);
-                        b = a;
-                        a = t;
+                function wikiCmdFold(cm, start) {
+                    var line = cm.getLine(start.line);
+                    if ((!line) || (!line.match(/^```[@\/]/)))
+                        return undefined;
+                    var end = start.line + 1;
+                    var lastLineNo = cm.lastLine();
+                    while (end < lastLineNo) {
+                        line = cm.getLine(end)
+                        if (line && line.match(/^```/))
+                            break;
+                        end++;
                     }
-                    a = safe_add(a, olda);
-                    b = safe_add(b, oldb);
-                    c = safe_add(c, oldc);
-                    d = safe_add(d, oldd);
-                    e = safe_add(e, olde);
+
+                    return {
+                        from: CodeMirror.Pos(start.line),
+                        to: CodeMirror.Pos(end, cm.getLine(end).length)
+                    };
                 }
-                return new Array(a, b, c, d, e);
-            }
 
-            /*
-             *
-             * Perform the appropriate triplet combination function for the current
-             * iteration
-             *
-             * 返回对应F函数的值
-             *
-             */
-            function sha1_ft(t, b, c, d) {
-                if (t < 20)
-                    return (b & c) | ((~b) & d);
-                if (t < 40)
-                    return b ^ c ^ d;
-                if (t < 60)
-                    return (b & c) | (b & d) | (c & d);
-                return b ^ c ^ d; // t<80
-            }
+                CodeMirror.registerHelper("fold", "wikiCmdFold", wikiCmdFold);
 
-            /*
-             *
-             * Determine the appropriate additive constant for the current iteration
-             *
-             * 返回对应的Kt值
-             *
-             */
-            function sha1_kt(t) {
-                return (t < 20) ? 1518500249 : (t < 40) ? 1859775393 : (t < 60) ? -1894007588 : -899497514;
-            }
+                editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+                    mode: 'markdown',
+                    lineNumbers: true,
+                    theme: "default",
+                    viewportMargin: Infinity,
+                    //绑定Vim
+                    //keyMap:"vim",
+                    //代码折叠
+                    lineWrapping: true,
 
-            /*
-             *
-             * Add integers, wrapping at 2^32. This uses 16-bit operations internally
-             *
-             * to work around bugs in some JS interpreters.
-             *
-             * 将32位数拆成高16位和低16位分别进行相加，从而实现 MOD 2^32 的加法
-             *
-             */
-            function safe_add(x, y) {
-                var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-                var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-                return (msw << 16) | (lsw & 0xFFFF);
-            }
+                    foldGutter: true,
+                    foldOptions: {
+                        rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.markdown, CodeMirror.fold.xml, CodeMirror.fold.wikiCmdFold),
+                    },
+                    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+                    //全屏模式
+                    //fullScreen:true,
+                    //括号匹配
+                    matchBrackets: true,
+                    lint: true,
+                    extraKeys: {
+                        "Alt-F": "findPersistent",
+                        "Ctrl-F": "find",
+                        "Ctrl-R": "replace",
+                        "F11": function (cm) {
+                            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                        },
+                        "Esc": function (cm) {
+                            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        },
+                        "Ctrl-S": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_savepage();
+                        },
+                        "Shift-Ctrl-N": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_newpage();
+                        },
+                        "Ctrl-B": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_bold();
+                        },
+                        "Ctrl-I": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_italic();
+                        },
+                        "Ctrl--": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_strikethrough();
+                        },
+                        "Shift-Ctrl-[": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_superscript();
+                        },
+                        "Shift-Ctrl-]": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_subscript();
+                        },
+                        "Shift-Ctrl-1": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_headline(1);
+                        },
+                        "Shift-Ctrl-2": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_headline(2);
+                        },
+                        "Shift-Ctrl-3": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_headline(3);
+                        },
+                        "Shift-Ctrl-4": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_headline(4);
+                        },
+                        "Shift-Ctrl-5": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_headline(5);
+                        },
+                        "Shift-Ctrl-6": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_headline(6);
+                        },
+                        "Ctrl-.": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_listul();
+                        },
+                        "Ctrl-/": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_listol();
+                        },
+                        "Ctrl-]": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_blockqote();
+                        },
+                        "Shift-Ctrl-T": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_tabel();
+                        },
+                        "Ctrl-H": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_horizontal();
+                        },
+                        "Alt-L": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_link();
+                        },
+                        "Alt-P": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_image();
+                        },
+                        "Alt-C": function (cm) {
+                            var $scope = angular.element('#wikiEditor').scope();
+                            $scope.cmd_code();
+                        },
+                    }
+                });
 
-            /*
-             *
-             * Bitwise rotate a 32-bit number to the left.
-             *
-             * 32位二进制数循环左移
-             *
-             */
-            function rol(num, cnt) {
-                return (num << cnt) | (num >>> (32 - cnt));
-            }
+                var mdwiki = markdownwiki({container_name: '.result-html', renderCallback: autoSave});
+                mdwiki.bindToCodeMirrorEditor(editor);
+                editor.setSize('auto', '640px');
+                editor.focus();
 
-            /*
-             *
-             * The standard SHA1 needs the input string to fit into a block
-             *
-             * This function align the input string to meet the requirement
-             *
-             */
-            function AlignSHA1(str) {
-                var nblk = ((str.length + 8) >> 6) + 1, blks = new Array(nblk * 16);
-                for (var i = 0; i < nblk * 16; i++)
-                    blks[i] = 0;
-                for (i = 0; i < str.length; i++)
-                    blks[i >> 2] |= str.charCodeAt(i) << (24 - (i & 3) * 8);
-                blks[i >> 2] |= 0x80 << (24 - (i & 3) * 8);
-                blks[nblk * 16 - 1] = str.length * 8;
-                return blks;
-            }
 
-            /*
-             *
-             * Convert an array of big-endian words to a hex string.
-             *
-             */
-            function binb2hex(binarray) {
-                var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-                var str = "";
-                for (var i = 0; i < binarray.length * 4; i++) {
-                    str += hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF) +
-                        hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
+                var showTreeview = true;
+                function initView(activity) {
+
+                    $("#srcview").removeClass('col-xs-12');
+                    $("#srcview").removeClass('col-xs-10');
+                    $("#srcview").removeClass('col-xs-5');
+                    $("#srcview").removeClass('col-xs-6');
+
+                    $("#preview").removeClass('col-xs-12');
+                    $("#preview").removeClass('col-xs-10');
+                    $("#preview").removeClass('col-xs-5');
+                    $("#preview").removeClass('col-xs-6');
+
+                    if (activity == true) {
+                        $('.toolbar-page-slide').removeClass('active');
+                        $('.toolbar-page-code').removeClass('active');
+                        $('.toolbar-page-design').removeClass('active');
+                    }
+
+                    if ($("#treeview").is(":hidden")) {
+                        if ($("#preview").is(":hidden")) {
+                            $("#srcview").addClass('col-xs-12');
+                        } else {
+                            $("#srcview").addClass('col-xs-6');
+                        }
+                        if ($("#srcview").is(":hidden")) {
+                            $("#preview").addClass('col-xs-12');
+                        } else {
+                            $("#preview").addClass('col-xs-6');
+                        }
+                    } else {
+                        if ($("#preview").is(":hidden")) {
+                            $("#srcview").addClass('col-xs-10');
+                        } else {
+                            $("#srcview").addClass('col-xs-5');
+                        }
+                        if ($("#srcview").is(":hidden")) {
+                            $("#preview").addClass('col-xs-10');
+                        } else {
+                            $("#preview").addClass('col-xs-5');
+                        }
+                    }
                 }
-                return str;
+
+                $('.toolbar-page-file').on('click', function () {
+                    if ($("#treeview").is(":hidden")) {
+                        $('#treeview').show('fast', function () {
+                            initView(false);
+                            if ($("#treeview").is(":hidden")) {
+                                $('.toolbar-page-file').removeClass('active');
+                            } else {
+                                $('.toolbar-page-file').addClass('active');
+                            }
+                        });
+                    } else {
+                        $('#treeview').hide('fast', function () {
+                            initView(false);
+                            if ($("#treeview").is(":hidden")) {
+                                $('.toolbar-page-file').removeClass('active');
+                            } else {
+                                $('.toolbar-page-file').addClass('active');
+                            }
+                        });
+                    }
+                });
+
+                $('.toolbar-page-code').on('click', function () {
+                    $('#srcview').show();
+                    $("#preview").hide('fast', function () {
+                        initView(true);
+                        $('.toolbar-page-code').addClass('active');
+                        $('.toolbar-page-view').attr("disabled", true);
+                        $('#codeToolbar button').attr("disabled", false);
+                    });
+                });
+
+                $('.toolbar-page-slide').on('click', function () {
+                    $('#srcview').show();
+                    $("#preview").show('fast', function () {
+                        initView(true);
+                        $('.toolbar-page-slide').addClass('active');
+                        $('.toolbar-page-view').attr("disabled", false);
+                        $('#codeToolbar button').attr("disabled", false);
+                    });
+                });
+
+                $('.toolbar-page-design').on('click', function () {
+                    $('#preview').show();
+                    $("#srcview").hide('fast', function () {
+                        initView(true);
+                        $('.toolbar-page-design').addClass('active');
+                        $('.toolbar-page-view').attr("disabled", false);
+                        $('#codeToolbar button').attr("disabled", true);
+
+                    });
+                });
+
+//获取剪贴板数据方法
+                function getClipboardText(event) {
+                    var clipboardData = event.clipboardData || window.clipboardData;
+                    return clipboardData.getData("text");
+                };
+
+//设置剪贴板数据
+                function setClipboardText(event, value) {
+                    if (event.clipboardData) {
+                        return event.clipboardData.setData("text/plain", value);
+                    } else if (window.clipboardData) {
+                        return window.clipboardData.setData("text", value);
+                    }
+                };
+
+                function CreateElementForExecCommand(textToClipboard) {
+                    var forExecElement = document.createElement("div");
+                    // place outside the visible area
+                    forExecElement.style.position = "absolute";
+                    forExecElement.style.left = "-10000px";
+                    forExecElement.style.top = "-10000px";
+                    // write the necessary text into the element and append to the document
+                    forExecElement.textContent = textToClipboard;
+                    document.body.appendChild(forExecElement);
+                    // the contentEditable mode is necessary for the  execCommand method in Firefox
+                    forExecElement.contentEditable = true;
+
+                    return forExecElement;
+                }
+
+                function SelectContent(element) {
+                    // first create a range
+                    var rangeToSelect = document.createRange();
+                    rangeToSelect.selectNodeContents(element);
+
+                    // select the contents
+                    var selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(rangeToSelect);
+                }
+
+                function CopyToClipboard(value) {
+                    var textToClipboard = value;
+
+                    var success = true;
+                    if (window.clipboardData) { // Internet Explorer
+                        window.clipboardData.setData("Text", textToClipboard);
+                    }
+                    else {
+                        // create a temporary element for the execCommand method
+                        var forExecElement = CreateElementForExecCommand(textToClipboard);
+
+                        /* Select the contents of the element
+                         (the execCommand for 'copy' method works on the selection) */
+                        SelectContent(forExecElement);
+
+                        var supported = true;
+
+                        // UniversalXPConnect privilege is required for clipboard access in Firefox
+                        try {
+                            if (window.netscape && netscape.security) {
+                                netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+                            }
+
+                            // Copy the selected content to the clipboard
+                            // Works in Firefox and in Safari before version 5
+                            success = document.execCommand("copy", false, null);
+                        }
+                        catch (e) {
+                            success = false;
+                        }
+
+                        // remove the temporary element
+                        document.body.removeChild(forExecElement);
+                    }
+
+                    if (success) {
+                        //alert("网址已成功拷贝到剪切板!");
+                        Message.info("网址已成功拷贝到剪切板!");
+                    }
+                    else {
+                        //alert("您的浏览器不支持访问剪切板!");
+                        Message.info("您的浏览器不支持访问剪切板!");
+                    }
+                }
+
+                $('.toolbar-page-copyurl').on('click', function () {
+                    CopyToClipboard($('#btUrl').val());
+                });
+
+                $('.toolbar-page-preview').on('click', function () {
+                    editor.focus();
+                    var url = $('#btUrl').val();
+                    if (url) {
+                        window.open(url);
+                    }
+
+                });
+
+                $('.toolbar-page-version').on('click', function () {
+                    var $scope = angular.element('#wikiEditor').scope();
+                    $scope.cmd_version();
+                });
+
+                $('.toolbar-page-hotkey').on('click', function () {
+                    console.log('toolbar-page-hotkey');
+                    $('#hotkeyModal').modal({
+                        keyboard: true
+                    })
+                });
+
+                $('.toolbar-page-knowledge').on('click', function () {
+                    console.log('toolbar-page-knowledge');
+                });
+
+                $(function () {
+                    var wellStartPos = $('.well').offset().top;
+
+                    $.event.add(window, "scroll", function () {
+                        var p = $(window).scrollTop();
+                        if (p > wellStartPos) {
+                            $('.well').css('position', 'fixed');
+                            $('.well').css('top', '0px');
+                            $('.well').css('left', '0px');
+                            $('.well').css('right', '0px');
+
+//                $('.treeview').css('position', 'fixed');
+//                $('.treeview').css('top',p + $('#toolbarview').height());
+                        } else {
+                            $('.well').css('position', 'static');
+                            $('.well').css('top', '');
+
+//                $('.treeview').css('position','static');
+//                $('.treeview').css('top','');
+                        }
+                    });
+                });
+
+//    editor.on("blur", function(){
+//        console.log('editor lost focus');
+//        setTimeout(function () {
+//            editor.focus();
+//        },500);
+//    });
+
+                $('.btn').on('click', function () {
+                    var unfocus = $(this).data('unfocus');
+                    if (unfocus == undefined || unfocus == '0') {
+                        editor.focus();
+                    }
+                });
+
+                function midDiv(DivId, left) {
+                    var Div = $(DivId);
+                    $(DivId).style.top = (document.documentElement.scrollTop + (document.documentElement.clientHeight - $(DivId).offsetHeight) / 2) + "px";
+//        $(DivId).style.left = (document.documentElement.scrollLeft + (document.documentElement.clientWidth - $(DivId).offsetWidth) / 2) + "px";
+                    $(DivId).style.left = left;
+                }
+
+                editor.focus();
+
+                editor.on("paste", function (editor, e) {
+                    if (!(e.clipboardData && e.clipboardData.items)) {
+                        alert("该浏览器不支持操作");
+                        return;
+                    }
+                    for (var i = 0, len = e.clipboardData.items.length; i < len; i++) {
+                        var item = e.clipboardData.items[i];
+                        // console.log(item.kind+":"+item.type);
+                        if (item.kind === "string") {
+                            item.getAsString(function (str) {
+                                // str 是获取到的字符串
+                                console.log('get str');
+                                console.log(str);
+                            })
+                        } else if (item.kind === "file") {
+                            var pasteFile = item.getAsFile();
+                            // pasteFile就是获取到的文件
+                            console.log(pasteFile);
+                            fileUpload(pasteFile);
+                        }
+                    }
+                });
+
+                editor.on("drop", function (editor, e) {
+                    // console.log(e.dataTransfer.files[0]);
+                    if (!(e.dataTransfer && e.dataTransfer.files)) {
+                        alert("该浏览器不支持操作");
+                        return;
+                    }
+                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                        //console.log(e.dataTransfer.files[i]);
+                        fileUpload(e.dataTransfer.files[i]);
+                    }
+                    e.preventDefault();
+                });
+
+//文件上传
+                function fileUpload(fileObj) {
+                    console.log(fileObj);
+                    var $scope = angular.element('#wikiEditor').scope();
+                    console.log("================");
+                    $scope.cmd_image_upload(fileObj);
+                    return;
+                }
+
+//阻止浏览器默认打开拖拽文件的行为
+                window.addEventListener("drop", function (e) {
+                    e = e || event;
+                    e.preventDefault();
+                    if (e.target.tagName == "textarea") {  // check wich element is our target
+                        e.preventDefault();
+                    }
+                }, false);
+
+
+                return editor;
             }
+
+
         }]);
 
-    return {
-        htmlContent: htmlContent,
-        domReady: function () {
-            //initEditor();
-        },
-    };
+    return htmlContent;
 });
