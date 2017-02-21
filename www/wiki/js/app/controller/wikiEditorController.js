@@ -934,7 +934,7 @@ define([
                 }
 
                 $scope.websitePage.content = content;
-                util.post(config.apiUrlPrefix + 'website_pages', $scope.websitePage, cb, errcb);
+                util.http('POST', config.apiUrlPrefix + 'website_pages/upsert', $scope.websitePage, cb, errcb);
             }
 
             function initEditor() {
