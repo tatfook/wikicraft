@@ -9,6 +9,20 @@ define([
     'helper/util',
     'helper/storage',
     'text!html/wikiEditor.html',
+    'codemirror/mode/markdown/markdown',
+    //'codemirror/mode/javascript/javascript',
+    //'codemirror/mode/xml/xml',
+    // 代码折叠
+    'codemirror/addon/fold/foldgutter',
+    'codemirror/addon/fold/foldcode',
+    //'codemirror/addon/fold/brace-fold',
+    //'codemirror/addon/fold/comment-fold',
+    //'codemirror/addon/fold/indent-fold',
+    'codemirror/addon/fold/markdown-fold',
+    'codemirror/addon/fold/xml-fold',
+    // 错误提示
+    'codemirror/addon/lint/json-lint',
+
     'codemirror/addon/search/search',
     'codemirror/addon/dialog/dialog',
     'codemirror/addon/edit/continuelist',
@@ -28,12 +42,47 @@ define([
             console.log("init editor failed");
             return;
         }
+
+        function wikiCmdFold(cm, start) {
+            var line = cm.getLine(start.line);
+            if ((!line) || (!line.match(/^```[@\/]/)))
+                return undefined;
+            var end = start.line + 1;
+            var lastLineNo = cm.lastLine();
+            while (end < lastLineNo) {
+                line = cm.getLine(end)
+                if (line && line.match(/^```/))
+                    break;
+                end++;
+            }
+
+            return {
+                from: CodeMirror.Pos(start.line),
+                to: CodeMirror.Pos(end, cm.getLine(end).length)
+            };
+        }
+        CodeMirror.registerHelper("fold", "wikiCmdFold", wikiCmdFold);
+
         editor = CodeMirror.fromTextArea(document.getElementById("source"), {
             mode: 'markdown',
             lineNumbers: true,
-            lineWrapping: true,
             theme: "default",
             viewportMargin: Infinity,
+            //绑定Vim
+            //keyMap:"vim",
+            //代码折叠
+            lineWrapping: true,
+
+            foldGutter: true,
+            foldOptions:{
+                rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.markdown,CodeMirror.fold.xml, CodeMirror.fold.wikiCmdFold),
+            },
+            gutters:["CodeMirror-linenumbers", "CodeMirror-foldgutter","CodeMirror-lint-markers"],
+            //全屏模式
+            //fullScreen:true,
+            //括号匹配
+            matchBrackets:true,
+            lint:true,
             extraKeys: {
                 "Alt-F": "findPersistent",
                 "Ctrl-F": "find",
@@ -133,8 +182,8 @@ define([
 
         var mdwiki = markdownwiki({container_name: '.result-html'});
         mdwiki.bindToCodeMirrorEditor(editor);
-
-        editor.setSize('auto', '600px');
+        console.log($('#wikiEditorContainer').css('height'));
+        editor.setSize('auto', '640px');
         editor.focus();
 
         var showTreeview = true;
@@ -143,13 +192,13 @@ define([
 
             $("#srcview").removeClass('col-xs-12');
             $("#srcview").removeClass('col-xs-10');
-            $("#srcview").removeClass('col-xs-6');
             $("#srcview").removeClass('col-xs-5');
+            $("#srcview").removeClass('col-xs-6');
 
             $("#preview").removeClass('col-xs-12');
             $("#preview").removeClass('col-xs-10');
-            $("#preview").removeClass('col-xs-6');
             $("#preview").removeClass('col-xs-5');
+            $("#preview").removeClass('col-xs-6');
 
             if (activity == true) {
                 $('.toolbar-page-slide').removeClass('active');
@@ -202,7 +251,6 @@ define([
                     }
                 });
             }
-
         });
 
         $('.toolbar-page-code').on('click', function () {
@@ -435,7 +483,9 @@ define([
 
 //文件上传
         function fileUpload(fileObj) {
+            console.log(fileObj);
             var $scope = angular.element('#wikiEditor').scope();
+            console.log("================");
             $scope.cmd_image_upload(fileObj);
             return;
         }
@@ -460,6 +510,10 @@ define([
         var treeData = [];
         for (var i = 0; i < pageList.length; i++) {
             var page = pageList[i];
+            if (page.isDelete) {
+                continue;
+            }
+
             var url = page.url;
             url = url.trim();
             var paths = page.url.split('/');
@@ -653,6 +707,7 @@ define([
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message',
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message) {
             console.log("wikiEditorController");
+            $rootScope.frameFooterExist =false;
             $scope.websites = [];           //站点列表
             $scope.websitePages = [];       //页面列表
 
@@ -691,7 +746,8 @@ define([
                 /*
                  github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'},'wxaxiaoyao');
                  $scope.githubSource = github;
-                 */
+                */
+
                 if (user.githubToken) {
                     github.init(user.githubToken, user.githubName);
                     $scope.githubSource = github;
@@ -779,8 +835,12 @@ define([
                     $('.toolbar-page-remove').attr("disabled", true);
                     return ;
                 }
-
+                //console.log(wp);
                 editor.setValue(wp.content);
+                //editor.execCommand("find");
+                //editor.foldCode(0);
+                CodeMirror.commands.foldAll(editor);
+
                 $('#btUrl').val(window.location.origin + wp.url);
                 $('.toolbar-page-remove').attr("disabled", false);
 
@@ -804,7 +864,7 @@ define([
 
             //初始化目录树  data:  $.parseJSON(getTree()),
             function initTree() {
-                //console.log('@initTree');
+                console.log('@initTree');
                 $('#treeview').treeview({
                     color: "#428bca",
                     showBorder: false,
@@ -1280,12 +1340,13 @@ define([
                     var retVal = confirm("你确定要删除页面:" + $scope.websitePage.name + "?");
                     if (retVal == true) {
                         $scope.loading = true;
-                        $http.delete("/api/wiki/models/website_pages", {
-                            params: {_id: $scope.websitePage._id, name: $scope.websitePage.name},
+                        $http.delete(config.apiUrlPrefix + "website_pages/deleteByPageId", {
+                            params: {_id: $scope.websitePage._id},
                         }).then(function (response) {
+                            github.isInited() && github.deleteFile($scope.websitePage.websieName + '/' + $scope.websitePage.name, "delete file");
                             $.each($scope.websitePages, function (index, item) {
                                 if (item._id == $scope.websitePage._id) {
-                                    $scope.websitePages[index].del = 1;
+                                    $scope.websitePages[index].isDelete = true;
                                 }
                             });
                             $scope.websitePage = {};
