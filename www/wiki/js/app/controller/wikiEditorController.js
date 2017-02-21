@@ -638,14 +638,13 @@ define([
             }
 
             //整行替换
-            function line_keyword(char, ch) {
-                var cursor = editor.getCursor();
-                var content = editor.getLine(cursor.line);
-                editor.replaceRange(char, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, content.length));
+            function line_keyword(lineNo, char, ch) {
+                var content = editor.getLine(lineNo);
+                editor.replaceRange(char, CodeMirror.Pos(lineNo, 0), CodeMirror.Pos(lineNo, content.length));
                 if (!ch) {
                     ch = 0;
                 }
-                editor.setCursor(CodeMirror.Pos(cursor.line, ch));
+                editor.setCursor(CodeMirror.Pos(lineNo, ch));
                 editor.focus();
             }
 
@@ -831,21 +830,22 @@ define([
                     //支持chrome IE10
                     if (window.FileReader) {
                         var fileReader = new FileReader();
+                        var cursor = editor.getCursor();
                         fileReader.onloadstart = function () {
                             console.log("onloadstart");
-                            line_keyword('![](uploading...0/' + fileObj.size + ')', 2);
+                            line_keyword(cursor.line, '![](uploading...0/' + fileObj.size + ')', 2);
                         };
                         fileReader.onprogress = function (p) {
                             console.log("onprogress");
-                            line_keyword('![](uploading...' + p.loaded + '/' + fileObj.size + ')', 2);
+                            line_keyword(cursor.line, '![](uploading...' + p.loaded + '/' + fileObj.size + ')', 2);
                         };
                         fileReader.onload = function () {
                             console.log("load complete");
-                            line_keyword('![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
+                            line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
                             $scope.githubSource.uploadImage(undefined, fileReader.result, function (img_url) {
                                 //console.log(result);
-                                line_keyword('![](' + img_url + ')', 2);
+                                line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
                                     cb(img_url);
                                 }
