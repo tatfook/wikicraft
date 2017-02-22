@@ -11,7 +11,7 @@ define([
     'helper/markdownwiki',
     'helper/util',
     'helper/storage',
-    'text!html/test.html',
+    'text!html/knowledge.html',
     'bootstrap-treeview',
 ], function (app, markdownwiki, util, storage,  htmlContent) {
     var md = markdownwiki({"use_template":false});
