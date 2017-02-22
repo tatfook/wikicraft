@@ -1298,6 +1298,7 @@ define([
 
                 $('.toolbar-page-knowledge').on('click', function () {
                     console.log('toolbar-page-knowledge');
+                    util.go("knowledge");
                 });
 
                 $(function () {

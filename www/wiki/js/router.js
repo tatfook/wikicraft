@@ -36,6 +36,8 @@ define(['app', 'require'], function (app, require) {
 
             // temp
             'game':{},
+
+            'knowledge':{},
         };
 
         for (var key in routerMap) {
