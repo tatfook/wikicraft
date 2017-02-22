@@ -42,7 +42,7 @@ function website_pages:delete(params)
 end
 
 -- 删除页面
-function website_pages:deleteByPageId(params)
+function website_pages:api_deleteByPageId(params)
 	self:ensureAuthenticated()
 	if not params._id then
 		return errors.wrap(errors.REQUEST_PARAMS_ERROR)
@@ -137,6 +137,17 @@ function website_pages:get(params)
 	end
 
 	return {error=errors.SUCCESS, data=data};
+end
+
+-- 通过页面ID获取页面
+function website_pages:api_getWebsitePageById(params)
+	if not params._id then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)	
+	
+	return errors:wrap(yield())
 end
 
 function website_pages:api_getWebsitePageByUrl(params) 
