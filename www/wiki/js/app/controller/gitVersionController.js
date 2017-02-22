@@ -12,7 +12,7 @@ define(['app','helper/util','text!html/gitVersion.html'], function (app, util, h
        Account.ensureAuthenticated();
 
        var user = Account.getUser();
-       github.init(user.githubToken, user.githubName, undefined, function () {
+       github.isInited() || github.init(user.githubToken, user.githubName, undefined, function () {
            init();
        }, function (response) {
            console.log(response);
@@ -75,7 +75,7 @@ define(['app','helper/util','text!html/gitVersion.html'], function (app, util, h
                    (function (sha, filename) {
                        github.rollbackFile(sha, filename, 'rollback file:' + filename, function () {
                            console.log("rollback success");
-                           github.getFile(filename, function (data) {
+                           github.getFile({path:filename}, function (data) {
                               util.http('POST', config.apiUrlPrefix + 'website_pages/updateContentAndShaByUrl', {url:filename, content:data.content, sha:data.sha});
                            });
                        }, function () {

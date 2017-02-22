@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/storage', 'helper/util'], function (app, storage, util) {
+define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (app, storage, util, dataSource) {
     console.log("accountFactory");
     app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github',function ($auth, $rootScope, $uibModal, github) {
         var account = {
@@ -33,7 +33,7 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage, util) {
             // 确保认证，未认证跳转登录页
             ensureAuthenticated: function(cb) {
                 if (!this.isAuthenticated()) {
-                    window.location.href = "/#/login";
+                    window.location.href = "/wiki/login";
                     return;
                 }
                 cb && cb();
@@ -127,7 +127,9 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage, util) {
         // 初始化github
         function initGithub(user) {
             if (user && user.githubToken && !github.isInited()) {
-                github.init(user.githubToken, user.githubName, undefined);
+                github.init(user.githubToken, user.githubName, undefined, function () {
+                    dataSource.registerDataSource('github', github);
+                });
             }
         }
 

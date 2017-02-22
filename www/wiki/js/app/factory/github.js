@@ -2,24 +2,24 @@
  * Created by wuxiangan on 2016/12/29.
  */
 
-define(['app','helper/storage', 'js-base64'], function (app, storage) {
+define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
     app.factory('github', ['$http', function ($http) {
         var github = {
-            inited:false,
-            githubName:'',
-            defalultRepoName:'wikicraftDataSource',
-            apiBase:'https://api.github.com',
-            defaultHttpHeader:{
+            inited: false,
+            githubName: '',
+            defalultRepoName: 'wikicraftDataSource',
+            apiBase: 'https://api.github.com',
+            defaultHttpHeader: {
                 'Accept': 'application/vnd.github.full+json',  // 这个必须有
             },
         };
 
         // http请求
-        github.httpRequest =function(method, url, data, cb, errcb) {
+        github.httpRequest = function (method, url, data, cb, errcb) {
             var config = {
-                method:method,
-                url:this.apiBase + url,
-                headers:this.defaultHttpHeader,
+                method: method,
+                url: this.apiBase + url,
+                headers: this.defaultHttpHeader,
                 skipAuthorization: true,  // 跳过插件satellizer认证
             };
             if (method == "POST" || method == "PUT") {
@@ -38,27 +38,28 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
         }
         // user operation
         github.getUser = function (cb, errcb) {
-            this.httpRequest('GET','/user', {}, cb, errcb);
+            this.httpRequest('GET', '/user', {}, cb, errcb);
         };
 
         // repos operation
         // listRepos
         github.listRepos = function (cb, errcb) {
             var url = '/user/repos';
-            github.httpRequest("GET", url, {affiliation:'owner'}, cb, errcb);
+            github.httpRequest("GET", url, {affiliation: 'owner'}, cb, errcb);
         };
 
         github.getRepos = function (cb, errcb) {
             var url = '/repos/' + this.githubName + '/' + this.defalultRepoName;
-            this.httpRequest('GET', url,{},cb, errcb);
+            this.httpRequest('GET', url, {}, cb, errcb);
         };
 
         // createRespo
         github.createRepos = function (cb, errcb) {
-            github.httpRequest("POST", "/user/repos", {name:this.defalultRepoName}, cb, errcb);
+            github.httpRequest("POST", "/user/repos", {name: this.defalultRepoName}, cb, errcb);
         };
+
         // delete repos
-        github.deleteRepos = function (repoName, cb, errcb) {
+        github.deleteRepos = function (cb, errcb) {
             var url = "/repos/" + this.githubName + '/' + this.defalultRepoName;
             github.httpRequest("DELETE", url, {}, cb, errcb);
         };
@@ -72,12 +73,12 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
         // writeFile
         github.writeFile = function (data, cb, errcb) {
             var self = this;
-            self.getFile({path:data.path}, function (result) {
-                //console.log(result);
+            self.getFile({path: data.path}, function (result) {
+                console.log(result);
                 data.sha = result.sha;
-                self.fileCURD('PUT',data,cb, errcb);
+                self.fileCURD('PUT', data, cb, errcb);
             }, function () {
-                self.fileCURD('PUT', data,cb, errcb);
+                self.fileCURD('PUT', data, cb, errcb);
             });
         }
         // read file
@@ -95,7 +96,7 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
         // rollbackFile
         github.rollbackFile = function (ref, path, message, cb, errcb) {
             var self = this;
-            var data={ref:ref, path:path}
+            var data = {ref: ref, path: path}
 
             self.getFile(data, function (file) {
                 data.ref = undefined;
@@ -117,13 +118,14 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
             github.httpRequest('GET', url, data, cb, errcb);
         };
         github.getSingleCommit = function (sha, cb, errcb) {
-            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/commits/'+sha;
+            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/commits/' + sha;
             github.httpRequest('GET', url, {}, cb, errcb);
         };
 
         return {
-            github:github,
+            github: github,
             init: function (githubToken, githubName, defaultRepoName, cb, errcb) {
+                var self = this;
                 //console.log(githubToken);
                 if (github.inited) {
                     cb && cb();
@@ -134,64 +136,75 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
                 github.githubName = githubName;
                 github.defalultRepoName = defaultRepoName || 'wikicraftDataSource';
                 github.defaultHttpHeader['Authorization'] = githubToken.token_type + ' ' + githubToken.access_token; // auth 或 使用 ?access_token= githubToken.access_token
-                // 包装成功回调，用于获取用户名
-                var getGithubName = function (data) {
-                    if (!githubName) {
-                        github.getUser(function (profile) {
-                            github.githubName = profile.login;
-                            github.inited = true;
-                            cb && cb(data);
-                        }, errcb);
-                    } else {
+
+                function setDefaultRepo(repoName, cb, errcb) {
+                    self.setDefaultRepo(repoName, function (data) {
                         github.inited = true;
                         cb && cb(data);
-                    }
-                };
-                // 会话期记录是否已存在数据源库，避免重复请求
-                if (!storage.sessionStorageGetItem('githubRepoExist')){
-                    github.getRepos(getGithubName, function (response) {
-                        //console.log(response);
-                        storage.sessionStorageSetItem('githubRepoExist', true);
-                        github.createRepos(getGithubName, errcb);
-                    });
-                } else if (!github.githubName) {  // 库存在用户名没有获取到
-                    getGithubName();
-                } else {                            // 没有请求 直接回调
-                    cb && cb();
+                    }, errcb);
+                }
+
+                if (!githubName) {
+                    github.getUser(function (profile) {
+                        github.githubName = profile.login;
+                        setDefaultRepo(defaultRepoName, cb, errcb);
+                    }, errcb);
+                } else {
+                    setDefaultRepo(defaultRepoName, cb, errcb);
                 }
             },
             isInited: function () {
                 return github.inited;
             },
+            getContentUrl: function (params) {
+                return 'https://github.com/' + github.githubName + '/' + github.defalultRepoName + '/blob/master/' + params.path;
+            },
             deleteRepos: function (cb, errcb) {
                 github.deleteRepos(cb, errcb);
             },
-            setDefaultRepo: function (repoName) {
-                github.defalultRepoName = repoName;
+            setDefaultRepo: function (repoName, cb, errcb) {
+                github.defalultRepoName = repoName || 'wikicraftDataSource';
+                //console.log(storage.sessionStorageGetItem('githubRepoExist'));
+                // 会话期记录是否已存在数据源库，避免重复请求
+                if (!storage.sessionStorageGetItem('githubRepoExist')) {
+                    github.createRepos(function (data) {
+                        storage.sessionStorageSetItem('githubRepoExist', true);
+                        cb && cb(data);
+                    }, errcb);
+                } else {
+                    github.getRepos(cb, errcb);
+                }
             },
-            writeFile: function (path, content, message, cb, errcb) {
-                github.writeFile({path:path, message:message, content:Base64.encode(content)}, cb, errcb);
+            writeFile: function (params, cb, errcb) {
+                //params: path, content, message,
+                params.content = Base64.encode(params.content);
+                github.writeFile(params, cb, errcb);
             },
             rollbackFile: function (ref, path, message, cb, errcb) {
                 github.rollbackFile(ref, path, message, cb, errcb);
             },
-            getContent: function (path, cb, errcb) {
-                this.getFile(path, function (data) {   // this.getFile 已做 base64解码
+            getContent: function (params, cb, errcb) {
+                // params: path
+                this.getFile(params, function (data) {   // this.getFile 已做 base64解码
                     cb && cb(data.content);
                 }, errcb)
             },
-            getFile: function (path, cb, errcb) {
-                github.getFile({path:path}, function (data) {
+            getFile: function (params, cb, errcb) {
+                // params: path
+                github.getFile(params, function (data) {
                     data.content = data.content && Base64.decode(data.content);
                     cb && cb(data);
                 }, errcb);
             },
-            getSha:function (path, cb, errcb) {
+            getSha: function (path, cb, errcb) {
                 this.getFile(path, cb, errcb);
             },
-            uploadImage: function (path, content, cb, errcb) {
+            uploadImage: function (params, cb, errcb) {
+                //params path, content
+                var path = params.path;
+                var content = params.content;
                 if (!path) {
-                    path =  'img_' + (new Date()).getTime();
+                    path = 'img_' + (new Date()).getTime();
                 }
                 path = 'images/' + path;
                 /*data:image/png;base64,iVBORw0KGgoAAAANS*/
@@ -199,23 +212,23 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
                 if (content.length > 1) {
                     var imgType = content[0];
                     content = content[1];
-                    
+
                     imgType = imgType.match(/image\/([\w]+)/)
                     imgType = imgType && imgType[1];
                     if (imgType) {
-                        path = path +  '.' + imgType;
+                        path = path + '.' + imgType;
                     }
                 } else {
                     content = content[0];
                 }
-                
-                github.writeFile({path:path, message: 'upload image:'+ path, content:content}, function(data){
-                    console.log(data);
+
+                github.writeFile({path: path, message: 'upload image:' + path, content: content}, function (data) {
                     cb && cb(data.content.download_url);
                 }, errcb);
             },
-            deleteFile: function (path, message, cb, errcb) {
-                github.deleteFile({path:path, message:message}, cb , errcb);
+            deleteFile: function (params, cb, errcb) {
+                // params: path, message,
+                github.deleteFile(params, cb, errcb);
             },
             getTree: function (bRecursive, cb, errcb) {
                 github.getTree(cb, errcb)
@@ -226,7 +239,6 @@ define(['app','helper/storage', 'js-base64'], function (app, storage) {
             getSingleCommit: function (sha, cb, errcb) {
                 github.getSingleCommit(sha, cb, errcb);
             },
-
         };
     }]);
 });

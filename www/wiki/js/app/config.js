@@ -14,6 +14,8 @@
         pathPrefix: pathPrefix,
         // 图片路径
         imgsPath: pathPrefix + 'assets/imgs/',
+        // 文章路径前缀
+        articlePath: pathPrefix + 'html/articles/',
 
         // js 路径
         jsPath: pathPrefix + 'js/',
@@ -44,6 +46,8 @@
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
+    // angular
+    //window.app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize']);
 
     // 预加载模块注册
     config.registerPreloadModule = function (path) {

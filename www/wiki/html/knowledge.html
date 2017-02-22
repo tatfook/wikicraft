@@ -1,69 +1,29 @@
-<div ng-controller="knowledgeController" class="container">
-    <div style="display:flex; justify-content: center; margin: 30px 0px">
-        <div style=" border-top: 1px solid grey">
-            <ul class="nav nav-tabs nav-stacked">
-                <li class="active"><a href="#intro" data-toggle="tab">简介</a></li>
-                <li><a href="#markdown" data-toggle="tab">Markdown语法</a></li>
-            </ul>
+<div ng-controller="knowledgeController">
+    <!--头部-->
+    <div style="position: absolute; top: 0px; left: 0px; right: 0px; height: 60px; border-bottom: 1px solid #dddddd">
+        <div class="container-fluid">
+            <div class="col-xs-4 col-sm-2">
+                <h3>WIKICRAFT</h3>
+            </div>
         </div>
-        <div class="tab-content"  style="flex-grow: 1; border-top: 1px solid grey;">
-            <div class="tab-pane fade in active" id="intro">
-                <div class="panel panel-default">
-                    <div class="panel-heading">wikicraft简介</div>
-                    <div class="panel-body" style="display: flex">
-                        <p>wikicraft简介</p>
-                        <p>wikicraft简介</p>
-                        <p>wikicraft简介</p>
-                        <p>wikicraft简介</p>
-                        <p>wikicraft简介</p>
-                        <p>wikicraft简介</p>
-                        <p>wikicraft简介</p>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade in" id="markdown">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Markdown语法</div>
-                    <p><a href="http://wowubuntu.com/markdown/#list" target="_blank">Markdown 中文版语法说明</a></p>
-                    <div class="panel-body" style="display: flex">
+    </div>
+    <!--正文-->
+    <div style="position: absolute; top: 60px; bottom: 0px; left: 0px; width: 15%; border-right: 1px solid #dddddd; min-width: 180px;">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#classify" data-toggle="tab"><i class="fa fa-align-justify" aria-hidden="true"></i>目录</a></li>
+        </ul>
 
-
-                        <div>1. 标题设置（让字体变大，和word的标题意思一样）
-                            <br> 在Markdown当中设置标题，有两种方式：
-                            <br> 第一种：通过在文字下方添加“=”和“-”，他们分别表示一级标题和二级标题。
-                            <br> 第二种：在文字开头加上 “#”，通过“#”数量表示几级标题。（一共只有1~6级标题，1级标题字体最大）<br>
-                            <br> 2. 块注释（blockquote）
-                            <br> 通过在文字开头添加“&gt;”表示块注释。（当&gt;和文字之间添加五个blank时，块注释的文字会有变化。）<br>
-                            <br> 3. 斜体
-                            <br> 将需要设置为斜体的文字两端使用1个“*”或者“_”夹起来<br>
-                            <br> 4. 粗体<br> 将需要设置为斜体的文字两端使用2个“*”或者“_”夹起来<br>
-                            <br> 5. 无序列表
-                            <br> 在文字开头添加(<code>*</code>, <code>+</code>, and <code>-</code>)实现无序列表。但是要注意在(<code>*</code>, <code>+</code>, and <code>-</code>)和文字之间需要添加空格。（建议：一个文档中只是用一种无序列表的表示方式）<br>
-                            <br> 6. 有序列表
-                            <br> 使用数字后面跟上句号。（还要有空格）<br>
-                            <br> 7. 链接（Links）<br> Markdown中有两种方式，实现链接，分别为内联方式和引用方式。
-                            <br> <pre><code>内联方式：This is an [example link](http://example.com/).
-                             <br>引用方式：</code><br><code>I get 10 times more traffic from [Google][1] than from [Yahoo][2] or [MSN][3].  <br>
-                                <br>[1]: http://google.com/        "Google"
-                                <br>[2]: http://search.yahoo.com/  "Yahoo Search"
-                                <br>[3]: http://search.msn.com/    "MSN Search"</code></pre>
-                            <br>8. 图片（Images）
-                            <br> 图片的处理方式和链接的处理方式，非常的类似。
-                            <br> 内联方式：<pre><code>![alt text](/path/to/img.jpg "Title")
-                                <br> 引用方式：</code></pre>
-                            <pre><code><br> ![alt text][id] </code></pre>  <br>
-                                <br> [id]: /path/to/img.jpg "Title"<br>
-                                <br> 9. 代码（HTML中所谓的Code）<br> 实现方式有两种：
-                                <br> 第一种：简单文字出现一个代码框。使用`&lt;blockquote&gt;`。（`不是单引号而是左上角的ESC下面~中的`）
-                                <br> 第二种：大片文字需要实现代码框。使用Tab和四个空格。<br>
-                                <br> 10. 脚注（footnote）<br> 实现方式如下：<br> hello[^hello]<br>
-                                <br>
-                                <br> [^hello]: hi<br>
-                                <br> 11. 下划线<br> 在空白行下方添加三条“-”横线。（前面讲过在文字下方添加“-”，实现的2级标题）</code>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="classify" class="tab-content">
+            <div id="treeview"></div>
+        </div>
+    </div>
+    <div style="position: absolute; top: 60px; bottom: 0px; right: 0px; width: 85%; left: 200px; overflow-y: auto">
+        <!--title-->
+        <div style="text-align: center">
+            <h3>{{articleTitle}}</h3>
+        </div>
+        <div style="max-width: 980px; margin-left: auto; margin-right: auto; margin-top: 10px">
+            <div id="articleContent"></div>
         </div>
     </div>
 </div>

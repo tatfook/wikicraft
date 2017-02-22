@@ -240,6 +240,7 @@ define([
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
+            $scope.isGithubAuth = false;
             $scope.websites = [];           //站点列表
             $scope.websitePages = [];       //页面列表
 
@@ -275,16 +276,20 @@ define([
                 if (urlObj && urlObj.username == user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
                 }
+
                 /*
-                 github.init({token_type:'bearer', access_token:'5576aa080fa5f9113607c779f067d4465be43dbf'},'wxaxiaoyao');
-                 $scope.githubSource = github;
-                 */
-
+                 github.init({token_type:'bearer', access_token:'aa9274714497aa7ecd7d37b1391f1266bfc23f1d'},'wxaxiaoyao', undefined, function () {
+                     $scope.isGithubAuth = true;
+                     $scope.githubSource = github;
+                 });
+                */
+                
                 if (user.githubToken) {
-                    github.init(user.githubToken, user.githubName);
-                    $scope.githubSource = github;
+                    github.init(user.githubToken, user.githubName, undefined, function () {
+                        $scope.isGithubAuth = true;
+                        $scope.githubSource = github;
+                    });
                 }
-
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
                 $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
@@ -447,6 +452,14 @@ define([
                 return;
             }
 
+            $scope.openGithubFile = function () {
+                if (!$scope.websitePage || !$scope.websitePage.url) {
+                    return;
+                }
+                var gitUrl = github.getContentUrl({path:$scope.websitePage.url.substring(1)});
+                window.open(gitUrl);
+            }
+
             $scope.cmd_newpage = function () {
                 $uibModal.open({
                     //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
@@ -489,8 +502,11 @@ define([
                     $http.put(config.apiUrlPrefix + 'website_pages', $scope.websitePage).then(function (response) {
                         //console.log(response.data);
                         if (!isEmptyObject($scope.githubSource)) {
-                            var path = $scope.websitePage.websiteName + '/' + $scope.websitePage.name;
-                            $scope.githubSource.writeFile(path, $scope.websitePage.content, 'wikicraft:' + path, function (result) {
+                            var path = $scope.websitePage.url;
+                            //var pathPrefix = '/' + $scope.websitePage.websiteName;
+                            //path = path.substring(pathPrefix.length+1);
+                            path = path.substring(+1);
+                            $scope.githubSource.writeFile({path:path, content:$scope.websitePage.content, message: 'wikicraft save file: ' + path}, function (result) {
                                 //alert('文件已保存到服务器及Github');
                                 Message.info("文件已保存到服务器及Github");
                             });
@@ -843,7 +859,7 @@ define([
                             console.log("load complete");
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
-                            $scope.githubSource.uploadImage(undefined, fileReader.result, function (img_url) {
+                            $scope.githubSource.uploadImage({content:fileReader.result}, function (img_url) {
                                 //console.log(result);
                                 line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
@@ -876,10 +892,8 @@ define([
                     var retVal = confirm("你确定要删除页面:" + $scope.websitePage.name + "?");
                     if (retVal == true) {
                         $scope.loading = true;
-                        $http.delete(config.apiUrlPrefix + "website_pages/deleteByPageId", {
-                            params: {_id: $scope.websitePage._id},
-                        }).then(function (response) {
-                            github.isInited() && github.deleteFile($scope.websitePage.websieName + '/' + $scope.websitePage.name, "delete file");
+                        util.post(config.apiUrlPrefix + "website_pages/deleteByPageId",{_id: $scope.websitePage._id}, function(data){
+                            github.isInited() && github.deleteFile({path:$scope.websitePage.websieName + '/' + $scope.websitePage.name, message:"delete file"});
                             $.each($scope.websitePages, function (index, item) {
                                 if (item._id == $scope.websitePage._id) {
                                     $scope.websitePages[index].isDelete = true;
@@ -889,9 +903,10 @@ define([
                             initTree();
                             openPage();
                             $scope.loading = false;
-                        }).catch(function (response) {
+                        }, function () {
                             console.log(response.data);
                             $scope.loading = false;
+
                         });
                     }
                 }

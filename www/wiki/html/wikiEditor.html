@@ -73,7 +73,8 @@
                     <div class= "btn-group">
                         <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="width: 400px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
                         <button type="button" class="btn btn-default btn-sm toolbar-page-remove"  ng-click="cmd_remove()" title="删除页面" disabled="disabled"><i class="fa fa-remove"></i></button>
-                        <button type="button" class="btn btn-default btn-sm toolbar-page-copyurl" title="复制网址"><i class="fa fa-external-link" ></i>&nbsp;复制网址</button>
+                        <!--button type="button" class="btn btn-default btn-sm toolbar-page-copyurl" title="复制网址"><i class="fa fa-external-link" ></i>&nbsp;复制网址</button-->
+                        <button ng-show="isGithubAuth" type="button" class="btn btn-default btn-sm" title="打开github文件" ng-click="openGithubFile()"><i class="fa fa-external-link" ></i>&nbsp;github</button>
                     </div>
 
                     <div class= "btn-group  pull-right">
