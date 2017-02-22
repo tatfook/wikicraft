@@ -24,7 +24,7 @@ function user:ctor()
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- hashed password
 	self:addfield("sex", "string", false, 12)
-	self:addfield("githubDS", "boolean", false) -- github 数据源是否开启  
+	self:addfield("githubDS", "number", false) -- github 数据源是否开启  
 	self:addfield("githubId", "number", false) -- github 
 	self:addfield("githubToken", "table", false) -- github access token
 	self:addfield("githubName", "string", false) -- github access token
@@ -124,7 +124,8 @@ function user:api_deleteById(params)
 end
 
 -- 更新用户信息
-function user:api_updateUserInfo(userId, params)
+function user:api_updateUserInfo(params)
+	_, params = self:validateQuery(params)
 	if not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -273,6 +274,7 @@ function user:api_getProfile()
 
 	return errors:wrap(yield())
 end
+
 -- 通过用户ID获得用户信息
 function user:api_getById(params)
 	if not params.userId then 

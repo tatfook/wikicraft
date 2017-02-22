@@ -20,7 +20,7 @@
                     <div class="panel-body" style="display: flex">
                         <div>
                             <div style="display: flex; justify-content: center">
-                                <img src='/wiki/assets/imgs/ManPortrait.jpg' id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
+                                <img ng-src="{{user.portrait || imgsPath + 'test.jpg'}}" id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
                             </div>
                             <div style="display: flex; justify-content: center; margin: 10px">
                                 <input type="file" accept='image/*' class="btn" id="uploadPortraitBtn">
