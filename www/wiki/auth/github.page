@@ -50,6 +50,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					local token, err = createJWT(user);
 					response:send({ token = token, userInfo=user });
 				end
+				-- 通过userID更新用户github信息
 				local token = request:header('Authorization'):match("%s+(%S+)");
 				local payload, err = decodeJWT(token);
 				db.user:findOne({_id=payload.id}, function(err, user)

@@ -83,7 +83,7 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 password: util.stringTrim($scope.password),
             };
             console.log(params);
-            if (!params.username || params.username.length == 0 || !params.password || params.password == 0) {
+            if (!params.username || params.username.length == 0 || !params.password || params.password.length == 0) {
                 $scope.errMsg = "用户名，密码为必填字段";
                 return;
             }

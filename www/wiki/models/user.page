@@ -24,10 +24,10 @@ function user:ctor()
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- hashed password
 	self:addfield("sex", "string", false, 12)
-	self:addfield("githubId", "number", false) -- github id
+	self:addfield("githubDS", "boolean", false) -- github 数据源是否开启  
+	self:addfield("githubId", "number", false) -- github 
 	self:addfield("githubToken", "table", false) -- github access token
 	self:addfield("githubName", "string", false) -- github access token
-
 	self:addfield("portrait", "string", false, 200) -- picture url
 	self:addfield("comment", "string", false, 300)
 	self:addfield("company", "string", false, 30)
@@ -91,6 +91,8 @@ function user:update(params)
 		query.password = nil
 		query.githubId = nil
 		query.githubToken = nil
+		query.githubName = nil
+		query.isadmin = nil
 	end
 
 	self:db():updateOne({_id=query._id}, query, resume)
@@ -122,9 +124,21 @@ function user:api_deleteById(params)
 end
 
 -- 更新用户信息
-function user:updateUserInfo(userId, params)
-	self:db():updateOne({_id=userId}, params, resume)
-	local err, data = yield()
+function user:api_updateUserInfo(userId, params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.email = nil
+	params.password = nil
+	params.githubId = nil
+	params.githubToken = nil
+	params.githubName = nil
+	params.isadmin = nil
+
+	self:db():updateOne({_id=params._id}, params, resume)
+
+	return errors:wrap(yield())
 end
 
 -- 更改密码
