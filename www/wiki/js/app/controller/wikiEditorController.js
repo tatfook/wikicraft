@@ -767,9 +767,11 @@ define([
                         } else {
                             wiki += '[]';
                         }
-                        wiki += '(' + link.url + ')';
-                        editor.replaceSelection(wiki);
-
+                        // wiki += '(' + link.url + ')';
+                        editor.replaceSelection(wiki + '(' + link.url + ')');
+						if (wiki == '[]') {
+							editor.setCursor(CodeMirror.Pos(editor.getCursor().line,1));
+						}
                         //var wiki = '[' + link.txt + '](' + link.url + ')\n';
                         //var cursor = editor.getCursor();
                         //var content = editor.getLine(cursor.line);
