@@ -85,18 +85,30 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             console.log(params);
             if (!params.username || params.username.length == 0 || !params.password || params.password.length == 0) {
                 $scope.errMsg = "用户名，密码为必填字段";
+                $("#input-name").addClass("has-error");
+                $("#input-pwd").addClass("has-error");
+                $("#input-email").removeClass("has-error");
                 return;
             }
             if (!params.username.match(/[\d\w_]{3,20}/)) {
                 $scope.errMsg = "用户名格式错误，应由3-20数字或字母或下划线组成";
+                $("#input-email").removeClass("has-error");
+                $("#input-pwd").removeClass("has-error");
+                $("#input-name").addClass("has-error");
                 return;
             }
             if (!params.email) {
-                $scope.errMsg = "邮箱格式错误"
+                $scope.errMsg = "邮箱格式错误";
+                $("#input-email").addClass("has-error");
+                $("#input-name").removeClass("has-error");
+                $("#input-pwd").removeClass("has-error");
                 return;
             }
             if (params.password.length < 4 || params.password.length > 20) {
                 $scope.errMsg = "密码格式错误"
+                $("#input-pwd").addClass("has-error");
+                $("#input-name").removeClass("has-error");
+                $("#input-email").removeClass("has-error");
             }
             util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
                 console.log("注册成功")
