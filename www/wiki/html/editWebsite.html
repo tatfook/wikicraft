@@ -3,7 +3,7 @@
         <div>
             <ul class="nav nav-tabs nav-stacked">
                 <li class="active"><a href="#EditWebsiteBasicSetUp" data-toggle="tab">基本设置</a></li>
-                <!--li><a href="#EditWebsiteAdvancedSetUp" data-toggle="tab">高级设置</a></li-->
+                <li><a href="#EditWebsiteAdvancedSetUp" data-toggle="tab" ng-click="advanceSetup()">高级设置</a></li>
                 <li><a href="#EditWebsiteMemberManager" data-toggle="tab" ng-click="memberManager()">成员管理</a></li>
                 <li><a href="#EditWebsiteWorksManager" data-toggle="tab" ng-click="worksManager()">作品管理</a></li>
             </ul>
@@ -45,18 +45,28 @@
                     </div>
                 </div>
             </div>
-            <!--
+
             <div class="tab-pane fade in" id="EditWebsiteAdvancedSetUp">
                 <div class="pane panel-default">
                     <div class="panel-heading">
-                        高级设置
+                        Github数据源
                     </div>
                     <div>
-                        高级设置
+                        <form class="form-horizontal" role="form">
+                            <div style="padding: 10px auto; color:darkgray;text-align: center"><b>用户所有网站默认都在wikicraftDataSource库名下,可为网站配置单独库名.</b></div>
+                            <div class="form-group">
+                                <label class=" control-label col-xs-3">github库名:</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" ng-model="website.githubRepoName">
+                                </div>
+                                <div class="col-xs-3">
+                                    <button class="btn btn-default" ng-click="setGithubRepoName()">配置</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            -->
 
             <div class="tab-pane fade in" id="EditWebsiteMemberManager">
                 <div class="panel panel-default">

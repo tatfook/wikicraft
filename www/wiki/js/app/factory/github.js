@@ -166,13 +166,19 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
                 github.defalultRepoName = repoName || 'wikicraftDataSource';
                 //console.log(storage.sessionStorageGetItem('githubRepoExist'));
                 // 会话期记录是否已存在数据源库，避免重复请求
-                if (!storage.sessionStorageGetItem('githubRepoExist')) {
-                    github.createRepos(function (data) {
-                        storage.sessionStorageSetItem('githubRepoExist', true);
+                var repoKey = 'githubRepoExist_' + github.defalultRepoName;
+                if (!storage.sessionStorageGetItem(repoKey)) {
+                    github.getRepos(function (data) {
+                        storage.sessionStorageSetItem(repoKey, true);
                         cb && cb(data);
-                    }, errcb);
+                    }, function () {
+                        github.createRepos(function (data) {
+                            storage.sessionStorageSetItem(repoKey, true);
+                            cb && cb(data);
+                        }, errcb);
+                    });
                 } else {
-                    github.getRepos(cb, errcb);
+                    cb && cb();
                 }
             },
             writeFile: function (params, cb, errcb) {

@@ -8,6 +8,7 @@ define([
     'helper/markdownwiki',
     'helper/util',
     'helper/storage',
+    'helper/dataSource',
     'text!html/wikiEditor.html',
     'codemirror/mode/markdown/markdown',
     //'codemirror/mode/javascript/javascript',
@@ -32,7 +33,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, CodeMirror, markdownwiki, util, storage, htmlContent) {
+], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
     var editor;
 
@@ -120,8 +121,7 @@ define([
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    console.log(github.isInited());
-                    github.isInited() && github.uploadImage(undefined, fileReader.result, function (url) {
+                    $scope.dataSource && $scope.dataSource.uploadImage(undefined, fileReader.result, function (url) {
                         $scope.img.url = url;
                     });
                 };
@@ -240,14 +240,12 @@ define([
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
-            $scope.isGithubAuth = false;
+            $scope.isGithubAuth = $scope.user.githubDS  && github.isInited();
             $scope.websites = [];           //站点列表
             $scope.websitePages = [];       //页面列表
 
             $scope.website = {};            //当前选中站点
             $scope.websitePage = {};        //当前选中页面
-
-            $scope.githubSource = {};
 
             $scope.progressbar = {
                 show: false,
@@ -260,6 +258,10 @@ define([
                 }
                 return true;
             }
+
+            $scope.$on('onDataSource', function (event, data) {
+                console.log("onDataSource change!!!");
+            });
 
 
             //初始化，读取用户站点列表及页面列表
@@ -277,19 +279,6 @@ define([
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
                 }
 
-                /*
-                 github.init({token_type:'bearer', access_token:'aa9274714497aa7ecd7d37b1391f1266bfc23f1d'},'wxaxiaoyao', undefined, function () {
-                     $scope.isGithubAuth = true;
-                     $scope.githubSource = github;
-                 });
-                */
-                
-                if (user.githubToken) {
-                    github.init(user.githubToken, user.githubName, undefined, function () {
-                        $scope.isGithubAuth = true;
-                        $scope.githubSource = github;
-                    });
-                }
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
                 $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
@@ -307,7 +296,6 @@ define([
                         initTree();
                         initRoot();
                     });
-
                 }).catch(function (response) {
                     console.log(response.data);
                 });
@@ -333,7 +321,7 @@ define([
                 $rootScope.website = $scope.website;
                 $rootScope.websitePage = $scope.websitePage;
 
-                if (!isEmptyObject($rootScope.websitePage)) {
+                if (!isEmptyObject($scope.websitePage)) {
                     openPage();
                 }
             }
@@ -359,6 +347,20 @@ define([
                 return null;
             }
 
+            function setDataSource() {
+                console.log($scope.user.githubDS);
+                console.log($scope.website.githubRepoName);
+                if (!$scope.user.githubDS && !$scope.website.githubRepoName) {
+                    $scope.dataSource = undefined;
+                } else {
+                    $scope.dataSource = dataSource.getDataSource(['github']);
+                    if ($scope.website.githubRepoName) {
+                        $scope.dataSource.getSingleDataSource('github').setDefaultRepo($scope.website.githubRepoName);
+                        console.log(github);
+                    }
+                }
+            }
+
             function openPage(isNodeSelected) {
                 $rootScope.siteinfo = $rootScope.website;
                 $rootScope.pageinfo = $rootScope.websitePage;
@@ -372,10 +374,11 @@ define([
                     $('.toolbar-page-remove').attr("disabled", true);
                     return;
                 }
+
+                setDataSource();
+
                 //console.log(wp);
                 editor.setValue(wp.content);
-                //editor.execCommand("find");
-                //editor.foldCode(0);
                 CodeMirror.commands.foldAll(editor);
 
                 $('#btUrl').val(window.location.origin + wp.url);
@@ -410,12 +413,13 @@ define([
                     data: getTreeData($scope.user.username, $scope.websitePages, false),
                     onNodeSelected: function (event, data) {
                         //console.log(data);
-                        //return;
                         autoSave(function () {
                             $scope.website = getWebsite(data.pageNode.siteId);
                             $scope.websitePage = getWebsitePage(data.pageNode.pageId);
                             $rootScope.websitePage = $scope.websitePage;
                             $rootScope.website = $scope.website;
+
+                            console.log($scope.websitePage);
                             if (data.pageNode.isLeaf) {
                                 openPage(true);
                             }
@@ -501,12 +505,12 @@ define([
                     $scope.websitePage.content = content;
                     $http.put(config.apiUrlPrefix + 'website_pages', $scope.websitePage).then(function (response) {
                         //console.log(response.data);
-                        if (!isEmptyObject($scope.githubSource)) {
+                        if ($scope.dataSource) {
                             var path = $scope.websitePage.url;
                             //var pathPrefix = '/' + $scope.websitePage.websiteName;
                             //path = path.substring(pathPrefix.length+1);
                             path = path.substring(+1);
-                            $scope.githubSource.writeFile({path:path, content:$scope.websitePage.content, message: 'wikicraft save file: ' + path}, function (result) {
+                            $scope.dataSource.writeFile({path:path, content:$scope.websitePage.content, message: 'wikicraft save file: ' + path}, function (result) {
                                 //alert('文件已保存到服务器及Github');
                                 Message.info("文件已保存到服务器及Github");
                             });
@@ -840,8 +844,8 @@ define([
                     return false;
                 }
 
-                if (isEmptyObject($scope.githubSource)) {
-                    alert('github账号尚未登录，图片无法上传');
+                if (isEmptyObject($scope.dataSource)) {
+                    alert('github数据未开启，图片无法上传');
                 } else {
                     //支持chrome IE10
                     if (window.FileReader) {
@@ -859,7 +863,7 @@ define([
                             console.log("load complete");
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
-                            $scope.githubSource.uploadImage({content:fileReader.result}, function (img_url) {
+                            $scope.dataSource.uploadImage({content:fileReader.result}, function (img_url) {
                                 //console.log(result);
                                 line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
@@ -893,7 +897,7 @@ define([
                     if (retVal == true) {
                         $scope.loading = true;
                         util.post(config.apiUrlPrefix + "website_pages/deleteByPageId",{_id: $scope.websitePage._id}, function(data){
-                            github.isInited() && github.deleteFile({path:$scope.websitePage.websieName + '/' + $scope.websitePage.name, message:"delete file"});
+                            $scope.dataSource && $scope.dataSource.deleteFile({path:$scope.websitePage.websieName + '/' + $scope.websitePage.name, message:"delete file"});
                             $.each($scope.websitePages, function (index, item) {
                                 if (item._id == $scope.websitePage._id) {
                                     $scope.websitePages[index].isDelete = true;
@@ -916,26 +920,6 @@ define([
             $scope.cmd_version = function () {
                 util.go("gitVersion");
             }
-
-            //目录树
-            $scope.cmd_tree = function () {
-                if (!isEmptyObject($scope.githubSource)) {
-                    $scope.githubSource.getTree('master', true, function (error, result, request) {
-                        var filelist = []
-                        for (var i = 0; result && i < result.length; i++) {
-                            filelist.push({path: result[i].path});
-                        }
-                        $scope.filelist = filelist;
-                        console.log(filelist);
-                    });
-                }
-            }
-
-            $scope.$on('onUserProfile', function (event, user) {
-                console.log("onUserProfile change!!!");
-                init();
-                command();
-            });
 
             // 渲染回调
             function autoSave(cb, errcb) {
@@ -1402,7 +1386,6 @@ define([
                 function fileUpload(fileObj) {
                     console.log(fileObj);
                     var $scope = angular.element('#wikiEditor').scope();
-                    console.log("================");
                     $scope.cmd_image_upload(fileObj);
                     return;
                 }

@@ -29,27 +29,39 @@ define(['app', 'helper/util'], function (app, util) {
     function getDataSource(dsList) {
         var dataSource = {};
         for (var i = 0; i < dsList.length; i++) {
-            dataSource = dataSourceMap[dsList[i]];
+            dataSource[dsList[i]] = dataSourceMap[dsList[i]];
         }
 
         function execFn(fnName, params, cb, errcb) {
-            dataSource[fnName] && dataSource[fnName](params, cb, errcb);
+            for (var key in dataSource) {
+                //console.log(key);
+                //console.log(fnName);
+                //console.log(dataSource[key]);
+                dataSource[key][fnName] && dataSource[key][fnName](params, cb, errcb);
+            }
         }
 
         return {
+            getSingleDataSource: function (dsName) {
+                return dataSource[dsName];
+            },
             writeFile: function (params, cb, errcb) {
                 execFn("writeFile", params, cb, errcb);
             },
 
-            getContent: function (params) {
+            getContent: function (params, cb, errcb) {
                 execFn("getContent", params, cb, errcb);
             },
 
-            deleteFile: function (params) {
+            deleteFile: function (params, cb, errcb) {
                 execFn("deleteFile", params, cb, errcb);
             },
 
-            rollbackFile: function (params) {
+            uploadImage: function (params, cb, errcb) {
+                execFn("uploadImage", params, cb, errcb);
+            },
+
+            rollbackFile: function (params, cb, errcb) {
                 execFn("rollbackFile", params, cb, errcb);
             },
         };
