@@ -137,9 +137,18 @@ define([
         }
 
         $scope.link_insert = function () {
-            $rootScope.link = $scope.link;
+            $rootScope.link = {url:$scope.selected.value.url,txt:''};
             $uibModalInstance.close("link");
         }
+
+        var itemArray=[];
+        var websites=$scope.websitePages || [];
+        for (var i=0;i<websites.length;i++){
+            itemArray.push({id:i,url:websites[i].url});
+        }
+        $scope.itemArray=itemArray;
+        $scope.selected = { value: $scope.itemArray[0] };
+
     }]);
     app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.table = {rows: 2, cols: 2, alignment: 0};
@@ -260,7 +269,6 @@ define([
                 }
                 return true;
             }
-
 
             //初始化，读取用户站点列表及页面列表
             function init() {
