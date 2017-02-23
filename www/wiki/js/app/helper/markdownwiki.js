@@ -287,7 +287,8 @@ define([
 
             //console.log(token);
             if (src.indexOf('#images/') == 0) {
-                return '<wiki-image src="' + src + '" alt="' + alt + '"></wiki-image>';
+                var url = util.getSelfServices().github.getRawContentUrl({path:src.substring(1)});
+                return '<wiki-image src="' + url + '" alt="' + alt + '"></wiki-image>';
             }
 
             // pass token to default renderer.
@@ -297,7 +298,7 @@ define([
 
     // md 语法重写
     function markdownit_rule_override(md, mdwikiName) {
-        //markdownit_wikicmd_iamge(md, mdwikiName);
+        markdownit_wikicmd_iamge(md, mdwikiName);
         markdownit_wikicmd_fence(md, mdwikiName);
     }
 

@@ -387,7 +387,7 @@ define([
 
 			setDataSource();
 
-			//console.log(wp);
+			console.log(wp);
 			editor.setValue(wp.content);
 			CodeMirror.commands.foldAll(editor);
 
@@ -429,7 +429,7 @@ define([
 						$rootScope.websitePage = $scope.websitePage;
 						$rootScope.website = $scope.website;
 
-						console.log($scope.websitePage);
+						//console.log($scope.websitePage);
 						if (data.pageNode.isLeaf) {
 							openPage(true);
 						}
@@ -514,7 +514,7 @@ define([
 			if (!isEmptyObject($scope.websitePage)) {//修改
 				$scope.websitePage.content = content;
 				$http.put(config.apiUrlPrefix + 'website_pages', $scope.websitePage).then(function (response) {
-					//console.log(response.data);
+                    Message.info("文件已保存到服务器");
 					if ($scope.dataSource) {
 						var path = $scope.websitePage.url;
 						//var pathPrefix = '/' + $scope.websitePage.websiteName;
@@ -524,9 +524,6 @@ define([
 							//alert('文件已保存到服务器及Github');
 							Message.info("文件已保存到服务器及Github");
 						});
-					} else {
-						//alert('文件已保存到服务器');
-						Message.info("文件已保存到服务器");
 					}
 				}).catch(function (response) {
 					console.log(response.data);
@@ -805,6 +802,10 @@ define([
                         var dat = $rootScope.img.dat;
                         var nam = $rootScope.img.nam;
 
+                        var imagePath = github.getRawContentUrl({path:''});
+                        if (url.indexOf(imagePath) == 0) {
+                            url = '#' + url.substring(imagePath.length);
+                        }
                         var wiki = '';
                         if (txt) {
                             wiki += '![' + txt + ']';
@@ -875,7 +876,14 @@ define([
 
                             $scope.dataSource.uploadImage({content:fileReader.result}, function (img_url) {
                                 //console.log(result);
-                                line_keyword(cursor.line, '![](' + img_url + ')', 2);
+                                var imagePath = github.getRawContentUrl({path:""});
+                                if (img_url.indexOf(imagePath) == 0) {
+                                    imagePath = '#' + img_url.substring(imagePath.length);
+                                } else {
+                                    imagePath = img_url;
+                                }
+                                line_keyword(cursor.line, '![](' + imagePath + ')', 2);
+                                //line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
                                     cb(img_url);
                                 }

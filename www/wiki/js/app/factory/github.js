@@ -74,7 +74,7 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
         github.writeFile = function (data, cb, errcb) {
             var self = this;
             self.getFile({path: data.path}, function (result) {
-                console.log(result);
+                //console.log(result);
                 data.sha = result.sha;
                 self.fileCURD('PUT', data, cb, errcb);
             }, function () {
@@ -158,6 +158,9 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
             },
             getContentUrl: function (params) {
                 return 'https://github.com/' + github.githubName + '/' + github.defalultRepoName + '/blob/master/' + params.path;
+            },
+            getRawContentUrl: function (params) {
+                return 'https://raw.githubusercontent.com/' + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
             },
             deleteRepos: function (cb, errcb) {
                 github.deleteRepos(cb, errcb);
