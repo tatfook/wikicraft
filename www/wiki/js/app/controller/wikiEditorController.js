@@ -387,7 +387,7 @@ define([
 
 			setDataSource();
 
-			console.log(wp);
+			//console.log(wp);
 			editor.setValue(wp.content);
 			CodeMirror.commands.foldAll(editor);
 
@@ -1101,13 +1101,64 @@ define([
                     }
                 });
 
-                var mdwiki = markdownwiki({container_name: '.result-html', renderCallback: autoSave});
+				var timer = undefined;
+				var isScrollPreview = false;
+				var mdwiki = markdownwiki({container_name: '.result-html', renderCallback: autoSave});
                 mdwiki.bindToCodeMirrorEditor(editor);
                 editor.setSize('auto', '640px');
                 editor.focus();
+				
+				function getBlockPosList() {
+					var blockList = $('#wikimdContentContainer').children();
+					var blockPosList = [];
+					for (var i = 0; i < blockList.length; i++) {
+						blockPosList.push(blockList[i].offsetTop);
+					}
+					return blockPosList;
+				}
 
+				editor.on('scroll', function (cm) {
+					if (isScrollPreview)
+						return;
+					timer && clearTimeout(timer);
+					timer = setTimeout(function () {
+						var blockPosList = getBlockPosList();
+						var editorPosList = mdwiki.getPosList();
+						var scrollObj = cm.getScrollInfo();
+						var index = 0;
+						for (index = 0; index < editorPosList.length; index++) {
+							if (editor.heightAtLine(editorPosList[index].from) > 142)
+								break;
+						}
+						$('#preview').scrollTop(blockPosList[index]-30);
+					}, 100);
+				});
 
-                var showTreeview = true;
+				$('#preview').on('scroll mouseenter mouseleave', function(e){
+					if (e.type == 'mouseenter') {
+						isScrollPreview = true;
+					} else if (e.type == 'mouseleave') {
+						isScrollPreview = false;
+					} else if (e.type == 'scroll') {
+						if (!isScrollPreview)
+							return;
+						timer && clearTimeout(timer);
+						timer = setTimeout(function () {
+							var blockPosList = getBlockPosList();
+							var editorPosList = mdwiki.getPosList();
+							var scrollTop = $('#preview')[0].scrollTop;
+							var index = 0;
+							for (index=0; index < blockPosList.length; index++) {
+								if (scrollTop <= blockPosList[index])
+									break;
+							}
+							editor.scrollTo(0,editor.getScrollInfo().top + editor.heightAtLine(editorPosList[index].from) - 142); // 142 为调试得到，应该是编辑器隐藏了142px
+						}, 100);
+					}
+				});
+
+				
+				var showTreeview = true;
                 function initView(activity) {
 
                     $("#srcview").removeClass('col-xs-12');

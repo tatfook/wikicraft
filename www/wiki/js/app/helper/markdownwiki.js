@@ -298,6 +298,7 @@ define([
 
     // md 语法重写
     function markdownit_rule_override(md, mdwikiName) {
+        //console.log(md.renderer.rules);
         markdownit_wikicmd_iamge(md, mdwikiName);
         markdownit_wikicmd_fence(md, mdwikiName);
     }
@@ -351,10 +352,19 @@ define([
         var lastUpdateTime = 0; // 上次更新时间
         var timer = undefined; // 定时器
 
+        mdwiki.getMarkdown = function () {
+            return md;
+        }
+
+        mdwiki.getPosList = function () {
+            return mdwiki.positionList;
+        }
+
         // force render a given text
         mdwiki.render = function (text) {
             mdwikiObj.template = undefined;
             var htmlResult = md.render(text);
+            htmlResult = '<div id="wikimdContentContainer">' + htmlResult + '</div>';
             if (!options.use_template) {
                 return htmlResult;
             }
@@ -396,12 +406,53 @@ define([
             timer = setTimeout(function () {
                 var source = GetEditorText && GetEditorText();
                 var htmlResult = mdwiki.render(source);
+                generatePosList();
                 //console.log(htmlResult);
                 util.html(options.container_name, htmlResult);
                 options.renderCallback && options.renderCallback();
                 //$(options.container_name).html(htmlResult);
                 timer = undefined;
             }, 1000);
+        }
+
+        // 生成每个div块对应编辑的位置列表
+        function generatePosList() {
+            var source = GetEditorText && GetEditorText();
+            var tokenList = md.parse(source);
+            var posList = [];
+            var pos = {from: 999999, to:0};
+            var stack = 0;
+
+            for (var i = 0; i < tokenList.length; i++) {
+                var token = tokenList[i];
+                if (token.type.indexOf('_open') >= 0) {
+                    stack++;
+                }
+                if (token.map) {
+                    if (pos.from > token.map[0])
+                        pos.from = token.map[0];
+                    if (pos.to < token.map[1])
+                        pos.to = token.map[1];
+                }
+                if (token.type.indexOf('_close') >= 0) {
+                    stack--;
+                }
+                if (stack == 0) {
+                    posList.push({from:pos.from, to:pos.to});
+                    pos = {from: 999999, to:0};
+                }
+            }
+            mdwiki.positionList = posList;
+            /*
+            var temp = [];
+            for (var i = 0; i < posList.length; i++) {
+                temp.push({height:editor.heightAtLine(posList[i].from), line:posList[i].from});
+            }
+            console.log(posList);
+            console.log(temp);
+            */
+            //console.log(tokenList);
+            //console.log(posList);
         }
 
         return mdwiki;
