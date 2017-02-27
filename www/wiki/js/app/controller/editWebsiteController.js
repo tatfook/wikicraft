@@ -3,14 +3,22 @@
  */
 
 define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], function (app, util, storage, htmlContent) {
-    app.registerController('editWebsiteController', ['$scope','github','Message',function ($scope, github, Message) {
-        //const github = ProjectStorageProvider.getDataSource('github');
-        $scope.tags=["tag1","tag2"];
+    app.registerController('editWebsiteController', ['$scope','github','Message', 'Account',function ($scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
         $scope.website = siteinfo;
+        $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
+
+        function sendModifyWebsiteRequest() {
+            util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
+                $scope.website = data;
+                Message.info("站点配置修改成功!!!");
+            }, function () {
+                Message.warning("站点配置修改失败!!!");
+            });
+        }
 
         $('#uploadPictureBtn').change(function (e) {
             if (!github.isInited()) {
@@ -75,12 +83,20 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], f
         }
 
         $scope.modifyWebsite = function () {
-            util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
-                $scope.website = data;
-                Message.info("站点配置修改成功!!!");
-            }, function () {
-                Message.warning("站点配置修改失败!!!");
-            });
+            sendModifyWebsiteRequest();
+        }
+
+        $scope.advanceSetup = function () {
+
+        }
+        
+        $scope.setGithubRepoName = function () {
+            console.log($scope.website);
+            if ($scope.user.githubToken) {
+                sendModifyWebsiteRequest();
+            } else {
+                Account.githubAuthenticate(sendModifyWebsiteRequest);
+            }
         }
 
         $scope.agreeMember = function (applyId) {

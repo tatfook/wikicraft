@@ -27,7 +27,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     $compile: $compile,
                     $auth: $auth
                 });
-                util.setSelfServices({config: config, storage: storage, Account: Account, Message: Message});
+                util.setSelfServices({config: config, storage: storage, Account: Account, Message: Message, github:github});
             }
 
             function initView() {
@@ -67,7 +67,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
                 var urlObj = util.parseUrl();
-                console.log(urlObj);
+                //console.log(urlObj);
                 // 置空用户页面内容
                 //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
@@ -85,7 +85,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                         renderHtmlText('/wiki/home');
                     } else { // /wiki/test
                         renderHtmlText(urlObj.pathname);
-                        //renderHtmlText('/wiki/test');
+                        //renderHtmlText('/wiki/wikiEditor');
                     }
                     //console.log($scope.IsRenderServerWikiContent);
                     return;

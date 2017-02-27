@@ -74,7 +74,7 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
         github.writeFile = function (data, cb, errcb) {
             var self = this;
             self.getFile({path: data.path}, function (result) {
-                console.log(result);
+                //console.log(result);
                 data.sha = result.sha;
                 self.fileCURD('PUT', data, cb, errcb);
             }, function () {
@@ -159,6 +159,9 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
             getContentUrl: function (params) {
                 return 'https://github.com/' + github.githubName + '/' + github.defalultRepoName + '/blob/master/' + params.path;
             },
+            getRawContentUrl: function (params) {
+                return 'https://raw.githubusercontent.com/' + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
+            },
             deleteRepos: function (cb, errcb) {
                 github.deleteRepos(cb, errcb);
             },
@@ -166,13 +169,19 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
                 github.defalultRepoName = repoName || 'wikicraftDataSource';
                 //console.log(storage.sessionStorageGetItem('githubRepoExist'));
                 // 会话期记录是否已存在数据源库，避免重复请求
-                if (!storage.sessionStorageGetItem('githubRepoExist')) {
-                    github.createRepos(function (data) {
-                        storage.sessionStorageSetItem('githubRepoExist', true);
+                var repoKey = 'githubRepoExist_' + github.defalultRepoName;
+                if (!storage.sessionStorageGetItem(repoKey)) {
+                    github.getRepos(function (data) {
+                        storage.sessionStorageSetItem(repoKey, true);
                         cb && cb(data);
-                    }, errcb);
+                    }, function () {
+                        github.createRepos(function (data) {
+                            storage.sessionStorageSetItem(repoKey, true);
+                            cb && cb(data);
+                        }, errcb);
+                    });
                 } else {
-                    github.getRepos(cb, errcb);
+                    cb && cb();
                 }
             },
             writeFile: function (params, cb, errcb) {

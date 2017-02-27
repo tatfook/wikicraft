@@ -7,16 +7,27 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
     app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github', 'Message', function ($auth, $rootScope, $uibModal, github, Message) {
         // 初始化github
         function initGithub(user) {
+            /*
+            user.githubToken = {
+                token_type: 'bearer',
+                access_token: 'f26813c35339436310c90233798bb49b9046625a'
+            };
+            user.githubName = 'wxaxiaoyao';
+            */
             if (user && user.githubToken && !github.isInited()) {
-                github.init(user.githubToken, user.githubName, undefined, function () {
+                github.init(user.githubToken, user.githubName, user.githubRepoName, function () {
                     dataSource.registerDataSource('github', github);
+                    $rootScope.$broadcast("onDataSource", github);
+                    console.log("github init success");
+                }, function () {
+                    console.log("github init failed");
                 });
             }
         }
 
 
         var account = {
-            user:undefined,
+            user: undefined,
             // 获取用户信息
             getUser: function (cb, errcb) {
                 var userinfo = this.user || storage.localStorageGetItem("userinfo");
@@ -47,7 +58,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 storage.localStorageSetItem("userinfo", this.user);
             },
             // 广播 TODO 需了解angualar 监听相关功能
-            send: function(msg, data) {
+            send: function (msg, data) {
                 $rootScope.$broadcast(msg, data);
             },
 
@@ -57,7 +68,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             },
 
             // 确保认证，未认证跳转登录页
-            ensureAuthenticated: function(cb) {
+            ensureAuthenticated: function (cb) {
                 if (!this.isAuthenticated()) {
                     window.location.href = "/wiki/login";
                     return;
@@ -72,22 +83,24 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             },
 
             // github s授权认证
-            githubAuthenticate: function() {
+            githubAuthenticate: function (cb, errcb) {
                 self = this;
 
                 var githubAuth = function () {
                     $auth.authenticate("github").then(function (response) {
                         $auth.setToken(response.data.token);
                         self.setUser(response.data.userInfo);
+                        cb && cb();
                         Message.info("github认证成功!!!");
-                    }, function(){
+                    }, function () {
+                        errcb && errcb();
                         Message.warning("github认证失败!!!");
                     });
                 }
                 // 如果已经认证就不再提示认证
                 if (self.getUser().githubToken) {
                     githubAuth();
-                    return ;
+                    return;
                 }
 
                 app.registerController('modalGithubAuthCtrl', function ($scope, $uibModalInstance) {
@@ -111,18 +124,18 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                     //console.log('error:' + error);
                     return;
                 });
-                return ;
+                return;
             },
 
             /*
-            isRequireSignin: function () {
-                return this.requireSignin;
-            },
+             isRequireSignin: function () {
+             return this.requireSignin;
+             },
 
-            setRequireSignin: function (bNeedSignin) {
-                this.requireSignin = bNeedSignin;
-            },
-            */
+             setRequireSignin: function (bNeedSignin) {
+             this.requireSignin = bNeedSignin;
+             },
+             */
 
             linkGithub: function () {
                 if (this.isAuthenticated()) {
@@ -152,8 +165,9 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         }
 
         account.getUser(function (user) {
-            account.user = user;
+            account.setUser(user);
         });
+
         return account;
     }]);
 });

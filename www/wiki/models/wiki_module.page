@@ -1,0 +1,20 @@
+<?npl
+--[[
+Title: wiki module
+Author: wuxiangan
+Date: 2017/2/27
+]]
+
+
+include_once("./abstract/base.page")
+
+local wiki_module = inherit(models.abstract.base, gettable("models.wiki_module"))
+wiki_module.db_name = "wiki_module"
+
+
+function wiki_module:ctor()
+	self:addfield("name", "string")
+	self:addfield("url", "string")
+	self:addfield("logo", "string")
+	self:addfield("desc", "string")
+end

@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="form-group span12" style="padding: 0 15px;">
                     <label for="url">链接</label>
-                    <ui-select ng-model="selected.value" id="url" name="url">
+                    <ui-select wiki-ui-select ng-model="selected" id="url" name="url">
                         <ui-select-match>
                             <span ng-bind="$select.selected.url"></span>
                         </ui-select-match>
@@ -18,12 +18,7 @@
                             <span ng-bind="item.url"></span>
                         </ui-select-choices>
                     </ui-select>
-                    <!--<input type="text" class="form-control" name="url" ng-model="link.url" placeholder="http://...">-->
                 </div>
-                <!--<div class="form-group col-xs-12">-->
-                    <!--<label for="txt">文本</label>-->
-                    <!--<input id="txt" type="text" class="form-control" name="txt" ng-model="link.txt">-->
-                <!--</div>-->
             </div>
         </div>
     </div>
