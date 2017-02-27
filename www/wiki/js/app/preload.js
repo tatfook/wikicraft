@@ -19,6 +19,7 @@
         'factory/account',
         'factory/message',
         'factory/github',
+        'factory/modal',
     ];
     moduleList = moduleList.concat(config.preloadModuleList);
     //console.log(moduleList);

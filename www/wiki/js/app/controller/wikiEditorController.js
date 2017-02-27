@@ -137,7 +137,7 @@ define([
         }
 
         $scope.link_insert = function () {
-            $rootScope.link = {url:$scope.selected.value.url,txt:''};
+            $rootScope.link = {url:$scope.selected.url,txt:''};
             $uibModalInstance.close("link");
         }
 
@@ -147,7 +147,11 @@ define([
             itemArray.push({id:i,url:websites[i].url});
         }
         $scope.itemArray=itemArray;
-        $scope.selected = { value: $scope.itemArray[0] };
+        $scope.selected = $scope.itemArray[0];
+
+		$scope.selected.getBindField = function () {
+			return 'url';
+		}
 
     }]);
     app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
