@@ -7,4 +7,6 @@
 a:hover {
     cursor: pointer;
 }
-
+.modal-dialog.modal-xxs {
+    width:90%;
+}

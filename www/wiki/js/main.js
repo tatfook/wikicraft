@@ -31,6 +31,7 @@
             'js-base64': libPathPrefix + 'js-base64/base64.min',
             'text': libPathPrefix + 'requirejs/text',
             'domReady': libPathPrefix + 'requirejs/domReady',
+            'fabric': libPathPrefix + 'fabric.require',
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
