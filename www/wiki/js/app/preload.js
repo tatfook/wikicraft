@@ -14,6 +14,7 @@
         'directive/moduleDirective',
         'directive/userpage',
         'directive/wikiImage',
+        'directive/wikiUISelect',
 
         // factory
         'factory/account',
