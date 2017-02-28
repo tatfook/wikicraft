@@ -103,6 +103,7 @@
     <Content Include="www\wiki\assets\cropper\cropper.min.css" />
     <Content Include="www\wiki\assets\cropper\cropper.min.js" />
     <Content Include="www\wiki\assets\editor.css" />
+    <Content Include="www\wiki\assets\fabric.require.js" />
     <Content Include="www\wiki\assets\icomoon.woff2" />
     <Content Include="www\wiki\assets\images\collection.png" />
     <Content Include="www\wiki\assets\images\defaultPortrait.jpg" />
@@ -225,6 +226,7 @@
     <Content Include="www\wiki\js\editorController.js" />
     <Content Include="www\wiki\js\factory.js" />
     <Content Include="www\wiki\js\headerController.js" />
+    <Content Include="www\wiki\js\lib\fabric.require.js" />
     <Content Include="www\wiki\js\mainController.js" />
     <Content Include="www\wiki\js\markdown\markdown-it-wikicmd.js" />
     <Content Include="www\wiki\js\markdown\markdownwiki.js" />
