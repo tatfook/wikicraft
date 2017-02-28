@@ -28,7 +28,7 @@
                                 <button class="btn btn-primary" type="button" ng-click="save()">保存</button>
                             </div>
                         `,
-                    size: 'xxs',
+                    size: 'xxl',
                     backdrop: 'static',
                     keyboard:false,
                     controller: function ($scope, $uibModalInstance, $timeout) {
@@ -37,8 +37,20 @@
                         };
                         
                         $timeout(function () {
-                            console.log('BBBBBBBBBb');
-                            console.log($scope.cvs);
+                            require(['fabric'], function (fabric) {
+                                var cvs = $scope.scopeElements.cvs;
+                                var body = new fabric.Canvas(cvs);
+
+                                var rect = new fabric.Rect({
+                                    left: 50,
+                                    top: 50,
+                                    fill: 'red',
+                                    width: 50,
+                                    height: 50
+                                });
+
+                                body.add(rect);
+                            });
                         });
                         
                         //$uibModalInstance.close("link");
