@@ -11,6 +11,7 @@
         //'controller/testController',
 
         // directives
+        'directive/directive',
         'directive/moduleDirective',
         'directive/userpage',
         'directive/wikiImage',
