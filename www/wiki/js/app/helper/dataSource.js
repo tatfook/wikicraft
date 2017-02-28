@@ -33,11 +33,32 @@ define(['app', 'helper/util'], function (app, util) {
         }
 
         function execFn(fnName, params, cb, errcb) {
+            var isOK = {};
+            var isError = false;
+
+            function isAllOK(key, isErr) {
+                return function () {
+                    isOK[key] = true;
+
+                    if (isErr)
+                        isError = true;
+
+                    for (var i = 0; i < dsList.length; i++) {
+                        if (!isOk[dsList[i]])
+                            break;
+                    }
+
+                    if (i == dsList.length) {
+                        if (isError)
+                            errcb && errcb();
+                        else
+                            cb && cb();
+                    }
+                }
+            }
+
             for (var key in dataSource) {
-                //console.log(key);
-                //console.log(fnName);
-                //console.log(dataSource[key]);
-                dataSource[key][fnName] && dataSource[key][fnName](params, cb, errcb);
+                dataSource[key][fnName] && dataSource[key][fnName](params, isAllOK(key, false), isAllOK(key, true));
             }
         }
 
