@@ -38,6 +38,7 @@ define(['app', 'require'], function (app, require) {
             'game':{},
 
             'knowledge':{},
+            'join':{}
         };
 
         for (var key in routerMap) {
