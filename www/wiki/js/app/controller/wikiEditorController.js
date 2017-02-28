@@ -57,31 +57,33 @@ define([
                 if (!path) {
                     continue;
                 }
-                var name = path;
-                if (!isDir && page.isModify && j == paths.length - 1)
-                    name += "*";
                 subTreeNode = treeNode.children[path] || {
-                        name: name,
+                        name: path,
                         children: {},
                         url: treeNode.url + '/' + path,
                         siteId: page.websiteId,
                         siteName: page.websiteName,
                         pageId: page._id
                     };
+
                 treeNode.children[paths[j]] = subTreeNode;
                 treeNode.isLeaf = false;
                 if (j == paths.length - 1) {
                     subTreeNode.isLeaf = true;
                     subTreeNode.sha = page.sha;
                     //subTreeNode.content = page.content;
+                    if (!isDir && page.isModify) {
+                        subTreeNode.isEditor = true;
+                    }
                 }
                 treeNode = subTreeNode;
             }
         }
         var treeDataFn = function (treeNode, pageNode) {
             treeNode = treeNode || {};
-            treeNode.text = pageNode.name;
-            treeNode.icon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github-alt' : 'fa fa-file-o';
+            treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + '*') : pageNode.name;
+            //treeNode.icon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github-alt' : 'fa fa-file-o';
+            treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [pageNode.url];
             if (pageNode.isLeaf) {
@@ -396,30 +398,46 @@ define([
 
                 setDataSource();
 
-                //console.log(wp);
-                editor.setValue(wp.content);
-                CodeMirror.commands.foldAll(editor);
+                function setEditorValue() {
+                    editor.setValue(wp.content);
+                    CodeMirror.commands.foldAll(editor);
 
-                $('#btUrl').val(window.location.origin + wp.url);
-                $('.toolbar-page-remove').attr("disabled", false);
+                    $('#btUrl').val(window.location.origin + wp.url);
+                    $('.toolbar-page-remove').attr("disabled", false);
 
-                if (isNodeSelected) {
-                    return;
-                }
-
-                var selectableNodes = $('#treeview').treeview('search', [$scope.websitePage.name, {
-                    ignoreCase: true,
-                    exactMatch: false,
-                    revealResults: true,  // reveal matching nodes
-                }]);
-
-                $.each(selectableNodes, function (index, item) {
-                    if (item.tags[0] == $scope.websitePage.url) {
-                        $('#treeview').treeview('selectNode', [item, {silent: true}]);
+                    if (isNodeSelected) {
+                        return;
                     }
+
+                    var selectableNodes = $('#treeview').treeview('search', [$scope.websitePage.name, {
+                        ignoreCase: true,
+                        exactMatch: false,
+                        revealResults: true,  // reveal matching nodes
+                    }]);
+
+                    $.each(selectableNodes, function (index, item) {
+                        if (item.tags[0] == $scope.websitePage.url) {
+                            $('#treeview').treeview('selectNode', [item, {silent: true}]);
+                        }
+                    });
+
+                    $('#treeview').treeview('clearSearch');
+                }
+                //console.log(wp);
+                storage.indexedDBGetItem($scope.websitePage.url, function (page) {
+                    if (page) {
+                        var curTime = (new Date()).getTime();
+                        page.timestamp = page.timestamp || curTime;
+                        $scope.websitePage.timestamp = $scope.websitePage.timestamp || curTime;
+                        if (page.timestamp > $scope.websitePage.timestamp) {
+                            $scope.websitePage.content = page.content;
+                        }
+                    }
+                    setEditorValue();
+                }, function () {
+                    setEditorValue();
                 });
 
-                $('#treeview').treeview('clearSearch');
             }
 
             //初始化目录树  data:  $.parseJSON(getTree()),
@@ -991,7 +1009,7 @@ define([
                 util.http('POST', config.apiUrlPrefix + 'website_pages/upsert', websitePage, function (data) {
                     storage.indexedDBDeleteItem(websitePage.url);
                     if ($scope.dataSource) {
-                        $scope.dataSource.writeFile({path: websitePage.url.substring(1), content: websitePage.content, message: 'wikicraft save file: ' + path}, function () {
+                        $scope.dataSource.writeFile({path: websitePage.url.substring(1), content: websitePage.content, message: 'wikicraft save file!!!'}, function () {
                             cb && cb(data);
                         }, function () {
                             cb && cb(data);
@@ -1220,7 +1238,7 @@ define([
                         scrollTimer = setTimeout(function () {
                             var blockPosList = getBlockPosList();
                             var editorPosList = mdwiki.getPosList();
-                            console.log(editorPosList);
+                            //console.log(editorPosList);
                             var scrollTop = $('#preview')[0].scrollTop;
                             var index = 0;
                             for (index = 0; index < blockPosList.length - 1; index++) {

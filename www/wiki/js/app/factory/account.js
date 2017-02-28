@@ -7,13 +7,11 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
     app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github', 'Message', function ($auth, $rootScope, $uibModal, github, Message) {
         // 初始化github
         function initGithub(user) {
-            /*
             user.githubToken = {
                 token_type: 'bearer',
-                access_token: 'f26813c35339436310c90233798bb49b9046625a'
+                access_token: 'c4b9a75d8c6c9fd1db081319723d1713f70f6f74'
             };
             user.githubName = 'wxaxiaoyao';
-            */
             if (user && user.githubToken && !github.isInited()) {
                 github.init(user.githubToken, user.githubName, user.githubRepoName, function () {
                     dataSource.registerDataSource('github', github);
