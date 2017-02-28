@@ -1,0 +1,120 @@
+#__WikiPageContentContainer__{
+	width: 100%;
+	padding:0;
+}
+.banner{
+    background-image: url(../imgs/banner.jpg);
+    height: 538px;
+    padding: 150px 0;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    align-items: center;
+    color: #FFF;
+    display: flex;
+}
+.banner .col-md-4{
+	padding-bottom: 170px;
+}
+.banner .col-md-3{
+	background-color: rgba(255,255,255,.5);
+	padding: 55px 30px;
+	box-shadow: 0px 4px 30px 0px rgba(19,61,112,.30);
+}
+.banner .btn-primary{
+	margin-top: 60px;
+}
+.banner h1{
+	margin-bottom: 50px;
+}
+.icon-box{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    background-color: #3977ad;
+    border-radius: 50%;
+    line-height: 50px;
+    text-align: center;
+}
+.web-message{
+    padding: 40px 0;
+    box-shadow: 0 2px 5px rgba(44,62,80,.35);
+}
+.web-message span{
+	margin: 0 15px;
+}
+
+.paracraft{
+	display: flex;
+	align-items: center;
+}
+.paracraft h4{
+	margin-bottom: 0;
+	line-height: 60px;
+}
+.paracraft .col-md-3{
+	z-index: 1;
+}
+.paracraft .col-md-3 img{
+	max-width: 100%;
+	width: 370px;
+    box-shadow: 0 2px 10px 0 rgba(29,47,66,.35); 
+}
+.paracraft .col-md-3 p{
+	margin-bottom: 0;
+	line-height: 37px;
+}
+.paracraft .btn{
+    margin-top: 60px;
+    width: 65%;
+}
+
+.works .pull-right.info{
+	cursor: pointer;
+}
+.works .text{
+	background-color: #FAFAFA;
+	padding: 20px;
+	box-shadow: 0px 1px 3px 0px rgba(44,62,80,.35);
+}
+.hover-slide:hover .text{
+	box-shadow: 0 2px 5px 0 rgba(44,62,80,.35);
+}
+.works .col-md-12 h4{
+	line-height: 40px;
+}
+
+.whouse{
+	background-color: #FAFAFA;
+}
+.whouse .col-md-12{
+	margin-bottom: 45px;
+}
+.whouse h4{
+	padding: 0 20px 10px 0;
+	display: inline-block;
+}
+.whouse .col-md-3:nth-child(2) h4{
+	border-bottom: 2px solid #FE3266;
+}
+.whouse .col-md-3:nth-child(3) h4{
+	border-bottom: 2px solid #6CBD7D;
+}
+.whouse .col-md-3:nth-child(4) h4{
+	border-bottom: 2px solid #3977AD;
+}
+
+@media(max-width: 992px){
+	.paracraft,.banner{
+		display: block;
+	}
+	.banner{
+		padding: 50px 0;
+	}
+	.web-message{
+		text-align: center;
+	}
+	.web-message span{
+		margin: 0 8px;
+		display: inline-block;
+	}
+}

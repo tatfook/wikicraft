@@ -17,22 +17,44 @@
                             <div class="modal-header">
                                 <h3 class="modal-title">绘图</h3>
                             </div>
-                            <div class="modal-body">
-                                This is a Dialog
+                            <div class ="modal-body" style="display:flex">
+                                <div style="min-width:200px"></div>
+                                <div style="flex-basis:100%">
+                                    <canvas scope-element="cvs" width="800" height="300"></canvas>
+                                </div>
                             </div>
                             <div class ="modal-footer">
                                 <button class ="btn btn-warning" type="button" data-dismiss="modal" ng-click="cancel()">取消</button>
                                 <button class="btn btn-primary" type="button" ng-click="save()">保存</button>
                             </div>
                         `,
-                    size: 'xxs',
+                    size: 'xxl',
                     backdrop: 'static',
                     keyboard:false,
-                    controller: function ($scope, $uibModalInstance) {
+                    controller: function ($scope, $uibModalInstance, $timeout) {
                         $scope.cancel = function () {
                             $uibModalInstance.dismiss('cancel');
                         };
+                        
+                        $timeout(function () {
+                            require(['fabric'], function (fabric) {
+                                var cvs = $scope.scopeElements.cvs;
+                                var body = new fabric.Canvas(cvs);
+
+                                var rect = new fabric.Rect({
+                                    left: 50,
+                                    top: 50,
+                                    fill: 'red',
+                                    width: 50,
+                                    height: 50
+                                });
+
+                                body.add(rect);
+                            });
+                        });
+                        
                         //$uibModalInstance.close("link");
+                        
                     }
                 }).result.then(function (provider) {
                     
