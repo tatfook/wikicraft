@@ -18,3 +18,11 @@ function wiki_module:ctor()
 	self:addfield("logo", "string")
 	self:addfield("desc", "string")
 end
+
+
+function wiki_module:api_get(params) 
+	self:db():find({},resume)
+
+	return errors:wrap(yield()) 
+end
+
