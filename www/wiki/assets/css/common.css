@@ -1,6 +1,10 @@
+#__WikiPageContentContainer__{
+	width: auto;
+	padding:0;
+}
 body{
 	font-family: "微软雅黑";
-	/*padding-top: 52px;*/
+	padding-top: 52px;
 }
 h1{
 	font-size: 48px;
@@ -19,28 +23,28 @@ h4{
 	font-weight: bold;
 }
 header{
-    box-shadow: 0 2px 5px rgba(44,62,80,.35);
+	box-shadow: 0 2px 5px rgba(44,62,80,.35);
 }
 footer{
-    background-color: #FAFAFA;
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
+	background-color: #FAFAFA;
+	height: 100px;
+	line-height: 100px;
+	text-align: center;
 }
 footer a{
-    margin: 0 25px;
-    padding: 0 5px 5px;
-    color: #3977ad;
+	margin: 0 25px;
+	padding: 0 5px 5px;
+	color: #3977ad;
 }
 footer a:focus,footer a:hover{
 	text-decoration: none;
 	border-bottom: 2px solid #3977AD;
 }
 .navbar-default {
-    background-color: #FFF;
-    border-color: #FFF;
-    margin-bottom: 0;
-} 
+	background-color: #FFF;
+	border-color: #FFF;
+	margin-bottom: 0;
+}
 a{
 	color: #666;
 	text-decoration: none;
@@ -81,10 +85,10 @@ h4 a.title:focus,h4 a.title:hover{
 	color: #FFF;
 }
 .navbar-default .navbar-nav a.btn-primary{
-    color: #FFF;
-    margin-top: 9px;
-    padding: 6px 12px;
-    border-radius: 2px;
+	color: #FFF;
+	margin-top: 9px;
+	padding: 6px 12px;
+	border-radius: 2px;
 }
 a.text-muted{
 	color: #666;
@@ -92,15 +96,19 @@ a.text-muted{
 	font-weight: lighter;
 }
 .navbar-default .form-control{
-    margin-top: 10px;
-    width: 200px;
-    height: 30px;
-    background-color: #FAFAFA;
+	margin-top: 10px;
+	width: 200px;
+	height: 30px;
+	background-color: #FAFAFA;
 }
 .navbar-default .form-control + span{
-    position: absolute;
-    right: 10px;
-    top: 18px;
+	position: absolute;
+	right: 10px;
+	top: 18px;
+}
+.navbar-default .dropdown-menu>li>a:focus,.navbar-default .dropdown-menu>li>a:hover{
+	color: #3977AD;
+	background-color: #DDD;
 }
 .form-control{
 	height: 40px;
@@ -120,6 +128,6 @@ a.text-muted{
 }
 
 .hover-slide:hover{
-    transform: translate3d(0,-3px,0);
-    transition: all .2s linear;
+	transform: translate3d(0,-3px,0);
+	transition: all .2s linear;
 }
