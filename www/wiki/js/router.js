@@ -38,7 +38,8 @@ define(['app', 'require'], function (app, require) {
             'game':{},
 
             'knowledge':{},
-            'join':{}
+            'join':{},
+            'kaitlynLogin':{}
         };
 
         for (var key in routerMap) {
