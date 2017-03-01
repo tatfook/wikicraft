@@ -13,19 +13,6 @@ define([
 ], function (angular) {
     console.log("app");
     var app = angular.module('webapp', ['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']);
-
-    app.directive('scopeElement', function () {
-        return {
-            restrict: "A",
-            replace: false,
-            link: function ($scope, elem, attrs) {
-                if (!$scope.scopeElements) {
-                    $scope.scopeElements = {};
-                }
-                $scope.scopeElements[attrs.scopeElement] = elem[0];
-            }
-        };
-    });
     
     app.config(['$controllerProvider', '$authProvider',function ($controllerProvider, $authProvider) {
         // 提供动态注册控制器接口

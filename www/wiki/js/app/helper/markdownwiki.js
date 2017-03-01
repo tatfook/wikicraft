@@ -357,7 +357,7 @@ define([
         }
 
         mdwiki.getPosList = function () {
-            return mdwiki.positionList;
+            return mdwiki.positionList || mdwiki.generatePosList();
         }
 
         // force render a given text
@@ -402,11 +402,12 @@ define([
 
         // update result from current editor, this is usually called automatically whenever editor content changed.
         mdwiki.updateResult = function () {
+            options.changeCallback && options.changeCallback();
             timer && clearTimeout(timer);
             timer = setTimeout(function () {
                 var source = GetEditorText && GetEditorText();
                 var htmlResult = mdwiki.render(source);
-                generatePosList();
+                mdwiki.generatePosList();
                 //console.log(htmlResult);
                 util.html(options.container_name, htmlResult);
                 options.renderCallback && options.renderCallback();
@@ -416,7 +417,7 @@ define([
         }
 
         // 生成每个div块对应编辑的位置列表
-        function generatePosList() {
+        mdwiki.generatePosList = function() {
             var source = GetEditorText && GetEditorText();
             var tokenList = md.parse(source);
             var posList = [];
@@ -443,6 +444,7 @@ define([
                 }
             }
             mdwiki.positionList = posList;
+            return posList;
             /*
             var temp = [];
             for (var i = 0; i < posList.length; i++) {
