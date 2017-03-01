@@ -11,19 +11,13 @@ define([
     'helper/dataSource',
     'text!html/wikiEditor.html',
     'codemirror/mode/markdown/markdown',
-    //'codemirror/mode/javascript/javascript',
-    //'codemirror/mode/xml/xml',
     // 代码折叠
     'codemirror/addon/fold/foldgutter',
     'codemirror/addon/fold/foldcode',
-    //'codemirror/addon/fold/brace-fold',
-    //'codemirror/addon/fold/comment-fold',
-    //'codemirror/addon/fold/indent-fold',
     'codemirror/addon/fold/markdown-fold',
     'codemirror/addon/fold/xml-fold',
     // 错误提示
     'codemirror/addon/lint/json-lint',
-
     'codemirror/addon/search/search',
     'codemirror/addon/dialog/dialog',
     'codemirror/addon/edit/continuelist',
@@ -129,7 +123,8 @@ define([
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    $scope.dataSource && $scope.dataSource.uploadImage(undefined, fileReader.result, function (url) {
+                    //$scope.dataSource && $scope.dataSource.uploadImage(undefined, fileReader.result, function (url) {
+                    github.isInited() && github.uploadImage(undefined, fileReader.result, function (url) {
                         $scope.img.url = url;
                     });
                 };
@@ -307,12 +302,12 @@ define([
 
                         for (var i = 0; i < $scope.websitePages.length; i++) {
                             if (url == $scope.websitePages[i].url) {
-                                currentWebsite= getWebsite($scope.websitePages[i].websiteId);
+                                currentWebsite = getWebsite($scope.websitePages[i].websiteId);
                                 currentWebsitePage = $scope.websitePages[i];
                                 break;
                             }
                         }
-                        storage.indexedDBOpen({storeName:'websitePage', storeKey:'url'}, function () {
+                        storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
                             initTree();
                             initRoot();
                         });
@@ -431,6 +426,7 @@ define([
 
                     $('#treeview').treeview('clearSearch');
                 }
+
                 //console.log(wp);
                 storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
                     if (page) {
@@ -458,7 +454,7 @@ define([
                     levels: 4,
                     data: getTreeData($scope.user.username, $scope.websitePages, false),
                     onNodeSelected: function (event, data) {
-                        console.log(data.pageNode);
+                        //console.log(data.pageNode);
                         autoSave(function () {
                             if (data.pageNode.isLeaf) {
                                 currentWebsite = getWebsite(data.pageNode.siteId);
@@ -503,7 +499,10 @@ define([
 
             $scope.openWikiBlock = function () {
                 console.log('openWikiBlock');
-                modal('controller/wikiBlockController',{controller:'wikiBlockController', size:'lg'}, function (result) {
+                modal('controller/wikiBlockController', {
+                    controller: 'wikiBlockController',
+                    size: 'lg'
+                }, function (result) {
                     console.log(result);
                     editor.replaceSelection('````\nwiki block sample\n```\n');
                 }, function (result) {
@@ -566,12 +565,10 @@ define([
                         Message.info("文件已保存到服务器");
                         if ($scope.dataSource) {
                             var path = currentWebsitePage.url;
-                            //var pathPrefix = '/' + $scope.websitePage.websiteName;
-                            //path = path.substring(pathPrefix.length+1);
                             path = path.substring(1);
                             $scope.dataSource.writeFile({
                                 path: path,
-                                content:currentWebsitePage.content,
+                                content: currentWebsitePage.content,
                                 message: 'wikicraft save file: ' + path
                             }, function (result) {
                                 //alert('文件已保存到服务器及Github');
@@ -930,8 +927,9 @@ define([
                             console.log("load complete");
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
-                            $scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                                //console.log(result);
+                            //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
+                             github.uploadImage({content: fileReader.result}, function (img_url) {
+                                console.log(img_url);
                                 var imagePath = github.getRawContentUrl({path: ""});
                                 if (img_url.indexOf(imagePath) == 0) {
                                     imagePath = '#' + img_url.substring(imagePath.length);
@@ -1011,8 +1009,6 @@ define([
                     cb && cb();
                     return;
                 }
-                console.log(content);
-                console.log(currentWebsitePage);
                 console.log('auto save website page!!!');
                 currentWebsitePage.content = content;
                 currentWebsitePage.timestamp = (new Date()).getTime();
@@ -1021,7 +1017,11 @@ define([
                 util.http('POST', config.apiUrlPrefix + 'website_pages/upsert', websitePage, function (data) {
                     storage.indexedDBDeleteItem(websitePage.url);
                     if ($scope.dataSource) {
-                        $scope.dataSource.writeFile({path: websitePage.url.substring(1), content: websitePage.content, message: 'wikicraft save file!!!'}, function () {
+                        $scope.dataSource.writeFile({
+                            path: websitePage.url.substring(1),
+                            content: websitePage.content,
+                            message: 'wikicraft save file!!!'
+                        }, function () {
                             cb && cb(data);
                         }, function () {
                             cb && cb(data);
@@ -1185,12 +1185,14 @@ define([
 
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
-                var mdwiki = markdownwiki({container_name: '.result-html', renderCallback: function () {
-                    storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
-                }, changeCallback:changeCallback});
+                var mdwiki = markdownwiki({
+                    container_name: '.result-html', renderCallback: function () {
+                        storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
+                    }, changeCallback: changeCallback
+                });
 
                 mdwiki.bindToCodeMirrorEditor(editor);
-                setTimeout(function(){
+                setTimeout(function () {
                     var wikiEditorContainer = $('#wikiEditorContainer')[0];
                     var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
                     var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';

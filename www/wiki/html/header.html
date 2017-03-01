@@ -1,104 +1,293 @@
-<!--头部-->
+<style>
+    header{
+        box-shadow: 0 2px 5px rgba(44,62,80,.35);
+    }
+    .nav>li>a.profile{
+        padding:5px;
+    }
+    .nav>li>a.profile>img{
+        width: 40px;
+        height:40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .navbar-default {
+        background-color: #FFF;
+        border-color: #FFF;
+        margin-bottom: 0;
+    }
+    .navbar-default .form-control{
+        margin-top: 10px;
+        width: 200px;
+        height: 30px;
+        background-color: #FAFAFA;
+    }
+    .navbar-default .form-control + span{
+        position: absolute;
+        right: 10px;
+        top: 18px;
+    }
+    .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover,a:focus,a:hover{
+        color: #3977ad;
+        text-decoration: none;
+    }
+    .navbar-default .navbar-nav a.btn-primary{
+        color: #FFF;
+        margin-top: 9px;
+        padding: 6px 12px;
+        border-radius: 2px;
+    }
+    /*导航条面包屑*/
+    .navbar-default .nav-bread-crumb .breadcrumb{
+        background-color: transparent;
+        padding:15px;
+        margin-bottom:0;
+    }
+    .navbar-default .nav-bread-crumb>a{
+        display: inline-block;
+        padding:16px 5px;
+    }
+    /*导航条下拉框*/
+    .navbar-right .dropdown-menu-center{
+        right: -50%;
+        text-align: center;
+    }
+    .navbar-default .dropdown-header{
+        text-align: center;
+        position: relative;
+    }
+    .navbar-default .dropdown-header:before{
+        content: "";
+        width: 25%;
+        height: 1px;
+        background-color: #DDD;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        z-index: -1;
+    }
+    .navbar-default .dropdown-header:after{
+        content: "";
+        width: 25%;
+        height: 1px;
+        background-color: #DDD;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        z-index: -1;
+    }
+    .navbar-default .dropdown-list a{
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+    .navbar-default .dropdown-footer{
+        background-color: #DCDCDC;
+        text-align: center;
+        padding:10px;
+    }
+    .navbar-default .dropdown-menu>li>a:focus,.navbar-default .dropdown-menu>li>a:hover{
+        color: #3977AD;
+        background-color: #DDD;
+    }
+    .navbar-default .user-dropdown .dropdown-menu{
+        width:220px;
+        right: -90px;
+        background-color: #F1F1F1;
+    }
+    .navbar-default .user-dropdown .dropdown-menu h5,.navbar-default .user-dropdown .dropdown-menu .level,.navbar-default .user-dropdown .dropdown-menu li>a{
+        padding:5px 30px;
+    }
+    .navbar-default .user-dropdown ul{
+        list-style: none;
+        margin:0;
+        padding:0;
+        text-align: left;
+    }
+    .navbar-default .user-dropdown ul>li>a{
+        padding-left: 0;
+    }
+    .navbar-default .user-dropdown ul>li>a:focus, .navbar-default .user-dropdown ul>li>a:hover{
+        color: #3977AD;
+        background-color: #DDD;
+        display: block;
+        padding: 5px 30px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        white-space: nowrap;
+    }
+    .navbar-default .user-dropdown .dropdown-footer{
+        background-color: #f9f9f9;
+    }
+    .navbar-default .level a{
+        color: #3977ad;
+    }
+    .navbar-default .level .progress{
+        height: 10px;
+        margin-bottom:8px;
+        background-color: #d5d5d5;
+        box-shadow: none;
+    }
+    .navbar-default .level .progress-bar{
+        background-color: #FD3265;
+    }
+
+    /*导航条》下拉框》tab切换*/
+    .navbar-default .tab-box{
+        background-color: #F1F1F1;
+        text-align: center;
+    }
+    .navbar-default .nav-tabs{
+        border-bottom:0;
+        display: inline-block;
+    }
+    .navbar-default .nav-tabs>li.active>a, .navbar-default .nav-tabs>li.active>a:focus, .navbar-default .nav-tabs>li.active>a:hover{
+        border:0;
+        color: #3976AC;
+        text-decoration: underline;
+        background-color: transparent;
+    }
+    .navbar-default .nav-tabs>li>a:hover{
+        background-color: transparent;
+        border:1px solid transparent;
+    }
+</style>
+
 <div ng-controller="headerController">
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between">
-                <!--左侧-->
-                <div style="display: flex">
-                    <div class="navbar-header">
-                        <a ng-click="goHomePage()" class="navbar-brand btn" style="color: grey;">
-                            <span class="glyphicon">WIKICRAFT</span>
-                        </a>
-                    </div>
-
-                    <div ng-show="isLogin" class="navbar-header">
-                        <a ng-click="goPersonalPage()" class="navbar-brand btn" style="color: grey;">
-                            <span class="glyphicon">个人主页</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!--form class="navbar-form navbar-left" role="search">
-              <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search">
-              </div>
-              <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-          </form-->
-
-                <!--右侧-->
-                <div style="display: flex">
-                    <div ng-show="!isLogin" class="navbar-right">
-                        <div class="navbar-header">
-                            <a class="navbar-brand btn" style="color: grey;">
-                                <span class="glyphicon">成为VIP</span>
-                            </a>
-                        </div>
-
-                        <div class="navbar-header ">
-                            <a ng-click="goLoginPage()" class="navbar-brand btn" style="color: grey;">
-                                <span class="glyphicon">用户登录</span>
-                            </a>
-                        </div>
-
-                        <div class="navbar-header ">
-                            <a ng-click="goRegisterPage()" class="navbar-brand btn" style="color: grey;">
-                                <span class="glyphicon">用户注册</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div ng-show="isLogin" class="navbar-right">
-                        <div class="navbar-header">
-                            <a ng-click="goWikiEditorPage()" class="navbar-brand btn" style="color: grey;">
-                                <span class="glyphicon">网站编辑</span>
-                            </a>
-                        </div>
-
-                        <!--div class="navbar-header ">
-                            <a ng-click="goWebsitePage()" class="navbar-brand btn" style="color: grey;">
-                                <span class="glyphicon">站点管理</span>
-                            </a>
-                        </div>
-
-                        <div class="navbar-header ">
-                            <a ng-click="goRegisterPage()" class="navbar-brand btn" style="color: grey;">
-                                <span class="glyphicon">全部作品</span>
-                            </a>
-                        </div-->
-                    </div>
-
-                    <div ng-show="isLogin" class="navbar-right">
-                        <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.username ||
-                                    "逍遥"}}<span
-                                            class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" ng-click="goUserCenterPage()">个人中心</a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" ng-click="goWebsitePage()">站点管理</a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" ng-click="goGitVersionPage()">版本管理</a>
-                                    </li>
-                                    <li role="presentation" class="divider"></li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" ng-click="logout()">退出登录 </a>
-                                    </li>
-                                </ul>
-                            </li>
+    <header class="navbar-fixed-top">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- <a class="navbar-brand" href="#">WIKICRAFT</a> -->
+                    <div class="dropdown navbar-brand">
+                        <a ng-click="goHomePage()">WIKICRAFT <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">创作站</a></li>
+                            <li><a href="#">内容站</a></li>
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-    </nav>
-</div>
 
-<!--补填nav的高度-->
-<div style="margin-top: 60px"></div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
+                        <li class="nav-bread-crumb">
+                            <ol class="breadcrumb">
+                                <li><a href="#">User</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Project</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="#">Project01</a></li>
+                                        <li><a href="#">Project02</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Page</a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="#">Page01</a></li>
+                                        <li><a href="#">Page02</a></li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </li>
+                        <li class="hidden-xs">
+                            <input type="text" class="form-control" placeholder="">
+                            <span class="glyphicon glyphicon-search text-muted"></span>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
+                        <li><a ng-click="goWikiEditorPage()" class="glyphicon glyphicon-edit"></a></li>
+                        <li><a href="#" class="glyphicon glyphicon-share"></a></li>
+                        <li><a href="#" class="glyphicon glyphicon-star-empty">34</a></li>
+                        <li class="dropdown user-dropdown">
+                            <a href="#"  class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><img src="{{imgsPath+'wiki_header.png '}}" alt=""></a>
+                            <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
+                                <h5>Lixizhi</h5>
+                                <div class="level clearfix">
+                                    <p class="info clearfix"><span class="pull-left">等级5</span><span class="pull-right">2324/2536</span></p>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                                            <span class="sr-only">50% Complete</span>
+                                        </div>
+                                    </div>
+                                    <p><a href="#" class="pull-right">会员等级说明</a></p>
+                                </div>
+                                <ul class="dropdown-list">
+                                    <li><a href="#">个人中心</a></li>
+                                    <li><a href="#">VIP</a></li>
+                                    <li><a href="#">网站管理</a></li>
+                                    <li><a href="#">数据源</a></li>
+                                </ul>
+                                <div class="clearfix dropdown-footer">
+                                    <a ng-click="logout()" class="pull-right">退出登录</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">动态(<span>23</span>)</a>
+                            <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
+                                <div class="tab-box">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#works" aria-controls="works" role="tab" data-toggle="tab">作品</a></li>
+                                        <li role="presentation"><a href="#organization" aria-controls="organization" role="tab" data-toggle="tab">组织</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="works">
+                                        作品
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="organization">组织</div>
+                                </div>
+                                <div class="dropdown-footer"><a href="#">查看更多></a></div>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">收藏夹</a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li><a href="#">这里显示作品名称</a></li>
+                                <li><a href="#">这里显示作品名称</a></li>
+                                <li><a href="#">这里显示作品名称</a></li>
+                                <li class="dropdown-footer"><a href="#">查看更多></a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">历史</a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li class="dropdown-header">今日</li>
+                                <li><a href="#">这里显示作品名称</a></li>
+                                <li><a href="#">这里显示作品名称</a></li>
+                                <li><a href="#">这里显示作品名称</a></li>
+                                <li class="dropdown-footer"><a href="#">查看更多></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
+                        <li class="hidden-xs">
+                            <input type="text" class="form-control" placeholder="">
+                            <span class="glyphicon glyphicon-search text-muted"></span>
+                        </li>
+                        <li><a href="#">VIP</a></li>
+                        <li><a ng-click="goLoginPage()">登录</a></li>
+                        <li><a ng-click="goRegisterPage()" class="btn btn-primary">注册</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+    </header>
+</div>
 
 <!-- 信息提示 -->
 <div>

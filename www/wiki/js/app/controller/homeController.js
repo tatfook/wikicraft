@@ -67,7 +67,7 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
         function init() {
             // 获得网站统计信息
             util.http("POST", config.apiUrlPrefix + "wikicraft/getStatics", {}, function (data) {
-                $scope.wikicraft = data || {}
+                $scope.wikicraft = data || {};
             });
 
             $scope.getWorksList();
@@ -76,40 +76,44 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
 
         $scope.register = function () {
             $scope.errMsg = "";
+            $("#mail-err").addClass("visible-hidden");
+            $("#pwd-err").addClass("visible-hidden");
+            $("#webname-err").addClass("visible-hidden");
+            $("#total-err").addClass("visible-hidden");
+
             var params = {
                 username: util.stringTrim($scope.username),
                 email: util.stringTrim($scope.email),
                 cellphone: util.stringTrim($scope.cellphone),
                 password: util.stringTrim($scope.password),
             };
-            console.log(params);
-            if (!params.username || params.username.length == 0 || !params.password || params.password.length == 0) {
-                $scope.errMsg = "用户名，密码为必填字段";
-                $("#input-name").addClass("has-error");
-                $("#input-pwd").addClass("has-error");
-                $("#input-email").removeClass("has-error");
-                return;
-            }
-            if (!params.username.match(/[\d\w_]{3,20}/)) {
-                $scope.errMsg = "用户名格式错误，应由3-20数字或字母或下划线组成";
-                $("#input-email").removeClass("has-error");
-                $("#input-pwd").removeClass("has-error");
-                $("#input-name").addClass("has-error");
-                return;
-            }
+
             if (!params.email) {
                 $scope.errMsg = "邮箱格式错误";
-                $("#input-email").addClass("has-error");
-                $("#input-name").removeClass("has-error");
-                $("#input-pwd").removeClass("has-error");
+                $("#mail-err").removeClass("visible-hidden");
+                return;
+            }
+            if(!params.password || params.password.length == 0){
+                $scope.errMsg = "密码为必填字段";
+                $("#pwd-err").removeClass("visible-hidden");
                 return;
             }
             if (params.password.length < 4 || params.password.length > 20) {
-                $scope.errMsg = "密码格式错误"
-                $("#input-pwd").addClass("has-error");
-                $("#input-name").removeClass("has-error");
-                $("#input-email").removeClass("has-error");
+                $scope.errMsg = "密码长度为4-20之间"
+                $("#pwd-err").removeClass("visible-hidden");
+                return;
             }
+            if(!params.username || params.username.length == 0){
+                $scope.errMsg = "个人网站名为必填字段";
+                $("#webname-err").removeClass("visible-hidden");
+                return;
+            }
+            if (!params.username.match(/[\d\w_]{3,20}/)) {
+                $scope.errMsg = "个人网站名格式错误";
+                $("#webname-err").removeClass("visible-hidden");
+                return;
+            }
+
             util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
                 console.log("注册成功")
                 $auth.setToken(data.token);
@@ -117,15 +121,47 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 //window.location.href = '/' + data.userInfo.username + '/' + data.userInfo.username;
                 window.location.href = '/wiki/website';
                 /*
-                if (!data.userInfo.githubToken) {
-                    Account.githubAuthenticate();
-                } else {
-                    window.location.href ='/#/home';
-                }*/
+                 if (!data.userInfo.githubToken) {
+                 Account.githubAuthenticate();
+                 } else {
+                 window.location.href ='/#/home';
+                 }*/
             }, function (error) {
                 $scope.errMsg = error.message;
+                console.log($scope.errMsg );
+                $("#total-err").removeClass("visible-hidden");
             });
         }
+
+        $scope.loveWork=function (event) {
+            var obj=event.target;
+            var loveIcon=$(obj).find(".js-heart");
+            if (loveIcon.hasClass("glyphicon-star-empty")) {
+                loveIcon.addClass("glyphicon-star");
+                loveIcon.removeClass("glyphicon-star-empty");
+            }else{
+                loveIcon.addClass("glyphicon-star-empty");
+                loveIcon.removeClass("glyphicon-star");
+            }
+        };
+
+        $scope.loveUser=function (event) {
+            var obj=event.target;
+            var loveIcon=$(obj).find(".js-heart");
+            if (loveIcon.hasClass("glyphicon-star-empty")) {
+                loveIcon.addClass("glyphicon-star");
+                loveIcon.removeClass("glyphicon-star-empty");
+            }else{
+                loveIcon.addClass("glyphicon-star-empty");
+                loveIcon.removeClass("glyphicon-star");
+            }
+        };
+
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13"){
+                $scope.register();
+            }
+        });
 
         init();
     }]);

@@ -236,6 +236,7 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
                 }
 
                 github.writeFile({path: path, message: 'upload image:' + path, content: content}, function (data) {
+                    console.log(data.content);
                     cb && cb(data.content.download_url);
                 }, errcb);
             },
