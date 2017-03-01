@@ -8,6 +8,7 @@
     var moduleList = [
         'controller/mainController',
         'controller/headerController',
+        'controller/kaitlynHeaderController',
         //'controller/testController',
 
         // directives
