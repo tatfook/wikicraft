@@ -355,7 +355,7 @@ function website_pages:api_getDetailInfo(params)
 	userDB:db():findOne({["+username"]={params.username}}, resume)
 	local err, userinfo = yield()
 	if not userinfo then
-		return  errors:wrap(errros.NOT_FOUND)
+		return  errors:wrap(errors.NOT_FOUND)
 	end
 
 	local websiteDB = models.website:new()

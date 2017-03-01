@@ -58,11 +58,14 @@ define(['app', 'helper/util'], function (app, util) {
             }
 
             for (var key in dataSource) {
-                dataSource[key][fnName] && dataSource[key][fnName](params, isAllOK(key, false), isAllOK(key, true));
+                dataSource[key] && dataSource[key][fnName] && dataSource[key][fnName](params, isAllOK(key, false), isAllOK(key, true));
             }
         }
 
         return {
+            isDataSourceExist: function (dsName) {
+                return dataSource[dsName] ? true : false;
+            },
             getSingleDataSource: function (dsName) {
                 return dataSource[dsName];
             },

@@ -123,7 +123,7 @@ define(['angular'], function (angular) {
     }
     
     storage.indexedDBSetItem = function (value, cb, errcb) {
-        console.log(storage.indexDBStoreName);
+        //console.log(storage.indexDBStoreName);
         var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
         var store=transaction.objectStore(storage.indexDBStoreName);
         var request=store.put(value);
