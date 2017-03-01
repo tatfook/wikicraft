@@ -4,9 +4,9 @@
 
 define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util', 'codemirror',], function ($, app, markdownwiki, storage, util, CodeMirror) {
     var md = markdownwiki({html: true});
-    
-    app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github',
-        function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github) {
+
+    app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
+        function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github, modal) {
             console.log("mainController");
             // 初始化基本信息
             function initBaseInfo() {
@@ -27,7 +27,13 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     $compile: $compile,
                     $auth: $auth
                 });
-                util.setSelfServices({config: config, storage: storage, Account: Account, Message: Message, github:github});
+                util.setSelfServices({
+                    config: config,
+                    storage: storage,
+                    Account: Account,
+                    Message: Message,
+                    github: github
+                });
             }
 
             function initView() {
@@ -69,7 +75,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 var urlObj = util.parseUrl();
                 //console.log(urlObj);
                 // 置空用户页面内容
-                //urlObj.username = 'wiki';
+                urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
                     $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
@@ -84,8 +90,8 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                         //window.location.href = config.frontEndRouteUrl + window.location.search + "#/home";
                         renderHtmlText('/wiki/home');
                     } else { // /wiki/test
-                        renderHtmlText(urlObj.pathname);
-                        //renderHtmlText('/wiki/wikiEditor');
+                        //renderHtmlText(urlObj.pathname);
+                        renderHtmlText('/wiki/test');
                     }
                     //console.log($scope.IsRenderServerWikiContent);
                     return;
@@ -117,4 +123,5 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
 
             init();
         }]);
+
 });

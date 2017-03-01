@@ -3,9 +3,14 @@
  */
 
 define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
-    app.registerController('loginController', ['$scope', '$state', '$auth', 'Account', function ($scope, $state, $auth, Account) {
+    app.registerController('loginController', ['$scope', '$auth', 'Account', function ($scope, $auth, Account) {
         console.log("loginController");
         //$scope.errMsg = "用户名或密码错误";
+
+        $scope.goRegisterPage = function () {
+            util.go('join');
+        }
+
         $scope.login = function () {
             $scope.errMsg = "";
             var params = {
@@ -14,27 +19,35 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
             };
             if (!params.email || !params.password) {
                 $scope.errMsg = "用户名或密码错误";
+                $("#total-err").removeClass("visible-hidden");
                 return;
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
                 console.log("登录成功");
+                /*
                 if (!data.userInfo.githubToken) {
                     Account.githubAuthenticate();
                 }
-                window.location.href = '/wiki/website';
+                */
+                util.go('website');
             }, function (error) {
                 $scope.errMsg = error.message;
+                $("#total-err").removeClass("visible-hidden");
             });
         }
 
         $scope.githubLogin = function () {
             $auth.authenticate("github").then(function (response) {
+                if (!response.data.token || !response.data.userInfo) {
+                    Message.info("github 登录失败!!!");
+                    return ;
+                }
                 console.log("github认证成功!!!");
                 $auth.setToken(response.data.token);
                 Account.setUser(response.data.userInfo);
-                window.location.href = '/wiki/website';
+                util.go('website');
             }, function () {
                 console.log("github认证失败!!!");
             });
