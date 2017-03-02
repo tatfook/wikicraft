@@ -44,7 +44,7 @@ define(['app', 'helper/util'], function (app, util) {
                         isError = true;
 
                     for (var i = 0; i < dsList.length; i++) {
-                        if (!isOk[dsList[i]])
+                        if (!isOK[dsList[i]])
                             break;
                     }
 

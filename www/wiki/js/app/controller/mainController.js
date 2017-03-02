@@ -37,6 +37,11 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
             }
 
             function initView() {
+                // 信息提示框
+                $("#messageTipCloseId").click(function () {
+                    Message.hide();
+                });
+                
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $scope.$on('$stateChangeStart', function (evt, toState, toParams, fromState, fromParams) {
                     // 如果需要阻止事件的完成

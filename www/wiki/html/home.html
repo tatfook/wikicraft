@@ -218,7 +218,6 @@
                     <span>网站数量</span>
                     <span>{{wikicraft.siteCount}}</span>
                 </a>
-
             </div>
             <div class="col-xs-4">
                 <div class="icon-box">
@@ -290,34 +289,42 @@
                 <h4>作品长廊 <a class="pull-right" ng-click="goAllWorksList()">查看更多>></a></h4>
             </div>
             <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList">
-                <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
-                <div class="text clearfix">
-                    <h4><a class="title" href="#">{{site.name}}</a></h4>
-                    <p>作者： <span>{{site.username}}</span></p>
-                    <p class="pull-left info">
-                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>253</span>
-                    </p>
-                    <p class="pull-right info" ng-click="loveWork($event)">
-                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount}}</span>
-                    </p>
+                <div>
+                    <a ng-click="goUserSite(site)">
+                        <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
+                    </a>
+                    <div class="text clearfix">
+                        <h4><a class="title" href="#">{{site.name}}</a></h4>
+                        <p>作者： <span>{{site.username}}</span></p>
+                        <p class="pull-left info">
+                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
+                        </p>
+                        <p class="pull-right info" ng-click="worksFavorite($event)">
+                            <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount}}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row works">
             <div class="col-md-12">
-                <h4>名人堂 <a class="pull-right" ng-click="goAllUserList()">查看更多>></a></h4>
+                <h4>名人堂 <a class="pull-right" ng-click="goAllPersonalList()">查看更多>></a></h4>
             </div>
-            <div class="col-md-3 hover-slide" ng-repeat="user in userObj.userList">
-                <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
-                <div class="text clearfix">
-                    <h4><a class="title" href="#">{{user.username}}</a></h4>
-                    <p>作者： <span>Lixzhi</span></p>
-                    <p class="pull-left info">
-                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>253</span>
-                    </p>
-                    <p class="pull-right info" ng-click="loveUser($event)">
-                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{user.favoriteCount}}</span>
-                    </p>
+            <div class="col-md-3 hover-slide" ng-repeat="site in personalSiteObj.siteList">
+                <div>
+                    <a ng-click="goUserSite(site)">
+                        <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
+                    </a>
+                    <div class="text clearfix">
+                        <h4><a class="title" href="#">{{site.name}}</a></h4>
+                        <p>作者： <span>{{site.username}}</span></p>
+                        <p class="pull-left info">
+                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
+                        </p>
+                        <p class="pull-right info" ng-click="worksFavorite($event, site)">
+                            <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount}}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

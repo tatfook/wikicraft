@@ -422,3 +422,43 @@ function website:api_isExist(params)
 	
 	return errors:wrap(yield())
 end 
+
+-- 获得站点列表
+function website:api_getSiteList(params)
+	local skip, limit = util:pagination(params)	
+	
+	local key = '';
+	local value = {};
+	-- 个人站点
+	if params.filterType == 'personal' then
+		key = key .. '+categoryId'
+		value[#value+1] = 0 
+	end
+	if params.sortBy then 
+		key = key .. params.sortBy
+	end
+	local query = {}
+	if key ~= '' then 
+		query[key] = value
+	end
+	log(query)	
+	self:db():count(query, resume)
+	local err, data = yield()
+	
+	if err then
+		return errors:wrap(err)
+	end
+	local count = data or 0
+	
+	if key == '' then
+		key = key .. '_id'
+		value['gt'] = -1
+	end
+	value["skip"] = skip
+	value['limit'] = limit
+
+	self:db():find({[key]=value}, resume)
+	local err, data = yield()
+	
+	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
+end

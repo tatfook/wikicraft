@@ -6,20 +6,71 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
     app.controller('headerController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         console.log("headerController");
 
-        // 信息提示框
-        $("#messageTipCloseId").click(function () {
-            Message.hide();
-        });
-
         $scope.isLogin = Account.isAuthenticated();
-        $scope.user = Account.getUser();
+        $scope.urlObj = {username:$scope.user.username};
+        
+        $scope.favoriteWebsiteObj = {};
+        
+        function getFavoriteList() {
+            util.http("POST", config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+                $scope.favoriteWebsiteObj = data;
+            });
+            
+        }
+        function init() {
+            var urlObj = util.parseUrl();
+            if (!config.localEnv && urlObj.username != 'wiki') {
+                if (urlObj.sitename) {
+                    $scope.urlObj.sitename = urlObj.sitename;
+                    util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName',{websiteName:urlObj.sitename}, function (data) {
+                        $scope.userSitePageList = data || [];
+                    });
+                }
+                if (urlObj.pagename) {
+                    $scope.urlObj.pagename = urlObj.pagename;
+                }
+            }
+
+            getFavoriteList();
+            
+            util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId:$scope.user._id}, function (data) {
+                $scope.userSiteList = data || [];
+            });
+        }
+        
+        $scope.$watch('$viewContentLoaded', init);
+
+        $scope.selectSite = function (site) {
+            $scope.urlObj.sitename = site.name;
+            $scope.urlObj.pagename = undefined;
+
+            util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteId', {websiteId:site._id}, function (data) {
+                $scope.userSitePageList = data; 
+            });
+        }
+
+        $scope.selectPage = function (page) {
+            $scope.urlObj.pagename = page.name;
+            $scope.goUrlSite();
+        }
+
+        $scope.goUrlSite = function () {
+            var url = '/' + $scope.urlObj.username;
+            url += '/' + $scope.urlObj.sitename || $scope.urlObj.username;
+            url += '/' + $scope.urlObj.pagename || 'index';
+            util.goUserSite(url);
+        }
+
+        $scope.goUserSite = function (site) {
+            util.goUserSite('/' + site.username + '/' + site.name);
+        }
 
         // 页面编辑页面
         $scope.goWikiEditorPage = function() {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
             util.go("wikiEditor")
         }
-
+        
         $scope.goLoginPage = function () {
             util.go("login");
         };

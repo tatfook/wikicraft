@@ -156,6 +156,21 @@
         background-color: transparent;
         border:1px solid transparent;
     }
+    .navbar-default .dropdown-menu li{
+        position: relative;
+    }
+    .navbar-default .dropdown-menu>li:not(.dropdown-header):not(.dropdown-footer):not([role="presentation"]):after {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        margin-right: 0px;
+        background-color: #333;
+        position: absolute;
+        left: 7px;
+        top: 10px;
+    }
 </style>
 
 <div ng-controller="headerController">
@@ -185,19 +200,21 @@
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
                         <li class="nav-bread-crumb">
                             <ol class="breadcrumb">
-                                <li><a href="#">User</a></li>
+                                <li><a ng-click="goUrlSite()">{{urlObj.username || 'User'}}</a></li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Project</a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.sitename || 'Project'}}</a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a href="#">Project01</a></li>
-                                        <li><a href="#">Project02</a></li>
+                                        <li ng-repeat="site in userSiteList">
+                                            <a ng-click="selectSite(site)">{{site.name}}</a>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Page</a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.pagename || 'Page'}}</a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a href="#">Page01</a></li>
-                                        <li><a href="#">Page02</a></li>
+                                        <li ng-repeat="page in userSitePageList">
+                                            <a ng-click="selectPage(page)">{{page.name}}</a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ol>
@@ -210,9 +227,11 @@
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li><a ng-click="goWikiEditorPage()" class="glyphicon glyphicon-edit"></a></li>
                         <li><a href="#" class="glyphicon glyphicon-share"></a></li>
-                        <li><a href="#" class="glyphicon glyphicon-star-empty">34</a></li>
+                        <li><a href="#" class="glyphicon glyphicon-star-empty">{{user.fansCount || 0}}</a></li>
                         <li class="dropdown user-dropdown">
-                            <a href="#"  class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><img src="{{imgsPath+'wiki_header.png '}}" alt=""></a>
+                            <a href="#"  class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <img ng-src="{{ user.portrait || imgsPath+'wiki_header.png '}}" alt="">
+                            </a>
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5>Lixizhi</h5>
                                 <div class="level clearfix">
@@ -225,10 +244,10 @@
                                     <p><a href="#" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a href="#">个人中心</a></li>
+                                    <li><a ng-click="goUserCenterPage()">个人中心</a></li>
                                     <li><a href="#">VIP</a></li>
-                                    <li><a href="#">网站管理</a></li>
-                                    <li><a href="#">数据源</a></li>
+                                    <li><a ng-click="goWebsitePage()">网站管理</a></li>
+                                    <li><a ng-click="goGitVersionPage()">数据源</a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
                                     <a ng-click="logout()" class="pull-right">退出登录</a>
@@ -257,9 +276,9 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">收藏夹</a>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <li><a href="#">这里显示作品名称</a></li>
-                                <li><a href="#">这里显示作品名称</a></li>
-                                <li><a href="#">这里显示作品名称</a></li>
+                                <li ng-repeat="site in favoriteWebsiteObj.siteList">
+                                    <a ng-click="goUserSite(site)">{{site.name}}</a>
+                                </li>
                                 <li class="dropdown-footer"><a href="#">查看更多></a></li>
                             </ul>
                         </li>
@@ -287,12 +306,4 @@
             </div><!-- /.container-fluid -->
         </nav>
     </header>
-</div>
-
-<!-- 信息提示 -->
-<div>
-    <div id="messageTipId" class="alert" style="display: none; position: fixed; right: 20%; width: 60%; z-index: 10;">
-        <a id="messageTipCloseId" href="#" class="close" ng-click="hide()">&times;</a>
-        <div id="messageTipConentId"></div>
-    </div>
 </div>

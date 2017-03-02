@@ -377,7 +377,27 @@ function website_pages:api_getDetailInfo(params)
 end
 
 
+-- 通过站点ID获取站点所有页
+function website_pages:api_getByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	self:db():find({['+websiteId']={params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 通过站点名获得站点所有页
+function website_pages:api_getByWebsiteName(params)
+	if not params.websiteName then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	self:db():find({['+websiteName'] = {params.websiteName}}, resume)
+
+	return errors:wrap(yield())
+end
 
 
 

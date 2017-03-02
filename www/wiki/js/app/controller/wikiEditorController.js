@@ -30,6 +30,8 @@ define([
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
     var editor;
+    var allWebsites = [];
+    var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
     var currentWebsitePage = undefined;
 
@@ -145,7 +147,7 @@ define([
         }
 
         var itemArray = [];
-        var websites = $scope.websitePages || [];
+        var websites = allWebsitePages || [];
         for (var i = 0; i < websites.length; i++) {
             itemArray.push({id: i, url: websites[i].url});
         }
@@ -181,14 +183,13 @@ define([
         //初始化目录树  data:  $.parseJSON(getTree()),
         function initTree() {
             //console.log('@initTree');
-            console.log($('#newPageTreeId'));
             $('#newPageTreeId').treeview({
                 color: "#428bca",
                 showBorder: false,
                 enableLinks: true,
                 data: getTreeData($scope.user.username, $scope.websitePages, true),
                 onNodeSelected: function (event, data) {
-                    console.log(data);
+                    //console.log(data);
                     treeNode = data.pageNode;
                 }
             });
@@ -196,8 +197,8 @@ define([
 
         //初始化
         function init() {
-            $scope.websites = $rootScope.websites;           //站点列表
-            $scope.websitePages = $rootScope.websitePages;       //页面列表
+            $scope.websites = allWebsites;           //站点列表
+            $scope.websitePages = allWebsitePages;       //页面列表
 
             initTree();
         }
@@ -239,8 +240,8 @@ define([
             }
 
             $http.put(config.apiUrlPrefix + 'website_pages/new', $scope.websitePage).then(function (response) {
-                $rootScope.websitePage = response.data.data;
-                $rootScope.website = $scope.website;
+                currentWebsitePage = response.data.data;
+                currentWebsite = $scope.website;
 
                 $uibModalInstance.close("page");
             }).catch(function (response) {
@@ -257,8 +258,6 @@ define([
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
             $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
-            $scope.websites = [];           //站点列表
-            $scope.websitePages = [];       //页面列表
 
             $scope.progressbar = {
                 show: false,
@@ -296,20 +295,23 @@ define([
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
                 $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
-                    $scope.websites = response.data.data;
+                    allWebsites = response.data.data;
                     util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: Account.getUser()._id}, function (data) {
-                        $scope.websitePages = data || [];
+                        allWebsitePages = data || [];
 
-                        for (var i = 0; i < $scope.websitePages.length; i++) {
-                            if (url == $scope.websitePages[i].url) {
-                                currentWebsite = getWebsite($scope.websitePages[i].websiteId);
-                                currentWebsitePage = $scope.websitePages[i];
+                        for (var i = 0; i < allWebsitePages.length; i++) {
+                            if (url == allWebsitePages[i].url) {
+                                currentWebsite = getWebsite(allWebsitePages[i].websiteId);
+                                currentWebsitePage = allWebsitePages[i];
                                 break;
                             }
                         }
                         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
                             initTree();
-                            initRoot();
+
+                            if (!isEmptyObject(currentWebsitePage)) {
+                                openPage();
+                            }
                         });
                     });
                 }).catch(function (response) {
@@ -330,21 +332,9 @@ define([
                 $(".progress-bar").css("width", $scope.progressbar.percent + "%");
             }
 
-            //设置全局变量
-            function initRoot() {
-                $rootScope.websites = $scope.websites;
-                $rootScope.websitePages = $scope.websitePages;
-                $rootScope.website = currentWebsite;
-                $rootScope.websitePage = currentWebsitePage;
-
-                if (!isEmptyObject(currentWebsitePage)) {
-                    openPage();
-                }
-            }
-
             function getWebsite(id) {
-                for (var i = 0; i < $scope.websites.length; i++) {
-                    ws = $scope.websites[i];
+                for (var i = 0; i < allWebsites.length; i++) {
+                    ws = allWebsites[i];
                     if (ws._id == id) {
                         return ws;
                     }
@@ -353,9 +343,8 @@ define([
             }
 
             function getWebsitePage(id) {
-                //console.log($scope.websitePages);
-                for (var j = 0; j < $scope.websitePages.length; j++) {
-                    wp = $scope.websitePages[j];
+                for (var j = 0; j < allWebsitePages.length; j++) {
+                    wp = allWebsitePages[j];
                     if (wp._id == id) {
                         return wp;
                     }
@@ -366,26 +355,23 @@ define([
             function setDataSource() {
                 //console.log($scope.user.githubDS);
                 //console.log($scope.website.githubRepoName);
-                if (!$scope.user.githubDS && !$scope.website.githubRepoName) {
+                if (!$scope.user.githubDS && !currentWebsite.githubRepoName) {
                     $scope.dataSource = undefined;
                 } else {
                     $scope.dataSource = dataSource.getDataSource(['github']);
                     var githubDS = $scope.dataSource.getSingleDataSource('github');
-                    if ($scope.website.githubRepoName && githubDS) {
-                        $scope.dataSource.getSingleDataSource('github').setDefaultRepo($scope.website.githubRepoName);
-                        //console.log(github);
+                    if (currentWebsite.githubRepoName && githubDS) {
+                        $scope.dataSource.getSingleDataSource('github').setDefaultRepo(currentWebsite.githubRepoName);
                     }
                 }
             }
 
             function openPage(isNodeSelected) {
-                $rootScope.siteinfo = $rootScope.website;
-                $rootScope.pageinfo = $rootScope.websitePage;
+                $rootScope.siteinfo = currentWebsite;
+                $rootScope.pageinfo = currentWebsitePage;
 
                 var wp = currentWebsitePage;
                 if (isEmptyObject(wp)) {
-                    $scope.websitePage = {};
-                    delete $rootScope.websitePage;
                     editor.setValue('');
                     $('#btUrl').val('');
                     $('.toolbar-page-remove').attr("disabled", true);
@@ -452,22 +438,20 @@ define([
                     showBorder: false,
                     enableLinks: true,
                     levels: 4,
-                    data: getTreeData($scope.user.username, $scope.websitePages, false),
+                    data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
                         //console.log(data.pageNode);
                         autoSave(function () {
                             if (data.pageNode.isLeaf) {
                                 currentWebsite = getWebsite(data.pageNode.siteId);
                                 currentWebsitePage = getWebsitePage(data.pageNode.pageId);
-                                $rootScope.websitePage = currentWebsitePage;
-                                $rootScope.website = currentWebsite;
-
+                                //console.log(currentWebsitePage);
                                 openPage(true);
                             }
                             editor.focus();
                         }, function () {
                             Message.warning("自动保存失败");
-                            openPage(false);
+                            openPage(true);
                         });
                     }
                 });
@@ -519,37 +503,43 @@ define([
             }
 
             $scope.cmd_newpage = function () {
-                $uibModal.open({
-                    //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                    templateUrl: config.htmlPath + "editorNewPage.html",
-                    controller: "pageCtrl",
-                }).result.then(function (provider) {
-                    //console.log(provider);
-                    if (provider == "page") {
-                        $scope.websitePages.push($rootScope.websitePage);
-                        currentWebsitePage = $rootScope.websitePage;
-                        currentWebsite = $rootScope.website;
+                function openNewPage() {
+                    $uibModal.open({
+                        //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                        templateUrl: config.htmlPath + "editorNewPage.html",
+                        controller: "pageCtrl",
+                    }).result.then(function (provider) {
+                        //console.log(provider);
+                        if (provider == "page") {
+                            allWebsitePages.push(currentWebsitePage);
+                            initTree();
+                            openPage(false);
 
-                        initTree();
-                        openPage(false);
-
-
-                        //下面是addNode实现方式
-                        //$websiteNode = $('#treeview').treeview("search",[ $scope.website.name, {exactMatch: true }]);
-                        //$('#treeview').treeview("addNode", [$websiteNode[0].nodeId, { node:{
-                        //    text:$scope.websitePage.name,
-                        //    icon:"fa fa-file-o",
-                        //    selectedIcon:"fa fa-file-text-o",
-                        //    tags:["newpage",$scope.websitePage._id,$scope.websitePage.websiteId]
-                        //}}]);
-                        //$rootScope.websiteNode = $scope.website;
-                        //$rootScope.websitePage = response.data;
-                    }
-                }, function (text, error) {
-                    console.log('text:' + text);
-                    console.log('error:' + error);
-                    return;
+                            //下面是addNode实现方式
+                            //$websiteNode = $('#treeview').treeview("search",[ $scope.website.name, {exactMatch: true }]);
+                            //$('#treeview').treeview("addNode", [$websiteNode[0].nodeId, { node:{
+                            //    text:$scope.websitePage.name,
+                            //    icon:"fa fa-file-o",
+                            //    selectedIcon:"fa fa-file-text-o",
+                            //    tags:["newpage",$scope.websitePage._id,$scope.websitePage.websiteId]
+                            //}}]);
+                            //$rootScope.websiteNode = $scope.website;
+                            //$rootScope.websitePage = response.data;
+                        }
+                    }, function (text, error) {
+                        console.log('text:' + text);
+                        console.log('error:' + error);
+                        return;
+                    });
+                }
+                autoSave(function () {
+                    //Message.warning("自动保存成功");
+                    openNewPage();
+                }, function () {
+                    Message.warning("自动保存失败");
+                    openNewPage();
                 });
+
             }
 
             //保存页面
@@ -975,11 +965,7 @@ define([
                                 message: "delete file"
                             });
 
-                            $.each(currentWebsitePages, function (index, item) {
-                                if (item._id == currentWebsitePage._id) {
-                                    currentWebsitePages[index].isDelete = true;
-                                }
-                            });
+                            currentWebsitePage.isDelete = true;
 
                             currentWebsitePage = {};
                             initTree();
@@ -1001,14 +987,12 @@ define([
 
             // 渲染回调
             function autoSave(cb, errcb) {
-                if (isEmptyObject(currentWebsitePage)) {//修改
-                    return;
-                }
                 var content = editor.getValue();
-                if (content == currentWebsitePage.content) {
+                if (isEmptyObject(currentWebsitePage) || content == currentWebsitePage.content) {//修改
                     cb && cb();
                     return;
                 }
+
                 console.log('auto save website page!!!');
                 currentWebsitePage.content = content;
                 currentWebsitePage.timestamp = (new Date()).getTime();
@@ -1187,6 +1171,9 @@ define([
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
                     container_name: '.result-html', renderCallback: function () {
+                        if (isEmptyObject(currentWebsitePage))
+                            return ;
+
                         storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
                     }, changeCallback: changeCallback
                 });
@@ -1205,8 +1192,6 @@ define([
                 function changeCallback() {
                     var content = editor.getValue();
                     if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content) {
-                        console.log(content);
-                        console.log(currentWebsitePage);
                         currentWebsitePage.isModify = true;
                         initTree();
                     }

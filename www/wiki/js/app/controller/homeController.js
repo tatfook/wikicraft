@@ -4,19 +4,17 @@
 
 define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlContent) {
     // 动态加载
-    app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', function ($scope, $rootScope, $state, $auth, Account) {
-        $scope.siteParams = {page: 1, pageSize: 3};
-        $scope.userParams = {page: 1, pageSize: 3};
+    app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', 'Message', function ($scope, $rootScope, $state, $auth, Account, Message) {
+        $scope.siteParams = {page: 1, pageSize: 4};
+        $scope.userParams = {page: 1, pageSize: 4};
         $scope.userObj = {};
         $scope.siteObj = {};
         $scope.isLogin = false; // false：注册  true：登录
-        $scope.getRandomColor = function (index) {
-            return util.getRandomColor(index);
+
+        $scope.goUserSite = function (site) {
+            window.location.href = '/' + site.username + '/' + site.name + '/index';
         }
 
-        $scope.goLoginPage = function () {
-            $scope.isLogin = true;
-        }
         // 更多我的收藏
         $scope.goAllWorksList = function () {
             var siteshowObj = {};
@@ -69,9 +67,17 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             util.http("POST", config.apiUrlPrefix + "wikicraft/getStatics", {}, function (data) {
                 $scope.wikicraft = data || {};
             });
+            
+            util.http("POST", config.apiUrlPrefix + 'website/getFavoriteSortList', {page:1, pageSize:4}, function (data) {
+                $scope.siteObj = data;
+            });
 
-            $scope.getWorksList();
-            $scope.getUserList();
+            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount', filterType:'personal'}, function (data) {
+                $scope.personalSiteObj = data;
+            });
+
+            //$scope.getWorksList();
+            //$scope.getUserList();
         }
 
         $scope.register = function () {
@@ -118,14 +124,8 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 console.log("注册成功")
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
-                //window.location.href = '/' + data.userInfo.username + '/' + data.userInfo.username;
-                window.location.href = '/wiki/website';
-                /*
-                 if (!data.userInfo.githubToken) {
-                 Account.githubAuthenticate();
-                 } else {
-                 window.location.href ='/#/home';
-                 }*/
+                //window.location.href = '/wiki/website';
+                util.go('website');
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
@@ -133,27 +133,40 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             });
         }
 
-        $scope.loveWork=function (event) {
-            var obj=event.target;
-            var loveIcon=$(obj).find(".js-heart");
-            if (loveIcon.hasClass("glyphicon-star-empty")) {
-                loveIcon.addClass("glyphicon-star");
-                loveIcon.removeClass("glyphicon-star-empty");
-            }else{
-                loveIcon.addClass("glyphicon-star-empty");
-                loveIcon.removeClass("glyphicon-star");
+        $scope.worksFavorite=function (event, site) {
+            //console.log(event, site);
+            if (!Account.isAuthenticated()) {
+                Message.info("登录后才能收藏!!!");
+                return ;
             }
-        };
 
-        $scope.loveUser=function (event) {
+            if (site.userId == $scope.user._id) {
+                Message.info("不能收藏自己作品!!!");
+                return ;
+            }
+            var worksFavoriteRequest = function(isFavorite) {
+                var params = {
+                    userId: $scope.user._id,
+                    favoriteUserId: site.userId,
+                    favoriteWebsiteId: site._id,
+                }
+
+                var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
+                util.post(url, params, function () {
+                    Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
+                });
+            };
+
             var obj=event.target;
             var loveIcon=$(obj).find(".js-heart");
             if (loveIcon.hasClass("glyphicon-star-empty")) {
                 loveIcon.addClass("glyphicon-star");
                 loveIcon.removeClass("glyphicon-star-empty");
+                worksFavoriteRequest(true);
             }else{
                 loveIcon.addClass("glyphicon-star-empty");
                 loveIcon.removeClass("glyphicon-star");
+                worksFavoriteRequest(false);
             }
         };
 
