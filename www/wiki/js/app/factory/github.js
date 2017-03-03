@@ -174,7 +174,11 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
                     github.getRepos(function (data) {
                         storage.sessionStorageSetItem(repoKey, true);
                         cb && cb(data);
-                    }, function () {
+                    }, function (response) {
+                        if (response.status == 401) {
+                            errcb && errcb(response);
+                            return;
+                        }
                         github.createRepos(function (data) {
                             storage.sessionStorageSetItem(repoKey, true);
                             cb && cb(data);
@@ -232,6 +236,7 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
                 }
 
                 github.writeFile({path: path, message: 'upload image:' + path, content: content}, function (data) {
+                    console.log(data.content);
                     cb && cb(data.content.download_url);
                 }, errcb);
             },

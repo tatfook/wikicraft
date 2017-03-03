@@ -14,7 +14,6 @@ define(['app', 'require'], function (app, require) {
                 controllerPath:controllerPathPrefix + 'testController',
                 controllerName:'testController',
             },
-            'testEditor':{},
 
             'login':{},
             'home':{},
@@ -34,11 +33,7 @@ define(['app', 'require'], function (app, require) {
             'usershow':{},
             'worksApply':{},
 
-            // temp
-            'game':{},
-
             'knowledge':{},
-            'join':{}
         };
 
         for (var key in routerMap) {

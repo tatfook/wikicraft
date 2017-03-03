@@ -4,9 +4,9 @@
 
 define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util', 'codemirror',], function ($, app, markdownwiki, storage, util, CodeMirror) {
     var md = markdownwiki({html: true});
-    
-    app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github',
-        function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github) {
+
+    app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
+        function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github, modal) {
             console.log("mainController");
             // 初始化基本信息
             function initBaseInfo() {
@@ -27,10 +27,21 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     $compile: $compile,
                     $auth: $auth
                 });
-                util.setSelfServices({config: config, storage: storage, Account: Account, Message: Message, github:github});
+                util.setSelfServices({
+                    config: config,
+                    storage: storage,
+                    Account: Account,
+                    Message: Message,
+                    github: github
+                });
             }
 
             function initView() {
+                // 信息提示框
+                $("#messageTipCloseId").click(function () {
+                    Message.hide();
+                });
+                
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $scope.$on('$stateChangeStart', function (evt, toState, toParams, fromState, fromParams) {
                     // 如果需要阻止事件的完成
@@ -85,7 +96,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                         renderHtmlText('/wiki/home');
                     } else { // /wiki/test
                         renderHtmlText(urlObj.pathname);
-                        //renderHtmlText('/wiki/wikiEditor');
+                        //renderHtmlText('/wiki/test');
                     }
                     //console.log($scope.IsRenderServerWikiContent);
                     return;
@@ -117,4 +128,5 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
 
             init();
         }]);
+
 });

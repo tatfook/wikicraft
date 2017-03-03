@@ -31,3 +31,28 @@ a:hover {
         -ms-flex-basis:100%;
         -o-flex-basis:100%;
     }
+
+#__WikiPageContentContainer__{
+    width: auto;
+    padding:0;
+}
+body{
+    font-family: "微软雅黑";
+    padding-top: 52px;
+}
+h1{
+    font-size: 48px;
+    font-weight: bold;
+}
+h2{
+    font-size: 24px;
+    font-weight: bold;
+}
+h3{
+    font-size: 18px;
+    font-weight: bold;
+}
+h4{
+    font-size: 16px;
+    font-weight: bold;
+}

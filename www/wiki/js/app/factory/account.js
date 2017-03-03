@@ -10,21 +10,27 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             /*
             user.githubToken = {
                 token_type: 'bearer',
-                access_token: 'f26813c35339436310c90233798bb49b9046625a'
+                access_token: 'c4b9a75d8c6c9fd1db081319723d1713f70f6f74'
             };
             user.githubName = 'wxaxiaoyao';
-            */
+             */
             if (user && user.githubToken && !github.isInited()) {
                 github.init(user.githubToken, user.githubName, user.githubRepoName, function () {
                     dataSource.registerDataSource('github', github);
                     $rootScope.$broadcast("onDataSource", github);
                     console.log("github init success");
-                }, function () {
+                }, function (response) {
+                    //console.log(response);
+                    if (response.status == 401) {  // Token失效
+                        Message.info('GITHUB授权过期，请重新认证!!!');
+                        console.log('GITHUB授权过期，请重新认证!!!');
+                        user.githubToken = undefined;
+                        account.setUser(user);
+                    }
                     console.log("github init failed");
                 });
             }
         }
-
 
         var account = {
             user: undefined,
@@ -51,7 +57,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                     return;
                 }
                 this.user = user;
-
+                console.log(user);
                 initGithub(user);
 
                 this.send("onUserProfile", this.user);
@@ -89,12 +95,15 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 var githubAuth = function () {
                     $auth.authenticate("github").then(function (response) {
                         $auth.setToken(response.data.token);
+                        console.log(response.data.userInfo);
                         self.setUser(response.data.userInfo);
                         cb && cb();
                         Message.info("github认证成功!!!");
+                        console.log("github认证成功!!!")
                     }, function () {
                         errcb && errcb();
                         Message.warning("github认证失败!!!");
+                        console.log("github认证失败!!!")
                     });
                 }
                 // 如果已经认证就不再提示认证

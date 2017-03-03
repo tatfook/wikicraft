@@ -46,7 +46,7 @@ end
 -- 获取最近一周内更新
 function website_renewal:api_getWeekCount(params)
 	local currentDate, currentTiem = timehelp.GetLocalTime()
-	local startDate = timehelp.get_next_date_str(currentDate, -7, "%4d-%2d-%2d")
+	local startDate = timehelp.get_next_date_str(currentDate, -7, "%04d-%02d-%02d")
 	params = params or {}
 	params.startDate = startDate
 	return self:api_getCount(params)

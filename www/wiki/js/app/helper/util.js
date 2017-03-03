@@ -152,6 +152,10 @@ define(['jquery'], function ($) {
         httpRespone.then(function (response) {
             var data = response.data;
             //console.log(data);
+            // debug use by wxa
+            if (!data.error) {
+                console.log(url);
+            }
             if (data.error.id == 0) {
                 //console.log(data.data);
                 callback && callback(data.data);

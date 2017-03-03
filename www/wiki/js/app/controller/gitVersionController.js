@@ -3,7 +3,7 @@
  */
 
 define(['app','helper/util','text!html/gitVersion.html'], function (app, util, htmlContent) {
-   app.registerController('gitVersionController', ['$scope', '$state', 'Account', 'github', function ($scope, $state, Account,github) {
+   app.registerController('gitVersionController', ['$scope', '$state', 'Account', 'github','Message', function ($scope, $state, Account,github, Message) {
        $scope.dtStartOpened = false;
        $scope.dtEndOpened = false;
        $scope.filelist = [];
@@ -12,15 +12,15 @@ define(['app','helper/util','text!html/gitVersion.html'], function (app, util, h
        Account.ensureAuthenticated();
 
        var user = Account.getUser();
-       github.isInited() || github.init(user.githubToken, user.githubName, undefined, function () {
-           init();
-       }, function (response) {
-           console.log(response);
-           console.log("github init failed!!!");
-       });
+
+       $scope.$watch('$viewContentLoaded', init);
 
        // 获得git文件列表
        function init() {
+           if (!github.isInited()) {
+               Message.info("此功能需开启github数据源");
+               return ;
+           }
            github.getTree(true, function (data) {
                var filelist = []
                for(var i = 0; i < data.tree.length; i++) {

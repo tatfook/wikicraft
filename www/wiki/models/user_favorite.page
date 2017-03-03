@@ -13,10 +13,10 @@ user_favorite.db_name = "user_favorite";
 
 
 function user_favorite:ctor() 
-	self:addfield("userId", "number", false)
+	self:addfield("userId", "number", false)         -- 用户ID
 	self:addfield("favoriteUserId", "number", false) -- 被收藏的用户ID
-	self:addfield("favoriteType", "number", false) -- 0 - user 1 - website
-	self:addfield("favoriteId", "number", false) -- userId websiteId
+	self:addfield("favoriteType", "number", false)   -- 0 - user 1 - website
+	self:addfield("favoriteId", "number", false)     -- userId websiteId
 end
 
 -- debug use
@@ -80,15 +80,39 @@ function user_favorite:api_favoriteSite(params)
 	self:db():insertOne(query, record, resume)
 	local err, data = yield()
 	
-	if err or (not data) then
-		return errors:wrap(err or errors.NOT_FOUND)
+	if err then
+		return errors:wrap(err)
 	end
 	
 	-- 修改用户收藏的数量
 	local userDB = models.user:new()
 	local favoriteCount = self:api_getFavoriteWebsiteCountByUserId({userId=params.userId}).data
-	local fansCount = self:api_getFansCountByUserId({userId=params.userId})
-	userDB:updateUserInfo(params.userId,{favoriteCount=favoriteCount, fansCount=fansCount})
+	local fansCount = self:api_getFansCountByUserId({userId=params.userId}).data
+	userDB:api_updateUserInfo({_id=params.userId, favoriteCount=favoriteCount, fansCount=fansCount})
+
+	return errors:wrap()
+end
+
+-- 取消收藏
+function user_favorite:api_unfavoriteSite(params)
+	if (not params.userId) or (not params.favoriteUserId) or (not params.favoriteWebsiteId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	-- 创建收藏用户个人站点记录
+	query = {["+userId+favoriteUserId+favoriteType+favoriteId"]={params.userId,params.favoriteUserId, const.FAVORITE_TYPE_WEBSITE, params.favoriteWebsiteId}}
+	self:db():deleteOne(query, resume)
+	local err, data = yield()
+	
+	if err then
+		return errors:wrap(err)
+	end
+	
+	-- 修改用户收藏的数量
+	local userDB = models.user:new()
+	local favoriteCount = self:api_getFavoriteWebsiteCountByUserId({userId=params.userId}).data
+	local fansCount = self:api_getFansCountByUserId({userId=params.userId}).data
+	userDB:api_updateUserInfo({_id=params.userId, favoriteCount=favoriteCount, fansCount=fansCount})
 
 	return errors:wrap()
 end
