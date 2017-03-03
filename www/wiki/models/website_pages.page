@@ -9,6 +9,7 @@ include_once("./abstract/base.page");
 include_once("./website_template_style.page");
 include_once("./website.page");
 include_once("./user.page");
+include_once("./user_visit_history.page")
 include_once("./website_renewal.page");
 
 --local errors = models.errors:new();
@@ -305,26 +306,6 @@ function website_pages:api_getWebsitePageList(params)
 	return {error=errors.SUCCESS, data=data}
 end
 
--- 访问页面
-function website_pages:api_visitPage(params)
-	if not params.url then
-		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
-	end
-	
-	-- 获取页面内容代码
-	self:db():findOne({url=params.url}, resume)	
-	local err, page = yield()
-	if err or (not page) then
-		return {error=errors:new(err), data=page};
-	end	
-
-	-- 获取站点, 浏览数加1
-	local website = models.website:new();
-	website:api_addVisitNum(page.websiteName)		
-
-	return {error=errors.SUCCESS, data=page};		
-end
-
 -- 获得站点页数
 function website_pages:api_getCountByWebsiteName(params)
 	if not params.websiteName then 
@@ -345,7 +326,27 @@ function website_pages:api_getCountByWebsiteId(params)
 	return errors:wrap(yield())
 end
 
--- 获取用户页详细信息
+-- 访问页面
+function website_pages:api_visitPage(params)
+	if not params.url then
+		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
+	end
+	
+	-- 获取页面内容代码
+	self:db():findOne({url=params.url}, resume)	
+	local err, page = yield()
+	if err or (not page) then
+		return {error=errors:new(err), data=page};
+	end	
+
+	-- 获取站点, 浏览数加1
+	local website = models.website:new();
+	website:api_addVisitNum(page.websiteName)		
+
+	return {error=errors.SUCCESS, data=page};		
+end
+
+-- 获取用户页详细信息 --此接口用网站网站访问统计
 function website_pages:api_getDetailInfo(params)
 	if (not params.username) or (not params.sitename) or (not params.pagename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -372,6 +373,16 @@ function website_pages:api_getDetailInfo(params)
 	if err or (not pageinfo) then
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
+
+	-- 增加站点访问量
+	local result = websiteDB:api_addVisitNum({websiteName=params.sitename})
+	if not errors:isOk(result.error) then 
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	-- 添加访问记录
+	local userVisitHistoryDB = models.user_visit_history:new()
+	userVisitHistoryDB:api_upsert({userId=userinfo._id, websiteName=siteinfo.name,url=pageinfo.url})
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo})
 end

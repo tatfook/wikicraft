@@ -18,6 +18,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             
         }
         function init() {
+
             var urlObj = util.parseUrl();
             if (!config.localEnv && urlObj.username != 'wiki') {
                 if (urlObj.sitename) {
@@ -31,11 +32,20 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 }
             }
 
-            getFavoriteList();
-            
-            util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId:$scope.user._id}, function (data) {
-                $scope.userSiteList = data || [];
-            });
+            if (Account.isAuthenticated()) {
+                // 用户收藏
+                util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+                    $scope.favoriteWebsiteObj = data;
+                });
+                // 用户站点
+                util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId:$scope.user._id}, function (data) {
+                    $scope.userSiteList = data || [];
+                });
+                // 用户收藏
+                util.post(config.apiUrlPrefix + 'user_visit_history/getCurrentDay',{userId:$scope.user._id}, function (data) {
+                    $scope.visitHistoryList = data.visitList;
+                });
+            }
         }
         
         $scope.$watch('$viewContentLoaded', init);
@@ -56,8 +66,8 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.goUrlSite = function () {
             var url = '/' + $scope.urlObj.username;
-            url += '/' + $scope.urlObj.sitename || $scope.urlObj.username;
-            url += '/' + $scope.urlObj.pagename || 'index';
+            url += '/' + ($scope.urlObj.sitename || $scope.urlObj.username);
+            url += '/' + ($scope.urlObj.pagename || 'index');
             util.goUserSite(url);
         }
 

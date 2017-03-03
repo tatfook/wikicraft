@@ -274,7 +274,7 @@
                             </div>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">收藏夹</a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">收藏夹</a>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <li ng-repeat="site in favoriteWebsiteObj.siteList">
                                     <a ng-click="goUserSite(site)">{{site.name}}</a>
@@ -286,9 +286,9 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">历史</a>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <li class="dropdown-header">今日</li>
-                                <li><a href="#">这里显示作品名称</a></li>
-                                <li><a href="#">这里显示作品名称</a></li>
-                                <li><a href="#">这里显示作品名称</a></li>
+                                <li ng-repeat="x in visitHistoryList">
+                                    <a href="#">{{x.websiteName}}</a>
+                                </li>
                                 <li class="dropdown-footer"><a href="#">查看更多></a></li>
                             </ul>
                         </li>
