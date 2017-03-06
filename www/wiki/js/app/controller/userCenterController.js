@@ -152,11 +152,13 @@ define(['app',
         // 我的动态
         $scope.clickMyTrends = function () {
             $scope.showItem = 'myTrends';
+            $scope.githubDS = $scope.user.githubDS;
         }
 
         // 我的收藏
         $scope.clickMyCollection = function () {
             $scope.showItem = 'myCollection';
+            $scope.currentPage = 1;
             var isPersonalSite = true;
 
             function getSiteList(isPersonalSite, page) {
@@ -186,7 +188,7 @@ define(['app',
                 getSiteList(isPersonalSite, $scope.currentPage);
             };
 
-            $scope.pageChanged = function () {
+            $scope.collectionPageChanged = function () {
                 getSiteList(isPersonalSite, $scope.currentPage);
             };
 
@@ -204,6 +206,7 @@ define(['app',
         // 我的粉丝
         $scope.clickMyFans = function () {
             $scope.showItem = 'myFans';
+            $scope.currentPage = 1;
 
             util.post(config.apiUrlPrefix + "website/getWebsiteListByUserId", {userId: $scope.user._id}, function (data) {
                 $scope.siteList = data;
@@ -211,19 +214,28 @@ define(['app',
                 for (var i = 0; i < $scope.siteList.length; i++) {
                     $scope.totalFavoriteCount += $scope.siteList[i].favoriteCount;
                 }
-                if ($scope.siteList.length > 0)
+                if ($scope.siteList.length > 0) {
                     $scope.currentFansSite = $scope.siteList[0];
+                    getFansList();
+                }
             });
-
-            $scope.selectFansSite = function (fansSiteId) {
-                var params = {userId: $scope.user._id}
-                params.websiteId = fansSiteId == "0" ? undefined : parseInt(fansSiteId);
+            
+            function getFansList() {
+                var params = {userId: $scope.user._id, websiteId: $scope.currentFansSite._id, page:$scope.currentPage, pageSize:$scope.pageSize};
                 util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
                     $scope.totalItems = data.total;
                     $scope.fansList = data.fansList || [];
                 });
             }
-            $scope.selectFansSite($scope.currentFansSite._id);
+
+            $scope.selectFansSite = function (site) {
+                $scope.currentFansSite = site;
+                getFansList();
+            }
+
+            $scope.fansPageChanged = function () {
+                getFansList();
+            }
         }
 
         // 实名认证

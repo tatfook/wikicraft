@@ -444,7 +444,7 @@
                             </div>
                         </div>
                         <div class="pagination-box">
-                            <ul uib-pagination items-per-page='5' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true"></ul>
+                            <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='5' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true"></ul>
                         </div>
                     </div>
                     <!--div role="tabpanel" class="tab-pane img-text-box" id="wiki_works">
@@ -483,7 +483,7 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''" >
-                        <a href="#wiki_works_fans" ng-click="selectFansSite(site._id)" aria-controls="wiki_works_fans" role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount}})</span></a>
+                        <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans" role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount}})</span></a>
                     </li>
                     <li class="pull-right"><a>总数：{{totalFavoriteCount}}</a></li>
                 </ul>
@@ -493,12 +493,12 @@
                     <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
                         <div class="clearfix">
                             <div class="fans-profile" ng-repeat="fans in fansList">
-                                <img ng-src="{{fans.protrait || imgsPath + 'wiki-photo.jpg'}}" alt="">
-                                <p>fans.username</p>
+                                <img ng-src="{{fans.userinfo.protrait || imgsPath + 'wiki-photo.jpg'}}" alt="">
+                                <p>{{fans.userinfo.username}}</p>
                             </div>
                         </div>
                         <div class="pagination-box">
-                            <ul uib-pagination items-per-page='pageSize' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true"></ul>
+                            <ul uib-pagination ng-change="fansPageChanged()" items-per-page='pageSize' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true"></ul>
                         </div>
                     </div>
                 </div>
