@@ -16,7 +16,7 @@ function user_favorite:ctor()
 	self:addfield("userId", "number", false)         -- 用户ID
 	self:addfield("favoriteUserId", "number", false) -- 被收藏的用户ID
 	self:addfield("favoriteType", "number", false)   -- 0 - user 1 - website
-	self:addfield("favoriteSubType", "number", false)   -- 0 - user 1 - website
+	--self:addfield("favoriteSubType", "number", false)   -- 0 - user 1 - website
 	self:addfield("favoriteId", "number", false)     -- userId websiteId
 	self:addfield("updateDate", "string", false)     -- 收藏日期
 end
@@ -77,7 +77,20 @@ function user_favorite:api_favoriteSite(params)
 	if (not params.userId) or (not params.favoriteUserId) or (not params.favoriteWebsiteId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+	local websiteDB = models.website:new()
+	local siteinfo = websiteDB:api_getById({websiteId=params.favoriteWebsiteId}).data
+	if not siteinfo then
+		return errors:wrap(errrors.SERVER_INNER_ERROR)
+	end
+
+	if siteinfo.categoryId == 0 then
+		-- 创建收藏用户记录
+		local record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_USER, favoriteId=params.favoriteUserId, updateDate=currentDate}
+		local query = {["+userId+favoriteUserId+favoriteType+favoriteId"]={params.userId,params.favoriteUserId, const.FAVORITE_TYPE_USER, params.favoriteUserId}}
+		self:db():insertOne(query, record, resume)
+		local err, data = yield()
+	end
+
 	-- 创建收藏用户个人站点记录
 	record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_WEBSITE, favoriteId=params.favoriteWebsiteId, updateDate=currentDate}
 	query = {["+userId+favoriteUserId+favoriteType+favoriteId"]={params.userId,params.favoriteUserId, const.FAVORITE_TYPE_WEBSITE, params.favoriteWebsiteId}}
@@ -91,9 +104,18 @@ function user_favorite:api_favoriteSite(params)
 	-- 修改用户收藏的数量
 	local userDB = models.user:new()
 	local favoriteCount = self:api_getFavoriteWebsiteCountByUserId({userId=params.userId}).data
-	local fansCount = self:api_getFansCountByUserId({userId=params.userId}).data
-	userDB:api_updateUserInfo({_id=params.userId, favoriteCount=favoriteCount, fansCount=fansCount})
-
+	userDB:api_updateUserInfo({_id=params.userId, favoriteCount=favoriteCount})
+	local fansCount = self:api_getFansCountByUserId({userId=params.favoriteUserId}).data
+	userDB:api_updateUserInfo({_id=params.favoriteUserId, fansCount=fansCount})
+	
+	-- 修改网站收藏量
+	local websiteDB = models.website:new()
+	self:db():count({['+favoriteUserId+favoriteType+favoriteId']={params.favoriteUserId, const.FAVORITE_TYPE_WEBSITE, params.favoriteId}}, resume)
+	local err, favoriteCount = yield()
+	local result = websiteDB:api_updateWebsite({_id=params.favoriteWebsiteId, favoriteCount=favoriteCount})
+	if result.error.id ~= 0 then
+		return result
+	end
 	return errors:wrap()
 end
 

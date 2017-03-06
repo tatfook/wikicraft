@@ -215,12 +215,7 @@ end
 
 -- 更新站点
 function website:api_updateWebsite(params) 
-	--[[
-	local userId = self:ensureAuthenticated()
-	if userId ~= params.userId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-	]]
+	self:ensureAuthenticated()
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	local err, params = self:validateQuery(params)
 	if err then 
