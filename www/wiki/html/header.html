@@ -233,7 +233,7 @@
                                 <img ng-src="{{ user.portrait || imgsPath+'wiki_header.png '}}" alt="">
                             </a>
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
-                                <h5>Lixizhi</h5>
+                                <h5>{{user.username}}</h5>
                                 <div class="level clearfix">
                                     <p class="info clearfix"><span class="pull-left">等级5</span><span class="pull-right">2324/2536</span></p>
                                     <div class="progress">
@@ -274,10 +274,10 @@
                             </div>
                         </li>
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">收藏夹</a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" ng-click="getFavoriteList()">收藏夹</a>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <li ng-repeat="site in favoriteWebsiteObj.siteList">
-                                    <a ng-click="goUserSite(site)">{{site.name}}</a>
+                                <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
+                                    <a ng-click="goUserSite(x.siteinfo)">{{x.siteinfo.name}}</a>
                                 </li>
                                 <li class="dropdown-footer"><a href="#">查看更多></a></li>
                             </ul>

@@ -16,7 +16,9 @@ function user_favorite:ctor()
 	self:addfield("userId", "number", false)         -- 用户ID
 	self:addfield("favoriteUserId", "number", false) -- 被收藏的用户ID
 	self:addfield("favoriteType", "number", false)   -- 0 - user 1 - website
+	self:addfield("favoriteSubType", "number", false)   -- 0 - user 1 - website
 	self:addfield("favoriteId", "number", false)     -- userId websiteId
+	self:addfield("updateDate", "string", false)     -- 收藏日期
 end
 
 -- debug use
@@ -40,18 +42,19 @@ end
 
 -- 收藏用户
 function user_favorite:api_favoriteUser(params)
+	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	if (not params.userId) or (not params.favoriteUserId) or (not params.favoriteWebsiteId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
 	-- 创建收藏用户记录
-	local record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_USER, favoriteId=params.favoriteUserId}
+	local record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_USER, favoriteId=params.favoriteUserId, updateDate=currentDate}
 	local query = {["+userId+favoriteUserId+favoriteType+favoriteId"]={params.userId,params.favoriteUserId, const.FAVORITE_TYPE_USER, params.favoriteUserId}}
 	self:db():insertOne(query, record, resume)
 	local err, data = yield()
 
 	-- 创建收藏用户个人站点记录
-	record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_WEBSITE, favoriteId=params.favoriteWebsiteId}
+	record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_WEBSITE, favoriteId=params.favoriteWebsiteId, updateDate=currentDate}
 	query = {["+userId+favoriteUserId+favoriteType+favoriteId"]={params.userId,params.favoriteUserId, const.FAVORITE_TYPE_WEBSITE, params.favoriteWebsiteId}}
 	self:db():insertOne(query, record, resume)
 	local err, data = yield()
@@ -70,12 +73,13 @@ end
 
 -- 收藏作品
 function user_favorite:api_favoriteSite(params)
+	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	if (not params.userId) or (not params.favoriteUserId) or (not params.favoriteWebsiteId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
 	-- 创建收藏用户个人站点记录
-	record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_WEBSITE, favoriteId=params.favoriteWebsiteId}
+	record = {userId = params.userId, favoriteUserId=params.favoriteUserId, favoriteType=const.FAVORITE_TYPE_WEBSITE, favoriteId=params.favoriteWebsiteId, updateDate=currentDate}
 	query = {["+userId+favoriteUserId+favoriteType+favoriteId"]={params.userId,params.favoriteUserId, const.FAVORITE_TYPE_WEBSITE, params.favoriteWebsiteId}}
 	self:db():insertOne(query, record, resume)
 	local err, data = yield()
@@ -123,22 +127,30 @@ function user_favorite:api_getFavoriteUserListByUserId(params)
 	local userId = self:ensureAuthenticated()
 	userId = params.userId or userId
 	
+	-- 获取数量
+	self:db():count({['+userId+favoriteType']={userId, const.FAVORITE_TYPE_USER}}, resume)
+	local err, total = yield()
+	
+	if err then
+		return errors:wrap(err)
+	end	
+
 	local skip, limit = util:pagination(params)
-	self:db():find({["+userId"]={userId, skip=skip, limit=limit},{"favoriteType", const.FAVORITE_TYPE_USER}}, resume)
+	self:db():find({["+userId+favoriteType"]={userId, const.FAVORITE_TYPE_USER, skip=skip, limit=limit}}, resume)
 	local err, data = yield()
 
 	if err or (not data) then
 		return errors:wrap(err, data)
 	end
 
-	local userList = {}
 	local userDB = models.user:new()
+	local websiteDB = models.website:new()
 	for _, value in pairs(data) do
-		userList[#userList + 1] = userDB:api_getById({userId=value.favoriteId}).data
-		log(userList[#userList+1])
+		value["userinfo"] = userDB:api_getById({userId=value.favoriteId}).data
+		value["siteinfo"] = websiteDB:api_getPersonalSiteByUserId({userId=value.favoriteId}).data
 	end
 	
-	return {error=errors.SUCCESS, data=userList}
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit), favoriteList=data})
 end
 
 -- 获得用收藏作品的数量
@@ -172,16 +184,14 @@ function user_favorite:api_getFavoriteWebsiteListByUserId(params)
 		return errors:wrap(err, data)
 	end
 
-	local websiteList = {}
 	local userDB = models.user:new()
 	local websiteDB = models.website:new()
 	for _, value in pairs(data) do
-		local site = websiteDB:api_getById({websiteId=value.favoriteId}).data
-		site.userInfo = userDB:api_getById({userId=value.favoriteUserId}).data
-		websiteList[#websiteList+1] = site
+		value["siteinfo"] = websiteDB:api_getById({websiteId=value.favoriteId}).data
+		value["userInfo"] = userDB:api_getById({userId=value.favoriteUserId}).data
 	end
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit),siteList=websiteList})
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit),favoriteList=data})
 end
 
 -- 获得用户的粉丝数
@@ -236,10 +246,9 @@ function user_favorite:api_getFansListByUserId(params)
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
 
-	local userList = {}
 	local userDB = models.user:new()
 	for _,value in pairs(data) do
-		userList[#userList+1] = userDB:api_getById({userId=value.userId}).data
+		value['userinfo'] = userDB:api_getById({userId=value.userId}).data
 	end
 
 	local total = self:api_getFansCountByUserId(params).data
@@ -247,7 +256,7 @@ function user_favorite:api_getFansListByUserId(params)
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
 
-	return {error=errors.SUCCESS, data = {total = total, pageCount=util:getPageCount(total, limit), fansList=userList}}	
+	return {error=errors.SUCCESS, data = {total = total, pageCount=util:getPageCount(total, limit), fansList=data}}	
 end
 
 -- 获得站点被收藏的数量

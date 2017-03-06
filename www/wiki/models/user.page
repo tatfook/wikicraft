@@ -19,7 +19,7 @@ function user:ctor()
 	self:addfield("username", "string", false, 30)
 	self:addfield("displayName", "string", false, 30)
 	self:addfield("signature", "string")
-	self:addfield("desc", "string", false)
+	self:addfield("introduce", "string", false)
 	self:addfield("email", "string", false, 30) -- private email, can be used to login
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- hashed password
@@ -159,14 +159,13 @@ function user:api_changepw(params)
 	
 	local oldpassword = self:encodePassword(params.oldpassword)
 	local newpassword = self:encodePassword(params.newpassword)
-
 	if user.password ~= oldpassword then
 		return errors:wrap("密码错误")
 	end
 
 	user.password = newpassword
 
-	self:db():updateOne({_id=params._id}, user, resume)
+	self:db():updateOne({_id=userId}, user, resume)
 	return errors:wrap(yield())
 end
 

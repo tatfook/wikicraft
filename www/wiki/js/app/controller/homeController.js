@@ -158,7 +158,10 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             };
 
             var obj=event.target;
-            var loveIcon=$(obj).find(".js-heart");
+            var loveIcon=$(obj);
+            if (obj.outerHTML.indexOf('<span') > 0) {
+                loveIcon=$(obj).find(".js-heart");
+            }
             if (loveIcon.hasClass("glyphicon-star-empty")) {
                 loveIcon.addClass("glyphicon-star");
                 loveIcon.removeClass("glyphicon-star-empty");

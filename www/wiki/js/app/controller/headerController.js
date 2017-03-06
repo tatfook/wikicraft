@@ -8,11 +8,11 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {username:$scope.user.username};
-        
-        $scope.favoriteWebsiteObj = {};
-        
-        function getFavoriteList() {
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+
+        // 用户收藏
+        $scope.getFavoriteList = function() {
+            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+                console.log(data);
                 $scope.favoriteWebsiteObj = data;
             });
             
@@ -33,10 +33,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             }
 
             if (Account.isAuthenticated()) {
-                // 用户收藏
-                util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
-                    $scope.favoriteWebsiteObj = data;
-                });
                 // 用户站点
                 util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId:$scope.user._id}, function (data) {
                     $scope.userSiteList = data || [];

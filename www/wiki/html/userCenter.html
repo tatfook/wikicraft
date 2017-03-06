@@ -1,261 +1,538 @@
-<div ng-controller="userCenterController" class="container">
-    <div style="display:flex; justify-content: center; margin: 30px 0px">
-        <div style=" border-top: 1px solid grey">
-            <ul class="nav nav-tabs nav-stacked">
-                <li class="active"><a href="#userCenterBaseInfo" data-toggle="tab" ng-click="clickBaseInfo()">我的资料</a></li>
-                <li><a href="#userCenterAccountSafe" data-toggle="tab" ng-click="clickAccountSafe()">账号安全</a></li>
-                <li><a href="#userCenterMyFavorite" data-toggle="tab" ng-click="clickMyFavorite()">我的收藏</a></li>
-                <li><a href="#userCenterMyHistory" data-toggle="tab" ng-click="clickMyHistory()">我的历史</a></li>
-                <li><a href="#userCenterMyFans" data-toggle="tab" ng-click="clickMyFans()">我的粉丝</a></li>
-                <li><a href="#userCenterRealAuth" data-toggle="tab">实名验证</a></li>
-                <li><a href="#userCenterInviteRegister" data-toggle="tab">邀请注册</a></li>
-                <li><a href="#userCenterVIP" data-toggle="tab">VIP</a></li>
-                <li><a href="#userCenterDataSource" data-toggle="tab" ng-click="clickMyDataSource()">数据源</a></li>
+<style>
+    /*左侧菜单栏*/
+    .subnav {
+        text-align: center;
+    }
+    .subnav > .list-group > .list-group-item{
+        padding: 0;
+        margin-bottom: 10px;
+    }
+    .subnav .panel{
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+    .subnav .panel-heading{
+        border-radius: 0;
+    }
+    .subnav .panel-body{
+        padding: 0;
+    }
+    .subnav .list-group{
+        margin-bottom: 0;
+    }
+    .subnav .list-group .list-group-item{
+        border: none;
+    }
+    .subnav .list-group .list-group-item.active{
+        background-color: #E0E3E9;
+        color: #3977AD;
+    }
+    .subnav .glyphicon{
+        display: none;
+    }
+    .subnav .list-group .list-group-item.active .glyphicon{
+        display:inline-block;
+    }
+    .subscribe{
+        font-size: 12px;
+    }
+
+    .main-content{
+        border:1px solid #DEE1E5;
+        padding: 0;
+        min-height: 515px;
+    }
+    .main-content .panel-heading{
+        border-bottom: 2px solid #F1F1F1;
+        color: #3977AD;
+        font-size: 16px;
+    }
+
+    .main-content .tab-content{
+        padding-top: 40px;
+    }
+    .main-content .form-control{
+        margin-bottom: 25px;
+    }
+    .main-content .nav-tabs>li[role="presentation"]>a{
+        font-size: 16px;
+    }
+    .main-content .nav-tabs>li.active>a, .main-content .nav-tabs>li.active>a:focus, .main-content .nav-tabs>li.active>a:hover {
+        left: -1px;
+        top: 0px;
+        border-top: 0px;
+        padding: 11px 15px;
+        border-radius: 0px;
+        border-bottom: 0px;
+        color: #3977AD;
+    }
+    .img-text{
+        display: flex;
+        align-items: center;
+        background-color: #F9F9F9;
+        border: 1px solid #e5e7e9;
+        margin-bottom: 20px;
+    }
+    .img-text .text{
+        flex: 1;
+    }
+    .main-content .img-text img{
+        width: 280px;
+        height: 180px;
+        object-fit: cover;
+    }
+    .main-content .img-text .text{
+        padding: 0 45px;
+        max-height: 180px;
+    }
+    .main-content .img-text .col-md-12,.tab-content .img-text .col-md-4{
+        padding: 0;
+        line-height: 75px;
+    }
+    .main-content .img-text p{
+        margin-bottom: 0;
+        line-height: 32px;
+    }
+    .pagination-box{
+        text-align: center;
+    }
+    /*我的资料页*/
+    .form-horizontal.sr-only{
+        height: 0;
+        min-height: 0;
+    }
+    .data-form .form-control{
+        margin-bottom: 0;
+    }
+    textarea{
+        resize: none;
+        width: 100%;
+    }
+    .preview-zone{
+        text-align: center;
+    }
+    .preview-zone .preview{
+        width: 130px;
+        height: 130px;
+        border-radius: 100%;
+        object-fit: cover;
+        margin: 0 auto 20px;
+    }
+    .preview-zone .change-profile{
+        text-align: center;
+        position: relative;
+    }
+    .preview-zone input[type="file"]{
+        position: absolute;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /*账户安全*/
+    /*我的动态*/
+    /*我的收藏*/
+    .tab-content .img-text-box{
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    /*我的历史*/
+    .timeline{
+        padding-left: 210px;
+        padding-top: 0;
+        position: relative;
+        padding-bottom: 0;
+        margin: 35px 0;
+    }
+    .timeline:before{
+        content: "";
+        display: inline-block;
+        width: 186.5px;
+        height: 100%;
+        border-right: 1px solid #3977AD;
+        left: 0;
+        z-index: 1;
+        position: absolute;
+    }
+    .timeline .img-text{
+        position: relative;
+    }
+    .timeline .time{
+        position: absolute;
+        width: 210px;
+        height: 100%;
+        left: -235px;
+        text-align: right;
+        padding-right: 20px;
+    }
+    .timeline span{
+        padding: 0 0 0 15px;
+    }
+    .timeline .time:before{
+        content: "";
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background-color: #3977AD;
+        border-radius: 50%;
+        position: absolute;
+        right: -6px;
+        top: 0;
+        z-index: 2;
+    }
+
+    /*我的粉丝*/
+    .fans-box{
+        width: 95%;
+        margin: 20px auto;
+    }
+    .fans-profile{
+        width: 14.285714%;
+        float: left;
+        padding: 0 20px;
+        margin-bottom: 40px;
+    }
+    .fans-profile img{
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div ng-controller="userCenterController" class="container" style="margin-top: 30px">
+    <div class="row">
+        <div class="col-md-2 subnav">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            个人中心
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <a ng-click="clickMyProfile()" class="list-group-item" ng-class="getActiveStyleClass('myProfile')">我的资料 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickAccountSafe()" class="list-group-item" ng-class="getActiveStyleClass('accountSafe')">账户安全 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickMyTrends()" class="list-group-item" ng-class="getActiveStyleClass('myTrends')">我的动态 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickMyCollection()" class="list-group-item" ng-class="getActiveStyleClass('myCollection')">我的收藏 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickMyHistory()" class="list-group-item" ng-class="getActiveStyleClass('myHistory')">我的历史 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickMyFans()" class="list-group-item" ng-class="getActiveStyleClass('myFans')">我的粉丝 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickRealName()" class="list-group-item" ng-class="getActiveStyleClass('realName')">实名认证 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                                <a ng-click="clickInvite()" class="list-group-item" ng-class="getActiveStyleClass('invite')">邀请注册 <span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            VIP
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            网站管理
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            数据源
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
-        <div class="tab-content"  style="flex-grow: 1; border-top: 1px solid grey;">
-            <div class="tab-pane fade in active" id="userCenterBaseInfo">
-                <div class="panel panel-default">
-                    <div class="panel-heading">我的资料</div>
-                    <div class="panel-body" style="display: flex">
-                        <div>
-                            <div style="display: flex; justify-content: center">
-                                <img ng-src="{{user.portrait || imgsPath + 'test.jpg'}}" id='portraitImg' class="img-rounded", style="width: 80px; height: 80px">
-                            </div>
-                            <div style="display: flex; justify-content: center; margin: 10px">
-                                <input type="file" accept='image/*' class="btn" id="uploadPortraitBtn">
-                            </div>
-                        </div>
-                        <div style="flex-grow: 1;">
-                            <form role="form" class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">昵称：</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" ng-model="user.username">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">性别：</label>
-                                    <div class="col-md-8">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="sex" value="M" ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}" >男
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="sex" value="F" ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}">女
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="sex" value="N" ng-model="user.sex" checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}">保密
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">位置：</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" ng-model="user.location">
-                                    </div>
-                                </div>
-                                <div class="form-group ">
-                                    <label class="control-label col-md-3">个人简介：</label>
-                                    <div class="col-md-8">
-                                        <textarea class="form-control" rows="4" ng-model="user.comment"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-offset-3 col-md-8">
-                                        <button class="btn btn-default" ng-click="modifyUserBaseInfo()">提交</button>
-                                        <span style="color:red;" class="glyphicon " ng-class='{"glyphicon-ok":modifyUserInfoOk==1,"glyphicon-remove":modifyUserInfoOk==2}'>{{tipInfo}}</span>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+        <!-- 基本资料-->
+        <div ng-show="showItem == 'myProfile'" class="col-md-10 panel main-content">
+            <div class="panel-heading">
+                我的资料
             </div>
-
-            <div class="tab-pane fade in" id="userCenterAccountSafe">
-                <div class="panel panel-default">
-                    <div class="panel-heading">修改密码</div>
-                    <div class="panel-body">
-                        <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label class="control-label col-md-3">旧密码</label>
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" ng-model="passwordObj.oldPassword">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">新密码</label>
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" ng-model="passwordObj.newPassword1">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-3">确认新密码</label>
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" ng-model="passwordObj.newPassword2">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-offset-3 col-md-6">
-                                    <button class="btn btn-default" ng-click="modifyPassword()">修改</button>
-                                    <span style="color: red" class="glyphicon " ng-class='{"glyphicon-ok":modifyPasswordOk==1,"glyphicon-remove":modifyPasswordOk==2}'>{{tipInfo}}</span>
-                                </div>
-                            </div>
-                        </form>
+            <div class="panel-body">
+                <div class="col-md-3 preview-zone">
+                    <div class="preview">
+                        <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_header.png'}}" alt="" style="width: 100%">
                     </div>
+                    <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)" type="file"></p>
+                    <a id="finish" class="btn btn-primary sr-only">确 定</a>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">安全验证</div>
-                    <div class="panel-body">
-                        <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label class="control-label col-md-3">验证邮箱</label>
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control">
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-default">验证</button>
-                                    <span class="glyphicon " ng-class='{"glyphicon-ok":checkEamilOk,"glyphicon-remove":!checkEamilOk}'></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-md-3">验证手机</label>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-default">验证</button>
-                                    <span class="glyphicon " ng-class='{"glyphicon-ok":checkPhoneOk,"glyphicon-remove":!checkPhoneOk}'></span>
-                                </div>
-                            </div>
-                        </form>
+                <div class="col-md-9">
+                    <div id="cropper" class="cropper-zone sr-only" style="width: 500px; height: 340px;" class="visible-hidden">
+                         <!--img ng-src="{{imgsPath + 'wiki_header.png'}}" alt=""-->
                     </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade in" id="userCenterMyFavorite">
-                <div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">作品</div>
-                        <div class="panel-body">
-                            <div style="display: flex; flex-wrap: wrap">
-                                <div ng-repeat="user in favoriteUserList" style="margin-left: 10px">
-                                    <img ng-src='{{user.portrait || "/wiki/assets/imgs/test.jpg"}}' class="img-rounded", style="width: 80px; height: 80px">
-                                    <p>{{user.username}}</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <a>上一页</a>
-                                <a>下一页</a>
+                    <form id="data-form" class="form-horizontal col-md-12 data-form" role="form">
+                        <div class="form-group sr-only">
+                            <legend>完善资料</legend>
+                        </div>
+                        <div class="form-group">
+                            <label for="displayName" class="col-sm-2 control-label">昵称：</label>
+                            <div class="col-sm-10">
+                                <input id='displayName' type="text" class="form-control" ng-model="user.displayName">
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">作者</div>
-                    <div class="panel-body">
-                        <div style="display: flex; flex-wrap: wrap">
-                            <div ng-repeat="site in favoriteWebsiteList" style="display: flex; border: 1px solid silver; padding: 10px; margin: 10px">
-                                <div>
-                                    <img ng-src='{{site.logoUrl || "/wiki/assets/imgs/test.jpg"}}' class="img-rounded", style="width: 80px; height: 80px">
-                                </div>
-                                <div style="margin-left: 10px">
-                                    <div>{{site.name}}</div>
-                                    <div>作者:{{site.userInfo && site.userInfo.username}}</div>
-                                    <div>简介:{{site.desc}}</div>
-                                </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">性别：</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="M" ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}"> 男
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="F" ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}"> 女
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="N" ng-model="user.sex" checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}"> 保密
+                                </label>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade in" id="userCenterMyHistory">
-                <div class="panel panel-default">
-                    <div class="panel-heading">我的历史</div>
-                    <div class="panel-body">
-                        <div ng-repeat="site in websiteList" style="margin: 20px; border: 1px solid silver;padding: 10px">
-                            <h4>{{site.name}}</h4>
-                            <p>{{site.desc}}</p>
-                            <div style="display: flex; justify-content: space-between;">
-                                <a>详情</a>
-                                <span>{{site.createDate}}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade in" id="userCenterMyFans">
-                <div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">我的粉丝</div>
-                        <div class="panel-body">
-                            <div style="padding: 10px; display: flex; border-bottom: 1px solid silver">
-                                <span>作品选择: </span>
-                                <select ng-change="selectFansWebsite(fansWebsiteId)" ng-model="fansWebsiteId" style="width: 120px">
-                                    <option value="0">全部</option>
-                                    <option ng-repeat="site in websiteList" value="{{site._id}}">{{site.name}}</option>
+                        <div class="form-group">
+                            <label for="location" class="col-sm-2 control-label">位置：</label>
+                            <div class="col-sm-10">
+                                <input id='location' type="text" class="form-control" ng-model="user.location">
+                                <!--select name="" id="">省
+                                    <option value="广东">广东省</option>
                                 </select>
-                                <span style="margin-left: 20px">粉丝数量:{{fans.total}}</span>
-                            </div>
-                            <div style="display: flex; flex-wrap: wrap">
-                                <div ng-repeat="user in fans.fansList" style="margin: 10px">
-                                    <img ng-src='{{user.protrait || "/wiki/assets/imgs/test.jpg"}}' class="img-rounded", style="width: 80px; height: 80px">
-                                    <div>{{user.username}}</div>
-                                </div>
+                                <select name="" id="">省
+                                    <option value="广东">广东省</option>
+                                </select>
+                                <select name="" id="">省
+                                    <option value="广东">广东省</option>
+                                </select-->
                             </div>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label for="intro" class="col-sm-2 control-label">个人简介</label>
+                            <div class="col-sm-10">
+                                <textarea name="intro" id="intro" rows="6" ng-model="user.introduce"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <button ng-click="saveProfile()" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <div class="tab-pane fade in" id="userCenterRealAuth">
-                <div>实名认证</div>
-            </div>
+        <!--账号安全-->
+        <div ng-show="showItem == 'accountSafe'" class="col-md-10 main-content">
+            <div role="tabpanel col-md-12">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#change" aria-controls="change" role="tab" data-toggle="tab">修改密码</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#verify" aria-controls="verify" role="tab" data-toggle="tab">安全验证</a>
+                    </li>
+                </ul>
 
-            <div class="tab-pane fade in" id="userCenterInviteRegister">
-                <div class="panel panel-default">
-                    <div class="panel-heading">邀请注册</div>
-                    <div class="panel-body">
+                <!-- Tab panes -->
+                <div class="tab-content col-md-7">
+                    <div role="tabpanel" class="tab-pane active" id="change">
                         <form class="form-horizontal" role="form">
+                            <div class="form-group sr-only">
+                                <legend>修改密码表单</legend>
+                            </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2">好友EMail：</label>
-                                <div class="col-md-8">
-                                    <input type="email" class="form-control">
+                                <label for="old" class="control-label col-sm-3">旧密码</label>
+                                <div class="col-sm-9">
+                                    <input type="password" id="old" class="form-control" ng-model="passwordObj.oldPassword">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-offset-2 col-md-8">
-                                    <button class="btn btn-default">邀请</button>
+                                <label for="new" class="control-label col-sm-3">新密码</label>
+                                <div class="col-sm-9">
+                                    <input type="password" id="new" class="form-control" ng-model="passwordObj.newPassword1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reNew" class="control-label col-sm-3">重复新密码</label>
+                                <div class="col-sm-9">
+                                    <input type="password" id="reNew" class="form-control" ng-model="passwordObj.newPassword2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-9 col-sm-offset-3">
+                                    <button ng-click="modifyPassword()" class="btn btn-primary">修 改</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="verify">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group sr-only">
+                                <legend>安全验证表单</legend>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="control-label col-sm-3">邮箱验证</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="email" class="form-control">
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="btn btn-block btn-primary">验证</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="control-label col-sm-3">手机验证</label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="phone" class="form-control">
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="btn btn-block btn-primary">验证</div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="tab-pane fade in" id="userCenterVIP">
-                <div>VIP</div>
-            </div>
-
-            <div class="tab-pane fade in" id="userCenterDataSource">
-                <div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">数据源</div>
-                        <div class="panel-body">
-                            <div>
-                                <div style="display: flex; justify-content: space-between">
-                                    <div>Github数据源</div>
-                                    <div><toggle-switch  ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch></div>
-                                </div>
-                            </div>
+        <!--我的动态-->
+        <div ng-show="showItem == 'myTrends'" class="col-md-10 main-content">
+            <div role="tabpanel col-md-12">
+                <div class="panel-heading">数据源</div>
+                <div class="panel-body">
+                    <div>
+                        <div style="display: flex; justify-content: space-between">
+                            <div>Github数据源</div>
+                            <div><toggle-switch  ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+            <!--我的收藏-->
+        <div ng-show="showItem == 'myCollection'" class="col-md-10 main-content">
+            <div role="tabpanel col-md-12">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a ng-click="clickCollectionUser()" href="#wiki_user" aria-controls="user" role="tab" data-toggle="tab">作者</a>
+                    </li>
+                    <li role="presentation">
+                        <a ng-click="clickCollectionWorks()" href="#wiki_user" aria-controls="works" role="tab" data-toggle="tab">作品</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active img-text-box" id="wiki_user">
+                        <div class="img-text" ng-repeat="x in favoriteList">
+                            <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <div class="text">
+                                <h4><a href="#">{{x.siteinfo.name}}</a></h4>
+                                <p>作者：{{x.siteinfo.username}}</p>
+                                <p>说明：{{x.siteinfo.desc}}</p>
+                                <div class="col-md-12 info">
+                                    <div class="col-md-4">
+                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.siteinfo.visitCount}}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.siteinfo.favoriteCount}}
+                                    </div>
+                                    <div class="col-md-4">
+                                        收藏于2017-03-02
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pagination-box">
+                            <ul uib-pagination items-per-page='5' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true"></ul>
+                        </div>
+                    </div>
+                    <!--div role="tabpanel" class="tab-pane img-text-box" id="wiki_works">
+                    </div-->
+                </div>
+            </div>
+        </div>
+
+        <!--我的历史-->
+        <div ng-show="showItem == 'myHistory'" class="col-md-10 main-content panel">
+            <div class="panel-heading">我的历史</div>
+            <div class="panel-body timeline">
+                <div class="img-text" ng-repeat="site in siteList">
+                    <img ng-src="{{site.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                    <div class="text">
+                        <h4><a href="#">{{site.name}}</a></h4>
+                        <p>作者：{{site.username}}</p>
+                        <p>页数：{{site.pageCount}}</p>
+                        <div class="col-md-12 info">
+                            <div class="col-sm-6">
+                                <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{site.visitCount}}
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{site.favoriteCount}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="time"><span>{{site.createDate}}</span><span></span></div>
+                </div>
+            </div>
+        </div>
+
+        <!--我的粉丝-->
+        <div ng-show="showItem == 'myFans'" class="col-md-10 main-content">
+            <div role="tabpanel col-md-12">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''" >
+                        <a href="#wiki_works_fans" ng-click="selectFansSite(site._id)" aria-controls="wiki_works_fans" role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount}})</span></a>
+                    </li>
+                    <li class="pull-right"><a>总数：{{totalFavoriteCount}}</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
+                        <div class="clearfix">
+                            <div class="fans-profile" ng-repeat="fans in fansList">
+                                <img ng-src="{{fans.protrait || imgsPath + 'wiki-photo.jpg'}}" alt="">
+                                <p>fans.username</p>
+                            </div>
+                        </div>
+                        <div class="pagination-box">
+                            <ul uib-pagination items-per-page='pageSize' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--实名认证-->
+        <div ng-show="showItem == 'realName'" class="col-md-10 main-content">
+            <div role="tabpanel col-md-12">
+            </div>
+        </div>
+
+        <!--邀请注册-->
+        <div ng-show="showItem == 'invite'" class="col-md-10 panel main-content">
+            <div class="panel-heading">
+                邀请注册
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group sr-only">
+                        <legend>邀请注册表单</legend>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="control-label col-sm-2">好友email</label>
+                        <div class="col-sm-4">
+                            <input type="email" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="btn btn-primary">邀 请</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 </div>

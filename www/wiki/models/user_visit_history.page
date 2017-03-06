@@ -37,7 +37,6 @@ function user_visit_history:api_getCurrentDay(params)
 	local currentDate, currentTiem = timehelp.GetLocalTime()
 	local startDate = timehelp.get_next_date_str(currentDate, -1, "%04d-%02d-%02d")
 	--local startDate = currentDate
-	log(startDate)
 	local key = ''
 	local value = {gt=startDate}
 	local query = {}
@@ -58,7 +57,6 @@ function user_visit_history:api_getCurrentDay(params)
 	value['gt'] = startDate
 	value['limit'] = limit
 	value['skip'] = skip
-	log({[key]=value})	
 	self:db():find({[key]=value}, resume)
 	local err, data = yield()
 	
