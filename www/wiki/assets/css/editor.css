@@ -211,3 +211,22 @@ body,
 .CodeMirrorFold {
     background-color: #ffe193;
 }
+
+.wiki-toolbar{
+    padding:15px 80px;
+}
+.wiki-toolbar .btn-toolbar:first-child{
+    margin-bottom: 15px;
+}
+.wiki-toolbar .btn-group{
+    margin-left: 10px;
+}
+.wiki-toolbar .btn-default{
+    border: 1px solid #DCDCDC;
+}
+.wiki-toolbar .btn-link{
+    padding:8px 12px;
+}
+.wiki-toolbar .wiki-btn{
+    padding: 7px 25px;
+}
