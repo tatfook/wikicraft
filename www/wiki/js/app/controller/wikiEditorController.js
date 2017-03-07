@@ -415,8 +415,10 @@ define([
 
                 //console.log(wp);
                 storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
+                    //console.log(page);
+                    //console.log(currentWebsitePage);
                     if (page) {
-                        var curTime = (new Date()).getTime();
+                        var curTime = 0;//(new Date()).getTime();
                         page.timestamp = page.timestamp || curTime;
                         currentWebsitePage.timestamp = currentWebsitePage.timestamp || curTime;
                         if (page.timestamp > currentWebsitePage.timestamp) {
@@ -1170,10 +1172,12 @@ define([
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
-                    container_name: '.result-html', renderCallback: function () {
+                    container_name: '.result-html', renderCallback: function (value) {
                         if (isEmptyObject(currentWebsitePage))
                             return ;
-
+                        currentWebsitePage.content = value;                               // 更新内容
+                        currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
+                        //console.log(currentWebsitePage);
                         storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
                     }, changeCallback: changeCallback
                 });
