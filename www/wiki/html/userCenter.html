@@ -23,6 +23,9 @@
     .subnav .list-group .list-group-item{
         border: none;
     }
+    .subnav .panel-body .list-group-item{
+        padding:10px 15px;
+    }
     .subnav .list-group .list-group-item.active{
         background-color: #E0E3E9;
         color: #3977AD;
@@ -77,17 +80,18 @@
         flex: 1;
     }
     .main-content .img-text img{
-        width: 280px;
-        height: 180px;
+        width: 140px;
+        height: 140px;
         object-fit: cover;
     }
     .main-content .img-text .text{
-        padding: 0 45px;
-        max-height: 180px;
+        padding: 0 5px 0 15px;
+        max-height: 140px;
+        overflow: hidden;
     }
     .main-content .img-text .col-md-12,.tab-content .img-text .col-md-4{
         padding: 0;
-        line-height: 75px;
+        line-height: 32px;
     }
     .main-content .img-text p{
         margin-bottom: 0;
@@ -136,14 +140,26 @@
         width: 90%;
         margin: 0 auto;
     }
+    .img-text.col-md-6{
+        width: 48%;
+        margin-right: 2%;
+        padding: 0;
+    }
+    .img-text .info{
+        line-height: 19px;
+        font-weight: normal;
+        color: #999;
+        font-size: 12px;
+    }
+    .img-text .col-md-6{
+        padding: 0;
+    }
 
     /*我的历史*/
     .timeline{
-        padding-left: 210px;
-        padding-top: 0;
         position: relative;
-        padding-bottom: 0;
         margin: 35px 0;
+        padding: 0 210px;
     }
     .timeline:before{
         content: "";
@@ -157,6 +173,15 @@
     }
     .timeline .img-text{
         position: relative;
+    }
+    .timeline .info .col-md-6 {
+        padding: 0;
+        text-align: left;
+    }
+    .timeline .info .glyphicon{
+        padding-left: 0;
+        font-size: 21px;
+        vertical-align: text-bottom;
     }
     .timeline .time{
         position: absolute;
@@ -180,6 +205,15 @@
         right: -6px;
         top: 0;
         z-index: 2;
+    }
+    .timeline .rubbish{
+        padding: 0 42px;
+        text-align: center;
+    }
+    .timeline .rubbish img{
+        width: 22px;
+        height: auto;
+        display: block;
     }
 
     /*我的粉丝*/
@@ -424,21 +458,20 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active img-text-box" id="wiki_user">
-                        <div class="img-text" ng-repeat="x in favoriteList">
-                            <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
-                            <div class="text">
-                                <h4><a href="#">{{x.siteinfo.name}}</a></h4>
-                                <p>作者：{{x.siteinfo.username}}</p>
-                                <p>说明：{{x.siteinfo.desc}}</p>
-                                <div class="col-md-12 info">
-                                    <div class="col-md-4">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.siteinfo.visitCount}}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.siteinfo.favoriteCount}}
-                                    </div>
-                                    <div class="col-md-4">
-                                        收藏于2017-03-02
+                        <div class="col-sm-12">
+                            <div class="img-text col-md-6" ng-repeat="x in favoriteList">
+                                <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                                <div class="text">
+                                    <h4><a href="#">{{x.siteinfo.name}}</a><span class="pull-right info">收藏于2017-03-02</span></h4>
+                                    <p>作者：{{x.siteinfo.username}}</p>
+                                    <p>说明：{{x.siteinfo.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.siteinfo.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.siteinfo.favoriteCount}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -473,6 +506,7 @@
                         </div>
                     </div>
                     <div class="time"><span>{{site.createDate}}</span><span></span></div>
+                    <div class="rubbish"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
                 </div>
             </div>
         </div>
