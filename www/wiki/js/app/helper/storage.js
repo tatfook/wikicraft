@@ -128,6 +128,7 @@ define(['angular'], function (angular) {
         var store=transaction.objectStore(storage.indexDBStoreName);
         var request=store.put(value);
         request.onsuccess=function(e){
+            //console.log(value);
             cb && cb(e.target.result);
         };
         request.onerror = function () {

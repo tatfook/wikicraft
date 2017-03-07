@@ -1065,6 +1065,7 @@ define([
                     foldGutter: true,
                     foldOptions: {
                         rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.markdown, CodeMirror.fold.xml, CodeMirror.fold.wikiCmdFold),
+                        clearOnEnter:false,
                     },
                     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
                     //全屏模式
@@ -1167,6 +1168,13 @@ define([
                             $scope.cmd_code();
                         },
                     }
+                });
+
+                editor.on('fold', function(cm, from, to){
+                    cm.getDoc().addLineClass(from.line,'wrap','CodeMirrorFold');
+                });
+                editor.on('unfold', function (cm, from, to) {
+                    cm.getDoc().removeLineClass(from.line,'wrap','CodeMirrorFold');
                 });
 
                 var scrollTimer = undefined, changeTimer = undefined;

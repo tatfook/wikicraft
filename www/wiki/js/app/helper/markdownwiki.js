@@ -410,7 +410,7 @@ define([
                 mdwiki.generatePosList();
                 //console.log(htmlResult);
                 util.html(options.container_name, htmlResult);
-                options.renderCallback && options.renderCallback();
+                options.renderCallback && options.renderCallback(source);
                 //$(options.container_name).html(htmlResult);
                 timer = undefined;
             }, 1000);

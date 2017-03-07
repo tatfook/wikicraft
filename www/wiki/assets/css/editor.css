@@ -208,3 +208,6 @@ body,
     margin-bottom: auto;
 }
 
+.CodeMirrorFold {
+    background-color: #ffe193;
+}
