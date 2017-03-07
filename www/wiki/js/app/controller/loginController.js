@@ -52,6 +52,11 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 console.log("github认证失败!!!");
             });
         }
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13"){
+                $scope.login();
+            }
+        });
     }]);
     return htmlContent;
 });

@@ -144,6 +144,7 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 Message.info("不能收藏自己作品!!!");
                 return ;
             }
+
             var worksFavoriteRequest = function(isFavorite) {
                 var params = {
                     userId: $scope.user._id,
@@ -166,10 +167,12 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
                 loveIcon.addClass("glyphicon-star");
                 loveIcon.removeClass("glyphicon-star-empty");
                 worksFavoriteRequest(true);
+                site.favoriteCount++;
             }else{
                 loveIcon.addClass("glyphicon-star-empty");
                 loveIcon.removeClass("glyphicon-star");
                 worksFavoriteRequest(false);
+                site.favoriteCount--;
             }
         };
 
