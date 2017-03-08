@@ -278,6 +278,22 @@ define([
     };
 
     // 重写图片渲染
+    function markdownit_wikicmd_link(md) {
+        var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+
+        md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+            tokens[idx].tag = 'wiki-link';
+            return defaultRender(tokens, idx, options, env, self);
+        };
+
+        defaultRender = md.renderer.rules.link_close || function(tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+        md.renderer.rules.link_close = function (tokens, idx, options, env, self) {
+            tokens[idx].tag = 'wiki-link';
+            return defaultRender(tokens, idx, options, env, self);
+        };
+    }
+
+    // 重写图片渲染
     function markdownit_wikicmd_iamge(md) {
         var defaultRender = md.renderer.rules.image;
         md.renderer.rules.image = function (tokens, idx, options, env, self) {
@@ -299,13 +315,33 @@ define([
     // md 语法重写
     function markdownit_rule_override(md, mdwikiName) {
         //console.log(md.renderer.rules);
+        markdownit_wikicmd_link(md, mdwikiName);
         markdownit_wikicmd_iamge(md, mdwikiName);
         markdownit_wikicmd_fence(md, mdwikiName);
     }
 
-    // formt md text
-    function formatMDText(text) {
-        
+    // preprocess md text
+    function preprocessMDText(text) {
+        text = ' ' + text;
+        var linkList = text.match(/[^\\](\[\[.*\]\])/g);
+        if (linkList) {
+            for (var i = 0; i < linkList.length; i++) {
+                // 过长不做连接处理
+                if (linkList[i].length > 1024)
+                    continue;
+                var content = linkList[i].substring(3,linkList[i].length-2);
+                var splitIndex = content.indexOf('|');
+                var newContent = "";
+                if (splitIndex > 0) {
+                    newContent = linkList[i][0] + '[' + content.substring(0,splitIndex) + '](wikilink://' + content.substring(splitIndex+1) + ')';
+                } else {
+                    newContent = linkList[i][0] + '[' + content + '](wikilink://' + content + ')';
+                }
+                text = text.replace(/[^\\](\[\[.*\]\])/, newContent);
+            }
+        }
+        //console.log(text);
+        return text.substring(1);
     }
 
     // 新建mdwiki编辑器
@@ -345,6 +381,8 @@ define([
         var md = markdownit(options);
         markdownit_rule_override(md, mdwikiName);
 
+        //console.log(md.renderer.rules);
+
         var mdwiki = {};
         var editor;
         var mdwikiObj = getMdwiki(mdwikiName);
@@ -363,7 +401,7 @@ define([
         // force render a given text
         mdwiki.render = function (text) {
             mdwikiObj.template = undefined;
-            var htmlResult = md.render(text);
+            var htmlResult = md.render(preprocessMDText(text));
             htmlResult = '<div id="wikimdContentContainer">' + htmlResult + '</div>';
             if (!options.use_template) {
                 return htmlResult;
@@ -419,7 +457,7 @@ define([
         // 生成每个div块对应编辑的位置列表
         mdwiki.generatePosList = function() {
             var source = GetEditorText && GetEditorText();
-            var tokenList = md.parse(source);
+            var tokenList = md.parse(source, {});
             var posList = [];
             var pos = {from: 999999, to:0};
             var stack = 0;

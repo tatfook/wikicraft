@@ -218,6 +218,10 @@ define([
                 return false;
             }
 
+            if ($scope.websitePage.name.indexOf('.') >= 0) {
+                $scope.errInfo = '页面名包含非法字符(.)';
+                return false;
+            }
             for (var i = 0; i < $scope.websites.length; i++) {
                 if (treeNode.siteId == $scope.websites[i]._id) {
                     $scope.website = $scope.websites[i];
