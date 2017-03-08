@@ -200,17 +200,17 @@
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
                         <li class="nav-bread-crumb">
                             <ol class="breadcrumb">
-                                <li><a ng-click="goUrlSite()">{{urlObj.username || 'User'}}</a></li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.sitename || 'Project'}}</a>
+                                <li><a ng-click="goUserSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
+                                <li class="dropdown" ng-show="urlObj.sitename">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.sitename || ''}}</a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="site in userSiteList">
                                             <a ng-click="selectSite(site)">{{site.name}}</a>
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.pagename || 'Page'}}</a>
+                                <li class="dropdown" ng-show="urlObj.pagename">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.pagename || ''}}</a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="page in userSitePageList">
                                             <a ng-click="selectPage(page)">{{page.name}}</a>

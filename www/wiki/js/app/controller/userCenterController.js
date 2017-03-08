@@ -11,6 +11,7 @@ define(['app',
     'controller/editWebsiteController',
 ], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, editWebsiteHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
+        $scope.contentType = undefined;
         $scope.userProfileItemList = [
             {flag:'myProfile', name:'我的资料'},
             {flag:'accountSafe', name:'账户安全'},
@@ -35,24 +36,19 @@ define(['app',
         ]
 
         function init() {
-            $(".subnav .panel-heading").on("click",function(){
-                var targetBody=$(this).next();
-                var nowActive=$(".subnav .panel-body:not(.sr-only)");
-                nowActive.toggleClass("sr-only");
-                targetBody.toggleClass("sr-only");
-
-                loadContentView($(this).attr('name'));
-                $scope.$apply();
-            });
-
-            var contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
-            loadContentView(contentType);
+            $scope.contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
+            storage.sessionStorageRemoveItem('userCenterContentType');
+            console.log($scope.contentType);
+            $scope.selectContentType($scope.contentType);
+            //$scope.$apply();
         }
 
         // 文档加载完成
         $scope.$watch('$viewContentLoaded', init);
+        
+        $scope.selectContentType = function (contentType) {
+            $scope.contentType = contentType;
 
-        function loadContentView(contentType) {
             if (contentType == 'userProfile') {
                 $scope.showItem = 'myProfile';
                 util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
@@ -65,6 +61,11 @@ define(['app',
                 $scope.showItem = 'dataSource';
             }
         }
+
+        $scope.getExpandClass = function (contentType) {
+            return $scope.contentType == contentType ? "" : 'sr-only';
+        }
+
         
         $scope.clickUserCenterItem = function (item) {
             $scope.showItem = item.flag;

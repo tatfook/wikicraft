@@ -44,7 +44,7 @@ define(['jquery'], function ($) {
 
         var username = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
         var sitename = '';
-        var pagename = 'index';
+        var pagename = '';
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
@@ -58,7 +58,7 @@ define(['jquery'], function ($) {
                 return {};
             }
             sitename = urlInfo[1];
-            pagename = urlInfo[2] || 'index';
+            pagename = urlInfo[2];
         } else {
             urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
             if (urlInfo == undefined) {
@@ -66,9 +66,12 @@ define(['jquery'], function ($) {
             }
             username = urlInfo[1];
             sitename = urlInfo[2];
-            pagename = urlInfo[3] || 'index';
+            pagename = urlInfo[3];
         }
 
+        if (username != 'wiki' && sitename && !pagename) {
+            pagename = index;
+        }
         return {username:username, sitename:sitename, pagename:pagename, pathname:pathname};
     }
 

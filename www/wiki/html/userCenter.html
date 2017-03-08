@@ -109,10 +109,10 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" name="userProfile">
+                        <div class="panel-heading" ng-click='selectContentType("userProfile")'>
                             个人中心
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body" ng-class='getExpandClass("userProfile")'>
                             <ul class="list-group">
                                 <a ng-repeat="item in userProfileItemList"
                                    ng-click="clickUserCenterItem(item)"
@@ -124,10 +124,10 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" name="myVIP">
+                        <div class="panel-heading" ng-click='selectContentType("myVIP")'>
                             VIP
                         </div>
-                        <div class="panel-body sr-only">
+                        <div class="panel-body " ng-class='getExpandClass("myVIP")'>
                             <ul class="list-group">
                                 <a ng-repeat="item in vipItemList"
                                    ng-click="clickUserCenterItem(item)"
@@ -139,10 +139,10 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" name="websiteManager">
+                        <div class="panel-heading" ng-click='selectContentType("websiteManager")'>
                             网站管理
                         </div>
-                        <div class="panel-body sr-only">
+                        <div class="panel-body" ng-class='getExpandClass("websiteManager")'>
                             <ul class="list-group">
                                 <a ng-repeat="item in websiteMangerItemList"
                                    ng-click="clickUserCenterItem(item)"
@@ -155,10 +155,10 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" name="dataSource">
+                        <div class="panel-heading" ng-click='selectContentType("dataSource")'>
                             数据源
                         </div>
-                        <div class="panel-body sr-only">
+                        <div class="panel-body" ng-class='getExpandClass("dataSource")'>
                             <ul class="list-group">
                                 <a ng-repeat="item in dataSourceItemList"
                                    ng-click="clickUserCenterItem(item)"
