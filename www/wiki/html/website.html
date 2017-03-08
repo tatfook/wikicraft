@@ -1,50 +1,64 @@
-<div ng-controller="websiteController" class="container">
-    <div>
-        <div>
-            <div class="pull-left">
-                <h3><b>站点管理</b></h3>
-            </div>
-            <div class="pull-right" style="margin: 30px 0px">
-                <button class="btn btn-default" ng-click="goCreateWebsitePage()"><span class="glyphicon glyphicon-plus"></span>新建网站</button>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-    </div>
+<style>
+    .website-table {
+        text-align: center;
+    }
 
-    <div style="margin: 30px 0px">
-        <table class="table table-hover table-striped">
-            <caption style="text-align: center"><h4>我的站点</h4></caption>
-            <thead>
-            <tr>
-                <td>站点名称</td>
-                <td>站点备注</td>
-                <td>独立域名</td>
-                <td>类型</td>
-                <td>模板</td>
-                <td>样式</td>
-                <td>标签</td>
-                <td>创建时间</td>
-                <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="website in websites">
-                <!--<td><a href='{{"/" + website.name}}' target="_blank">{{website.name}}</a></td>-->
-                <td><a ng-click="goWebsiteIndexPage(website.name)">{{website.name}}</a></td>
-                <td>{{website.desc}}</td>
-                <td><a href='{{website.domain ? (website.domain + ".wikicraft.cn") : ""}}' target="_blank">{{website.domain ? (website.domain + '.wikicraft.cn') : ""}}</a></td>
-                <td>{{website.categoryName}}</td>
-                <td>{{website.templateName}}</td>
-                <td>{{website.styleName}}</td>
-                <td>{{website.tags}}</td>
-                <td>{{website.createDate}}</td>
-                <td>
-                    <button class="btn btn-default" data-toggle="tooltip" title="编辑网站页面" ng-click="goEditWebsitePagePage(website)"><span class="glyphicon glyphicon-plus"></span></button>
-                    <button class="btn btn-default" data-toggle="tooltip" title="修改站点" ng-click="goEditWebsitePage(website)"><span class="glyphicon glyphicon-edit"></span></button>
-                    <button class="btn btn-default" data-toggle="tooltip" title="删除站点" ng-click="deleteWebsite(website._id)"><span class="glyphicon glyphicon-remove"></span></button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    .website-table table {
+        margin-bottom: 120px;
+    }
+
+    .website-table table > thead > tr > th {
+        text-align: center;
+    }
+
+    .website-table tbody > tr > td {
+        vertical-align: middle;
+    }
+
+    .website-table tbody > tr:hover a {
+        color: #3977AD;
+    }
+</style>
+
+<div ng-controller="websiteController">
+    <div class="col-md-10 panel main-content">
+        <div class="panel-heading">
+            我的站点
+        </div>
+        <div class="panel-body website-table">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>站点名称</th>
+                    <th>站点备注</th>
+                    <th>独立域名</th>
+                    <th>类型</th>
+                    <th>模板</th>
+                    <th>样式</th>
+                    <th>标签</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="website in websites">
+                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.name}}</a></td>
+                    <td>{{website.desc}}</td>
+                    <td><a href='{{website.domain ? ("http://" + website.domain + ".wikicraft.cn") : ""}}' class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>
+                    <td>{{website.categoryName || '/'}}</td>
+                    <td>{{website.templateName || '/'}}</td>
+                    <td>{{website.styleName || '/'}}</td>
+                    <td>{{website.tags}}</td>
+                    <td>{{website.createDate}}</td>
+                    <td>
+                        <a class="btn"  ng-click="goEditWebsitePagePage(website)">编辑</a>
+                        <a class="btn"  ng-click="goEditWebsitePage(website)">设置</a>
+                        <a class="btn"  ng-click="deleteWebsite(website._id)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a class="btn btn-primary" ng-click="goNewWebsitePage()">新建网站</a>
+        </div>
     </div>
 </div>

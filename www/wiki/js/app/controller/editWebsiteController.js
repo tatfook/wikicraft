@@ -2,12 +2,19 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], function (app, util, storage, htmlContent) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!html/editWebsite.html',
+], function (app, util, storage, htmlContent) {
     app.registerController('editWebsiteController', ['$scope','github','Message', 'Account',function ($scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
+        $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
+        console.log(siteinfo);
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
@@ -20,22 +27,51 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], f
             });
         }
 
-        $('#uploadPictureBtn').change(function (e) {
-            if (!github.isInited()) {
-                //alert("图片上传功能需要绑定数据源!!!");
-                Message.info("图片上传功能需要绑定数据源!!!");
-                return ;
+        $scope.addTag = function (tagName) {
+            tagName = util.stringTrim(tagName);
+            if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
+                return;
             }
-            var fileReader = new FileReader();
-            fileReader.onload = function(){
-                $('#websiteLogo').attr('src',fileReader.result);
-                github.uploadImage("websiteLogo", fileReader.result, function (url) {
-                    $scope.website.logoUrl = url;
-                });
-            };
-            fileReader.readAsDataURL(e.target.files[0]);
-        });
+            $scope.tags.push(tagName);
+            $scope.website.tags = $scope.tags.join('|');
+        }
 
+        $scope.removeTag = function (tagName) {
+            var index = $scope.tags.indexOf(tagName);
+            if (index >= 0) {
+                $scope.tags.splice(index, 1);
+            }
+            $scope.website.tags = $scope.tags.join('|');
+        }
+
+        // 修改网站设置
+        $scope.modifyWebsite = function () {
+            sendModifyWebsiteRequest();
+        }
+
+        function init() {
+            /*
+            $('#uploadPictureBtn').change(function (e) {
+                if (!github.isInited()) {
+                    //alert("图片上传功能需要绑定数据源!!!");
+                    Message.info("图片上传功能需要绑定数据源!!!");
+                    return ;
+                }
+                var fileReader = new FileReader();
+                fileReader.onload = function(){
+                    $('#websiteLogo').attr('src',fileReader.result);
+                    github.uploadImage("websiteLogo", fileReader.result, function (url) {
+                        $scope.website.logoUrl = url;
+                    });
+                };
+                fileReader.readAsDataURL(e.target.files[0]);
+            });
+            */
+
+        }
+
+        $scope.$watch('$viewContentLoaded',init);
+        /*
         $scope.roleSelect = function (userinfo) {
             userinfo.roleInfo.roleId = parseInt(userinfo.roleInfo.roleUIIndex);
             userinfo.roleInfo.roleId = $scope.roleList[userinfo.roleInfo.roleId].id;
@@ -65,31 +101,11 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], f
             return $scope.classifyList[worksFlag];
         }
 
-        $scope.addTag = function (tagName) {
-            tagName = util.stringTrim(tagName);
-            if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
-                return;
-            }
-            $scope.tags.push(tagName);
-            $scope.website.tags = $scope.tags.join('|');
-        }
-
-        $scope.removeTag = function (tagName) {
-            var index = $scope.tags.indexOf(tagName);
-            if (index >= 0) {
-                $scope.tags.splice(index, 1);
-            }
-            $scope.website.tags = $scope.tags.join('|');
-        }
-
-        $scope.modifyWebsite = function () {
-            sendModifyWebsiteRequest();
-        }
 
         $scope.advanceSetup = function () {
 
         }
-        
+
         $scope.setGithubRepoName = function () {
             console.log($scope.website);
             if ($scope.user.githubToken) {
@@ -147,9 +163,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/editWebsite.html'], f
 
             });
         }
-
-        function init() {
-        }
+        */
     }]);
 
     return htmlContent;
