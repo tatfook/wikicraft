@@ -1,3 +1,93 @@
+<style>
+    @media (min-width: 992px) {
+        .modal-lg {
+            width: 1170px;
+        }
+    }
+
+    .img-text {
+        align-items: center;
+        background-color: #F9F9F9;
+        border: 1px solid #e5e7e9;
+        margin-bottom: 20px;
+    }
+
+    .img-text .text {
+        flex: 1;
+    }
+
+    .wikitabpanel {
+        border: 1px solid #DCDCDC;
+        padding: 0;
+    }
+
+    .wikitabpanel .nav-tabs {
+        margin: -1px 0 0 -1px;
+    }
+
+    .wikitabpanel .nav-tabs > li > a {
+        border-radius: 0;
+    }
+
+    .wikiblock-tab {
+        max-height: 510px;
+        overflow-y: auto;
+        padding-top: 20px;
+    }
+
+    .wikiblock-tab .img-text img {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+    }
+
+    .wikiblock-tab .img-text .text {
+        padding: 0 15px;
+        max-height: 140px;
+        overflow: hidden;
+    }
+    .wikiblock-tab .img-text h4{
+        line-height:34px;
+    }
+
+    .wikiblock-tab .img-text .col-md-12, .tab-content .img-text .col-md-4 {
+        padding: 0;
+        line-height: 32px;
+    }
+
+    .wikiblock-tab .img-text p {
+        margin-bottom: 0;
+        line-height: 25px;
+    }
+    .wikiblock-tab .img-text p.info {
+        line-height: 35px;
+    }
+    .wikiblock-tab .img-text .glyphicon{
+        line-height:35px;
+        font-size: 20px;
+    }
+
+    .tab-content .img-text-box {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .img-text.col-md-6 {
+        width: 40%;
+        margin: 0 5% 20px;
+        padding: 0;
+    }
+
+    .img-text .info {
+        line-height: 19px;
+        font-weight: normal;
+        color: #999;
+    }
+
+    .img-text .col-md-6 {
+        padding: 0;
+    }
+</style>
 <div>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="no()">&times;</button>
@@ -6,34 +96,80 @@
 
     <div class="modal-body">
         <div class="container-fluid">
-            <form class="form-horizontal" role="form">
-                <div class="form-group">
-                    <label class="col-xs-2 control-label">模块名称</label>
-                    <div class="col-xs-8">
-                        <input class="form-control">
+            <div class="row">
+                <form role="form">
+                    <div class="form-group clearfix">
+                        <label class="control-label sr-only">模块名称</label>
+                        <div class="col-xs-4 col-xs-offset-4">
+                            <input class="form-control">
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+            <div class="row">
+                <div role="tabpanel" class="col-md-10 col-md-offset-1 wikitabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#hot" aria-controls="hot" role="tab" data-toggle="tab">热门</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#kinds" aria-controls="kinds" role="tab" data-toggle="tab">Mod分类</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#rank" aria-controls="rank" role="tab" data-toggle="tab">排行榜</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#collection" aria-controls="collection" role="tab" data-toggle="tab">收藏</a>
+                        </li>
+                    </ul>
 
-        <div style="overflow-y: auto; height: 400px">
-            <div ng-repeat="wikiBlock in wikiBlockList">
-                <div style="margin: 5px; border: 1px solid silver; padding: 5px;">
-                    <img ng-src="{{wikiBlock.logoUrl || imgsPath + 'test.jpg'}}" class="img-responsive">
-                    <div>
-                        <h4>{{'名称：' + wikiBlock.name}}</h4>
-                        <p>{{'描述：' + wikiBlock.desc}}</p>
-                    </div>
-                    <div>
-                        <button class="btn btn-default" ng-click="selectWikiBlock(wikiBlock)">使用</button>
+                    <!-- Tab panes -->
+                    <div class="tab-content col-md-12 wikiblock-tab">
+                        <div role="tabpanel" class="tab-pane active" id="hot">
+
+                            <!--<div style="overflow-y: auto; height: 400px">-->
+                                <!--<div ng-repeat="wikiBlock in wikiBlockList">-->
+                                    <!--<div style="margin: 5px; border: 1px solid silver; padding: 5px;">-->
+                                        <!--<img ng-src="{{wikiBlock.logoUrl || imgsPath + 'test.jpg'}}" class="img-responsive">-->
+                                        <!--<div>-->
+                                            <!--<h4>{{'名称：' + wikiBlock.name}}</h4>-->
+                                            <!--<p>{{'描述：' + wikiBlock.desc}}</p>-->
+                                        <!--</div>-->
+                                        <!--<div>-->
+                                            <!--<button class="btn btn-default" >使用</button>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+
+                            <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
+                                <img ng-src="{{site.logoUrl || (imgsPath + 'works.jpg')}}" alt="" class="pull-left">
+                                <div class="text">
+                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a></h4>
+                                    <p class="info">热度：1025 <span class="pull-right glyphicon glyphicon-star text-danger"></span>
+                                    </p>
+                                    <p>{{wikiBlock.desc}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="kinds">
+                            Mod分类
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="rank">
+                            排行榜
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="collection">
+                            收藏
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="no()">否</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="yes()">是</button>
-    </div>
+    <!--<div class="modal-footer">-->
+    <!--<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="no()">否</button>-->
+    <!--<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="yes()">是</button>-->
+    <!--</div>-->
 </div>

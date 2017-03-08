@@ -1,31 +1,37 @@
 <style>
     /*我的资料页*/
-    .form-horizontal.sr-only{
+    .form-horizontal.sr-only {
         height: 0;
         min-height: 0;
     }
-    .data-form .form-control{
+
+    .data-form .form-control {
         margin-bottom: 0;
     }
-    textarea{
+
+    textarea {
         resize: none;
         width: 100%;
     }
-    .preview-zone{
+
+    .preview-zone {
         text-align: center;
     }
-    .preview-zone .preview{
+
+    .preview-zone .preview {
         width: 130px;
         height: 130px;
         border-radius: 100%;
         object-fit: cover;
         margin: 0 auto 20px;
     }
-    .preview-zone .change-profile{
+
+    .preview-zone .change-profile {
         text-align: center;
         position: relative;
     }
-    .preview-zone input[type="file"]{
+
+    .preview-zone input[type="file"] {
         position: absolute;
         top: 0;
         opacity: 0;
@@ -35,20 +41,36 @@
     /*账户安全*/
     /*我的动态*/
     /*我的收藏*/
-    .tab-content .img-text-box{
+    .tab-content .img-text-box {
         width: 90%;
         margin: 0 auto;
     }
 
-    /*我的历史*/
-    .timeline{
-        padding-left: 210px;
-        padding-top: 0;
-        position: relative;
-        padding-bottom: 0;
-        margin: 35px 0;
+    .img-text.col-md-6 {
+        width: 48%;
+        margin-right: 2%;
+        padding: 0;
     }
-    .timeline:before{
+
+    .img-text .info {
+        line-height: 19px;
+        font-weight: normal;
+        color: #999;
+        font-size: 12px;
+    }
+
+    .img-text .col-md-6 {
+        padding: 0;
+    }
+
+    /*我的历史*/
+    .timeline {
+        position: relative;
+        margin: 35px 0;
+        padding: 0 210px;
+    }
+
+    .timeline:before {
         content: "";
         display: inline-block;
         width: 186.5px;
@@ -58,10 +80,23 @@
         z-index: 1;
         position: absolute;
     }
-    .timeline .img-text{
+
+    .timeline .img-text {
         position: relative;
     }
-    .timeline .time{
+
+    .timeline .info .col-sm-6 {
+        padding: 0;
+        text-align: left;
+    }
+
+    .timeline .info .glyphicon {
+        padding-left: 0;
+        font-size: 21px;
+        vertical-align: text-bottom;
+    }
+
+    .timeline .time {
         position: absolute;
         width: 210px;
         height: 100%;
@@ -69,10 +104,12 @@
         text-align: right;
         padding-right: 20px;
     }
-    .timeline span{
+
+    .timeline span {
         padding: 0 0 0 15px;
     }
-    .timeline .time:before{
+
+    .timeline .time:before {
         content: "";
         display: inline-block;
         width: 12px;
@@ -85,18 +122,31 @@
         z-index: 2;
     }
 
+    .timeline .rubbish {
+        padding: 0 42px;
+        text-align: center;
+    }
+
+    .timeline .rubbish img {
+        width: 22px;
+        height: auto;
+        display: block;
+    }
+
     /*我的粉丝*/
-    .fans-box{
+    .fans-box {
         width: 95%;
         margin: 20px auto;
     }
-    .fans-profile{
+
+    .fans-profile {
         width: 14.285714%;
         float: left;
         padding: 0 20px;
         margin-bottom: 40px;
     }
-    .fans-profile img{
+
+    .fans-profile img {
         width: 80px;
         height: 80px;
         object-fit: cover;
@@ -112,13 +162,16 @@
         <div class="panel-body">
             <div class="col-md-3 preview-zone">
                 <div class="preview">
-                    <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_header.png'}}" alt="" style="width: 100%">
+                    <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_header.png'}}" alt=""
+                         style="width: 100%">
                 </div>
-                <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)" type="file"></p>
+                <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)"
+                                                     type="file"></p>
                 <a id="finish" class="btn btn-primary sr-only">确 定</a>
             </div>
             <div class="col-md-9">
-                <div id="cropper" class="cropper-zone sr-only" style="width: 500px; height: 340px;" class="visible-hidden">
+                <div id="cropper" class="cropper-zone sr-only" style="width: 500px; height: 340px;"
+                     class="visible-hidden">
                     <!--img ng-src="{{imgsPath + 'wiki_header.png'}}" alt=""-->
                 </div>
                 <form id="data-form" class="form-horizontal col-md-12 data-form" role="form">
@@ -135,13 +188,17 @@
                         <label class="col-sm-2 control-label">性别：</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="M" ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}"> 男
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="M"
+                                       ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}"> 男
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="F" ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}"> 女
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="F"
+                                       ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}"> 女
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="N" ng-model="user.sex" checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}"> 保密
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="N"
+                                       ng-model="user.sex"
+                                       checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}"> 保密
                             </label>
                         </div>
                     </div>
@@ -177,7 +234,6 @@
     </div>
 
 
-
     <!--账号安全-->
     <div ng-show="showItem == 'accountSafe'" class="col-md-10 main-content">
         <div role="tabpanel col-md-12">
@@ -207,13 +263,15 @@
                         <div class="form-group">
                             <label for="new" class="control-label col-sm-3">新密码</label>
                             <div class="col-sm-9">
-                                <input type="password" id="new" class="form-control" ng-model="passwordObj.newPassword1">
+                                <input type="password" id="new" class="form-control"
+                                       ng-model="passwordObj.newPassword1">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="reNew" class="control-label col-sm-3">重复新密码</label>
                             <div class="col-sm-9">
-                                <input type="password" id="reNew" class="form-control" ng-model="passwordObj.newPassword2">
+                                <input type="password" id="reNew" class="form-control"
+                                       ng-model="passwordObj.newPassword2">
                             </div>
                         </div>
                         <div class="form-group">
@@ -260,7 +318,9 @@
                 <div>
                     <div style="display: flex; justify-content: space-between">
                         <div>Github数据源</div>
-                        <div><toggle-switch  ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch></div>
+                        <div>
+                            <toggle-switch ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -273,37 +333,42 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
-                    <a ng-click="clickCollectionUser()" href="#wiki_user" aria-controls="user" role="tab" data-toggle="tab">作者</a>
+                    <a ng-click="clickCollectionUser()" href="#wiki_user" aria-controls="user" role="tab"
+                       data-toggle="tab">作者</a>
                 </li>
                 <li role="presentation">
-                    <a ng-click="clickCollectionWorks()" href="#wiki_user" aria-controls="works" role="tab" data-toggle="tab">作品</a>
+                    <a ng-click="clickCollectionWorks()" href="#wiki_user" aria-controls="works" role="tab"
+                       data-toggle="tab">作品</a>
                 </li>
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active img-text-box" id="wiki_user">
-                    <div class="img-text" ng-repeat="x in favoriteList">
-                        <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
-                        <div class="text">
-                            <h4><a href="#">{{x.siteinfo.name}}</a></h4>
-                            <p>作者：{{x.siteinfo.username}}</p>
-                            <p>说明：{{x.siteinfo.desc}}</p>
-                            <div class="col-md-12 info">
-                                <div class="col-md-4">
-                                    <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.siteinfo.visitCount}}
-                                </div>
-                                <div class="col-md-4">
-                                    <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.siteinfo.favoriteCount}}
-                                </div>
-                                <div class="col-md-4">
-                                    收藏于2017-03-02
+                    <div class="col-sm-12">
+                        <div class="img-text col-md-6" ng-repeat="x in favoriteList">
+                            <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <div class="text">
+                                <h4><a href="#">{{x.siteinfo.name}}</a><span
+                                        class="pull-right info">收藏于2017-03-02</span></h4>
+                                <p>作者：{{x.siteinfo.username}}</p>
+                                <p>说明：{{x.siteinfo.desc}}</p>
+                                <div class="col-md-12 info">
+                                    <div class="col-md-6">
+                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.siteinfo.visitCount}}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏
+                                        {{x.siteinfo.favoriteCount}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="pagination-box">
-                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='5' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true"></ul>
+                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='5' previous-text="上一页"
+                            next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="maxSize"
+                            class="pagination-sm" boundary-link-numbers="true"></ul>
                     </div>
                 </div>
                 <!--div role="tabpanel" class="tab-pane img-text-box" id="wiki_works">
@@ -332,6 +397,7 @@
                     </div>
                 </div>
                 <div class="time"><span>{{site.createDate}}</span><span></span></div>
+                <div class="rubbish"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
             </div>
         </div>
     </div>
@@ -341,8 +407,10 @@
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''" >
-                    <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans" role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount}})</span></a>
+                <li role="presentation" ng-repeat="site in siteList"
+                    ng-class="currentFansSite._id == site._id ? 'active' : ''">
+                    <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans"
+                       role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount}})</span></a>
                 </li>
                 <li class="pull-right"><a>总数：{{totalFavoriteCount}}</a></li>
             </ul>
@@ -357,7 +425,9 @@
                         </div>
                     </div>
                     <div class="pagination-box">
-                        <ul uib-pagination ng-change="fansPageChanged()" items-per-page='pageSize' previous-text="上一页" next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true"></ul>
+                        <ul uib-pagination ng-change="fansPageChanged()" items-per-page='pageSize' previous-text="上一页"
+                            next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                            class="pagination-sm" boundary-link-numbers="true"></ul>
                     </div>
                 </div>
             </div>
