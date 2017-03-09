@@ -1,39 +1,49 @@
-<div ng-controller="siteshowController" class="container">
-    <div class="row">
-        <div class="col-md-offset-1 col-md-10" style="display: flex; justify-content: space-between; align-items: center; height: 90px">
-            <div style="font-size: 30px">{{title}}</div>
-            <div style="font-size: 18px; align-self: flex-end">
-                <a ng-click="getAllSiteList()"></a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1 workslistNav" >
-            <div style="display: flex; align-items: center; justify-content: center; height: 100%" >
-                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getSiteList(requestParams.page-1)"><img ng-src="{{imgsPath + 'worksPrev.png'}}"></a>
-            </div>
-        </div>
-        <div class="col-md-10">
-            <div class="row workslist"  style="border-bottom: 1px solid silver">
-                <div class="col-md-4" style="position: relative; height: 280px;" ng-repeat="site in siteObj.siteList">
-                    <img ng-src="{{site.logoUrl || (imgsPath + 'test.jpg')}}" class="img-responsive" style="width: 100%; height: 200px;">
-                    <div style="position: absolute; top: 120px; left: 15%; width: 70%;background-color: rgba(0,0,0,0.3);">
-                        <div style="height: 70px; padding-top: 15px; padding-left: 24px">
-                            <div style="font-size: 18px; color: white;">{{site.name}}</div>
-                            <div style="font-size: 14px; color: rgb(200,219,0);;">导演：{{site.username}}</div>
-                        </div>
-                        <div ng-style='{"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}'>
-                            <img ng-src="{{imgsPath + 'lover.png'}}" style="margin-left: 115px">
-                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{site.favoriteCount}}</span>
-                        </div>
-                    </div>
+<style>
+    .works{
+        padding-top: 10px;
+    }
+    .works .text {
+        background-color: #FAFAFA;
+        padding: 20px;
+        box-shadow: 0px 1px 3px 0px rgba(44,62,80,.35);
+    }
+    .works .col-md-3{
+        margin-bottom: 30px;
+    }
+    .hover-slide:hover .text{
+        box-shadow: 0 2px 5px 0 rgba(44,62,80,.35);
+    }
+    .pagination-box {
+        text-align: center;
+    }
+    h3.title{
+        border-bottom: 1px solid #f1f1f1;
+        padding-bottom: 16px;
+    }
+</style>
+
+<div ng-controller="siteshowController" >
+    <div class="container">
+        <h3 class="title">作品集</h3>
+        <div class="row works">
+            <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList">
+                <img ng-src="{{ site.logoUrl || imgsPath + 'wiki_works.jpg' }}">
+                <div class="text clearfix">
+                    <h4><a class="title" href="#">{{site.name}}</a></h4>
+                    <p>作者： <span>{{site.username}}</span></p>
+                    <p class="pull-left info">
+                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount}}</span>
+                    </p>
+                    <p class="pull-right info">
+                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount}}</span>
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="col-md-1 workslistNav">
-            <div style="display: flex; align-items: center; justify-content: center; height: 100%" >
-                <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getSiteList(requestParams.page+1)"><img ng-src="{{imgsPath + 'worksNext.png'}}"></a>
-            </div>
+        <div class="pagination-box">
+            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
+                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                class="pagination-sm" boundary-link-numbers="true"></ul>
         </div>
     </div>
 </div>

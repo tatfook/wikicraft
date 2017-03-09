@@ -2,66 +2,32 @@
  * Created by wuxiangan on 2016/12/15.
  */
 
-define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlContent) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!html/home.html'
+], function (app, util, storage, htmlContent) {
     // 动态加载
     app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', 'Message', function ($scope, $rootScope, $state, $auth, Account, Message) {
-        $scope.siteParams = {page: 1, pageSize: 4};
-        $scope.userParams = {page: 1, pageSize: 4};
-        $scope.userObj = {};
-        $scope.siteObj = {};
         $scope.isLogin = false; // false：注册  true：登录
 
         $scope.goUserSite = function (site) {
-            window.location.href = '/' + site.username + '/' + site.name + '/index';
+            util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
 
         // 更多我的收藏
         $scope.goAllWorksList = function () {
-            var siteshowObj = {};
-            siteshowObj.requestUrl = config.apiUrlPrefix + "website/getFavoriteSortList";
-            siteshowObj.requestParams = $scope.siteParams;
-            siteshowObj.title = "作品长廊"
-            sessionStorage.setItem("siteshow", util.objectToJsonString(siteshowObj));
+            storage.sessionStorageSetItem("siteshowType", 'all');
             $state.go("siteshow");
         }
 
-        // 更多我的收藏
-        $scope.goAllUserList = function () {
-            var usershowObj = {};
-            usershowObj.requestUrl = config.apiUrlPrefix + "user/getFavoriteSortList";
-            usershowObj.requestParams = $scope.userParams;
-            usershowObj.title = "名人堂";
-            sessionStorage.setItem("usershow", util.objectToJsonString(usershowObj));
-            $state.go("usershow");
+        // 更多收藏
+        $scope.goAllPersonalList = function () {
+            storage.sessionStorageSetItem("siteshowType", 'personal');
+            $state.go("siteshow");
         }
-
-        $scope.getWorksList = function (page) {
-            $scope.siteParams.page = page ? (page > 0 ? page : 1) : $scope.siteParams.page;
-
-            if ($scope.siteObj.pageCount && $scope.siteParams.page > $scope.siteObj.pageCount) {
-                $scope.siteParams.page = $scope.siteObj.pageCount
-            }
-            var url = $scope.siteParams.url || config.apiUrlPrefix + "website/getFavoriteSortList"; // 获得最近更新
-
-            util.http("POST", url, $scope.siteParams, function (data) {
-                $scope.siteObj = data;
-            });
-        }
-
-        $scope.getUserList = function (page) {
-            $scope.userParams.page = page ? (page > 0 ? page : 1) : $scope.userParams.page;
-
-            if ($scope.userObj.pageCount && $scope.userParams.page > $scope.userObj.pageCount) {
-                $scope.userParams.page = $scope.userObj.pageCount
-            }
-
-            var url = $scope.userParams.url || config.apiUrlPrefix + "user/getFavoriteSortList"; // 获得最近更新
-
-            util.http("POST", url, $scope.userParams, function (data) {
-                $scope.userObj = data;
-            });
-        }
-
+        
         function init() {
             // 获得网站统计信息
             util.http("POST", config.apiUrlPrefix + "wikicraft/getStatics", {}, function (data) {
@@ -80,6 +46,7 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             //$scope.getUserList();
         }
 
+        // 注册
         $scope.register = function () {
             $scope.errMsg = "";
             $("#mail-err").addClass("visible-hidden");
@@ -133,6 +100,7 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             });
         }
 
+        // 收藏作品
         $scope.worksFavorite=function (event, site) {
             //console.log(event, site);
             if (!Account.isAuthenticated()) {
@@ -176,6 +144,7 @@ define(['app', 'helper/util','text!html/home.html'], function (app, util, htmlCo
             }
         };
 
+        // 回车提交注册
         $(document).keyup(function (event) {
             if(event.keyCode=="13"){
                 $scope.register();

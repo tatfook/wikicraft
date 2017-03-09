@@ -17,22 +17,13 @@ define(['app', 'require'], function (app, require) {
 
             'login':{},
             'home':{},
-
-            'userCenter':{},
-            'userpage': {},
-
-            'website':{},
-            'createWebsite':{},
-            'editWebsite': {},
-            'preview':{},
             'wikiEditor':{},
-            
+            'userCenter':{},
             'gitVersion':{},
-
             'siteshow':{},
-            'usershow':{},
-            'worksApply':{},
 
+            'preview':{},
+            'worksApply':{},
             'knowledge':{},
         };
 
