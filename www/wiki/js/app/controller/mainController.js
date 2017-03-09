@@ -16,6 +16,8 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 $rootScope.frameHeaderExist = true;
                 $rootScope.frameFooterExist = true;
 
+                $rootScope.isLogin = Account.isAuthenticated();
+                
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }

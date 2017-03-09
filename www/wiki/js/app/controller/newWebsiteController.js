@@ -8,7 +8,7 @@ define([
     'helper/storage',
     'text!html/newWebsite.html',
 ], function (app, util, storage, htmlContent) {
-    var controller = ['$scope', '$state', '$sce', 'Account', function ($scope, $state, $sce, Account) {
+    var controller = ['$scope', '$sce', 'Account', function ($scope, $sce, Account) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
         $scope.websiteDomainErrMsg = "";
@@ -19,76 +19,65 @@ define([
         $scope.subCategories = [];
         $scope.step = 1;
         $scope.nextStepDisabled = !$scope.website.name;
-        $scope.isPreview = true;
-        config.templateObject = {executeTemplateScript: false};
+
+        $scope.nextStep = function () {
+            console.log($scope.step);
+            $scope.errMsg = "";
+            if ($scope.step == 1) {
+                if (!$scope.website.name) {
+                    $scope.errMsg = "站点名为必填字段";
+                    return;
+                }
+                if ($scope.websiteNameErrMsg || $scope.websiteUrlErrMsg) {
+                    $scope.errMsg = "请正确填写相关信息";
+                    return;
+                }
+
+                util.http('POST', config.apiUrlPrefix + 'website/isExist', {
+                    username: $scope.user.username,
+                    sitename: $scope.website.name
+                }, function (data) {
+                    if (data && $scope.website._id != data._id) {
+                        $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
+                        $scope.nextStepDisabled = true;
+                    } else {
+                        $scope.websiteNameErrMsg = "";
+                        //$scope.nextStepDisabled = $scope.websiteDomainErrMsg;
+                        //$scope.nextStepDisabled || $scope.step++;
+                        $scope.nextStepDisabled = false;
+                        $scope.step++;
+                    }
+                });
+                return ;
+            } else if ($scope.step == 2) {
+            } else if ($scope.step == 3) {
+                $scope.nextStepDisabled = !$scope.website.templateId;
+            } else if ($scope.step == 4) {
+                if (!$scope.website.templateId) {
+                    $scope.errMsg = "请选择站点类型和模板";
+                    return;
+                }
+                $scope.nextStepDisabled = !$scope.website.styleId;
+            } else if ($scope.step == 5) {
+                if (!$scope.website.styleId) {
+                    $scope.errMsg = "请选择模板样式";
+                    return ;
+                }
+                //createWebsiteRequest();
+                //return;
+            } else if ($scope.step == 6) {
+            } else {
+                createWebsiteRequest();
+            }
+            $scope.step++;
+        }
+
+        $scope.prevStep = function () {
+            $scope.step--;
+            $scope.nextStepDisabled = false;
+        }
 
         function init() {
-            var stepLenth = 6;//步骤总数，不包括最后finish状态
-            var preBtn = $("#pre");//上一步按钮
-            var nextBtn = $("#next");//下一步按钮
-            var creatBtn = $("#confirm");
-            var finishBtn = $("#finishBtn");//完成按钮
-
-            //初始化当前步骤以及按钮状态
-            var nowStep = $(".step-content>div:not(.sr-only)");
-            var nowStepId = nowStep[0].id;//当前步骤的id
-            btnState(nowStepId);
-
-            function btnState(nowStepId) {
-                if (nowStepId === "step1") {//第一步隐藏 上一步、完成、确认创建 按钮
-                    preBtn.addClass("sr-only");
-                    finishBtn.addClass("sr-only");
-                    creatBtn.addClass("sr-only");
-                    nextBtn.removeClass("sr-only");
-                } else if (nowStepId === "finish") {//完成步骤时隐藏 上一步、下一步、确认创建 按钮
-                    preBtn.addClass("sr-only");
-                    nextBtn.addClass("sr-only");
-                    creatBtn.addClass("sr-only");
-                    finishBtn.removeClass("sr-only");
-                } else if (nowStepId === ("step" + stepLenth)) {//信息确认时隐藏 下一步、完成按钮 显示 上一步、确认创建按钮
-                    preBtn.removeClass("sr-only");
-                    creatBtn.removeClass("sr-only");
-                    finishBtn.addClass("sr-only");
-                    nextBtn.addClass("sr-only");
-                } else {//中间步骤隐藏 完成、确认创建 按钮，显示上一步、下一步按钮
-                    preBtn.removeClass("sr-only");
-                    nextBtn.removeClass("sr-only");
-                    finishBtn.addClass("sr-only");
-                    creatBtn.addClass("sr-only");
-                }
-            }
-
-            // 上一步
-            preBtn.on("click", function () {
-                var nowNum = parseInt(nowStepId.substring(4));//当前步骤类名后的数字 step2 取2
-                var preStep = $("#step" + (nowNum - 1));
-                preStep.removeClass("sr-only");
-                nowStep.addClass("sr-only");
-                nowStep = preStep;
-                nowStepId = "step" + (nowNum - 1);
-                btnState(nowStepId);
-            });
-
-            // 下一步
-            nextBtn.on("click", function () {
-                var nowNum = parseInt(nowStepId.substring(4));//当前步骤类名后的数字 step2 取2
-                var nextStep = $("#step" + (nowNum + 1));
-                nextStep.removeClass("sr-only");
-                nowStep.addClass("sr-only");
-                nowStep = nextStep;
-                nowStepId = "step" + (nowNum + 1);
-                btnState(nowStepId);
-            });
-
-            //确认创建
-            creatBtn.on("click", function () {
-                var nextStep = $("#finish");
-                nextStep.removeClass("sr-only");
-                nowStep.addClass("sr-only");
-                nowStepId = "finish";
-                btnState(nowStepId);
-            });
-
             //util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
             util.http('POST', config.apiUrlPrefix + 'website_template_config', {}, function (data) {
                 $scope.categories = data;
@@ -129,18 +118,18 @@ define([
         $scope.$watch('$viewContentLoaded', init);
 
         function createWebsiteRequest() {
-            $scope.website.userId = Account.getUser()._id;
-            $scope.website.username = Account.getUser().username;
+            $scope.website.userId = $scope.user._id;
+            $scope.website.username = $scope.user.username;
 
             var url = config.apiUrlPrefix + "website";
-            console.log($scope.website);
 
-            if (!$scope.editWebsite) {
-                url += '/new';
-            }
             util.http('PUT', url, $scope.website, function (data) {
                 $scope.step++;
             });
+        }
+
+        $scope.getActiveStyleClass = function (category) {
+            return category._id == $scope.website.categoryId ? 'active' : '';
         }
 
         $scope.selectCategory = function (category) {
@@ -199,22 +188,13 @@ define([
             }
 
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
+            $scope.website.domain = $scope.website.name;
 
-            util.http('POST', config.apiUrlPrefix + 'website/isExist', {
-                username: $scope.user.username,
-                sitename: $scope.website.name
-            }, function (data) {
-                if (data && $scope.website._id != data._id) {
-                    $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
-                    $scope.nextStepDisabled = true;
-                } else {
-                    $scope.websiteNameErrMsg = "";
-                    $scope.nextStepDisabled = $scope.websiteDomainErrMsg;
-                }
-            });
+            $scope.nextStepDisabled = false;
         }
 
         $scope.checkWebsiteDomain = function () {
+            return ;
             if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
                 $scope.nextStepDisabled = $scope.websiteNameErrMsg;
                 $scope.websiteDomainErrMsg = "";
@@ -232,46 +212,6 @@ define([
                 }
             });
         }
-
-        $scope.nextStep = function () {
-            $scope.errMsg = "";
-            if ($scope.step == 1) {
-                if (!$scope.website.name) {
-                    $scope.errMsg = "站点名为必填字段";
-                    return;
-                }
-                if ($scope.websiteNameErrMsg || $scope.websiteUrlErrMsg) {
-                    $scope.errMsg = "请正确填写相关信息";
-                    return;
-                }
-            } else if ($scope.step == 2) {
-                if ($scope.website.tags) {
-
-                }
-                $scope.nextStepDisabled = !$scope.website.templateId;
-            } else if ($scope.step == 3) {
-                if (!$scope.website.templateId) {
-                    $scope.errMsg = "请选择站点类型和模板";
-                    return;
-                }
-                $scope.nextStepDisabled = !$scope.website.styleId;
-            } else if ($scope.step == 4) {
-                if (!$scope.website.styleId) {
-                    $scope.errMsg = "请选择模板样式";
-                }
-                createWebsiteRequest();
-                return;
-            } else {
-                $state.go('website');
-            }
-            $scope.step++;
-        }
-
-        $scope.prevStep = function () {
-            $scope.step--;
-            $scope.nextStepDisabled = false;
-        }
-
 
         $scope.goPreviewPage = function (style) {
             var url = window.location.href;

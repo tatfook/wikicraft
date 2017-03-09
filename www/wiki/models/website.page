@@ -431,12 +431,13 @@ function website:api_getSiteList(params)
 	end
 	if params.sortBy then 
 		key = key .. params.sortBy
+		value['gt'] = -1
 	end
 	local query = {}
 	if key ~= '' then 
 		query[key] = value
 	end
-	log(query)	
+	--log(query)	
 	self:db():count(query, resume)
 	local err, data = yield()
 	
@@ -452,6 +453,7 @@ function website:api_getSiteList(params)
 	value["skip"] = skip
 	value['limit'] = limit
 
+	-- log({[key]=value})
 	self:db():find({[key]=value}, resume)
 	local err, data = yield()
 	

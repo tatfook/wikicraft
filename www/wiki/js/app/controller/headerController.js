@@ -3,10 +3,9 @@
  */
 
 define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    app.controller('headerController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
+    app.controller('headerController',['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         console.log("headerController");
-
-        $scope.isLogin = Account.isAuthenticated();
+        //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
 
         // 用户收藏
@@ -126,8 +125,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.logout = function () {
             Account.logout();
-            $scope.isLogin = false;
-            //window.location.href = "/wiki/home";
+            $rootScope.isLogin = false;
             util.go('home');
         };
 
@@ -138,7 +136,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             console.log("isAuthenticated");
-            $scope.isLogin = bAuthenticated;
         });
     }]);
 });

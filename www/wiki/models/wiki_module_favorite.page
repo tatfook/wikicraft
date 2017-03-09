@@ -1,0 +1,43 @@
+<?npl
+--[[
+Title: wiki module favorite
+Author: wuxiangan
+Date: 2017/3/9
+]]
+
+
+include_once("./abstract/base.page")
+include_once("./wiki_module.page")
+
+local wiki_module = inherit(models.abstract.base, gettable("models.wiki_module"))
+wiki_module.db_name = "wiki_module"
+
+
+function wiki_module:ctor()
+	self:addfield("userId", "number")
+	self:addfield("moduleId", "number")
+end
+
+
+function wiki_module:api_getByUserId(params) 
+	if not params.userId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local skip, limit = util:pagination(params)	
+
+	self:db():count({['+userId']={params.userId}},resume)
+	local err, total = yield()
+
+	local wikiModuleDB = models.wiki_module:new()
+
+	self:db():find({['+userId']={params.userId, skip=skip, limit=limit}},resume)
+	local err, moduleList = yield()
+	
+	for _, value in pairs(moduleList) do
+		value.moduleInfo = wikiModuleDB:api_getById({moduleId=value._id}).data
+	end		
+
+	return errors:wrap(nil, {total=total, moduleList=moduleList})
+end
+
