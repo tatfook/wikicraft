@@ -21,15 +21,10 @@ define([
         $scope.nextStepDisabled = !$scope.website.name;
 
         $scope.nextStep = function () {
-            console.log($scope.step);
             $scope.errMsg = "";
             if ($scope.step == 1) {
                 if (!$scope.website.name) {
                     $scope.errMsg = "站点名为必填字段";
-                    return;
-                }
-                if ($scope.websiteNameErrMsg || $scope.websiteUrlErrMsg) {
-                    $scope.errMsg = "请正确填写相关信息";
                     return;
                 }
 
@@ -38,12 +33,10 @@ define([
                     sitename: $scope.website.name
                 }, function (data) {
                     if (data && $scope.website._id != data._id) {
-                        $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
+                        $scope.errMsg = $scope.website.name + "已存在，请换个名字";
                         $scope.nextStepDisabled = true;
                     } else {
                         $scope.websiteNameErrMsg = "";
-                        //$scope.nextStepDisabled = $scope.websiteDomainErrMsg;
-                        //$scope.nextStepDisabled || $scope.step++;
                         $scope.nextStepDisabled = false;
                         $scope.step++;
                     }
@@ -63,8 +56,6 @@ define([
                     $scope.errMsg = "请选择模板样式";
                     return ;
                 }
-                //createWebsiteRequest();
-                //return;
             } else if ($scope.step == 6) {
             } else {
                 createWebsiteRequest();
@@ -121,10 +112,10 @@ define([
             $scope.website.userId = $scope.user._id;
             $scope.website.username = $scope.user.username;
 
-            var url = config.apiUrlPrefix + "website";
-
-            util.http('PUT', url, $scope.website, function (data) {
-                $scope.step++;
+            util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
+                require(['controller/websiteController'], function (websiteHtmlContent) {
+                    util.html('#userCenterSubPage', websiteHtmlContent);
+                });
             });
         }
 
@@ -133,6 +124,7 @@ define([
         }
 
         $scope.selectCategory = function (category) {
+            $scope.category = category;
             $scope.templates = category.templates;
             $scope.styles = category.templates[0].styles;
             $scope.website.categoryId = category._id;
@@ -145,22 +137,20 @@ define([
         }
 
         $scope.selectTemplate = function (template) {
+            $scope.template = template;
             $scope.styles = template.styles;
             $scope.website.templateId = template._id;
             $scope.website.templateName = template.name;
             $scope.website.styleId = $scope.styles[0]._id;
             $scope.website.styleName = $scope.styles[0].name;
             $scope.nextStepDisabled = false;
-            $(".effect-select .btn.active").removeClass("active");
-            $(event.target).addClass("active");
         }
 
         $scope.selectStyle = function (style) {
+            $scope.style = style;
             $scope.website.styleId = style._id;
             $scope.website.styleName = style.name;
             $scope.nextStepDisabled = false;
-            $(".model-select .btn.active").removeClass("active");
-            $(event.target).addClass("active");
         }
 
         $scope.addTag = function (tagName) {
@@ -182,8 +172,6 @@ define([
 
         $scope.checkWebsiteName = function () {
             if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
-                $scope.nextStepDisabled = $scope.websiteDomainErrMsg;
-                $scope.websiteNameErrMsg = "";
                 return;
             }
 
@@ -221,7 +209,7 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
-            window.location.href = '/' + websiteName;
+            util.goUserSite('/' + $scope.user.username + '/' + $scope.website.name + '/index');
         }
     }];
 

@@ -132,6 +132,7 @@
     .congratulation a{
         color: #3977AD;
     }
+
 </style>
 
 <div ng-controller="newWebsiteController">
@@ -152,7 +153,7 @@
                                 <input id="webName" ng-change="checkWebsiteName()" ng-model="website.name" type="text" class="form-control">
                             </div>
                             <div class="col-sm-5">
-                                <p class="info">为你的网站起个名字吧，这个名字将用来称呼你的网站。</p>
+                                <p style="color: red;">{{errMsg}}</p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -210,7 +211,7 @@
                                     <img ng-src="{{template.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                                     <div class="col-md-12 btn-group">
                                         <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
-                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)">应用</div>
+                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateId == template._id ? 'active' : ''">应用</div>
                                     </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
@@ -225,7 +226,7 @@
                             <img ng-src="{{ style.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                             <div class="col-md-12 btn-group">
                                 <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style)">预览</div>
-                                <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)">应用</div>
+                                <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)" ng-class="website.styleId == style._id ? 'active' : ''">应用</div>
                             </div>
                             <span class="label">{{style.name}}</span>
                         </div>
@@ -234,35 +235,35 @@
                 <div ng-show="step == 6" class="confirm-msg">
                     <h4>信息确认：</h4>
                     <div class="col-sm-12">
-                        站点名称：<span> MY网站</span>
+                        站点名称：<span>{{website.name}}</span>
                     </div>
                     <div class="col-sm-12">
-                        网站介绍：<span> 作者对网站的简介</span>
+                        网站介绍：<span>{{website.desc}}</span>
                     </div>
                     <div class="col-sm-12">
-                        URL：<span> user.wikicraft.cn</span>
+                        URL：<span>{{'/' + user.username + '/' + website.name + '/index'}}</span>
                     </div>
                     <div class="col-sm-12">
-                        标签：<span> #游戏#、#摄影#</span>
+                        标签：<span>{{website.tags}}</span>
                     </div>
                     <div class="col-sm-6">
                         功能模板：
                         <div class="label-img">
-                            <img ng-src="{{imgsPath + 'wiki_works.jpg'}}" alt="">
-                            <div class="label">3D</div>
+                            <img ng-src="{{website.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <div class="label">{{website.templateName}}</div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         美术模板：
                         <div class="label-img">
-                            <img ng-src="{{imgsPath + 'wiki_works.jpg'}}" alt="">
-                            <div class="label">空灵</div>
+                            <img ng-src="{{style.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <div class="label">{{website.styleName}}</div>
                         </div>
                     </div>
                 </div>
                 <div ng-show="step == 7" class="congratulation">
-                    <h4>恭喜你！成功创建了 WyWibsite 网站。 </h4>
-                    <h4>可以通过<a href="user.wikicraft.cn" target="_blank">user.wikicraft.cn</a>来进行访问、编辑。</h4>
+                    <h4>恭喜你！成功创建了 {{website.name}} 网站。 </h4>
+                    <h4>可以通过<a ng-click="goWebsiteIndexPage()" target="_blank">{{'/' + user.username + '/' + website.name + '/index'}}</a>来进行访问、编辑。</h4>
                 </div>
             </div>
             <div class="step-footer">
