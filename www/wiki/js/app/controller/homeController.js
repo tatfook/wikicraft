@@ -10,8 +10,6 @@ define([
 ], function (app, util, storage, htmlContent) {
     // 动态加载
     app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', 'Message', function ($scope, $rootScope, $state, $auth, Account, Message) {
-        $scope.isLogin = false; // false：注册  true：登录
-
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
@@ -41,9 +39,6 @@ define([
             util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount', filterType:'personal'}, function (data) {
                 $scope.personalSiteObj = data;
             });
-
-            //$scope.getWorksList();
-            //$scope.getUserList();
         }
 
         // 注册

@@ -59,7 +59,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 this.user = user;
                 console.log(user);
                 initGithub(user);
-
+                
                 this.send("onUserProfile", this.user);
                 storage.localStorageSetItem("userinfo", this.user);
             },
