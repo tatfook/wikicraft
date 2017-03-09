@@ -21,9 +21,10 @@
     .preview-zone .preview {
         width: 130px;
         height: 130px;
-        border-radius: 100%;
+        border-radius: 50%;
         object-fit: cover;
         margin: 0 auto 20px;
+        overflow: hidden;
     }
 
     .preview-zone .change-profile {
@@ -44,6 +45,9 @@
     .tab-content .img-text-box {
         width: 90%;
         margin: 0 auto;
+    }
+    .tab-content .img-text-box .col-sm-12{
+        min-height:325px;
     }
 
     .img-text.col-md-6 {
@@ -162,7 +166,7 @@
         <div class="panel-body">
             <div class="col-md-3 preview-zone">
                 <div class="preview">
-                    <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_header.png'}}" alt=""
+                    <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_photo.jpg'}}" alt=""
                          style="width: 100%">
                 </div>
                 <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)"
