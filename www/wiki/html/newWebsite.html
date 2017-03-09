@@ -69,9 +69,19 @@
     .website-model .btn-group{
         background-color: #F9F9F9;
         box-shadow: 0 1px 3px 0 rgba(44,62,80,.35);
+        padding:0;
     }
     .website-model .btn-group .btn-lg{
         font-size: 16px;
+        border-radius: 0;
+        margin:0;
+    }
+    .website-model .btn-group .btn-lg.active{
+        background-color: #3977AD;
+        color: #FFF;
+    }
+    .website-model img{
+        width:100%;
     }
     .model-select .nav-tabs{
         border-bottom: none;
@@ -147,7 +157,7 @@
                         </div>
                         <div class="form-group">
                             <label for="webIntro" class="control-label col-sm-2">网站介绍</label>
-                            <div class="col-sm-4">
+                            <div class="col-sm-5">
                                 <textarea id="webIntro" ng-model="website.desc" rows="6"></textarea>
                             </div>
                         </div>
@@ -195,7 +205,7 @@
 
                         <!-- Tab panes -->
                         <div class="tab-content website-model col-sm-10">
-                            <div role="tabpanel" class="tab-pane active" id="personal-web">
+                            <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
                                 <div class="col-sm-5" ng-repeat="template in templates">
                                     <img ng-src="{{template.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                                     <div class="col-md-12 btn-group">

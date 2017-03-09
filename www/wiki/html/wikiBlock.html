@@ -46,8 +46,9 @@
         max-height: 140px;
         overflow: hidden;
     }
-    .wikiblock-tab .img-text h4{
-        line-height:34px;
+
+    .wikiblock-tab .img-text h4 {
+        line-height: 34px;
     }
 
     .wikiblock-tab .img-text .col-md-12, .tab-content .img-text .col-md-4 {
@@ -59,11 +60,13 @@
         margin-bottom: 0;
         line-height: 25px;
     }
+
     .wikiblock-tab .img-text p.info {
         line-height: 35px;
     }
-    .wikiblock-tab .img-text .glyphicon{
-        line-height:35px;
+
+    .wikiblock-tab .img-text .glyphicon {
+        line-height: 35px;
         font-size: 20px;
     }
 
@@ -83,9 +86,13 @@
         font-weight: normal;
         color: #999;
     }
-
     .img-text .col-md-6 {
         padding: 0;
+    }
+    .wiki-searchbar>span{
+        position: absolute;
+        right: 25px;
+        top: 10px;
     }
 </style>
 <div>
@@ -100,8 +107,9 @@
                 <form role="form">
                     <div class="form-group clearfix">
                         <label class="control-label sr-only">模块名称</label>
-                        <div class="col-xs-4 col-xs-offset-4">
-                            <input class="form-control">
+                        <div class="col-xs-4 col-xs-offset-4 wiki-searchbar">
+                            <input type="text" class="form-control" placeholder="">
+                            <span class="glyphicon glyphicon-search text-muted"></span>
                         </div>
                     </div>
                 </form>
@@ -127,27 +135,14 @@
                     <!-- Tab panes -->
                     <div class="tab-content col-md-12 wikiblock-tab">
                         <div role="tabpanel" class="tab-pane active" id="hot">
-
-                            <!--<div style="overflow-y: auto; height: 400px">-->
-                                <!--<div ng-repeat="wikiBlock in wikiBlockList">-->
-                                    <!--<div style="margin: 5px; border: 1px solid silver; padding: 5px;">-->
-                                        <!--<img ng-src="{{wikiBlock.logoUrl || imgsPath + 'test.jpg'}}" class="img-responsive">-->
-                                        <!--<div>-->
-                                            <!--<h4>{{'名称：' + wikiBlock.name}}</h4>-->
-                                            <!--<p>{{'描述：' + wikiBlock.desc}}</p>-->
-                                        <!--</div>-->
-                                        <!--<div>-->
-                                            <!--<button class="btn btn-default" >使用</button>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-
                             <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
                                 <img ng-src="{{site.logoUrl || (imgsPath + 'works.jpg')}}" alt="" class="pull-left">
                                 <div class="text">
-                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a></h4>
-                                    <p class="info">热度：1025 <span class="pull-right glyphicon glyphicon-star text-danger"></span>
+                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right"
+                                                                             ng-click="selectWikiBlock(wikiBlock)">添加</a>
+                                    </h4>
+                                    <p class="info">热度：1025 <span
+                                            class="pull-right glyphicon glyphicon-star text-danger"></span>
                                     </p>
                                     <p>{{wikiBlock.desc}}</p>
                                 </div>
