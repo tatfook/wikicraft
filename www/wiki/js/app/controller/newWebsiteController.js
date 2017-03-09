@@ -162,12 +162,16 @@ define([
             $scope.website.styleId = $scope.styles[0]._id;
             $scope.website.styleName = $scope.styles[0].name;
             $scope.nextStepDisabled = false;
+            $(".effect-select .btn.active").removeClass("active");
+            $(event.target).addClass("active");
         }
 
         $scope.selectStyle = function (style) {
             $scope.website.styleId = style._id;
             $scope.website.styleName = style.name;
             $scope.nextStepDisabled = false;
+            $(".model-select .btn.active").removeClass("active");
+            $(event.target).addClass("active");
         }
 
         $scope.addTag = function (tagName) {
