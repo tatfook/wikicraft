@@ -230,3 +230,29 @@ body,
 .wiki-toolbar .wiki-btn{
     padding: 7px 25px;
 }
+
+@media (max-width: 1200px) {
+    .wiki-toolbar{
+        padding:15px 0;
+    }
+    .wiki-toolbar .btn-group:first-child{
+        margin-left: 0;
+    }
+    .wiki-toolbar .btn-default{
+        border: 1px solid #DCDCDC;
+        padding: 5px 5px;
+    }
+    .wiki-toolbar .btn-default img{
+        width: 20px;
+    }
+    .wiki-toolbar .wiki-btn{
+        padding: 5px 10px;
+    }
+    .wiki-toolbar .wiki-btn img{
+        width:18px;
+    }
+    .wiki-toolbar .btn-link{
+        width:300px;
+        padding:6.5px 12px;
+    }
+}

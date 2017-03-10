@@ -111,14 +111,19 @@
         line-height: 50px;
         text-align: center;
     }
+    .web-message a{
+        cursor: default;
+    }
 
     .web-message {
         padding: 40px 0;
         box-shadow: 0 2px 5px rgba(44, 62, 80, .35);
     }
-
     .web-message span {
         margin: 0 15px;
+    }
+    .web-message a:focus,.web-message a:hover{
+        color: #666;
     }
 
     .paracraft {
@@ -279,18 +284,18 @@
         <div class="container">
             <div class="col-xs-4">
                 <div class="icon-box">
-                    <a href="#"><img ng-src='{{imgsPath+"icon/computer.png"}}' alt="网站数量"></a>
+                    <a><img ng-src='{{imgsPath+"icon/computer.png"}}' alt="网站数量"></a>
                 </div>
-                <a href="#">
+                <a>
                     <span>网站数量</span>
                     <span>{{wikicraft.siteCount}}</span>
                 </a>
             </div>
             <div class="col-xs-4">
                 <div class="icon-box">
-                    <a href="#"><img ng-src='{{imgsPath+"icon/user.png"}}' alt="名人数量"></a>
+                    <a><img ng-src='{{imgsPath+"icon/user.png"}}' alt="名人数量"></a>
                 </div>
-                <a href="#">
+                <a>
                     <span>名人数量</span>
                     <span>{{wikicraft.userCount}}</span>
                 </a>
@@ -299,7 +304,7 @@
                 <div class="icon-box">
                     <a href="#"><img ng-src='{{imgsPath+"icon/update.png"}}' alt="本周更新"></a>
                 </div>
-                <a href="#">
+                <a>
                     <span>本周更新</span>
                     <span>{{wikicraft.renewalCount}}</span>
                 </a>
