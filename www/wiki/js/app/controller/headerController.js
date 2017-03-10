@@ -124,5 +124,9 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             console.log("isAuthenticated");
         });
+
+        $('.nav-tabs > li > a').hover(function() {
+            $(this).tab('show');
+        });
     }]);
 });

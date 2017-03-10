@@ -41,6 +41,79 @@
 
     /*账户安全*/
     /*我的动态*/
+    .tab-content .status-row{
+        padding:0;
+        border-bottom: 1px solid #DCDCDC;
+        margin-bottom: 15px;
+    }
+    .tab-content .status-row:last-child{
+        border-bottom: none;
+    }
+    .tab-content .status-row .col-sm-12{
+        height: 160px;
+        padding-left: 50px;
+        line-height: 130px;
+    }
+    .tab-content .status-row .glyphicon{
+        width: 35px;
+        height: 35px;
+        border: 3px solid;
+        text-align: center;
+        line-height: 29px;
+        border-radius: 50%;
+        font-size: 20px;
+        margin-right: 10px;
+    }
+    .tab-content .status-row .inline-img{
+        width:40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 50%;
+    }
+    .tab-content .collect-row{
+        border-top: 1px solid #DCDCDC;
+        padding: 40px 40px 40px 80px;
+    }
+    .tab-content .collect-row:first-child{
+        padding-top:0;
+        border-top: none;
+    }
+    .collect-row p{
+        font-size: 16px;
+    }
+    .collect-row img{
+        width: 100px;
+        height:100px;
+        object-fit: cover;
+        margin-right: 20px;
+    }
+    .myworks-row{
+        padding:30px 30px 30px 60px;
+        border-top:1px solid #DCDCDC;
+    }
+    .myworks-row:first-child{
+        border-top: none;
+        padding-top: 0;
+    }
+    .myworks-row img{
+        width:100px;
+        height:100px;
+        margin-left: 50px ;
+        object-fit: cover;
+    }
+    .myworks-row p{
+        font-size: 16px;
+        line-height: 40px;;
+    }
+    .myworks-row .inline-img{
+        width:40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 50%;
+        margin-left:0;
+    }
     /*我的收藏*/
     .tab-content .img-text-box {
         width: 90%;
@@ -317,8 +390,96 @@
     <!--我的动态-->
     <div ng-show="showItem == 'myTrends'" class="col-md-10 main-content">
         <div role="tabpanel col-md-12">
-            <div class="panel-heading">数据源</div>
-            <div class="panel-body">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#wiki_organize" aria-controls="wiki_organize" role="tab" data-toggle="tab">组织</a>
+                </li>
+                <li role="presentation">
+                    <a href="#wiki_collect" aria-controls="wiki_collect" role="tab" data-toggle="tab">收藏</a>
+                </li>
+                <li role="presentation">
+                    <a href="#wiki_myworks" aria-controls="wiki_myworks" role="tab" data-toggle="tab">我的作品</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active col-sm-12" id="wiki_organize">
+                    <div class="status-row col-sm-12">
+                        <p class="pull-right info">2017-03-10 15:27</p>
+                        <div class="col-sm-12">
+                            <span class="glyphicon glyphicon-ok status text-success"></span>您申请加入#组织名#的申请被通过
+                        </div>
+                    </div>
+                    <div class="status-row col-sm-12">
+                        <p class="pull-right info">2017-03-10 15:27</p>
+                        <div class="col-sm-12">
+                            <span class="glyphicon glyphicon-remove status text-danger"></span>您申请加入#组织名#的申请被拒绝
+                        </div>
+                    </div>
+                    <div class="status-row col-sm-12">
+                        <p class="pull-right info">2017-03-10 15:27</p>
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img">Lixizhi申请加入#组织名#。 <a href="#">[通过]</a> <a
+                                href="#" class="text-muted">[拒绝]</a>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="wiki_collect">
+                    <div class="collect-row col-sm-12">
+                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
+                        <p class="pull-left">你收藏的#作品名#更新了。</p>
+                        <p class="pull-right info">2017-03-10 15:57</p>
+                    </div>
+                    <div class="collect-row col-sm-12">
+                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
+                        <p class="pull-left">你收藏的#作品名#更新了。</p>
+                        <p class="pull-right info">2017-03-10 15:57</p>
+                    </div>
+                    <div class="collect-row col-sm-12">
+                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
+                        <p class="pull-left">你收藏的#作品名#更新了。</p>
+                        <p class="pull-right info">2017-03-10 15:57</p>
+                    </div>
+                    <div class="collect-row col-sm-12">
+                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
+                        <p class="pull-left">你收藏的#作品名#更新了。</p>
+                        <p class="pull-right info">2017-03-10 15:57</p>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="wiki_myworks">
+                    <div class="myworks-row col-sm-12">
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img pull-left" alt="">
+                            <p class="pull-left">Lixizhi收藏了你的#myWebsite#。</p>
+                            <p class="info pull-right">2017-03-10 16:12</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
+                        </div>
+                    </div>
+                    <div class="myworks-row col-sm-12">
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img pull-left" alt="">
+                            <p class="pull-left">Lixizhi收藏了你的#myWebsite#。</p>
+                            <p class="info pull-right">2017-03-10 16:12</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
+                        </div>
+                    </div>
+                    <div class="myworks-row col-sm-12">
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img pull-left" alt="">
+                            <p class="pull-left">Lixizhi收藏了你的#myWebsite#。</p>
+                            <p class="info pull-right">2017-03-10 16:12</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
