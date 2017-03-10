@@ -265,6 +265,16 @@ define(['app',
         // 邀请注册
         $scope.clickInvite = function () {
             $scope.showItem = 'invite';
+
+            $scope.inviteFriend = function () {
+                if (!$scope.friendMail) {
+                    Message.info("请正确填写好友邮箱地址!!!");
+                    return ;
+                }
+                util.post(config.apiUrlPrefix + 'user/inviteFriend',{userId:$scope.user._id,username:$scope.user.username,friendMail:$scope.friendMail}, function () {
+                   Message.info("邀请好友邮件已发送^-^");
+                });
+            }
         }
    }]);
 

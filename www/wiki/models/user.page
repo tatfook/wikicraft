@@ -5,7 +5,6 @@ Author: wuxiangan
 Date: 2016/10/21
 ]]
 
--- NPL.load("(gl)script/ide/System/os/GetUrl.lua")
 
 include_once("./abstract/base.page")
 include_once("./website.page")
@@ -39,6 +38,33 @@ function user:ctor()
 	self:addfield("fansCount", "number")  -- 粉丝数量
 	self:addfield("websiteCount", "number") -- 作品数量
 end
+
+-- 发送邀请邮件
+function user:api_inviteFriend(params) 
+	if (not params.userId) or (not params.friendMail) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local par = {}
+	-- par.to = params.friendMail
+	par.to = "765485868@qq.com"
+	par.subject = "wikicraft好友邀请"
+	par.body = [[
+		<div class="main-content">
+			<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
+			<p>wikicraft 是一款强大的网站构建平台。</p>
+			<p>#username#的作品：</p>
+			<p><a href="#">作品链接</a></p>
+			<p><a href="#">作品链接</a></p>
+			<div class="btn">点击注册</div>
+		</div>
+	]]
+	
+	util:sendEmail(par)
+	
+	return errors:wrap(nil)
+end
+
 
 function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
@@ -175,7 +201,7 @@ function user:api_setemail(params)
 	par.to = "765485868@qq.com"
 	par.subject = "wikicraft email confirm"
 	par.body = "<a href='localhost:8099/wiki/userFavoriteDB'>注册确认</a>"
-	util:SendEmail(par)
+	util:sendEmail(par)
 	return "email"
 	--[[
 	if (not params._id) or (not params.email) then

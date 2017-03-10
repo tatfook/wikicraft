@@ -610,10 +610,10 @@
                 <div class="form-group">
                     <label for="email" class="control-label col-sm-2">好友email</label>
                     <div class="col-sm-4">
-                        <input type="email" class="form-control">
+                        <input type="email" ng-model="friendMail" class="form-control">
                     </div>
                     <div class="col-sm-3">
-                        <div class="btn btn-primary">邀 请</div>
+                        <div ng-click="inviteFriend()" class="btn btn-primary">邀 请</div>
                     </div>
                 </div>
             </form>
