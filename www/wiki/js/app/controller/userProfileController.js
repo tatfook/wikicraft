@@ -8,7 +8,7 @@ define(['app',
     'text!html/userProfile.html',
     'cropper',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('testController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
+    app.registerController('userProfileController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         $scope.showItem = 'myProfile';
@@ -266,22 +266,7 @@ define(['app',
         $scope.clickInvite = function () {
             $scope.showItem = 'invite';
         }
-
-        // data source
-        $scope.clickMyDataSource = function () {
-            $scope.githubDS = $scope.user.githubDS;
-        }
-
-        /*
-        $scope.githubDSChange = function () {
-            if ($scope.githubDS) {
-                Account.linkGithub();
-            } else {
-                Account.unlinkGithub();
-            }
-        }
-        */
-    }]);
+   }]);
 
     return htmlContent;
 });

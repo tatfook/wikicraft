@@ -15,6 +15,7 @@ wiki_module.db_name = "wiki_module"
 function wiki_module:ctor()
 	self:addfield("name", "string")
 	self:addfield("classifyName", "string")
+	self:addfield("content", "string")
 	self:addfield("url", "string")
 	self:addfield("logo", "string")
 	self:addfield("desc", "string")

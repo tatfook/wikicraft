@@ -11,7 +11,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         // 用户收藏
         $scope.getFavoriteList = function() {
             util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
-                console.log(data);
+                //console.log(data);
                 $scope.favoriteWebsiteObj = data;
             });
             
@@ -101,26 +101,13 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.go("home");
         };
 
-        $scope.goUserCenterPage = function () {
-            util.go("userCenter");
-        };
-
-        $scope.goWebsitePage = function () {
-            storage.sessionStorageSetItem('userCenterContentType', 'websiteManager');
-            util.go("userCenter");
-            //util.go("website");
-        };
-
-        $scope.goGitVersionPage = function () {
-            util.go("gitVersion");
-        };
-
-        $scope.goPersonalPage = function () {
-            if (!$scope.isLogin) {
-                Message.info("请先登录!!!");
-                return;
+        $scope.goUserCenterPage = function (contentType) {
+            if (window.location.pathname == '/wiki/userCenter') {
+                $rootScope.$broadcast('userCenterContentType', contentType);
+            } else {
+                storage.sessionStorageSetItem('userCenterContentType', contentType);
+                util.go("userCenter");
             }
-            util.goUserSite('/' + $scope.user.username + '/' + $scope.user.username);
         };
 
         $scope.logout = function () {

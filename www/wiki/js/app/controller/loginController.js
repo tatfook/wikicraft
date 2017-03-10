@@ -31,7 +31,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                     Account.githubAuthenticate();
                 }
                 */
-                util.go('website');
+                util.go('home');
             }, function (error) {
                 $scope.errMsg = error.message;
                 $("#total-err").removeClass("visible-hidden");

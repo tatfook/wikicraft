@@ -8,8 +8,8 @@ define(['app',
     'text!html/userCenter.html',
     'controller/userProfileController',
     'controller/websiteController',
-    'controller/editWebsiteController',
-], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, editWebsiteHtmlContent) {
+    'controller/dataSourceController',
+], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
@@ -38,15 +38,20 @@ define(['app',
         function init() {
             $scope.contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
             storage.sessionStorageRemoveItem('userCenterContentType');
-            console.log($scope.contentType);
+            //console.log($scope.contentType);
             $scope.selectContentType($scope.contentType);
             //$scope.$apply();
+
+            $scope.$on('userCenterContentType', function (event, contentType) {
+                $scope.selectContentType(contentType);
+            })
         }
 
         // 文档加载完成
         $scope.$watch('$viewContentLoaded', init);
         
         $scope.selectContentType = function (contentType) {
+            //console.log(contentType);
             $scope.contentType = contentType;
 
             if (contentType == 'userProfile') {
@@ -55,10 +60,11 @@ define(['app',
             } else if (contentType == 'websiteManager') {
                 $scope.showItem = 'myWebsite';
                 util.html('#userCenterSubPage', websiteHtmlContent, $scope);
-            } else if (contentType == 'myVIP') {
+            } else if (contentType == 'VIP') {
                 $scope.showItem = 'myVIP';
             } else if (contentType == 'dataSource') {
                 $scope.showItem = 'dataSource';
+                util.html('#userCenterSubPage', dataSourceHtmlContent, $scope);
             }
         }
 
@@ -66,13 +72,13 @@ define(['app',
             return $scope.contentType == contentType ? "" : 'sr-only';
         }
 
-        
         $scope.clickUserCenterItem = function (item) {
             $scope.showItem = item.flag;
-            console.log(item);
+            //console.log(item);
             if (item.flag == 'myWebsite') {
                 util.html('#userCenterSubPage', websiteHtmlContent, $scope);
             }
+
             $rootScope.$broadcast('userCenterItem', item.flag);
         }
 

@@ -244,10 +244,10 @@
                                     <p><a href="#" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserCenterPage()">个人中心</a></li>
-                                    <li><a href="#">VIP</a></li>
-                                    <li><a ng-click="goWebsitePage()">网站管理</a></li>
-                                    <li><a ng-click="goGitVersionPage()">数据源</a></li>
+                                    <li><a ng-click="goUserCenterPage('userProfile')">个人中心</a></li>
+                                    <li><a ng-click="goUserCenterPage('VIP')">VIP</a></li>
+                                    <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
+                                    <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
                                     <a ng-click="logout()" class="pull-right">退出登录</a>

@@ -8,7 +8,7 @@ define([
     'helper/storage',
     'text!html/newWebsite.html',
 ], function (app, util, storage, htmlContent) {
-    var controller = ['$scope', '$sce', 'Account', function ($scope, $sce, Account) {
+    var controller = ['$rootScope','$scope', '$sce', 'Account', function ($rootScope, $scope, $sce, Account) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
         $scope.websiteDomainErrMsg = "";
@@ -113,9 +113,7 @@ define([
             $scope.website.username = $scope.user.username;
 
             util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
-                require(['controller/websiteController'], function (websiteHtmlContent) {
-                    util.html('#userCenterSubPage', websiteHtmlContent);
-                });
+                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             });
         }
 

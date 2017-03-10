@@ -10,7 +10,7 @@ define([
     'controller/newWebsiteController',
     'controller/editWebsiteController',
 ], function (app, util, storage, htmlContent, newWebsiteHtmlContent, editWebsiteHtmlContent) {
-    app.registerController('websiteController', ['$scope', '$state', 'Account', function ($scope, $state, Account) {
+    app.registerController('websiteController', ['$rootScope', '$scope', '$state', 'Account', function ($rootScope, $scope, $state, Account) {
         console.log("websiteController");
         $scope.websites = [];
 
@@ -22,6 +22,9 @@ define([
         function init() {
             // 获取项目列表
             getUserSiteList();
+
+            $scope.$on('userCenterItem', function (event, item) {
+            });
         }
 
         //  创建网站

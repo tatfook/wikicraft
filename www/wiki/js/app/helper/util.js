@@ -48,7 +48,7 @@ define(['jquery'], function ($) {
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
-            sitename = undefined;
+            username = undefined;
         }
 
         if (username) {

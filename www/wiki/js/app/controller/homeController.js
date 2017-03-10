@@ -87,7 +87,7 @@ define([
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
                 //window.location.href = '/wiki/website';
-                util.go('website');
+                util.go('home');
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
