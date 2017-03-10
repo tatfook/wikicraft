@@ -120,6 +120,36 @@
       <number name='token_expire'>360000</number>
      </table>
     </table>
+    <table name='qiankunew.com'>
+	 <table name='wiki'>
+      <table name='secrets'>
+        <!--token secret for this website-->
+        <string name='TOKEN_SECRET'>1234567890</string>
+        <!--OAuth 2.0-->
+        <string name='GITHUB_SECRET'>cf3ca47ea05649e868f377fd103eb113de1be417</string>
+      </table>
+      <table name='clientid'>
+        <string name='GITHUB_CLIENTID'>60516ce6357ada9725df</string>
+      </table>
+      <!--how many seconds to expire user token-->
+      <number name='token_expire'>360000</number>
+     </table>
+    </table>
+    <table name='keepwork.com'>
+	 <table name='wiki'>
+      <table name='secrets'>
+        <!--token secret for this website-->
+        <string name='TOKEN_SECRET'>1234567890</string>
+        <!--OAuth 2.0-->
+        <string name='GITHUB_SECRET'>1134a7f3be96538930692296ca64f30b342fcef9</string>
+      </table>
+      <table name='clientid'>
+        <string name='GITHUB_CLIENTID'>2219fe9cb6d105dd30fb</string>
+      </table>
+      <!--how many seconds to expire user token-->
+      <number name='token_expire'>360000</number>
+     </table>
+    </table>
     <table name='wikicraft.cn'>
     </table>
   </config>
