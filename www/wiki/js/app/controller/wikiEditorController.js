@@ -492,9 +492,9 @@ define([
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
                     size: 'lg'
-                }, function (result) {
-                    console.log(result);
-                    editor.replaceSelection('````\nwiki block sample\n```\n');
+                }, function (wikiBlock) {
+                    //console.log(result);
+                    editor.replaceSelection(wikiBlock.content);
                 }, function (result) {
                     console.log(result);
                 });
@@ -1198,6 +1198,7 @@ define([
                 setTimeout(function () {
                     var wikiEditorContainer = $('#wikiEditorContainer')[0];
                     var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                    console.log(wikiEditorContainer.offsetTop);
                     var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                     editor.setSize('auto', height);
                     $('#wikiEditorContainer').css('height', height);

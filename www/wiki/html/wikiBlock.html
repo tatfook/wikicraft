@@ -151,7 +151,7 @@
 </style>
 <div>
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="no()">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">WIKI模块</h4>
     </div>
 
@@ -162,8 +162,8 @@
                     <div class="form-group clearfix">
                         <label class="control-label sr-only">模块名称</label>
                         <div class="col-xs-4 col-xs-offset-4 wiki-searchbar">
-                            <input type="text" class="form-control" placeholder="">
-                            <span class="glyphicon glyphicon-search text-muted"></span>
+                            <input type="text" ng-model="moduleName" class="form-control" placeholder="模块名">
+                            <span ng-click="getByName()" class="glyphicon glyphicon-search text-muted"></span>
                         </div>
                     </div>
                 </form>
@@ -173,79 +173,37 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active">
-                            <a href="#hot" aria-controls="hot" role="tab" data-toggle="tab">热门</a>
+                            <a href="#wikiBlockListView" ng-click="getHot()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">热门</a>
                         </li>
                         <li role="presentation" class="dropdown">
                             <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents" aria-expanded="false">Mod分类 <span class="caret"></span></a>
                             <ul class="dropdown-menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
-                                <li><a href="#kinds" role="tab" data-toggle="tab" aria-controls="kinds" aria-expanded="true">全部</a></li>
-                                <li><a href="#kinds" role="tab" data-toggle="tab" aria-controls="kinds" aria-expanded="false">分类一</a></li>
-                                <li><a href="#kinds" role="tab" data-toggle="tab" aria-controls="kinds" aria-expanded="false">分类二</a></li>
+                                <li><a href="#wikiBlockListView" ng-click="getClassify()" role="tab" data-toggle="tab" aria-controls="wikiBlockListView" aria-expanded="true">全部</a></li>
+                                <li ng-repeat="classify in moduleClassifyList">
+                                    <a href="#wikiBlockListView" ng-click="getClassify(classify.name)" role="tab" data-toggle="tab" aria-controls="wikiBlockListView" aria-expanded="false">{{classify.name}}</a>
+                                </li>
                             </ul>
                         </li>
                         <li role="presentation">
-                            <a href="#rank" aria-controls="rank" role="tab" data-toggle="tab">排行榜</a>
+                            <a href="#wikiBlockListView" ng-click="getAll()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">排行榜</a>
                         </li>
                         <li role="presentation">
-                            <a href="#collection" aria-controls="collection" role="tab" data-toggle="tab">收藏</a>
+                            <a href="#wikiBlockListView" ng-click="getFavorite()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">收藏</a>
                         </li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content col-md-12 wikiblock-tab">
-                        <div role="tabpanel" class="tab-pane active" id="hot">
+                        <div role="tabpanel" class="tab-pane active" id="wikiBlockListView">
                             <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
-                                <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
+                                <img ng-src="{{wikiBlock.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
                                 <div class="text">
-                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right"
-                                                                             ng-click="selectWikiBlock(wikiBlock)">添加</a>
+                                    <h4>
+                                        <a href="#">{{wikiBlock.name}}</a>
+                                        <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a>
                                     </h4>
-                                    <p class="info">热度：1025 <span
-                                            class="pull-right glyphicon glyphicon-star text-danger"></span>
-                                    </p>
-                                    <p>{{wikiBlock.desc}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="kinds">
-                            <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
-                                <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
-                                <div class="text">
-                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right"
-                                                                             ng-click="selectWikiBlock(wikiBlock)">添加</a>
-                                    </h4>
-                                    <p class="info">热度：dddddddd1025 <span
-                                            class="pull-right glyphicon glyphicon-star text-danger"></span>
-                                    </p>
-                                    <p>{{wikiBlock.desc}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane rank-tab" id="rank">
-                            <h4>全部分类排行榜</h4>
-                            <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
-                                <span class="rank">1.</span>
-                                <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
-                                <div class="text">
-                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right"
-                                                                             ng-click="selectWikiBlock(wikiBlock)">添加</a>
-                                    </h4>
-                                    <p class="info">热度：1025 <span
-                                            class="pull-right glyphicon glyphicon-star text-danger"></span>
-                                    </p>
-                                    <p>{{wikiBlock.desc}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="collection">
-                            <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
-                                <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
-                                <div class="text">
-                                    <h4><a href="#">{{wikiBlock.name}}</a><a class="btn btn-primary pull-right"
-                                                                             ng-click="selectWikiBlock(wikiBlock)">添加</a>
-                                    </h4>
-                                    <p class="info">热度：1025 <span
-                                            class="pull-right glyphicon glyphicon-star text-danger"></span>
+                                    <p class="info">
+                                        热度：{{wikiBlock.useCount}} <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon glyphicon-star-empty text-danger"></span>
                                     </p>
                                     <p>{{wikiBlock.desc}}</p>
                                 </div>

@@ -11,31 +11,43 @@ include_once("./abstract/base.page")
 local wiki_module = inherit(models.abstract.base, gettable("models.wiki_module"))
 wiki_module.db_name = "wiki_module"
 
+-- 常量定义
+local WIKI_MODULE_FLAG_DEFAULT = 0
+local WIKI_MODULE_FLAG_HOT = 1
 
 function wiki_module:ctor()
 	self:addfield("name", "string")
 	self:addfield("classifyName", "string")
 	self:addfield("content", "string")
 	self:addfield("url", "string")
-	self:addfield("logo", "string")
+	self:addfield("logoUrl", "string")
 	self:addfield("desc", "string")
 	self:addfield("flag", "number") -- 0 官方推荐
-	self:addfield("useCount", "number")
+	self:addfield("useCount", "number")  -- 模块使用数量
+	self:addfield("favoriteCount", "number") -- 模块被收藏的数量
 end
 
+-- 创建wiki module 记录
+function wiki_module:api_create(params)
+	self:db();insertOne(nil, params, resume)
+	
+	return errors:wrap(yield())
+end
 
+-- 获取所有wiki module
 function wiki_module:api_get(params) 
 	local skip, limit = util:pagination(params)	
 	
-	self:db():count({['_id']={gt=-1}}, resume)
+	self:db():count({['-useCount']={gt=-1}}, resume)
 	local err, total = yield()
 
-	self:db():find({['_id']={gt=-1,skip=skip, limit=limit}},resume)
+	self:db():find({['-useCount']={gt=-1,skip=skip, limit=limit}},resume)
 	local err, moduleList = yield()
 	
 	return errors:wrap(nil,{total=total, moduleList=moduleList})
 end
 
+-- 获取单个wiki module by moduleId
 function wiki_module:api_getById(params) 
 	if not params.moduleId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -46,3 +58,66 @@ function wiki_module:api_getById(params)
 	return errors:wrap(yield())
 end
 
+-- 获取热门wiki
+function wiki_module:api_getHot(params) 
+	local skip, limit = util:pagination(params)	
+	
+	self:db():count({['+flag-useCount']={WIKI_MODULE_FLAG_HOT}}, resume)
+	local err, total = yield()
+
+	self:db():find({['+flag-useCount']={WIKI_MODULE_FLAG_HOT,skip=skip, limit=limit}},resume)
+	local err, moduleList = yield()
+	
+	return errors:wrap(nil,{total=total, moduleList=moduleList})
+end
+
+-- 获取分类wiki
+function wiki_module:api_getClassify(params) 
+	if not params.classifyName then
+		return self:api_get(params)
+	end
+
+	local skip, limit = util:pagination(params)	
+	
+	self:db():count({['+classifyName-useCount']={params.classifyName}}, resume)
+	local err, total = yield()
+
+	self:db():find({['+classifyName-useCount']={params.classifyName, skip=skip, limit=limit}}, resume)
+	local err, moduleList = yield()
+	
+	return errors:wrap(nil,{total=total, moduleList=moduleList})
+end
+
+-- 获取wiki module by name
+function wiki_module:api_getByName(params)
+	if not params.moduleName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local skip, limit = util:pagination(params)	
+	
+	self:db():count({['+name-useCount']={params.moduleName}}, resume)
+	local err, total = yield()
+
+	self:db():find({['+name-useCount']={params.moduleName, skip=skip, limit=limit}}, resume)
+	local err, moduleList = yield()
+	
+	return errors:wrap(nil,{total=total, moduleList=moduleList})
+end
+
+-- 增加使用计数
+function wiki_module:api_updateUseCount(params)
+	if not params.moduleId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)	
+	end
+	
+	local count = params.useCount or 0
+	local wikiModule = self:api_getById({moduleId=params.moduleId}).data
+	if not wikiModule then
+		return errors:wrap(nil)
+	end
+
+	self:db():updateOne({_id=moduleId}, {useCount=wikiModule.useCount+count}, resume)	
+	
+	return errors:wrap(yield())
+end
