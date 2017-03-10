@@ -7,13 +7,13 @@
         padding-top: 20px;
         padding-bottom: 20px;
     }
-    .step-content{
-        min-height: 485px;
-        padding: 65px 70px 0;
+    .step-content {
+        min-height: 480px;
+        padding: 25px 70px 0;
     }
-    .step-footer{
+    .step-footer {
         text-align: center;
-        margin-bottom: 80px;
+        margin-bottom: 25px;
     }
     .step-footer .btn-primary{
         padding: 9px 42px;
@@ -129,7 +129,7 @@
     .congratulation h4{
         font-weight: normal;
     }
-    .congratulation a{
+    .congratulation a {
         color: #3977AD;
     }
 
@@ -141,7 +141,7 @@
             新建网站
         </div>
         <div class="panel-body">
-            <div class="step-content">
+            <div class="step-content clearfix">
                 <div ng-show="step == 1">
                     <form class="form-horizontal" role="form">
                         <div class="form-group sr-only">
@@ -212,7 +212,7 @@
                                     <div class="col-md-12 btn-group">
                                         <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
                                         <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateId == template._id ? 'active' : ''">应用</div>
-                                    </div>
+                                        </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
                             </div>

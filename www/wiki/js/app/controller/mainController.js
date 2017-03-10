@@ -17,7 +17,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 $rootScope.frameFooterExist = true;
 
                 $rootScope.isLogin = Account.isAuthenticated();
-                
+
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
@@ -43,7 +43,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 $("#messageTipCloseId").click(function () {
                     Message.hide();
                 });
-                
+
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $scope.$on('$stateChangeStart', function (evt, toState, toParams, fromState, fromParams) {
                     // 如果需要阻止事件的完成
@@ -126,6 +126,14 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 initBaseInfo();
                 initView();
                 initContentInfo();
+                setTimeout(function () {
+                    var w = $("#__mainContent__");
+                    var headerHeight = w[0].offsetTop;
+                    var footerHeight = $("#_footer_")[0].clientHeight;
+                    var win = $(window);
+                    var minHeight = win.height() - headerHeight - footerHeight;
+                    w.css("min-height", minHeight);
+                }, 100);
             }
 
             init();

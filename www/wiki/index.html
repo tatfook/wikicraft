@@ -33,7 +33,7 @@
     </div>
 
     <!--页面主题内容-->
-    <div style="z-index: 1">
+    <div style="z-index: 1" id="__mainContent__">
         <!--官网内容体-->
         <div id="__WikiPageContentContainer__">
             <div id="SinglePageId" ng-show="IsRenderServerWikiContent">
@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div ng-show="frameFooterExist">
+    <div ng-show="frameFooterExist" id="_footer_">
         <div ng-include="'html/footer.html'"></div>
     </div>
 </div>
