@@ -127,14 +127,12 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 initBaseInfo();
                 initView();
                 initContentInfo();
-                setTimeout(function () {
-                    var w = $("#__mainContent__");
-                    var headerHeight = w[0].offsetTop;
-                    var footerHeight = $("#_footer_")[0].clientHeight;
-                    var win = $(window);
-                    var minHeight = win.height() - headerHeight - footerHeight;
-                    w.css("min-height", minHeight);
-                }, 100);
+                var winH=$(window).height();
+                var headerH=52;
+                var footerH=100;
+                var minH=winH-headerH-footerH;
+                var w = $("#__mainContent__");
+                w.css("min-height", minH);
             }
 
             init();
