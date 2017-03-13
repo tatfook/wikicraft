@@ -107,7 +107,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
                     username: urlObj.username,
                     sitename: urlObj.sitename,
-                    pagename: urlObj.pagename
+                    pagename: urlObj.pagename,
 					userId:$rootScope.user && $rootScope.user._id,
                 }, function (data) {
                     data = data || {};
