@@ -105,6 +105,9 @@ end
 
 <?npl
 
+-- 加载helper相关文件
+include_once(WIKI_ROOT .. 'helper/index.page')
+
 -- 解析URL
 function parseURL() 
 	local host = request:GetHost() or ""
@@ -132,9 +135,9 @@ function RenderServerWikiContent()
 		return 
 	end
 
-	log(sitename)
-	log(_pagename)
-	log(subpage)
+	--log(sitename)
+	--log(_pagename)
+	--log(subpage)
 	if sitename == nil or sitename == "wiki" or sitename == "api" then
 		if _pagename == "mod" then
 			include_once(WIKI_ROOT .. "mod/routes.page");
@@ -153,5 +156,6 @@ function RenderServerWikiContent()
 	end
 end
 
+-- 加载通用页
 include(WIKI_ROOT .. "index.page")
 ?>

@@ -1,0 +1,8 @@
+<?npl
+--[[
+Title: load helper file
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+include_once("wiki_module.page")

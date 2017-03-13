@@ -16,20 +16,24 @@ local WIKI_MODULE_FLAG_DEFAULT = 0
 local WIKI_MODULE_FLAG_HOT = 1
 
 function wiki_module:ctor()
-	self:addfield("name", "string")
-	self:addfield("classifyName", "string")
-	self:addfield("content", "string")
-	self:addfield("url", "string")
-	self:addfield("logoUrl", "string")
-	self:addfield("desc", "string")
-	self:addfield("flag", "number") -- 0 官方推荐
-	self:addfield("useCount", "number")  -- 模块使用数量
+	self:addfield("name", "string")          -- 模块名
+	self:addfield("classifyName", "string")  -- 分类名
+	self:addfield("content", "string")       -- 内容
+	self:addfield("wikiCmdName", "string")   -- 命令名  -- unique
+	self:addfield("logoUrl", "string")       -- logo url 
+	self:addfield("desc", "string")          -- 描述
+	self:addfield("flag", "number")          -- 0 官方推荐
+	self:addfield("useCount", "number")      -- 模块使用数量
 	self:addfield("favoriteCount", "number") -- 模块被收藏的数量
 end
 
 -- 创建wiki module 记录
 function wiki_module:api_create(params)
-	self:db();insertOne(nil, params, resume)
+	if not params.wikiCmdName then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db();insertOne({['+wikiCmdName'] = {params.wikiCmdName}}, params, resume)
 	
 	return errors:wrap(yield())
 end
