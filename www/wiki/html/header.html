@@ -290,8 +290,8 @@
                             </ol>
                         </li>
                         <li class="hidden-xs">
-                            <input type="text" class="form-control" placeholder="">
-                            <span class="glyphicon glyphicon-search text-muted"></span>
+                            <input type="text" class="form-control" ng-model="search" placeholder="">
+                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
@@ -394,9 +394,6 @@
                                     <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
                                         <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
                                     </li>
-                                    <li><a href="#" class="text-muted">个人网站《skldjd的网站》。</a></li>
-                                    <li><a href="#" class="text-muted">组织网站《skldjd的网站》。</a></li>
-                                    <li><a href="#" class="text-muted">参赛网站《3D作品大赛》。</a></li>
                                 </ul>
                                 <div class="dropdown-footer"><a href="#">查看更多></a></div>
                             </div>
@@ -406,12 +403,9 @@
                                aria-expanded="true">历史</a>
                             <ul class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
-                                    <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
-                                        <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
+                                    <li ng-repeat="x in visitHistoryList">
+                                        <a href="{{x.url}}" class="text-muted">{{x.websiteName}}</a>
                                     </li>
-                                    <li><a href="#" class="text-muted">个人网站《skldjd的网站》。</a></li>
-                                    <li><a href="#" class="text-muted">个人网站《skldjd的网站》。</a></li>
-                                    <li><a href="#" class="text-muted">个人网站《skldjd的网站》。</a></li>
                                 </ul>
                                 <div class="dropdown-footer"><a href="#">查看更多></a></div>
                             </ul>

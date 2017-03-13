@@ -425,20 +425,27 @@ function website:api_getSiteList(params)
 	local key = '';
 	local value = {};
 	-- 个人站点
-	if params.filterType == 'personal' then
+	if params.categoryId then
 		key = key .. '+categoryId'
-		value[#value+1] = 0 
+		value[#value+1] = tonumber(params.categoryId)
 	end
+	
+	if params.websiteName then
+		key = key .. '+name'
+		value[#value+1] = params.websiteName
+	end
+
 	if params.sortBy then 
 		key = key .. params.sortBy
 		value['gt'] = -1
 	end
-	local query = {}
-	if key ~= '' then 
-		query[key] = value
+
+	if key == '' then
+		key = key .. '_id'
+		value['gt'] = -1
 	end
-	--log(query)	
-	self:db():count(query, resume)
+
+	self:db():count({[key]=value}, resume)
 	local err, data = yield()
 	
 	if err then
@@ -446,10 +453,6 @@ function website:api_getSiteList(params)
 	end
 	local count = data or 0
 	
-	if key == '' then
-		key = key .. '_id'
-		value['gt'] = -1
-	end
 	value["skip"] = skip
 	value['limit'] = limit
 

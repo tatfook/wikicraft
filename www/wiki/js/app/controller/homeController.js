@@ -16,13 +16,13 @@ define([
 
         // 更多我的收藏
         $scope.goAllWorksList = function () {
-            storage.sessionStorageSetItem("siteshowType", 'all');
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType:'all'});
             util.go("siteshow");
         }
 
         // 更多收藏
         $scope.goAllPersonalList = function () {
-            storage.sessionStorageSetItem("siteshowType", 'personal');
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType:'personal'});
             util.go("siteshow");
         }
         

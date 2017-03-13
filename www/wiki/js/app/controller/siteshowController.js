@@ -7,17 +7,19 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
+        var siteshowParams = {siteshowType:'all'};
 
         function getSiteList() {
             var params = {pageSize:$scope.pageSize, page:$scope.currentPage,sortBy:'-favoriteCount'};
-
+            var url = config.apiUrlPrefix + 'website/getSiteList';
             // 个人站点
-            if ($scope.siteshowType == 'personal') {
-                params.filterType = 'personal';
+            if (siteshowParams.siteshowType == 'personal') {
+                params.categoryId = 0;
+            } else if (siteshowParams.siteshowType == 'search') {
+                params.websiteName = siteshowParams.websiteName;
             }
-            console.log($scope.siteshowType);
 
-            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', params, function (data) {
+            util.http("POST", url, params, function (data) {
                 $scope.siteObj = data;
                 $scope.totalItems = data.total;
             });
@@ -25,7 +27,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
 
         function init() {
             console.log('init siteshow controller');
-            $scope.siteshowType = storage.sessionStorageGetItem('siteshowType') || 'all';
+            siteshowParams = storage.sessionStorageGetItem('siteshowParams') || siteshowParams;
             getSiteList();
         }
 

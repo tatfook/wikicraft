@@ -366,7 +366,7 @@
                         <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
                     </a>
                     <div class="text clearfix">
-                        <h4><a class="title" href="#">{{site.name}}</a></h4>
+                        <h4><a class="title" ng-click="goUserSite(site)">{{site.name}}</a></h4>
                         <p>作者： <span>{{site.username}}</span></p>
                         <p class="pull-left info">
                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
@@ -388,7 +388,7 @@
                         <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
                     </a>
                     <div class="text clearfix">
-                        <h4><a class="title" href="#">{{site.name}}</a></h4>
+                        <h4><a class="title" ng-click="goUserSite(site)">{{site.name}}</a></h4>
                         <p>作者： <span>{{site.username}}</span></p>
                         <p class="pull-left info">
                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>

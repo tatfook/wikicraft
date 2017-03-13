@@ -8,6 +8,13 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
 
+        // 通过站点名搜索
+        $scope.searchWebsite = function () {
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType:'search', websiteName:$scope.search});
+            //window.location.reload(false);
+            util.go("siteshow");
+        }
+
         // 用户收藏
         $scope.getFavoriteList = function() {
             util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
