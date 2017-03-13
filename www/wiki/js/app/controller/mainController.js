@@ -108,6 +108,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     username: urlObj.username,
                     sitename: urlObj.sitename,
                     pagename: urlObj.pagename
+					userId:$rootScope.user && $rootScope.user._id,
                 }, function (data) {
                     data = data || {};
                     // 这三种基本信息根化，便于用户页内模块公用
