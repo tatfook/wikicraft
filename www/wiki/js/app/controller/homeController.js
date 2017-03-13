@@ -17,13 +17,13 @@ define([
         // 更多我的收藏
         $scope.goAllWorksList = function () {
             storage.sessionStorageSetItem("siteshowType", 'all');
-            $state.go("siteshow");
+            util.go("siteshow");
         }
 
         // 更多收藏
         $scope.goAllPersonalList = function () {
             storage.sessionStorageSetItem("siteshowType", 'personal');
-            $state.go("siteshow");
+            util.go("siteshow");
         }
         
         function init() {
