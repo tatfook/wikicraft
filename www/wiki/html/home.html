@@ -5,73 +5,73 @@
         font-size: 14px;
         font-weight: normal;
     }
-
     h4 a.title {
         font-size: 16px;
         color: #333;
         font-weight: bold;
     }
-
     h4 a.title:focus, h4 a.title:hover {
-        color: #3977ad;
+        color: #3977AD;
         text-decoration: none;
     }
-
     .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover, a:focus, a:hover {
-        color: #3977ad;
+        color: #3977AD;
         text-decoration: none;
     }
-
     .btn-primary {
-        background-color: #3977ad;
-        border: 1px solid #3977ad;
+        background-color: #3977AD;
+        border: 1px solid #3977AD;
         color: #FFF;
     }
-
     .btn-primary:active, .navbar-default .navbar-nav a.btn-primary:active {
         background-color: #2F6391;
         border: 1px solid #2F6391;
         color: #FFF;
     }
-
     .btn-primary:hover, .navbar-default .navbar-nav a.btn-primary:hover {
         background-color: #4187C2;
         border: 1px solid #4187C2;
         color: #FFF;
     }
-
     .btn-primary:focus, .navbar-default .navbar-nav a.btn-primary:focus {
         background-color: #2F6391;
         border: 1px solid #2F6391;
         color: #FFF;
     }
-
     .form-control {
         height: 40px;
     }
-
     .row {
         padding: 30px 0;
     }
-
     .row img {
         width: 100%;
     }
-
     .info {
         font-size: 12px;
         color: #666;
     }
-
     .visible-hidden {
         visibility: hidden;
     }
-
     .hover-slide:hover {
         transform: translate3d(0, -3px, 0);
         transition: all .2s linear;
     }
-
+    .web-info {
+        position: absolute;
+        bottom: -38px;
+        width: 100%;
+        height: 28px;
+        background-color: #FFF;
+        border-radius: 4px;
+        line-height: 27px;
+        color: #333;
+        padding-left: 12px;;
+    }
+    .banner .form-group {
+        position: relative;
+    }
     .banner {
         /*background-image: url(../imgs/wiki_banner.jpg);*/
         background-image: url(/wiki/assets/imgs/wiki_banner.jpg);
@@ -83,38 +83,32 @@
         color: #FFF;
         display: flex;
     }
-
     .banner .col-md-4 {
         padding-bottom: 170px;
     }
-
     .banner .col-md-3 {
         background-color: rgba(255, 255, 255, .5);
         padding: 55px 30px;
         box-shadow: 0px 4px 30px 0px rgba(19, 61, 112, .30);
     }
-
     .banner .btn-primary {
         margin-top: 60px;
     }
-
     .banner h1 {
         margin-bottom: 50px;
     }
-
     .icon-box {
         width: 50px;
         height: 50px;
         display: inline-block;
-        background-color: #3977ad;
+        background-color: #3977AD;
         border-radius: 50%;
         line-height: 50px;
         text-align: center;
     }
-    .web-message a{
+    .web-message a {
         cursor: default;
     }
-
     .web-message {
         padding: 40px 0;
         box-shadow: 0 2px 5px rgba(44, 62, 80, .35);
@@ -122,96 +116,76 @@
     .web-message span {
         margin: 0 15px;
     }
-    .web-message a:focus,.web-message a:hover{
+    .web-message a:focus, .web-message a:hover {
         color: #666;
     }
-
     .paracraft {
         display: flex;
         align-items: center;
     }
-
     .paracraft h4 {
         margin-bottom: 0;
         line-height: 60px;
     }
-
     .paracraft .col-md-3 {
         z-index: 1;
     }
-
     .paracraft .col-md-3 img {
         max-width: 100%;
         width: 370px;
         box-shadow: 0 2px 10px 0 rgba(29, 47, 66, .35);
     }
-
     .paracraft .col-md-3 p {
         margin-bottom: 0;
         line-height: 37px;
     }
-
     .paracraft .btn {
         margin-top: 60px;
         width: 65%;
     }
-
     .works .pull-right.info {
         cursor: pointer;
     }
-
     .works .text {
         background-color: #FAFAFA;
         padding: 20px;
         box-shadow: 0px 1px 3px 0px rgba(44, 62, 80, .35);
     }
-
     .hover-slide:hover .text {
         box-shadow: 0 2px 5px 0 rgba(44, 62, 80, .35);
     }
-
     .works .col-md-12 h4 {
         line-height: 40px;
     }
-
     .whouse {
         background-color: #FAFAFA;
     }
-
     .whouse .col-md-12 {
         margin-bottom: 45px;
     }
-
     .whouse h4 {
         padding: 0 20px 10px 0;
         display: inline-block;
     }
-
     .whouse .col-md-3:nth-child(2) h4 {
         border-bottom: 2px solid #FE3266;
     }
-
     .whouse .col-md-3:nth-child(3) h4 {
         border-bottom: 2px solid #6CBD7D;
     }
-
     .whouse .col-md-3:nth-child(4) h4 {
         border-bottom: 2px solid #3977AD;
     }
-
     @media (max-width: 992px) {
         .paracraft, .banner {
             display: block;
         }
-
         .banner {
             padding: 50px 0;
         }
-
         .web-message {
             text-align: center;
         }
-
         .web-message span {
             margin: 0 8px;
             display: inline-block;
@@ -229,18 +203,19 @@
                 <div class="form-group">
                     <span id="mail-err" class="text-danger visible-hidden">*{{errMsg}}</span>
                     <label class="sr-only" for="email">Email address</label>
-                    <input ng-model="email" type="email" class="form-control" id="email" placeholder="E-mail账号">
+                    <input ng-model="email" type="email" class="form-control" id="email" placeholder="登录账号">
                 </div>
                 <div class="form-group">
                     <span id="pwd-err" class="text-danger visible-hidden">*{{errMsg}}</span>
                     <label class="sr-only" for="password">Password</label>
                     <input ng-model="password" type="password" class="form-control" id="password"
-                           placeholder="Password">
+                           placeholder="密码">
                 </div>
                 <div class="form-group">
                     <span id="webname-err" class="text-danger visible-hidden">*{{errMsg}}</span>
                     <label class="sr-only" for="webName">webName</label>
                     <input ng-model="username" type="text" class="form-control" id="webName" placeholder="个人网站名">
+                    <p class="web-info">个人网址：http://paracraft.wiki/{{username+"/"+username}}</p>
                 </div>
                 <span id="total-err" class="text-danger visible-hidden">*{{errMsg}}</span>
                 <a ng-click="register()" class="btn btn-primary btn-lg btn-block">注册</a>

@@ -8,7 +8,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
         //$scope.errMsg = "用户名或密码错误";
 
         $scope.goRegisterPage = function () {
-            util.go('join');
+            util.go('home');
         }
 
         $scope.login = function () {
