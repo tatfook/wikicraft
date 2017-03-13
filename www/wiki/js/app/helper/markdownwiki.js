@@ -320,8 +320,7 @@ define([
         markdownit_wikicmd_fence(md, mdwikiName);
     }
 
-    // preprocess md text
-    function preprocessMDText(text) {
+    function preprocessInnerLink(text) {
         text = ' ' + text;
         var linkList = text.match(/[^\\](\[\[.*\]\])/g);
         if (linkList) {
@@ -342,6 +341,37 @@ define([
         }
         //console.log(text);
         return text.substring(1);
+    }
+
+    function preprocessLink(text) {
+        var lines = text.split('\n');
+        var codeBlock = false, codeLine = false;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            // 代码块
+            if (/^\s*```/.test(line)) {
+                codeBlock = !codeBlock;
+                continue;
+            }
+            //
+            if (codeBlock)
+                continue;
+
+            if (/^(\t|[ ]{4})/.test(line) && i > 0 && (codeLine || /^\s*$/.test(lines[i-1]))) {
+                codeLine = true;
+                continue;
+            }
+
+            codeLine = false;
+            lines[i] = preprocessInnerLink(line);
+        }
+        return lines.join('\n');
+    }
+
+    // preprocess md text
+    function preprocessMDText(text) {
+        var preprocessText = preprocessLink(text);
+        return preprocessText;
     }
 
     // 新建mdwiki编辑器
