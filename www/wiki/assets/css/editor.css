@@ -3,6 +3,8 @@
 @import "../../js/lib/codemirror/addon/dialog/dialog.css";
 @import "../../js/lib/codemirror/addon/search/matchesonscrollbar.css";
 @import "../../js/lib/codemirror/addon/display/fullscreen.css";
+@import "../../js/lib/codemirror/addon/fold/foldgutter.css";
+@import "../../js/lib/codemirror/addon/lint/lint.css";
 @import "fontawesome/css/font-awesome.min.css";
 
 html,
@@ -206,3 +208,51 @@ body,
     margin-bottom: auto;
 }
 
+.CodeMirrorFold {
+    background-color: #ffe193;
+}
+
+.wiki-toolbar{
+    padding:15px 80px;
+}
+.wiki-toolbar .btn-toolbar:first-child{
+    margin-bottom: 15px;
+}
+.wiki-toolbar .btn-group{
+    margin-left: 10px;
+}
+.wiki-toolbar .btn-default{
+    border: 1px solid #DCDCDC;
+}
+.wiki-toolbar .btn-link{
+    padding:8px 12px;
+}
+.wiki-toolbar .wiki-btn{
+    padding: 7px 25px;
+}
+
+@media (max-width: 1200px) {
+    .wiki-toolbar{
+        padding:15px 0;
+    }
+    .wiki-toolbar .btn-group:first-child{
+        margin-left: 0;
+    }
+    .wiki-toolbar .btn-default{
+        border: 1px solid #DCDCDC;
+        padding: 5px 5px;
+    }
+    .wiki-toolbar .btn-default img{
+        width: 20px;
+    }
+    .wiki-toolbar .wiki-btn{
+        padding: 5px 10px;
+    }
+    .wiki-toolbar .wiki-btn img{
+        width:18px;
+    }
+    .wiki-toolbar .btn-link{
+        width:300px;
+        padding:6.5px 12px;
+    }
+}

@@ -1,18 +1,17 @@
-<?npl
+<div ng-controller="testController" class="container">
+    <button class="zclip" data-zclip-text="Testing 1-2-3!">Click to copy!</button>
+</div>
 
--- NPL.load("(gl)script/ide/System/os/os.lua");
-NPL.load("(gl)script/ide/System/os/GetUrl.lua");
-
-System.os.SendEmail(
-	{
-		url="smtp://mail.paraengine.com",
-		username="LiXizhi", password="1234567", 
-		from="lixizhi@paraengine.com", to="765485868@qq.com", 
-		subject = "title here",
-		body = "any body context here. can be very long",
-	}, 
-	function()
-	end);
-?>
-
-
+<script src="js/lib/jquery/jquery.min.js"></script>
+<script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script>
+<script>
+jQuery(document).ready(function($) {
+	console.log("===========");
+	$("body").on("copy", ".zclip", function(e) {
+		console.log("test");
+		e.clipboardData.clearData();
+		e.clipboardData.setData("text/plain", $(this).data("zclip-text"));
+		e.preventDefault();
+	});
+});
+</script>

@@ -1,5 +1,3 @@
-
-
 define(['app'], function (app) {
     app.controller('packagesController', function ($scope, $http, $location, $rootScope) {
         $scope.packages = [];
@@ -89,6 +87,7 @@ define(['app'], function (app) {
                 url: '/api/mod/packages/models/packages',
                 data: {
                     projectType: $scope.projectType,
+                    userid: -1,
                     amount: 20
                 }
             })
@@ -103,7 +102,8 @@ define(['app'], function (app) {
                             var gitRootStart = gitRoot[1].indexOf("/");
                             var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
                         } catch (err) {
-                            return alert("url format error");
+                            console.log("url format error");
+                            return;
                         }
 
                         var gitIcon = gitRoot + '/master/icon.png'
@@ -116,4 +116,3 @@ define(['app'], function (app) {
         });
     })
 });
-

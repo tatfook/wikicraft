@@ -18,9 +18,9 @@
 
 		<!-- 个人导航 -->
 		<div ng-show="isSelfSite()">
-			<div style="position: absolute; right: 10px; top: 0px; margin: 0px 20px; width: 300px; display: flex; justify-content: space-between">
-				<button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 18px; background: none; color: white">网页编辑</button>
-				<button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 18px; background: none; color: white">网站管理</button>
+			<div style="position: absolute; right: 10px; top: 0px; margin: 0px 20px; width: 300px; display: flex; justify-content: flex-end">
+				<!--button class="btn" ng-click="goWebsitePageManagerPage()" style="font-size: 18px; background: none; color: white">网页编辑</button>
+				<button class="btn" ng-click="goWebsiteMangerPage()" style="font-size: 18px; background: none; color: white">网站管理</button-->
 				<button class="btn" ng-click="showWorksList()" style="font-size: 18px; background: none; color: white">全部作品</button>
 			</div>
 

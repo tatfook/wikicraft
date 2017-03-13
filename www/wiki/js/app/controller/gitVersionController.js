@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','helper/util'], function (app, util) {
-   return ['$scope', '$state', 'Account', 'github', function ($scope, $state, Account,github) {
+define(['app','helper/util','text!html/gitVersion.html'], function (app, util, htmlContent) {
+   app.registerController('gitVersionController', ['$scope', '$state', 'Account', 'github','Message', function ($scope, $state, Account,github, Message) {
        $scope.dtStartOpened = false;
        $scope.dtEndOpened = false;
        $scope.filelist = [];
@@ -12,15 +12,15 @@ define(['app','helper/util'], function (app, util) {
        Account.ensureAuthenticated();
 
        var user = Account.getUser();
-       github.init(user.githubToken, user.githubName, undefined, function () {
-           init();
-       }, function (response) {
-           console.log(response);
-           console.log("github init failed!!!");
-       });
+
+       $scope.$watch('$viewContentLoaded', init);
 
        // 获得git文件列表
        function init() {
+           if (!github.isInited()) {
+               Message.info("此功能需开启github数据源");
+               return ;
+           }
            github.getTree(true, function (data) {
                var filelist = []
                for(var i = 0; i < data.tree.length; i++) {
@@ -75,7 +75,7 @@ define(['app','helper/util'], function (app, util) {
                    (function (sha, filename) {
                        github.rollbackFile(sha, filename, 'rollback file:' + filename, function () {
                            console.log("rollback success");
-                           github.getFile(filename, function (data) {
+                           github.getFile({path:filename}, function (data) {
                               util.http('POST', config.apiUrlPrefix + 'website_pages/updateContentAndShaByUrl', {url:filename, content:data.content, sha:data.sha});
                            });
                        }, function () {
@@ -89,5 +89,7 @@ define(['app','helper/util'], function (app, util) {
        $scope.pathSelected =function ($item, $model) {
            $scope.path = $item.path;
        }
-   }];
+   }]);
+
+    return htmlContent;
 });

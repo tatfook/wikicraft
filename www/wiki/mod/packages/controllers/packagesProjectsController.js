@@ -31,8 +31,16 @@ define(['app'], function (app) {
                 forceUpdatePagin = _forceUpdatePagin;
             }
         };
-    }).controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
-        Account.setRequireSignin(true);
+    })
+    .controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
+        var request = $location.search();
+
+        if (request.userid == undefined) {
+            //Account.setRequireSignin(true);
+            Account.ensureAuthenticated();
+        } else {
+            $scope.othersMode = true;
+        }
 
         $rootScope.$on('$locationChangeSuccess', function () {
             if ($location.path() == "/npl") {
@@ -54,34 +62,56 @@ define(['app'], function (app) {
                 $scope.editProfile = '个人设置';
                 $scope.create = '新建';
                 $scope.myProjects = '我的paracraft模块';
-                $scope.downloadsA = '下载次数:';
+                $scope.downloadsA = '下载次数';
                 $scope.downloadsB = '次';
                 $scope.deleteDesc = "是否确定删除你的项目？";
             }
 
             packagesService.setProjectsType($scope.projectType);
 
-            $scope.$watch(Account.getUser, function (newValue, oldValue) {
-                $scope.user = angular.copy(newValue);
-            });
+            if (request.userid == undefined) {
+
+                //$scope.$watch(Account.getUser, function (newValue, oldValue) {
+                //    $scope.user = angular.copy(newValue);
+                //});
+                // 更改获取用户信息方式 getUser函数使用locationSession使用watch报错  add by wuxiangan
+                $scope.$on("onUserProfile", function (event, user) {
+                    $scope.user = angular.copy(user);
+                });
+            } else {
+                $http({
+                    method: 'POST',
+                    url: '/api/wiki/models/user/getminiprofile',
+                    data: {"_id": request.userid}
+                })
+                    .then(function (response) {
+                        $scope.user = response.data;
+                    }).then(function (response) {
+                });
+            }
 
             $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
-                $scope.page = newValue;
+                postData.page = newValue;
                 $scope.getProjects();
             });
 
             $scope.items = [];
-            $scope.page = 1;
+
+            var postData = {
+                projectType: $scope.projectType,
+                page: 1,
+                amount: 4
+            };
+
+            if (request.userid != undefined) {
+                postData.userid = request.userid;
+            }
 
             $scope.getProjects = function () {
                 $http({
                     method: 'POST',
                     url: '/api/mod/packages/models/packages',
-                    data: {
-                        projectType: $scope.projectType,
-                        page: $scope.page,
-                        amount: 4
-                    }
+                    data: postData
                 })
                     .then(function (response) {
                             $scope.items = response.data;
@@ -94,7 +124,8 @@ define(['app'], function (app) {
                                     var gitRootStart = gitRoot[1].indexOf("/");
                                     var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
                                 } catch (err) {
-                                    return alert("url format error");
+                                    console.log("url format error");
+                                    return;
                                 }
 
                                 var gitIcon = gitRoot + '/master/icon.png'
@@ -167,7 +198,8 @@ define(['app'], function (app) {
                 }
             }
         });
-    }).controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
+    })
+    .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
         $scope.projectName = '';
         $scope.projectDesc = '';
         $scope.version = '';
@@ -176,8 +208,14 @@ define(['app'], function (app) {
         $scope.projectTypeName = '';
         $scope.projectReleases = '';
 
-        $scope.$watch(Account.getUser, function (newValue, oldValue) {
-            $scope.user = angular.copy(newValue);
+        /*
+         $scope.$watch(Account.getUser, function (newValue, oldValue) {
+         $scope.user = angular.copy(newValue);
+         });
+         */
+        // 更改获取用户信息方式 getUser函数使用locationSession使用watch报错  add by wuxiangan
+        $scope.$on("onUserProfile", function (event, user) {
+            $scope.user = angular.copy(user);
         });
 
         $scope.$watch('projectType', function (newValue, oldValue) {
@@ -204,7 +242,8 @@ define(['app'], function (app) {
                 var gitRootStart = gitRoot[1].indexOf("/");
                 var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
             } catch (err) {
-                return alert("url format error");
+                console.log("url format error");
+                return;
             }
 
             var getIcon = gitRoot + '/master/icon.png';
@@ -263,7 +302,8 @@ define(['app'], function (app) {
                         return alert("You need to upload icon.png in your git repositary");
                     });
         }
-    }).controller('packagesProjectsModifyController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
+    })
+    .controller('packagesProjectsModifyController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
         $scope.projectName = '';
         $scope.projectDesc = '';
         $scope.projectGitURL = '';
@@ -284,7 +324,7 @@ define(['app'], function (app) {
             $scope.projectGitURLDesc = 'Git URL';
             $scope.projectReleasesDesc = '下载 URL';
             $scope.projectNameDesc = "项目";
-            $scope.descriptionDesc = "描述"
+            $scope.descriptionDesc = "描述";
         }
 
         $scope.packageId = 0;
@@ -336,7 +376,8 @@ define(['app'], function (app) {
                 }, function (error) {
                 });
         }
-    }).controller('Pagination', function ($scope, $log, $http, packagesService) {
+    })
+    .controller('Pagination', function ($scope, $log, $http, packagesService) {
         $scope.$watch(packagesService.getProjectsType, function (newValue, oldValue) {
             $scope.projectType = newValue;
             $scope.getPackageStats();
@@ -344,8 +385,8 @@ define(['app'], function (app) {
 
         $scope.$watch(packagesService.getForceUpdatePagin, function (newValue, oldValue) {
             $scope.getPackageStats();
-            packagesService.setForceUpdatePagin(0)
-        })
+            packagesService.setForceUpdatePagin(0);
+        });
 
         //packagestats
         $scope.getPackageStats = function () {

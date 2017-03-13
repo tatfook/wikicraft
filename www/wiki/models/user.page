@@ -4,6 +4,8 @@ Title: user profile
 Author: wuxiangan
 Date: 2016/10/21
 ]]
+
+
 include_once("./abstract/base.page")
 include_once("./website.page")
 include_once("./user_favorite.page")
@@ -16,25 +18,53 @@ function user:ctor()
 	self:addfield("username", "string", false, 30)
 	self:addfield("displayName", "string", false, 30)
 	self:addfield("signature", "string")
-	self:addfield("desc", "string", false)
+	self:addfield("introduce", "string", false)
 	self:addfield("email", "string", false, 30) -- private email, can be used to login
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- hashed password
 	self:addfield("sex", "string", false, 12)
-	self:addfield("githubId", "number", false) -- github id
+	self:addfield("githubDS", "number", false) -- github 数据源是否开启  
+	self:addfield("githubId", "number", false) -- github 
 	self:addfield("githubToken", "table", false) -- github access token
 	self:addfield("githubName", "string", false) -- github access token
-
+	self:addfield("githubRepoName", "string", false) -- github access token
 	self:addfield("portrait", "string", false, 200) -- picture url
 	self:addfield("comment", "string", false, 300)
 	self:addfield("company", "string", false, 30)
 	self:addfield("location", "string", false, 50)
 	self:addfield("joindate", "string", false, 30)
-	self:addfield("administrator", "boolean", false);
+	self:addfield("isadmin", "boolean", false);
 	self:addfield("favoriteCount", "number")   -- 收藏量
 	self:addfield("fansCount", "number")  -- 粉丝数量
 	self:addfield("websiteCount", "number") -- 作品数量
 end
+
+-- 发送邀请邮件
+function user:api_inviteFriend(params) 
+	if (not params.userId) or (not params.friendMail) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local par = {}
+	-- par.to = params.friendMail
+	par.to = "765485868@qq.com"
+	par.subject = "wikicraft好友邀请"
+	par.body = [[
+		<div class="main-content">
+			<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
+			<p>wikicraft 是一款强大的网站构建平台。</p>
+			<p>#username#的作品：</p>
+			<p><a href="#">作品链接</a></p>
+			<p><a href="#">作品链接</a></p>
+			<div class="btn">点击注册</div>
+		</div>
+	]]
+	
+	util:sendEmail(par)
+	
+	return errors:wrap(nil)
+end
+
 
 function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
@@ -88,6 +118,8 @@ function user:update(params)
 		query.password = nil
 		query.githubId = nil
 		query.githubToken = nil
+		query.githubName = nil
+		query.isadmin = nil
 	end
 
 	self:db():updateOne({_id=query._id}, query, resume)
@@ -119,9 +151,22 @@ function user:api_deleteById(params)
 end
 
 -- 更新用户信息
-function user:updateUserInfo(userId, params)
-	self:db():updateOne({_id=userId}, params, resume)
-	local err, data = yield()
+function user:api_updateUserInfo(params)
+	_, params = self:validateQuery(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.email = nil
+	params.password = nil
+	params.githubId = nil
+	params.githubToken = nil
+	params.githubName = nil
+	params.isadmin = nil
+
+	self:db():updateOne({_id=params._id}, params, resume)
+
+	return errors:wrap(yield())
 end
 
 -- 更改密码
@@ -140,19 +185,25 @@ function user:api_changepw(params)
 	
 	local oldpassword = self:encodePassword(params.oldpassword)
 	local newpassword = self:encodePassword(params.newpassword)
-
 	if user.password ~= oldpassword then
 		return errors:wrap("密码错误")
 	end
 
 	user.password = newpassword
 
-	self:db():updateOne({_id=params._id}, user, resume)
+	self:db():updateOne({_id=userId}, user, resume)
 	return errors:wrap(yield())
 end
 
 -- 发邮件
 function user:api_setemail(params)
+	par = {}
+	par.to = "765485868@qq.com"
+	par.subject = "wikicraft email confirm"
+	par.body = "<a href='localhost:8099/wiki/userFavoriteDB'>注册确认</a>"
+	util:sendEmail(par)
+	return "email"
+	--[[
 	if (not params._id) or (not params.email) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -163,6 +214,8 @@ function user:api_setemail(params)
 
 	self:db():updateOne({_id=params._id}, {email=email}, resume)
 	return errors:wrap(yield())
+
+	]]
 end
 
 -- 登录
@@ -194,7 +247,7 @@ function user:api_register(params)
 	
 	local websiteDB = models.website:new()
 	-- 查找用户名是否可用
-	if websiteDB:api_getByName({websiteName=params.username}).data then
+	if self:api_getByName({username=params.username}).data then
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 	
@@ -209,6 +262,7 @@ function user:api_register(params)
 	-- 创建用户
 	self:db():insertOne(nil, {
 		username = params.username,
+		displayName = params.username,
 		password = self:encodePassword(params.password),
 		email = params.email,
 		cellphone = params.cellphone,
@@ -246,6 +300,7 @@ function user:api_getProfile()
 
 	return errors:wrap(yield())
 end
+
 -- 通过用户ID获得用户信息
 function user:api_getById(params)
 	if not params.userId then 
@@ -255,6 +310,42 @@ function user:api_getById(params)
 	userId = params.userId
 
 	self:db():findOne({_id=userId}, resume)
+	local err, data = yield()
+	if not data then
+		return errors:wrap(err or errors.NOT_FOUND, data)
+	end
+
+	return errors:wrap(nil, data)
+	--[[
+		-- 精简信息
+		local userInfo = {
+			_id=data._id,
+			username=data.username,
+			email=data.email,
+			cellphone=data.cellphone,
+			sex=data.sex,
+			githubId=data.githubId,
+			githubToken=data.githubToken,
+			portrait=data.portrait,
+			comment=data.comment,
+			company=data.company,
+			location=data.location,
+			joindate=data.joindate,		
+		}
+		return {error=errors.SUCCESS, data=userInfo}
+
+	]]
+end
+
+-- 通过用户名获得用户信息
+function user:api_getByName(params)
+	if not params.username then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	userId = params.userId
+
+	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, data = yield()
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)

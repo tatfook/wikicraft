@@ -9,6 +9,7 @@ include_once("./abstract/base.page");
 include_once("./website_template_style.page");
 include_once("./website.page");
 include_once("./user.page");
+include_once("./user_visit_history.page")
 include_once("./website_renewal.page");
 
 --local errors = models.errors:new();
@@ -24,6 +25,7 @@ function website_pages:ctor()
 	self:addfield("url", "string", true, 120);  -- 页面路径   /websiteName/pageName
 	self:addfield("websiteId", 'number', false); -- 所属站点id
 	self:addfield("websiteName", 'string', false); -- 所属站点名
+	self:addfield("timestamp", 'number', false); -- 更新时间点
 	-- self:addfield("contentType", "string", false, 12);  -- 页内容类型  html, markdown
 	self:addfield("content", "string", false, 100000);  -- 具体页面内容
 	-- sha hash: sha1("blob "+"filesize"+"\0"+"content");
@@ -39,6 +41,17 @@ function website_pages:delete(params)
 	end
 
 	return {error=errors.SUCCESS, data=data};
+end
+
+-- 删除页面
+function website_pages:api_deleteByPageId(params)
+	self:ensureAuthenticated()
+	if not params._id then
+		return errors.wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params._id}, resume)
+	return errors.wrap(yield())
 end
 
 -- 删除站点所有页
@@ -126,6 +139,17 @@ function website_pages:get(params)
 	end
 
 	return {error=errors.SUCCESS, data=data};
+end
+
+-- 通过页面ID获取页面
+function website_pages:api_getWebsitePageById(params)
+	if not params._id then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)	
+	
+	return errors:wrap(yield())
 end
 
 function website_pages:api_getWebsitePageByUrl(params) 
@@ -260,8 +284,7 @@ end
 function website_pages:api_getByUserId(params) 
 	-- local userId = self:ensureAuthenticated()
 	userId = params.userId or userId
-	log(userId)
-	self:db():find({userId=tonumber(userId)}, resume)
+	self:db():find({["+userId"]={tonumber(userId)}}, resume)
 
 	return errors:wrap(yield())
 end
@@ -281,26 +304,6 @@ function website_pages:api_getWebsitePageList(params)
 	end
 
 	return {error=errors.SUCCESS, data=data}
-end
-
--- 访问页面
-function website_pages:api_visitPage(params)
-	if not params.url then
-		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
-	end
-	
-	-- 获取页面内容代码
-	self:db():findOne({url=params.url}, resume)	
-	local err, page = yield()
-	if err or (not page) then
-		return {error=errors:new(err), data=page};
-	end	
-
-	-- 获取站点, 浏览数加1
-	local website = models.website:new();
-	website:api_addVisitNum(page.websiteName)		
-
-	return {error=errors.SUCCESS, data=page};		
 end
 
 -- 获得站点页数
@@ -323,25 +326,47 @@ function website_pages:api_getCountByWebsiteId(params)
 	return errors:wrap(yield())
 end
 
--- 获取用户页详细信息
+-- 访问页面
+function website_pages:api_visitPage(params)
+	if not params.url then
+		return {error=errors.REQUEST_PARAMS_ERROR,data=nil}		
+	end
+	
+	-- 获取页面内容代码
+	self:db():findOne({url=params.url}, resume)	
+	local err, page = yield()
+	if err or (not page) then
+		return {error=errors:new(err), data=page};
+	end	
+
+	-- 获取站点, 浏览数加1
+	local website = models.website:new();
+	website:api_addVisitNum(page.websiteName)		
+
+	return {error=errors.SUCCESS, data=page};		
+end
+
+-- 获取用户页详细信息 --此接口用网站网站访问统计
 function website_pages:api_getDetailInfo(params)
-	if (not params.sitename) or (not params.pagename) then
+	if (not params.username) or (not params.sitename) or (not params.pagename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local err, userinfo = yield()
+	if not userinfo then
+		return  errors:wrap(errors.NOT_FOUND)
+	end
+
 	local websiteDB = models.website:new()
 	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename}).data
 	if not siteinfo then
 		return errors:wrap(errors.NOT_FOUND)
 	end
 	
-	local userDB = models.user:new()
-	local userinfo = userDB:api_getById({userId=siteinfo.userId}).data
-	if not userinfo then
-		return  errors:wrap(errros.NOT_FOUND)
-	end
 	
-	local pageurl = "/" .. params.sitename .. "/" .. params.pagename
+	local pageurl ="/" .. params.username .. "/" .. params.sitename .. "/" .. params.pagename
 	self:db():findOne({["+url"]={pageurl}}, resume)
 	local err, pageinfo = yield()
 
@@ -349,11 +374,41 @@ function website_pages:api_getDetailInfo(params)
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
 
+	-- 增加站点访问量
+	local result = websiteDB:api_addVisitNum({websiteName=params.sitename})
+	if not errors:isOk(result.error) then 
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	-- 添加访问记录
+	local userVisitHistoryDB = models.user_visit_history:new()
+	userVisitHistoryDB:api_upsert({userId=userinfo._id, websiteName=siteinfo.name,url=pageinfo.url})
+
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo})
 end
 
 
+-- 通过站点ID获取站点所有页
+function website_pages:api_getByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	self:db():find({['+websiteId']={params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 通过站点名获得站点所有页
+function website_pages:api_getByWebsiteName(params)
+	if not params.websiteName then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	self:db():find({['+websiteName'] = {params.websiteName}}, resume)
+
+	return errors:wrap(yield())
+end
 
 
 

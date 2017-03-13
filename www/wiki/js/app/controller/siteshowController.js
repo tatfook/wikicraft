@@ -2,41 +2,39 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope',function ($scope) {
-        var siteshowObj = storage.sessionStorageGetItem("siteshow");
-        //console.log(siteshowObj);
-        $scope.title = siteshowObj.title;
-        $scope.requestUrl = siteshowObj.requestUrl;
-        $scope.requestParams = siteshowObj.requestParams || {};
-        $scope.requestParams.pageSize = 12;
-        $scope.requestParams.page = 0;
+define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], function (app, util, storage, htmlContent) {
+    app.registerController('siteshowController', ['$scope', function ($scope) {
+        $scope.totalItems = 0;
+        $scope.currentPage = 1;
+        $scope.pageSize = 12;
 
-        window.scrollTo(0,0);
+        function getSiteList() {
+            var params = {pageSize:$scope.pageSize, page:$scope.currentPage,sortBy:'-favoriteCount'};
 
-        // 随机颜色
-        $scope.getRandomColor = function (index) {
-            return util.getRandomColor(index);
-        }
-
-        var height = (200 + Math.floor(($scope.requestParams.pageSize-1)/3) * 280) + "px";
-        $(".workslistNav").css("height",height);
-        height = Math.ceil($scope.requestParams.pageSize/3) * 280 + "px";
-        $(".workslist").css("height",height);
-
-        $scope.getSiteList = function (page) {
-            if (!util.pagination(page, $scope.requestParams, $scope.siteObj && $scope.siteObj.pageCount)) {
-                return ;
+            // 个人站点
+            if ($scope.siteshowType == 'personal') {
+                params.filterType = 'personal';
             }
-            util.http("POST", $scope.requestUrl, $scope.requestParams, function (data) {
+            console.log($scope.siteshowType);
+
+            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', params, function (data) {
                 $scope.siteObj = data;
+                $scope.totalItems = data.total;
             });
         }
 
         function init() {
-            $scope.getSiteList();
+            console.log('init siteshow controller');
+            $scope.siteshowType = storage.sessionStorageGetItem('siteshowType') || 'all';
+            getSiteList();
         }
 
-        init();
-    }]
+        $scope.sitePageChanged = function () {
+            getSiteList();
+        }
+
+        $scope.$watch('$viewContentLoaded', init);
+    }]);
+
+    return htmlContent;
 });

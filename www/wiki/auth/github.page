@@ -50,6 +50,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					local token, err = createJWT(user);
 					response:send({ token = token, userInfo=user });
 				end
+				-- 通过userID更新用户github信息
 				local token = request:header('Authorization'):match("%s+(%S+)");
 				local payload, err = decodeJWT(token);
 				db.user:findOne({_id=payload.id}, function(err, user)
@@ -68,8 +69,8 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 			end);
 		else
 			-- Step 3b. Create a new user account or return an existing one.
-			db.user:findOne({ githubId = profile.id }, function(err, existingUser)
-				if (existingUser) then
+			db.user:findOne({ githubId = profile.id }, function(err, user)
+				if (user) then
 					-- refresh access token
 					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
 						db.user:updateOne({_id = user._id}, {githubToken=accessToken, githubName=profile.login});
@@ -80,16 +81,18 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 					response:send({ token = token, userInfo=user });
 				end
 				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
+				--[[
 					db.user:insertOne({githubId = profile.id}, {
 						githubId = profile.id,
 						portrait = profile.avatar_url,
-						githubToken = profile.login,
+						githubName = profile.login,
 						githubToken = accessToken,
 						joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 					}, function(err, user) 
 						local token = createJWT(user);
 						response:send({ token = token, userInfo=user });
 					end);
+				]]
 			end);
 		end
 	end);

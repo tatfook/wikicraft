@@ -2,103 +2,90 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope', '$state', 'Account', 'Message', function ($scope, $state, Account, Message) {
-        //const github = ProjectStorageProvider.getDataSource('github');
-        $scope.user = Account.getUser() || {};
-        $scope.passwordObj = {};
-        $scope.fansWebsiteId = "0";
-        var userId = $scope.user._id;
+define(['app',
+    'helper/util',
+    'helper/storage',
+    'text!html/userCenter.html',
+    'controller/userProfileController',
+    'controller/websiteController',
+    'controller/dataSourceController',
+], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent) {
+    app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
+        $scope.contentType = undefined;
+        $scope.userProfileItemList = [
+            {flag:'myProfile', name:'我的资料'},
+            {flag:'accountSafe', name:'账户安全'},
+            {flag:'myTrends', name:'我的动态'},
+            {flag:'myCollection', name:'我的收藏'},
+            {flag:'myHistory', name:'我的历史'},
+            {flag:'myFans', name:'我的粉丝'},
+            {flag:'realName', name:'实名认证'},
+            {flag:'invite', name:'邀请注册'},
+        ];
+
+        $scope.websiteMangerItemList = [
+            {flag:'myWebsite', name:'我的站点'},
+        ];
+
+        $scope.vipItemList = [
+            {flag:'myVIP', name:'我的VIP'},
+        ];
+
+        $scope.dataSourceItemList = [
+            {flag:'dataSource', name:'数据源配置'},
+        ]
 
         function init() {
-            $('#uploadPortraitBtn').change(function (e) {
-                var fileReader = new FileReader();
-                fileReader.onload = function () {
-                    $('#portraitImg').attr('src', fileReader.result);
-                    /*
-                    github.uploadImage("portrait", fileReader.reault, function (error, result, request) {
-                        if (error) {
-                            console.log("上传失败");
-                        }
-                        $scope.user.portrait = result.content.download_url;
-                    });
-                    */
-                };
-                fileReader.readAsDataURL(e.target.files[0]);
-            });
+            $scope.contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
+            storage.sessionStorageRemoveItem('userCenterContentType');
+            //console.log($scope.contentType);
+            $scope.selectContentType($scope.contentType);
+            //$scope.$apply();
 
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFavoriteUserListByUserId", {}, function (data) {
-                $scope.favoriteUserList = data || [];
-            });
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {}, function (data) {
-                $scope.favoriteWebsiteList = data || [];
-            });
-
+            $scope.$on('userCenterContentType', function (event, contentType) {
+                $scope.selectContentType(contentType);
+            })
         }
 
-        // 修改用户信息
-        $scope.modifyUserBaseInfo = function () {
-            console.log($scope.user);
-            util.http("PUT", config.apiUrlPrefix + "user", $scope.user, function (data) {
-                Account.setUser(data);
-                Message.success("修改成功");
-            });
-        }
+        // 文档加载完成
+        $scope.$watch('$viewContentLoaded', init);
+        
+        $scope.selectContentType = function (contentType) {
+            //console.log(contentType);
+            $scope.contentType = contentType;
 
-        $scope.modifyPassword = function () {
-            console.log($scope.passwordObj);
-            if ($scope.passwordObj.newPassword1 != $scope.passwordObj.newPassword2) {
-                Message.info("两次新密码不一致!!!");
-                return;
+            if (contentType == 'userProfile') {
+                $scope.showItem = 'myProfile';
+                util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
+            } else if (contentType == 'websiteManager') {
+                $scope.showItem = 'myWebsite';
+                util.html('#userCenterSubPage', websiteHtmlContent, $scope);
+            } else if (contentType == 'VIP') {
+                $scope.showItem = 'myVIP';
+            } else if (contentType == 'dataSource') {
+                $scope.showItem = 'dataSource';
+                util.html('#userCenterSubPage', dataSourceHtmlContent, $scope);
             }
-            var params = {oldpassword: $scope.passwordObj.oldPassword, newpassword: $scope.passwordObj.newPassword1};
-            util.http("POST", config.apiUrlPrefix + "user/changepw", params, function (data) {
-                Message.success("密码修改成功");
-            }, function (error) {
-                Message.info(error.message);
-            });
         }
 
-        $scope.clickBaseInfo = function () {
-        }
-        $scope.clickAccountSafe = function () {
-        }
-
-        // 获取用户收藏信息
-        $scope.clickMyFavorite = function () {
-            util.http("POST", config.apiUrlPrefix + 'user_favorite/getFavoriteUserListByUserId', {}, function (data) {
-                $scope.favoriteUserList = data;
-            });
-
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {}, function (data) {
-                $scope.favoriteWebsiteList = data;
-            });
+        $scope.getExpandClass = function (contentType) {
+            return $scope.contentType == contentType ? "" : 'sr-only';
         }
 
-        // 我的建站历史
-        $scope.clickMyHistory = function () {
-            util.http("POST", config.apiUrlPrefix + 'website/getHistoryListByUserId', {userId: userId}, function (data) {
-                $scope.websiteList = data; // 用户的建站列表
-            });
+        $scope.clickUserCenterItem = function (item) {
+            $scope.showItem = item.flag;
+            //console.log(item);
+            if (item.flag == 'myWebsite') {
+                util.html('#userCenterSubPage', websiteHtmlContent, $scope);
+            }
+
+            $rootScope.$broadcast('userCenterItem', item.flag);
         }
 
-        // 我的粉丝
-        $scope.clickMyFans = function () {
-            util.http("POST", config.apiUrlPrefix + "website/getWebsiteListByUserId", {userId: userId}, function (data) {
-                $scope.websiteList = data;
-            });
-
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", {userId: userId}, function (data) {
-                $scope.fans = data || {};
-            });
+        $scope.getActiveStyleClass = function (item) {
+            return $scope.showItem == item.flag ? 'active' : '';
         }
+    }]);
 
-        $scope.selectFansWebsite = function (fansWebsiteId) {
-            var params = {userId: userId}
-            params.websiteId = fansWebsiteId == "0" ? undefined : parseInt(fansWebsiteId);
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
-                $scope.fans = data || {};
-            });
-        }
-    }]
+    return htmlContent;
 });

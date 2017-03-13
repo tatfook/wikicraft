@@ -8,16 +8,21 @@
     var moduleList = [
         'controller/mainController',
         'controller/headerController',
+        //'controller/testController',
 
         // directives
+        'directive/directive',
         'directive/moduleDirective',
         'directive/userpage',
         'directive/wikiImage',
+        'directive/wikiLink',
+        'directive/wikiUISelect',
 
         // factory
         'factory/account',
         'factory/message',
         'factory/github',
+        'factory/modal',
     ];
     moduleList = moduleList.concat(config.preloadModuleList);
     //console.log(moduleList);

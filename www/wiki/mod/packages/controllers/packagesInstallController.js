@@ -10,12 +10,23 @@
                 return this.giturl;
             }
         }
-    }).controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesInstallService) {
+    })
+    .controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesInstallService) {
         $scope.isadmin = false;
         $scope.isVerified = null;
 
-        $scope.$watch(Account.getUser, function (newValue, oldValue) {
-            $scope.user = angular.copy(newValue);
+        /*
+         $scope.$watch(Account.getUser, function (newValue, oldValue) {
+         $scope.user = angular.copy(newValue);
+
+         if ($scope.user != undefined && $scope.user.isadmin != undefined) {
+         $scope.isadmin = eval($scope.user.isadmin);
+         }
+         });
+         */
+        // 更改获取用户信息方式 getUser函数使用locationSession使用watch报错  add by wuxiangan
+        $scope.$on("onUserProfile", function (event, user) {
+            $scope.user = angular.copy(user);
 
             if ($scope.user != undefined && $scope.user.isadmin != undefined) {
                 $scope.isadmin = eval($scope.user.isadmin);
@@ -127,7 +138,8 @@
                 var gitRootStart = gitRoot[1].indexOf("/");
                 var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
             } catch (err) {
-                return alert("url format error");
+                console.log("url format error");
+                return;
             }
 
             $scope.gitIcon = gitRoot + '/master/icon.png'
@@ -250,7 +262,8 @@
             }
 
         });
-    }).controller('localInstallDialogController', function ($scope, packagesInstallService, $sce, $uibModalInstance) {
+    })
+    .controller('localInstallDialogController', function ($scope, packagesInstallService, $sce, $uibModalInstance) {
         var url = packagesInstallService.getGiturl();
 
         $scope.giturl = $sce.trustAsResourceUrl("http://" + url);

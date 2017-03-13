@@ -18,18 +18,20 @@
             'angular': libPathPrefix + 'angular/angular.min',
             'angular-ui-bootstrap': libPathPrefix + 'angular-ui-bootstrap/ui-bootstrap-tpls',
             'angular-ui-router': libPathPrefix + 'angular-ui-router/angular-ui-router.min',
+            'angular-toggle-switch': libPathPrefix + 'angular-toggle-switch/angular-toggle-switch.min',
             'angular-ui-select': libPathPrefix + 'angular-ui-select/select.min',
             'angular-sanitize': libPathPrefix + 'angular-sanitize/angular-sanitize.min',
             'bootstrap': libPathPrefix + "bootstrap/js/bootstrap.min",
             'satellizer': libPathPrefix + 'satellizer/satellizer.min',
             'bootstrap-treeview': libPathPrefix + 'bootstrap-treeview/bootstrap-treeview.min',
             //'github-api': libPathPrefix + 'github-api/GitHub.bundle.min',
-            //'cropper': libPathPrefix + 'cropper/cropper.min',
+            'cropper': libPathPrefix + 'cropper/cropper.min',
             'markdown-it':libPathPrefix + 'markdown-it/markdown-it.min',  // 已支持amd则不能喝<script>标签混合使用
             'highlight': libPathPrefix + 'highlight/highlight.pack', //不支持amd规范可用标签引入 或配置shim
             'js-base64': libPathPrefix + 'js-base64/base64.min',
             'text': libPathPrefix + 'requirejs/text',
             'domReady': libPathPrefix + 'requirejs/domReady',
+            'fabric': libPathPrefix + 'fabric.require',
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
@@ -54,6 +56,9 @@
                 deps:['angular'],
             },
             'angular-ui-bootstrap':{
+                deps:['angular'],
+            },
+            'angular-toggle-switch':{
                 deps:['angular'],
             },
             'angular-ui-select':{

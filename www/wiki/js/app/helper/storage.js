@@ -29,7 +29,13 @@ define(['angular'], function (angular) {
     }
 
     storage.localStorageGetItem = function (key) {
-        return angular.fromJson(storage.localStorage.getItem(key));
+        try {
+            return angular.fromJson(storage.localStorage.getItem(key));
+        } catch (e) {
+            console.log(e);
+            return undefined;
+        }
+        //return angular.fromJson(storage.localStorage.getItem(key));
     }
 
     storage.localStorageRemoveItem = function (key) {
@@ -45,7 +51,13 @@ define(['angular'], function (angular) {
     }
 
     storage.sessionStorageGetItem = function (key) {
-        return angular.fromJson(storage.sessionStorage.getItem(key));
+        try {
+            return angular.fromJson(storage.sessionStorage.getItem(key));
+        } catch (e) {
+            console.log(e);
+            return undefined;
+        }
+        //return angular.fromJson(storage.sessionStorage.getItem(key));
     }
 
     storage.sessionStorageRemoveItem = function (key) {
@@ -54,6 +66,98 @@ define(['angular'], function (angular) {
 
     storage.sessionStorageClear = function () {
         storage.sessionStorage.clear();
+    }
+
+    // In the following line, you should include the prefixes of implementations you want to test.
+    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    // DON'T use "var indexedDB = ..." if you're not in a function.
+    // Moreover, you may need references to some window.IDB* objects:
+    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+    // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
+    storage.indexedDBOpen = function (option, cb, errcb) {
+        var db = window.indexedDB.open(option.dbName || 'wikicraftDB', option.version || 1);
+        storage.indexDBStoreName = option.storeName;
+
+        db.onerror = function (e) {
+            console.log("index db open error");
+            errcb && errcb();
+        }
+        db.onsuccess = function (e) {
+            storage.indexDB = e.target.result;
+            console.log('onsuccess');
+            cb && cb();
+        }
+        db.onupgradeneeded = function (e) {
+            storage.indexDB = e.target.result;
+            console.log('onupgradeneeded');
+            if (!option.storeName || !option.storeKey) {
+                console.log("opion error!!!");
+                return;
+            }
+            if (!storage.indexDB.objectStoreNames.contains(option.storeName)) {
+                storage.indexDB.createObjectStore(option.storeName,{keyPath:option.storeKey});
+            }
+        }
+    }
+
+    storage.indexedDBClose = function () {
+        storage.indexDB.close();
+    }
+
+    storage.indexedDBDelete = function (dbName) {
+        window.indexedDB.deleteDatabase(dbName || 'wikicraftDB');
+    }
+
+    storage.indexedDBGetItem = function (key, cb, errcb) {
+        var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
+        var store=transaction.objectStore(storage.indexDBStoreName);
+        var request=store.get(key);
+        request.onsuccess=function(e){
+            cb && cb(e.target.result);
+        };
+        request.onerror = function () {
+            errcb && errcb();
+        }
+    }
+    
+    storage.indexedDBSetItem = function (value, cb, errcb) {
+        //console.log(storage.indexDBStoreName);
+        var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
+        var store=transaction.objectStore(storage.indexDBStoreName);
+        var request=store.put(value);
+        request.onsuccess=function(e){
+            //console.log(value);
+            cb && cb(e.target.result);
+        };
+        request.onerror = function () {
+            errcb && errcb();
+        }
+    }
+
+    storage.indexedDBDeleteItem = function (key, cb, errcb) {
+        var transaction=storage.indexDB.transaction(storage.indexDBStoreName,'readwrite');
+        var store=transaction.objectStore(storage.indexDBStoreName);
+        var request=store.delete(key);
+        request.onsuccess=function(e){
+            cb && cb(e.target.result);
+        };
+        request.onerror = function () {
+            errcb && errcb();
+        }
+    }
+
+    storage.indexedDBClearItem = function (cb, errcb) {
+        var transaction=storage.indexDB.transaction(storage.indexDBStoreName,'readwrite');
+        var store=transaction.objectStore(storage.indexDBStoreName);
+        var request = store.clear();
+        request.onsuccess=function(e){
+            cb && cb(e.target.result);
+        };
+        request.onerror = function () {
+            errcb && errcb();
+        }
     }
 
     return storage;

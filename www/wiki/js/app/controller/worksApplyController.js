@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
-    return ['$scope', '$state', 'Account',function ($scope, $state, Account) {
+define(['app','helper/util', 'helper/storage', 'text!html/worksApply.html'], function (app, util, storage, htmlContent) {
+    app.registerController('worksApplyController', ['$scope', '$state', 'Account',function ($scope, $state, Account) {
         $scope.user = Account.getUser();
         $scope.worksSelected = [];
         $scope.submitDisabled = "";
@@ -41,5 +41,7 @@ define(['app','helper/util', 'helper/storage'], function (app, util, storage) {
         }
 
         init();
-    }]
+    }]);
+
+    return htmlContent;
 });

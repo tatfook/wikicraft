@@ -1,0 +1,107 @@
+<?npl
+--[[
+Title: worlds_star
+Author: Big
+Date: 2016/12/31
+]]
+
+include_once(WIKI_ROOT.."models/abstract/multi_user_base.page");
+include_once(WIKI_ROOT.."models/user.page");
+include_once("./worlds_stats.page");
+
+local worlds_star = inherit(models.abstract.multi_user_base, gettable("models.worlds_star"));
+
+worlds_star.db_name = 'worlds_star';
+
+function worlds_star:ctor()
+	-- opus id
+	self:addfield("opusId","number",false,10);
+	-- user id
+	self:addfield("method","string",false,10);
+end
+
+function worlds_star:get(params)
+	local err, query = self:validateQuery(params);
+
+	self:ensureAuthenticated();
+	local userid = self:getUserId();
+
+	if(not query.opusId)then
+		return {error = -1,msg="opusId is not set"};
+	end
+
+	LOG.std(nil,"debug","query.opusId",query.opusId);
+
+	self:db():findOne({["+userid+opusId"] = {userid,query.opusId}},resume);
+	local err,response = yield(true);
+
+	LOG.std(nil,"debug","worlds_star:get",response);
+
+	if(not err)then
+		if(response == nil)then
+			return {error= 1,msg="not exist"}
+		else
+			return {error= 0,data=response};
+		end
+	else
+		return {error=-1,msg="database is error"};
+	end
+end
+
+function worlds_star:update(params)
+	local err, query = self:validateQuery(params);
+
+	if(not query.opusId)then
+		return {error = -1,msg="opusId is not set"};
+	end
+
+	if(not query.method)then
+		return {error = -1,msg="method is not set"};
+	end
+
+	self:ensureAuthenticated();
+	local userid = self:getUserId();
+
+	if(not userid)then
+		return {error = -1,msg="user is not exist"};
+	end
+
+	self:db():findOne({["+opusId+userid"] = {query.opusId,userid}},resume);
+	local err,starResponse = yield(true);
+
+	if(not err)then
+		if(query.method == "create")then
+			if(starResponse == nil)then
+				local insertParams     = {};
+				insertParams.opusId    = query.opusId;
+
+				worlds_star._super.create(self, insertParams);
+
+				local params  = {};
+				params.method = "add";
+				params.statsType = "worldsStarTotals" .. query.opusId;
+
+				models.worlds_stats:new():inside_update(params);
+				return {error=0,msg="set successful"};
+			end
+		elseif(query.method == "delete")then
+			if(starResponse ~= nil)then
+				self:db():deleteOne({_id = starResponse._id},resume);
+				local err,deleteResponse = yield(true);
+
+				if(not err)then
+					local params  = {};
+					params.method = "minus";
+					params.statsType = "worldsStarTotals" .. query.opusId;
+
+					models.worlds_stats:new():inside_update(params);
+					return {error=0,msg="set successful"};
+				else
+					return {error=-1,msg="database error"};
+				end
+			end
+		end
+	else
+		return {error=-1,msg="database is error"};
+	end
+end

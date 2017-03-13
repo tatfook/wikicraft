@@ -2,8 +2,8 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-   var controller =  function ($scope, $state, $sce, Account) {
+define(['app', 'helper/util', 'helper/storage','text!html/createWebsite.html'], function (app, util, storage, htmlContent) {
+   var controller =  ['$scope', '$state', '$sce', 'Account', function ($scope, $state, $sce, Account) {
        //const github = ProjectStorageProvider.getDataSource('github');
        $scope.website = storage.sessionStorageGetItem("createWebsiteParams") || {};
        $scope.editWebsite = $scope.website._id ? true : false;
@@ -161,8 +161,8 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
            $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
 
-           util.http('POST', config.apiUrlPrefix+'website', {name:$scope.website.name}, function (data) {
-               if (data && data.length > 0 && $scope.website._id != data[0]._id) {
+           util.http('POST', config.apiUrlPrefix+'website/isExist', {username:$scope.user.username, sitename:$scope.website.name}, function (data) {
+               if (data && $scope.website._id != data._id) {
                    $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
                    $scope.nextStepDisabled = true;
                } else {
@@ -241,9 +241,9 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
        $scope.goWebsiteIndexPage = function(websiteName) {
            window.location.href = '/' + websiteName;
        }
-   };
+   }];
 
-    controller.$inject = ['$scope', '$state', '$sce', 'Account'];
-
-    return controller;
+    //controller.$inject = ['$scope', '$state', '$sce', 'Account'];
+    app.registerController('createWebsiteController', controller);
+    return htmlContent;
 });

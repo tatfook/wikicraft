@@ -42,28 +42,37 @@ define(['jquery'], function ($) {
             pathname = window.location.search.substring(1);
         }
 
-        var sitename = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
-        var pagename = 'index';
+        var username = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+        var sitename = '';
+        var pagename = '';
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
-            sitename = undefined;
+            username = undefined;
         }
 
-        if (sitename) {
-            sitename = sitename[1];
-            pagename = pathname.match(/^\/?([^\/]+)/);
-            pagename = pagename ? pagename[1] : 'index';
-        } else {
-            sitename = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-            if (sitename == undefined) {
+        if (username) {
+            username = username[1];
+            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
+            if (urlInfo == undefined) {
                 return {};
             }
-            pagename = sitename[2] || pagename;
-            sitename = sitename[1]
+            sitename = urlInfo[1];
+            pagename = urlInfo[2];
+        } else {
+            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
+            if (urlInfo == undefined) {
+                return {};
+            }
+            username = urlInfo[1];
+            sitename = urlInfo[2];
+            pagename = urlInfo[3];
         }
 
-        return {sitename:sitename, pagename:pagename, pathname:pathname};
+        if (username != 'wiki' && sitename && !pagename) {
+            pagename = index;
+        }
+        return {username:username, sitename:sitename, pagename:pagename, pathname:pathname};
     }
 
     util.setLastUrlObj = function (urlObj) {
@@ -146,6 +155,10 @@ define(['jquery'], function ($) {
         httpRespone.then(function (response) {
             var data = response.data;
             //console.log(data);
+            // debug use by wxa
+            if (!data.error) {
+                console.log(url);
+            }
             if (data.error.id == 0) {
                 //console.log(data.data);
                 callback && callback(data.data);
@@ -212,10 +225,20 @@ define(['jquery'], function ($) {
 
     util.goUserSite = function (url) {
         if (config.localEnv) {
-            window.location.href = config.frontEndRouteUrl + '?' + url;
+            window.open("http://localhost:8099" + url);
+            //window.location.href = "http://localhost:8099" + url;
         } else {
             window.location.href = url;
         }
+    }
+
+    util.go = function (pageName) {
+        if (config.localEnv) {
+            window.location.href = config.frontEndRouteUrl + '#/' + pageName;
+        } else {
+            window.location.href = "/wiki/" + pageName;
+        }
+
     }
 
     return util;

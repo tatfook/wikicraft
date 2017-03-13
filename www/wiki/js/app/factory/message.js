@@ -5,9 +5,9 @@
 define(['app'], function (app) {
     app.factory("Message", [function () {
         var message={
-            timeout:5000,
+            timeout:2000,
             slideDownTimeout:1000,
-            slideUpTimeout:2000,
+            slideUpTimeout:1000,
         };
         //$('#messageTipId').slideToggle();
         message.show = function (type, content) {

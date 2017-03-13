@@ -1,0 +1,222 @@
+<style>
+    .dropdown-toggle a{
+        line-height: 1.42857143;
+        display: block;
+        padding: 10px 15px;
+    }
+    .img-text {
+        align-items: center;
+        background-color: #F9F9F9;
+        border: 1px solid #e5e7e9;
+        margin-bottom: 20px;
+    }
+
+    .img-text .text {
+        flex: 1;
+    }
+
+    .wikitabpanel {
+        border: 1px solid #DCDCDC;
+        padding: 0;
+    }
+
+    .wikitabpanel .nav-tabs {
+        margin: -1px 0 0 -1px;
+    }
+
+    .wikitabpanel .nav-tabs > li > a {
+        border-radius: 0;
+    }
+
+    .wikiblock-tab {
+        max-height: 510px;
+        overflow-y: auto;
+        padding-top: 20px;
+    }
+
+    .wikiblock-tab .img-text img {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+    }
+
+    .wikiblock-tab .img-text .text {
+        padding: 0 15px;
+        max-height: 140px;
+        overflow: hidden;
+    }
+
+    .wikiblock-tab .img-text h4 {
+        line-height: 34px;
+    }
+
+    .wikiblock-tab .img-text .col-md-12, .tab-content .img-text .col-md-4 {
+        padding: 0;
+        line-height: 32px;
+    }
+
+    .wikiblock-tab .img-text p {
+        margin-bottom: 0;
+        line-height: 25px;
+    }
+
+    .wikiblock-tab .img-text p.info {
+        line-height: 35px;
+    }
+
+    .wikiblock-tab .img-text .glyphicon {
+        line-height: 35px;
+        font-size: 20px;
+        color: #FE3266;
+    }
+
+    .tab-content .img-text-box {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .img-text.col-md-6 {
+        width: 40%;
+        margin: 0 5% 20px;
+        padding: 0;
+    }
+
+    .img-text .info {
+        line-height: 19px;
+        font-weight: normal;
+        color: #999;
+    }
+
+    .img-text .col-md-6 {
+        padding: 0;
+    }
+
+    .img-text .rank {
+        position: absolute;
+        left: -16px;
+        top: 0;
+    }
+
+    .wiki-searchbar > span {
+        position: absolute;
+        right: 25px;
+        top: 10px;
+    }
+
+    .rank-tab > h4 {
+        border-left: 4px solid #3977AD;
+        margin-left: 3%;
+        padding-left: 13px;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 1200px) {
+        .modal-lg {
+            width: 900px;
+        }
+        .wikiblock-tab{
+            max-height:340px;
+        }
+        .img-text.col-md-6{
+            width:48%;
+            margin: 0 1% 30px;
+        }
+        .wikiblock-tab .img-text h4{
+            font-size: 14px;
+        }
+        .wikiblock-tab .img-text img{
+            width:120px;
+            height: 120px;
+        }
+        .wikiblock-tab .img-text .text{
+            max-height:120px;
+        }
+        .wikiblock-tab .img-text .glyphicon{
+            margin-right: 15px;
+        }
+        .img-text .rank{
+            left:0;
+            top: -23px;
+        }
+        .rank-tab > h4{
+            margin-left:11px;
+            margin-bottom:32px;
+        }
+    }
+    @media (min-width: 1200px) {
+        .modal-lg {
+            width: 1170px;
+        }
+    }
+</style>
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">WIKI模块</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <form role="form">
+                    <div class="form-group clearfix">
+                        <label class="control-label sr-only">模块名称</label>
+                        <div class="col-xs-4 col-xs-offset-4 wiki-searchbar">
+                            <input type="text" ng-model="moduleName" class="form-control" placeholder="模块名">
+                            <span ng-click="getByName()" class="glyphicon glyphicon-search text-muted"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div role="tabpanel" class="col-md-10 col-md-offset-1 wikitabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#wikiBlockListView" ng-click="getHot()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">热门</a>
+                        </li>
+                        <li role="presentation" class="dropdown">
+                            <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents" aria-expanded="false">Mod分类 <span class="caret"></span></a>
+                            <ul class="dropdown-menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
+                                <li><a href="#wikiBlockListView" ng-click="getClassify()" role="tab" data-toggle="tab" aria-controls="wikiBlockListView" aria-expanded="true">全部</a></li>
+                                <li ng-repeat="classify in moduleClassifyList">
+                                    <a href="#wikiBlockListView" ng-click="getClassify(classify.name)" role="tab" data-toggle="tab" aria-controls="wikiBlockListView" aria-expanded="false">{{classify.name}}</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="presentation">
+                            <a href="#wikiBlockListView" ng-click="getAll()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">排行榜</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#wikiBlockListView" ng-click="getFavorite()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">收藏</a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content col-md-12 wikiblock-tab">
+                        <div role="tabpanel" class="tab-pane active" id="wikiBlockListView">
+                            <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
+                                <img ng-src="{{wikiBlock.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
+                                <div class="text">
+                                    <h4>
+                                        <a href="#">{{wikiBlock.name}}</a>
+                                        <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a>
+                                    </h4>
+                                    <p class="info">
+                                        热度：{{wikiBlock.useCount}} <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon glyphicon-star-empty text-danger"></span>
+                                    </p>
+                                    <p>{{wikiBlock.desc}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="modal-footer">-->
+    <!--<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="no()">否</button>-->
+    <!--<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="yes()">是</button>-->
+    <!--</div>-->
+</div>

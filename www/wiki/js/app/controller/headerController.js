@@ -2,54 +2,118 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/util'], function (app, util) {
-    app.controller('headerController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
+define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+    app.controller('headerController',['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         console.log("headerController");
+        //$scope.isLogin = Account.isAuthenticated();
+        $scope.urlObj = {};
 
-        // 信息提示框
-        $("#messageTipCloseId").click(function () {
-            Message.hide();
-        });
+        // 用户收藏
+        $scope.getFavoriteList = function() {
+            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+                //console.log(data);
+                $scope.favoriteWebsiteObj = data;
+            });
+            
+        }
+        function init() {
+            var urlObj = util.parseUrl();
+            $scope.isWikiPage = urlObj.username == 'wiki';
 
-        $scope.isLogin = Account.isAuthenticated();
-        $scope.user = Account.getUser();
+            if (!config.localEnv) {
+                $scope.urlObj.username = urlObj.username;
+                $scope.urlObj.sitename = urlObj.sitename;
+                $scope.urlObj.pagename = urlObj.pagename;
+                if (urlObj.username != 'wiki') {
+                    if (urlObj.sitename) {
+                        util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName',{websiteName:urlObj.sitename}, function (data) {
+                            $scope.userSitePageList = data || [];
+                        });
+                    }
+                }
+            }
 
+            if (Account.isAuthenticated()) {
+                // 用户站点
+                if (urlObj.username != 'wiki') {
+                    util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId:$scope.user._id}, function (data) {
+                        $scope.userSiteList = data || [];
+                    });
+                } else {
+                    $scope.userSiteList = [{name:'home'},{name:'login'},{name:'userCenter'}];
+                }
+
+                // 用户收藏
+                util.post(config.apiUrlPrefix + 'user_visit_history/getCurrentDay',{userId:$scope.user._id}, function (data) {
+                    $scope.visitHistoryList = data.visitList;
+                });
+            }
+        }
+        
+        $scope.$watch('$viewContentLoaded', init);
+
+        $scope.selectSite = function (site) {
+            $scope.urlObj.sitename = site.name;
+            $scope.urlObj.pagename = undefined;
+            $scope.goUrlSite();
+
+            //util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteId', {websiteId:site._id}, function (data) {
+            //    $scope.userSitePageList = data;
+            //});
+        }
+
+        $scope.selectPage = function (page) {
+            $scope.urlObj.pagename = page.name;
+            $scope.goUrlSite();
+        }
+
+        $scope.goUrlSite = function () {
+            var url = '/' + $scope.urlObj.username;
+            url += '/' + ($scope.urlObj.sitename || $scope.urlObj.username);
+            if ($scope.urlObj.pagename || $scope.urlObj.username != 'wiki')
+                url += '/' + ($scope.urlObj.pagename || 'index' );
+            util.goUserSite(url);
+        }
+
+        $scope.goUserSite = function (username) {
+            if (username == 'wiki') {
+                util.goUserSite('/' + username + '/home');
+            } else {
+                util.goUserSite('/' + username + '/' + username);
+            }
+        }
+
+        // 页面编辑页面
+        $scope.goWikiEditorPage = function() {
+            storage.sessionStorageSetItem("urlObj", util.parseUrl());
+            util.go("wikiEditor")
+        }
+        
         $scope.goLoginPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/login";
+            util.go("login");
         };
 
         $scope.goRegisterPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/home";
+            util.go("home");
         };
 
         $scope.goHomePage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/home";
+            util.go("home");
         };
 
-        $scope.goUserCenterPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/userCenter";
-        };
-
-        $scope.goWebsitePage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/website";
-        };
-
-        $scope.goGitVersionPage = function () {
-            window.location.href=config.frontEndRouteUrl + "#/gitVersion";
-        };
-
-        $scope.goPersonalPage = function () {
-            if (!$scope.isLogin) {
-                Message.info("请先登录!!!");
-                return;
+        $scope.goUserCenterPage = function (contentType) {
+            if (window.location.pathname == '/wiki/userCenter') {
+                $rootScope.$broadcast('userCenterContentType', contentType);
+            } else {
+                storage.sessionStorageSetItem('userCenterContentType', contentType);
+                util.go("userCenter");
             }
-            util.goUserSite('/' + $scope.user.username);
         };
 
         $scope.logout = function () {
             Account.logout();
-            $scope.isLogin = false;
-            window.location.href= config.frontEndRouteUrl + "#/home";
+            $rootScope.isLogin = false;
+            util.go('home');
         };
 
         $scope.$on("onUserProfile", function (event, user) {
@@ -59,7 +123,10 @@ define(['app', 'helper/util'], function (app, util) {
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             console.log("isAuthenticated");
-            $scope.isLogin = bAuthenticated;
+        });
+
+        $('.nav-tabs > li > a').hover(function() {
+            $(this).tab('show');
         });
     }]);
 });

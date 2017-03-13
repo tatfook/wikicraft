@@ -2,26 +2,69 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
+define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (app, storage, util, dataSource) {
     console.log("accountFactory");
-    app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github',function ($auth, $rootScope, $uibModal, github) {
+    app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github', 'Message', function ($auth, $rootScope, $uibModal, github, Message) {
+        // 初始化github
+        function initGithub(user) {
+            /*
+            user.githubToken = {
+                token_type: 'bearer',
+                access_token: 'c4b9a75d8c6c9fd1db081319723d1713f70f6f74'
+            };
+            user.githubName = 'wxaxiaoyao';
+             */
+            if (user && user.githubToken && !github.isInited()) {
+                github.init(user.githubToken, user.githubName, user.githubRepoName, function () {
+                    dataSource.registerDataSource('github', github);
+                    $rootScope.$broadcast("onDataSource", github);
+                    console.log("github init success");
+                }, function (response) {
+                    //console.log(response);
+                    if (response.status == 401) {  // Token失效
+                        Message.info('GITHUB授权过期，请重新认证!!!');
+                        console.log('GITHUB授权过期，请重新认证!!!');
+                        user.githubToken = undefined;
+                        account.setUser(user);
+                    }
+                    console.log("github init failed");
+                });
+            }
+        }
+
         var account = {
-            user:undefined,
+            user: undefined,
             // 获取用户信息
-            getUser: function () {
-                return this.user || storage.localStorageGetItem("userinfo");
+            getUser: function (cb, errcb) {
+                var userinfo = this.user || storage.localStorageGetItem("userinfo");
+                if (userinfo) {
+                    cb && cb(userinfo);
+                    return userinfo;
+                }
+
+                if (!userinfo && this.isAuthenticated()) {
+                    util.post(config.apiUrlPrefix + 'user/getProfile', function (data) {
+                        cb && cb(data);
+                    }, errcb)
+                }
+
+                return userinfo;
             },
+
             // 设置用户信息
             setUser: function (user) {
+                if (!user) {
+                    return;
+                }
                 this.user = user;
-
-                init(user);
-
-                storage.localStorageSetItem("userinfo", this.user);
+                console.log(user);
+                initGithub(user);
+                
                 this.send("onUserProfile", this.user);
+                storage.localStorageSetItem("userinfo", this.user);
             },
             // 广播 TODO 需了解angualar 监听相关功能
-            send: function(msg, data) {
+            send: function (msg, data) {
                 $rootScope.$broadcast(msg, data);
             },
 
@@ -31,9 +74,9 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
             },
 
             // 确保认证，未认证跳转登录页
-            ensureAuthenticated: function(cb) {
+            ensureAuthenticated: function (cb) {
                 if (!this.isAuthenticated()) {
-                    window.location.href = "/#/login";
+                    window.location.href = "/wiki/login";
                     return;
                 }
                 cb && cb();
@@ -46,22 +89,27 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
             },
 
             // github s授权认证
-            githubAuthenticate: function() {
+            githubAuthenticate: function (cb, errcb) {
                 self = this;
 
                 var githubAuth = function () {
                     $auth.authenticate("github").then(function (response) {
                         $auth.setToken(response.data.token);
+                        console.log(response.data.userInfo);
                         self.setUser(response.data.userInfo);
-                        console.log("github认证成功!!!");
-                    }, function(){
+                        cb && cb();
+                        Message.info("github认证成功!!!");
+                        console.log("github认证成功!!!")
+                    }, function () {
+                        errcb && errcb();
+                        Message.warning("github认证失败!!!");
                         console.log("github认证失败!!!")
                     });
                 }
                 // 如果已经认证就不再提示认证
                 if (self.getUser().githubToken) {
                     githubAuth();
-                    return ;
+                    return;
                 }
 
                 app.registerController('modalGithubAuthCtrl', function ($scope, $uibModalInstance) {
@@ -85,22 +133,50 @@ define(['app', 'helper/storage', 'helper/util'], function (app, storage) {
                     //console.log('error:' + error);
                     return;
                 });
-                return ;
+                return;
             },
-        }
 
-        // 初始化github
-        function initGithub(user) {
-            if (user && user.githubToken && !github.isInited()) {
-                github.init(user.githubToken, user.githubName, undefined);
+            /*
+             isRequireSignin: function () {
+             return this.requireSignin;
+             },
+
+             setRequireSignin: function (bNeedSignin) {
+             this.requireSignin = bNeedSignin;
+             },
+             */
+
+            linkGithub: function () {
+                if (this.isAuthenticated()) {
+                    this.user.githubDS = 1;
+                    this.updateProfile(this.user, function () {
+                        account.githubAuthenticate();
+                    });
+                }
+            },
+            unlinkGithub: function () {
+                if (this.isAuthenticated()) {
+                    this.user.githubDS = 0;
+                    this.updateProfile(this.user);
+                }
+            },
+            updateProfile: function (userinfo, cb, errcb) {
+                var self = this;
+                util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", userinfo, function (data) {
+                    self.setUser(data);
+                    Message.success("用户信息修改成功");
+                    cb && cb(data);
+                }, function () {
+                    Message.success("用户信息修改失败");
+                    errcb && errcb();
+                });
             }
         }
 
-        function init(user) {
-            initGithub(user)
-        }
+        account.getUser(function (user) {
+            account.setUser(user);
+        });
 
-        init(account.getUser());
         return account;
     }]);
 });

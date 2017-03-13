@@ -1,7 +1,64 @@
 @import "../../js/lib/bootstrap/css/bootstrap.min.css";
 @import "../../js/lib/angular-ui-select/select.min.css";
+@import "../../js/lib/angular-toggle-switch/style/default/angular-toggle-switch.css";
 @import "editor.css";
+@import "markdownit.css";
 
 a:hover {
     cursor: pointer;
+}
+.modal-dialog.modal-xxl {
+    width:90%;
+    height:90%;
+}
+.modal-xxl > .modal-content {
+    height:100%;
+    display:flex;
+    display:-webkit-flex;
+    display:-moz-flex;
+    display:-ms-flex;
+    display:-o-flex;
+    flex-direction:column;
+    -webkit-flex-direction:column;
+    -moz-flex-direction:column;
+    -ms-flex-direction:column;
+    -o-flex-direction:column;
+}
+    .modal-xxl > .modal-content > .modal-body {
+        flex-basis:100%;
+        -webkit-flex-basis:100%;
+        -moz-flex-basis:100%;
+        -ms-flex-basis:100%;
+        -o-flex-basis:100%;
+    }
+
+#__WikiPageContentContainer__{
+    width: auto;
+    padding:0;
+}
+body{
+    font-family: "微软雅黑";
+    padding-top: 52px;
+}
+h1{
+    font-size: 48px;
+    font-weight: bold;
+}
+h2{
+    font-size: 24px;
+    font-weight: bold;
+}
+h3{
+    font-size: 18px;
+    font-weight: bold;
+}
+h4{
+    font-size: 16px;
+    font-weight: bold;
+}
+textarea{
+    resize: none;
+    width: 100%;
+    border: 1px solid #CCC;
+    border-radius: 4px;
 }

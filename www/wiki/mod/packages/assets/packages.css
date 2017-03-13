@@ -407,6 +407,12 @@ body {
 .packages-install .install-infor-sm {
   padding-top: 5px;
 }
+.packages-install .install-infor-sm > p {
+  max-width: 95%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .packages-install .install-infor-sm .infor-main .infor-details {
   width: 100%;
 }
@@ -569,6 +575,7 @@ body {
 }
 .packages-projects .projects .projects-list .item .project-infor {
   float: left;
+  width: 54%;
 }
 .packages-projects .projects .projects-list .item .project-infor a {
   font-size: 18px;
@@ -582,12 +589,13 @@ body {
 .packages-projects .projects .projects-list .item .project-infor p {
   font-size: 14px;
   margin: 0px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .packages-projects .projects .projects-list .item .project-downloads {
-  float: left;
   font-size: 14px;
-  margin-top: 26px;
-  margin-left: 10px;
 }
 .packages-projects .projects .projects-list .item .project-operation {
   float: right;
