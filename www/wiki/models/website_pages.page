@@ -383,7 +383,7 @@ function website_pages:api_getDetailInfo(params)
 	-- 添加访问记录
 	if params.userId then
 		local userVisitHistoryDB = models.user_visit_history:new()
-		userVisitHistoryDB:api_upsert({userId=userinfo._id, websiteName=siteinfo.name,url=pageinfo.url})
+		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=siteinfo.name,url=pageinfo.url})
 	end
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo})
