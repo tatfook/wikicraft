@@ -102,8 +102,8 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            var nowpage=window.location.hash.substring(2);
-            if (nowpage!="home"){
+            nowPage=window.location.hash.substring(2);
+            if (nowPage!="home"){
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: ''
