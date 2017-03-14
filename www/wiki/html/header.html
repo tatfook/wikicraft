@@ -19,6 +19,10 @@
         border-color: #FFF;
         margin-bottom: 0;
     }
+    .navbar-default li.icon {
+        padding: 12px 15px;
+        cursor: pointer;
+    }
     .navbar-default .form-control {
         margin-top: 10px;
         width: 200px;
@@ -250,9 +254,9 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">WIKICRAFT</a> -->
+                    <!-- <a class="navbar-brand" href="#">KEEPWORK</a> -->
                     <div class="dropdown navbar-brand">
-                        <a ng-click="goHomePage()">WIKICRAFT <a class="dropdown-toggle" data-toggle="dropdown"
+                        <a ng-click="goHomePage()">KEEPWORK <a class="dropdown-toggle" data-toggle="dropdown"
                                                                 role="button" aria-haspopup="true"
                                                                 aria-expanded="false"><span
                                 class="caret"></span></a></a>
@@ -295,9 +299,9 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
-                        <li><a ng-click="goWikiEditorPage()" class="glyphicon glyphicon-edit"></a></li>
-                        <li><a href="#" class="glyphicon glyphicon-share"></a></li>
-                        <li><a href="#" class="glyphicon glyphicon-star-empty">{{user.fansCount || 0}}</a></li>
+                        <li class="icon"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
+                        <li class="icon"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
+                        <li class="icon"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted"> 34</span></li>
                         <li class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="true">
