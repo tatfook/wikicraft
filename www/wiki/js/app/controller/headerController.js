@@ -54,7 +54,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 }
 
                 // 用户收藏
-                util.post(config.apiUrlPrefix + 'user_visit_history/getCurrentDay',{userId:$scope.user._id}, function (data) {
+                util.post(config.apiUrlPrefix + 'user_visit_history/get',{userId:$scope.user._id}, function (data) {
                     $scope.visitHistoryList = data.visitList;
                 });
             }
