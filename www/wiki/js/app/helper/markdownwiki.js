@@ -469,8 +469,8 @@ define([
         }
 
         // update result from current editor, this is usually called automatically whenever editor content changed.
-        mdwiki.updateResult = function () {
-            options.changeCallback && options.changeCallback();
+        mdwiki.updateResult = function (cm, changeObj) {
+            options.changeCallback && options.changeCallback(cm, changeObj);
             timer && clearTimeout(timer);
             timer = setTimeout(function () {
                 var source = GetEditorText && GetEditorText();

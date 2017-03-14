@@ -65,7 +65,7 @@ function wiki_module_favorite:api_favorite(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({['+userId+moduleId']={params.userId, params.moduleId}}, resume)
+	self:db():insertOne({['+userId+moduleId']={params.userId, params.moduleId}}, params, resume)
 	local err, data = yield()
 
 	self:updateFavorite(params.moduleId)	

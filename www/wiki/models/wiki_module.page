@@ -12,8 +12,8 @@ local wiki_module = inherit(models.abstract.base, gettable("models.wiki_module")
 wiki_module.db_name = "wiki_module"
 
 -- 常量定义
-local WIKI_MODULE_FLAG_DEFAULT = 1
-local WIKI_MODULE_FLAG_HOT = 2
+local WIKI_MODULE_FLAG_DEFAULT = 0
+local WIKI_MODULE_FLAG_HOT = 1
 
 function wiki_module:ctor()
 	self:addfield("name", "string")          -- 模块名
@@ -32,8 +32,16 @@ function wiki_module:api_upsert(params)
 	if not params.wikiCmdName then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	params.useCount = nil
-	params.favoriteCount = nil
+	self:db():findOne({['+wikiCmdName']={params.wikiCmdName}}, resume)
+	local err, data = yield()
+	
+	if data then 
+		params.useCount = nil
+		params.favoriteCount = nil
+	else 
+		params.useCount = 0
+		params.favoriteCount = 0
+	end
 	self:db():insertOne({['+wikiCmdName'] = {params.wikiCmdName}}, params, resume)
 	
 	return errors:wrap(yield())
@@ -58,7 +66,7 @@ function wiki_module:api_getById(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({_id=params.moduleId}, resume)
+	self:db():findOne({["_id"]={params.moduleId}}, resume)
 	
 	return errors:wrap(yield())
 end

@@ -203,7 +203,9 @@
                                         <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a>
                                     </h4>
                                     <p class="info">
-                                        热度：{{wikiBlock.useCount}} <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon glyphicon-star-empty text-danger"></span>
+                                        热度：{{wikiBlock.useCount}} <span ng-click="favoriteWikiBlock(wikiBlock._id)"
+                                                                        class="pull-right glyphicon  text-danger"
+                                                                        ng-class="labelItem == 'favorite' ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
                                     </p>
                                     <p>{{wikiBlock.desc}}</p>
                                 </div>

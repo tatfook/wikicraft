@@ -30,7 +30,7 @@ define([
         $scope.selectWikiBlock = function (wikiBlock) {
             console.log(wikiBlock);
             // 增加模块使用计数
-            util.post(config.apiUrlPrefix, 'wiki_module/updateUseCount', {moduleId:wikiBlock._id});
+            util.post(config.apiUrlPrefix + 'wiki_module/updateUseCount', {moduleId:wikiBlock._id});
             $uibModalInstance.close(wikiBlock);
         }
 
@@ -80,11 +80,21 @@ define([
 
         $scope.favoriteWikiBlock = function (moduleId) {
             var target=$(event.target);
+            var isFavorite = true;
             if (target.hasClass("glyphicon-star")) {
                 // 取消收藏
                 util.post(config.apiUrlPrefix + 'wiki_module_favorite/unfavorite', {userId:$scope.user._id, moduleId:moduleId}, function () {
                     Message.info("取消收藏");
                 });
+                if ($scope.labelItem == 'favorite') {
+                    var wikiBlockList = [];
+                    for (var i = 0; i < $scope.wikiBlockList.length; i++) {
+                        if ($scope.wikiBlockList[i]._id != moduleId) {
+                            wikiBlockList.push($scope.wikiBlockList[i]);
+                        }
+                        $scope.wikiBlockList = wikiBlockList;
+                    }
+                }
             } else {
                 // 收藏模块
                 util.post(config.apiUrlPrefix + 'wiki_module_favorite/favorite', {userId:$scope.user._id, moduleId:moduleId}, function () {
@@ -96,24 +106,29 @@ define([
         }
         // 获得全部
         $scope.getAll = function () {
+            $scope.labelItem = 'all';
             getWikiBlockList('all');
         }
         // 获取用户收藏
         $scope.getFavorite = function () {
+            $scope.labelItem = 'favorite';
             getWikiBlockList('favorite');
         }
         // 获得热门
         $scope.getHot = function () {
+            $scope.labelItem = 'hot';
             getWikiBlockList('hot');
         }
         // 分类获取
         $scope.getClassify = function (classifyName) {
             $scope.classifyName = classifyName;
+            $scope.labelItem = 'classify';
             getWikiBlockList('classify')
         }
         // 通过模块名搜索
         $scope.getByName = function () {
             $scope.currentPage = 1;
+            $scope.labelItem = 'name';
             getWikiBlockList('name');
         }
         // 回车搜索

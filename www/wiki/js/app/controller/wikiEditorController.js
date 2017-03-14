@@ -427,6 +427,8 @@ define([
                         currentWebsitePage.timestamp = currentWebsitePage.timestamp || curTime;
                         if (page.timestamp > currentWebsitePage.timestamp) {
                             currentWebsitePage.content = page.content;
+                            currentWebsitePage.isModify = true;
+                            initTree();
                         }
                     }
                     setEditorValue();
@@ -488,13 +490,36 @@ define([
             }
 
             $scope.openWikiBlock = function () {
-                console.log('openWikiBlock');
+                function formatWikiCmd(text) {
+                    var lines = text.split('\n');
+                    var startPos = undefined, endPos = undefined;
+                    for (var i = 0; i < lines.length; i++) {
+                        lines[i] = lines[i].replace(/^[\s]*/, '');
+                        if (lines[i].indexOf('```') == 0) {
+                            if (startPos == undefined) {
+                                startPos = i;
+                            } else {
+                                endPos = i;
+                            }
+                        }
+                    }
+                    if (startPos == undefined || endPos == undefined)
+                        return text;
+
+                    var paramLines = lines.slice(startPos+1, endPos);
+                    var paramObj = angular.fromJson(paramLines.join('\n'));
+                    var paramsText = angular.toJson(paramObj, 4);
+                    var newText = lines.slice(0,startPos+1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                    //console.log(newText);
+                    return newText;
+                }
+                //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
                     size: 'lg'
                 }, function (wikiBlock) {
                     //console.log(result);
-                    editor.replaceSelection(wikiBlock.content);
+                    editor.replaceSelection(formatWikiCmd(wikiBlock.content));
                 }, function (result) {
                     console.log(result);
                 });
@@ -554,8 +579,10 @@ define([
                 if (!isEmptyObject(currentWebsitePage)) {//修改
                     currentWebsitePage.content = content;
                     currentWebsitePage.timestamp = (new Date()).getTime();
-                    currentWebsitePage.isModify = undefined;
-                    $http.put(config.apiUrlPrefix + 'website_pages', currentWebsitePage).then(function (response) {
+                    var savePage = angular.copy(currentWebsitePage);
+                    savePage.isModify = undefined;
+                    $http.put(config.apiUrlPrefix + 'website_pages', savePage).then(function (response) {
+                        currentWebsitePage.isModify = undefined;
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         initTree();
                         Message.info("文件已保存到服务器");
@@ -1003,7 +1030,7 @@ define([
                 currentWebsitePage.content = content;
                 currentWebsitePage.timestamp = (new Date()).getTime();
                 var websitePage = angular.copy(currentWebsitePage);
-                websitePage.isModify = undefined;
+                //websitePage.isModify = undefined;
                 util.http('POST', config.apiUrlPrefix + 'website_pages/upsert', websitePage, function (data) {
                     storage.indexedDBDeleteItem(websitePage.url);
                     if ($scope.dataSource) {
@@ -1023,9 +1050,7 @@ define([
                     storage.indexedDBSetItem(currentWebsitePage);
                     errcb && errcb();
                 });
-
                 // 数据源提交
-
             }
 
             function initEditor() {
@@ -1076,7 +1101,7 @@ define([
                     //fullScreen:true,
                     //括号匹配
                     matchBrackets: true,
-                    lint: true,
+                    // lint: true,
                     extraKeys: {
                         "Alt-F": "findPersistent",
                         "Ctrl-F": "find",
@@ -1198,15 +1223,24 @@ define([
                 setTimeout(function () {
                     var wikiEditorContainer = $('#wikiEditorContainer')[0];
                     var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
-                    console.log(wikiEditorContainer.offsetTop);
+                    //console.log(wikiEditorContainer.offsetTop);
                     var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                     editor.setSize('auto', height);
                     $('#wikiEditorContainer').css('height', height);
                     editor.focus();
                 });
 
+                editor.on("beforeChange", function (cm, changeObj) {
+                    for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
+                        cm.getDoc().removeLineClass(i,'wrap','CodeMirrorFold');
+                    }
+                });
                 // 编辑器改变内容回调
-                function changeCallback() {
+                function changeCallback(cm, changeObj) {
+                    if (changeObj.origin == "redo" || changeObj.origin == "paste" || changeObj.origin == "undo") {
+                        editor.foldCode(changeObj.from, null, 'fold');
+                    }
+
                     var content = editor.getValue();
                     if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content) {
                         currentWebsitePage.isModify = true;
