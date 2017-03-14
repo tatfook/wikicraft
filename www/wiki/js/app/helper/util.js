@@ -239,5 +239,12 @@ define(['jquery'], function ($) {
 
     }
 
+    util.isOfficialPage = function () {
+        var pathname = window.location.pathname;
+        if (pathname.indexOf('/wiki/') == 0 || pathname == '/') {
+            return true;
+        }
+        return false;
+    }
     return util;
 });

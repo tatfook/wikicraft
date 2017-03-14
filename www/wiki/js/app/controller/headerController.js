@@ -7,8 +7,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
-        var nowPage;
-
+        $scope.isIconShow = !util.isOfficialPage();
         // 通过站点名搜索
         $scope.searchWebsite = function () {
             storage.sessionStorageSetItem("siteshowParams", {siteshowType:'search', websiteName:$scope.search});
@@ -102,13 +101,11 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            nowPage=window.location.hash.substring(2);
-            if (nowPage!="home"){
+            if (window.location.pathname !="/wiki/home" && window.location.pathname !="/"){
                 modal('controller/loginController', {
                     controller: 'loginController',
-                    size: ''
-                }, function (login) {
-                    console.log(login);
+                }, function (result) {
+                    console.log(result);
                     // nowPage.replaceSelection(login.content);
                 }, function (result) {
                     console.log(result);

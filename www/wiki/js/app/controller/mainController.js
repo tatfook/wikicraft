@@ -7,7 +7,6 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
 
     app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
         function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github, modal) {
-            $scope.isIconShow=true;
             console.log("mainController");
             // 初始化基本信息
             function initBaseInfo() {
@@ -45,6 +44,14 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     Message.hide();
                 });
 
+                // 底部高度自适应
+                var winH=$(window).height();
+                var headerH=52;
+                var footerH=100;
+                var minH=winH-headerH-footerH;
+                var w = $("#__mainContent__");
+                w.css("min-height", minH);
+
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $scope.$on('$stateChangeStart', function (evt, toState, toParams, fromState, fromParams) {
                     // 如果需要阻止事件的完成
@@ -81,10 +88,6 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
                 var urlObj = util.parseUrl();
-                nowPage=window.location.hash.substring(2);
-                if (nowPage=="home"){
-                    $scope.isIconShow=false;
-                }
                 // 置空用户页面内容
                 //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
@@ -131,12 +134,6 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 initBaseInfo();
                 initView();
                 initContentInfo();
-                var winH=$(window).height();
-                var headerH=52;
-                var footerH=100;
-                var minH=winH-headerH-footerH;
-                var w = $("#__mainContent__");
-                w.css("min-height", minH);
             }
 
             init();

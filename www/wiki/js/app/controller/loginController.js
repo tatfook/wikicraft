@@ -5,11 +5,15 @@
 define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
     app.registerController('loginController', ['$scope', '$auth', 'Account', function ($scope, $auth, Account) {
         //$scope.errMsg = "用户名或密码错误";
-        $scope.isModal=true;
-        var nowpage=window.location.hash.substring(2);
-        if (nowpage=="login"){
-            $scope.isModal=false;
+        $scope.isModal=false;
+
+        function init() {
+            if (window.location.pathname !="/wiki/login"){
+                $scope.isModal=true;
+            }
         }
+
+        $scope.$watch('$viewContentLoaded', init);
 
         $scope.goRegisterPage = function () {
             util.go('home');
@@ -35,7 +39,12 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                     Account.githubAuthenticate();
                 }
                 */
-                util.go('home');
+                if ($scope.isModal) {
+                    $scope.$close(data.userInfo);
+                } else {
+                    util.go('home');
+                }
+
             }, function (error) {
                 $scope.errMsg = error.message;
                 $("#total-err").removeClass("visible-hidden");
@@ -51,11 +60,16 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 console.log("github认证成功!!!");
                 $auth.setToken(response.data.token);
                 Account.setUser(response.data.userInfo);
-                util.go('website');
+                if ($scope.isModal) {
+                    $scope.$close(response.data.userInfo);
+                } else {
+                    util.go('website');
+                }
             }, function () {
                 console.log("github认证失败!!!");
             });
         }
+
         $(document).keyup(function (event) {
             if(event.keyCode=="13"){
                 $scope.login();
