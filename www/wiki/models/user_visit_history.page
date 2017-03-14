@@ -32,7 +32,7 @@ function user_visit_history:api_upsert(params)
 end
 
 -- 获得用户访问记录
-function user_visit_history:api_get()
+function user_visit_history:api_get(params)
 	local skip, limit = util:pagination(params)
 	local key = ''
 	local value = {gt=""}
