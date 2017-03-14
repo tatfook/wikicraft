@@ -25,6 +25,7 @@ define(['app', 'require'], function (app, require) {
             'preview':{},
             'worksApply':{},
             'knowledge':{},
+            'VIP':{}
         };
 
         for (var key in routerMap) {

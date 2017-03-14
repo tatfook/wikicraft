@@ -4,8 +4,12 @@
 
 define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
     app.registerController('loginController', ['$scope', '$auth', 'Account', function ($scope, $auth, Account) {
-        console.log("loginController");
         //$scope.errMsg = "用户名或密码错误";
+        $scope.isModal=true;
+        var nowpage=window.location.hash.substring(2);
+        if (nowpage=="login"){
+            $scope.isModal=false;
+        }
 
         $scope.goRegisterPage = function () {
             util.go('home');
