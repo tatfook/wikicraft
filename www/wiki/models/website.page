@@ -273,11 +273,11 @@ end
 
 -- 通过站点名获得站点
 function website:api_getByName(params)
-	if not params.websiteName then
+	if (not params.websiteName) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
-	self:db():findOne({name=params.websiteName}, resume)
+	self:db():findOne({['+username+name']={params.username, params.websiteName}}, resume)
 	local err, data = yield()
 	
 	return errors:wrap(err, data)		

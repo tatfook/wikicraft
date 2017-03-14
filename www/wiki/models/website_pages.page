@@ -360,7 +360,7 @@ function website_pages:api_getDetailInfo(params)
 	end
 
 	local websiteDB = models.website:new()
-	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename}).data
+	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename,username=params.username}).data
 	if not siteinfo then
 		return errors:wrap(errors.NOT_FOUND)
 	end
