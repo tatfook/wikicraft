@@ -215,7 +215,7 @@
                     <span id="webname-err" class="text-danger visible-hidden">*{{errMsg}}</span>
                     <label class="sr-only" for="webName">webName</label>
                     <input ng-model="username" type="text" class="form-control" id="webName" placeholder="个人网站名">
-                    <p class="web-info">个人网址：http://paracraft.wiki/{{username+"/"+username}}</p>
+                    <p class="web-info" ng-show="username">个人网址：http://paracraft.wiki/{{username?username+"/"+username :""}}</p>
                 </div>
                 <span id="total-err" class="text-danger visible-hidden">*{{errMsg}}</span>
                 <a ng-click="register()" class="btn btn-primary btn-lg btn-block">注册</a>

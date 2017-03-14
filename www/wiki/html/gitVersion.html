@@ -1,15 +1,66 @@
 <link href="/wiki/js/lib/angular-ui-select/select.min.css" rel="stylesheet">
+<style>
+    .git-version {
+        padding: 0;
+        margin-top: 80px;
+    }
+    .git-version .panel-heading{
+        background-color: #FFF;
+        color: #666;
+    }
+    .git-version-form .form-group {
+        margin-bottom: 20px;
+    }
+    .git-version-form .control-label {
+        font-size: 16px;
+        color: #666;
+        font-weight: normal;
+    }
+    .git-version-form .form-group input {
+        height: 42px;
+    }
+    .git-version-form .btn-box {
+        text-align: center;
+    }
+    .git-version-form .btn-box .btn-primary {
+        font-size: 16px;
+        padding: 10px 33px;
+    }
+    .git-version-form .ui-select-toggle {
+        height: 42px;
+        line-height: 28px;
+    }
+    .git-version-form .btn-calender {
+        padding: 7.5px 16px;
+    }
+    .git-version-form .btn-calender:hover{
+        background-color: #DCDCDC;
+        border-color: #DCDCDC;
+    }
+    .git-version table > thead > tr > th {
+        text-align: center;
+        font-size: 16px;
+        font-weight: normal;
+        color: #666;
+    }
+    .git-version table>caption{
+        text-align: center;
+        margin-bottom:12px;
+        font-size: 16px;
+        color: #666;
+    }
+</style>
 
 <div ng-controller="gitVersionController" class="container">
-    <div class="panel panel-default" style="margin: 20px auto">
+    <div class="panel panel-default col-md-12 git-version">
         <div class="panel-heading">
-            站点版本管理
+            <h4>站点版本管理</h4>
         </div>
         <div class="panel-body">
-            <form role="form" class="form-horizontal">
+            <form role="form" class="form-horizontal git-version-form">
                 <div class="form-group">
                     <label class="control-label col-md-2">文件路径：</label>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <!--input type="text" class="form-control" ng-model="path"-->
                         <div>
                             <ui-select ng-model="seleected" ng-disabled on-select="pathSelected($item, $model)">
@@ -23,19 +74,19 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-2">起始sha：</label>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <input placeholder="sha过滤(选填)" type="text" class="form-control" ng-model="sha">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-2">起始日期：</label>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="input-group">
                             <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
                                    ng-model="dtStart" is-open="dtStartOpened" popup-placement="bottom-right"/>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="dtStartOpen()">
-                                    <i class="glyphicon glyphicon-calendar"></i>
+                                <button type="button" class="btn btn-default btn-calender" ng-click="dtStartOpen()">
+                                    <img ng-src="{{imgsPath+'icon/wiki_calender.png'}}" alt="">
                                 </button>
                             </span>
                         </div>
@@ -43,29 +94,29 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-2">终止日期：</label>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="input-group">
                             <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
                                    ng-model="dtEnd" is-open="dtEndOpened" popup-placement="bottom-right"/>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="dtEndOpen()">
-                                    <i class="glyphicon glyphicon-calendar"></i>
+                                <button type="button" class="btn btn-default btn-calender" ng-click="dtEndOpen()">
+                                    <img ng-src="{{imgsPath+'icon/wiki_calender.png'}}" alt="">
                                 </button>
                             </span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-offset-2 col-md-8">
-                        <button class="btn btn-default" ng-click="submit()">查询</button>
+                    <div class="btn-box col-md-8">
+                        <button class="btn btn-primary" ng-click="submit()">查询</button>
                     </div>
                 </div>
             </form>
         </div>
 
-        <div style="margin: 20px;">
+        <div style="margin: 20px;" class="col-md-8">
             <table class="table table-bordered">
-                <div style="display: flex;justify-content: center; color: darkgray">提交记录</div>
+                <caption>提交记录</caption>
                 <thead>
                 <tr>
                     <th>SHA</th>
