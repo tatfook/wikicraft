@@ -3,10 +3,11 @@
  */
 
 define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    app.controller('headerController',['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
+    app.controller('headerController',['$rootScope','$scope', 'Account', 'Message','modal', function ($rootScope, $scope, Account, Message, modal) {
         console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
+        var nowPage;
 
         // 通过站点名搜索
         $scope.searchWebsite = function () {
@@ -21,7 +22,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 //console.log(data);
                 $scope.favoriteWebsiteObj = data;
             });
-            
+
         }
         function init() {
             if (!$scope.user || !$scope.user._id)
@@ -59,7 +60,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 });
             }
         }
-        
+
         $scope.$watch('$viewContentLoaded', init);
 
         $scope.selectSite = function (site) {
@@ -98,9 +99,23 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
             util.go("wikiEditor")
         }
-        
+
         $scope.goLoginPage = function () {
-            util.go("login");
+            // util.go("login");
+            nowPage=window.location.hash.substring(2);
+            if (nowPage!="home"){
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    size: ''
+                }, function (login) {
+                    console.log(login);
+                    // nowPage.replaceSelection(login.content);
+                }, function (result) {
+                    console.log(result);
+                });
+            }else{
+                util.go("login");
+            }
         };
 
         $scope.goRegisterPage = function () {

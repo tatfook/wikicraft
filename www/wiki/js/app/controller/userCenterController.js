@@ -9,7 +9,8 @@ define(['app',
     'controller/userProfileController',
     'controller/websiteController',
     'controller/dataSourceController',
-], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent) {
+    'controller/myVIPController',
+], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent,myVIPHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
@@ -62,6 +63,7 @@ define(['app',
                 util.html('#userCenterSubPage', websiteHtmlContent, $scope);
             } else if (contentType == 'VIP') {
                 $scope.showItem = 'myVIP';
+                util.html('#userCenterSubPage', myVIPHtmlContent, $scope);
             } else if (contentType == 'dataSource') {
                 $scope.showItem = 'dataSource';
                 util.html('#userCenterSubPage', dataSourceHtmlContent, $scope);

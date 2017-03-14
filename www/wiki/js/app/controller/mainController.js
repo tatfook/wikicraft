@@ -7,6 +7,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
 
     app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
         function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github, modal) {
+            $scope.isIconShow=true;
             console.log("mainController");
             // 初始化基本信息
             function initBaseInfo() {
@@ -80,7 +81,10 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
                 var urlObj = util.parseUrl();
-                //console.log(urlObj);
+                nowPage=window.location.hash.substring(2);
+                if (nowPage=="home"){
+                    $scope.isIconShow=false;
+                }
                 // 置空用户页面内容
                 //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
