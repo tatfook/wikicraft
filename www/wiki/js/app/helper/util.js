@@ -162,8 +162,6 @@ define(['jquery'], function ($) {
             if (data.error.id == 0) {
                 //console.log(data.data);
                 callback && callback(data.data);
-                util.getAngularServices().$rootScope.$broadcast('http');
-                //util.setParentIframeAutoHeight();
             } else {
                 console.log(data);
                 errorCallback && errorCallback(data.error);

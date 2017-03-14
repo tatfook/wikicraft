@@ -4,7 +4,11 @@
 
 define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (app, storage, util, dataSource) {
     console.log("accountFactory");
-    app.factory('Account', ['$auth', '$rootScope', '$uibModal', 'github', 'Message', function ($auth, $rootScope, $uibModal, github, Message) {
+    app.factory('Account', ['$auth', '$rootScope', '$http','$uibModal', 'github', 'Message', function ($auth, $rootScope, $http, $uibModal, github, Message) {
+        var angularService = util.getAngularServices();
+        if (!angularService || !angularService.$http) {
+            util.setAngularServices({$http:$http});
+        }
         // 初始化github
         function initGithub(user) {
             /*
@@ -33,21 +37,26 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         }
 
         var account = {
-            user: undefined,
+            user: {},
             // 获取用户信息
             getUser: function (cb, errcb) {
                 var userinfo = this.user || storage.localStorageGetItem("userinfo");
-                if (userinfo) {
+
+                //console.log(userinfo);
+
+                if (userinfo && userinfo._id && userinfo.username) {
                     cb && cb(userinfo);
                     return userinfo;
                 }
 
-                if (!userinfo && this.isAuthenticated()) {
-                    util.post(config.apiUrlPrefix + 'user/getProfile', function (data) {
+                if ($auth.isAuthenticated()) {
+                    util.post(config.apiUrlPrefix + 'user/getProfile',{}, function (data) {
+                        //console.log(data);
                         cb && cb(data);
-                    }, errcb)
+                    }, function () {
+                        errcb && errcb();
+                    })
                 }
-
                 return userinfo;
             },
 
@@ -57,7 +66,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                     return;
                 }
                 this.user = user;
-                console.log(user);
+                //console.log(user);
                 initGithub(user);
                 
                 this.send("onUserProfile", this.user);
@@ -174,6 +183,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         }
 
         account.getUser(function (user) {
+            //console.log(user);
             account.setUser(user);
         });
 

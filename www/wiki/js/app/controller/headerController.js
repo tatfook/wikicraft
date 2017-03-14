@@ -24,6 +24,9 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             
         }
         function init() {
+            if (!$scope.user || !$scope.user._id)
+                return ;
+
             var urlObj = util.parseUrl();
             $scope.isWikiPage = urlObj.username == 'wiki';
 
@@ -124,8 +127,9 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         };
 
         $scope.$on("onUserProfile", function (event, user) {
-            console.log('onUserProfile');
+            //console.log('onUserProfile');
             $scope.user = user;
+            init();
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {

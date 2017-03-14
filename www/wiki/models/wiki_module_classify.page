@@ -25,7 +25,7 @@ function wiki_module_classify:api_get(params)
 	return errors:wrap(yield())
 end
 
-function wiki_module_classify:api_create(params) 
+function wiki_module_classify:api_upsert(params) 
 	if not params.name then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
