@@ -166,7 +166,10 @@ define(['app',
         // 我的动态
         $scope.clickMyTrends = function () {
             $scope.showItem = 'myTrends';
-            $scope.githubDS = $scope.user.githubDS;
+            $scope.trendsType = "organization";
+            $scope.selectTrendsType = function (trendsType) {
+                $scope.trendsType = trendsType;
+            }
         }
 
         // 我的收藏

@@ -66,7 +66,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 pathname = pathname.replace('/wiki/', '');
                 var pageUrl = 'controller/' + pathname + 'Controller';
                 var htmlContent;
-                //console.log(pageUrl);
+                console.log(pageUrl);
                 require([pageUrl], function (htmlObj) {
                     //console.log(htmlContent);
                     $scope.IsRenderServerWikiContent = true;
@@ -139,9 +139,9 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
             init();
 
             $scope.$on("onUserProfile", function (event, user) {
-                //console.log('onUserProfile');
+                console.log('onUserProfile -- mainController');
                 $scope.user = user;
-                init();
+                //init();
             });
         }]);
 

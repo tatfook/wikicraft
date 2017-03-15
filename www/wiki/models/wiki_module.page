@@ -32,6 +32,7 @@ function wiki_module:api_upsert(params)
 	if not params.wikiCmdName then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+	local err, params = self:validateQuery(params)
 	self:db():findOne({['+wikiCmdName']={params.wikiCmdName}}, resume)
 	local err, data = yield()
 	

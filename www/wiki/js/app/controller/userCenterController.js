@@ -38,8 +38,8 @@ define(['app',
 
         function init() {
             $scope.contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
-            storage.sessionStorageRemoveItem('userCenterContentType');
-            //console.log($scope.contentType);
+            //storage.sessionStorageRemoveItem('userCenterContentType');
+            console.log($scope.contentType);
             $scope.selectContentType($scope.contentType);
             //$scope.$apply();
 

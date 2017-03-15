@@ -17,7 +17,7 @@ function main()
 			wikiCmdName="@header/js/personalHeader",
 			logoUrl="",
 			desc="个人站点头部",
-			flag="1",
+			flag=1,
 		},
 		{
 			name="organizationHeader",
@@ -29,7 +29,7 @@ function main()
 			wikiCmdName="@header/js/organizationHeader",
 			logoUrl="",
 			desc="组织站点头部",
-			flag="1",
+			flag=1,
 		},
 		{
 			name="gameHeader",
@@ -41,7 +41,7 @@ function main()
 			wikiCmdName="@header/js/gameHeader",
 			logoUrl="",
 			desc="比赛站点头部",
-			flag="1",
+			flag=1,
 		},
 	}
 		

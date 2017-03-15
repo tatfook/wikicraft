@@ -332,58 +332,31 @@
                             </div>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            <a href="#" ng-click="clickMyTrends()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="true">动态(<span>23</span>)</a>
                             <div class="dropdown-menu dropdown-menu-center news-dropdown-menu"
                                  aria-labelledby="dropdownMenu1">
                                 <div class="tab-box">
                                     <ul class="nav nav-tabs" role="tablist">
-                                        <li role="presentation" class="active">
-                                            <a href="#organization" aria-controls="organization" role="tab"
-                                               data-toggle="tab">组织</a>
+                                        <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
                                         </li>
-                                        <li role="presentation">
-                                            <a href="#collect-news" aria-controls="collect-news" role="tab"
-                                               data-toggle="tab">收藏</a>
+                                        <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
                                         </li>
-                                        <li role="presentation">
-                                            <a href="#works" aria-controls="works" role="tab" data-toggle="tab">作品</a>
+                                        <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')"  aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <!-- Tab panes -->
                                 <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="organization">
-                                        <p class="info">有4条动态更新</p>
+                                    <div role="tabpanel" class="tab-pane active" id="userTrends">
+                                        <p class="info">有{{trendsCount}}条动态更新</p>
                                         <ul>
-                                            <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
-                                                <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
+                                            <li ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
+                                                <a ng-click="rendTrends(x)" class="text-muted">{{x.desc}}</a>
                                             </li>
-                                            <li><a href="#" class="text-muted">您申请加入#组织名#的申请被通过</a></li>
-                                            <li><a href="#" class="text-muted">Lisa申请加入#班级组#。</a></li>
-                                            <li><a href="#" class="text-muted">您申请加入#学习组#的申请被通过</a></li>
-                                        </ul>
-                                    </div>
-                                    <div role="tabpanel" class="tab-pane" id="collect-news">
-                                        <p class="info">有4条动态更新</p>
-                                        <ul>
-                                            <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
-                                                <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
-                                            </li>
-                                            <li><a href="#" class="text-muted">你收藏的#作品名#更新了。</a></li>
-                                            <li><a href="#" class="text-muted">你收藏的Lisa，创建了#作品名#。</a></li>
-                                            <li><a href="#" class="text-muted">你收藏的tianya作品集更新了。</a></li>
-                                        </ul>
-                                    </div>
-                                    <div role="tabpanel" class="tab-pane" id="works">
-                                        <p class="info">有4条动态更新</p>
-                                        <ul>
-                                            <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
-                                                <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
-                                            </li>
-                                            <li><a href="#" class="text-muted">lalala收藏了你的#作品网站#。</a></li>
-                                            <li><a href="#" class="text-muted">lalala收藏了你的#组织网站#。</a></li>
-                                            <li><a href="#" class="text-muted">lalala收藏了你的#作品网站#。</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -392,7 +365,7 @@
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-                               ng-click="getFavoriteList()">收藏夹</a>
+                               ng-click="clickMyFavorite()">收藏夹</a>
                             <div class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
                                     <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
@@ -403,7 +376,7 @@
                             </div>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            <a href="#" ng-click="clickMyHistory()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="true">历史</a>
                             <ul class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>

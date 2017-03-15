@@ -9,6 +9,7 @@ include_once("./abstract/base.page");
 include_once("./website_template_style.page");
 include_once("./website.page");
 include_once("./user.page");
+include_once("./user_trends.page");
 include_once("./user_visit_history.page")
 include_once("./website_renewal.page");
 
@@ -77,7 +78,7 @@ function website_pages:api_upsert(params)
 
 	params.userId = userId
 	
-	-- 创建一条更新记录
+	-- 创建一条更新记录 TODO
 	local websiteDB	= models.website:new()
 	local websiteRenewalDB = models.website_renewal:new()
 	local site = websiteDB:api_getPersonalSiteByUserId({userId=params.userId}).data
@@ -92,7 +93,11 @@ function website_pages:api_upsert(params)
 	
 	-- 添加或修改页	
 	local data = self:api_getWebsitePageByUrl(params).data
-	
+
+	-- 创建动态
+	local userTrendsDB = models.user_trends:new()
+	userTrendsDB:api_websiteRenewal({websiteId=params.websiteId, otherUserId=params.userId})	
+
 	if data then 
 		self:db():updateOne({url=params.url}, params, resume);
 	else 
@@ -122,14 +127,17 @@ function website_pages:api_updateContentAndShaByUrl(params)
 	return self:api_upsert(pageinfo)
 end
 
+-- 新增页面
 function website_pages:create(params) 
 	return self:api_upsert(params)
 end
 
+-- 修改页面
 function website_pages:update(params)
 	return self:api_upsert(params)
 end
 
+-- 获取页面
 function website_pages:get(params)
 	self:db():find(params, resume);
 	local err, data = yield();

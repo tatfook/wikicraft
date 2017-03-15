@@ -8,6 +8,8 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
+        $scope.trendsType = "organization";
+
         // 通过站点名搜索
         $scope.searchWebsite = function () {
             storage.sessionStorageSetItem("siteshowParams", {siteshowType:'search', websiteName:$scope.search});
@@ -15,14 +17,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.go("siteshow");
         }
 
-        // 用户收藏
-        $scope.getFavoriteList = function() {
-            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
-                //console.log(data);
-                $scope.favoriteWebsiteObj = data;
-            });
-
-        }
         function init() {
             if (!$scope.user || !$scope.user._id)
                 return ;
@@ -52,11 +46,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 } else {
                     $scope.userSiteList = [{name:'home'},{name:'login'},{name:'userCenter'}];
                 }
-
-                // 用户收藏
-                util.post(config.apiUrlPrefix + 'user_visit_history/get',{userId:$scope.user._id}, function (data) {
-                    $scope.visitHistoryList = data.visitList;
-                });
             }
         }
 
@@ -71,6 +60,57 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             //    $scope.userSitePageList = data;
             //});
         }
+        $scope.clickMyHistory = function () {
+            if (!Account.isAuthenticated())
+                return;
+
+            // 用户收藏
+            util.post(config.apiUrlPrefix + 'user_visit_history/get',{userId:$scope.user._id}, function (data) {
+                $scope.visitHistoryList = data.visitList;
+            });
+        }
+        
+        $scope.clickMyFavorite = function () {
+            if (!Account.isAuthenticated())
+                return;
+            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+                //console.log(data);
+                $scope.favoriteWebsiteObj = data;
+            });
+        }
+        // 用户动态=======================================start=========================================
+        $scope.clickMyTrends = function () {
+            if (!Account.isAuthenticated())
+                return;
+
+            // 用户动态
+            util.post(config.apiUrlPrefix + 'user_trends/getUnread', {userId:$scope.user._id}, function (data) {
+                $scope.trendsList = data.trendsList;
+                $scope.trendsCount = data.total;
+            });
+        }
+        $scope.isShowTrend = function (trends) {
+            var trendsTypeList = ["organization","favorite","works"];
+            return  trends.state == 'unread' && $scope.trendsType == trendsTypeList[trends.trendsType];
+        }
+        // 选择动态类型
+        $scope.selectTrendsType = function (trendsType) {
+            //console.log(trendsType);
+            $scope.trendsType = trendsType;
+        }
+        // 读取动态
+        $scope.rendTrends = function (trends) {
+            trends.state = 'read';
+            util.post(config.apiUrlPrefix + 'user_trends/upsert', trends);
+
+            for (var i = 0; i < $scope.trendsList.length; i++) {
+                if ($scope.trendsList[i]._id = trends._id) {
+                    $scope.trendsList[i].state = 'read';
+                    break;
+                }
+            }
+        }
+        // 用户动态=======================================end=========================================
 
         $scope.selectPage = function (page) {
             $scope.urlObj.pagename = page.name;
@@ -139,17 +179,14 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         };
 
         $scope.$on("onUserProfile", function (event, user) {
-            //console.log('onUserProfile');
+            console.log('onUserProfile');
             $scope.user = user;
             init();
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             console.log("isAuthenticated");
-        });
-
-        $('.nav-tabs > li > a').hover(function() {
-            $(this).tab('show');
+            $rootScope.isLogin = Account.isAuthenticated();
         });
     }]);
 });

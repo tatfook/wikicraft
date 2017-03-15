@@ -583,6 +583,7 @@ define([
                     savePage.isModify = undefined;
                     $http.put(config.apiUrlPrefix + 'website_pages', savePage).then(function (response) {
                         currentWebsitePage.isModify = undefined;
+                        //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         initTree();
                         Message.info("文件已保存到服务器");
@@ -1026,7 +1027,7 @@ define([
                     return;
                 }
 
-                console.log('auto save website page!!!');
+                //console.log('auto save website page!!!');
                 currentWebsitePage.content = content;
                 currentWebsitePage.timestamp = (new Date()).getTime();
                 var websitePage = angular.copy(currentWebsitePage);
@@ -1107,6 +1108,9 @@ define([
                         "Ctrl-F": "find",
                         "Ctrl-R": "replace",
                         "F11": function (cm) {
+                            $rootScope.frameHeaderExist = !$rootScope.frameHeaderExist;
+                            $rootScope.$apply();
+                            //console.log($rootScope.frameHeaderExist);
                             cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                         },
                         "Esc": function (cm) {
@@ -1210,11 +1214,12 @@ define([
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
                     container_name: '.result-html', renderCallback: function (value) {
-                        if (isEmptyObject(currentWebsitePage))
+                        if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value)
                             return ;
                         currentWebsitePage.content = value;                               // 更新内容
                         currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
                         //console.log(currentWebsitePage);
+                        //console.log('save storage ' + currentWebsitePage.url);
                         storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
                     }, changeCallback: changeCallback
                 });
@@ -1237,6 +1242,7 @@ define([
                 });
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
+                    //console.log(changeObj);
                     if (changeObj.origin == "redo" || changeObj.origin == "paste" || changeObj.origin == "undo") {
                         editor.foldCode(changeObj.from, null, 'fold');
                     }

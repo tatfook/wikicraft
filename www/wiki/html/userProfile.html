@@ -392,91 +392,24 @@
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a href="#wiki_organize" aria-controls="wiki_organize" role="tab" data-toggle="tab">组织</a>
+                <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
+                    <a href="#userTrends"  ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
                 </li>
-                <li role="presentation">
-                    <a href="#wiki_collect" aria-controls="wiki_collect" role="tab" data-toggle="tab">收藏</a>
+                <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
+                    <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
                 </li>
-                <li role="presentation">
-                    <a href="#wiki_myworks" aria-controls="wiki_myworks" role="tab" data-toggle="tab">我的作品</a>
+                <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
+                    <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">我的作品</a>
                 </li>
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active col-sm-12" id="wiki_organize">
-                    <div class="status-row col-sm-12">
-                        <p class="pull-right info">2017-03-10 15:27</p>
+                    <div class="status-row col-sm-12" ng-repeat="x in trendsList">
+                        <p class="pull-right info">{{x.updateDate}}</p>
                         <div class="col-sm-12">
-                            <span class="glyphicon glyphicon-ok status text-success"></span>您申请加入#组织名#的申请被通过
-                        </div>
-                    </div>
-                    <div class="status-row col-sm-12">
-                        <p class="pull-right info">2017-03-10 15:27</p>
-                        <div class="col-sm-12">
-                            <span class="glyphicon glyphicon-remove status text-danger"></span>您申请加入#组织名#的申请被拒绝
-                        </div>
-                    </div>
-                    <div class="status-row col-sm-12">
-                        <p class="pull-right info">2017-03-10 15:27</p>
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img">Lixizhi申请加入#组织名#。 <a href="#">[通过]</a> <a
-                                href="#" class="text-muted">[拒绝]</a>
-                        </div>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="wiki_collect">
-                    <div class="collect-row col-sm-12">
-                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
-                        <p class="pull-left">你收藏的#作品名#更新了。</p>
-                        <p class="pull-right info">2017-03-10 15:57</p>
-                    </div>
-                    <div class="collect-row col-sm-12">
-                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
-                        <p class="pull-left">你收藏的#作品名#更新了。</p>
-                        <p class="pull-right info">2017-03-10 15:57</p>
-                    </div>
-                    <div class="collect-row col-sm-12">
-                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
-                        <p class="pull-left">你收藏的#作品名#更新了。</p>
-                        <p class="pull-right info">2017-03-10 15:57</p>
-                    </div>
-                    <div class="collect-row col-sm-12">
-                        <img ng-src="{{imgsPath+'wiki_works.jpg'}}" class="pull-left" alt="">
-                        <p class="pull-left">你收藏的#作品名#更新了。</p>
-                        <p class="pull-right info">2017-03-10 15:57</p>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="wiki_myworks">
-                    <div class="myworks-row col-sm-12">
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img pull-left" alt="">
-                            <p class="pull-left">Lixizhi收藏了你的#myWebsite#。</p>
-                            <p class="info pull-right">2017-03-10 16:12</p>
-                        </div>
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                        </div>
-                    </div>
-                    <div class="myworks-row col-sm-12">
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img pull-left" alt="">
-                            <p class="pull-left">Lixizhi收藏了你的#myWebsite#。</p>
-                            <p class="info pull-right">2017-03-10 16:12</p>
-                        </div>
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                        </div>
-                    </div>
-                    <div class="myworks-row col-sm-12">
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_header.png'}}" class="inline-img pull-left" alt="">
-                            <p class="pull-left">Lixizhi收藏了你的#myWebsite#。</p>
-                            <p class="info pull-right">2017-03-10 16:12</p>
-                        </div>
-                        <div class="col-sm-12">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
+                            <span class="glyphicon glyphicon-ok status text-success"></span>{{x.desc}}
                         </div>
                     </div>
                 </div>

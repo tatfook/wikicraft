@@ -17,7 +17,7 @@ function main()
 			wikiCmdName="@statics/js/personalStatics",
 			logoUrl="",
 			desc="个人统计信息",
-			flag="1",
+			flag=1,
 		},
 		{
 			name="gameStatics",
@@ -29,7 +29,7 @@ function main()
 			wikiCmdName="@statics/js/gameStatics",
 			logoUrl="",
 			desc="大赛站点统计信息",
-			flag="1",
+			flag=1,
 		},
 		{
 			name="organizationStatics",
@@ -41,7 +41,7 @@ function main()
 			wikiCmdName="@statics/js/organizationStatics",
 			logoUrl="",
 			desc="组织站点统计信息",
-			flag="1",
+			flag=1,
 		},
 	}
 		

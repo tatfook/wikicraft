@@ -13,10 +13,13 @@ include_once("./website.page")
 local website_renewal = inherit(models.abstract.base, gettable("models.website_renewal"))
 website_renewal.db_name="website_renewal"
 
+local WEBSITE_RENEWAL_TYPE_PERSONAL = 0
+local WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
 
 function website_renewal:ctor()
 	self:addfield("websiteId", "string")   -- 所属者 组织名, 个人创建的其它站点归属个人站下
-	self:addfield("worksId", "number")      -- 组织内作品的ID
+	self:addfield("renewalType", "number") -- 作品所属类型
+	self:addfield("worksId", "number")     -- 组织内作品的ID
 
 	self:addfield("createDate", "string");
 	self:addfield("updateDate", "string");

@@ -5,7 +5,7 @@
 define(['app'], function (app) {
     app.directive('wikiLink', ['$http', '$rootScope', function ($http, $rootScope) {
         return {
-            restrict: 'EA',
+            restrict: 'E',
             replace: true,
             template:'<a ng-click="clickLink()">{{textContent}}</a>',
             link: function ($scope, $element, $attrs) {
@@ -26,14 +26,18 @@ define(['app'], function (app) {
                 }
 
                 var siteinfo = $rootScope.siteinfo;
-                $scope.textContent = $element.context.textContent;
-
                 // 存在点表明是外部链接，内部连接禁用点
                 if (href.indexOf('.') > 0) {
                     href = 'http://' + href;
                 } else {
                     href = window.location.origin + '/' + siteinfo.username + '/' + siteinfo.name + '/' + href;
                 }
+
+                if ($element.context && $element.context.textContent)
+                    $scope.textContent = $element.context.textContent;
+                else
+                    $scope.textContent = href;
+
                 //console.log(href);
                 //$element.attr('href', '#');
                 $element.attr('href', href);

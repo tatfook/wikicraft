@@ -37,7 +37,7 @@ define(['app', 'require'], function (app, require) {
             var routeObj = {
                 url:url,
                 templateUrl: templatePathPrefix + key + '.html',
-                controller:controllerName,
+                //controller:controllerName,
                 resolve:{
                     resolveData: requireModule(controllerPath, controllerName, routeObj),
                 },

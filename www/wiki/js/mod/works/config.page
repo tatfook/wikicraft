@@ -21,7 +21,7 @@ function main()
 			wikiCmdName="@works/js/workslist",
 			logoUrl="",
 			desc="作品显示",
-			flag="1",
+			flag=1,
 		},
 	}
 		
