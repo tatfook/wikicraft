@@ -28,6 +28,7 @@ end
 function loadWikiModule()
 	local fileList = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
 	for _, file in ipairs(fileList) do
+		log("load file: " .. file.filename)
 		include_once(WIKI_ROOT ..'js/mod/'.. file.filename)
 	end
 end
@@ -36,3 +37,5 @@ loadWikiModule()
 
 
 -- log("load helper wiki_module.page!!!")
+
+?>

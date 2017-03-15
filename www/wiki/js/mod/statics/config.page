@@ -8,40 +8,40 @@ Date: 2017/3/14
 function main()
 	local wikiModuleList = {
 		{
-			name:"personalStatics",
-			classifyName:"statics",
-			content:[[
+			name="personalStatics",
+			classifyName="statics",
+			content=[[
                 ```@statics/js/personalStatics
                 ```
             ]],
-			wikiCmdName:"@statics/js/personalStatics",
-			logoUrl:"",
-			desc:"个人统计信息",
-			flag:"1",
+			wikiCmdName="@statics/js/personalStatics",
+			logoUrl="",
+			desc="个人统计信息",
+			flag="1",
 		},
 		{
-			name:"gameStatics",
-			classifyName:"statics",
-			content:[[
+			name="gameStatics",
+			classifyName="statics",
+			content=[[
                 ```@statics/js/gameStatics
                 ```
             ]],
-			wikiCmdName:"@statics/js/gameStatics",
-			logoUrl:"",
-			desc:"大赛站点统计信息",
-			flag:"1",
+			wikiCmdName="@statics/js/gameStatics",
+			logoUrl="",
+			desc="大赛站点统计信息",
+			flag="1",
 		},
 		{
-			name:"organizationStatics",
-			classifyName:"statics",
-			content:[[
+			name="organizationStatics",
+			classifyName="statics",
+			content=[[
                 ```@statics/js/organizationStatics
                 ```
             ]],
-			wikiCmdName:"@statics/js/organizationStatics",
-			logoUrl:"",
-			desc:"组织站点统计信息",
-			flag:"1",
+			wikiCmdName="@statics/js/organizationStatics",
+			logoUrl="",
+			desc="组织站点统计信息",
+			flag="1",
 		},
 	}
 		

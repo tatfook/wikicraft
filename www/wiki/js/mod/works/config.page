@@ -8,20 +8,20 @@ Date: 2017/3/14
 function main()
 	local wikiModuleList = {
 		{
-			name:"worksList",
-			classifyName:"works",
-			content:[[
+			name="worksList",
+			classifyName="works",
+			content=[[
                 ```@works/js/workslist
                 {
-                "title":"全部作品",
-                "type":"all"
+                "title"="全部作品",
+                "type"="all"
                 }
                 ```
             ]],
-			wikiCmdName:"@works/js/workslist",
-			logoUrl:"",
-			desc:"作品显示",
-			flag:"1",
+			wikiCmdName="@works/js/workslist",
+			logoUrl="",
+			desc="作品显示",
+			flag="1",
 		},
 	}
 		
