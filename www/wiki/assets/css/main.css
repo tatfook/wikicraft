@@ -62,3 +62,9 @@ textarea{
     border: 1px solid #CCC;
     border-radius: 4px;
 }
+.text-danger{
+    color: #FE3266;
+}
+.text-primary{
+    color: #3977AD;
+}
