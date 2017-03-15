@@ -60,6 +60,9 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 } else if (moduleParams.type == "upgrade") {  // 入围作品
                     $scope.requestUrl = config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId";
                     $scope.requestParams.websiteId = $scope.siteinfo._id;
+                } else {
+                    $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
+                    $scope.requestParams.websiteId = $scope.siteinfo._id;
                 }
                 $scope.getSiteList();
             }

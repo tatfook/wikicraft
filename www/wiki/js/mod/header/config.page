@@ -1,0 +1,54 @@
+<?npl
+--[[
+Title: wiki module test
+Author: wuxiangan
+Date: 2017/3/14
+]]
+
+function main()
+	local wikiModuleList = {
+		{
+			name:"personalHeader",
+			classifyName:"header",
+			content:[[
+                ```@header/js/personalHeader
+                ```
+            ]],
+			wikiCmdName:"@header/js/personalHeader",
+			logoUrl:"",
+			desc:"个人站点头部",
+			flag:"1",
+		},
+		{
+			name:"organizationHeader",
+			classifyName:"header",
+			content:[[
+                ```@header/js/organizationHeader
+                ```
+            ]],
+			wikiCmdName:"@header/js/organizationHeader",
+			logoUrl:"",
+			desc:"组织站点头部",
+			flag:"1",
+		},
+		{
+			name:"gameHeader",
+			classifyName:"header",
+			content:[[
+                ```@header/js/gameHeader
+                ```
+            ]],
+			wikiCmdName:"@header/js/gameHeader",
+			logoUrl:"",
+			desc:"比赛站点头部",
+			flag:"1",
+		},
+	}
+		
+	regitsterWikiModuleList(wikiModuleList)
+end
+
+main()
+
+?>
+
