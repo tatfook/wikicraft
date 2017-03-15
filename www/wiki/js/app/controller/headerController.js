@@ -163,6 +163,10 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.go("home");
         };
 
+        $scope.goVIPLevel=function () {
+            util.go("VIPLevel");
+        };
+
         $scope.goUserCenterPage = function (contentType) {
             if (window.location.pathname == '/wiki/userCenter') {
                 $rootScope.$broadcast('userCenterContentType', contentType);

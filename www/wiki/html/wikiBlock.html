@@ -1,146 +1,89 @@
 <style>
-    .dropdown-toggle a{
+    .wikitabpanel{
+        border: 1px solid #DCDCDC;
+        padding: 0;
+    }
+    .wikitabpanel .nav-tabs {
+        margin: -1px 0 0 -1px;
+    }
+    .wikitabpanel .nav-tabs > li > a {
+        border-radius: 0;
+    }
+    .dropdown-toggle a {
         line-height: 1.42857143;
         display: block;
         padding: 10px 15px;
     }
-    .img-text {
-        align-items: center;
-        background-color: #F9F9F9;
-        border: 1px solid #e5e7e9;
-        margin-bottom: 20px;
-    }
-
-    .img-text .text {
-        flex: 1;
-    }
-
-    .wikitabpanel {
-        border: 1px solid #DCDCDC;
-        padding: 0;
-    }
-
-    .wikitabpanel .nav-tabs {
-        margin: -1px 0 0 -1px;
-    }
-
-    .wikitabpanel .nav-tabs > li > a {
-        border-radius: 0;
-    }
-
     .wikiblock-tab {
-        max-height: 510px;
+        max-height: 450px;
         overflow-y: auto;
         padding-top: 20px;
     }
-
-    .wikiblock-tab .img-text img {
-        width: 140px;
-        height: 140px;
+    .wikiblock-tab .col-md-4{
+        margin-bottom: 20px;
+    }
+    .wikiblock-tab .img-hover{
+        position: relative;
+    }
+    .wikiblock-tab .img-hover:hover p.code{
+        opacity:1;
+        bottom:0;
+        -webkit-transition: all 0.1s ease;
+        -moz-transition: all 0.1s ease;
+        -ms-transition: all 0.1s ease;
+        -o-transition: all 0.1s ease;
+        transition: all 0.1s ease;
+    }
+    .wikiblock-tab .img-hover>img{
+        width: 100%;
+        height:80px;
         object-fit: cover;
     }
-
-    .wikiblock-tab .img-text .text {
-        padding: 0 15px;
-        max-height: 140px;
-        overflow: hidden;
+    .wikiblock-tab .img-hover p.code{
+        background-color: rgba(0,0,0,.5);
+        height: 30px;
+        line-height: 30px;
+        position: absolute;
+        width: 100%;
+        margin-bottom: 0;
+        bottom: -3px;
+        color: #FFF;
+        text-align: center;
+        opacity:0;
     }
-
-    .wikiblock-tab .img-text h4 {
-        line-height: 34px;
+    .wikiblock-tab .text {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #DCDCDC;
+        border-top: none;
     }
-
-    .wikiblock-tab .img-text .col-md-12, .tab-content .img-text .col-md-4 {
-        padding: 0;
+    .wikiblock-tab .text h4{
+        margin: 0;
         line-height: 32px;
     }
-
-    .wikiblock-tab .img-text p {
-        margin-bottom: 0;
-        line-height: 25px;
+    .wikiblock-tab .text h4 .btn{
+        padding:4px 25px;
     }
-
-    .wikiblock-tab .img-text p.info {
-        line-height: 35px;
+    .wikiblock-tab .text p{
+        line-height:33px;
+        margin-bottom:0;
     }
-
-    .wikiblock-tab .img-text .glyphicon {
-        line-height: 35px;
+    .wikiblock-tab .text span.glyphicon{
+        line-height: 30px;
+        right: 25px;
         font-size: 20px;
-        color: #FE3266;
     }
-
-    .tab-content .img-text-box {
-        width: 90%;
-        margin: 0 auto;
-    }
-
-    .img-text.col-md-6 {
-        width: 40%;
-        margin: 0 5% 20px;
-        padding: 0;
-    }
-
-    .img-text .info {
-        line-height: 19px;
-        font-weight: normal;
-        color: #999;
-    }
-
-    .img-text .col-md-6 {
-        padding: 0;
-    }
-
-    .img-text .rank {
-        position: absolute;
-        left: -16px;
-        top: 0;
-    }
-
     .wiki-searchbar > span {
         position: absolute;
         right: 25px;
         top: 10px;
     }
-
-    .rank-tab > h4 {
-        border-left: 4px solid #3977AD;
-        margin-left: 3%;
-        padding-left: 13px;
-        margin-bottom: 20px;
-    }
-
     @media (max-width: 1200px) {
         .modal-lg {
             width: 900px;
         }
-        .wikiblock-tab{
-            max-height:340px;
-        }
-        .img-text.col-md-6{
-            width:48%;
-            margin: 0 1% 30px;
-        }
-        .wikiblock-tab .img-text h4{
-            font-size: 14px;
-        }
-        .wikiblock-tab .img-text img{
-            width:120px;
-            height: 120px;
-        }
-        .wikiblock-tab .img-text .text{
-            max-height:120px;
-        }
-        .wikiblock-tab .img-text .glyphicon{
-            margin-right: 15px;
-        }
-        .img-text .rank{
-            left:0;
-            top: -23px;
-        }
-        .rank-tab > h4{
-            margin-left:11px;
-            margin-bottom:32px;
+        .wikiblock-tab {
+            max-height: 340px;
         }
     }
     @media (min-width: 1200px) {
@@ -195,19 +138,21 @@
                     <!-- Tab panes -->
                     <div class="tab-content col-md-12 wikiblock-tab">
                         <div role="tabpanel" class="tab-pane active" id="wikiBlockListView">
-                            <div class="img-text col-md-6" ng-repeat="wikiBlock in wikiBlockList">
-                                <img ng-src="{{wikiBlock.logoUrl || (imgsPath + 'wiki_modalImg.jpg')}}" alt="" class="pull-left">
+                            <div class="col-md-4" ng-repeat="wikiBlock in wikiBlockList">
+                                <div class="img-hover">
+                                    <img ng-src="{{wikiBlock.logoUrl || (imgsPath + 'wiki_mod_banner1.jpg')}}" alt="">
+                                    <p class="code">```@header/js/personalHeader</p>
+                                </div>
                                 <div class="text">
                                     <h4>
                                         <a href="#">{{wikiBlock.name}}</a>
                                         <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a>
                                     </h4>
                                     <p class="info">
-                                        热度：{{wikiBlock.useCount}} <span ng-click="favoriteWikiBlock(wikiBlock._id)"
-                                                                        class="pull-right glyphicon  text-danger"
-                                                                        ng-class="labelItem == 'favorite' ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
+                                        热度：{{wikiBlock.useCount}}
+                                        <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="labelItem == 'favorite' ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
                                     </p>
-                                    <p>{{wikiBlock.desc}}</p>
+                                    <p>{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
                                 </div>
                             </div>
                         </div>
