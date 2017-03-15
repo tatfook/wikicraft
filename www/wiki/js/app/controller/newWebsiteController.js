@@ -43,6 +43,19 @@ define([
                 });
                 return ;
             } else if ($scope.step == 2) {
+                if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
+                    $scope.step++;
+                } else {
+                    $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
+                    util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: $scope.website.domain}, function (data) {
+                        if (data == 0) {
+                            $scope.errMsg = $scope.website.domain + "已存在，请换个名字";
+                        } else {
+                            $scope.step++;
+                        }
+                    });
+                }
+                return;
             } else if ($scope.step == 3) {
                 $scope.nextStepDisabled = !$scope.website.templateId;
             } else if ($scope.step == 4) {
@@ -181,22 +194,7 @@ define([
 
         $scope.checkWebsiteDomain = function () {
             return ;
-            if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
-                $scope.nextStepDisabled = $scope.websiteNameErrMsg;
-                $scope.websiteDomainErrMsg = "";
-                return;
-            }
 
-            $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
-            util.http('POST', config.apiUrlPrefix + 'website', {domain: $scope.website.domain}, function (data) {
-                if (data && data.length > 0 && $scope.website._id != data[0]._id) {
-                    $scope.websiteDomainErrMsg = $scope.website.domain + "已存在，请换个名字";
-                    $scope.nextStepDisabled = true;
-                } else {
-                    $scope.websiteDomainErrMsg = "";
-                    $scope.nextStepDisabled = $scope.websiteNameErrMsg;
-                }
-            });
         }
 
         $scope.goPreviewPage = function (style) {

@@ -8,6 +8,7 @@ Date: 2016/10/21
 
 include_once("./abstract/base.page")
 include_once("./website.page")
+include_once("./website_domain.page")
 include_once("./user_favorite.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
@@ -247,7 +248,7 @@ function user:api_register(params)
 	
 	local websiteDB = models.website:new()
 	-- 查找用户名是否可用
-	if self:api_getByName({username=params.username}).data then
+	if self:api_checkUsername({username=params.username}).data == 0 then
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 	
@@ -481,5 +482,26 @@ function user:api_getStatics(params)
 
 	return errors:wrap(nil, {favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount})	
 end
+
+-- 检测用户名是否有效
+function user:api_checkUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local err, data = yield()
+	if data then
+		return errors:wrap(nil, 0) -- 无效
+	end
+
+	local websiteDomainDB = models.website_domain:new()
+	
+	return websiteDomainDB:api_checkDomain({domain=params.username})	
+end
+
+
+
+
 
 

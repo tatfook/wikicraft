@@ -14,6 +14,7 @@ include_once("./website_renewal.page")
 include_once("./website_works.page")
 include_once("./website_template_style.page")
 include_once("./website_template_config.page")
+include_once("./website_domain.page")
 
 local website = inherit(models.abstract.base, gettable("models.website"))
 
@@ -122,6 +123,13 @@ function website:create(params)
 	page.userId = params.userId
 	website_pages_db:create(page)
 			
+	-- create website domain record
+	local websiteDomainDB = models.website_domain:new()
+	websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' site.name})	
+	if site.domain then 
+		websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' site.domain})	
+	end
+
 	return {error=errors.SUCCESS, data=site}
 end
 
@@ -164,6 +172,10 @@ function website:deleteById(websiteId)
 	-- 删除该站点内所有申请
 	local websiteApplyModel = models.website_apply:new()
 	websiteApplyModel:api_deleteByWebsiteId({websiteId=websiteId})
+
+	-- 删除该站点的所有域名
+	local websiteDomainDB = models.website_domain:new()
+	websiteDomainDB:api_deleteByWebsiteId({websiteId=websiteId})
 
 	-- 删除站点
 	self:db():deleteOne({_id=websiteId}, resume)
@@ -461,4 +473,22 @@ function website:api_getSiteList(params)
 	local err, data = yield()
 	
 	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
+end
+
+-- 通过domain获得站点
+function website:api_getByDomain(params)
+	if not params.domain then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteDomainDB = models.website_domain:new()
+	local data = websiteDomainDB:api_getByDomain({domain=params.domain}).data
+	if not data then
+		return errors:wrap(nil, nil)
+	end
+
+	self:db():findOne({_id=data.websiteId}, resume)
+	local err, data = yield()
+
+	return errors:wrap(nil, data)
 end

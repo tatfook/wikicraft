@@ -45,6 +45,7 @@ define(['jquery'], function ($) {
         var username = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
         var sitename = '';
         var pagename = '';
+        var domain = undefined;
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
@@ -53,6 +54,7 @@ define(['jquery'], function ($) {
 
         if (username) {
             username = username[1];
+            domain = username;
             urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
             if (urlInfo == undefined) {
                 return {};
@@ -72,7 +74,7 @@ define(['jquery'], function ($) {
         if (username != 'wiki' && sitename && !pagename) {
             pagename = index;
         }
-        return {username:username, sitename:sitename, pagename:pagename, pathname:pathname};
+        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname};
     }
 
     util.setLastUrlObj = function (urlObj) {
