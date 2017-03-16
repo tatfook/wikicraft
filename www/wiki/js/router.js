@@ -27,6 +27,8 @@ define(['app', 'require'], function (app, require) {
             'knowledge':{},
             'VIP':{},
             'VIPLevel':{},
+            'findPwd': {},
+            'kaitlynUser':{},
         };
 
         for (var key in routerMap) {

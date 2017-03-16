@@ -172,7 +172,7 @@
     .navbar-default .dropdown-menu li {
         position: relative;
     }
-    .navbar-default .dropdown-menu > li:not(.dropdown-header):not(.dropdown-footer):not([role="presentation"]):after {
+    .navbar-default .dropdown-menu:not(.nodot-dropdown) > li:not(.dropdown-header):not(.dropdown-footer):not([role="presentation"]):after {
         content: "";
         display: inline-block;
         width: 5px;
@@ -239,6 +239,9 @@
         left: 0px;
         top: 12px;
     }
+    ul.nodot-dropdown >li{
+        text-align: center;
+    }
 </style>
 
 <div ng-controller="headerController">
@@ -260,7 +263,7 @@
                                                                 role="button" aria-haspopup="true"
                                                                 aria-expanded="false"><span
                                 class="caret"></span></a></a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu nodot-dropdown">
                             <li><a href="#">创作站</a></li>
                             <li><a href="http://paracraft.wiki/wiki/mod/packages" target="_blank">Mod扩展</a></li>
                         </ul>
@@ -276,7 +279,7 @@
                                 <li class="dropdown" ng-show="urlObj.sitename">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="true">{{urlObj.sitename || ''}}</a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="site in userSiteList">
                                             <a ng-click="selectSite(site)">{{site.name}}</a>
                                         </li>
@@ -285,7 +288,7 @@
                                 <li class="dropdown" ng-show="urlObj.pagename">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="true">{{urlObj.pagename || ''}}</a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="page in userSitePageList">
                                             <a ng-click="selectPage(page)">{{page.name}}</a>
                                         </li>
