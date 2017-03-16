@@ -66,7 +66,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 pathname = pathname.replace('/wiki/', '');
                 var pageUrl = 'controller/' + pathname + 'Controller';
                 var htmlContent;
-                console.log(pageUrl);
+                //console.log(pageUrl);
                 require([pageUrl], function (htmlObj) {
                     //console.log(htmlContent);
                     $scope.IsRenderServerWikiContent = true;
@@ -110,24 +110,40 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     //console.log($scope.IsRenderServerWikiContent);
                     return;
                 }
-                // 访问用户页
-                util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
-                    username: urlObj.username,
-                    sitename: urlObj.sitename,
-                    pagename: urlObj.pagename,
-					userId:$rootScope.user && $rootScope.user._id,
-                }, function (data) {
-                    data = data || {};
-                    // 这三种基本信息根化，便于用户页内模块公用
-                    $rootScope.userinfo = data.userinfo;
-                    $rootScope.siteinfo = data.siteinfo;
-                    $rootScope.pageinfo = data.pageinfo;
-                    var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
-                    pageContent = md.render(pageContent);
-                    //console.log(pageContent);
-                    pageContent = $compile(pageContent)($scope);
-                    $('#__UserSitePageContent__').html(pageContent);
-                });
+
+                if (urlObj.domain) {
+                    util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
+                        urlObj.pagename = urlObj.sitename;
+                        urlObj.username = data.username;
+                        urlObj.sitename = data.name;
+                        getUserPage();
+                    }, function () {
+                        getUserPage();
+                    });
+                } else {
+                    getUserPage();
+                }
+
+                function getUserPage() {
+                    // 访问用户页
+                    util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
+                        username: urlObj.username,
+                        sitename: urlObj.sitename,
+                        pagename: urlObj.pagename,
+                        userId:$rootScope.user && $rootScope.user._id,
+                    }, function (data) {
+                        data = data || {};
+                        // 这三种基本信息根化，便于用户页内模块公用
+                        $rootScope.userinfo = data.userinfo;
+                        $rootScope.siteinfo = data.siteinfo;
+                        $rootScope.pageinfo = data.pageinfo;
+                        var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
+                        pageContent = md.render(pageContent);
+                        //console.log(pageContent);
+                        pageContent = $compile(pageContent)($scope);
+                        $('#__UserSitePageContent__').html(pageContent);
+                    });
+                }
             }
 
             function init() {

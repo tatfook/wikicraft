@@ -70,6 +70,8 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 initGithub(user);
 
                 $rootScope.isLogin = $auth.isAuthenticated();
+                $rootScope.user = user;
+
                 this.send("onUserProfile", this.user);
                 storage.localStorageSetItem("userinfo", this.user);
             },
@@ -184,7 +186,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         }
 
         account.getUser(function (user) {
-            //console.log(user);
+            console.log(user);
             account.setUser(user);
         });
 

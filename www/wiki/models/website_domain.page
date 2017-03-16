@@ -31,7 +31,7 @@ end
 
 
 -- 获取记录
-function website_domain:api_getByDomian(params)
+function website_domain:api_getByDomain(params)
 	if not params.domain then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

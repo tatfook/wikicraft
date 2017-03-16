@@ -21,30 +21,19 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             if (!$scope.user || !$scope.user._id)
                 return ;
 
+            $scope.userSiteList = [{name:'home'},{name:'login'},{name:'userCenter'}];
             var urlObj = util.parseUrl();
-            $scope.isWikiPage = urlObj.username == 'wiki';
 
             if (!config.localEnv) {
                 $scope.urlObj.username = urlObj.username;
                 $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
-                if (urlObj.username != 'wiki') {
-                    if (urlObj.sitename) {
-                        util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName',{websiteName:urlObj.sitename}, function (data) {
-                            $scope.userSitePageList = data || [];
-                        });
-                    }
-                }
-            }
-
-            if (Account.isAuthenticated()) {
-                // 用户站点
-                if (urlObj.username != 'wiki') {
-                    util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId:$scope.user._id}, function (data) {
-                        $scope.userSiteList = data || [];
+                if (urlObj.domain) {
+                    util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
+                        $scope.urlObj.pagename = $scope.urlObj.sitename;
+                        $scope.urlObj.username = data.username;
+                        $scope.urlObj.sitename = data.name;
                     });
-                } else {
-                    $scope.userSiteList = [{name:'home'},{name:'login'},{name:'userCenter'}];
                 }
             }
         }
@@ -55,11 +44,51 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             $scope.urlObj.sitename = site.name;
             $scope.urlObj.pagename = undefined;
             $scope.goUrlSite();
-
-            //util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteId', {websiteId:site._id}, function (data) {
-            //    $scope.userSitePageList = data;
-            //});
         }
+
+        // 点击站点
+        $scope.clickSiteList = function () {
+            if ($scope.urlObj.username == "wiki")
+                return;
+            util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username:$scope.urlObj.username}, function (data) {
+                $scope.userSiteList = data || [];
+            });
+        }
+
+        $scope.clickPageList = function () {
+            if ($scope.urlObj.username == "wiki")
+                return;
+
+            if (urlObj.sitename) {
+                util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName',{websiteName:urlObj.sitename}, function (data) {
+                    $scope.userSitePageList = data || [];
+                });
+            }
+        }
+
+        $scope.selectPage = function (page) {
+            $scope.urlObj.pagename = page.name;
+            $scope.goUrlSite();
+        }
+
+        $scope.goUrlSite = function () {
+            var url = '/' + $scope.urlObj.username;
+            url += '/' + ($scope.urlObj.sitename || $scope.urlObj.username);
+            if ($scope.urlObj.pagename || $scope.urlObj.username != 'wiki')
+                url += '/' + ($scope.urlObj.pagename || 'index' );
+            util.goUserSite(url);
+        }
+
+        $scope.goUserSite = function (username) {
+            if (username == 'wiki') {
+                util.goUserSite('/' + username + '/home');
+            } else {
+                util.goUserSite('/' + username + '/' + username);
+            }
+        }
+
+
+        //=======================================================
         $scope.clickMyHistory = function () {
             if (!Account.isAuthenticated())
                 return;
@@ -112,26 +141,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         }
         // 用户动态=======================================end=========================================
 
-        $scope.selectPage = function (page) {
-            $scope.urlObj.pagename = page.name;
-            $scope.goUrlSite();
-        }
-
-        $scope.goUrlSite = function () {
-            var url = '/' + $scope.urlObj.username;
-            url += '/' + ($scope.urlObj.sitename || $scope.urlObj.username);
-            if ($scope.urlObj.pagename || $scope.urlObj.username != 'wiki')
-                url += '/' + ($scope.urlObj.pagename || 'index' );
-            util.goUserSite(url);
-        }
-
-        $scope.goUserSite = function (username) {
-            if (username == 'wiki') {
-                util.goUserSite('/' + username + '/home');
-            } else {
-                util.goUserSite('/' + username + '/' + username);
-            }
-        }
 
         // 页面编辑页面
         $scope.goWikiEditorPage = function() {
