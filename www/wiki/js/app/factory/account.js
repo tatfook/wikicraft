@@ -9,6 +9,14 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         if (!angularService || !angularService.$http) {
             util.setAngularServices({$http:$http});
         }
+
+        var hostname = window.location.hostname;
+        if (hostname != config.hostname) {
+            $auth.setStorageType('sessionStorage');
+        } else {
+            $auth.setStorageType("localStorage");
+        }
+
         // 初始化github
         function initGithub(user) {
             /*
