@@ -27,7 +27,6 @@ define([
                     $scope.errMsg = "站点名为必填字段";
                     return;
                 }
-
                 util.http('POST', config.apiUrlPrefix + 'website/isExist', {
                     username: $scope.user.username,
                     sitename: $scope.website.name

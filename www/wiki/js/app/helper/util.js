@@ -243,7 +243,8 @@ define(['jquery'], function ($) {
 
     util.isOfficialPage = function () {
         var pathname = window.location.pathname;
-        if (pathname.indexOf('/wiki/') == 0 || pathname == '/') {
+        var hostname = window.location.hostname;
+        if (hostname == "keepwork.com" && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
             return true;
         }
         return false;

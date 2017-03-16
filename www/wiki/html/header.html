@@ -274,7 +274,7 @@
                             <ol class="breadcrumb">
                                 <li><a ng-click="goUserSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
                                 <li class="dropdown" ng-show="urlObj.sitename">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                    <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="true">{{urlObj.sitename || ''}}</a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="site in userSiteList">
@@ -283,7 +283,7 @@
                                     </ul>
                                 </li>
                                 <li class="dropdown" ng-show="urlObj.pagename">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                    <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="true">{{urlObj.pagename || ''}}</a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="page in userSitePageList">
