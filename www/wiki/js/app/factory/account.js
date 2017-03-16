@@ -61,13 +61,15 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                     cb && cb(userinfo);
                     return userinfo;
                 }
-                console.log(config.apiUrlPrefix);
-                util.post(config.apiUrlPrefix + 'user/getProfile',{}, function (data) {
-                    //console.log(data);
-                    cb && cb(data);
-                }, function () {
-                    errcb && errcb();
-                });
+                if ($auth.isAuthenticated()) {
+                    util.post(config.apiUrlPrefix + 'user/getProfile',{}, function (data) {
+                        //console.log(data);
+                        cb && cb(data);
+                    }, function () {
+                        errcb && errcb();
+                    });
+                }
+                
                 return userinfo;
             },
 

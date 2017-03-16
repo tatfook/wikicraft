@@ -152,31 +152,29 @@
     }
 </style>
 
-<div class="container" ng-controller="kaitlynUserController">
+<div class="container" ng-controller="userController">
     <div class="row">
         <div class="col-md-3 subnav">
-            <img class="profile" ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-            <h3>Chares <a href="#" class="info pull-right">投诉</a></h3>
-            <p class="info">CharseLi <span class="pull-right">注册于2016.9.12</span></p>
-            <p> 我是一个边学习边分享的人。关于读书、关于影视剧、关于足球，所学，所思，所感，所闻，分享一切有趣的、有用的。</p>
+            <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
+            <h3>{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
+            <p class="info">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
+            <p>{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary">关 注</div>
             <div class="message-row">
-                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">深圳</p>
-                <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="#" class="text-primary">asd@wie.com</a></p>
-                <p><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon"><a href="#" class="text-primary">paracraft.cn/asd</a></p>
+                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
+                <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{userinfo.email}}</a></p>
+                <p><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{"http://keepwork.com/" + userinfo.username}}</a></p>
             </div>
             <div class="message-row">
-                <h4>Chares的组织：</h4>
+                <h4>创建的组织：</h4>
                 <ul class="list-item">
-                    <li><a href="#" class="text-muted">我的组织1</a></li>
-                    <li><a href="#" class="text-muted">我的组织2</a></li>
+                    <li ng-repeat="x in selfOrganizationList"><a href="#" class="text-muted">{{x.name}}</a></li>
                 </ul>
             </div>
             <div class="message-row">
                 <h4>加入的组织：</h4>
                 <ul class="list-item">
-                    <li><a href="#" class="text-muted">加入的组织1</a></li>
-                    <li><a href="#" class="text-muted">加入的组织2</a></li>
+                    <li ng-repeat="x in joinOrganizationList"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
                 </ul>
             </div>
         </div>
@@ -188,10 +186,10 @@
                         <a href="#preview" aria-controls="preview" role="tab" data-toggle="tab">概况</a>
                     </li>
                     <li role="presentation">
-                        <a href="#works" aria-controls="works" role="tab" data-toggle="tab">作品<span class="info">23</span></a>
+                        <a href="#works" aria-controls="works" role="tab" data-toggle="tab">作品<span class="info">{{allSiteTotal}}</span></a>
                     </li>
                     <li role="presentation">
-                        <a href="#fans" aria-controls="fans" role="tab" data-toggle="tab">粉丝<span class="info">123</span></a>
+                        <a href="#fans" aria-controls="fans" role="tab" data-toggle="tab">粉丝<span class="info">{{fansTotal}}</span></a>
                     </li>
                 </ul>
 
@@ -200,71 +198,53 @@
                     <div role="tabpanel" class="tab-pane active" id="preview">
                         <div class="col-md-12">
                             <h3 class="title">热门作品</h3>
-                            <div class="img-text col-md-6">
-                                <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
+                            <div class="img-text col-md-6" ng-repeat="x in hotSiteList">
+                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                                 <div class="text">
-                                    <h4><a href="#">Xialowet</a></h4>
-                                    <p>作者：Lixizhi </p>
-                                    <p>这里将显示说明文字</p>
+                                    <h4><a href="#">{{x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="img-text col-md-6">
-                                <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                                <div class="text">
-                                    <h4><a href="#">Xialowet</a></h4>
-                                    <p>作者：Lixizhi </p>
-                                    <p>这里将显示说明文字</p>
-                                    <div class="col-md-12 info">
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="img-text col-md-6">
-                                <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                                <div class="text">
-                                    <h4><a href="#">Xialowet</a></h4>
-                                    <p>作者：Lixizhi </p>
-                                    <p>这里将显示说明文字</p>
-                                    <div class="col-md-12 info">
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="img-text col-md-6">
-                                <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                                <div class="text">
-                                    <h4><a href="#">Xialowet</a></h4>
-                                    <p>作者：Lixizhi </p>
-                                    <p>这里将显示说明文字</p>
-                                    <div class="col-md-12 info">
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div role="tabpanel" class="tab-pane" id="works">
+                            <div class="img-text col-md-6" ng-repeat="x in allSiteList">
+                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <div class="text">
+                                    <h4><a href="#">{{x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.favoriteCount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane col-md-12 fans" id="fans">
+                            <div class="col-md-12 fans-row" ng-repeat="x in fansList">
+                                <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <div class="intro">
+                                    <h4>{{x.userinfo.username}}</h4>
+                                    <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
+                                </div>
+                                <div class="btn btn-primary">关 注</div>
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <h3 class="title">活动次数</h3>
                             <div class="col-md-12 user-activation">
@@ -797,98 +777,6 @@
                                     <img ng-src="{{imgsPath+'wiki_header.png'}}" alt=""> Chares更新了#作品名# <span class="pull-right">2017-03-11</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="works">
-                        <div class="img-text col-md-6">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                            <div class="text">
-                                <h4><a href="#">Xialowet</a></h4>
-                                <p>作者：Lixizhi </p>
-                                <p>这里将显示说明文字</p>
-                                <div class="col-md-12 info">
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="img-text col-md-6">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                            <div class="text">
-                                <h4><a href="#">Xialowet</a></h4>
-                                <p>作者：Lixizhi </p>
-                                <p>这里将显示说明文字</p>
-                                <div class="col-md-12 info">
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="img-text col-md-6">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                            <div class="text">
-                                <h4><a href="#">Xialowet</a></h4>
-                                <p>作者：Lixizhi </p>
-                                <p>这里将显示说明文字</p>
-                                <div class="col-md-12 info">
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="img-text col-md-6">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                            <div class="text">
-                                <h4><a href="#">Xialowet</a></h4>
-                                <p>作者：Lixizhi </p>
-                                <p>这里将显示说明文字</p>
-                                <div class="col-md-12 info">
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 253
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 253
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane col-md-12 fans" id="fans">
-                        <div class="col-md-12 fans-row">
-                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
-                            <div class="intro">
-                                <h4>Asia</h4>
-                                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon"> 深圳</p>
-                            </div>
-                            <div class="btn btn-primary">关 注</div>
-                        </div>
-                        <div class="col-md-12 fans-row">
-                            <img ng-src="{{imgsPath+'wiki_header.png'}}" alt="">
-                            <div class="intro">
-                                <h4>Asia</h4>
-                                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}"  alt="" class="icon"> 深圳</p>
-                            </div>
-                            <div class="btn btn-primary">关 注</div>
-                        </div>
-                        <div class="col-md-12 fans-row">
-                            <img ng-src="{{imgsPath+'wiki_header.png'}}" alt="">
-                            <div class="intro">
-                                <h4>Asia</h4>
-                                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon"> 深圳</p>
-                            </div>
-                            <div class="btn btn-primary">关 注</div>
                         </div>
                     </div>
                 </div>

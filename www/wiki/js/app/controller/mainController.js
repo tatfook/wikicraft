@@ -2,7 +2,14 @@
  * Created by wuxiangan on 2016/12/19.
  */
 
-define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util', 'codemirror',], function ($, app, markdownwiki, storage, util, CodeMirror) {
+define([
+    'app',
+    'helper/markdownwiki',
+    'helper/storage',
+    'helper/util',
+
+    'controller/userController',
+], function (app, markdownwiki, storage, util, userHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
@@ -88,8 +95,9 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
                 var urlObj = util.parseUrl();
+                $rootScope.urlObj = urlObj;
                 // 置空用户页面内容
-                console.log(urlObj);
+                //console.log(urlObj);
                 //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
@@ -129,23 +137,28 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
 
                 function getUserPage() {
                     // 访问用户页
-                    util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
-                        username: urlObj.username,
-                        sitename: urlObj.sitename,
-                        pagename: urlObj.pagename || 'index',
-                        userId:$rootScope.user && $rootScope.user._id,
-                    }, function (data) {
-                        data = data || {};
-                        // 这三种基本信息根化，便于用户页内模块公用
-                        $rootScope.userinfo = data.userinfo;
-                        $rootScope.siteinfo = data.siteinfo;
-                        $rootScope.pageinfo = data.pageinfo;
-                        var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
-                        pageContent = md.render(pageContent);
-                        //console.log(pageContent);
-                        pageContent = $compile(pageContent)($scope);
-                        $('#__UserSitePageContent__').html(pageContent);
-                    });
+                    if (urlObj.username && urlObj.sitename) {
+                        util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
+                            username: urlObj.username,
+                            sitename: urlObj.sitename,
+                            pagename: urlObj.pagename || 'index',
+                            userId:$rootScope.user && $rootScope.user._id,
+                        }, function (data) {
+                            data = data || {};
+                            // 这三种基本信息根化，便于用户页内模块公用
+                            $rootScope.userinfo = data.userinfo;
+                            $rootScope.siteinfo = data.siteinfo;
+                            $rootScope.pageinfo = data.pageinfo;
+                            var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
+                            pageContent = md.render(pageContent);
+                            //console.log(pageContent);
+                            pageContent = $compile(pageContent)($scope);
+                            $('#__UserSitePageContent__').html(pageContent);
+                        });
+                    } else if (urlObj.username){
+                        util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                    }
+
                 }
             }
 

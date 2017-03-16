@@ -9,7 +9,9 @@ Date: 2016/10/21
 include_once("./abstract/base.page")
 include_once("./website.page")
 include_once("./website_domain.page")
+include_once("./website_member.page")
 include_once("./user_favorite.page")
+include_once("./user_fans.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
@@ -351,6 +353,8 @@ function user:api_getByName(params)
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
+	
+	data.password = nil
 
 	return errors:wrap(nil, data)
 	--[[
@@ -499,6 +503,52 @@ function user:api_checkUsername(params)
 	
 	return websiteDomainDB:api_checkDomain({domain=params.username})	
 end
+
+-- 获取用户详细相关信息通过用户名
+function user:api_getDetailByName(params)
+	local skip, limit = util:pagination(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	-- 获取用户信息
+	self:db();findOne({["+username"]={params.username}}, resume)
+	local err, userinfo = yield()
+
+	if not userinfo then
+		return errors:wrap(nil, nil)
+	end
+
+	-- 获取创建的组织列表
+	local websiteDB = models.website:new()
+	websiteDB:db():count({["+userId+categoryId"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION}}, resume)
+	local err, selfOrganiztionTotal = yield()
+	websiteDB:db():find({["+userId+categoryId"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION, limit=limit}}, resume)
+	local err, selfOrganiztionList = yield()
+	local selfOrganiztionObj = {total=selfOrganiztionTotal, siteList=selfOrganiztionList}
+	
+	-- 加入的组织
+	local websiteMemberDB = models.website_member:new()
+	local joinOrganizationObj = websiteMemberDB:api_getWebsiteListByUserId({userId=userinfo._id}).data	
+	
+	-- 获取热门作品
+	local hotSiteObj = websiteDB:api_getSiteList({username=userinfo.username,sortBy="-favoriteCount"}).data	
+	
+	-- 获得全部站点
+	local allSiteObj = websiteDB:api_getAllByUsername({username=userinfo.username}).data
+
+	-- 获得用户粉丝
+	local userFansDB = models.user_fans:new()
+	local fansObj = userFansDB:api_getFansByUserId({userId=userinfo._id}).data
+	
+	return errors:wrap(nil,{userinfo=userinfo,selfOrganiztionObj=selfOrganiztionObj,joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteObj=allSiteObj, fansObj=fansObj})
+end
+
+
+
+
+
+
 
 
 

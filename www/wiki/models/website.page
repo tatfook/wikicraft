@@ -459,6 +459,11 @@ function website:api_getSiteList(params)
 		value[#value+1] = params.websiteName
 	end
 
+	if params.username then
+		key = key .. "+username"
+		value[#value+1] = params.username
+	end
+
 	if params.sortBy then 
 		key = key .. params.sortBy
 		value['gt'] = -1
