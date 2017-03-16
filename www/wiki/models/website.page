@@ -494,12 +494,12 @@ function website:api_getByDomain(params)
 	end
 	
 	local websiteDomainDB = models.website_domain:new()
-	local data = websiteDomainDB:api_getByDomain({domain=params.domain}).data
-	if not data then
-		return errors:wrap(nil, nil)
+	local result = websiteDomainDB:api_getByDomain({domain=params.domain}).data
+	if not result.data then
+		return result
 	end
-
-	self:db():findOne({_id=data.websiteId}, resume)
+	
+	self:db():findOne({_id=result.data.websiteId}, resume)
 	
 	return errors:wrap(yield())
 end
