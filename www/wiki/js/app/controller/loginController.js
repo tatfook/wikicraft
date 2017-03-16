@@ -21,14 +21,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
         
         $scope.findPwd=function () {
             $scope.$close("login");
-            modal('controller/findPwdController', {
-                controller: 'findPwdController',
-            }, function (result) {
-                console.log(result);
-                // nowPage.replaceSelection(login.content);
-            }, function (result) {
-                console.log(result);
-            });
+            util.go("findPwd");
         }
 
         $scope.login = function () {
