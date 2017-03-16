@@ -494,7 +494,7 @@ function website:api_getByDomain(params)
 	end
 	
 	local websiteDomainDB = models.website_domain:new()
-	local result = websiteDomainDB:api_getByDomain({domain=params.domain}).data
+	local result = websiteDomainDB:api_getByDomain({domain=params.domain})
 	if not result.data then
 		return result
 	end

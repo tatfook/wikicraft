@@ -89,6 +89,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                 $scope.IsRenderServerWikiContent = false;
                 var urlObj = util.parseUrl();
                 // 置空用户页面内容
+                console.log(urlObj);
                 //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
@@ -113,9 +114,11 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
 
                 if (urlObj.domain) {
                     util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
-                        urlObj.pagename = urlObj.sitename;
-                        urlObj.username = data.username;
-                        urlObj.sitename = data.name;
+                        if (data) {
+                            urlObj.pagename = urlObj.sitename;
+                            urlObj.username = data.username;
+                            urlObj.sitename = data.name;
+                        }
                         getUserPage();
                     }, function () {
                         getUserPage();
@@ -129,7 +132,7 @@ define(['jquery', 'app', 'helper/markdownwiki', 'helper/storage', 'helper/util',
                     util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
                         username: urlObj.username,
                         sitename: urlObj.sitename,
-                        pagename: urlObj.pagename,
+                        pagename: urlObj.pagename || 'index',
                         userId:$rootScope.user && $rootScope.user._id,
                     }, function (data) {
                         data = data || {};

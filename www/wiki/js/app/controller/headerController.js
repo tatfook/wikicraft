@@ -18,9 +18,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         }
 
         function init() {
-            if (!$scope.user || !$scope.user._id)
-                return ;
-
             $scope.userSiteList = [{name:'home'},{name:'login'},{name:'userCenter'}];
             var urlObj = util.parseUrl();
 
@@ -28,11 +25,16 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 $scope.urlObj.username = urlObj.username;
                 $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
+                console.log(urlObj);
                 if (urlObj.domain) {
+                    console.log(urlObj.domain);
                     util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
-                        $scope.urlObj.pagename = $scope.urlObj.sitename;
-                        $scope.urlObj.username = data.username;
-                        $scope.urlObj.sitename = data.name;
+                        console.log(data);
+                        if (data) {
+                            $scope.urlObj.pagename = $scope.urlObj.sitename;
+                            $scope.urlObj.username = data.username;
+                            $scope.urlObj.sitename = data.name;
+                        }
                     });
                 }
             }

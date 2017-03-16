@@ -42,7 +42,7 @@ define(['jquery'], function ($) {
             pathname = window.location.search.substring(1);
         }
 
-        var username = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+        var username = hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
         var sitename = '';
         var pagename = '';
         var domain = undefined;
@@ -56,24 +56,20 @@ define(['jquery'], function ($) {
             username = username[1];
             domain = username;
             urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
-            if (urlInfo == undefined) {
-                return {};
+            if (urlInfo) {
+                sitename = urlInfo[1];
+                pagename = urlInfo[2];
             }
-            sitename = urlInfo[1];
-            pagename = urlInfo[2];
+
         } else {
             urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-            if (urlInfo == undefined) {
-                return {};
+            if (urlInfo) {
+                username = urlInfo[1];
+                sitename = urlInfo[2];
+                pagename = urlInfo[3];
             }
-            username = urlInfo[1];
-            sitename = urlInfo[2];
-            pagename = urlInfo[3];
         }
 
-        if (username != 'wiki' && sitename && !pagename) {
-            pagename = index;
-        }
         return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname};
     }
 
@@ -233,10 +229,14 @@ define(['jquery'], function ($) {
     }
 
     util.go = function (pageName) {
+        var host = window.location.host;
+        if (host.indexOf('keepwork.com') >= 0) {
+            host = "keepwork.com";
+        }
         if (config.localEnv) {
             window.location.href = config.frontEndRouteUrl + '#/' + pageName;
         } else {
-            window.location.href = "/wiki/" + pageName;
+            window.location.href = "http://" + host + "/wiki/" + pageName;
         }
 
     }
