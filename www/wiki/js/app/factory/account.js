@@ -9,12 +9,17 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         if (!angularService || !angularService.$http) {
             util.setAngularServices({$http:$http});
         }
-
+        /*
         var hostname = window.location.hostname;
         if (hostname != config.hostname) {
             $auth.setStorageType('sessionStorage');
         } else {
             $auth.setStorageType("localStorage");
+        }
+        */
+        // 为认证且域名为子域名
+        if (!$auth.isAuthenticated() && window.location.hostname != config.hostname && $.cookie('token')) {
+            $auth.setToken($.cookie('token'));
         }
 
         // 初始化github
@@ -56,15 +61,13 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                     cb && cb(userinfo);
                     return userinfo;
                 }
-
-                if ($auth.isAuthenticated()) {
-                    util.post(config.apiUrlPrefix + 'user/getProfile',{}, function (data) {
-                        //console.log(data);
-                        cb && cb(data);
-                    }, function () {
-                        errcb && errcb();
-                    })
-                }
+                console.log(config.apiUrlPrefix);
+                util.post(config.apiUrlPrefix + 'user/getProfile',{}, function (data) {
+                    //console.log(data);
+                    cb && cb(data);
+                }, function () {
+                    errcb && errcb();
+                });
                 return userinfo;
             },
 
@@ -80,6 +83,10 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 $rootScope.isLogin = $auth.isAuthenticated();
                 $rootScope.user = user;
 
+                if ($auth.isAuthenticated()) {
+                    var token = $auth.getToken();
+                    $.cookie('token',token,{path:'/', expires:365, domain:'.'+config.hostname});
+                }
                 this.send("onUserProfile", this.user);
                 storage.localStorageSetItem("userinfo", this.user);
             },

@@ -15,6 +15,7 @@
         paths: {
             // 框架库
             'jquery': libPathPrefix + 'jquery/jquery.min',
+            'jquery-cookie': libPathPrefix + 'jquery-cookie/jquery.cookie',
             'angular': libPathPrefix + 'angular/angular.min',
             'angular-ui-bootstrap': libPathPrefix + 'angular-ui-bootstrap/ui-bootstrap-tpls',
             'angular-ui-router': libPathPrefix + 'angular-ui-router/angular-ui-router.min',
@@ -81,6 +82,9 @@
             },
             'highlight':{
                 exports: 'hljs',
+            },
+            'jquery-cookie': {
+                deps:['jquery'],
             },
             /*
             'js-base64':{

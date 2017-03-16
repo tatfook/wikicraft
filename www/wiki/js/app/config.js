@@ -48,6 +48,7 @@
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
+    console.log(config.apiUrlPrefix);
     // angular
     //window.app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize']);
 
