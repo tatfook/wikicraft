@@ -45,7 +45,7 @@ define([
 
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
-        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {module:{renderCount:0}};
+        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {renderCount:0, module:{}};
         return mdwikiMap[mdwikiName];
     }
 

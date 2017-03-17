@@ -1,7 +1,10 @@
 /**
  * Created by wuxiangan on 2016/12/12.
  */
-define(['app', 'helper/util'], function (app, util) {
+define([
+    'app',
+    'helper/util',
+], function (app, util) {
     function registerController(wikiBlock) {
         app.registerController("gameStaticsController", function ($scope, $auth, Account, Message) {
             $scope.htmlUrl = config.wikiModPath + 'statics/pages/gameStatics.page';

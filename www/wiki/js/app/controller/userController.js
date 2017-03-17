@@ -10,7 +10,7 @@ define([
 ], function (app, util, storage, htmlContent) {
     console.log("load userController file");
 
-    app.registerController('userController', ['$scope', function ($scope) {
+    app.controller('userController', ['$scope', function ($scope) {
         var username = $scope.urlObj.username;
         function init() {
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {

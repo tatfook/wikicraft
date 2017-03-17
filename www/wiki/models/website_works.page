@@ -12,10 +12,9 @@ local website_works = inherit(models.abstract.base, gettable("models.website_wor
 website_works.db_name="website_works"
 
 function website_works:ctor()
-	self:addfield("websiteId", "number")      -- 组织名
+	self:addfield("websiteId", "number")      -- 站点ID
+	self:addfield("websiteType", "number")      -- 站点类型
 	self:addfield("worksId", "number")        -- 组织内作品的ID
-	-- self:addfield("worksStarCount", "number") -- 作品被关注的数量
-	-- self:addfield("worksState", "number")     -- 热门 入围
 	self:addfield("worksFlag", "number")     -- 热门 入围
 	self:addfield("createDate", "string", false, 64);
 	self:addfield("updateDate", "string", false, 64);

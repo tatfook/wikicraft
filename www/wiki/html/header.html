@@ -304,7 +304,7 @@
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted"> 34</span></li>
+                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted">{{user.fansCount}}</span></li>
                         <li class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="true">

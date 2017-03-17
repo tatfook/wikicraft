@@ -1,9 +1,13 @@
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!wikimod/works/html/workslist.html',
+], function (app, util, storage, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("workslistController", function ($scope, $auth, Account, Message) {
-            $scope.htmlUrl = config.wikiModPath + 'works/pages/workslist.page';
-
+        app.registerController("workslistController", ['$scope','Account','Message',function ($scope, Account, Message) {
+            $scope.imgsPath = config.wikiModPath + 'works/assets/imgs/';
             $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
             $scope.requestParams = {pageSize: 3, page: 0, websiteId: $scope.siteinfo._id};
 
@@ -16,24 +20,25 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 window.location.href = config.frontEndRouteUrl + "#/siteshow";
             }
 
-            // 随机颜色
-            $scope.getRandomColor = function (index) {
-                return util.getRandomColor(index);
-            }
-
             $scope.getSiteList = function (page) {
-                if (!util.pagination(page, $scope.requestParams, $scope.siteObj && $scope.siteObj.pageCount)) {
+                var pageCount = 1;
+                if ($scope.siteTotal) {
+                    pageCount = $scope.siteTotal / requestParams.pageSize + ($scope.siteTotal % requestParams.pageSize && 1);
+                }
+                if (!util.pagination(page, $scope.requestParams, pageCount)) {
                     return;
                 }
 
                 util.http("POST", $scope.requestUrl, $scope.requestParams, function (data) {
-                    $scope.siteObj = data;
+                    data = data || {};
+                    $scope.siteList = data.siteList;
+                    $scope.siteTotal = data.total;
                 });
             }
 
             function init() {
-                var moduleParams = wikiBlock.modParams;
-                var pageSize = parseInt(moduleParams.pageSize) || 3;
+                var moduleParams = wikiBlock.modParams || {};
+                var pageSize = parseInt(moduleParams.pageSize || "3");
                 pageSize = pageSize < 1 ? 1 : pageSize;
                 $scope.workslistNavHeight = (200 + Math.floor((pageSize - 1) / 3) * 280) + "px";
                 $scope.workslistHeight = Math.ceil(pageSize / 3) * 280 + "px";
@@ -66,15 +71,14 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 }
                 $scope.getSiteList();
             }
-
-            init();
-        });
+            $scope.$watch("$viewContentLoaded", init);
+        }]);
     }
 
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="workslistController"><div ng-include="htmlUrl"></div></div>';
+            return htmlContent;
         }
     };
 });

@@ -261,6 +261,7 @@ define([
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message, modal) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
+            $rootScope.userinfo = $rootScope.user;
             $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
 
             $scope.progressbar = {
@@ -507,11 +508,16 @@ define([
                         return text;
 
                     var paramLines = lines.slice(startPos+1, endPos);
-                    var paramObj = angular.fromJson(paramLines.join('\n'));
-                    var paramsText = angular.toJson(paramObj, 4);
-                    var newText = lines.slice(0,startPos+1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
-                    //console.log(newText);
-                    return newText;
+                    try {
+                        var paramObj = angular.fromJson(paramLines.join('\n'));
+                        var paramsText = angular.toJson(paramObj, 4);
+                        var newText = lines.slice(0,startPos+1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                        //console.log(newText);
+                        return newText;
+                    } catch (e) {
+                        console.log(e);
+                        return lines.slice(0,startPos+1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                    }
                 }
                 //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
@@ -1262,6 +1268,9 @@ define([
                     var blockList = $('#wikimdContentContainer').children();
                     var blockPosList = [];
                     for (var i = 0; i < blockList.length; i++) {
+                        if (blockPosList[blockPosList.length-1] >= blockList[i].offsetTop)
+                            continue;
+                        
                         blockPosList.push(blockList[i].offsetTop);
                     }
                     return blockPosList;
@@ -1303,6 +1312,9 @@ define([
                                 if (scrollTop <= blockPosList[index])
                                     break;
                             }
+                            //console.log(index);
+                            //console.log(blockPosList);
+                            //console.log(editorPosList);
                             editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(editorPosList[index].from) - 142); // 142 为调试得到，应该是编辑器隐藏了142px
                         }, 100);
                     }

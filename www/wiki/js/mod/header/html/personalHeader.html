@@ -1,0 +1,78 @@
+<style>
+    .personal-header{
+        height: 510px;
+        position: relative;
+        background-color: #FFF;
+    }
+    .personal-header .profile{
+        height: 400px;
+        overflow: hidden;
+    }
+    .personal-header .profile>img{
+        width: 100%;
+    }
+    .personal-header .text{
+        padding: 10px 30px;
+    }
+    .personal-header .user-msg{
+        position: absolute;
+        bottom: 10px;
+        width: 800px;
+        padding: 30px;
+        display: flex;
+        left: 50%;
+        background-color: #FFF;
+        transform: translate(-400px,0);
+        box-shadow: 0 0 15px 0 rgba(75,129,183,.35);
+        border-radius: 10px;
+    }
+    .personal-header h2{
+        color: #FF7A7A;
+        font-weight: bold;
+    }
+    .personal-header .info{
+        font-size: 12px;
+        color: #999;
+    }
+    .personal-header .user-msg>img{
+        width: 190px;
+        height: 190px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    .personal-header .msg-top{
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    .personal-header .msg-top>.msg-left{
+        flex: 1;
+    }
+    .personal-header .btn-lg{
+        padding: 11px 41px;
+        border-radius: 10px;
+    }
+    .personal-header .intro{
+        line-height: 25px;
+    }
+</style>
+
+<!-- 个人主页头部 -->
+<div class="personal-header" ng-controller="personalHeaderController">
+	<div class="profile">
+		<img ng-src="{{imgsPath + 'personal_header_banner.jpg'}}" alt="">
+	</div>
+	<div class="user-msg">
+		<img ng-src="{{user.protrait || imgsPath + 'personsal-header-profile.jpg'}}" alt="用户头像" class="pull-left">
+		<div class="text pull-left">
+			<div class="msg-top">
+				<div class="msg-left">
+					<h2>{{user.username}}</h2>
+					<p class="info"><span class="glyphicon glyphicon-map-marker"></span> {{user.location + '注册于:' + user.joindate}}</p>
+				</div>
+				<div class="btn btn-primary btn-lg">关注</div>
+			</div>
+			<p class="intro">{{user.introduce}}</p>
+		</div>
+	</div>
+</div>
