@@ -44,7 +44,7 @@
                 <tr ng-repeat="website in websites">
                     <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.name}}</a></td>
                     <td>{{website.desc}}</td>
-                    <td><a href='{{website.domain ? ("http://" + website.domain + ".wikicraft.cn") : ""}}' class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>
+                    <td><a href='{{website.domain ? ("http://" + website.domain + ".wikicraft.cn") : ""}}' target="_blank" class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>
                     <td>{{website.categoryName || '/'}}</td>
                     <td>{{website.templateName || '/'}}</td>
                     <td>{{website.styleName || '/'}}</td>

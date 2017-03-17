@@ -3,7 +3,7 @@
         background-color: #E0EFFD;
     }
     .personal-statics .msg-box{
-        width: 930px;
+        max-width: 930px;
         margin: 0 auto;
         padding: 55px 0;
     }
@@ -20,6 +20,15 @@
     }
     .personal-statics .text-primary{
         color: #0081BA;
+    }
+    @media (max-width: 768px) {
+        .personal-statics .msg-box{
+            padding: 15px 0 0;
+            font-size: 12px;
+        }
+        .personal-statics .msg>img{
+            width: 40px;
+        }
     }
 </style>
 
