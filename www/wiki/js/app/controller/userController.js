@@ -12,6 +12,9 @@ define([
 
     app.controller('userController', ['$scope', function ($scope) {
         var username = $scope.urlObj.username;
+        if (config.islocalWinEnv()) {
+            username = "xiaoyao";
+        }
         function init() {
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
@@ -22,10 +25,12 @@ define([
                 $scope.selfOrganizationList = data.selfOrganizationObj.siteList;
                 $scope.joinOrganizationList = data.joinOrganizationObj.siteList;
                 $scope.hotSiteList = data.hotSiteObj.siteList;
-                $scope.allSiteList = data.allSiteObj.siteList;
-                $scope.allSiteTotal = data.allSiteObj.total;
+                $scope.allSiteList = data.allSiteList;
+                //$scope.allSiteTotal = data.allSiteObj.total;
                 $scope.fansList = data.fansObj.userList;
                 $scope.fansCount = data.fansObj.total;
+                $scope.trendsCount = data.trendsObj.total;
+                $scope.trendsList = data.trendsObj.trendsList;
             });
         }
 

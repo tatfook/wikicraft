@@ -61,17 +61,20 @@ define([
                 w.css("min-height", minH);
 
                 // 注册路由改变事件, 改变路由时清空相关内容
+
                 $rootScope.$on('$locationChangeSuccess', function () {
                     console.log("$locationChangeSuccess change");
                     initContentInfo();
                 });
+
+                //initContentInfo();
             }
 
             function renderHtmlText(pathname, md) {
                 pathname = pathname.replace('/wiki/', '');
                 var pageUrl = 'controller/' + pathname + 'Controller';
                 var htmlContent;
-                //console.log(pageUrl);
+                console.log(pageUrl);
                 require([pageUrl], function (htmlContent) {
                     //console.log(htmlContent);
                     $scope.IsRenderServerWikiContent = true;
@@ -91,7 +94,7 @@ define([
                 var urlObj = util.parseUrl();
                 $rootScope.urlObj = urlObj;
                 // 置空用户页面内容
-                //console.log(urlObj);
+                console.log(urlObj);
                 //urlObj.username = 'wiki';
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
@@ -106,10 +109,13 @@ define([
                         pathname = '/wiki' + window.location.hash.substring(1);
                         renderHtmlText(pathname, md);
                         return;
-                    } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
-                        pathname = '/wiki/home';
-                    } else { // /wiki/test
-                        pathname = urlObj.pathname;
+                    } else {
+                        // wikicraft.cn  重定向/#/home
+                        if (window.location.pathname == '/' || window.location.pathname == '/wiki' || config.islocalWinEnv()) {
+                            pathname = '/wiki/home';
+                        } else { // /wiki/test
+                            pathname = urlObj.pathname;
+                        }
                     }
                     renderHtmlText(pathname);
                     return;

@@ -11,6 +11,7 @@
     var hostname = "keepwork.com";
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
+        localVMEnv:localVMEnv,
         hostname:hostname,
         frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/server/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
@@ -49,10 +50,14 @@
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
-    console.log(config.apiUrlPrefix);
-    // angular
-    //window.app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize']);
-
+    // local window env
+    config.islocalWinEnv = function () {
+        return localEnv && !localVMEnv
+    }
+    // local VM env
+    config.islocalVMEnv = function () {
+        return localEnv && localVMEnv;
+    }
     // 预加载模块注册
     config.registerPreloadModule = function (path) {
         this.preloadModuleList.push(path);
