@@ -105,7 +105,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             // 确保认证，未认证跳转登录页
             ensureAuthenticated: function (cb) {
                 if (!this.isAuthenticated()) {
-                    window.location.href = "/wiki/login";
+                    util.go('login');
                     return;
                 }
                 cb && cb();

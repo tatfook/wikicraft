@@ -8,7 +8,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
         $scope.isModal=false;
 
         function init() {
-            if (window.location.pathname !="/wiki/login"){
+            if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login"){
                 $scope.isModal=true;
             }
         }
