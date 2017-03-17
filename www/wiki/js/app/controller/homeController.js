@@ -9,7 +9,7 @@ define([
     'text!html/home.html'
 ], function (app, util, storage, htmlContent) {
     // 动态加载
-    app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', 'Message', function ($scope, $rootScope, $state, $auth, Account, Message) {
+    app.registerController('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }

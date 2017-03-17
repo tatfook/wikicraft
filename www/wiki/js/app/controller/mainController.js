@@ -12,8 +12,8 @@ define([
 ], function (app, markdownwiki, storage, util, userHtmlContent) {
     var md = markdownwiki({html: true});
 
-    app.controller('mainController', ['$scope', '$rootScope', '$state', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
-        function ($scope, $rootScope, $state, $http, $auth, $compile, Account, Message, github, modal) {
+    app.controller('mainController', ['$scope', '$rootScope', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
+        function ($scope, $rootScope, $http, $auth, $compile, Account, Message, github, modal) {
             console.log("mainController");
             // 初始化基本信息
             function initBaseInfo() {
@@ -32,7 +32,6 @@ define([
                 util.setAngularServices({
                     $rootScope: $rootScope,
                     $http: $http,
-                    $state: $state,
                     $compile: $compile,
                     $auth: $auth
                 });
@@ -109,7 +108,7 @@ define([
                     //console.log(window.location);
                     if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
                         //window.location.href = config.frontEndRouteUrl + window.location.search + window.location.hash;
-                        renderHtmlText('/wiki' + window.location.hash.substring(1));
+                        renderHtmlText('/wiki' + window.location.hash.substring(1), md);
                     } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
                         //window.location.href = config.frontEndRouteUrl + window.location.search + "#/home";
                         renderHtmlText('/wiki/home');

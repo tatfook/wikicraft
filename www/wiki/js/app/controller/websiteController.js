@@ -10,7 +10,7 @@ define([
     'controller/newWebsiteController',
     'controller/editWebsiteController',
 ], function (app, util, storage, htmlContent, newWebsiteHtmlContent, editWebsiteHtmlContent) {
-    app.registerController('websiteController', ['$rootScope', '$scope', '$state', 'Account', function ($rootScope, $scope, $state, Account) {
+    app.registerController('websiteController', ['$rootScope', '$scope', 'Account', function ($rootScope, $scope, Account) {
         console.log("websiteController");
         $scope.websites = [];
 
