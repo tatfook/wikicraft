@@ -284,7 +284,7 @@ define([
 
             //初始化，读取用户站点列表及页面列表
             function init() {
-                if (!Account.isAuthenticated()) {
+                if (!Account.ensureAuthenticated()) {
                     return;
                 }
 
@@ -297,7 +297,7 @@ define([
                 if (urlObj && urlObj.username == user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index') ;
                 }
-                //console.log(url);
+                console.log(url);
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
                 $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
@@ -329,7 +329,7 @@ define([
             }
 
             $scope.$watch('$viewContentLoaded', init);
-
+            //init();
 
             function progressing(step) {
                 if ($scope.progressbar.percent == 0) {
