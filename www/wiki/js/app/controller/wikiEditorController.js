@@ -1234,9 +1234,16 @@ define([
                 var mdwiki = markdownwiki({
                     container_name: '.result-html', renderCallback: function (value) {
                         renderAutoSave(value);
-                        console.log($('#wikimdContentContainer'));
+                        resizeMod();
                     }, changeCallback: changeCallback
                 });
+
+                function resizeMod(){
+                    var boxWidth=$("#preview").width()-30;//30为#preview的padding宽度
+                    var contentWidth=1170;
+                    var scaleSize=(boxWidth>=contentWidth)? 1:(boxWidth/contentWidth);
+                    $('#wikimdContentContainer').css({"transform":"scale("+scaleSize+")","transform-origin":"left top"});
+                }
 
                 mdwiki.bindToCodeMirrorEditor(editor);
                 setTimeout(function () {
@@ -1357,8 +1364,10 @@ define([
                         }
                         if ($("#srcview").is(":hidden")) {
                             $("#preview").addClass('col-xs-12');
+                            resizeMod();
                         } else {
                             $("#preview").addClass('col-xs-6');
+                            resizeMod();
                         }
                     } else {
                         if ($("#preview").is(":hidden")) {
@@ -1368,8 +1377,10 @@ define([
                         }
                         if ($("#srcview").is(":hidden")) {
                             $("#preview").addClass('col-xs-10');
+                            resizeMod();
                         } else {
                             $("#preview").addClass('col-xs-5');
+                            resizeMod();
                         }
                     }
                 }
