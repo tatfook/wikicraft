@@ -28,6 +28,7 @@ define([
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
+    var winWidth = $(window).width();
     //console.log("wiki editor controller!!!");
     var editor;
     var allWebsites = [];
@@ -287,7 +288,7 @@ define([
                 if (!Account.isAuthenticated()) {
                     return;
                 }
-
+                $(".result-html").css("width", winWidth + "px");
                 initEditor();
 
                 var user = $scope.user;
@@ -295,7 +296,7 @@ define([
                 storage.sessionStorageRemoveItem('urlObj');
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 if (urlObj && urlObj.username == user.username) {
-                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index') ;
+                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                 }
                 //console.log(url);
                 // console.log(config.apiUrlPrefix);
@@ -509,17 +510,17 @@ define([
                     if (startPos == undefined || endPos == undefined)
                         return text;
 
-                    var paramLines = lines.slice(startPos+1, endPos);
+                    var paramLines = lines.slice(startPos + 1, endPos);
                     try {
                         conosle.log(paramLines);
                         var paramObj = angular.fromJson(paramLines.join('\n'));
                         var paramsText = angular.toJson(paramObj, 4);
-                        var newText = lines.slice(0,startPos+1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                        var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
                         //console.log(newText);
                         return newText;
                     } catch (e) {
                         console.log(e);
-                        return lines.slice(0,startPos+1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                        return lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
                     }
                 }
                 //console.log('openWikiBlock');
@@ -961,7 +962,7 @@ define([
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
                             //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                             github.uploadImage({content: fileReader.result}, function (img_url) {
+                            github.uploadImage({content: fileReader.result}, function (img_url) {
                                 console.log(img_url);
                                 var imagePath = github.getRawContentUrl({path: ""});
                                 if (img_url.indexOf(imagePath) == 0) {
@@ -1104,7 +1105,7 @@ define([
                     foldGutter: true,
                     foldOptions: {
                         rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.markdown, CodeMirror.fold.xml, CodeMirror.fold.wikiCmdFold),
-                        clearOnEnter:false,
+                        clearOnEnter: false,
                     },
                     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
                     //全屏模式
@@ -1212,16 +1213,16 @@ define([
                     }
                 });
 
-                editor.on('fold', function(cm, from, to){
-                    cm.getDoc().addLineClass(from.line,'wrap','CodeMirrorFold');
+                editor.on('fold', function (cm, from, to) {
+                    cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 editor.on('unfold', function (cm, from, to) {
-                    cm.getDoc().removeLineClass(from.line,'wrap','CodeMirrorFold');
+                    cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 // 渲染后自动保存
                 function renderAutoSave(value) {
                     if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value)
-                        return ;
+                        return;
                     currentWebsitePage.content = value;                               // 更新内容
                     currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
                     //console.log(currentWebsitePage);
@@ -1238,11 +1239,11 @@ define([
                     }, changeCallback: changeCallback
                 });
 
-                function resizeMod(){
-                    var boxWidth=$("#preview").width()-30;//30为#preview的padding宽度
-                    var contentWidth=1170;
-                    var scaleSize=(boxWidth>=contentWidth)? 1:(boxWidth/contentWidth);
-                    $('#wikimdContentContainer').css({"transform":"scale("+scaleSize+")","transform-origin":"left top"});
+                function resizeMod() {
+                    var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
+                    var contentWidth = winWidth;
+                    var scaleSize = (boxWidth >= contentWidth) ? 1 : (boxWidth / contentWidth);
+                    $('#wikimdContentContainer').css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
                 mdwiki.bindToCodeMirrorEditor(editor);
@@ -1258,7 +1259,7 @@ define([
 
                 editor.on("beforeChange", function (cm, changeObj) {
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
-                        cm.getDoc().removeLineClass(i,'wrap','CodeMirrorFold');
+                        cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
                     }
                 });
                 // 编辑器改变内容回调
@@ -1283,7 +1284,7 @@ define([
                     var blockList = $('#wikimdContentContainer').children();
                     var blockPosList = [];
                     for (var i = 0; i < blockList.length; i++) {
-                        if (blockPosList[blockPosList.length-1] >= blockList[i].offsetTop)
+                        if (blockPosList[blockPosList.length - 1] >= blockList[i].offsetTop)
                             continue;
 
                         blockPosList.push(blockList[i].offsetTop);
