@@ -40,7 +40,7 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function(websiteName) {
-            util.goUserSite('/' + $scope.user.username + '/'+ websiteName);
+            util.goUserSite('/' + $scope.user.username + '/'+ websiteName, true);
         }
 
         // 编辑网站页面

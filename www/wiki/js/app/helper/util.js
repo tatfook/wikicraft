@@ -219,24 +219,35 @@ define(['jquery'], function ($) {
         return window.IframeId ? true : false;
     }
 
-    util.goUserSite = function (url) {
+    util.goUserSite = function (url, isOpen) {
         if (config.localEnv) {
-            window.open("http://localhost:8099" + url);
-            //window.location.href = "http://localhost:8099" + url;
+            url = "http://localhost:8099" + url;
+        }
+        if (isOpen) {
+            window.open(url);
         } else {
             window.location.href = url;
         }
     }
 
-    util.go = function (pageName) {
+    util.go = function (pageName, isOpen) {
         var host = window.location.host;
+        var url;
+
         if (host.indexOf('keepwork.com') >= 0) {
             host = "keepwork.com";
         }
+
         if (config.localEnv) {
-            window.location.href = config.frontEndRouteUrl + '#/' + pageName;
+            url = config.frontEndRouteUrl + '#/' + pageName;
         } else {
-            window.location.href = "http://" + host + "/wiki/" + pageName;
+            url = "http://" + host + "/wiki/" + pageName;
+        }
+
+        if (isOpen) {
+            window.location.open(url);
+        } else {
+            window.location.href = url;
         }
 
     }

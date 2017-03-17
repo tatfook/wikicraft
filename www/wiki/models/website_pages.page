@@ -373,12 +373,10 @@ function website_pages:api_getDetailInfo(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 	
-	
 	local pageurl ="/" .. params.username .. "/" .. params.sitename .. "/" .. params.pagename
 	self:db():findOne({["+url"]={pageurl}}, resume)
 	local err, pageinfo = yield()
-
-	if err or (not pageinfo) then
+	if not pageinfo then
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
 
