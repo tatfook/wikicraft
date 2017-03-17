@@ -151,7 +151,7 @@ define([
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
         tplObj.render = function (htmlContent) {
-            util.html('#wikiblock_template', htmlContent);
+            util.html('#wikimdContentContainer', htmlContent);
         };
         tplObj.http = function(method, url, params, callback, errorCallback){
             return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
@@ -432,12 +432,11 @@ define([
         mdwiki.render = function (text) {
             mdwikiObj.template = undefined;
             var htmlResult = md.render(preprocessMDText(text));
-            htmlResult = '<div id="wikimdContentContainer">' + htmlResult + '</div>';
             if (!options.use_template) {
-                return htmlResult;
+                return '<div id="wikimdContentContainer">' + htmlResult + '</div>';;
             }
             var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
-            var html = '<div id="wikiblock_template"></div>';
+            var html = '<div id="wikimdContentContainer"></div>';
             mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/default', modParams:{}};
             mdwikiObj.template.content = htmlResult;
             mdwikiObj.renderCount++;

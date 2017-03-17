@@ -4,7 +4,6 @@
 ///wiki/js/lib/angular-ui-select/select.min.js
 define([
     'angular',
-    'angular-ui-router',
     'angular-ui-bootstrap',
     'angular-ui-select',
     'angular-sanitize',
@@ -12,7 +11,7 @@ define([
     'angular-toggle-switch',
 ], function (angular) {
     console.log("app");
-    var app = angular.module('webapp', ['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']);
+    var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']);
     
     app.config(['$controllerProvider', '$authProvider',function ($controllerProvider, $authProvider) {
         // 提供动态注册控制器接口

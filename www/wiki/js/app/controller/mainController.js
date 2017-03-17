@@ -28,6 +28,7 @@ define([
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
+
                 //配置一些全局服务
                 util.setAngularServices({
                     $rootScope: $rootScope,
@@ -35,6 +36,7 @@ define([
                     $compile: $compile,
                     $auth: $auth
                 });
+                
                 util.setSelfServices({
                     config: config,
                     storage: storage,
@@ -59,12 +61,9 @@ define([
                 w.css("min-height", minH);
 
                 // 注册路由改变事件, 改变路由时清空相关内容
-                $scope.$on('$stateChangeStart', function (evt, toState, toParams, fromState, fromParams) {
-                    // 如果需要阻止事件的完成
-                    //evt.preventDefault();
-                    console.log("$stateChangeStart");
-                    $scope.IsRenderServerWikiContent = false;
-                    util.html('#__UserSitePageContent__', '<div></div>', $scope);
+                $rootScope.$on('$locationChangeSuccess', function () {
+                    console.log("$locationChangeSuccess change");
+                    initContentInfo();
                 });
             }
 
@@ -73,26 +72,22 @@ define([
                 var pageUrl = 'controller/' + pathname + 'Controller';
                 var htmlContent;
                 //console.log(pageUrl);
-                require([pageUrl], function (htmlObj) {
+                require([pageUrl], function (htmlContent) {
                     //console.log(htmlContent);
                     $scope.IsRenderServerWikiContent = true;
-                    if (typeof htmlObj == "string") {
-                        htmlContent = htmlObj;
+                    if (pathname != "wikiEditor") {
                         htmlContent = md ? md.render(htmlContent) : htmlContent;
-                        util.html('#__UserSitePageContent__', htmlContent, $scope);
-                    } else if (typeof htmlObj == "object") {
-                        htmlContent = htmlObj.htmlContent;
-                        htmlContent = md ? md.render(htmlContent) : htmlContent;
-                        //util.html('#SinglePageId', htmlObj.htmlContent, $scope);
-                        util.html('#__UserSitePageContent__', htmlObj.htmlContent, $scope);
-                        typeof htmlObj.domReady == "function" && htmlObj.domReady();
                     }
+                    util.html('#__UserSitePageContent__', htmlContent, $scope);
                 });
             }
 
             // 加载内容信息
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
+                util.html('#__UserSitePageContent__', '<div></div>', $scope);
+
+                var pathname = "/wiki/home";
                 var urlObj = util.parseUrl();
                 $rootScope.urlObj = urlObj;
                 // 置空用户页面内容
@@ -108,15 +103,15 @@ define([
                     //console.log(window.location);
                     if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
                         //window.location.href = config.frontEndRouteUrl + window.location.search + window.location.hash;
-                        renderHtmlText('/wiki' + window.location.hash.substring(1), md);
+                        pathname = '/wiki' + window.location.hash.substring(1);
+                        renderHtmlText(pathname, md);
+                        return;
                     } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
-                        //window.location.href = config.frontEndRouteUrl + window.location.search + "#/home";
-                        renderHtmlText('/wiki/home');
+                        pathname = '/wiki/home';
                     } else { // /wiki/test
-                        renderHtmlText(urlObj.pathname);
-                        //renderHtmlText('/wiki/home');
+                        pathname = urlObj.pathname;
                     }
-                    //console.log($scope.IsRenderServerWikiContent);
+                    renderHtmlText(pathname);
                     return;
                 }
 
@@ -165,7 +160,6 @@ define([
             function init() {
                 initBaseInfo();
                 initView();
-                initContentInfo();
             }
 
             init();

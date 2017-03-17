@@ -1218,18 +1218,23 @@ define([
                 editor.on('unfold', function (cm, from, to) {
                     cm.getDoc().removeLineClass(from.line,'wrap','CodeMirrorFold');
                 });
+                // 渲染后自动保存
+                function renderAutoSave(value) {
+                    if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value)
+                        return ;
+                    currentWebsitePage.content = value;                               // 更新内容
+                    currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
+                    //console.log(currentWebsitePage);
+                    //console.log('save storage ' + currentWebsitePage.url);
+                    storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
+                }
 
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
                     container_name: '.result-html', renderCallback: function (value) {
-                        if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value)
-                            return ;
-                        currentWebsitePage.content = value;                               // 更新内容
-                        currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
-                        //console.log(currentWebsitePage);
-                        //console.log('save storage ' + currentWebsitePage.url);
-                        storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
+                        renderAutoSave(value);
+                        console.log($('#wikimdContentContainer'));
                     }, changeCallback: changeCallback
                 });
 
