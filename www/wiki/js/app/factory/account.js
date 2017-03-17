@@ -69,7 +69,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                         errcb && errcb();
                     });
                 }
-                
+
                 return userinfo;
             },
 
@@ -203,7 +203,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
         }
 
         account.getUser(function (user) {
-            console.log(user);
+            //console.log(user);
             account.setUser(user);
         });
 

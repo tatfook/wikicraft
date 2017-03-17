@@ -25,7 +25,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 $scope.urlObj.username = urlObj.username;
                 $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
-                console.log(urlObj);
+                //console.log(urlObj);
                 if (urlObj.domain) {
                     console.log(urlObj.domain);
                     util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {

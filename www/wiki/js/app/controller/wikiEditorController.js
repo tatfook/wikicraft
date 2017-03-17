@@ -292,11 +292,12 @@ define([
 
                 var user = $scope.user;
                 var urlObj = storage.sessionStorageGetItem('urlObj');
+                storage.sessionStorageRemoveItem('urlObj');
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 if (urlObj && urlObj.username == user.username) {
-                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
+                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index') ;
                 }
-
+                //console.log(url);
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
                 $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
@@ -311,6 +312,7 @@ define([
                                 break;
                             }
                         }
+                        //console.log(currentWebsitePage);
                         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
                             initTree();
 
@@ -509,6 +511,7 @@ define([
 
                     var paramLines = lines.slice(startPos+1, endPos);
                     try {
+                        conosle.log(paramLines);
                         var paramObj = angular.fromJson(paramLines.join('\n'));
                         var paramsText = angular.toJson(paramObj, 4);
                         var newText = lines.slice(0,startPos+1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
@@ -1270,7 +1273,7 @@ define([
                     for (var i = 0; i < blockList.length; i++) {
                         if (blockPosList[blockPosList.length-1] >= blockList[i].offsetTop)
                             continue;
-                        
+
                         blockPosList.push(blockList[i].offsetTop);
                     }
                     return blockPosList;

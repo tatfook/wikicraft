@@ -108,7 +108,8 @@ define([
                     }
                     //console.log(window.location);
                     if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
-                        window.location.href = config.frontEndRouteUrl + window.location.search + window.location.hash;
+                        //window.location.href = config.frontEndRouteUrl + window.location.search + window.location.hash;
+                        renderHtmlText('/wiki' + window.location.hash.substring(1));
                     } else if (window.location.pathname == '/' || window.location.pathname == '/wiki') {     // wikicraft.cn  重定向/#/home
                         //window.location.href = config.frontEndRouteUrl + window.location.search + "#/home";
                         renderHtmlText('/wiki/home');
