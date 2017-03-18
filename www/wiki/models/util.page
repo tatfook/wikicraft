@@ -87,7 +87,7 @@ const.WORKS_STATE_NOPASS=0  -- 未审核
 const.WORKS_STATE_PASS=1    -- 审核
 
 -- 作品标记
-const.WORKS_FLAG_NORMAL=0 -- 普通
+const.WORKS_FLAG_NORMAL=0  -- 普通
 const.WORKS_FLAG_UPGRADE=1 -- 入围
 const.WORKS_FLAG_HOT=2     -- 热门
 

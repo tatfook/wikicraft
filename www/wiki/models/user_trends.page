@@ -91,6 +91,10 @@ function user_trends:api_worksFavorite(params)
 	return self:api_upsert(params)
 end
 
+-- 组织添加成员
+--function user_trends:api_OrganizationAddMember(params)
+--end
+
 -- 获取用户动态
 function user_trends:api_get(params)
 	if not params.userId then

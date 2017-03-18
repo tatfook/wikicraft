@@ -6,6 +6,7 @@ Date: 2016/11/14
 
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./user_trends.page")
 include_once("./website.page")
 
 local website_member = inherit(models.abstract.base, gettable("models.website_member"))
@@ -42,7 +43,39 @@ function website_member:create(params)
 	params.updateDate = params.createDate
 
 	self:db():insertOne({["+websiteId+userId"]={params.websiteId, params.userId}}, params, resume)
-	return errors:wrap(yield())
+	local err, data = yield()
+
+	local websiteDB = models.website:new()
+	local site = websiteDB:api_getById({websiteId=params.websiteId}).data
+	if not site then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	if site.userId == params.userId then
+		return errors:wrap()
+	end
+
+	local userTrendsDB = models.user_trends:new()
+	local trends = {
+		userId=params.userId,
+		websiteId=params.websiteId,
+		otherUserId=site.userId,
+		trendsType=const.USER_TRENDS_TYPE_ORGANIZATION,
+		desc="你已加入组织:" .. site.name
+	}
+	userTrendsDB:api_upsert(trends)
+	
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=params.userId}).data
+	if not userinfo then
+		return errors:wrap()
+	end
+	trends.userId = site.userId
+	trends.otherUserId = params.userId
+	trends.desc = userinfo.username .. "加入你的组织:" .. website.name
+	userTrendsDB:api_upsert(trends)
+
+	return errors:wrap()
 end
 
 -- 更新
