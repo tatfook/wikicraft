@@ -150,14 +150,19 @@
     .fans-row img.icon{
         width: 13px;
     }
+    .info{
+        font-size: 12px;
+        color: #666;
+        font-weight:normal;
+    }
 </style>
 
 <div class="container" ng-controller="userController">
     <div class="row">
         <div class="col-md-3 subnav">
             <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
-            <h3>{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
-            <p class="info">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
+            <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
+            <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
             <p>{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary">关 注</div>
             <div class="message-row">
