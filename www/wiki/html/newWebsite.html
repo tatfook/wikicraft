@@ -8,12 +8,12 @@
         padding-bottom: 20px;
     }
     .step-content {
-        min-height: 480px;
+        min-height: 325px;
         padding: 25px 70px 0;
     }
     .step-footer {
         text-align: center;
-        margin-bottom: 25px;
+        margin: 40px 0;
     }
     .step-footer .btn-primary{
         padding: 9px 42px;
@@ -136,6 +136,9 @@
     .congratulation a {
         color: #3977AD;
     }
+    .no-padding-left{
+        padding-left:0;
+    }
 
 </style>
 
@@ -189,7 +192,7 @@
                 <div ng-show="step == 3">
                     <div class="col-sm-6">
                         <p>本站标签：</p>
-                        <div class="col-sm-10">
+                        <div class="col-sm-10 no-padding-left">
                             <input type="text" class="form-control" ng-model="tag">
                         </div>
                         <div class="col-sm-2">
