@@ -18,12 +18,12 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         }
 
         function init() {
-            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'}];
+            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikiEditor'}];
             var urlObj = util.parseUrl();
 
-            if (!config.localEnv) {
-                $scope.urlObj.username = urlObj.username;
-                $scope.urlObj.sitename = urlObj.sitename;
+            if (!config.islocalWinEnv()) {
+                $scope.urlObj.username = urlObj.username || "wiki";
+                $scope.urlObj.sitename = urlObj.sitename || "home";
                 $scope.urlObj.pagename = urlObj.pagename;
                 //console.log(urlObj);
                 if (urlObj.domain) {
@@ -142,7 +142,6 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             }
         }
         // 用户动态=======================================end=========================================
-
 
         // 页面编辑页面
         $scope.goWikiEditorPage = function () {

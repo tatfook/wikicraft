@@ -95,29 +95,25 @@ define([
                 $rootScope.urlObj = urlObj;
                 // 置空用户页面内容
                 //console.log(urlObj);
-                if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
+                if (!urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
                     $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
                     if ($scope.IsRenderServerWikiContent) {
                         console.log("server page !!!");
                         return;
                     }
-                    //console.log(window.location);
-                    if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
-                        //window.location.href = config.frontEndRouteUrl + window.location.search + window.location.hash;
-                        pathname = '/wiki' + window.location.hash.substring(1);
-                    } else {
-                        // wikicraft.cn  重定向/#/home
-                        if (window.location.pathname == '/' || window.location.pathname == '/wiki' || config.islocalWinEnv()) {
-                            pathname = '/wiki/home';
-                        } else { // /wiki/test
-                            pathname = urlObj.pathname;
-                        }
+
+                    if (!urlObj.username || !urlObj.sitename) {
+                        pathname = '/wiki/home';
+                    } else { // /wiki/test
+                        pathname = urlObj.pathname;
                     }
+
                     if (config.isLocal())
                         renderHtmlText(pathname, md);
                     else
                         renderHtmlText(pathname);
+                    
                     return;
                 }
 
