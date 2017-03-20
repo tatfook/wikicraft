@@ -22,7 +22,7 @@ define([
         // github 认证配置
         $authProvider.github({
             url: "/api/wiki/auth/github",
-            clientId: '7ca5d2185ce6d6f5be69',
+            clientId: '2219fe9cb6d105dd30fb',
             redirectUri: window.location.origin + '/wiki/login',
             // scope: ["public_repo", "delete_repo"],
             scope: ["public_repo"],
