@@ -167,8 +167,21 @@ define(['app',
         $scope.clickMyTrends = function () {
             $scope.showItem = 'myTrends';
             $scope.trendsType = "organization";
+            getUserTrends();
+
             $scope.selectTrendsType = function (trendsType) {
                 $scope.trendsType = trendsType;
+            }
+
+            function getUserTrends() {
+                util.post(config.apiUrlPrefix + 'user_trends/get', {userId:$scope.user._id}, function (data) {
+                    $scope.trendsList = data.trendsList;
+                });
+            }
+
+            $scope.isShowTrend = function (trends) {
+                var trendsTypeList = ["organization","favorite","works"];
+                return  $scope.trendsType == trendsTypeList[trends.trendsType];
             }
         }
 

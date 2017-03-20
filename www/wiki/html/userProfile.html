@@ -399,14 +399,14 @@
                     <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
                 </li>
                 <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
-                    <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">我的作品</a>
+                    <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
                 </li>
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active col-sm-12" id="wiki_organize">
-                    <div class="status-row col-sm-12" ng-repeat="x in trendsList">
+                    <div class="status-row col-sm-12" ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
                         <p class="pull-right info">{{x.updateDate}}</p>
                         <div class="col-sm-12">
                             <span class="glyphicon glyphicon-ok status text-success"></span>{{x.desc}}
