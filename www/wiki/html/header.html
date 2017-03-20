@@ -239,7 +239,7 @@
         left: 0px;
         top: 12px;
     }
-    ul.nodot-dropdown >li{
+    ul.nodot-dropdown > li {
         text-align: center;
     }
 </style>
@@ -259,12 +259,9 @@
                     </button>
                     <!-- <a class="navbar-brand" href="#">KEEPWORK</a> -->
                     <div class="dropdown navbar-brand">
-                        <a ng-click="goHomePage()">KEEPWORK <a class="dropdown-toggle" data-toggle="dropdown"
-                                                                role="button" aria-haspopup="true"
-                                                                aria-expanded="false"><span
-                                class="caret"></span></a></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">KEEPWORK<span class="caret"></span></a>
                         <ul class="dropdown-menu nodot-dropdown">
-                            <li><a href="#">创作站</a></li>
+                            <li><a ng-click="goHomePage()">keepwork.com</a></li>
                             <li><a href="http://paracraft.wiki/wiki/mod/packages" target="_blank">Mod扩展</a></li>
                         </ul>
                     </div>
@@ -348,7 +345,7 @@
                                             <a href="#userTrends" ng-mouseover="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')"  aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -390,6 +387,7 @@
                                 <div class="dropdown-footer"><a href="#">查看更多></a></div>
                             </ul>
                         </li>
+                        <li ng-show="!isIconShow"><a ng-click="goWikiEditorPage()">编辑器</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">

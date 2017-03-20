@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
-    app.controller('headerController',['$rootScope','$scope', 'Account', 'Message','modal', function ($rootScope, $scope, Account, Message, modal) {
+    app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
@@ -12,13 +12,13 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         // 通过站点名搜索
         $scope.searchWebsite = function () {
-            storage.sessionStorageSetItem("siteshowParams", {siteshowType:'search', websiteName:$scope.search});
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', websiteName: $scope.search});
             //window.location.reload(false);
             util.go("siteshow");
         }
 
         function init() {
-            $scope.userSiteList = [{name:'home'},{name:'login'},{name:'userCenter'}];
+            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'}];
             var urlObj = util.parseUrl();
 
             if (!config.localEnv) {
@@ -28,7 +28,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 //console.log(urlObj);
                 if (urlObj.domain) {
                     console.log(urlObj.domain);
-                    util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
+                    util.post(config.apiUrlPrefix + 'website/getByDomain', {domain: urlObj.domain}, function (data) {
                         console.log(data);
                         if (data) {
                             $scope.urlObj.pagename = $scope.urlObj.sitename;
@@ -52,7 +52,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         $scope.clickSiteList = function () {
             if ($scope.urlObj.username == "wiki")
                 return;
-            util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username:$scope.urlObj.username}, function (data) {
+            util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username: $scope.urlObj.username}, function (data) {
                 $scope.userSiteList = data || [];
             });
         }
@@ -62,7 +62,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 return;
 
             if (urlObj.sitename) {
-                util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName',{websiteName:urlObj.sitename}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName', {websiteName: urlObj.sitename}, function (data) {
                     $scope.userSitePageList = data || [];
                 });
             }
@@ -96,15 +96,15 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 return;
 
             // 用户收藏
-            util.post(config.apiUrlPrefix + 'user_visit_history/get',{userId:$scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + 'user_visit_history/get', {userId: $scope.user._id}, function (data) {
                 $scope.visitHistoryList = data.visitList;
             });
         }
-        
+
         $scope.clickMyFavorite = function () {
             if (!Account.isAuthenticated())
                 return;
-            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId:$scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId: $scope.user._id}, function (data) {
                 //console.log(data);
                 $scope.favoriteWebsiteObj = data;
             });
@@ -115,14 +115,14 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
                 return;
 
             // 用户动态
-            util.post(config.apiUrlPrefix + 'user_trends/getUnread', {userId:$scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + 'user_trends/getUnread', {userId: $scope.user._id}, function (data) {
                 $scope.trendsList = data.trendsList;
                 $scope.trendsCount = data.total;
             });
         }
         $scope.isShowTrend = function (trends) {
-            var trendsTypeList = ["organization","favorite","works"];
-            return  trends.state == 'unread' && $scope.trendsType == trendsTypeList[trends.trendsType];
+            var trendsTypeList = ["organization", "favorite", "works"];
+            return trends.state == 'unread' && $scope.trendsType == trendsTypeList[trends.trendsType];
         }
         // 选择动态类型
         $scope.selectTrendsType = function (trendsType) {
@@ -145,24 +145,24 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
 
         // 页面编辑页面
-        $scope.goWikiEditorPage = function() {
+        $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
             util.go("wikiEditor")
         }
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (window.location.pathname !="/wiki/home" && window.location.pathname !="/"){
+            if (window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
-                    size:'lg'
+                    size: 'lg'
                 }, function (result) {
                     console.log(result);
                     // nowPage.replaceSelection(login.content);
                 }, function (result) {
                     console.log(result);
                 });
-            }else{
+            } else {
                 util.go("login");
             }
         };
@@ -175,7 +175,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.go("home");
         };
 
-        $scope.goVIPLevel=function () {
+        $scope.goVIPLevel = function () {
             util.go("VIPLevel");
         };
 
