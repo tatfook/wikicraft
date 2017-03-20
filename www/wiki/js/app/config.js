@@ -50,6 +50,9 @@
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
+    config.isLocal = function () {
+        return localEnv;
+    }
     // local window env
     config.islocalWinEnv = function () {
         return localEnv && !localVMEnv

@@ -49,6 +49,11 @@ define([
         return mdwikiMap[mdwikiName];
     }
 
+    function getWikiMdContentContainerId(mdwikiName) {
+        var mdwikiObj = getMdwiki(mdwikiName);
+        return 'wikimdContentContainer_' + mdwikiName + (mdwikiObj.renderCount - 1);
+    }
+
     // 获得模块路径
     function getModPath(cmdName) {
         var wikiModulePath = config.wikiModPath;
@@ -151,7 +156,7 @@ define([
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
         tplObj.render = function (htmlContent) {
-            util.html('#wikimdContentContainer', htmlContent);
+            util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
         };
         tplObj.http = function(method, url, params, callback, errorCallback){
             return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
@@ -433,16 +438,19 @@ define([
             mdwikiObj.template = undefined;
             var htmlResult = md.render(preprocessMDText(text));
             if (!options.use_template) {
-                return '<div id="wikimdContentContainer">' + htmlResult + '</div>';;
+                return '<div id="wikimdContentContainer_'+ mdwikiName + mdwikiObj.renderCount +'">' + htmlResult + '</div>';;
             }
             var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
-            var html = '<div id="wikimdContentContainer"></div>';
+            var html = '<div id="wikimdContentContainer_'+ mdwikiName + mdwikiObj.renderCount + '"></div>';
             mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/default', modParams:{}};
             mdwikiObj.template.content = htmlResult;
             mdwikiObj.renderCount++;
             return html + scipt;
         }
 
+        mdwiki.getWikiMdContentContainerId = function () {
+            return getWikiMdContentContainerId(mdwikiName);
+        }
         // update the content of markdown whenever the editor is changed
         mdwiki.bindToCodeMirrorEditor = function (editor_) {
             mdwikiObj.editor = editor_;

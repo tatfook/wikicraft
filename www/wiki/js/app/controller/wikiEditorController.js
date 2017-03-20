@@ -328,11 +328,13 @@ define([
                 websitePage.websiteId = site._id;
                 websitePage.content = ""; // $scope.style.data[0].content;
                 websitePage.userId = site.userId;
+                websitePage.name = urlObj.pagename;
 
-                $http.put(config.apiUrlPrefix + 'website_pages/new', $scope.websitePage).then(function (response) {
+                $http.put(config.apiUrlPrefix + 'website_pages/new', websitePage).then(function (response) {
                     currentWebsitePage = response.data.data;
                     currentWebsite = $scope.website;
                     allWebsitePages.push(currentWebsitePage);
+                    initTree();
                     openPage();
                 }).catch(function (response) {
                     console.log(response.data);
@@ -357,10 +359,7 @@ define([
                         //console.log(currentWebsitePage);
                         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
                             initTree();
-
-                            if (!isEmptyObject(currentWebsitePage)) {
-                                openPage();
-                            }
+                            openPage();
                         });
                     });
                 }).catch(function (response) {
@@ -404,6 +403,9 @@ define([
             function setDataSource() {
                 //console.log($scope.user.githubDS);
                 //console.log($scope.website.githubRepoName);
+                if (!currentWebsite)
+                    return;
+
                 if (!$scope.user.githubDS && !currentWebsite.githubRepoName) {
                     $scope.dataSource = undefined;
                 } else {
@@ -414,15 +416,23 @@ define([
                     }
                 }
             }
-
-            function openUrlPage() {
-                var urlObj = storage.sessionStorageGetItem('urlObj');
+            
+            $scope.$on("changeEditorPage", function (event, urlObj) {
+                renderAutoSave(function() {
+                    openUrlPage(urlObj);
+                }, function () {
+                    openUrlPage(urlObj);
+                });
+            });
+            function openUrlPage(urlObj) {
+                urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
                 storage.sessionStorageRemoveItem('urlObj');
+                console.log(urlObj);
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 if (urlObj && urlObj.username == $scope.user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                 }
-                console.log(url);
+                //console.log(url);
 
                 for (var i = 0; i < allWebsitePages.length; i++) {
                     if (url == allWebsitePages[i].url) {
@@ -434,11 +444,15 @@ define([
 
                 if (!currentWebsitePage) {
                     newWebsitePage(urlObj);
+                } else {
+                    openPage();
                 }
             }
             function openPage(isNodeSelected) {
+                //console.log(currentWebsitePage);
                 if (!currentWebsitePage) {
-                    openUrlPage
+                    openUrlPage();
+                    return;
                 }
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
@@ -525,12 +539,12 @@ define([
                                 currentWebsite = getWebsite(data.pageNode.siteId);
                                 currentWebsitePage = getWebsitePage(data.pageNode.pageId);
                                 //console.log(currentWebsitePage);
-                                openPage(true);
+                                openPage();
                             }
                             editor.focus();
                         }, function () {
                             Message.warning("自动保存失败");
-                            openPage(true);
+                            openPage();
                         });
                     }
                 });
@@ -1130,6 +1144,19 @@ define([
                 });
                 // 数据源提交
             }
+            // 渲染自动保存
+            function renderAutoSave(cb, errcb) {
+                var value = editor.getValue();
+                if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value) {
+                    cb && cb();
+                    return;
+                }
+                currentWebsitePage.content = value;                               // 更新内容
+                currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
+                //console.log(currentWebsitePage);
+                //console.log('save storage ' + currentWebsitePage.url);
+                storage.indexedDBSetItem(currentWebsitePage, cb, errcb); // 每次改动本地保存
+            }
 
             function initEditor() {
                 console.log("initEditor");
@@ -1287,21 +1314,12 @@ define([
                     cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 // 渲染后自动保存
-                function renderAutoSave(value) {
-                    if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value)
-                        return;
-                    currentWebsitePage.content = value;                               // 更新内容
-                    currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
-                    //console.log(currentWebsitePage);
-                    //console.log('save storage ' + currentWebsitePage.url);
-                    storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
-                }
 
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
-                    container_name: '.result-html', renderCallback: function (value) {
-                        renderAutoSave(value);
+                    container_name: '.result-html', renderCallback: function () {
+                        renderAutoSave();
                         resizeMod();
                     }, changeCallback: changeCallback
                 });
@@ -1310,7 +1328,7 @@ define([
                     var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
                     var contentWidth = winWidth;
                     var scaleSize = (boxWidth >= contentWidth) ? 1 : (boxWidth / contentWidth);
-                    $('#wikimdContentContainer').css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
+                    $('#'+mdwiki.getWikiMdContentContainerId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
                 mdwiki.bindToCodeMirrorEditor(editor);
@@ -1351,7 +1369,7 @@ define([
                 }
 
                 function getBlockPosList() {
-                    var blockList = $('#wikimdContentContainer').children();
+                    var blockList = $('#' + mdwiki.getWikiMdContentContainerId()).children();
                     var blockPosList = [];
                     for (var i = 0; i < blockList.length; i++) {
                         if (blockPosList[blockPosList.length - 1] >= blockList[i].offsetTop)

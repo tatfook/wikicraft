@@ -47,7 +47,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 if ($scope.isModal) {
                     $scope.$close(data.userInfo);
                 } else {
-                    util.go('home');
+                    util.goUserSite('/' + data.userInfo.username);
                 }
 
             }, function (error) {
@@ -68,7 +68,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 if ($scope.isModal) {
                     $scope.$close(response.data.userInfo);
                 } else {
-                    util.go('website');
+                    util.goUserSite('/' + response.data.userInfo.username);
                 }
             }, function () {
                 console.log("github认证失败!!!");

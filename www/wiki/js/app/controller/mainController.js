@@ -94,8 +94,7 @@ define([
                 var urlObj = util.parseUrl();
                 $rootScope.urlObj = urlObj;
                 // 置空用户页面内容
-                console.log(urlObj);
-                //urlObj.username = 'wiki';
+                //console.log(urlObj);
                 if (window.location.href.indexOf('#') >= 0 || !urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
                     $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
@@ -107,8 +106,6 @@ define([
                     if (window.location.hash) {                  // 带有#前端路由 统一用/#/url格式
                         //window.location.href = config.frontEndRouteUrl + window.location.search + window.location.hash;
                         pathname = '/wiki' + window.location.hash.substring(1);
-                        renderHtmlText(pathname, md);
-                        return;
                     } else {
                         // wikicraft.cn  重定向/#/home
                         if (window.location.pathname == '/' || window.location.pathname == '/wiki' || config.islocalWinEnv()) {
@@ -117,7 +114,10 @@ define([
                             pathname = urlObj.pathname;
                         }
                     }
-                    renderHtmlText(pathname);
+                    if (config.isLocal())
+                        renderHtmlText(pathname, md);
+                    else
+                        renderHtmlText(pathname);
                     return;
                 }
 

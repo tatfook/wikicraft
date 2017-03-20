@@ -38,8 +38,8 @@ define(['jquery'], function ($) {
         var hostname = window.location.hostname;
         var pathname = window.location.pathname;
 
-        if (!window.location.hash && config.localEnv && window.location.search.length > 1) {
-            pathname = window.location.search.substring(1);
+        if(config.islocalWinEnv()) {
+            pathname = window.location.hash ? window.location.hash.substring(1) : '/';
         }
 
         var username = hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
@@ -52,22 +52,16 @@ define(['jquery'], function ($) {
             username = undefined;
         }
 
+        var paths = pathname.split('/');
         if (username) {
             username = username[1];
             domain = username;
-            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
-            if (urlInfo) {
-                sitename = urlInfo[1];
-                pagename = urlInfo[2];
-            }
-
+            sitename = paths.length > 1 ? paths[1] : undefined;
+            pagename = paths.length > 2 ? paths[2] : undefined;
         } else {
-            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-            if (urlInfo) {
-                username = urlInfo[1];
-                sitename = urlInfo[2];
-                pagename = urlInfo[3];
-            }
+            username = paths.length > 1 ? paths[1] : undefined;
+            sitename = paths.length > 2 ? paths[2] : undefined;
+            pagename = paths.length > 3 ? paths[3] : undefined;
         }
 
         return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname};
@@ -220,9 +214,13 @@ define(['jquery'], function ($) {
     }
 
     util.goUserSite = function (url, isOpen) {
-        if (config.localEnv) {
-            url = "http://localhost:8099" + url;
+        var host = window.location.host;
+        if (config.isLocal()) {
+            host = "localhost:8099";
+        } else if (host.indexOf(config.hostname) >= 0) {
+            host = config.hostname;
         }
+        url = "http://" + host + url;
         if (isOpen) {
             window.open(url);
         } else {
@@ -233,12 +231,12 @@ define(['jquery'], function ($) {
     util.go = function (pageName, isOpen) {
         var host = window.location.host;
         var url;
-
-        if (host.indexOf('keepwork.com') >= 0) {
-            host = "keepwork.com";
+        if (config.isLocal()) {
+            host = "localhost:8099";
+        } else if (host.indexOf(config.hostname) >= 0) {
+            host = config.hostname;
         }
-
-        if (config.localEnv) {
+        if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#/' + pageName;
         } else {
             url = "http://" + host + "/wiki/" + pageName;
