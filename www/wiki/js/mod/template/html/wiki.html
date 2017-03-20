@@ -1,0 +1,16 @@
+<div ng-controller="wikiTemplateController">
+    <div class="col-xs-12">
+        <div ng-show="isSelfPageShow('_header')" ng-click="clickSelfPage('_header')">+Editor Header</div>
+    </div>
+    <div class="container-fluid">
+        <div class="col-xs-offset-2 col-xs-8">
+            TemplateContent
+        </div>
+        <div class="col-xs-2">
+            <div ng-show="isSelfPageShow('_sidebar')" ng-click="clickSelfPage('_sidebar')">+Editor SideBar</div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div ng-show="isSelfPageShow('_footer')" ng-click="clickSelfPage('_footer')">+Editor Footer</div>
+    </div>
+</div>

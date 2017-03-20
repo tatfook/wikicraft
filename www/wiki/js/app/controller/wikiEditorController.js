@@ -307,6 +307,37 @@ define([
                 $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
             });
 
+            function newWebsitePage(urlObj) {
+                if (!urlObj || urlObj.username != $scope.user.username || !urlObj.sitename)
+                    return;
+
+                var site = undefined;
+                for (var i =0; i < allWebsites.length; i++) {
+                    if (urlObj.sitename = allWebsites[i].name) {
+                        site = allWebsites[i];
+                        break;
+                    }
+                }
+
+                if (!site)
+                    return;
+
+                var websitePage = {};
+                websitePage.url = '/'+ site.username + '/' + site.name + '/' + urlObj.pagename;
+                websitePage.websiteName = site.name;
+                websitePage.websiteId = site._id;
+                websitePage.content = ""; // $scope.style.data[0].content;
+                websitePage.userId = site.userId;
+
+                $http.put(config.apiUrlPrefix + 'website_pages/new', $scope.websitePage).then(function (response) {
+                    currentWebsitePage = response.data.data;
+                    currentWebsite = $scope.website;
+                    allWebsitePages.push(currentWebsitePage);
+                    openPage();
+                }).catch(function (response) {
+                    console.log(response.data);
+                });
+            }
 
             //初始化，读取用户站点列表及页面列表
             function init() {
@@ -317,27 +348,12 @@ define([
                 initEditor();
 
                 var user = $scope.user;
-                var urlObj = storage.sessionStorageGetItem('urlObj');
-                storage.sessionStorageRemoveItem('urlObj');
-                var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
-                if (urlObj && urlObj.username == user.username) {
-                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
-                }
-                console.log(url);
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
                 $http.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: Account.getUser()._id}).then(function (response) {
                     allWebsites = response.data.data;
                     util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: Account.getUser()._id}, function (data) {
                         allWebsitePages = data || [];
-
-                        for (var i = 0; i < allWebsitePages.length; i++) {
-                            if (url == allWebsitePages[i].url) {
-                                currentWebsite = getWebsite(allWebsitePages[i].websiteId);
-                                currentWebsitePage = allWebsitePages[i];
-                                break;
-                            }
-                        }
                         //console.log(currentWebsitePage);
                         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
                             initTree();
@@ -399,7 +415,31 @@ define([
                 }
             }
 
+            function openUrlPage() {
+                var urlObj = storage.sessionStorageGetItem('urlObj');
+                storage.sessionStorageRemoveItem('urlObj');
+                var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
+                if (urlObj && urlObj.username == $scope.user.username) {
+                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
+                }
+                console.log(url);
+
+                for (var i = 0; i < allWebsitePages.length; i++) {
+                    if (url == allWebsitePages[i].url) {
+                        currentWebsite = getWebsite(allWebsitePages[i].websiteId);
+                        currentWebsitePage = allWebsitePages[i];
+                        break;
+                    }
+                }
+
+                if (!currentWebsitePage) {
+                    newWebsitePage(urlObj);
+                }
+            }
             function openPage(isNodeSelected) {
+                if (!currentWebsitePage) {
+                    openUrlPage
+                }
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
 
