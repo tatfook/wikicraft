@@ -12,7 +12,6 @@ include_once(WIKI_ROOT .. 'models/wiki_module_classify.page')
 function registerWikiModule(params)
 	local wikiModuleDB = models.wiki_module:new()
 	local wikiModuleClassifyDB = models.wiki_module_classify:new()
-	log(params)
 	wikiModuleDB:api_upsert(params)
 	wikiModuleClassifyDB:api_upsert({name=params.classifyName})	
 end
@@ -28,7 +27,7 @@ end
 function loadWikiModule()
 	local fileList = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
 	for _, file in ipairs(fileList) do
-		log("load file: " .. file.filename)
+		-- log("load file: " .. file.filename)
 		include_once(WIKI_ROOT ..'js/mod/'.. file.filename)
 	end
 end

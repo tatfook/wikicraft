@@ -79,6 +79,30 @@ define([
                 treeNode = subTreeNode;
             }
         }
+        // 加上所有站点
+        for (var i = 0; i < allWebsites.length; i++) {
+            var isExist = false;
+            var site = allWebsites[i];
+            for (key in pageTree.children) {
+                if (key == site.name){
+                    isExist = true;
+                    break;
+                }
+            }
+            if (isExist)
+                continue;
+
+            pageTree.children[site.name] = {
+                name: site.name,
+                children: {},
+                url: '/' + site.username + '/' + site.name,
+                siteId: site._id,
+                siteName: site.name,
+                pageId: -1,
+            }
+        }
+        //console.log(pageTree.children);
+
         var treeDataFn = function (treeNode, pageNode) {
             treeNode = treeNode || {};
             treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + '*') : pageNode.name;
@@ -106,6 +130,7 @@ define([
         for (var i = 0; i < treeData.length; i++) {
             treeData[i].icon = 'fa fa-globe';
         }
+        //console.log(treeData);
         return treeData;
     }
 
@@ -228,17 +253,17 @@ define([
                     $scope.website = $scope.websites[i];
                 }
             }
-
+            console.log($scope.website);
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.name;
             $scope.websitePage.websiteName = $scope.website.name;
             $scope.websitePage.websiteId = $scope.website._id;
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
             $scope.websitePage.userId = $scope.website.userId;
-
+            console.log($scope.websitePage);
             for (var i = 0; i < $scope.websitePages.length; i++) {
                 var url1 = $scope.websitePages[i].url + '/';
                 var url2 = $scope.websitePage.url + '/';
-                if (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0) {
+                if (!$scope.websitePages[i].isDelete && (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0)) {
                     $scope.errInfo = '页面名已存在';
                     return false;
                 }
@@ -301,7 +326,7 @@ define([
                 console.log(url);
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
-                $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
+                $http.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: Account.getUser()._id}).then(function (response) {
                     allWebsites = response.data.data;
                     util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: Account.getUser()._id}, function (data) {
                         allWebsitePages = data || [];
@@ -389,7 +414,9 @@ define([
                 setDataSource();
 
                 function setEditorValue() {
+                    currentWebsitePage.isFirstEditor = true;
                     editor.setValue(wp.content);
+
                     // 折叠wiki命令
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
                         var lineValue = editor.getLine(i);
@@ -426,10 +453,10 @@ define([
                     //console.log(page);
                     //console.log(currentWebsitePage);
                     if (page) {
-                        var curTime = 0;//(new Date()).getTime();
-                        page.timestamp = page.timestamp || curTime;
-                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || curTime;
+                        page.timestamp = page.timestamp || 0;
+                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || (new Date()).getTime();
                         if (page.timestamp > currentWebsitePage.timestamp) {
+                            console.log("---------------histroy modify---------------");
                             currentWebsitePage.content = page.content;
                             currentWebsitePage.isModify = true;
                             initTree();
@@ -1270,9 +1297,12 @@ define([
                     }
 
                     var content = editor.getValue();
-                    if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content) {
-                        currentWebsitePage.isModify = true;
-                        initTree();
+                    if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
+                        (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g,"") != currentWebsitePage.content.replace(/[\r\n]*/g,""))) {
+                            console.log("--------manual modify--------------");
+                            currentWebsitePage.isFirstEditor = undefined;
+                            currentWebsitePage.isModify = true;
+                            initTree();
                     }
                     changeTimer && clearTimeout(changeTimer);
                     changeTimer = setTimeout(function () {
