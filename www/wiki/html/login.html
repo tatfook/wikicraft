@@ -2,10 +2,18 @@
     body{
         background-color: #F2F2F2;
     }
+    .modal-lg{
+        width:25%;
+    }
     .login-form{
         background-color: #FAFAFA;
         box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
         padding: 40px 0 60px;
+    }
+    .login-form .close{
+        position: absolute;
+        right:15px;
+        top:15px;
     }
     .login-form.col-md-4{
         margin-top: 80px;
@@ -60,6 +68,7 @@
 
 <div ng-controller="loginController" ng-class="{'container-fluid':!isModal}">
     <div class="login-form" ng-class="{'col-md-4 col-md-offset-4 ':!isModal}">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()" ng-show="isModal"><span aria-hidden="true">&times;</span></button>
         <form class="clearfix">
             <div class="form-group">
                 <span id="total-err" class="visible-hidden text-danger">*{{errMsg}}</span>

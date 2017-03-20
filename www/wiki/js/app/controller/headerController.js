@@ -155,6 +155,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             if (window.location.pathname !="/wiki/home" && window.location.pathname !="/"){
                 modal('controller/loginController', {
                     controller: 'loginController',
+                    size:'lg'
                 }, function (result) {
                     console.log(result);
                     // nowPage.replaceSelection(login.content);
