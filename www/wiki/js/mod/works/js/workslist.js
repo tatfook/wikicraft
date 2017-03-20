@@ -66,8 +66,8 @@ define([
                     $scope.requestUrl = config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId";
                     $scope.requestParams.websiteId = $scope.siteinfo._id;
                 } else {
-                    $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-                    $scope.requestParams.websiteId = $scope.siteinfo._id;
+                    $scope.requestUrl = config.apiUrlPrefix + "website/getByUserId";
+                    $scope.requestParams.userId = $scope.userinfo._id;
                 }
                 $scope.getSiteList();
             }
