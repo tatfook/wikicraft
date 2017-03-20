@@ -52,16 +52,22 @@ define(['jquery'], function ($) {
             username = undefined;
         }
 
-        var paths = pathname.split('/');
         if (username) {
-            domain = username;
             username = username[1];
-            sitename = paths.length > 1 && paths[1];
-            pagename = paths.length > 2 && paths[2];
+            domain = username;
+            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
+            if (urlInfo) {
+                sitename = urlInfo[1];
+                pagename = urlInfo[2];
+            }
+
         } else {
-            username = paths.length > 1 && paths[1];
-            sitename = paths.length > 2 && paths[2];
-            pagename = paths.length > 3 && paths[3];
+            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
+            if (urlInfo) {
+                username = urlInfo[1];
+                sitename = urlInfo[2];
+                pagename = urlInfo[3];
+            }
         }
 
         return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname};
@@ -232,7 +238,7 @@ define(['jquery'], function ($) {
             host = "keepwork.com";
         }
 
-        if (config.islocalWinEnv()) {
+        if (config.localEnv) {
             url = config.frontEndRouteUrl + '#/' + pageName;
         } else {
             url = "http://" + host + "/wiki/" + pageName;
