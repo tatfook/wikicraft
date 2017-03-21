@@ -237,7 +237,7 @@ define(['jquery'], function ($) {
             host = config.hostname;
         }
         if (config.islocalWinEnv()) {
-            url = config.frontEndRouteUrl + '#/' + pageName;
+            url = config.frontEndRouteUrl + '#/wiki' + pageName;
         } else {
             url = "http://" + host + "/wiki/" + pageName;
         }
