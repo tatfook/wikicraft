@@ -54,16 +54,17 @@ define([
             $scope.$watch('$viewContentLoaded', init);
 
             $scope.isSelfPageShow = function (type) {
-                return true;
+                return util.isWikiEditorPage();
             }
-            
-            $scope.clickSelfPage = function (type) {
+
+            $scope.setSelfPage = function (type) {
                 modal('wikimod/template/js/_wikiBlockInput',{
                     controller:'_wikiBlockInputController',
                 }, function (data) {
                     setSelfPageContent(type, data);
                 });
-                return;
+            }
+            $scope.editSelfPage = function (type) {
                 var siteinfo = $rootScope.siteinfo;
                 var urlObj = {username: siteinfo.username, sitename:siteinfo.name, pagename:type};
                 if (window.location.pathname == '/wiki/wikiEditor') {
@@ -73,7 +74,6 @@ define([
                     util.go('wikiEditor');
                 }
             }
-
         }]);
     }
     return {
