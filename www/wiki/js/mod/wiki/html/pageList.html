@@ -1,0 +1,10 @@
+<div class="pages">
+    <div class="btn btn-default btn-block" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <span class="glyphicon glyphicon-play"></span>{{"Pages " + pageTotal }}
+    </div>
+    <div class="collapse" id="collapseExample">
+        <ul class="well">
+            <li ng-repeat="x in pageList">{{x.name}}</li>
+        </ul>
+    </div>
+</div>

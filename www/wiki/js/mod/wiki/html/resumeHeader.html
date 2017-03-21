@@ -1,0 +1,24 @@
+<div ng-controller="resumeHeaderController">
+    <div class="resume-top col-sm-12">
+        <div class="profile">
+            <img ng-src="{{imgsPath + 'wiki_header_banner.jpg'}}" alt="">
+        </div>
+        <div class="user-msg col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-lg-6 col-lg-offset-3">
+            <img ng-src="{{modParams.protrait || imgsPath + 'wiki_header_profile.jpg'}}" alt="用户头像" class="pull-left">
+            <div class="text pull-left">
+                <div class="msg-top">
+                    <div class="msg-left">
+                        <h2>{{modParams.username || "USERNAME"}}</h2>
+                        <p class="info"><span class="glyphicon glyphicon-map-marker"></span>{{modParams.baseInfo || '男 本科 10年工作经验 深圳'}}</p>
+                        <p class="info"><span class="glyphicon glyphicon-map-marker"></span>{{modParams.company || 'CTO, Founder.ParaEngine Co.'}}</p>
+                        <p class="info">
+                            <span class="glyphicon glyphicon-map-marker"></span>{{modParams.cellphone || '13012345678'}}
+                            <span class="glyphicon glyphicon-map-marker"></span>{{modParams.email || '13012345678@163.com'}}
+                        </p>
+                    </div>
+                </div>
+                <p class="intro">{{modParams.introduce || "我是一个边学习边分享的人。关于读书、关于影视剧、关于足球， 所学，所思，所感，所闻，分享一切有趣的、有用的。"}}</p>
+            </div>
+        </div>
+    </div>
+</div>

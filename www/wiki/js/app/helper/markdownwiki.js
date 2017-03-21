@@ -453,7 +453,7 @@ define([
             }
             var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
             var html = '<div id="wikimdContentContainer_'+ mdwikiName + mdwikiObj.renderCount + '"></div>';
-            mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/default', modParams:{}};
+            mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/js/default', modParams:{}};
             mdwikiObj.template.content = htmlResult;
             mdwikiObj.renderCount++;
             return html + scipt;

@@ -10,7 +10,7 @@ define([
 
     'controller/userController',
 ], function (app, markdownwiki, storage, util, userHtmlContent) {
-    var md = markdownwiki({html: true});
+    var md = markdownwiki({html: true, use_template:false});
 
     app.controller('mainController', ['$scope', '$rootScope', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
         function ($scope, $rootScope, $http, $auth, $compile, Account, Message, github, modal) {

@@ -1,0 +1,36 @@
+<div ng-controller="resumeDetailController">
+    <div class="kind">
+        <h3>工作经历</h3>
+        <div class="timeline" ng-repeat="x in modParams.workList">
+            <h4 class="node active">{{x.company}}<span class="info">{{x.time}}</span></h4>
+            <p class="info node">{{x.job}}</p>
+            <div class="intro node">
+                <p>{{x.desc}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="kind">
+        <h3>教育经历</h3>
+        <div class="timeline" ng-repeat="x in modParams.educationList">
+            <h4 class="node active">{{x.schoolName}}<span class="info">{{x.graduationDate}}</span></h4>
+            <p class="info node">{{x.desc}}</p>
+        </div>
+    </div>
+    <div class="kind">
+        <h3>期望工作</h3>
+        <div class="info clearfix" ng-repeat="x in modParams.expectWorkList">
+            <div class="item pull-left">
+                <span class="glyphicon glyphicon-edit"></span> {{x.job}}
+            </div>
+            <div class="item pull-left">
+                <span class="glyphicon glyphicon-edit"></span> {{x.workType || "全职"}}
+            </div>
+            <div class="item pull-left">
+                <span class="glyphicon glyphicon-edit"></span> {{x.salary || "面议"}}
+            </div>
+            <div class="item pull-left">
+                <span class="glyphicon glyphicon-edit"></span> {{x.position || "深圳"}}
+            </div>
+        </div>
+    </div>
+</div>
