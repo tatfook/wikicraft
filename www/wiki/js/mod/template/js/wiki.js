@@ -14,7 +14,7 @@ define([
         app.registerController('wikiTemplateController', ['$rootScope','$scope','modal', function ($rootScope, $scope, modal) {
             $rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
             $scope.urlPrefix = '/' + $rootScope.siteinfo.username + '/' + $rootScope.siteinfo.name + '/';
-            var modParams = wikiBlock.modParams || {headerContent:'# header'};
+            var modParams = wikiBlock.modParams || {};
             
             function setSelfPageContent(type, content) {
                 if (!content)
@@ -37,6 +37,7 @@ define([
 
             }
             function init() {
+                console.log(modParams);
                 if (modParams.headerContent) {
                     var headerHtml = md.render(modParams.headerContent);
                     util.html('#_headerContentId', headerHtml, $scope);
@@ -83,3 +84,8 @@ define([
         }
     }
 });
+
+/*
+```@template/js/wiki
+```
+*/

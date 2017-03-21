@@ -308,6 +308,7 @@ define([
             });
 
             function newWebsitePage(urlObj) {
+                //console.log("---------newWebsitePage-------------");
                 if (!urlObj || urlObj.username != $scope.user.username || !urlObj.sitename)
                     return;
 
@@ -433,7 +434,8 @@ define([
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                 }
                 //console.log(url);
-
+                currentWebsite = undefined;
+                currentWebsitePage = undefined;
                 for (var i = 0; i < allWebsitePages.length; i++) {
                     if (url == allWebsitePages[i].url) {
                         currentWebsite = getWebsite(allWebsitePages[i].websiteId);
