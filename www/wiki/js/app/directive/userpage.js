@@ -3,7 +3,7 @@
  */
 
 define(['app','helper/util', 'helper/markdownwiki'], function (app, util, markdownwiki) {
-    app.directive('userpage', ['$compile',function ($compile) {
+    app.directive('userpage', ['$compile','$parse',function ($compile, $parse) {
         var md = markdownwiki({html:true, use_template:false});
         return {
             restrict: 'E',

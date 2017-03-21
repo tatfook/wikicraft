@@ -51,7 +51,7 @@ define([
 
     function getWikiMdContentContainerId(mdwikiName) {
         var mdwikiObj = getMdwiki(mdwikiName);
-        return 'wikimdContentContainer_' + mdwikiName + (mdwikiObj.renderCount - 1);
+        return 'wikimdContentContainer_' + mdwikiName + '_' + (mdwikiObj.renderCount - 1);
     }
 
     // 获得模块路径
@@ -217,6 +217,7 @@ define([
                 return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
             },
             render: function (htmlContent) {
+                //console.log(idx);
                 util.html('#wikiblock_'+ idx, htmlContent);
             },
         };
@@ -268,7 +269,7 @@ define([
                             };
                             return '<div></div>'
                         }
-                        idx = mdwikiObj.renderCount + '_' + idx;
+                        idx = mdwikiName + "_" +mdwikiObj.renderCount + '_' + idx;
                         var script = '<script>renderWikiBlock("' + idx + '", "' + modName + '", "' + cmdname + '",' + params + ','
                             + JSON.stringify({mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]}) +');</script>';
                         return '<div>' +
@@ -448,14 +449,15 @@ define([
         mdwiki.render = function (text) {
             mdwikiObj.template = undefined;
             var htmlResult = md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
+            mdwikiObj.renderCount++;
+            var wikimdContentContainerId = getWikiMdContentContainerId(mdwikiName);
             if (!options.use_template) {
-                return '<div id="wikimdContentContainer_'+ mdwikiName + mdwikiObj.renderCount +'">' + htmlResult + '</div>';;
+                return '<div id="'+ wikimdContentContainerId + '">' + htmlResult + '</div>';
             }
             var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
-            var html = '<div id="wikimdContentContainer_'+ mdwikiName + mdwikiObj.renderCount + '"></div>';
+            var html = '<div id="'+ wikimdContentContainerId+ '"></div>';
             mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/js/default', modParams:{}};
             mdwikiObj.template.content = htmlResult;
-            mdwikiObj.renderCount++;
             return html + scipt;
         }
 

@@ -12,10 +12,12 @@ define([
     var md = markdownwiki({html:true, use_template:false});
     function registerController(wikiBlock) {
         app.registerController('wikiTemplateController', ['$rootScope','$scope','modal', function ($rootScope, $scope, modal) {
-            $rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
-            $scope.urlPrefix = '/' + $rootScope.siteinfo.username + '/' + $rootScope.siteinfo.name + '/';
+            //$rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
             var modParams = wikiBlock.modParams || {};
-            
+            if ($rootScope.siteinfo) {
+                $scope.urlPrefix = '/' + $rootScope.siteinfo.username + '/' + $rootScope.siteinfo.name + '/';
+            }
+
             function setSelfPageContent(type, content) {
                 if (!content)
                     return;
@@ -37,6 +39,10 @@ define([
 
             }
             function init() {
+                //console.log($rootScope.siteinfo);
+                if (!$rootScope.siteinfo)
+                    return;
+
                 //console.log(modParams);
                 if (modParams.headerContent) {
                     var headerHtml = md.render(modParams.headerContent);
