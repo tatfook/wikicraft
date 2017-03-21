@@ -314,7 +314,7 @@ define([
 
                 var site = undefined;
                 for (var i =0; i < allWebsites.length; i++) {
-                    if (urlObj.sitename = allWebsites[i].name) {
+                    if (urlObj.sitename == allWebsites[i].name) {
                         site = allWebsites[i];
                         break;
                     }
