@@ -1318,10 +1318,12 @@ define([
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
-                    container_name: '.result-html', renderCallback: function () {
+                    container_name: '.result-html',
+                    renderCallback: function () {
                         renderAutoSave();
                         resizeMod();
-                    }, changeCallback: changeCallback
+                    },
+                    changeCallback: changeCallback
                 });
 
                 function resizeMod() {
@@ -1700,13 +1702,13 @@ define([
                         if (item.kind === "string") {
                             item.getAsString(function (str) {
                                 // str 是获取到的字符串
-                                console.log('get str');
-                                console.log(str);
+                                //console.log('get str');
+                                //console.log(str);
                             })
                         } else if (item.kind === "file") {
                             var pasteFile = item.getAsFile();
                             // pasteFile就是获取到的文件
-                            console.log(pasteFile);
+                            //console.log(pasteFile);
                             fileUpload(pasteFile);
                         }
                     }

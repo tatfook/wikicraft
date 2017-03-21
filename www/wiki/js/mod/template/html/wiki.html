@@ -1,6 +1,7 @@
 <div ng-controller="wikiTemplateController">
     <div class="col-xs-12">
         <div ng-show="isSelfPageShow('_header')" ng-click="clickSelfPage('_header')" style="cursor: pointer">+Editor Header</div>
+        <div id="_headerContentId"></div>
         <userpage url="{{urlPrefix + '_header'}}"></userpage>
     </div>
     <div class="container-fluid">
@@ -9,11 +10,13 @@
         </div>
         <div class="col-xs-2">
             <div ng-show="isSelfPageShow('_sidebar')" ng-click="clickSelfPage('_sidebar')" style="cursor: pointer">+Editor SideBar</div>
+            <div id="_sidebarContentId"></div>
             <userpage url="{{urlPrefix + '_sidebar'}}"></userpage>
         </div>
     </div>
     <div class="col-xs-12">
         <div ng-show="isSelfPageShow('_footer')" ng-click="clickSelfPage('_footer')" style="cursor: pointer">+Editor Footer</div>
+        <div id="_footerContentId"></div>
         <userpage url="{{urlPrefix + '_footer'}}"></userpage>
     </div>
 </div>

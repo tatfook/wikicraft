@@ -258,5 +258,9 @@ define(['jquery'], function ($) {
         }
         return false;
     }
+
+    util.isWikiEditorPage = function () {
+        return util.parseUrl().pathname == '/wiki/wikiEditor';
+    }
     return util;
 });

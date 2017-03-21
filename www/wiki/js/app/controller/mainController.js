@@ -74,7 +74,7 @@ define([
                 pathname = pathname.replace('/wiki/', '');
                 var pageUrl = 'controller/' + pathname + 'Controller';
                 var htmlContent;
-                console.log(pageUrl);
+                //console.log(pageUrl);
                 require([pageUrl], function (htmlContent) {
                     //console.log(htmlContent);
                     $scope.IsRenderServerWikiContent = true;
@@ -94,7 +94,7 @@ define([
                 var urlObj = util.parseUrl();
                 $rootScope.urlObj = urlObj;
                 // 置空用户页面内容
-                //console.log(urlObj);
+                console.log(urlObj);
                 if (!urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
                     $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;

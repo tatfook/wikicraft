@@ -153,6 +153,8 @@ define([
         //console.log(mdwikiName);
         var mdwikiObj = getMdwiki(mdwikiName);
         var tplObj = mdwikiObj.template;
+        var innerParams = tplObj.innerParams;
+        var editor = mdwikiObj.editor;
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
         tplObj.render = function (htmlContent) {
@@ -161,6 +163,14 @@ define([
         tplObj.http = function(method, url, params, callback, errorCallback){
             return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
         };
+
+        tplObj.applyModParams = function (modParams) {
+            //console.log(modParams);
+            if (!modParams || !editor) {
+                return ;
+            }
+            editor.replaceRange(angular.toJson(modParams, 4) + '\n', {line:innerParams.line_begin+1, ch:'\n'}, {line:innerParams.line_end-1, ch:'\n'});
+        },
         render(tplObj);
     };
 
@@ -184,7 +194,7 @@ define([
             editor:mdwikiObj.editor,
             applyModParams: function (modParams) {
                 //console.log(modParams);
-                if (!modParams) {
+                if (!modParams || !this.editor) {
                     this.viewEdit = false;
                     return ;
                 }
@@ -254,6 +264,7 @@ define([
                                 modName:modName,
                                 cmdName:cmdname,
                                 modParams:angular.fromJson(params) || params,
+                                innerParams:{mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]},
                             };
                             return '<div></div>'
                         }
