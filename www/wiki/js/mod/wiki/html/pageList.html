@@ -39,14 +39,14 @@
         border: 1px solid #989898;
     }
 </style>
-<div ng-controller="pageListController">
-    <div class="resume-sidebar clearfix">
-        <div class="sidebar">
-            <div class="panel">
-                <div class="panel-heading" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    <span class="glyphicon glyphicon-play"></span>{{"Pages " + pageTotal }}
-                </div>
-                <ul class="panel-collapse collapse" id="collapseExample">
+<div class="resume-sidebar clearfix" ng-controller="pageListController">
+    <div class="sidebar">
+        <div class="panel">
+            <div class="panel-heading" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <span class="glyphicon glyphicon-play"></span>{{"Pages " + pageTotal }}
+                <img class="pull-right" ng-src="{{imgsPath+'icon/resume_edit.png'}}" alt="">
+            </div>
+            <ul class="panel-collapse collapse" id="collapseExample">
                     <li ng-repeat="x in pageList">{{x.name}}</li>
                 </ul>
             </div>
