@@ -5,7 +5,7 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/wiki/html/resumeHeader.html'
+    'text!wikimod/wiki/html/pageList.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
         app.registerController('pageListController',['$rootScope','$scope', function ($rootScope, $scope) {

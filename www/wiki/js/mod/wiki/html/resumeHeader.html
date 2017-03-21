@@ -1,3 +1,74 @@
+<style>
+    .resume-top {
+        position: relative;
+        background-color: #FFF;
+        padding:0;
+        height:510px;
+    }
+    .resume-top .profile {
+        height: 400px;
+        overflow: hidden;
+    }
+    .resume-top .profile > img {
+        width: 100%;
+    }
+    .resume-top .text {
+        padding: 0 30px;
+        width: 100%;
+    }
+    .resume-top .user-msg {
+        position: absolute;
+        bottom: 0;
+        padding: 30px;
+        display: flex;
+        background-color: #FFF;
+        box-shadow: 0 0 15px 0 rgba(75, 129, 183, .35);
+        border-radius: 10px;
+    }
+    .resume-top h2 {
+        color: #FF7A7A;
+        font-weight: bold;
+        margin-top: 0;
+    }
+    .resume-top .info {
+        font-size: 14px;
+        color: #999;
+    }
+    .resume-top .user-msg > img {
+        width: 190px;
+        height: 190px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    .resume-top .msg-top {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 25px;
+    }
+    .resume-top .msg-top > .msg-left {
+        flex: 1;
+    }
+    .resume-top .switch {
+        width: 60px;
+        height: 30px;
+        border-radius: 30px;
+        background-color: #CCC;
+        position: relative;
+    }
+    .resume-top .switch:before {
+        content: '';
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #3977AD;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .resume-top .intro {
+        line-height: 25px;
+    }
+</style>
 <div ng-controller="resumeHeaderController">
     <div class="resume-top col-sm-12">
         <div class="profile">
