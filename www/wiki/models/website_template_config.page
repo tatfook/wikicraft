@@ -40,6 +40,27 @@ local template_config = {
 					},
 				},
 			},
+			{
+				_id=2,
+				name="WIKI模板",
+				categoryId=2,
+				logoUrl="/wiki/assets/imgs/wiki_resume_site_template.png",
+				filename="",
+				layoutTpl='',
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="WIKI样式",
+						templateId=1,
+						logoUrl="/wiki/assets/imgs/wiki_resume_site_template.png",
+						filename="resume.html",
+						-- previewFilename="organizationPreview.html",
+						layoutTpl='',
+					},
+				},
+			},
+
 		},
 	},
 	{
@@ -66,7 +87,6 @@ local template_config = {
 					},
 				},
 			},
-
 		},
 	},
 	{

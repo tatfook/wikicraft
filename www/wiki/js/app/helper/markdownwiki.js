@@ -447,7 +447,7 @@ define([
         // force render a given text
         mdwiki.render = function (text) {
             mdwikiObj.template = undefined;
-            var htmlResult = md.render(preprocessMDText(text));
+            var htmlResult = md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
             if (!options.use_template) {
                 return '<div id="wikimdContentContainer_'+ mdwikiName + mdwikiObj.renderCount +'">' + htmlResult + '</div>';;
             }

@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2017/1/4.
  */
 
-define(['../../../app', 'helper/util'], function (app, util) {
+define(['app', 'helper/util'], function (app, util) {
     function registerController(wikiBlock) {
         app.registerController("defaultTemplateController", function ($scope) {
             function init() {
