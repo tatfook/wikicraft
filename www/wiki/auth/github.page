@@ -35,7 +35,6 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 			LOG.std(nil, "debug", "github", msg);
 			return response:status(400):send({ message= 'Failed to fetch github profile' });
 		end
-
 		if(request:header('Authorization')) then
 			-- Step 3a. Link user accounts.
 			log("github step 3")
