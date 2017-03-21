@@ -37,7 +37,7 @@ define([
 
             }
             function init() {
-                console.log(modParams);
+                //console.log(modParams);
                 if (modParams.headerContent) {
                     var headerHtml = md.render(modParams.headerContent);
                     util.html('#_headerContentId', headerHtml, $scope);
@@ -59,6 +59,10 @@ define([
             }
 
             $scope.setSelfPage = function (type) {
+                var content = type.substring(1) + "Content";
+                //console.log(content, modParams[content]);
+                storage.sessionStorageSetItem("_wikiBlockInputParam",{content:modParams[content]});
+
                 modal('wikimod/template/js/_wikiBlockInput',{
                     controller:'_wikiBlockInputController',
                 }, function (data) {
