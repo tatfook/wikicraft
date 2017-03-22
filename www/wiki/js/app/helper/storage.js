@@ -86,7 +86,7 @@ define(['angular'], function (angular) {
         }
         db.onsuccess = function (e) {
             storage.indexDB = e.target.result;
-            console.log('onsuccess');
+            //console.log('onsuccess');
             cb && cb();
         }
         db.onupgradeneeded = function (e) {

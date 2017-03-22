@@ -6,10 +6,11 @@ define([
     'helper/util',
     'markdown-it',
     'highlight',
-], function (util, markdownit,hljs) {
+], function (util, markdownit, hljs) {
     var httpCache = {};
+    var idCount = 0;
     var mdwikiMap = {
-        count:0, // markdownwiki 数量
+        count: 0, // markdownwiki 数量
     };
     // 获得毫秒
     function getTime() {
@@ -27,9 +28,9 @@ define([
         }
         // 在此带上认证参数
         if (method == 'POST') {
-            httpRespone = $http({method:method,url:url,data:params}); //$http.post(url, params);
+            httpRespone = $http({method: method, url: url, data: params}); //$http.post(url, params);
         } else {
-            httpRespone = $http({method:method,url:url,params:params});
+            httpRespone = $http({method: method, url: url, params: params});
         }
         httpRespone.then(function (response) {
             if (isCache) {
@@ -45,7 +46,7 @@ define([
 
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
-        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {renderCount:0, module:{}};
+        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {renderCount: 0, module: {}};
         return mdwikiMap[mdwikiName];
     }
 
@@ -57,11 +58,11 @@ define([
     // 获得模块路径
     function getModPath(cmdName) {
         var wikiModulePath = config.wikiModPath;
-        if (cmdName[cmdName.length-1] == '/') {
-            cmdName = cmdName.substring(0, cmdName.length-1);
+        if (cmdName[cmdName.length - 1] == '/') {
+            cmdName = cmdName.substring(0, cmdName.length - 1);
         }
         if (cmdName.indexOf('@') >= 0) {
-            wikiModulePath += cmdName.replace('@','');
+            wikiModulePath += cmdName.replace('@', '');
         } else {
             wikiModulePath = cmdName;
         }
@@ -77,7 +78,7 @@ define([
         var mdwikiObj = getMdwiki(wikiBlockObj.mdwikiName);
         require([wikiModulePath], function (module) {
             mdwikiObj.module[cmdName] = module;
-            if (typeof module == "object" && typeof module.render == "function"){
+            if (typeof module == "object" && typeof module.render == "function") {
                 wikiBlockObj.render(module.render(wikiBlockObj));
             } else {
                 // module error
@@ -101,7 +102,7 @@ define([
         var module = mdwikiObj.module[cmdName];
         // 没有绑定编辑器则不支持视图编辑
         if (!wikiBlockObj.editor) {
-            return ;
+            return;
         }
         var idx = wikiBlockObj.idx;
         // 模块头部显示与隐藏
@@ -114,15 +115,15 @@ define([
                  }
                  */
                 $('#wikiblockHeader_' + idx).fadeIn();
-                $('#wikiblockContainer_' + idx).css('border','1px solid silver');
+                $('#wikiblockContainer_' + idx).css('border', '1px solid silver');
                 //wikiBlockObj.editor.setSelection({line:wikiBlockObj.innerParams.line_begin, ch:'\n'},{line:wikiBlockObj.innerParams.line_end, ch:'\n'});
             } else if (e.type == 'mouseleave') {
                 $('#wikiblockHeader_' + idx).fadeOut();
-                $('#wikiblockContainer_' + idx).css('border','0px');
+                $('#wikiblockContainer_' + idx).css('border', '0px');
                 //wikiBlockObj.editor.setSelection({line:0});
-            } else if(e.type == 'mouseover' && element.attr('wikimodparamskey')) {
+            } else if (e.type == 'mouseover' && element.attr('wikimodparamskey')) {
                 //wikiBlockObj.setSelection(element.attr('wikimodparamskey'));
-            } else if (e.type == 'mouseout'){
+            } else if (e.type == 'mouseout') {
                 //wikiBlockObj.editor.setSelection({line:0});
             }
         });
@@ -139,7 +140,10 @@ define([
         $('#wikiblockDeleteBtn_' + idx).on('click', function () {
             $('#wikiblockHeader_' + idx).fadeOut();
             //console.log('delete wiki block' + idx);
-            wikiBlockObj.editor.replaceRange('',{line:wikiBlockObj.innerParams.line_begin,ch:'\n'}, {line:wikiBlockObj.innerParams.line_end, ch:'\n'});
+            wikiBlockObj.editor.replaceRange('', {
+                line: wikiBlockObj.innerParams.line_begin,
+                ch: '\n'
+            }, {line: wikiBlockObj.innerParams.line_end, ch: '\n'});
         });
 
         // 删除模块
@@ -160,50 +164,59 @@ define([
         tplObj.render = function (htmlContent) {
             util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
         };
-        tplObj.http = function(method, url, params, callback, errorCallback){
+        tplObj.http = function (method, url, params, callback, errorCallback) {
             return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
         };
 
         tplObj.applyModParams = function (modParams) {
             //console.log(modParams);
-            if (!modParams || !editor) {
-                return ;
+            if (!modParams || !editor || !innerParams) {
+                return;
             }
-            editor.replaceRange(angular.toJson(modParams, 4) + '\n', {line:innerParams.line_begin+1, ch:'\n'}, {line:innerParams.line_end-1, ch:'\n'});
+            editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
+                line: innerParams.line_begin + 1,
+                ch: '\n'
+            }, {line: innerParams.line_end - 1, ch: '\n'});
         },
-        render(tplObj);
+            render(tplObj);
     };
 
     /** Global helper function:
      * Helper function to render a single block
      */
-    window.renderWikiBlock = function(idx, modName, cmdName, params, innerParams) {
+    window.renderWikiBlock = function (idx, modName, cmdName, params, innerParams) {
         //console.log(params);
         //console.log(innerParams);
         var render = getRenderFunc(modName);
         var mdwikiObj = getMdwiki(innerParams.mdwikiName);
         var wikiBlockObj = {
-            idx:idx,
-            modName:modName,
-            cmdName:cmdName,
-            modParams:params,
-            mdwikiName:innerParams.mdwikiName,
+            idx: idx,
+            modName: modName,
+            cmdName: cmdName,
+            modParams: params,
+            mdwikiName: innerParams.mdwikiName,
             innerParams: innerParams,
-            viewEdit:false,
+            viewEdit: false,
             editorMode: mdwikiObj.editorMode,
-            editor:mdwikiObj.editor,
+            editor: mdwikiObj.editor,
             applyModParams: function (modParams) {
                 //console.log(modParams);
                 if (!modParams || !this.editor) {
                     this.viewEdit = false;
-                    return ;
+                    return;
                 }
-                this.editor.replaceRange(angular.toJson(modParams, 4) + '\n', {line:innerParams.line_begin+1, ch:'\n'}, {line:innerParams.line_end-1, ch:'\n'});
+                this.editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
+                    line: innerParams.line_begin + 1,
+                    ch: '\n'
+                }, {line: innerParams.line_end - 1, ch: '\n'});
                 this.viewEdit = false;
                 render(this);
             },
             setSelection: function (key) {
-                var value = this.editor.getRange({line:this.innerParams.line_begin + 2, ch:'\n'},{line:this.innerParams.line_end-2, ch:'\n'});
+                var value = this.editor.getRange({
+                    line: this.innerParams.line_begin + 2,
+                    ch: '\n'
+                }, {line: this.innerParams.line_end - 2, ch: '\n'});
                 var start = this.innerParams.line_begin + 2, value = value.split('\n');
                 for (var i = 0; i < value.length; i++) {
                     if (value[i].split(':')[0].indexOf(key) >= 0) {
@@ -213,12 +226,12 @@ define([
                     }
                 }
             },
-            http:function(method, url, params, callback, errorCallback){
+            http: function (method, url, params, callback, errorCallback) {
                 return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
             },
             render: function (htmlContent) {
                 //console.log(idx);
-                util.html('#wikiblock_'+ idx, htmlContent);
+                util.html('#wikiblock_' + idx, htmlContent);
             },
         };
         registerEvent(wikiBlockObj, render);
@@ -262,29 +275,33 @@ define([
                         if (modName == "template") {
                             // 模板信息
                             mdwikiObj.template = {
-                                modName:modName,
-                                cmdName:cmdname,
-                                modParams:angular.fromJson(params) || params,
-                                innerParams:{mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]},
+                                modName: modName,
+                                cmdName: cmdname,
+                                modParams: angular.fromJson(params) || params,
+                                innerParams: {mdwikiName: mdwikiName, line_begin: token.map[0], line_end: token.map[1]},
                             };
                             return '<div></div>'
                         }
-                        idx = mdwikiName + "_" +mdwikiObj.renderCount + '_' + idx;
+                        idx = mdwikiName + "_" + mdwikiObj.renderCount + '_' + idx;
                         var script = '<script>renderWikiBlock("' + idx + '", "' + modName + '", "' + cmdname + '",' + params + ','
-                            + JSON.stringify({mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]}) +');</script>';
+                            + JSON.stringify({
+                                mdwikiName: mdwikiName,
+                                line_begin: token.map[0],
+                                line_end: token.map[1]
+                            }) + ');</script>';
                         return '<div>' +
-                            '<div id="wikiblockContainer_'+ idx + '" style="position: relative">' +
-                            '<div id="wikiblockHeader_'+ idx + '" style="position: absolute; left:0px; right:0px; display: none; z-index: 3">' +
+                            '<div id="wikiblockContainer_' + idx + '" style="position: relative">' +
+                            '<div id="wikiblockHeader_' + idx + '" style="position: absolute; left:0px; right:0px; display: none; z-index: 3">' +
                             '<div style="background-color: rgba(0,0,0,0.1); display: flex; justify-content: flex-end">' +
-                            '<button class="btn" id="wikiblockEditBtn_'+idx+'"style="background: none; color: white">编辑</button>' +
-                            '<button class="btn" id="wikiblockDeleteBtn_'+idx+'"style="background: none; color: white">删除</button>' +
-                            '<button class="btn" id="wikiblockHideBtn_'+idx+'"style="background: none; color: white">隐藏</button>' +
+                            '<button class="btn" id="wikiblockEditBtn_' + idx + '"style="background: none; color: white">编辑</button>' +
+                            '<button class="btn" id="wikiblockDeleteBtn_' + idx + '"style="background: none; color: white">删除</button>' +
+                            '<button class="btn" id="wikiblockHideBtn_' + idx + '"style="background: none; color: white">隐藏</button>' +
                             '</div>' +
                             '</div>' +
-                            '<div id="wikiblockEdit_'+idx+'"></div>' +
-                            '<div id="wikiblock_' + idx+ '"></div>' +
+                            '<div id="wikiblockEdit_' + idx + '"></div>' +
+                            '<div id="wikiblock_' + idx + '"></div>' +
                             '</div>' +
-                            "</div>"  + script;
+                            "</div>" + script;
                         //return '<div class="col-sm-12" id="' + containerTagId + '"></div>' + script;
                     }
                 }
@@ -296,14 +313,18 @@ define([
 
     // 重写图片渲染
     function markdownit_wikicmd_link(md) {
-        var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+        var defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
+                return self.renderToken(tokens, idx, options);
+            };
 
         md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
             tokens[idx].tag = 'wiki-link';
             return defaultRender(tokens, idx, options, env, self);
         };
 
-        defaultRender = md.renderer.rules.link_close || function(tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+        defaultRender = md.renderer.rules.link_close || function (tokens, idx, options, env, self) {
+                return self.renderToken(tokens, idx, options);
+            };
         md.renderer.rules.link_close = function (tokens, idx, options, env, self) {
             tokens[idx].tag = 'wiki-link';
             return defaultRender(tokens, idx, options, env, self);
@@ -320,7 +341,7 @@ define([
 
             //console.log(token);
             if (src.indexOf('#images/') == 0) {
-                var url = util.getSelfServices().github.getRawContentUrl({path:src.substring(1)});
+                var url = util.getSelfServices().github.getRawContentUrl({path: src.substring(1)});
                 return '<wiki-image src="' + url + '" alt="' + alt + '"></wiki-image>';
             }
 
@@ -345,11 +366,11 @@ define([
                 // 过长不做连接处理
                 if (linkList[i].length > 1024)
                     continue;
-                var content = linkList[i].substring(3,linkList[i].length-2);
+                var content = linkList[i].substring(3, linkList[i].length - 2);
                 var splitIndex = content.indexOf('|');
                 var newContent = "";
                 if (splitIndex > 0) {
-                    newContent = linkList[i][0] + '[' + content.substring(0,splitIndex) + '](wikilink://' + content.substring(splitIndex+1) + ')';
+                    newContent = linkList[i][0] + '[' + content.substring(0, splitIndex) + '](wikilink://' + content.substring(splitIndex + 1) + ')';
                 } else {
                     newContent = linkList[i][0] + '[' + content + '](wikilink://' + content + ')';
                 }
@@ -374,7 +395,7 @@ define([
             if (codeBlock)
                 continue;
 
-            if (/^(\t|[ ]{4})/.test(line) && i > 0 && (codeLine || /^\s*$/.test(lines[i-1]))) {
+            if (/^(\t|[ ]{4})/.test(line) && i > 0 && (codeLine || /^\s*$/.test(lines[i - 1]))) {
                 codeLine = true;
                 continue;
             }
@@ -389,6 +410,56 @@ define([
     function preprocessMDText(text) {
         var preprocessText = preprocessLink(text);
         return preprocessText;
+    }
+
+    window.mdwikiRender = function (id, text, mdwikiName) {
+        text = decodeURI(text);
+        //console.log(id, mdwikiName, text);
+        var mdwikiObj = getMdwiki(mdwikiName);
+        var id = '#' + id;
+
+        mdwikiObj.renderCount++;
+        mdwikiObj.template = undefined;
+
+        var renderContent = mdwikiObj.md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
+        var wikimdContentContainerId = getWikiMdContentContainerId(mdwikiName);
+        if (!mdwikiObj.options.use_template) {
+            util.html(id, '<div id="' + wikimdContentContainerId + '">' + renderContent + '</div>');
+            return;
+        }
+        var script = '<script>renderWikiTemplate("' + mdwikiName + '")</script>';
+        var html = '<div id="' + wikimdContentContainerId + '"></div>';
+        var htmlContent = html + script;
+
+        if (mdwikiObj.template) {
+            mdwikiObj.template.content = renderContent;
+            util.html(id, htmlContent);
+            return;
+        } else {
+            mdwikiObj.template = {
+                content: renderContent,
+                modName: 'template',
+                cmdName: '@template/js/default',
+                modParams: {}
+            };
+            var siteinfo = util.getAngularServices().$rootScope.siteinfo;
+            if (siteinfo) {
+                var url = '/' + siteinfo.username + '/' + siteinfo.name + '/_theme';
+                util.post(config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url: url}, function (data) {
+                    if (data) {
+                        text = data.content + '\n' + text;
+                        //console.log(text);
+                        renderContent = mdwikiObj.md.render(preprocessMDText(text));
+                        mdwikiObj.template.content = renderContent;
+                    }
+                    util.html(id, htmlContent)
+                }, function () {
+                    util.html(id, htmlContent)
+                });
+            } else {
+                util.html(id, htmlContent)
+            }
+        }
     }
 
     // 新建mdwiki编辑器
@@ -427,15 +498,16 @@ define([
         //var md = markdownit(options).use(markdownit_wikicmd_plugin);
         var md = markdownit(options);
         markdownit_rule_override(md, mdwikiName);
-
         //console.log(md.renderer.rules);
-
         var mdwiki = {};
         var editor;
         var mdwikiObj = getMdwiki(mdwikiName);
         var GetEditorText;
         var lastUpdateTime = 0; // 上次更新时间
         var timer = undefined; // 定时器
+        var divContainerId = undefined;
+        mdwikiObj.md = md;
+        mdwikiObj.options = options;
 
         mdwiki.getMarkdown = function () {
             return md;
@@ -447,23 +519,22 @@ define([
 
         // force render a given text
         mdwiki.render = function (text) {
-            mdwikiObj.template = undefined;
-            var htmlResult = md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
-            mdwikiObj.renderCount++;
-            var wikimdContentContainerId = getWikiMdContentContainerId(mdwikiName);
-            if (!options.use_template) {
-                return '<div id="'+ wikimdContentContainerId + '">' + htmlResult + '</div>';
-            }
-            var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
-            var html = '<div id="'+ wikimdContentContainerId+ '"></div>';
-            mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/js/default', modParams:{}};
-            mdwikiObj.template.content = htmlResult;
-            return html + scipt;
+            var mdwikiObj = getMdwiki(mdwikiName);
+            var id = mdwikiName + "_" + mdwikiObj.idCount;
+            var html = '<div id="' + id + '"></div>';
+
+            idCount++;
+            divContainerId = id;
+            text = encodeURI(text);
+
+            var script = '<script>mdwikiRender("' + id + '","' + text + '","' + mdwikiName + '");</script>';
+            return html + script;
         }
 
-        mdwiki.getWikiMdContentContainerId = function () {
-            return getWikiMdContentContainerId(mdwikiName);
+        mdwiki.getLastDivId = function () {
+            return divContainerId;
         }
+
         // update the content of markdown whenever the editor is changed
         mdwiki.bindToCodeMirrorEditor = function (editor_) {
             mdwikiObj.editor = editor_;
@@ -505,11 +576,11 @@ define([
         }
 
         // 生成每个div块对应编辑的位置列表
-        mdwiki.generatePosList = function() {
+        mdwiki.generatePosList = function () {
             var source = GetEditorText && GetEditorText();
             var tokenList = md.parse(source, {});
             var posList = [];
-            var pos = {from: 999999, to:0};
+            var pos = {from: 999999, to: 0};
             var stack = 0;
 
             for (var i = 0; i < tokenList.length; i++) {
@@ -527,20 +598,20 @@ define([
                     stack--;
                 }
                 if (stack == 0) {
-                    posList.push({from:pos.from, to:pos.to});
-                    pos = {from: 999999, to:0};
+                    posList.push({from: pos.from, to: pos.to});
+                    pos = {from: 999999, to: 0};
                 }
             }
             mdwiki.positionList = posList;
             return posList;
             /*
-            var temp = [];
-            for (var i = 0; i < posList.length; i++) {
-                temp.push({height:editor.heightAtLine(posList[i].from), line:posList[i].from});
-            }
-            console.log(posList);
-            console.log(temp);
-            */
+             var temp = [];
+             for (var i = 0; i < posList.length; i++) {
+             temp.push({height:editor.heightAtLine(posList[i].from), line:posList[i].from});
+             }
+             console.log(posList);
+             console.log(temp);
+             */
             //console.log(tokenList);
             //console.log(posList);
         }

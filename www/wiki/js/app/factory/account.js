@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (app, storage, util, dataSource) {
-    console.log("accountFactory");
+    //console.log("accountFactory");
     app.factory('Account', ['$auth', '$rootScope', '$http','$uibModal', 'github', 'Message', function ($auth, $rootScope, $http, $uibModal, github, Message) {
         var angularService = util.getAngularServices();
         if (!angularService || !angularService.$http) {

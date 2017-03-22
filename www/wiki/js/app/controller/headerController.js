@@ -194,7 +194,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         };
 
         $scope.$on("onUserProfile", function (event, user) {
-            console.log('onUserProfile');
+            //console.log('onUserProfile');
             $scope.user = user;
             init();
         });

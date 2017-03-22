@@ -57,6 +57,7 @@ local template_config = {
 						filename="resume.html",
 						-- previewFilename="organizationPreview.html",
 						layoutTpl='',
+						theme="",
 					},
 				},
 			},
@@ -163,7 +164,7 @@ function website_template_config:api_getTemplatePageByFilename(params)
 end
 
 -- 获取模板页
-function website_template_config:api_getTemplatePage(params)
+function website_template_config:api_getTemplateStylePage(params)
 	if not params.categoryId or params.categoryId == 0 then 
 		return self:getPersonalPage()
 	end
@@ -186,6 +187,7 @@ function website_template_config:api_getTemplatePage(params)
 	end
 	
 	local content = self:getFileContent(filename)	
+	style.content = content
 
 	return {error=errors.SUCCESS, data=content}
 end

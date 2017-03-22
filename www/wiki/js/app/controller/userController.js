@@ -8,7 +8,7 @@ define([
     'helper/storage',
     'text!html/user.html'
 ], function (app, util, storage, htmlContent) {
-    console.log("load userController file");
+    //console.log("load userController file");
 
     app.controller('userController', ['$scope', function ($scope) {
         var username = $scope.urlObj.username;

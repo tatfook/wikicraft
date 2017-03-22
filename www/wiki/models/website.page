@@ -111,16 +111,24 @@ function website:create(params)
 	-- local template_style_db = models.website_template_style:new()
 	-- local data = template_style_db:api_getIndexPage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
 	local template_config_db = models.website_template_config:new()
-	local data = template_config_db:api_getTemplatePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
+	local data = template_config_db:api_getTemplateStylePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId}).data
+	data = data or {content="", theme=""}
 	
+	-- 创建功能模板页
 	local page = {name="index"}
 	page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
 	page.websiteName = params.name
 	page.websiteId = site._id
-	page.content = data.data or ""
+	page.content = data.content or ""
 	page.userId = params.userId
 	website_pages_db:create(page)
-			
+	
+	-- 创建布局模板页
+	page.content = data.theme or ""	
+	page.name = "_theme"
+	page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
+	website_pages_db:create(page)
+	
 	-- create website domain record
 	local websiteDomainDB = models.website_domain:new()
 	-- websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	

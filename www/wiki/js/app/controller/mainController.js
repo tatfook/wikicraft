@@ -167,7 +167,7 @@ define([
             init();
 
             $scope.$on("onUserProfile", function (event, user) {
-                console.log('onUserProfile -- mainController');
+                //console.log('onUserProfile -- mainController');
                 $scope.user = user;
                 //init();
             });

@@ -359,7 +359,8 @@ define([
                 storage.indexedDBGet(function (page) {
                     var serverPage = getWebsitePage(page._id);
                     var localTimestamp = page.timestamp || 0;
-                    var serverTimestamp = serverPage.timestamp || (new Date()).getTime();
+                    var serverTimestamp = serverPage.timestamp || 0; //(new Date()).getTime();
+                    //console.log(page.url, serverPage, localTimestamp);
                     if (localTimestamp > serverTimestamp && page.content != serverPage.content) {
                         serverPage.isModify = true;
                         serverPage.content = page.content;
@@ -457,7 +458,7 @@ define([
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
                 storage.sessionStorageRemoveItem('urlObj');
-                console.log(urlObj);
+                //console.log(urlObj);
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 // 必须是自己编辑自己页面
                 if (urlObj && urlObj.username == $scope.user.username) {
@@ -540,7 +541,7 @@ define([
                     //console.log(currentWebsitePage);
                     if (page) {
                         page.timestamp = page.timestamp || 0;
-                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || (new Date()).getTime();
+                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || 0; // (new Date()).getTime();
                         if (page.timestamp > currentWebsitePage.timestamp &&  currentWebsitePage.content != page.content) {
                             console.log("---------------histroy modify---------------");
                             currentWebsitePage.content = page.content;
@@ -557,7 +558,7 @@ define([
 
             //初始化目录树  data:  $.parseJSON(getTree()),
             function initTree() {
-                console.log('@initTree');
+                //console.log('@initTree');
                 $('#treeview').treeview({
                     color: "#428bca",
                     showBorder: false,
@@ -1362,7 +1363,8 @@ define([
                     var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
                     var contentWidth = winWidth;
                     var scaleSize = (boxWidth >= contentWidth) ? 1 : (boxWidth / contentWidth);
-                    $('#'+mdwiki.getWikiMdContentContainerId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
+                    //console.log(mdwiki.getLastDivId());
+                    $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
                 mdwiki.bindToCodeMirrorEditor(editor);
