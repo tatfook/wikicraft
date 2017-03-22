@@ -442,11 +442,12 @@
                 });
 
                 var init_show = function (width, height, data) {
-                    cvs_show.dataset.width = width;
-                    cvs_show.dataset.height = height;
-                    cvs_show.dataset.data = JSON.stringify(data);
+                    //cvs_show.dataset.width = width;
+                    //cvs_show.dataset.height = height;
+                    //cvs_show.dataset.data = JSON.stringify(data);
                     var body_show = new fabric.StaticCanvas(cvs_show, { width: width, height: height });
                     body_show.clear();
+                    data = JSON.parse(JSON.stringify(data)); // loadFromJSON() 会改变数据，为了不影响后面的操作，此处重新生成一个JSON用于loadFromJSON()
                     body_show.loadFromJSON(data, function () {
                         body_show.renderAll();
                     }, function (o, obj) {
@@ -454,12 +455,16 @@
                     });
                 };
                 
-                var show_w = parseInt(cvs_show.dataset.width), show_h = parseInt(cvs_show.dataset.height);
-                if (show_w && show_h) {
-                    var data_show = cvs_show.dataset.data;
-                    if (data_show) {
-                        data_show = JSON.parse(data_show);
-                        init_show(show_w, show_h, data_show);
+                //var show_w = parseInt(cvs_show.dataset.width), show_h = parseInt(cvs_show.dataset.height);
+                if (wikiBlock.modParams) {
+                    var show_w = wikiBlock.modParams.w, show_h = wikiBlock.modParams.h;
+                    if (show_w && show_h) {
+                        //var data_show = cvs_show.dataset.data;
+                        var data_show = wikiBlock.modParams.data;
+                        if (data_show) {
+                            //data_show = JSON.parse(data_show);
+                            init_show(show_w, show_h, data_show);
+                        }
                     }
                 }
 
@@ -699,8 +704,10 @@
                             $timeout(function () {
                                 var cvs = $scope.scopeElements.cvs, parentEle = cvs.parentElement;
 
-                                var body_w = parseInt(cvs_show.dataset.width) || parentEle.offsetWidth,
-                                    body_h = parseInt(cvs_show.dataset.height) || parentEle.offsetHeight;
+                                //var body_w = parseInt(cvs_show.dataset.width) || parentEle.offsetWidth,
+                                //    body_h = parseInt(cvs_show.dataset.height) || parentEle.offsetHeight;
+                                var body_w = (wikiBlock.modParams && wikiBlock.modParams.w) || parentEle.offsetWidth,
+                                    body_h = (wikiBlock.modParams && wikiBlock.modParams.h) || parentEle.offsetHeight;
 
                                 body = new fabric.Canvas(cvs, { width: body_w, height: body_h });
 
@@ -734,7 +741,9 @@
                                 body.on('selection:cleared', function () {
                                     $scope.editItems = [];
                                     $scope.selectedShape = null;
-                                    $scope.$apply();
+                                    $timeout(function () {
+                                        $scope.$apply();
+                                    });
                                 });
 
                                 $scope.fillColorChanged = function (color) {
@@ -827,8 +836,21 @@
                                     });
                                 };
 
-                                if (cvs_show.dataset.data) {
-                                    body.loadFromJSON(JSON.parse(cvs_show.dataset.data), function () {
+                                //if (cvs_show.dataset.data) {
+                                //    body.loadFromJSON(JSON.parse(cvs_show.dataset.data), function () {
+                                //        body.renderAll();
+                                //        body.getObjects().forEach(function (T) {
+                                //            if (T.type == 'group') {
+                                //                bindGroupEvent(T, body);
+                                //            }
+                                //        });
+                                //    }, function (obj, o) {
+                                //        //console.log(obj, o);
+                                //    });
+                                //}
+                                if (wikiBlock.modParams && wikiBlock.modParams.data) {
+                                    var data = JSON.parse(JSON.stringify(wikiBlock.modParams.data));
+                                    body.loadFromJSON(data, function () {
                                         body.renderAll();
                                         body.getObjects().forEach(function (T) {
                                             if (T.type == 'group') {
@@ -912,9 +934,10 @@
 
                             $scope.save = function () {
                                 body.deactivateAll().renderAll();
-                                init_show(body.width, body.height, body.toJSON());
+                                //init_show(body.width, body.height, body.toJSON());
+                                wikiBlock.applyModParams({ w: body.width, h: body.height, data: body.toJSON() });
                                 $uibModalInstance.close("link");
-                                console.log(fabric);
+                                //console.log(fabric);
                             };
 
                         }
