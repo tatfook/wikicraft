@@ -1,0 +1,56 @@
+<style>
+    .blog-header{
+        position: relative;
+        background-color: #F5F5F5;
+        padding:0;
+        height:525px;
+    }
+    .blog-header .profile {
+        height: 400px;
+        overflow: hidden;
+    }
+    .blog-header .profile>img{
+        width:100%;
+    }
+    .blog-header .user-msg {
+        position: absolute;
+        bottom: 0;
+        padding:40px 110px;
+        background-color: #FFF;
+        box-shadow: 0 0 15px 0 rgba(75, 129, 183, .35);
+        border-radius: 10px;
+        text-align: center;
+    }
+    .blog-header .align-left{
+        text-align: left;
+    }
+    .blog-header p.info{
+        font-size: 14px;
+        font-weight: normal;
+        color: #999;
+    }
+    .blog-header h1{
+        font-size: 60px;
+        color: #FF7A7A;
+        margin: 0;
+    }
+    .blog-header .btn-lg{
+        font-size: 18px;
+        padding:10px 63px;
+        margin-top: 25px;
+    }
+    .blog-header .time{
+        margin-left: 25px;
+    }
+</style>
+<div class="blog-header" ng-controller="blogHeaderController">
+    <div class="profile">
+        <img ng-src="{{imgsPath+'blog_header_banner.jpg'}}" alt="">
+    </div>
+    <div class="user-msg col-xs-8 col-xs-offset-2 col-lg-4 col-lg-offset-4">
+        <h1>{{userinfo.displayName || userinfo.username || "USERNAME"}}</h1>
+        <p class="info"><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> {{userinfo.location || "深圳"}}<span class="time">注册于2016.9.12</span></p>
+        <p class="align-left">{{modParams.introduce || "我是一个边学习边分享的人。关于读书、关于影视剧、关于足球， 所学，所思，所感，所闻，分享一切有趣的、有用的。"}}</p>
+        <div class="btn btn-primary btn-lg">收藏网站</div>
+    </div>
+</div>
