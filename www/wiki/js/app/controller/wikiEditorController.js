@@ -205,20 +205,33 @@ define([
         $scope.errInfo = "";             // 错误提示
         var treeNode = undefined;       // 目录节点
 
-
+        $scope.$watch('$viewContentLoaded', init);
         //初始化目录树  data:  $.parseJSON(getTree()),
         function initTree() {
             //console.log('@initTree');
             $('#newPageTreeId').treeview({
                 color: "#428bca",
                 showBorder: false,
-                enableLinks: true,
+                enableLinks: false,
                 data: getTreeData($scope.user.username, $scope.websitePages, true),
                 onNodeSelected: function (event, data) {
                     //console.log(data);
                     treeNode = data.pageNode;
                 }
             });
+            var selectableNodes = $('#newPageTreeId').treeview('search', [currentWebsite.name, {
+                ignoreCase: true,
+                exactMatch: false,
+                revealResults: true,  // reveal matching nodes
+            }]);
+
+            $.each(selectableNodes, function (index, item) {
+                if (item.pageNode.url == ('/' + currentWebsite.username + '/' + currentWebsite.name)) {
+                    $('#newPageTreeId').treeview('selectNode', [item, {silent: false}]);
+                    treeNode = item.pageNode;
+                }
+            });
+            $('#newPageTreeId').treeview('clearSearch');
         }
 
         //初始化
@@ -280,7 +293,6 @@ define([
             });
         }
 
-        $scope.$watch('$viewContentLoaded', init);
     }]);
 
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal',
@@ -342,6 +354,22 @@ define([
                 });
             }
 
+            // 加载未提交到服务的页面
+            function loadUnSavePage() {
+                storage.indexedDBGet(function (page) {
+                    var serverPage = getWebsitePage(page._id);
+                    var localTimestamp = page.timestamp || 0;
+                    var serverTimestamp = serverPage.timestamp || (new Date()).getTime();
+                    if (localTimestamp > serverTimestamp && page.content != serverPage.content) {
+                        serverPage.isModify = true;
+                        serverPage.content = page.content;
+                        serverPage.timestamp = localTimestamp;
+                    }
+                }, undefined, function () {
+                    initTree();
+                });
+            }
+
             //初始化，读取用户站点列表及页面列表
             function init() {
                 if (!Account.ensureAuthenticated()) {
@@ -359,6 +387,7 @@ define([
                         allWebsitePages = data || [];
                         //console.log(currentWebsitePage);
                         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
+                            loadUnSavePage();
                             initTree();
                             openPage();
                         });
@@ -430,6 +459,7 @@ define([
                 storage.sessionStorageRemoveItem('urlObj');
                 console.log(urlObj);
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
+                // 必须是自己编辑自己页面
                 if (urlObj && urlObj.username == $scope.user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                 }
@@ -511,7 +541,7 @@ define([
                     if (page) {
                         page.timestamp = page.timestamp || 0;
                         currentWebsitePage.timestamp = currentWebsitePage.timestamp || (new Date()).getTime();
-                        if (page.timestamp > currentWebsitePage.timestamp) {
+                        if (page.timestamp > currentWebsitePage.timestamp &&  currentWebsitePage.content != page.content) {
                             console.log("---------------histroy modify---------------");
                             currentWebsitePage.content = page.content;
                             currentWebsitePage.isModify = true;
@@ -531,7 +561,7 @@ define([
                 $('#treeview').treeview({
                     color: "#428bca",
                     showBorder: false,
-                    enableLinks: true,
+                    enableLinks: false,
                     levels: 4,
                     data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
