@@ -1,0 +1,46 @@
+<style>
+    .blog-statics{
+        padding: 40px 0;
+        background-color: #F5F5F5;
+    }
+    .blog-statics .item{
+        background-color: #FD7D7E;
+        color: #FFF;
+        box-shadow: 0 0 10px 0 rgba(165,49,50,.35);
+        text-align: center;
+        width:30%;
+        padding:30px 0;
+    }
+    .blog-statics .item:nth-child(3n+1){
+        margin-right: 3.333%;
+    }
+    .blog-statics .item:nth-child(3n+2){
+        margin: 0 1.66666%;
+    }
+    .blog-statics .item:nth-child(3n){
+        margin-left: 3.333%;
+    }
+    .blog-statics .col-lg-4{
+        padding:0;
+    }
+    .blog-statics .item>p{
+        font-size: 18px;
+        margin: 25px 0 0;
+    }
+</style>
+<div class="blog-statics clearfix" ng-controller="blogStaticsController">
+    <div class="col-xs-8 col-xs-offset-2 col-lg-4 col-lg-offset-4">
+        <div class="col-xs-4 item">
+            <img ng-src="{{imgsPath+'icon/blog_webnum.png'}}" alt="">
+            <p>总数：0</p>
+        </div>
+        <div class="col-xs-4 item">
+            <img ng-src="{{imgsPath+'icon/blog_collect.png'}}" alt="">
+            <p>收藏：0</p>
+        </div>
+        <div class="col-xs-4 item">
+            <img ng-src="{{imgsPath+'icon/blog_good.png'}}" alt="">
+            <p>赞：0</p>
+        </div>
+    </div>
+</div>

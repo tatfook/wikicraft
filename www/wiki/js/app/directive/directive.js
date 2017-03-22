@@ -25,11 +25,13 @@ define(['app'], function (app) {
             },
             template: `
                 <div class="btn-group">
-                  <button class ="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" ng-style="{backgroundColor:selected}">
-                    <span style="display:inline-block;width:30px"></span> <span class ="caret"></span>
+                  <button class ="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="padding: 2px 8px 2px 30px;border-radius: 0;">
+                    <span style="display:inline-block;width:18px;height: 18px;position:absolute;left: 4px;top: 3px;" ng-style="{backgroundColor:selected}"></span> <span class ="caret"></span>
                   </button>
-                  <div class ="dropdown-menu row" role="menu" aria-labelledby="single-button" style="width:80px">
-                    <div role="menuitem" ng-repeat="item in items" class ="col-md-3" ng-click="onselect(item)" ng-style="{backgroundColor:item, cursor:'pointer'}"><span>&nbsp; </span></div>
+                  <div class ="dropdown-menu row" role="menu" aria-labelledby="single-button" style="width:140px;min-width: 120px;border: none;outline: 1px solid #DCDCDC;padding: 10px 10px 5px;">
+                    <div role="menuitem" ng-repeat="item in items" class ="col-xs-3" ng-click="onselect(item)" style="width: 30px;padding: 0;">
+                        <span ng-style="{backgroundColor:item, cursor:'pointer'}" style="display: inline-block;width: 20px;height: 20px;margin: 5px 5px;"></span>
+                    </div>
                   </div>
                 </div>
                 `,
@@ -84,7 +86,7 @@ define(['app'], function (app) {
             },
             template: `
                 <div class ="btn-group">
-                  <button class ="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button class ="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 2px 12px;border-radius: 0;">
                     {{selected}}
                     <span class ="caret"></span>
                   </button>
