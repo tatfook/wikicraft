@@ -21,9 +21,10 @@
     .preview-zone .preview {
         width: 130px;
         height: 130px;
-        border-radius: 100%;
+        border-radius: 50%;
         object-fit: cover;
         margin: 0 auto 20px;
+        overflow: hidden;
     }
 
     .preview-zone .change-profile {
@@ -40,10 +41,86 @@
 
     /*账户安全*/
     /*我的动态*/
+    .tab-content .status-row{
+        padding:0;
+        border-bottom: 1px solid #DCDCDC;
+        margin-bottom: 15px;
+    }
+    .tab-content .status-row:last-child{
+        border-bottom: none;
+    }
+    .tab-content .status-row .col-sm-12{
+        height: 160px;
+        padding-left: 50px;
+        line-height: 130px;
+    }
+    .tab-content .status-row .glyphicon{
+        width: 35px;
+        height: 35px;
+        border: 3px solid;
+        text-align: center;
+        line-height: 29px;
+        border-radius: 50%;
+        font-size: 20px;
+        margin-right: 10px;
+    }
+    .tab-content .status-row .inline-img{
+        width:40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 50%;
+    }
+    .tab-content .collect-row{
+        border-top: 1px solid #DCDCDC;
+        padding: 40px 40px 40px 80px;
+    }
+    .tab-content .collect-row:first-child{
+        padding-top:0;
+        border-top: none;
+    }
+    .collect-row p{
+        font-size: 16px;
+    }
+    .collect-row img{
+        width: 100px;
+        height:100px;
+        object-fit: cover;
+        margin-right: 20px;
+    }
+    .myworks-row{
+        padding:30px 30px 30px 60px;
+        border-top:1px solid #DCDCDC;
+    }
+    .myworks-row:first-child{
+        border-top: none;
+        padding-top: 0;
+    }
+    .myworks-row img{
+        width:100px;
+        height:100px;
+        margin-left: 50px ;
+        object-fit: cover;
+    }
+    .myworks-row p{
+        font-size: 16px;
+        line-height: 40px;;
+    }
+    .myworks-row .inline-img{
+        width:40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 50%;
+        margin-left:0;
+    }
     /*我的收藏*/
     .tab-content .img-text-box {
         width: 90%;
         margin: 0 auto;
+    }
+    .tab-content .img-text-box .col-sm-12{
+        min-height:325px;
     }
 
     .img-text.col-md-6 {
@@ -154,7 +231,7 @@
     }
 </style>
 
-<div ng-controller="testController">
+<div ng-controller="userProfileController">
     <div ng-show="showItem == 'myProfile'" class="col-md-10 panel main-content">
         <div class="panel-heading">
             我的资料
@@ -162,7 +239,7 @@
         <div class="panel-body">
             <div class="col-md-3 preview-zone">
                 <div class="preview">
-                    <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_header.png'}}" alt=""
+                    <img id='userPortraitId' ng-src="{{ user.protrait || imgsPath + 'wiki_photo.jpg'}}" alt=""
                          style="width: 100%">
                 </div>
                 <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)"
@@ -313,13 +390,26 @@
     <!--我的动态-->
     <div ng-show="showItem == 'myTrends'" class="col-md-10 main-content">
         <div role="tabpanel col-md-12">
-            <div class="panel-heading">数据源</div>
-            <div class="panel-body">
-                <div>
-                    <div style="display: flex; justify-content: space-between">
-                        <div>Github数据源</div>
-                        <div>
-                            <toggle-switch ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
+                    <a href="#userTrends"  ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
+                </li>
+                <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
+                    <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
+                </li>
+                <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
+                    <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active col-sm-12" id="wiki_organize">
+                    <div class="status-row col-sm-12" ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
+                        <p class="pull-right info">{{x.updateDate}}</p>
+                        <div class="col-sm-12">
+                            <span class="glyphicon glyphicon-ok status text-success"></span>{{x.desc}}
                         </div>
                     </div>
                 </div>
@@ -453,10 +543,10 @@
                 <div class="form-group">
                     <label for="email" class="control-label col-sm-2">好友email</label>
                     <div class="col-sm-4">
-                        <input type="email" class="form-control">
+                        <input type="email" ng-model="friendMail" class="form-control">
                     </div>
                     <div class="col-sm-3">
-                        <div class="btn btn-primary">邀 请</div>
+                        <div ng-click="inviteFriend()" class="btn btn-primary">邀 请</div>
                     </div>
                 </div>
             </form>

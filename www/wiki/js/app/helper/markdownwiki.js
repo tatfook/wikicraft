@@ -45,8 +45,13 @@ define([
 
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
-        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {module:{renderCount:0}};
+        mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {renderCount:0, module:{}};
         return mdwikiMap[mdwikiName];
+    }
+
+    function getWikiMdContentContainerId(mdwikiName) {
+        var mdwikiObj = getMdwiki(mdwikiName);
+        return 'wikimdContentContainer_' + mdwikiName + '_' + (mdwikiObj.renderCount - 1);
     }
 
     // 获得模块路径
@@ -148,14 +153,24 @@ define([
         //console.log(mdwikiName);
         var mdwikiObj = getMdwiki(mdwikiName);
         var tplObj = mdwikiObj.template;
+        var innerParams = tplObj.innerParams;
+        var editor = mdwikiObj.editor;
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
         tplObj.render = function (htmlContent) {
-            util.html('#wikiblock_template', htmlContent);
+            util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
         };
         tplObj.http = function(method, url, params, callback, errorCallback){
             return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
         };
+
+        tplObj.applyModParams = function (modParams) {
+            //console.log(modParams);
+            if (!modParams || !editor) {
+                return ;
+            }
+            editor.replaceRange(angular.toJson(modParams, 4) + '\n', {line:innerParams.line_begin+1, ch:'\n'}, {line:innerParams.line_end-1, ch:'\n'});
+        },
         render(tplObj);
     };
 
@@ -179,7 +194,7 @@ define([
             editor:mdwikiObj.editor,
             applyModParams: function (modParams) {
                 //console.log(modParams);
-                if (!modParams) {
+                if (!modParams || !this.editor) {
                     this.viewEdit = false;
                     return ;
                 }
@@ -202,6 +217,7 @@ define([
                 return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
             },
             render: function (htmlContent) {
+                //console.log(idx);
                 util.html('#wikiblock_'+ idx, htmlContent);
             },
         };
@@ -249,10 +265,11 @@ define([
                                 modName:modName,
                                 cmdName:cmdname,
                                 modParams:angular.fromJson(params) || params,
+                                innerParams:{mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]},
                             };
                             return '<div></div>'
                         }
-                        idx = mdwikiObj.renderCount + '_' + idx;
+                        idx = mdwikiName + "_" +mdwikiObj.renderCount + '_' + idx;
                         var script = '<script>renderWikiBlock("' + idx + '", "' + modName + '", "' + cmdname + '",' + params + ','
                             + JSON.stringify({mdwikiName:mdwikiName, line_begin:token.map[0], line_end:token.map[1]}) +');</script>';
                         return '<div>' +
@@ -320,8 +337,7 @@ define([
         markdownit_wikicmd_fence(md, mdwikiName);
     }
 
-    // preprocess md text
-    function preprocessMDText(text) {
+    function preprocessInnerLink(text) {
         text = ' ' + text;
         var linkList = text.match(/[^\\](\[\[.*\]\])/g);
         if (linkList) {
@@ -342,6 +358,37 @@ define([
         }
         //console.log(text);
         return text.substring(1);
+    }
+
+    function preprocessLink(text) {
+        var lines = text.split('\n');
+        var codeBlock = false, codeLine = false;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            // 代码块
+            if (/^\s*```/.test(line)) {
+                codeBlock = !codeBlock;
+                continue;
+            }
+            //
+            if (codeBlock)
+                continue;
+
+            if (/^(\t|[ ]{4})/.test(line) && i > 0 && (codeLine || /^\s*$/.test(lines[i-1]))) {
+                codeLine = true;
+                continue;
+            }
+
+            codeLine = false;
+            lines[i] = preprocessInnerLink(line);
+        }
+        return lines.join('\n');
+    }
+
+    // preprocess md text
+    function preprocessMDText(text) {
+        var preprocessText = preprocessLink(text);
+        return preprocessText;
     }
 
     // 新建mdwiki编辑器
@@ -401,19 +448,22 @@ define([
         // force render a given text
         mdwiki.render = function (text) {
             mdwikiObj.template = undefined;
-            var htmlResult = md.render(preprocessMDText(text));
-            htmlResult = '<div id="wikimdContentContainer">' + htmlResult + '</div>';
+            var htmlResult = md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
+            mdwikiObj.renderCount++;
+            var wikimdContentContainerId = getWikiMdContentContainerId(mdwikiName);
             if (!options.use_template) {
-                return htmlResult;
+                return '<div id="'+ wikimdContentContainerId + '">' + htmlResult + '</div>';
             }
             var scipt = '<script>renderWikiTemplate("'+ mdwikiName +'")</script>';
-            var html = '<div id="wikiblock_template"></div>';
-            mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/default', modParams:{}};
+            var html = '<div id="'+ wikimdContentContainerId+ '"></div>';
+            mdwikiObj.template = mdwikiObj.template || {modName:'template', cmdName:'@template/js/default', modParams:{}};
             mdwikiObj.template.content = htmlResult;
-            mdwikiObj.renderCount++;
             return html + scipt;
         }
 
+        mdwiki.getWikiMdContentContainerId = function () {
+            return getWikiMdContentContainerId(mdwikiName);
+        }
         // update the content of markdown whenever the editor is changed
         mdwiki.bindToCodeMirrorEditor = function (editor_) {
             mdwikiObj.editor = editor_;
@@ -439,8 +489,8 @@ define([
         }
 
         // update result from current editor, this is usually called automatically whenever editor content changed.
-        mdwiki.updateResult = function () {
-            options.changeCallback && options.changeCallback();
+        mdwiki.updateResult = function (cm, changeObj) {
+            options.changeCallback && options.changeCallback(cm, changeObj);
             timer && clearTimeout(timer);
             timer = setTimeout(function () {
                 var source = GetEditorText && GetEditorText();

@@ -1,9 +1,16 @@
 
-define(['app', 'helper/util'], function (app, util) {
+define([
+    'app',
+    'helper/util',
+    'text!wikimod/header/html/personalHeader.html',
+], function (app, util, htmlContent) {
+
+    // 使用闭包使模块重复独立使用
     function registerController(wikiBlock) {
-        app.registerController("personalHeaderController", function ($scope, $auth, Account, Message) {
-            //console.log($scope);
-            $scope.htmlUrl = config.wikiModPath + 'header/pages/personalHeader.page';
+        app.registerController("personalHeaderController", ['$scope','Account','Message', function ($scope, Account, Message) {
+            $scope.imgsPath = config.wikiModPath + 'header/assets/imgs/';
+            $scope.user = Account.getUser();
+
             // 显示全部作品
             $scope.showWorksList = function() {
                 $('#worksListNavId').toggle();
@@ -53,21 +60,20 @@ define(['app', 'helper/util'], function (app, util) {
 
             function init() {
                 // 获得站点列表
-                console.log(config.apiUrlPrefix);
                 wikiBlock.http("POST", config.apiUrlPrefix + "website",{userId:$scope.userinfo._id}, function (data) {
                     $scope.websiteList = data.data || [];
                 });
             }
 
-            init();
-        });
+            $scope.$watch("$viewContentLoaded", init);
+        }]);
     }
 
     return {
         render: function (mdwiki) {
             mdwiki.viewEdit = false; // 关闭视图编辑功能
             registerController(mdwiki);
-            return '<div ng-controller="personalHeaderController"><div ng-include="htmlUrl"></div></div>';
+            return htmlContent;
         }
     }
 });

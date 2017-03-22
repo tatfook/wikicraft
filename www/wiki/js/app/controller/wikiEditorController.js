@@ -28,6 +28,7 @@ define([
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
+    var winWidth = $(window).width();
     //console.log("wiki editor controller!!!");
     var editor;
     var allWebsites = [];
@@ -78,6 +79,30 @@ define([
                 treeNode = subTreeNode;
             }
         }
+        // 加上所有站点
+        for (var i = 0; i < allWebsites.length; i++) {
+            var isExist = false;
+            var site = allWebsites[i];
+            for (key in pageTree.children) {
+                if (key == site.name){
+                    isExist = true;
+                    break;
+                }
+            }
+            if (isExist)
+                continue;
+
+            pageTree.children[site.name] = {
+                name: site.name,
+                children: {},
+                url: '/' + site.username + '/' + site.name,
+                siteId: site._id,
+                siteName: site.name,
+                pageId: -1,
+            }
+        }
+        //console.log(pageTree.children);
+
         var treeDataFn = function (treeNode, pageNode) {
             treeNode = treeNode || {};
             treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + '*') : pageNode.name;
@@ -105,6 +130,7 @@ define([
         for (var i = 0; i < treeData.length; i++) {
             treeData[i].icon = 'fa fa-globe';
         }
+        //console.log(treeData);
         return treeData;
     }
 
@@ -179,20 +205,33 @@ define([
         $scope.errInfo = "";             // 错误提示
         var treeNode = undefined;       // 目录节点
 
-
+        $scope.$watch('$viewContentLoaded', init);
         //初始化目录树  data:  $.parseJSON(getTree()),
         function initTree() {
             //console.log('@initTree');
             $('#newPageTreeId').treeview({
                 color: "#428bca",
                 showBorder: false,
-                enableLinks: true,
+                enableLinks: false,
                 data: getTreeData($scope.user.username, $scope.websitePages, true),
                 onNodeSelected: function (event, data) {
                     //console.log(data);
                     treeNode = data.pageNode;
                 }
             });
+            var selectableNodes = $('#newPageTreeId').treeview('search', [currentWebsite.name, {
+                ignoreCase: true,
+                exactMatch: false,
+                revealResults: true,  // reveal matching nodes
+            }]);
+
+            $.each(selectableNodes, function (index, item) {
+                if (item.pageNode.url == ('/' + currentWebsite.username + '/' + currentWebsite.name)) {
+                    $('#newPageTreeId').treeview('selectNode', [item, {silent: false}]);
+                    treeNode = item.pageNode;
+                }
+            });
+            $('#newPageTreeId').treeview('clearSearch');
         }
 
         //初始化
@@ -227,17 +266,17 @@ define([
                     $scope.website = $scope.websites[i];
                 }
             }
-
+            console.log($scope.website);
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.name;
             $scope.websitePage.websiteName = $scope.website.name;
             $scope.websitePage.websiteId = $scope.website._id;
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
             $scope.websitePage.userId = $scope.website.userId;
-
+            console.log($scope.websitePage);
             for (var i = 0; i < $scope.websitePages.length; i++) {
                 var url1 = $scope.websitePages[i].url + '/';
                 var url2 = $scope.websitePage.url + '/';
-                if (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0) {
+                if (!$scope.websitePages[i].isDelete && (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0)) {
                     $scope.errInfo = '页面名已存在';
                     return false;
                 }
@@ -254,13 +293,13 @@ define([
             });
         }
 
-        $scope.$watch('$viewContentLoaded', init);
     }]);
 
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal',
         function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message, modal) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
+            $rootScope.userinfo = $rootScope.user;
             $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
 
             $scope.progressbar = {
@@ -280,42 +319,77 @@ define([
                 $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
             });
 
+            function newWebsitePage(urlObj) {
+                //console.log("---------newWebsitePage-------------");
+                if (!urlObj || urlObj.username != $scope.user.username || !urlObj.sitename)
+                    return;
+
+                var site = undefined;
+                for (var i =0; i < allWebsites.length; i++) {
+                    if (urlObj.sitename == allWebsites[i].name) {
+                        site = allWebsites[i];
+                        break;
+                    }
+                }
+
+                if (!site)
+                    return;
+
+                var websitePage = {};
+                websitePage.url = '/'+ site.username + '/' + site.name + '/' + urlObj.pagename;
+                websitePage.websiteName = site.name;
+                websitePage.websiteId = site._id;
+                websitePage.content = ""; // $scope.style.data[0].content;
+                websitePage.userId = site.userId;
+                websitePage.name = urlObj.pagename;
+
+                $http.put(config.apiUrlPrefix + 'website_pages/new', websitePage).then(function (response) {
+                    currentWebsitePage = response.data.data;
+                    currentWebsite = $scope.website;
+                    allWebsitePages.push(currentWebsitePage);
+                    initTree();
+                    openPage();
+                }).catch(function (response) {
+                    console.log(response.data);
+                });
+            }
+
+            // 加载未提交到服务的页面
+            function loadUnSavePage() {
+                storage.indexedDBGet(function (page) {
+                    var serverPage = getWebsitePage(page._id);
+                    var localTimestamp = page.timestamp || 0;
+                    var serverTimestamp = serverPage.timestamp || (new Date()).getTime();
+                    if (localTimestamp > serverTimestamp && page.content != serverPage.content) {
+                        serverPage.isModify = true;
+                        serverPage.content = page.content;
+                        serverPage.timestamp = localTimestamp;
+                    }
+                }, undefined, function () {
+                    initTree();
+                });
+            }
 
             //初始化，读取用户站点列表及页面列表
             function init() {
-                if (!Account.isAuthenticated()) {
+                if (!Account.ensureAuthenticated()) {
                     return;
                 }
-
+                $(".result-html").css("width", winWidth + "px");
                 initEditor();
 
                 var user = $scope.user;
-                var urlObj = storage.sessionStorageGetItem('urlObj');
-                var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
-                if (urlObj && urlObj.username == user.username) {
-                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
-                }
-
                 // console.log(config.apiUrlPrefix);
                 // 获取用户站点列表
-                $http.post(config.apiUrlPrefix + 'website', {userId: Account.getUser()._id}).then(function (response) {
+                $http.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: Account.getUser()._id}).then(function (response) {
                     allWebsites = response.data.data;
                     util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: Account.getUser()._id}, function (data) {
                         allWebsitePages = data || [];
-
-                        for (var i = 0; i < allWebsitePages.length; i++) {
-                            if (url == allWebsitePages[i].url) {
-                                currentWebsite = getWebsite(allWebsitePages[i].websiteId);
-                                currentWebsitePage = allWebsitePages[i];
-                                break;
-                            }
-                        }
+                        //console.log(currentWebsitePage);
                         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
+                            loadUnSavePage();
                             initTree();
-
-                            if (!isEmptyObject(currentWebsitePage)) {
-                                openPage();
-                            }
+                            openPage();
                         });
                     });
                 }).catch(function (response) {
@@ -326,7 +400,7 @@ define([
             }
 
             $scope.$watch('$viewContentLoaded', init);
-
+            //init();
 
             function progressing(step) {
                 if ($scope.progressbar.percent == 0) {
@@ -359,6 +433,9 @@ define([
             function setDataSource() {
                 //console.log($scope.user.githubDS);
                 //console.log($scope.website.githubRepoName);
+                if (!currentWebsite)
+                    return;
+
                 if (!$scope.user.githubDS && !currentWebsite.githubRepoName) {
                     $scope.dataSource = undefined;
                 } else {
@@ -369,8 +446,46 @@ define([
                     }
                 }
             }
+            
+            $scope.$on("changeEditorPage", function (event, urlObj) {
+                renderAutoSave(function() {
+                    openUrlPage(urlObj);
+                }, function () {
+                    openUrlPage(urlObj);
+                });
+            });
+            function openUrlPage(urlObj) {
+                urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
+                storage.sessionStorageRemoveItem('urlObj');
+                console.log(urlObj);
+                var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
+                // 必须是自己编辑自己页面
+                if (urlObj && urlObj.username == $scope.user.username) {
+                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
+                }
+                //console.log(url);
+                currentWebsite = undefined;
+                currentWebsitePage = undefined;
+                for (var i = 0; i < allWebsitePages.length; i++) {
+                    if (url == allWebsitePages[i].url) {
+                        currentWebsite = getWebsite(allWebsitePages[i].websiteId);
+                        currentWebsitePage = allWebsitePages[i];
+                        break;
+                    }
+                }
 
+                if (!currentWebsitePage) {
+                    newWebsitePage(urlObj);
+                } else {
+                    openPage();
+                }
+            }
             function openPage(isNodeSelected) {
+                //console.log(currentWebsitePage);
+                if (!currentWebsitePage) {
+                    openUrlPage();
+                    return;
+                }
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
 
@@ -385,7 +500,9 @@ define([
                 setDataSource();
 
                 function setEditorValue() {
+                    currentWebsitePage.isFirstEditor = true;
                     editor.setValue(wp.content);
+
                     // 折叠wiki命令
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
                         var lineValue = editor.getLine(i);
@@ -422,11 +539,13 @@ define([
                     //console.log(page);
                     //console.log(currentWebsitePage);
                     if (page) {
-                        var curTime = 0;//(new Date()).getTime();
-                        page.timestamp = page.timestamp || curTime;
-                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || curTime;
-                        if (page.timestamp > currentWebsitePage.timestamp) {
+                        page.timestamp = page.timestamp || 0;
+                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || (new Date()).getTime();
+                        if (page.timestamp > currentWebsitePage.timestamp &&  currentWebsitePage.content != page.content) {
+                            console.log("---------------histroy modify---------------");
                             currentWebsitePage.content = page.content;
+                            currentWebsitePage.isModify = true;
+                            initTree();
                         }
                     }
                     setEditorValue();
@@ -442,7 +561,7 @@ define([
                 $('#treeview').treeview({
                     color: "#428bca",
                     showBorder: false,
-                    enableLinks: true,
+                    enableLinks: false,
                     levels: 4,
                     data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
@@ -452,12 +571,12 @@ define([
                                 currentWebsite = getWebsite(data.pageNode.siteId);
                                 currentWebsitePage = getWebsitePage(data.pageNode.pageId);
                                 //console.log(currentWebsitePage);
-                                openPage(true);
+                                openPage();
                             }
                             editor.focus();
                         }, function () {
                             Message.warning("自动保存失败");
-                            openPage(true);
+                            openPage();
                         });
                     }
                 });
@@ -488,13 +607,42 @@ define([
             }
 
             $scope.openWikiBlock = function () {
-                console.log('openWikiBlock');
+                function formatWikiCmd(text) {
+                    var lines = text.split('\n');
+                    var startPos = undefined, endPos = undefined;
+                    for (var i = 0; i < lines.length; i++) {
+                        lines[i] = lines[i].replace(/^[\s]*/, '');
+                        if (lines[i].indexOf('```') == 0) {
+                            if (startPos == undefined) {
+                                startPos = i;
+                            } else {
+                                endPos = i;
+                            }
+                        }
+                    }
+                    if (startPos == undefined || endPos == undefined)
+                        return text;
+
+                    var paramLines = lines.slice(startPos + 1, endPos);
+                    try {
+                        conosle.log(paramLines);
+                        var paramObj = angular.fromJson(paramLines.join('\n'));
+                        var paramsText = angular.toJson(paramObj, 4);
+                        var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                        //console.log(newText);
+                        return newText;
+                    } catch (e) {
+                        console.log(e);
+                        return lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                    }
+                }
+                //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
                     size: 'lg'
-                }, function (result) {
-                    console.log(result);
-                    editor.replaceSelection('````\nwiki block sample\n```\n');
+                }, function (wikiBlock) {
+                    //console.log(result);
+                    editor.replaceSelection(formatWikiCmd(wikiBlock.content));
                 }, function (result) {
                     console.log(result);
                 });
@@ -554,8 +702,11 @@ define([
                 if (!isEmptyObject(currentWebsitePage)) {//修改
                     currentWebsitePage.content = content;
                     currentWebsitePage.timestamp = (new Date()).getTime();
-                    currentWebsitePage.isModify = undefined;
-                    $http.put(config.apiUrlPrefix + 'website_pages', currentWebsitePage).then(function (response) {
+                    var savePage = angular.copy(currentWebsitePage);
+                    savePage.isModify = undefined;
+                    $http.put(config.apiUrlPrefix + 'website_pages', savePage).then(function (response) {
+                        currentWebsitePage.isModify = undefined;
+                        //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         initTree();
                         Message.info("文件已保存到服务器");
@@ -924,7 +1075,7 @@ define([
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
                             //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                             github.uploadImage({content: fileReader.result}, function (img_url) {
+                            github.uploadImage({content: fileReader.result}, function (img_url) {
                                 console.log(img_url);
                                 var imagePath = github.getRawContentUrl({path: ""});
                                 if (img_url.indexOf(imagePath) == 0) {
@@ -999,11 +1150,11 @@ define([
                     return;
                 }
 
-                console.log('auto save website page!!!');
+                //console.log('auto save website page!!!');
                 currentWebsitePage.content = content;
                 currentWebsitePage.timestamp = (new Date()).getTime();
                 var websitePage = angular.copy(currentWebsitePage);
-                websitePage.isModify = undefined;
+                //websitePage.isModify = undefined;
                 util.http('POST', config.apiUrlPrefix + 'website_pages/upsert', websitePage, function (data) {
                     storage.indexedDBDeleteItem(websitePage.url);
                     if ($scope.dataSource) {
@@ -1023,9 +1174,20 @@ define([
                     storage.indexedDBSetItem(currentWebsitePage);
                     errcb && errcb();
                 });
-
                 // 数据源提交
-
+            }
+            // 渲染自动保存
+            function renderAutoSave(cb, errcb) {
+                var value = editor.getValue();
+                if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value) {
+                    cb && cb();
+                    return;
+                }
+                currentWebsitePage.content = value;                               // 更新内容
+                currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
+                //console.log(currentWebsitePage);
+                //console.log('save storage ' + currentWebsitePage.url);
+                storage.indexedDBSetItem(currentWebsitePage, cb, errcb); // 每次改动本地保存
             }
 
             function initEditor() {
@@ -1069,19 +1231,22 @@ define([
                     foldGutter: true,
                     foldOptions: {
                         rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.markdown, CodeMirror.fold.xml, CodeMirror.fold.wikiCmdFold),
-                        clearOnEnter:false,
+                        clearOnEnter: false,
                     },
                     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
                     //全屏模式
                     //fullScreen:true,
                     //括号匹配
                     matchBrackets: true,
-                    lint: true,
+                    // lint: true,
                     extraKeys: {
                         "Alt-F": "findPersistent",
                         "Ctrl-F": "find",
                         "Ctrl-R": "replace",
                         "F11": function (cm) {
+                            $rootScope.frameHeaderExist = !$rootScope.frameHeaderExist;
+                            $rootScope.$apply();
+                            //console.log($rootScope.frameHeaderExist);
                             cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                         },
                         "Esc": function (cm) {
@@ -1174,42 +1339,62 @@ define([
                     }
                 });
 
-                editor.on('fold', function(cm, from, to){
-                    cm.getDoc().addLineClass(from.line,'wrap','CodeMirrorFold');
+                editor.on('fold', function (cm, from, to) {
+                    cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 editor.on('unfold', function (cm, from, to) {
-                    cm.getDoc().removeLineClass(from.line,'wrap','CodeMirrorFold');
+                    cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
+                // 渲染后自动保存
 
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
                 var mdwiki = markdownwiki({
-                    container_name: '.result-html', renderCallback: function (value) {
-                        if (isEmptyObject(currentWebsitePage))
-                            return ;
-                        currentWebsitePage.content = value;                               // 更新内容
-                        currentWebsitePage.timestamp = (new Date()).getTime();           // 更新时间戳
-                        //console.log(currentWebsitePage);
-                        storage.indexedDBSetItem(currentWebsitePage); // 每次改动本地保存
-                    }, changeCallback: changeCallback
+                    container_name: '.result-html',
+                    renderCallback: function () {
+                        renderAutoSave();
+                        resizeMod();
+                    },
+                    changeCallback: changeCallback
                 });
+
+                function resizeMod() {
+                    var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
+                    var contentWidth = winWidth;
+                    var scaleSize = (boxWidth >= contentWidth) ? 1 : (boxWidth / contentWidth);
+                    $('#'+mdwiki.getWikiMdContentContainerId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
+                }
 
                 mdwiki.bindToCodeMirrorEditor(editor);
                 setTimeout(function () {
                     var wikiEditorContainer = $('#wikiEditorContainer')[0];
                     var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                    //console.log(wikiEditorContainer.offsetTop);
                     var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                     editor.setSize('auto', height);
                     $('#wikiEditorContainer').css('height', height);
                     editor.focus();
                 });
 
+                editor.on("beforeChange", function (cm, changeObj) {
+                    for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
+                        cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
+                    }
+                });
                 // 编辑器改变内容回调
-                function changeCallback() {
+                function changeCallback(cm, changeObj) {
+                    //console.log(changeObj);
+                    if (changeObj.origin == "redo" || changeObj.origin == "paste" || changeObj.origin == "undo") {
+                        editor.foldCode(changeObj.from, null, 'fold');
+                    }
+
                     var content = editor.getValue();
-                    if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content) {
-                        currentWebsitePage.isModify = true;
-                        initTree();
+                    if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
+                        (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g,"") != currentWebsitePage.content.replace(/[\r\n]*/g,""))) {
+                            console.log("--------manual modify--------------");
+                            currentWebsitePage.isFirstEditor = undefined;
+                            currentWebsitePage.isModify = true;
+                            initTree();
                     }
                     changeTimer && clearTimeout(changeTimer);
                     changeTimer = setTimeout(function () {
@@ -1218,9 +1403,12 @@ define([
                 }
 
                 function getBlockPosList() {
-                    var blockList = $('#wikimdContentContainer').children();
+                    var blockList = $('#' + mdwiki.getWikiMdContentContainerId()).children();
                     var blockPosList = [];
                     for (var i = 0; i < blockList.length; i++) {
+                        if (blockPosList[blockPosList.length - 1] >= blockList[i].offsetTop)
+                            continue;
+
                         blockPosList.push(blockList[i].offsetTop);
                     }
                     return blockPosList;
@@ -1262,6 +1450,9 @@ define([
                                 if (scrollTop <= blockPosList[index])
                                     break;
                             }
+                            //console.log(index);
+                            //console.log(blockPosList);
+                            //console.log(editorPosList);
                             editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(editorPosList[index].from) - 142); // 142 为调试得到，应该是编辑器隐藏了142px
                         }, 100);
                     }
@@ -1296,8 +1487,10 @@ define([
                         }
                         if ($("#srcview").is(":hidden")) {
                             $("#preview").addClass('col-xs-12');
+                            resizeMod();
                         } else {
                             $("#preview").addClass('col-xs-6');
+                            resizeMod();
                         }
                     } else {
                         if ($("#preview").is(":hidden")) {
@@ -1307,8 +1500,10 @@ define([
                         }
                         if ($("#srcview").is(":hidden")) {
                             $("#preview").addClass('col-xs-10');
+                            resizeMod();
                         } else {
                             $("#preview").addClass('col-xs-5');
+                            resizeMod();
                         }
                     }
                 }
@@ -1539,13 +1734,13 @@ define([
                         if (item.kind === "string") {
                             item.getAsString(function (str) {
                                 // str 是获取到的字符串
-                                console.log('get str');
-                                console.log(str);
+                                //console.log('get str');
+                                //console.log(str);
                             })
                         } else if (item.kind === "file") {
                             var pasteFile = item.getAsFile();
                             // pasteFile就是获取到的文件
-                            console.log(pasteFile);
+                            //console.log(pasteFile);
                             fileUpload(pasteFile);
                         }
                     }

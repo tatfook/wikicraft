@@ -21,7 +21,7 @@
                                 <img ng-src="{{imgsPath+'icon/wiki_replace.png'}}" alt="">
                             </div>
                         </div>
-
+                        <!---->
                         <div class= "btn-group ">
                             <div class="btn btn-default btn-sm" ng-click="cmd_headline(1)" title="标题1（Shift+Ctrl+1）" style="font-weight:bold;">
                                 <img ng-src="{{imgsPath+'icon/wiki_H1.png'}}" alt="">
@@ -42,7 +42,7 @@
                                 <img ng-src="{{imgsPath+'icon/wiki_underline.png'}}" alt="">
                             </div>
                         </div>
-
+                        <!---->
                         <div class= "btn-group ">
                             <div class="btn btn-default btn-sm"  ng-click="cmd_listul()" title="无序列表（Ctrl+.）">
                                 <img ng-src="{{imgsPath+'icon/wiki_disorder.png'}}" alt="">
@@ -60,7 +60,7 @@
                                 <img ng-src="{{imgsPath+'icon/wiki_segment.png'}}" alt="">
                             </div>
                         </div>
-
+                        <!---->
                         <div class= "btn-group ">
                             <div class="btn btn-default btn-sm"  ng-click="cmd_link()" title="链接（Alt+L）">
                                 <img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="">
@@ -72,7 +72,7 @@
                                 <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">
                             </div>
                         </div>
-
+                        <!---->
                         <div class="pull-right">
                             <div class="btn btn-default wiki-btn" title="模块" ng-click="openWikiBlock()"><img ng-src="{{imgsPath+'icon/wiki_model.png'}}" alt=""> 模块</div>
                         </div>
@@ -99,7 +99,7 @@
                             <div class="btn btn-default btn-sm toolbar-page-slide active" title="拆分"><img ng-src="{{imgsPath+'icon/wiki_split.png'}}" alt=""> 拆分</div>
                             <div class="btn btn-default btn-sm toolbar-page-design" title="预览"><img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt=""> 预览</div>
                         </div>
-
+                        <!---->
                         <div class= "btn-group">
                             <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="width: 400px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
                             <div class="btn btn-default btn-sm toolbar-page-remove"  ng-click="cmd_remove()" title="删除页面" disabled="disabled">
@@ -110,7 +110,7 @@
                                 <img ng-src="{{imgsPath+'icon/wiki_github.png'}}" alt="">github
                             </div>
                         </div>
-
+                        <!---->
                         <div class= "btn-group  pull-right">
                             <div class="btn btn-default toolbar-page-version wiki-btn" title="版本">版本</div>
                             <div class="btn btn-default toolbar-page-hotkey wiki-btn" title="热键表">热键</div>
@@ -125,21 +125,20 @@
                         </div>
                     </div>
                 </div>
-
+                <!---->
                 <div id="wikiEditorContainer">
                     <div id="treeview" class="col-xs-2 full-height nopadding nomargin"></div>
                     <div id="srcview" class="col-xs-5 full-height">
                         <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
                         <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
                     </div>
-                    <section id="preview" class="col-xs-5 full-height" style="max-height: 100%; overflow-y: auto;">
-                        <div class="result-html full-height" ></div>
+                    <section id="preview" class="col-xs-5 full-height" style="max-height: 100%; overflow-y: auto;overflow-x: hidden;">
+                        <div class="result-html full-height"></div>
                         <pre class="hljs result-src full-height"><code class="result-src-content full-height"></code></pre>
                         <pre class="hljs result-debug full-height"><code class="result-debug-content full-height"></code></pre>
                     </section>
                 </div>
             </div>
-
             <div class="modal fade" id="hotkeyModal" tabindex="-1" role="dialog"  aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -148,7 +147,7 @@
                             <h4 class="modal-title" style="text-align: center">热键表</h4>
                         </div>
                         <div class="modal-body">
-                            <div>
+                            <div class="clearfix">
                                 <div class="col-md-6">
                                     <ul class="list-group">
                                         <li class="list-group-item text-center active">操作</li>

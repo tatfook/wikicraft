@@ -1,0 +1,36 @@
+<?npl
+--[[
+Title: wiki module favorite
+Author: wuxiangan
+Date: 2017/3/10
+]]
+
+
+include_once("./abstract/base.page")
+include_once("./wiki_module.page")
+
+local wiki_module_classify = inherit(models.abstract.base, gettable("models.wiki_module_classify"))
+wiki_module_classify.db_name = "wiki_module_classify"
+
+
+function wiki_module_classify:ctor()
+	self:addfield("name", "string")
+	self:addfield("desc", "string")
+end
+
+
+function wiki_module_classify:api_get(params) 
+	self:db():find({}, resume)
+	
+	return errors:wrap(yield())
+end
+
+function wiki_module_classify:api_upsert(params) 
+	if not params.name then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+name"]={params.name}}, params, resume)
+	
+	return errors:wrap(yield())
+end

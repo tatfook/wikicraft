@@ -1,4 +1,7 @@
 <style>
+    body{
+        background-color: #F1F1F1;
+    }
     /*左侧菜单栏*/
     .subnav {
         text-align: center;
@@ -40,9 +43,9 @@
     .subscribe{
         font-size: 12px;
     }
-
     .main-content{
         border:1px solid #DEE1E5;
+        background-color: #FFF;
         padding: 0;
         min-height: 515px;
     }
@@ -51,7 +54,6 @@
         color: #3977AD;
         font-size: 16px;
     }
-
     .main-content .tab-content{
         padding-top: 40px;
     }
@@ -101,9 +103,13 @@
     .pagination-box{
         text-align: center;
     }
+    .tab-content p.info{
+        font-size: 12px;
+        color: #999;;
+    }
 </style>
 
-<div ng-controller="userCenterController" class="container" style="margin-top: 30px">
+<div ng-controller="userCenterController" class="container" style="padding-top: 30px">
     <div class="row">
         <div class="col-md-2 subnav">
             <ul class="list-group">
@@ -124,10 +130,10 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" ng-click='selectContentType("myVIP")'>
+                        <div class="panel-heading" ng-click='selectContentType("VIP")'>
                             VIP
                         </div>
-                        <div class="panel-body " ng-class='getExpandClass("myVIP")'>
+                        <div class="panel-body " ng-class='getExpandClass("VIP")'>
                             <ul class="list-group">
                                 <a ng-repeat="item in vipItemList"
                                    ng-click="clickUserCenterItem(item)"
@@ -151,7 +157,6 @@
                             </ul>
                         </div>
                     </div>
-
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
@@ -170,7 +175,6 @@
                 </li>
             </ul>
         </div>
-
         <div id="userCenterSubPage"></div>
     </div>
 </div>

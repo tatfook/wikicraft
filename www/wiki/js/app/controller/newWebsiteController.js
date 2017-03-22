@@ -8,7 +8,7 @@ define([
     'helper/storage',
     'text!html/newWebsite.html',
 ], function (app, util, storage, htmlContent) {
-    var controller = ['$scope', '$sce', 'Account', function ($scope, $sce, Account) {
+    var controller = ['$rootScope','$scope', '$sce', 'Account', function ($rootScope, $scope, $sce, Account) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
         $scope.websiteDomainErrMsg = "";
@@ -21,35 +21,40 @@ define([
         $scope.nextStepDisabled = !$scope.website.name;
 
         $scope.nextStep = function () {
-            console.log($scope.step);
             $scope.errMsg = "";
             if ($scope.step == 1) {
                 if (!$scope.website.name) {
                     $scope.errMsg = "站点名为必填字段";
                     return;
                 }
-                if ($scope.websiteNameErrMsg || $scope.websiteUrlErrMsg) {
-                    $scope.errMsg = "请正确填写相关信息";
-                    return;
-                }
-
                 util.http('POST', config.apiUrlPrefix + 'website/isExist', {
                     username: $scope.user.username,
                     sitename: $scope.website.name
                 }, function (data) {
                     if (data && $scope.website._id != data._id) {
-                        $scope.websiteNameErrMsg = $scope.website.name + "已存在，请换个名字";
+                        $scope.errMsg = $scope.website.name + "已存在，请换个名字";
                         $scope.nextStepDisabled = true;
                     } else {
                         $scope.websiteNameErrMsg = "";
-                        //$scope.nextStepDisabled = $scope.websiteDomainErrMsg;
-                        //$scope.nextStepDisabled || $scope.step++;
                         $scope.nextStepDisabled = false;
                         $scope.step++;
                     }
                 });
                 return ;
             } else if ($scope.step == 2) {
+                if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
+                    $scope.step++;
+                } else {
+                    $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
+                    util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: $scope.website.domain}, function (data) {
+                        if (data == 0) {
+                            $scope.errMsg = $scope.website.domain + "已存在，请换个名字";
+                        } else {
+                            $scope.step++;
+                        }
+                    });
+                }
+                return;
             } else if ($scope.step == 3) {
                 $scope.nextStepDisabled = !$scope.website.templateId;
             } else if ($scope.step == 4) {
@@ -63,8 +68,6 @@ define([
                     $scope.errMsg = "请选择模板样式";
                     return ;
                 }
-                //createWebsiteRequest();
-                //return;
             } else if ($scope.step == 6) {
             } else {
                 createWebsiteRequest();
@@ -121,10 +124,8 @@ define([
             $scope.website.userId = $scope.user._id;
             $scope.website.username = $scope.user.username;
 
-            var url = config.apiUrlPrefix + "website";
-
-            util.http('PUT', url, $scope.website, function (data) {
-                $scope.step++;
+            util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
+                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             });
         }
 
@@ -133,6 +134,7 @@ define([
         }
 
         $scope.selectCategory = function (category) {
+            $scope.category = category;
             $scope.templates = category.templates;
             $scope.styles = category.templates[0].styles;
             $scope.website.categoryId = category._id;
@@ -145,6 +147,7 @@ define([
         }
 
         $scope.selectTemplate = function (template) {
+            $scope.template = template;
             $scope.styles = template.styles;
             $scope.website.templateId = template._id;
             $scope.website.templateName = template.name;
@@ -154,6 +157,7 @@ define([
         }
 
         $scope.selectStyle = function (style) {
+            $scope.style = style;
             $scope.website.styleId = style._id;
             $scope.website.styleName = style.name;
             $scope.nextStepDisabled = false;
@@ -178,8 +182,6 @@ define([
 
         $scope.checkWebsiteName = function () {
             if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
-                $scope.nextStepDisabled = $scope.websiteDomainErrMsg;
-                $scope.websiteNameErrMsg = "";
                 return;
             }
 
@@ -191,22 +193,7 @@ define([
 
         $scope.checkWebsiteDomain = function () {
             return ;
-            if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
-                $scope.nextStepDisabled = $scope.websiteNameErrMsg;
-                $scope.websiteDomainErrMsg = "";
-                return;
-            }
 
-            $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
-            util.http('POST', config.apiUrlPrefix + 'website', {domain: $scope.website.domain}, function (data) {
-                if (data && data.length > 0 && $scope.website._id != data[0]._id) {
-                    $scope.websiteDomainErrMsg = $scope.website.domain + "已存在，请换个名字";
-                    $scope.nextStepDisabled = true;
-                } else {
-                    $scope.websiteDomainErrMsg = "";
-                    $scope.nextStepDisabled = $scope.websiteNameErrMsg;
-                }
-            });
         }
 
         $scope.goPreviewPage = function (style) {
@@ -217,7 +204,7 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
-            window.location.href = '/' + websiteName;
+            util.goUserSite('/' + $scope.user.username + '/' + $scope.website.name + '/index');
         }
     }];
 

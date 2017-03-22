@@ -3,7 +3,7 @@
  */
 
 define(['app','helper/util', 'helper/storage', 'text!html/worksApply.html'], function (app, util, storage, htmlContent) {
-    app.registerController('worksApplyController', ['$scope', '$state', 'Account',function ($scope, $state, Account) {
+    app.registerController('worksApplyController', ['$scope', 'Account',function ($scope, Account) {
         $scope.user = Account.getUser();
         $scope.worksSelected = [];
         $scope.submitDisabled = "";

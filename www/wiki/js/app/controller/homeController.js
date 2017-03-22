@@ -9,21 +9,21 @@ define([
     'text!html/home.html'
 ], function (app, util, storage, htmlContent) {
     // 动态加载
-    app.registerController('homeController', ['$scope', '$rootScope', '$state', '$auth', 'Account', 'Message', function ($scope, $rootScope, $state, $auth, Account, Message) {
+    app.registerController('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
 
         // 更多我的收藏
         $scope.goAllWorksList = function () {
-            storage.sessionStorageSetItem("siteshowType", 'all');
-            $state.go("siteshow");
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType:'all'});
+            util.go("siteshow");
         }
 
         // 更多收藏
         $scope.goAllPersonalList = function () {
-            storage.sessionStorageSetItem("siteshowType", 'personal');
-            $state.go("siteshow");
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType:'personal'});
+            util.go("siteshow");
         }
         
         function init() {
@@ -87,7 +87,7 @@ define([
                 $auth.setToken(data.token);
                 Account.setUser(data.userInfo);
                 //window.location.href = '/wiki/website';
-                util.go('website');
+                util.go('home');
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );

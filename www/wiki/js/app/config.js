@@ -5,11 +5,15 @@
 /* 程序配置模块 */
 
 (function () {
-    var localEnv = false;
-    pathPrefix = localEnv ? '/html/server/' : '/wiki/';
+    var localEnv = window.location.hostname == "localhost";
+    var localVMEnv = localEnv && window.location.host == "localhost:8099";
+    var pathPrefix = (localEnv && !localVMEnv) ? '/html/server/' : '/wiki/';
+    var hostname = "keepwork.com";
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
-        frontEndRouteUrl: localEnv ? '/html/server/index.html' : '/',  // 当使用前端路由时使用的url
+        localVMEnv:localVMEnv,
+        hostname:hostname,
+        frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/server/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
         // 图片路径
@@ -34,7 +38,7 @@
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
-        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : '/api/wiki/models/',
+        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : ('http://' + hostname + '/api/wiki/models/'),
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // 路径配置 END
@@ -46,9 +50,17 @@
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
-    // angular
-    //window.app = angular.module('webapp',['ui.router', 'ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize']);
-
+    config.isLocal = function () {
+        return localEnv;
+    }
+    // local window env
+    config.islocalWinEnv = function () {
+        return localEnv && !localVMEnv
+    }
+    // local VM env
+    config.islocalVMEnv = function () {
+        return localEnv && localVMEnv;
+    }
     // 预加载模块注册
     config.registerPreloadModule = function (path) {
         this.preloadModuleList.push(path);

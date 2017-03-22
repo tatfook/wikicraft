@@ -1,0 +1,90 @@
+<?npl
+--[[
+Title: user profile
+Author: wuxiangan
+Date: 2017/03/15
+]]
+include_once("./abstract/base.page")
+
+-- 暂时不用
+local website_domain = inherit(models.abstract.base, gettable("models.website_domain"))
+
+website_domain.db_name = "website_domain";
+
+function website_domain:ctor() 
+	self:addfield("userId", "number")
+	self:addfield("websiteId","number")
+	self:addfield("domain", "string")
+end
+
+
+-- 创建记录
+function website_domain:api_upsert(params)
+	if (not params.userId) or (not params.websiteId) or (not params.domain) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({['+domain']={params.domain}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除记录
+function website_domain:api_deleteByDomain(params)
+	if not params.domain then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({["+domian"]={params.domain}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 获取站点所有域名
+function website_domain:api_getByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:db():find({["+websiteId"]={params.websiteId}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 获取记录
+function website_domain:api_getByDomain(params)
+	if not params.domain then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({['+domain']={params.domain}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- domain validate
+function website_domain:api_checkDomain(params)
+	if not params.domain then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({['+domain']={params.domain}}, resume)
+	local err, data = yield()
+
+	if data then
+		return errors:wrap(nil,0) -- 无效
+	end
+	
+	return errors:wrap(nil, 1) -- 有效
+end
+
+-- 删除记录通过websiteId
+function website_domain:api_deleteByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():delete({['+websiteId']={params.websiteId}}, resume)
+
+	return errors:wrap(yield())
+end

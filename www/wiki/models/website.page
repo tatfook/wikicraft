@@ -14,6 +14,7 @@ include_once("./website_renewal.page")
 include_once("./website_works.page")
 include_once("./website_template_style.page")
 include_once("./website_template_config.page")
+include_once("./website_domain.page")
 
 local website = inherit(models.abstract.base, gettable("models.website"))
 
@@ -103,9 +104,7 @@ function website:create(params)
 	-- 不是个人网站则将网站添加到个人站点下
 	local websiteWorksDB = models.website_works:new()
 	local personalSite = self:api_getPersonalSiteByUserId({userId=params.userId}).data
-	if personalSite and personalSite._id ~= site._id then
-		websiteWorksDB:create({websiteId=personalSite._id, worksId=site._id, worksFlag=util.WORKS_FLAG_NORMAL}) 
-	end		
+	websiteWorksDB:create({websiteId=personalSite._id, worksId=site._id, worksFlag=util.WORKS_FLAG_NORMAL}) 
 
 	-- create index page by template content 	
 	local website_pages_db = models.website_pages:new()
@@ -122,6 +121,13 @@ function website:create(params)
 	page.userId = params.userId
 	website_pages_db:create(page)
 			
+	-- create website domain record
+	local websiteDomainDB = models.website_domain:new()
+	websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	
+	if site.domain then 
+		websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' ..  site.domain})	
+	end
+
 	return {error=errors.SUCCESS, data=site}
 end
 
@@ -164,6 +170,10 @@ function website:deleteById(websiteId)
 	-- 删除该站点内所有申请
 	local websiteApplyModel = models.website_apply:new()
 	websiteApplyModel:api_deleteByWebsiteId({websiteId=websiteId})
+
+	-- 删除该站点的所有域名
+	local websiteDomainDB = models.website_domain:new()
+	websiteDomainDB:api_deleteByWebsiteId({websiteId=websiteId})
 
 	-- 删除站点
 	self:db():deleteOne({_id=websiteId}, resume)
@@ -271,13 +281,25 @@ function website:api_getAllByUserId(params)
 	return errors:wrap(yield())
 end
 
+-- 通过用户名获取所有站点
+function website:api_getAllByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():find({["+username"]={params.username}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+
 -- 通过站点名获得站点
 function website:api_getByName(params)
-	if not params.websiteName then
+	if (not params.websiteName) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
-	self:db():findOne({name=params.websiteName}, resume)
+	self:db():findOne({['+username+name']={params.username, params.websiteName}}, resume)
 	local err, data = yield()
 	
 	return errors:wrap(err, data)		
@@ -425,20 +447,32 @@ function website:api_getSiteList(params)
 	local key = '';
 	local value = {};
 	-- 个人站点
-	if params.filterType == 'personal' then
+	if params.categoryId then
 		key = key .. '+categoryId'
-		value[#value+1] = 0 
+		value[#value+1] = tonumber(params.categoryId)
 	end
+	
+	if params.websiteName then
+		key = key .. '+name'
+		value[#value+1] = params.websiteName
+	end
+
+	if params.username then
+		key = key .. "+username"
+		value[#value+1] = params.username
+	end
+
 	if params.sortBy then 
 		key = key .. params.sortBy
 		value['gt'] = -1
 	end
-	local query = {}
-	if key ~= '' then 
-		query[key] = value
+
+	if key == '' then
+		key = key .. '_id'
+		value['gt'] = -1
 	end
-	--log(query)	
-	self:db():count(query, resume)
+
+	self:db():count({[key]=value}, resume)
 	local err, data = yield()
 	
 	if err then
@@ -446,10 +480,6 @@ function website:api_getSiteList(params)
 	end
 	local count = data or 0
 	
-	if key == '' then
-		key = key .. '_id'
-		value['gt'] = -1
-	end
 	value["skip"] = skip
 	value['limit'] = limit
 
@@ -458,4 +488,21 @@ function website:api_getSiteList(params)
 	local err, data = yield()
 	
 	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
+end
+
+-- 通过domain获得站点
+function website:api_getByDomain(params)
+	if not params.domain then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteDomainDB = models.website_domain:new()
+	local result = websiteDomainDB:api_getByDomain({domain=params.domain})
+	if not result.data then
+		return result
+	end
+	
+	self:db():findOne({_id=result.data.websiteId}, resume)
+	
+	return errors:wrap(yield())
 end

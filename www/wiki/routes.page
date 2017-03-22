@@ -15,11 +15,16 @@ Mapping of CRUD AJAX operations:
 
 Everything else is mapped to `wiki.page` as standard html file.
 ]]
+
 local path = pagename() or "";
 -- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
 WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
 WIKI_ROOT = dirname(__FILE__);
 local ajax_type, ajax_path = path:match("^/?api/(%w+)/(.+)");
+
+-- 加载helper相关文件
+include_once(WIKI_ROOT .. 'helpers/index.page')
+-- log("--------------------------------------------------")
 
 if(ajax_type == "mod") then
 	include_once("./mod/routes.page");
@@ -105,6 +110,7 @@ end
 
 <?npl
 
+
 -- 解析URL
 function parseURL() 
 	local host = request:GetHost() or ""
@@ -132,9 +138,9 @@ function RenderServerWikiContent()
 		return 
 	end
 
-	log(sitename)
-	log(_pagename)
-	log(subpage)
+	--log(sitename)
+	--log(_pagename)
+	--log(subpage)
 	if sitename == nil or sitename == "wiki" or sitename == "api" then
 		if _pagename == "mod" then
 			include_once(WIKI_ROOT .. "mod/routes.page");
@@ -153,5 +159,6 @@ function RenderServerWikiContent()
 	end
 end
 
+-- 加载通用页
 include(WIKI_ROOT .. "index.page")
 ?>

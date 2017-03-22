@@ -3,7 +3,7 @@
  */
 
 define(['app','helper/util', 'helper/markdownwiki'], function (app, util, markdownwiki) {
-    app.directive('userpage', ['$compile',function ($compile) {
+    app.directive('userpage', ['$compile','$parse',function ($compile, $parse) {
         var md = markdownwiki({html:true, use_template:false});
         return {
             restrict: 'E',
@@ -11,21 +11,16 @@ define(['app','helper/util', 'helper/markdownwiki'], function (app, util, markdo
             template:'<div></div>',
             link: function ($scope, $element, $attrs) {
                 if ($attrs.url) {
-                    /*
+                    //console.log($attrs.url);
                     util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$attrs.url}, function (data) {
-                        console.log(data);
+                        //console.log(data);
+                        if (!data)
+                            return;
                         var htmlContent = md.render(data.content);
                         htmlContent = $compile(htmlContent)($scope);
                         $element.replaceWith(htmlContent);
                         //$scope.$apply();
                     });
-                     */
-                     require(['text!html'+ $attrs.url + '.html'], function (mdContent) {
-                         var htmlContent = md.render(mdContent);
-                         htmlContent = $compile(htmlContent)($scope);
-                         $element.replaceWith(htmlContent);
-                         $scope.$apply();
-                     });
                 }
             },
         };

@@ -7,6 +7,7 @@ Date: 2016/10/24
 include_once("./abstract/base.page")
 include_once("./user.page")
 include_once("./website.page")
+include_once("./user_trends.page")
 
 local user_favorite = inherit(models.abstract.base, gettable("models.user_favorite"))
 user_favorite.db_name = "user_favorite";
@@ -23,7 +24,6 @@ end
 
 -- debug use
 function user_favorite:api_create(params)
-	log(params)
 	self:db():insertOne(nil, params, resume)
 	
 	return errors:wrap(yield())
@@ -112,10 +112,12 @@ function user_favorite:api_favoriteSite(params)
 	local websiteDB = models.website:new()
 	self:db():count({['+favoriteUserId+favoriteType+favoriteId']={params.favoriteUserId, const.FAVORITE_TYPE_WEBSITE, params.favoriteId}}, resume)
 	local err, favoriteCount = yield()
-	local result = websiteDB:api_updateWebsite({_id=params.favoriteWebsiteId, favoriteCount=favoriteCount})
-	if result.error.id ~= 0 then
-		return result
-	end
+	websiteDB:api_updateWebsite({_id=params.favoriteWebsiteId, favoriteCount=favoriteCount})
+
+	-- 增加收藏动态
+	local userTrendsDB = models.user_trends:new()
+	userTrendsDB:api_worksFavorite({userId=params.favoriteUserId, websiteId=params.favoriteWebsiteId,otherUserId=params.userId})	
+
 	return errors:wrap()
 end
 

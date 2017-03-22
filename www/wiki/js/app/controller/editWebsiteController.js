@@ -8,13 +8,15 @@ define([
     'helper/storage',
     'text!html/editWebsite.html',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('editWebsiteController', ['$scope','github','Message', 'Account',function ($scope, github, Message, Account) {
+    app.registerController('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
+        $scope.cnames=[];
+        $scope.cnamesLength=0;
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
-        console.log(siteinfo);
+        //console.log(siteinfo);
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
@@ -22,9 +24,32 @@ define([
             util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                 $scope.website = data;
                 Message.info("站点配置修改成功!!!");
+                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             }, function () {
                 Message.warning("站点配置修改失败!!!");
             });
+        }
+
+        $scope.addCname=function(){
+            var len=$scope.cnamesLength++;
+            $scope.cnames.push("cnames"+len);
+        }
+
+        $scope.removeCname=function(){
+            var removeIndex=findItem($scope.cnames, $(event.target)[0].dataset.removeid);
+            $scope.cnames.splice(removeIndex,1);
+        }
+
+        function findItem(arr,item){
+            var index=-1;
+            var len=arr.length;
+            for(var i=0;i<len;i++){
+                if(arr[i]==item){
+                    index=i;
+                    break;
+                }
+            }
+            return index;
         }
 
         $scope.addTag = function (tagName) {

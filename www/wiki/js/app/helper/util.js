@@ -38,41 +38,33 @@ define(['jquery'], function ($) {
         var hostname = window.location.hostname;
         var pathname = window.location.pathname;
 
-        if (!window.location.hash && config.localEnv && window.location.search.length > 1) {
-            pathname = window.location.search.substring(1);
+        if(config.islocalWinEnv()) {
+            pathname = window.location.hash ? window.location.hash.substring(1) : '/';
         }
 
-        var username = hostname.match(/([\w]+)\.[\w]+\.[\w]+/);
+        var username = hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
         var sitename = '';
         var pagename = '';
+        var domain = undefined;
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
-            sitename = undefined;
+            username = undefined;
         }
 
+        var paths = pathname.split('/');
         if (username) {
             username = username[1];
-            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]*)/);
-            if (urlInfo == undefined) {
-                return {};
-            }
-            sitename = urlInfo[1];
-            pagename = urlInfo[2];
+            domain = username;
+            sitename = paths.length > 1 ? paths[1] : undefined;
+            pagename = paths.length > 2 ? paths[2] : undefined;
         } else {
-            urlInfo = pathname.match(/^\/?([^\/]+)\/?([^\/]+)\/?([^\/]*)/);  // 这里不会返回null
-            if (urlInfo == undefined) {
-                return {};
-            }
-            username = urlInfo[1];
-            sitename = urlInfo[2];
-            pagename = urlInfo[3];
+            username = paths.length > 1 ? paths[1] : undefined;
+            sitename = paths.length > 2 ? paths[2] : undefined;
+            pagename = paths.length > 3 ? paths[3] : undefined;
         }
 
-        if (username != 'wiki' && sitename && !pagename) {
-            pagename = index;
-        }
-        return {username:username, sitename:sitename, pagename:pagename, pathname:pathname};
+        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname};
     }
 
     util.setLastUrlObj = function (urlObj) {
@@ -162,8 +154,6 @@ define(['jquery'], function ($) {
             if (data.error.id == 0) {
                 //console.log(data.data);
                 callback && callback(data.data);
-                util.getAngularServices().$rootScope.$broadcast('http');
-                //util.setParentIframeAutoHeight();
             } else {
                 console.log(data);
                 errorCallback && errorCallback(data.error);
@@ -223,23 +213,54 @@ define(['jquery'], function ($) {
         return window.IframeId ? true : false;
     }
 
-    util.goUserSite = function (url) {
-        if (config.localEnv) {
-            window.open("http://localhost:8099" + url);
-            //window.location.href = "http://localhost:8099" + url;
+    util.goUserSite = function (url, isOpen) {
+        var host = window.location.host;
+        if (config.isLocal()) {
+            host = "localhost:8099";
+        } else if (host.indexOf(config.hostname) >= 0) {
+            host = config.hostname;
+        }
+        url = "http://" + host + url;
+        if (isOpen) {
+            window.open(url);
         } else {
             window.location.href = url;
         }
     }
 
-    util.go = function (pageName) {
-        if (config.localEnv) {
-            window.location.href = config.frontEndRouteUrl + '#/' + pageName;
+    util.go = function (pageName, isOpen) {
+        var host = window.location.host;
+        var url;
+        if (config.isLocal()) {
+            host = "localhost:8099";
+        } else if (host.indexOf(config.hostname) >= 0) {
+            host = config.hostname;
+        }
+        if (config.islocalWinEnv()) {
+            url = config.frontEndRouteUrl + '#/wiki/' + pageName;
         } else {
-            window.location.href = "/wiki/" + pageName;
+            url = "http://" + host + "/wiki/" + pageName;
+        }
+
+        if (isOpen) {
+            window.location.open(url);
+        } else {
+            window.location.href = url;
         }
 
     }
 
+    util.isOfficialPage = function () {
+        var pathname = window.location.pathname;
+        var hostname = window.location.hostname;
+        if (hostname == "keepwork.com" && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+            return true;
+        }
+        return false;
+    }
+
+    util.isWikiEditorPage = function () {
+        return util.parseUrl().pathname == '/wiki/wikiEditor';
+    }
     return util;
 });

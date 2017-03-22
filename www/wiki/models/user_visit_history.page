@@ -31,6 +31,29 @@ function user_visit_history:api_upsert(params)
 	return errors:wrap(yield())
 end
 
+-- 获得用户访问记录
+function user_visit_history:api_get(params)
+	local skip, limit = util:pagination(params)
+	local key = ''
+	local value = {gt=""}
+	if params.userId then
+		key = key .. '+userId'
+		value[#value+1]	= params.userId
+	end
+	key = key .. '-updateDate'
+	
+	self:db():count({[key]=value}, resume)
+	local err, total = yield()		
+	total = total or 0
+
+	value['limit'] = limit
+	value['skip'] = skip
+	self:db():find({[key]=value}, resume)
+	local err, data = yield()
+	
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit),visitList=data})
+
+end
 -- 获得用户一天访问记录
 function user_visit_history:api_getCurrentDay(params)
 	local skip, limit = util:pagination(params)

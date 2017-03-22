@@ -1,0 +1,24 @@
+{
+			name="gameStatics",
+			classifyName="statics",
+			content=[[
+                ```@statics/js/gameStatics
+                ```
+            ]],
+			wikiCmdName="@statics/js/gameStatics",
+			logoUrl="",
+			desc="大赛站点统计信息",
+			flag=1,
+		},
+		{
+			name="organizationStatics",
+			classifyName="statics",
+			content=[[
+                ```@statics/js/organizationStatics
+                ```
+            ]],
+			wikiCmdName="@statics/js/organizationStatics",
+			logoUrl="",
+			desc="组织站点统计信息",
+			flag=1,
+		},

@@ -5,11 +5,14 @@ Author: wuxiangan
 Date: 2016/10/21
 ]]
 
--- NPL.load("(gl)script/ide/System/os/GetUrl.lua")
 
 include_once("./abstract/base.page")
 include_once("./website.page")
+include_once("./website_domain.page")
+include_once("./website_member.page")
 include_once("./user_favorite.page")
+include_once("./user_fans.page")
+include_once("./user_trends.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
@@ -39,6 +42,33 @@ function user:ctor()
 	self:addfield("fansCount", "number")  -- 粉丝数量
 	self:addfield("websiteCount", "number") -- 作品数量
 end
+
+-- 发送邀请邮件
+function user:api_inviteFriend(params) 
+	if (not params.userId) or (not params.friendMail) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local par = {}
+	-- par.to = params.friendMail
+	par.to = "765485868@qq.com"
+	par.subject = "wikicraft好友邀请"
+	par.body = [[
+		<div class="main-content">
+			<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
+			<p>wikicraft 是一款强大的网站构建平台。</p>
+			<p>#username#的作品：</p>
+			<p><a href="#">作品链接</a></p>
+			<p><a href="#">作品链接</a></p>
+			<div class="btn">点击注册</div>
+		</div>
+	]]
+	
+	util:sendEmail(par)
+	
+	return errors:wrap(nil)
+end
+
 
 function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
@@ -175,7 +205,7 @@ function user:api_setemail(params)
 	par.to = "765485868@qq.com"
 	par.subject = "wikicraft email confirm"
 	par.body = "<a href='localhost:8099/wiki/userFavoriteDB'>注册确认</a>"
-	util:SendEmail(par)
+	util:sendEmail(par)
 	return "email"
 	--[[
 	if (not params._id) or (not params.email) then
@@ -221,7 +251,7 @@ function user:api_register(params)
 	
 	local websiteDB = models.website:new()
 	-- 查找用户名是否可用
-	if self:api_getByName({username=params.username}).data then
+	if self:api_checkUsername({username=params.username}).data == 0 then
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 	
@@ -324,6 +354,8 @@ function user:api_getByName(params)
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
+	
+	data.password = nil
 
 	return errors:wrap(nil, data)
 	--[[
@@ -455,5 +487,75 @@ function user:api_getStatics(params)
 
 	return errors:wrap(nil, {favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount})	
 end
+
+-- 检测用户名是否有效
+function user:api_checkUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local err, data = yield()
+	if data then
+		return errors:wrap(nil, 0) -- 无效
+	end
+
+	local websiteDomainDB = models.website_domain:new()
+	
+	return websiteDomainDB:api_checkDomain({domain=params.username})	
+end
+
+-- 获取用户详细相关信息通过用户名
+function user:api_getDetailByName(params)
+	local skip, limit = util:pagination(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	-- 获取用户信息
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local err, userinfo = yield()
+
+	if not userinfo then
+		return errors:wrap(nil, nil)
+	end
+
+	-- 获取创建的组织列表
+	local websiteDB = models.website:new()
+	websiteDB:db():count({["+userId+categoryId"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION}}, resume)
+	local err, selfOrganiztionTotal = yield()
+	websiteDB:db():find({["+userId+categoryId"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION, limit=limit}}, resume)
+	local err, selfOrganiztionList = yield()
+	local selfOrganizationObj = {total=selfOrganiztionTotal, siteList=selfOrganiztionList}
+	
+	-- 加入的组织
+	local websiteMemberDB = models.website_member:new()
+	local joinOrganizationObj = websiteMemberDB:api_getWebsiteListByUserId({userId=userinfo._id}).data	
+	
+	-- 获取热门作品
+	local hotSiteObj = websiteDB:api_getSiteList({username=userinfo.username,sortBy="-favoriteCount"}).data	
+	
+	-- 获得全部站点
+	local allSiteList = websiteDB:api_getAllByUsername({username=userinfo.username}).data
+
+	-- 获得用户粉丝
+	local userFansDB = models.user_fans:new()
+	local fansObj = userFansDB:api_getFansByUserId({userId=userinfo._id}).data
+	
+	-- 获取用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trendsObj = userTrendsDB:api_get({userId=userinfo._id}).data
+	return errors:wrap(nil,{userinfo=userinfo,selfOrganizationObj=selfOrganizationObj,joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, fansObj=fansObj, trendsObj=trendsObj})
+end
+
+
+
+
+
+
+
+
+
+
 
 

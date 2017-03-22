@@ -2,19 +2,15 @@
     .website-table {
         text-align: center;
     }
-
     .website-table table {
         margin-bottom: 120px;
     }
-
     .website-table table > thead > tr > th {
         text-align: center;
     }
-
     .website-table tbody > tr > td {
         vertical-align: middle;
     }
-
     .website-table tbody > tr:hover a {
         color: #3977AD;
     }
@@ -44,7 +40,7 @@
                 <tr ng-repeat="website in websites">
                     <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.name}}</a></td>
                     <td>{{website.desc}}</td>
-                    <td><a href='{{website.domain ? ("http://" + website.domain + ".wikicraft.cn") : ""}}' class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>
+                    <td><a href='{{website.domain ? ("http://" + website.domain + ".keepwork.com") : ""}}' target="_blank" class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>
                     <td>{{website.categoryName || '/'}}</td>
                     <td>{{website.templateName || '/'}}</td>
                     <td>{{website.styleName || '/'}}</td>

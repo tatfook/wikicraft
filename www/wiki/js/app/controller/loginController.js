@@ -3,12 +3,25 @@
  */
 
 define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
-    app.registerController('loginController', ['$scope', '$auth', 'Account', function ($scope, $auth, Account) {
-        console.log("loginController");
+    app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
+        $scope.isModal=false;
+
+        function init() {
+            if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login"){
+                $scope.isModal=true;
+            }
+        }
+
+        $scope.$watch('$viewContentLoaded', init);
 
         $scope.goRegisterPage = function () {
-            util.go('join');
+            util.go('home');
+        }
+        
+        $scope.findPwd=function () {
+            $scope.$close("login");
+            util.go("findPwd");
         }
 
         $scope.login = function () {
@@ -31,7 +44,12 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                     Account.githubAuthenticate();
                 }
                 */
-                util.go('website');
+                if ($scope.isModal) {
+                    $scope.$close(data.userInfo);
+                } else {
+                    util.goUserSite('/' + data.userInfo.username);
+                }
+
             }, function (error) {
                 $scope.errMsg = error.message;
                 $("#total-err").removeClass("visible-hidden");
@@ -47,11 +65,16 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 console.log("github认证成功!!!");
                 $auth.setToken(response.data.token);
                 Account.setUser(response.data.userInfo);
-                util.go('website');
+                if ($scope.isModal) {
+                    $scope.$close(response.data.userInfo);
+                } else {
+                    util.goUserSite('/' + response.data.userInfo.username);
+                }
             }, function () {
                 console.log("github认证失败!!!");
             });
         }
+
         $(document).keyup(function (event) {
             if(event.keyCode=="13"){
                 $scope.login();

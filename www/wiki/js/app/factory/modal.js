@@ -6,6 +6,7 @@ define(['app'], function (app) {
     app.factory('modal', ['$uibModal', function ($uibModal) {
         console.log("load modal!!!");
         function modal(path, option, cb, errcb) {
+            option = option || {};
             require([path], function (htmlContent) {
                 $uibModal.open({
                     template: htmlContent,

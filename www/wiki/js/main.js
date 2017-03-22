@@ -15,9 +15,9 @@
         paths: {
             // 框架库
             'jquery': libPathPrefix + 'jquery/jquery.min',
+            'jquery-cookie': libPathPrefix + 'jquery-cookie/jquery.cookie',
             'angular': libPathPrefix + 'angular/angular.min',
             'angular-ui-bootstrap': libPathPrefix + 'angular-ui-bootstrap/ui-bootstrap-tpls',
-            'angular-ui-router': libPathPrefix + 'angular-ui-router/angular-ui-router.min',
             'angular-toggle-switch': libPathPrefix + 'angular-toggle-switch/angular-toggle-switch.min',
             'angular-ui-select': libPathPrefix + 'angular-ui-select/select.min',
             'angular-sanitize': libPathPrefix + 'angular-sanitize/angular-sanitize.min',
@@ -52,9 +52,6 @@
             'angular': {
                 exports: 'angular',
             },
-            'angular-ui-router':{
-                deps:['angular'],
-            },
             'angular-ui-bootstrap':{
                 deps:['angular'],
             },
@@ -82,6 +79,9 @@
             'highlight':{
                 exports: 'hljs',
             },
+            'jquery-cookie': {
+                deps:['jquery'],
+            },
             /*
             'js-base64':{
                 exports:'base64',
@@ -98,7 +98,7 @@
         urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
     });
 
-    require(['domReady', 'angular', 'router', 'preload'], function (domReady, angular) {
+    require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular) {
         domReady(function () {
             angular.bootstrap(document, ['webapp']);
         });

@@ -1,0 +1,21 @@
+<?npl
+--[[
+Title: wiki module
+Author: wuxiangan
+Date: 2017/2/27
+]]
+
+
+include_once("./abstract/base.page")
+
+local test = inherit(models.abstract.base, gettable("models.test"))
+
+
+function test:api_test()
+	local result = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
+	for _, value in ipairs(result) do
+		log("----------")
+		include_once(WIKI_ROOT ..'js/mod/'.. value.filename)
+	end
+	return result
+end

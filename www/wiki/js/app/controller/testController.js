@@ -3,21 +3,18 @@
  */
 
 define(['app',
-    'codemirror',
     'text!html/test.html',
-], function (app,CodeMirror, htmlContent) {
-    /*
-     app.controller("testController", ['$scope', function ($scope) {
-        jQuery(document).ready(function($) {
-            console.log("===========");
-        });
-    }]);
-     */
+], function (app, htmlContent) {
+    console.log("testController");
     app.registerController("testController", ['$scope', function ($scope) {
+        console.log("---init testController");
+        function init() {
+            console.log("init testController");
+        }
+        init();
+        //$scope.$watch("$viewContentLoaded", init);
     }]);
-    
-    function domReady() {
-    }
-    return {htmlContent:htmlContent,domReady:domReady};
+
+    return htmlContent;
 });
 

@@ -8,7 +8,7 @@ define(['app',
     'text!html/userProfile.html',
     'cropper',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('testController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
+    app.registerController('userProfileController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         $scope.showItem = 'myProfile';
@@ -166,7 +166,23 @@ define(['app',
         // 我的动态
         $scope.clickMyTrends = function () {
             $scope.showItem = 'myTrends';
-            $scope.githubDS = $scope.user.githubDS;
+            $scope.trendsType = "organization";
+            getUserTrends();
+
+            $scope.selectTrendsType = function (trendsType) {
+                $scope.trendsType = trendsType;
+            }
+
+            function getUserTrends() {
+                util.post(config.apiUrlPrefix + 'user_trends/get', {userId:$scope.user._id}, function (data) {
+                    $scope.trendsList = data.trendsList;
+                });
+            }
+
+            $scope.isShowTrend = function (trends) {
+                var trendsTypeList = ["organization","favorite","works"];
+                return  $scope.trendsType == trendsTypeList[trends.trendsType];
+            }
         }
 
         // 我的收藏
@@ -265,23 +281,18 @@ define(['app',
         // 邀请注册
         $scope.clickInvite = function () {
             $scope.showItem = 'invite';
-        }
 
-        // data source
-        $scope.clickMyDataSource = function () {
-            $scope.githubDS = $scope.user.githubDS;
-        }
-
-        /*
-        $scope.githubDSChange = function () {
-            if ($scope.githubDS) {
-                Account.linkGithub();
-            } else {
-                Account.unlinkGithub();
+            $scope.inviteFriend = function () {
+                if (!$scope.friendMail) {
+                    Message.info("请正确填写好友邮箱地址!!!");
+                    return ;
+                }
+                util.post(config.apiUrlPrefix + 'user/inviteFriend',{userId:$scope.user._id,username:$scope.user.username,friendMail:$scope.friendMail}, function () {
+                   Message.info("邀请好友邮件已发送^-^");
+                });
             }
         }
-        */
-    }]);
+   }]);
 
     return htmlContent;
 });

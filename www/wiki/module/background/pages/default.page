@@ -1,9 +1,0 @@
-<?npl
-wp_enqueue_script("defaultBackgroundCtrl", MOD_WEBROOT.."controllers/default.js");
-?>
-<div ng-controller="defaultBackgroundCtrl">
-    <div class="container">
-        <div id="backgroundId">
-        </div>
-    </div>
-</div>

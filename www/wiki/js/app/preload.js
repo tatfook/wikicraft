@@ -6,6 +6,8 @@
 
 (function () {
     var moduleList = [
+        'jquery-cookie',
+
         'controller/mainController',
         'controller/headerController',
         //'controller/testController',

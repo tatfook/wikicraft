@@ -3,7 +3,7 @@
  */
 
 define(['app','helper/util','text!html/gitVersion.html'], function (app, util, htmlContent) {
-   app.registerController('gitVersionController', ['$scope', '$state', 'Account', 'github','Message', function ($scope, $state, Account,github, Message) {
+   app.registerController('gitVersionController', ['$scope', 'Account', 'github','Message', function ($scope, Account,github, Message) {
        $scope.dtStartOpened = false;
        $scope.dtEndOpened = false;
        $scope.filelist = [];

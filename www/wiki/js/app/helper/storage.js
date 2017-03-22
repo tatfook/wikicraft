@@ -110,6 +110,24 @@ define(['angular'], function (angular) {
         window.indexedDB.deleteDatabase(dbName || 'wikicraftDB');
     }
 
+    storage.indexedDBGet = function (cb, errcb, finish) {
+        var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
+        var store=transaction.objectStore(storage.indexDBStoreName);
+        var request = store.openCursor();
+        request.onsuccess = function(e) {
+            var cursor = e.target.result
+            if (cursor) {
+                cb && cb(cursor.value);
+                cursor.continue();
+            } else {
+                finish && finish();
+            }
+        }
+        request.onerror = function (e) {
+            errcb && errcb();
+        }
+    }
+
     storage.indexedDBGetItem = function (key, cb, errcb) {
         var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
         var store=transaction.objectStore(storage.indexDBStoreName);
