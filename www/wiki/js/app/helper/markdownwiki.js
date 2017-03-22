@@ -520,7 +520,7 @@ define([
         // force render a given text
         mdwiki.render = function (text) {
             var mdwikiObj = getMdwiki(mdwikiName);
-            var id = mdwikiName + "_" + mdwikiObj.idCount;
+            var id = mdwikiName + "_" + idCount;
             var html = '<div id="' + id + '"></div>';
 
             idCount++;

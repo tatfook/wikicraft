@@ -57,7 +57,7 @@ local template_config = {
 						filename="resume.html",
 						-- previewFilename="organizationPreview.html",
 						layoutTpl='',
-						theme="",
+						theme="wiki_theme.html",
 					},
 				},
 			},
@@ -185,10 +185,14 @@ function website_template_config:api_getTemplateStylePage(params)
 	if (not filename) or (filename:len() == 0) then
 		return errors:wrap(errors.NOT_FOUND, nil)
 	end
-	
-	local content = self:getFileContent(filename)	
-	style.content = content
 
-	return {error=errors.SUCCESS, data=content}
+	style.content = self:getFileContent(filename)	
+
+	filename = style and style.theme
+	if filename and filename:len() > 0 then 
+		style.theme = self:getFileContent(filename)
+	end
+
+	return {error=errors.SUCCESS, data=style}
 end
 
