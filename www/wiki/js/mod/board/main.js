@@ -1,9 +1,445 @@
 ﻿define(function () {
     function registerController(wikiBlock) {
         app.registerController("boardController", function ($scope, $uibModal, $timeout) {
+
+            var __id = 0;
+            var genId = function () {
+                return Date.now() + (++__id);
+            };
             
             require(['fabric'], function (fabric) {
                 var cvs_show = $scope.scopeElements.cvs_show;
+
+                var _add = fabric.Canvas.prototype.add;
+                fabric.Canvas.prototype.add = function () {
+                    _add.apply(this, arguments);
+                    if (!this.shapes) {
+                        this.shapes = {};
+                    }
+                    var shape = arguments[0];
+                    this.shapes[shape.id] = shape;
+                };
+
+                var _init = fabric.Object.prototype.initialize;
+                fabric.Object.prototype.initialize = function () {
+                    if (!this.id) {
+                        this.id = genId();
+                    }
+                    _init.apply(this, arguments);
+                };
+                
+                var _toObject = fabric.Object.prototype.toObject;
+                fabric.Object.prototype.toObject = function () {
+                    //return fabric.util.object.extend(fabric.Object.prototype.toObject.call(this), {
+                    //    id: this.id,
+                    //    link: this.link ? this.link.id : undefined,
+                    //    point0: this.point0 ? this.point0.id : undefined,
+                    //    point1: this.point1 ? this.point1.id : undefined
+                    //});
+                    var json = _toObject.apply(this, arguments);
+                    json.id = this.id;
+                    if (this.link) {
+                        json.link = this.link;
+                    }
+                    if (this.port0) {
+                        json.port0 = this.port0;
+                    }
+                    if (this.port1) {
+                        json.port1 = this.port1;
+                    }
+                    if (this.link_line) {
+                        json.link_line = this.link_line;
+                    }
+                    if (this.link_ports) {
+                        json.link_ports = this.link_ports;
+                    }
+                    if (this.bindat) {
+                        json.bindat = this.bindat;
+                    }
+                    return json;
+                };
+
+                // 连接线
+                fabric.Link = fabric.util.createClass(fabric.Line, {
+                    type: 'link',
+                    initialize: function (ary, options) {
+                        options || (options = {});
+                        options.stroke = options.stroke || '#1b1b1b';
+                        options.strokeWidth = options.strokeWiddth || 3;
+                        options.lockScalingX = true;
+                        options.lockScalingY = true;
+                        options.lockRotation = true;
+                        options.hasBorders = false;
+                        options.hasControls = false;
+                        options.perPixelTargetFind = true;
+                        //options.selectable = false;
+                        options.fill = options.fill || options.stroke;
+                        //this._lineStrokeWidth = options.strokeWidth;
+                        //options.strokeWidth = this._lineStrokeWidth + 6;
+                        //this._stroke = options.stroke;
+                        //options.stroke = 'transparent';
+                        this.callSuper('initialize', ary, options);
+                        //this.set('point1', new fabric.Circle({
+                        //    fill: '#5b9bd5',
+                        //    strokeWidth: 1,
+                        //    stroke: '#41719c',
+                        //    radius: 10
+                        //}));
+                        //this.set('point2', new fabric.Circle({
+                        //    fill: '#5b9bd5',
+                        //    strokeWidth: 1,
+                        //    stroke: '#41719c',
+                        //    radius: 10,
+                        //    left: 100,
+                        //    top: 50
+                        //}));
+
+                        this.on('moving', function (evt) {
+                            if (this.port0) {
+                                var p0 = this.canvas.shapes[this.port0];
+                                if (p0) {
+                                    var oldCenterX = (this.x1 + this.x2) / 2,
+                                        oldCenterY = (this.y1 + this.y2) / 2,
+                                        center = this.getCenterPoint(),
+                                        deltaX = center.x - oldCenterX,
+                                        deltaY = center.y - oldCenterY;
+                                    p0.set({
+                                        'left': this.x1 + deltaX - p0.radius,
+                                        'top': this.y1 + deltaY - p0.radius
+                                    }).setCoords();
+                                    var p1 = this.canvas.shapes[this.port1];
+                                    if (p1) {
+                                        p1.set({
+                                            'left': this.x2 + deltaX - p1.radius,
+                                            'top': this.y2 + deltaY - p1.radius
+                                        }).setCoords();
+                                    }
+                                }
+                                this.set({
+                                    'x1': this.x1 + deltaX,
+                                    'y1': this.y1 + deltaY
+                                });
+                                this.set({
+                                    'x2': this.x2 + deltaX,
+                                    'y2': this.y2 + deltaY
+                                });
+
+                                //this.set({
+                                //    'left': (this.x1 + this.x2) / 2,
+                                //    'top': (this.y1 + this.y2) / 2
+                                //});
+
+                                if (!window.__selected_linkline) {
+                                    window.__selected_linkline = this;
+                                    var mouseuphandler = function(){
+                                        var linkline = window.__selected_linkline;
+                                        if (linkline) {
+                                            var p0 = linkline.canvas.shapes[linkline.port0],
+                                                p1 = linkline.canvas.shapes[linkline.port1];
+                                            if (p0 && p1) {
+                                                var p0_center = p0.getCenterPoint(),
+                                                    p1_center = p1.getCenterPoint(),
+                                                    p0_shape = null,
+                                                    p1_shape = null;
+                                                for (var k in linkline.canvas.shapes) {
+                                                    var shape = linkline.canvas.shapes[k];
+                                                    if (shape != linkline && shape != p0 && shape != p1) {
+                                                        if (!p0_shape && shape.containsPoint(p0_center)) {
+                                                            p0_shape = shape;
+                                                        } else if (p1_shape && shape.containsPoint(p1_center)) {
+                                                            p1_shape = shape;
+                                                        }
+                                                        if (p0_shape && p1_shape) {
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                if (p0_shape) {
+                                                    if (p0_shape.id != p0.bindat) {
+                                                        p0.bindTo(p0_shape);
+                                                    }
+                                                    p0.adjustBindPos();
+                                                    p0.canvas.renderAll();
+                                                } else {
+                                                    p0.unbind();
+                                                }
+                                                if (p1_shape) {
+                                                    if (p1_shape.id != p1.bindat) {
+                                                        p1.bindTo(p1_shape);
+                                                    }
+                                                    p1.adjustBindPos();
+                                                    p1.canvas.renderAll();
+                                                } else {
+                                                    p1.unbind();
+                                                }
+                                            }
+                                            delete window.__selected_linkline;
+                                        }
+                                        document.removeEventListener('mouseup', mouseuphandler);
+                                    };
+                                    document.addEventListener('mouseup', mouseuphandler);
+                                }
+                            }
+                        });
+
+                        this.on('mousedown', function () {
+                            this.bringToFront();
+                            var p0 = this.canvas.shapes[this.port0];
+                            if (p0) {
+                                p0.bringToFront();
+                            }
+                            var p1 = this.canvas.shapes[this.port1];
+                            if (p1) {
+                                p1.bringToFront();
+                            }
+                            //this.canvas.renderAll();
+                        });
+                    },
+                    //_render: function (ctx) {
+                    //    this.callSuper('_render', ctx);
+
+                    //    //this.point1.callSuper('_render', ctx);
+                    //    //this.point2.callSuper('_render', ctx);
+                    //    //if (!window._isAppendedChilds) {
+                    //    //    console.log('AAAAAAAAAAAA');
+                    //    //    console.log(this);
+                    //    //    this.canvas.add(this.point1);
+                    //    //    window._isAppendedChilds = true;
+                    //    //    //
+                    //    //    //this.canvas.add(this.point2);
+                    //    //    //this._isAppendedChilds = true;
+                    //    //}
+                        
+                    //    //ctx.save();
+                    //    //ctx.beginPath();
+                    //    //ctx.strokeStyle = 'blue';
+                    //    //ctx.lineWidth = 2;
+                    //    //ctx.moveTo(0, 3);
+                    //    //ctx.lineTo(this.width, 3);
+                    //    //ctx.stroke();
+                    //    //ctx.restore();
+
+                    //    //ctx.save();
+                    //    //ctx.beginPath();
+                    //    //ctx.strokeStyle = ctx.fillStyle = 'red';
+                    //    //ctx.lineWidth = 5;
+                    //    //ctx.arc(this.x1 + 5, this.y1 + 5, 10, 0, 2 * Math.PI, true);
+                    //    //ctx.stroke();
+                    //},
+                    //render: function (ctx) {
+                    //    this.callSuper('render', ctx);
+                    //    console.log('FFFFFFFFFf');
+                    //    //console.log(this.canvas.add);
+                    //    if (!this.point1._isin) {
+                    //        this.point1._isin = true;
+                    //        this.canvas.add(this.point1);
+                    //    }
+
+                    //    //this.point1.set({
+                    //    //    left: this.left - this.point1.radius,
+                    //    //    top: this.top - this.point1.radius
+                    //    //});
+                    //    //this.point2.set({
+                    //    //    left: this.x2 - this.point2.radius,
+                    //    //    top: this.y2 - this.point2.radius
+                    //    //});
+                    //    //this.point1.render(ctx);
+                    //}
+                });
+
+                // 连接线端点
+                fabric.LinkPort = fabric.util.createClass(fabric.Circle, {
+                    type: 'linkport',
+                    initialize: function (options, link, portIndex) {
+                        options || (options = {});
+                        options.lockScalingX = true;
+                        options.lockScalingY = true;
+                        options.lockRotation = true;
+                        options.hasBorders = false;
+                        options.hasControls = false;
+                        //options.selectable = false;
+                        options.radius = 4;
+                        options.strokeWidth = 2;
+                        options.stroke = '#1b1b1b';
+                        options.fill = '#1b1b1b';
+                        this.callSuper('initialize', options);
+                        if (link) {
+                            this.set({link_line: link.id});
+                            var left = 0, top = 0;
+                            if (portIndex) {
+                                left = link.x2 - options.radius;
+                                top = link.y2 - options.radius;
+                                link.port1 = this.id;
+                            } else {
+                                left = link.x1 - options.radius;
+                                top = link.y1 - options.radius;
+                                link.port0 = this.id;
+                            }
+                            this.set({
+                                left: left,
+                                top: top
+                            });
+                        }
+                        this.on('moving', function (evt) {
+                            var link_line = this.canvas.shapes[this.link_line];
+                            if (link_line) {
+                                //var x = evt.e.offsetX, y = evt.e.offsetY;
+                                //if (link_line.port0 == this.id) {
+                                //    link_line.set({
+                                //        x1: x,
+                                //        y1: y
+                                //    });
+                                //} else if (link_line.port1 == this.id) {
+                                //    link_line.set({
+                                //        x2: x,
+                                //        y2: y
+                                //    });
+                                //}
+                                //link_line.setCoords();
+
+                                this.adjustLinkLine();
+
+                                if (window.__selected_linkport != this) {
+                                    window.__selected_linkport = this;
+                                    var mouseup_handler = function () {
+                                        var port = window.__selected_linkport;
+                                        if (port) {
+                                            for (var k in port.canvas.shapes) {
+                                                var shape = port.canvas.shapes[k];
+                                                if (shape.type == 'group') {
+                                                    if (shape.containsPoint(port.getCenterPoint())) {
+                                                        port.bindTo(shape);
+                                                        port.canvas.renderAll();
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            delete window.__selected_linkport;
+                                        }
+                                        document.removeEventListener('mouseup', mouseup_handler);
+                                    };
+                                    document.addEventListener('mouseup', mouseup_handler);
+                                }
+                            }
+                        });
+
+                        this.adjustLinkLine = function () {
+                            var link_line = this.canvas.shapes[this.link_line];
+                            if (link_line) {
+                                var center = this.getCenterPoint(),
+                                    x = center.x, y = center.y;
+                                if (link_line.port0 == this.id) {
+                                    link_line.set({
+                                        x1: x - this.strokeWidth / 2,
+                                        y1: y - this.strokeWidth / 2
+                                    });
+                                } else if (link_line.port1 == this.id) {
+                                    link_line.set({
+                                        x2: x - this.strokeWidth / 2,
+                                        y2: y - this.strokeWidth / 2
+                                    });
+                                }
+                                link_line.setCoords();
+                            }
+                        };
+
+                        this.setPos = function (x, y) {
+                            this.set({
+                                left: x,
+                                top: y
+                            }).setCoords();
+                            this.adjustLinkLine();
+                            return this;
+                        };
+
+                        this.bindTo = function (obj) {
+                            this.unbind();
+                            if (!obj.link_ports) {
+                                obj.link_ports = {};
+                            }
+                            obj.link_ports[this.id] = 1;
+                            this.bindat = obj.id;
+                            this.adjustBindPos();
+                            var _this = this;
+                            var unbind_handler = function () {
+                                if (window.__selected_linkport == _this) {
+                                    if (!obj.containsPoint(_this.getCenterPoint())) {
+                                        _this.unbind();
+                                        document.removeEventListener('mouseup', unbind_handler);
+                                    }
+                                }
+                            };
+                            document.addEventListener('mouseup', unbind_handler);
+                            return this;
+                        };
+
+                        this.adjustBindPos = function () {
+                            var link = this.canvas.shapes[this.link_line];
+                            if (link) {
+                                var otherPort = this.canvas.shapes[link.port0 == this.id ? link.port1 : link.port0];
+                                if (otherPort) {
+                                    if (this.bindat) {
+                                        var shape = this.canvas.shapes[this.bindat];
+                                        if (shape) {
+                                            var center = shape.getCenterPoint(),
+                                                x0 = center.x, y0 = center.y,
+                                                x1 = otherPort.left, y1 = otherPort.top,
+                                                coords = shape.getCoords(),// 四个控制角的坐标
+                                                p = null, len = null;// p:相交点，len:相交点与另一个端点的距离。最终要取得的是离另一个端点较近的相交点
+                                            for (var i = 0; i < coords.length; i++) {
+                                                var p2 = coords[i], p3 = coords[i + 1];
+                                                if (!p3) {
+                                                    p3 = coords[0];
+                                                }
+                                                var x2 = p2.x, y2 = p2.y,
+                                                    x3 = p3.x, y3 = p3.y;
+                                                // 求两条线的相交点
+                                                // 如果分母为0 则平行或共线, 不相交  
+                                                var denominator = (y1 - y0) * (x3 - x2) - (x0 - x1) * (y2 - y3);
+                                                if (denominator != 0) {
+                                                    // 线段所在直线的交点坐标 (x , y)      
+                                                    var x = ((x1 - x0) * (x3 - x2) * (y2 - y0)
+                                                                + (y1 - y0) * (x3 - x2) * x0
+                                                                - (y3 - y2) * (x1 - x0) * x2) / denominator,
+                                                        y = -((y1 - y0) * (y3 - y2) * (x2 - x0)
+                                                                + (x1 - x0) * (y3 - y2) * y0
+                                                                - (x3 - x2) * (y1 - y0) * y2) / denominator;
+                                                    var minX = Math.min(x2, x3),
+                                                        maxX = x2 == minX ? x3 : x2,
+                                                        minY = Math.min(y2, y3),
+                                                        maxY = y2 == minY ? y3 : y2;
+                                                    if (x >= minX && x <= maxX && y >= minY && y <= maxY) {// 点在形状的边框线范围内才算是真正的相交
+                                                        var l = Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2)); // 相交点与连接线另一个端点的距离
+                                                        if (len == null || l < len) {
+                                                            len = l;
+                                                            p = { x: x, y: y };
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (p) {
+                                                this.setPos(p.x, p.y);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            return this;
+                        };
+
+                        this.unbind = function () {
+                            if (this.bindat) {
+                                var shape = this.canvas.shapes[this.bindat];
+                                if (shape && shape.link_ports) {
+                                    delete shape.link_ports[this.id];
+                                }
+                                delete this.bindat;
+                            }
+                        };
+
+
+                    }
+                });
 
                 var init_show = function (width, height, data) {
                     cvs_show.dataset.width = width;
@@ -60,6 +496,88 @@
                         }
                         this._scaling_ = false;
                     });
+                    g.on('moving', function (options) {
+                        if (this.link_ports) {// 如果与一个连接线绑定在一起，则需同时移动连接线的端点
+                            for (var link_port in this.link_ports) {
+                                var port = this.canvas.shapes[link_port];
+                                if (port) {
+                                    this.setCoords();
+                                    port.adjustBindPos();
+                                    
+                                    //var link = this.canvas.shapes[port.link_line];
+                                    //if (link) {
+                                    //    var otherPort = this.canvas.shapes[link.port0 == link_port ? link.port1 : link.port0];
+                                    //    if (otherPort) {
+                                    //        this.setCoords();
+                                    //        var center = this.getCenterPoint(),
+                                    //            x0 = center.x, y0 = center.y,
+                                    //            x1 = otherPort.left, y1 = otherPort.top,
+                                    //            coords = this.getCoords(),// 四个控制角的坐标
+                                    //            p = null, len = null;// p:相交点，len:相交点与另一个端点的距离。最终要取得的是离另一个端点较近的相交点
+                                    //        for (var i = 0; i < coords.length; i++) {
+                                    //            // 已知两条直线上的四个点，求两条直线相交点的公式
+                                    //            // y = ( (y0-y1)*(y3-y2)*x0 + (y3-y2)*(x1-x0)*y0 + (y1-y0)*(y3-y2)*x2 + (x2-x3)*(y1-y0)*y2 ) / ( (x1-x0)*(y3-y2) + (y0-y1)*(x3-x2) );
+                                    //            // x = x2 + (x3 - x2) * (y - y2) / (y3 - y2);
+                                    //            var p2 = coords[i], p3 = coords[i + 1];
+                                    //            if (!p3) {
+                                    //                p3 = coords[0];
+                                    //            }
+                                    //            var x2 = p2.x, y2 = p2.y,
+                                    //                x3 = p3.x, y3 = p3.y;
+                                    //            //var y = ((y0 - y1) * (y3 - y2) * x0 + (y3 - y2) * (x1 - x0) * y0 + (y1 - y0) * (y3 - y2) * x2 + (x2 - x3) * (y1 - y0) * y2) / ((x1 - x0) * (y3 - y2) + (y0 - y1) * (x3 - x2));
+
+                                    //            //if (!isNaN(y)) {
+                                    //            //    var x = x2 + (x3 - x2) * (y - y2) / (y3 - y2);
+                                    //            //    if (!isNaN(x)) {
+                                    //            //        var minX = Math.min(x2, x3),
+                                    //            //            maxX = x2 == minX ? x3 : x2,
+                                    //            //            minY = Math.min(y2, y3),
+                                    //            //            maxY = y2 == minY ? y3 : y2;
+                                    //            //        if (x >= minX && x <= maxX && y >= minY && y <= maxY) {// 点在形状的边框线范围内才算是真正的相交
+                                    //            //            var l = Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2)); // 相交点与连接线另一个端点的距离
+                                    //            //            if (len == null || l < len) {
+                                    //            //                len = l;
+                                    //            //                p = { x: x, y: y };
+                                    //            //            }
+                                    //            //        }
+                                    //            //    }
+                                    //            //}
+
+                                    //            /** 1 解线性方程组, 求线段交点. **/
+                                    //            // 如果分母为0 则平行或共线, 不相交  
+                                    //            var denominator = (y1 - y0) * (x3 - x2) - (x0 - x1) * (y2 - y3);
+                                    //            if (denominator != 0) {
+                                    //                // 线段所在直线的交点坐标 (x , y)      
+                                    //                var x = ((x1 - x0) * (x3 - x2) * (y2 - y0)
+                                    //                            + (y1 - y0) * (x3 - x2) * x0
+                                    //                            - (y3 - y2) * (x1 - x0) * x2) / denominator,
+                                    //                    y = -((y1 - y0) * (y3 - y2) * (x2 - x0)
+                                    //                            + (x1 - x0) * (y3 - y2) * y0
+                                    //                            - (x3 - x2) * (y1 - y0) * y2) / denominator;
+                                    //                var minX = Math.min(x2, x3),
+                                    //                    maxX = x2 == minX ? x3 : x2,
+                                    //                    minY = Math.min(y2, y3),
+                                    //                    maxY = y2 == minY ? y3 : y2;
+                                    //                if (x >= minX && x <= maxX && y >= minY && y <= maxY) {// 点在形状的边框线范围内才算是真正的相交
+                                    //                    var l = Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2)); // 相交点与连接线另一个端点的距离
+                                    //                    if (len == null || l < len) {
+                                    //                        len = l;
+                                    //                        p = { x: x, y: y };
+                                    //                    }
+                                    //                }
+                                    //            }
+                                    //        }
+                                    //        if (p) {
+                                    //            //console.log(p);
+                                    //            port.setPos(p.x, p.y);
+                                    //            this.setCoords();
+                                    //        }
+                                    //    }
+                                    //}
+                                }
+                            }
+                        }
+                    });
                     if (!text._boundExitedEvent) {
                         text._boundExitedEvent = true;
                         text.on('editing:exited', function () {
@@ -79,14 +597,39 @@
                 $scope.onclick = function () {
                     $uibModal.open({
                         template: `
-                            <div class="modal-header">
-                                <h3 class="modal-title">绘图</h3>
+                            <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                <h3 class ="modal-title" style="min-width:100px">画板</h3>
+                                <div style="flex-basis:100%;-webkit-flex-basis:100%;-moz-flex-basis:100%;-ms-flex-basis:100%;-o-flex-basis:100%;text-align:right">
+                                    <span ng-repeat="item in editItems">
+                                        <span ng-switch="item">
+                                            <span ng-switch-when="fill">
+                                                填充色：<color-selector onchange="fillColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[0].fill : selectedShape.fill"></color-selector>
+                                            </span>
+                                            <span ng-switch-when="stroke">
+                                                边框色：<color-selector onchange="strokeColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[0].stroke : selectedShape.stroke"></color-selector>
+                                            </span>
+                                            <span ng-switch-when="color">
+                                                字体色：<color-selector onchange="fontColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[1].fill : selectedShape.fill"></color-selector>
+                                            </span>
+                                            <span ng-switch-when="fontSize">
+                                                字体大小：<number-selector onchange="fontSizeChanged" min="'13'" max="'29'" step="'2'" unit="'px'" value="selectedShape.type == 'group' ? selectedShape._objects[1].fontSize : selectedShape.fontSize"></number-selector>
+                                            </span>
+                                        </span>
+                                    </span>
+                                    <span ng-show="selectedShape">
+                                        |
+                                        <button type="button" class="btn btn-danger" ng-click="removeShape()">删除</button>
+                                    </span>
+                                </div>
                             </div>
-                            <div class ="modal-body" style="display:flex;display:-webkit-flex">
+                            <div class="modal-body" style="display:flex;display:-webkit-flex">
                                 <div style="width:200px;min-width:200px;background-color:#444;">
                                     <div style="display:flex;display:-webkit-flex;flex-wrap:wrap;-webkit-flex-wrap:wrap;-moz-flex-wrap:wrap;-ms-flex-wrap:-o-wrap">
-                                        <div ng-repeat="item in items" ng-click="itemClick()" style="flex-basis:33.3%;-webkit-flex-basis:33.3%;-moz-flex-basis:33.3%;-ms-flex-basis:33.3%;-o-flex-basis:33.3%;text-align:center">
-                                            <button style="width:60px;height:60px">{{item.name}}</button>
+                                        <div ng-repeat="item in items" ng-click="itemClick()" style="flex-basis:50%;-webkit-flex-basis:50%;-moz-flex-basis:50%;-ms-flex-basis:50%;-o-flex-basis:50%;text-align:center">
+                                            <button type="button" title="{{item.name}}" class ="btn btn-default btn-lg active" style="width:90px;height:50px;padding:0px;border-radius:0px">
+                                                <span style="display:inline-block;width:42px;height:30px;background-image:url('/wiki/js/mod/board/shapes.png');" ng-style="{backgroundPosition:-$index*42+'px 0px'}"></span>
+                                            </button>
+                                            <br/>{{item.name}}
                                         </div>
                                     </div>
                                 </div>
@@ -108,12 +651,41 @@
                             };
 
                             $scope.items = [
-                                { name: '方形', className:'Rect', ico: '', options: { fill: '#5b9bd5', strokeWidth: 1, stroke: '#41719c', width: 100, height: 40, offset: {x:-50, y:-20} } },
-                                { name: '三角形', className: 'Triangle', ico: '', options: { fill: '#5b9bd5', strokeWidth: 1, stroke: '#41719c', width: 60, height: 52, offset: { x: -30, y: -26 } } },
-                                { name: '圆形', className: 'Circle', ico: '', options: { fill: '#5b9bd5', strokeWidth: 1, stroke: '#41719c', radius: 40, offset: {x:-40,y:-40} } },
-                                { name: '椭圆形', className: 'Ellipse', ico: '', options: { fill: '#5b9bd5', strokeWidth: 1, stroke: '#41719c', rx: 50, ry: 30, offset: {x:-50, y:-30}} },
-                                { name: '直线', className: 'Line', ico: '', options: [[0, 0, 120, 0], { strokeWidth: 2, stroke: 'blue', x1: 100, y1: 100, x2: 300, y2: 100, offset: { x: -60, y: 0 } }] },
-                                { name: '文本', className: 'IText', ico: '', options: ['', { fontFamily: 'verdana', fontSize:28, fill: 'red', originX: 'left', centerTransform: true, offset: {x: 0, y: -14 } }] }
+                                {
+                                    name: '方形', className: 'Rect', ico: '',
+                                    options: { fill: '#facd89', strokeWidth: 1, stroke: '#8f82bc', width: 100, height: 40, offset: { x: -50, y: -20 } },
+                                    edit: ['fill', 'stroke', 'color', 'fontSize']
+                                },
+                                {
+                                    name: '三角形', className: 'Triangle', ico: '',
+                                    options: { fill: '#facd89', strokeWidth: 1, stroke: '#8f82bc', width: 60, height: 52, offset: { x: -30, y: -26 } },
+                                    edit: ['fill', 'stroke', 'color', 'fontSize']
+                                },
+                                {
+                                    name: '圆形', className: 'Circle', ico: '',
+                                    options: { fill: '#facd89', strokeWidth: 1, stroke: '#8f82bc', radius: 40, offset: { x: -40, y: -40 } },
+                                    edit: ['fill', 'stroke', 'color', 'fontSize']
+                                },
+                                {
+                                    name: '椭圆形', className: 'Ellipse', ico: '',
+                                    options: { fill: '#facd89', strokeWidth: 1, stroke: '#8f82bc', rx: 50, ry: 30, offset: { x: -50, y: -30 } },
+                                    edit: ['fill', 'stroke', 'color', 'fontSize']
+                                },
+                                {
+                                    name: '直线', className: 'Line', ico: '',
+                                    options: [[0, 0, 120, 0], { strokeWidth: 2, stroke: '#8f82bc', lockScalingY: true, x1: 100, y1: 100, x2: 300, y2: 100, offset: { x: -60, y: 0 } }],
+                                    edit: ['stroke', 'color', 'fontSize']
+                                },
+                                {
+                                    name: '文本', className: 'IText', ico: '',
+                                    options: ['', { fontFamily: 'verdana', fontSize: 29, fill: '#1b1b1b', originX: 'left', centerTransform: true, offset: { x: 0, y: -14 } }],
+                                    edit: ['color', 'fontSize']
+                                },
+                                {
+                                    name: '连接线', className: 'Link', ico: '',
+                                    options: [200, {}],
+                                    edit: ['stroke']
+                                }
                             ];
 
                             var selected_item = null;
@@ -132,6 +704,129 @@
 
                                 body = new fabric.Canvas(cvs, { width: body_w, height: body_h });
 
+                                body.on('object:selected', function (opt) {
+                                    var target = opt.target,
+                                        shape = target;
+                                    if (target.type == 'group') {
+                                        shape = target._objects[0];
+                                    }
+                                    var className = shape.type,
+                                        classDefine = null;
+                                    className = className.replace('\-', '');
+                                    for (var i = 0; i < $scope.items.length; i++) {
+                                        var item = $scope.items[i];
+                                        if (item.className.toLowerCase() == className) {
+                                            classDefine = item;
+                                            break;
+                                        }
+                                    }
+
+                                    if (classDefine) {
+                                        $scope.editItems = classDefine.edit;
+                                        $scope.selectedShape = target;
+                                    } else {
+                                        $scope.editItems = [];
+                                        $scope.selectedShape = null;
+                                    }
+                                    $scope.$apply();
+                                });
+
+                                body.on('selection:cleared', function () {
+                                    $scope.editItems = [];
+                                    $scope.selectedShape = null;
+                                    $scope.$apply();
+                                });
+
+                                $scope.fillColorChanged = function (color) {
+                                    var obj = body.getActiveObject();
+                                    if (obj) {
+                                        var shape = obj;
+                                        if (shape.type == 'group') {
+                                            shape = shape._objects[0];
+                                        }
+                                        shape.set({
+                                            fill: color
+                                        });
+                                        body.renderAll();
+                                    }
+                                };
+
+                                $scope.strokeColorChanged = function (color) {
+                                    var obj = body.getActiveObject();
+                                    if (obj) {
+                                        var shape = obj;
+                                        if (shape.type == 'group') {
+                                            shape = shape._objects[0];
+                                        }
+                                        shape.set({
+                                            stroke: color
+                                        });
+                                        if (shape.type == 'link') {
+                                            var p0 = body.shapes[shape.port0],
+                                                p1 = body.shapes[shape.port1];
+                                            if (p0) {
+                                                p0.set({
+                                                    fill: color,
+                                                    stroke: color
+                                                });
+                                            }
+                                            if (p1) {
+                                                p1.set({
+                                                    fill: color,
+                                                    stroke: color
+                                                });
+                                            }
+                                        }
+                                        body.renderAll();
+                                    }
+                                };
+
+                                $scope.fontColorChanged = function (color) {
+                                    var obj = body.getActiveObject();
+                                    if (obj) {
+                                        var shape = obj;
+                                        if (shape.type == 'group') {
+                                            shape = shape._objects[1];
+                                        }
+                                        shape.set({
+                                            fill: color
+                                        });
+                                        body.renderAll();
+                                    }
+                                };
+
+                                $scope.fontSizeChanged = function (val) {
+                                    var obj = body.getActiveObject();
+                                    if (obj) {
+                                        var shape = obj;
+                                        if (shape.type == 'group') {
+                                            shape = shape._objects[1];
+                                        }
+                                        shape.set({
+                                            fontSize: val
+                                        });
+                                        body.renderAll();
+                                    }
+                                };
+
+                                $scope.removeShape = function () {
+                                    var activeObj = body.getActiveObject(),
+                                        activeGroup = body.getActiveGroup();
+                                    $scope.editItems = [];
+                                    $scope.selectedShape = null;
+                                    $timeout(function () {
+                                        if (activeObj) {
+                                            body.remove(activeObj);
+                                        } else {
+                                            var objectsInGroup = activeGroup.getObjects();
+                                            body.discardActiveGroup();
+                                            objectsInGroup.forEach(function (object) {
+                                                body.remove(object);
+                                            });
+                                        }
+                                    });
+                                };
+
                                 if (cvs_show.dataset.data) {
                                     body.loadFromJSON(JSON.parse(cvs_show.dataset.data), function () {
                                         body.renderAll();
@@ -148,15 +843,15 @@
                                 var genGroup = function (shape) {
                                     var text = new fabric.IText('', {
                                         fontFamily: 'verdana',
-                                        fontSize: 16,
-                                        fill: 'red',
+                                        fontSize: 17,
+                                        fill: '#1b1b1b',
                                         originX: 'center',
-                                        originY:'center',
+                                        originY: 'center',
                                         centerTransform: true,
                                         left: shape.left + shape.width / 2,
                                         top: shape.top + (shape.type == 'line' ? -12 : shape.height / 2)
                                     });
-                                    
+
                                     return initGroup(shape, text, body);
                                 };
 
@@ -167,28 +862,48 @@
                                         if (obj instanceof Array) {
                                             opt = obj[obj.length - 1];
                                         }
-                                        opt.left = options.e.offsetX + opt.offset.x;
-                                        opt.top = options.e.offsetY + opt.offset.y;
+                                        if (opt.offset) {
+                                            opt.left = options.e.offsetX + opt.offset.x;
+                                            opt.top = options.e.offsetY + opt.offset.y;
+                                        }
                                         var shape = null, c = fabric[selected_item.className];
                                         if (obj != opt && obj.length > 1) {
+                                            var params0 = obj[0];
+                                            if (typeof (params0) == 'number') {
+                                                var w = obj[0],
+                                                    x0 = options.e.offsetX - w / 2,
+                                                    y0 = options.e.offsetY,
+                                                    x1 = x0 + w,
+                                                    y1 = y0;
+                                                params0 = [x0, y0, x1, y1];
+                                            }
                                             if (obj.length == 2) {
-                                                shape = new c(obj[0], opt);
+                                                shape = new c(params0, opt);
                                             } else if (obj.length == 3) {
-                                                shape = new c(obj[0], obj[1], opt);
+                                                shape = new c(params0, obj[1], opt);
                                             }
                                         } else {
                                             shape = new c(opt);
                                         }
 
                                         if (shape) {
-                                            if (selected_item.className != 'IText') {
+                                            if (selected_item.className != 'IText' && selected_item.className != 'Link') {
                                                 shape = genGroup(shape);
                                             }
                                             body.add(shape);
+                                            if (selected_item.className == 'Link') {
+                                                var port0 = new fabric.LinkPort({}, shape, 0);
+                                                body.add(port0);
+                                                var port1 = new fabric.LinkPort({}, shape, 1);
+                                                body.add(port1);
+                                                port0.bringToFront();
+                                                port1.bringToFront();
+                                            }
                                             body.setActiveObject(shape);
                                             if (selected_item.className == 'IText') {
                                                 shape.enterEditing();
-                                            }   
+                                            }
+                                            body.renderAll();
                                         }
                                         selected_item = null;
                                     }
@@ -199,6 +914,7 @@
                                 body.deactivateAll().renderAll();
                                 init_show(body.width, body.height, body.toJSON());
                                 $uibModalInstance.close("link");
+                                console.log(fabric);
                             };
 
                         }
