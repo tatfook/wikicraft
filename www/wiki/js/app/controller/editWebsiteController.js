@@ -12,10 +12,10 @@ define([
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
-        $scope.cnames=[];
-        $scope.cnamesLength=0;
+        $scope.domainList=[];
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
+        var currentDomain = siteinfo.domain;
         //console.log(siteinfo);
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
@@ -30,26 +30,30 @@ define([
             });
         }
 
-        $scope.addCname=function(){
-            var len=$scope.cnamesLength++;
-            $scope.cnames.push("cnames"+len);
-        }
+        $scope.checkDomain = function () {
+            if (currentDomain == $scope.website.domain)
+                return;
 
-        $scope.removeCname=function(){
-            var removeIndex=findItem($scope.cnames, $(event.target)[0].dataset.removeid);
-            $scope.cnames.splice(removeIndex,1);
-        }
-
-        function findItem(arr,item){
-            var index=-1;
-            var len=arr.length;
-            for(var i=0;i<len;i++){
-                if(arr[i]==item){
-                    index=i;
-                    break;
+            var domain =$scope.website.username + '-' + $scope.website.domain;
+            util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: domain}, function (data) {
+                if (data == 0) {
+                    $scope.errMsg = $scope.website.domain + "已存在，请换个名字";
+                    return;
                 }
-            }
-            return index;
+                //currentDomain = $scope.website.domain;
+            });
+        }
+
+        $scope.addDomain=function(){
+            util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {userId:$scope.website.userId, websiteId:$scope.website._id, domain: $scope.domain}, function (data) {
+                $scope.domainList.push({domain:$scope.domain});
+                $scope.domain = "";
+            });
+        }
+
+        $scope.removeDomain=function(domainObj){
+            domainObj.isDelete = true;
+            util.post(config.apiUrlPrefix + 'website_domain/deleteByDomain', {domain:domainObj.domain});
         }
 
         $scope.addTag = function (tagName) {
@@ -75,6 +79,14 @@ define([
         }
 
         function init() {
+            util.post(config.apiUrlPrefix + "website_domain/getByWebsiteId", {websiteId:$scope.website._id}, function (data) {
+               $scope.domainList = data;
+               for (var i = 0; i < data.length; i++) {
+                   if (data[i].domain == ($scope.website.username + "-" + $scope.website.domain)) {
+                       data[i].isDelete = true; // 隐藏系统提供的独立域名
+                   }
+               }
+            });
             /*
             $('#uploadPictureBtn').change(function (e) {
                 if (!github.isInited()) {

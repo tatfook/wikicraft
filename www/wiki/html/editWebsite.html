@@ -75,6 +75,7 @@
             网站设置
         </div>
         <div class="panel-body">
+            </span><span style="color: red">{{errMsg}}</span>
             <form class="form-horizontal setting-form" role="form">
                 <div class="form-group sr-only">
                     <legend>网站设置</legend>
@@ -88,18 +89,21 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">独立域名</label>
                     <div class="col-sm-5 user-domain">
-                        {{website.domain + 'paracraft.wiki'}}
+                        <input type="text" ng-model="website.domain" ng-blur="checkDomain()">
+                        <div>{{website.username + "-" + website.domain +".keepwork.com"}}</div>
                     </div>
                 </div>
                 <div class="form-group" id="cnameBox">
                     <label for="cname" class="col-sm-2 control-label">Cname转发</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="cname" ng-model="website.domain">
+                        <input type="text" class="form-control" id="cname" ng-model="domain">
                     </div>
-                    <div class="col-sm-5"><span ng-click="addCname()" class="btn btn-primary btn-sm btn-add-cname"> 添加 </span></div>
-                    <div class="col-sm-5 col-sm-offset-2 new-cname" ng-repeat="cname in cnames">
-                        <input type="text" class="form-control" id="{{cname}}">
-                        <span class="glyphicon glyphicon-remove" ng-click="removeCname()" data-removeid="{{cname}}"></span>
+                    <div class="col-sm-5"><span ng-click="addDomain()" class="btn btn-primary btn-sm btn-add-cname"> 添加 </span></div>
+                    <div class="col-sm-5 col-sm-offset-2 new-cname" ng-repeat="x in domainList">
+                        <div ng-show="!x.isDelete">
+                            <span>{{x.domain}}.keepwork.com</span>
+                            <span class="glyphicon glyphicon-remove" ng-click="removeDomain(x)" data-removeid="{{x.cname}}"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">

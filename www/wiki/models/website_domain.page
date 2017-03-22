@@ -35,7 +35,7 @@ function website_domain:api_deleteByDomain(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():deleteOne({["+domian"]={params.domain}}, resume)
+	self:db():deleteOne({["+domain"]={params.domain}}, resume)
 
 	return errors:wrap(yield())
 end

@@ -123,7 +123,7 @@ function website:create(params)
 			
 	-- create website domain record
 	local websiteDomainDB = models.website_domain:new()
-	websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	
+	-- websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	
 	if site.domain then 
 		websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' ..  site.domain})	
 	end
@@ -233,6 +233,19 @@ function website:api_updateWebsite(params)
 	end
 	
 	params.name = nil   -- 防止名字被改
+	
+	local site = self:api_getById({websiteId=params._id}).data
+	if not site then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	if params.domain and params.domain ~= "" and site.domain ~= params.domain then
+		local websiteDomainDB = models.website_domain:new()
+		if site.domain then
+			 websiteDomainDB:api_deleteByDomain({domain=site.username .. "-" .. site.domain})
+		end
+		websiteDomainDB:api_upsert({userId=site.userId, websiteId=site._id, domain=site.username .. "-" .. params.domain})	
+	end
 
 	self:db():updateOne({_id=params._id}, params, resume)
 
