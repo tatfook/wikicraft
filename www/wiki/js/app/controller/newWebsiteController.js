@@ -7,7 +7,8 @@ define([
     'helper/util',
     'helper/storage',
     'text!html/newWebsite.html',
-], function (app, util, storage, htmlContent) {
+    'controller/editWebsiteController',
+], function (app, util, storage, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', function ($rootScope, $scope, $sce, Account) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
@@ -211,6 +212,12 @@ define([
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
             util.goUserSite('/' + $scope.user.username + '/' + $scope.website.name + '/index');
+        }
+
+        //网站设置
+        $scope.goEditWebsitePage = function (website) {
+            storage.sessionStorageSetItem("editWebsiteParams", website);
+            util.html('#userCenterSubPage', editWebsiteHtmlContent);
         }
     }];
 

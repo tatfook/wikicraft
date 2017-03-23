@@ -285,7 +285,11 @@
                 </div>
                 <div ng-show="step == 7" class="congratulation">
                     <h4>恭喜你！成功创建了 {{website.name}} 网站。 </h4>
-                    <h4>可以通过<a ng-click="goWebsiteIndexPage()" target="_blank">{{'/' + user.username + '/' + website.name + '/index'}}</a>来进行访问、编辑。</h4>
+                    <h4>可以通过
+                        <a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://' + user.username + '-' + website.name + '.keepwork.com'}}</a>或者
+                        <a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://keepwork.com/' + user.username + '/' + website.name}}</a>来进行访问、编辑。
+                    </h4>
+                    <h4>您可以在 <a ng-click="goEditWebsitePage('website')">【网站设置】</a>中添加CNAME转发规则，将您拥有的其他域名定向到该网站 </h4>
                 </div>
             </div>
             <div class="step-footer">

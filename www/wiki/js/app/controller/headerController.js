@@ -174,6 +174,10 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.go("home");
         };
 
+        $scope.goModPackagePage = function () {
+            util.go("wiki/mod/packages",true);
+        };
+
         $scope.goVIPLevel = function () {
             util.go("VIPLevel");
         };
