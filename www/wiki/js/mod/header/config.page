@@ -15,7 +15,7 @@ function main()
                 ```
             ]],
 			wikiCmdName="@header/js/personalHeader",
-			logoUrl="",
+			logoUrl="header/assets/imgs/personal_header.jpg",
 			desc="个人站点头部",
 			flag=1,
 		},

@@ -71,7 +71,18 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded', init);
-
+        
+        $scope.getWikiBlockLogoUrl = function (wikiBlock) {
+            if (!wikiBlock.logoUrl) {
+                return $scope.imgsPath + 'wiki_wiki_block_default.png';
+            } else {
+                if (wikiBlock.logoUrl[0] == '/') {
+                    return wikiBlock.logoUrl;
+                } else {
+                    return config.modPath + wikiBlock.logoUrl;
+                }
+            }
+        }
         // 点击标签项
         $scope.clickLableItem = function (labelItem) {
             $scope.labelItem = labelItem;
