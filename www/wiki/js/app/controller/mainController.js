@@ -17,6 +17,7 @@ define([
             console.log("mainController");
             // 初始化基本信息
             function initBaseInfo() {
+                $rootScope.urlObj = util.parseUrl();
                 $rootScope.imgsPath = config.imgsPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
@@ -24,10 +25,19 @@ define([
                 $rootScope.frameFooterExist = true;
 
                 $rootScope.isLogin = Account.isAuthenticated();
-
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
+
+                var pathname = $rootScope.urlObj.pathname;
+                console.log(pathname);
+                var paths = pathname.split('/');
+                if (paths.length > 1) {
+                    $rootScope.title = paths[paths.length-1] + (paths.length > 2 ? (' - ' +paths.slice(1,paths.length-1).join('/')) : "");
+                } else {
+                    $rootScope.title = config.hostname.substring(0,config.hostname.indexOf('.'));
+                }
+
 
                 //配置一些全局服务
                 util.setAngularServices({
@@ -89,10 +99,8 @@ define([
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
                 util.html('#__UserSitePageContent__', '<div></div>', $scope);
-
                 var pathname = "/wiki/home";
-                var urlObj = util.parseUrl();
-                $rootScope.urlObj = urlObj;
+                var urlObj = $rootScope.urlObj;
                 // 置空用户页面内容
                 console.log(urlObj);
                 if (!urlObj.username || urlObj.username == "wiki") {
