@@ -11,6 +11,9 @@
     <!-- lib css -->
     <link href="/wiki/assets/css/main.css" rel="stylesheet">
 
+    <!--script src="js/lib/jquery/jquery.min.js"></script>
+    <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script-->
+
     <!-- 全局配置 -->
     <script src="/wiki/js/app/config.js"></script>
 </head>

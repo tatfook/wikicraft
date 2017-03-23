@@ -30,9 +30,9 @@ define([
                 }
 
                 var pathname = $rootScope.urlObj.pathname;
-                console.log(pathname);
+                //console.log(pathname);
                 var paths = pathname.split('/');
-                if (paths.length > 1) {
+                if (paths.length > 1 && paths[1]) {
                     $rootScope.title = paths[paths.length-1] + (paths.length > 2 ? (' - ' +paths.slice(1,paths.length-1).join('/')) : "");
                 } else {
                     $rootScope.title = config.hostname.substring(0,config.hostname.indexOf('.'));
