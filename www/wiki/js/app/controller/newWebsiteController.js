@@ -45,6 +45,11 @@ define([
                 if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
                     $scope.step++;
                 } else {
+                    var isValid = /[\d\w]+/.test($scope.website.domain);
+                    if (!isValid) {
+                        $scope.errMsg = "域名只能为数字和字母组合";
+                        return;
+                    }
                     $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
                     util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: $scope.website.domain}, function (data) {
                         if (data == 0) {
@@ -186,7 +191,8 @@ define([
             }
 
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-            $scope.website.domain = $scope.website.name;
+            if (/['\d\w']+/.test($scope.website.name))
+                $scope.website.domain = $scope.website.name;
 
             $scope.nextStepDisabled = false;
         }

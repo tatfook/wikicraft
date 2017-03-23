@@ -34,6 +34,11 @@ define([
             if (currentDomain == $scope.website.domain)
                 return;
 
+            if (!/[\d\w]+/.test($scope.website.domain)) {
+                $scope.errMsg = "独立域名格式错误, 域名只能为数字和字母组合";
+                return;
+            }
+
             var domain =$scope.website.username + '-' + $scope.website.domain;
             util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: domain}, function (data) {
                 if (data == 0) {
@@ -45,6 +50,11 @@ define([
         }
 
         $scope.addDomain=function(){
+            if (!/[\d\w]+/.test($scope.domain)) {
+                $scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
+                return;
+            }
+
             util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {userId:$scope.website.userId, websiteId:$scope.website._id, domain: $scope.domain}, function (data) {
                 $scope.domainList.push({domain:$scope.domain});
                 $scope.domain = "";

@@ -41,6 +41,7 @@ define(['jquery'], function ($) {
         if(config.islocalWinEnv()) {
             pathname = window.location.hash ? window.location.hash.substring(1) : '/';
         }
+        pathname = decodeURI(pathname);
 
         var username = hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
         var sitename = '';
