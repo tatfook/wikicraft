@@ -15,7 +15,7 @@ function main()
                 ```
             ]],
 			wikiCmdName="@statics/js/personalStatics",
-			logoUrl="statics/assets/imgs/personal_statics/png",
+			logoUrl="statics/assets/imgs/personal_statics.png",
 			desc="个人统计信息",
 			flag=1,
 		},

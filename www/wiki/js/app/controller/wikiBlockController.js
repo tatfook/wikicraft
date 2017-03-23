@@ -73,13 +73,14 @@ define([
         $scope.$watch('$viewContentLoaded', init);
         
         $scope.getWikiBlockLogoUrl = function (wikiBlock) {
+            //console.log(wikiBlock.logoUrl);
             if (!wikiBlock.logoUrl) {
                 return $scope.imgsPath + 'wiki_wiki_block_default.png';
             } else {
                 if (wikiBlock.logoUrl[0] == '/') {
                     return wikiBlock.logoUrl;
                 } else {
-                    return config.modPath + wikiBlock.logoUrl;
+                    return config.wikiModPath + wikiBlock.logoUrl;
                 }
             }
         }

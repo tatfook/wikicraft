@@ -630,7 +630,7 @@ define([
 
                     var paramLines = lines.slice(startPos + 1, endPos);
                     try {
-                        conosle.log(paramLines);
+                        console.log(paramLines);
                         var paramObj = angular.fromJson(paramLines.join('\n'));
                         var paramsText = angular.toJson(paramObj, 4);
                         var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');

@@ -140,7 +140,7 @@
                         <div role="tabpanel" class="tab-pane active" id="wikiBlockListView">
                             <div class="col-md-4" ng-repeat="wikiBlock in wikiBlockList">
                                 <div class="img-hover">
-                                    <img ng-src="getWikiBlockLogoUrl(wikiBlock)" alt="">
+                                    <img ng-src="{{getWikiBlockLogoUrl(wikiBlock)}}" alt="">
                                     <p class="code">{{wikiBlock.wikiCmdName}}</p>
                                 </div>
                                 <div class="text">

@@ -15,7 +15,7 @@ function main()
                 ```
             ]],
 			wikiCmdName="@board/main",
-			logoUrl="board/imgs/wiki_board.png",
+			logoUrl="board/assets/imgs/wiki_board.png",
 			desc="绘图模块",
 			flag=1,
 		},
