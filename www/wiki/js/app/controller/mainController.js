@@ -134,6 +134,10 @@ define([
 
                 function getUserPage() {
                     // 访问用户页
+                    $rootScope.userinfo = undefined;
+                    $rootScope.siteinfo = undefined;
+                    $rootScope.pageinfo = undefined;
+
                     if (urlObj.username && urlObj.sitename) {
                         util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
                             username: urlObj.username,

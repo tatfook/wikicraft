@@ -56,6 +56,11 @@ define([
                 password: util.stringTrim($scope.password),
             };
 
+            if (!/[\d\w]+/.test(params.username)) {
+                $scope.errMsg = "用户名格式错误, 用户名由字母和数字组成";
+                return ;
+            }
+
             if (!params.email) {
                 $scope.errMsg = "邮箱格式错误";
                 $("#mail-err").removeClass("visible-hidden");
