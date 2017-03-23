@@ -151,7 +151,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
+            if (window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg'
@@ -175,7 +175,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         };
 
         $scope.goModPackagePage = function () {
-            util.go("wiki/mod/packages",true);
+            util.go("mod/packages",true);
         };
 
         $scope.goVIPLevel = function () {

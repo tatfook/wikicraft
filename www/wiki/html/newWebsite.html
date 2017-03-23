@@ -293,7 +293,7 @@
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 8" class="btn btn-primary" ng-click="prevStep()">上一步</button>
+                <button ng-show="step > 1 && step < 7" class="btn btn-primary" ng-click="prevStep()">上一步</button>
                 <button ng-show="step < 7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 6 ? '确认' : '下一步'}}</button>
                 <button ng-show="step==7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">完成</button>
             </div>

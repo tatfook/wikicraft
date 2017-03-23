@@ -14,6 +14,12 @@
         border-radius: 50%;
         object-fit: cover;
     }
+    .navbar-brand .caret{
+        margin-left: 9px;
+        border-top: 6px solid;
+        border-right: 6px solid transparent;
+        border-left: 6px solid transparent;
+    }
     .navbar-default {
         background-color: #FFF;
         border-color: #FFF;
@@ -259,7 +265,10 @@
                     </button>
                     <!-- <a class="navbar-brand" href="#">KEEPWORK</a> -->
                     <div class="dropdown navbar-brand">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">KEEPWORK<span class="caret"></span></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <img ng-src="{{imgsPath+'icon/logo.png'}}" alt="">
+                            <span class="caret"></span>
+                        </a>
                         <ul class="dropdown-menu nodot-dropdown">
                             <li><a ng-click="goHomePage()">keepwork.com</a></li>
                             <li><a ng-click="goModPackagePage()">Mod扩展</a></li>
