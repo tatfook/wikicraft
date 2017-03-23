@@ -141,7 +141,7 @@
                             <div class="col-md-4" ng-repeat="wikiBlock in wikiBlockList">
                                 <div class="img-hover">
                                     <img ng-src="{{wikiBlock.logoUrl || (imgsPath + 'wiki_mod_banner1.jpg')}}" alt="">
-                                    <p class="code">```@header/js/personalHeader</p>
+                                    <p class="code">{{wikiBlock.wikiCmdName}}</p>
                                 </div>
                                 <div class="text">
                                     <h4>
