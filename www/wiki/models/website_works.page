@@ -86,9 +86,14 @@ function website_works:api_getByWebsiteId(params)
 	
 	local websiteDB = models.website:new()
 	local siteInfoList = {}
+	local siteinfo = nil
+
 	for _, obj in ipairs(data) do
-		siteInfoList[#siteInfoList+1] = websiteDB:api_getById({websiteId=obj.worksId}).data
-		siteInfoList[#siteInfoList].classifyInfo = obj
+		siteinfo  = websiteDB:api_getById({websiteId=obj.worksId}).data
+		if siteinfo then
+			siteinfo.classifyInfo = obj
+			siteInfoList[#siteInfoList+1] = siteinfo
+		end
 	end
 	
 	local total = self:api_getCountByWebsiteId(params).data 
