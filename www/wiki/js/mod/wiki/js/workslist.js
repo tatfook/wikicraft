@@ -6,10 +6,12 @@ define([
     'text!wikimod/wiki/html/workslist.html',
 ], function (app, util, storage, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("workslistController", ['$scope','Account','Message',function ($scope, Account, Message) {
+        app.registerController("workslistController", ['$rootScope', '$scope','Account','Message',function ($rootScope, $scope, Account, Message) {
+            //console.log($rootScope.siteinfo);
+
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-            $scope.requestParams = {pageSize: 3, page: 0, websiteId: $scope.siteinfo._id};
+            $scope.requestParams = {pageSize: 3, page: 0, websiteId: $rootScope.siteinfo._id};
 
             $scope.getAllSiteList = function () {
                 var siteshowObj = {};

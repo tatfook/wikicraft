@@ -297,7 +297,7 @@ end
 function website:api_getAllByUserId(params) 
 	local userId = self:ensureAuthenticated()
 	userId = params.userId or userId
-	self:db():find({userId=userId}, resume)
+	self:db():find({["+userId"]=userId}, resume)
 	
 	return errors:wrap(yield())
 end
