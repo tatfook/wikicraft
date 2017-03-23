@@ -537,6 +537,10 @@ define([
             return divContainerId;
         }
 
+        mdwiki.getWikiMdContentContainerId = function () {
+            getWikiMdContentContainerId(mdwikiName);
+        }
+
         // update the content of markdown whenever the editor is changed
         mdwiki.bindToCodeMirrorEditor = function (editor_) {
             mdwikiObj.editor = editor_;
