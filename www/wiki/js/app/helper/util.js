@@ -9,6 +9,12 @@ define(['jquery'], function ($) {
         id:0,       // ID产生器 局部唯一性
         lastUrlObj:{}, // 记录最近一次URL信息
     };
+    // 获取一个随机颜色
+    util.getRandomColor = function (index) {
+        index = index || 0;
+        index %= this.colorList.length;
+        return this.colorList[index];
+    }
 
     util.getId = function () {
         this.id = this.id > 1000000 ? 0 : this.id+1;
@@ -26,20 +32,18 @@ define(['jquery'], function ($) {
         },1);
     }
 
-    // 获取一个随机颜色
-    util.getRandomColor = function (index) {
-        index = index || 0;
-        index %= this.colorList.length;
-        return this.colorList[index];
-    }
-
     // 将字符串url解析成{sitename, pagename}对象
     util.parseUrl = function () {
         var hostname = window.location.hostname;
         var pathname = window.location.pathname;
 
         if(config.islocalWinEnv()) {
-            pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            var $location = util.getAngularServices().$location;
+            if ($location) {
+                pathname = $location.path();
+            } else {
+                pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            }
         }
         pathname = decodeURI(pathname);
 
@@ -185,33 +189,6 @@ define(['jquery'], function ($) {
         params.page = page;
 
         return true;
-    }
-
-    util.setParentIframeAutoHeight = function (minHeight) {
-        if (!window.IframeId) {
-            return ;
-        }
-        window.setTimeout(function () {
-            var iframe = window.parent.document.getElementById(window.IframeId);
-            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
-            //console.log(iframe.contentWindow.document.body.scrollHeight);
-            //console.log(iframe.contentWindow.document.documentElement.scrollHeight);
-            //console.log(iframe.contentWindow.document.body.clientHeight);
-            //console.log(iframe.contentWindow.document.documentElement.clientHeight);
-        },1);
-        return ;
-    }
-
-    util.setIframeParams = function (obj) {
-        this.iframeParams = obj;
-    }
-
-    util.getIframeParams = function () {
-        return this.iframeParams || window.iframeParams || {};
-    }
-
-    util.isSubMoudle = function () {
-        return window.IframeId ? true : false;
     }
 
     util.goUserSite = function (url, isOpen) {

@@ -28,7 +28,7 @@ define([
         }
 
         $scope.selectWikiBlock = function (wikiBlock) {
-            console.log(wikiBlock);
+            //console.log(wikiBlock);
             // 增加模块使用计数
             util.post(config.apiUrlPrefix + 'wiki_module/updateUseCount', {moduleId:wikiBlock._id});
             $uibModalInstance.close(wikiBlock);
