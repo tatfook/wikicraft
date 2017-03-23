@@ -190,6 +190,12 @@ define([
         //console.log(innerParams);
         var render = getRenderFunc(modName);
         var mdwikiObj = getMdwiki(innerParams.mdwikiName);
+
+        if (mdwikiObj.templateLineCount) {
+            innerParams.line_begin = innerParams.line_begin - mdwikiObj.templateLineCount;
+            innerParams.line_end = innerParams.line_end - mdwikiObj.templateLineCount;
+        }
+
         var wikiBlockObj = {
             idx: idx,
             modName: modName,
@@ -206,10 +212,10 @@ define([
                     this.viewEdit = false;
                     return;
                 }
-                console.log(innerParams);
+                //console.log(innerParams);
                 this.editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
-                    line: innerParams.line_begin,  ch: '\n'
-                }, {line: innerParams.line_end - 2, ch: '\n'});
+                    line: innerParams.line_begin + 1,  ch: '\n'
+                }, {line: innerParams.line_end - 1, ch: '\n'});
                 this.viewEdit = false;
                 render(this);
             },
@@ -453,6 +459,7 @@ define([
                         //console.log(text);
                         renderContent = mdwikiObj.md.render(preprocessMDText(text));
                         mdwikiObj.template.content = renderContent;
+                        mdwikiObj.templateLineCount =  data.content.split('\n').length;
                     }
                     util.html(id, htmlContent)
                 }, function () {
@@ -521,6 +528,7 @@ define([
 
         // force render a given text
         mdwiki.render = function (text) {
+            //console.log(text)
             var mdwikiObj = getMdwiki(mdwikiName);
             var id = mdwikiName + "_" + idCount;
             var html = '<div id="' + id + '"></div>';
@@ -609,6 +617,7 @@ define([
                 }
             }
             mdwiki.positionList = posList;
+            //console.log(posList);
             return posList;
             /*
              var temp = [];
