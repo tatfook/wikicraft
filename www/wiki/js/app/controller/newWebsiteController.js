@@ -75,8 +75,17 @@ define([
                     return ;
                 }
             } else if ($scope.step == 6) {
-            } else {
-                createWebsiteRequest();
+                $scope.website.userId = $scope.user._id;
+                $scope.website.username = $scope.user.username;
+
+                util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
+                    $scope.website = data;
+                    $scope.step++;
+                });
+                return
+            } else{
+                //createWebsiteRequest();
+                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             }
             $scope.step++;
         }
@@ -127,12 +136,7 @@ define([
         $scope.$watch('$viewContentLoaded', init);
 
         function createWebsiteRequest() {
-            $scope.website.userId = $scope.user._id;
-            $scope.website.username = $scope.user.username;
 
-            util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
-                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
-            });
         }
 
         $scope.getActiveStyleClass = function (category) {
@@ -215,9 +219,11 @@ define([
         }
 
         //网站设置
-        $scope.goEditWebsitePage = function (website) {
-            storage.sessionStorageSetItem("editWebsiteParams", website);
-            util.html('#userCenterSubPage', editWebsiteHtmlContent);
+        $scope.goEditWebsitePage = function () {
+            storage.sessionStorageSetItem("editWebsiteParams", $scope.website);
+            storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
+            util.go('userCenter', true);
+            //window.open(window.location.href);
         }
     }];
 
