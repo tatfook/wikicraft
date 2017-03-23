@@ -35,7 +35,9 @@ define([
         // 编辑网站
         $scope.goEditWebsitePage = function (website) {
             storage.sessionStorageSetItem("editWebsiteParams", website);
-            util.html('#userCenterSubPage', editWebsiteHtmlContent);
+            storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
+            window.open(window.location.href);
+            //util.html('#userCenterSubPage', editWebsiteHtmlContent);
         }
 
         // 访问网站

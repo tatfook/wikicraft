@@ -358,6 +358,10 @@ define([
             function loadUnSavePage() {
                 storage.indexedDBGet(function (page) {
                     var serverPage = getWebsitePage(page._id);
+                    if (!serverPage) {
+                        storage.indexedDBDeleteItem(page.url);
+                        return;
+                    }
                     var localTimestamp = page.timestamp || 0;
                     var serverTimestamp = serverPage.timestamp || 0; //(new Date()).getTime();
                     //console.log(page.url, serverPage, localTimestamp);

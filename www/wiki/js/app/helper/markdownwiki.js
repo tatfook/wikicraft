@@ -161,6 +161,7 @@ define([
         var editor = mdwikiObj.editor;
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
+        tplObj.isPageTemplate = mdwikiObj.isPageTemplate;
         tplObj.render = function (htmlContent) {
             util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
         };
@@ -433,6 +434,7 @@ define([
 
         if (mdwikiObj.template) {
             mdwikiObj.template.content = renderContent;
+            mdwikiObj.isPageTemplate = true;
             util.html(id, htmlContent);
             return;
         } else {
