@@ -206,10 +206,10 @@ define([
                     this.viewEdit = false;
                     return;
                 }
+                console.log(innerParams);
                 this.editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
-                    line: innerParams.line_begin + 1,
-                    ch: '\n'
-                }, {line: innerParams.line_end - 1, ch: '\n'});
+                    line: innerParams.line_begin,  ch: '\n'
+                }, {line: innerParams.line_end - 2, ch: '\n'});
                 this.viewEdit = false;
                 render(this);
             },
