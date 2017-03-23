@@ -244,7 +244,7 @@ define(['jquery'], function ($) {
         }
 
         if (isOpen) {
-            window.location.open(url);
+            window.open(url);
         } else {
             window.location.href = url;
         }
