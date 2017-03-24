@@ -151,7 +151,7 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         // 用户主页
         $scope.goUserIndexPage = function (username) {
-            util.go(username);
+            util.goUserSite('/' + username);
         }
 
         $scope.goLoginPage = function () {

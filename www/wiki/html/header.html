@@ -31,7 +31,7 @@
     }
     .navbar-default .form-control {
         margin-top: 10px;
-        width: 200px;
+        width: 120px;
         height: 30px;
         background-color: #FAFAFA;
     }
@@ -121,6 +121,14 @@
     }
     .navbar-default .user-dropdown .dropdown-menu h5, .navbar-default .user-dropdown .dropdown-menu .level, .navbar-default .user-dropdown .dropdown-menu li > a {
         padding: 5px 30px;
+    }
+    .navbar-default .user-dropdown .caret{
+        position: absolute;
+        border-top: 6px dashed #3977ad;
+        right: 10px;
+        bottom: 7px;
+        background-color: #FFF;
+        outline: 2px solid #FFF;
     }
     .navbar-default .user-dropdown ul {
         list-style: none;
@@ -284,6 +292,10 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
+                        <li class="hidden-xs">
+                            <input type="text" class="form-control" ng-model="search" placeholder="">
+                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
+                        </li>
                         <li class="nav-bread-crumb">
                             <ol class="breadcrumb">
                                 <li><a ng-click="goUserSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
@@ -307,19 +319,16 @@
                                 </li>
                             </ol>
                         </li>
-                        <li class="hidden-xs">
-                            <input type="text" class="form-control" ng-model="search" placeholder="">
-                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted">{{user.fansCount}}</span></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="true">
                                 <img ng-src="{{ user.portrait || imgsPath+'wiki_header.png '}}" alt="">
+                                <span class="caret"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5>{{user.username}}</h5>
@@ -335,7 +344,7 @@
                                     <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
+                                    <li><a ng-click="goUserIndexPage('/'+user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
                                     <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>

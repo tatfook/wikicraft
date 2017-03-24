@@ -27,7 +27,7 @@
                 <tr>
                     <th>站点名称</th>
                     <th>站点备注</th>
-                    <th>独立域名</th>
+                    <!--<th>独立域名</th>-->
                     <th>类型</th>
                     <th>模板</th>
                     <th>样式</th>
@@ -40,7 +40,7 @@
                 <tr ng-repeat="website in websites">
                     <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.name}}</a></td>
                     <td>{{website.desc}}</td>
-                    <!--td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.domain ? (website.domain + '.keepwork.com') : ""}}</a></td-->
+                    <!--<td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>-->
                     <td>{{website.categoryName || '/'}}</td>
                     <td>{{website.templateName || '/'}}</td>
                     <td>{{website.styleName || '/'}}</td>

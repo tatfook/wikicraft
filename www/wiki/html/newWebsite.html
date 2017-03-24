@@ -18,6 +18,15 @@
     .step-footer .btn-primary{
         padding: 9px 42px;
     }
+    .step-footer .btn-prev{
+        background-color: #FFF;
+        color: #666;
+        border-color: #666;
+    }
+    .step-footer .btn-prev:hover{
+        background-color: #666;
+        color: #FFF;
+    }
     .step-content .step2 .col-sm-7{
         display: flex;
         align-items: center;
@@ -80,14 +89,24 @@
         border-radius: 0;
         margin:0;
     }
+    .website-model .active>img{
+        border: 1px solid #3977AD;
+        border-bottom:none;
+    }
+    .website-model .active>.btn-group{
+        border: 1px solid #3977AD;
+        border-top: none;
+    }
     .website-model .btn-group .btn-lg.active{
-        background-color: #3977AD;
-        color: #FFF;
+        background-color: #eee;
+        color: #3977AD;
+        box-shadow: none;
     }
     .website-model img{
         width:100%;
         height:180px;
         object-fit: cover;
+        cursor: pointer;
     }
     .model-select .nav-tabs{
         border-bottom: none;
@@ -191,7 +210,7 @@
                     </div>
 
                     <div class="col-sm-12 info">
-                        <p>*创建网站后，可在网站设置页面中添加域名转发功能， 将其他域名制定到本网站。</p>
+                        <p>*创建网站后，可在网站设置页面中添加域名转发功能， 将其他域名指定到本网站。</p>
                         <p>*您也可以向本站申请高级域名服务。获得类似： http://project.keepwork.com 这样的域名。<a href="#">马上申请</a></p>
                     </div>
                 </div>
@@ -229,11 +248,11 @@
                         <!-- Tab panes -->
                         <div class="tab-content website-model col-sm-10">
                             <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
-                                <div class="col-sm-5" ng-repeat="template in templates">
-                                    <img ng-src="{{template.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                                <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateId == template._id ? 'active' : ''">
+                                    <img ng-src="{{template.logoUrl || imgsPath + 'wiki_works.jpg'}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-md-12 btn-group">
                                         <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
-                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateId == template._id ? 'active' : ''">应用</div>
+                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateId == template._id ? 'active' : ''">选择</div>
                                         </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
@@ -244,11 +263,11 @@
                 <div ng-show="step == 5">
                     <h4>选择美术效果</h4>
                     <div class="website-model">
-                        <div class="col-sm-4" ng-repeat="style in styles">
-                            <img ng-src="{{ style.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                        <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''">
+                            <img ng-src="{{ style.logoUrl || imgsPath + 'wiki_works.jpg'}}" ng-click="selectTemplate(template)" alt="">
                             <div class="col-md-12 btn-group">
                                 <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style)">预览</div>
-                                <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)" ng-class="website.styleId == style._id ? 'active' : ''">应用</div>
+                                <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)" ng-class="website.styleId == style._id ? 'active' : ''">选择</div>
                             </div>
                             <span class="label">{{style.name}}</span>
                         </div>
@@ -285,15 +304,15 @@
                 </div>
                 <div ng-show="step == 7" class="congratulation">
                     <h4>恭喜你！成功创建了 {{website.name}} 网站。 </h4>
-                    <h4>可以通过
-                        <a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://' + user.username + '-' + website.name + '.keepwork.com'}}</a>或者
-                        <a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://keepwork.com/' + user.username + '/' + website.name}}</a>来进行访问、编辑。
+                    <h4>
+                        <p>可以通过<a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://' + user.username + '-' + website.name + '.keepwork.com'}}</a>或者</p>
+                        <p><a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://keepwork.com/' + user.username + '/' + website.name}}</a>来进行访问、编辑。</p>
                     </h4>
                     <h4>您可以在 <a ng-click="goEditWebsitePage()">【网站设置】</a>中添加CNAME转发规则，将您拥有的其他域名定向到该网站 </h4>
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 7" class="btn btn-primary" ng-click="prevStep()">上一步</button>
+                <button ng-show="step > 1 && step < 7" class="btn btn-primary btn-prev" ng-click="prevStep()">上一步</button>
                 <button ng-show="step < 7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 6 ? '确认' : '下一步'}}</button>
                 <button ng-show="step==7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">完成</button>
             </div>
