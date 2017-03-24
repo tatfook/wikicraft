@@ -782,7 +782,8 @@
                                 var body_w = (wikiBlock.modParams && wikiBlock.modParams.w) || (parentEle.offsetWidth-1),
                                     body_h = (wikiBlock.modParams && wikiBlock.modParams.h) || (parentEle.offsetHeight-1);
 
-                                body = new fabric.Canvas(cvs, { width: body_w, height: body_h,backgroundColor:'#DCDCDC'  });
+                                body = new fabric.Canvas(cvs, { width: body_w, height: body_h, backgroundColor: '#DCDCDC' });
+                                body.preserveObjectStacking = true;
                                 body.renderAll();
 
                                 body.on('object:selected', function (opt) {
