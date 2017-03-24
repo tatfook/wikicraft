@@ -1374,6 +1374,8 @@ define([
                     },
                     changeCallback: changeCallback
                 });
+                editor.focus();
+                setEditorHeight();
 
                 function resizeMod() {
                     var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
@@ -1383,16 +1385,26 @@ define([
                     $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
+                function setEditorHeight() {
+                    setTimeout(function () {
+                        var wikiEditorContainer = $('#wikiEditorContainer')[0];
+                        var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                        console.log(wikiEditorContainer.offsetTop);
+                        console.log(wikiEditorPageContainer.clientHeight);
+                        console.log($(window).height());
+                        var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
+                        editor.setSize('auto', height);
+                        $('#wikiEditorContainer').css('height', height);
+                        $('#treeview').css('max-height', height);
+
+                        var w = $("#__mainContent__");
+                        w.css("min-height", "0px");
+                    });
+                }
+                window.onresize = function () {
+                    setEditorHeight();
+                }
                 mdwiki.bindToCodeMirrorEditor(editor);
-                setTimeout(function () {
-                    var wikiEditorContainer = $('#wikiEditorContainer')[0];
-                    var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
-                    //console.log(wikiEditorContainer.offsetTop);
-                    var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
-                    editor.setSize('auto', height);
-                    $('#wikiEditorContainer').css('height', height);
-                    editor.focus();
-                });
 
                 editor.on("beforeChange", function (cm, changeObj) {
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
@@ -1401,7 +1413,7 @@ define([
                 });
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
-                    console.log(changeObj);
+                    //console.log(changeObj);
                     if (changeObj.text.length > 1) {
                         editor.foldCode(changeObj.from, null, 'fold');
                     }
