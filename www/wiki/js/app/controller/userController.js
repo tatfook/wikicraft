@@ -12,9 +12,10 @@ define([
 
     app.controller('userController', ['$scope', function ($scope) {
         var username = $scope.urlObj.username;
-        if (config.islocalWinEnv()) {
-            username = "xiaoyao";
+        if (!username) {
+            username = $scope.user.username;
         }
+
         function init() {
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
@@ -32,6 +33,10 @@ define([
                 $scope.trendsCount = data.trendsObj.total;
                 $scope.trendsList = data.trendsObj.trendsList;
             });
+        }
+
+        $scope.goUserSite = function (x) {
+            util.goUserSite('/' + x.username + '/' + x.name, true);
         }
 
         $scope.$watch('$viewContentLoaded', init);
