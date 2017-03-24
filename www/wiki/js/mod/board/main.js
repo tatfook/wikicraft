@@ -777,8 +777,6 @@
                             $timeout(function () {
                                 var cvs = $scope.scopeElements.cvs, parentEle = cvs.parentElement;
 
-                                //var body_w = parseInt(cvs_show.dataset.width) || parentEle.offsetWidth,
-                                //    body_h = parseInt(cvs_show.dataset.height) || parentEle.offsetHeight;
                                 var body_w = (wikiBlock.modParams && wikiBlock.modParams.w) || (parentEle.offsetWidth-1),
                                     body_h = (wikiBlock.modParams && wikiBlock.modParams.h) || (parentEle.offsetHeight-1);
 
