@@ -370,24 +370,25 @@
                                         var shape = this.canvas.shapes[this.bindat];
                                         if (shape) {
                                             var center = shape.getCenterPoint(),
-                                                x0 = center.x, y0 = center.y,
-                                                x1 = otherPort.left, y1 = otherPort.top,
+                                                otherShape = null,
+                                                x0 = parseInt(center.x), y0 = parseInt(center.y),
+                                                x1 = parseInt(otherPort.left), y1 = parseInt(otherPort.top),
                                                 coords = shape.getCoords(),// 四个控制角的坐标
                                                 p = null, len = null;// p:相交点，len:相交点与另一个端点的距离。最终要取得的是离另一个端点较近的相交点
                                             if (otherPort.bindat) {
-                                                var otherShape = this.canvas.shapes[otherPort.bindat];
+                                                otherShape = this.canvas.shapes[otherPort.bindat];
                                                 if (otherShape) {
                                                     var centerOther = otherShape.getCenterPoint();
-                                                    x1 = centerOther.x;
-                                                    y1 = centerOther.y;
+                                                    x1 = parseInt(centerOther.x);
+                                                    y1 = parseInt(centerOther.y);
                                                     var coordsOther = otherShape.getCoords();
                                                     for (var i = 0; i < coordsOther.length; i++) {
                                                         var p2 = coordsOther[i], p3 = coordsOther[i + 1];
                                                         if (!p3) {
                                                             p3 = coordsOther[0];
                                                         }
-                                                        var x2 = p2.x, y2 = p2.y,
-                                                            x3 = p3.x, y3 = p3.y;
+                                                        var x2 = parseInt(p2.x), y2 = parseInt(p2.y),
+                                                            x3 = parseInt(p3.x), y3 = parseInt(p3.y);
                                                         // 求两条线的相交点
                                                         // 如果分母为0 则平行或共线, 不相交  
                                                         var denominator = (y1 - y0) * (x3 - x2) - (x0 - x1) * (y2 - y3);
@@ -399,6 +400,8 @@
                                                                 y = -((y1 - y0) * (y3 - y2) * (x2 - x0)
                                                                         + (x1 - x0) * (y3 - y2) * y0
                                                                         - (x3 - x2) * (y1 - y0) * y2) / denominator;
+                                                            x = parseInt(x);
+                                                            y = parseInt(y);
                                                             var minX = Math.min(x2, x3),
                                                                 maxX = x2 == minX ? x3 : x2,
                                                                 minY = Math.min(y2, y3),
@@ -418,13 +421,22 @@
                                                 }
                                             }
                                             p = len = null;//重置
+                                            if (otherShape) {
+                                                var otherShapeCenter = otherShape.getCenterPoint();
+                                                x1 = otherShapeCenter.x;
+                                                y1 = otherShapeCenter.y;
+                                            } else {
+                                                var otherPortCenter = otherPort.getCenterPoint();
+                                                x1 = otherPortCenter.x;
+                                                y1 = otherPortCenter.y;
+                                            }
                                             for (var i = 0; i < coords.length; i++) {
                                                 var p2 = coords[i], p3 = coords[i + 1];
                                                 if (!p3) {
                                                     p3 = coords[0];
                                                 }
-                                                var x2 = p2.x, y2 = p2.y,
-                                                    x3 = p3.x, y3 = p3.y;
+                                                var x2 = parseInt(p2.x), y2 = parseInt(p2.y),
+                                                    x3 = parseInt(p3.x), y3 = parseInt(p3.y);
                                                 // 求两条线的相交点
                                                 // 如果分母为0 则平行或共线, 不相交  
                                                 var denominator = (y1 - y0) * (x3 - x2) - (x0 - x1) * (y2 - y3);
@@ -436,10 +448,12 @@
                                                         y = -((y1 - y0) * (y3 - y2) * (x2 - x0)
                                                                 + (x1 - x0) * (y3 - y2) * y0
                                                                 - (x3 - x2) * (y1 - y0) * y2) / denominator;
+                                                    x = parseInt(x);
+                                                    y = parseInt(y);
                                                     var minX = Math.min(x2, x3),
-                                                        maxX = x2 == minX ? x3 : x2,
+                                                        maxX = Math.max(x2, x3),
                                                         minY = Math.min(y2, y3),
-                                                        maxY = y2 == minY ? y3 : y2;
+                                                        maxY = Math.max(y2, y3);
                                                     if (x >= minX && x <= maxX && y >= minY && y <= maxY) {// 点在形状的边框线范围内才算是真正的相交
                                                         var l = Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2)); // 相交点与连接线另一个端点的距离
                                                         if (len == null || l < len) {
