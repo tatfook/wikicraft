@@ -195,61 +195,33 @@
                             //this.canvas.renderAll();
                         });
                     },
-                    //_render: function (ctx) {
-                    //    this.callSuper('_render', ctx);
-
-                    //    //this.point1.callSuper('_render', ctx);
-                    //    //this.point2.callSuper('_render', ctx);
-                    //    //if (!window._isAppendedChilds) {
-                    //    //    console.log('AAAAAAAAAAAA');
-                    //    //    console.log(this);
-                    //    //    this.canvas.add(this.point1);
-                    //    //    window._isAppendedChilds = true;
-                    //    //    //
-                    //    //    //this.canvas.add(this.point2);
-                    //    //    //this._isAppendedChilds = true;
-                    //    //}
-                        
-                    //    //ctx.save();
-                    //    //ctx.beginPath();
-                    //    //ctx.strokeStyle = 'blue';
-                    //    //ctx.lineWidth = 2;
-                    //    //ctx.moveTo(0, 3);
-                    //    //ctx.lineTo(this.width, 3);
-                    //    //ctx.stroke();
-                    //    //ctx.restore();
-
-                    //    //ctx.save();
-                    //    //ctx.beginPath();
-                    //    //ctx.strokeStyle = ctx.fillStyle = 'red';
-                    //    //ctx.lineWidth = 5;
-                    //    //ctx.arc(this.x1 + 5, this.y1 + 5, 10, 0, 2 * Math.PI, true);
-                    //    //ctx.stroke();
-                    //},
-                    //render: function (ctx) {
-                    //    this.callSuper('render', ctx);
-                    //    console.log('FFFFFFFFFf');
-                    //    //console.log(this.canvas.add);
-                    //    if (!this.point1._isin) {
-                    //        this.point1._isin = true;
-                    //        this.canvas.add(this.point1);
-                    //    }
-
-                    //    //this.point1.set({
-                    //    //    left: this.left - this.point1.radius,
-                    //    //    top: this.top - this.point1.radius
-                    //    //});
-                    //    //this.point2.set({
-                    //    //    left: this.x2 - this.point2.radius,
-                    //    //    top: this.y2 - this.point2.radius
-                    //    //});
-                    //    //this.point1.render(ctx);
-                    //}
+                    toObject: function () {
+                        return fabric.util.object.extend(this.callSuper('toObject'), {
+                            //customAttribute: this.get('customAttribute')
+                        });
+                    },
+                    _render: function (ctx) {
+                        this.callSuper('_render', ctx);
+                    }
                 });
-
+                fabric.Link.fromObject = function (object, callback, forceAsync) {
+                    //return fabric.Object._fromObject('Link', object, callback, forceAsync, 'line');
+                    //return fabric.Line.fromObject.apply(this, arguments);
+                    function _callback(instance) {
+                        delete instance.points;
+                        callback && callback(instance);
+                    };
+                    var options = fabric.util.object.clone(object, true);
+                    options.points = [object.x1, object.y1, object.x2, object.y2];
+                    var link = fabric.Object._fromObject('Link', options, _callback, forceAsync, 'points');
+                    if (link) {
+                        delete link.points;
+                    }
+                    return link;
+                };
                 // 连接线端点
                 fabric.LinkPort = fabric.util.createClass(fabric.Circle, {
-                    type: 'linkport',
+                    type: 'link-port',
                     initialize: function (options, link, portIndex) {
                         options || (options = {});
                         options.lockScalingX = true;
@@ -333,11 +305,27 @@
                                         x1: x - this.strokeWidth / 2,
                                         y1: y - this.strokeWidth / 2
                                     });
+                                    var port1 = this.canvas.shapes[link_line.port1];
+                                    if (port1) {
+                                        var center1 = port1.getCenterPoint();
+                                        link_line.set({
+                                            x2: center1.x - this.strokeWidth / 2,
+                                            y2: center1.y - this.strokeWidth / 2
+                                        });
+                                    }
                                 } else if (link_line.port1 == this.id) {
                                     link_line.set({
                                         x2: x - this.strokeWidth / 2,
                                         y2: y - this.strokeWidth / 2
                                     });
+                                    var port0 = this.canvas.shapes[link_line.port0];
+                                    if (port0) {
+                                        var center0 = port0.getCenterPoint();
+                                        link_line.set({
+                                            x1: center0.x - this.strokeWidth / 2,
+                                            y1: center0.y - this.strokeWidth / 2
+                                        });
+                                    }
                                 }
                                 link_line.setCoords();
                             }
@@ -382,24 +370,25 @@
                                         var shape = this.canvas.shapes[this.bindat];
                                         if (shape) {
                                             var center = shape.getCenterPoint(),
-                                                x0 = center.x, y0 = center.y,
-                                                x1 = otherPort.left, y1 = otherPort.top,
+                                                otherShape = null,
+                                                x0 = parseInt(center.x), y0 = parseInt(center.y),
+                                                x1 = parseInt(otherPort.left), y1 = parseInt(otherPort.top),
                                                 coords = shape.getCoords(),// 四个控制角的坐标
                                                 p = null, len = null;// p:相交点，len:相交点与另一个端点的距离。最终要取得的是离另一个端点较近的相交点
                                             if (otherPort.bindat) {
-                                                var otherShape = this.canvas.shapes[otherPort.bindat];
+                                                otherShape = this.canvas.shapes[otherPort.bindat];
                                                 if (otherShape) {
                                                     var centerOther = otherShape.getCenterPoint();
-                                                    x1 = centerOther.x;
-                                                    y1 = centerOther.y;
+                                                    x1 = parseInt(centerOther.x);
+                                                    y1 = parseInt(centerOther.y);
                                                     var coordsOther = otherShape.getCoords();
                                                     for (var i = 0; i < coordsOther.length; i++) {
                                                         var p2 = coordsOther[i], p3 = coordsOther[i + 1];
                                                         if (!p3) {
                                                             p3 = coordsOther[0];
                                                         }
-                                                        var x2 = p2.x, y2 = p2.y,
-                                                            x3 = p3.x, y3 = p3.y;
+                                                        var x2 = parseInt(p2.x), y2 = parseInt(p2.y),
+                                                            x3 = parseInt(p3.x), y3 = parseInt(p3.y);
                                                         // 求两条线的相交点
                                                         // 如果分母为0 则平行或共线, 不相交  
                                                         var denominator = (y1 - y0) * (x3 - x2) - (x0 - x1) * (y2 - y3);
@@ -411,6 +400,8 @@
                                                                 y = -((y1 - y0) * (y3 - y2) * (x2 - x0)
                                                                         + (x1 - x0) * (y3 - y2) * y0
                                                                         - (x3 - x2) * (y1 - y0) * y2) / denominator;
+                                                            x = parseInt(x);
+                                                            y = parseInt(y);
                                                             var minX = Math.min(x2, x3),
                                                                 maxX = x2 == minX ? x3 : x2,
                                                                 minY = Math.min(y2, y3),
@@ -430,13 +421,22 @@
                                                 }
                                             }
                                             p = len = null;//重置
+                                            if (otherShape) {
+                                                var otherShapeCenter = otherShape.getCenterPoint();
+                                                x1 = otherShapeCenter.x;
+                                                y1 = otherShapeCenter.y;
+                                            } else {
+                                                var otherPortCenter = otherPort.getCenterPoint();
+                                                x1 = otherPortCenter.x;
+                                                y1 = otherPortCenter.y;
+                                            }
                                             for (var i = 0; i < coords.length; i++) {
                                                 var p2 = coords[i], p3 = coords[i + 1];
                                                 if (!p3) {
                                                     p3 = coords[0];
                                                 }
-                                                var x2 = p2.x, y2 = p2.y,
-                                                    x3 = p3.x, y3 = p3.y;
+                                                var x2 = parseInt(p2.x), y2 = parseInt(p2.y),
+                                                    x3 = parseInt(p3.x), y3 = parseInt(p3.y);
                                                 // 求两条线的相交点
                                                 // 如果分母为0 则平行或共线, 不相交  
                                                 var denominator = (y1 - y0) * (x3 - x2) - (x0 - x1) * (y2 - y3);
@@ -448,10 +448,12 @@
                                                         y = -((y1 - y0) * (y3 - y2) * (x2 - x0)
                                                                 + (x1 - x0) * (y3 - y2) * y0
                                                                 - (x3 - x2) * (y1 - y0) * y2) / denominator;
+                                                    x = parseInt(x);
+                                                    y = parseInt(y);
                                                     var minX = Math.min(x2, x3),
-                                                        maxX = x2 == minX ? x3 : x2,
+                                                        maxX = Math.max(x2, x3),
                                                         minY = Math.min(y2, y3),
-                                                        maxY = y2 == minY ? y3 : y2;
+                                                        maxY = Math.max(y2, y3);
                                                     if (x >= minX && x <= maxX && y >= minY && y <= maxY) {// 点在形状的边框线范围内才算是真正的相交
                                                         var l = Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2)); // 相交点与连接线另一个端点的距离
                                                         if (len == null || l < len) {
@@ -482,8 +484,21 @@
                         };
 
 
+                    },
+                    toObject: function () {
+                        return fabric.util.object.extend(this.callSuper('toObject'), {
+                            //customAttribute: this.get('customAttribute')
+                        });
+                    },
+                    _render: function (ctx) {
+                        this.callSuper('_render', ctx);
                     }
                 });
+
+                fabric.LinkPort.fromObject = function (object, callback, forceAsync) {
+                    return fabric.Object._fromObject('LinkPort', object, callback, forceAsync);
+                    //return fabric.Circle.fromObject.apply(this, arguments);
+                };
 
                 var init_show = function (width, height, data) {
                     //cvs_show.dataset.width = width;
@@ -649,7 +664,7 @@
                             <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
                                 <h3 class ="modal-title" style="min-width:100px;flex:1;">画板</h3>
                                 <div>
-                                    <div ng-repeat="item in editItems" class="pull-left" style="margin-right:25px;">
+                                    <div ng-repeat="item in editItems" class ="pull-left" style="margin-right:25px;">
                                         <div ng-switch="item">
                                             <div ng-switch-when="fill">
                                                 填充色：<color-selector onchange="fillColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[0].fill : selectedShape.fill"></color-selector>
@@ -665,12 +680,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div ng-show="selectedShape" class="pull-left">
-                                        <span class="glyphicon glyphicon-trash" ng-click="removeShape()" style="font-size:20px;line-height:24px;"></span>
+                                    <div ng-show="selectedShape" class ="pull-left">
+                                        <span class ="glyphicon glyphicon-trash" ng-click="removeShape()" style="font-size:20px;line-height:24px;"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-body" style="display:flex;display:-webkit-flex;padding:0;">
+                            <div class ="modal-body" style="display:flex;display:-webkit-flex;padding:0;">
                                 <div style="width:200px;min-width:200px;background-color:#FFF;margin-top:20px;padding:0 3px 0 5px;">
                                     <div style="display:flex;display:-webkit-flex;flex-wrap:wrap;-webkit-flex-wrap:wrap;-moz-flex-wrap:wrap;-ms-flex-wrap:-o-wrap">
                                         <div ng-repeat="item in items" ng-click="itemClick()" style="flex-basis:50%;-webkit-flex-basis:50%;-moz-flex-basis:50%;-ms-flex-basis:50%;-o-flex-basis:50%;text-align:center;margin-bottom:20px;">
@@ -687,7 +702,7 @@
                             </div>
                             <div class ="modal-footer">
                                 <button class ="btn btn-default" type="button" data-dismiss="modal" ng-click="cancel()">取消</button>
-                                <button class="btn btn-primary" type="button" ng-click="save()">保存</button>
+                                <button class ="btn btn-primary" type="button" ng-click="save()">保存</button>
                             </div>
                         `,
                         size: 'xxl',
@@ -898,12 +913,17 @@
                                 if (wikiBlock.modParams && wikiBlock.modParams.data) {
                                     var data = JSON.parse(JSON.stringify(wikiBlock.modParams.data));
                                     body.loadFromJSON(data, function () {
-                                        body.renderAll();
+                                        
+                                        body.shapes = {};
                                         body.getObjects().forEach(function (T) {
+                                            if (T.id) {
+                                                body.shapes[T.id] = T;
+                                            }
                                             if (T.type == 'group') {
                                                 bindGroupEvent(T, body);
                                             }
                                         });
+                                        body.renderAll();
                                     }, function (obj, o) {
                                         //console.log(obj, o);
                                     });
