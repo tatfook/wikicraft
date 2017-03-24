@@ -32,6 +32,16 @@ function loadWikiModule()
 	end
 end
 
+function clearWikiModuleInfo()
+	local wikiModuleDB = models.wiki_module:new()
+	local wikiModuleClassifyDB = models.wiki_module_classify:new()
+	wikiModuleDB:db():makeEmpty({}, resume)
+	yield()
+	wikiModuleClassifyDB:db():makeEmpty({}, resume)
+	yield()
+end
+
+clearWikiModuleInfo()
 loadWikiModule()
 
 

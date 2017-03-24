@@ -8,15 +8,15 @@ Date: 2017/3/14
 function main()
 	local wikiModuleList = {
 		{
-			name="personalHeader",
-			classifyName="header",
+			name="wiki",
+			classifyName="模板",
 			content=[[
-                ```@header/js/personalHeader
+                ```@template/js/wiki
                 ```
             ]],
-			wikiCmdName="@header/js/personalHeader",
-			logoUrl="header/assets/imgs/personal_header.jpg",
-			desc="个人站点头部",
+			wikiCmdName="@example/js/wiki",
+			logoUrl="",
+			desc="wiki template",
 			flag=1,
 		},
 	}
@@ -24,7 +24,5 @@ function main()
 	regitsterWikiModuleList(wikiModuleList)
 end
 
-main()
-
-?>
+-- main()
 

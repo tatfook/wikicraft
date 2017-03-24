@@ -146,12 +146,17 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         // 页面编辑页面
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
-            util.go("wikiEditor")
+            util.go("wikiEditor");
+        }
+
+        // 用户主页
+        $scope.goUserIndexPage = function (username) {
+            util.go(username);
         }
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
+            if (window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg'
@@ -172,6 +177,10 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
 
         $scope.goHomePage = function () {
             util.go("home");
+        };
+
+        $scope.goModPackagePage = function () {
+            util.go("mod/packages",true);
         };
 
         $scope.goVIPLevel = function () {

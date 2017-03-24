@@ -12,12 +12,29 @@ define([
 ], function (app, markdownwiki, storage, util, userHtmlContent) {
     var md = markdownwiki({html: true});
 
-    app.controller('mainController', ['$scope', '$rootScope', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
-        function ($scope, $rootScope, $http, $auth, $compile, Account, Message, github, modal) {
+    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
+        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal) {
             console.log("mainController");
+
             // 初始化基本信息
             function initBaseInfo() {
-                $rootScope.urlObj = util.parseUrl();
+                //配置一些全局服务
+                util.setAngularServices({
+                    $rootScope: $rootScope,
+                    $http: $http,
+                    $compile: $compile,
+                    $auth: $auth,
+                    $location:$location,
+                });
+
+                util.setSelfServices({
+                    config: config,
+                    storage: storage,
+                    Account: Account,
+                    Message: Message,
+                    github: github
+                });
+
                 $rootScope.imgsPath = config.imgsPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
@@ -28,32 +45,6 @@ define([
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
-
-                var pathname = $rootScope.urlObj.pathname;
-                console.log(pathname);
-                var paths = pathname.split('/');
-                if (paths.length > 1) {
-                    $rootScope.title = paths[paths.length-1] + (paths.length > 2 ? (' - ' +paths.slice(1,paths.length-1).join('/')) : "");
-                } else {
-                    $rootScope.title = config.hostname.substring(0,config.hostname.indexOf('.'));
-                }
-
-
-                //配置一些全局服务
-                util.setAngularServices({
-                    $rootScope: $rootScope,
-                    $http: $http,
-                    $compile: $compile,
-                    $auth: $auth
-                });
-                
-                util.setSelfServices({
-                    config: config,
-                    storage: storage,
-                    Account: Account,
-                    Message: Message,
-                    github: github
-                });
             }
 
             function initView() {
@@ -70,14 +61,16 @@ define([
                 var w = $("#__mainContent__");
                 w.css("min-height", minH);
 
+                var isFirstLocationChange = true;
                 // 注册路由改变事件, 改变路由时清空相关内容
-
                 $rootScope.$on('$locationChangeSuccess', function () {
                     console.log("$locationChangeSuccess change");
+                    if (!isFirstLocationChange && window.location.pathname == '/wiki/wikiEditor') {
+                        return ;
+                    }
+                    isFirstLocationChange = false;
                     initContentInfo();
                 });
-
-                //initContentInfo();
             }
 
             function renderHtmlText(pathname, md) {
@@ -95,14 +88,30 @@ define([
                 });
             }
 
+            function setWindowTitle(urlObj) {
+                var pathname = urlObj.pathname;
+                //console.log(pathname);
+                var paths = pathname.split('/');
+                if (paths.length > 1 && paths[1]) {
+                    $rootScope.title = paths[paths.length-1] + (paths.length > 2 ? (' - ' +paths.slice(1,paths.length-1).join('/')) : "");
+                } else {
+                    $rootScope.title = config.hostname.substring(0,config.hostname.indexOf('.'));
+                }
+            }
+
             // 加载内容信息
             function initContentInfo() {
                 $scope.IsRenderServerWikiContent = false;
                 util.html('#__UserSitePageContent__', '<div></div>', $scope);
+                $rootScope.urlObj = util.parseUrl();
+
                 var pathname = "/wiki/home";
                 var urlObj = $rootScope.urlObj;
                 // 置空用户页面内容
                 console.log(urlObj);
+
+                setWindowTitle(urlObj);
+
                 if (!urlObj.username || urlObj.username == "wiki") {
                     //console.log($('#SinglePageId').children().length);
                     $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;

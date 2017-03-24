@@ -110,6 +110,8 @@ define([
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [pageNode.url];
+            treeNode.state = {selected: currentWebsitePage && currentWebsitePage.url == pageNode.url};
+
             if (pageNode.isLeaf) {
                 treeNode.selectedIcon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github' : 'fa fa-file-o';
             }
@@ -295,8 +297,8 @@ define([
 
     }]);
 
-    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal',
-        function ($scope, $rootScope, $http, $location, $uibModal, Account, github, Message, modal) {
+    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal',
+        function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
             $rootScope.userinfo = $rootScope.user;
@@ -358,6 +360,10 @@ define([
             function loadUnSavePage() {
                 storage.indexedDBGet(function (page) {
                     var serverPage = getWebsitePage(page._id);
+                    if (!serverPage) {
+                        storage.indexedDBDeleteItem(page.url);
+                        return;
+                    }
                     var localTimestamp = page.timestamp || 0;
                     var serverTimestamp = serverPage.timestamp || 0; //(new Date()).getTime();
                     //console.log(page.url, serverPage, localTimestamp);
@@ -457,8 +463,9 @@ define([
             });
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
-                storage.sessionStorageRemoveItem('urlObj');
+                //storage.sessionStorageRemoveItem('urlObj');
                 //console.log(urlObj);
+
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 // 必须是自己编辑自己页面
                 if (urlObj && urlObj.username == $scope.user.username) {
@@ -487,8 +494,14 @@ define([
                     openUrlPage();
                     return;
                 }
+                // 设置全局用户页信息和站点信息
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
+                // 保存正在编辑的页面urlObj
+                var urlPrefix = '/' + currentWebsite.username + '/' + currentWebsite.name + '/';
+                storage.sessionStorageSetItem('urlObj',{username:currentWebsite.username, sitename:currentWebsite.name, pagename:currentWebsitePage.url.substring(urlPrefix.length)});
+                !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
+                //window.location.href = window.location.pathname + '#' + currentWebsitePage.url;
 
                 var wp = currentWebsitePage;
                 if (isEmptyObject(wp)) {
@@ -626,11 +639,14 @@ define([
 
                     var paramLines = lines.slice(startPos + 1, endPos);
                     try {
-                        conosle.log(paramLines);
-                        var paramObj = angular.fromJson(paramLines.join('\n'));
-                        var paramsText = angular.toJson(paramObj, 4);
-                        var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
-                        //console.log(newText);
+                        //console.log(paramLines);
+                        var paramsText = paramLines.join('\n');
+                        var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                        if (paramsText) {
+                            var paramObj = angular.fromJson(paramsText);
+                            paramsText = angular.toJson(paramObj, 4);
+                            newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                        }
                         return newText;
                     } catch (e) {
                         console.log(e);
@@ -709,7 +725,6 @@ define([
                         currentWebsitePage.isModify = undefined;
                         //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
-                        initTree();
                         Message.info("文件已保存到服务器");
                         if ($scope.dataSource) {
                             var path = currentWebsitePage.url;
@@ -723,6 +738,7 @@ define([
                                 Message.info("文件已保存到服务器及Github");
                             });
                         }
+                        initTree();
                     }).catch(function (response) {
                         console.log(response.data);
                         storage.indexedDBSetItem(currentWebsitePage);
@@ -1358,6 +1374,8 @@ define([
                     },
                     changeCallback: changeCallback
                 });
+                editor.focus();
+                setEditorHeight();
 
                 function resizeMod() {
                     var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
@@ -1367,16 +1385,26 @@ define([
                     $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
+                function setEditorHeight() {
+                    setTimeout(function () {
+                        var wikiEditorContainer = $('#wikiEditorContainer')[0];
+                        var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                        console.log(wikiEditorContainer.offsetTop);
+                        console.log(wikiEditorPageContainer.clientHeight);
+                        console.log($(window).height());
+                        var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
+                        editor.setSize('auto', height);
+                        $('#wikiEditorContainer').css('height', height);
+                        $('#treeview').css('max-height', height);
+
+                        var w = $("#__mainContent__");
+                        w.css("min-height", "0px");
+                    });
+                }
+                window.onresize = function () {
+                    setEditorHeight();
+                }
                 mdwiki.bindToCodeMirrorEditor(editor);
-                setTimeout(function () {
-                    var wikiEditorContainer = $('#wikiEditorContainer')[0];
-                    var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
-                    //console.log(wikiEditorContainer.offsetTop);
-                    var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
-                    editor.setSize('auto', height);
-                    $('#wikiEditorContainer').css('height', height);
-                    editor.focus();
-                });
 
                 editor.on("beforeChange", function (cm, changeObj) {
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
@@ -1386,18 +1414,19 @@ define([
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
                     //console.log(changeObj);
-                    if (changeObj.origin == "redo" || changeObj.origin == "paste" || changeObj.origin == "undo") {
+                    if (changeObj.text.length > 1) {
                         editor.foldCode(changeObj.from, null, 'fold');
                     }
 
                     var content = editor.getValue();
                     if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
-                        (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g,"") != currentWebsitePage.content.replace(/[\r\n]*/g,""))) {
-                            console.log("--------manual modify--------------");
-                            currentWebsitePage.isFirstEditor = undefined;
+                        (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g,"") != currentWebsitePage.content.replace(/[\r\n]*/g,""))) { // 解决 editor.setValue(text); text != editor.getValue() 问题
+                            //console.log("--------manual modify--------------");
                             currentWebsitePage.isModify = true;
                             initTree();
                     }
+                    currentWebsitePage.isFirstEditor = undefined;
+
                     changeTimer && clearTimeout(changeTimer);
                     changeTimer = setTimeout(function () {
                         autoSave();                               // 每分钟提交一次server

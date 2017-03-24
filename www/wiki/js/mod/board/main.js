@@ -207,7 +207,18 @@
 
                 fabric.Link.fromObject = function (object, callback, forceAsync) {
                     //return fabric.Object._fromObject('Link', object, callback, forceAsync, 'line');
-                    return fabric.Line.fromObject.apply(this, arguments);
+                    //return fabric.Line.fromObject.apply(this, arguments);
+                    function _callback(instance) {
+                        delete instance.points;
+                        callback && callback(instance);
+                    };
+                    var options = fabric.util.object.clone(object, true);
+                    options.points = [object.x1, object.y1, object.x2, object.y2];
+                    var link = fabric.Object._fromObject('Link', options, _callback, forceAsync, 'points');
+                    if (link) {
+                        delete link.points;
+                    }
+                    return link;
                 };
 
                 // 连接线端点
@@ -296,11 +307,27 @@
                                         x1: x - this.strokeWidth / 2,
                                         y1: y - this.strokeWidth / 2
                                     });
+                                    var port1 = this.canvas.shapes[link_line.port1];
+                                    if (port1) {
+                                        var center1 = port1.getCenterPoint();
+                                        link_line.set({
+                                            x2: center1.x - this.strokeWidth / 2,
+                                            y2: center1.y - this.strokeWidth / 2
+                                        });
+                                    }
                                 } else if (link_line.port1 == this.id) {
                                     link_line.set({
                                         x2: x - this.strokeWidth / 2,
                                         y2: y - this.strokeWidth / 2
                                     });
+                                    var port0 = this.canvas.shapes[link_line.port0];
+                                    if (port0) {
+                                        var center0 = port0.getCenterPoint();
+                                        link_line.set({
+                                            x1: center0.x - this.strokeWidth / 2,
+                                            y1: center0.y - this.strokeWidth / 2
+                                        });
+                                    }
                                 }
                                 link_line.setCoords();
                             }
@@ -457,8 +484,8 @@
                 });
 
                 fabric.LinkPort.fromObject = function (object, callback, forceAsync) {
-                    //return fabric.Object._fromObject('Link', object, callback, forceAsync, 'line');
-                    return fabric.Circle.fromObject.apply(this, arguments);
+                    return fabric.Object._fromObject('LinkPort', object, callback, forceAsync);
+                    //return fabric.Circle.fromObject.apply(this, arguments);
                 };
 
                 var init_show = function (width, height, data) {
@@ -871,12 +898,17 @@
                                 if (wikiBlock.modParams && wikiBlock.modParams.data) {
                                     var data = JSON.parse(JSON.stringify(wikiBlock.modParams.data));
                                     body.loadFromJSON(data, function () {
-                                        body.renderAll();
+                                        
+                                        body.shapes = {};
                                         body.getObjects().forEach(function (T) {
+                                            if (T.id) {
+                                                body.shapes[T.id] = T;
+                                            }
                                             if (T.type == 'group') {
                                                 bindGroupEvent(T, body);
                                             }
                                         });
+                                        body.renderAll();
                                     }, function (obj, o) {
                                         //console.log(obj, o);
                                     });

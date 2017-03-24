@@ -166,7 +166,7 @@ define(['angular'], function (angular) {
         }
     }
 
-    storage.indexedDBClearItem = function (cb, errcb) {
+    storage.indexedDBClear = function (cb, errcb) {
         var transaction=storage.indexDB.transaction(storage.indexDBStoreName,'readwrite');
         var store=transaction.objectStore(storage.indexDBStoreName);
         var request = store.clear();

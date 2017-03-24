@@ -7,19 +7,19 @@ Date: 2017/3/14
 
 function main()
 	local wikiModuleList = {
-		{
+	    {
 			name="worksList",
 			classifyName="works",
 			content=[[
-                ```@works/js/workslist
+                ```@wiki/js/workslist
                 {
                 "title"="全部作品",
                 "type"="all"
                 }
                 ```
             ]],
-			wikiCmdName="@works/js/workslist",
-			logoUrl="",
+			wikiCmdName="@wiki/js/workslist",
+			logoUrl="wiki/assets/imgs/wiki_workslist.png",
 			desc="作品显示",
 			flag=1,
 		},
@@ -27,8 +27,5 @@ function main()
 		
 	regitsterWikiModuleList(wikiModuleList)
 end
-
 main()
-
-?>
 

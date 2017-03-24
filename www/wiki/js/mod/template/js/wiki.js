@@ -11,7 +11,7 @@ define([
 ], function (app, util, storage, markdownwiki, htmlContent) {
     var md = markdownwiki({html:true, use_template:false});
     function registerController(wikiBlock) {
-        app.registerController('wikiTemplateController', ['$rootScope','$scope','modal', function ($rootScope, $scope, modal) {
+        app.registerController('wikiTemplateController', ['$rootScope','$scope','modal','Message', function ($rootScope, $scope, modal, Message) {
             //$rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
             var modParams = wikiBlock.modParams || {};
             if ($rootScope.siteinfo) {
@@ -65,6 +65,11 @@ define([
             }
 
             $scope.setSelfPage = function (type) {
+                if (!wikiBlock.isPageTemplate) {
+                    //$scope.editSelfPage(type);
+                    Message.info("请在_theme文件编辑布局模块");
+                    return;
+                }
                 var content = type.substring(1) + "Content";
                 //console.log(content, modParams[content]);
                 storage.sessionStorageSetItem("_wikiBlockInputParam",{content:modParams[content]});

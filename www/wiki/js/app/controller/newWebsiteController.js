@@ -7,7 +7,8 @@ define([
     'helper/util',
     'helper/storage',
     'text!html/newWebsite.html',
-], function (app, util, storage, htmlContent) {
+    'controller/editWebsiteController',
+], function (app, util, storage, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', function ($rootScope, $scope, $sce, Account) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
@@ -74,8 +75,17 @@ define([
                     return ;
                 }
             } else if ($scope.step == 6) {
-            } else {
-                createWebsiteRequest();
+                $scope.website.userId = $scope.user._id;
+                $scope.website.username = $scope.user.username;
+
+                util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
+                    $scope.website = data;
+                    $scope.step++;
+                });
+                return
+            } else{
+                //createWebsiteRequest();
+                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             }
             $scope.step++;
         }
@@ -126,12 +136,7 @@ define([
         $scope.$watch('$viewContentLoaded', init);
 
         function createWebsiteRequest() {
-            $scope.website.userId = $scope.user._id;
-            $scope.website.username = $scope.user.username;
 
-            util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
-                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
-            });
         }
 
         $scope.getActiveStyleClass = function (category) {
@@ -211,6 +216,14 @@ define([
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
             util.goUserSite('/' + $scope.user.username + '/' + $scope.website.name + '/index');
+        }
+
+        //网站设置
+        $scope.goEditWebsitePage = function () {
+            storage.sessionStorageSetItem("editWebsiteParams", $scope.website);
+            storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
+            util.go('userCenter', true);
+            //window.open(window.location.href);
         }
     }];
 

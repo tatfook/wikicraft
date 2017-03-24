@@ -14,6 +14,12 @@
         border-radius: 50%;
         object-fit: cover;
     }
+    .navbar-brand .caret{
+        margin-left: 9px;
+        border-top: 6px solid;
+        border-right: 6px solid transparent;
+        border-left: 6px solid transparent;
+    }
     .navbar-default {
         background-color: #FFF;
         border-color: #FFF;
@@ -242,6 +248,11 @@
     ul.nodot-dropdown > li {
         text-align: center;
     }
+    @media (max-width: 992px) {
+        .navbar-default .container{
+            width:100%;
+        }
+    }
 </style>
 
 <div ng-controller="headerController">
@@ -259,10 +270,13 @@
                     </button>
                     <!-- <a class="navbar-brand" href="#">KEEPWORK</a> -->
                     <div class="dropdown navbar-brand">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">KEEPWORK<span class="caret"></span></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <img ng-src="{{imgsPath+'icon/logo.png'}}" alt="">
+                            <span class="caret"></span>
+                        </a>
                         <ul class="dropdown-menu nodot-dropdown">
                             <li><a ng-click="goHomePage()">keepwork.com</a></li>
-                            <li><a href="http://paracraft.wiki/wiki/mod/packages" target="_blank">Mod扩展</a></li>
+                            <li><a ng-click="goModPackagePage()">Mod扩展</a></li>
                         </ul>
                     </div>
                 </div>
@@ -321,11 +335,13 @@
                                     <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserCenterPage('userProfile')">个人中心</a></li>
-                                    <li><a ng-click="goUserCenterPage('VIP')">VIP</a></li>
+                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
                                     <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
+                                    <li><a ng-click="goUserCenterPage('VIP')">VIP</a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
                                     <a ng-click="logout()" class="pull-right">退出登录</a>

@@ -28,7 +28,7 @@ define([
         }
 
         $scope.selectWikiBlock = function (wikiBlock) {
-            console.log(wikiBlock);
+            //console.log(wikiBlock);
             // 增加模块使用计数
             util.post(config.apiUrlPrefix + 'wiki_module/updateUseCount', {moduleId:wikiBlock._id});
             $uibModalInstance.close(wikiBlock);
@@ -71,7 +71,19 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded', init);
-
+        
+        $scope.getWikiBlockLogoUrl = function (wikiBlock) {
+            //console.log(wikiBlock.logoUrl);
+            if (!wikiBlock.logoUrl) {
+                return $scope.imgsPath + 'wiki_wiki_block_default.png';
+            } else {
+                if (wikiBlock.logoUrl[0] == '/') {
+                    return wikiBlock.logoUrl;
+                } else {
+                    return config.wikiModPath + wikiBlock.logoUrl;
+                }
+            }
+        }
         // 点击标签项
         $scope.clickLableItem = function (labelItem) {
             $scope.labelItem = labelItem;

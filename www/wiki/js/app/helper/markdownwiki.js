@@ -161,6 +161,7 @@ define([
         var editor = mdwikiObj.editor;
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
+        tplObj.isPageTemplate = mdwikiObj.isPageTemplate;
         tplObj.render = function (htmlContent) {
             util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
         };
@@ -189,6 +190,12 @@ define([
         //console.log(innerParams);
         var render = getRenderFunc(modName);
         var mdwikiObj = getMdwiki(innerParams.mdwikiName);
+
+        if (mdwikiObj.templateLineCount) {
+            innerParams.line_begin = innerParams.line_begin - mdwikiObj.templateLineCount;
+            innerParams.line_end = innerParams.line_end - mdwikiObj.templateLineCount;
+        }
+
         var wikiBlockObj = {
             idx: idx,
             modName: modName,
@@ -205,9 +212,9 @@ define([
                     this.viewEdit = false;
                     return;
                 }
+                //console.log(innerParams);
                 this.editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
-                    line: innerParams.line_begin + 1,
-                    ch: '\n'
+                    line: innerParams.line_begin + 1,  ch: '\n'
                 }, {line: innerParams.line_end - 1, ch: '\n'});
                 this.viewEdit = false;
                 render(this);
@@ -433,6 +440,7 @@ define([
 
         if (mdwikiObj.template) {
             mdwikiObj.template.content = renderContent;
+            mdwikiObj.isPageTemplate = true;
             util.html(id, htmlContent);
             return;
         } else {
@@ -451,6 +459,7 @@ define([
                         //console.log(text);
                         renderContent = mdwikiObj.md.render(preprocessMDText(text));
                         mdwikiObj.template.content = renderContent;
+                        mdwikiObj.templateLineCount =  data.content.split('\n').length;
                     }
                     util.html(id, htmlContent)
                 }, function () {
@@ -519,6 +528,7 @@ define([
 
         // force render a given text
         mdwiki.render = function (text) {
+            //console.log(text)
             var mdwikiObj = getMdwiki(mdwikiName);
             var id = mdwikiName + "_" + idCount;
             var html = '<div id="' + id + '"></div>';
@@ -533,6 +543,10 @@ define([
 
         mdwiki.getLastDivId = function () {
             return divContainerId;
+        }
+
+        mdwiki.getWikiMdContentContainerId = function () {
+            getWikiMdContentContainerId(mdwikiName);
         }
 
         // update the content of markdown whenever the editor is changed
@@ -603,6 +617,7 @@ define([
                 }
             }
             mdwiki.positionList = posList;
+            //console.log(posList);
             return posList;
             /*
              var temp = [];

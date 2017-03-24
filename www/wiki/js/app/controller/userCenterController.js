@@ -10,7 +10,8 @@ define(['app',
     'controller/websiteController',
     'controller/dataSourceController',
     'controller/myVIPController',
-], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent,myVIPHtmlContent) {
+    'controller/editWebsiteController',
+], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
@@ -58,9 +59,13 @@ define(['app',
             if (contentType == 'userProfile') {
                 $scope.showItem = 'myProfile';
                 util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
-            } else if (contentType == 'websiteManager') {
+            } else if (contentType == 'websiteManager' || contentType == "editWebsite") {
                 $scope.showItem = 'myWebsite';
-                util.html('#userCenterSubPage', websiteHtmlContent, $scope);
+                $scope.contentType = "websiteManager";
+                if (contentType == "websiteManager")
+                    util.html('#userCenterSubPage', websiteHtmlContent, $scope);
+                else if (contentType == "editWebsite")
+                    util.html('#userCenterSubPage', editWebsiteHtmlContent, $scope);
             } else if (contentType == 'VIP') {
                 $scope.showItem = 'myVIP';
                 util.html('#userCenterSubPage', myVIPHtmlContent, $scope);
