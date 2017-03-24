@@ -81,7 +81,11 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.goUserSite(url);
         }
 
-        $scope.goUserSite = function (username) {
+        $scope.goUserSite = function (site) {
+            util.goUserSite('/' + site.username + '/' + site.name + '/index');
+        }
+
+        $scope.goUserPersonalSite = function (username) {
             if (username == 'wiki') {
                 util.goUserSite('/' + username + '/home');
             } else {
