@@ -29,10 +29,20 @@
         padding: 12px 15px;
         cursor: pointer;
     }
+    .navbar-default .search-bar{
+        width: 120px;
+        z-index: 1;
+    }
+    .navbar-default .search-bar.active input{
+        width:200px;
+    }
+    .navbar-default .search-bar.active span{
+        right:-70px;
+    }
     .navbar-default .form-control {
         margin-top: 10px;
         width: 120px;
-        height: 30px;
+        height: 32px;
         background-color: #FAFAFA;
     }
     .navbar-default .form-control + span {
@@ -292,8 +302,8 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
-                        <li class="hidden-xs">
-                            <input type="text" class="form-control" ng-model="search" placeholder="">
+                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
+                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
                             <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
                         <li class="nav-bread-crumb">
