@@ -122,6 +122,10 @@ define([
 
                     if (!urlObj.username || !urlObj.sitename) {
                         pathname = '/wiki/home';
+                        if (!urlObj.username && Account.isAuthenticated()) {
+                            util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                            return;
+                        }
                     } else { // /wiki/test
                         pathname = urlObj.pathname;
                     }

@@ -205,7 +205,7 @@
                             <div class="img-text col-md-6" ng-repeat="x in hotSiteList">
                                 <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                                 <div class="text">
-                                    <h4><a href="#">{{x.name}}</a></h4>
+                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
                                     <p>{{x.desc}}</p>
                                     <div class="col-md-12 info">
@@ -224,7 +224,7 @@
                         <div class="img-text col-md-6" ng-repeat="x in allSiteList">
                             <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                             <div class="text">
-                                <h4><a href="#">{{x.name}}</a></h4>
+                                <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                 <p>作者：{{x.username}} </p>
                                 <p>{{x.desc}}</p>
                                 <div class="col-md-12 info">

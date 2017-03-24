@@ -204,7 +204,6 @@
                         this.callSuper('_render', ctx);
                     }
                 });
-
                 fabric.Link.fromObject = function (object, callback, forceAsync) {
                     //return fabric.Object._fromObject('Link', object, callback, forceAsync, 'line');
                     //return fabric.Line.fromObject.apply(this, arguments);
@@ -220,7 +219,6 @@
                     }
                     return link;
                 };
-
                 // 连接线端点
                 fabric.LinkPort = fabric.util.createClass(fabric.Circle, {
                     type: 'link-port',
@@ -650,48 +648,47 @@
                     $uibModal.open({
                         template: `
                             <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                <h3 class ="modal-title" style="min-width:100px">画板</h3>
-                                <div style="flex-basis:100%;-webkit-flex-basis:100%;-moz-flex-basis:100%;-ms-flex-basis:100%;-o-flex-basis:100%;text-align:right">
-                                    <span ng-repeat="item in editItems">
-                                        <span ng-switch="item">
-                                            <span ng-switch-when="fill">
+                                <h3 class ="modal-title" style="min-width:100px;flex:1;">画板</h3>
+                                <div>
+                                    <div ng-repeat="item in editItems" class ="pull-left" style="margin-right:25px;">
+                                        <div ng-switch="item">
+                                            <div ng-switch-when="fill">
                                                 填充色：<color-selector onchange="fillColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[0].fill : selectedShape.fill"></color-selector>
-                                            </span>
-                                            <span ng-switch-when="stroke">
+                                            </div>
+                                            <div ng-switch-when="stroke">
                                                 边框色：<color-selector onchange="strokeColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[0].stroke : selectedShape.stroke"></color-selector>
-                                            </span>
-                                            <span ng-switch-when="color">
+                                            </div>
+                                            <div ng-switch-when="color">
                                                 字体色：<color-selector onchange="fontColorChanged" value="selectedShape.type == 'group' ? selectedShape._objects[1].fill : selectedShape.fill"></color-selector>
-                                            </span>
-                                            <span ng-switch-when="fontSize">
+                                            </div>
+                                            <div ng-switch-when="fontSize">
                                                 字体大小：<number-selector onchange="fontSizeChanged" min="'13'" max="'29'" step="'2'" unit="'px'" value="selectedShape.type == 'group' ? selectedShape._objects[1].fontSize : selectedShape.fontSize"></number-selector>
-                                            </span>
-                                        </span>
-                                    </span>
-                                    <span ng-show="selectedShape">
-                                        |
-                                        <button type="button" class="btn btn-danger" ng-click="removeShape()">删除</button>
-                                    </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="selectedShape" class ="pull-left">
+                                        <span class ="glyphicon glyphicon-trash" ng-click="removeShape()" style="font-size:20px;line-height:24px;"></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-body" style="display:flex;display:-webkit-flex">
-                                <div style="width:200px;min-width:200px;background-color:#444;">
+                            <div class ="modal-body" style="display:flex;display:-webkit-flex;padding:0;">
+                                <div style="width:200px;min-width:200px;background-color:#FFF;margin-top:20px;padding:0 3px 0 5px;">
                                     <div style="display:flex;display:-webkit-flex;flex-wrap:wrap;-webkit-flex-wrap:wrap;-moz-flex-wrap:wrap;-ms-flex-wrap:-o-wrap">
-                                        <div ng-repeat="item in items" ng-click="itemClick()" style="flex-basis:50%;-webkit-flex-basis:50%;-moz-flex-basis:50%;-ms-flex-basis:50%;-o-flex-basis:50%;text-align:center">
-                                            <button type="button" title="{{item.name}}" class ="btn btn-default btn-lg active" style="width:90px;height:50px;padding:0px;border-radius:0px">
+                                        <div ng-repeat="item in items" ng-click="itemClick()" style="flex-basis:50%;-webkit-flex-basis:50%;-moz-flex-basis:50%;-ms-flex-basis:50%;-o-flex-basis:50%;text-align:center;margin-bottom:20px;">
+                                            <button ng-style="item.style" type="button" title="{{item.name}}" class ="btn btn-default btn-lg" style="width:90px;height:50px;padding:0px;border-radius:0px;background-color:#DCDCDC;">
                                                 <span style="display:inline-block;width:42px;height:30px;background-image:url('/wiki/js/mod/board/shapes.png');" ng-style="{backgroundPosition:-$index*42+'px 0px'}"></span>
                                             </button>
                                             <br/>{{item.name}}
                                         </div>
                                     </div>
                                 </div>
-                                <div style="flex-basis:100%;-webkit-flex-basis:100%;-moz-flex-basis:100%;-ms-flex-basis:100%;-o-flex-basis:100%;background-color:#f8f8f8">
+                                <div style="flex-basis:100%;-webkit-flex-basis:100%;-moz-flex-basis:100%;-ms-flex-basis:100%;-o-flex-basis:100%;overflow:auto;">
                                     <canvas scope-element="cvs"></canvas>
                                 </div>
                             </div>
                             <div class ="modal-footer">
-                                <button class ="btn btn-warning" type="button" data-dismiss="modal" ng-click="cancel()">取消</button>
-                                <button class="btn btn-primary" type="button" ng-click="save()">保存</button>
+                                <button class ="btn btn-default" type="button" data-dismiss="modal" ng-click="cancel()">取消</button>
+                                <button class ="btn btn-primary" type="button" ng-click="save()">保存</button>
                             </div>
                         `,
                         size: 'xxl',
@@ -744,6 +741,9 @@
 
                             $scope.itemClick = function () {
                                 selected_item = this.item;
+                                this.item.style={
+                                    "border":"3px solid #3977AD"
+                                };
                             };
 
                             var body = null;
@@ -753,10 +753,11 @@
 
                                 //var body_w = parseInt(cvs_show.dataset.width) || parentEle.offsetWidth,
                                 //    body_h = parseInt(cvs_show.dataset.height) || parentEle.offsetHeight;
-                                var body_w = (wikiBlock.modParams && wikiBlock.modParams.w) || parentEle.offsetWidth,
-                                    body_h = (wikiBlock.modParams && wikiBlock.modParams.h) || parentEle.offsetHeight;
+                                var body_w = (wikiBlock.modParams && wikiBlock.modParams.w) || (parentEle.offsetWidth-1),
+                                    body_h = (wikiBlock.modParams && wikiBlock.modParams.h) || (parentEle.offsetHeight-1);
 
-                                body = new fabric.Canvas(cvs, { width: body_w, height: body_h });
+                                body = new fabric.Canvas(cvs, { width: body_w, height: body_h,backgroundColor:'#DCDCDC'  });
+                                body.renderAll();
 
                                 body.on('object:selected', function (opt) {
                                     var target = opt.target,
@@ -979,6 +980,8 @@
                                             }
                                             body.renderAll();
                                         }
+
+                                        selected_item.style={};
                                         selected_item = null;
                                     }
                                 });
@@ -1009,7 +1012,7 @@
         render: function (wikiBlock) {
             registerController(wikiBlock);
             return `
-                <div ng-controller="boardController" ng-click="onclick()" style="min-height:100px">
+                <div ng-controller="boardController" ng-click="onclick()" style="min-height:100px;border: 1px solid #DCDCDC;text-align: center;">
                     <canvas scope-element="cvs_show"></canvas>
                 </div>
                 `;
