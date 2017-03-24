@@ -1416,16 +1416,34 @@ define([
                 mdwiki.bindToCodeMirrorEditor(editor);
 
                 editor.on("beforeChange", function (cm, changeObj) {
+                    //console.log(changeObj);
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
-                        cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
+                        if (!/^```[@\/]/.test(editor.getLine(i))) {
+                            cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
+                        }
                     }
                 });
+                // 折叠wiki代码
+                function foldWikiBlock(changeObj) {
+                    console.log(changeObj);
+
+                    var start = -1, end = -1;
+                    for (var i = 0; i < changeObj.text.length; i++) {
+                        if (/^```[@\/]/.test(changeObj.text[i])) {
+                            start = i;
+                        }
+                        if (start >= 0 && /^```/.test(changeObj.text[i])) {
+                            end = i;
+                        }
+                    }
+                    if (start >= 0 && end >= 0) {
+                        editor.foldCode({line:changeObj.from.line + start, ch:changeObj.from.ch}, null, 'fold');
+                    }
+                }
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
                     //console.log(changeObj);
-                    if (changeObj.text.length > 1) {
-                        editor.foldCode(changeObj.from, null, 'fold');
-                    }
+                    foldWikiBlock(changeObj);
 
                     var content = editor.getValue();
                     if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
