@@ -556,7 +556,13 @@
                             this._restoreObjectsState();
                             text.scaleX = text.scaleY = 1;
                             body.remove(this);
-                            body.add(initGroup(shape, text, body));
+                            var g2 = initGroup(shape, text, body);
+                            ['id', 'link', 'port0', 'port1', 'link_line', 'link_ports', 'bindat'].forEach(function (T) {
+                                if (g[T]) {
+                                    g2[T] = g[T];
+                                }
+                            });
+                            body.add(g2);
                         }
                         this._scaling_ = false;
                     });
@@ -647,7 +653,13 @@
                         text.on('editing:exited', function () {
                             body.remove(text);
                             body.remove(shape);
-                            body.add(initGroup(shape, text, body));
+                            var g2 = initGroup(shape, text, body);
+                            ['id', 'link', 'port0', 'port1', 'link_line', 'link_ports', 'bindat'].forEach(function (T) {
+                                if (g[T]) {
+                                    g2[T] = g[T];
+                                }
+                            });
+                            body.add(g2);
                         });
                     }
                 };
