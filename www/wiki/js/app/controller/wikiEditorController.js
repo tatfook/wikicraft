@@ -659,7 +659,14 @@ define([
                     size: 'lg'
                 }, function (wikiBlock) {
                     //console.log(result);
-                    editor.replaceSelection(formatWikiCmd(wikiBlock.content));
+                    var wikiBlockContent = formatWikiCmd(wikiBlock.content);
+                    var cursor = editor.getCursor();
+                    var content = editor.getLine(cursor.line);
+                    console.log(content);
+                    if (content.length > 0) {
+                        wikiBlockContent = '\n' + wikiBlockContent;
+                    }
+                    editor.replaceSelection(wikiBlockContent);
                 }, function (result) {
                     console.log(result);
                 });
@@ -1389,9 +1396,11 @@ define([
                     setTimeout(function () {
                         var wikiEditorContainer = $('#wikiEditorContainer')[0];
                         var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                        /*
                         console.log(wikiEditorContainer.offsetTop);
                         console.log(wikiEditorPageContainer.clientHeight);
                         console.log($(window).height());
+                        */
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                         editor.setSize('auto', height);
                         $('#wikiEditorContainer').css('height', height);
