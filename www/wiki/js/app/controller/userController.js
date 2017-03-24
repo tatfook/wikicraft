@@ -10,13 +10,14 @@ define([
 ], function (app, util, storage, htmlContent) {
     //console.log("load userController file");
 
-    app.controller('userController', ['$scope', function ($scope) {
-        var username = $scope.urlObj.username;
-        if (!username) {
-            username = $scope.user.username;
-        }
+    app.controller('userController', ['$scope','Account', function ($scope, Account) {
 
         function init() {
+            var username = $scope.urlObj.username;
+            if (!username) {
+                username = $scope.user.username;
+            }
+
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
                     return ;
@@ -39,7 +40,11 @@ define([
             util.goUserSite('/' + x.username + '/' + x.name, true);
         }
 
-        $scope.$watch('$viewContentLoaded', init);
+        $scope.$watch('$viewContentLoaded', function () {
+            if (!Account.isAuthenticated())
+                return;
+            Account.getUser(init);
+        });
     }]);
 
     return htmlContent;
