@@ -38,8 +38,8 @@ define([
                 $rootScope.imgsPath = config.imgsPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
-                $rootScope.frameHeaderExist = true;
-                $rootScope.frameFooterExist = true;
+                $rootScope.frameHeaderExist = window.location.hostname == config.hostname;
+                $rootScope.frameFooterExist = window.location.hostname == config.hostname;
 
                 $rootScope.isLogin = Account.isAuthenticated();
                 $rootScope.isSelfSite = function () {
