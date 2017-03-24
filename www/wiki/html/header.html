@@ -248,6 +248,11 @@
     ul.nodot-dropdown > li {
         text-align: center;
     }
+    @media (max-width: 992px) {
+        .navbar-default .container{
+            width:100%;
+        }
+    }
 </style>
 
 <div ng-controller="headerController">
@@ -330,11 +335,13 @@
                                     <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserCenterPage('userProfile')">个人中心</a></li>
-                                    <li><a ng-click="goUserCenterPage('VIP')">VIP</a></li>
+                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
                                     <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
+                                    <li><a ng-click="goUserCenterPage('VIP')">VIP</a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
                                     <a ng-click="logout()" class="pull-right">退出登录</a>

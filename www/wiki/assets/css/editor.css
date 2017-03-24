@@ -256,3 +256,8 @@ body,
         padding:6.5px 12px;
     }
 }
+@media(min-width: 1200px) and (max-width:1301px){
+    .wiki-toolbar{
+        padding:15px 29px;
+    }
+}

@@ -146,7 +146,12 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
         // 页面编辑页面
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
-            util.go("wikiEditor")
+            util.go("wikiEditor");
+        }
+
+        // 用户主页
+        $scope.goUserIndexPage = function (username) {
+            util.go(username);
         }
 
         $scope.goLoginPage = function () {

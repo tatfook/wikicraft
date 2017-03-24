@@ -756,6 +756,7 @@
                                     body_h = (wikiBlock.modParams && wikiBlock.modParams.h) || (parentEle.offsetHeight-1);
 
                                 body = new fabric.Canvas(cvs, { width: body_w, height: body_h,backgroundColor:'#DCDCDC'  });
+                                body.renderAll();
 
                                 body.on('object:selected', function (opt) {
                                     var target = opt.target,
