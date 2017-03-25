@@ -109,7 +109,9 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
         // tree  TODO:文件过多会获取不全
         github.getTree = function (bRecursive, cb, errch) {
             var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/git/trees/master' + (bRecursive ? '?recursive=1' : '');
-            github.httpRequest('GET', url, {}, cb, errch);
+            github.httpRequest('GET', url, {}, function(data) {
+                cb && cb(data.tree);
+            }, errch);
         };
 
         // commit 
@@ -245,7 +247,7 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
                 github.deleteFile(params, cb, errcb);
             },
             getTree: function (bRecursive, cb, errcb) {
-                github.getTree(cb, errcb)
+                github.getTree(bRecursive, cb, errcb)
             },
             listCommits: function (data, cb, errcb) {
                 github.listCommits(data, cb, errcb);

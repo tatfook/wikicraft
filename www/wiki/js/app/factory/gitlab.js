@@ -48,16 +48,36 @@ define([
             return '/projects/' + gitlab.projectId + '/repository/files/';
         }
 
+        gitlab.getCommitMessagePrefix = function () {
+            return "keepwork commit: ";
+        }
+        gitlab.getCommitUrlPrefix = function (params) {
+            params = params || {}
+            return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/';
+        }
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {}
             return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
         }
 
+        // 获得文件列表
+        gitlab.getTree = function (isRecursive, cb, errcb) {
+            var url = '/projects/' + gitlab.projectId + '/repository/tree';
+            gitlab.httpRequest("GET", url, {recursive:isRecursive}, cb, errcb);
+        }
+
+        // commit
+        gitlab.listCommits = function (data, cb, errcb) {
+            //data.ref_name = data.ref_name || 'master';
+            var url = '/projects/' + gitlab.projectId + '/repository/commits';
+            gitlab.httpRequest('GET', url, data, cb, errcb);
+        };
+
         // 写文件
         gitlab.writeFile = function (params, cb, errcb) {
             //params.content = Base64.encode(params.content);
             var url = gitlab.getFileUrlPrefix() + encodeURIComponent(params.path);
-            params.commit_message = params.message || "keepwork commit";
+            params.commit_message = /*params.message ||*/ gitlab.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || "master";
             gitlab.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
                 // 已存在
@@ -77,7 +97,7 @@ define([
         // 删除文件
         gitlab.deleteFile = function (params, cb, errcb) {
             var url = gitlab.getFileUrlPrefix() + params.path;
-            params.commit_message = params.message || "keepwork commit";
+            params.commit_message = /*params.message ||*/ gitlab.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || 'master';
             gitlab.httpRequest("DELETE", url, params, cb, errcb)
         }
@@ -107,7 +127,7 @@ define([
             //console.log(content);
             gitlab.writeFile({
                 path: path,
-                message: 'upload image:' + path,
+                message: gitlab.getCommitMessagePrefix() + path,
                 content: content,
                 encoding: 'base64'
             }, function (data) {

@@ -66,6 +66,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                         innerGitlab.init(ds.dataSourceToken, ds.dataSourceUsername, undefined, function () {
                             console.log("inner gitlab data source init success");
                             //dataSource.registerDataSource("innerGitlab", innerGitlab);
+                            $rootScope.$broadcast("onDataSource", {type:'innerGitlab', dataSource:innerGitlab});
                         }, function () {
                             console.log("inner gitlab data source init failed");
                         });
