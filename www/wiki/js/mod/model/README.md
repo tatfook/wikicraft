@@ -10,10 +10,13 @@ Show bmax model on KeepWork.com
 </pe:blocktemplate>
 ```
 
-### Data Source format 2
+### Data Source format 2(Not implemented)
 ```
 ```@model/main
 <pe:blocktemplate >
 <pe:model>https://github.com/tatfook/wikicraft/raw/wxa_dev/www/wiki/js/mod/model/test.zip</pe:model>
 </pe:blocktemplate>
 ```
+### Screenshot
+![block1](https://cloud.githubusercontent.com/assets/5885941/24322891/92ea4aa0-11a7-11e7-8e69-06afa33793a6.png)
+![block2](https://cloud.githubusercontent.com/assets/5885941/24322893/977a20ea-11a7-11e7-88f9-c32bf8b6e652.png)
