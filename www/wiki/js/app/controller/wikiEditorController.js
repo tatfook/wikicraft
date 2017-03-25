@@ -297,7 +297,7 @@ define([
 
     }]);
 
-    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal',
+    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
@@ -442,11 +442,12 @@ define([
                 //console.log($scope.website.githubRepoName);
                 if (!currentWebsite)
                     return;
-
+                $scope.dataSource = dataSource.getDataSource();
+                return
                 if (!$scope.user.githubDS && !currentWebsite.githubRepoName) {
                     $scope.dataSource = undefined;
                 } else {
-                    $scope.dataSource = dataSource.getDataSource(['github']);
+                    $scope.dataSource = dataSource.getDataSource();
                     var githubDS = $scope.dataSource.getSingleDataSource('github');
                     if (currentWebsite.githubRepoName && githubDS) {
                         $scope.dataSource.getSingleDataSource('github').setDefaultRepo(currentWebsite.githubRepoName);
@@ -733,6 +734,7 @@ define([
                         //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         Message.info("文件已保存到服务器");
+                        console.log($scope.dataSource);
                         if ($scope.dataSource) {
                             var path = currentWebsitePage.url;
                             path = path.substring(1);
@@ -1078,9 +1080,10 @@ define([
                     alert("这不是图片！");
                     return false;
                 }
-
-                if (isEmptyObject($scope.dataSource)) {
-                    alert('github数据未开启，图片无法上传');
+                var innerGitlab = dataSource.getRawDataSource('innerGitlab');
+                //console.log(innerGitlab);
+                if (!innerGitlab.isInited()) {
+                    alert('innerGitlab服务失效，图片无法上传');
                 } else {
                     //支持chrome IE10
                     if (window.FileReader) {
@@ -1099,9 +1102,9 @@ define([
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
                             //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                            github.uploadImage({content: fileReader.result}, function (img_url) {
+                            innerGitlab.uploadImage({content: fileReader.result}, function (img_url) {
                                 console.log(img_url);
-                                var imagePath = github.getRawContentUrl({path: ""});
+                                var imagePath = innerGitlab.getRawContentUrlPrefix();
                                 if (img_url.indexOf(imagePath) == 0) {
                                     imagePath = '#' + img_url.substring(imagePath.length);
                                 } else {
@@ -1425,7 +1428,7 @@ define([
                 });
                 // 折叠wiki代码
                 function foldWikiBlock(changeObj) {
-                    console.log(changeObj);
+                    //console.log(changeObj);
 
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {

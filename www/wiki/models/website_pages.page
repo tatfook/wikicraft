@@ -12,6 +12,7 @@ include_once("./user.page");
 include_once("./user_trends.page");
 include_once("./user_visit_history.page")
 include_once("./website_renewal.page");
+include_once("./data_source.page")
 
 --local errors = models.errors:new();
 local website_pages = inherit(models.abstract.base, gettable("models.website_pages"));
@@ -367,6 +368,12 @@ function website_pages:api_getDetailInfo(params)
 		return  errors:wrap(errors.NOT_FOUND)
 	end
 
+	local dataSourceDB = models.data_source:new()
+	userinfo.dataSource = dataSourceDB:api_getByUserId({userId=data._id}).data
+	for _, x in ipairs(userinfo.dataSource) do
+		x.dataSourceToken = nil
+	end
+	
 	local websiteDB = models.website:new()
 	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename,username=params.username}).data
 	if not siteinfo then

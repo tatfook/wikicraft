@@ -12,8 +12,8 @@ define([
 ], function (app, markdownwiki, storage, util, userHtmlContent) {
     var md = markdownwiki({html: true});
 
-    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
-        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal) {
+    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
+        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab) {
             console.log("mainController");
 
             // 初始化基本信息
@@ -32,7 +32,8 @@ define([
                     storage: storage,
                     Account: Account,
                     Message: Message,
-                    github: github
+                    github: github,
+                    gitlab:gitlab,
                 });
 
                 $rootScope.imgsPath = config.imgsPath;

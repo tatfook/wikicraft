@@ -22,14 +22,21 @@ define(['app', 'helper/util'], function (app, util) {
     
     var dataSourceMap = {};
 
-    function registerDataSource(name, ds) {
-        dataSourceMap[name] = ds;
+    function registerDataSource(name, ds, enable) {
+        dataSourceMap[name] = {dataSource:ds, enable: enable || true};
     }
 
     function getDataSource(dsList) {
         var dataSource = {};
+
+        if (!dsList) {
+            dsList = [];
+            for (var key in dataSourceMap) {
+                dsList.push(key);
+            }
+        }
         for (var i = 0; i < dsList.length; i++) {
-            dataSource[dsList[i]] = dataSourceMap[dsList[i]];
+            dataSource[dsList[i]] = dataSourceMap[dsList[i]].dataSource;
         }
 
         function execFn(fnName, params, cb, errcb) {
@@ -58,7 +65,9 @@ define(['app', 'helper/util'], function (app, util) {
             }
 
             for (var key in dataSource) {
-                dataSource[key] && dataSource[key][fnName] && dataSource[key][fnName](params, isAllOK(key, false), isAllOK(key, true));
+                if (dataSourceMap[key].enable) {
+                    dataSource[key] && dataSource[key][fnName] && dataSource[key][fnName](params, isAllOK(key, false), isAllOK(key, true));
+                }
             }
         }
 
@@ -69,18 +78,27 @@ define(['app', 'helper/util'], function (app, util) {
             getSingleDataSource: function (dsName) {
                 return dataSource[dsName];
             },
+            /*
+                param:{path,content,message,branch}
+             */
             writeFile: function (params, cb, errcb) {
                 execFn("writeFile", params, cb, errcb);
             },
-
+            /*
+             param:{path,ref}
+             */
             getContent: function (params, cb, errcb) {
                 execFn("getContent", params, cb, errcb);
             },
-
+            /*
+             param:{path,message,sha,branch}
+             */
             deleteFile: function (params, cb, errcb) {
                 execFn("deleteFile", params, cb, errcb);
             },
-
+            /*
+             param:{path,content,message,branch}
+             */
             uploadImage: function (params, cb, errcb) {
                 execFn("uploadImage", params, cb, errcb);
             },
@@ -103,5 +121,15 @@ define(['app', 'helper/util'], function (app, util) {
     return {
         registerDataSource:registerDataSource,
         getDataSource:getDataSource,
+        getRawDataSource: function (dsName) {
+            return dataSourceMap[dsName] && dataSourceMap[dsName].dataSource
+        },
+        getDataSourceEnable: function (dsName) {
+            return dataSourceMap[dsName] && dataSourceMap[dsName].enable;
+        },
+        setDataSourceEnable: function (dsName, enable) {
+            if (dataSourceMap[dsName])
+                dataSourceMap[dsName].enable = enable;
+        }
     };
 });
