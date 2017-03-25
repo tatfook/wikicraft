@@ -10,10 +10,22 @@
     var libPathPrefix = pathPrefix + 'js/lib/';
     var appPathPrefix = pathPrefix + 'js/app/';
     var helperPathPrefix = pathPrefix + 'js/app/helper/';
+
+    define('THREE', [libPathPrefix + 'threejs/three.min.js'], function (THREE) {
+        window.THREE = THREE;
+        return THREE;
+    });
     requirejs.config({
         baseUrl:'',
         paths: {
             // 框架库
+            'THREE_OrbitControls': libPathPrefix + 'threejs/controls/OrbitControls',
+            'THREE_TransformControls': libPathPrefix + 'threejs/controls/TransformControls',
+            'THREE_ThreeJsView': jsPathPrefix + 'mod/model/ThreeJsView',
+            
+            'weblua': jsPathPrefix + 'mod/model/weblua-0.1.5', // lua vm
+
+            
             'jquery': libPathPrefix + 'jquery/jquery.min',
             'jquery-cookie': libPathPrefix + 'jquery-cookie/jquery.cookie',
             'angular': libPathPrefix + 'angular/angular.min',
@@ -98,8 +110,11 @@
         urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
     });
 
-    require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular) {
+    
+
+    require(['domReady', 'angular', 'app', 'preload', 'THREE', 'weblua'], function (domReady, angular) {
         domReady(function () {
+            Lua.initialize();
             angular.bootstrap(document, ['webapp']);
         });
 
