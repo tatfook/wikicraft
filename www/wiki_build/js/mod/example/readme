@@ -1,8 +1,0 @@
-访问:localhost:8099/wiki/editor, 粘贴如下模块代码, 实现代码见该目录相关代码
-
-```@example/js/example
-{
-    "title": "title",
-    "content": "hello wiki module!!!"
-}
-```
