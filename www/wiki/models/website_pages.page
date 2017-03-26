@@ -369,7 +369,7 @@ function website_pages:api_getDetailInfo(params)
 	end
 
 	local dataSourceDB = models.data_source:new()
-	userinfo.dataSource = dataSourceDB:api_getByUserId({userId=data._id}).data
+	userinfo.dataSource = dataSourceDB:api_getByUserId({userId=userinfo._id}).data
 	for _, x in ipairs(userinfo.dataSource) do
 		x.dataSourceToken = nil
 	end

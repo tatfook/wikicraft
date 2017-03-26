@@ -7,9 +7,10 @@ define([
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
+    'helper/dataSource',
 
     'controller/userController',
-], function (app, markdownwiki, storage, util, userHtmlContent) {
+], function (app, markdownwiki, storage, util, dataSource, userHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
@@ -34,6 +35,7 @@ define([
                     Message: Message,
                     github: github,
                     gitlab:gitlab,
+                    dataSource:dataSource,
                 });
 
                 $rootScope.imgsPath = config.imgsPath;
