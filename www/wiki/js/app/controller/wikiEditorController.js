@@ -35,6 +35,7 @@ define([
     var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
     var currentWebsitePage = undefined;
+    var editorDocMap = {};
 
 
     function getTreeData(username, websitePages, isDir) {
@@ -504,8 +505,7 @@ define([
                 !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
                 //window.location.href = window.location.pathname + '#' + currentWebsitePage.url;
 
-                var wp = currentWebsitePage;
-                if (isEmptyObject(wp)) {
+                if (isEmptyObject(currentWebsitePage)) {
                     editor.setValue('');
                     $('#btUrl').val('');
                     $('.toolbar-page-remove').attr("disabled", true);
@@ -516,7 +516,13 @@ define([
 
                 function setEditorValue() {
                     currentWebsitePage.isFirstEditor = true;
-                    editor.setValue(wp.content);
+
+                    if (!editorDocMap[currentWebsitePage.url]) {
+                        editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content)
+                    }
+                    editor.swapDoc(editorDocMap[currentWebsitePage.url]);
+
+                    //editor.setValue(currentWebsitePage.content);
 
                     // 折叠wiki命令
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
@@ -527,7 +533,7 @@ define([
                     }
                     //CodeMirror.commands.foldAll(editor);
 
-                    $('#btUrl').val(window.location.origin + wp.url);
+                    $('#btUrl').val(window.location.origin + currentWebsitePage.url);
                     $('.toolbar-page-remove').attr("disabled", false);
 
                     if (isNodeSelected) {
@@ -549,7 +555,6 @@ define([
                     $('#treeview').treeview('clearSearch');
                 }
 
-                //console.log(wp);
                 storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
                     //console.log(page);
                     //console.log(currentWebsitePage);
@@ -734,7 +739,7 @@ define([
                         //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         Message.info("文件已保存到服务器");
-                        console.log($scope.dataSource);
+                        //console.log($scope.dataSource);
                         if ($scope.dataSource) {
                             var path = currentWebsitePage.url;
                             path = path.substring(1);
@@ -1428,7 +1433,7 @@ define([
                 });
                 // 折叠wiki代码
                 function foldWikiBlock(cm, changeObj) {
-                    console.log(changeObj);
+                    //console.log(changeObj);
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {
                         //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
