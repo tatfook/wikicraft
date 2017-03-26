@@ -19,12 +19,18 @@
         baseUrl:'',
         paths: {
             // 框架库
-            'THREE_OrbitControls': libPathPrefix + 'threejs/controls/OrbitControls',
-            'THREE_TransformControls': libPathPrefix + 'threejs/controls/TransformControls',
-            'THREE_ThreeJsView': jsPathPrefix + 'mod/model/ThreeJsView',
+            'jszip': libPathPrefix + 'jszip/jszip.min', // jszip
+            'jszip-utils': libPathPrefix + 'jszip/jszip-utils', // jszip-utils
+            
+            'THREE_OrbitControls': libPathPrefix + 'threejs/controls/OrbitControls', // OrbitControls
+            'THREE_TransformControls': libPathPrefix + 'threejs/controls/TransformControls', // TransformControls
+            'AxisMonitor': libPathPrefix + 'threejs/controls/AxisMonitor', // AxisMonitor
+            
+            'STLLoader': libPathPrefix + 'threejs/STLLoader', // STLLoader
+
+            'THREE_ThreeJsView': jsPathPrefix + 'mod/model/ThreeJsView',// threejs view for the mod of model
             
             'weblua': jsPathPrefix + 'mod/model/weblua-0.1.5', // lua vm
-
             
             'jquery': libPathPrefix + 'jquery/jquery.min',
             'jquery-cookie': libPathPrefix + 'jquery-cookie/jquery.cookie',
@@ -112,9 +118,8 @@
 
     
 
-    require(['domReady', 'angular', 'app', 'preload', 'THREE', 'weblua'], function (domReady, angular) {
+    require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular) {
         domReady(function () {
-            Lua.initialize();
             angular.bootstrap(document, ['webapp']);
         });
 

@@ -42,6 +42,22 @@ THREE.ThreeJsView = function (parent) {
     helper.material.transparent = true;
     scene.add(helper);
 
+
+    var axisMonitor_dom = document.createElement("div");
+    axisMonitor_dom.style["id"] = "axis_container";
+    axisMonitor_dom.style["position"] = "absolute";
+    axisMonitor_dom.style["width"] = "100px";
+    axisMonitor_dom.style["height"] = "100px";
+    axisMonitor_dom.style["margin"] = "20px";
+    axisMonitor_dom.style["padding"] = "0px";
+    axisMonitor_dom.style["left"] = "0px";
+    axisMonitor_dom.style["bottom"] = "0px";
+    axisMonitor_dom.style["z-index"] = "100";
+    parent.appendChild(axisMonitor_dom);
+
+    //var axisMonitor;
+    var axisMonitor = new THREE.AxisMonitor(axisMonitor_dom, config.pathPrefix);
+
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setClearColor(0xf0f0f0);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -77,6 +93,7 @@ THREE.ThreeJsView = function (parent) {
     }
     function animate() {
         requestAnimationFrame(animate);
+        axisMonitor.update(orbit_controls);
         render();
         orbit_controls.update();
         transformControl.update();
@@ -112,14 +129,12 @@ THREE.ThreeJsView.prototype = {
         }
         this.meshes.splice(0, this.meshes.length);
     },
-    createMesh: function (x,y,z,block_id,color) {
-        var geometry = new THREE.BoxBufferGeometry(1,1,1);
-        var material = new THREE.MeshLambertMaterial({ color: color });
-        var mesh = new THREE.Mesh(geometry, material);
+    addMesh(mesh) {
+        if (!mesh) {
+            return;
+        }
         this.scene.add(mesh);
         this.meshes.push(mesh);
-        mesh.position.set(x, y, z);
-
-    },
+    }
     
 }

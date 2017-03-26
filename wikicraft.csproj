@@ -44,6 +44,7 @@
     <None Include="README.md" />
     <None Include="start.bat" />
     <None Include="update_packages.bat" />
+    <None Include="www\wiki\js\lib\threejs\fonts\helvetiker_regular.typeface.json" />
     <None Include="www\wiki\js\mod\background\pages\default.page" />
     <None Include="www\wiki\js\mod\example\page\example.page" />
     <None Include="www\wiki\js\mod\example\readme" />
@@ -222,8 +223,12 @@
     <Content Include="www\wiki\js\app\helper\util.js" />
     <Content Include="www\wiki\js\app\preload.js" />
     <Content Include="www\wiki\js\lib\fabric.require.js" />
+    <Content Include="www\wiki\js\lib\jszip\jszip-utils.js" />
+    <Content Include="www\wiki\js\lib\jszip\jszip.min.js" />
+    <Content Include="www\wiki\js\lib\threejs\controls\AxisMonitor.js" />
     <Content Include="www\wiki\js\lib\threejs\controls\OrbitControls.js" />
     <Content Include="www\wiki\js\lib\threejs\controls\TransformControls.js" />
+    <Content Include="www\wiki\js\lib\threejs\STLLoader.js" />
     <Content Include="www\wiki\js\lib\threejs\three.min.js" />
     <Content Include="www\wiki\js\main.js" />
     <Content Include="www\wiki\js\markdown\markdown-it-wikicmd.js" />
