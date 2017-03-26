@@ -21,27 +21,6 @@ local template_config = {
 		templates={
 			{
 				_id=1,
-				name="图书模板",
-				categoryId=1,
-				logoUrl="",
-				filename="",
-				layoutTpl='',
-				-- 样式列表
-				styles={
-					{
-						_id=1,
-						name="图书样式",
-						templateId=1,
-						logoUrl="",
-						--filename="works.html",
-						filename="works.html",
-						previewFilename="worksPreview.html",
-						layoutTpl='',
-					},
-				},
-			},
-			{
-				_id=2,
 				name="WIKI模板",
 				categoryId=2,
 				logoUrl="/wiki/assets/imgs/wiki_resume_site_template.png",
@@ -61,7 +40,27 @@ local template_config = {
 					},
 				},
 			},
-
+			{
+				_id=2,
+				name="图书模板",
+				categoryId=1,
+				logoUrl="",
+				filename="",
+				layoutTpl='',
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="图书样式",
+						templateId=1,
+						logoUrl="",
+						--filename="works.html",
+						filename="works.html",
+						previewFilename="worksPreview.html",
+						layoutTpl='',
+					},
+				},
+			},
 		},
 	},
 	{
