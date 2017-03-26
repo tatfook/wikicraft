@@ -23,7 +23,7 @@ define(['app', 'helper/util'], function (app, util) {
     var dataSourceMap = {};
 
     function registerDataSource(name, ds, enable) {
-        dataSourceMap[name] = {dataSource:ds, enable: enable || true};
+        dataSourceMap[name] = {dataSource:ds, enable: (enable == undefined || enable) ? true : false};
     }
 
     function getDataSource(dsList) {

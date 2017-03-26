@@ -57,8 +57,50 @@ function data_source:api_getInnerGitlabByUserId(params)
 	return errors:wrap(yield())
 end
 
-function data_source:getInnerGitlabToken(ds) 
-
+function data_source:api_getInnerGitlabToken(params) 
+	ds = {
+		userId = params.userId,
+		type = const.DATA_SOURCE_INNER_GITLAB,
+		dataSourceId = params.gitlabUserId,
+		dataSourceUsername = params.username,
+		--dataSourceToken = gitlabToken.token,
+		enable = 1,
+	}
+	System.os.GetUrl({
+		url="http://keepwork.com:9000/api/v4/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+		headers={['PRIVATE-TOKEN']= params.token},
+		method = "GET",
+		json = true,
+	}, function(code, msg, data)
+		if code ~= 200 then
+			return
+		end	
+		for _, token in ipairs(data) do
+			if not token.revoked and token.active then
+				ds.dataSourceToken = token.token		
+				self:db():insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+				-- log(ds)
+				return
+			end
+		end
+		-- 没有有效token 则创建
+		System.os.GetUrl({
+			url="http://keepwork.com:9000/api/v4/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+			headers={['PRIVATE-TOKEN']= params.token},
+			method = "POST",
+			form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
+			json = true,
+		}, function(code, msg, data)
+			if code ~= 201 then
+				return
+			end	
+			ds.dataSourceToken = data.token
+			-- log(ds)
+			self:db():insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+		end)
+	end)
+	
+	return errors:wrap(nil)
 end
 
 -- 开启内部gitlab数据源
@@ -69,7 +111,7 @@ function data_source:api_linkInnerGitlab(params)
 	
 	-- 是否已存在
 	local ds = self:api_getInnerGitlabByUserId(params).data
-	
+		
 	-- 不存在创建
 	if not ds then
 		params.name = "gitlab_" .. (params.name or params.username)
@@ -80,39 +122,32 @@ function data_source:api_linkInnerGitlab(params)
 
 		local adminToken = "mveKpt6Mpe7BAks7tiBx"
 		System.os.GetUrl({
-			url="http://keepwork.com:9000/api/v4" .. "/users", 
+			url="http://keepwork.com:9000/api/v4/users?username=" .. params.username, 
 			headers={['PRIVATE-TOKEN']= adminToken},
-			method = "POST",
-			form = params,
+			method = "GET",
 			json = true,
-		}, function(code, msg, gitlabUser)
-			-- log(gitlabUser)
-			if code ~= 201 then
-				return 
+		}, function(code, msg, data)
+			if code ~= 200 then
+				return
 			end
-			System.os.GetUrl({
-				url="http://keepwork.com:9000/api/v4" .. "/users/" .. tostring(gitlabUser.id) .. "/impersonation_tokens",
-				headers={['PRIVATE-TOKEN']= adminToken},
-				method = "POST",
-				form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
-				json = true,
-			}, function(code, msg, gitlabToken)
-				log(gitlabToken)
-				if code ~= 201 then
-					return
-				end	
-				ds = {
-					userId = params.userId,
-					type = const.DATA_SOURCE_INNER_GITLAB,
-					dataSourceId = gitlabUser.id,
-					dataSourceUsername = gitlabUser.username,
-					dataSourceToken = gitlabToken.token,
-					enable = 1,
-				}
-				-- ds = self:api_upsert(ds).data
-				self:db():insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
-				-- log(ds)
-			end)
+			-- 不存在创建用户
+			if #data == 0 then 
+				System.os.GetUrl({
+					url="http://keepwork.com:9000/api/v4/users", 
+					headers={['PRIVATE-TOKEN']= adminToken},
+					method = "POST",
+					form = params,
+					json = true,
+				}, function(code, msg, gitlabUser)
+					-- log(gitlabUser)
+					if code ~= 201 then
+						return
+					end
+					self:api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=gitlabUser.id})
+				end)
+			else
+				self:api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=data[0].id})
+			end
 		end)
 	else 
 		if ds.enable == 0 then

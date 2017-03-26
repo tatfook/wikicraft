@@ -56,7 +56,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             // 初始化innerGitlab
             function initInnerGitlab(dataSourceLList) {
                 var innerGitlab = gitlab();
-                dataSource.registerDataSource("innerGitlab", innerGitlab)
+                dataSource.registerDataSource("innerGitlab", innerGitlab, false)
                 account.innerGitlab = innerGitlab;
                 //console.log(account.innerGitlab)
                 for (var i = 0; i < dataSourceLList.length; i++) {
@@ -66,6 +66,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                         innerGitlab.init(ds.dataSourceToken, ds.dataSourceUsername, undefined, function () {
                             console.log("inner gitlab data source init success");
                             //dataSource.registerDataSource("innerGitlab", innerGitlab);
+                            dataSource.setDataSourceEnable('innerGitlab', true);
                             $rootScope.$broadcast("onDataSource", {type:'innerGitlab', dataSource:innerGitlab});
                         }, function () {
                             console.log("inner gitlab data source init failed");
