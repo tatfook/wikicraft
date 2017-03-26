@@ -1,0 +1,48 @@
+<?npl
+--[[
+Title: website category
+Author: wuxiangan
+Date: 2016/10/10
+]]
+include_once("./abstract/base.page");
+include_once("./website_template.page");
+
+local website_category = inherit(models.abstract.base, gettable("models.website_category"));
+
+website_category.db_name = "website_category";
+
+function website_category:ctor()
+	self:addfield("name", "string", false, 60);   -- 分类名
+	-- self:addfield("type", "string", false, 12);
+	self:addfield("parentId", "number", false, nil, 0);  -- 父ID
+end
+
+function website_category:categoryArrayToTree(parentId ,array) 
+	local result = {}
+	for key, value in pairs(array) do
+		if value.parentId == parentId then
+			value.subCategories = self:categoryArrayToTree(value._id, array); 
+			result[#result+1] = value;
+		end
+	end
+	return result
+end
+	
+function website_category:get(params) 
+	self:db():find(params, resume);
+	local err, data = yield(true);
+	
+	if err then 
+		return errors.wrap(err, data);
+	end
+	
+	local template = models.website_template:new();
+
+	for key, value in pairs(data) do
+		value.templates = template:get({categoryId=value._id}).data;
+	end
+
+	data = self:categoryArrayToTree(0,data);
+	
+	return {error=errors.SUCCESS, data=data};
+end

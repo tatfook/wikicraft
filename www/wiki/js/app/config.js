@@ -7,13 +7,13 @@
 (function () {
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && window.location.host == "localhost:8099";
-    var pathPrefix = (localEnv && !localVMEnv) ? '/html/server/' : '/wiki/';
+    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : '/wiki/';
     var hostname = "keepwork.com";
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
         localVMEnv:localVMEnv,
         hostname:hostname,
-        frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/server/index.html' : '/',  // 当使用前端路由时使用的url
+        frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/wiki/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
         // 图片路径

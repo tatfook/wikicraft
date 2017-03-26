@@ -1,0 +1,12 @@
+<div ng-controller="testModuleController">
+    <!--模块表单配置-->
+    <div ng-show="modViewEdit">
+        <input type="text" ng-model="content">
+        <button class="btn" ng-click="submit()">提交</button>
+    </div>
+    <!--模块内容-->
+    <div>
+        {{content}}
+    </div>
+    <div>hello world</div>
+</div>

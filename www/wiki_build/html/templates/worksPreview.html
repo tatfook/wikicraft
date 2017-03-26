@@ -1,0 +1,177 @@
+<div class="mod_header container">
+    <div style="display: flex; height: 200px; background-color: silver">
+        <div>
+            <img src="/wiki/assets/imgs/test.jpg">
+        </div>
+        <div style="margin-left: 40px; display: flex; flex-direction: column; height: 100%">
+            <h3>这是一本测试的书籍</h3>
+            <div style="display: flex;">
+                <div>
+                    <div>作者：李宇</div>
+                    <div>页数：145</div>
+                    <div>阅读：12345</div>
+                    <div>收藏：2345</div>
+                </div>
+                <div style="align-self: flex-end; margin-left: 20px">
+                    <button class="btn btn-default"><span class="glyphicon glyphicon-link"></span></button>
+                    <button class="btn btn-default"><span class="glyphicon glyphicon-star-empty"></span></button>
+                    <button class="btn btn-default"><span class="glyphicon glyphicon-phone"></span></button>
+                </div>
+            </div>
+            <div style="align-self: flex-end;">
+                <a>开始阅读</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="margin-top: 20px">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#Introduction" data-toggle="tab">介绍</a></li>
+        </ul>
+        <div class="tab-content" style="height: 300px; border: 1px solid silver">
+            <div class="tab-pane fade in active" id="Introduction">
+                <p>测试书籍</p>
+            </div>
+        </div>
+    </div>
+
+    <!--评论模块-->
+    <div ng-controller="commentCtrl">
+        <div style="border-bottom: 1px solid silver;">
+            <h3>我要评论</h3>
+        </div>
+        <div style="display: flex; margin-top: 20px" ng-repeat="comment in commentObj.commentList">
+            <div style="padding: 0px 20px">
+                <img ng-src="{{comment.userInfo.protrait || '/wiki/assets/imgs/test.jpg'}}" style="width: 80px; height: 80px">
+            </div>
+            <div style="border-bottom: 1px solid silver; padding-bottom: 20px; flex-grow: 1">
+                <div style="display: flex; justify-content: space-between">
+                    <h4><b>{{comment.userInfo.username}}</b></h4>
+                </div>
+                <div>
+                    {{comment.content}}
+                </div>
+                <div style="color: silver; margin: 10px">
+                    <span>{{'#' + comment._id}}</span>
+                    <span>{{comment.createTime}}</span>
+                    <a ng-show="user._id == comment.userId" style="color: silver" ng-click="deleteComment(comment)">删除</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="display: flex; justify-content: center; padding: 20px 0px">
+            <div style="width: 60%">
+                <div style="color: red;">{{tipInfo}}</div>
+                <textarea class="form-control" ng-model="comment.content"></textarea>
+            </div>
+            <div style="margin-left: 20px; align-self: flex-end">
+                <button class="btn btn-default" ng-click="submitComment()">提交</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div style="height: 145px; margin:0px 130px; display: flex; justify-content: space-between; align-items: center">
+            <div style="font-size: 50px">更多推荐</div>
+            <div style="font-size: 30px; align-self: flex-end">
+                <a>更多</a>
+            </div>
+        </div>
+        <div style="height: 920px; display: flex; margin-top: 20px">
+            <div style="display: flex; align-items: center; height: 800px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksPrev.png"></a>
+            </div>
+            <div style="width: 1660px;height: 100%;">
+                <div style="position: relative; height: 460px; display: inline-block">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative; height: 460px; display: inline-block" ng-style='{"margin-left":"60px"}'>
+                    <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative; margin-left: 60px; height: 460px; display: inline-block">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative; height: 460px; display: inline-block">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative; margin-left: 60px; height: 460px; display: inline-block">
+                    <img src="/wiki/assets/imgs/meilixinqing.png" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="position: relative; margin-left: 60px; height: 460px; display: inline-block">
+                    <img src="/wiki/assets/imgs/flower.png" style="width: 505px; height: 340px;">
+                    <div style="position: absolute; top: 215px; left: 85px; width: 345px; height: 190px;background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 110px; padding-top: 25px; padding-left: 40px">
+                            <div style="font-size: 29px; color: white;">60年的鲜花</div>
+                            <div style="font-size: 18px; color: rgb(200,219,0);;">导演：小方块</div>
+                        </div>
+                        <div style="height: 80px;background-color: rgb(145,185,114); display: flex; align-items: center">
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 190px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">9999</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width: 100%; border-bottom: 2px solid silver"></div>
+            </div>
+            <div style="display: flex; align-items: center; height: 800px; justify-content: center; width: 130px">
+                <a class="btn" style="height: 100%; display: flex;align-items: center"><img src="/wiki/assets/imgs/worksNext.png"></a>
+            </div>
+        </div>
+    </div>
+</div>

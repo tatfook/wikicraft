@@ -1,0 +1,40 @@
+<div ng-controller="commentController">
+    <div class="row">
+        <div class="col-xs-12">
+            <!--评论模块-->
+            <div>
+                <div style="border-bottom: 1px solid silver;">
+                    <h3>我要评论</h3>
+                </div>
+                <div style="display: flex; margin-top: 20px" ng-repeat="comment in commentObj.commentList">
+                    <div style="padding: 0px 20px">
+                        <img ng-src="{{comment.userInfo.protrait ||  imgsPath + 'wiki_works.jpg'}}" style="width: 80px; height: 80px">
+                    </div>
+                    <div style="border-bottom: 1px solid silver; padding-bottom: 20px; flex-grow: 1">
+                        <div style="display: flex; justify-content: space-between">
+                            <h4><b>{{comment.userInfo.username}}</b></h4>
+                        </div>
+                        <div>
+                            {{comment.content}}
+                        </div>
+                        <div style="color: silver; margin: 10px">
+                            <span>{{'#' + comment._id}}</span>
+                            <span>{{comment.createTime}}</span>
+                            <a ng-show="user._id == comment.userId" style="color: silver" ng-click="deleteComment(comment)">删除</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: flex; justify-content: center; padding: 20px 0px">
+                    <div style="width: 60%">
+                        <div style="color: red;">{{tipInfo}}</div>
+                        <textarea class="form-control" ng-model="comment.content"></textarea>
+                    </div>
+                    <div style="margin-left: 20px; align-self: flex-end">
+                        <button class="btn btn-default" ng-click="submitComment()">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

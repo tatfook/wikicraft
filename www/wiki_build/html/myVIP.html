@@ -1,0 +1,21 @@
+<style>
+    .myvip .panel-body{
+        padding-top: 40px;
+    }
+    .myvip .col-sm-4{
+        text-align: center;
+        line-height: 34px;
+    }
+</style>
+
+<div ng-controller="myVIPController">
+    <div class="col-md-10 panel main-content myvip">
+        <div class="panel-heading">
+            我的VIP
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-4">您的VIP特权将在<span class="text-danger">2017-08-12</span>到期</div>
+            <div class="col-sm-3"><div class="btn btn-primary" ng-click="goBuyVip()">追加续费</div></div>
+        </div>
+    </div>
+</div>

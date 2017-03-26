@@ -1,0 +1,149 @@
+﻿<?npl
+wp_enqueue_script("githubService", WIKI_WEBROOT.."controllers/githubService.js");
+wp_enqueue_script("settingsController", WIKI_WEBROOT.."controllers/settingsController.js");
+?>
+<div class="col-sm-12" ng-controller="settingsController">
+    <ul class="setting nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#profile">个人信息</a></li>
+        <li><a data-toggle="tab" href="#account">账户</a></li>
+        <li><a data-toggle="tab" href="#projects">我的网站</a></li>
+    </ul>
+    <div class="tab-content" >
+        <div id="profile" class="tab-pane fade in active"  style="padding-top:10px;">
+            <div class="boxed-group">
+                <h3>公开信息</h3>
+                <div class="boxed-group-inner">
+                    <form name="profileform">
+                        <div class="form-group">
+                            <h4>个人头像</h4>
+                            <div>
+                                <div class="pull-left" style="padding-bottom:10px">
+									<wiki-identicon userid="user._id" size="64" imageurl="user.picture"></wiki-identicon>
+                                </div>
+                                <div class="pull-left" style="padding-left:20px">
+                                    <button class="btn">上传新图片</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': !profileform.username.$valid }">
+							<h4>姓名</h4>
+                            <input id="username" name="username" type="text" placeholder="姓名，至少3个字" class="form-control" ng-minlength="3" ng-maxlength="30" ng-model="user.displayName" required />
+                            <span ng-show="!profileform.username.$valid" class="help-block">名字至少3个字</span>
+                        </div>
+                        <div class="form-group">
+                            <h4>网址</h4>
+                            <input id="url" ng-model="user.url" class="form-control" placeholder="默认为: <?=request:GetHost()?>/{{user.displayName}}/" />
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': profileform.publicemail.$dirty && !profileform.publicemail.$valid }">
+                            <h4>公开的Email</h4>
+                            <input id="publicemail" type="email" name="publicemail" placeholder="例如: {{user.email}}" class="form-control" ng-model="user.publicemail" />
+                            <span ng-show="profileform.publicemail.$dirty && profileform.publicemail.$error.email" class="help-block">Email格式例如:abc@example.com</span>
+                        </div>
+                        <div class="form-group">
+                            <h4>个人简介</h4>
+                            <textarea id="bio" ng-model="user.bio" class="form-control" rows="3" placeholder="150字以内" ></textarea>
+                         </div>
+                        <div class="form-group">
+                            <h4>公司</h4>
+                            <input id="company" ng-model="user.company" class="form-control" placeholder="所属公司或学校" />
+                        </div>
+                        <div class="form-group">
+                            <h4>位置</h4>
+                            <input id="location" ng-model="user.location" class="form-control" placeholder="城市, 国家" />
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-info" ng-click="updateProfile()" ng-disabled="!profileform.$dirty">更改档案</button>
+                            <div class="note">我们在中国大陆存储你的个人信息. 更多信息请看我们的<a href="/wiki/privacy">隐私政策</a></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="account" class="tab-pane fade" style="padding-top:10px;">
+            <div ng-if="user.github==null || user.github==0">
+                <blockquote class="bg-danger">
+                    尚未开通Github数据备份服务，强烈建议开通数据备份.
+                    <button class="btn btn-primary" ng-click="linkGithub()">开启备份</button>
+                </blockquote>
+            </div>
+            <div ng-if="user.github">
+                <blockquote class="bg-success">
+                    <p>Github数据备份已经开启. 用户id:{{user.github}} 授权范围:{{user.github_token.scope}}.</p>
+                    <button class="btn" ng-click="linkGithub()" uib-tooltip="access_token: {{user.github_token.access_token}}">重新认证</button>
+                    <button class="btn btn-danger" ng-click="unlinkGithub()">关闭备份</button>
+                </blockquote>
+            </div>
+            <div class="boxed-group">
+                <h3>更改密码</h3>
+                <div class="boxed-group-inner">
+                    <form name="form">
+                        <div class="form-group" ng-class="{ 'has-error': form.oldpassword.$dirty && !form.oldpassword.$valid }">
+                            <div>旧密码</div>
+                            <input type="password" id="oldpassword" name="oldpassword" placeholder="" ng-maxlength="20" class="form-control" ng-model="account.oldpassword" />
+                            <span ng-show="form.oldpassword.$dirty && !form.oldpassword.$valid" class="help-block">请输入旧密码，如果没有设置过可为空</span>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && !form.password.$valid }">
+                            <div>新密码</div>
+                            <input type="password" id="password" name="password" placeholder="" ng-minlength="6" ng-maxlength="20" class="form-control" ng-model="account.password" required />
+                            <span ng-show="form.password.$dirty && !form.password.$valid" class="help-block">请输入密码，6位以上</span>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.passwordConfirm.$error.pwmatch }">
+                            <div>密码确认</div>
+                            <input type="password" pw-check="password" name="passwordConfirm" placeholder="请再次输入新密码" class="form-control" ng-model="account.passwordConfirm" required />
+                            <span ng-show="form.password.$dirty && form.passwordConfirm.$error.pwmatch" class="help-block">
+                                请输入与新密码一致的密码
+                            </span>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" ng-click="changePassword(account.oldpassword, account.password)" ng-disabled="!form.$valid">更改密码</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="boxed-group">
+                <h3>更改登录Email</h3>
+                <div class="boxed-group-inner">
+                    <div ng-if="!user.email">
+                        <form name="emailform">
+                            <div class="form-group" ng-class="{ 'has-error': emailform.email.$dirty && !emailform.email.$valid }">
+                                <input id="email" type="email" name="email" placeholder="只用于登录，其他用户不可见" class="form-control" ng-model="Account.email" required />
+                                <span ng-show="emailform.email.$dirty && emailform.email.$error.email" class="help-block">Email格式例如:abc@example.com</span>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn" ng-click="setEmail(Account.email)" ng-disabled="!emailform.$valid">设置登录Email</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div ng-if="user.email">
+                        {{user.email}}
+                    </div>
+                </div>
+            </div>
+            <div class="boxed-group dangerzone">
+                <h3>删除账号</h3>
+                <div class="boxed-group-inner">
+                    <p>账号一旦删除无法找回</p>
+                    <div ng-if="account.showConfirm">
+                        <form name="deleteform">
+                            <div class="form-group" ng-class="{ 'has-error': deleteform.confirmname.$dirty && deleteform.confirmname.$error.pwmatch }">
+                                <div class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    请再次确认你要删除的用户的名字为：<span id="username" name="username">{{user.displayName}}</span>
+                                </div>
+                                <input type="text" pw-check="username" name="confirmname" placeholder="请输入你要删除的用户名" class="form-control" ng-model="account.confirmname" required />
+                                <span ng-show="deleteform.confirmname.$error.pwmatch" class="help-block">
+                                    输入的名字不一致
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    <button class="btn btn-danger" ng-click="deleteAccount()">删除你的账号</button>
+                </div>
+            </div>
+        </div>
+        <div id="projects" class="tab-pane fade"  style="padding-top:10px;">
+            <? include("projects.page"); ?>
+        </div>
+    </div>
+</div>

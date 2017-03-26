@@ -1,0 +1,60 @@
+<style>
+    .website-table {
+        text-align: center;
+    }
+    .website-table table {
+        margin-bottom: 120px;
+    }
+    .website-table table > thead > tr > th {
+        text-align: center;
+    }
+    .website-table tbody > tr > td {
+        vertical-align: middle;
+    }
+    .website-table tbody > tr:hover a {
+        color: #3977AD;
+    }
+</style>
+
+<div ng-controller="websiteController">
+    <div class="col-md-10 panel main-content">
+        <div class="panel-heading">
+            我的站点
+        </div>
+        <div class="panel-body website-table">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>站点名称</th>
+                    <th>站点备注</th>
+                    <!--<th>独立域名</th>-->
+                    <th>类型</th>
+                    <th>模板</th>
+                    <th>样式</th>
+                    <th>标签</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="website in websites">
+                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.name}}</a></td>
+                    <td>{{website.desc}}</td>
+                    <!--<td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>-->
+                    <td>{{website.categoryName || '/'}}</td>
+                    <td>{{website.templateName || '/'}}</td>
+                    <td>{{website.styleName || '/'}}</td>
+                    <td>{{website.tags}}</td>
+                    <td>{{website.createDate}}</td>
+                    <td>
+                        <a class="btn"  ng-click="goEditWebsitePagePage(website)">编辑</a>
+                        <a class="btn"  ng-click="goEditWebsitePage(website)">设置</a>
+                        <a class="btn"  ng-click="deleteWebsite(website._id)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a class="btn btn-primary" ng-click="goNewWebsitePage()">新建网站</a>
+        </div>
+    </div>
+</div>

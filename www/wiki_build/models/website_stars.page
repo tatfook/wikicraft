@@ -1,0 +1,59 @@
+<?npl
+--[[
+Title: stars owned by a website
+Author: wuxiangan
+Date: 2016/10/16
+]]
+include_once("./website.page")
+
+local website_stars = inherit(models.abstract.base, gettable("models.website_stars"))
+website_stars.db_name = "website_stars"
+
+function website_stars:ctor()
+	self:addfield("websiteName", "string", false, 30)
+	self:addfield("userId", "number", nil)
+end
+
+function website_stars:get(params)
+	self:db():find(params, resume)
+
+	if err then
+		return errors:wrap(err, data)
+	end	
+
+	return {error=errors.SUCCESS, data=data}
+end
+
+function website_stars:create(params)
+	self:db():findOne(params, resume)
+	local err ,data = yield()
+	
+	if data then
+		return {error=errors.SUCCESS, data=data}
+	end
+
+	self:db():insertOne(nil, params, resume)
+	local err ,data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end	
+
+	return {error=errors.SUCCESS, data=data}
+end
+
+function website_stars:update(params)
+	-- no update 
+end
+
+function website_stars:delete(params)
+	self:db():delete(params, resume)
+	local err, data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end	
+
+	return {error=errors.SUCCESS, data=data}
+end
+

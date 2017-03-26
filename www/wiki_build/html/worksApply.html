@@ -1,0 +1,16 @@
+<div ng-controller="worksApplyController" class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            作品申请
+        </div>
+        <div class="panel-body">
+            <div style="display: flex; flex-direction: column; justify-content: center">
+                <label class="control-label">选择要申请的作品:</label>
+                <select multiple ng-change="worksSelectChange()" ng-model="worksSelected">
+                    <option ng-repeat="site in siteList" value="{{site._id}}">{{site.name}}</option>
+                </select>
+                <button id="submitId" class="btn btn-default" ng-click="worksApply()" disabled>提交</button>
+            </div>
+        </div>
+    </div>
+</div>

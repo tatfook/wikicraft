@@ -1,0 +1,32 @@
+<?npl
+--[[
+Title: oauth handler for `satellizer oauth framework`
+Author: LiXizhi
+Date: 2016/5/10
+]]
+if(is_ajax()) then
+	local config = include("config.page");
+	
+	local accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
+	local peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
+	local params = {
+		code = request:get("code"),
+		client_id = request:get("clientId"),
+		client_secret = config.GOOGLE_SECRET,
+		redirect_uri = request:get("redirectUri"),
+		grant_type =  'authorization_code'
+	};
+
+	response:Begin();
+
+	-- Step 1. Exchange authorization code for access token.
+	util.GetUrl({url = accessTokenUrl, json = true, form = params }, function(err, msg)
+		--local accessToken = token.access_token;
+		--local headers = { Authorization = 'Bearer ' .. accessToken };
+		--wp_send_json({});
+		commonlib.echo("1111111111111");
+		commonlib.echo(msg)
+		response:End();
+	end);
+end
+?>

@@ -1,0 +1,35 @@
+<div ng-controller="usershowController" class="container">
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10" style="display: flex; justify-content: space-between; align-items: center;height: 90px">
+            <div style="font-size: 30px">{{title}}</div>
+            <div style="font-size: 18px; align-self: flex-end">
+                <a ng-click="goAllUserList()">更多</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 workslistNav"  style="display: flex; align-items: center; height: 205px; justify-content: center;">
+            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getUserList(userParams.page-1)"><img src="/wiki/assets/imgs/worksPrev.png"></a>
+        </div>
+        <div class="col-md-10">
+            <div class="row workslist">
+                <div class="col-md-4" style="position: relative; height: 280px" ng-repeat="user in userObj.userList">
+                    <img ng-src="{{site.logoUrl || '/wiki/assets/imgs/test.jpg'}}" class="img-responsive" style="width: 305px; height: 205px;">
+                    <div style="position: absolute; top: 125px; left: 15%; width: 70%; background-color: rgba(0,0,0,0.3);">
+                        <div style="height: 70px; padding-top: 15px; padding-left: 24px">
+                            <div style="font-size: 18px; color: white;">{{user.username}}</div>
+                            <div style="font-size: 10px; color: rgb(200,219,0);;">{{user.desc}}</div>
+                        </div>
+                        <div ng-style={"height":"50px","background-color":getRandomColor($index),"display":"flex","align-items":"center"}>
+                            <img src="/wiki/assets/imgs/lover.png" style="margin-left: 115px">
+                            <span style="font-size: 25px; margin-left: 10px; color: white;">{{user.favoriteCount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 workslistNav" style="display: flex; align-items: center; height: 205px; justify-content: center;">
+            <a class="btn" style="height: 100%; display: flex;align-items: center" ng-click="getUserList(userParams.page+1)"><img src="/wiki/assets/imgs/worksNext.png"></a>
+        </div>
+    </div>
+</div>

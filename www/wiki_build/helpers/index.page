@@ -1,0 +1,22 @@
+<?npl
+--[[
+Title: load helper file
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
+local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
+
+local isWebServerStart = mem_cache:get("isWebServerStart")
+if not isWebServerStart then
+	mem_cache:set("isWebServerStart", true)
+end
+
+-- 程序启动
+if not isWebServerStart then
+	include_once(WIKI_ROOT .. "helpers/wiki_module.page")
+end
+
+
+-- log("load helper index.page!!!")

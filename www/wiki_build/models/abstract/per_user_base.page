@@ -1,0 +1,82 @@
+<?npl
+--[[
+Title: each userid has only one row of table
+Author: LiXizhi
+Date: 2016/7/28
+Desc: all CRUD operations use `userid` as key. 
+Only the owner can update/delete/create record; anyone can get by `userid`.
+]]
+include_once("base.page");
+
+local per_user_base = inherit(models.abstract.base, gettable("models.abstract.per_user_base"));
+
+function per_user_base:ctor()
+	-- unique user id
+	self:addfield("userid", "number", true);
+end
+
+function per_user_base:getUserId()
+	return request.userid;
+end
+
+-- `userid` is automatically injected if no other field is found. 
+function per_user_base:findUnqiueIndexName(params)
+	local name = per_user_base._super.findUnqiueIndexName(self, params);
+	if(not name) then
+		-- `userid` is automatically injected if no other unique index-field is found. 
+		self:ensureAuthenticated();
+		name = "userid";
+		params.userid = request.userid;
+	end
+	return name;
+end
+
+-- virtual:  
+function per_user_base:get(params)
+	params = params or {};
+	local err, query = self:validateQuery(params);
+	local name = self:findUnqiueIndexName(query);
+	if(name) then
+		self:db():findOne({[name] = query[name]}, resume);
+		local err, data = yield(true); 
+		if(not err) then
+			data = self:validateRow(data);
+		end
+		return data;
+	end
+end
+
+-- virtual: 
+function per_user_base:create(params)
+	self:ensureAuthenticated();
+	params.userid = request.userid;
+	params._id = nil;
+	local err, params = self:validateQuery(params);
+	if(params) then
+		local query = self:getUniqueQuery(params, true);
+		if(query) then
+			self:db():insertOne(query, params, resume);
+			local err, data = yield(true); 
+			return data;
+		end
+	end
+end
+
+-- virtual: 
+function per_user_base:update(params)
+	self:ensureAuthenticated();
+	local err, query = self:validateQuery(params);
+	if(query) then
+		self:db():updateOne({userid = request.userid}, query, resume);
+		local err, data = yield(true); 
+		return data;
+	end
+end
+
+-- virtual: 
+function per_user_base:delete(params)
+	self:ensureAuthenticated();
+	self:db():deleteOne({userid = request.userid}, resume);
+	local err, data = yield(true); 
+	return data;
+end

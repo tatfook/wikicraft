@@ -11,5 +11,6 @@ WP_USE_MINI_LOADER = true;
 include_once("script/apps/WebServer/admin/wp-main.page");
 
 -- call the router  
-include_once("./wiki/routes.page");
+-- include_once("./wiki/routes.page");
+include_once("./wiki_build/routes.page");
 

@@ -1,0 +1,50 @@
+<?npl
+--[[
+Title: wiki module
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+include_once(WIKI_ROOT .. 'models/wiki_module.page')
+include_once(WIKI_ROOT .. 'models/wiki_module_classify.page')
+
+-- 注册单个wikimodule
+function registerWikiModule(params)
+	local wikiModuleDB = models.wiki_module:new()
+	local wikiModuleClassifyDB = models.wiki_module_classify:new()
+	wikiModuleDB:api_upsert(params)
+	wikiModuleClassifyDB:api_upsert({name=params.classifyName})	
+end
+
+-- 注册多个wikimodule
+function regitsterWikiModuleList(params) 
+	for _, obj in ipairs(params) do
+		registerWikiModule(obj)
+	end
+end
+
+-- load wiki module
+function loadWikiModule()
+	local fileList = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
+	for _, file in ipairs(fileList) do
+		-- log("load file: " .. file.filename)
+		include_once(WIKI_ROOT ..'js/mod/'.. file.filename)
+	end
+end
+
+function clearWikiModuleInfo()
+	local wikiModuleDB = models.wiki_module:new()
+	local wikiModuleClassifyDB = models.wiki_module_classify:new()
+	wikiModuleDB:db():makeEmpty({}, resume)
+	yield()
+	wikiModuleClassifyDB:db():makeEmpty({}, resume)
+	yield()
+end
+
+clearWikiModuleInfo()
+loadWikiModule()
+
+
+-- log("load helper wiki_module.page!!!")
+
+?>

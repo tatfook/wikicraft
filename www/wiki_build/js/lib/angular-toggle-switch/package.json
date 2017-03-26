@@ -1,0 +1,73 @@
+{
+  "name": "angular-bootstrap-toggle-switch",
+  "version": "0.5.6",
+  "title": "Angular.JS Toggle Switch",
+  "author": {
+    "name": "Chris Garvis",
+    "url": "http://chrisgarvis.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:JumpLink/angular-toggle-switch.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "angular.js",
+    "toggle",
+    "switch",
+    "toggle switch",
+    "angular toggle",
+    "angular switch",
+    "bootstrap",
+    "bootstrap switch",
+    "bootstrap toggle switch"
+  ],
+  "main": "angular-toggle-switch.js",
+  "homepage": "http://cgarvis.github.io/angular-toggle-switch",
+  "devDependencies": {
+    "bower": "~1.6.8",
+    "grunt": "^0.4.4",
+    "grunt-auto-release": "0.0.6",
+    "grunt-bump": "0.6.0",
+    "grunt-cli": "0.1.13",
+    "grunt-contrib-jshint": "~0.11.3",
+    "grunt-contrib-less": "^1.1.0",
+    "grunt-contrib-uglify": "~0.11.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-karma": "~0.12.1",
+    "grunt-ng-annotate": "^1.0.1",
+    "grunt-npm": "0.0.2",
+    "jasmine-core": "^2.3.4",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.6",
+    "karma-script-launcher": "^0.1.0",
+    "matchdep": "~1.0.0"
+  },
+  "scripts": {
+    "test": "grunt test -v"
+  },
+  "contributors": [
+    "JumpLink <jumplink@gmail.com>",
+    "Martin Maestri <mmaestri@gmail.com>",
+    "Pascal Garber <pascal@jumplink.eu>",
+    "JumpLink <pascal@jumplink.eu>",
+    "Pascal Garber <jumplink@gmail.com>",
+    "Pascal Garber <jumplink@googlemail.com>",
+    "alexander rusanov <alexander.rusanov@gmail.com>",
+    "Philipp Wolfer <ph.wolfer@gmail.com>",
+    "menny <onemenny@gmail.com>",
+    "Benjamin Squire <b.squire@gmail.com>",
+    "Fabio Rueda <avances123@gmail.com>",
+    "Hypercubed <hypercubed@gmail.com>",
+    "Marko <marko.corokalo@gmail.com>",
+    "Salvatore Garbesi <sal@dolox.com>",
+    "Shinework <adrien.baptiste@gmail.com>",
+    "Taylor Brushwyler <tbrushwyler@ostusa.com>",
+    "Tom Vincent <git@tlvince.com>",
+    "alexndlm <alexndlm@gmail.com>",
+    "Alemar Osorio <darkguy2008@gmail.com>"
+  ]
+}

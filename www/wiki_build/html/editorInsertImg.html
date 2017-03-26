@@ -1,0 +1,57 @@
+<!--Created by Karlwu on 2016-12-18-->
+<style>
+    .nav-btn-tabs{
+        text-align: center;
+        margin-bottom: 13px;
+    }
+    .nav-btn-tabs>li{
+        display: inline-block;
+        margin: 0 5px;
+    }
+    .nav-btn-tabs>li.active>a.btn{
+        color: #3977AD;
+        border-color: #3977AD;
+    }
+    .nav-btn-tabs>li>a.btn:focus,.nav-btn-tabs>li>a.btn:hover{
+        background-color: transparent;
+        border-color: #3977AD;
+    }
+    .nav-btn-tabs>li>a.btn{
+        font-size: 16px;
+        padding:8px;
+        border:1px solid #DCDCDC;
+        color: #666;
+    }
+</style>
+<div>
+    <form name="imgForm" role="form" ng-submit="img_insert()" novalidate>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+        <h4 class="modal-title">插入图片</h4>
+    </div>
+    <div class="modal-body">
+        <ul class="nav nav-btn-tabs">
+            <li class="active"><a href="#image_url" data-toggle="tab" class="btn">网络地址</a></li>
+            <li><a href="#image_local" data-toggle="tab" ng-click="imageLocal()" class="btn">本地上传</a></li>
+        </ul>
+        <ul class="tab-content">
+            <div class="tab-pane fade in active padding" id="image_url">
+                <p>请输入网络地址：</p>
+                <p>
+                    <input id="url" type="text" class="form-control" name="url" ng-model="img.url" placeholder="http://...">
+                </p>
+            </div>
+            <div class="tab-pane fade padding" id="image_local">
+                <p>
+                    <input type="file" accept="image/*" class="btn" id="uploadImageId"/>
+                </p>
+            </div>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="btn btn-primary btn-fill">确定</button>
+    </div>
+    </form>
+</div>

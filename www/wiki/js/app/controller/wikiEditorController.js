@@ -31,6 +31,7 @@ define([
     var winWidth = $(window).width();
     //console.log("wiki editor controller!!!");
     var editor;
+    var mdwiki;
     var allWebsites = [];
     var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
@@ -521,8 +522,10 @@ define([
                         editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content)
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
-
-                    //editor.setValue(currentWebsitePage.content);
+                    editor.setValue(currentWebsitePage.content);
+                    //util.html('.result-html', mdwiki.render(editor.getValue()), $scope);
+                    //console.log(mdwiki.options);
+                    //mdwiki.options.renderCallback && mdwiki.options.renderCallback();
 
                     // 折叠wiki命令
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
@@ -1381,7 +1384,7 @@ define([
 
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
-                var mdwiki = markdownwiki({
+                mdwiki = markdownwiki({
                     container_name: '.result-html',
                     renderCallback: function () {
                         renderAutoSave();

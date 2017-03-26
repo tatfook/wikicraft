@@ -1,0 +1,200 @@
+<div id='wikiEditorPageContainer' style="position: absolute; top:52px; bottom: 0; left: 0; right: 0;">
+    <div class="container-fluid" style="padding: 0;">
+        <div class="row" style="margin: 0">
+            <div id="wikiEditor" ng-controller="wikiEditorController">
+                <div id="toolbarview" class="well well-sm nopadding wiki-toolbar" style="z-index:99;">
+                    <div id="codeToolbar" class="btn-toolbar" role="toolbar">
+                        <div class="btn-group">
+                            <div type="button" class="btn btn-default btn-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）">
+                                <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_undo()" title="撤销（Ctrl+Z）">
+                                <img ng-src="{{imgsPath+'icon/wiki_revoked.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_redo()" title="重做（Ctrl+Y）">
+                                <img ng-src="{{imgsPath+'icon/wiki_redo.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_find()" title="查找（Ctrl+F）">
+                                <img ng-src="{{imgsPath+'icon/wiki_search.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_replace()" title="替换（Shift+Ctrl+F）">
+                                <img ng-src="{{imgsPath+'icon/wiki_replace.png'}}" alt="">
+                            </div>
+                        </div>
+                        <!---->
+                        <div class= "btn-group ">
+                            <div class="btn btn-default btn-sm" ng-click="cmd_headline(1)" title="标题1（Shift+Ctrl+1）" style="font-weight:bold;">
+                                <img ng-src="{{imgsPath+'icon/wiki_H1.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" ng-click="cmd_headline(2)" title="标题2（Shift+Ctrl+2）" style="font-weight:bold;">
+                                <img ng-src="{{imgsPath+'icon/wiki_H2.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" ng-click="cmd_headline(3)" title="标题3（Shift+Ctrl+3）" style="font-weight:bold;">
+                                <img ng-src="{{imgsPath+'icon/wiki_H3.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="加粗（Ctrl+B）"  ng-click="cmd_bold()">
+                                <img ng-src="{{imgsPath+'icon/wiki_bold.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="斜体（Ctrl+I）" ng-click="cmd_italic()">
+                                <img ng-src="{{imgsPath+'icon/wiki_italic.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="下划线">
+                                <img ng-src="{{imgsPath+'icon/wiki_underline.png'}}" alt="">
+                            </div>
+                        </div>
+                        <!---->
+                        <div class= "btn-group ">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_listul()" title="无序列表（Ctrl+.）">
+                                <img ng-src="{{imgsPath+'icon/wiki_disorder.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_listol()" title="有序列表（Ctrl+/）">
+                                <img ng-src="{{imgsPath+'icon/wiki_order.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_blockqote()" title="引用内容（Ctrl+]）">
+                                <img ng-src="{{imgsPath+'icon/wiki_quots.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_tabel()" title="表格（Shift+Ctrl+T）">
+                                <img ng-src="{{imgsPath+'icon/wiki_table.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_horizontal()" title="水平分隔线（Ctrl+H）">
+                                <img ng-src="{{imgsPath+'icon/wiki_segment.png'}}" alt="">
+                            </div>
+                        </div>
+                        <!---->
+                        <div class= "btn-group ">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_link()" title="链接（Alt+L）">
+                                <img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_image()" title="图片（Alt+P）">
+                                <img ng-src="{{imgsPath+'icon/wiki_img.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_code()" title="代码（Alt+C）">
+                                <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">
+                            </div>
+                        </div>
+                        <!---->
+                        <div class="pull-right">
+                            <div class="btn btn-default wiki-btn" title="模块" ng-click="openWikiBlock()"><img ng-src="{{imgsPath+'icon/wiki_model.png'}}" alt=""> 模块</div>
+                        </div>
+                        <!--div class= "btn-group  dropdown pull-right">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" title="更多模块">
+                                <i class="fa fa-th-large"></i>
+                                更多模块
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">模块 1</a></li>
+                                <li><a href="#">模块 2</a></li>
+                                <li><a href="#">模块 3</a></li>
+                                <li><a href="#">模块 4</a></li>
+                                <li><a href="#">模块 5</a></li>
+                            </ul>
+                        </div-->
+                    </div>
+                    <div class="btn-toolbar" role="toolbar">
+                        <div class= "btn-group">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）"><img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt=""> 新建页</div>
+                            <div class="btn btn-default btn-sm toolbar-page-file" title="文件"><img ng-src="{{imgsPath+'icon/wiki_file.png'}}" alt=""> 文件</div>
+                            <div class="btn btn-default btn-sm toolbar-page-code" title="代码"><img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt=""> 代码</div>
+                            <div class="btn btn-default btn-sm toolbar-page-slide active" title="拆分"><img ng-src="{{imgsPath+'icon/wiki_split.png'}}" alt=""> 拆分</div>
+                            <div class="btn btn-default btn-sm toolbar-page-design" title="预览"><img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt=""> 预览</div>
+                        </div>
+                        <!---->
+                        <div class= "btn-group">
+                            <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="width: 400px;border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
+                            <div class="btn btn-default btn-sm toolbar-page-remove"  ng-click="cmd_remove()" title="删除页面" disabled="disabled">
+                                <img ng-src="{{imgsPath+'icon/wiki_remove.png'}}" alt="">
+                            </div>
+                            <!--button type="button" class="btn btn-default btn-sm toolbar-page-copyurl" title="复制网址"><i class="fa fa-external-link" ></i>&nbsp;复制网址</button-->
+                            <div ng-show="isGithubAuth" type="button" class="btn btn-default btn-sm" title="打开github文件" ng-click="openGithubFile()">
+                                <img ng-src="{{imgsPath+'icon/wiki_github.png'}}" alt="">github
+                            </div>
+                        </div>
+                        <!---->
+                        <div class= "btn-group  pull-right">
+                            <div class="btn btn-default toolbar-page-version wiki-btn" title="版本">版本</div>
+                            <div class="btn btn-default toolbar-page-hotkey wiki-btn" title="热键表">热键</div>
+                            <div class="btn btn-default toolbar-page-knowledge wiki-btn" title="知识库">知识库</div>
+                        </div>
+                    </div>
+                    <div class="progress progress-striped active" ng-show="progressbar.show">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                             style="width: 0%;">
+                            <span class="sr-only">{{progressbar.percent}}%</span>
+                        </div>
+                    </div>
+                </div>
+                <!---->
+                <div id="wikiEditorContainer">
+                    <div id="treeview" class="col-xs-2 full-height nopadding nomargin" style="overflow-y: auto"></div>
+                    <div id="srcview" class="col-xs-5 full-height">
+                        <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
+                        <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
+                    </div>
+                    <section id="preview" class="col-xs-5 full-height" style="max-height: 100%; overflow-y: auto;overflow-x: hidden;">
+                        <div class="result-html full-height"></div>
+                        <pre class="hljs result-src full-height"><code class="result-src-content full-height"></code></pre>
+                        <pre class="hljs result-debug full-height"><code class="result-debug-content full-height"></code></pre>
+                    </section>
+                </div>
+            </div>
+            <div class="modal fade" id="hotkeyModal" tabindex="-1" role="dialog"  aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+                            <h4 class="modal-title" style="text-align: center">热键表</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="clearfix">
+                                <div class="col-md-6">
+                                    <ul class="list-group">
+                                        <li class="list-group-item text-center active">操作</li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">A</span><span style="display: inline-block;float:right;">全选</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">U</span><span style="display: inline-block;float:right;">取消选中</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">U</span><span style="display: inline-block;float:right;">重新选中</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Home</span><span style="display: inline-block;float:right;">文档开头</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">End</span><span style="display: inline-block;float:right;">文档末尾</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">Left</span><span style="display: inline-block;float:right;">当前行首</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">Right</span><span style="display: inline-block;float:right;">当前行尾</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">D</span><span style="display: inline-block;float:right;">删除一行</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Backspace</span><span style="display: inline-block;float:right;">删除单词</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Z</span><span style="display: inline-block;float:right;">撤销</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Y</span><span style="display: inline-block;float:right;">重做</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">F</span><span style="display: inline-block;float:right;">查找</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">G</span><span style="display: inline-block;float:right;">查找下一个</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">G</span><span style="display: inline-block;float:right;">查找上一个</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">F</span><span style="display: inline-block;float:right;">替换</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">R</span><span style="display: inline-block;float:right;">全部替换</span></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-group">
+                                        <li class="list-group-item text-center active">编辑</li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">N</span><span style="display: inline-block;float:right;">新建页</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">S</span><span style="display: inline-block;float:right;">保存</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">B</span><span style="display: inline-block;float:right;">加粗</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">I</span><span style="display: inline-block;float:right;">斜体</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">-</span><span style="display: inline-block;float:right;">删除线</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">[</span><span style="display: inline-block;float:right;">上标</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">]</span><span style="display: inline-block;float:right;">下标</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">1-6</span><span style="display: inline-block;float:right;">标题</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">.</span><span style="display: inline-block;float:right;">无序列表</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">/</span><span style="display: inline-block;float:right;">有序列表</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">]</span><span style="display: inline-block;float:right;">引用内容</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">T</span><span style="display: inline-block;float:right;">表格</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">H</span><span style="display: inline-block;float:right;">水平分割线</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">L</span><span style="display: inline-block;float:right;">链接</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">P</span><span style="display: inline-block;float:right;">图片</span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">C</span><span style="display: inline-block;float:right;">代码</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</div>

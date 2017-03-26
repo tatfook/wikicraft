@@ -1,0 +1,52 @@
+<?npl
+--[[
+Title: base class of all models
+Author: wuxiangan
+Date: 2016/10/13
+Desc: define error code and message 
+]]
+
+NPL.load("(gl)script/ide/debug.lua")
+
+--local errors = inherit(nil, gettable("models.errors"))
+
+errors = {}
+errors.SUCCESS={id=0,message="success",}
+errors.SERVER_INNER_ERROR = {id=1,message="server inner error",}
+errors.REQUEST_PARAMS_ERROR = {id=2,message="request params error",}
+errors.NOT_FOUND = {id=3, message="not found",}
+
+function errors:new(message) 
+	return {
+		id=-1,
+		message=message,
+	};
+end 
+
+function errors:isOk(error) 
+	return error.id == 0
+end
+
+function errors:isError(error)
+	return error.id ~= 0
+end
+
+function errors:wrap(err, data) 
+	if not err then
+		return {error=errors.SUCCESS, data=data}
+	end
+	
+	if err then 
+		log(commonlib.debugstack())
+		log(err)
+	end
+
+	if type(err) == "string" then 
+		return {error=self:new(err),data=nil,}
+	elseif type(err) == "table" then
+		return {error=err, data=nil}
+	end
+
+	return {error=errors.SUCCESS, data=data}
+end
+

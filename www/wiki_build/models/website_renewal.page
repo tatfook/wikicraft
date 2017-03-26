@@ -1,0 +1,143 @@
+<?npl --[[
+Title: website renewal model
+Author: wuxiangan
+Date: 2016/11/07
+]]
+
+NPL.load("(gl)script/ide/DateTime.lua")
+local timehelp = commonlib.timehelp
+
+include_once("./abstract/base.page");
+include_once("./website.page")
+
+local website_renewal = inherit(models.abstract.base, gettable("models.website_renewal"))
+website_renewal.db_name="website_renewal"
+
+local WEBSITE_RENEWAL_TYPE_PERSONAL = 0
+local WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
+
+function website_renewal:ctor()
+	self:addfield("websiteId", "string")   -- 所属者 组织名, 个人创建的其它站点归属个人站下
+	self:addfield("renewalType", "number") -- 作品所属类型
+	self:addfield("worksId", "number")     -- 组织内作品的ID
+
+	self:addfield("createDate", "string");
+	self:addfield("updateDate", "string");
+end
+
+-- 通过websiteID删除
+function website_renewal:api_deleteByWebsiteId(params) 
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 通过worksId删除
+function website_renewal:api_deleteByWorksId(params)
+	if not params.worksId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():delete({["+worksId"]={params.worksId}}, resume)
+	return errors:wrap(yield())
+end
+
+-- 获取最近一周内更新
+function website_renewal:api_getWeekCount(params)
+	local currentDate, currentTiem = timehelp.GetLocalTime()
+	local startDate = timehelp.get_next_date_str(currentDate, -7, "%04d-%02d-%02d")
+	params = params or {}
+	params.startDate = startDate
+	return self:api_getCount(params)
+end
+
+-- 获取最近更新的数量
+function website_renewal:api_getCount(params)
+	local startDate = params.startDate or ""
+	if params.websiteId then
+		self:db():count({["+websiteId-updateDate"]={params.websiteId,gt=startDate}}, resume)
+	else
+		self:db():count({["-updateDate"]={gt=startDate}}, resume)
+	end
+
+	local err, data = yield()
+
+	if err then
+		return errors:wrap(err, data)
+	end
+
+	return {error=errors.SUCCESS, data=data}
+end
+
+-- 获取最近更新
+function website_renewal:get(params)
+	local skip, limit = util:pagination(params)
+	local startDate = params.startDate or ""
+	
+	local total = self:api_getCount(params).data
+
+	if params.websiteId then
+		self:db():find({["+websiteId-updateDate"]={params.websiteId,gt=startDate, skip=skip, limit=limit}}, resume)
+	else
+		self:db():find({["-updateDate"]={gt=startDate, skip=skip, limit=limit}}, resume)
+	end
+		
+	local err, data = yield()
+	if err or (not data) then
+		return errors:wrap(err or errors.NOT_FOUND)
+	end
+
+	local siteList = {}
+	local websiteDB = models.website:new()
+	for _, value in pairs(data) do
+		siteList[#siteList + 1] = websiteDB:api_getById({websiteId=value.worksId}).data
+	end
+
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), siteList=siteList})
+end	
+
+-- 当更新站点页面时调用此方法，更新一个站点
+function website_renewal:update(params)	
+	if (not params.websiteId) or (not params.worksId) then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	-- local currentDate = '2016-12-05'
+	self:db():updateOne(params,{updateDate=currentDate}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 创建或修改更新记录
+function website_renewal:api_upsert(params)
+	if (not params.websiteId) or (not params.worksId) then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+	
+	self:db():findOne({["+websiteId+worksId"] = {params.websiteId, params.worksId}}, resume)
+	local err, data = yield()
+
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	if not data then
+		params.createDate = params.updateDate
+	end
+	
+	self:db():insertOne({["+websiteId+worksId"] = {params.websiteId, params.worksId}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+function website_renewal:create(params) 
+
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = params.createDate
+
+	self:db():insertOne(nil, params, resume)
+	return errors:wrap(yield())
+end
+

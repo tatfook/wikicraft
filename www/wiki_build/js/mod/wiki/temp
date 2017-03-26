@@ -1,0 +1,24 @@
+		{
+			name="简历头部",
+			classifyName="header",
+			content=[[
+                ```@wiki/js/resumeHeader
+                ```
+            ]],
+			wikiCmdName="@wiki/js/resumeHeader",
+			logoUrl="wiki/assets/imgs/wiki_resume_header.jpg",
+			desc="resume header",
+			flag=1,
+		},
+		{
+			name="简历内容",
+			classifyName="wiki",
+			content=[[
+                ```@wiki/js/resumeHeader
+                ```
+            ]],
+			wikiCmdName="@wiki/js/resumeHeader",
+			logoUrl="",
+			desc="resume header",
+			flag=1,
+		},

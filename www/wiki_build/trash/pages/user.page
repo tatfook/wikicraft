@@ -1,0 +1,411 @@
+﻿<?npl
+--[[
+Title: ucenter page
+Author: zhoujun
+Date: 2016/10/11
+]]
+include_once(WIKI_ROOT.."helpers/website.page");
+RenderServerWikiScript();
+wp_enqueue_script("MyApp", WIKI_WEBROOT.."app.js");
+include(WIKI_ROOT.."auth/clientconfig.page");
+wp_enqueue_script("uc_leftmenu", WIKI_WEBROOT.."assets/lib/js/ucenter.js");
+wp_enqueue_script("js_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.js");
+wp_enqueue_script("js_sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.js");
+wp_enqueue_script("userStarsController", WIKI_WEBROOT.."controllers/userStarsController.js");
+wp_enqueue_style("uc_style", WIKI_WEBROOT.."assets/lib/css/uc_style.css");
+wp_enqueue_style("h_style", WIKI_WEBROOT.."assets/lib/css/style.css");
+wp_enqueue_style("css_cropper", WIKI_WEBROOT.."assets/cropper/cropper.min.css");
+wp_enqueue_style("sitelogo", WIKI_WEBROOT.."assets/sitelogo/sitelogo.css");
+wp_enqueue_script("userCollectionController", WIKI_WEBROOT.."controllers/userCollectionController.js");
+
+?>
+ <div id="leftmenu" class="left_menu">
+ 		<!-- left section -->
+		<div class="left_menu_uc">
+				<ul>
+				  <li id="lm1" onclick="setTab('lm',1,9)" class="hover">我的资料</li>
+			      <li id="lm2" onclick="setTab('lm',2,9)">账号安全</li>
+				  <li id="lm3" onclick="setTab('lm',3,9)">我的收藏</li>
+				  <li id="lm4" onclick="setTab('lm',4,9)">我的历史</li>
+				  <li id="lm5" onclick="setTab('lm',5,9)">我的粉丝</li>
+				  <li id="lm6" onclick="setTab('lm',6,9)">实名验证</li>
+				  <li id="lm7" onclick="setTab('lm',7,9)">邀请注册</li>
+				  <li id="lm8" onclick="setTab('lm',8,9)">VIP</li>
+				  <li id="lm9" onclick="setTab('lm',9,9)">数据源</li>
+				</ul>
+			</div>
+	  	<!-- right section -->	
+			<div class="l_contentbox">
+			     <!--my information-->
+				 <div id="lm_1" >
+				 <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					     <div id="content" class="row-fluid">
+                     
+                           <div class="col-md-4" >
+						         <div class="uprow">
+			                          <div id="crop-avatar" class="col-md-6">
+				                      <div class="avatar-view" title="点击编辑头像">
+									      <span style="padding-bottom:10px">
+				                             <wiki-identicon userid="user._id" size="64" imageurl="user.picture" ></wiki-identicon>
+                                         </span>
+			    	                     <!-- <img src="<?=WIKI_WEBROOT..'assets/lib/images/logo.jpg'?>" alt="Logo">-->
+			                         </div>
+			                        </div>
+		                      </div>
+						   
+						    </div>
+                           <div class="col-md-8">
+						           <form class="form-horizontal" role="form">
+                    <fieldset>
+                        <legend>基本信息</legend>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="nickname">昵称：</label>
+                          <div class="col-sm-6">
+                             <input class="form-control" id="nickname" type="text" placeholder="请输入"/>
+                          </div>
+                           </div>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="">性别：</label>
+                          <div class="col-sm-6">
+                             <div class="radio radio-info radio-inline">
+                                    <input type="radio" id="inlineRadio1" value="0" name="radioInline" checked>
+                                   <label for="inlineRadio1"> 男 </label>
+                             </div>
+                             <div class="radio radio-inline">
+                                <input type="radio" id="inlineRadio2" value="1" name="radioInline">
+                                <label for="inlineRadio2"> 女 </label>
+                             </div>							  <div class="radio radio-inline">
+                                <input type="radio" id="inlineRadio3" value="2" name="radioInline">
+                                <label for="inlineRadio3"> 保密 </label>
+                             </div>
+                          </div>
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for="">位置设定：</label>
+						  <!--province -->
+						    <div class="row">
+                                   <div class="col-sm-2">
+                                       <select name="province_code" class="form-control combox" ref="city_select"
+                                               refUrl="">
+                                       </select>
+                                  </div>
+                                  <div class="col-sm-2">
+                                       <select name="city_code" id="city_select" class="form-control">
+                                       </select>
+                                  </div>
+		                          <div class="col-sm-2">
+                                       <select name="area_code" id="area_select" class="form-control">
+                                       </select>
+                                  </div>
+                            </div>
+                         
+                        
+                       </div>
+					   <!--personal profile-->
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for="">个人简介：</label>
+						  <textarea id="bio" ng-model="user.bio" class="form-control" rows="3" placeholder="150字以内" ></textarea>
+                         </div>
+						 
+                         <div class="col-md-4 col-md-offset-8" >
+                             <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">保存</button>
+                        </div>
+                       
+                      
+                    </fieldset>     
+                   
+                  
+                  </form>
+						          
+						   
+						   
+						   
+						   
+						   </div>
+    
+                        </div>
+                     
+	                </div>
+                 </div>
+				 </div>
+				 <!--account security-->
+				 <div id="lm_2" style="display:none">
+				 		 <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					<form class="form-horizontal" role="form">
+                    <fieldset>
+                        <legend>修改密码</legend>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_host">旧密码</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_host" type="password" placeholder="请输入"/>
+                          </div>
+                           </div>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_username">新密码</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_username" type="password" placeholder="请输入"/>
+                          </div>
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_username">确认密码</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_username" type="password" placeholder="请确认"/>
+                          </div>
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for=""></label>
+						  <div class="col-sm-4">
+                             <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">修改
+                            </button>
+                          </div>
+                        
+                       </div>
+                    </fieldset>     
+                    <fieldset>
+                         <legend>安全验证</legend>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="yz_mail">验证邮箱</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="yz_mail" type="text" placeholder=""/>
+                          </div>
+						  <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">验证
+                        
+                       </div>
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for="yz_tel">验证手机</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="yz_tel" type="text" placeholder=""/>
+                          </div>
+                          <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">验证
+                       </div>
+                    </fieldset>
+                  
+                  </form>
+					 </div>
+					   </div>
+				 	    </div>
+				 <!--my collections-->
+				 <div id="lm_3" style="display:none" ng-controller="userStarsController">
+				 
+				  <div class="panel panel-default">
+
+	                 <div class="pbody"  >
+					 	  <div   style="height:5%"><big>`{{isOwner() ? "您" : getUser().displayName}}`共收藏{{projects.length || 0}}个作品</big> </div>
+					                        
+					         <div id="content" class="row-fluid" ng-bind-html="getProjectsInPageFormat()">
+                           
+	               
+					        </div>
+                           <div class="mt-2 mb-2 col-sm-12" float:"right">
+                                <ul uib-pagination items-per-page="items_per_page" boundary-links="true" total-items="projects.length || 0" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                           </div>
+					 </div>
+                         
+				 </div>
+
+				 </div>
+				 <!--my history-->
+				 <div id="lm_4" style="display:none">
+				  <div class="panel panel-default" >
+				           
+	                       
+	                 <div class="pbody" style="position:absolute; width:100%; height:100%; overflow:auto">
+					 		  <section id="cd-timeline" class="cd-container">
+	                        <div class="cd-timeline-block">
+		                       <div class="cd-timeline-img cd-picture">
+			                     <img src="" alt="">
+		                       </div>
+
+		                     <div class="cd-timeline-content">
+			                   <h2>test1</h2>
+			                   <p>test</p>
+			                      <a href="#" class="cd-read-more" target="_blank">详情</a>
+			                   <span class="cd-date">2016-10-12</span>
+		                    </div>
+	                        </div>
+	                     <div class="cd-timeline-block">
+		                    <div class="cd-timeline-img cd-movie">
+		                      	<img src="" alt="">
+		                     </div>
+
+		                   <div class="cd-timeline-content">
+			                    <h2>test2</h2>
+			               <p>test2</p>
+			                <a href="#" class="cd-read-more" target="_blank">详情</a>
+			               <span class="cd-date">2016-10-13</span>
+		                 </div>
+	                   </div>
+	
+                     </section>
+			
+					 </div>
+					 </div>
+				 
+				 
+				 
+				 
+				 
+				 </div>
+				 <!--my fans-->
+				 <div id="lm_5" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 
+				 </div>
+				 <!--authentication -->
+				 <div id="lm_6" style="display:none">
+				 
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div>
+				 </div>
+				 <!--register by invite-->
+				 <div id="lm_7" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div></div>
+				 <!--VIP-->
+				 <div id="lm_8" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+					 </div>
+					 </div></div>
+				 <!--datasource-->
+				 <div id="lm_9" style="display:none">
+				  <div class="panel panel-default">
+	
+	                 <div class="pbody">
+
+					 <form class="form-horizontal" role="form">
+                    <fieldset>
+                        <legend>绑定数据源</legend>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_host">github账号：</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_host" type="text" placeholder="请输入"/>
+                          </div>
+                           </div>
+                       <div class="form-group">
+                          <label class="col-sm-2 control-label" for="ds_username">github密码：</label>
+                          <div class="col-sm-4">
+                             <input class="form-control" id="ds_username" type="password" placeholder="请输入"/>
+                          </div>
+                        
+                       </div>
+					  
+					    <div class="form-group">
+                          <label class="col-sm-2 control-label" for=""></label>
+						  <div class="col-sm-4">
+                             <button type="button" class="btn btn-primary" 
+                                 data-toggle="button">绑定
+                            </button>
+                          </div>
+                        
+                       </div>
+                    </fieldset>     
+                    <fieldset>
+                         <legend>已绑定数据源</legend>
+                       
+                            <table class="table table-striped">
+ 
+                           <thead>
+                               <tr>
+                                 <th>账号</th>
+                                 <th>设为默认</th>
+      
+                               </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                <td>exejun1986@163.com</td>
+                               <td><button type="button" class="btn btn-primary" 
+                                 data-toggle="button">设为默认</td>
+      
+                             </tr>
+   
+                               </tbody>
+                          </table>
+                       </div>
+					    
+                         </fieldset>
+                     </form>
+					 </div>
+					 </div>
+				 
+				 
+				 
+				 
+				 
+				 
+				 </div>
+								
+			</div>	
+		 
+
+	</div>
+	
+<div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<form class="avatar-form" action="" enctype="multipart/form-data" method="post">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal" type="button">&times;</button>
+					<h4 class="modal-title" id="avatar-modal-label">Change Logo Picture</h4>
+				</div>
+				<div class="modal-body">
+					<div class="avatar-body">
+						<div class="avatar-upload">
+							<input class="avatar-src" name="avatar_src" type="hidden">
+							<input class="avatar-data" name="avatar_data" type="hidden">
+							<label for="avatarInput">图片上传</label>
+							<input class="avatar-input" id="avatarInput" name="avatar_file" type="file"></div>
+						<div class="row">
+							<div class="col-md-9">
+								<div class="avatar-wrapper"></div>
+							</div>
+							<div class="col-md-3">
+								<div class="avatar-preview preview-lg"></div>
+								<div class="avatar-preview preview-md"></div>
+								<div class="avatar-preview preview-sm"></div>
+							</div>
+						</div>
+						<div class="row avatar-btns">
+							<div class="col-md-9">
+								<div class="btn-group">
+									<button class="btn" data-method="rotate" data-option="-90" type="button" title="Rotate -90 degrees"><i class="fa fa-undo"></i> 向左旋转</button>
+								</div>
+								<div class="btn-group">
+									<button class="btn" data-method="rotate" data-option="90" type="button" title="Rotate 90 degrees"><i class="fa fa-repeat"></i> 向右旋转</button>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-success btn-block avatar-save" type="submit"><i class="fa fa-save"></i> 保存修改</button>
+							</div>
+						</div>
+					</div>
+				</div>
+  		</form>
+  	</div>
+     </div>
+   </div>
+
+    <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>

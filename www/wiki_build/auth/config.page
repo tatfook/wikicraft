@@ -1,0 +1,8 @@
+<?npl
+--[[
+Title: secrete keys for "NPL code wiki" demo app.
+Author: LiXizhi
+Date: 2016/5/10
+Desc: This only gives an example. *Do not distribute your secrets to clients!*
+]]
+return wiki_config().wiki.secrets;

@@ -1,0 +1,112 @@
+<?npl
+--[[
+Title: website template
+Author: wuxiangan
+Date: 2016/10/10
+]]
+include_once("./abstract/base.page");
+
+local website_template_style = inherit(models.abstract.base, gettable("models.website_template_style"));
+
+website_template_style.db_name = "website_template_style";
+local website_template_style_dir = WIKI_ROOT .. "html/templates/";
+
+function website_template_style:ctor()
+	self:addfield("name", "string", false, 60);   -- 样式名
+	self:addfield("templateId", "number", false); -- 模板ID
+	self:addfield("logoUrl", "string", false)     -- logo
+	--self:addfield("content", "string", false, 1200);   -- 样式内容  wiki template command
+	self:addfield("filename", "string", false, 120);   -- 模板名
+end
+
+function website_template_style:get(params)
+	self:db():find(params, resume);
+	local err, data = yield();
+	
+	if err then 
+		return errors.wrap(err,data);
+	end
+--[[	
+	for key, value in pairs(data) do
+		self:loadTemplateStyleContent(value)
+	end
+]]--
+	return {error=errors.SUCCESS, data=data};
+end
+
+
+function website_template_style:api_getWebsiteTemplateStyleById(params) 
+	log(params);
+	if not params._id then 
+		return {error=errors.REQUEST_PARAMS_ERROR, nil};
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+	local err, data = yield();
+
+	self:loadTemplateStyleContent(data)
+
+	if err then
+		return errors.wrap(err,data);
+	end 
+
+	return {error=errors.SUCCESS, data=data}; 
+end
+
+function website_template_style:loadTemplateStyleContent(data) 
+	if (not data) or (not data.filename) or data.filename:len() == 0 then
+		return
+	end
+	file = ParaIO.open(website_template_style_dir .. data.filename, "r")
+	if not file then
+		log("template file lose!!!")
+		return 
+	end
+
+	data.content = "" 
+	local line = nil
+	
+	repeat
+		line = file:readline()
+		data.content = data.content .. (line or "")
+	until (line == nil)
+	
+	file:close()
+	return	
+end
+
+function website_template_style:api_getIndexPage(params) 
+	if not params.styleId then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	self:db():findOne({_id=params.styleId}, resume)
+	local err, data = yield()
+
+	if (not data) or (not data.filename) or data.filename:len() == 0 then
+		log("no record")
+		return {error=errors.SUCCESS, data=""}
+	end
+
+	file = ParaIO.open(website_template_style_dir .. data.filename, "r")
+	if not file then
+		log("template file lose!!!")
+		return {error=errors.SUCCESS, data=""}
+	end
+
+	local content = "" 
+	local line = nil
+	
+	repeat
+		line = file:readline()
+		content = content .. (line or "") .. "\r\n"
+	until (line == nil)
+	
+	file:close()
+	
+	return {error=errors.SUCCESS, data=content}
+end
+
+
+
+

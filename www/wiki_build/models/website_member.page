@@ -1,0 +1,202 @@
+<?npl --[[
+Title: website renewal model
+Author: wuxiangan
+Date: 2016/11/14
+]]
+
+include_once("./abstract/base.page")
+include_once("./user.page")
+include_once("./user_trends.page")
+include_once("./website.page")
+
+local website_member = inherit(models.abstract.base, gettable("models.website_member"))
+website_member.db_name = "website_member"
+
+function website_member:ctor()
+	-- (websiteId, userId) key
+	self:addfield("websiteId","number")    -- 站点ID
+	self:addfield("userId", "number")      -- 成员ID
+	-- 
+	self:addfield("roleId", "number")        -- 角色
+	self:addfield("createDate", "string", false, 64)
+	self:addfield("updateDate", "string", false, 64)
+end
+
+-- 通过websiteID删除
+function website_member:api_deleteByWebsiteId(params) 
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 添加成员
+function website_member:create(params) 
+	if (not params.websiteId) or (not params.userId) then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = params.createDate
+
+	self:db():insertOne({["+websiteId+userId"]={params.websiteId, params.userId}}, params, resume)
+	local err, data = yield()
+
+	local websiteDB = models.website:new()
+	local site = websiteDB:api_getById({websiteId=params.websiteId}).data
+	if not site then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	if site.userId == params.userId then
+		return errors:wrap()
+	end
+
+	local userTrendsDB = models.user_trends:new()
+	local trends = {
+		userId=params.userId,
+		websiteId=params.websiteId,
+		otherUserId=site.userId,
+		trendsType=const.USER_TRENDS_TYPE_ORGANIZATION,
+		desc="你已加入组织:" .. site.name
+	}
+	userTrendsDB:api_upsert(trends)
+	
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=params.userId}).data
+	if not userinfo then
+		return errors:wrap()
+	end
+	trends.userId = site.userId
+	trends.otherUserId = params.userId
+	trends.desc = userinfo.username .. "加入你的组织:" .. website.name
+	userTrendsDB:api_upsert(trends)
+
+	return errors:wrap()
+end
+
+-- 更新
+function website_member:api_updateById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.updateDate = params.createDate
+	self:db():updateOne({_id=params._id}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- used to debug
+function website_member:get(params)
+	local query = util:formatQuery(params)
+	self:db():find(query, resume)
+	return errors:wrap(yield())
+end
+
+-- 获得数量
+function website_member:api_getCount(query)
+	self:db():count(query, resume)
+    local err, data = yield()
+
+	return errors:wrap(err, data or 0)
+end
+
+-- 获得列表
+function website_member:api_get(query)
+	self:db():find(query, resume)
+	local err, data = yield()
+
+	if err or (not data) then
+		return errors:wrap(err or errors.NOT_FOUND)
+	end
+
+	local userDB = models.user:new()
+	local userList = {}
+	for _, obj in pairs(data) do
+		userList[#userList+1] = userDB:api_getById({userId=obj.userId}).data
+		userList[#userList].roleInfo = obj
+	end
+	
+	return errors:wrap(nil, userList)
+end
+
+-- 获得站点成员列表
+function website_member:api_getByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+	end
+
+	local query = {["+websiteId"]={params.websiteId}}
+	local total = self:api_getCount(query).data
+
+	local skip, limit = util:pagination(params)
+	query = {["+websiteId"]={params.websiteId, skip=skip, limit=limit}}
+	local userList = self:api_get(query).data
+
+	return errors:wrap(err, {total=total, pageCount=util:getPageCount(total,limit), userList=userList})		
+end
+
+-- 获得站点全部成员数量
+function website_member:api_getCountByWebsiteId(params) 
+	if not params.websiteId then
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
+
+	self:db():count({["+websiteId"] = {params.websiteId}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除站点成员
+function website_member:delete(params)
+	local query = util:formatQuery(params)
+	self:db():delete(query, resume)
+	return errors:wrap(yield())
+end
+
+-- 获得评委成员信息
+function website_member:api_getJudgeListByWebsiteId(params)
+	params.role = const.WEBSITE_USER_ROLE_JUDGE
+	local query = {["+websiteId+roleId"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE}}
+	local total = self:api_getCount(query).data
+	
+	local skip, limit = util:pagination(params)
+	query = {["+websiteId+roleId"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE, skip=skip, limit=limit}}
+	local userList = self:api_get(query).data
+
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit), userList=userList})
+end
+
+-- 获得用户加入的站点列表
+function website_member:api_getWebsiteListByUserId(params)
+	local skip, limit = util:pagination(params)
+	
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():count({["+userId"]={params.userId}}, resume)
+	local err, total = yield()
+
+	self:db():find({["+userId"]={params.userId, skip=skip, limit=limit}}, resume)
+	local err, data = yield()
+	
+	local websiteDB = models.website:new()
+	for _, value in ipairs(data) do
+		value["siteinfo"] = websiteDB:api_getById({websiteId=value.websiteId}).data
+	end
+	
+	return errors:wrap(nil,{total=total, siteList=data})
+end
+
+
+
+
+
+
+
+
