@@ -57,8 +57,8 @@ function data_source:api_getInnerGitlabByUserId(params)
 	return errors:wrap(yield())
 end
 
-function data_source:api_getInnerGitlabToken(params) 
-	ds = {
+function getInnerGitlabToken(params) 
+	local ds = {
 		userId = params.userId,
 		type = const.DATA_SOURCE_INNER_GITLAB,
 		dataSourceId = params.gitlabUserId,
@@ -78,8 +78,7 @@ function data_source:api_getInnerGitlabToken(params)
 		for _, token in ipairs(data) do
 			if not token.revoked and token.active then
 				ds.dataSourceToken = token.token		
-				self:db():insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
-				-- log(ds)
+				db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
 				return
 			end
 		end
@@ -95,8 +94,7 @@ function data_source:api_getInnerGitlabToken(params)
 				return
 			end	
 			ds.dataSourceToken = data.token
-			-- log(ds)
-			self:db():insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
 		end)
 	end)
 	
@@ -131,7 +129,7 @@ function data_source:api_linkInnerGitlab(params)
 				return
 			end
 			-- 不存在创建用户
-			if #data == 0 then 
+			if not data or #data == 0 then 
 				System.os.GetUrl({
 					url="http://keepwork.com:9000/api/v4/users", 
 					headers={['PRIVATE-TOKEN']= adminToken},
@@ -143,10 +141,10 @@ function data_source:api_linkInnerGitlab(params)
 					if code ~= 201 then
 						return
 					end
-					self:api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=gitlabUser.id})
+					api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=gitlabUser.id})
 				end)
 			else
-				self:api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=data[0].id})
+				api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=data[1].id})
 			end
 		end)
 	else 
