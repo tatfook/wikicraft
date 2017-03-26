@@ -37,42 +37,54 @@ define(['app',
             {flag:'dataSource', name:'数据源配置'},
         ]
 
+        $scope.$on('userCenterContentType', function (event, contentType) {
+            if (contentType != $scope.contentType) {
+                $scope.selectContentType(contentType);
+            }
+        })
+        $scope.$on('userCenterSubContentType', function (event, subContentType) {
+            //$scope.selectContentType(contentType);
+            //console.log(subContentType);
+            $scope.showItem = subContentType;
+        });
+
         function init() {
             $scope.contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
             storage.sessionStorageRemoveItem('userCenterContentType');
-            console.log($scope.contentType);
-            $scope.selectContentType($scope.contentType);
-            //$scope.$apply();
+            $scope.showItem = storage.sessionStorageGetItem('userCenterSubContentType');
+            storage.sessionStorageRemoveItem('userCenterSubContentType');
 
-            $scope.$on('userCenterContentType', function (event, contentType) {
-                $scope.selectContentType(contentType);
-            })
+            //console.log($scope.contentType, $scope.showItem);
+            $scope.selectContentType($scope.contentType, $scope.showItem);
+            //$scope.$apply();
         }
 
         // 文档加载完成
         $scope.$watch('$viewContentLoaded', init);
         
-        $scope.selectContentType = function (contentType) {
+        $scope.selectContentType = function (contentType, subContentType) {
             //console.log(contentType);
             $scope.contentType = contentType;
 
             if (contentType == 'userProfile') {
-                $scope.showItem = 'myProfile';
+                $scope.showItem = subContentType || 'myProfile';
                 util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
             } else if (contentType == 'websiteManager' || contentType == "editWebsite") {
-                $scope.showItem = 'myWebsite';
+                $scope.showItem = subContentType || 'myWebsite';
                 $scope.contentType = "websiteManager";
                 if (contentType == "websiteManager")
                     util.html('#userCenterSubPage', websiteHtmlContent, $scope);
                 else if (contentType == "editWebsite")
                     util.html('#userCenterSubPage', editWebsiteHtmlContent, $scope);
             } else if (contentType == 'VIP') {
-                $scope.showItem = 'myVIP';
+                $scope.showItem = subContentType || 'myVIP';
                 util.html('#userCenterSubPage', myVIPHtmlContent, $scope);
             } else if (contentType == 'dataSource') {
-                $scope.showItem = 'dataSource';
+                $scope.showItem = subContentType || 'dataSource';
                 util.html('#userCenterSubPage', dataSourceHtmlContent, $scope);
             }
+
+            subContentType && $rootScope.$broadcast('userCenterSubContentType', subContentType);
         }
 
         $scope.getExpandClass = function (contentType) {
@@ -86,7 +98,7 @@ define(['app',
                 util.html('#userCenterSubPage', websiteHtmlContent, $scope);
             }
 
-            $rootScope.$broadcast('userCenterItem', item.flag);
+            $rootScope.$broadcast('userCenterSubContentType', item.flag);
         }
 
         $scope.getActiveStyleClass = function (item) {

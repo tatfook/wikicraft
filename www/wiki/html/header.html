@@ -331,7 +331,8 @@
                         </li>
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted">{{user.fansCount}}</span></li>
+                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt="" ng-click="goUserCenterPage('userProfile','myFans')">
+                            <span class="text-muted">{{user.fansCount}}</span></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li class="dropdown user-dropdown">
@@ -354,7 +355,7 @@
                                     <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserIndexPage('/'+user.username)">我的主页</a></li>
+                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
                                     <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>

@@ -58,7 +58,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 var innerGitlab = gitlab();
                 dataSource.registerDataSource("innerGitlab", innerGitlab)
                 account.innerGitlab = innerGitlab;
-                console.log(account.innerGitlab)
+                //console.log(account.innerGitlab)
                 for (var i = 0; i < dataSourceLList.length; i++) {
                     var ds = dataSourceLList[i];
                     // inner gitlab data source flag

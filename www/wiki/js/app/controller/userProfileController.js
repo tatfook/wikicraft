@@ -16,6 +16,8 @@ define(['app',
         $scope.currentPage = 1;
         $scope.pageSize = 5;
 
+        //console.log("init userProfileController!!!");
+
         var innerGitlab = Account.innerGitlab;
 
         function init() {
@@ -30,7 +32,6 @@ define(['app',
                 cropBoxMovable: false,
                 cropBoxResizable: false,
                 ready: function () {
-                    console.log("dfg");
                     var $clone = $(this).clone().removeClass('cropper-hidden');
                     console.log($(this));
                     $clone.css({
@@ -108,26 +109,27 @@ define(['app',
                 finishBtn.addClass("sr-only");
                 dataForm.removeClass("sr-only");
             });
-
-            $scope.$on('userCenterItem', function (event, item) {
-                if (item == 'myProfile')
-                    $scope.clickMyProfile();
-                else if(item == 'accountSafe')
-                    $scope.clickAccountSafe();
-                else if(item == 'myTrends')
-                    $scope.clickMyTrends();
-                else if(item == 'myCollection')
-                    $scope.clickMyCollection();
-                else if(item == 'myHistory')
-                    $scope.clickMyHistory();
-                else if(item == 'myFans')
-                    $scope.clickMyFans();
-                else if(item == 'realName')
-                    $scope.clickRealName();
-                else if(item == 'invite')
-                    $scope.clickInvite();
-            });
         }
+
+        $scope.$on('userCenterSubContentType', function (event, item) {
+            //console.log(item);
+            if (item == 'myProfile')
+                $scope.clickMyProfile();
+            else if(item == 'accountSafe')
+                $scope.clickAccountSafe();
+            else if(item == 'myTrends')
+                $scope.clickMyTrends();
+            else if(item == 'myCollection')
+                $scope.clickMyCollection();
+            else if(item == 'myHistory')
+                $scope.clickMyHistory();
+            else if(item == 'myFans')
+                $scope.clickMyFans();
+            else if(item == 'realName')
+                $scope.clickRealName();
+            else if(item == 'invite')
+                $scope.clickInvite();
+        });
 
         // 文档加载完成
         $scope.$watch('$viewContentLoaded', init);

@@ -191,11 +191,14 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             util.go("VIPLevel");
         };
 
-        $scope.goUserCenterPage = function (contentType) {
+        $scope.goUserCenterPage = function (contentType, subContentType) {
+            console.log(contentType, subContentType);
             if (window.location.pathname == '/wiki/userCenter') {
                 $rootScope.$broadcast('userCenterContentType', contentType);
+                subContentType && $rootScope.$broadcast('userCenterSubContentType', subContentType);
             } else {
                 storage.sessionStorageSetItem('userCenterContentType', contentType);
+                subContentType && storage.sessionStorageSetItem('userCenterSubContentType', subContentType);
                 util.go("userCenter");
             }
         };
