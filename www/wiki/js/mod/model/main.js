@@ -80,7 +80,9 @@ define(function () {
 
                     var blocks_list = parseBmaxText(txt);
                     create_meshes(blocks_list);
+                    return true;
                 }
+                return false;
             }
             function extend_box(box,v) {
                 var min = box.min;
@@ -154,9 +156,11 @@ define(function () {
                     var container = $scope.scopeElements.container;
                     $scope.view = new THREE.ThreeJsView(container);
 
-                    if (!parseModel()) {
-                        parseOriginalBlockNode(wikiBlock.modParams);
+                    // parse original format first
+                    if (!parseOriginalBlockNode(wikiBlock.modParams)) {
+                        parseModel()
                     }
+                   
                 });
             });
                 
