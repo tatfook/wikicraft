@@ -67,7 +67,7 @@ function wiki_module:api_getById(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["_id"]={params.moduleId}}, resume)
+	self:db():findOne({_id=params.moduleId}, resume)
 	
 	return errors:wrap(yield())
 end
@@ -125,13 +125,13 @@ function wiki_module:api_updateUseCount(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)	
 	end
 	
-	local count = params.useCount or 0
+	local count = params.useCount or 1
 	local wikiModule = self:api_getById({moduleId=params.moduleId}).data
 	if not wikiModule then
 		return errors:wrap(nil)
 	end
 
-	self:db():updateOne({_id=moduleId}, {useCount=wikiModule.useCount+count}, resume)	
+	self:db():updateOne({_id=params.moduleId}, {useCount=wikiModule.useCount+count}, resume)	
 	
 	return errors:wrap(yield())
 end
