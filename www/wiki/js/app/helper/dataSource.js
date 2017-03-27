@@ -66,7 +66,7 @@ define(['app', 'helper/util'], function (app, util) {
 
             for (var key in dataSource) {
                 if (dataSourceMap[key].enable) {
-                    dataSource[key] && dataSource[key][fnName] && dataSource[key][fnName](params, isAllOK(key, false), isAllOK(key, true));
+                    dataSource[key] && dataSource[key][fnName] && dataSource[key][fnName](angular.copy(params), isAllOK(key, false), isAllOK(key, true));
                 }
             }
         }

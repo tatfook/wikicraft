@@ -35,9 +35,14 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                  };
                  user.githubName = 'wxaxiaoyao';
                  */
+                var outerGithubDS = dataSource.getSingleDataSource('github');
+                if (outerGithubDS && outerGithubDS.isInited()) {
+                    dataSource.setDataSourceEnable('github', user.githubDS);
+                    return;
+                }
                 if (user && user.githubToken && !github.isInited()) {
                     github.init(user.githubToken, user.githubName, user.githubRepoName, function () {
-                        dataSource.registerDataSource('github', github);
+                        dataSource.registerDataSource('github', github, user.githubDS);
                         $rootScope.$broadcast("onDataSource", github);
                         console.log("github init success");
                     }, function (response) {
@@ -55,6 +60,10 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
 
             // 初始化innerGitlab
             function initInnerGitlab(dataSourceLList) {
+                var innerGitlabDS = dataSource.getSingleDataSource('innerGitlab');
+                if (innerGitlabDS && innerGitlabDS.isInited()) {
+                    return;
+                }
                 var innerGitlab = gitlab();
                 dataSource.registerDataSource("innerGitlab", innerGitlab, false)
                 account.innerGitlab = innerGitlab;
