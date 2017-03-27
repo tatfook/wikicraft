@@ -8,7 +8,7 @@ Date: 2017/3/14
 function main()
 	local wikiModuleList = {
 	    {
-			name="worksList",
+			name="作品展示",
 			classifyName="works",
 			content=[[
                 ```@wiki/js/workslist

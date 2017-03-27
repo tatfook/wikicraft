@@ -8,7 +8,7 @@ Date: 2017/3/14
 function main()
 	local wikiModuleList = {
 		{
-			name="personalStatics",
+			name="信息统计",
 			classifyName="statics",
 			content=[[
                 ```@statics/js/personalStatics

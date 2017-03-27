@@ -50,6 +50,8 @@
             'text': libPathPrefix + 'requirejs/text',
             'domReady': libPathPrefix + 'requirejs/domReady',
             'fabric': libPathPrefix + 'fabric.require',
+            'jquerySharejs': libPathPrefix + 'sharejs/js/jquery.share.min',// 社交分享
+            'sharejs': libPathPrefix + 'sharejs/js/social-share',// 社交分享
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
@@ -112,7 +114,7 @@
                 main: "lib/codemirror"
             },
         ],
-        deps:['bootstrap'],
+        deps:['bootstrap','jquerySharejs','sharejs'],
         // urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
     });
 
