@@ -116,6 +116,7 @@
         ],
         deps:['bootstrap','jquerySharejs','sharejs'],
         // urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
+         urlArgs: "bust=111"   //防止读取缓存，调试用
     });
 
     

@@ -4,7 +4,7 @@
 
 define(['app', 'helper/util','text!wikimod/comment/html/comment.html'], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("commentController", function ($scope, Account) {
+        app.registerController("commentController", ['$scope', 'Account', function ($scope, Account) {
             $scope.user = Account.getUser();
             $scope.isAuthenticated = Account.isAuthenticated();
             //$scope.tipInfo = "登录后才能评论!!!";
@@ -44,7 +44,7 @@ define(['app', 'helper/util','text!wikimod/comment/html/comment.html'], function
             }
 
             init();
-        });
+        }]);
     }
 
     return {
