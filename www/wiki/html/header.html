@@ -301,39 +301,6 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
-                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
-                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
-                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
-                        </li>
-                        <li class="nav-bread-crumb">
-                            <ol class="breadcrumb">
-                                <li><a ng-click="goUserPersonalSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
-                                <li class="dropdown" ng-show="urlObj.sitename">
-                                    <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="true">{{urlObj.sitename || ''}}</a>
-                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                                        <li ng-repeat="site in userSiteList">
-                                            <a ng-click="selectSite(site)">{{site.name}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" ng-show="urlObj.pagename">
-                                    <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="true">{{urlObj.pagename || ''}}</a>
-                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                                        <li ng-repeat="page in userSitePageList">
-                                            <a ng-click="selectPage(page)">{{page.name}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt="" ng-click="goUserCenterPage('userProfile','myFans')">
-                            <span class="text-muted">{{user.fansCount}}</span></li>
-                    </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true"
@@ -424,6 +391,38 @@
                                 <div class="dropdown-footer"><a href="#">查看更多></a></div>
                             </ul>
                         </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
+                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
+                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
+                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
+                        </li>
+                        <li class="nav-bread-crumb">
+                            <ol class="breadcrumb">
+                                <li><a ng-click="goUserSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
+                                <li class="dropdown" ng-show="urlObj.sitename">
+                                    <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="true">{{urlObj.sitename || ''}}</a>
+                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
+                                        <li ng-repeat="site in userSiteList">
+                                            <a ng-click="selectSite(site)">{{site.name}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown" ng-show="urlObj.pagename">
+                                    <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="true">{{urlObj.pagename || ''}}</a>
+                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
+                                        <li ng-repeat="page in userSitePageList">
+                                            <a ng-click="selectPage(page)">{{page.name}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </li>
+                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
+                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
+                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted">{{user.fansCount}}</span></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">
