@@ -141,10 +141,10 @@ function data_source:api_linkInnerGitlab(params)
 					if code ~= 201 then
 						return
 					end
-					api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=gitlabUser.id})
+					getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=gitlabUser.id})
 				end)
 			else
-				api_getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=data[1].id})
+				getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=data[1].id})
 			end
 		end)
 	else 
