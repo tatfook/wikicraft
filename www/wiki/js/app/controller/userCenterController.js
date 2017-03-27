@@ -38,7 +38,7 @@ define(['app',
         ]
 
         $scope.$on('userCenterContentType', function (event, contentType) {
-            if (contentType != $scope.contentType) {
+            if (contentType != $scope.contentType || contentType == 'websiteManager') {
                 $scope.selectContentType(contentType);
             }
         })
