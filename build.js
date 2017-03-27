@@ -3,9 +3,9 @@
  */
 
 ({
-    appDir:"wiki",
-    dir:'wiki_build',
-    baseUrl:'js',
+    appDir:"www",
+    dir:'www_build',
+    baseUrl:'wiki/js',
     //name:'main',
     optimizeCss: 'standard',
     removeCombined:true,

@@ -3,33 +3,27 @@
  */
 
 /*预加载模块*/
+define([
+    'jquery-cookie',
 
-(function () {
-    var moduleList = [
-        'jquery-cookie',
+    'controller/mainController',
+    'controller/headerController',
+    //'controller/testController',
 
-        'controller/mainController',
-        'controller/headerController',
-        //'controller/testController',
+    // directives
+    //'directive/directive', // 不支持打包 动态加载
+    'directive/moduleDirective',
+    'directive/userpage',
+    'directive/wikiImage',
+    'directive/wikiLink',
+    'directive/wikiUISelect',
 
-        // directives
-        'directive/directive',
-        'directive/moduleDirective',
-        'directive/userpage',
-        'directive/wikiImage',
-        'directive/wikiLink',
-        'directive/wikiUISelect',
-
-        // factory
-        'factory/account',
-        'factory/message',
-        'factory/github',
-        'factory/gitlab',
-        'factory/modal',
-    ];
-    moduleList = moduleList.concat(config.preloadModuleList);
-    //console.log(moduleList);
-    define(moduleList, function () {
-        console.log("preload finished!!!");
-    });
-})();
+    // factory
+    'factory/account',
+    'factory/message',
+    'factory/github',
+    'factory/gitlab',
+    'factory/modal',
+], function () {
+    return {};
+});

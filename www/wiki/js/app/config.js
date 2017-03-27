@@ -45,7 +45,9 @@
 
 
         // 预加载模块列表
-        preloadModuleList:[],
+        preloadModuleList:[
+            'directive/directive', // 不支持打包 动态加载
+        ],
 
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
@@ -73,5 +75,12 @@
     config.getWikiModuleRender = function (moduleName) {
         return this.wikiModuleRenderMap[moduleName];
     }
+    // 全局初始化
+    config.init = function (cb) {
+        require(config.preloadModuleList,function () {
+            cb && cb();
+        })
+    }
+
     window.config = config;
 })();

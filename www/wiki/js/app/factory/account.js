@@ -35,7 +35,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                  };
                  user.githubName = 'wxaxiaoyao';
                  */
-                var outerGithubDS = dataSource.getSingleDataSource('github');
+                var outerGithubDS = dataSource.getRawDataSource('github');
                 if (outerGithubDS && outerGithubDS.isInited()) {
                     dataSource.setDataSourceEnable('github', user.githubDS);
                     return;
@@ -60,7 +60,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
 
             // 初始化innerGitlab
             function initInnerGitlab(dataSourceLList) {
-                var innerGitlabDS = dataSource.getSingleDataSource('innerGitlab');
+                var innerGitlabDS = dataSource.getRawDataSource('innerGitlab');
                 if (innerGitlabDS && innerGitlabDS.isInited()) {
                     return;
                 }
