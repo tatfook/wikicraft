@@ -1,8 +1,11 @@
 
-define(['app', 'helper/util'], function (app, util) {
+define([
+    'app',
+    'helper/util',
+    'text!wikimod/wiki/html/organizationHeader.html',
+], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("organizationHeaderController", function ($scope, Account, Message) {
-            $scope.htmlUrl = config.wikiModPath + 'header/pages/organizationHeader.page';
+        app.registerController("organizationHeaderController", ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
             $scope.memberApply = function () {
                 if (!Account.isAuthenticated()) {
                     Message.info("请重新登录!!!");
@@ -24,13 +27,13 @@ define(['app', 'helper/util'], function (app, util) {
                     Message.info("成员申请成功");
                 });
             }
-        });
+        }]);
     }
 
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="organizationHeaderController"><div ng-include="htmlUrl"></div></div>';
+            return htmlContent;
         }
     }
 });

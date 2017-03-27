@@ -2,13 +2,13 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/header/html/personalHeader.html',
+    'text!wikimod/wiki/html/personalHeader.html',
 ], function (app, util, htmlContent) {
 
     // 使用闭包使模块重复独立使用
     function registerController(wikiBlock) {
         app.registerController("personalHeaderController", ['$scope','Account','Message', function ($scope, Account, Message) {
-            $scope.imgsPath = config.wikiModPath + 'header/assets/imgs/';
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.user = Account.getUser();
 
             // 显示全部作品

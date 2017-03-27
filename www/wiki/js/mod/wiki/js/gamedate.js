@@ -1,9 +1,10 @@
 
-define(['app'], function (app) {
+define([
+    'app',
+    'text!wikimod/wiki/html/gamedate.html'
+], function (app, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("gamedateController", ['$scope',function ($scope) {
-            $scope.htmlUrl = config.wikiModPath + 'game/pages/gamedate.page';
-
             function init() {
                 var moduleParams = wikiBlock.modParams;
                 $scope.contributeDate = moduleParams.contributeDate || "待定";
@@ -17,7 +18,7 @@ define(['app'], function (app) {
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="gamedateController"><div ng-include="htmlUrl"></div></div>';
+            return htmlContent;
         }
     }
 });

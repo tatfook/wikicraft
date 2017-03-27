@@ -1,9 +1,12 @@
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!wikimod/wiki/html/userlist.html',
+], function (app, util, storage) {
     function registerController(wikiBlock) {
-        app.registerController("userlistController", function ($scope, $auth, Account, Message) {
-            $scope.htmlUrl = config.wikiModPath + 'user/pages/userlist.page';
-
+        app.registerController("userlistController", ['$scope',function ($scope) {
             $scope.requestUrl = config.apiUrlPrefix + "website_member/getByWebsiteId";
             $scope.requestParams = {pageSize: 6, page: 0, websiteId: $scope.siteinfo._id};
 
@@ -45,13 +48,13 @@ define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
             }
 
             init();
-        });
+        }]);
     }
 
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="userlistController"><div ng-include="htmlUrl"></div></div>';
+            return htmlContent;
         }
     }
 });

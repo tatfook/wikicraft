@@ -1,8 +1,11 @@
 
-define(['app', 'helper/storage'], function (app, storage) {
+define([
+    'app',
+    'helper/storage',
+    'text!wikimod/wiki/html/gameHeader.html',
+], function (app, storage, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("gameHeaderController", function ($scope, $auth, Account, Message) {
-            $scope.htmlUrl = config.wikiModPath + 'header/pages/gameHeader.page';
+        app.registerController("gameHeaderController", ['$scope', '$auth', 'Account', 'Message', function ($scope, $auth, Account, Message) {
             // worksApply
             $scope.goWorksApplyPage = function () {
                 if (!Account.isAuthenticated()) {
@@ -12,13 +15,13 @@ define(['app', 'helper/storage'], function (app, storage) {
                 storage.sessionStorageSetItem("workApplyWebsiteId", $scope.siteinfo._id);
                 window.location.href = config.frontEndRouteUrl + "#/worksApply";
             }
-        });
+        }]);
     }
 
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="gameHeaderController"><div ng-include="htmlUrl"></div></div>';
+            return htmlContent;
         }
     }
 });
