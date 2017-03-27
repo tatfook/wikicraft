@@ -23,6 +23,18 @@ function main()
 			desc="作品显示",
 			flag=1,
 		},
+		{
+            name="3D世界",
+            classifyName="works",
+            content=[[
+                ```@wiki/js/world3D
+                ```
+            ]],
+            wikiCmdName="@wiki/js/world3D",
+            logoUrl="wiki/assets/imgs/3DWorld_model.jpg",
+            desc="这里是mod介绍",
+            flag=1,
+        },
 	}
 		
 	regitsterWikiModuleList(wikiModuleList)
