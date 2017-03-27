@@ -1,7 +1,7 @@
 
 define(['app'], function (app) {
     function registerController(wikiBlock) {
-        app.registerController("gamedateController", function ($scope) {
+        app.registerController("gamedateController", ['$scope',function ($scope) {
             $scope.htmlUrl = config.wikiModPath + 'game/pages/gamedate.page';
 
             function init() {
@@ -11,7 +11,7 @@ define(['app'], function (app) {
                 $scope.resultDate = moduleParams.resultDate || "待定";
             }
             init();
-        });
+        }]);
     }
 
     return {
