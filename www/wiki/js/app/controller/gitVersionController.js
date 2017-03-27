@@ -100,8 +100,13 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
             if ($scope.isGitlabType) {
                 currentDataSource.getContent({path:$scope.path, ref:commit.sha}, function (data) {
                     currentDataSource.writeFile({path:$scope.path, content:data}, function () {
-                        console.log("rollback success");
-                        Message.info("文件回滚成功!!!")
+                        util.http('POST', config.apiUrlPrefix + 'website_pages/updateContentAndShaByUrl', {
+                            url: '/' + $scope.path,
+                            content: data,
+                        }, function () {
+                            console.log("rollback success");
+                            Message.info("文件回滚成功!!!");
+                        });
                     }, function () {
                         console.log("rollback failed");
                     });
