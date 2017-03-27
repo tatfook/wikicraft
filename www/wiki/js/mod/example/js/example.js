@@ -4,7 +4,7 @@
 
 define(['app', 'text!wikimod/example/page/example.page'], function (app, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("exampleController", function ($scope) {
+        app.registerController("exampleController", ['$scope',function ($scope) {
             console.log(wikiBlock);
             // 模块参数初始化相关表单值
             var modParams = wikiBlock.modParams || {};
@@ -18,7 +18,7 @@ define(['app', 'text!wikimod/example/page/example.page'], function (app, htmlCon
                 modParams.content = $scope.content;
                 wikiBlock.applyModParams(modParams);  // 应用模块参数
             }
-        });
+        }]);
     }
 
     return {
