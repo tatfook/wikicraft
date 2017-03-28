@@ -4,12 +4,16 @@ workDir=`pwd`
 if [ "$1" = "build" ]; then
 	echo "start build web server..."
 	pid=`ps uax | grep "npl.*port=8900.*" | grep -v grep | awk '{print $2}'`
-	kill -9 $((pid))
+	if [ ! -z $pid ]; then
+		kill -9 $((pid))
+	fi
 	npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www_build/" port="8900" dev="${workDir}"
 else
 	echo "start server..."
 	pid=`ps uax | grep "npl.*port=8099.*" | grep -v grep | awk '{print $2}'`
-	kill -9 $((pid))
+	if [ ! -z $pid ]; then
+		kill -9 $((pid))
+	fi
 	npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www/" port="8099" dev="${workDir}"
 fi
 
