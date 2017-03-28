@@ -466,12 +466,12 @@ define([
             });
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
-                //storage.sessionStorageRemoveItem('urlObj');
+                storage.sessionStorageRemoveItem('urlObj');
                 //console.log(urlObj);
 
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 // 必须是自己编辑自己页面
-                if (urlObj && urlObj.username == $scope.user.username) {
+                if (urlObj && urlObj.sitename && urlObj.username == $scope.user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                 }
                 //console.log(url);
@@ -497,6 +497,7 @@ define([
                     openUrlPage();
                     return;
                 }
+
                 // 设置全局用户页信息和站点信息
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
@@ -1472,6 +1473,8 @@ define([
                     foldWikiBlock(cm, changeObj);
 
                     var content = editor.getValue();
+                    //console.log(currentWebsitePage);
+
                     if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
                         (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g,"") != currentWebsitePage.content.replace(/[\r\n]*/g,""))) { // 解决 editor.setValue(text); text != editor.getValue() 问题
                             //console.log("--------manual modify--------------");
