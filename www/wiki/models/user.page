@@ -355,8 +355,6 @@ function user:api_getByName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	userId = params.userId
-
 	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, data = yield()
 	if not data then
@@ -366,25 +364,23 @@ function user:api_getByName(params)
 	data.password = nil
 
 	return errors:wrap(nil, data)
-	--[[
-		-- 精简信息
-		local userInfo = {
-			_id=data._id,
-			username=data.username,
-			email=data.email,
-			cellphone=data.cellphone,
-			sex=data.sex,
-			githubId=data.githubId,
-			githubToken=data.githubToken,
-			portrait=data.portrait,
-			comment=data.comment,
-			company=data.company,
-			location=data.location,
-			joindate=data.joindate,		
-		}
-		return {error=errors.SUCCESS, data=userInfo}
+end
 
-	]]
+-- 通过email获得用户信息
+function user:api_getByEmail(params)
+	if not params.email then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+email"]={params.email}}, resume)
+	local err, data = yield()
+	if not data then
+		return errors:wrap(err or errors.NOT_FOUND, data)
+	end
+	
+	data.password = nil
+
+	return errors:wrap(nil, data)
 end
 
 -- 获得用户数量

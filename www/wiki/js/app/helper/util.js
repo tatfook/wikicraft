@@ -208,10 +208,11 @@ define(['jquery'], function ($) {
 
     util.go = function (pageName, isOpen) {
         var host = window.location.host;
+        var hostname = window.location.hostname;
         var url;
         if (config.isLocal()) {
             host = "localhost:8099";
-        } else if (host.indexOf(config.officialDomain) >= 0) {
+        } else if (!config.isOfficialDomain(hostname)) {
             host = config.officialDomain;
         }
         if (config.islocalWinEnv()) {
@@ -231,7 +232,7 @@ define(['jquery'], function ($) {
     util.isOfficialPage = function () {
         var pathname = window.location.pathname;
         var hostname = window.location.hostname;
-        if (hostname == "keepwork.com" && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+        if (config.isOfficialDomain(hostname) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
             return true;
         }
         return false;

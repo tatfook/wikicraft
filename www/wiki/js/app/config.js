@@ -13,8 +13,11 @@
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
         localVMEnv:localVMEnv,
-        hostname:wiki_config.hostname,
+        hostname:wiki_config.hostname.split(":")[0],
         officialDomain:officialDomain,
+        officialSubDomainList:[
+            "build." + officialDomain,
+        ],
         frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/wiki/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
@@ -61,6 +64,18 @@
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
+
+    config.isOfficialDomain = function (hostname) {
+        if (config.officialDomain == hostname)
+            return true;
+
+        for (var i = 0; i < config.officialSubDomainList.length; i++) {
+            if (config.officialSubDomainList[i] == hostname)
+                return true;
+        }
+        return false;
+    }
+
     config.isLocal = function () {
         return localEnv;
     }

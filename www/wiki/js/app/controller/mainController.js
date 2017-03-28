@@ -45,8 +45,8 @@ define([
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
                 } else {
-                    $rootScope.frameHeaderExist = window.location.hostname == config.hostname;
-                    $rootScope.frameFooterExist = window.location.hostname == config.hostname;
+                    $rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
+                    $rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
                 }
 
                 $rootScope.isLogin = Account.isAuthenticated();
