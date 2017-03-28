@@ -231,6 +231,17 @@ body,
     padding: 7px 25px;
 }
 
+.border{
+    width: 15px;
+    height: 100%;
+    background-color: #f7f7f7;
+    z-index: 1;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-right: 1px solid #eee;
+}
+
 @media (max-width: 1200px) {
     .wiki-toolbar{
         padding:15px 0;
@@ -259,5 +270,15 @@ body,
 @media(min-width: 1200px) and (max-width:1301px){
     .wiki-toolbar{
         padding:15px 29px;
+    }
+}
+@media(min-width: 1302px){
+    input.btn-link{
+        width:357px;
+    }
+}
+@media(max-width:1370px){
+    input.btn-link{
+        width:330px;
     }
 }

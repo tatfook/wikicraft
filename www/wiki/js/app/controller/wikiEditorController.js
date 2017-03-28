@@ -1398,7 +1398,7 @@ define([
                 function resizeMod() {
                     var winWidth = $(window).width();
                     $(".result-html").css("width", winWidth + "px");
-                    var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
+                    var boxWidth = $("#preview").width();//30为#preview的padding宽度
                     var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
                     //console.log(mdwiki.getLastDivId());
                     $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
@@ -1416,7 +1416,6 @@ define([
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                         editor.setSize('auto', height);
                         $('#wikiEditorContainer').css('height', height);
-                        $('#treeview').css('max-height', height);
 
                         var w = $("#__mainContent__");
                         w.css("min-height", "0px");
