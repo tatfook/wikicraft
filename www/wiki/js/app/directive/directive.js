@@ -35,7 +35,7 @@ define(['app'], function (app) {
                   </div>
                 </div>
                 `,
-            controller: function ($scope) {
+            controller: ['$scope',function ($scope) {
                 $scope.items = [
                     '#facd89',
                     '#cce198',
@@ -69,10 +69,9 @@ define(['app'], function (app) {
                 }, function (newVal, oldVal) {
                     $scope.select(newVal);
                 });
-            }
+            }]
         };
     });
-
     app.directive('numberSelector', function () {
         return {
             restrict: 'E',
@@ -95,7 +94,7 @@ define(['app'], function (app) {
                   </ul>
                 </div>
                 `,
-            controller: function ($scope) {
+            controller: ['$scope',function ($scope) {
                 $scope.items = [];
 
                 var initItems = function () {
@@ -129,7 +128,7 @@ define(['app'], function (app) {
                 }, function (newVal, oldVal) {
                     $scope.select(newVal);
                 });
-            }
+            }],
         };
     });
 });

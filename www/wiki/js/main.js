@@ -65,7 +65,6 @@
             'helper': config.jsAppHelperPath,
             // html dir
             'html': config.htmlPath,
-            //'html':'/html/server/html',
             'wikimod': config.wikiModPath,
         },
         shim: {
@@ -105,10 +104,6 @@
             'jquery-sharejs':{
                 deps:['jquery'],
             }
-            /*
-            'js-base64':{
-                exports:'base64',
-            }*/
         },
         packages: [
             {

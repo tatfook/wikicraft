@@ -347,25 +347,6 @@ function user:api_getById(params)
 	end
 
 	return errors:wrap(nil, data)
-	--[[
-		-- 精简信息
-		local userInfo = {
-			_id=data._id,
-			username=data.username,
-			email=data.email,
-			cellphone=data.cellphone,
-			sex=data.sex,
-			githubId=data.githubId,
-			githubToken=data.githubToken,
-			portrait=data.portrait,
-			comment=data.comment,
-			company=data.company,
-			location=data.location,
-			joindate=data.joindate,		
-		}
-		return {error=errors.SUCCESS, data=userInfo}
-
-	]]
 end
 
 -- 通过用户名获得用户信息

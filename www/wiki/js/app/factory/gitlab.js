@@ -7,7 +7,7 @@ define([
     'helper/storage',
     'js-base64'
 ], function (app, storage) {
-    var gitlabHost = 'http://keepwork.com:9000';
+    var gitlabHost =config.dataSource.innerGitlab.host;
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,
@@ -15,7 +15,7 @@ define([
             projectId: undefined,
             projectName: 'keepworkDataSource',
             host: gitlabHost,
-            apiBase: gitlabHost + '/api/v4',
+            apiBase:  'http://' + gitlabHost + '/api/v4',
             httpHeader: {
                 //'Accept': 'application/vnd.github.full+json',  // 这个必须有
             },
@@ -53,11 +53,11 @@ define([
         }
         gitlab.getCommitUrlPrefix = function (params) {
             params = params || {}
-            return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/';
+            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/';
         }
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {}
-            return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
+            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
         }
 
         // 获得文件列表
@@ -136,7 +136,7 @@ define([
         }
         // 初始化
         gitlab.init = function (token, username, projectName, cb, errcb) {
-            if (gitlab.inited)
+            if (gitlab.inited || !gitlab.host)
                 return;
 
             gitlab.username = username;

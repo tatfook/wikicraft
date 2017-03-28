@@ -24,11 +24,11 @@ function main()
 			name="个人站点头部",
 			classifyName="header",
 			content=[[
-                ```@header/js/personalHeader
+                ```@wiki/js/personalHeader
                 ```
             ]],
-			wikiCmdName="@header/js/personalHeader",
-			logoUrl="header/assets/imgs/personal_header.jpg",
+			wikiCmdName="@wiki/js/personalHeader",
+			logoUrl="wiki/assets/imgs/personal_header.jpg",
 			desc="个人站点头部",
 			flag=1,
 		},
@@ -37,11 +37,11 @@ function main()
 			name="信息统计",
 			classifyName="statics",
 			content=[[
-                ```@statics/js/personalStatics
+                ```@wiki/js/personalStatics
                 ```
             ]],
-			wikiCmdName="@statics/js/personalStatics",
-			logoUrl="statics/assets/imgs/personal_statics.png",
+			wikiCmdName="@wiki/js/personalStatics",
+			logoUrl="wiki/assets/imgs/personal_statics.png",
 			desc="个人统计信息",
 			flag=1,
 		},

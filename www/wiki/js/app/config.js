@@ -48,7 +48,11 @@
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // 路径配置 END
 
-
+        dataSource:{
+            innerGitlab:{
+                host:wiki_config.dataSource && wiki_config.dataSource.innerGitlab.host,
+            }
+        },
         // 预加载模块列表
         preloadModuleList:[
             'directive/directive', // 不支持打包 动态加载

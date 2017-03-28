@@ -109,6 +109,8 @@ end
 ?>
 
 <?npl
+include_once(WIKI_ROOT .. "auth/api.page")
+
 -- 解析URL
 function parseURL() 
 	local host = request:GetHost() or ""
@@ -155,11 +157,15 @@ function RenderServerWikiContent()
 end
 
 function RenderServerWikiScript() 
-	local wiki_config = {}
-	wiki_config.officialDomain = "keepwork.com"
-	wiki_config.hostname = request:GetHost()
-	wiki_config.bustVersion = os.time()	
-	echo(format('<script>window.wiki_config=%s</script>', json_encode(wiki_config)))
+	local siteConfig = wiki_config()
+	local config = {}
+	config.officialDomain = "keepwork.com"
+	config.hostname = request:GetHost()
+	config.bustVersion = os.time()	
+	config.dataSource = {}
+	config.dataSource.innerGitlab = {}
+	config.dataSource.innerGitlab.host = siteConfig.data_source.inner_gitlab.host
+	echo(format('<script>window.wiki_config=%s</script>', json_encode(config)))
 end
 
 -- 加载通用页

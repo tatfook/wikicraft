@@ -67,7 +67,7 @@ function getInnerGitlabToken(params)
 		enable = 1,
 	}
 	System.os.GetUrl({
-		url="http://keepwork.com:9000/api/v4/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+		url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
 		headers={['PRIVATE-TOKEN']= params.token},
 		method = "GET",
 		json = true,
@@ -84,7 +84,7 @@ function getInnerGitlabToken(params)
 		end
 		-- 没有有效token 则创建
 		System.os.GetUrl({
-			url="http://keepwork.com:9000/api/v4/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+			url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
 			headers={['PRIVATE-TOKEN']= params.token},
 			method = "POST",
 			form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
@@ -118,9 +118,10 @@ function data_source:api_linkInnerGitlab(params)
 		params.password = params.password or tostring(os.time())
 		params.confirm = false
 
-		local adminToken = "mveKpt6Mpe7BAks7tiBx"
+		local adminToken = wiki_config().data_source.inner_gitlab.token
+		local urlPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host .. "/api/v4"
 		System.os.GetUrl({
-			url="http://keepwork.com:9000/api/v4/users?username=" .. params.username, 
+			url= urlPrefix .. "/users?username=" .. params.username, 
 			headers={['PRIVATE-TOKEN']= adminToken},
 			method = "GET",
 			json = true,
@@ -131,7 +132,7 @@ function data_source:api_linkInnerGitlab(params)
 			-- 不存在创建用户
 			if not data or #data == 0 then 
 				System.os.GetUrl({
-					url="http://keepwork.com:9000/api/v4/users", 
+					url= urlPrefix .. "/users", 
 					headers={['PRIVATE-TOKEN']= adminToken},
 					method = "POST",
 					form = params,
@@ -141,10 +142,10 @@ function data_source:api_linkInnerGitlab(params)
 					if code ~= 201 then
 						return
 					end
-					getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=gitlabUser.id})
+					getInnerGitlabToken({userId=params.userId, username=params.username, urlPrefix=urlPrefix, token=adminToken, gitlabUserId=gitlabUser.id})
 				end)
 			else
-				getInnerGitlabToken({userId=params.userId, username=params.username, token=adminToken, gitlabUserId=data[1].id})
+				getInnerGitlabToken({userId=params.userId, username=params.username, urlPrefix=urlPrefix, token=adminToken, gitlabUserId=data[1].id})
 			end
 		end)
 	else 
