@@ -7,7 +7,7 @@
 (function () {
     var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
-    var localVMEnv = localEnv && window.location.host == "localhost:8099";
+    var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
     var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
     var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
@@ -16,7 +16,7 @@
         hostname:wiki_config.hostname.split(":")[0],
         officialDomain:officialDomain,
         officialSubDomainList:[
-            "build." + officialDomain,
+            "dev." + officialDomain,
         ],
         frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/wiki/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
