@@ -193,9 +193,10 @@ define(['jquery'], function ($) {
 
     util.goUserSite = function (url, isOpen) {
         var host = window.location.host;
+        var hostname = window.location.hostname;
         if (config.isLocal()) {
             host = "localhost:8099";
-        } else if (host.indexOf(config.officialDomain) >= 0) {
+        } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
             host = config.officialDomain;
         }
         url = "http://" + host + url;
@@ -212,7 +213,7 @@ define(['jquery'], function ($) {
         var url;
         if (config.isLocal()) {
             host = "localhost:8099";
-        } else if (!config.isOfficialDomain(hostname)) {
+        } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
             host = config.officialDomain;
         }
         if (config.islocalWinEnv()) {
