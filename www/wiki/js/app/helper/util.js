@@ -212,7 +212,7 @@ define(['jquery'], function ($) {
         var hostname = window.location.hostname;
         var url;
         if (config.isLocal()) {
-            host = "localhost:8099";
+            //host = "localhost:8099";
         } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
             host = config.officialDomain;
         }
