@@ -47,7 +47,7 @@ define(['jquery'], function ($) {
         }
         pathname = decodeURI(pathname);
 
-        var username = hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
+        var username = config.isOfficialDomain(hostname) ? undefined : hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
         var sitename = '';
         var pagename = '';
         var domain = undefined;
