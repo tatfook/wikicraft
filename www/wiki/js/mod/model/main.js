@@ -1,6 +1,6 @@
 define(function () {
     function registerController(wikiBlock) {
-        app.registerController("modelController", function ($scope, $uibModal, $timeout) {
+        app.registerController("modelController", ["$scope",function ($scope) {
 
             function convert16_32(rgb) {
                 var a = (rgb & 0xF000) << 16;
@@ -164,7 +164,7 @@ define(function () {
                 });
             });
                 
-        })
+        }])
     };
 
     return {
