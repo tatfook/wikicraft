@@ -15,6 +15,7 @@
     <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script-->
 
     <!-- 全局配置 -->
+    <? RenderServerWikiScript() ?>
     <script src="/wiki/js/app/config.js"></script>
 </head>
 

@@ -2,7 +2,12 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/util', 'helper/storage'], function (app, util, storage) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'jquery-sharejs'
+], function (app, util, storage) {
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();

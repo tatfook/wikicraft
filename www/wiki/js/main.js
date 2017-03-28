@@ -50,8 +50,8 @@
             'text': libPathPrefix + 'requirejs/text',
             'domReady': libPathPrefix + 'requirejs/domReady',
             'fabric': libPathPrefix + 'fabric.require',
-            'jquerySharejs': libPathPrefix + 'sharejs/js/jquery.share.min',// 社交分享
-            'sharejs': libPathPrefix + 'sharejs/js/social-share',// 社交分享
+            'jquery-sharejs': libPathPrefix + 'sharejs/js/jquery.share.min',// 社交分享
+            //'social-sharejs': libPathPrefix + 'sharejs/js/social-share',// 社交分享
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
@@ -102,6 +102,9 @@
             'jquery-cookie': {
                 deps:['jquery'],
             },
+            'jquery-sharejs':{
+                deps:['jquery'],
+            }
             /*
             'js-base64':{
                 exports:'base64',
@@ -114,16 +117,18 @@
                 main: "lib/codemirror"
             },
         ],
-        deps:['bootstrap','jquerySharejs','sharejs'],
+        deps:['bootstrap'],
         // urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
-         urlArgs: "bust=111"   //防止读取缓存，调试用
+         urlArgs: "bust=" + config.bustVersion,   //防止读取缓存，调试用
     });
 
     
 
     require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular) {
         domReady(function () {
-            angular.bootstrap(document, ['webapp']);
+            config.init(function () {
+                angular.bootstrap(document, ['webapp']);
+            });
         });
 
     });

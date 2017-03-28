@@ -5,14 +5,16 @@
 /* 程序配置模块 */
 
 (function () {
+    var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && window.location.host == "localhost:8099";
-    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : '/wiki/';
-    var hostname = "keepwork.com";
+    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
+    var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
         localVMEnv:localVMEnv,
-        hostname:hostname,
+        hostname:wiki_config.hostname,
+        officialDomain:officialDomain,
         frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/wiki/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
@@ -37,8 +39,11 @@
         htmlPath: pathPrefix + 'html/',
         pageUrlPrefix:'/wiki/html/',
 
+        // bust version
+        bustVersion: wiki_config.bustVersion,
+
         // api接口路径
-        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : ('http://' + hostname + '/api/wiki/models/'),
+        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : ('http://' + officialDomain + '/api/wiki/models/'),
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // 路径配置 END
