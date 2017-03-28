@@ -519,7 +519,7 @@ define([
                     currentWebsitePage.isFirstEditor = true;
 
                     if (!editorDocMap[currentWebsitePage.url]) {
-                        editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content)
+                        editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
                     editor.setValue(currentWebsitePage.content);
