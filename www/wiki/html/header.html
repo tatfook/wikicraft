@@ -29,6 +29,10 @@
         padding: 12px 15px;
         cursor: pointer;
     }
+    .navbar-default li.collect-icon>img{
+        width:30px;
+        height:30px;
+    }
     .navbar-default .search-bar{
         width: 120px;
         z-index: 1;
@@ -449,7 +453,11 @@
                                 <div class="social-share"></div>
                             </div>
                         </li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted">{{user.fansCount}}</span></li>
+                        <li class="icon collect-icon" ng-show="isIconShow">
+                            <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="worksFavorite($event)" alt="">
+                            <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="worksFavorite($event)" alt="">
+                            <span class="text-muted" ng-click="goFans()">{{user.fansCount}}</span>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">

@@ -14,6 +14,7 @@ define([
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
+        $scope.isCollect=false;//是否已收藏当前作品
 
         // 通过站点名搜索
         $scope.searchWebsite = function () {
@@ -227,6 +228,16 @@ define([
                 wechatQrcodeHelper  : '扫一扫分享到微信',
             };
             $('.social-share').share($config);
+        }
+
+        // 收藏作品
+        $scope.worksFavorite=function (event) {
+            $scope.isCollect=$scope.isCollect? false:true;
+        };
+
+        //作品的粉丝页
+        $scope.goFans=function(){
+            util.go("fans");
         }
 
         $scope.$on("onUserProfile", function (event, user) {
