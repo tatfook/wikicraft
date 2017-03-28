@@ -1,10 +1,15 @@
 workDir=`pwd`
 #npl -d bootstrapper="script/apps/WebServer/WebServer.lua" ip="10.0.2.15" port="8099" root="www/" dev="${workDir}"
 
-echo $1
-if [ $1 = “build” ]; then
-npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www_build/" port="8900" dev="${workDir}"
+if [ "$1" = "build" ]; then
+	echo "start build web server..."
+	pid=`ps uax | grep "npl.*port=8900.*" | grep -v grep | awk '{print $2}'`
+	kill -9 $((pid))
+	npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www_build/" port="8900" dev="${workDir}"
 else
-npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www/" port="8099" dev="${workDir}"
+	echo "start server..."
+	pid=`ps uax | grep "npl.*port=8099.*" | grep -v grep | awk '{print $2}'`
+	kill -9 $((pid))
+	npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www/" port="8099" dev="${workDir}"
 fi
 
