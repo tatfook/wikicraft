@@ -28,7 +28,6 @@ define([
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
-    var winWidth = $(window).width();
     //console.log("wiki editor controller!!!");
     var editor;
     var mdwiki;
@@ -384,7 +383,7 @@ define([
                 if (!Account.ensureAuthenticated()) {
                     return;
                 }
-                $(".result-html").css("width", winWidth + "px");
+
                 initEditor();
 
                 var user = $scope.user;
@@ -1397,9 +1396,10 @@ define([
                 setEditorHeight();
 
                 function resizeMod() {
+                    var winWidth = $(window).width();
+                    $(".result-html").css("width", winWidth + "px");
                     var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
-                    var contentWidth = winWidth;
-                    var scaleSize = (boxWidth >= contentWidth) ? 1 : (boxWidth / contentWidth);
+                    var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
                     //console.log(mdwiki.getLastDivId());
                     $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
