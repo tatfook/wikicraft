@@ -53,6 +53,9 @@
     <None Include="www\wiki\js\mod\header\pages\organizationHeader.page" />
     <None Include="www\wiki\js\mod\header\pages\personalHeader.page" />
     <None Include="www\wiki\js\mod\header\pages\worksHeader.page" />
+    <None Include="www\wiki\js\mod\model\assets\test_bmax.zip" />
+    <None Include="www\wiki\js\mod\model\assets\test_stl.zip" />
+    <None Include="www\wiki\js\mod\model\config.page" />
     <None Include="www\wiki\js\mod\model\README.md" />
     <None Include="www\wiki\js\mod\statics\pages\gameStatics.page" />
     <None Include="www\wiki\js\mod\statics\pages\organizationStatics.page" />
@@ -250,6 +253,7 @@
     <Content Include="www\wiki\js\mod\header\js\worksHeader.js" />
     <Content Include="www\wiki\js\mod\message\default.js" />
     <Content Include="www\wiki\js\mod\message\html\default.html" />
+    <Content Include="www\wiki\js\mod\model\assets\imgs\wiki_board.png" />
     <Content Include="www\wiki\js\mod\model\main.js" />
     <Content Include="www\wiki\js\mod\model\ThreeJsView.js" />
     <Content Include="www\wiki\js\mod\model\weblua-0.1.5.js" />
