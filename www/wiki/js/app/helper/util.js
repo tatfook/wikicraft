@@ -34,7 +34,7 @@ define(['jquery'], function ($) {
 
     // 将字符串url解析成{sitename, pagename}对象
     util.parseUrl = function () {
-        var hostname = window.location.hostname;
+        var hostname = config.hostname || window.location.hostname;
         var pathname = window.location.pathname;
 
         if(config.islocalWinEnv()) {
@@ -195,8 +195,8 @@ define(['jquery'], function ($) {
         var host = window.location.host;
         if (config.isLocal()) {
             host = "localhost:8099";
-        } else if (host.indexOf(config.hostname) >= 0) {
-            host = config.hostname;
+        } else if (host.indexOf(config.officialDomain) >= 0) {
+            host = config.officialDomain;
         }
         url = "http://" + host + url;
         if (isOpen) {
@@ -211,8 +211,8 @@ define(['jquery'], function ($) {
         var url;
         if (config.isLocal()) {
             host = "localhost:8099";
-        } else if (host.indexOf(config.hostname) >= 0) {
-            host = config.hostname;
+        } else if (host.indexOf(config.officialDomain) >= 0) {
+            host = config.officialDomain;
         }
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#/wiki/' + pageName;

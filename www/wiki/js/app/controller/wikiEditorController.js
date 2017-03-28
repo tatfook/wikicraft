@@ -1423,6 +1423,7 @@ define([
                 }
                 window.onresize = function () {
                     setEditorHeight();
+                    resizeMod();
                 }
                 mdwiki.bindToCodeMirrorEditor(editor);
 

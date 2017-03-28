@@ -14,7 +14,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             }
             /*
              var hostname = window.location.hostname;
-             if (hostname != config.hostname) {
+             if (hostname != config.officialDomain) {
              $auth.setStorageType('sessionStorage');
              } else {
              $auth.setStorageType("localStorage");

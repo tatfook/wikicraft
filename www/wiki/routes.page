@@ -109,8 +109,6 @@ end
 ?>
 
 <?npl
-
-
 -- 解析URL
 function parseURL() 
 	local host = request:GetHost() or ""
@@ -131,9 +129,6 @@ end
 
 function RenderServerWikiContent() 
 	local sitename, _pagename = parseURL()
-	log(sitename)
-	log(_pagename)
-
 	if (not sitename) or (not _pagename) then
 		return 
 	end
@@ -159,6 +154,22 @@ function RenderServerWikiContent()
 	end
 end
 
+function RenderServerWikiScript() 
+	local wiki_config = {}
+	wiki_config.officialDomain = "keepwork.com"
+	wiki_config.hostname = request:GetHost()
+	wiki_config.bustVersion = os.time()	
+	echo(format('<script>window.wiki_config=%s</script>', json_encode(wiki_config)))
+end
+
 -- 加载通用页
 include(WIKI_ROOT .. "index.page")
 ?>
+
+
+
+
+
+
+
+
