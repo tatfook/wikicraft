@@ -243,6 +243,7 @@
     <Content Include="www\wiki\js\mod\blog\html\header.html" />
     <Content Include="www\wiki\js\mod\blog\js\header.js" />
     <Content Include="www\wiki\js\mod\board\main.js" />
+    <Content Include="www\wiki\js\mod\board\shapes.png" />
     <Content Include="www\wiki\js\mod\comment\html\comment.html" />
     <Content Include="www\wiki\js\mod\comment\js\comment.js" />
     <Content Include="www\wiki\js\mod\example\js\example.js" />

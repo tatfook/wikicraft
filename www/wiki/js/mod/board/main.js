@@ -505,6 +505,8 @@
                     //cvs_show.dataset.height = height;
                     //cvs_show.dataset.data = JSON.stringify(data);
                     var body_show = new fabric.StaticCanvas(cvs_show, { width: width, height: height });
+                    //var body_show = new fabric.StaticCanvas(cvs_show);
+                    cvs_show.style.width = cvs_show.style.height = 'auto';
                     body_show.clear();
                     data = JSON.parse(JSON.stringify(data)); // loadFromJSON() 会改变数据，为了不影响后面的操作，此处重新生成一个JSON用于loadFromJSON()
                     body_show.loadFromJSON(data, function () {
@@ -516,6 +518,9 @@
                 
                 //var show_w = parseInt(cvs_show.dataset.width), show_h = parseInt(cvs_show.dataset.height);
                 if (wikiBlock.modParams) {
+                    if (typeof (wikiBlock.modParams) == 'string') {
+                        wikiBlock.modParams = JSON.parse(wikiBlock.modParams);
+                    }
                     var show_w = wikiBlock.modParams.w, show_h = wikiBlock.modParams.h;
                     if (show_w && show_h) {
                         //var data_show = cvs_show.dataset.data;
@@ -670,6 +675,9 @@
                     return g;
                 };
 
+                if (!wikiBlock.editorMode) {
+                    return true;
+                }
                 $scope.onclick = function () {
                     $uibModal.open({
                         template: `
@@ -1015,7 +1023,7 @@
                             $scope.save = function () {
                                 body.deactivateAll().renderAll();
                                 //init_show(body.width, body.height, body.toJSON());
-                                wikiBlock.applyModParams({ w: body.width, h: body.height, data: body.toJSON() });
+                                wikiBlock.applyModParams(JSON.stringify({ w: body.width, h: body.height, data: body.toJSON() }));
                                 $uibModalInstance.close("link");
                                 //console.log(fabric);
                             };
@@ -1038,7 +1046,7 @@
             registerController(wikiBlock);
             return `
                 <div ng-controller="boardController" ng-click="onclick()" style="min-height:100px;border: 1px solid #DCDCDC;text-align: center;">
-                    <canvas scope-element="cvs_show"></canvas>
+                    <canvas scope-element="cvs_show" style="max-width:100%"></canvas>
                 </div>
                 `;
         }
