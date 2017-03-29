@@ -14,6 +14,9 @@
         border-radius: 50%;
         object-fit: cover;
     }
+    .navbar-brand img{
+        width:115px;
+    }
     .navbar-brand .caret{
         margin-left: 9px;
         border-top: 6px solid;
@@ -315,7 +318,7 @@
                     <!-- <a class="navbar-brand" href="#">KEEPWORK</a> -->
                     <div class="dropdown navbar-brand">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <img ng-src="{{imgsPath+'icon/logo.png'}}" alt="">
+                            <img ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu nodot-dropdown">
@@ -456,7 +459,7 @@
                         <li class="icon collect-icon" ng-show="isIconShow">
                             <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="worksFavorite($event)" alt="">
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="worksFavorite($event)" alt="">
-                            <span class="text-muted" ng-click="goFans()">{{user.fansCount}}</span>
+                            <span class="text-muted" ng-click="goFans()">{{totalItems}}</span>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">

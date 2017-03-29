@@ -102,6 +102,9 @@
     .banner h1 {
         margin-bottom: 50px;
     }
+    .crausel-banner img{
+        min-width: 100%;
+    }
     .icon-box {
         width: 50px;
         height: 50px;
@@ -239,7 +242,7 @@
                 <li data-target="#header-carousel" data-slide-to="2"></li>
             </ol>
             <!-- Wrapper for slides -->
-            <div class="carousel-inner" role="listbox">
+            <div class="carousel-inner crausel-banner" role="listbox">
                 <div class="item active">
                     <img ng-src='{{imgsPath+"wiki_carousel_banner.jpg"}}' alt="PARACRAFT">
                 </div>
