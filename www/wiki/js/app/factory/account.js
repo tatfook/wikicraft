@@ -62,8 +62,11 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             function initInnerGitlab(dataSourceLList) {
                 var innerGitlabDS = dataSource.getRawDataSource('innerGitlab');
                 if (innerGitlabDS && innerGitlabDS.isInited()) {
+                    //console.log("-------------inner gitlab already init--------------");
                     return;
                 }
+                //console.log("--------------init inner gitlab-----------------");
+
                 var innerGitlab = gitlab();
                 dataSource.registerDataSource("innerGitlab", innerGitlab, false)
                 account.innerGitlab = innerGitlab;

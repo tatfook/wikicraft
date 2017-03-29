@@ -29,6 +29,7 @@ define([
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
+    var defaultDataSource = dataSource.getDefaultDataSource();
     var editor;
     var mdwiki;
     var allWebsites = [];
@@ -154,8 +155,7 @@ define([
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    //$scope.dataSource && $scope.dataSource.uploadImage(undefined, fileReader.result, function (url) {
-                    github.isInited() && github.uploadImage(undefined, fileReader.result, function (url) {
+                    defaultDataSource.isInited() && defaultDataSource.uploadImage({content:fileReader.result}, function (url) {
                         $scope.img.url = url;
                     });
                 };
@@ -303,7 +303,6 @@ define([
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
             $rootScope.userinfo = $rootScope.user;
-            $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
 
             $scope.progressbar = {
                 show: false,
@@ -319,7 +318,7 @@ define([
 
             $scope.$on('onDataSource', function (event, data) {
                 console.log("onDataSource change!!!");
-                $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
+                defaultDataSource = dataSource.getDefaultDataSource();
             });
 
             function newWebsitePage(urlObj) {
@@ -383,7 +382,7 @@ define([
                 if (!Account.ensureAuthenticated()) {
                     return;
                 }
-
+                defaultDataSource = dataSource.getDefaultDataSource();
                 initEditor();
 
                 var user = $scope.user;
@@ -681,12 +680,16 @@ define([
                 });
             }
 
-            $scope.openGithubFile = function () {
+            $scope.openGitFile = function () {
                 if (!currentWebsitePage || !currentWebsitePage.url) {
                     return;
                 }
-                var gitUrl = github.getContentUrl({path: currentWebsitePage.url.substring(1)});
-                window.open(gitUrl);
+                if ($scope.user.githubDS && github.isInited()) {
+                    window.open(github.getContentUrl({path: currentWebsitePage.url.substring(1)}));
+                } else {
+                    var innerGitlab = dataSource.getRawDataSource('innerGitlab');
+                    window.open(innerGitlab.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
+                }
             }
 
             $scope.cmd_newpage = function () {
@@ -1036,7 +1039,7 @@ define([
                         var dat = $rootScope.img.dat;
                         var nam = $rootScope.img.nam;
 
-                        var imagePath = github.getRawContentUrl({path: ''});
+                        var imagePath = defaultDataSource.getRawContentUrlPrefix({path: ''});
                         if (url.indexOf(imagePath) == 0) {
                             url = '#' + url.substring(imagePath.length);
                         }
@@ -1088,9 +1091,8 @@ define([
                     alert("这不是图片！");
                     return false;
                 }
-                var innerGitlab = dataSource.getRawDataSource('innerGitlab');
-                //console.log(innerGitlab);
-                if (!innerGitlab.isInited()) {
+
+                if (!defaultDataSource.isInited()) {
                     alert('innerGitlab服务失效，图片无法上传');
                 } else {
                     //支持chrome IE10
@@ -1108,16 +1110,16 @@ define([
                         fileReader.onload = function () {
                             console.log("load complete");
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
-
-                            //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                            innerGitlab.uploadImage({content: fileReader.result}, function (img_url) {
-                                console.log(img_url);
-                                var imagePath = innerGitlab.getRawContentUrlPrefix();
+                            defaultDataSource.uploadImage({content: fileReader.result}, function (img_url) {
+                                //console.log(img_url);
+                                var imagePath = defaultDataSource.getRawContentUrlPrefix();
+                                //console.log(imagePath);
                                 if (img_url.indexOf(imagePath) == 0) {
                                     imagePath = '#' + img_url.substring(imagePath.length);
                                 } else {
                                     imagePath = img_url;
                                 }
+                                //imagePath = img_url;
                                 line_keyword(cursor.line, '![](' + imagePath + ')', 2);
                                 //line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
@@ -1376,8 +1378,10 @@ define([
 
                 editor.on('fold', function (cm, from, to) {
                     cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
+                    console.log("--------------------fold--------------------");
                 });
                 editor.on('unfold', function (cm, from, to) {
+                    console.log("----------------unfold--------------------");
                     cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 // 渲染后自动保存
@@ -1428,7 +1432,7 @@ define([
                 mdwiki.bindToCodeMirrorEditor(editor);
 
                 editor.on("beforeChange", function (cm, changeObj) {
-                    //console.log(changeObj);
+                    console.log(changeObj);
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
                         if (!/^```[@\/]/.test(editor.getLine(i))) {
                             cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
@@ -1437,7 +1441,7 @@ define([
                 });
                 // 折叠wiki代码
                 function foldWikiBlock(cm, changeObj) {
-                    //console.log(changeObj);
+                    console.log(changeObj);
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {
                         //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');

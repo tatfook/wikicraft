@@ -11,14 +11,25 @@
     var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
     var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
-        localEnv:localEnv,                                                 // 是否本地调试环境
-        localVMEnv:localVMEnv,
-        hostname:wiki_config.hostname.split(":")[0],
-        officialDomain:officialDomain,
-        officialSubDomainList:[
+        // --------------------------------------前端配置 START----------------------------------------------
+        localEnv:localEnv,                                                                                         // 是否本地调试环境
+        localVMEnv:localVMEnv,                                                                                     // 本地虚拟机环境
+        hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,      //  url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
+        officialDomain:officialDomain,                                                                            // 官方域名 因存在用户官方子域名和其它域名 故需记录
+        officialSubDomainList:[                                                                                  // 官方占用的子域名列表
             "dev." + officialDomain,
         ],
-        frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/wiki/index.html' : '/',  // 当使用前端路由时使用的url
+        // 预加载模块列表
+        preloadModuleList:[
+            'directive/directive', // 不支持打包 动态加载
+        ],
+
+        // wiki 模块解析函数
+        wikiModuleRenderMap:{},
+        // ----------------------------------------前端配置 END------------------------------------------
+
+        //------------------------------------------路径配置 START-----------------------------------------
+        frontEndRouteUrl: (localEnv && !localVMEnv) ? (pathPrefix + 'index.html') : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
         // 图片路径
@@ -42,27 +53,22 @@
         htmlPath: pathPrefix + 'html/',
         pageUrlPrefix:'/wiki/html/',
 
-        // bust version
-        bustVersion: wiki_config.bustVersion,
-
         // api接口路径
         apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : ('http://' + officialDomain + '/api/wiki/models/'),
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
-        // 路径配置 END
+        // --------------------------------------路径配置 END----------------------------------------
+
+        // --------------------------------------后端配置 START------------------------------------
+        // bust version
+        bustVersion: wiki_config.bustVersion,
 
         dataSource:{
             innerGitlab:{
                 host:wiki_config.dataSource && wiki_config.dataSource.innerGitlab.host,
             }
         },
-        // 预加载模块列表
-        preloadModuleList:[
-            'directive/directive', // 不支持打包 动态加载
-        ],
-
-        // wiki 模块解析函数
-        wikiModuleRenderMap:{},
+        // --------------------------------------后端配置 END-------------------------------------
     };
 
     config.isOfficialDomain = function (hostname) {
@@ -99,6 +105,7 @@
     config.getWikiModuleRender = function (moduleName) {
         return this.wikiModuleRenderMap[moduleName];
     }
+
     // 全局初始化
     config.init = function (cb) {
         require(config.preloadModuleList,function () {
