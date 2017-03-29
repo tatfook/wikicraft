@@ -522,17 +522,16 @@ define([
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
                     editor.setValue(currentWebsitePage.content);
-                    //util.html('.result-html', mdwiki.render(editor.getValue()), $scope);
-                    //console.log(mdwiki.options);
-                    //mdwiki.options.renderCallback && mdwiki.options.renderCallback();
 
                     // 折叠wiki命令
+                    /*
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
                         var lineValue = editor.getLine(i);
                         if (lineValue.indexOf('```@') == 0 || lineValue.indexOf('```/') == 0) {
                             editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
                         }
                     }
+                    */
                     //CodeMirror.commands.foldAll(editor);
 
                     $('#btUrl').val(window.location.origin + currentWebsitePage.url);
@@ -1238,6 +1237,7 @@ define([
                     var line = cm.getLine(start.line);
                     if ((!line) || (!line.match(/^```[@\/]/)))
                         return undefined;
+                    //console.log(start);
                     var end = start.line + 1;
                     var lastLineNo = cm.lastLine();
                     while (end < lastLineNo) {
@@ -1378,10 +1378,10 @@ define([
 
                 editor.on('fold', function (cm, from, to) {
                     cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
-                    console.log("--------------------fold--------------------");
+                    //console.log("--------------------fold--------------------");
                 });
                 editor.on('unfold', function (cm, from, to) {
-                    console.log("----------------unfold--------------------");
+                    //console.log("----------------unfold--------------------");
                     cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 // 渲染后自动保存
@@ -1432,7 +1432,10 @@ define([
                 mdwiki.bindToCodeMirrorEditor(editor);
 
                 editor.on("beforeChange", function (cm, changeObj) {
-                    console.log(changeObj);
+                    //console.log(changeObj);
+                    if (currentWebsitePage && currentWebsitePage.isFirstEditor) {
+                        return;
+                    }
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
                         if (!/^```[@\/]/.test(editor.getLine(i))) {
                             cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
@@ -1441,7 +1444,7 @@ define([
                 });
                 // 折叠wiki代码
                 function foldWikiBlock(cm, changeObj) {
-                    console.log(changeObj);
+                    //console.log(changeObj);
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {
                         //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
@@ -1453,7 +1456,12 @@ define([
                         }
                         if (start >= 0 && end >= 0) {
                             editor.foldCode({line:changeObj.from.line + start, ch:changeObj.from.ch}, null, 'fold');
+                            start = end = -1;
                         }
+                    }
+
+                    if (currentWebsitePage && currentWebsitePage.isFirstEditor) {
+                        return;
                     }
                     start = end = -1;
                     for (var i = 0; i < changeObj.removed.length; i++) {
@@ -1466,6 +1474,7 @@ define([
                         }
                         if (start >= 0 && end >= 0) {
                             cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
+                            start = end = -1;
                         }
                     }
 
