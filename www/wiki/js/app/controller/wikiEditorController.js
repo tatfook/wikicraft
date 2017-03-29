@@ -532,7 +532,7 @@ define([
                             editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
                         }
                     }
-                    
+
                     //CodeMirror.commands.foldAll(editor);
 
                     $('#btUrl').val(window.location.origin + currentWebsitePage.url);
@@ -1291,87 +1291,66 @@ define([
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
                         "Ctrl-S": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_savepage();
                         },
                         "Shift-Ctrl-N": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_newpage();
                         },
                         "Ctrl-B": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_bold();
                         },
                         "Ctrl-I": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_italic();
                         },
                         "Ctrl--": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_strikethrough();
                         },
                         "Shift-Ctrl-[": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_superscript();
                         },
                         "Shift-Ctrl-]": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_subscript();
                         },
                         "Shift-Ctrl-1": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(1);
                         },
                         "Shift-Ctrl-2": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(2);
                         },
                         "Shift-Ctrl-3": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(3);
                         },
                         "Shift-Ctrl-4": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(4);
                         },
                         "Shift-Ctrl-5": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(5);
                         },
                         "Shift-Ctrl-6": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(6);
                         },
                         "Ctrl-.": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_listul();
                         },
                         "Ctrl-/": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_listol();
                         },
                         "Ctrl-]": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_blockqote();
                         },
                         "Shift-Ctrl-T": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_tabel();
                         },
                         "Ctrl-H": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_horizontal();
                         },
                         "Alt-L": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_link();
                         },
                         "Alt-P": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_image();
                         },
                         "Alt-C": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_code();
                         },
                     }
@@ -1764,7 +1743,6 @@ define([
                 });
 
                 $('.toolbar-page-version').on('click', function () {
-                    var $scope = angular.element('#wikiEditor').scope();
                     $scope.cmd_version();
                 });
 
@@ -1865,7 +1843,6 @@ define([
                 //文件上传
                 function fileUpload(fileObj) {
                     console.log(fileObj);
-                    var $scope = angular.element('#wikiEditor').scope();
                     $scope.cmd_image_upload(fileObj);
                     return;
                 }
