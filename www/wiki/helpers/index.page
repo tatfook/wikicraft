@@ -9,21 +9,34 @@ NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
 local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
 
--- 数据库句柄
-if(db) then
-	return;
+-- 初始化数据库
+function init_db()
+	if(db) then
+		return;
+	end
+
+	local pos = string.find(WIKI_ROOT,"/")
+	local name = WIKI_ROOT
+	if pos then
+		name = string.sub(WIKI_ROOT, 1, pos-1)
+	end
+
+	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
 end
-db = TableDatabase:new():connect(WIKI_ROOT .. "database/npl/", function() end);
 
-local isWebServerStart = mem_cache:get("isWebServerStart")
-if not isWebServerStart then
-	mem_cache:set("isWebServerStart", true)
+-- 初始化wiki module
+function init_wiki_module()
+	local isWebServerStart = mem_cache:get("isWebServerStart")
+	if not isWebServerStart then
+		mem_cache:set("isWebServerStart", true)
+		include_once(WIKI_ROOT .. "helpers/wiki_module.page")
+	end
 end
 
--- 程序启动
-if not isWebServerStart then
-	include_once(WIKI_ROOT .. "helpers/wiki_module.page")
+function init()
+	init_db()
+	init_wiki_module()
 end
 
-
+init()
 -- log("load helper index.page!!!")

@@ -1,14 +1,32 @@
 #!/bin/bash
 
+current_dir=`pwd`
+build_src_dir="www"
+build_dst_dir="www_build"
+
+build_server() {
+	echo $current_dir
+	local db_dir=${build_dst_dir}"/wiki/database"
+	local temp_db_dir=".database"
+
+	if [ -e ${build_dst_dir} -a -e ${db_dir} ]; then 
+		echo "back up database ..."
+		cp -fr  ${db_dir} ${temp_db_dir}
+	fi
+	#node r.js -o build.js
+	ls ${db_dir}
+	rm -fr ${db_dir}
+	mv ${temp_db_dir} ${db_dir}
+}
 
 start_server() {
 	local server_type=$1
 	
 	if [ $server_type = "build" ]; then
 		node r.js -o build.js
-		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www_build/" port="8099" logfile="build_log.log" 
+		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${build_dst_dir}/" port="8099" logfile="build_log.log" 
 	elif [ $server_type = "dev" ]; then 
-		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="www/" port="8900" logfile="dev_log.log"
+		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${build_src_dir}/" port="8900" logfile="dev_log.log"
 	else
 		start_server "build"
 		start_server "dev"

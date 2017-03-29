@@ -194,8 +194,8 @@ define(['jquery'], function ($) {
     util.goUserSite = function (url, isOpen) {
         var host = window.location.host;
         var hostname = window.location.hostname;
-        if (config.isLocal()) {
-            host = "localhost:8099";
+        if (config.islocalWinEnv()) {
+            host = "localhost:8900";
         } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
             host = config.officialDomain;
         }
