@@ -61,7 +61,7 @@ define([
             $scope.$watch('$viewContentLoaded', init);
 
             $scope.isSelfPageShow = function (type) {
-                return util.isWikiEditorPage();
+                return wikiBlock.editorMode;
             }
 
             $scope.setSelfPage = function (type) {
