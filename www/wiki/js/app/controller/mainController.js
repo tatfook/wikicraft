@@ -179,6 +179,7 @@ define([
                             $rootScope.userinfo = data.userinfo;
                             $rootScope.siteinfo = data.siteinfo;
                             $rootScope.pageinfo = data.pageinfo;
+                            $rootScope.$broadcast('userpageLoaded',{});
                             var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
                             pageContent = md.render(pageContent);
                             //console.log(pageContent);
