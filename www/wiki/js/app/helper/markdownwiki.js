@@ -95,63 +95,6 @@ define([
         return render;
     }
 
-    // 视图编辑实现
-    function registerEvent(wikiBlockObj, render) {
-        var cmdName = wikiBlockObj.cmdName;
-        var mdwikiObj = getMdwiki(wikiBlockObj.mdwikiName);
-        var module = mdwikiObj.module[cmdName];
-        // 没有绑定编辑器则不支持视图编辑
-        if (!wikiBlockObj.editor) {
-            return;
-        }
-        var idx = wikiBlockObj.idx;
-        // 模块头部显示与隐藏
-        $('#wikiblockContainer_' + idx).on('mouseenter mouseleave mouseover mouseout', function (e) {
-            var element = $(e.target);
-            if (e.type == 'mouseenter') {
-                /*
-                 if (!wikiBlockObj.viewEdit) {
-                 $('#wikiblockHeader_' + idx).fadeIn();
-                 }
-                 */
-                $('#wikiblockHeader_' + idx).fadeIn();
-                $('#wikiblockContainer_' + idx).css('border', '1px solid silver');
-                //wikiBlockObj.editor.setSelection({line:wikiBlockObj.innerParams.line_begin, ch:'\n'},{line:wikiBlockObj.innerParams.line_end, ch:'\n'});
-            } else if (e.type == 'mouseleave') {
-                $('#wikiblockHeader_' + idx).fadeOut();
-                $('#wikiblockContainer_' + idx).css('border', '0px');
-                //wikiBlockObj.editor.setSelection({line:0});
-            } else if (e.type == 'mouseover' && element.attr('wikimodparamskey')) {
-                //wikiBlockObj.setSelection(element.attr('wikimodparamskey'));
-            } else if (e.type == 'mouseout') {
-                //wikiBlockObj.editor.setSelection({line:0});
-            }
-        });
-
-        // 编辑模块
-        $('#wikiblockEditBtn_' + idx).on('click', function () {
-            //console.log('edit wiki block' + idx);
-            $('#wikiblockHeader_' + idx).fadeOut();
-            wikiBlockObj.viewEdit = true;
-            render(wikiBlockObj);
-        });
-
-        // 删除模块
-        $('#wikiblockDeleteBtn_' + idx).on('click', function () {
-            $('#wikiblockHeader_' + idx).fadeOut();
-            //console.log('delete wiki block' + idx);
-            wikiBlockObj.editor.replaceRange('', {
-                line: wikiBlockObj.innerParams.line_begin,
-                ch: '\n'
-            }, {line: wikiBlockObj.innerParams.line_end, ch: '\n'});
-        });
-
-        // 删除模块
-        $('#wikiblockHideBtn_' + idx).on('click', function () {
-            $('#wikiblockHeader_' + idx).fadeOut();
-        });
-    };
-
     // 模板渲染
     window.renderWikiTemplate = function (mdwikiName) {
         //console.log(mdwikiName);
@@ -162,6 +105,7 @@ define([
         var render = getRenderFunc(tplObj.modName);
         tplObj.mdwikiName = mdwikiName;
         tplObj.isPageTemplate = mdwikiObj.isPageTemplate;
+        tplObj.editorMode = mdwikiObj.editorMode;
         tplObj.render = function (htmlContent) {
             util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
         };
@@ -178,8 +122,8 @@ define([
                 line: innerParams.line_begin + 1,
                 ch: '\n'
             }, {line: innerParams.line_end - 1, ch: '\n'});
-        },
-            render(tplObj);
+        }
+        render(tplObj);
     };
 
     /** Global helper function:
@@ -241,7 +185,6 @@ define([
                 util.html('#wikiblock_' + idx, htmlContent);
             },
         };
-        registerEvent(wikiBlockObj, render);
         render(wikiBlockObj);
     };
 
@@ -296,20 +239,7 @@ define([
                                 line_begin: token.map[0],
                                 line_end: token.map[1]
                             }) + ');</script>';
-                        return '<div>' +
-                            '<div id="wikiblockContainer_' + idx + '" style="position: relative">' +
-                            '<div id="wikiblockHeader_' + idx + '" style="position: absolute; left:0px; right:0px; display: none; z-index: 3">' +
-                            '<div style="background-color: rgba(0,0,0,0.1); display: flex; justify-content: flex-end">' +
-                            '<button class="btn" id="wikiblockEditBtn_' + idx + '"style="background: none; color: white">编辑</button>' +
-                            '<button class="btn" id="wikiblockDeleteBtn_' + idx + '"style="background: none; color: white">删除</button>' +
-                            '<button class="btn" id="wikiblockHideBtn_' + idx + '"style="background: none; color: white">隐藏</button>' +
-                            '</div>' +
-                            '</div>' +
-                            '<div id="wikiblockEdit_' + idx + '"></div>' +
-                            '<div id="wikiblock_' + idx + '"></div>' +
-                            '</div>' +
-                            "</div>" + script;
-                        //return '<div class="col-sm-12" id="' + containerTagId + '"></div>' + script;
+                        return '<div><div id="wikiblock_' + idx + '"></div></div>' + script;
                     }
                 }
             }

@@ -1798,11 +1798,8 @@ define([
                 function midDiv(DivId, left) {
                     var Div = $(DivId);
                     $(DivId).style.top = (document.documentElement.scrollTop + (document.documentElement.clientHeight - $(DivId).offsetHeight) / 2) + "px";
-//        $(DivId).style.left = (document.documentElement.scrollLeft + (document.documentElement.clientWidth - $(DivId).offsetWidth) / 2) + "px";
                     $(DivId).style.left = left;
                 }
-
-                editor.focus();
 
                 editor.on("paste", function (editor, e) {
                     if (!(e.clipboardData && e.clipboardData.items)) {
@@ -1859,8 +1856,6 @@ define([
 
                 return editor;
             }
-
-
         }]);
 
     return htmlContent;
