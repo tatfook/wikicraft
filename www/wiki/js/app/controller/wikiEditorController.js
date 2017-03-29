@@ -521,17 +521,18 @@ define([
                         editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
-                    editor.setValue(currentWebsitePage.content);
+                    CodeMirror.signal(editor,'change', editor);
+                    //editor.setValue(currentWebsitePage.content);
 
                     // 折叠wiki命令
-                    /*
+
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
                         var lineValue = editor.getLine(i);
                         if (lineValue.indexOf('```@') == 0 || lineValue.indexOf('```/') == 0) {
                             editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
                         }
                     }
-                    */
+                    
                     //CodeMirror.commands.foldAll(editor);
 
                     $('#btUrl').val(window.location.origin + currentWebsitePage.url);
@@ -1445,6 +1446,9 @@ define([
                 // 折叠wiki代码
                 function foldWikiBlock(cm, changeObj) {
                     //console.log(changeObj);
+                    if (!changeObj) {
+                        return;
+                    }
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {
                         //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
