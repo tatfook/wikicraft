@@ -16,7 +16,7 @@ function main()
             ]],
 			wikiCmdName="@model/main",
 			logoUrl="model/assets/imgs/model_logo.png",
-			desc="显示常用的3D模型",
+			desc="在网页中预览3D模型",
 			flag=1,
 		},
 	}

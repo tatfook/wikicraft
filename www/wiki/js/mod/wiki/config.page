@@ -16,7 +16,7 @@ function main()
             ]],
             wikiCmdName="@wiki/js/world3D",
             logoUrl="wiki/assets/imgs/3DWorld_model.jpg",
-            desc="这里是mod介绍",
+            desc="在网页中嵌入Paracraft创作的3D世界",
             flag=1,
         },
 
