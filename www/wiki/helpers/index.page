@@ -8,6 +8,13 @@ Date: 2017/3/13
 NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
 local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
+
+-- 数据库句柄
+if(db) then
+	return;
+end
+db = TableDatabase:new():connect(WIKI_ROOT .. "database/npl/", function() end);
+
 local isWebServerStart = mem_cache:get("isWebServerStart")
 if not isWebServerStart then
 	mem_cache:set("isWebServerStart", true)

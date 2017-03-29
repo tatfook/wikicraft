@@ -158,10 +158,10 @@ define(['app', 'helper/storage', 'js-base64'], function (app, storage) {
             isInited: function () {
                 return github.inited;
             },
-            getContentUrl: function (params) {
+            getContentUrlPrefix: function (params) {
                 return 'https://github.com/' + github.githubName + '/' + github.defalultRepoName + '/blob/master/' + params.path;
             },
-            getRawContentUrl: function (params) {
+            getRawContentUrlPrefix: function (params) {
                 return 'https://raw.githubusercontent.com/' + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
             },
             deleteRepos: function (cb, errcb) {

@@ -102,6 +102,9 @@ define(['app', 'helper/util'], function (app, util) {
             uploadImage: function (params, cb, errcb) {
                 execFn("uploadImage", params, cb, errcb);
             },
+            getRawContentUrlPrefix: function (params) {
+                //execFn("getRawContentUrlPrefix", params);
+            },
 
             rollbackFile: function (params, cb, errcb) {
                 execFn("rollbackFile", params, cb, errcb);
@@ -119,6 +122,8 @@ define(['app', 'helper/util'], function (app, util) {
     app.getDataSource = getDataSource;
 
     return {
+        defaultDataSourceName:'innerGitlab',
+
         registerDataSource:registerDataSource,
         getDataSource:getDataSource,
         getRawDataSource: function (dsName) {
@@ -130,6 +135,9 @@ define(['app', 'helper/util'], function (app, util) {
         setDataSourceEnable: function (dsName, enable) {
             if (dataSourceMap[dsName])
                 dataSourceMap[dsName].enable = enable;
+        },
+        getDefaultDataSource:function () {
+            return dataSourceMap[this.defaultDataSourceName] && dataSourceMap[this.defaultDataSourceName].dataSource;
         }
     };
 });

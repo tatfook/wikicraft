@@ -7,7 +7,7 @@ define([
     'helper/storage',
     'js-base64'
 ], function (app, storage) {
-    var gitlabHost =config.dataSource.innerGitlab.host;
+    var gitlabHost =config.dataSource.innerGitlab.host || "git.keepwork.com";
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,
@@ -53,11 +53,15 @@ define([
         }
         gitlab.getCommitUrlPrefix = function (params) {
             params = params || {}
-            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/';
+            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/'+ (params.path || '');
         }
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {}
             return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
+        }
+        gitlab.getContentUrlPrefix = function (params) {
+            params = params || {}
+            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/blob/master/' + (params.path || '');
         }
 
         // 获得文件列表

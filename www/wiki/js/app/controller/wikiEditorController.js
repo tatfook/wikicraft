@@ -29,6 +29,7 @@ define([
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
+    var defaultDataSource = dataSource.getDefaultDataSource();
     var editor;
     var mdwiki;
     var allWebsites = [];
@@ -154,8 +155,7 @@ define([
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    //$scope.dataSource && $scope.dataSource.uploadImage(undefined, fileReader.result, function (url) {
-                    github.isInited() && github.uploadImage(undefined, fileReader.result, function (url) {
+                    defaultDataSource.isInited() && defaultDataSource.uploadImage({content:fileReader.result}, function (url) {
                         $scope.img.url = url;
                     });
                 };
@@ -303,7 +303,6 @@ define([
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
             $rootScope.userinfo = $rootScope.user;
-            $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
 
             $scope.progressbar = {
                 show: false,
@@ -319,7 +318,7 @@ define([
 
             $scope.$on('onDataSource', function (event, data) {
                 console.log("onDataSource change!!!");
-                $scope.isGithubAuth = $scope.user.githubDS && github.isInited();
+                defaultDataSource = dataSource.getDefaultDataSource();
             });
 
             function newWebsitePage(urlObj) {
@@ -383,7 +382,7 @@ define([
                 if (!Account.ensureAuthenticated()) {
                     return;
                 }
-
+                defaultDataSource = dataSource.getDefaultDataSource();
                 initEditor();
 
                 var user = $scope.user;
@@ -522,18 +521,18 @@ define([
                         editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
-                    editor.setValue(currentWebsitePage.content);
-                    //util.html('.result-html', mdwiki.render(editor.getValue()), $scope);
-                    //console.log(mdwiki.options);
-                    //mdwiki.options.renderCallback && mdwiki.options.renderCallback();
+                    CodeMirror.signal(editor,'change', editor);
+                    //editor.setValue(currentWebsitePage.content);
 
                     // 折叠wiki命令
+
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
                         var lineValue = editor.getLine(i);
                         if (lineValue.indexOf('```@') == 0 || lineValue.indexOf('```/') == 0) {
                             editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
                         }
                     }
+
                     //CodeMirror.commands.foldAll(editor);
 
                     $('#btUrl').val(window.location.origin + currentWebsitePage.url);
@@ -681,12 +680,16 @@ define([
                 });
             }
 
-            $scope.openGithubFile = function () {
+            $scope.openGitFile = function () {
                 if (!currentWebsitePage || !currentWebsitePage.url) {
                     return;
                 }
-                var gitUrl = github.getContentUrl({path: currentWebsitePage.url.substring(1)});
-                window.open(gitUrl);
+                if ($scope.user.githubDS && github.isInited()) {
+                    window.open(github.getContentUrl({path: currentWebsitePage.url.substring(1)}));
+                } else {
+                    var innerGitlab = dataSource.getRawDataSource('innerGitlab');
+                    window.open(innerGitlab.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
+                }
             }
 
             $scope.cmd_newpage = function () {
@@ -1036,7 +1039,7 @@ define([
                         var dat = $rootScope.img.dat;
                         var nam = $rootScope.img.nam;
 
-                        var imagePath = github.getRawContentUrl({path: ''});
+                        var imagePath = defaultDataSource.getRawContentUrlPrefix({path: ''});
                         if (url.indexOf(imagePath) == 0) {
                             url = '#' + url.substring(imagePath.length);
                         }
@@ -1088,9 +1091,8 @@ define([
                     alert("这不是图片！");
                     return false;
                 }
-                var innerGitlab = dataSource.getRawDataSource('innerGitlab');
-                //console.log(innerGitlab);
-                if (!innerGitlab.isInited()) {
+
+                if (!defaultDataSource.isInited()) {
                     alert('innerGitlab服务失效，图片无法上传');
                 } else {
                     //支持chrome IE10
@@ -1108,16 +1110,16 @@ define([
                         fileReader.onload = function () {
                             console.log("load complete");
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
-
-                            //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                            innerGitlab.uploadImage({content: fileReader.result}, function (img_url) {
-                                console.log(img_url);
-                                var imagePath = innerGitlab.getRawContentUrlPrefix();
+                            defaultDataSource.uploadImage({content: fileReader.result}, function (img_url) {
+                                //console.log(img_url);
+                                var imagePath = defaultDataSource.getRawContentUrlPrefix();
+                                //console.log(imagePath);
                                 if (img_url.indexOf(imagePath) == 0) {
                                     imagePath = '#' + img_url.substring(imagePath.length);
                                 } else {
                                     imagePath = img_url;
                                 }
+                                //imagePath = img_url;
                                 line_keyword(cursor.line, '![](' + imagePath + ')', 2);
                                 //line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
@@ -1236,6 +1238,7 @@ define([
                     var line = cm.getLine(start.line);
                     if ((!line) || (!line.match(/^```[@\/]/)))
                         return undefined;
+                    //console.log(start);
                     var end = start.line + 1;
                     var lastLineNo = cm.lastLine();
                     while (end < lastLineNo) {
@@ -1288,87 +1291,66 @@ define([
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
                         "Ctrl-S": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_savepage();
                         },
                         "Shift-Ctrl-N": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_newpage();
                         },
                         "Ctrl-B": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_bold();
                         },
                         "Ctrl-I": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_italic();
                         },
                         "Ctrl--": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_strikethrough();
                         },
                         "Shift-Ctrl-[": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_superscript();
                         },
                         "Shift-Ctrl-]": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_subscript();
                         },
                         "Shift-Ctrl-1": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(1);
                         },
                         "Shift-Ctrl-2": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(2);
                         },
                         "Shift-Ctrl-3": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(3);
                         },
                         "Shift-Ctrl-4": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(4);
                         },
                         "Shift-Ctrl-5": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(5);
                         },
                         "Shift-Ctrl-6": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_headline(6);
                         },
                         "Ctrl-.": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_listul();
                         },
                         "Ctrl-/": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_listol();
                         },
                         "Ctrl-]": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_blockqote();
                         },
                         "Shift-Ctrl-T": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_tabel();
                         },
                         "Ctrl-H": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_horizontal();
                         },
                         "Alt-L": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_link();
                         },
                         "Alt-P": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_image();
                         },
                         "Alt-C": function (cm) {
-                            var $scope = angular.element('#wikiEditor').scope();
                             $scope.cmd_code();
                         },
                     }
@@ -1376,8 +1358,10 @@ define([
 
                 editor.on('fold', function (cm, from, to) {
                     cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
+                    //console.log("--------------------fold--------------------");
                 });
                 editor.on('unfold', function (cm, from, to) {
+                    //console.log("----------------unfold--------------------");
                     cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 // 渲染后自动保存
@@ -1429,6 +1413,9 @@ define([
 
                 editor.on("beforeChange", function (cm, changeObj) {
                     //console.log(changeObj);
+                    if (currentWebsitePage && currentWebsitePage.isFirstEditor) {
+                        return;
+                    }
                     for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
                         if (!/^```[@\/]/.test(editor.getLine(i))) {
                             cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
@@ -1438,6 +1425,9 @@ define([
                 // 折叠wiki代码
                 function foldWikiBlock(cm, changeObj) {
                     //console.log(changeObj);
+                    if (!changeObj) {
+                        return;
+                    }
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {
                         //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
@@ -1449,7 +1439,12 @@ define([
                         }
                         if (start >= 0 && end >= 0) {
                             editor.foldCode({line:changeObj.from.line + start, ch:changeObj.from.ch}, null, 'fold');
+                            start = end = -1;
                         }
+                    }
+
+                    if (currentWebsitePage && currentWebsitePage.isFirstEditor) {
+                        return;
                     }
                     start = end = -1;
                     for (var i = 0; i < changeObj.removed.length; i++) {
@@ -1462,6 +1457,7 @@ define([
                         }
                         if (start >= 0 && end >= 0) {
                             cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
+                            start = end = -1;
                         }
                     }
 
@@ -1747,7 +1743,6 @@ define([
                 });
 
                 $('.toolbar-page-version').on('click', function () {
-                    var $scope = angular.element('#wikiEditor').scope();
                     $scope.cmd_version();
                 });
 
@@ -1848,7 +1843,6 @@ define([
                 //文件上传
                 function fileUpload(fileObj) {
                     console.log(fileObj);
-                    var $scope = angular.element('#wikiEditor').scope();
                     $scope.cmd_image_upload(fileObj);
                     return;
                 }

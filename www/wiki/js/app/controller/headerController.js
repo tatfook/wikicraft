@@ -216,16 +216,17 @@ define([
         };
         
         $scope.clickShare=function () {
+            $scope.tit=$scope.user.displayName+'分享给你'+$scope.urlObj.username+"制作的"+$scope.urlObj.sitename+"网站";
+            var description="我将"+$scope.urlObj.username+"在KEEPWORK.COM制作的网站分享给你";
+            var img=$scope.imgsPath+"icon/logo.png";
             var $config = {
-                url                 : '', // 网址，默认使用 window.location.href
-                source              : '', // 来源（QQ空间会用到）, 默认读取head标签：<meta name="site" content="http://overtrue" />
-                title               : '', // 标题，默认读取 document.title 或者 <meta name="title" content="share.js" />
-                description         : '', // 描述, 默认读取head标签：<meta name="description" content="PHP弱类型的实现原理分析" />
-                image               : '', // 图片, 默认取网页中第一个img标签
+                url                 : window.location.href, // 网址，默认使用 window.location.href
+                source              : 'http://keepwork.com', // 来源（QQ空间会用到）, 默认读取head标签：<meta name="site" content="http://overtrue" />
+                description         : description, // 描述, 默认读取head标签：<meta name="description" content="PHP弱类型的实现原理分析" />
                 sites               : ['qq', 'qzone','tencent' , 'weibo', 'wechat'], // 启用的站点（weibo qq wechat tencent douban qzone linkedin diandian facebook twitter google）
                 disabled            : [], // 禁用的站点
                 wechatQrcodeTitle   : "", // 微信二维码提示文字
-                wechatQrcodeHelper  : '扫一扫分享到微信',
+                wechatQrcodeHelper  : '扫描二维码打开网页',
             };
             $('.social-share').share($config);
         }
