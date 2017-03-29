@@ -10,10 +10,20 @@ local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
 
 -- 数据库句柄
-if(db) then
-	return;
+function init_db()
+	if(db) then
+		return;
+	end
+	local pos = string.find(WIKI_ROOT, "/")
+	local name = WIKI_ROOT
+	if pos then
+		name = string.sub(WIKI_ROOT, 1, pos -1)
+	end
+
+	db = TableDatabase:new():connect("database/" .. name .. "/", function() end);
 end
-db = TableDatabase:new():connect(WIKI_ROOT .. "database/npl/", function() end);
+
+init_db()
 
 local isWebServerStart = mem_cache:get("isWebServerStart")
 if not isWebServerStart then
