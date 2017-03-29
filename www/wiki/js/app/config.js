@@ -54,7 +54,7 @@
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
-        apiUrlPrefix:localEnv ? 'http://'+window.location.host+'/api/wiki/models/' : ('http://' + officialDomain + '/api/wiki/models/'),
+        apiUrlPrefix:'http://' + (localEnv ? (localVMEnv ? window.location.host : "localhost:8900") : officialDomain ) + '/api/wiki/models/',
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // --------------------------------------路径配置 END----------------------------------------
