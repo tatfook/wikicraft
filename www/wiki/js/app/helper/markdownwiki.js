@@ -342,13 +342,26 @@ define([
     function markdownit_wikicmd_iamge(md) {
         var defaultRender = md.renderer.rules.image;
         md.renderer.rules.image = function (tokens, idx, options, env, self) {
+            var gitlab = util.getSelfServices().gitlab;
+            var $rootScope = util.getAngularServices().$rootScope;
+            gitlab = gitlab();
+            var dataSourceList = $rootScope.userinfo.dataSource || [];
+            //console.log($rootScope.userinfo);
+            var urlPrefix = '';
+            for (var i = 0; i < dataSourceList.length; i++) {
+                var ds = dataSourceList[i];
+                if (ds.type == 0) {
+                    urlPrefix = gitlab.getRawContentUrlPrefix({username:ds.dataSourceUsername});  // TODO 独立数据源，即不使用默认库名或项目名时，此处也应做修改
+                }
+            }
+
             var token = tokens[idx], alt = token.content,
                 srcIndex = token.attrIndex('src'),
                 src = token.attrs[srcIndex][1] || '';
 
             //console.log(token);
             if (src.indexOf('#images/') == 0) {
-                var url = util.getSelfServices().github.getRawContentUrl({path: src.substring(1)});
+                var url = urlPrefix + src.substring(1);
                 return '<wiki-image src="' + url + '" alt="' + alt + '"></wiki-image>';
             }
 

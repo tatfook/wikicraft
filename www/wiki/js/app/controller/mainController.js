@@ -7,13 +7,14 @@ define([
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
+    'helper/dataSource',
 
     'controller/userController',
-], function (app, markdownwiki, storage, util, userHtmlContent) {
+], function (app, markdownwiki, storage, util, dataSource, userHtmlContent) {
     var md = markdownwiki({html: true});
 
-    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal',
-        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal) {
+    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
+        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab) {
             console.log("mainController");
 
             // 初始化基本信息
@@ -32,14 +33,21 @@ define([
                     storage: storage,
                     Account: Account,
                     Message: Message,
-                    github: github
+                    github: github,
+                    gitlab:gitlab,
+                    dataSource:dataSource,
                 });
 
                 $rootScope.imgsPath = config.imgsPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
-                $rootScope.frameHeaderExist = window.location.hostname == config.hostname;
-                $rootScope.frameFooterExist = window.location.hostname == config.hostname;
+                if (config.isLocal()) {
+                    $rootScope.frameHeaderExist = true;
+                    $rootScope.frameFooterExist = true;
+                } else {
+                    $rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
+                    $rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
+                }
 
                 $rootScope.isLogin = Account.isAuthenticated();
                 $rootScope.isSelfSite = function () {

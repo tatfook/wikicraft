@@ -8,13 +8,18 @@ define(['app',
     'text!html/userProfile.html',
     'cropper',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('userProfileController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
+    app.registerController('userProfileController', ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         $scope.showItem = 'myProfile';
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 5;
+
+        //console.log("init userProfileController!!!");
+
+        var innerGitlab = Account.innerGitlab;
+
         function init() {
             $('#cropper > img').cropper({
                 aspectRatio: 1 / 1,
@@ -27,7 +32,6 @@ define(['app',
                 cropBoxMovable: false,
                 cropBoxResizable: false,
                 ready: function () {
-                    console.log("dfg");
                     var $clone = $(this).clone().removeClass('cropper-hidden');
                     console.log($(this));
                     $clone.css({
@@ -77,12 +81,12 @@ define(['app',
                 var reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function (arg) {
-                    if (!github.isInited()) {
-                        Message.info("图片上传工能需要绑定github数据源!!!");
+                    if (!innerGitlab.isInited()) {
+                        Message.info("内部数据源失效");
                         return;
                     }
 
-                    github.uploadImage(undefined, arg.target.result, function (url) {
+                    innerGitlab.uploadImage({content:arg.target.result}, function (url) {
                         $scope.user.portrait = url;
                         $('#userPortraitId').attr('src', arg.target.result);
                         Message.info("图片上传成功")
@@ -105,26 +109,27 @@ define(['app',
                 finishBtn.addClass("sr-only");
                 dataForm.removeClass("sr-only");
             });
-
-            $scope.$on('userCenterItem', function (event, item) {
-                if (item == 'myProfile')
-                    $scope.clickMyProfile();
-                else if(item == 'accountSafe')
-                    $scope.clickAccountSafe();
-                else if(item == 'myTrends')
-                    $scope.clickMyTrends();
-                else if(item == 'myCollection')
-                    $scope.clickMyCollection();
-                else if(item == 'myHistory')
-                    $scope.clickMyHistory();
-                else if(item == 'myFans')
-                    $scope.clickMyFans();
-                else if(item == 'realName')
-                    $scope.clickRealName();
-                else if(item == 'invite')
-                    $scope.clickInvite();
-            });
         }
+
+        $scope.$on('userCenterSubContentType', function (event, item) {
+            //console.log(item);
+            if (item == 'myProfile')
+                $scope.clickMyProfile();
+            else if(item == 'accountSafe')
+                $scope.clickAccountSafe();
+            else if(item == 'myTrends')
+                $scope.clickMyTrends();
+            else if(item == 'myCollection')
+                $scope.clickMyCollection();
+            else if(item == 'myHistory')
+                $scope.clickMyHistory();
+            else if(item == 'myFans')
+                $scope.clickMyFans();
+            else if(item == 'realName')
+                $scope.clickRealName();
+            else if(item == 'invite')
+                $scope.clickInvite();
+        });
 
         // 文档加载完成
         $scope.$watch('$viewContentLoaded', init);

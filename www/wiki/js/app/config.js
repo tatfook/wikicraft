@@ -5,15 +5,20 @@
 /* 程序配置模块 */
 
 (function () {
+    var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
-    var localVMEnv = localEnv && window.location.host == "localhost:8099";
-    var pathPrefix = (localEnv && !localVMEnv) ? '/html/server/' : '/wiki/';
-    var hostname = "keepwork.com";
+    var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
+    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
+    var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
         localEnv:localEnv,                                                 // 是否本地调试环境
         localVMEnv:localVMEnv,
-        hostname:hostname,
-        frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/server/index.html' : '/',  // 当使用前端路由时使用的url
+        hostname:wiki_config.hostname.split(":")[0],
+        officialDomain:officialDomain,
+        officialSubDomainList:[
+            "dev." + officialDomain,
+        ],
+        frontEndRouteUrl: (localEnv && !localVMEnv) ? '/html/wiki/index.html' : '/',  // 当使用前端路由时使用的url
         // 路径配置 BEGIN
         pathPrefix: pathPrefix,
         // 图片路径
@@ -37,19 +42,40 @@
         htmlPath: pathPrefix + 'html/',
         pageUrlPrefix:'/wiki/html/',
 
+        // bust version
+        bustVersion: wiki_config.bustVersion,
+
         // api接口路径
-        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : ('http://' + hostname + '/api/wiki/models/'),
+        apiUrlPrefix:localEnv ? 'http://localhost:8099/api/wiki/models/' : ('http://' + officialDomain + '/api/wiki/models/'),
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // 路径配置 END
 
-
+        dataSource:{
+            innerGitlab:{
+                host:wiki_config.dataSource && wiki_config.dataSource.innerGitlab.host,
+            }
+        },
         // 预加载模块列表
-        preloadModuleList:[],
+        preloadModuleList:[
+            'directive/directive', // 不支持打包 动态加载
+        ],
 
         // wiki 模块解析函数
         wikiModuleRenderMap:{},
     };
+
+    config.isOfficialDomain = function (hostname) {
+        if (config.officialDomain == hostname)
+            return true;
+
+        for (var i = 0; i < config.officialSubDomainList.length; i++) {
+            if (config.officialSubDomainList[i] == hostname)
+                return true;
+        }
+        return false;
+    }
+
     config.isLocal = function () {
         return localEnv;
     }
@@ -73,5 +99,12 @@
     config.getWikiModuleRender = function (moduleName) {
         return this.wikiModuleRenderMap[moduleName];
     }
+    // 全局初始化
+    config.init = function (cb) {
+        require(config.preloadModuleList,function () {
+            cb && cb();
+        })
+    }
+
     window.config = config;
 })();

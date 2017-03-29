@@ -28,13 +28,14 @@ define([
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
-    var winWidth = $(window).width();
     //console.log("wiki editor controller!!!");
     var editor;
+    var mdwiki;
     var allWebsites = [];
     var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
     var currentWebsitePage = undefined;
+    var editorDocMap = {};
 
 
     function getTreeData(username, websitePages, isDir) {
@@ -297,7 +298,7 @@ define([
 
     }]);
 
-    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal',
+    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
@@ -382,7 +383,7 @@ define([
                 if (!Account.ensureAuthenticated()) {
                     return;
                 }
-                $(".result-html").css("width", winWidth + "px");
+
                 initEditor();
 
                 var user = $scope.user;
@@ -442,11 +443,12 @@ define([
                 //console.log($scope.website.githubRepoName);
                 if (!currentWebsite)
                     return;
-
+                $scope.dataSource = dataSource.getDataSource();
+                return
                 if (!$scope.user.githubDS && !currentWebsite.githubRepoName) {
                     $scope.dataSource = undefined;
                 } else {
-                    $scope.dataSource = dataSource.getDataSource(['github']);
+                    $scope.dataSource = dataSource.getDataSource();
                     var githubDS = $scope.dataSource.getSingleDataSource('github');
                     if (currentWebsite.githubRepoName && githubDS) {
                         $scope.dataSource.getSingleDataSource('github').setDefaultRepo(currentWebsite.githubRepoName);
@@ -463,12 +465,12 @@ define([
             });
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
-                //storage.sessionStorageRemoveItem('urlObj');
+                storage.sessionStorageRemoveItem('urlObj');
                 //console.log(urlObj);
 
                 var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
                 // 必须是自己编辑自己页面
-                if (urlObj && urlObj.username == $scope.user.username) {
+                if (urlObj && urlObj.sitename && urlObj.username == $scope.user.username) {
                     url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                 }
                 //console.log(url);
@@ -494,6 +496,7 @@ define([
                     openUrlPage();
                     return;
                 }
+
                 // 设置全局用户页信息和站点信息
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
@@ -503,8 +506,7 @@ define([
                 !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
                 //window.location.href = window.location.pathname + '#' + currentWebsitePage.url;
 
-                var wp = currentWebsitePage;
-                if (isEmptyObject(wp)) {
+                if (isEmptyObject(currentWebsitePage)) {
                     editor.setValue('');
                     $('#btUrl').val('');
                     $('.toolbar-page-remove').attr("disabled", true);
@@ -515,7 +517,15 @@ define([
 
                 function setEditorValue() {
                     currentWebsitePage.isFirstEditor = true;
-                    editor.setValue(wp.content);
+
+                    if (!editorDocMap[currentWebsitePage.url]) {
+                        editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content, 'markdown');
+                    }
+                    editor.swapDoc(editorDocMap[currentWebsitePage.url]);
+                    editor.setValue(currentWebsitePage.content);
+                    //util.html('.result-html', mdwiki.render(editor.getValue()), $scope);
+                    //console.log(mdwiki.options);
+                    //mdwiki.options.renderCallback && mdwiki.options.renderCallback();
 
                     // 折叠wiki命令
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
@@ -526,7 +536,7 @@ define([
                     }
                     //CodeMirror.commands.foldAll(editor);
 
-                    $('#btUrl').val(window.location.origin + wp.url);
+                    $('#btUrl').val(window.location.origin + currentWebsitePage.url);
                     $('.toolbar-page-remove').attr("disabled", false);
 
                     if (isNodeSelected) {
@@ -548,7 +558,6 @@ define([
                     $('#treeview').treeview('clearSearch');
                 }
 
-                //console.log(wp);
                 storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
                     //console.log(page);
                     //console.log(currentWebsitePage);
@@ -733,6 +742,7 @@ define([
                         //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         Message.info("文件已保存到服务器");
+                        //console.log($scope.dataSource);
                         if ($scope.dataSource) {
                             var path = currentWebsitePage.url;
                             path = path.substring(1);
@@ -1078,9 +1088,10 @@ define([
                     alert("这不是图片！");
                     return false;
                 }
-
-                if (isEmptyObject($scope.dataSource)) {
-                    alert('github数据未开启，图片无法上传');
+                var innerGitlab = dataSource.getRawDataSource('innerGitlab');
+                //console.log(innerGitlab);
+                if (!innerGitlab.isInited()) {
+                    alert('innerGitlab服务失效，图片无法上传');
                 } else {
                     //支持chrome IE10
                     if (window.FileReader) {
@@ -1099,9 +1110,9 @@ define([
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
 
                             //$scope.dataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                            github.uploadImage({content: fileReader.result}, function (img_url) {
+                            innerGitlab.uploadImage({content: fileReader.result}, function (img_url) {
                                 console.log(img_url);
-                                var imagePath = github.getRawContentUrl({path: ""});
+                                var imagePath = innerGitlab.getRawContentUrlPrefix();
                                 if (img_url.indexOf(imagePath) == 0) {
                                     imagePath = '#' + img_url.substring(imagePath.length);
                                 } else {
@@ -1373,7 +1384,7 @@ define([
 
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
-                var mdwiki = markdownwiki({
+                mdwiki = markdownwiki({
                     container_name: '.result-html',
                     renderCallback: function () {
                         renderAutoSave();
@@ -1385,9 +1396,10 @@ define([
                 setEditorHeight();
 
                 function resizeMod() {
-                    var boxWidth = $("#preview").width() - 30;//30为#preview的padding宽度
-                    var contentWidth = winWidth;
-                    var scaleSize = (boxWidth >= contentWidth) ? 1 : (boxWidth / contentWidth);
+                    var winWidth = $(window).width();
+                    $(".result-html").css("width", winWidth + "px");
+                    var boxWidth = $("#preview").width();//30为#preview的padding宽度
+                    var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
                     //console.log(mdwiki.getLastDivId());
                     $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
@@ -1404,7 +1416,6 @@ define([
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                         editor.setSize('auto', height);
                         $('#wikiEditorContainer').css('height', height);
-                        $('#treeview').css('max-height', height);
 
                         var w = $("#__mainContent__");
                         w.css("min-height", "0px");
@@ -1412,6 +1423,7 @@ define([
                 }
                 window.onresize = function () {
                     setEditorHeight();
+                    resizeMod();
                 }
                 mdwiki.bindToCodeMirrorEditor(editor);
 
@@ -1424,28 +1436,44 @@ define([
                     }
                 });
                 // 折叠wiki代码
-                function foldWikiBlock(changeObj) {
-                    console.log(changeObj);
-
+                function foldWikiBlock(cm, changeObj) {
+                    //console.log(changeObj);
                     var start = -1, end = -1;
                     for (var i = 0; i < changeObj.text.length; i++) {
+                        //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
                         if (/^```[@\/]/.test(changeObj.text[i])) {
                             start = i;
                         }
                         if (start >= 0 && /^```/.test(changeObj.text[i])) {
                             end = i;
                         }
+                        if (start >= 0 && end >= 0) {
+                            editor.foldCode({line:changeObj.from.line + start, ch:changeObj.from.ch}, null, 'fold');
+                        }
                     }
-                    if (start >= 0 && end >= 0) {
-                        editor.foldCode({line:changeObj.from.line + start, ch:changeObj.from.ch}, null, 'fold');
+                    start = end = -1;
+                    for (var i = 0; i < changeObj.removed.length; i++) {
+                        //cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
+                        if (/^```[@\/]/.test(changeObj.removed[i])) {
+                            start = i;
+                        }
+                        if (start >= 0 && /^```/.test(changeObj.removed[i])) {
+                            end = i;
+                        }
+                        if (start >= 0 && end >= 0) {
+                            cm.getDoc().removeLineClass(changeObj.from.line + i, 'wrap', 'CodeMirrorFold');
+                        }
                     }
+
                 }
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
                     //console.log(changeObj);
-                    foldWikiBlock(changeObj);
+                    foldWikiBlock(cm, changeObj);
 
                     var content = editor.getValue();
+                    //console.log(currentWebsitePage);
+
                     if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
                         (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g,"") != currentWebsitePage.content.replace(/[\r\n]*/g,""))) { // 解决 editor.setValue(text); text != editor.getValue() 问题
                             //console.log("--------manual modify--------------");

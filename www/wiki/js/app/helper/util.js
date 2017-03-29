@@ -34,7 +34,7 @@ define(['jquery'], function ($) {
 
     // 将字符串url解析成{sitename, pagename}对象
     util.parseUrl = function () {
-        var hostname = window.location.hostname;
+        var hostname = config.hostname || window.location.hostname;
         var pathname = window.location.pathname;
 
         if(config.islocalWinEnv()) {
@@ -47,7 +47,7 @@ define(['jquery'], function ($) {
         }
         pathname = decodeURI(pathname);
 
-        var username = hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
+        var username = config.isOfficialDomain(hostname) ? undefined : hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
         var sitename = '';
         var pagename = '';
         var domain = undefined;
@@ -193,10 +193,11 @@ define(['jquery'], function ($) {
 
     util.goUserSite = function (url, isOpen) {
         var host = window.location.host;
+        var hostname = window.location.hostname;
         if (config.isLocal()) {
             host = "localhost:8099";
-        } else if (host.indexOf(config.hostname) >= 0) {
-            host = config.hostname;
+        } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
+            host = config.officialDomain;
         }
         url = "http://" + host + url;
         if (isOpen) {
@@ -208,11 +209,12 @@ define(['jquery'], function ($) {
 
     util.go = function (pageName, isOpen) {
         var host = window.location.host;
+        var hostname = window.location.hostname;
         var url;
         if (config.isLocal()) {
-            host = "localhost:8099";
-        } else if (host.indexOf(config.hostname) >= 0) {
-            host = config.hostname;
+            //host = "localhost:8099";
+        } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
+            host = config.officialDomain;
         }
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#/wiki/' + pageName;
@@ -231,7 +233,7 @@ define(['jquery'], function ($) {
     util.isOfficialPage = function () {
         var pathname = window.location.pathname;
         var hostname = window.location.hostname;
-        if (hostname == "keepwork.com" && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+        if (config.isOfficialDomain(hostname) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
             return true;
         }
         return false;

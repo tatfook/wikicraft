@@ -109,7 +109,7 @@ end
 ?>
 
 <?npl
-
+include_once(WIKI_ROOT .. "auth/api.page")
 
 -- 解析URL
 function parseURL() 
@@ -131,9 +131,6 @@ end
 
 function RenderServerWikiContent() 
 	local sitename, _pagename = parseURL()
-	log(sitename)
-	log(_pagename)
-
 	if (not sitename) or (not _pagename) then
 		return 
 	end
@@ -159,6 +156,26 @@ function RenderServerWikiContent()
 	end
 end
 
+function RenderServerWikiScript() 
+	local siteConfig = wiki_config()
+	local config = {}
+	config.officialDomain = "keepwork.com"
+	config.hostname = request:GetHost()
+	config.bustVersion = os.time()	
+	config.dataSource = {}
+	config.dataSource.innerGitlab = {}
+	config.dataSource.innerGitlab.host = siteConfig.data_source.inner_gitlab.host
+	echo(format('<script>window.wiki_config=%s</script>', json_encode(config)))
+end
+
 -- 加载通用页
 include(WIKI_ROOT .. "index.page")
 ?>
+
+
+
+
+
+
+
+

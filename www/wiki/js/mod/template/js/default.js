@@ -4,7 +4,7 @@
 
 define(['app', 'helper/util'], function (app, util) {
     function registerController(wikiBlock) {
-        app.registerController("defaultTemplateController", function ($scope) {
+        app.registerController("defaultTemplateController", ['$scope', function ($scope) {
             function init() {
                 var moduleParams = wikiBlock.modParams;
                 //console.log(moduleParams);
@@ -19,7 +19,7 @@ define(['app', 'helper/util'], function (app, util) {
             }
 
             init();
-        });
+        }]);
     }
 
     return {

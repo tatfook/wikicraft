@@ -29,6 +29,10 @@
         padding: 12px 15px;
         cursor: pointer;
     }
+    .navbar-default li.collect-icon>img{
+        width:30px;
+        height:30px;
+    }
     .navbar-default .search-bar{
         width: 120px;
         z-index: 1;
@@ -135,10 +139,8 @@
     .navbar-default .user-dropdown .caret{
         position: absolute;
         border-top: 6px dashed #3977ad;
-        right: 10px;
+        right: 0;
         bottom: 7px;
-        background-color: #FFF;
-        outline: 2px solid #FFF;
     }
     .navbar-default .user-dropdown ul {
         list-style: none;
@@ -263,6 +265,30 @@
         left: 0px;
         top: 12px;
     }
+    /*社交分享*/
+    .share-dropdown .dropdown-menu{
+        min-width: 210px;
+        padding: 10px 20px 135px;
+    }
+    .social-share{
+        text-align: center;
+    }
+    .social-share .icon-wechat{
+        visibility: hidden;
+    }
+    .social-share .icon-wechat .wechat-qrcode.bottom{
+        top: 10px;
+        left: -40px;
+        width: 105px;
+        background-color: transparent;
+        box-shadow: none;
+        border: none;
+        visibility: visible;
+        display: block;
+    }
+    .social-share .icon-wechat .wechat-qrcode h4{
+        display: none;
+    }
     ul.nodot-dropdown > li {
         text-align: center;
     }
@@ -301,38 +327,6 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
-                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
-                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
-                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
-                        </li>
-                        <li class="nav-bread-crumb">
-                            <ol class="breadcrumb">
-                                <li><a ng-click="goUserSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
-                                <li class="dropdown" ng-show="urlObj.sitename">
-                                    <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="true">{{urlObj.sitename || ''}}</a>
-                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                                        <li ng-repeat="site in userSiteList">
-                                            <a ng-click="selectSite(site)">{{site.name}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" ng-show="urlObj.pagename">
-                                    <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="true">{{urlObj.pagename || ''}}</a>
-                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                                        <li ng-repeat="page in userSitePageList">
-                                            <a ng-click="selectPage(page)">{{page.name}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_share.png'}}" alt=""></li>
-                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" alt=""> <span class="text-muted">{{user.fansCount}}</span></li>
-                    </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="isLogin">
                         <li class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle profile" data-toggle="dropdown" aria-haspopup="true"
@@ -354,7 +348,7 @@
                                     <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserIndexPage('/'+user.username)">我的主页</a></li>
+                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
                                     <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>
@@ -422,6 +416,47 @@
                                 </ul>
                                 <div class="dropdown-footer"><a href="#">查看更多></a></div>
                             </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
+                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
+                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
+                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
+                        </li>
+                        <li class="nav-bread-crumb">
+                            <ol class="breadcrumb">
+                                <li><a ng-click="goUserSite(urlObj.username)">{{urlObj.username || ''}}</a></li>
+                                <li class="dropdown" ng-show="urlObj.sitename">
+                                    <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="true">{{urlObj.sitename || ''}}</a>
+                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
+                                        <li ng-repeat="site in userSiteList">
+                                            <a ng-click="selectSite(site)">{{site.name}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown" ng-show="urlObj.pagename">
+                                    <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="true">{{urlObj.pagename || ''}}</a>
+                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
+                                        <li ng-repeat="page in userSitePageList">
+                                            <a ng-click="selectPage(page)">{{page.name}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </li>
+                        <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
+                        <li class="icon dropdown share-dropdown" ng-show="isIconShow">
+                            <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <div class="dropdown-menu">
+                                <div class="social-share"></div>
+                            </div>
+                        </li>
+                        <li class="icon collect-icon" ng-show="isIconShow">
+                            <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="worksFavorite($event)" alt="">
+                            <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="worksFavorite($event)" alt="">
+                            <span class="text-muted" ng-click="goFans()">{{user.fansCount}}</span>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">

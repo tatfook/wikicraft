@@ -2,7 +2,12 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','helper/markdownwiki', 'helper/util', 'text!preview.html'], function (app, markdownwiki, util, htmlContent) {
+define([
+    'app',
+    'helper/markdownwiki',
+    'helper/util',
+    'text!html/preview.html'
+], function (app, markdownwiki, util, htmlContent) {
     app.registerController('previewController', ['$scope','$compile', function ($scope,$compile) {
         console.log("previewCtrl");
         var filename = window.location.search.replace('?','');

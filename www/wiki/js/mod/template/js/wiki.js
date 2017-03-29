@@ -102,5 +102,10 @@ define([
 
 /*
 ```@template/js/wiki
+{
+    "headerContent":"# header",
+    "sidebarContent":"# sidebar",
+    "footerContent":"# footer"
+}
 ```
 */

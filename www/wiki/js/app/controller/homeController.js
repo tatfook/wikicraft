@@ -50,10 +50,10 @@ define([
             $("#total-err").addClass("visible-hidden");
 
             var params = {
-                username: util.stringTrim($scope.username),
-                email: util.stringTrim($scope.email),
-                cellphone: util.stringTrim($scope.cellphone),
-                password: util.stringTrim($scope.password),
+                username: $scope.username.trim(),
+                email: $scope.email.trim(),
+                cellphone: $scope.cellphone.trim(),
+                password: $scope.password.trim(),
             };
 
             if (!/[\d\w]+/.test(params.username)) {
@@ -99,6 +99,57 @@ define([
                 $("#total-err").removeClass("visible-hidden");
             });
         }
+
+        //判断账号是否已存在（登录还是注册）
+        $scope.checkUser=function () {
+            var params = {
+                email: $scope.email.trim(),
+            };
+            console.log(params.email);
+            if(params.email){
+                util.http("POST", config.apiUrlPrefix + "user/getByEmail", params, function (data) {
+                    $("#webName").attr("disabled","disabled");
+                    $scope.logining=true;
+                }, function (error) {
+                    console.log(error );
+                    $scope.logining=false;
+                    $("#webName").removeAttr("disabled");
+                });
+            }
+        }
+
+        $scope.login = function () {
+            $scope.errMsg = "";
+            var params = {
+                email: $scope.email.trim(),
+                password: $scope.password.trim(),
+            };
+            if (!params.email || !params.password) {
+                $scope.errMsg = "用户名或密码错误";
+                $("#total-err").removeClass("visible-hidden");
+                return;
+            }
+            util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
+                $auth.setToken(data.token);
+                Account.setUser(data.userInfo);
+                console.log("登录成功");
+                /*
+                 if (!data.userInfo.githubToken) {
+                 Account.githubAuthenticate();
+                 }
+                 */
+                if ($scope.isModal) {
+                    $scope.$close(data.userInfo);
+                } else {
+                    util.goUserSite('/' + data.userInfo.username);
+                }
+
+            }, function (error) {
+                $scope.errMsg = error.message;
+                $("#total-err").removeClass("visible-hidden");
+            });
+        }
+
 
         // 收藏作品
         $scope.worksFavorite=function (event, site) {

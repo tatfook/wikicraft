@@ -129,6 +129,9 @@ define([
                 $scope.website.templateName = $scope.templates[0].name;
                 $scope.website.styleId = $scope.styles[0]._id;
                 $scope.website.styleName = $scope.styles[0].name;
+                $scope.category = $scope.categories[0];
+                $scope.template = $scope.templates[0];
+                $scope.style = $scope.styles[0];
             });
         }
 
@@ -154,6 +157,8 @@ define([
             $scope.website.styleId = $scope.styles[0]._id;
             $scope.website.styleName = $scope.styles[0].name;
             $scope.nextStepDisabled = false;
+            $scope.template = $scope.templates[0];
+            $scope.style = $scope.styles[0];
         }
 
         $scope.selectTemplate = function (template) {
@@ -165,6 +170,7 @@ define([
             $scope.website.styleName = $scope.styles[0].name;
             $scope.nextStepDisabled = false;
             $scope.website.logoUrl=template.logoUrl;
+            $scope.style = $scope.styles[0];
         }
 
         $scope.selectStyle = function (style) {

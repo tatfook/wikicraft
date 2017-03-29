@@ -1,4 +1,3 @@
-<link href="/wiki/js/lib/angular-ui-select/select.min.css" rel="stylesheet">
 <style>
     body{
         background-color: #F1F1F1;
@@ -75,12 +74,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <!--div class="form-group">
                     <label class="control-label col-md-2">起始sha：</label>
                     <div class="col-md-6">
                         <input placeholder="sha过滤(选填)" type="text" class="form-control" ng-model="sha">
                     </div>
-                </div>
+                </div-->
                 <div class="form-group">
                     <label class="control-label col-md-2">起始日期：</label>
                     <div class="col-md-6">
@@ -116,13 +115,12 @@
                 </div>
             </form>
         </div>
-
         <div style="margin: 20px;" class="col-md-8">
             <table class="table table-bordered">
                 <caption>提交记录</caption>
                 <thead>
                 <tr>
-                    <th>SHA</th>
+                    <!--th>SHA</th-->
                     <th>备注</th>
                     <th>日期</th>
                     <th>操作</th>
@@ -130,7 +128,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="commit in commits track by $index">
-                    <td>{{commit.sha}}</td>
+                    <!--td>{{commit.sha}}</td-->
                     <td>{{commit.message}}</td>
                     <td>{{commit.date}}</td>
                     <td>

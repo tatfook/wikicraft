@@ -51,7 +51,7 @@ define([
     };
 
     function registerController(wikiBlock) {
-        app.registerController("gridTemplateController", function ($rootScope, $scope, $rootScope) {
+        app.registerController("gridTemplateController", ['$rootScope', '$scope', function ($rootScope, $scope) {
             $scope.modParams = wikiBlock.modParams;
             $rootScope.frameHeaderExist = wikiBlock.modParams.frameHeaderExist;
             $rootScope.frameFooterExist = wikiBlock.modParams.frameFooterExist;
@@ -61,7 +61,7 @@ define([
             $scope.clickSelfPage = function (pageId) {
                 console.log("------------", pageId);
             }
-        });
+        }]);
     }
 
     return {

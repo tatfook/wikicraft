@@ -1,6 +1,6 @@
 ﻿define(function () {
     function registerController(wikiBlock) {
-        app.registerController("boardController", function ($scope, $uibModal, $timeout) {
+        app.registerController("boardController", ['$scope', '$uibModal', '$timeout',function ($scope, $uibModal, $timeout) {
 
             var __id = 0;
             var genId = function () {
@@ -720,7 +720,7 @@
                         size: 'xxl',
                         backdrop: 'static',
                         keyboard: false,
-                        controller: function ($scope, $uibModalInstance, $timeout) {
+                        controller: ['$scope', '$uibModalInstance', '$timeout',function ($scope, $uibModalInstance, $timeout) {
                             $scope.cancel = function () {
                                 $uibModalInstance.dismiss('cancel');
                             };
@@ -1020,7 +1020,7 @@
                                 //console.log(fabric);
                             };
 
-                        }
+                        }],
                     }).result.then(function (provider) {
                     
                     }, function (text, error) {
@@ -1030,7 +1030,7 @@
                 };
             });
             
-        });
+        }]);
     };
 
     return {

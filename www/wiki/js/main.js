@@ -10,10 +10,28 @@
     var libPathPrefix = pathPrefix + 'js/lib/';
     var appPathPrefix = pathPrefix + 'js/app/';
     var helperPathPrefix = pathPrefix + 'js/app/helper/';
+
+    define('THREE', [libPathPrefix + 'threejs/three.min.js'], function (THREE) {
+        window.THREE = THREE;
+        return THREE;
+    });
     requirejs.config({
         baseUrl:'',
         paths: {
             // 框架库
+            'jszip': libPathPrefix + 'jszip/jszip.min', // jszip
+            'jszip-utils': libPathPrefix + 'jszip/jszip-utils', // jszip-utils
+            
+            'THREE_OrbitControls': libPathPrefix + 'threejs/controls/OrbitControls', // OrbitControls
+            'THREE_TransformControls': libPathPrefix + 'threejs/controls/TransformControls', // TransformControls
+            'AxisMonitor': libPathPrefix + 'threejs/controls/AxisMonitor', // AxisMonitor
+            
+            'STLLoader': libPathPrefix + 'threejs/STLLoader', // STLLoader
+
+            'THREE_ThreeJsView': jsPathPrefix + 'mod/model/ThreeJsView',// threejs view for the mod of model
+            
+            'weblua': jsPathPrefix + 'mod/model/weblua-0.1.5', // lua vm
+            
             'jquery': libPathPrefix + 'jquery/jquery.min',
             'jquery-cookie': libPathPrefix + 'jquery-cookie/jquery.cookie',
             'angular': libPathPrefix + 'angular/angular.min',
@@ -32,6 +50,8 @@
             'text': libPathPrefix + 'requirejs/text',
             'domReady': libPathPrefix + 'requirejs/domReady',
             'fabric': libPathPrefix + 'fabric.require',
+            'jquery-sharejs': libPathPrefix + 'sharejs/js/jquery.share.min',// 社交分享
+            //'social-sharejs': libPathPrefix + 'sharejs/js/social-share',// 社交分享
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
@@ -45,7 +65,6 @@
             'helper': config.jsAppHelperPath,
             // html dir
             'html': config.htmlPath,
-            //'html':'/html/server/html',
             'wikimod': config.wikiModPath,
         },
         shim: {
@@ -82,10 +101,9 @@
             'jquery-cookie': {
                 deps:['jquery'],
             },
-            /*
-            'js-base64':{
-                exports:'base64',
-            }*/
+            'jquery-sharejs':{
+                deps:['jquery'],
+            }
         },
         packages: [
             {
@@ -95,12 +113,17 @@
             },
         ],
         deps:['bootstrap'],
-        urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
+        // urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
+         urlArgs: "bust=" + config.bustVersion,   //防止读取缓存，调试用
     });
+
+    
 
     require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular) {
         domReady(function () {
-            angular.bootstrap(document, ['webapp']);
+            config.init(function () {
+                angular.bootstrap(document, ['webapp']);
+            });
         });
 
     });

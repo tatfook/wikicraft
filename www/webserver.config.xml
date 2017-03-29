@@ -104,21 +104,12 @@
           <!--email from-->
           <string name='from'>wxaxiaoyao@sina.com</string>
 	  </table>
-    </table>
-    <table name='paracraft.wiki'>
-	 <table name='wiki'>
-      <table name='secrets'>
-        <!--token secret for this website-->
-        <string name='TOKEN_SECRET'>1234567890</string>
-        <!--OAuth 2.0-->
-        <string name='GITHUB_SECRET'>09d542f77c91121ce62857a28070cab7e84972c9</string>
-      </table>
-      <table name='clientid'>
-        <string name='GITHUB_CLIENTID'>7ca5d2185ce6d6f5be69</string>
-      </table>
-      <!--how many seconds to expire user token-->
-      <number name='token_expire'>360000</number>
-     </table>
+	 <table name='data_source'>
+	  <table name='inner_gitlab'>
+	   <string name='token'>14HUmpCrwfViyxUWQxts</string>
+	   <string name='host'>git.keepwork.com</string>
+	  </table>
+	 </table>
     </table>
     <table name='qiankunew.com'>
 	 <table name='wiki'>
@@ -149,8 +140,12 @@
       <!--how many seconds to expire user token-->
       <number name='token_expire'>360000</number>
      </table>
-    </table>
-    <table name='wikicraft.cn'>
+	 <table name='data_source'>
+	  <table name='inner_gitlab'>
+	   <string name='token'>14HUmpCrwfViyxUWQxts</string>
+	   <string name='host'>git.keepwork.com</string>
+	  </table>
+	 </table>
     </table>
   </config>
 </WebServer>

@@ -1,0 +1,119 @@
+<style>
+    .world3D{
+        display: flex;
+        background-color: #F9F9F9;
+        box-shadow: 0 0 5px 0 rgba(44,62,80,.35);
+        padding:0;
+        position: relative;
+    }
+    .world3D h4{
+        margin-top:0;
+    }
+    .world3D .img>img{
+        width: 300px;
+        height: 200px;
+    }
+    .world3D .text{
+        width: 430px;
+        max-height: 200px;
+        padding: 20px;
+    }
+    .world3D .inner{
+        padding-right: 100px;
+        min-width: 330px;
+    }
+    .world3D .inner p{
+        line-height: 40px;
+    }
+    .world3D .inner .col-xs-6{
+        padding-left:0;
+    }
+    .world3D .inner .col-xs-12{
+        margin-bottom: 25px;
+        padding:0;
+    }
+    .world3D .inner .icon{
+        vertical-align: text-bottom;
+        font-size: 17px;
+        margin-right: 10px;
+    }
+    .world3D .inner .glyphicon-star{
+        color: #FD3265;
+    }
+    .world3D .inner .info{
+        color: #666;
+    }
+    .world3D .info{
+        font-size: 12px;
+        font-weight: normal;
+        color: #999;
+    }
+    .world3D .btn-default{
+        background-color: transparent;
+        border:1px solid #656565;
+    }
+    .world3D .mask{
+        width:100%;
+        height:100%;
+        position: absolute;
+        left:0;
+        top:0;
+        background-color: rgba(0,0,0,.3);
+    }
+    .world3D .model-main{
+        position: absolute;
+        background-color: #FFF;
+        width: 390px;
+        left: 50%;
+        align-self: center;
+        transform: translate(-195px,0);
+        padding: 20px 58px 30px;
+        text-align: center;
+    }
+    .world3D .model-main .close-icon{
+        position: absolute;
+        right: 5px;
+        top: 5px;
+    }
+    .world3D .model-main .btn-default{
+        font-size: 16px;
+        padding: 8px 37px;
+        border: 1px solid #3977AD;
+        color: #333;
+    }
+    .world3D .model-main p{
+        line-height: 30px;
+    }
+    @media (max-width: 992px) {
+        .world3D .inner{
+            padding-right:0;
+        }
+    }
+</style>
+<div class="clearfix" ng-controller="world3DController">
+    <div class="world3D col-xs-10 col-xs-offset-1 col-lg-6 col-lg-offset-3">
+        <div class="img">
+            <img ng-src="{{imgsPath+'3DWorld.jpg'}}" alt="">
+        </div>
+        <div class="text">
+            <h4>Xiahdjsipe <p class="info pull-right">2017-3-27 10:28 版本：1.01</p></h4>
+            <div class="inner clearfix">
+                <p>作者：Lixizhi</p>
+                <div class="col-xs-12">
+                    <div class="col-xs-6 info"><img ng-src="{{imgsPath+'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 253</div>
+                    <div class="col-xs-6 info"><span class="glyphicon glyphicon-star icon"></span>收藏 43</div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="col-xs-6"><a class="btn btn-block btn-default" href="https://github.com/LiXizhi/HourOfCode/archive/master.zip" target="_blank">下载</a></div>
+                    <div class="col-xs-6"><a class="btn btn-block btn-primary" href="paracraft://cmd/loadworld https://github.com/LiXizhi/HourOfCode/archive/master.zip" ng-click="checkEngine()" target="_blank">进入</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="mask" ng-show="showModal" ng-click="closeModal()"></div>
+        <div class="model-main" ng-show="showModal">
+            <button type="button" class="close close-icon"><span aria-hidden="true" ng-click="closeModal()">&times;</span></button>
+            <p>如果您的设备没有自动使用Paracraft启动3D世界，请安装Paracraft</p>
+            <div class="btn btn-lg btn-default">点击下载</div>
+        </div>
+    </div>
+</div>

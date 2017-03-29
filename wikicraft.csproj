@@ -44,6 +44,7 @@
     <None Include="README.md" />
     <None Include="start.bat" />
     <None Include="update_packages.bat" />
+    <None Include="www\wiki\js\lib\threejs\fonts\helvetiker_regular.typeface.json" />
     <None Include="www\wiki\js\mod\background\pages\default.page" />
     <None Include="www\wiki\js\mod\example\page\example.page" />
     <None Include="www\wiki\js\mod\example\readme" />
@@ -52,6 +53,10 @@
     <None Include="www\wiki\js\mod\header\pages\organizationHeader.page" />
     <None Include="www\wiki\js\mod\header\pages\personalHeader.page" />
     <None Include="www\wiki\js\mod\header\pages\worksHeader.page" />
+    <None Include="www\wiki\js\mod\model\assets\test_bmax.zip" />
+    <None Include="www\wiki\js\mod\model\assets\test_stl.zip" />
+    <None Include="www\wiki\js\mod\model\config.page" />
+    <None Include="www\wiki\js\mod\model\README.md" />
     <None Include="www\wiki\js\mod\statics\pages\gameStatics.page" />
     <None Include="www\wiki\js\mod\statics\pages\organizationStatics.page" />
     <None Include="www\wiki\js\mod\statics\pages\personalStatics.page" />
@@ -220,20 +225,20 @@
     <Content Include="www\wiki\js\app\helper\storage.js" />
     <Content Include="www\wiki\js\app\helper\util.js" />
     <Content Include="www\wiki\js\app\preload.js" />
-    <Content Include="www\wiki\js\config.js" />
-    <Content Include="www\wiki\js\controller.js" />
-    <Content Include="www\wiki\js\editor.js" />
-    <Content Include="www\wiki\js\editorController.js" />
-    <Content Include="www\wiki\js\factory.js" />
-    <Content Include="www\wiki\js\headerController.js" />
     <Content Include="www\wiki\js\lib\fabric.require.js" />
-    <Content Include="www\wiki\js\mainController.js" />
+    <Content Include="www\wiki\js\lib\jszip\jszip-utils.js" />
+    <Content Include="www\wiki\js\lib\jszip\jszip.min.js" />
+    <Content Include="www\wiki\js\lib\threejs\controls\AxisMonitor.js" />
+    <Content Include="www\wiki\js\lib\threejs\controls\OrbitControls.js" />
+    <Content Include="www\wiki\js\lib\threejs\controls\TransformControls.js" />
+    <Content Include="www\wiki\js\lib\threejs\STLLoader.js" />
+    <Content Include="www\wiki\js\lib\threejs\three.min.js" />
+    <Content Include="www\wiki\js\main.js" />
     <Content Include="www\wiki\js\markdown\markdown-it-wikicmd.js" />
     <Content Include="www\wiki\js\markdown\markdownwiki.js" />
     <Content Include="www\wiki\js\markdown\markdownwiki.min.js">
       <DependentUpon>markdownwiki.js</DependentUpon>
     </Content>
-    <Content Include="www\wiki\js\moduleParser.js" />
     <Content Include="www\wiki\js\mod\background\controllers\default.js" />
     <Content Include="www\wiki\js\mod\blog\html\header.html" />
     <Content Include="www\wiki\js\mod\blog\js\header.js" />
@@ -249,6 +254,10 @@
     <Content Include="www\wiki\js\mod\header\js\worksHeader.js" />
     <Content Include="www\wiki\js\mod\message\default.js" />
     <Content Include="www\wiki\js\mod\message\html\default.html" />
+    <Content Include="www\wiki\js\mod\model\assets\imgs\wiki_board.png" />
+    <Content Include="www\wiki\js\mod\model\main.js" />
+    <Content Include="www\wiki\js\mod\model\ThreeJsView.js" />
+    <Content Include="www\wiki\js\mod\model\weblua-0.1.5.js" />
     <Content Include="www\wiki\js\mod\statics\js\gameStatics.js" />
     <Content Include="www\wiki\js\mod\statics\js\organizationStatics.js" />
     <Content Include="www\wiki\js\mod\statics\js\personalStatics.js" />
@@ -259,10 +268,7 @@
     <Content Include="www\wiki\js\mod\test\render.js" />
     <Content Include="www\wiki\js\mod\test\testModuleController.js" />
     <Content Include="www\wiki\js\mod\user\js\userlist.js" />
-    <Content Include="www\wiki\js\mod\wikiModBase.js" />
     <Content Include="www\wiki\js\mod\works\js\workslist.js" />
-    <Content Include="www\wiki\js\userController.js" />
-    <Content Include="www\wiki\js\util.js" />
     <Content Include="www\wiki\models\abstract\base.page" />
     <Content Include="www\wiki\models\abstract\multi_user_base.page" />
     <Content Include="www\wiki\models\abstract\per_user_base.page" />
