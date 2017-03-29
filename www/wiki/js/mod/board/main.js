@@ -675,6 +675,9 @@
                     return g;
                 };
 
+                if (!wikiBlock.editorMode) {
+                    return true;
+                }
                 $scope.onclick = function () {
                     $uibModal.open({
                         template: `
