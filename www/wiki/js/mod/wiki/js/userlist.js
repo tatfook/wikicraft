@@ -4,7 +4,7 @@ define([
     'helper/util',
     'helper/storage',
     'text!wikimod/wiki/html/userlist.html',
-], function (app, util, storage) {
+], function (app, util, storage, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("userlistController", ['$scope',function ($scope) {
             $scope.requestUrl = config.apiUrlPrefix + "website_member/getByWebsiteId";
@@ -33,8 +33,9 @@ define([
             function init() {
                 var moduleParams = wikiBlock.modParams;
                 moduleParams.type = moduleParams.type || "all";
-
-                $scope.title = moduleParams.title || "成员信息";
+                moduleParams.title = moduleParams.title || "成员信息";
+                $scope.moduleParams = moduleParams;
+                //console.log(moduleParams);
 
                 $scope.requestParams.pageSize = moduleParams.pageSize || 6;
                 $scope.requestParams.websiteId = $scope.siteinfo._id;

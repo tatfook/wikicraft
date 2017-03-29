@@ -124,11 +124,13 @@ function website:create(params)
 	website_pages_db:create(page)
 	
 	-- 创建布局模板页
-	page.content = data.theme or ""	
-	page.name = "_theme"
-	page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
-	website_pages_db:create(page)
-	
+	if data.theme and data.theme ~= "" then
+		page.content = data.theme or ""	
+		page.name = "_theme"
+		page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
+		website_pages_db:create(page)
+	end
+
 	-- create website domain record
 	local websiteDomainDB = models.website_domain:new()
 	-- websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	

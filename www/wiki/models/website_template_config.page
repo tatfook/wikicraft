@@ -149,7 +149,7 @@ function website_template_config:getPersonalPage()
 	local filename = "personal.html"
 	local content = self:getFileContent(filename)
 
-	return errors:wrap(nil, content)
+	return errors:wrap(nil, {content=content})
 end
 
 -- 通过模板文件获得模板内容  用于预览
