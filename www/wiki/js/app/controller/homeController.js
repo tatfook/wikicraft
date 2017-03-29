@@ -50,10 +50,10 @@ define([
             $("#total-err").addClass("visible-hidden");
 
             var params = {
-                username: $scope.username.trim(),
-                email: $scope.email.trim(),
-                cellphone: $scope.cellphone.trim(),
-                password: $scope.password.trim(),
+                username: $scope.username? $scope.username.trim():"",
+                email: $scope.email? $scope.email.trim():"",
+                cellphone: $scope.cellphone? $scope.cellphone.trim():"",
+                password: $scope.password? $scope.password.trim():"",
             };
 
             if (!/[\d\w]+/.test(params.username)) {
