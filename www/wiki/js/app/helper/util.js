@@ -192,14 +192,7 @@ define(['jquery'], function ($) {
     }
 
     util.goUserSite = function (url, isOpen) {
-        var host = window.location.host;
-        var hostname = window.location.hostname;
-        if (config.islocalWinEnv()) {
-            host = "localhost:8900";
-        } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
-            host = config.officialDomain;
-        }
-        url = "http://" + host + url;
+        url = "http://" + config.apiHost + url;
         if (isOpen) {
             window.open(url);
         } else {
@@ -208,18 +201,12 @@ define(['jquery'], function ($) {
     }
 
     util.go = function (pageName, isOpen) {
-        var host = window.location.host;
-        var hostname = window.location.hostname;
         var url;
-        if (config.isLocal()) {
-            //host = "localhost:8099";
-        } else if (!config.isOfficialDomain(hostname) && host.indexOf(config.officialDomain) >= 0) {
-            host = config.officialDomain;
-        }
+
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#/wiki/' + pageName;
         } else {
-            url = "http://" + host + "/wiki/" + pageName;
+            url = "http://" + config.apiHost + "/wiki/" + pageName;
         }
 
         if (isOpen) {

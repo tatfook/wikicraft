@@ -12,11 +12,21 @@ function main()
             classifyName="works",
             content=[[
                 ```@wiki/js/world3D
+                {
+                    "worldName":"3D海洋世界",
+                    "worldUrl":"https://github.com/LiXizhi/HourOfCode/archive/master.zip",
+                    "logoUrl":"",
+                    "username":"lixizhi",
+                    "visitCount":235,
+                    "favoriteCount":51,
+                    "updateDate":"2017-03-30",
+                    "version":"1.0.1"
+                }
                 ```
             ]],
             wikiCmdName="@wiki/js/world3D",
             logoUrl="wiki/assets/imgs/3DWorld_model.jpg",
-            desc="在网页中嵌入Paracraft创作的3D世界",
+            desc="这里是mod介绍",
             flag=1,
         },
 
@@ -52,8 +62,8 @@ function main()
 			content=[[
                 ```@wiki/js/workslist
                 {
-                "title"="全部作品",
-                "type"="all"
+                    "title"="全部作品",
+                    "type"="all"
                 }
                 ```
             ]],

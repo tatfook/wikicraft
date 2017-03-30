@@ -54,7 +54,6 @@
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
-        apiUrlPrefix:'http://' + (localEnv ? (localVMEnv ? window.location.host : "localhost:8900") : officialDomain ) + '/api/wiki/models/',
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // --------------------------------------路径配置 END----------------------------------------
@@ -70,8 +69,23 @@
         },
         // --------------------------------------后端配置 END-------------------------------------
     };
+    function initConfig() {
+        var domain = window.location.host;
+        if (config.islocalWinEnv()) {
+            domain = "localhost:8900";
+        }
+        if (!config.isLocal() && !config.isOfficialDomain()) {
+            domain = config.officialDomain;
+        }
+        config.apiHost = domain;
+        config.apiUrlPrefix = 'http://' + domain + '/api/wiki/models/';
+    }
 
+    //-----------------------------helper function-----------------------------------
     config.isOfficialDomain = function (hostname) {
+        hostname = hostname || window.location.hostname;
+        hostname = hostname.split(':')[0];
+
         if (config.officialDomain == hostname)
             return true;
 
@@ -82,13 +96,16 @@
         return false;
     }
 
+    // local env
     config.isLocal = function () {
         return localEnv;
     }
+
     // local window env
     config.islocalWinEnv = function () {
         return localEnv && !localVMEnv
     }
+
     // local VM env
     config.islocalVMEnv = function () {
         return localEnv && localVMEnv;
@@ -102,6 +119,8 @@
     config.setWikiModuleRender = function(moduleName, render) {
         this.wikiModuleRenderMap[moduleName] = render;
     }
+
+    // 获得模块渲染函数
     config.getWikiModuleRender = function (moduleName) {
         return this.wikiModuleRenderMap[moduleName];
     }
@@ -112,6 +131,8 @@
             cb && cb();
         })
     }
+
+    initConfig();
 
     window.config = config;
 })();

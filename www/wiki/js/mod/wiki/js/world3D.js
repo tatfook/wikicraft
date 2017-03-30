@@ -21,6 +21,20 @@ define([
 
             $scope.closeModal=function () {
                 $scope.showModal=false;
+                window.open("paracraft://cmd/loadworld " + $scope.modParams.worldUrl);
+            }
+
+            $scope.getImageUrl = function (url) {
+                if (!url)
+                    return undefined;
+
+                if (url.indexOf("http") == 0)
+                    return url;
+
+                if (url[0] == '/')
+                    url = url.substring(1);
+
+                return $scope.imgsPath + url;
             }
         }]);
     }
@@ -34,5 +48,16 @@ define([
 
 /*
 ```@wiki/js/world3D
+{
+    "worldName":"3D海洋世界",
+    "worldUrl":"https://github.com/LiXizhi/HourOfCode/archive/master.zip",
+    "logoUrl":"",
+    "desc":"",
+    "username":"lixizhi",
+    "visitCount":235,
+    "favoriteCount":51,
+    "updateDate":"2017-03-30",
+    "version":"1.0.1"
+}
 ```
 */
