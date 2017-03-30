@@ -14,9 +14,6 @@ define([
 
         function init() {
             var username = $scope.urlObj.username;
-            if (!username) {
-                username = $scope.user.username;
-            }
 
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
@@ -40,11 +37,7 @@ define([
             util.goUserSite('/' + x.username + '/' + x.name, true);
         }
 
-        $scope.$watch('$viewContentLoaded', function () {
-            if (!Account.isAuthenticated())
-                return;
-            Account.getUser(init);
-        });
+        $scope.$watch('$viewContentLoaded', init);
     }]);
 
     return htmlContent;
