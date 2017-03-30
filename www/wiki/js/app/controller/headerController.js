@@ -29,7 +29,7 @@ define([
             var urlObj = util.parseUrl();
 
             if (!config.islocalWinEnv()) {
-                $scope.urlObj.username = urlObj.username || "wiki";
+                $scope.urlObj.username = urlObj.username;
                 $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
                 //console.log(urlObj);
