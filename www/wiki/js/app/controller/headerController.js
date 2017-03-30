@@ -244,8 +244,31 @@ define([
         }
 
         // 收藏作品
-        $scope.worksFavorite=function (event) {
-            $scope.isCollect=$scope.isCollect? false:true;
+        $scope.doWorksFavorite=function (event,doCollect) {
+            var worksFavoriteRequest = function(isFavorite) {
+                console.log($scope.user);
+                console.log($rootScope.pageinfo);
+                var params = {
+                    userId: $scope.user._id,
+                    favoriteUserId: site.userId,
+                    favoriteWebsiteId: site._id,
+                }
+
+                var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
+                util.post(url, params, function () {
+                    Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
+                });
+            };
+
+            if (doCollect){
+                worksFavoriteRequest(true);
+                $scope.totalItems++;
+                $scope.isCollect=true;
+            }else{
+                worksFavoriteRequest(false);
+                $scope.totalItems--;
+                $scope.isCollect=false;
+            }
         };
 
         //作品的粉丝页
