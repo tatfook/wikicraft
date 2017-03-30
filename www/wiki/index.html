@@ -10,9 +10,8 @@
     <!-- lib css -->
     <link href="assets/css/main.css" rel="stylesheet" type="text/css">
 
-    <script src="js/lib/jquery/jquery.min.js"></script>
-    <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script>
-    <!--script src="js/lib/angular/angular.min.js"></script-->
+    <!--script src="js/lib/jquery/jquery.min.js"></script>
+    <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script-->
     <!-- 全局配置 -->
     <script src="js/app/config.js"></script>
 </head>
@@ -21,7 +20,7 @@
 
 <div ng-controller="mainController">
     <div ng-show="frameHeaderExist">
-        <div ng-include="'html/header.html'"></div>
+        <div id="__wikiHeader__"></div>
     </div>
 
     <!-- 信息提示 -->
@@ -34,16 +33,6 @@
 
     <!--页面主题内容-->
     <div style="z-index: 1" id="__mainContent__">
-        <!--官网内容体-->
-        <div id="__WikiPageContentContainer__">
-            <div id="SinglePageId" ng-show="IsRenderServerWikiContent">
-                <? RenderServerWikiContent() ?>
-            </div>
-            <div ng-show="!IsRenderServerWikiContent">
-                <div ui-view></div>
-            </div>
-        </div>
-
         <!--用户站点内容体-->
         <div>
             <div id="__UserSitePageContentContainer__">
@@ -52,8 +41,8 @@
         </div>
     </div>
 
-    <div ng-show="frameFooterExist" id="_footer_">
-        <div ng-include="'html/footer.html'"></div>
+    <div ng-show="frameFooterExist">
+        <div id="__wikiFooter__"></div>
     </div>
 </div>
 

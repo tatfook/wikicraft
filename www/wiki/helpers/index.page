@@ -24,7 +24,7 @@ function init_db()
 	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
 end
 
--- 初始化wiki module
+-- 初始wiki module
 function init_wiki_module()
 	local isWebServerStart = mem_cache:get("isWebServerStart")
 	if not isWebServerStart then
@@ -33,10 +33,20 @@ function init_wiki_module()
 	end
 end
 
+-- 获取bust version
+function getBustVersion()
+	local version = mem_cache:get("bustVersion")
+	if not version then 
+		version = os.time()
+		mem_cache:set("bustVersion", version)
+	end
+
+	return version
+end
+
 function init()
 	init_db()
 	init_wiki_module()
 end
 
 init()
--- log("load helper index.page!!!")

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -13,17 +12,13 @@
 
     <!--script src="js/lib/jquery/jquery.min.js"></script>
     <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script-->
-
-    <!-- 全局配置 -->
-    <? RenderServerWikiScript() ?>
-    <script src="/wiki/js/app/config.js"></script>
 </head>
 
 <body>
 <div ng-controller="mainController">
     <!--头部-->
     <div ng-show="frameHeaderExist">
-        <div ng-include="'/wiki/html/header.html'"></div>
+        <div id="__wikiHeader__"></div>
     </div>
 
     <!-- 信息提示 -->
@@ -36,16 +31,6 @@
 
     <!--页面主题内容-->
     <div style="z-index: 1" id="__mainContent__">
-        <!--官网内容体-->
-        <div id="__WikiPageContentContainer__">
-            <div id="SinglePageId" ng-show="IsRenderServerWikiContent">
-                <? RenderServerWikiContent() ?>
-            </div>
-            <div ng-show="!IsRenderServerWikiContent">
-                <div ui-view></div>
-            </div>
-        </div>
-
         <!--用户站点内容体-->
         <div>
             <div id="__UserSitePageContentContainer__">
@@ -55,11 +40,12 @@
     </div>
 
     <div ng-show="frameFooterExist"  id="_footer_">
-        <div ng-include="'/wiki/html/footer.html'"></div>
+        <div id="__wikiFooter__"></div>
     </div>
 </div>
 
-<!-- lib脚本 -->
-<script data-main="/wiki/js/main.js" src="/wiki/js/lib/requirejs/require.js"></script>
+<!-- 全局配置 -->
+<? RenderServerWikiScript() ?>
+
 </body>
 </html>

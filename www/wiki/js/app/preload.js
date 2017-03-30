@@ -7,7 +7,6 @@ define([
     'jquery-cookie',
 
     'controller/mainController',
-    'controller/headerController',
     //'controller/testController',
 
     // directives

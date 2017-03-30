@@ -6,8 +6,9 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'text!html/header.html',
     'jquery-sharejs'
-], function (app, util, storage) {
+], function (app, util, storage, htmlContent) {
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
@@ -267,4 +268,6 @@ define([
             $rootScope.isLogin = Account.isAuthenticated();
         });
     }]);
+
+    return htmlContent;
 });

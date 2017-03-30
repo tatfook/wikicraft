@@ -8,9 +8,10 @@ define([
     'helper/storage',
     'helper/util',
     'helper/dataSource',
-
+    'controller/headerController',
+    'controller/footerController',
     'controller/userController',
-], function (app, markdownwiki, storage, util, dataSource, userHtmlContent) {
+], function (app, markdownwiki, storage, util, dataSource, headerHtmlContent, footerHtmlContent, userHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
@@ -60,6 +61,13 @@ define([
                 $("#messageTipCloseId").click(function () {
                     Message.hide();
                 });
+
+                if ($rootScope.frameHeaderExist) {
+                    util.html('#__wikiHeader__', headerHtmlContent, $scope);
+                }
+                if ($rootScope.frameFooterExist) {
+                    util.html('#__wikiFooter__', footerHtmlContent, $scope);
+                }
 
                 // 底部高度自适应
                 var winH=$(window).height();
@@ -121,13 +129,6 @@ define([
                 setWindowTitle(urlObj);
 
                 if (!urlObj.username || urlObj.username == "wiki") {
-                    //console.log($('#SinglePageId').children().length);
-                    $scope.IsRenderServerWikiContent = $('#SinglePageId').children().length > 0;
-                    if ($scope.IsRenderServerWikiContent) {
-                        console.log("server page !!!");
-                        return;
-                    }
-
                     if (!urlObj.username || !urlObj.sitename) {
                         pathname = '/wiki/home';
                         if (!urlObj.username && Account.isAuthenticated()) {

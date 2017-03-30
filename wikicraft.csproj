@@ -46,6 +46,7 @@
     <None Include="update_packages.bat" />
     <None Include="www\wiki\js\lib\threejs\fonts\helvetiker_regular.typeface.json" />
     <None Include="www\wiki\js\mod\background\pages\default.page" />
+    <None Include="www\wiki\js\mod\board\config.page" />
     <None Include="www\wiki\js\mod\example\page\example.page" />
     <None Include="www\wiki\js\mod\example\readme" />
     <None Include="www\wiki\js\mod\game\pages\gamedate.page" />
@@ -242,6 +243,7 @@
     <Content Include="www\wiki\js\mod\background\controllers\default.js" />
     <Content Include="www\wiki\js\mod\blog\html\header.html" />
     <Content Include="www\wiki\js\mod\blog\js\header.js" />
+    <Content Include="www\wiki\js\mod\board\assets\imgs\wiki_board.png" />
     <Content Include="www\wiki\js\mod\board\main.js" />
     <Content Include="www\wiki\js\mod\board\shapes.png" />
     <Content Include="www\wiki\js\mod\comment\html\comment.html" />
