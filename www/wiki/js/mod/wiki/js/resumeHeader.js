@@ -24,6 +24,8 @@ define([
 /*
 ```@wiki/js/resumeHeader
 {
+    "backgroundImage":"",
+    "portrait":"",
     "username":"逍遥",
     "baseInfo":"'男 本科 3年工作经验 深圳",
     "company":"xxx",
