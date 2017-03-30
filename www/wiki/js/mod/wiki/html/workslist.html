@@ -112,7 +112,8 @@
 
 <div class="container-fluid" ng-controller="workslistController">
     <div class="personal-works-list">
-        <img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">
+        <h3>我的作品</h3>
+        <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
         <div class="carousel-content clearfix">
             <div class="carousel-item" ng-repeat="x in siteList">
                 <img ng-src="{{x.logoUrl || imgsPath+'personal_workslist_banner.jpg'}}" alt="作品名">
