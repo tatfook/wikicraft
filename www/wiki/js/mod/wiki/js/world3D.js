@@ -17,11 +17,11 @@ define([
                 if(true){// 判断是否安装了Paracraft
                     $scope.showModal=true;
                 }
+                window.open("paracraft://cmd/loadworld " + $scope.modParams.worldUrl);
             }
 
             $scope.closeModal=function () {
                 $scope.showModal=false;
-                window.open("paracraft://cmd/loadworld " + $scope.modParams.worldUrl);
             }
 
             $scope.getImageUrl = function (url) {
@@ -35,6 +35,11 @@ define([
                     url = url.substring(1);
 
                 return $scope.imgsPath + url;
+            }
+
+            $scope.clickDownload = function() {
+                $scope.showModal=false;
+                window.open("www.paracraft.cn");
             }
         }]);
     }
