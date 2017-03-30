@@ -230,10 +230,39 @@
         object-fit: cover;
         margin-bottom: 20px;
     }
+    @media (min-width: 768px) and (max-width: 992px) {
+        .panel-body, .col-sm-9{
+            padding:0;
+        }
+        .preview-zone{
+            margin: 20px;
+        }
+        .preview-zone .preview{
+            width: 100px;
+            height: 100px;
+        }
+    }
+    @media (min-width: 992px) {
+        .panel-body{
+            margin-top: 20px;
+        }
+    }
+    @media(max-width: 768px){
+        .preview-zone .preview{
+            width: 80px;
+            height:80px;
+        }
+        .safety-panel .btn-primary{
+            margin-bottom: 30px;
+        }
+        .safety-panel .form-group{
+            margin-bottom:0;
+        }
+    }
 </style>
 
-<div ng-controller="userProfileController">
-    <div ng-show="showItem == 'myProfile'" class="col-md-10 panel main-content">
+<div ng-controller="userProfileController" class="col-sm-9 col-md-10">
+    <div ng-show="showItem == 'myProfile'" class="panel main-content col-xs-12">
         <div class="panel-heading">
             我的资料
         </div>
@@ -312,7 +341,7 @@
 
 
     <!--账号安全-->
-    <div ng-show="showItem == 'accountSafe'" class="col-md-10 main-content">
+    <div ng-show="showItem == 'accountSafe'" class=" col-xs-12 main-content">
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
@@ -325,8 +354,8 @@
             </ul>
 
             <!-- Tab panes -->
-            <div class="tab-content col-md-7">
-                <div role="tabpanel" class="tab-pane active" id="change">
+            <div class="tab-content col-lg-7 col-sm-10 col-xs-12">
+                <div role="tabpanel" class="tab-pane safety-panel active" id="change">
                     <form class="form-horizontal" role="form">
                         <div class="form-group sr-only">
                             <legend>修改密码表单</legend>
@@ -353,12 +382,12 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-9 col-sm-offset-3">
-                                <button ng-click="modifyPassword()" class="btn btn-primary">修 改</button>
+                                <button ng-click="modifyPassword()" class="btn btn-primary col-xs-12">修 改</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="verify">
+                <div role="tabpanel" class="tab-pane safety-panel" id="verify">
                     <form class="form-horizontal" role="form">
                         <div class="form-group sr-only">
                             <legend>安全验证表单</legend>

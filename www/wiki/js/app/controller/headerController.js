@@ -250,8 +250,8 @@ define([
                 console.log($rootScope.pageinfo);
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: site.userId,
-                    favoriteWebsiteId: site._id,
+                    favoriteUserId: $rootScope.pageinfo.userId,
+                    favoriteWebsiteId: $rootScope.pageinfo.websiteId,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');

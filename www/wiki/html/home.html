@@ -199,6 +199,30 @@
             display: inline-block;
         }
     }
+    @media (min-width: 768px) and (max-width: 992px) {
+        .works{
+            max-height: 405px;
+            overflow: hidden;
+        }
+        .works .col-sm-4{
+            margin: 10px 0;
+        }
+    }
+    @media (max-width: 768px) {
+        .web-message{
+            padding: 10px 0;
+            box-shadow: none;
+        }
+        .row{
+            padding:10px 0 20px;
+        }
+        .row.works{
+            padding-top: 0;
+        }
+        .works .col-xs-10{
+            margin-bottom: 10px;
+        }
+    }
 </style>
 
 <div ng-controller="homeController">
@@ -342,7 +366,7 @@
             <div class="col-md-12">
                 <h4>作品长廊 <a class="pull-right" ng-click="goAllWorksList()">查看更多>></a></h4>
             </div>
-            <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList">
+            <div class="col-md-3 hover-slide col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in siteObj.siteList">
                 <div>
                     <a ng-click="goUserSite(site)">
                         <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
@@ -364,7 +388,7 @@
             <div class="col-md-12">
                 <h4>名人堂 <a class="pull-right" ng-click="goAllPersonalList()">查看更多>></a></h4>
             </div>
-            <div class="col-md-3 hover-slide" ng-repeat="site in personalSiteObj.siteList">
+            <div class="col-md-3 hover-slide col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in personalSiteObj.siteList">
                 <div>
                     <a ng-click="goUserSite(site)">
                         <img ng-src="{{site.logoUrl || (imgsPath + 'wiki_works.jpg')}}">
@@ -389,15 +413,15 @@
                 <div class="col-md-12">
                     <h2>谁在用KEEPWORK？</h2>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-4">
                     <h4>个人</h4>
                     <p>上万名中小学生，使用KEEPWORK建立了自己的3D作品</p>
                 </div>
-                <div class="col-md-3 col-md-offset-1">
+                <div class="col-md-3 col-md-offset-1 col-sm-4">
                     <h4>老师</h4>
                     <p>优秀的老师与企业CTO使KEEPWORK创建了交互的教学课件。</p>
                 </div>
-                <div class="col-md-3 col-md-offset-1">
+                <div class="col-md-3 col-md-offset-1 col-sm-4">
                     <h4>企业</h4>
                     <p>学校、培训机构使用KEEPWORK创建了连接学生与家长和老师的公司网站。</p>
                 </div>

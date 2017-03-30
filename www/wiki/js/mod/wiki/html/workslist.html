@@ -34,6 +34,11 @@
     .personal-works-list .work-msg img{
         vertical-align: text-bottom;
     }
+    .personal-works-list span.title{
+        border-bottom: 2px solid #FF7A7A;
+        color: #FF7A7A;
+        padding:4px 10px;
+    }
     @media(min-width: 768px){
         .personal-works-list{
             width: 700px;
@@ -112,7 +117,7 @@
 
 <div class="container-fluid" ng-controller="workslistController">
     <div class="personal-works-list">
-        <h3>我的作品</h3>
+        <h3><span class="title">{{modParams .title || "我的作品"}}</span></h3>
         <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
         <div class="carousel-content clearfix">
             <div class="carousel-item" ng-repeat="x in siteList">

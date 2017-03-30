@@ -107,11 +107,27 @@
         font-size: 12px;
         color: #999;;
     }
+    .subnav .panel-body{
+        margin-top: 0;
+    }
+    @media(max-width: 768px){
+        .subnav .list-group-item:first-child .list-group-item{
+            padding: 10px 5px;
+            float: left;
+            width: 25%;
+        }
+        .subnav .list-group .list-group-item.active .glyphicon{
+            display: none;
+        }
+        .main-content{
+            min-height: auto;
+        }
+    }
 </style>
 
 <div ng-controller="userCenterController" class="container" style="padding-top: 30px">
     <div class="row">
-        <div class="col-md-2 subnav">
+        <div class="col-md-2 subnav col-sm-3">
             <ul class="list-group">
                 <li class="list-group-item">
                     <div class="panel panel-primary">

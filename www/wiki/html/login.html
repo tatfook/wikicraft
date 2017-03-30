@@ -15,7 +15,7 @@
         right:15px;
         top:15px;
     }
-    .login-form.col-md-4{
+    .login-form.col-sm-6{
         margin-top: 80px;
         margin-bottom: 80px;
     }
@@ -64,10 +64,26 @@
     .visible-hidden{
         visibility: hidden;
     }
+    @media(max-width: 768px){
+        .container-fluid{
+            padding:0;
+        }
+        .login-form.col-sm-6{
+            margin: 0 0 10px;
+            box-shadow: none;
+            padding: 20px 0;
+        }
+        .login-form form{
+            width: 80%;
+        }
+        .otherLogin .title{
+            margin: 20px 0;
+        }
+    }
 </style>
 
 <div ng-controller="loginController" ng-class="{'container-fluid':!isModal}">
-    <div class="login-form" ng-class="{'col-md-4 col-md-offset-4 ':!isModal}">
+    <div class="login-form" ng-class="{'col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 responsive':!isModal}">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()" ng-show="isModal"><span aria-hidden="true">&times;</span></button>
         <form class="clearfix">
             <div class="form-group">

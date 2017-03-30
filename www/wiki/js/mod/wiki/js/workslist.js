@@ -38,6 +38,8 @@ define([
                 });
             }
 
+            $scope.modParams = angular.copy(wikiBlock.modParams || {});
+
             function init() {
                 var moduleParams = wikiBlock.modParams || {};
                 var pageSize = parseInt(moduleParams.pageSize || "3");
