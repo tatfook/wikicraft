@@ -163,6 +163,7 @@ define([
                 // 不存在则创建项目
                 gitlab.httpRequest("POST", "/projects", {name: gitlab.projectName, visibility:'public',request_access_enabled:true}, function (data) {
                     //console.log(data);
+                    gitlab.projectId = data.id;
                     gitlab.inited = true;
                     cb && cb(data);
                     return;
