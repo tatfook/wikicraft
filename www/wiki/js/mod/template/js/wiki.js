@@ -56,6 +56,17 @@ define([
                     var footerHtml = md.render(modParams.footerContent);
                     util.html('#_footerContentId', footerHtml, $scope);
                 }
+
+                util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_header'}, function (data) {
+                    data && data.content && util.html('#_headerPageContentId', md.render(data.content), $scope);
+                });
+                util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_sidebar'}, function (data) {
+                    data && data.content && util.html('#_sidebarPageContentId', md.render(data.content), $scope);
+                });
+                util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_footer'}, function (data) {
+                    data && data.content && util.html('#_footerPageContentId', md.render(data.content), $scope);
+                });
+
             }
             
             $scope.$watch('$viewContentLoaded', init);
