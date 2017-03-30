@@ -347,7 +347,7 @@ define([
 
                 $http.put(config.apiUrlPrefix + 'website_pages/new', websitePage).then(function (response) {
                     currentWebsitePage = response.data.data;
-                    currentWebsite = $scope.website;
+                    currentWebsite = site;
                     allWebsitePages.push(currentWebsitePage);
                     initTree();
                     openPage();
@@ -490,12 +490,11 @@ define([
                 }
             }
             function openPage(isNodeSelected) {
-                //console.log(currentWebsitePage);
                 if (!currentWebsitePage) {
                     openUrlPage();
                     return;
                 }
-
+                //console.log(currentWebsitePage);
                 // 设置全局用户页信息和站点信息
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
@@ -503,7 +502,6 @@ define([
                 var urlPrefix = '/' + currentWebsite.username + '/' + currentWebsite.name + '/';
                 storage.sessionStorageSetItem('urlObj',{username:currentWebsite.username, sitename:currentWebsite.name, pagename:currentWebsitePage.url.substring(urlPrefix.length)});
                 !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
-                //window.location.href = window.location.pathname + '#' + currentWebsitePage.url;
 
                 if (isEmptyObject(currentWebsitePage)) {
                     editor.setValue('');
@@ -1155,13 +1153,20 @@ define([
                         util.post(config.apiUrlPrefix + "website_pages/deleteByPageId", {_id: currentWebsitePage._id}, function (data) {
                             storage.indexedDBDeleteItem(currentWebsitePage.url);
                             $scope.dataSource && $scope.dataSource.deleteFile({
-                                path: currentWebsitePage.websieName + '/' + currentWebsitePage.name,
+                                path: currentWebsitePage.websiteName + '/' + currentWebsitePage.name,
                                 message: "delete file"
                             });
 
-                            currentWebsitePage.isDelete = true;
-
-                            currentWebsitePage = {};
+                            var currentPageIndex = allWebsitePages.length;
+                            for (var i = 0; i < allWebsitePages.length; i++) {
+                                if (allWebsitePages[i]._id == currentWebsitePage._id) {
+                                    currentPageIndex = i;
+                                    break;
+                                }
+                            }
+                            allWebsitePages.splice(currentPageIndex,1);
+                            storage.sessionStorageRemoveItem('urlObj');
+                            currentWebsitePage = undefined;
                             initTree();
                             openPage(false);
                             $scope.loading = false;
