@@ -12,12 +12,14 @@ define([
 
     app.controller('userController', ['$scope','Account', function ($scope, Account) {
 
-        function init() {
+        function init(userinfo) {
             var username = $scope.urlObj.username;
-            if (!username) {
-                username = $scope.user.username;
+            if (!username && userinfo && userinfo.username) {
+                username = userinfo.username;
             }
-
+            if (!username) {
+                return;
+            }
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
                     return ;
@@ -40,7 +42,15 @@ define([
             util.goUserSite('/' + x.username + '/' + x.name, true);
         }
 
-        $scope.$watch('$viewContentLoaded', init);
+        $scope.$watch('$viewContentLoaded', function () {
+            if ($scope.urlObj.username) {
+                init();
+            } else {
+                if (Account.isAuthenticated()) {
+                    Account.getUser(init);
+                }
+            }
+        });
     }]);
 
     return htmlContent;
