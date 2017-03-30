@@ -1245,7 +1245,7 @@ define([
                         return undefined;
                     //console.log(start);
                     var end = start.line + 1;
-                    var lastLineNo = cm.lastLine();
+                    var lastLineNo = cm.lastLine() - 1;
                     while (end < lastLineNo) {
                         line = cm.getLine(end)
                         if (line && line.match(/^```/))

@@ -19,7 +19,9 @@ define(['app','helper/util', 'helper/markdownwiki'], function (app, util, markdo
                         var htmlContent = md.render(data.content);
                         htmlContent = $compile(htmlContent)($scope);
                         $element.replaceWith(htmlContent);
-                        //$scope.$apply();
+                        setTimeout(function () {
+                            $scope.$apply();
+                        })
                     });
                 }
             },
