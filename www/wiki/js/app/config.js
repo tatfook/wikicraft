@@ -8,7 +8,7 @@
     var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
-    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
+    var pathPrefix = (localEnv && !localVMEnv) ? '/wiki/' : (wiki_config.webroot || '/wiki/');
     var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
         // --------------------------------------前端配置 START----------------------------------------------
@@ -54,7 +54,7 @@
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
-        apiUrlPrefix:'http://' + (localEnv ? (localVMEnv ? window.location.host : "localhost:8900") : officialDomain ) + '/api/wiki/models/',
+        apiUrlPrefix:localEnv ? 'http://keepwork.com/api/wiki/models/' : ('http://' + officialDomain + '/api/wiki/models/'),
         //modulePageUrlPrefix:'/wiki/module',
         //moduleApiUrlPrefix:'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
         // --------------------------------------路径配置 END----------------------------------------
