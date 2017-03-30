@@ -457,8 +457,8 @@
                             </div>
                         </li>
                         <li class="icon collect-icon" ng-show="isIconShow">
-                            <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="worksFavorite($event)" alt="">
-                            <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="worksFavorite($event)" alt="">
+                            <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="doWorksFavorite($event,false)" alt="">
+                            <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
                             <span class="text-muted" ng-click="goFans()">{{totalItems}}</span>
                         </li>
                     </ul>

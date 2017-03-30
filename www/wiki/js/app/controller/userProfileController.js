@@ -21,52 +21,6 @@ define(['app',
         var innerGitlab = Account.innerGitlab;
 
         function init() {
-            $('#cropper > img').cropper({
-                aspectRatio: 1 / 1,
-                viewMode: 1,
-                dragMode: 'move',
-                autoCropArea: 0.65,
-                restore: false,
-                guides: false,
-                highlight: false,
-                cropBoxMovable: false,
-                cropBoxResizable: false,
-                ready: function () {
-                    var $clone = $(this).clone().removeClass('cropper-hidden');
-                    console.log($(this));
-                    $clone.css({
-                        display: 'block',
-                        width: "100%",
-                        minWidth: 0,
-                        minHeight: 0,
-                        maxWidth: 'none',
-                        maxHeight: 'none'
-                    });
-
-                    $previews.css({
-                        overflow: 'hidden'
-                    }).html($clone);
-                },
-                crop: function (e) {
-                    var imageData = $(this).cropper('getImageData');
-                    var previewAspectRatio = e.width / e.height;
-
-                    $previews.each(function () {
-                        var $preview = $(this);
-                        var previewWidth = $preview.width();
-                        var previewHeight = previewWidth / previewAspectRatio;
-                        var imageScaledRatio = e.width / previewWidth;
-
-                        $preview.height(previewHeight).find('img').css({
-                            width: imageData.naturalWidth / imageScaledRatio,
-                            height: imageData.naturalHeight / imageScaledRatio,
-                            marginLeft: -e.x / imageScaledRatio,
-                            marginTop: -e.y / imageScaledRatio
-                        });
-                    });
-                }
-            });
-
             var changeBtn = $("#change-profile");
             var finishBtn = $("#finish");
             var cropper = $("#cropper");
@@ -100,6 +54,50 @@ define(['app',
                     var img = "<h4>修改头像</h4><img src='" + arg.target.result + "' alt='preview' />";
                     cropper.html(img);
                     var $previews = $('.preview');
+                    $('#cropper > img').cropper({
+                        aspectRatio: 1 / 1,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 0.65,
+                        restore: false,
+                        guides: false,
+                        highlight: false,
+                        cropBoxMovable: false,
+                        cropBoxResizable: false,
+                        build:function(){
+                            var $clone = $(this).clone().removeClass('cropper-hidden');
+                            $clone.css({
+                                display: 'block',
+                                width:"100%",
+                                minWidth: 0,
+                                minHeight: 0,
+                                maxWidth: 'none',
+                                maxHeight: 'none'
+                            });
+
+                            $previews.css({
+                                overflow: 'hidden'
+                            }).html($clone);
+                        },
+                        crop: function (e) {
+                            var imageData = $(this).cropper('getImageData');
+                            var previewAspectRatio = e.width / e.height;
+
+                            $previews.each(function () {
+                                var $preview = $(this);
+                                var previewWidth = $preview.width();
+                                var previewHeight = previewWidth / previewAspectRatio;
+                                var imageScaledRatio = e.width / previewWidth;
+
+                                $preview.height(previewHeight).find('img').css({
+                                    width: imageData.naturalWidth / imageScaledRatio,
+                                    height: imageData.naturalHeight / imageScaledRatio,
+                                    marginLeft: -e.x / imageScaledRatio,
+                                    marginTop: -e.y / imageScaledRatio
+                                });
+                            });
+                        }
+                    });
                 }
             };
             finishBtn.on("click", function () {
