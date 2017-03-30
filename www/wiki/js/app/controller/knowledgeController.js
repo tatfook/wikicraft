@@ -71,8 +71,6 @@ define([
         $scope.$watch('$viewContentLoaded', init);
     }]);
 
-    function domReady() {
-    }
-    return {htmlContent:htmlContent,domReady:domReady};
+    return htmlContent;
 });
 
