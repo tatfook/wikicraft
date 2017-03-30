@@ -67,6 +67,9 @@
     .wikiblock-tab .text p{
         line-height:33px;
         margin-bottom:0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
     .wikiblock-tab .text span.glyphicon{
         line-height: 30px;
@@ -89,6 +92,13 @@
     @media (min-width: 1200px) {
         .modal-lg {
             width: 1170px;
+        }
+        .modal-lg .tab-pane{
+            width:840px;
+            margin:0 auto;
+        }
+        .wikiblock-tab .col-md-4{
+            width: 280px;
         }
     }
 </style>
@@ -137,7 +147,7 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content col-md-12 wikiblock-tab">
-                        <div role="tabpanel" class="tab-pane active" id="wikiBlockListView">
+                        <div role="tabpanel" class="tab-pane active clearfix" id="wikiBlockListView">
                             <div class="col-md-4" ng-repeat="wikiBlock in wikiBlockList">
                                 <div class="img-hover">
                                     <img ng-src="{{getWikiBlockLogoUrl(wikiBlock)}}" alt="">
@@ -145,14 +155,14 @@
                                 </div>
                                 <div class="text">
                                     <h4>
-                                        <a href="#">{{wikiBlock.name}}</a>
+                                        <a ng-click="selectWikiBlock(wikiBlock)">{{wikiBlock.name}}</a>
                                         <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a>
                                     </h4>
                                     <p class="info">
                                         热度：{{wikiBlock.useCount}}
                                         <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="labelItem == 'favorite' ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
                                     </p>
-                                    <p>{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
+                                    <p title="{{wikiBlock.desc}}">{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
                                 </div>
                             </div>
                         </div>
