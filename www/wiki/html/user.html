@@ -1,4 +1,7 @@
 <style>
+    body{
+        min-width:1170px;
+    }
     .row {
         padding: 30px 0;
     }
@@ -52,6 +55,8 @@
     }
     .main-content h3.title>a{
         color: #3977AD;
+        font-size: 14px;
+        font-weight: normal;
     }
     .main-content .tab-content{
         padding-top: 20px;
@@ -156,11 +161,17 @@
         color: #666;
         font-weight:normal;
     }
+    @media (max-width: 1200px){
+        .container {
+            width: 100%;
+        }
+    }
+
 </style>
 
 <div class="container" ng-controller="userController">
     <div class="row">
-        <div class="col-md-3 subnav">
+        <div class="col-md-3 subnav col-xs-3">
             <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
             <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
             <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
@@ -184,7 +195,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-9 main-content">
+        <div class="col-md-9 main-content col-xs-9">
             <div role="tabpanel">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
