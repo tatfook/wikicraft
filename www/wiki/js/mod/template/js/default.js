@@ -6,7 +6,7 @@ define(['app', 'helper/util'], function (app, util) {
     function registerController(wikiBlock) {
         app.registerController("defaultTemplateController", ['$scope', function ($scope) {
             function init() {
-                var moduleParams = wikiBlock.modParams;
+                var moduleParams = wikiBlock.modParams || {};
                 //console.log(moduleParams);
                 $scope.style = {
                     'background-color': moduleParams.backgroundColor,
