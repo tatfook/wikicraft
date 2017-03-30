@@ -30,7 +30,7 @@ define([
 
             if (!config.islocalWinEnv()) {
                 $scope.urlObj.username = urlObj.username || "wiki";
-                $scope.urlObj.sitename = urlObj.sitename || "home";
+                $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
                 //console.log(urlObj);
                 if (urlObj.domain) {
