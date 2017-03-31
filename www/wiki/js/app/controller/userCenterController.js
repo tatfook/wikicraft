@@ -55,8 +55,7 @@ define(['app',
             storage.sessionStorageRemoveItem('userCenterSubContentType');
 
             //console.log($scope.contentType, $scope.showItem);
-            util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
-            //$scope.selectContentType($scope.contentType, $scope.showItem);
+            $scope.selectContentType($scope.contentType, $scope.showItem);
             //$scope.$apply();
         }
 

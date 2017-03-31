@@ -8,7 +8,7 @@ define(['app',
     'helper/dataSource',
     'text!html/userProfile.html',
     'cropper',
-], function (app, util, storage, htmlContent) {
+], function (app, util, storage,dataSource, htmlContent) {
     app.registerController('userProfileController', ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";

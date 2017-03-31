@@ -66,7 +66,7 @@ define([
     /** Global helper function:
      * Helper function to render a single block
      */
-    window.renderWikiBlock = function (idx, modName, cmdName, params, innerParams) {
+    window.renderWikiBlock1 = function (idx, modName, cmdName, params, innerParams) {
         //console.log(params);
         //console.log(innerParams);
         var render = getRenderFunc(modName);
@@ -300,7 +300,7 @@ define([
     }
 
     // 模板渲染
-    window.renderWikiTemplate = function (id, mdwikiName) {
+    window.renderWikiTemplate1 = function (id, mdwikiName) {
         var mdwiki = getMdwiki(mdwikiName);
         var modParams = mdwiki.template;
         var innerParams = modParams.innerParams;
@@ -330,7 +330,7 @@ define([
     };
 
 
-    window.mdwikiRender = function (id, text, mdwikiName) {
+    window.mdwikiRender1 = function (id, text, mdwikiName) {
         //console.log(id, mdwikiName, text);
         text = decodeURI(text);
         id = '#' + id;
