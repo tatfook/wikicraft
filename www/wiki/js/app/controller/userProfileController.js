@@ -5,6 +5,7 @@
 define(['app',
     'helper/util',
     'helper/storage',
+    'helper/dataSource',
     'text!html/userProfile.html',
     'cropper',
 ], function (app, util, storage, htmlContent) {
@@ -18,7 +19,7 @@ define(['app',
 
         //console.log("init userProfileController!!!");
 
-        var innerGitlab = Account.innerGitlab;
+        var innerGitlab = undefined;
 
         function init() {
             var changeBtn = $("#change-profile");
@@ -35,7 +36,8 @@ define(['app',
                 var reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function (arg) {
-                    if (!innerGitlab.isInited()) {
+                    innerGitlab = dataSource.getDefaultDataSource();
+                    if (!innerGitlab || !innerGitlab.isInited()) {
                         Message.info("内部数据源失效");
                         return;
                     }

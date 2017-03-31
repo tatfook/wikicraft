@@ -69,6 +69,7 @@
         },
         shim: {
             'angular': {
+                deps:['jquery'],
                 exports: 'angular',
             },
             'angular-ui-bootstrap':{

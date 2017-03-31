@@ -303,7 +303,7 @@ define([
     // md 语法重写
     function markdownit_rule_override(md, mdwikiName) {
         //console.log(md.renderer.rules);
-        //markdownit_wikicmd_link(md, mdwikiName);
+        markdownit_wikicmd_link(md, mdwikiName);
         markdownit_wikicmd_iamge(md, mdwikiName);
         markdownit_wikicmd_fence(md, mdwikiName);
     }
@@ -367,6 +367,8 @@ define([
         //console.log(id, mdwikiName, text);
         var mdwikiObj = getMdwiki(mdwikiName);
         var id = '#' + id;
+        var siteinfo = util.getAngularServices().$rootScope.siteinfo;
+        var pageinfo = util.getAngularServices().$rootScope.pageinfo;
 
         mdwikiObj.renderCount++;
         mdwikiObj.template = undefined;
@@ -387,13 +389,16 @@ define([
             util.html(id, htmlContent);
             return;
         } else {
+            if (pageinfo && pageinfo.name[0] == '_') {
+                util.html(id, '<div id="' + wikimdContentContainerId + '">' + renderContent + '</div>');
+                return;
+            }
             mdwikiObj.template = {
                 content: renderContent,
                 modName: 'template',
                 cmdName: '@template/js/default',
                 modParams: {}
             };
-            var siteinfo = util.getAngularServices().$rootScope.siteinfo;
             if (siteinfo) {
                 var url = '/' + siteinfo.username + '/' + siteinfo.name + '/_theme';
                 util.post(config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url: url}, function (data) {

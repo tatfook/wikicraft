@@ -6,10 +6,12 @@ define(['app'], function (app) {
     app.directive('wikiLink', ['$http', '$rootScope', function ($http, $rootScope) {
         return {
             restrict: 'E',
+            scope:{},
             replace: true,
             template:'<a>{{textContent}}</a>',
             link: function ($scope, $element, $attrs) {
                 var href = $element.attr('href');
+                //console.log($element);
                 if ($element.context && $element.context.textContent)
                     $scope.textContent = $element.context.textContent;
                 else
