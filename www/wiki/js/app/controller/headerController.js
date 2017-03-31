@@ -233,12 +233,11 @@ define([
             var img=$scope.imgsPath+"icon/logo.png";
             var $config = {
                 url                 : window.location.href, // 网址，默认使用 window.location.href
-                source              : 'http://keepwork.com', // 来源（QQ空间会用到）, 默认读取head标签：<meta name="site" content="http://overtrue" />
                 description         : description, // 描述, 默认读取head标签：<meta name="description" content="PHP弱类型的实现原理分析" />
                 sites               : ['qq', 'qzone','tencent' , 'weibo', 'wechat'], // 启用的站点（weibo qq wechat tencent douban qzone linkedin diandian facebook twitter google）
                 disabled            : [], // 禁用的站点
                 wechatQrcodeTitle   : "", // 微信二维码提示文字
-                wechatQrcodeHelper  : '扫描二维码打开网页',
+                wechatQrcodeHelper  : '扫描二维码打开网页'
             };
             $('.social-share').share($config);
         }
