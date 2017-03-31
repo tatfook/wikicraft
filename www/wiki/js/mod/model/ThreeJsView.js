@@ -43,20 +43,19 @@ THREE.ThreeJsView = function (parent) {
     scene.add(helper);
 
 
-    var axisMonitor_dom = document.createElement("div");
-    axisMonitor_dom.style["id"] = "axis_container";
-    axisMonitor_dom.style["position"] = "absolute";
-    axisMonitor_dom.style["width"] = "100px";
-    axisMonitor_dom.style["height"] = "100px";
-    axisMonitor_dom.style["margin"] = "20px";
-    axisMonitor_dom.style["padding"] = "0px";
-    axisMonitor_dom.style["left"] = "0px";
-    axisMonitor_dom.style["bottom"] = "0px";
-    axisMonitor_dom.style["z-index"] = "100";
-    parent.appendChild(axisMonitor_dom);
+    //var axisMonitor_dom = document.createElement("div");
+    //axisMonitor_dom.style["id"] = "axis_container";
+    //axisMonitor_dom.style["position"] = "absolute";
+    //axisMonitor_dom.style["width"] = "100px";
+    //axisMonitor_dom.style["height"] = "100px";
+    //axisMonitor_dom.style["margin"] = "20px";
+    //axisMonitor_dom.style["padding"] = "0px";
+    //axisMonitor_dom.style["left"] = "0px";
+    //axisMonitor_dom.style["bottom"] = "0px";
+    //axisMonitor_dom.style["z-index"] = "100";
+    //parent.appendChild(axisMonitor_dom);
 
-    //var axisMonitor;
-    var axisMonitor = new THREE.AxisMonitor(axisMonitor_dom, config.pathPrefix);
+    //var axisMonitor = new THREE.AxisMonitor(axisMonitor_dom, config.pathPrefix);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setClearColor(0xf0f0f0);
@@ -80,7 +79,7 @@ THREE.ThreeJsView = function (parent) {
     orbit_controls.keys.FOREWARD = 87;
     orbit_controls.keys.BACKWARD = 83;
     orbit_controls.addEventListener('change', render);
-
+    orbit_controls.noZoom = true;
 
     function onWindowResize() {
         var w = container.offsetWidth;
@@ -93,7 +92,7 @@ THREE.ThreeJsView = function (parent) {
     }
     function animate() {
         requestAnimationFrame(animate);
-        axisMonitor.update(orbit_controls);
+        //axisMonitor.update(orbit_controls);
         render();
         orbit_controls.update();
         transformControl.update();
