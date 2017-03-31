@@ -7,9 +7,14 @@ define(['app'], function (app) {
         return {
             restrict: 'E',
             replace: true,
-            template:'<a ng-click="clickLink()">{{textContent}}</a>',
+            template:'<a>{{textContent}}</a>',
             link: function ($scope, $element, $attrs) {
                 var href = $element.attr('href');
+                if ($element.context && $element.context.textContent)
+                    $scope.textContent = $element.context.textContent;
+                else
+                    $scope.textContent = href;
+
                 if (!href) {
                     $element.attr('href','#');
                     return ;
@@ -33,12 +38,6 @@ define(['app'], function (app) {
                     href = window.location.origin + '/' + siteinfo.username + '/' + siteinfo.name + '/' + href;
                 }
 
-                if ($element.context && $element.context.textContent)
-                    $scope.textContent = $element.context.textContent;
-                else
-                    $scope.textContent = href;
-
-                //console.log(href);
                 //$element.attr('href', '#');
                 $element.attr('href', href);
             },
