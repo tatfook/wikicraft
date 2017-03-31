@@ -15,23 +15,21 @@
         window.THREE = THREE;
         return THREE;
     });
+
     requirejs.config({
         baseUrl:'',
         paths: {
             // 框架库
             'jszip': libPathPrefix + 'jszip/jszip.min', // jszip
             'jszip-utils': libPathPrefix + 'jszip/jszip-utils', // jszip-utils
-            
+            'AxisMonitor': libPathPrefix + 'threejs/controls/AxisMonitor', // AxisMonitor
+            'STLLoader': libPathPrefix + 'threejs/STLLoader', // STLLoader
+            'weblua': jsPathPrefix + 'mod/model/weblua-0.1.5', // lua vm
+            //'THREE':libPathPrefix + 'threejs/three.min.js',
             'THREE_OrbitControls': libPathPrefix + 'threejs/controls/OrbitControls', // OrbitControls
             'THREE_TransformControls': libPathPrefix + 'threejs/controls/TransformControls', // TransformControls
-            'AxisMonitor': libPathPrefix + 'threejs/controls/AxisMonitor', // AxisMonitor
-            
-            'STLLoader': libPathPrefix + 'threejs/STLLoader', // STLLoader
-
             'THREE_ThreeJsView': jsPathPrefix + 'mod/model/ThreeJsView',// threejs view for the mod of model
-            
-            'weblua': jsPathPrefix + 'mod/model/weblua-0.1.5', // lua vm
-            
+
             'jquery': libPathPrefix + 'jquery/jquery.min',
             'jquery-cookie': libPathPrefix + 'jquery-cookie/jquery.cookie',
             'angular': libPathPrefix + 'angular/angular.min',
@@ -115,7 +113,7 @@
         ],
         deps:['bootstrap'],
         // urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
-         urlArgs: "bust=" + (config.bustVersion || ''),   //防止读取缓存，调试用
+         urlArgs: "bust=" + (config.isLocal() ? ((new Date()).getTime()) : (config.bustVersion || '')),   //防止读取缓存，调试用
     });
 
     

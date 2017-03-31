@@ -7,42 +7,9 @@ define([
     'markdown-it',
     'highlight',
 ], function (util, markdownit, hljs) {
-    var httpCache = {};
-    var idCount = 0;
     var mdwikiMap = {
-        count: 0, // markdownwiki 数量
+        count: 0,    // markdownwiki 数量
     };
-    // 获得毫秒
-    function getTime() {
-        return (new Date()).getTime();
-    }
-
-    function http(isCache, method, url, params, callback, errorCallback) {
-        var $http = util.angularServices.$http;
-        var httpRespone = undefined;
-        var key = method + url + angular.toJson(params || {});
-
-        if (isCache && httpCache[key]) {
-            callback && callback(httpCache[key]);
-            return;
-        }
-        // 在此带上认证参数
-        if (method == 'POST') {
-            httpRespone = $http({method: method, url: url, data: params}); //$http.post(url, params);
-        } else {
-            httpRespone = $http({method: method, url: url, params: params});
-        }
-        httpRespone.then(function (response) {
-            if (isCache) {
-                httpCache[key] = angular.copy(response.data);
-            }
-            callback && callback(response.data);
-
-        }).catch(function (response) {
-            // 网络错误
-            errorCallback && errorCallback(response);
-        });
-    }
 
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
@@ -95,36 +62,6 @@ define([
         return render;
     }
 
-    // 模板渲染
-    window.renderWikiTemplate = function (mdwikiName) {
-        //console.log(mdwikiName);
-        var mdwikiObj = getMdwiki(mdwikiName);
-        var tplObj = mdwikiObj.template;
-        var innerParams = tplObj.innerParams;
-        var editor = mdwikiObj.editor;
-        var render = getRenderFunc(tplObj.modName);
-        tplObj.mdwikiName = mdwikiName;
-        tplObj.isPageTemplate = mdwikiObj.isPageTemplate;
-        tplObj.editorMode = mdwikiObj.editorMode;
-        tplObj.render = function (htmlContent) {
-            util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
-        };
-        tplObj.http = function (method, url, params, callback, errorCallback) {
-            return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
-        };
-
-        tplObj.applyModParams = function (modParams) {
-            //console.log(modParams);
-            if (!modParams || !editor || !innerParams) {
-                return;
-            }
-            editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
-                line: innerParams.line_begin + 1,
-                ch: '\n'
-            }, {line: innerParams.line_end - 1, ch: '\n'});
-        }
-        render(tplObj);
-    };
 
     /** Global helper function:
      * Helper function to render a single block
@@ -362,30 +299,56 @@ define([
         return preprocessText;
     }
 
+    // 模板渲染
+    window.renderWikiTemplate = function (id, mdwikiName) {
+        var mdwiki = getMdwiki(mdwikiName);
+        var modParams = mdwiki.template;
+        var innerParams = modParams.innerParams;
+        var editor = mdwikiObj.editor;
+        var render = getRenderFunc(tplObj.modName);
+        tplObj.mdwikiName = mdwikiName;
+        tplObj.isPageTemplate = mdwikiObj.isPageTemplate;
+        tplObj.editorMode = mdwikiObj.editorMode;
+        tplObj.render = function (htmlContent) {
+            util.html('#' + getWikiMdContentContainerId(mdwikiName), htmlContent);
+        };
+        tplObj.http = function (method, url, params, callback, errorCallback) {
+            return http(mdwikiObj.editorMode, method, url, params, callback, errorCallback);
+        };
+
+        tplObj.applyModParams = function (modParams) {
+            //console.log(modParams);
+            if (!modParams || !editor || !innerParams) {
+                return;
+            }
+            editor.replaceRange(angular.toJson(modParams, 4) + '\n', {
+                line: innerParams.line_begin + 1,
+                ch: '\n'
+            }, {line: innerParams.line_end - 1, ch: '\n'});
+        }
+        render(tplObj);
+    };
+
+
     window.mdwikiRender = function (id, text, mdwikiName) {
-        text = decodeURI(text);
         //console.log(id, mdwikiName, text);
-        var mdwikiObj = getMdwiki(mdwikiName);
-        var id = '#' + id;
+        text = decodeURI(text);
+        id = '#' + id;
+        var mdwiki = getMdwiki(mdwikiName);
         var siteinfo = util.getAngularServices().$rootScope.siteinfo;
         var pageinfo = util.getAngularServices().$rootScope.pageinfo;
 
-        mdwikiObj.renderCount++;
-        mdwikiObj.template = undefined;
+        mdwiki.template = undefined;
 
-        var renderContent = mdwikiObj.md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
-        var wikimdContentContainerId = getWikiMdContentContainerId(mdwikiName);
-        if (!mdwikiObj.options.use_template) {
-            util.html(id, '<div id="' + wikimdContentContainerId + '">' + renderContent + '</div>');
+        var renderContent = mdwiki.md.render(preprocessMDText(text));   // 会对 mdwikiObj.template 赋值
+        if (!mdwiki.options.use_template) {
+            util.html(id, renderContent);
             return;
         }
-        var script = '<script>renderWikiTemplate("' + mdwikiName + '")</script>';
-        var html = '<div id="' + wikimdContentContainerId + '"></div>';
-        var htmlContent = html + script;
-
-        if (mdwikiObj.template) {
-            mdwikiObj.template.content = renderContent;
-            mdwikiObj.isPageTemplate = true;
+        return;
+        if (mdwiki.template) {
+            mdwiki.template.content = renderContent;
+            mdwiki.isPageTemplate = true;
             util.html(id, htmlContent);
             return;
         } else {
@@ -456,16 +419,17 @@ define([
         var md = markdownit(options);
         markdownit_rule_override(md, mdwikiName);
         //console.log(md.renderer.rules);
-        var mdwiki = {};
-        var editor;
-        var mdwikiObj = getMdwiki(mdwikiName);
-        var GetEditorText;
         var lastUpdateTime = 0; // 上次更新时间
         var timer = undefined; // 定时器
-        var divContainerId = undefined;
-        mdwikiObj.md = md;
-        mdwikiObj.options = options;
 
+        var mdwiki = getMdwiki(mdwikiName);
+        mdwiki.editorMode = options.editorMode;
+        mdwiki.md = md;
+        mdwiki.mdwikiName = mdwikiName;
+        mdwiki.renderCount = 0;
+        mdwiki.options = options;
+
+        // 获取原生markdown
         mdwiki.getMarkdown = function () {
             return md;
         }
@@ -476,49 +440,65 @@ define([
 
         // force render a given text
         mdwiki.render = function (text) {
-            //console.log(text)
-            var mdwikiObj = getMdwiki(mdwikiName);
-            var id = mdwikiName + "_" + idCount;
-            var html = '<div id="' + id + '"></div>';
-
-            idCount++;
-            divContainerId = id;
+            mdwikiContainerId = "_mdwiki_container_" + mdwikiName + "_" + mdwiki.renderCount;
+            mdwiki.renderCount++;
+            mdwiki.parse(text);
             text = encodeURI(text);
-
-            var script = '<script>mdwikiRender("' + id + '","' + text + '","' + mdwikiName + '");</script>';
-            return html + script;
+            //mdwiki.renderContent = text;
+            var renderContent = '<div id="' + mdwikiContainerId + '"></div>'+ '<script>mdwikiRender("' + mdwikiContainerId + '","' + text + '","' + mdwikiName + '");</script>';
+            return renderContent;
         }
 
-        mdwiki.getLastDivId = function () {
-            return divContainerId;
+        mdwiki.getMdWikiContainerId = function () {
+            return "_mdwiki_container_" + mdwikiName + "_" + (mdwiki.renderCount - 1);
         }
-
-        mdwiki.getWikiMdContentContainerId = function () {
-            getWikiMdContentContainerId(mdwikiName);
-        }
-
-        // update the content of markdown whenever the editor is changed
-        mdwiki.bindToCodeMirrorEditor = function (editor_) {
-            mdwikiObj.editor = editor_;
-            mdwikiObj.editorMode = true;
-            editor = editor_;
-            GetEditorText = function () {
-                return editor && editor.getValue();
+        
+        mdwiki.parse = function (text) {
+            console.log(text);
+            var textLineList = text.split('\n');
+            var tokenList = md.parse(text, {});
+            var blockList = [];
+            var stack = 0;
+            var block = {
+                textPosition: {from:99999999, to:0},
+                htmlContent:'',
+                content:'',
+                info:'',
             }
-            // Setup listeners
-            editor.on("change", mdwiki.updateResult);
-        }
-
-        // NOT tested: update the content of markdown whenever the editor is changed
-        mdwiki.bindToAceEditor = function (editor_) {
-            mdwikiObj.editor = editor_;
-            mdwikiObj.editorMode = true;
-            editor = editor_;
-            GetEditorText = function () {
-                return editor && editor.session.getValue();
+            for (var i = 0; i < tokenList.length; i++) {
+                var token = tokenList[i];
+                if (token.type.indexOf('_open') >= 0) {
+                    stack++;
+                }
+                if (token.type.indexOf('_close') >= 0) {
+                    stack--;
+                }
+                // 获取文本位置
+                if (token.map) {
+                    if (block.textPosition.from > token.map[0])
+                        block.textPosition.from = token.map[0];
+                    if (block.textPosition.to < token.map[1])
+                        block.textPosition.to = token.map[1];
+                }
+                if (stack == 0) {
+                    for (var j = block.textPosition.from; j < block.textPosition.to; j++) {
+                        block.content += textLineList[j] + '\n';
+                    }
+                    block.info = token.info;
+                    // 获取的对应的html标签内容
+                    block.htmlContent += mdwiki.md.render(block.content);
+                    blockList.push(block);
+                    // 重置初始状态
+                    block = {
+                        textPosition: {from:99999999, to:0},
+                        htmlContent:'',
+                        content:'',
+                        info:'',
+                    }
+                }
             }
-            // Setup listeners
-            editor.on("change", mdwiki.updateResult);
+            console.log(blockList);
+            return blockList;
         }
 
         // update result from current editor, this is usually called automatically whenever editor content changed.

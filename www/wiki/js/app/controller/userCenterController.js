@@ -55,7 +55,8 @@ define(['app',
             storage.sessionStorageRemoveItem('userCenterSubContentType');
 
             //console.log($scope.contentType, $scope.showItem);
-            $scope.selectContentType($scope.contentType, $scope.showItem);
+            util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
+            //$scope.selectContentType($scope.contentType, $scope.showItem);
             //$scope.$apply();
         }
 
@@ -65,7 +66,7 @@ define(['app',
         $scope.selectContentType = function (contentType, subContentType) {
             //console.log(contentType);
             $scope.contentType = contentType;
-
+            //console.log($('#userCenterSubPage'));
             if (contentType == 'userProfile') {
                 $scope.showItem = subContentType || 'myProfile';
                 util.html('#userCenterSubPage', userProfileHtmlContent, $scope);

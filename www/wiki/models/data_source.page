@@ -20,6 +20,8 @@ function data_source:ctor()
 	self:addfield("dataSourceId", "number")  -- 数据源ID
 	self:addfield("dataSourceUsername", "string")  -- 数据源用户名
 	self:addfield("dataSourceToken", "string")  -- 数据源ID
+	self:addfield("projectName", "string")  -- 项目名
+	self:addfield("apiBaseUrl", "string")  -- api url prefix
 	self:addfield("enable", "number")  -- 数据源ID
 end
 
@@ -166,6 +168,35 @@ function data_source:api_setDataSourceEnable(params)
 	
 	return self:api_upsert(params)	
 end
+
+
+-- 获取数据源api base url
+function data_source:api_getApiBaseUrl(params)
+	if not params.type then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if params.type == const.DATA_SOURCE_OUTER_GITHUB then 
+		return "https://api.github.com"
+	elseif params.type == const.DATA_SOURCE_INNER_GITLAB then
+		return "http://git.keepwork.com/api/v4"
+	else
+		return ""
+	end
+end
+
+-- 添加数据源
+function data_source:api_addDataSource(params)
+	if (not params.token) or (not params.userId) or (not params.type) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	
+end
+
+
+
+
 
 
 

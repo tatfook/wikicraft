@@ -304,6 +304,8 @@ define([
             $rootScope.frameFooterExist = false;
             $rootScope.userinfo = $rootScope.user;
 
+            $scope.enableTransform = true;
+
             $scope.progressbar = {
                 show: false,
                 percent: 0
@@ -702,17 +704,6 @@ define([
                             allWebsitePages.push(currentWebsitePage);
                             initTree();
                             openPage(false);
-
-                            //下面是addNode实现方式
-                            //$websiteNode = $('#treeview').treeview("search",[ $scope.website.name, {exactMatch: true }]);
-                            //$('#treeview').treeview("addNode", [$websiteNode[0].nodeId, { node:{
-                            //    text:$scope.websitePage.name,
-                            //    icon:"fa fa-file-o",
-                            //    selectedIcon:"fa fa-file-text-o",
-                            //    tags:["newpage",$scope.websitePage._id,$scope.websitePage.websiteId]
-                            //}}]);
-                            //$rootScope.websiteNode = $scope.website;
-                            //$rootScope.websitePage = response.data;
                         }
                     }, function (text, error) {
                         console.log('text:' + text);
@@ -1135,11 +1126,11 @@ define([
             //代码
             $scope.cmd_code = function () {
                 var sel = editor.getSelection();
-                var desStr = '```' + sel + '```';
+                var desStr = '```\n' + sel + '\n```';
                 editor.replaceSelection(desStr);
 
                 var cursor = editor.getCursor();
-                editor.setCursor(CodeMirror.Pos(cursor.line, cursor.ch - 3));
+                editor.setCursor(CodeMirror.Pos(cursor.line-1, cursor.ch));
 
                 editor.focus();
             }
@@ -1182,6 +1173,11 @@ define([
             //版本
             $scope.cmd_version = function () {
                 util.go("gitVersion");
+            }
+
+            $scope.cmd_transform = function () {
+                $scope.enableTransform = !$scope.enableTransform;
+                CodeMirror.signal(editor,'change', editor);
             }
 
             // 渲染回调
@@ -1385,6 +1381,10 @@ define([
                 setEditorHeight();
 
                 function resizeMod() {
+                    if (!$scope.enableTransform) {
+                        return;
+                    }
+
                     var winWidth = $(window).width();
                     $(".result-html").css("width", winWidth + "px");
                     var boxWidth = $("#preview").width();//30为#preview的padding宽度
