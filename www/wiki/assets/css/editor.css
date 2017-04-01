@@ -241,6 +241,12 @@ body,
     top: 0;
     border-right: 1px solid #eee;
 }
+.treeview .node-selected .badge{
+    background-color: transparent;
+}
+.treeview li:not(.node-selected) .badge{
+    display: none;
+}
 
 @media (max-width: 1200px) {
     .wiki-toolbar{

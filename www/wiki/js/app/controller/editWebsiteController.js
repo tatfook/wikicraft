@@ -97,6 +97,90 @@ define([
                    }
                }
             });
+            var finishBtn = $("#finish");
+            var cropper = $("#cropper");
+            var changeBtn=$(".change-btn");
+
+            $scope.fileUpload = function (e) {
+                var file = e.target.files[0];
+                // 只选择图片文件
+                if (!file.type.match('image.*')) {
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (arg) {
+                    innerGitlab = dataSource.getDefaultDataSource();
+                    if (!innerGitlab || !innerGitlab.isInited()) {
+                        Message.info("内部数据源失效");
+                        return;
+                    }
+
+                    innerGitlab.uploadImage({content:arg.target.result}, function (url) {
+                        $scope.user.portrait = url;
+                        $('#userPortraitId').attr('src', arg.target.result);
+                        util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
+                            Message.info("图片上传成功");
+                        })
+                    }, function () {
+                        Message.info("图片上传失败");
+                    });
+                    finishBtn.removeClass("sr-only");
+                    cropper.removeClass("sr-only");
+                    changeBtn.addClass("sr-only");
+                    var img = "<img src='" + arg.target.result + "' alt='preview' />";
+                    cropper.html(img);
+                    var $previews = $('.preview');
+                    $('#cropper > img').cropper({
+                        aspectRatio: 4 / 3,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        restore: false,
+                        guides: false,
+                        highlight: false,
+                        cropBoxMovable: false,
+                        cropBoxResizable: false,
+                        minCropBoxWidth:280,
+                        build:function(){
+                            var $clone = $(this).clone().removeClass('cropper-hidden');
+                            $clone.css({
+                                display: 'block',
+                                width:'320px',
+                                height:'240px'
+                            });
+
+                            $previews.css({
+                                overflow: 'hidden'
+                            }).html($clone);
+                        },
+                        crop: function (e) {
+                            var imageData = $(this).cropper('getImageData');
+                            var previewAspectRatio = e.width / e.height;
+
+                            $previews.each(function () {
+                                var $preview = $(this);
+                                console.log($preview);
+                                var previewWidth = $preview.width();
+                                var previewHeight = previewWidth / previewAspectRatio;
+                                var imageScaledRatio = e.width / previewWidth;
+
+                                $preview.height(previewHeight).find('img').css({
+                                    width: imageData.naturalWidth / imageScaledRatio,
+                                    height: imageData.naturalHeight / imageScaledRatio,
+                                    marginLeft: -e.x / imageScaledRatio,
+                                    marginTop: -e.y / imageScaledRatio
+                                });
+                            });
+                        }
+                    });
+                }
+            };
+            finishBtn.on("click", function () {
+                changeBtn.removeClass("sr-only");
+                cropper.html("");
+                cropper.addClass("sr-only");
+                finishBtn.addClass("sr-only");
+            });
             /*
             $('#uploadPictureBtn').change(function (e) {
                 if (!github.isInited()) {

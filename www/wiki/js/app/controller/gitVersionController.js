@@ -8,6 +8,11 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
         $scope.dtEndOpened = false;
         $scope.filelist = [];
         $scope.commits = [];
+        $scope.isModal=true;
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss();
+        }
 
         var user = Account.getUser();
         var currentDataSource = Account.innerGitlab;

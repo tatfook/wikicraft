@@ -51,18 +51,110 @@
         font-size: 16px;
         color: #666;
     }
+    .git-version-modal h4{
+        margin: 0;
+    }
 </style>
 
-<div ng-controller="gitVersionController" class="container">
-    <div class="panel panel-default col-md-12 git-version">
-        <div class="panel-heading">
+<div ng-controller="gitVersionController">
+    <div class="container" ng-show="!isModal">
+        <div class="panel panel-default col-md-12 git-version">
+            <div class="panel-heading">
+                <h4>站点版本管理</h4>
+            </div>
+            <div class="panel-body">
+                <form role="form" class="form-horizontal git-version-form">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">文件路径：</label>
+                        <div class="col-md-6">
+                            <!--input type="text" class="form-control" ng-model="path"-->
+                            <div>
+                                <ui-select ng-model="seleected" ng-disabled on-select="pathSelected($item, $model)">
+                                    <ui-select-match placeholder="文件过滤(必填)">{{$select.selected.path}}</ui-select-match>
+                                    <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index">
+                                        <span ng-bind="file.path"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                    </div>
+                    <!--div class="form-group">
+                        <label class="control-label col-md-2">起始sha：</label>
+                        <div class="col-md-6">
+                            <input placeholder="sha过滤(选填)" type="text" class="form-control" ng-model="sha">
+                        </div>
+                    </div-->
+                    <div class="form-group">
+                        <label class="control-label col-md-2">起始日期：</label>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
+                                       ng-model="dtStart" is-open="dtStartOpened" popup-placement="bottom-right"/>
+                                <span class="input-group-btn">
+                                <button type="button" class="btn btn-default btn-calender" ng-click="dtStartOpen()">
+                                    <img ng-src="{{imgsPath+'icon/wiki_calender.png'}}" alt="">
+                                </button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">终止日期：</label>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
+                                       ng-model="dtEnd" is-open="dtEndOpened" popup-placement="bottom-right"/>
+                                <span class="input-group-btn">
+                                <button type="button" class="btn btn-default btn-calender" ng-click="dtEndOpen()">
+                                    <img ng-src="{{imgsPath+'icon/wiki_calender.png'}}" alt="">
+                                </button>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="btn-box col-md-8">
+                            <button class="btn btn-primary" ng-click="submit()">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div style="margin: 20px;" class="col-md-8">
+                <table class="table table-bordered">
+                    <caption>提交记录</caption>
+                    <thead>
+                    <tr>
+                        <!--th>SHA</th-->
+                        <th>备注</th>
+                        <th>日期</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="commit in commits track by $index">
+                        <!--td>{{commit.sha}}</td-->
+                        <td>{{commit.message}}</td>
+                        <td>{{commit.date}}</td>
+                        <td>
+                            <button class="btn btn-default" ng-click="viewCommit(commit)" data-toggle="tooltip" title="查看修改"><span class="glyphicon glyphicon-eye-open"></span></button>
+                            <button class="btn btn-default" ng-click="rollbackFile(commit)" data-toggle="tooltip" title="回滚到此版本"><span class="glyphicon glyphicon-repeat"></span></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div ng-show="isModal" class="panel panel-default col-md-12 git-version git-version-modal">
+        <div class="modal-header">
+            <button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
             <h4>站点版本管理</h4>
         </div>
-        <div class="panel-body">
+        <div class="modal-body col-md-10 col-md-offset-1">
             <form role="form" class="form-horizontal git-version-form">
                 <div class="form-group">
                     <label class="control-label col-md-2">文件路径：</label>
-                    <div class="col-md-6">
+                    <div class="col-md-10">
                         <!--input type="text" class="form-control" ng-model="path"-->
                         <div>
                             <ui-select ng-model="seleected" ng-disabled on-select="pathSelected($item, $model)">
@@ -76,13 +168,13 @@
                 </div>
                 <!--div class="form-group">
                     <label class="control-label col-md-2">起始sha：</label>
-                    <div class="col-md-6">
+                    <div class="col-md-10">
                         <input placeholder="sha过滤(选填)" type="text" class="form-control" ng-model="sha">
                     </div>
                 </div-->
                 <div class="form-group">
                     <label class="control-label col-md-2">起始日期：</label>
-                    <div class="col-md-6">
+                    <div class="col-md-10">
                         <div class="input-group">
                             <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
                                    ng-model="dtStart" is-open="dtStartOpened" popup-placement="bottom-right"/>
@@ -96,7 +188,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-2">终止日期：</label>
-                    <div class="col-md-6">
+                    <div class="col-md-10">
                         <div class="input-group">
                             <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
                                    ng-model="dtEnd" is-open="dtEndOpened" popup-placement="bottom-right"/>
@@ -109,35 +201,35 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="btn-box col-md-8">
+                    <div class="btn-box col-md-12">
                         <button class="btn btn-primary" ng-click="submit()">查询</button>
                     </div>
                 </div>
             </form>
-        </div>
-        <div style="margin: 20px;" class="col-md-8">
-            <table class="table table-bordered">
-                <caption>提交记录</caption>
-                <thead>
-                <tr>
-                    <!--th>SHA</th-->
-                    <th>备注</th>
-                    <th>日期</th>
-                    <th>操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="commit in commits track by $index">
-                    <!--td>{{commit.sha}}</td-->
-                    <td>{{commit.message}}</td>
-                    <td>{{commit.date}}</td>
-                    <td>
-                        <button class="btn btn-default" ng-click="viewCommit(commit)" data-toggle="tooltip" title="查看修改"><span class="glyphicon glyphicon-eye-open"></span></button>
-                        <button class="btn btn-default" ng-click="rollbackFile(commit)" data-toggle="tooltip" title="回滚到此版本"><span class="glyphicon glyphicon-repeat"></span></button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div style="margin: 20px 0;" class="col-md-12">
+                <table class="table table-bordered">
+                    <caption>提交记录</caption>
+                    <thead>
+                    <tr>
+                        <!--th>SHA</th-->
+                        <th>备注</th>
+                        <th>日期</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="commit in commits track by $index">
+                        <!--td>{{commit.sha}}</td-->
+                        <td>{{commit.message}}</td>
+                        <td>{{commit.date}}</td>
+                        <td>
+                            <button class="btn btn-default" ng-click="viewCommit(commit)" data-toggle="tooltip" title="查看修改"><span class="glyphicon glyphicon-eye-open"></span></button>
+                            <button class="btn btn-default" ng-click="rollbackFile(commit)" data-toggle="tooltip" title="回滚到此版本"><span class="glyphicon glyphicon-repeat"></span></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

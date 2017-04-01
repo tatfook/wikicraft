@@ -112,7 +112,7 @@ define([
             //treeNode.icon = (pageNode.isLeaf && pageNode.sha) ? 'fa fa-github-alt' : 'fa fa-file-o';
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
-            treeNode.tags = [pageNode.url];
+            treeNode.tags = ["<div onclick='angular.element(this).scope().cmd_remove(event)' >&times;</div>"];
             treeNode.state = {selected: currentWebsitePage && currentWebsitePage.url == pageNode.url};
 
             if (pageNode.isLeaf) {
@@ -582,10 +582,12 @@ define([
             function initTree() {
                 //console.log('@initTree');
                 $('#treeview').treeview({
-                    color: "#428bca",
+                    color: "#3977AD",
+                    selectedBackColor:"#3977AD",
                     showBorder: false,
                     enableLinks: false,
                     levels: 4,
+                    showTags:true,
                     data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
                         //console.log(data.pageNode);
@@ -1173,7 +1175,15 @@ define([
 
             //版本
             $scope.cmd_version = function () {
-                util.go("gitVersion");
+                // util.go("gitVersion");
+                modal('controller/gitVersionController', {
+                    controller: 'gitVersionController',
+                    size: 'lg'
+                }, function (wikiBlock) {
+                    console.log(wikiBlock);
+                }, function (result) {
+                    console.log(result);
+                });
             }
 
             $scope.cmd_transform = function () {
