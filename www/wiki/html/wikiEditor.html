@@ -84,9 +84,11 @@
                         </div>
                     </div>
                     <div class="btn-toolbar" role="toolbar">
-                        <div class= "btn-group">
-                            <div class="btn btn-default btn-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）"><img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt=""> 新建页</div>
+                        <div class="btn-group">
                             <div class="btn btn-default btn-sm toolbar-page-file" title="文件"><img ng-src="{{imgsPath+'icon/wiki_file.png'}}" alt=""> 文件</div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）"><img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt=""> 新建页</div>
+                        </div>
+                        <div class= "btn-group">
                             <div class="btn btn-default btn-sm toolbar-page-code" title="代码"><img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt=""> 代码</div>
                             <div class="btn btn-default btn-sm toolbar-page-slide active" title="拆分"><img ng-src="{{imgsPath+'icon/wiki_split.png'}}" alt=""> 拆分</div>
                             <div class="btn btn-default btn-sm toolbar-page-design" title="预览"><img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt=""> 预览</div>
@@ -94,9 +96,9 @@
                         <!---->
                         <div class= "btn-group">
                             <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
-                            <div class="btn btn-default btn-sm toolbar-page-remove"  ng-click="cmd_remove()" title="删除页面" disabled="disabled">
-                                <img ng-src="{{imgsPath+'icon/wiki_remove.png'}}" alt="">
-                            </div>
+                            <!--<div class="btn btn-default btn-sm toolbar-page-remove"  ng-click="cmd_remove()" title="删除页面" disabled="disabled">-->
+                                <!--<img ng-src="{{imgsPath+'icon/wiki_remove.png'}}" alt="">-->
+                            <!--</div>-->
                             <!--button type="button" class="btn btn-default btn-sm toolbar-page-copyurl" title="复制网址"><i class="fa fa-external-link" ></i>&nbsp;复制网址</button-->
                             <div type="button" class="btn btn-default btn-sm" title="打开github文件" ng-click="openGitFile()">
                                 <img ng-src="{{imgsPath+'icon/wiki_github.png'}}" alt="">git
