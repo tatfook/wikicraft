@@ -1172,7 +1172,15 @@ define([
 
             //版本
             $scope.cmd_version = function () {
-                util.go("gitVersion");
+                // util.go("gitVersion");
+                modal('controller/gitVersionController', {
+                    controller: 'gitVersionController',
+                    size: 'lg'
+                }, function (wikiBlock) {
+                    console.log(wikiBlock);
+                }, function (result) {
+                    console.log(result);
+                });
             }
 
             $scope.cmd_transform = function () {
