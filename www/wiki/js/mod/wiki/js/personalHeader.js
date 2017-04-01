@@ -59,10 +59,7 @@ define([
             }
 
             function init() {
-                // 获得站点列表
-                wikiBlock.http("POST", config.apiUrlPrefix + "website",{userId:$scope.userinfo._id}, function (data) {
-                    $scope.websiteList = data.data || [];
-                });
+                console.log("----------init personal header---------");
             }
 
             $scope.$watch("$viewContentLoaded", init);

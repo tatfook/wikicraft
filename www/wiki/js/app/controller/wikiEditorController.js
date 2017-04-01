@@ -6,6 +6,7 @@ define([
     'app',
     'codemirror',
     'helper/markdownwiki',
+    'helper/wikimarkdown',
     'helper/util',
     'helper/storage',
     'helper/dataSource',
@@ -27,11 +28,11 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
+], function (app, CodeMirror, markdownwiki, wikimarkdown, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
     var defaultDataSource = dataSource.getDefaultDataSource();
     var editor;
-    var mdwiki;
+    var mdwiki = wikimarkdown({});
     var allWebsites = [];
     var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
@@ -1357,6 +1358,9 @@ define([
                     }
                 });
 
+                var scrollTimer = undefined, changeTimer = undefined;
+                var isScrollPreview = false;
+
                 editor.on('fold', function (cm, from, to) {
                     cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
                     //console.log("--------------------fold--------------------");
@@ -1366,17 +1370,21 @@ define([
                     cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                 });
                 // 渲染后自动保存
+                var renderTimer = undefined;
+                editor.on("change", function (cm, changeObj) {
+                    changeCallback(cm, changeObj);
 
-                var scrollTimer = undefined, changeTimer = undefined;
-                var isScrollPreview = false;
-                mdwiki = markdownwiki({
-                    container_name: '.result-html',
-                    renderCallback: function () {
+                    renderTimer && clearTimeout(renderTimer);
+                    renderTimer = setTimeout(function () {
+                        var text = editor.getValue();
+                        var htmlResult = mdwiki.render(text);
+                        $('.result-html').html(htmlResult);
                         renderAutoSave();
                         resizeMod();
-                    },
-                    changeCallback: changeCallback
+                        timer = undefined;
+                    }, 100);
                 });
+
                 editor.focus();
                 setEditorHeight();
 
@@ -1390,7 +1398,7 @@ define([
                     var boxWidth = $("#preview").width();//30为#preview的padding宽度
                     var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
                     //console.log(mdwiki.getLastDivId());
-                    $('#'+mdwiki.getLastDivId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
+                    $('#'+mdwiki.getMdWikiContainerId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
                 function setEditorHeight() {
@@ -1410,11 +1418,11 @@ define([
                         w.css("min-height", "0px");
                     });
                 }
+
                 window.onresize = function () {
                     setEditorHeight();
                     resizeMod();
                 }
-                mdwiki.bindToCodeMirrorEditor(editor);
 
                 editor.on("beforeChange", function (cm, changeObj) {
                     //console.log(changeObj);

@@ -19,14 +19,10 @@ define([
     }]);
 
     var md = wikimarkdown();
-    var blockList = md.parse(htmlContent);
-    var $compile = util.getAngularServices().$compile;
-    var $rootScope = util.getAngularServices().$rootScope;
-    var html = $compile(blockList[0].htmlContent)($rootScope);
-    console.log(html);
+    var html = md.render(htmlContent)
     setTimeout(function () {
-        $('#test').html(html)
-    },5000);
+        util.html('#__UserSitePageContent__', html, undefined, false);
+    },1000)
     return htmlContent;
 });
 

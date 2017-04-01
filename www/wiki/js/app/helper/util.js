@@ -22,14 +22,27 @@ define(['jquery'], function ($) {
     }
 
     // $html
-    util.html = function(selector, htmlStr, $scope) {
-        var $compile = util.angularServices.$compile;
+    util.html = function(selector, htmlStr, $scope, isCompile) {
+        isCompile = isCompile == undefined ? true : isCompile;
+        htmlStr = htmlStr||'<div></div>';
         $scope = $scope || util.angularServices.$rootScope;
-        htmlStr = $compile(htmlStr||'<div></div>')($scope)
+
+        if (isCompile) {
+            var $compile = util.angularServices.$compile;
+            htmlStr = $compile(htmlStr)($scope);
+        }
+
         $(selector).html(htmlStr);
         setTimeout(function () {
             $scope.$apply();
-        },1);
+        });
+    }
+
+    util.compile = function (htmlStr, $scope) {
+        var $compile = util.angularServices.$compile;
+        $scope = $scope || util.angularServices.$rootScope;
+        htmlStr = $compile(htmlStr||'<div></div>')($scope);
+        return htmlStr;
     }
 
     // 将字符串url解析成{sitename, pagename}对象
