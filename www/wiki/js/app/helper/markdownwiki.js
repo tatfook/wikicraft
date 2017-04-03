@@ -189,7 +189,7 @@ define([
             cmdName: wikiBlock.cmdName,
             modParams: wikiBlock.modParams,
             editorMode: mdwiki.options.editorMode,
-            isPageTemplate: mdwiki.template.isPageTemplate,   // 是页内模板则可编辑   wiki tempate block 使用此字段判断当前是否可以编辑
+            isPageTemplate: block.isPageTemplate,   // 是页内模板则可编辑   wiki tempate block 使用此字段判断当前是否可以编辑
             content: block.isTemplate ? defaultTemplateContent : undefined,
             render: function (htmlContent) {
                 if (block.isTemplate) {
@@ -222,6 +222,7 @@ define([
     function setMdWikiContent(mdwiki) {
         var blockList = mdwiki.blockList;
         var selector = '#' + mdwiki.getMdWikiContentContainerId();
+        var tempSelector = '#' + mdwiki.getMdWikiTempContentContainerId();
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
             if (block.isTemplate) {
@@ -249,6 +250,7 @@ define([
                 $('#' + blockCache.containerId).html(blockCache.renderContent);
             }
         }
+        $(tempSelector).empty();
         /*
          setTimeout(function () {
          util.getAngularServices().$rootScope.$apply();
