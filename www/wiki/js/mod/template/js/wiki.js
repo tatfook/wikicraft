@@ -9,7 +9,9 @@ define([
     'helper/markdownwiki',
     'text!wikimod/template/html/wiki.html'
 ], function (app, util, storage, markdownwiki, htmlContent) {
-    var md = markdownwiki({html:true, use_template:false});
+    var headerMD = markdownwiki({html:true, use_template:false});
+    var sidebarMD = markdownwiki({html:true, use_template:false});
+    var footerMD = markdownwiki({html:true, use_template:false});
     function registerController(wikiBlock) {
         app.registerController('wikiTemplateController', ['$rootScope','$scope','modal','Message', function ($rootScope, $scope, modal, Message) {
             //$rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
@@ -58,16 +60,19 @@ define([
                 }
 
                 /*
+                headerMD.bindRenderContainer('#_headerPageContentId');
+                sidebarMD.bindRenderContainer('#_sidebarPageContentId');
+                footerMD.bindRenderContainer('#_footerPageContentId');
+                */
                 util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_header'}, function (data) {
-                    data && data.content && util.html('#_headerPageContentId', md.render(data.content), $scope);
+                    data && data.content && util.html('#_headerPageContentId', headerMD.render(data.content), $scope);
                 });
                 util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_sidebar'}, function (data) {
-                    data && data.content && util.html('#_sidebarPageContentId', md.render(data.content), $scope);
+                    data && data.content && util.html('#_sidebarPageContentId', sidebarMD.render(data.content), $scope);
                 });
                 util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_footer'}, function (data) {
-                    data && data.content && util.html('#_footerPageContentId', md.render(data.content), $scope);
+                    data && data.content && util.html('#_footerPageContentId', footerMD.render(data.content), $scope);
                 });
-                */
             }
             
             $scope.$watch('$viewContentLoaded', init);

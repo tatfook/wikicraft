@@ -6,7 +6,6 @@ define([
     'app',
     'codemirror',
     'helper/markdownwiki',
-    'helper/wikimarkdown',
     'helper/util',
     'helper/storage',
     'helper/dataSource',
@@ -28,11 +27,11 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, CodeMirror, markdownwiki, wikimarkdown, util, storage, dataSource, htmlContent) {
+], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
     var defaultDataSource = dataSource.getDefaultDataSource();
+    var mdwiki = markdownwiki({editorMode:true});
     var editor;
-    var mdwiki = wikimarkdown({});
     var allWebsites = [];
     var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
@@ -1367,7 +1366,7 @@ define([
                         },
                     }
                 });
-
+                mdwiki.setEditor(editor);
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
 
@@ -1387,27 +1386,32 @@ define([
                     renderTimer && clearTimeout(renderTimer);
                     renderTimer = setTimeout(function () {
                         var text = editor.getValue();
-                        var htmlResult = mdwiki.render(text);
-                        $('.result-html').html(htmlResult);
+                        mdwiki.render(text);
                         renderAutoSave();
                         resizeMod();
                         timer = undefined;
                     }, 100);
                 });
-
+                mdwiki.bindRenderContainer(".result-html");
                 editor.focus();
                 setEditorHeight();
+
+                function getScaleSize() {
+                    if (!$scope.enableTransform) {
+                        return 1;
+                    }
+                    var winWidth = $(window).width();
+                    $(".result-html").css("width", winWidth + "px");
+                    var boxWidth = $("#preview").width();                                                              //30为#preview的padding宽度
+                    var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
+                    return scaleSize;
+                }
 
                 function resizeMod() {
                     if (!$scope.enableTransform) {
                         return;
                     }
-
-                    var winWidth = $(window).width();
-                    $(".result-html").css("width", winWidth + "px");
-                    var boxWidth = $("#preview").width();//30为#preview的padding宽度
-                    var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
-                    //console.log(mdwiki.getLastDivId());
+                    var scaleSize = getScaleSize();
                     $('#'+mdwiki.getMdWikiContainerId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
 
@@ -1507,32 +1511,27 @@ define([
                     }, 60000);
                 }
 
-                function getBlockPosList() {
-                    var blockList = $('#' + mdwiki.getWikiMdContentContainerId()).children();
-                    var blockPosList = [];
-                    for (var i = 0; i < blockList.length; i++) {
-                        if (blockPosList[blockPosList.length - 1] >= blockList[i].offsetTop)
-                            continue;
-
-                        blockPosList.push(blockList[i].offsetTop);
-                    }
-                    return blockPosList;
-                }
-
                 editor.on('scroll', function (cm) {
                     if (isScrollPreview)
                         return;
                     scrollTimer && clearTimeout(scrollTimer);
                     scrollTimer = setTimeout(function () {
-                        var blockPosList = getBlockPosList();
-                        var editorPosList = mdwiki.getPosList();
-                        var scrollObj = cm.getScrollInfo();
+                        var templateLineCount = (mdwiki.template && mdwiki.template.templateLineCount) || 0;
+                        var scaleSize = getScaleSize();
+                        var initHegiht = editor.getScrollInfo().top + editor.heightAtLine(0);
                         var index = 0;
-                        for (index = 0; index < editorPosList.length - 1; index++) {
-                            if (editor.heightAtLine(editorPosList[index].from) > 142)
+                        var block;
+                        var blockList = mdwiki.blockList;
+                        for (index = 0; index < blockList.length -1 ; index++) {
+                            block = blockList[index];
+                            if (block.blockCache.isTemplate)
+                                continue;
+
+                            if (editor.heightAtLine(block.textPosition.from - templateLineCount) >= initHegiht)
                                 break;
                         }
-                        $('#preview').scrollTop(blockPosList[index] - 30);
+                        //console.log(index, $('#' + block.blockCache.containerId)[0].offsetTop);
+                        $('#preview').scrollTop($('#' + block.blockCache.containerId)[0].offsetTop * scaleSize);
                     }, 100);
                 });
 
@@ -1546,19 +1545,21 @@ define([
                             return;
                         scrollTimer && clearTimeout(scrollTimer);
                         scrollTimer = setTimeout(function () {
-                            var blockPosList = getBlockPosList();
-                            var editorPosList = mdwiki.getPosList();
-                            //console.log(editorPosList);
-                            var scrollTop = $('#preview')[0].scrollTop;
+                            var templateLineCount = (mdwiki.template && mdwiki.template.templateLineCount) || 0;
+                            var scaleSize = getScaleSize();
+                            var initHeight = editor.getScrollInfo().top + editor.heightAtLine(0);
                             var index = 0;
-                            for (index = 0; index < blockPosList.length - 1; index++) {
-                                if (scrollTop <= blockPosList[index])
+                            var block;
+                            var blockList = mdwiki.blockList;
+                            var scrollTop = $('#preview')[0].scrollTop;
+                            for (index = 0; index < blockList.length - 1; index++) {
+                                block = blockList[index];
+                                if (block.blockCache.isTemplate)
+                                    continue;
+                                if (scrollTop <= $('#' + block.blockCache.containerId)[0].offsetTop * scaleSize)
                                     break;
                             }
-                            //console.log(index);
-                            //console.log(blockPosList);
-                            //console.log(editorPosList);
-                            editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(editorPosList[index].from) - 142); // 142 为调试得到，应该是编辑器隐藏了142px
+                            editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(block.textPosition.from-templateLineCount) - initHeight);
                         }, 100);
                     }
                 });

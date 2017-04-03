@@ -95,12 +95,12 @@ define([
                 var htmlContent;
                 //console.log(pageUrl);
                 require([pageUrl], function (htmlContent) {
-                    //console.log(htmlContent);
-                    $scope.IsRenderServerWikiContent = true;
-                    if (pathname != "wikiEditor") {
-                        htmlContent = md ? md.render(htmlContent) : htmlContent;
+                    if (pathname == "wikiEditor") {
+                        util.html('#__UserSitePageContent__', htmlContent, $scope);
+                    } else {
+                        md.bindRenderContainer('#__UserSitePageContent__');
+                        md.render(htmlContent);
                     }
-                    util.html('#__UserSitePageContent__', htmlContent, $scope);
                 });
             }
 
