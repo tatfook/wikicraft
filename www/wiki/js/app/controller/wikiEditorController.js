@@ -549,7 +549,7 @@ define([
                     }]);
 
                     $.each(selectableNodes, function (index, item) {
-                        if (item.tags[0] == currentWebsitePage.url) {
+                        if (item.pageNode.url == currentWebsitePage.url) {
                             $('#treeview').treeview('selectNode', [item, {silent: true}]);
                         }
                     });
@@ -592,17 +592,27 @@ define([
                         //console.log(data.pageNode);
                         autoSave(function () {
                             if (data.pageNode.isLeaf) {
-                                currentWebsite = getWebsite(data.pageNode.siteId);
-                                currentWebsitePage = getWebsitePage(data.pageNode.pageId);
-                                //console.log(currentWebsitePage);
-                                openPage();
+                                if (!currentWebsitePage || currentWebsitePage._id != data.pageNode.pageId){
+                                    currentWebsite = getWebsite(data.pageNode.siteId);
+                                    currentWebsitePage = getWebsitePage(data.pageNode.pageId);
+                                    openPage();
+                                }
+                                editor.focus();
                             }
-                            editor.focus();
                         }, function () {
                             Message.warning("自动保存失败");
                             openPage();
                         });
-                    }
+                    },
+                    /*
+                    onNodeUnselected: function (event, data) {
+                        if (data.pageNode.isLeaf && data.pageNode.pageId == currentWebsitePage._id) {
+                            setTimeout(function () {
+                                $('#treeview').treeview('selectNode', [data, {silent: true}]);
+                            },1000);
+                            editor.focus();
+                        }
+                    }*/
                 });
             }
 

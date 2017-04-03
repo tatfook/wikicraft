@@ -19,7 +19,7 @@ define([
             if ($rootScope.siteinfo) {
                 $scope.urlPrefix = '/' + $rootScope.siteinfo.username + '/' + $rootScope.siteinfo.name + '/';
             }
-
+            console.log("-----------wiki template----------------");
             function setSelfPageContent(type, content) {
                 if (!content)
                     return;
@@ -41,7 +41,7 @@ define([
 
             }
             function init() {
-                //console.log($rootScope.siteinfo);
+                console.log("-----------init wiki template----------------");
                 if (!$rootScope.siteinfo)
                     return;
 
@@ -74,8 +74,9 @@ define([
                     data && data.content && util.html('#_footerPageContentId', footerMD.render(data.content), $scope);
                 });
             }
-            
-            $scope.$watch('$viewContentLoaded', init);
+
+            init();
+            //$scope.$watch('$viewContentLoaded', init);
 
             $scope.isSelfPageShow = function (type) {
                 return wikiBlock.editorMode;

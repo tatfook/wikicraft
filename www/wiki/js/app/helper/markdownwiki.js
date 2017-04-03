@@ -196,9 +196,10 @@ define([
                     $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
                 }
+                //console.log("render wiki block:" + wikiBlock.cmdName);
                 blockCache.renderContent = util.compile(htmlContent);
-                console.log("render wiki block:" + wikiBlock.cmdName);
                 $('#' + blockCache.containerId).html(blockCache.renderContent);
+                //util.html('#' + blockCache.containerId).html(htmlContent);
                 blockCache.domNode = $('#' + blockCache.containerId);
                 if (block.isTemplate) {
                     setMdWikiContent(mdwiki);
@@ -223,6 +224,9 @@ define([
         var blockList = mdwiki.blockList;
         var selector = '#' + mdwiki.getMdWikiContentContainerId();
         var tempSelector = '#' + mdwiki.getMdWikiTempContentContainerId();
+
+        //console.log(blockList);
+
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
             if (block.isTemplate) {
@@ -259,7 +263,7 @@ define([
     }
 
     // mdwiki render
-    function mdwikiRender(mdwikiName, text) {
+    window.mdwikiRender = function(mdwikiName, text) {
         // 备份节点信息
         text = decodeURI(text);
         var mdwiki = getMdwiki(mdwikiName);
@@ -287,7 +291,7 @@ define([
             setMdWikiContent(mdwiki);
             return;
         }
-
+        //console.log("----------------template-----------------", mdwiki.template);
         if (mdwiki.template) {
             mdwiki.template.isPageTemplate = true;
         } else {
@@ -368,8 +372,11 @@ define([
             }
 
             mdwiki.clearBlockCache();
+            var mdwikiContainerId = mdwiki.getMdWikiContainerId();
+            var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
+            var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
-            var scriptContent = '<script>window.mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
+            var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
             return htmlContent + scriptContent;
         }
         mdwiki.bindRenderContainer = function (selector) {
@@ -468,6 +475,8 @@ define([
                     if (blockCache.isUsing) {
                         blockCache.isUsing = false;   // 将使用状态改为未使用状态 下次未使用则删除
                         newBlockCacheList.push(blockCache);
+                    } else {
+                        blockCache.domNode && blockCache.domNode.remove();
                     }
                 }
                 if (newBlockCacheList.length > 0) {
