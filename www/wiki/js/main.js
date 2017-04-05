@@ -123,7 +123,7 @@
     require(['domReady', 'angular', 'app', 'preload'], function (domReady) {
         // ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
         // 加载页面主体内容
-        function loadMainContent(util) {
+        function loadMainContent() {
             var pathname = window.location.pathname;
             if(config.islocalWinEnv()) {
                 pathname = window.location.hash ? window.location.hash.substring(1) : '/';
@@ -138,9 +138,9 @@
                 } else {
                     pageurl = 'mod/' + paths[0] + '/controller/indexController';
                 }
-            } else if (pathname.indexOf('/wiki/') == 0) {
+            } else if (pathname.indexOf('/wiki/') == 0 || pathname == '/wiki') {
                 var pagename = pathname.substring('/wiki/'.length);
-                pageurl = 'controller/' + pagename + 'Controller';
+                pageurl = 'controller/' + (pagename || 'home') + 'Controller';
             }
             console.log(pageurl);
 

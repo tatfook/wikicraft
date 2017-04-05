@@ -8,10 +8,11 @@ define([
     'helper/storage',
     'helper/util',
     'helper/dataSource',
+    'controller/homeController',
     'controller/headerController',
     'controller/footerController',
     'controller/userController',
-], function (app, markdownwiki, storage, util, dataSource, headerHtmlContent, footerHtmlContent, userHtmlContent) {
+], function (app, markdownwiki, storage, util, dataSource, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
@@ -120,83 +121,74 @@ define([
                 }
             }
 
+            function getUserPage() {
+                var urlObj = $rootScope.urlObj;
+                // 访问用户页
+                $rootScope.userinfo = undefined;
+                $rootScope.siteinfo = undefined;
+                $rootScope.pageinfo = undefined;
+                $rootScope.tplinfo = undefined;
+                if (urlObj.username && urlObj.sitename) {
+                    util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
+                        username: urlObj.username,
+                        sitename: urlObj.sitename,
+                        pagename: urlObj.pagename || 'index',
+                        userId:$rootScope.user && $rootScope.user._id,
+                    }, function (data) {
+                        data = data || {};
+                        // 这三种基本信息根化，便于用户页内模块公用
+                        $rootScope.userinfo = data.userinfo;
+                        $rootScope.siteinfo = data.siteinfo;
+                        $rootScope.pageinfo = data.pageinfo;
+                        $rootScope.tplinfo = data.tplinfo;
+                        $rootScope.$broadcast('userpageLoaded',{});
+                        var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
+                        pageContent = md.render(pageContent);
+                        //console.log(pageContent);
+                        pageContent = $compile(pageContent)($scope);
+                        $('#__UserSitePageContent__').html(pageContent);
+                    });
+                } else if (urlObj.username){
+                    util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                }
+            }
+
             // 加载内容信息
             function initContentInfo() {
                 util.html('#__UserSitePageContent__', '<div></div>', $scope);
                 $rootScope.urlObj = util.parseUrl();
 
-                var pathname = "/wiki/home";
                 var urlObj = $rootScope.urlObj;
                 // 置空用户页面内容
                 console.log(urlObj);
 
                 setWindowTitle(urlObj);
-
-                if (!urlObj.username || urlObj.username == "wiki") {
-                    if (!urlObj.username || !urlObj.sitename) {
-                        pathname = '/wiki/home';
-                        if (!urlObj.username && Account.isAuthenticated()) {
-                            util.html('#__UserSitePageContent__', userHtmlContent, $scope);
-                            return;
-                        }
-                    } else { // /wiki/test
-                        pathname = urlObj.pathname;
-                    }
-
-                    if (config.isLocal())
-                        renderHtmlText(pathname, md);
-                    else
-                        renderHtmlText(pathname);
-                    
-                    return;
-                }
-
-                if (urlObj.domain) {
-                    util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
-                        if (data) {
-                            urlObj.pagename = urlObj.sitename;
-                            urlObj.username = data.username;
-                            urlObj.sitename = data.name;
-                        }
-                        getUserPage();
-                    }, function () {
-                        getUserPage();
-                    });
-                } else {
-                    getUserPage();
-                }
-
-                function getUserPage() {
-                    // 访问用户页
-                    $rootScope.userinfo = undefined;
-                    $rootScope.siteinfo = undefined;
-                    $rootScope.pageinfo = undefined;
-                    $rootScope.tplinfo = undefined;
-                    if (urlObj.username && urlObj.sitename) {
-                        util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
-                            username: urlObj.username,
-                            sitename: urlObj.sitename,
-                            pagename: urlObj.pagename || 'index',
-                            userId:$rootScope.user && $rootScope.user._id,
-                        }, function (data) {
-                            data = data || {};
-                            // 这三种基本信息根化，便于用户页内模块公用
-                            $rootScope.userinfo = data.userinfo;
-                            $rootScope.siteinfo = data.siteinfo;
-                            $rootScope.pageinfo = data.pageinfo;
-                            $rootScope.tplinfo = data.tplinfo;
-                            $rootScope.$broadcast('userpageLoaded',{});
-                            var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
-                            pageContent = md.render(pageContent);
-                            //console.log(pageContent);
-                            pageContent = $compile(pageContent)($scope);
-                            $('#__UserSitePageContent__').html(pageContent);
-                        });
-                    } else if (urlObj.username){
+                
+                if (config.mainContent) {
+                    util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                } else if (!urlObj.username){
+                    if (Account.isAuthenticated()) {
                         util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                    } else {
+                        util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
-
+                } else {
+                    if (urlObj.domain) {
+                        util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
+                            if (data) {
+                                urlObj.pagename = urlObj.sitename;
+                                urlObj.username = data.username;
+                                urlObj.sitename = data.name;
+                            }
+                            getUserPage();
+                        }, function () {
+                            getUserPage();
+                        });
+                    } else {
+                        getUserPage();
+                    }
                 }
+
             }
 
             function init() {
