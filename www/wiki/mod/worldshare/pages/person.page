@@ -141,7 +141,3 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-	config.registerPreloadModule(config.modPath + 'worldshare/controllers/personController.js');
-</script>

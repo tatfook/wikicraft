@@ -98,8 +98,6 @@
 <script src="/wiki/js/lib/jquery/jquery.min.js"></script>
 <script src="/wiki/mod/worldshare/assets/jquery.zeroclipboard.min.js"></script>
 <script type="text/javascript">
-	config.registerPreloadModule(config.modPath + 'worldshare/controllers/shareController.js');
-
 	jQuery(document).ready(function ($) {
 		$("body").on("copy", ".zclip", function (e) {
 			e.clipboardData.clearData();
