@@ -1,4 +1,7 @@
-define(['app'], function (app) {
+define([
+    'app',
+    'text!mod/package/html/packages_projects.html'
+], function (app) {
     app.factory('packagesService', function () {
         var packageId = 0;
         var page = 1;
@@ -141,7 +144,7 @@ define(['app'], function (app) {
 
             $scope.ShowCreateProjectDialog = function () {
                 $uibModal.open({
-                    templateUrl: MOD_WEBROOT + "partials/packages_project_create.html",
+                    templateUrl: '/wiki/mod/packages/partials/packages_project_create.html',
                     controller: "packagesProjectsCreateController",
                     size: 'lg'
                 }).result.then(function (params) {
@@ -163,7 +166,7 @@ define(['app'], function (app) {
                 packagesService.setModifyPackageID(packageId);
 
                 $uibModal.open({
-                    templateUrl: MOD_WEBROOT + "partials/packages_project_modify.html",
+                    templateUrl: '/wiki/mod/packages/partials/packages_project_modify.html',
                     controller: "packagesProjectsModifyController",
                     size: 'lg'
                 }).result.then(function (params) {

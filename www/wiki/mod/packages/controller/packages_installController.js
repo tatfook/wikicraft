@@ -1,4 +1,8 @@
-﻿define(['app'], function (app) {
+﻿define([
+    'app',
+    'markdown-it',
+    'text!mod/packages/html/package_install.html',
+], function (app,markdownit, htmlContent) {
     app.factory('packagesInstallService', function () {
         var giturl = '';
 
@@ -111,7 +115,7 @@
         var md;
         $scope.getMarkDownRenderer = function () {
             if (md == null) {
-                md = window.markdownit({
+                md = markdownit({
                     html: true, // Enable HTML tags in source
                     linkify: true, // Autoconvert URL-like text to links
                     typographer: true, // Enable some language-neutral replacement + quotes beautification
@@ -272,4 +276,6 @@
             $uibModalInstance.close();
         }
     });
+
+    return htmlContent;
 });
