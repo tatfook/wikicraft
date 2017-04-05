@@ -418,7 +418,7 @@ define([
                 $scope.progressbar.percent = $scope.progressbar.percent + step;
                 $(".progress-bar").css("width", $scope.progressbar.percent + "%");
             }
-
+            // 获得指定站点
             function getWebsite(id) {
                 for (var i = 0; i < allWebsites.length; i++) {
                     ws = allWebsites[i];
@@ -428,12 +428,22 @@ define([
                 }
                 return null;
             }
-
+            // 获得指定页
             function getWebsitePage(id) {
                 for (var j = 0; j < allWebsitePages.length; j++) {
                     wp = allWebsitePages[j];
                     if (wp._id == id) {
                         return wp;
+                    }
+                }
+                return null;
+            }
+            // 获得站点模板信息
+            function getSiteTplInfo(site) {
+                var url = "/" + site.username + '/' + site.name + '/_theme';
+                for (var i = 0; i < allWebsitePages.length; i++) {
+                    if (allWebsitePages[i].url == url) {
+                        return allWebsitePages[i];
                     }
                 }
                 return null;
@@ -500,6 +510,8 @@ define([
                 // 设置全局用户页信息和站点信息
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
+                $rootScope.tplinfo = getSiteTplInfo(currentWebsite);
+
                 // 保存正在编辑的页面urlObj
                 var urlPrefix = '/' + currentWebsite.username + '/' + currentWebsite.name + '/';
                 storage.sessionStorageSetItem('urlObj',{username:currentWebsite.username, sitename:currentWebsite.name, pagename:currentWebsitePage.url.substring(urlPrefix.length)});

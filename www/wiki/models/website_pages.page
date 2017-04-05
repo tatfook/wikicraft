@@ -386,6 +386,10 @@ function website_pages:api_getDetailInfo(params)
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
 
+	local tplurl = "/" .. params.username .. "/" .. params.sitename .. "/" .. "_theme"
+	self:db():findOne({["+url"]={tplurl}}, resume)
+	local err, tplinfo = yield()
+	
 	-- 增加站点访问量
 	local result = websiteDB:api_addVisitNum({websiteName=params.sitename})
 	if not errors:isOk(result.error) then 
@@ -398,7 +402,7 @@ function website_pages:api_getDetailInfo(params)
 		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=siteinfo.name,url=pageinfo.url})
 	end
 
-	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo})
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo, tplinfo=tplinfo})
 end
 
 

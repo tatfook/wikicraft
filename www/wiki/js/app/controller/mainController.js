@@ -95,7 +95,7 @@ define([
                 var htmlContent;
                 //console.log(pageUrl);
                 require([pageUrl], function (htmlContent) {
-                    if (pathname == "wikiEditor") {
+                    if (pathname == "wikiEditor" || !md) {
                         util.html('#__UserSitePageContent__', htmlContent, $scope);
                     } else {
                         md.bindRenderContainer('#__UserSitePageContent__');
@@ -167,7 +167,7 @@ define([
                     $rootScope.userinfo = undefined;
                     $rootScope.siteinfo = undefined;
                     $rootScope.pageinfo = undefined;
-
+                    $rootScope.tplinfo = undefined;
                     if (urlObj.username && urlObj.sitename) {
                         util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
                             username: urlObj.username,
@@ -180,6 +180,7 @@ define([
                             $rootScope.userinfo = data.userinfo;
                             $rootScope.siteinfo = data.siteinfo;
                             $rootScope.pageinfo = data.pageinfo;
+                            $rootScope.tplinfo = data.tplinfo;
                             $rootScope.$broadcast('userpageLoaded',{});
                             var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
                             pageContent = md.render(pageContent);
