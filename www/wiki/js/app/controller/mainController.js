@@ -91,23 +91,18 @@ define([
             }
 
             function renderHtmlText(pathname, md) {
-                if (config.mainContent) {
-                    util.html('#__UserSitePageContent__', config.mainContent, $scope);
-                } else {
-                    pathname = pathname.replace('/wiki/', '');
-                    var pageUrl = 'controller/' + pathname + 'Controller';
-                    var htmlContent;
-                    //console.log(pageUrl);
-                    require([pageUrl], function (htmlContent) {
-                        if (pathname == "wikiEditor" || !md) {
-                            util.html('#__UserSitePageContent__', htmlContent, $scope);
-                        } else {
-                            md.bindRenderContainer('#__UserSitePageContent__');
-                            md.render(htmlContent);
-                        }
-                    });
-                }
-
+                pathname = pathname.replace('/wiki/', '');
+                var pageUrl = 'controller/' + pathname + 'Controller';
+                var htmlContent;
+                //console.log(pageUrl);
+                require([pageUrl], function (htmlContent) {
+                    if (pathname == "wikiEditor" || !md) {
+                        util.html('#__UserSitePageContent__', htmlContent, $scope);
+                    } else {
+                        md.bindRenderContainer('#__UserSitePageContent__');
+                        md.render(htmlContent);
+                    }
+                });
             }
 
             function setWindowTitle(urlObj) {
@@ -163,15 +158,18 @@ define([
                 console.log(urlObj);
 
                 setWindowTitle(urlObj);
-                
+
                 if (config.mainContent) {
                     util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                    config.mainContent = undefined;
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {
                         util.html('#__UserSitePageContent__', userHtmlContent, $scope);
                     } else {
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
+                } else if(urlObj.username == 'wiki') {
+                    renderHtmlText(urlObj.pathname, md);
                 } else {
                     if (urlObj.domain) {
                         util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {

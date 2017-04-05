@@ -120,7 +120,7 @@
     });
 
 
-    require(['domReady', 'angular', 'app', 'preload'], function (domReady) {
+    require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular, app) {
         // ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
         // 加载页面主体内容
         function loadMainContent() {
@@ -129,7 +129,7 @@
                 pathname = window.location.hash ? window.location.hash.substring(1) : '/';
             }
             // 为官网页面 则预先加载
-            var pageurl = 'controller/homeController';
+            var pageurl = undefined;
             if (pathname.indexOf('/wiki/mod/') == 0) {
                 var pagename = pathname.substring('/wiki/mod/'.length);
                 var paths = pagename.split('/');
@@ -143,12 +143,20 @@
                 pageurl = 'controller/' + (pagename || 'home') + 'Controller';
             }
             console.log(pageurl);
-
             // 启动angular
-            require([pageurl], function (mainContent) {
-               config.mainContent = mainContent;
-                angular.bootstrap(document, ['webapp']);
-            });
+            if (pageurl) {
+                require([pageurl], function (mainContent) {
+                    config.mainContent = mainContent;
+                    angular.bootstrap(document, ['webapp']).run(function () {
+                        config.angularBootstrap = true;
+                    });
+                });
+            } else {
+                angular.bootstrap(document, ['webapp']).run(function () {
+                    config.angularBootstrap = true;
+                });
+            }
+
         }
 
         domReady(function () {

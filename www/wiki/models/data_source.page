@@ -187,6 +187,9 @@ end
 
 -- 添加数据源
 function data_source:api_addDataSource(params)
+	params = {
+		token=""
+	}
 	if (not params.token) or (not params.userId) or (not params.type) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
