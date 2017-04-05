@@ -19,8 +19,10 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
             util.go('home');
         }
         
-        $scope.findPwd=function () {
-            $scope.$close("login");
+        $scope.findPwd=function (isModal) {
+            if(isModal){
+                $scope.$close("login");
+            }
             util.go("findPwd");
         }
 
