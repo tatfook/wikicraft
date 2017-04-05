@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], function (app, util, storage, htmlContent) {
-    app.registerController('siteshowController', ['$scope', function ($scope) {
+    app.registerController('siteshowController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
@@ -34,6 +34,55 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
         $scope.sitePageChanged = function () {
             getSiteList();
         }
+
+        //打开用户页
+        $scope.goUserSite = function (site) {
+            util.goUserSite('/' + site.username + '/' + site.name + '/index');
+        }
+
+        // 收藏作品
+        $scope.worksFavorite=function (event, site) {
+            //console.log(event, site);
+            if (!Account.isAuthenticated()) {
+                Message.info("登录后才能收藏!!!");
+                return ;
+            }
+
+            if (site.userId == $scope.user._id) {
+                Message.info("不能收藏自己作品!!!");
+                return ;
+            }
+
+            var worksFavoriteRequest = function(isFavorite) {
+                var params = {
+                    userId: $scope.user._id,
+                    favoriteUserId: site.userId,
+                    favoriteWebsiteId: site._id,
+                }
+
+                var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
+                util.post(url, params, function () {
+                    Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
+                });
+            };
+
+            var obj=event.target;
+            var loveIcon=$(obj);
+            if (obj.outerHTML.indexOf('<span') > 0) {
+                loveIcon=$(obj).find(".js-heart");
+            }
+            if (loveIcon.hasClass("glyphicon-star-empty")) {
+                loveIcon.addClass("glyphicon-star");
+                loveIcon.removeClass("glyphicon-star-empty");
+                worksFavoriteRequest(true);
+                site.favoriteCount++;
+            }else{
+                loveIcon.addClass("glyphicon-star-empty");
+                loveIcon.removeClass("glyphicon-star");
+                worksFavoriteRequest(false);
+                site.favoriteCount--;
+            }
+        };
 
         $scope.$watch('$viewContentLoaded', init);
     }]);

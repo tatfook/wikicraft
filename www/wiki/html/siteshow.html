@@ -23,8 +23,24 @@
         border-bottom: 1px solid #f1f1f1;
         padding-bottom: 16px;
     }
+    h4 a.title {
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
+    h4 a.title:focus, h4 a.title:hover {
+        color: #3977AD;
+        text-decoration: none;
+    }
     .works img{
         width: 100%;
+    }
+    .hover-slide:hover {
+        transform: translate3d(0, -3px, 0);
+        transition: all .2s linear;
+    }
+    .works .pull-right.info{
+        cursor: pointer;
     }
 </style>
 
@@ -33,14 +49,14 @@
         <h3 class="title">作品集</h3>
         <div class="row works">
             <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList">
-                <img ng-src="{{ site.logoUrl || imgsPath + 'wiki_works.jpg' }}">
+                <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || imgsPath + 'wiki_works.jpg' }}">
                 <div class="text clearfix">
-                    <h4><a class="title" href="#">{{site.name}}</a></h4>
+                    <h4><a class="title" ng-click="goUserSite(site)">{{site.name}}</a></h4>
                     <p>作者： <span>{{site.username}}</span></p>
                     <p class="pull-left info">
                         <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount}}</span>
                     </p>
-                    <p class="pull-right info">
+                    <p class="pull-right info" ng-click="worksFavorite($event, site)">
                         <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount}}</span>
                     </p>
                 </div>
