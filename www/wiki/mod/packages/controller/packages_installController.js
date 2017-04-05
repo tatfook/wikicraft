@@ -229,7 +229,7 @@
                                 );
 
                                 $uibModal.open({
-                                    templateUrl: MOD_WEBROOT + "partials/local_install_dialog.html",
+                                    templateUrl: '/wiki/mod/packages/partials/local_install_dialog.html',
                                     controller: 'localInstallDialogController',
                                     size: 'lg'
                                 }).result.then(function (params) {
