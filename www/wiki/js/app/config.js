@@ -129,7 +129,7 @@
     config.init = function (cb) {
         require(config.preloadModuleList,function () {
             cb && cb();
-        })
+        });
     }
 
     initConfig();

@@ -64,6 +64,9 @@
             // html dir
             'html': config.htmlPath,
             'wikimod': config.wikiModPath,
+
+            // mod dir
+            'mod': config.modPath,
         },
         shim: {
             'angular': {
@@ -116,15 +119,43 @@
          urlArgs: "bust=" + (config.isLocal() ? ((new Date()).getTime()) : (config.bustVersion || '')),   //防止读取缓存，调试用
     });
 
-    
 
-    require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular) {
-        domReady(function () {
-            config.init(function () {
+    require(['domReady', 'angular', 'app', 'preload'], function (domReady) {
+        // ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
+        // 加载页面主体内容
+        function loadMainContent(util) {
+            var pathname = window.location.pathname;
+            if(config.islocalWinEnv()) {
+                pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            }
+            // 为官网页面 则预先加载
+            var pageurl = 'controller/homeController';
+            if (pathname.indexOf('/wiki/mod/') == 0) {
+                var pagename = pathname.substring('/wiki/mod/'.length);
+                var paths = pagename.split('/');
+                if (paths.length > 1) {
+                    pageurl = 'mod/' + paths[0] + '/controller/' + paths[1] + "Controller";
+                } else {
+                    pageurl = 'mod/' + paths[0] + '/controller/indexController';
+                }
+            } else if (pathname.indexOf('/wiki/') == 0) {
+                var pagename = pathname.substring('/wiki/'.length);
+                pageurl = 'controller/' + pathname + '/Controller';
+            }
+            console.log(pageurl);
+
+            // 启动angular
+            require([pageurl], function (mainContent) {
+               config.mainContent = mainContent;
                 angular.bootstrap(document, ['webapp']);
             });
-        });
+        }
 
+        domReady(function () {
+            config.init(function () {
+                loadMainContent();
+            });
+        });
     });
 })(window);
 

@@ -51,12 +51,15 @@ define(['jquery'], function ($) {
         var pathname = window.location.pathname;
 
         if(config.islocalWinEnv()) {
+            pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            /*
             var $location = util.getAngularServices().$location;
             if ($location) {
                 pathname = $location.path();
             } else {
                 pathname = window.location.hash ? window.location.hash.substring(1) : '/';
             }
+            */
         }
         pathname = decodeURI(pathname);
 

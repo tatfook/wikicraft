@@ -90,18 +90,23 @@ define([
             }
 
             function renderHtmlText(pathname, md) {
-                pathname = pathname.replace('/wiki/', '');
-                var pageUrl = 'controller/' + pathname + 'Controller';
-                var htmlContent;
-                //console.log(pageUrl);
-                require([pageUrl], function (htmlContent) {
-                    if (pathname == "wikiEditor" || !md) {
-                        util.html('#__UserSitePageContent__', htmlContent, $scope);
-                    } else {
-                        md.bindRenderContainer('#__UserSitePageContent__');
-                        md.render(htmlContent);
-                    }
-                });
+                if (config.mainContent) {
+                    util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                } else {
+                    pathname = pathname.replace('/wiki/', '');
+                    var pageUrl = 'controller/' + pathname + 'Controller';
+                    var htmlContent;
+                    //console.log(pageUrl);
+                    require([pageUrl], function (htmlContent) {
+                        if (pathname == "wikiEditor" || !md) {
+                            util.html('#__UserSitePageContent__', htmlContent, $scope);
+                        } else {
+                            md.bindRenderContainer('#__UserSitePageContent__');
+                            md.render(htmlContent);
+                        }
+                    });
+                }
+
             }
 
             function setWindowTitle(urlObj) {
@@ -117,7 +122,6 @@ define([
 
             // 加载内容信息
             function initContentInfo() {
-                $scope.IsRenderServerWikiContent = false;
                 util.html('#__UserSitePageContent__', '<div></div>', $scope);
                 $rootScope.urlObj = util.parseUrl();
 
