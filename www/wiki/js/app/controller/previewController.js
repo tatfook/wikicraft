@@ -8,7 +8,7 @@ define([
     'helper/util',
     'text!html/preview.html'
 ], function (app, markdownwiki, util, htmlContent) {
-    app.registerController('previewController', ['$scope','$compile', function ($scope,$compile) {
+    app.controller('previewController', ['$scope','$compile', function ($scope,$compile) {
         console.log("previewCtrl");
         var filename = window.location.search.replace('?','');
         console.log(filename);

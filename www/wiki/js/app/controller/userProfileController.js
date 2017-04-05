@@ -9,7 +9,7 @@ define(['app',
     'text!html/userProfile.html',
     'cropper',
 ], function (app, util, storage,dataSource, htmlContent) {
-    app.registerController('userProfileController', ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
+    app.controller('userProfileController', ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         $scope.showItem = 'myProfile';

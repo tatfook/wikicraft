@@ -9,7 +9,7 @@ define([
     'text!html/test.html',
 ], function (app, util, markdownwiki, htmlContent) {
     console.log("testController");
-    app.registerController("testController", ['$scope', function ($scope) {
+    app.controller("testController", ['$scope', function ($scope) {
         function init() {
             console.log("init testController");
             $scope.message = "hello world";

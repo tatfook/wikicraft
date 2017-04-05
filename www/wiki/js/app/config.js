@@ -40,13 +40,13 @@
         // js 路径
         jsPath: pathPrefix + 'js/',
         jsAppPath: pathPrefix + 'js/app/',
-        jsAppControllerPath: pathPrefix + 'js/app/controller/',
-        jsAppDirectivePath: pathPrefix + 'js/app/directive/',
-        jsAppFactoryPath: pathPrefix + 'js/app/factory/',
-        jsAppHelperPath: pathPrefix + 'js/app/helper/',
+        jsAppControllerPath: pathPrefix + 'js/app/controller',
+        jsAppDirectivePath: pathPrefix + 'js/app/directive',
+        jsAppFactoryPath: pathPrefix + 'js/app/factory',
+        jsAppHelperPath: pathPrefix + 'js/app/helper',
         jsLibPath: pathPrefix + 'js/lib',
 
-        modPath: pathPrefix + 'mod/',
+        modPath: pathPrefix + 'mod',
         wikiModPath: pathPrefix + 'js/mod/',
 
         // html 路径

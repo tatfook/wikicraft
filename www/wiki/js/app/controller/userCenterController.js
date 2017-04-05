@@ -12,7 +12,7 @@ define(['app',
     'controller/myVIPController',
     'controller/editWebsiteController',
 ], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent) {
-    app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
+    app.controller('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
             {flag:'myProfile', name:'我的资料'},

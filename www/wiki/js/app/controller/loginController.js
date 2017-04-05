@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
-    app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
+    app.controller('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.isModal=false;
 

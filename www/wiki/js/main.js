@@ -140,7 +140,7 @@
                 }
             } else if (pathname.indexOf('/wiki/') == 0) {
                 var pagename = pathname.substring('/wiki/'.length);
-                pageurl = 'controller/' + pathname + '/Controller';
+                pageurl = 'controller/' + pagename + 'Controller';
             }
             console.log(pageurl);
 

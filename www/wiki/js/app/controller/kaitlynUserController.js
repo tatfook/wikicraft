@@ -8,7 +8,7 @@ define(['app',
     'helper/storage',
     'text!html/kaitlynUser.html',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('kaitlynUserController', ['$scope', 'Account', 'Message','modal', function ($scope, Account, Message,modal) {
+    app.controller('kaitlynUserController', ['$scope', 'Account', 'Message','modal', function ($scope, Account, Message,modal) {
         function init() {
             // $scope
             // .githubDS = $scope.user.githubDS;

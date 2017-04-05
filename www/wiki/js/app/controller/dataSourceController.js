@@ -9,7 +9,7 @@ define(['app',
     'helper/dataSource',
     'text!html/dataSource.html',
 ], function (app, util, storage,dataSource, htmlContent) {
-    app.registerController('dataSourceController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
+    app.controller('dataSourceController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
         function init() {
             $scope.githubDS = $scope.user.githubDS;
             $scope.innerGitlab = dataSource.getDataSourceEnable('innerGitlab');

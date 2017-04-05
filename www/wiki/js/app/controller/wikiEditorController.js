@@ -139,7 +139,7 @@ define([
     }
 
 
-    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {
+    app.controller('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
@@ -163,7 +163,7 @@ define([
             });
         }
     }]);
-    app.registerController('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
+    app.controller('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.link = {url: '', txt: ''};
 
         $scope.cancel = function () {
@@ -188,7 +188,7 @@ define([
         }
 
     }]);
-    app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
+    app.controller('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.table = {rows: 2, cols: 2, alignment: 0};
 
         $scope.cancel = function () {
@@ -200,7 +200,7 @@ define([
             $uibModalInstance.close("table");
         }
     }]);
-    app.registerController('pageCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
+    app.controller('pageCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
         $scope.websites = {};            //站点列表
         $scope.websitePages = {};       //页面列表
         $scope.website = {};             //当前选中站点
@@ -298,7 +298,7 @@ define([
 
     }]);
 
-    app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
+    app.controller('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;

@@ -236,6 +236,6 @@ define([
     }];
 
     //controller.$inject = ['$scope', '$state', '$sce', 'Account'];
-    app.registerController('newWebsiteController', controller);
+    app.controller('newWebsiteController', controller);
     return htmlContent;
 });

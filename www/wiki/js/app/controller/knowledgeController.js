@@ -16,7 +16,7 @@ define([
 ], function (app, markdownwiki, util, storage,  htmlContent) {
     var md = markdownwiki({"use_template":false});
 
-    app.registerController("knowledgeController", ['$scope','$rootScope', '$http', function ($scope, $rootScope, $http) {
+    app.controller("knowledgeController", ['$scope','$rootScope', '$http', function ($scope, $rootScope, $http) {
         function getTreeData() {
             return [
                 {
