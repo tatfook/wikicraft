@@ -23,7 +23,7 @@ define(['app',
             user.dataSource = undefined;
             user.dataSourceId = parseInt($scope.defaultDataSourceId);
             util.post(config.apiUrlPrefix + 'user/updateUserInfo', user, function (data) {
-                Account.setUser(data);
+                dataSource.setDefaultDataSourceId(user.dataSourceId);
             });
         };
 

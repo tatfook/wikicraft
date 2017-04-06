@@ -11,7 +11,7 @@ define([
         var github = {
             inited: false,
             githubName: '',
-            defalultRepoName: 'wikicraftDataSource',
+            defalultRepoName: 'keepworkDataSource',
             apiBase: 'https://api.github.com',
             defaultHttpHeader: {
                 'Accept': 'application/vnd.github.full+json',  // 这个必须有

@@ -506,8 +506,6 @@ define([
                     return;
                 }
 
-                setDataSource();
-
                 function setEditorValue() {
                     currentWebsitePage.isFirstEditor = true;
 
