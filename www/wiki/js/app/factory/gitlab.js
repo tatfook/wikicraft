@@ -7,15 +7,13 @@ define([
     'helper/storage',
     'js-base64'
 ], function (app, storage) {
-    var gitlabHost =config.dataSource.innerGitlab.host || "git.keepwork.com";
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,
             username: '',   // gitlab 用户名
             projectId: undefined,
             projectName: 'keepworkDataSource',
-            host: gitlabHost,
-            apiBase:  'http://' + gitlabHost + '/api/v4',
+            apiBase:  'http://git.keepwork.com/api/v4',
             httpHeader: {
                 //'Accept': 'application/vnd.github.full+json',  // 这个必须有
             },
@@ -47,7 +45,6 @@ define([
         gitlab.getFileUrlPrefix = function () {
             return '/projects/' + gitlab.projectId + '/repository/files/';
         }
-
         gitlab.getCommitMessagePrefix = function () {
             return "keepwork commit: ";
         }
@@ -138,17 +135,24 @@ define([
                 cb && cb(gitlab.getRawContentUrlPrefix() + data.file_path);
             }, errcb);
         }
+
         // 初始化
-        gitlab.init = function (token, username, projectName, cb, errcb) {
-            if (gitlab.inited || !gitlab.host)
+        gitlab.init = function (dataSource,  cb, errcb) {
+            if (gitlab.inited) {
+                cb && cb();
                 return;
+            }
 
-            gitlab.username = username;
-            gitlab.httpHeader["PRIVATE-TOKEN"] = token;
-            gitlab.projectName = projectName || gitlab.projectName;
-
-            if (!token)
+            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl) {
+                errcb && errcb();
                 return;
+            }
+
+            gitlab.username = dataSource.dataSourceUsername;
+            gitlab.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
+            gitlab.projectName = dataSource.projectName || gitlab.projectName;
+            gitlab.apiBase = dataSource.apiBaseUrl;
+            gitlab.host = gitlab.apiBase.substring(0,gitlab.apiBase.indexOf('/api/v4'));
 
             gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned:true}, function (projectList) {
                 // 查找项目是否存在

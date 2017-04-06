@@ -13,6 +13,7 @@ define([
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
         $scope.domainList=[];
+        $scope.dataSourceList = $scope.user.dataSource;
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
         var currentDomain = siteinfo.domain;
@@ -20,6 +21,12 @@ define([
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
+        $scope.dataSourceId = $scope.website.dataSourceId && $scope.website.dataSourceId.toString();
+
+        $scope.changeDataSource = function () {
+            $scope.website.dataSourceId = parseInt($scope.dataSourceId);
+        }
+        
         function sendModifyWebsiteRequest() {
             util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                 $scope.website = data;

@@ -2,11 +2,14 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (app, storage, util, dataSource) {
-    //console.log(dataSource);
-    //console.log("accountFactory");
-    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'github', 'Message', 'gitlab',
-        function ($auth, $rootScope, $http, $uibModal, github, Message, gitlab) {
+define([
+    'app',
+    'helper/storage',
+    'helper/util',
+    'helper/dataSource'
+], function (app, storage, util, DataSource) {
+    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'github', 'Message', 'gitlab', 'github',
+        function ($auth, $rootScope, $http, $uibModal, github, Message, gitlab, github) {
             var account = undefined;
             var angularService = util.getAngularServices();
             if (!angularService || !angularService.$http) {
@@ -26,82 +29,20 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
                 $auth.setToken($.cookie('token'));
             }
 
-            // 初始化github
-            function initGithub(user) {
-                /*
-                 user.githubToken = {
-                 token_type: 'bearer',
-                 access_token: 'c4b9a75d8c6c9fd1db081319723d1713f70f6f74'
-                 };
-                 user.githubName = 'wxaxiaoyao';
-                 */
-                var outerGithubDS = dataSource.getRawDataSource('github');
-                if (outerGithubDS && outerGithubDS.isInited()) {
-                    dataSource.setDataSourceEnable('github', user.githubDS);
-                    return;
-                }
-                if (user && user.githubToken && !github.isInited()) {
-                    github.init(user.githubToken, user.githubName, user.githubRepoName, function () {
-                        dataSource.registerDataSource('github', github, user.githubDS);
-                        $rootScope.$broadcast("onDataSource", github);
-                        console.log("github init success");
-                    }, function (response) {
-                        //console.log(response);
-                        if (response.status == 401) {  // Token失效
-                            Message.info('GITHUB授权过期，请重新认证!!!');
-                            console.log('GITHUB授权过期，请重新认证!!!');
-                            user.githubToken = undefined;
-                            account.setUser(user);
-                        }
-                        console.log("github init failed");
-                    });
-                }
-            }
-
-            // 初始化innerGitlab
-            function initInnerGitlab(dataSourceLList) {
-                var innerGitlabDS = dataSource.getRawDataSource('innerGitlab');
-                if (innerGitlabDS && innerGitlabDS.isInited()) {
-                    //console.log("-------------inner gitlab already init--------------");
-                    return;
-                }
-                //console.log("--------------init inner gitlab-----------------");
-
-                var innerGitlab = gitlab();
-                dataSource.registerDataSource("innerGitlab", innerGitlab, false)
-                account.innerGitlab = innerGitlab;
-                //console.log(account.innerGitlab)
-                for (var i = 0; i < dataSourceLList.length; i++) {
-                    var ds = dataSourceLList[i];
-                    // inner gitlab data source flag
-                    if (ds.type == 0) {
-                        innerGitlab.init(ds.dataSourceToken, ds.dataSourceUsername, undefined, function () {
-                            console.log("inner gitlab data source init success");
-                            //dataSource.registerDataSource("innerGitlab", innerGitlab);
-                            dataSource.setDataSourceEnable('innerGitlab', true);
-                            $rootScope.$broadcast("onDataSource", {type:'innerGitlab', dataSource:innerGitlab});
-                        }, function () {
-                            console.log("inner gitlab data source init failed");
-                        });
-                    }
-                }
-            }
-
             // 初始化数据源
             function initDataSource(user) {
-                var _initDataSource = function (user) {
-                    initGithub(user);
-                    initInnerGitlab(user.dataSource)
+                var dataSourceFactory = {
+                    'gitlab': gitlab,
+                    'github': github,
                 }
-                //console.log(user);
                 if (!user.dataSource || user.dataSource.length == 0) {
                     util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId: user._id}, function (data) {
                         user.dataSource = data || [];
                         storage.localStorageSetItem("userinfo", user);
-                        _initDataSource(user);
+                        DataSource.init(dataSourceFactory, user.dataSource);
                     });
                 } else {
-                    _initDataSource(user);
+                    DataSource.init(dataSourceFactory, user.dataSource);
                 }
             }
 
@@ -259,7 +200,7 @@ define(['app', 'helper/storage', 'helper/util', 'helper/dataSource'], function (
             }
 
             account.getUser(function (user) {
-                //console.log(user);
+                console.log(user);
                 account.setUser(user);
             });
 

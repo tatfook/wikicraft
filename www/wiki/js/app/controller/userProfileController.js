@@ -138,6 +138,8 @@ define(['app',
 
         // 保存用户信息
         $scope.saveProfile = function () {
+            var user = angular.copy($scope.user);
+            user.dataSource = undefined;
             util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function (data) {
                 Account.setUser(data);
                 Message.success("修改成功");

@@ -1,5 +1,3 @@
-<style>
-</style>
 
 <div ng-controller="dataSourceController">
     <div class="col-md-10 panel main-content">
@@ -7,14 +5,83 @@
             数据源配置
         </div>
         <div class="panel-body">
-            <div style="display: flex; justify-content: space-between">
-                <div>Github数据源</div>
-                <div><toggle-switch  ng-model="githubDS" ng-change="githubDSChange()"></toggle-switch></div>
-            </div>
-            <!--div style="display: flex; justify-content: space-between">
-                <div>KEEPWOK Gitlab数据源</div>
-                <div><toggle-switch  ng-model="innerGitlab" ng-change="dataSourceChange('innerGitlab')"></toggle-switch></div>
-            </div-->
+            <form role="form" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">默认数据源</label>
+                    <div class="col-xs-8">
+                        <select class="form-control" ng-model="defaultDataSourceId" ng-change="changeDefaultDataSource()">
+                            <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <table class="table table-hover">
+                <caption>已配置的数据源</caption>
+                <thead>
+                <tr>
+                    <th>数据源名</th>
+                    <th>类型</th>
+                    <th>apiBaseUrl</th>
+                    <th>Token</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in dataSourceList">
+                    <td>{{x.name}}</td>
+                    <td>{{x.type}}</td>
+                    <td>{{x.apiBaseUrl}}</td>
+                    <td>{{x.dataSourceToken}}</td>
+                    <td>{{x.dataSourceId ? "有效" : "无效"}}</td>
+                    <td>
+                        <div >
+                            <button class="btn btn-default" ng-click="clickModifyDataSource(x)">修改</button>
+                            <button class="btn btn-default" ng-click="clickDeleteDataSource(x)">删除</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-heading">
+            增改数据源
+        </div>
+        <div class="panel-body">
+            <form role="form" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">数据源类型</label>
+                    <div class="col-xs-8">
+                        <select class="form-control" ng-model="newDataSource.type">
+                            <option ng-repeat="x in dataSourceTypeList" value="{{x}}">{{x}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">数据源名:</label>
+                    <div class="col-xs-8">
+                        <input ng-model="newDataSource.name" type="text" class="form-control" placeholder="github">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">ApiBaseUrl:</label>
+                    <div class="col-xs-8">
+                        <input ng-model="newDataSource.apiBaseUrl" type="text" class="form-control" placeholder="https://api.github.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">Token:</label>
+                    <div class="col-xs-8">
+                        <input ng-model="newDataSource.dataSourceToken" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-offset-2 col-xs-8">
+                        <button class="btn btn-default" ng-click="clickNewDataSource()">提交</button>
+                        <span style="color: red">{{errMsg}}</span>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -13,10 +13,13 @@ include_once("./abstract/base.page")
 local data_source = inherit(models.abstract.base, gettable("models.data_source"))
 data_source.db_name = "data_source"
 
+local innerGitlabName = "内置gitlab"
+local innerGithubName = "内置github"
 
 function data_source:ctor()
 	self:addfield("userId", "number")   -- 用户ID 
-	self:addfield("type", "number")     -- 类型
+	self:addfield("name", "string")     -- 数据源名
+	self:addfield("type", "string")     -- 类型
 	self:addfield("dataSourceId", "number")  -- 数据源ID
 	self:addfield("dataSourceUsername", "string")  -- 数据源用户名
 	self:addfield("dataSourceToken", "string")  -- 数据源ID
@@ -32,7 +35,18 @@ function data_source:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({["+userId+type"]={params.userId,params.type}}, params, resume)
+	self:db():insertOne({["+userId+name"]={params.userId,params.name}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除用户数据源
+function data_source:api_deleteById(params)
+	if not params.dataSourceId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({_id=params.dataSourceId}, resume)
 
 	return errors:wrap(yield())
 end
@@ -54,7 +68,7 @@ function data_source:api_getInnerGitlabByUserId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["+userId+type"]={params.userId, const.DATA_SOURCE_INNER_GITLAB}}, resume)
+	self:db():findOne({["+userId+name"]={params.userId, innerGitlabName}}, resume)
 
 	return errors:wrap(yield())
 end
@@ -62,11 +76,13 @@ end
 function getInnerGitlabToken(params) 
 	local ds = {
 		userId = params.userId,
-		type = const.DATA_SOURCE_INNER_GITLAB,
+		type = "gitlab",
+		name = innerGitlabName,
 		dataSourceId = params.gitlabUserId,
 		dataSourceUsername = params.username,
 		--dataSourceToken = gitlabToken.token,
 		enable = 1,
+		apiBaseUrl = params.urlPrefix,
 	}
 	System.os.GetUrl({
 		url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
@@ -96,7 +112,7 @@ function getInnerGitlabToken(params)
 				return
 			end	
 			ds.dataSourceToken = data.token
-			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}},ds,	function(err, data)	--[[db.user.updateOne({_id=ds.userId},{dataSourceId=data._id}}, function() end) ]]	end)
 		end)
 	end)
 	
@@ -185,17 +201,136 @@ function data_source:api_getApiBaseUrl(params)
 	end
 end
 
--- 添加数据源
-function data_source:api_addDataSource(params)
-	params = {
-		token=""
+-- 添加github数据源
+function data_source:api_setGithubDataSource(params)
+	if (not params.name) or (not params.dataSourceToken) or (not params.userId) or (not params.type) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.apiBaseUrl = params.apiBaseUrl or "https://api.github.com"
+	local ds = {
+		userId = params.userId,
+		type = params.type,
+		dataSourceToken = params.dataSourceToken,
+		apiBaseUrl = params.apiBaseUrl, 
+		name = params.name,
+		enable = 1,
 	}
-	if (not params.token) or (not params.userId) or (not params.type) then
+	
+	if params._id then
+		self:db():updateOne({_id=params._id}, params, resume)
+		return errors:wrap(yield())
+	end
+	
+	self:db():findOne({["+userId+name"]={params.userId, params.name}}, resume)
+	local err, data = yield()
+	if data then
+		self:db():updateOne({["+userId+name"]={params.userId, params.name}}, params, resume)
+		return errors:wrap(yield())
+	end
+
+	local headers = {["User-Agent"]="Satellizer",["Accept"]="application/vnd.github.full+json", ["Authorization"]= " token " .. params.dataSourceToken}
+	
+	-- 不存在创建用户
+	if not data or #data == 0 then 
+		System.os.GetUrl({
+			url= params.apiBaseUrl .. "/user", 
+			headers=headers,
+			method = "GET",
+			json = true,
+		}, function(code, msg, data)
+			if code ~= 200 then
+				log(data)
+				return
+			end
+			ds.dataSourceId = data.id
+			ds.dataSourceUsername = data.login
+			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+		end)
+	else
+		db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+	end
+	
+	return errors:wrap()
+end
+
+-- 设置gitlab数据源
+function data_source:api_setGitlabDataSource(params)
+	if (not params.name) or (not params.dataSourceToken) or (not params.userId) or (not params.type) or (not params.apiBaseUrl)then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local ds = {
+		userId = params.userId,
+		type = params.type,
+		dataSourceToken = params.dataSourceToken,
+		enable = 1,
+		apiBaseUrl = params.apiBaseUrl,
+		name = params.name,
+	}
+
+	if params._id then
+		self:db():updateOne({_id=params._id}, params, resume)
+		return errors:wrap(yield())
+	end
+	if data then
+		self:db():updateOne({["+userId+name"]={params.userId, params.name}}, params, resume)
+		return errors:wrap(yield())
+	end
+
+	local headers = {['PRIVATE-TOKEN']= params.dataSouceToken}
 	
+	-- 不存在创建用户
+	if not data or #data == 0 then 
+		System.os.GetUrl({
+			url= params.apiBaseUrl .. "/user", 
+			headers=headers,
+			method = "GET",
+			json = true,
+		}, function(code, msg, data)
+			-- log(data)
+			if code ~= 200 then
+				return
+			end
+			ds.dataSourceId = data.id
+			ds.dataSourceUsername = data.username
+			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+		end)
+	else
+		db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+	end
+	
+	return errors:wrap()
 end
+
+-- 设置数据源
+function data_source:api_setDataSource(params) 
+	if not params.type then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if params.type == const.DATA_SOURCE_TYPE_GITHUB then
+		return self:api_setGithubDataSource(params)
+	elseif params.type == const.DATA_SOURCE_TYPE_GITLAB then
+		return self:api_setGitlabDataSource(params)
+	else 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	return errors:wrap()
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
