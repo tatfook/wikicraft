@@ -165,6 +165,10 @@
     .works .col-md-12 h4 {
         line-height: 40px;
     }
+    .works img{
+        height:196.88px;
+        object-fit: contain;
+    }
     .whouse {
         background-color: #FAFAFA;
     }
@@ -199,6 +203,12 @@
             display: inline-block;
         }
     }
+    @media (min-width: 992px) and (max-width: 1200px) {
+        .works img{
+            height:159.38px;
+            object-fit: contain;
+        }
+    }
     @media (min-width: 768px) and (max-width: 992px) {
         .works{
             max-height: 405px;
@@ -206,6 +216,10 @@
         }
         .works .col-sm-4{
             margin: 10px 0;
+        }
+        .works img{
+            height:165px;
+            object-fit: contain;
         }
     }
     @media (max-width: 768px) {

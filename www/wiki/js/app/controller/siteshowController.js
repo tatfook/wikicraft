@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], function (app, util, storage, htmlContent) {
-    app.registerController('siteshowController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
+    app.controller('siteshowController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;

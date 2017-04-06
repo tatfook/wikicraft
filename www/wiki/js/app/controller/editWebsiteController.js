@@ -6,14 +6,15 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/dataSource',
     'text!html/editWebsite.html',
-], function (app, util, storage, htmlContent) {
+], function (app, util, storage,dataSource, htmlContent) {
     app.registerController('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
         $scope.domainList=[];
-        $scope.dataSourceList = $scope.user.dataSource;
+        var innerGitlab = undefined;
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
         var currentDomain = siteinfo.domain;
@@ -124,11 +125,11 @@ define([
                     }
 
                     innerGitlab.uploadImage({content:arg.target.result}, function (url) {
-                        $scope.user.portrait = url;
-                        $('#userPortraitId').attr('src', arg.target.result);
-                        util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
-                            Message.info("图片上传成功");
-                        })
+                        // $scope.user.portrait = url;
+                        // $('#userPortraitId').attr('src', arg.target.result);
+                        // util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
+                        //     Message.info("图片上传成功");
+                        // })
                     }, function () {
                         Message.info("图片上传失败");
                     });
@@ -166,7 +167,6 @@ define([
 
                             $previews.each(function () {
                                 var $preview = $(this);
-                                console.log($preview);
                                 var previewWidth = $preview.width();
                                 var previewHeight = previewWidth / previewAspectRatio;
                                 var imageScaledRatio = e.width / previewWidth;
