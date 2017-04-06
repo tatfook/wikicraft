@@ -61,9 +61,14 @@
     .setting-form .form-group:last-child{
         text-align: center;
     }
+    .setting-form .border-bottom{
+        margin-bottom: 25px;
+        border-bottom:1px solid #DCDCDC;
+    }
     .setting-form .btn-save{
         padding: 10px 52px;
         font-size: 16px;
+        margin: 45px 0;
     }
     .setting-form .new-cname{
         margin-top: 10px;
@@ -77,18 +82,72 @@
     .setting-form .new-cname .form-control{
         padding-right: 20px;
     }
+    .setting-form .preview-zone img{
+        width:280px;
+        height:210px;
+    }
+    .setting-form .preview-zone a{
+        position: absolute;
+        left:310px;
+        bottom: 27px;
+        font-size: 16px;
+    }
+    .setting-form .preview-zone a.btn{
+        left: 350px;
+        bottom:10px;
+    }
+    .setting-form .preview-zone input[type="file"] {
+        position: absolute;
+        left:310px;
+        bottom: 27px;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 1;
+    }
+    .setting-form .preview{
+        width: 280px;
+        height:210px;
+        margin-bottom: 30px;
+    }
+    .setting-form .cropper-zone{
+        width: 320px;
+        height: 240px;
+        position: absolute;
+        left: 15px;
+        top: 0;
+    }
+    .setting-form .control-label{
+        font-weight: normal;
+        font-size: 16px;
+    }
 </style>
 
-<div ng-controller="editWebsiteController" class="container">
-    <div class="col-md-10 panel main-content">
+<div ng-controller="editWebsiteController" class="container col-sm-9 col-md-10">
+    <div class="col-xs-12 panel main-content">
         <div class="panel-heading">
             网站设置
         </div>
         <div class="panel-body">
-            </span><span style="color: red">{{errMsg}}</span>
+            <span style="color: red">{{errMsg}}</span>
             <form class="form-horizontal setting-form" role="form">
                 <div class="form-group sr-only">
                     <legend>网站设置</legend>
+                </div>
+                <h4 class="clearfix"><span class="col-sm-2">常用设置</span></h4>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">站点图标：</label>
+                    <div class="col-sm-10 preview-zone">
+                        <div class="preview">
+                            <img ng-src="{{imgsPath+'wiki_works.jpg'}}" alt="">
+                        </div>
+                        <p class="crop-control">
+                            <input class="change-btn" onchange="angular.element(this).scope().fileUpload(event)" type="file">
+                            <a class="change-btn">点击修改</a>
+                            <a id="finish" class="btn btn-primary sr-only">确 定</a>
+                        </p>
+                        <div id="cropper" class="cropper-zone sr-only visible-hidden">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="webName" class="col-sm-2 control-label">站点名称：</label>
@@ -97,14 +156,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">独立域名</label>
+                    <label class="col-sm-2 control-label">独立域名：</label>
                     <div class="col-sm-5 user-domain">
                         <input class="form-control" type="text" ng-model="website.domain" ng-blur="checkDomain()">
                         <div>{{website.username + "-" + website.domain +".keepwork.com"}}</div>
                     </div>
                 </div>
                 <div class="form-group" id="cnameBox">
-                    <label for="cname" class="col-sm-2 control-label">Cname转发</label>
+                    <label for="cname" class="col-sm-2 control-label">Cname转发：</label>
                     <div class="col-sm-5">
                         <div class="col-sm-8 add-cname">
                             <input type="text" class="form-control" id="cname" ng-model="domain">
@@ -125,7 +184,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">本站标签</label>
+                    <label class="col-sm-2 control-label">本站标签：</label>
                     <div class="col-sm-5">
                         <div class="col-sm-8 add-label">
                             <input type="text" class="col-sm-8 form-control" ng-model="tag">
@@ -142,12 +201,36 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group border-bottom">
+                    <div class="col-sm-12">
+                        <button ng-click="modifyWebsite()" class="btn btn-primary btn-save">保存</button>
+                    </div>
+                </div>
+            </form>
+            <form class="form-horizontal setting-form" role="form">
+                <div class="form-group sr-only">
+                    <legend>网站高级设置</legend>
+                </div>
+                <h4 class="clearfix"><span class="col-sm-2">高级设置</span></h4>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">独立数据源</label>
+                    <label for="dataOrigin" class="col-sm-2 control-label">数据源：</label>
                     <div class="col-sm-5">
-                        <select class="form-control" ng-model="dataSourceId" ng-change="changeDataSource()">
-                            <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
+                        <select class="form-control" name="dataOrigin" id="dataOrigin">
+                            <option value="github">github</option>
+                            <option value="gitlab">gitlab</option>
                         </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="webToken" class="col-sm-2 control-label">token：</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="webToken" ng-model="website.webToken">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">name：</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="name">
                     </div>
                 </div>
                 <div class="form-group">
