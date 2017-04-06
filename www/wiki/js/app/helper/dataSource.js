@@ -9,6 +9,7 @@ define([
     var dataSourceObj = {
         dataSourceMap:{},
         dataSourceList:undefined,
+        defaultDataSourceId:undefined,
     };
 
     dataSourceObj.registerDataSource = function (name, obj) {
@@ -29,8 +30,13 @@ define([
         return undefined;
     }
 
-    dataSourceObj.init = function (dataSourceFactory, dataSourceList) {
+    dataSourceObj.getDefaultDataSource = function () {
+        return dataSourceObj.getDataSourceById(dataSourceObj.defaultDataSourceId);
+    }
+
+    dataSourceObj.init = function (dataSourceFactory, dataSourceList,defaultDataSourceId) {
         dataSourceObj.dataSourceList = dataSourceList;
+        dataSourceObj.defaultDataSourceId = defaultDataSourceId;
 
         var _init = function(dataSource, dataSourceInstance) {
             if (!dataSourceInstance)

@@ -39,10 +39,10 @@ define([
                     util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId: user._id}, function (data) {
                         user.dataSource = data || [];
                         storage.localStorageSetItem("userinfo", user);
-                        DataSource.init(dataSourceFactory, user.dataSource);
+                        DataSource.init(dataSourceFactory, user.dataSource, user.dataSourceId);
                     });
                 } else {
-                    DataSource.init(dataSourceFactory, user.dataSource);
+                    DataSource.init(dataSourceFactory, user.dataSource, user.dataSourceId);
                 }
             }
 

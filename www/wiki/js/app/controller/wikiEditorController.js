@@ -29,7 +29,6 @@ define([
     'bootstrap-treeview',
 ], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
-    var defaultDataSource = dataSource.getDefaultDataSource();
     var mdwiki = markdownwiki({editorMode:true});
     var editor;
     var allWebsites = [];
@@ -37,7 +36,13 @@ define([
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
     var currentWebsitePage = undefined;
     var editorDocMap = {};
-
+    
+    function getCurrentDataSource() {
+        if (currentWebsite && currentWebsite.dataSourceId) {
+            return dataSource.getDataSourceById(currentWebsite.dataSourceId);
+        }
+        return dataSource.getDefaultDataSource();
+    }
 
     function getTreeData(username, websitePages, isDir) {
         var pageList = websitePages || [];
@@ -152,10 +157,11 @@ define([
         }
 
         $scope.imageLocal = function () {
+            var currentDataSource = getCurrentDataSource();
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    defaultDataSource.isInited() && defaultDataSource.uploadImage({content:fileReader.result}, function (url) {
+                    currentDataSource &&  currentDataSource.uploadImage({content:fileReader.result}, function (url) {
                         $scope.img.url = url;
                     });
                 };
@@ -318,11 +324,6 @@ define([
                 return true;
             }
 
-            $scope.$on('onDataSource', function (event, data) {
-                console.log("onDataSource change!!!");
-                defaultDataSource = dataSource.getDefaultDataSource();
-            });
-
             function newWebsitePage(urlObj) {
                 //console.log("---------newWebsitePage-------------");
                 if (!urlObj || urlObj.username != $scope.user.username || !urlObj.sitename)
@@ -384,7 +385,6 @@ define([
                 if (!Account.ensureAuthenticated()) {
                     return;
                 }
-                defaultDataSource = dataSource.getDefaultDataSource();
                 initEditor();
 
                 var user = $scope.user;
@@ -449,24 +449,6 @@ define([
                 return null;
             }
 
-            function setDataSource() {
-                //console.log($scope.user.githubDS);
-                //console.log($scope.website.githubRepoName);
-                if (!currentWebsite)
-                    return;
-                $scope.dataSource = dataSource.getDataSource();
-                return
-                if (!$scope.user.githubDS && !currentWebsite.githubRepoName) {
-                    $scope.dataSource = undefined;
-                } else {
-                    $scope.dataSource = dataSource.getDataSource();
-                    var githubDS = $scope.dataSource.getSingleDataSource('github');
-                    if (currentWebsite.githubRepoName && githubDS) {
-                        $scope.dataSource.getSingleDataSource('github').setDefaultRepo(currentWebsite.githubRepoName);
-                    }
-                }
-            }
-            
             $scope.$on("changeEditorPage", function (event, urlObj) {
                 renderAutoSave(function() {
                     openUrlPage(urlObj);
@@ -708,11 +690,10 @@ define([
                 if (!currentWebsitePage || !currentWebsitePage.url) {
                     return;
                 }
-                if ($scope.user.githubDS && github.isInited()) {
-                    window.open(github.getContentUrl({path: currentWebsitePage.url.substring(1)}));
-                } else {
-                    var innerGitlab = dataSource.getRawDataSource('innerGitlab');
-                    window.open(innerGitlab.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
+
+                var currentDataSource = getCurrentDataSource();
+                if (currentDataSource) {
+                    window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
                 }
             }
 
@@ -748,6 +729,7 @@ define([
             //保存页面
             $scope.cmd_savepage = function () {
                 var content = editor.getValue();
+                var currentDataSource = getCurrentDataSource();
                 if (!isEmptyObject(currentWebsitePage)) {//修改
                     currentWebsitePage.content = content;
                     currentWebsitePage.timestamp = (new Date()).getTime();
@@ -759,16 +741,16 @@ define([
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         Message.info("文件已保存到服务器");
                         //console.log($scope.dataSource);
-                        if ($scope.dataSource) {
+                        if (currentDataSource) {
                             var path = currentWebsitePage.url;
                             path = path.substring(1);
-                            $scope.dataSource.writeFile({
+                            currentDataSource.writeFile({
                                 path: path,
                                 content: currentWebsitePage.content,
                                 message: 'wikicraft save file: ' + path
                             }, function (result) {
                                 //alert('文件已保存到服务器及Github');
-                                Message.info("文件已保存到服务器及Github");
+                                Message.info("文件已同步到数据源");
                             });
                         }
                         initTree();
@@ -1052,10 +1034,6 @@ define([
                         var dat = $rootScope.img.dat;
                         var nam = $rootScope.img.nam;
 
-                        var imagePath = defaultDataSource.getRawContentUrlPrefix({path: ''});
-                        if (url.indexOf(imagePath) == 0) {
-                            url = '#' + url.substring(imagePath.length);
-                        }
                         var wiki = '';
                         if (txt) {
                             wiki += '![' + txt + ']';
@@ -1105,8 +1083,9 @@ define([
                     return false;
                 }
 
-                if (!defaultDataSource.isInited()) {
-                    alert('innerGitlab服务失效，图片无法上传');
+                var currentDataSource = getCurrentDataSource();
+                if (!currentDataSource) {
+                    alert('数据源服务失效，图片无法上传');
                 } else {
                     //支持chrome IE10
                     if (window.FileReader) {
@@ -1123,18 +1102,9 @@ define([
                         fileReader.onload = function () {
                             console.log("load complete");
                             line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
-                            defaultDataSource.uploadImage({content: fileReader.result}, function (img_url) {
+                            currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
                                 //console.log(img_url);
-                                var imagePath = defaultDataSource.getRawContentUrlPrefix();
-                                //console.log(imagePath);
-                                if (img_url.indexOf(imagePath) == 0) {
-                                    imagePath = '#' + img_url.substring(imagePath.length);
-                                } else {
-                                    imagePath = img_url;
-                                }
-                                //imagePath = img_url;
-                                line_keyword(cursor.line, '![](' + imagePath + ')', 2);
-                                //line_keyword(cursor.line, '![](' + img_url + ')', 2);
+                                line_keyword(cursor.line, '![](' + img_url + ')', 2);
                                 if (cb) {
                                     cb(img_url);
                                 }
@@ -1161,13 +1131,14 @@ define([
 
             //删除
             $scope.cmd_remove = function () {
+                var currentDataSource = getCurrentDataSource();
                 if (!isEmptyObject(currentWebsitePage)) {
                     var retVal = confirm("你确定要删除页面:" + currentWebsitePage.name + "?");
                     if (retVal == true) {
                         $scope.loading = true;
                         util.post(config.apiUrlPrefix + "website_pages/deleteByPageId", {_id: currentWebsitePage._id}, function (data) {
                             storage.indexedDBDeleteItem(currentWebsitePage.url);
-                            $scope.dataSource && $scope.dataSource.deleteFile({
+                            currentDataSource && currentDataSource.deleteFile({
                                 path: currentWebsitePage.websiteName + '/' + currentWebsitePage.name,
                                 message: "delete file"
                             });
