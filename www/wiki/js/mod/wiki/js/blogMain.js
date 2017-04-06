@@ -37,6 +37,6 @@ define([
 })
 
 /*
-```@wiki/js/blogStatics
+```@wiki/js/blogMain
 ```
 */
