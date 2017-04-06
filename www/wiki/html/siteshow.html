@@ -34,6 +34,8 @@
     }
     .works img{
         width: 100%;
+        height:196.88px;
+        object-fit: contain;
     }
     .hover-slide:hover {
         transform: translate3d(0, -3px, 0);
@@ -41,6 +43,18 @@
     }
     .works .pull-right.info{
         cursor: pointer;
+    }
+    @media (min-width: 992px) and (max-width: 1200px) {
+        .works img{
+            height:159.38px;
+            object-fit: contain;
+        }
+    }
+    @media (min-width: 768px) and (max-width: 992px) {
+        .works img{
+            height:165px;
+            object-fit: contain;
+        }
     }
 </style>
 
