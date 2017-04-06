@@ -10,7 +10,7 @@ define([
 ], function (app, util, storage, htmlContent) {
     //console.log("load userController file");
 
-    app.controller('userController', ['$scope','Account', function ($scope, Account) {
+    app.registerController('userController', ['$scope','Account', function ($scope, Account) {
 
         function init(userinfo) {
             var username = $scope.urlObj.username;

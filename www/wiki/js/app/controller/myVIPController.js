@@ -8,7 +8,7 @@ define(['app',
     'helper/storage',
     'text!html/myVIP.html',
 ], function (app, util, storage, htmlContent) {
-    app.controller('myVIPController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
+    app.registerController('myVIPController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
         function init() {
             // $scope.githubDS = $scope.user.githubDS;
         }

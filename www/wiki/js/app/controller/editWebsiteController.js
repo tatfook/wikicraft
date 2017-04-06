@@ -8,7 +8,7 @@ define([
     'helper/storage',
     'text!html/editWebsite.html',
 ], function (app, util, storage, htmlContent) {
-    app.controller('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
+    app.registerController('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];

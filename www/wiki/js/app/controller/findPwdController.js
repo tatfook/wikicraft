@@ -8,7 +8,7 @@ define(['app',
     'helper/storage',
     'text!html/findPwd.html',
 ], function (app, util, storage, htmlContent) {
-    app.controller('findPwdController', ['$scope', 'Account', 'Message','modal', function ($scope, Account, Message,modal) {
+    app.registerController('findPwdController', ['$scope', 'Account', 'Message','modal', function ($scope, Account, Message,modal) {
         $scope.step = 1;
         $scope.isModal=false;
         function init() {

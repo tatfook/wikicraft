@@ -7,7 +7,7 @@ define(['app',
     'helper/util',
     'helper/storage',
 ], function (app, htmlContent, util, storage) {
-    app.controller("fansController", ['$scope', function ($scope) {
+    app.registerController("fansController", ['$scope', function ($scope) {
         function init() {
             var params=storage.sessionStorageGetItem('pageinfo');
             util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {

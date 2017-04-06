@@ -8,7 +8,7 @@ define([
     'text!html/wikiBlock.html',
 ], function (app, util, htmlContent) {
 
-    app.controller('wikiBlockController',['$scope', '$uibModalInstance','Message', function ($scope, $uibModalInstance, Message) {
+    app.registerController('wikiBlockController',['$scope', '$uibModalInstance','Message', function ($scope, $uibModalInstance, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;

@@ -3,7 +3,7 @@
  */
 
 define(['app','helper/util', 'helper/storage', 'text!usershow.html'], function (app, util, storage, htmlContent) {
-    app.controller('usershowController', ['$scope',function ($scope) {
+    app.registerController('usershowController', ['$scope',function ($scope) {
         var usershowObj = storage.sessionStorageGetItem("usershow");
         //console.log(usershowObj);
         $scope.title = usershowObj.title;
