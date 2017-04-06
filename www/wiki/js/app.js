@@ -11,12 +11,20 @@ define([
     'angular-toggle-switch',
 ], function (angular) {
     console.log("app");
-    var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']);
-    
-    app.config(['$controllerProvider', '$authProvider',function ($controllerProvider, $authProvider) {
+    var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']).run(function () {
+        config.angularBootstrap = true;
+    });
+
+    app.registerController = app.controller;
+
+    app.config(['$controllerProvider', '$authProvider', function ($controllerProvider, $authProvider) {
         // 提供动态注册控制器接口
         app.registerController = function (name, constructor) {
-            $controllerProvider.register(name, constructor);
+            if (config.angularBootstrap) {
+                $controllerProvider.register(name, constructor);
+            } else {
+                app.controller(name, constructor);
+            }
         };
 
         // github 认证配置

@@ -49,7 +49,7 @@
             'domReady': libPathPrefix + 'requirejs/domReady',
             'fabric': libPathPrefix + 'fabric.require',
             'jquery-sharejs': libPathPrefix + 'sharejs/js/jquery.share.min',// 社交分享
-            'contribution-calendar':libPathPrefix+'contribution-calendar/js/contribution-calendar.min',//类github活动记录
+            //'social-sharejs': libPathPrefix + 'sharejs/js/social-share',// 社交分享
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
@@ -147,14 +147,10 @@
             if (pageurl) {
                 require([pageurl], function (mainContent) {
                     config.mainContent = mainContent;
-                    angular.bootstrap(document, ['webapp']).run(function () {
-                        config.angularBootstrap = true;
-                    });
+                    angular.bootstrap(document, ['webapp']);
                 });
             } else {
-                angular.bootstrap(document, ['webapp']).run(function () {
-                    config.angularBootstrap = true;
-                });
+                angular.bootstrap(document, ['webapp']);
             }
 
         }
