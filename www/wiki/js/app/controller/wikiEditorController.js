@@ -736,6 +736,7 @@ define([
                 var content = editor.getValue();
                 var currentDataSource = getCurrentDataSource();
                 if (!isEmptyObject(currentWebsitePage)) {//修改
+                    console.log("1");
                     currentWebsitePage.content = content;
                     currentWebsitePage.timestamp = (new Date()).getTime();
                     var savePage = angular.copy(currentWebsitePage);

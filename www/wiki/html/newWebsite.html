@@ -180,7 +180,7 @@
                             <legend>新建网站第一步表单</legend>
                         </div>
                         <div class="form-group">
-                            <label for="webName" class="control-label col-sm-2">站点名称</label>
+                            <label for="webName" class="control-label col-sm-2">站点名称：</label>
                             <div class="col-sm-5">
                                 <input id="webName" ng-change="checkWebsiteName()" ng-model="website.name" type="text" class="form-control">
                                 <p class="errorMsg text-danger">{{errMsg}}</p>
@@ -190,7 +190,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="webIntro" class="control-label col-sm-2">网站介绍</label>
+                            <label for="webIntro" class="control-label col-sm-2">网站介绍：</label>
                             <div class="col-sm-5">
                                 <textarea id="webIntro" ng-model="website.desc" rows="6"></textarea>
                             </div>
@@ -261,7 +261,7 @@
                     </div>
                 </div>
                 <div ng-show="step == 5">
-                    <h4>选择美术效果</h4>
+                    <h4>选择美术效果：</h4>
                     <div class="website-model">
                         <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''">
                             <img ng-src="{{ style.logoUrl || imgsPath + 'wiki_works.jpg'}}" ng-click="selectTemplate(template)" alt="">
