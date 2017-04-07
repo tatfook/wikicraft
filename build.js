@@ -35,6 +35,7 @@
         'text': 'lib/requirejs/text',
         'domReady': 'lib/requirejs/domReady',
 		'jquery-sharejs': 'lib/sharejs/js/jquery.share.min',// 社交分享
+		'contribution-calendar': 'lib/contribution-calendar/js/contribution-calendar.min',//类github活动记录
 
         // 自定义模块
         'app': 'app',
