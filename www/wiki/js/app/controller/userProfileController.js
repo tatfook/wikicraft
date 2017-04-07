@@ -17,7 +17,23 @@ define(['app',
         $scope.currentPage = 1;
         $scope.pageSize = 5;
 
-        //console.log("init userProfileController!!!");
+        function getResultCanvas(sourceCanvas) {
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+            var width = sourceCanvas.width;
+            var height = sourceCanvas.height;
+
+            canvas.width = width;
+            canvas.height = height;
+            context.beginPath();
+            context.rect(0,0,width,height);
+            context.strokeStyle = 'rgba(0,0,0,0)';
+            context.stroke();
+            context.clip();
+            context.drawImage(sourceCanvas, 0, 0, width, height);
+
+            return canvas;
+        }
 
         function init() {
             var changeBtn = $("#change-profile");
@@ -34,22 +50,9 @@ define(['app',
                 var reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function (arg) {
-
-                    var defaultDataSource = dataSource.getDefaultDataSource();
-                    if (!defaultDataSource || !defaultDataSource.isInited()) {
-                        Message.info("默认数据源失效");
-                        return;
-                    }
-
-                    defaultDataSource.uploadImage({content:arg.target.result}, function (url) {
-                        $scope.user.portrait = url;
-                        $('#userPortraitId').attr('src', arg.target.result);
-                        util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
-                            Message.info("图片上传成功");
-                        })
-                    }, function () {
-                        Message.info("图片上传失败");
-                    });
+                    var croppedCanvas;
+                    var resultCanvas;
+                    $scope.arg=arg;
                     finishBtn.removeClass("sr-only");
                     cropper.removeClass("sr-only");
                     changeBtn.addClass("sr-only");
@@ -99,6 +102,10 @@ define(['app',
                                     marginTop: -e.y / imageScaledRatio
                                 });
                             });
+
+                            croppedCanvas=$(this).cropper('getCroppedCanvas');
+                            resultCanvas=getResultCanvas(croppedCanvas);
+                            $scope.imgUrl=resultCanvas.toDataURL();//产生裁剪后的图片的url
                         }
                     });
                 }
@@ -109,6 +116,23 @@ define(['app',
                 cropper.addClass("sr-only");
                 finishBtn.addClass("sr-only");
                 dataForm.removeClass("sr-only");
+
+                var defaultDataSource = dataSource.getDefaultDataSource();
+                if (!defaultDataSource || !defaultDataSource.isInited()) {
+                    Message.info("默认数据源失效");
+                    return;
+                }
+
+                var imgUrl=$scope.imgUrl;
+                defaultDataSource.uploadImage({content:imgUrl}, function (url) {
+                    $scope.user.portrait = url;
+                    $('#userPortraitId').attr('src', imgUrl);
+                    util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
+                        Message.info("图片上传成功");
+                    })
+                }, function () {
+                    Message.info("图片上传失败");
+                });
             });
         }
 
