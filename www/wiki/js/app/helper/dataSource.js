@@ -3,9 +3,8 @@
  */
 
 define([
-    'app',
     'helper/util'
-], function (app, util) {
+], function (util) {
     var dataSourceObj = {
         dataSourceMap:{},
         dataSourceList:undefined,

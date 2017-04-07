@@ -160,8 +160,12 @@ define([
                 setWindowTitle(urlObj);
 
                 if (config.mainContent) {
-                    util.html('#__UserSitePageContent__', config.mainContent, $scope);
-                    config.mainContent = undefined;
+                    if (urlObj.username == "wiki") {
+                        renderHtmlText(urlObj.pathname, md);
+                    } else {
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        config.mainContent = undefined;
+                    }
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {
                         util.html('#__UserSitePageContent__', userHtmlContent, $scope);

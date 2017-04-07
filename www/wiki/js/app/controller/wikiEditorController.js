@@ -275,7 +275,7 @@ define([
                     $scope.website = $scope.websites[i];
                 }
             }
-            console.log($scope.website);
+            //console.log($scope.website);
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.name;
             $scope.websitePage.websiteName = $scope.website.name;
             $scope.websitePage.websiteId = $scope.website._id;
@@ -456,6 +456,7 @@ define([
                     openUrlPage(urlObj);
                 });
             });
+
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
                 storage.sessionStorageRemoveItem('urlObj');
@@ -483,6 +484,7 @@ define([
                     openPage();
                 }
             }
+
             function openPage(isNodeSelected) {
                 if (!currentWebsitePage) {
                     openUrlPage();
