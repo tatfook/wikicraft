@@ -691,7 +691,14 @@ define([
 
                 var currentDataSource = getCurrentDataSource();
                 if (currentDataSource) {
-                    window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
+                    if (currentDataSource.getDataSourceType() == "github") {
+                        currentDataSource.getFile({path:currentWebsitePage.url.substring(1)}, function (data) {
+                            console.log(data);
+                            window.open(data.html_url);
+                        });
+                    } else {
+                        window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
+                    }
                 }
             }
 

@@ -148,11 +148,13 @@ define([
                 return;
             }
 
+            gitlab.type = dataSource.type;
             gitlab.username = dataSource.dataSourceUsername;
             gitlab.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
             gitlab.projectName = dataSource.projectName || gitlab.projectName;
             gitlab.apiBase = dataSource.apiBaseUrl;
-            gitlab.host = gitlab.apiBase.substring(0,gitlab.apiBase.indexOf('/api/v4'));
+            gitlab.host = gitlab.apiBase.match(/http[s]?:\/\/[^\/]+/);
+            gitlab.host = gitlab.host && gitlab.host[0];
 
             gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned:true}, function (projectList) {
                 // 查找项目是否存在
@@ -177,6 +179,10 @@ define([
 
         gitlab.isInited = function () {
             return gitlab.inited;
+        }
+
+        gitlab.getDataSourceType = function () {
+            return gitlab.type;
         }
 
         return function () {

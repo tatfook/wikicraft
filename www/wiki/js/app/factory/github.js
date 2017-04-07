@@ -15,7 +15,7 @@ define([
             apiBase: 'https://api.github.com',
             defaultHttpHeader: {
                 'Accept': 'application/vnd.github.full+json',  // 这个必须有
-                'User-Agent':'Satellizer',
+                //'User-Agent':'Satellizer',
             },
         };
 
@@ -23,8 +23,8 @@ define([
         github.httpRequest = function (method, url, data, cb, errcb) {
             var config = {
                 method: method,
-                url: this.apiBase + url,
-                headers: this.defaultHttpHeader,
+                url: github.apiBase + url,
+                headers: github.defaultHttpHeader,
                 skipAuthorization: true,  // 跳过插件satellizer认证
             };
             if (method == "POST" || method == "PUT") {
@@ -43,7 +43,7 @@ define([
         }
         // user operation
         github.getUser = function (cb, errcb) {
-            this.httpRequest('GET', '/user', {}, cb, errcb);
+            github.httpRequest('GET', '/user', {}, cb, errcb);
         };
 
         // repos operation
@@ -54,18 +54,18 @@ define([
         };
 
         github.getRepos = function (cb, errcb) {
-            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName;
-            this.httpRequest('GET', url, {}, cb, errcb);
+            var url = '/repos/' + github.githubName + '/' + github.defalultRepoName;
+            github.httpRequest('GET', url, {}, cb, errcb);
         };
 
         // createRespo
         github.createRepos = function (cb, errcb) {
-            github.httpRequest("POST", "/user/repos", {name: this.defalultRepoName}, cb, errcb);
+            github.httpRequest("POST", "/user/repos", {name: github.defalultRepoName}, cb, errcb);
         };
 
         // delete repos
         github.deleteRepos = function (cb, errcb) {
-            var url = "/repos/" + this.githubName + '/' + this.defalultRepoName;
+            var url = "/repos/" + github.githubName + '/' + github.defalultRepoName;
             github.httpRequest("DELETE", url, {}, cb, errcb);
         };
 
@@ -97,13 +97,13 @@ define([
         // content operations
         // actions: CREATE UPDATE READ DELETE
         github.fileCURD = function (method, data, cb, errcb) {
-            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/contents/' + data.path;
+            var url = '/repos/' + github.githubName + '/' + github.defalultRepoName + '/contents/' + data.path;
             github.httpRequest(method, url, data, cb, errcb);
         };
 
         // rollbackFile
         github.rollbackFile = function (ref, path, message, cb, errcb) {
-            var self = this;
+            var self = github;
             var data = {ref: ref, path: path}
 
             self.getFile(data, function (file) {
@@ -116,7 +116,7 @@ define([
 
         // tree
         github.getTree = function (bRecursive, cb, errch) {
-            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/git/trees/master' + (bRecursive ? '?recursive=1' : '');
+            var url = '/repos/' + github.githubName + '/' + github.defalultRepoName + '/git/trees/master' + (bRecursive ? '?recursive=1' : '');
             github.httpRequest('GET', url, {}, function(data) {
                 cb && cb(data.tree);
             }, errch);
@@ -124,19 +124,19 @@ define([
 
         // commit 
         github.listCommits = function (data, cb, errcb) {
-            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/commits';
+            var url = '/repos/' + github.githubName + '/' + github.defalultRepoName + '/commits';
             github.httpRequest('GET', url, data, cb, errcb);
         };
 
         github.getSingleCommit = function (sha, cb, errcb) {
-            var url = '/repos/' + this.githubName + '/' + this.defalultRepoName + '/commits/' + sha;
+            var url = '/repos/' + github.githubName + '/' + github.defalultRepoName + '/commits/' + sha;
             github.httpRequest('GET', url, {}, cb, errcb);
         };
 
 
 
         github.init = function (dataSource, cb, errcb) {
-            var self = this;
+            var self = github;
             if (github.inited) {
                 cb && cb();
                 return;
@@ -147,6 +147,7 @@ define([
                 return;
             }
 
+            github.type = dataSource.type;
             github.githubToken = dataSource.dataSourceToken;
             github.githubName = dataSource.dataSourceUsername;
             github.defalultRepoName = dataSource.projectName || 'keepworkDataSource';
@@ -163,6 +164,9 @@ define([
             return github.inited;
         }
 
+        github.getDataSourceType = function () {
+            return github.type;
+        }
         github.getContentUrlPrefix = function (params) {
             return github.apiBase + '/' + github.githubName + '/' + github.defalultRepoName + '/blob/master/' + params.path;
         }
@@ -174,7 +178,7 @@ define([
         // writeFile
         github.writeFile = function (data, cb, errcb) {
             data.content = Base64.encode(data.content);
-            var self = this;
+            var self = github;
             self.getFile({path: data.path}, function (result) {
                 //console.log(result);
                 data.sha = result.sha;
@@ -185,14 +189,15 @@ define([
         }
         // read file
         github.getFile = function (data, cb, errcb) {
-            this.fileCURD("GET", data, function () {
+            github.fileCURD("GET", data, function (data) {
+                console.log(data)
                 data.content = data.content && Base64.decode(data.content);
                 cb && cb(data);
             }, errcb);
         };
         // deleteFile
         github.deleteFile = function (data, cb, errcb) {
-            var self = this;
+            var self = github;
             self.getFile(data, function (result) {
                 data.sha = result.sha;
                 self.fileCURD("DELETE", data, cb, errcb);
@@ -201,7 +206,7 @@ define([
 
         // params: path
         github.getContent = function (params, cb, errcb) {
-            this.getFile(params, function (data) {   // this.getFile 已做 base64解码
+            github.getFile(params, function (data) {   // github.getFile 已做 base64解码
                 cb && cb(data.content);
             }, errcb)
         }

@@ -17,7 +17,7 @@ define([
     };
 
     dataSourceObj.getDataSource = function (name) {
-        return dataSource.dataSourceMap[name];
+        return dataSourceObj.dataSourceMap[name];
     }
 
     dataSourceObj.getDataSourceById = function(dataSourceId) {
@@ -28,6 +28,10 @@ define([
             }
         }
         return undefined;
+    }
+
+    dataSourceObj.setDefaultDataSourceId = function (dataSourceId) {
+        dataSourceObj.defaultDataSourceId = dataSourceId;
     }
 
     dataSourceObj.getDefaultDataSource = function () {

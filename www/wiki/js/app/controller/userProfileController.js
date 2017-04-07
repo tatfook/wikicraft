@@ -19,8 +19,6 @@ define(['app',
 
         //console.log("init userProfileController!!!");
 
-        var innerGitlab = undefined;
-
         function init() {
             var changeBtn = $("#change-profile");
             var finishBtn = $("#finish");
@@ -36,13 +34,14 @@ define(['app',
                 var reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function (arg) {
-                    innerGitlab = dataSource.getDefaultDataSource();
-                    if (!innerGitlab || !innerGitlab.isInited()) {
-                        Message.info("内部数据源失效");
+
+                    var defaultDataSource = dataSource.getDefaultDataSource();
+                    if (!defaultDataSource || !defaultDataSource.isInited()) {
+                        Message.info("默认数据源失效");
                         return;
                     }
 
-                    innerGitlab.uploadImage({content:arg.target.result}, function (url) {
+                    defaultDataSource.uploadImage({content:arg.target.result}, function (url) {
                         $scope.user.portrait = url;
                         $('#userPortraitId').attr('src', arg.target.result);
                         util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {

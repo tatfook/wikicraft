@@ -84,6 +84,7 @@ function getInnerGitlabToken(params)
 		enable = 1,
 		apiBaseUrl = params.urlPrefix,
 	}
+
 	System.os.GetUrl({
 		url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
 		headers={['PRIVATE-TOKEN']= params.token},
@@ -112,9 +113,18 @@ function getInnerGitlabToken(params)
 				return
 			end	
 			ds.dataSourceToken = data.token
-			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}},ds,	function(err, data)	--[[db.user.updateOne({_id=ds.userId},{dataSourceId=data._id}}, function() end) ]]	end)
+			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}},ds,	
+				function(err, dataSourceInfo)	
+					db.user:findOne({_id=ds.userId},
+						function(err, userinfo)
+							if (not userinfo.dataSourceId) or (userinfo.dataSourceId == 0) then
+								userinfo.dataSourceId = dataSourceInfo._id
+								db.user:updateOne({_id=ds.userId}, userinfo, function() end)
+							end 
+						end)
+				end) 
+			end)
 		end)
-	end)
 	
 	return errors:wrap(nil)
 end
