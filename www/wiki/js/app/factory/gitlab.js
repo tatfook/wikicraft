@@ -50,15 +50,15 @@ define([
         }
         gitlab.getCommitUrlPrefix = function (params) {
             params = params || {}
-            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/'+ (params.path || '');
+            return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/'+ (params.path || '');
         }
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {}
-            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
+            return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
         }
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {}
-            return 'http://' + gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/blob/master/' + (params.path || '');
+            return gitlab.host + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/blob/master/' + (params.path || '');
         }
 
         // 获得文件列表
