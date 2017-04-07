@@ -12,6 +12,9 @@ define([
     var headerMD = markdownwiki({html:true, use_template:false});
     var sidebarMD = markdownwiki({html:true, use_template:false});
     var footerMD = markdownwiki({html:true, use_template:false});
+    var headerPageMD = markdownwiki({html:true, use_template:false});
+    var sidebarPageMD = markdownwiki({html:true, use_template:false});
+    var footerPageMD = markdownwiki({html:true, use_template:false});
     function registerController(wikiBlock) {
         app.registerController('wikiTemplateController', ['$rootScope','$scope','modal','Message', function ($rootScope, $scope, modal, Message) {
             //$rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
@@ -24,6 +27,7 @@ define([
                 if (!content)
                     return;
 
+                var md = markdownwiki({html:true, use_template:false});
                 var id = "#" + type + "ContentId";
                 var html = md.render(content);
                 util.html(id, html, $scope);
@@ -47,15 +51,15 @@ define([
 
                 //console.log(modParams);
                 if (modParams.headerContent) {
-                    var headerHtml = md.render(modParams.headerContent);
+                    var headerHtml = headerMD.render(modParams.headerContent);
                     util.html('#_headerContentId', headerHtml, $scope);
                 }
                 if (modParams.sidebarContent) {
-                    var sidebarHtml = md.render(modParams.sidebarContent);
+                    var sidebarHtml = sidebarMD.render(modParams.sidebarContent);
                     util.html('#_sidebarContentId', sidebarHtml, $scope);
                 }
                 if (modParams.footerContent) {
-                    var footerHtml = md.render(modParams.footerContent);
+                    var footerHtml = footerMD.render(modParams.footerContent);
                     util.html('#_footerContentId', footerHtml, $scope);
                 }
 
@@ -65,13 +69,13 @@ define([
                 footerMD.bindRenderContainer('#_footerPageContentId');
                 */
                 util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_header'}, function (data) {
-                    data && data.content && util.html('#_headerPageContentId', headerMD.render(data.content), $scope);
+                    data && data.content && util.html('#_headerPageContentId', headerPageMD.render(data.content), $scope);
                 });
                 util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_sidebar'}, function (data) {
-                    data && data.content && util.html('#_sidebarPageContentId', sidebarMD.render(data.content), $scope);
+                    data && data.content && util.html('#_sidebarPageContentId', sidebarPageMD.render(data.content), $scope);
                 });
                 util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_footer'}, function (data) {
-                    data && data.content && util.html('#_footerPageContentId', footerMD.render(data.content), $scope);
+                    data && data.content && util.html('#_footerPageContentId', footerPageMD.render(data.content), $scope);
                 });
             }
 

@@ -190,7 +190,7 @@ define([
         // read file
         github.getFile = function (data, cb, errcb) {
             github.fileCURD("GET", data, function (data) {
-                console.log(data)
+                //console.log(data)
                 data.content = data.content && Base64.decode(data.content);
                 cb && cb(data);
             }, errcb);
