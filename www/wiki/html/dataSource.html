@@ -7,7 +7,7 @@
         <div class="panel-body">
             <form role="form" class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-2 control-label">默认数据源</label>
+                    <label class="col-xs-2 control-label">默认数据源：</label>
                     <div class="col-xs-8">
                         <select class="form-control" ng-model="defaultDataSourceId" ng-change="changeDefaultDataSource()">
                             <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
@@ -16,7 +16,7 @@
                 </div>
             </form>
             <table class="table table-hover">
-                <caption>已配置的数据源</caption>
+                <caption>已配置的数据源：</caption>
                 <thead>
                 <tr>
                     <th>数据源名</th>
@@ -50,7 +50,7 @@
         <div class="panel-body">
             <form role="form" class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-2 control-label">数据源类型</label>
+                    <label class="col-xs-2 control-label">数据源类型：</label>
                     <div class="col-xs-8">
                         <select class="form-control" ng-model="newDataSource.type">
                             <option ng-repeat="x in dataSourceTypeList" value="{{x}}">{{x}}</option>

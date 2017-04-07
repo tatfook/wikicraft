@@ -58,17 +58,12 @@
     .setting-form .user-domain{
         line-height: 32px;
     }
-    .setting-form .form-group:last-child{
+    .setting-form .form-group form-group-lg:last-child{
         text-align: center;
     }
     .setting-form .border-bottom{
         margin-bottom: 25px;
         border-bottom:1px solid #DCDCDC;
-    }
-    .setting-form .btn-save{
-        padding: 10px 52px;
-        font-size: 16px;
-        margin: 45px 0;
     }
     .setting-form .new-cname{
         margin-top: 10px;
@@ -116,9 +111,25 @@
         left: 15px;
         top: 0;
     }
-    .setting-form .control-label{
+    .setting-form .form-group-lg{
+        margin-bottom: 30px;
+    }
+    .setting-form .form-group-lg .control-label{
         font-weight: normal;
         font-size: 16px;
+    }
+    .setting-form .save-origin{
+        text-align: left;
+    }
+    .setting-form .form-group-lg .form-control{
+        height:42px;
+    }
+    .setting-form .form-group-lg .btn-primary{
+        padding:9px 52px;
+    }
+    .setting-form .save-setting{
+        text-align: center;
+        margin: 45px 0;
     }
 </style>
 
@@ -130,11 +141,11 @@
         <div class="panel-body">
             <span style="color: red">{{errMsg}}</span>
             <form class="form-horizontal setting-form" role="form">
-                <div class="form-group sr-only">
+                <div class="form-group form-group-lg sr-only">
                     <legend>网站设置</legend>
                 </div>
                 <h4 class="clearfix"><span class="col-sm-2">常用设置</span></h4>
-                <div class="form-group">
+                <div class="form-group form-group-lg">
                     <label class="col-sm-2 control-label">站点图标：</label>
                     <div class="col-sm-10 preview-zone">
                         <div class="preview">
@@ -149,20 +160,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-lg">
                     <label for="webName" class="col-sm-2 control-label">站点名称：</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control" id="webName" ng-model="website.name" disabled>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-lg">
                     <label class="col-sm-2 control-label">独立域名：</label>
                     <div class="col-sm-5 user-domain">
                         <input class="form-control" type="text" ng-model="website.domain" ng-blur="checkDomain()">
                         <div>{{website.username + "-" + website.domain +".keepwork.com"}}</div>
                     </div>
                 </div>
-                <div class="form-group" id="cnameBox">
+                <div class="form-group form-group-lg" id="cnameBox">
                     <label for="cname" class="col-sm-2 control-label">Cname转发：</label>
                     <div class="col-sm-5">
                         <div class="col-sm-8 add-cname">
@@ -177,13 +188,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-lg">
                     <label for="intro" class="col-sm-2 control-label">网站介绍：</label>
                     <div class="col-sm-5">
                         <textarea id="intro" rows="6" ng-model="website.desc"></textarea>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-lg">
                     <label class="col-sm-2 control-label">本站标签：</label>
                     <div class="col-sm-5">
                         <div class="col-sm-8 add-label">
@@ -201,18 +212,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group border-bottom">
-                    <div class="col-sm-12">
-                        <button ng-click="modifyWebsite()" class="btn btn-primary btn-save">保存</button>
+                <div class="form-group form-group-lg border-bottom">
+                    <div class="col-sm-12 save-setting">
+                        <button ng-click="modifyWebsite()" class="btn btn-primary">保存</button>
                     </div>
                 </div>
             </form>
             <form class="form-horizontal setting-form" role="form">
-                <div class="form-group sr-only">
+                <div class="form-group form-group-lg sr-only">
                     <legend>网站高级设置</legend>
                 </div>
                 <h4 class="clearfix"><span class="col-sm-2">高级设置</span></h4>
-                <div class="form-group">
+                <div class="form-group form-group-lg">
                     <label for="dataOrigin" class="col-sm-2 control-label">数据源：</label>
                     <div class="col-sm-5">
                         <select class="form-control" name="dataOrigin" id="dataOrigin">
@@ -220,22 +231,8 @@
                             <option value="gitlab">gitlab</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="webToken" class="col-sm-2 control-label">token：</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="webToken" ng-model="website.webToken">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="name" class="col-sm-2 control-label">name：</label>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" id="name">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <button ng-click="modifyWebsite()" class="btn btn-primary btn-save">保存</button>
+                        <button ng-click="modifyWebsite()" class="btn btn-primary">保存</button>
                     </div>
                 </div>
             </form>
