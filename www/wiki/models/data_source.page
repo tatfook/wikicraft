@@ -73,6 +73,19 @@ function data_source:api_getInnerGitlabByUserId(params)
 	return errors:wrap(yield())
 end
 
+function addInnerGitlab(dataSource)
+	db.data_source:insertOne({["+userId+name"]={dataSource.userId,dataSource.name}},dataSource,	
+		function(err, dataSourceInfo)	
+			db.user:findOne({_id=dataSource.userId},
+				function(err, userinfo)
+					if (not userinfo.dataSourceId) or (userinfo.dataSourceId == 0) then
+						userinfo.dataSourceId = dataSourceInfo._id
+						db.user:updateOne({_id=dataSource.userId}, userinfo, function() end)
+					end 
+				end)
+		end) 
+
+end
 function getInnerGitlabToken(params) 
 	local ds = {
 		userId = params.userId,
@@ -97,7 +110,7 @@ function getInnerGitlabToken(params)
 		for _, token in ipairs(data) do
 			if not token.revoked and token.active then
 				ds.dataSourceToken = token.token		
-				db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}}, ds, function() end)
+				addInnerGitlab(ds)
 				return
 			end
 		end
@@ -113,16 +126,7 @@ function getInnerGitlabToken(params)
 				return
 			end	
 			ds.dataSourceToken = data.token
-			db.data_source:insertOne({["+userId+type"]={ds.userId,ds.type}},ds,	
-				function(err, dataSourceInfo)	
-					db.user:findOne({_id=ds.userId},
-						function(err, userinfo)
-							if (not userinfo.dataSourceId) or (userinfo.dataSourceId == 0) then
-								userinfo.dataSourceId = dataSourceInfo._id
-								db.user:updateOne({_id=ds.userId}, userinfo, function() end)
-							end 
-						end)
-				end) 
+			addInnerGitlab(ds)
 			end)
 		end)
 	
@@ -137,7 +141,6 @@ function data_source:api_linkInnerGitlab(params)
 	
 	-- 是否已存在
 	local ds = self:api_getInnerGitlabByUserId(params).data
-		
 	-- 不存在创建
 	if not ds then
 		params.name = "gitlab_" .. (params.name or params.username)

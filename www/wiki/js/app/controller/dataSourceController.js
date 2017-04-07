@@ -11,7 +11,7 @@ define(['app',
 ], function (app, util, storage,dataSource, htmlContent) {
     app.registerController('dataSourceController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message) {
         $scope.dataSourceList = $scope.user.dataSource;
-        $scope.defaultDataSourceId = $scope.user.dataSourceId.toString();
+        $scope.defaultDataSourceId = $scope.user.dataSourceId && $scope.user.dataSourceId.toString();
 
         $scope.dataSourceTypeList = ["github", "gitlab"];
         $scope.newDataSource = {userId:$scope.user._id};

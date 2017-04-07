@@ -21,7 +21,7 @@ define([
     }
 
     dataSourceObj.getDataSourceById = function(dataSourceId) {
-        for (var i = 0; dataSourceObj.dataSourceList.length; i++) {
+        for (var i = 0; i < dataSourceObj.dataSourceList.length; i++) {
             var dataSource = dataSourceObj.dataSourceList[i];
             if (dataSource._id == dataSourceId) {
                 return dataSourceObj.getDataSource(dataSource.name);
