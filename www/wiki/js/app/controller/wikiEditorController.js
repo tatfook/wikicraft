@@ -734,16 +734,16 @@ define([
             }
 
             //保存页面
-            $scope.cmd_savepage = function () {
+            $scope.cmd_savepage = function (cb, errcb) {
                 var content = editor.getValue();
                 var currentDataSource = getCurrentDataSource();
                 if (!isEmptyObject(currentWebsitePage)) {//修改
-                    console.log("1");
                     currentWebsitePage.content = content;
                     currentWebsitePage.timestamp = (new Date()).getTime();
                     var savePage = angular.copy(currentWebsitePage);
                     savePage.isModify = undefined;
                     $http.put(config.apiUrlPrefix + 'website_pages', savePage).then(function (response) {
+                        cb && cb();
                         currentWebsitePage.isModify = undefined;
                         //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
@@ -763,6 +763,7 @@ define([
                         }
                         initTree();
                     }).catch(function (response) {
+                        errcb && errcb();
                         console.log(response.data);
                         storage.indexedDBSetItem(currentWebsitePage);
                     });
@@ -1761,7 +1762,15 @@ define([
                 $('.toolbar-page-preview').on('click', function () {
                     editor.focus();
                     var url = $('#btUrl').val();
-                    if (url) {
+
+                    if (url && currentWebsitePage.isModify) {
+                        var tmpWin=window.open();
+                        $scope.cmd_savepage(function(){
+                            if(url){
+                                tmpWin.location=url;
+                            }
+                        });
+                    }else{
                         window.open(url);
                     }
 
