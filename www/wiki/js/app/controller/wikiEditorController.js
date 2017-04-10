@@ -1190,6 +1190,7 @@ define([
 
             $scope.cmd_transform = function () {
                 $scope.enableTransform = !$scope.enableTransform;
+                //console.log($scope.enableTransform);
                 CodeMirror.signal(editor,'change', editor);
             }
 
@@ -1376,8 +1377,8 @@ define([
                     //return $this;
                 }).on('blur', '[contenteditable]', function () {
                     var $this = $(this);
-                    console.log($this, $this[0].id);
-                    console.log(mdwiki.blockList);
+                    //console.log($this, $this[0].id);
+                    //console.log(mdwiki.blockList);
                     var blockList = mdwiki.blockList;
                     var block = undefined;
                     for (var i = 0; i < blockList.length; i++) {
@@ -1450,9 +1451,11 @@ define([
                 }
 
                 function resizeMod() {
+                    /*
                     if (!$scope.enableTransform) {
                         return;
                     }
+                    */
                     var scaleSize = getScaleSize();
                     $('#'+mdwiki.getMdWikiContainerId()).css({"transform": "scale(" + scaleSize + ")", "transform-origin": "left top"});
                 }
