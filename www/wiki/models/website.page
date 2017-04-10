@@ -24,6 +24,7 @@ website.db_name = "website"
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
+	self:addfield("displayName", "string", false, 30)
 	self:addfield("userId", "number", false)
 	self:addfield("username", "string", false)
 	self:addfield("desc", "string", false, 240)
