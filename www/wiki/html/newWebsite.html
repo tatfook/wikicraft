@@ -48,6 +48,13 @@
         position: absolute;
         bottom:-10px;
     }
+    .step-content .error-msg-box{
+        padding-left: 0;
+        line-height:34px;
+    }
+    .step-content .btn-tag{
+        padding:0;
+    }
     .labels-box{
         min-height: 130px;
         background-color: #F9f9f9;
@@ -182,7 +189,7 @@
                         <div class="form-group">
                             <label for="webName" class="control-label col-sm-2">站点名称：</label>
                             <div class="col-sm-5">
-                                <input id="webName" ng-change="checkWebsiteName()" ng-model="website.name" type="text" class="form-control">
+                                <input id="webName" ng-model="website.displayName" ng-change="checkWebsiteDisplayName()" type="text" class="form-control">
                                 <p class="errorMsg text-danger">{{errMsg}}</p>
                             </div>
                             <div class="col-sm-5 info">
@@ -200,13 +207,15 @@
                 <div ng-show="step == 2" class="step2">
                     <p>系统将会为你生成单独的访问地址名称，请设定：</p>
                     <div class="col-sm-7 form-group">
-                        <input ng-model="website.domain" type="text" class="form-control">
-                        <p class="errorMsg text-danger">{{errMsg}}</p>
+                        <input ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
+                    </div>
+                    <div class="col-sm-5 error-msg-box">
+                        <p class="text-danger">{{errMsg}}</p>
                     </div>
                     <div class="col-sm-12">
                         <p>新建的网站可以使用以下地址访问：</p>
-                        <h4>http://{{user.username}}-{{website.domain}}.keepwork.com</h4>
-                        <h4>http://keepwork.com/{{user.username}}/{{website.domain}}</h4>
+                        <h4>http://{{user.username}}-{{website.name}}.keepwork.com</h4>
+                        <h4>http://keepwork.com/{{user.username}}/{{website.name}}</h4>
                     </div>
 
                     <div class="col-sm-12 info">
@@ -220,8 +229,8 @@
                         <div class="col-sm-10 no-padding-left">
                             <input type="text" class="form-control" ng-model="tag">
                         </div>
-                        <div class="col-sm-2">
-                            <div class="btn btn-primary" ng-click="addTag(tag)">添 加</div>
+                        <div class="col-sm-2 btn-tag">
+                            <div class="btn btn-primary btn-block" ng-click="addTag(tag)">添 加</div>
                         </div>
                         <div class="col-sm-12 labels-box">
                             <div ng-repeat="tag in tags" class="label-selected">#{{tag}}#<span ng-click="removeTag(tag)" class="glyphicon glyphicon-remove text-danger"></span></div>
@@ -276,7 +285,7 @@
                 <div ng-show="step == 6" class="confirm-msg">
                     <h4>信息确认：</h4>
                     <div class="col-sm-12">
-                        站点名称：<span>{{website.name}}</span>
+                        站点名称：<span>{{website.displayName}}</span>
                     </div>
                     <div class="col-sm-12">
                         网站介绍：<span>{{website.desc}}</span>
@@ -303,7 +312,7 @@
                     </div>
                 </div>
                 <div ng-show="step == 7" class="congratulation">
-                    <h4>恭喜你！成功创建了 {{website.name}} 网站。 </h4>
+                    <h4>恭喜你！成功创建了 {{website.displayName}} 网站。 </h4>
                     <h4>
                         <p>可以通过<a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://' + user.username + '-' + website.name + '.keepwork.com'}}</a>或者</p>
                         <p><a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://keepwork.com/' + user.username + '/' + website.name}}</a>来进行访问、编辑。</p>
