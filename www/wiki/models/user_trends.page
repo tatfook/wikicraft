@@ -109,7 +109,11 @@ function user_trends:api_get(params)
 
 	self:db():find({['+userId-updateDate']={params.userId, skip=skip, limit=limit}}, resume)
 	local err, trendsList = yield()
-
+	
+	local userDB = models.user:new()
+	for _, value in ipairs(trendsList) do
+		value.userinfo = userDB:api_getById({userId=value.otherUserId}).data
+	end
 	return errors:wrap(nil, {total = total, trendsList=trendsList})	
 end
 

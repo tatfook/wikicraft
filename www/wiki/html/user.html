@@ -283,7 +283,7 @@
                     <h3 class="title">活动<a href="#" class="pull-right">查看更多活动</a></h3>
                     <div class="active-row-box col-md-12">
                         <div class="col-md-12 active-row" ng-repeat="x in trendsList">
-                            <img ng-src="{{userinfo.portrait || imgsPath+'wiki_header.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
+                            <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_header.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
                         </div>
                     </div>
                 </div>
