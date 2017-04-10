@@ -1121,15 +1121,15 @@ define([
                         var cursor = editor.getCursor();
                         fileReader.onloadstart = function () {
                             console.log("onloadstart");
-                            line_keyword(cursor.line, '![](uploading...0/' + fileObj.size + ')', 2);
+                            line_keyword(cursor.line, '***uploading...0/' + fileObj.size + ')***', 2);
                         };
                         fileReader.onprogress = function (p) {
                             console.log("onprogress");
-                            line_keyword(cursor.line, '![](uploading...' + p.loaded + '/' + fileObj.size + ')', 2);
+                            line_keyword(cursor.line, '***uploading...' + p.loaded + '/' + fileObj.size + ')***', 2);
                         };
                         fileReader.onload = function () {
                             console.log("load complete");
-                            line_keyword(cursor.line, '![](uploading...' + fileObj.size + '/' + fileObj.size + ')', 2);
+                            line_keyword(cursor.line, '***uploading...' + fileObj.size + '/' + fileObj.size + ')***', 2);
                             currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
                                 //console.log(img_url);
                                 line_keyword(cursor.line, '![](' + img_url + ')', 2);
@@ -1579,7 +1579,6 @@ define([
                         return;
                     scrollTimer && clearTimeout(scrollTimer);
                     scrollTimer = setTimeout(function () {
-                        var templateLineCount = (mdwiki.template && mdwiki.template.templateLineCount) || 0;
                         var scaleSize = getScaleSize();
                         var initHegiht = editor.getScrollInfo().top + editor.heightAtLine(0);
                         var index = 0;
@@ -1590,7 +1589,7 @@ define([
                             if (block.blockCache.isTemplate)
                                 continue;
 
-                            if (editor.heightAtLine(block.textPosition.from - templateLineCount) >= initHegiht)
+                            if (editor.heightAtLine(block.textPosition.from) >= initHegiht)
                                 break;
                         }
                         //console.log(index, $('#' + block.blockCache.containerId)[0].offsetTop);
@@ -1608,7 +1607,6 @@ define([
                             return;
                         scrollTimer && clearTimeout(scrollTimer);
                         scrollTimer = setTimeout(function () {
-                            var templateLineCount = (mdwiki.template && mdwiki.template.templateLineCount) || 0;
                             var scaleSize = getScaleSize();
                             var initHeight = editor.getScrollInfo().top + editor.heightAtLine(0);
                             var index = 0;
@@ -1622,7 +1620,7 @@ define([
                                 if (scrollTop <= $('#' + block.blockCache.containerId)[0].offsetTop * scaleSize)
                                     break;
                             }
-                            editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(block.textPosition.from-templateLineCount) - initHeight);
+                            editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(block.textPosition.from) - initHeight);
                         }, 100);
                     }
                 });

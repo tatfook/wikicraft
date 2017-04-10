@@ -179,10 +179,6 @@ define([
         var render = getRenderFunc(wikiBlock.modName);
         var editor = mdwiki.editor;
         var pos = block.textPosition;
-        if (mdwiki.templateLineCount) {
-            pos.from = pos.from - mdwiki.templateLineCount;
-            pos.to = pos.to - mdwiki.templateLineCount;
-        }
 
         var wikiBlockParams = {
             modName: wikiBlock.modName,
@@ -263,7 +259,7 @@ define([
     }
 
     // mdwiki render
-    window.mdwikiRender = function(mdwikiName, text) {
+    window.mdwikiRender = function (mdwikiName, text) {
         // 备份节点信息
         text = decodeURI(text);
         var mdwiki = getMdwiki(mdwikiName);
@@ -281,18 +277,17 @@ define([
         var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
         if ((mdwiki.template && mdwiki.template.blockCache.domNode) || !pageinfo ||          // 模板没有改变 被缓存  页面信息错误
             (!mdwiki.template && (pageinfo.name[0] == "_" || !mdwiki.options.use_template    /* 模板不存在 且配置不使用默认模板(_pagename默认不是使用默认模板)*/
-            || !tplinfo || tplinfo.content  ))) {                                                 // 模板不存在 且默认模板也不存在
+            || !tplinfo || !tplinfo.content  ))) {// 模板不存在 且默认模板也不存在
             /*
              console.log("-------------------");
-             console.log(!mdwiki.options.use_template, !pageinfo);
              console.log(mdwiki.template && mdwiki.template.blockCache.domNode);
-             console.log(mdwiki.template);
-             console.log((!mdwiki.template && (pageinfo.name[0] == "_" || !tplinfo || tplinfo.content)));
+             console.log(!pageinfo);
+             console.log(!mdwiki.template && (pageinfo.name[0] == "_" || !tplinfo || !tplinfo.content || !mdwiki.options.use_template));
              */
             setMdWikiContent(mdwiki);
             return;
         }
-        //console.log("----------------template-----------------", mdwiki.template);
+        //console.log("----------------template-----------------");
         if (mdwiki.template) {
             mdwiki.template.isPageTemplate = true;
         } else {
@@ -300,6 +295,10 @@ define([
             //console.log(text);
             blockList = mdwiki.parse(preprocessMDText(text));
             mdwiki.templateLineCount = tplinfo.content.split('\n').length;
+            for (var i = 0; i < blockList.length; i++) {
+                blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
+                blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
+            }
             if (!mdwiki.template) {
                 setMdWikiContent(mdwiki)
                 return;
@@ -444,7 +443,7 @@ define([
         }
         mdwiki.getBlockCache = function (text, token) {
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            var htmlContent = '<div id="' + idx + '"' + (token.type == "html_block" ? '': '  contenteditable="true"') + '></div>';
+            var htmlContent = '<div id="' + idx + '"' + (token.type == "html_block" ? '' : '  contenteditable="true"') + '></div>';
             var blockCache = undefined;
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
@@ -526,13 +525,13 @@ define([
                 block.textPosition.from = block.textPosition.from == maxValue && token.map ? token.map[0] : block.textPosition.from;
                 block.textPosition.to = token.map ? token.map[1] : block.textPosition.to;
                 /*
-                if (token.map) {
-                    if (block.textPosition.from > token.map[0])
-                        block.textPosition.from = token.map[0];
-                    if (block.textPosition.to < token.map[1])
-                        block.textPosition.to = token.map[1];
-                }
-                */
+                 if (token.map) {
+                 if (block.textPosition.from > token.map[0])
+                 block.textPosition.from = token.map[0];
+                 if (block.textPosition.to < token.map[1])
+                 block.textPosition.to = token.map[1];
+                 }
+                 */
                 if (stack == 0) {
                     for (var j = block.textPosition.from; j < block.textPosition.to; j++) {
                         block.content += textLineList[j] + '\n';
