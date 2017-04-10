@@ -51,6 +51,7 @@
             'jquery-sharejs': libPathPrefix + 'sharejs/js/jquery.share.min',// 社交分享
             //'social-sharejs': libPathPrefix + 'sharejs/js/social-share',// 社交分享
             'contribution-calendar':libPathPrefix+'contribution-calendar/js/contribution-calendar.min',//类github活动记录
+            'to-markdown': libPathPrefix + 'to-markdown/to-markdown',
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
