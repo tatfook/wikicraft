@@ -28,20 +28,10 @@ define([
                     $scope.errMsg = "站点名为必填字段";
                     return;
                 }
-                util.http('POST', config.apiUrlPrefix + 'website/isExist', {
-                    username: $scope.user.username,
-                    sitename: $scope.website.displayName
-                }, function (data) {
-                    if (data && $scope.website._id != data._id) {
-                        $scope.errMsg = $scope.website.displayName + "已存在，请换个名字";
-                        $scope.nextStepDisabled = true;
-                    } else {
-                        $scope.websiteNameErrMsg = "";
-                        $scope.nextStepDisabled = false;
-                        $scope.step++;
-                    }
-                });
-                return ;
+                $scope.websiteNameErrMsg = "";
+                $scope.nextStepDisabled = false;
+                $scope.step++;
+                return;
             } else if ($scope.step == 2) {
                 if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
                     $scope.errMsg = "域名为必填字段";
@@ -211,7 +201,7 @@ define([
                 return;
             }
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-            if (/['\d\w']+/.test($scope.website.name)){
+            if (/^['\d\w']+$/.test($scope.website.name)){
                 $scope.nextStepDisabled = false;
                 $scope.website.domain = $scope.website.name;
             }else{
