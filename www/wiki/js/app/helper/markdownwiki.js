@@ -359,6 +359,18 @@ define([
             mdwiki.bindRenderContainer(options.container_selector);
         }
 
+        mdwiki.enableEditor = function () {
+            mdwiki.editorMode = true;
+        }
+
+        mdwiki.disableEditor = function () {
+            mdwiki.editorMode = false;
+        }
+
+        mdwiki.isEditor = function () {
+            return mdwiki.editorMode;
+        }
+
         // 获取原生markdown
         mdwiki.getMarkdown = function () {
             return md;
@@ -495,8 +507,9 @@ define([
             var tokenList = md.parse(text, {});
             var blockList = [];
             var stack = 0;
+            var maxValue = 99999999;
             var block = {
-                textPosition: {from: 99999999, to: 0},
+                textPosition: {from: maxValue, to: 0},
                 htmlContent: '',
                 content: '',
                 info: '',
@@ -510,12 +523,16 @@ define([
                     stack--;
                 }
                 // 获取文本位置
+                block.textPosition.from = block.textPosition.from == maxValue && token.map ? token.map[0] : block.textPosition.from;
+                block.textPosition.to = token.map ? token.map[1] : block.textPosition.to;
+                /*
                 if (token.map) {
                     if (block.textPosition.from > token.map[0])
                         block.textPosition.from = token.map[0];
                     if (block.textPosition.to < token.map[1])
                         block.textPosition.to = token.map[1];
                 }
+                */
                 if (stack == 0) {
                     for (var j = block.textPosition.from; j < block.textPosition.to; j++) {
                         block.content += textLineList[j] + '\n';
@@ -529,7 +546,7 @@ define([
                     blockList.push(block);
                     // 重置初始状态
                     block = {
-                        textPosition: {from: 99999999, to: 0},
+                        textPosition: {from: maxValue, to: 0},
                         htmlContent: '',
                         content: '',
                     }

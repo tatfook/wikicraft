@@ -4,6 +4,7 @@
 
 define([
     'app',
+    'to-markdown',
     'codemirror',
     'helper/markdownwiki',
     'helper/util',
@@ -27,7 +28,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
+], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
     var mdwiki = markdownwiki({editorMode:true});
     var editor;
@@ -1367,9 +1368,48 @@ define([
                         },
                     }
                 });
+
+                $('body').on('focus', '[contenteditable]', function() {
+                    //return $this;
+                }).on('blur keyup paste input', '[contenteditable]', function() {
+                    //return $this;
+                }).on('blur', '[contenteditable]', function () {
+                    var $this = $(this);
+                    console.log($this, $this[0].id);
+                    console.log(mdwiki.blockList);
+                    var blockList = mdwiki.blockList;
+                    var block = undefined;
+                    for (var i = 0; i < blockList.length; i++) {
+                        if (blockList[i].blockCache.containerId == $this[0].id) {
+                            block = blockList[i]
+                        }
+                    }
+                    htmlToMd(block);
+                });
+
                 mdwiki.setEditor(editor);
+
                 var scrollTimer = undefined, changeTimer = undefined;
                 var isScrollPreview = false;
+                
+                function htmlToMd(block) {
+                    if (!block || !mdwiki.isEditor())
+                        return;
+                    var domNode = $('#' + block.blockCache.containerId)[0];
+                    var mdText = toMarkdown(domNode.innerHTML, {gfm:true, converters:[
+                        /*
+                        {
+                            filter:'ul',
+                            replacement: function (content) {
+                                console.log(content);
+                                return content + '\n';
+                            }
+                        }
+                        */
+                    ]});
+                    editor.replaceRange(mdText,{line: block.textPosition.from, ch:0}, {line: block.textPosition.to-1});
+                    console.log(mdText, domNode, block.textPosition);
+                }
 
                 editor.on('fold', function (cm, from, to) {
                     cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
