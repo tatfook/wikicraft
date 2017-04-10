@@ -24,16 +24,16 @@ define([
         $scope.nextStep = function () {
             $scope.errMsg = "";
             if ($scope.step == 1) {
-                if (!$scope.website.name) {
+                if (!$scope.website.displayName) {
                     $scope.errMsg = "站点名为必填字段";
                     return;
                 }
                 util.http('POST', config.apiUrlPrefix + 'website/isExist', {
                     username: $scope.user.username,
-                    sitename: $scope.website.name
+                    sitename: $scope.website.displayName
                 }, function (data) {
                     if (data && $scope.website._id != data._id) {
-                        $scope.errMsg = $scope.website.name + "已存在，请换个名字";
+                        $scope.errMsg = $scope.website.displayName + "已存在，请换个名字";
                         $scope.nextStepDisabled = true;
                     } else {
                         $scope.websiteNameErrMsg = "";
@@ -43,18 +43,19 @@ define([
                 });
                 return ;
             } else if ($scope.step == 2) {
-                if (!$scope.website.domain || $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "") == "") {
-                    $scope.step++;
+                if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
+                    $scope.errMsg = "域名为必填字段";
+                    return;
                 } else {
-                    var isValid = /[\d\w]+/.test($scope.website.domain);
+                    var isValid = /[\d\w]+/.test($scope.website.name);
                     if (!isValid) {
                         $scope.errMsg = "域名只能为数字和字母组合";
                         return;
                     }
-                    $scope.website.domain = $scope.website.domain.replace(/(^\s*)|(\s*$)/g, "");
-                    util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: $scope.website.domain}, function (data) {
+                    $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
+                    util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: $scope.website.name}, function (data) {
                         if (data == 0) {
-                            $scope.errMsg = $scope.website.domain + "已存在，请换个名字";
+                            $scope.errMsg = $scope.website.name + "已存在，请换个名字";
                         } else {
                             $scope.step++;
                         }
@@ -198,21 +199,24 @@ define([
             $scope.website.tags = $scope.tags.join('|');
         }
 
+        $scope.checkWebsiteDisplayName = function () {
+            if (!$scope.website.displayName || $scope.website.displayName.replace(/(^\s*)|(\s*$)/g, "") == "") {
+                return;
+            }
+            $scope.nextStepDisabled = false;
+        }
+
         $scope.checkWebsiteName = function () {
             if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
                 return;
             }
-
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-            if (/['\d\w']+/.test($scope.website.name))
+            if (/['\d\w']+/.test($scope.website.name)){
+                $scope.nextStepDisabled = false;
                 $scope.website.domain = $scope.website.name;
-
-            $scope.nextStepDisabled = false;
-        }
-
-        $scope.checkWebsiteDomain = function () {
-            return ;
-
+            }else{
+                $scope.nextStepDisabled = true;
+            }
         }
 
         $scope.goPreviewPage = function (style) {
