@@ -307,6 +307,24 @@ define([
 
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
+
+        // window.onbeforeunload = function(e){
+        //     e = e || window.event;
+        //     if (e) {
+        //         e.returnValue = 'bbbbbbbbbbbbbbbbbbbbb';
+        //     }
+        //     return 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+        // }
+
+            $(window).on("beforeunload", function(e) {
+                if(currentWebsitePage.isModify){
+                    e = e || window.event;
+                    var returnValue = '您的页面还未保存，需要手动保存';
+                    e.returnValue = returnValue;
+                    return returnValue;
+                }
+            })
+
             console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
             $rootScope.userinfo = $rootScope.user;
@@ -749,7 +767,7 @@ define([
                         //console.log("delete storage " + currentWebsitePage.url);
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         Message.info("文件已保存到服务器");
-                        //console.log($scope.dataSource);
+                         //console.log($scope.dataSource);
                         if (currentDataSource) {
                             var path = currentWebsitePage.url;
                             path = path.substring(1);
