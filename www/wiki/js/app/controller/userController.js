@@ -37,27 +37,13 @@ define([
                 $scope.trendsCount = data.trendsObj.total;
                 $scope.trendsList = data.trendsObj.trendsList;
                 $scope.active = data.activeObj;
+                if(data.activeObj){
+                    data.activeObj.before="calendarSibling";//插入在某个子元素的前面，默认在子元素的尾部，
+                    contributionCalendar("contributeCalendar",data.activeObj);
+                }else{
+                    contributionCalendar("contributeCalendar",{before:"calendarSibling"});
+                }
             });
-            //调用
-            var options={
-                year: "2016",//展示的年份，可不传，默认为今年
-                dateCount: {//日期的活动次数，不传的默认次数是1
-                    "2016-1-1": 1,
-                    "2016-2-1": 2,
-                    "2016-3-1": 3,
-                    "2016-4-1": 4,
-                    "2016-5-1": 5,
-                    "2016-6-1": 6,
-                    "2016-7-1": 5,
-                    "2016-8-1": 4,
-                    "2016-9-1": 3,
-                    "2016-10-1": 2,
-                    "2016-11-1": 1,
-                    "2016-12-1": 0,
-                },
-                before:"calendarSibling"//插入在某个子元素的前面，默认在子元素的尾部，
-            };
-            contributionCalendar("contributeCalendar",options);
         }
 
         $scope.favoriteUser = function () {

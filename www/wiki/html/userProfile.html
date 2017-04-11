@@ -135,6 +135,12 @@
     .tab-content .img-text-box .col-sm-12{
         min-height:325px;
     }
+    .collection-pane img.icon{
+        width: 23px;
+        height: auto;
+        vertical-align: text-bottom;
+        margin-right: 5px;
+    }
 
     .img-text .info {
         line-height: 19px;
@@ -205,16 +211,26 @@
         top: 0;
         z-index: 2;
     }
-
+    .timeline .img-text:hover .rubbish{
+        visibility: visible;
+    }
     .timeline .rubbish {
         padding: 0 42px;
         text-align: center;
+        visibility: hidden;
+        cursor: pointer;
     }
 
     .timeline .rubbish img {
         width: 22px;
         height: auto;
         display: block;
+    }
+    .timeline img.icon{
+        width: 23px;
+        height: auto;
+        vertical-align: text-bottom;
+        margin-right: 5px;
     }
 
     /*我的粉丝*/
@@ -503,10 +519,10 @@
                                 <p>说明：{{x.siteinfo.desc}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.siteinfo.visitCount}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.siteinfo.visitCount}}
                                     </div>
                                     <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">收藏
                                         {{x.siteinfo.favoriteCount}}
                                     </div>
                                 </div>
@@ -537,10 +553,10 @@
                     <p>页数：{{site.pageCount}}</p>
                     <div class="col-md-12 info">
                         <div class="col-sm-6">
-                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{site.visitCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{site.visitCount}}
                         </div>
                         <div class="col-sm-6">
-                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{site.favoriteCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> 收藏 {{site.favoriteCount}}
                         </div>
                     </div>
                 </div>

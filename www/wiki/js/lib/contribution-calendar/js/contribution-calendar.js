@@ -12,8 +12,12 @@
  * contributionCalendar("containerId",{
  *   year: "2016",
  *   dateCount: {
- *     "2016-1-1": 1,
- *     "2016-2-1": 2
+ *     "2016-01-01": 1,
+ *     "2016-02-01": 2,
+ *     "2016-03-01"：3,
+ *     "2016-04-01"：4,
+ *     "2016-05-01"：5,
+ *     "2016-06-01":6,
  *   }
  *});
  */
@@ -21,41 +25,30 @@
     var defaults = {
         year: new Date().getFullYear(),
         week: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-        dateCount: {
-            "2017-1-5": 1,
-            "2017-2-5": 2,
-            "2017-2-6": 5,
-        }
+        step:5,
+        stepColor:["#E8D8F8","#B5CdE6","#77A4D0","#3977AD"],
+        defaultColor:"#EBEDF0",
+        active: {}
     };
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     var year = defaults.year;
     var yearLen = 0;
     var month = [];
     var week = defaults.week;
-    var dateCount = defaults.dateCount;
+    var dateCount = defaults.active;
+    var step=defaults.step;
+    var stepColor=defaults.stepColor;
+    var defaultColor=defaults.defaultColor;
 
+    //格式化数字为固定位数
+    function fixNum(num,length){
+        return (""+num).length<length? ((new Array(length+1).join("0")+num).slice(-length)):""+num;
+    }
     //根据活动次数设置颜色
     function getColor(count) {
-        switch (count) {
-            case 0:
-                color = "#EBEDF0";
-                break;
-            case 1:
-                color = "#E8D8F8";
-                break;
-            case 2:
-                color = "#B5CdE6";
-
-                break;
-            case 3:
-                color = "#77A4D0";
-                break;
-            case 4:
-                color = "#3977AD";
-                break;
-            default:
-                color = "#3977AD";
-        }
+        var rank=Math.floor(count/step);
+        var len=stepColor.length;
+        var color=count>0? ((rank>len-1)? stepColor[len-1]: stepColor[rank]): defaultColor;
         return color;
     }
     //获取活动次数
@@ -129,7 +122,7 @@
             var locY = j % 7; //day 位于第几行
             var r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             var nowDay = getDay(j + 1);
-            var dataDate = year + "-" + nowDay.month + "-" + nowDay.day;
+            var dataDate = year + "-" + fixNum(nowDay.month ,2)+ "-" + fixNum(nowDay.day,2);
             r.setAttribute("data-date", dataDate);
             var dataCount = getCount(dataDate);
             var color = getColor(dataCount);
@@ -155,8 +148,8 @@
         if(options.year){
             year=options.year;
         }
-        if(options.dateCount){
-            dateCount=options.dateCount;
+        if(options.active){
+            dateCount=options.active;
         }
         yearLen = getYearLen(year);
         svg=showMonth(svg);
