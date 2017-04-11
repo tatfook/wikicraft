@@ -36,6 +36,7 @@ define([
                 $scope.fansCount = data.fansObj.total;
                 $scope.trendsCount = data.trendsObj.total;
                 $scope.trendsList = data.trendsObj.trendsList;
+                $scope.active = data.activeObj;
             });
             //调用
             var options={

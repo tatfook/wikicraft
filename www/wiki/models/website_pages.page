@@ -10,6 +10,7 @@ include_once("./website_template_style.page");
 include_once("./website.page");
 include_once("./user.page");
 include_once("./user_trends.page");
+include_once("./user_active.page");
 include_once("./user_visit_history.page")
 include_once("./website_renewal.page");
 include_once("./data_source.page")
@@ -79,24 +80,30 @@ function website_pages:api_upsert(params)
 	params.userId = userId
 	
 	-- 创建一条更新记录 TODO
-	local websiteDB	= models.website:new()
-	local websiteRenewalDB = models.website_renewal:new()
-	local site = websiteDB:api_getPersonalSiteByUserId({userId=params.userId}).data
-	if not site then 
-		log(params.userId)
-		return errors:wrap(errors.SERVER_INNER_ERROR)
-	end
-	local ret = websiteRenewalDB:api_upsert({websiteId=site._id, worksId=params.websiteId}).data
-	if not ret then
-		log("create or update renewal record error!!!")
-	end
+	-- [[
+		local websiteDB	= models.website:new()
+		local websiteRenewalDB = models.website_renewal:new()
+		local site = websiteDB:api_getPersonalSiteByUserId({userId=params.userId}).data
+		if not site then 
+			log(params.userId)
+			return errors:wrap(errors.SERVER_INNER_ERROR)
+		end
+		local ret = websiteRenewalDB:api_upsert({websiteId=site._id, worksId=params.websiteId}).data
+		if not ret then
+			log("create or update renewal record error!!!")
+		end
+	]]
 	
-	-- 添加或修改页	
-	local data = self:api_getWebsitePageByUrl(params).data
-
 	-- 创建动态
 	local userTrendsDB = models.user_trends:new()
 	userTrendsDB:api_websiteRenewal({websiteId=params.websiteId, otherUserId=params.userId})	
+
+	-- 修改活动记录
+	local userActiveDB = models.user_active:new()
+	userActiveDB:api_addActiveCount({userId=params.userId})
+
+	-- 添加或修改页	
+	local data = self:api_getWebsitePageByUrl(params).data
 
 	if data then 
 		self:db():updateOne({url=params.url}, params, resume);
