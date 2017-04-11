@@ -1,0 +1,119 @@
+<style>
+    /*隐藏keepwork导航条*/
+    .companyNavbar{
+        margin-top: -52px;
+        z-index: 9023;
+        position: fixed;
+        width: 100%;
+    }
+    .companyNavbar .navbar-default{
+        background-color: #F6F6F6;
+        padding:4px 0;
+    }
+    .companyNavbar .navbar-header{
+        text-align: center;
+    }
+    .companyNavbar .navbar-header p.info{
+        color: #999;
+    }
+    .companyNavbar .navbar>.container h1{
+        margin: 0 0 10px;
+    }
+    .companyNavbar .navbar>.container h1>.navbar-brand{
+        margin:0;
+        padding: 0;
+        height: auto;
+        float: none;
+        font-size: 42px;
+        color: #323232;
+    }
+    .companyNavbar .breadcrumb>li{
+        font-size: 12px;
+    }
+    .companyNavbar .breadcrumb>li.active{
+        color: #999;
+    }
+    .companyNavbar .search-row{
+        position: relative;
+    }
+    .companyNavbar .search-row>input{
+        width: 205px;
+    }
+    .companyNavbar .breadcrumb{
+        margin-top:17px;
+        margin-bottom:0;
+    }
+    .companyNavbar .nav>li>a{
+        color: #333;
+        font-size: 16px;
+        border-bottom:2px solid transparent;
+    }
+    .companyNavbar .nav .open > a{
+        color: #21B3DB;
+        border-bottom: 2px solid;
+        background-color: transparent;
+    }
+    .companyNavbar .dropdown-menu>li>a{
+        color: #666;
+        font-size: 16px;
+        text-align: center;
+        padding: 16px 18px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .companyNavbar .navbar-default .dropdown-menu{
+        min-width: 100px;
+        padding:0;
+    }
+    .companyNavbar .navbar-default .dropdown-menu>li:after{
+        content: '';
+        display: none !important;
+    }
+</style>
+<div class="companyNavbar" ng-controller="companyNavbarController">
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1 class="clearfix">
+                    <a class="navbar-brand" href="{{modParams.brandUrl}}">{{modParams.companyName}}</a>
+                </h1>
+                <p class="info">{{modParams.companyInfo}}</p>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="nav navbar-nav navbar-right">
+                    <div class="navbar-right-top clearfix">
+                        <form class="navbar-form pull-right" role="search">
+                            <div class="form-group search-row">
+                                <input type="text" class="form-control" placeholder="Google自定义搜索">
+                                <span class="glyphicon glyphicon-search text-muted"></span>
+                            </div>
+                        </form>
+                        <ol class="breadcrumb pull-right">
+                            <li class="active">简体中文</li>
+                            <li><a href="#">English</a></li>
+                        </ol>
+                    </div>
+                    <ul class="nav clearfix">
+                        <li class="pull-left" ng-repeat="navItem in modParams.navItems" ng-class={"dropdown":navItem.subUrl}>
+                            <a href="{{navItem.url}}" ng-show="!navItem.subUrl">{{navItem.name}}</a>
+                            <a ng-show="navItem.subUrl" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{navItem.name}}</a>
+                            <ul class="dropdown-menu" ng-show="navItem.subUrl">
+                                <li ng-repeat="subNavItem in navItem.subUrl">
+                                    <a href="{{subNavItem.url}}">{{subNavItem.name}}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
