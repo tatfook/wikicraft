@@ -218,11 +218,14 @@ define([
     // 设置模板内容
     function setMdWikiContent(mdwiki) {
         var blockList = mdwiki.blockList;
+        var container = '#' + mdwiki.getMdWikiContainerId();
         var selector = '#' + mdwiki.getMdWikiContentContainerId();
         var tempSelector = '#' + mdwiki.getMdWikiTempContentContainerId();
 
-        //console.log(blockList);
-
+        //console.log($(selector), $(tempSelector), blockList);
+        if (!$(selector).length) {
+            $(container).prepend('<div id="'+mdwiki.getMdWikiContentContainerId()+'"></div>');
+        }
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
             if (block.isTemplate) {
@@ -251,6 +254,7 @@ define([
             }
         }
         $(tempSelector).empty();
+        //console.log($(selector), $(tempSelector), blockList);
         /*
          setTimeout(function () {
          util.getAngularServices().$rootScope.$apply();
