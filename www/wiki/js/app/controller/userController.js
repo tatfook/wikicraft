@@ -60,6 +60,16 @@ define([
             contributionCalendar("contributeCalendar",options);
         }
 
+        $scope.favoriteUser = function () {
+            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == $scope.userinfo._id) {
+                return; // 自己不关注自己
+            }
+
+            util.post(config.apiUrlPrefix + 'user_fans/upsert', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
+               console.log("关注成功");
+            });
+        }
+
         $scope.goUserSite = function (x) {
             util.goUserSite('/' + x.username + '/' + x.name, true);
         }

@@ -115,3 +115,12 @@ const.WEBSITE_TYPE_GAME = 3
 -- 数据源类型
 const.DATA_SOURCE_TYPE_GITHUB = "github"
 const.DATA_SOURCE_TYPE_GITLAB = "gitlab"
+
+-- 站点更新所属类型
+local WEBSITE_RENEWAL_TYPE_PERSONAL = 0
+local WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
+
+
+
+
+

@@ -245,8 +245,11 @@ define([
         // 收藏作品
         $scope.doWorksFavorite=function (event,doCollect) {
             var worksFavoriteRequest = function(isFavorite) {
-                console.log($scope.user);
-                console.log($rootScope.pageinfo);
+                //console.log($scope.user);
+                //console.log($rootScope.pageinfo);
+                if (!$rootScope.pageinfo) {
+                    return;
+                }
                 var params = {
                     userId: $scope.user._id,
                     favoriteUserId: $rootScope.pageinfo.userId,

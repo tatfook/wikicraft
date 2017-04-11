@@ -13,12 +13,10 @@ include_once("./website.page")
 local website_renewal = inherit(models.abstract.base, gettable("models.website_renewal"))
 website_renewal.db_name="website_renewal"
 
-local WEBSITE_RENEWAL_TYPE_PERSONAL = 0
-local WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
 
 function website_renewal:ctor()
-	self:addfield("websiteId", "string")   -- 所属者 组织名, 个人创建的其它站点归属个人站下
-	self:addfield("renewalType", "number") -- 作品所属类型
+	self:addfield("belongToId", "string")   -- 所属者 组织名, 当所属类型为个人时填userId
+	self:addfield("belongToType", "number") -- 作品所属类型
 	self:addfield("worksId", "number")     -- 组织内作品的ID
 
 	self:addfield("createDate", "string");
@@ -27,11 +25,11 @@ end
 
 -- 通过websiteID删除
 function website_renewal:api_deleteByWebsiteId(params) 
-	if not params.websiteId then
+	if (not params.belongToId) or (not params.belongToType) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
+	self:db():delete({["+belongToId+belongToType"]={params.belongToId, params.belongToType}}, resume)
 	
 	return errors:wrap(yield())
 end
@@ -58,8 +56,8 @@ end
 -- 获取最近更新的数量
 function website_renewal:api_getCount(params)
 	local startDate = params.startDate or ""
-	if params.websiteId then
-		self:db():count({["+websiteId-updateDate"]={params.websiteId,gt=startDate}}, resume)
+	if params.belongToId and params.belongToType then
+		self:db():count({["+belongToId+belongToType-updateDate"]={params.belongToId, params.belongToType,gt=startDate}}, resume)
 	else
 		self:db():count({["-updateDate"]={gt=startDate}}, resume)
 	end
@@ -80,8 +78,8 @@ function website_renewal:get(params)
 	
 	local total = self:api_getCount(params).data
 
-	if params.websiteId then
-		self:db():find({["+websiteId-updateDate"]={params.websiteId,gt=startDate, skip=skip, limit=limit}}, resume)
+	if params.belongToId and params.belongToType then
+		self:db():find({["+belongToId+belongToType-updateDate"]={params.belongToId,params.belongToType,gt=startDate, skip=skip, limit=limit}}, resume)
 	else
 		self:db():find({["-updateDate"]={gt=startDate, skip=skip, limit=limit}}, resume)
 	end
@@ -102,7 +100,7 @@ end
 
 -- 当更新站点页面时调用此方法，更新一个站点
 function website_renewal:update(params)	
-	if (not params.websiteId) or (not params.worksId) then
+	if (not params.belongToId) or (not params.belongToType) or (not params.worksId) then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
@@ -115,11 +113,11 @@ end
 
 -- 创建或修改更新记录
 function website_renewal:api_upsert(params)
-	if (not params.websiteId) or (not params.worksId) then
+	if (not params.belongToId) or (not params.belongToType) or (not params.worksId) then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 	
-	self:db():findOne({["+websiteId+worksId"] = {params.websiteId, params.worksId}}, resume)
+	self:db():findOne({["+belongToId+belongToType+worksId"] = {params.belongToId, params.belongToType, params.worksId}}, resume)
 	local err, data = yield()
 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
@@ -127,7 +125,7 @@ function website_renewal:api_upsert(params)
 		params.createDate = params.updateDate
 	end
 	
-	self:db():insertOne({["+websiteId+worksId"] = {params.websiteId, params.worksId}}, params, resume)
+	self:db():insertOne({["+belongToId+belongToType+worksId"] = {params.belongToId, params.belongToType, params.worksId}}, params, resume)
 
 	return errors:wrap(yield())
 end
