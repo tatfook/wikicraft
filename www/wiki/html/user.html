@@ -174,7 +174,7 @@
             <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
             <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
             <p>{{userinfo.introduce}}</p>
-            <div class="btn btn-block btn-primary">关 注</div>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser()">关 注</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{userinfo.email}}</a></p>

@@ -8,7 +8,7 @@
     var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
-    var pathPrefix = (localEnv && !localVMEnv) ? '/www/wiki/' : (wiki_config.webroot || '/wiki/');
+    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
     var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
         // --------------------------------------前端配置 START----------------------------------------------
@@ -72,8 +72,7 @@
     function initConfig() {
         var domain = window.location.host;
         if (config.islocalWinEnv()) {
-            //domain = "localhost:8900";
-            domain = "dev.keepwork.com";
+            domain = "localhost:8900";
         }
         if (!config.isLocal() && !config.isOfficialDomain()) {
             domain = config.officialDomain;
