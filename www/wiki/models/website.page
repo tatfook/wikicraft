@@ -104,9 +104,11 @@ function website:create(params)
 	local userDB = models.user:new()
 	userDB:updateWebsiteCount(site.userId, 1)
 	-- 不是个人网站则将网站添加到个人站点下
-	local websiteWorksDB = models.website_works:new()
-	local personalSite = self:api_getPersonalSiteByUserId({userId=params.userId}).data
-	websiteWorksDB:create({websiteId=personalSite._id, worksId=site._id, worksFlag=util.WORKS_FLAG_NORMAL}) 
+	--[[
+		local websiteWorksDB = models.website_works:new()
+		local personalSite = self:api_getPersonalSiteByUserId({userId=params.userId}).data
+		websiteWorksDB:create({websiteId=personalSite._id, worksId=site._id, worksFlag=util.WORKS_FLAG_NORMAL}) 
+	]]
 
 	-- create index page by template content 	
 	local website_pages_db = models.website_pages:new()

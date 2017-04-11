@@ -215,7 +215,7 @@
                             <div class="img-text col-md-6" ng-repeat="x in hotSiteList">
                                 <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                                 <div class="text">
-                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                    <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
                                     <p>{{x.desc}}</p>
                                     <div class="col-md-12 info">
@@ -283,7 +283,7 @@
                     <h3 class="title">活动<a href="#" class="pull-right">查看更多活动</a></h3>
                     <div class="active-row-box col-md-12">
                         <div class="col-md-12 active-row" ng-repeat="x in trendsList">
-                            <img ng-src="{{userinfo.portrait || imgsPath+'wiki_header.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
+                            <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_header.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
                         </div>
                     </div>
                 </div>

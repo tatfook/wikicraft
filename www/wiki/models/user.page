@@ -293,15 +293,17 @@ function user:api_register(params)
 	request.userid = userInfo._id
 
 	-- 创建个人站点
-	websiteDB:create({
-		name=params.username,
-		userId=userInfo._id, 
-		username=params.username, 
-		desc="个人站点", 
-		categoryId=0, 
-		categoryName="个人站点",
-		favoriteCount=0,
-	})
+	--[[
+		websiteDB:create({
+			name=params.username,
+			userId=userInfo._id, 
+			username=params.username, 
+			desc="个人站点", 
+			categoryId=0, 
+			categoryName="个人站点",
+			favoriteCount=0,
+		})
+	]]
 
 	local dataSourceDB = models.data_source:new()
 	local dataSource = dataSourceDB:api_getByUserId({userId=userInfo._id}).data
