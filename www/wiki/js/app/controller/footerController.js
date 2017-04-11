@@ -8,8 +8,11 @@ define([
 ], function (app, htmlContent) {
     app.controller("footerController", ['$scope', function ($scope) {
         function init() {
+            //console.log(config.bustVersion);
+            $scope.serverUpdateTime =  config.bustVersion ? new Date(config.bustVersion) : new Date();
+            $scope.serverUpdateTime = $scope.serverUpdateTime.toLocaleString();
         }
-        //$scope.$watch('$viewContentLoaded', init);
+        $scope.$watch('$viewContentLoaded', init);
     }]);
 
     return htmlContent;
