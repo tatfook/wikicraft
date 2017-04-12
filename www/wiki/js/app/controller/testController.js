@@ -5,37 +5,31 @@
 define([
     'app',
     'helper/util',
-    'helper/markdownwiki',
-    'helper/htmlmd',
     'text!html/test.html',
-], function (app, util, markdownwiki, htmlmd, htmlContent) {
+    'wangEditor',
+    'to-markdown',
+], function (app, util, htmlContent, wangEditor, toMarkdown) {
     console.log("testController");
-    app.registerController("testController", ['$scope', function ($scope) {
+
+    console.log("-------------------");
+    console.log(toMarkdown('<div>hello world</div>', {
+        converters:[
+            {
+                filter: 'div',
+                replacement: function(content) {
+                    console.log("================");
+                    return '\n' + content + '\n';
+                }
+            },
+        ]
+    }));
+    app.registerController("testController", ['$scope','modal', function ($scope, modal) {
         function init() {
             console.log("init testController");
-            $scope.message = "hello world";
+
         }
-
-        $('body').on('focus', '[contenteditable]', function() {
-            var $this = $(this);
-            console.log($this, $this.html());
-            $this.data('before', $this.html());
-            return $this;
-        }).on('blur keyup paste input', '[contenteditable]', function() {
-            console.log("------------------------");
-            var $this = $(this);
-            console.log($this, $this.html());
-
-            if ($this.data('before') !== $this.html()) {
-                $this.data('before', $this.html());
-                $this.trigger('change');
-            }
-            return $this;
-        }).on('blur', '[contenteditable]', function () {
-            var $this = $(this);
-        });
-        init();
-        //$scope.$watch("$viewContentLoaded", init);
+        //init();
+        $scope.$watch("$viewContentLoaded", init);
     }]);
 
 

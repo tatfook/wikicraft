@@ -30,7 +30,7 @@ define([
     'bootstrap-treeview',
 ], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
-    var mdwiki = markdownwiki({editorMode:true});
+    var mdwiki = markdownwiki({editorMode:true, breaks:true});
     var editor;
     var allWebsites = [];
     var allWebsitePages = [];
@@ -1483,16 +1483,16 @@ define([
                         return;
                     var domNode = $('#' + block.blockCache.containerId)[0];
                     var mdText = toMarkdown(domNode.innerHTML, {gfm:true, converters:[
-                        /*
                         {
-                            filter:'ul',
+                            filter:'div',
                             replacement: function (content) {
                                 console.log(content);
-                                return content + '\n';
+                                return '\n'+ content + '\n';
                             }
                         }
-                        */
+
                     ]});
+                    block.blockCache.domNode = undefined;
                     editor.replaceRange(mdText,{line: block.textPosition.from, ch:0}, {line: block.textPosition.to-1});
                     //console.log(mdText, domNode, block.textPosition);
                 }

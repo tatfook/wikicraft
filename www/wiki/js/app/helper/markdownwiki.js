@@ -206,7 +206,11 @@ define([
                 if (!modParams || !editor || !mdwiki.options.editorMode) {
                     return;
                 }
-                editor.replaceRange(angular.toJson(modParams, 4) + '\n', {line: pos.from + 1, ch: 0}, {
+
+                if (typeof(modParams) == "object") {
+                    modParams = angular.toJson(modParams, 4);
+                }
+                editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
                     ch: 0
                 });
@@ -224,7 +228,7 @@ define([
 
         //console.log($(selector), $(tempSelector), blockList);
         if (!$(selector).length) {
-            $(container).prepend('<div id="'+mdwiki.getMdWikiContentContainerId()+'"></div>');
+            $(container).prepend('<div id="' + mdwiki.getMdWikiContentContainerId() + '"></div>');
         }
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
@@ -255,11 +259,9 @@ define([
         }
         $(tempSelector).empty();
         //console.log($(selector), $(tempSelector), blockList);
-        /*
-         setTimeout(function () {
-         util.getAngularServices().$rootScope.$apply();
-         })
-         */
+        setTimeout(function () {
+            util.getAngularServices().$rootScope.$apply();
+        })
     }
 
     // mdwiki render
@@ -452,7 +454,10 @@ define([
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
             for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {
-                blockCache = blockCacheList[i]
+                blockCache = blockCacheList[i];
+                if (!blockCache.domNode) {
+                    continue;
+                }
                 if (!blockCache.isUsing) {  // 返回一个未被使用缓存块
                     blockCache.isUsing = true;
                     //console.log(blockCache.renderContent);
