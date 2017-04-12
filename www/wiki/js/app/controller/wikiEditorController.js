@@ -36,7 +36,9 @@ define([
     var allWebsitePages = [];
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
     var currentWebsitePage = undefined;
-    var editorDocMap = {};
+    var editorDocMap = {};           // 每个文件对应一个文档
+    var isHTMLViewEditor = false;   // 是否h5视图编辑
+    var currentRichTextObj = undefined; // 当前编辑的富文本
     
     function getCurrentDataSource() {
         if (currentWebsite && currentWebsite.dataSourceId) {
@@ -307,15 +309,6 @@ define([
 
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
-
-        // window.onbeforeunload = function(e){
-        //     e = e || window.event;
-        //     if (e) {
-        //         e.returnValue = 'bbbbbbbbbbbbbbbbbbbbb';
-        //     }
-        //     return 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-        // }
-
             $(window).on("beforeunload", function(e) {
                 if(currentWebsitePage.isModify){
                     e = e || window.event;
@@ -341,6 +334,11 @@ define([
                     return false;
                 }
                 return true;
+            }
+            
+            function formatHtmlView(cmd, value) {
+                document.execCommand(cmd, false, value);
+                currentRichTextObj && currentRichTextObj.focus();
             }
 
             function newWebsitePage(urlObj) {
@@ -793,12 +791,22 @@ define([
 
             //撤销
             $scope.cmd_undo = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('undo');
+                    return;
+                }
                 editor.undo();
+                editor.focus();
             }
 
             //重做
             $scope.cmd_redo = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('redo');
+                    return;
+                }
                 editor.redo();
+                editor.focus();
             }
 
             //查找
@@ -815,6 +823,10 @@ define([
 
             //标题    H1：Hn
             $scope.cmd_headline = function (level) {
+                if (isHTMLViewEditor) {
+                    formatHtmlView("formatblock", 'H' + level);
+                    return;
+                }
                 var preChar = '';
                 while (level > 0) {
                     preChar += '#';
@@ -839,6 +851,7 @@ define([
                     }
                 }
                 editor.replaceRange(preChar, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, iSpace));
+                editor.focus();
                 return;
             }
 
@@ -861,35 +874,65 @@ define([
 
             //加粗
             $scope.cmd_bold = function () {
+                //console.log(isHTMLViewEditor);
+                if (isHTMLViewEditor) {
+                    formatHtmlView('bold');
+                    return ;
+                }
                 font_style('**');
             }
 
             //斜体
             $scope.cmd_italic = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('italic');
+                    return;
+                }
                 font_style('*');
             }
 
             //下划线
             $scope.cmd_underline = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('underline');
+                    return;
+                }
             }
 
             //下划线
             $scope.cmd_strikethrough = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('strikethrough');
+                    return;
+                }
                 font_style('~~');
             }
 
             //上标
             $scope.cmd_superscript = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('superscript');
+                    return;
+                }
                 font_style('^');
             }
 
             //下标
             $scope.cmd_subscript = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('subscript');
+                    return;
+                }
                 font_style('~');
             }
 
             //有序列表
             $scope.cmd_listol = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('insertorderedlist');
+                    return;
+                }
+
                 if (editor.somethingSelected()) {
                     var sel = editor.getSelection();
                     var srcStr = '~ol~' + sel.replace(/\n/g, "\n~ol~");
@@ -935,11 +978,20 @@ define([
 
             //无序列表
             $scope.cmd_listul = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('insertunorderedlist');
+                    return;
+                }
                 hol_keyword('- ');
             }
 
             //引用内容
             $scope.cmd_blockqote = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('formatblock','blockquote');
+                    return;
+                }
+
                 hol_keyword('> ');
             }
 
@@ -1006,8 +1058,8 @@ define([
             //水平分割线
             $scope.cmd_horizontal = function () {
                 var cursor = editor.getCursor();
-                editor.replaceRange('---\n', CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
-                editor.setCursor(CodeMirror.Pos(cursor.line + 1, 3));
+                editor.replaceRange('---\n', CodeMirror.Pos(cursor.line+1, 0), CodeMirror.Pos(cursor.line+1, 0));
+                editor.setCursor(CodeMirror.Pos(cursor.line + 2, 0));
                 editor.focus();
             }
 
@@ -1020,26 +1072,23 @@ define([
                     if (provider == "link") {
                         var link = $rootScope.link;
                         var wiki = '';
+                        /*
+                        if (isHTMLViewEditor) {
+                            formatHtmlView('createlink', link);
+                            return;
+                        }
+                        */
                         if (editor.somethingSelected()) {
                             wiki += '[' + editor.getSelection() + ']';
                         } else {
                             wiki += '[]';
                         }
+
                         // wiki += '(' + link.url + ')';
                         editor.replaceSelection(wiki + '(' + link.url + ')');
                         if (wiki == '[]') {
                             editor.setCursor(CodeMirror.Pos(editor.getCursor().line, 1));
                         }
-                        //var wiki = '[' + link.txt + '](' + link.url + ')\n';
-                        //var cursor = editor.getCursor();
-                        //var content = editor.getLine(cursor.line);
-                        //if(content.length>0){
-                        //    editor.replaceRange(wiki,CodeMirror.Pos(cursor.line+1,0),CodeMirror.Pos(cursor.line+1,0));
-                        //    editor.setCursor(CodeMirror.Pos(cursor.line+1,1));
-                        //}else{
-                        //    editor.replaceRange(wiki,CodeMirror.Pos(cursor.line,0),CodeMirror.Pos(cursor.line,0));
-                        //    editor.setCursor(CodeMirror.Pos(cursor.line,1));
-                        //}
                         editor.focus();
                     }
                 }, function (text, error) {
@@ -1147,6 +1196,11 @@ define([
 
             //代码
             $scope.cmd_code = function () {
+                if (isHTMLViewEditor) {
+                    formatHtmlView('formatblock','pre');
+                    return;
+                }
+
                 var sel = editor.getSelection();
                 var desStr = '```\n' + sel + '\n```';
                 editor.replaceSelection(desStr);
@@ -1389,22 +1443,34 @@ define([
                     }
                 });
 
+                var viewEditorTimer = undefined;
                 $('body').on('focus', '[contenteditable]', function() {
+                    //console.log("start html view edit...");
+                    isHTMLViewEditor = true;
+                    currentRichTextObj = $(this);
+                    if (viewEditorTimer) {
+                        clearTimeout(viewEditorTimer);
+                        viewEditorTimer = undefined;
+                    }
                     //return $this;
                 }).on('blur keyup paste input', '[contenteditable]', function() {
                     //return $this;
                 }).on('blur', '[contenteditable]', function () {
+                    //console.log("end html view edit...");
                     var $this = $(this);
-                    //console.log($this, $this[0].id);
-                    //console.log(mdwiki.blockList);
-                    var blockList = mdwiki.blockList;
-                    var block = undefined;
-                    for (var i = 0; i < blockList.length; i++) {
-                        if (blockList[i].blockCache.containerId == $this[0].id) {
-                            block = blockList[i]
+                    viewEditorTimer = setTimeout(function () {
+                        isHTMLViewEditor = false;
+                        currentRichTextObj = undefined;
+                        //console.log(mdwiki.blockList);
+                        var blockList = mdwiki.blockList;
+                        var block = undefined;
+                        for (var i = 0; i < blockList.length; i++) {
+                            if (blockList[i].blockCache.containerId == $this[0].id) {
+                                block = blockList[i]
+                            }
                         }
-                    }
-                    htmlToMd(block);
+                        htmlToMd(block);
+                    },1000);
                 });
 
                 mdwiki.setEditor(editor);
@@ -1428,7 +1494,7 @@ define([
                         */
                     ]});
                     editor.replaceRange(mdText,{line: block.textPosition.from, ch:0}, {line: block.textPosition.to-1});
-                    console.log(mdText, domNode, block.textPosition);
+                    //console.log(mdText, domNode, block.textPosition);
                 }
 
                 editor.on('fold', function (cm, from, to) {
@@ -1873,26 +1939,6 @@ define([
                         }
                     });
                 });
-
-//    editor.on("blur", function(){
-//        console.log('editor lost focus');
-//        setTimeout(function () {
-//            editor.focus();
-//        },500);
-//    });
-
-                $('.btn').on('click', function () {
-                    var unfocus = $(this).data('unfocus');
-                    if (unfocus == undefined || unfocus == '0') {
-                        editor.focus();
-                    }
-                });
-
-                function midDiv(DivId, left) {
-                    var Div = $(DivId);
-                    $(DivId).style.top = (document.documentElement.scrollTop + (document.documentElement.clientHeight - $(DivId).offsetHeight) / 2) + "px";
-                    $(DivId).style.left = left;
-                }
 
                 editor.on("paste", function (editor, e) {
                     if (!(e.clipboardData && e.clipboardData.items)) {
