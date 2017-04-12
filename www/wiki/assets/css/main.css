@@ -1,9 +1,9 @@
 @import "../../js/lib/bootstrap/css/bootstrap.min.css";
-@import "../../js/lib/contribution-calendar/css/contribution-calendar.css";
 @import "../../js/lib/angular-ui-select/select.min.css";
 @import "../../js/lib/angular-toggle-switch/style/default/angular-toggle-switch.css";
 @import "../../js/lib/sharejs/css/share.min.css";
 @import "../../js/lib/cropper/cropper.min.css";
+@import "../../js/lib/wangEditor/css/wangEditor.min.css";
 @import "editor.css";
 @import "markdownit.css";
 
@@ -41,7 +41,7 @@ a:hover {
 }
 body{
     font-family: "微软雅黑";
-    padding-top: 52px;
+    padding-top: 56px;
 }
 h1{
     font-size: 48px;
