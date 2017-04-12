@@ -203,6 +203,11 @@
             display: inline-block;
         }
     }
+    @media (min-width: 1200px){
+        .form-join-box{
+            max-width: 400px;
+        }
+    }
     @media (min-width: 992px) and (max-width: 1200px) {
         .works img{
             height:159.38px;
@@ -245,7 +250,7 @@
             <h1>欢迎加入KeepWork</h1>
             <p>我们致力于为个人、老师、企业提供免费，可靠的作品创作与分享平台。</p>
         </div>
-        <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1">
+        <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1 form-join-box">
             <form>
                 <div class="form-group">
                     <span id="mail-err" class="text-danger visible-hidden">*{{errMsg}}</span>

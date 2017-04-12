@@ -45,6 +45,13 @@ define(['jquery'], function ($) {
         return htmlStr;
     }
 
+    util.$apply = function ($scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+        setTimeout(function () {
+            $scope.$apply();
+        });
+    }
+
     // 将字符串url解析成{sitename, pagename}对象
     util.parseUrl = function () {
         var hostname = config.hostname || window.location.hostname;
