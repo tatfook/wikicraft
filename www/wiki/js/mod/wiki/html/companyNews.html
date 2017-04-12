@@ -1,0 +1,123 @@
+<style>
+    .companyNews .ellipsis-1{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .companyNews .ellipsis-2{
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+    .companyNews a{
+        color: inherit;
+    }
+    .companyNews h2{
+        font-size: 40px;
+        font-weight:bold;
+        margin: 0;
+    }
+    .companyNews p{
+        margin: 0;
+        color: #666;
+    }
+    .companyNews{
+        margin-top: 80px;
+    }
+    .companyNews .sidebar{
+        background-color: #05438C;
+        color: #FFF;
+        text-align: left;
+        width: 240px;
+        height:300px;
+        padding:40px 30px;
+        position: relative;
+    }
+    .companyNews .sidebar h1{
+        margin: 0 0 20px;
+    }
+    .companyNews .sidebar p{
+        color: #FFF;
+    }
+    .companyNews .sidebar a.btn{
+        border: 1px solid #FFF;
+        color: #FFF;
+        position: absolute;
+        left: 30px;
+        bottom: 40px;
+        padding:6px 15px;
+    }
+    .companyNews .main-content{
+        padding-left: 260px;
+    }
+    .companyNews .top-news img{
+        width: 200px;
+        height: 100px;
+        object-fit: cover;
+    }
+    .companyNews .year-month{
+        font-size: 12px;
+        font-weight:bold;
+    }
+    .companyNews .img-text{
+        display: inline-block;
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #DCDCDC;
+        margin-bottom: 0;
+        padding:20px 0 9px;
+    }
+    .companyNews .time{
+        color: #656565;
+        width: 80px;
+        text-align: center;
+    }
+    .companyNews .img-text .text{
+        padding-left: 95px;
+    }
+    .companyNews .img-text h4{
+        margin: 0 0 24px;
+    }
+    .companyNews .top-news{
+        padding:0 0 17px;
+    }
+    .companyNews .top-news h4{
+        margin: 0 0 44px;
+    }
+    .companyNews .top-news .text{
+        padding-left: 210px;
+    }
+</style>
+<div class="companyNews" ng-controller="companyNewsController">
+    <div class="container">
+        <div class="sidebar pull-left">
+            <h1>{{modParams.columnName}}</h1>
+            <p class="column-info">{{modParams.columnInfo}}</p>
+            <a href="{{modParams.moreNewsLink}}" class="btn" target="_blank">更多></a>
+        </div>
+        <div class="main-content">
+            <div class="top-news img-text clearfix">
+                <a href="{{modParams.topNewsLink}}" target="_blank">
+                    <img ng-src="{{imgsPath+'company_news_top.jpg'}}" class="pull-left" alt="">
+                </a>
+                <div class="text">
+                    <h4 class="ellipsis-1"><a href="{{modParams.topNewsLink}}" target="_blank">{{modParams.topNewsTitle}}</a></h4>
+                    <p class="ellipsis-2"><a href="{{modParams.topNewsLink}}" target="_blank">{{modParams.topNewsContent}}</a></p>
+                </div>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item img-text clearfix" ng-repeat="newsItem in modParams.news">
+                    <div class="time pull-left">
+                        <h2>{{newsItem.day}}</h2>
+                        <p class="year-month">{{newsItem.yearMonth}}</p>
+                    </div>
+                    <div class="text">
+                        <h4 class="ellipsis-1"><a href="{{newsItem.newsLink}}" target="_blank">{{newsItem.title}}</a></h4>
+                        <p class="ellipsis-1"><a href="{{newsItem.newsLink}}" target="_blank">{{newsItem.content}}</a></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
