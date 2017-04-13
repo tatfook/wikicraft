@@ -37,6 +37,7 @@
 		'jquery-sharejs': 'lib/sharejs/js/jquery.share.min',// 社交分享
 		'contribution-calendar': 'lib/contribution-calendar/js/contribution-calendar.min',//类github活动记录
 		'to-markdown': 'lib/to-markdown/to-markdown',
+		'wangEditor': 'lib/wangEditor/js/wangEditor',
 
         // 自定义模块
         'app': 'app',
@@ -87,6 +88,9 @@
 			deps:['jquery'],
 		},
 		'jquery-sharejs':{
+			deps:['jquery'],
+		},
+		'wangEditor': {
 			deps:['jquery'],
 		}
     },

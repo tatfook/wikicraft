@@ -73,6 +73,19 @@ function main()
 			flag=1,
 		},
 
+		{
+			name="富文本",
+			classifyName="editor",
+			content=[[
+                ```@wiki/js/richText
+                ```
+            ]],
+			wikiCmdName="@wiki/js/richText",
+			logoUrl="wiki/assets/imgs/richText.png",
+			desc="富文本编辑模块",
+			flag=1,
+		},
+
 	}
 	
 	regitsterWikiModuleList(wikiModuleList)

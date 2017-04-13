@@ -1,0 +1,42 @@
+<?npl
+--[[
+Title: site page info
+Author: wuxiangan
+Date: 2017/04/13
+]]
+include_once("./abstract/base.page")
+
+-- 暂时不用
+local website_pageinfo = inherit(models.abstract.base, gettable("models.website_pageinfo"))
+
+website_pageinfo.db_name = "website_pageinfo";
+
+
+function website_pageinfo:ctor() 
+	self:addfield("websiteId","number")        -- 站点ID
+	self:addfield("dataSourceId", "number")    -- 数据源id  0 -- 没有数据源
+	self:addfield("pageinfo", "string")        -- 页信息  json 字符串
+end
+
+-- 添加记录
+function website_pageinfo:api_upsert(params)
+	if (not params.websiteId) or (not params.dataSourceId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+websiteId+dataSourceId"]={params.websiteId, params.dataSourceId}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 获取站点页信息
+function website_pageinfo:api_get(params)
+	if (not params.websiteId) or (not params.dataSourceId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+websiteId+dataSourceId"]={params.websiteId, params.dataSourceId}}, resume)
+
+	return errors:wrap(yield())
+end
+
