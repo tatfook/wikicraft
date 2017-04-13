@@ -46,12 +46,13 @@ function website_pageinfo:api_getByUserId(params)
 	for _, site in ipairs(siteList) do
 		site.pageinfo = self:api_getByWebsiteId({websiteId=site._id, dataSourceId=site.dataSourceId or 0}).data
 	end
-	
+	log(siteList)
 	return errors:wrap(nil, siteList)	
 end
 
 -- 获取站点页信息
 function website_pageinfo:api_getByWebsiteId(params)
+	log(params)
 	if (not params.websiteId) or (not params.dataSourceId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

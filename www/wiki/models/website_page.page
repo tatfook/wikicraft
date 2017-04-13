@@ -1,0 +1,48 @@
+<?npl
+--[[
+Title: website page content
+Author: wuxiangan
+Date: 2017/04/13
+]]
+
+include_once("./abstract/base.page")
+
+local website_page = inherit(models.abstract.base, gettable("models.website_page"))
+website_page.db_name = "website_page"
+
+function website_page:ctor()
+	self:addfield("url", "string", true, 120)             -- 页面路径   /websiteName/pageName
+	self:addfield("content", "string", false, 100000)     -- 具体页面内容
+end
+
+
+function website_page:api_upsert(params)
+	if not params.url then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+url"]={params.url}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+function website_page:api_getByUrl(params)
+	if not params.url then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+url"]={params.url}}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+function website_page:api_deleteByUrl(params)
+	if not params.url then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["+url"]={params.url}}, resume)
+
+	return errors:wrap(yield())
+end

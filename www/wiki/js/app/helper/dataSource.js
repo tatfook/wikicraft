@@ -5,6 +5,28 @@
 define([
     'helper/util'
 ], function (util) {
+    var innerServerDS = {
+        writeFile: function (params, cb, errcb) {
+            util.post(config.apiUrlPrefix + 'website_page/upsert', params, cb, errcb);
+        },
+        getContent: function (params, cb, errcb) {
+            util.post(config.apiUrlPrefix + 'website_page/getByUrl', params, function (data) {
+                cb && cb(data.content);
+            }, errcb);
+        },
+        getRawContent: function (params, cb, errcb) {
+            util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url:'/' + params.url}, function (data) {
+                cb && cb( data && (data.content || ''));
+            }, errcb);
+        },
+        deleteFile: function (params, cb, errcb) {
+            util.post(config.apiUrlPrefix + 'website_page/deleteByUrl', params, cb, errcb);
+        },
+        rollbackFile: function (params, cb, errcb) {
+            //cb && cb();
+        },
+    }
+
     var dataSourceObj = {
         dataSourceMap:{},
         dataSourceList:undefined,
@@ -20,6 +42,11 @@ define([
     }
 
     dataSourceObj.getDataSourceById = function(dataSourceId) {
+        // 当数据源id不存在时, 返回inner server 存贮
+        if (dataSourceId == 0) {
+            return innerServerDS;
+        }
+
         for (var i = 0; i < dataSourceObj.dataSourceList.length; i++) {
             var dataSource = dataSourceObj.dataSourceList[i];
             if (dataSource._id == dataSourceId) {

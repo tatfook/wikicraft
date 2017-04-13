@@ -88,10 +88,19 @@ function website:create(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	-- 用户网站数量加1
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=params.userId}).data
+	if not userinfo then 
+		return errors:wrap(errors.NOT_FOUND)
+	end
+	userDB:updateWebsiteCount(userinfo._id, 1)
+
 	params.favoriteCount = 0
 	params.visitCount = 0
 	params.pageCount = 1
 	params.memberCount = 1
+	params.dataSourceId = userinfo.dataSourceId
 
 	self:db():insertOne({name=params.name}, params, resume)	
 	local err, site = yield()
@@ -100,9 +109,6 @@ function website:create(params)
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
 	end
 
-	-- 用户网站数量加1
-	local userDB = models.user:new()
-	userDB:updateWebsiteCount(site.userId, 1)
 	-- 不是个人网站则将网站添加到个人站点下
 	--[[
 		local websiteWorksDB = models.website_works:new()

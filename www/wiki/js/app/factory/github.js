@@ -178,6 +178,7 @@ define([
         // writeFile
         github.writeFile = function (data, cb, errcb) {
             data.content = Base64.encode(data.content);
+            data.message = data.message || "keepwork commit";
             var self = github;
             self.getFile({path: data.path}, function (result) {
                 //console.log(result);
@@ -209,6 +210,10 @@ define([
             github.getFile(params, function (data) {   // github.getFile 已做 base64解码
                 cb && cb(data.content);
             }, errcb)
+        }
+        
+        github.getRawContent = function () {
+            
         }
 
         github.uploadImage = function (params, cb, errcb) {

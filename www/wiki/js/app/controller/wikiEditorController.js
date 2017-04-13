@@ -34,6 +34,7 @@ define([
     var editor;
     var allWebsites = [];
     var allWebsitePages = [];
+    var allWebstePageContent = {};
     var currentWebsite = undefined; // $scope.website, $scope.websitePage 两变量使用怪异，估计存在备份机制， 这里用全局变量变量奇怪问题
     var currentWebsitePage = undefined;
     var editorDocMap = {};           // 每个文件对应一个文档
@@ -284,6 +285,7 @@ define([
             $scope.websitePage.websiteId = $scope.website._id;
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
             $scope.websitePage.userId = $scope.website.userId;
+            $scope.websitePage.isModify = true;
             console.log($scope.websitePage);
             for (var i = 0; i < $scope.websitePages.length; i++) {
                 var url1 = $scope.websitePages[i].url + '/';
@@ -294,17 +296,10 @@ define([
                 }
             }
 
-            $http.put(config.apiUrlPrefix + 'website_pages/new', $scope.websitePage).then(function (response) {
-                currentWebsitePage = response.data.data;
-                currentWebsite = $scope.website;
-
-                $uibModalInstance.close("page");
-            }).catch(function (response) {
-                console.log(response.data);
-                alert('新建页面失败');
-            });
+            currentWebsitePage = $scope.websitePage;
+            currentWebsite = $scope.website;
+            $uibModalInstance.close("page");
         }
-
     }]);
 
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal','gitlab',
@@ -324,23 +319,21 @@ define([
 
             $scope.enableTransform = true;
 
-            $scope.progressbar = {
-                show: false,
-                percent: 0
-            };
-
+            // 判断对象是否为空
             function isEmptyObject(obj) {
                 for (var key in obj) {
                     return false;
                 }
                 return true;
             }
-            
+
+            // 格式化html文本
             function formatHtmlView(cmd, value) {
                 document.execCommand(cmd, false, value);
                 currentRichTextObj && currentRichTextObj.focus();
             }
 
+            // 新建网站页
             function newWebsitePage(urlObj) {
                 //console.log("---------newWebsitePage-------------");
                 if (!urlObj || urlObj.username != $scope.user.username || !urlObj.sitename)
@@ -365,15 +358,11 @@ define([
                 websitePage.userId = site.userId;
                 websitePage.name = urlObj.pagename;
 
-                $http.put(config.apiUrlPrefix + 'website_pages/new', websitePage).then(function (response) {
-                    currentWebsitePage = response.data.data;
-                    currentWebsite = site;
-                    allWebsitePages.push(currentWebsitePage);
-                    initTree();
-                    openPage();
-                }).catch(function (response) {
-                    console.log(response.data);
-                });
+                currentWebsitePage = websitePage;
+                currentWebsite = site;
+                allWebsitePages.push(currentWebsitePage);
+                initTree();
+                openPage();
             }
 
             // 加载未提交到服务的页面
@@ -388,6 +377,7 @@ define([
                     var serverTimestamp = serverPage.timestamp || 0; //(new Date()).getTime();
                     //console.log(page.url, serverPage, localTimestamp);
                     if (localTimestamp > serverTimestamp && page.content != serverPage.content) {
+                        allWebstePageContent[serverPage.url] = page.content;
                         serverPage.isModify = true;
                         serverPage.content = page.content;
                         serverPage.timestamp = localTimestamp;
@@ -404,39 +394,65 @@ define([
                 }
                 initEditor();
 
-                var user = $scope.user;
-                // console.log(config.apiUrlPrefix);
-                // 获取用户站点列表
-                $http.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: Account.getUser()._id}).then(function (response) {
-                    allWebsites = response.data.data;
-                    util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: Account.getUser()._id}, function (data) {
-                        allWebsitePages = data || [];
-                        //console.log(currentWebsitePage);
-                        storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
-                            loadUnSavePage();
-                            initTree();
-                            openPage();
-                        });
+                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUserId', {userId: $scope.user._id}, function (data) {
+                    allWebsites = data || [];
+                    allWebsitePages = [];
+                    for (var i = 0; i < allWebsites.length; i++) {
+                        allWebsitePages = allWebsitePages.concat(angular.fromJson(allWebsites[i].pageinfo || '[]'));
+                    }
+                    storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
+                        loadUnSavePage();
+                        initTree();
+                        openPage();
                     });
-                }).catch(function (response) {
-                    console.log(response.data);
                 });
 
+                // 获取用户站点列表
+                // $http.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}).then(function (response) {
+                //     allWebsites = response.data.data;
+                //     util.http('POST', config.apiUrlPrefix + 'website_pages/getByUserId', {userId: $scope.user._id}, function (data) {
+                //         allWebsitePages = data || [];
+                //         storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
+                //             loadUnSavePage();
+                //             initTree();
+                //             openPage();
+                //         });
+                //     });
+                // }).catch(function (response) {
+                //     console.log(response.data);
+                // });
                 return;
             }
 
             $scope.$watch('$viewContentLoaded', init);
             //init();
 
-            function progressing(step) {
-                if ($scope.progressbar.percent == 0) {
-                    $scope.progressbar.show = true;
+            // 获取站点页信息
+            function getPageInfo(webisteId) {
+                var temp = [];
+                for (var i = 0; i < allWebsitePages.length; i++) {
+                    if (allWebsitePages[i].websiteId == webisteId) {
+                        temp.push(allWebsitePages[i]);
+                    }
                 }
-                $scope.progressbar.percent = $scope.progressbar.percent + step;
-                $(".progress-bar").css("width", $scope.progressbar.percent + "%");
+                return angular.toJson(temp);
             }
+            // 保存页
+            function savePageContent(content, cb, errcb) {
+                var currentDataSource = getCurrentDataSource();
+                util.post(config.apiUrlPrefix + 'website_pageinfo/upsert',
+                    {
+                        userId:$scope.user._id,
+                        websiteId:currentWebsite._id,
+                        dataSourceId:currentWebsite.dataSourceId || $scope.user.dataSourceId,
+                        pageinfo: getPageInfo(currentWebsite._id),
+                    }, function () {
+                        currentDataSource.writeFile({url:currentWebsitePage.url.substring(1), content:content}, cb, errcb);
+                    }, errcb);
+            }
+
             // 获得指定站点
-            function getWebsite(id) {
+            function getWebsiteById(id) {
                 for (var i = 0; i < allWebsites.length; i++) {
                     ws = allWebsites[i];
                     if (ws._id == id) {
@@ -445,12 +461,21 @@ define([
                 }
                 return null;
             }
+
+            function getWebsiteByName(name) {
+                for (var i = 0; i < allWebsites.length; i++) {
+                    if (allWebsites[i].name == name) {
+                        return allWebsites[i];
+                    }
+                }
+                return null;
+            }
+
             // 获得指定页
-            function getWebsitePage(id) {
-                for (var j = 0; j < allWebsitePages.length; j++) {
-                    wp = allWebsitePages[j];
-                    if (wp._id == id) {
-                        return wp;
+            function getWebsitePageByUrl(url) {
+                for (var i = 0; i < allWebsitePages.length; i++) {
+                    if (allWebsitePages[i].url == url) {
+                        return allWebsitePages[i];
                     }
                 }
                 return null;
@@ -474,34 +499,52 @@ define([
                 });
             });
 
+            // 打开url页
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj');
                 storage.sessionStorageRemoveItem('urlObj');
                 //console.log(urlObj);
 
-                var url = '/' + $scope.user.username + '/' + $scope.user.username + '/index'; // 默认编辑个人网站首页
-                // 必须是自己编辑自己页面
-                if (urlObj && urlObj.sitename && urlObj.username == $scope.user.username) {
-                    url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
-                }
-                //console.log(url);
                 currentWebsite = undefined;
                 currentWebsitePage = undefined;
-                for (var i = 0; i < allWebsitePages.length; i++) {
-                    if (url == allWebsitePages[i].url) {
-                        currentWebsite = getWebsite(allWebsitePages[i].websiteId);
-                        currentWebsitePage = allWebsitePages[i];
-                        break;
-                    }
+                var username = urlObj.username;
+                var sitename = urlObj.sitename;
+                var pagename = urlObj.pagename || 'index';
+                var url = '/' + username + '/' + sitename + '/' + pagename ;
+                if (!username || !sitename || username != $scope.user.username)
+                    return;
+
+                currentWebsitePage = getWebsitePageByUrl(url);
+                currentWebsite = getWebsiteById(sitename);
+
+                if (!currentWebsite) {
+                    return;
                 }
 
                 if (!currentWebsitePage) {
-                    newWebsitePage(urlObj);
+                    // 特殊页面允许自动创建
+                    if (pagename != 'index' && pagename != '_header' && pagename != "_footer" && pagename != "_sidebar")
+                        return;
+
+                    var websitePage = {};
+                    websitePage.url = '/'+ currentWebsite.username + '/' + currentWebsite.name + '/' + pagename;
+                    websitePage.websiteName = currentWebsite.name;
+                    websitePage.websiteId = currentWebsite._id;
+                    websitePage.content = ""; // $scope.style.data[0].content;
+                    websitePage.userId = currentWebsite.userId;
+                    websitePage.name = pagename;
+                    websitePage.isModify = true;
+
+                    currentWebsitePage = websitePage;
+                    allWebsitePages.push(currentWebsitePage);
+                    initTree();
+                    openPage();
                 } else {
                     openPage();
                 }
             }
 
+            // 打开页
             function openPage(isNodeSelected) {
                 if (!currentWebsitePage) {
                     openUrlPage();
@@ -518,25 +561,17 @@ define([
                 storage.sessionStorageSetItem('urlObj',{username:currentWebsite.username, sitename:currentWebsite.name, pagename:currentWebsitePage.url.substring(urlPrefix.length)});
                 !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
 
-                if (isEmptyObject(currentWebsitePage)) {
-                    editor.setValue('');
-                    $('#btUrl').val('');
-                    $('.toolbar-page-remove').attr("disabled", true);
-                    return;
-                }
-
-                function setEditorValue() {
+                function setEditorValue(content) {
                     currentWebsitePage.isFirstEditor = true;
 
                     if (!editorDocMap[currentWebsitePage.url]) {
-                        editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(currentWebsitePage.content, 'markdown');
+                        editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
                     CodeMirror.signal(editor,'change', editor);
                     //editor.setValue(currentWebsitePage.content);
 
                     // 折叠wiki命令
-
                     for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
                         var lineValue = editor.getLine(i);
                         if (lineValue.indexOf('```@') == 0 || lineValue.indexOf('```/') == 0) {
@@ -567,30 +602,50 @@ define([
 
                     $('#treeview').treeview('clearSearch');
                 }
-
-                storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
-                    //console.log(page);
-                    //console.log(currentWebsitePage);
-                    if (page) {
-                        page.timestamp = page.timestamp || 0;
-                        currentWebsitePage.timestamp = currentWebsitePage.timestamp || 0; // (new Date()).getTime();
-                        if (page.timestamp > currentWebsitePage.timestamp &&  currentWebsitePage.content != page.content) {
-                            console.log("---------------histroy modify---------------");
-                            currentWebsitePage.content = page.content;
-                            currentWebsitePage.isModify = true;
-                            initTree();
-                        }
-                    }
-                    setEditorValue();
-                }, function () {
-                    setEditorValue();
+                
+                getPageContent(currentWebsitePage.url, function (data) {
+                    setEditorValue(data);
                 });
+                // storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
+                //     if (page) {
+                //         page.timestamp = page.timestamp || 0;
+                //         currentWebsitePage.timestamp = currentWebsitePage.timestamp || 0; // (new Date()).getTime();
+                //         if (page.timestamp > currentWebsitePage.timestamp &&  currentWebsitePage.content != page.content) {
+                //             console.log("---------------histroy modify---------------");
+                //             currentWebsitePage.content = page.content;
+                //             currentWebsitePage.isModify = true;
+                //             initTree();
+                //         }
+                //     }
+                //     setEditorValue();
+                // }, function () {
+                //     setEditorValue();
+                // });
+            }
 
+            // 获得页面内容
+            function getPageContent(url, cb, errcb) {
+                if (allWebstePageContent[url]) {
+                    cb && cb(allWebstePageContent[url]);
+                } else {
+                    var currentDataSource = getCurrentDataSource();
+                    //TODO currentDataSource.getRawContent({path:url.substring(1)}, function (data) {
+                    //console.log(currentDataSource);
+                    if (currentDataSource) {
+                        currentDataSource.getContent({path:url.substring(1)}, function (data) {
+                            cb && cb(data);
+                        }, function (data) {
+                            errcb && errcb(data);
+                        });
+                    } else {
+                        errcb && errcb();
+                    }
+                }
             }
 
             //初始化目录树  data:  $.parseJSON(getTree()),
             function initTree() {
-                //console.log('@initTree');
+                console.log('@initTree');
                 $('#treeview').treeview({
                     color: "#3977AD",
                     selectedBackColor:"#3977AD",
@@ -735,8 +790,6 @@ define([
                             openPage(false);
                         }
                     }, function (text, error) {
-                        console.log('text:' + text);
-                        console.log('error:' + error);
                         return;
                     });
                 }
@@ -755,37 +808,20 @@ define([
                 var content = editor.getValue();
                 var currentDataSource = getCurrentDataSource();
                 if (!isEmptyObject(currentWebsitePage)) {//修改
-                    currentWebsitePage.content = content;
                     currentWebsitePage.timestamp = (new Date()).getTime();
-                    var savePage = angular.copy(currentWebsitePage);
-                    savePage.isModify = undefined;
-                    $http.put(config.apiUrlPrefix + 'website_pages', savePage).then(function (response) {
-                        cb && cb();
-                        currentWebsitePage.isModify = undefined;
-                        //console.log("delete storage " + currentWebsitePage.url);
+                    savePageContent(content, function () {
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
-                        Message.info("文件已保存到服务器");
-                         //console.log($scope.dataSource);
-                        if (currentDataSource) {
-                            var path = currentWebsitePage.url;
-                            path = path.substring(1);
-                            currentDataSource.writeFile({
-                                path: path,
-                                content: currentWebsitePage.content,
-                                message: 'wikicraft save file: ' + path
-                            }, function (result) {
-                                //alert('文件已保存到服务器及Github');
-                                Message.info("文件已同步到数据源");
-                            });
-                        }
+                        currentWebsitePage.isModify = false;
                         initTree();
-                    }).catch(function (response) {
+                        cb && cb();
+                        Message.info("文件保存成功");
+                    }, function () {
                         errcb && errcb();
-                        console.log(response.data);
-                        storage.indexedDBSetItem(currentWebsitePage);
+                        var page = angular.copy(currentWebsitePage);
+                        page.content = content;
+                        storage.indexedDBSetItem(page);
+                        Message.info("文件保存失败");
                     });
-                } else {// 新增
-                    console.log('save temp file');
                 }
             }
 
