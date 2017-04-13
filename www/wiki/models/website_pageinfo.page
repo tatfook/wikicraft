@@ -5,6 +5,7 @@ Author: wuxiangan
 Date: 2017/04/13
 ]]
 include_once("./abstract/base.page")
+include_once("./website.page")
 
 -- 暂时不用
 local website_pageinfo = inherit(models.abstract.base, gettable("models.website_pageinfo"))
@@ -13,6 +14,7 @@ website_pageinfo.db_name = "website_pageinfo";
 
 
 function website_pageinfo:ctor() 
+	self:addfield("userId","number")           -- 用户ID
 	self:addfield("websiteId","number")        -- 站点ID
 	self:addfield("dataSourceId", "number")    -- 数据源id  0 -- 没有数据源
 	self:addfield("pageinfo", "string")        -- 页信息  json 字符串
@@ -30,7 +32,26 @@ function website_pageinfo:api_upsert(params)
 end
 
 -- 获取站点页信息
-function website_pageinfo:api_get(params)
+function website_pageinfo:api_getByUserId(params)
+	if not params.userId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteDB = models.website:new()
+	local siteList = websiteDB:api_getAllByUserId({userId=params.userId}).data
+	if not siteList then
+		return errors:wrap(nil)
+	end
+
+	for _, site in ipairs(siteList) do
+		site.pageinfo = self:api_getByWebsiteId({websiteId=site._id, dataSourceId=site.dataSourceId or 0}).data
+	end
+	
+	return errors:wrap(nil, siteList)	
+end
+
+-- 获取站点页信息
+function website_pageinfo:api_getByWebsiteId(params)
 	if (not params.websiteId) or (not params.dataSourceId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -39,4 +60,5 @@ function website_pageinfo:api_get(params)
 
 	return errors:wrap(yield())
 end
+
 
