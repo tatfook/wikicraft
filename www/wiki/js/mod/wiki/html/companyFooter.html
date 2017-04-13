@@ -1,0 +1,40 @@
+<style>
+    .companyFooter{
+        background-color: #2A2A2A;
+        color:#A0A0A0 ;
+        padding:22px 0;
+    }
+    .companyFooter p{
+        margin-bottom: 0;
+    }
+    .companyFooter a{
+        color: #A0A0A0;
+        padding:0 6px;
+    }
+    .companyFooter .container{
+        display: flex;
+        align-items:center;
+    }
+    .companyFooter .friendsLink{
+        flex: 1;
+    }
+    .companyFooter .info{
+        font-size: 12px;
+        margin-top: 15px;
+    }
+    .companyFooter .brand{
+        color: #FFF;
+    }
+</style>
+<div class="companyFooter" ng-controller="companyFooterController">
+    <div class="container">
+        <p class="friendsLink">
+          公司链接：
+            <a href="{{link.url}}" target="_blank" ng-repeat="link in modParams.friendsLinks">{{link.name}}</a>
+        </p>
+        <div>
+            <p class="brand">{{modParams.companyName}}</p>
+            <p class="info">{{modParams.companyInfo}}</p>
+        </div>
+    </div>
+</div>
