@@ -1,0 +1,62 @@
+<style>
+    .company-about-second{
+        margin-top: 80px;
+    }
+    .company-about-second a{
+        color: inherit;
+    }
+    .company-about-second a:hover{
+        color: #20B4DC;
+    }
+    .company-about-second p{
+        margin:0;
+        text-indent: 2em;
+        line-height:28px;
+    }
+    .company-about-second img{
+        width: 100%;
+        height:340px;
+        object-fit: cover;
+    }
+    .company-about-second .container{
+        padding:0 0 0 15px;
+    }
+    .company-about-second h2{
+        color: #333;
+        margin: 0 0 65px 0;
+        display: flex;
+        align-items:center;
+    }
+    .company-about-second h2 span{
+        font-size: 20px;
+        color: #999;
+        flex:1;
+        padding-left: 10px;
+    }
+    .company-about-second .content-box{
+        padding: 0 5px 0 0;
+        max-height: 340px;
+        overflow: hidden;
+        position: relative;
+    }
+    .company-about-second .content{
+        font-size: 16px;
+        line-height: 27px;
+    }
+</style>
+<div class="company-about-second" ng-controller="companyAboutSecondController">
+    <div class="container">
+        <div class="col-sm-6 content-box">
+            <h2>{{modParams.columnName}} <span class="info">{{modParams.columnInfo}}</span></h2>
+            <div class="content">
+                <p ng-repeat="paragraph in modParams.paragraphs">
+                    {{paragraph}}
+                </p>
+                <p><a href="{{modParams.moreNewsLink}}" class="pull-right" target="_blank">了解详情>></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <img ng-src="{{modParams.companyImg}}" alt="">
+        </div>
+    </div>
+</div>

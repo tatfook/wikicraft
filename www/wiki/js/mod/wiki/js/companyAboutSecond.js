@@ -5,10 +5,10 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/wiki/html/companyAbout.html'
+    'text!wikimod/wiki/html/companyAboutSecond.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
-        app.registerController('companyAboutController',['$scope', function ($scope) {
+        app.registerController('companyAboutSecondController',['$scope', function ($scope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
         }]);
@@ -22,10 +22,10 @@ define([
 })
 
 /*
- ```@wiki/js/companyAbout
+ ```@wiki/js/companyAboutSecond
  {
- "columnName":"ABOUT",
- "columnInfo":"关于我们",
+ "columnName":"关于我们",
+ "columnInfo":"ABOUT",
  "moreNewsLink":"http://www.tatfook.com/?cat=10",
  "paragraphs":[
  "深圳市大富科技股份有限公司成立于2001年，是一家集产品研发、生产和销售为一体的国家级高新技术企业，2010年10月26日于深圳市证券交易所挂牌上市（股票代码300134）。",
