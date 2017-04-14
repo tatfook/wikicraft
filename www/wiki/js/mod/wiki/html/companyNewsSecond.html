@@ -1,0 +1,137 @@
+<style>
+    .company-news-second{
+        margin-top: 80px;
+    }
+    .company-news-second .container{
+        padding:0;
+    }
+    .company-news-second .ellipsis-1{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .company-news-second .ellipsis-2{
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+    .company-news-second a{
+        color: inherit;
+    }
+    .company-news-second h1{
+        font-size: 40px;
+        font-weight: bold;
+        margin: 0;
+        color: #FFF;
+        padding-bottom: 0px;
+    }
+    .company-news-second h2{
+        color: #333;
+        margin: 0 0 60px 0;
+        display: flex;
+        align-items:center;
+    }
+    .company-news-second h2 span{
+        font-size: 20px;
+        color: #999;
+        flex:1;
+        padding-left: 10px;
+    }
+    .company-news-second h4.top-news-title{
+        margin: 20px 0 30px;
+    }
+    .company-news-second img{
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+    }
+    .company-news-second p{
+        color: #666;
+        line-height:26px;
+        margin-bottom: 0;
+    }
+    .company-news-second a.btn{
+        color: #666;
+        border: 1px solid;
+        font-size: 14px;
+        padding:5px 15px;
+    }
+    .company-news-second a.btn:hover{
+        color: #FFF;
+        background-color: #21B3DB;
+        font-size: 14px;
+    }
+    .company-news-second .year-month{
+        font-size: 12px;
+        font-weight:bold;
+    }
+    .company-news-second .list-group{
+        margin-bottom: 0;
+    }
+    .company-news-second .img-text{
+        display: inline-block;
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #DCDCDC;
+        margin-bottom: 0;
+        padding:28px 0;
+    }
+    .company-news-second .img-text:hover .time{
+        background-color: #21B3DB;
+        color: #FFF;
+    }
+    .company-news-second .img-text:hover h4 a{
+        color: #21B3DB;
+    }
+    .company-news-second .img-text:first-child{
+        padding-top: 0;
+    }
+    .company-news-second .img-text:last-child{
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+    .company-news-second .time{
+        color: #656565;
+        width: 80px;
+        text-align: center;
+        background-color: #CBCBCB;
+        padding: 10px 0;
+    }
+    .company-news-second .time p{
+        color: #FFF;
+    }
+    .company-news-second .img-text .text{
+        padding-left: 95px;
+    }
+    .company-news-second .img-text h4{
+        margin: 0 0 24px;
+        font-weight: normal;
+
+    }
+</style>
+<div class="company-news-second" ng-controller="companyNewsSecondController">
+    <div class="container">
+        <div class="col-sm-6">
+            <h2>{{modParams.leftColumnName}} <span class="info">{{modParams.leftColumnInfo}}</span></h2>
+            <img ng-src="{{modParams.topNewsImg}}" alt="">
+            <h4 class="ellipsis-1 top-news-title">{{modParams.topNewsTitle}}</h4>
+            <p class="ellipsis-2">{{modParams.topNewsContent}}</p>
+        </div>
+        <div class="col-sm-6">
+            <h2>{{modParams.rightColumnName}} <span class="info">{{modParams.rightColumnInfo}}</span><a href="{{modParams.moreNewsLink}}" target="_blank" class="btn">更多></a></h2>
+            <ul class="list-group">
+                <li class="list-group-item img-text clearfix" ng-repeat="newsItem in modParams.news">
+                    <div class="time pull-left">
+                        <h1><a href="{{newsItem.newsLink}}" target="_blank">{{newsItem.day}}</a></h1>
+                        <p class="year-month"><a href="{{newsItem.newsLink}}" target="_blank">{{newsItem.yearMonth}}</a></p>
+                    </div>
+                    <div class="text">
+                        <h4 class="ellipsis-1"><a href="{{newsItem.newsLink}}" target="_blank">{{newsItem.title}}</a></h4>
+                        <p class="ellipsis-2"><a href="{{newsItem.newsLink}}" target="_blank">{{newsItem.content}}</a></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
