@@ -8,6 +8,8 @@ include_once("./abstract/base.page")
 include_once("./user.page")
 include_once("./user_favorite.page")
 include_once("./website_pages.page")
+include_once("./website_page.page")
+include_once("./website_pageinfo.page")
 include_once("./website_member.page")
 include_once("./website_apply.page")
 include_once("./website_renewal.page")
@@ -103,52 +105,41 @@ function website:create(params)
 	params.dataSourceId = userinfo.dataSourceId
 
 	self:db():insertOne({name=params.name}, params, resume)	
-	local err, site = yield()
-
-	if err then
+	local _, site = yield()
+	if not site then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
 	end
 
-	-- 不是个人网站则将网站添加到个人站点下
-	--[[
-		local websiteWorksDB = models.website_works:new()
-		local personalSite = self:api_getPersonalSiteByUserId({userId=params.userId}).data
-		websiteWorksDB:create({websiteId=personalSite._id, worksId=site._id, worksFlag=util.WORKS_FLAG_NORMAL}) 
-	]]
-
+	local websiteDomainDB = models.website_domain:new()
+	websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	
 	-- create index page by template content 	
-	local website_pages_db = models.website_pages:new()
-	-- local template_style_db = models.website_template_style:new()
-	-- local data = template_style_db:api_getIndexPage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId})
-	local template_config_db = models.website_template_config:new()
-	local data = template_config_db:api_getTemplateStylePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId}).data
+	local templateConfigDB = models.website_template_config:new()
+	local data = templateConfigDB:api_getTemplateStylePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId}).data
 	data = data or {content="", theme=""}
 	
 	-- 创建功能模板页
-	local page = {name="index"}
-	page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
-	page.websiteName = params.name
-	page.websiteId = site._id
-	page.content = data.content or ""
-	page.userId = params.userId
-	website_pages_db:create(page)
+	local indexPage = {}
+	indexPage.name = "index"
+	indexPage.url = "/" .. params.username .. '/' ..  params.name .. '/' .. indexPage.name
+	indexPage.websiteName = params.name
+	indexPage.websiteId = site._id
+	indexPage.userId = params.userId
+	indexPage.content = data.content or ""
 	
-	-- 创建布局模板页
-	if data.theme and data.theme ~= "" then
-		page.content = data.theme or ""	
-		page.name = "_theme"
-		page.url = "/" .. params.username .. '/' ..  params.name .. '/' .. page.name
-		website_pages_db:create(page)
-	end
+	local themePage = commonlib.copy(indexPage)
+	themePage.name = "_theme"
+	themePage.url = "/" .. params.username .. '/' ..  params.name .. '/' .. themePage.name
+	themePage.content = data.theme or ""	
 
-	-- create website domain record
-	local websiteDomainDB = models.website_domain:new()
-	-- websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	
-	if site.domain then 
-		websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' ..  site.domain})	
-	end
+	local websitePageDB = models.website_page:new()
+	websitePageDB:api_upsert({url=indexPage.url, content=indexPage.content})
+	websitePageDB:api_upsert({url=themePage.url, content=themePage.content})
 
-	return {error=errors.SUCCESS, data=site}
+	local pageinfo = commonlib.Json.Encode({indexPage, themePage})	
+	local websitePageinfoDB = models.website_pageinfo:new()
+	websitePageinfoDB:api_upsert({websiteId=site._id, dataSourceId=site.dataSourceId, pageinfo=pageinfo})	
+	
+	return errors:wrap(nil, site)
 end
 
 -- 删除站点
@@ -307,8 +298,10 @@ end
 
 -- 获得用户站点列表  TODO:用户建站数量做限制，故暂不分页
 function website:api_getAllByUserId(params) 
-	local userId = self:ensureAuthenticated()
-	userId = params.userId or userId
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
 	self:db():find({["+userId"]=userId}, resume)
 	
 	return errors:wrap(yield())
@@ -539,3 +532,58 @@ function website:api_getByDomain(params)
 	
 	return errors:wrap(yield())
 end
+
+
+-- 获取站点详细信息
+function website:api_getDetailInfoByName(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getByName({username=params.username}).data
+	
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+userId+name"]={userinfo._id, params.sitename}}, resume)
+	local _, siteinfo = yield()
+	
+	if not siteinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local websitePageinfoDB = models.website_pageinfo:new()
+	local pageinfo = websitePageinfoDB:api_getByWebsiteId({websiteId=siteinfo._id, dataSourceId=siteinfo.dataSourceId}).data or {}
+	pageinfo = pageinfo.content
+
+	local url = '/' .. params.username .. '/' .. params.sitename .. '/' .. (params.pagename or "index")
+	local websitePageDB = models.website_page:new()
+	local pageContent = websitePageDB:api_getByUrl({url=url}).data	
+	
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, })
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
