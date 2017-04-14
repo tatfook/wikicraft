@@ -212,8 +212,13 @@ define([
             }, errcb)
         }
         
-        github.getRawContent = function () {
-            
+        github.getRawContent = function (params, cb, errcb) {
+            var url = github.getRawContentUrlPrefix(params);
+            $http.get(url).then(function (response) {
+                cb && cb(response.data);
+            }).catch(function (response) {
+                errcb && errcb(response);
+            });
         }
 
         github.uploadImage = function (params, cb, errcb) {

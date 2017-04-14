@@ -124,7 +124,7 @@ define([
                 $rootScope.pageinfo = undefined;
                 $rootScope.tplinfo = undefined;
                 if (urlObj.username && urlObj.sitename) {
-                    util.http("POST", config.apiUrlPrefix + "website_pages/getDetailInfo", {
+                    util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
                         username: urlObj.username,
                         sitename: urlObj.sitename,
                         pagename: urlObj.pagename || 'index',
@@ -134,14 +134,36 @@ define([
                         // 这三种基本信息根化，便于用户页内模块公用
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo;
-                        $rootScope.pageinfo = data.pageinfo;
-                        $rootScope.tplinfo = data.tplinfo;
-                        $rootScope.$broadcast('userpageLoaded',{});
-                        var pageContent = data.pageinfo ? data.pageinfo.content : '<div>用户页丢失!!!</div>';
-                        pageContent = md.render(pageContent);
-                        //console.log(pageContent);
-                        pageContent = $compile(pageContent)($scope);
-                        $('#__UserSitePageContent__').html(pageContent);
+
+                        var pageContent = data.pageContent;
+                        var pageList = angular.fromJson(data.pageinfo);
+                        var themeUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/_theme';
+                        var pageUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
+                        for (var i = 0; i < pageList.length; i++) {
+                            if (pageList[i].url == themeUrl) {
+                                $rootScope.siteinfo.themeContent = pageList[i].content;
+                            }
+
+                            if (pageList[i].url == pageUrl) {
+                                $rootScope.pageinfo = pageList[i];
+                            }
+                        }
+                        
+                        var renderContent = function (content) {
+                            $rootScope.$broadcast('userpageLoaded',{});
+                            content = md.render(content ||  '<div>用户页丢失!!!</div>');
+                            util.html('#__UserSitePageContent__', content, $scope);
+                        };
+
+                        dataSource.registerInitFinishCallback(function () {
+                            var ds = dataSource.getDataSourceById($rootScope.siteinfo.dataSourceId);
+                            var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
+                            ds.getContent({path:url.substring(1)}, function (data) {
+                                renderContent(data);
+                            }, function () {
+                                renderContent(pageContent);
+                            });
+                        });
                     });
                 } else if (urlObj.username){
                     util.html('#__UserSitePageContent__', userHtmlContent, $scope);
@@ -160,11 +182,11 @@ define([
                 setWindowTitle(urlObj);
 
                 if (config.mainContent) {
-                    if (urlObj.username == "wiki") {
-                        renderHtmlText(urlObj.pathname, md);
-                    } else {
+                    if (urlObj.pathname.indexOf("/wiki/mod/") == 0) {
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         config.mainContent = undefined;
+                    } else {
+                        renderHtmlText(urlObj.pathname, md);
                     }
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {

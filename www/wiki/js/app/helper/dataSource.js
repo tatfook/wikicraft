@@ -28,10 +28,20 @@ define([
     }
 
     var dataSourceObj = {
+        isInitFinish:false,
+        initFinishCallbackList:[],
         dataSourceMap:{},
         dataSourceList:undefined,
         defaultDataSourceId:undefined,
     };
+
+    dataSourceObj.registerInitFinishCallback = function (callback) {
+        if (dataSourceObj.isInitFinish) {
+            callback && callback();
+        } else {
+            dataSourceObj.initFinishCallbackList.push(callback);
+        }
+    }
 
     dataSourceObj.registerDataSource = function (name, obj) {
         dataSourceObj.dataSourceMap[name] = obj;
@@ -64,26 +74,51 @@ define([
         return dataSourceObj.getDataSourceById(dataSourceObj.defaultDataSourceId);
     }
 
-    dataSourceObj.init = function (dataSourceFactory, dataSourceList,defaultDataSourceId) {
+    dataSourceObj.init = function (dataSourceFactory, dataSourceList, defaultDataSourceId) {
         dataSourceObj.dataSourceList = dataSourceList;
         dataSourceObj.defaultDataSourceId = defaultDataSourceId;
 
-        var _init = function(dataSource, dataSourceInstance) {
-            if (!dataSourceInstance)
+        var isInited = [];
+        
+        var initFinish = function (index) {
+            isInited[index] = true;
+            if (isInited.length == dataSourceList.length) {
+                for (var i = 0; i < isInited.length; i++) {
+                    if (!isInited[i]) {
+                        return;
+                    }
+                }
+
+                for (var i = 0; i < dataSourceObj.initFinishCallbackList.length; i++) {
+                    var callback = dataSourceObj.initFinishCallbackList[i];
+                    callback && callback();
+                    dataSourceObj.initFinishCallbackList = [];
+                }
+                dataSourceObj.isInitFinish = true;
+            }
+        }
+
+        var _init = function(dataSource, dataSourceInstance, i) {
+            if (!dataSourceInstance) {
+                initFinish(i);
                 return;
+            }
             dataSourceInstance.init(dataSource, function () {
                 console.log(dataSource.name + " data source init success");
                 dataSourceObj.registerDataSource(dataSource.name, dataSourceInstance);
+                initFinish(i);
             }, function () {
                 console.log(dataSource.name + " data source init failed");
+                initFinish(i);
             });
         }
 
         for (var i = 0; i < dataSourceList.length; i++) {
+            isInited.push(false);
             var dataSource = dataSourceList[i];
             var dataSourceInstance = dataSourceFactory[dataSource.type];
             dataSourceInstance = dataSourceInstance && dataSourceInstance();
-            _init(dataSource, dataSourceInstance);
+            _init(dataSource, dataSourceInstance, i);
         }
     }
 

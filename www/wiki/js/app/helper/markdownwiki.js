@@ -276,14 +276,14 @@ define([
 
         var siteinfo = util.getAngularServices().$rootScope.siteinfo;
         var pageinfo = util.getAngularServices().$rootScope.pageinfo;
-        var tplinfo = util.getAngularServices().$rootScope.tplinfo;
+        var themeContent = siteinfo && siteinfo.themeContent;
 
         mdwiki.template = undefined;
         mdwiki.templateLineCount = 0;
         var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
         if ((mdwiki.template && mdwiki.template.blockCache.domNode) || !pageinfo ||          // 模板没有改变 被缓存  页面信息错误
             (!mdwiki.template && (pageinfo.name[0] == "_" || !mdwiki.options.use_template    /* 模板不存在 且配置不使用默认模板(_pagename默认不是使用默认模板)*/
-            || !tplinfo || !tplinfo.content  ))) {// 模板不存在 且默认模板也不存在
+            || !themeContent  ))) {// 模板不存在 且默认模板也不存在
             /*
              console.log("-------------------");
              console.log(mdwiki.template && mdwiki.template.blockCache.domNode);

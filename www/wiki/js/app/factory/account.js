@@ -35,7 +35,7 @@ define([
                     'gitlab': gitlab,
                     'github': github,
                 };
-                DataSource.setDefaultDataSourceId(user.dataSourceId);
+
                 if (!user.dataSource || user.dataSource.length == 0) {
                     util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId: user._id}, function (data) {
                         user.dataSource = data || [];

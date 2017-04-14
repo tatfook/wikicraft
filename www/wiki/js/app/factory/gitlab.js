@@ -95,6 +95,11 @@ define([
             gitlab.httpRequest("GET", url, params, cb, errcb);
         }
 
+        // 获取原始内容
+        gitlab.getRawContent = function (params, cb, errcb) {
+            gitlab.getContent(params, cb, errcb);
+        }
+
         // 删除文件
         gitlab.deleteFile = function (params, cb, errcb) {
             var url = gitlab.getFileUrlPrefix() + params.path;
