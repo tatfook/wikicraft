@@ -4,9 +4,10 @@
 
 define([
     'app',
+    'helper/dataSource',
     'helper/storage',
     'js-base64'
-], function (app, storage) {
+], function (app, dataSource, storage) {
     app.factory('github', ['$http', function ($http) {
         var github = {
             inited: false,
@@ -256,8 +257,12 @@ define([
             });
         }
 
-        return function() {
+        var githubFactory = function() {
             return angular.copy(github);
         }
+
+        dataSource.registerDataSourceFactory("github", githubFactory);
+        
+        return githubFactory;
     }]);
 });

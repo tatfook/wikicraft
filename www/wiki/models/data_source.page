@@ -7,8 +7,7 @@ Date: 2016/10/21
 
 
 include_once("./abstract/base.page")
--- include_once("./website.page")
--- include_once("./user.page")
+include_once("./user.page")
 
 local data_source = inherit(models.abstract.base, gettable("models.data_source"))
 data_source.db_name = "data_source"
@@ -135,15 +134,22 @@ end
 
 -- 开启内部gitlab数据源
 function data_source:api_linkInnerGitlab(params)
-	if (not params.userId) or (not params.username) then
+	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local userDB = models.user:new()
+	userDB:db():findOne({_id=params.userId}, resume)
+	local _, userinfo = yield()
+	if not userinfo then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 	
 	-- 是否已存在
 	local ds = self:api_getInnerGitlabByUserId(params).data
 	-- 不存在创建
 	if not ds then
-		params.name = "gitlab_" .. (params.name or params.username)
+		params.name = "gitlab_" .. (params.name or userinfo.username)
 		params.username = params.name
 		params.email = params.name .. '@paraengine.com'
 		params.password = params.password or tostring(os.time())

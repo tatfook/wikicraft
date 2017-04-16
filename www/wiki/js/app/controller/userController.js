@@ -61,6 +61,7 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded', function () {
+            console.log("------------------init user controller----------------------");
             if ($scope.urlObj.username) {
                 init();
             } else {

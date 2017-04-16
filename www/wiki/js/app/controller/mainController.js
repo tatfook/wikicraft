@@ -135,30 +135,36 @@ define([
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo;
 
+                        var dataSourceId = data.userinfo.dataSourceId;
                         var pageContent = data.pageContent;
-                        var pageList = angular.fromJson(data.pageinfo);
                         var themeUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/_theme';
                         var pageUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
-                        for (var i = 0; i < pageList.length; i++) {
-                            if (pageList[i].url == themeUrl) {
-                                $rootScope.siteinfo.themeContent = pageList[i].content;
-                            }
 
-                            if (pageList[i].url == pageUrl) {
-                                $rootScope.pageinfo = pageList[i];
+                        if (data.siteinfo) {
+                            dataSourceId = data.siteinfo.dataSourceId || dataSourceId;
+                            var pageList = angular.fromJson(data.siteinfo.pageinfo || '[]');
+                            for (var i = 0; i < pageList.length; i++) {
+                                if (pageList[i].url == themeUrl) {
+                                    $rootScope.siteinfo.themeContent = pageList[i].content;
+                                }
+
+                                if (pageList[i].url == pageUrl) {
+                                    $rootScope.pageinfo = pageList[i];
+                                }
                             }
                         }
-                        
+
                         var renderContent = function (content) {
                             $rootScope.$broadcast('userpageLoaded',{});
                             content = md.render(content ||  '<div>用户页丢失!!!</div>');
                             util.html('#__UserSitePageContent__', content, $scope);
                         };
 
-                        dataSource.registerInitFinishCallback(function () {
-                            var ds = dataSource.getDataSourceById($rootScope.siteinfo.dataSourceId);
-                            var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + urlObj.pagename;
-                            ds.getContent({path:url.substring(1)}, function (data) {
+                        var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
+                        userDataSource.init(data.userinfo.dataSource, data.userinfo.dataSourceId);
+                        userDataSource.registerInitFinishCallback(function () {
+                            var ds = userDataSource.getDataSourceById(dataSourceId);
+                            ds.getContent({path:pageUrl.substring(1)}, function (data) {
                                 renderContent(data);
                             }, function () {
                                 renderContent(pageContent);

@@ -7,9 +7,9 @@ define([
     'helper/storage',
     'helper/util',
     'helper/dataSource'
-], function (app, storage, util, DataSource) {
-    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'github', 'Message', 'gitlab', 'github',
-        function ($auth, $rootScope, $http, $uibModal, github, Message, gitlab, github) {
+], function (app, storage, util, dataSource) {
+    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'github', 'Message',
+        function ($auth, $rootScope, $http, $uibModal, github, Message) {
             var account = undefined;
             var angularService = util.getAngularServices();
             if (!angularService || !angularService.$http) {
@@ -31,19 +31,16 @@ define([
 
             // 初始化数据源
             function initDataSource(user) {
-                var dataSourceFactory = {
-                    'gitlab': gitlab,
-                    'github': github,
-                };
-
+                dataSource.setDefaultUsername(user.username);
+                var DataSource = dataSource.getUserDataSource(user.username);
                 if (!user.dataSource || user.dataSource.length == 0) {
                     util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId: user._id}, function (data) {
                         user.dataSource = data || [];
                         storage.localStorageSetItem("userinfo", user);
-                        DataSource.init(dataSourceFactory, user.dataSource, user.dataSourceId);
+                        DataSource.init(user.dataSource, user.dataSourceId);
                     });
                 } else {
-                    DataSource.init(dataSourceFactory, user.dataSource, user.dataSourceId);
+                    DataSource.init(user.dataSource, user.dataSourceId);
                 }
             }
 

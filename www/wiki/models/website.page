@@ -7,6 +7,7 @@ Date: 2016/10/10
 include_once("./abstract/base.page")
 include_once("./user.page")
 include_once("./user_favorite.page")
+include_once("./user_visit_history.page")
 include_once("./website_pages.page")
 include_once("./website_page.page")
 include_once("./website_pageinfo.page")
@@ -120,7 +121,8 @@ function website:create(params)
 	-- 创建功能模板页
 	local indexPage = {}
 	indexPage.name = "index"
-	indexPage.url = "/" .. params.username .. '/' ..  params.name .. '/' .. indexPage.name
+	indexPage.url = "/" .. params.username .. '/' ..  site.name .. '/' .. indexPage.name
+	indexPage.username = params.username
 	indexPage.websiteName = params.name
 	indexPage.websiteId = site._id
 	indexPage.userId = params.userId
@@ -128,7 +130,7 @@ function website:create(params)
 	
 	local themePage = commonlib.copy(indexPage)
 	themePage.name = "_theme"
-	themePage.url = "/" .. params.username .. '/' ..  params.name .. '/' .. themePage.name
+	themePage.url = "/" .. params.username .. '/' ..  site.name .. '/' .. themePage.name
 	themePage.content = data.theme or ""	
 
 	local websitePageDB = models.website_page:new()
@@ -137,7 +139,7 @@ function website:create(params)
 
 	local pageinfo = commonlib.Json.Encode({indexPage, themePage})	
 	local websitePageinfoDB = models.website_pageinfo:new()
-	websitePageinfoDB:api_upsert({websiteId=site._id, dataSourceId=site.dataSourceId, pageinfo=pageinfo})	
+	websitePageinfoDB:api_upsert({username=site.username, websiteName=site.name, dataSourceId=site.dataSourceId, pageinfo=pageinfo})	
 	
 	return errors:wrap(nil, site)
 end
@@ -562,18 +564,27 @@ function website:api_getDetailInfo(params)
 	local _, siteinfo = yield()
 	
 	if not siteinfo then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+		return errors:wrap(nil, {userinfo=userinfo})
 	end
 
 	local websitePageinfoDB = models.website_pageinfo:new()
 	local pageinfo = websitePageinfoDB:api_get({userId=siteinfo.userId, websiteName=siteinfo.name, dataSourceId=siteinfo.dataSourceId}).data or {}
-	pageinfo = pageinfo.content
+	siteinfo.pageinfo = pageinfo.content
 
 	local url = '/' .. params.username .. '/' .. params.sitename .. '/' .. (params.pagename or "index")
 	local websitePageDB = models.website_page:new()
 	local pageContent = websitePageDB:api_getByUrl({url=url}).data	
 	
-	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo, pageContent=pageContent})
+	-- 增加站点访问量
+	self:api_addVisitNum({websiteName=params.sitename})
+
+	-- 添加访问记录
+	if params.userId then
+		local userVisitHistoryDB = models.user_visit_history:new()
+		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=siteinfo.name,url=url})
+	end
+
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageContent=pageContent})
 end
 
 

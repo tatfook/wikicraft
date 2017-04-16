@@ -4,9 +4,10 @@
 
 define([
     'app',
+    'helper/dataSource',
     'helper/storage',
-    'js-base64'
-], function (app, storage) {
+    'js-base64',
+], function (app, dataSource, storage) {
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,
@@ -190,8 +191,13 @@ define([
             return gitlab.type;
         }
 
-        return function () {
+        var gitlabFactory = function () {
             return angular.copy(gitlab);
         }
+
+        // 注册数据源构造器
+        dataSource.registerDataSourceFactory("gitlab", gitlabFactory);
+
+        return gitlabFactory;
     }]);
 });

@@ -6,68 +6,106 @@ Date: 2017/04/13
 ]]
 include_once("./abstract/base.page")
 include_once("./website.page")
+include_once("./user.page");
+include_once("./user_trends.page");
+include_once("./user_active.page");
 
 -- 暂时不用
 local website_pageinfo = inherit(models.abstract.base, gettable("models.website_pageinfo"))
 
 website_pageinfo.db_name = "website_pageinfo";
 
+local WEBSITE_PAGEINFO_SITE_NOT_EXIST = 0
+local WEBSITE_PAGEINFO_SITE_EXIST = 1
 
 function website_pageinfo:ctor() 
-	self:addfield("userId","number")           -- userID
+	self:addfield("username","string")         -- username
 	self:addfield("websiteName","string")      -- 站点ID
 	self:addfield("dataSourceId", "number")    -- 数据源id  0 -- 没有数据源
+	self:addfield("isExistSite", "number")     -- 站点是否存在
 	self:addfield("pageinfo", "string")        -- 页信息  json 字符串
 end
 
 -- 添加记录
 function website_pageinfo:api_upsert(params)
-	if (not params.userId) or (not params.websiteName) or (not params.dataSourceId) then
+	if (not params.username) or (not params.websiteName) or (not params.dataSourceId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local userId = self:ensureAuthenticated() -- 此函数只能是授权用户操作自己的页面
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getByName({username=params.username}).data
+
+	if (not userinfo) or (userId ~= userinfo._id) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({["+userId+websiteName+dataSourceId"]={params.userId, params.websiteName, params.dataSourceId}}, params, resume)
+	self:db():insertOne({["+username+websiteName+dataSourceId"]={params.username, params.websiteName, params.dataSourceId}}, params, resume)
+
+	-- 获得站点
+	local websiteDB = models.website:new()
+	websiteDB:db():findOne({["+username+name"]={params.username, params.websiteName}}, resume)
+	local _, siteinfo = yield()
+	
+	-- 创建动态
+	if siteinfo then
+		local userTrendsDB = models.user_trends:new()
+		userTrendsDB:api_websiteRenewal({websiteId=params.websiteId, otherUserId=params.userId})	
+	end
+
+	-- 修改活动记录
+	local userActiveDB = models.user_active:new()
+	userActiveDB:api_addActiveCount({userId=userId})
 
 	return errors:wrap(yield())
 end
 
 -- 删除记录
 function website_pageinfo:api_delete(params)
-	if (not params.userId) or (not params.websiteName) then
+	if (not params.username) or (not params.websiteName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():delete({["+userId+websiteName"]={params.userId, params.websiteName}}, resume)
+	self:db():delete({["+username+websiteName"]={params.username, params.websiteName}}, resume)
 
 	return errors:wrap(yield())
 end
 
 -- 获取站点页信息
-function website_pageinfo:api_getByUserId(params)
-	if not params.userId then 
+function website_pageinfo:api_getByUsername(params)
+	if not params.username then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	local pageinfoList = {}
+	-- 获取站点信息
 	local websiteDB = models.website:new()
-	local siteList = websiteDB:api_getAllByUserId({userId=params.userId}).data
-	if not siteList then
-		return errors:wrap(nil)
-	end
+	local siteList = websiteDB:api_getAllByUsername({username=params.username}).data or {}
 
+	-- 获取站点的页面信息
 	for _, site in ipairs(siteList) do
-		site.pageinfo = self:api_get({websiteName=site.name, userId=site.userId, dataSourceId=site.dataSourceId or 0}).data or {}
+		site.pageinfo = self:api_get({websiteName=site.name, username=site.username, dataSourceId=site.dataSourceId or 0}).data or {}
 		site.pageinfo = site.pageinfo.pageinfo
+		pageinfoList[#pageinfoList+1] = site.pageinfo
 	end
-	return errors:wrap(nil, siteList)	
+	
+	-- 获取没有站点的页面信息	
+	self:db():find({["+username+isExistSite"]={params.username, WEBSITE_PAGEINFO_SITE_NOT_EXIST}}, resume)
+	local _, tmpList = yield()
+	for _, pageinfo in ipairs(tmpList) do
+		pageinfoList[#pageinfoList+1] = pageinfo.pageinfo
+	end
+	
+	return errors:wrap(nil, {siteList=siteList, pageinfoList=pageinfoList})	
 end
 
 -- 获取站点页信息
 function website_pageinfo:api_get(params)
-	if (not params.userId) or (not params.websiteName) or (not params.dataSourceId) then
+	if (not params.username) or (not params.websiteName) or (not params.dataSourceId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["+userId+websiteName+dataSourceId"]={params.userId, params.websiteName, params.dataSourceId}}, resume)
+	self:db():findOne({["+username+websiteName+dataSourceId"]={params.username, params.websiteName, params.dataSourceId}}, resume)
 
 	return errors:wrap(yield())
 end

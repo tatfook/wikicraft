@@ -156,7 +156,7 @@ end
 
 function RenderServerWikiScript() 
 	local siteConfig = wiki_config()
-	log(siteConfig)
+	--log(siteConfig)
 	local config = {}
 	config.officialDomain = "keepwork.com"
 	config.hostname = request:GetHost()

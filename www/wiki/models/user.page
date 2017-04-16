@@ -316,23 +316,30 @@ function user:api_register(params)
 	return errors:wrap(nil, {token=createJWT(userInfo), userInfo=userInfo})
 end
 
+function user:api_getUserDataSource(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local dataSourceDB = models.data_source:new()
+	local dataSource = dataSourceDB:api_getByUserId({userId=params.userId}).data
+	if (not dataSource) or (#dataSource == 0) then
+		dataSourceDB:api_linkInnerGitlab({userId=params.userId})
+	end
+	
+	return errors:wrap(nil, dataSource)
+end
+
 -- 获取用户信息
 function user:api_getProfile()
 	local userId = self:ensureAuthenticated()
 	self:db():findOne({_id=userId}, resume)
-
 	local err, data = yield()
 	if not data then 
 		return errors:wrap(nil)
 	end
 
-	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getByUserId({userId=data._id}).data
-	if (not dataSource) or (#dataSource == 0) then
-		dataSourceDB:api_linkInnerGitlab({userId=data._id, username=data.username})
-	end
-	data.dataSource = dataSource
-
+	data.dataSource = self:api_getUserDataSource({userId=userId}).data
 	return errors:wrap(nil, data)
 end
 
@@ -350,6 +357,7 @@ function user:api_getById(params)
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
 
+	data.dataSource = self:api_getUserDataSource(params).data
 	return errors:wrap(nil, data)
 end
 
@@ -367,6 +375,7 @@ function user:api_getByName(params)
 	
 	data.password = nil
 
+	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
 	return errors:wrap(nil, data)
 end
 
@@ -384,6 +393,7 @@ function user:api_getByEmail(params)
 	
 	data.password = nil
 
+	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
 	return errors:wrap(nil, data)
 end
 

@@ -56,7 +56,7 @@ define([
         // 删除网站
         $scope.deleteWebsite = function (site) {
             dataSource.registerInitFinishCallback(function () {
-                util.post(config.apiUrlPrefix + 'website_pageinfo/get', {userId:site.userId, websiteName:site.name, dataSourceId:site.dataSourceId}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_pageinfo/get', {username:site.username, websiteName:site.name, dataSourceId:site.dataSourceId}, function (data) {
                     var pageList = angular.fromJson(data ? (data.pageinfo || '[]') : '[]');
                     var ds = dataSource.getDataSourceById(site.dataSourceId);
                     console.log(pageList, ds);
