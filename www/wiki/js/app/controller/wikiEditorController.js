@@ -1707,7 +1707,7 @@ define([
                     var content = editor.getValue();
                     //console.log(currentWebsitePage);
 
-                    if (currentWebsitePage._id && !currentWebsitePage.isModify && content != currentWebsitePage.content &&
+                    if (!currentWebsitePage.isModify && content != currentWebsitePage.content &&
                         (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g, "") != currentWebsitePage.content.replace(/[\r\n]*/g, ""))) { // 解决 editor.setValue(text); text != editor.getValue() 问题
                         //console.log("--------manual modify--------------");
                         currentWebsitePage.isModify = true;

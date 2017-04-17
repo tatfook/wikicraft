@@ -41,6 +41,7 @@ function website_pageinfo:api_upsert(params)
 	end
 
 	self:db():insertOne({["+username+websiteName+dataSourceId"]={params.username, params.websiteName, params.dataSourceId}}, params, resume)
+	local _, pageinfo = yield()
 
 	-- 获得站点
 	local websiteDB = models.website:new()
@@ -57,7 +58,7 @@ function website_pageinfo:api_upsert(params)
 	local userActiveDB = models.user_active:new()
 	userActiveDB:api_addActiveCount({userId=userId})
 
-	return errors:wrap(yield())
+	return errors:wrap(nil)
 end
 
 -- 删除记录

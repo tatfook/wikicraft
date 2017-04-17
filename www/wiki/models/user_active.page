@@ -56,7 +56,7 @@ function user_active:api_addActiveCount(params)
 	if not active then
 		active = {userId=params.userId, year=year,active={}}
 	end
-	
+
 	active.active[date] = active.active[date] or 0
 	active.active[date] = active.active[date] + count		
 
