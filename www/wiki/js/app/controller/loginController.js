@@ -58,6 +58,18 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
             });
         }
 
+        $scope.qqLogin = function () {
+            console.log("QQ登录");
+        }
+
+        $scope.wechatLogin = function () {
+            console.log("微信登录");
+        }
+
+        $scope.sinaWeiboLogin = function () {
+            console.log("新浪微博登录");
+        }
+
         $scope.githubLogin = function () {
             $auth.authenticate("github").then(function (response) {
                 if (!response.data.token || !response.data.userInfo) {

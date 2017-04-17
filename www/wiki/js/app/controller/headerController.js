@@ -189,12 +189,12 @@ define([
                     console.log(result);
                 });
             } else {
-                util.go("login");
+                util.go("home");
             }
         };
 
         $scope.goRegisterPage = function () {
-            util.go("home");
+            util.go("join");
         };
 
         $scope.goHomePage = function () {

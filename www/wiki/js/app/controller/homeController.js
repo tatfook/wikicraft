@@ -41,6 +41,10 @@ define([
             });
         }
 
+        $scope.goRegisterPage = function () {
+            util.go('join');
+        }
+
         // 注册
         $scope.register = function () {
             $scope.errMsg = "";
@@ -121,8 +125,8 @@ define([
         $scope.login = function () {
             $scope.errMsg = "";
             var params = {
-                email: $scope.email.trim(),
-                password: $scope.password.trim(),
+                email: $scope.email? $scope.email.trim() : "",
+                password: $scope.password?$scope.password.trim():"",
             };
             if (!params.email || !params.password) {
                 $scope.errMsg = "用户名或密码错误";
@@ -147,6 +151,37 @@ define([
             }, function (error) {
                 $scope.errMsg = error.message;
                 $("#total-err").removeClass("visible-hidden");
+            });
+        }
+
+        $scope.qqLogin = function () {
+            console.log("QQ登录");
+        }
+
+        $scope.wechatLogin = function () {
+            console.log("微信登录");
+        }
+
+        $scope.sinaWeiboLogin = function () {
+            console.log("新浪微博登录");
+        }
+
+        $scope.githubLogin = function () {
+            $auth.authenticate("github").then(function (response) {
+                if (!response.data.token || !response.data.userInfo) {
+                    Message.info("github 登录失败!!!");
+                    return ;
+                }
+                console.log("github认证成功!!!");
+                $auth.setToken(response.data.token);
+                Account.setUser(response.data.userInfo);
+                if ($scope.isModal) {
+                    $scope.$close(response.data.userInfo);
+                } else {
+                    util.goUserSite('/' + response.data.userInfo.username);
+                }
+            }, function () {
+                console.log("github认证失败!!!");
             });
         }
 
@@ -197,7 +232,7 @@ define([
         // 回车提交注册
         $(document).keyup(function (event) {
             if(event.keyCode=="13"){
-                $scope.register();
+                $scope.login();
             }
         });
 
