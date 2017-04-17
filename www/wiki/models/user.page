@@ -206,7 +206,6 @@ function user:api_findPwdOne(params)
 		</div>
 	]]
 	par.body = string.format(par.body, url, url)
-	log(par)
 	util:sendEmail(par)
 	
 	return errors:wrap(nil)

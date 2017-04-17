@@ -74,7 +74,7 @@ define([
                         children: {},
                         url: treeNode.url + '/' + path,
                         siteId: page.websiteId,
-                        siteName: page.websiteName,
+                        sitename: page.websiteName,
                         pageId: page._id
                     };
 
@@ -109,7 +109,7 @@ define([
                 children: {},
                 url: '/' + site.username + '/' + site.name,
                 siteId: site._id,
-                siteName: site.name,
+                sitename: site.name,
                 pageId: -1,
             }
         }
@@ -233,14 +233,14 @@ define([
                     treeNode = data.pageNode;
                 }
             });
-            var selectableNodes = $('#newPageTreeId').treeview('search', [currentWebsite.name, {
+            var selectableNodes = $('#newPageTreeId').treeview('search', [currentWebsitePage.websiteName, {
                 ignoreCase: true,
                 exactMatch: false,
                 revealResults: true,  // reveal matching nodes
             }]);
 
             $.each(selectableNodes, function (index, item) {
-                if (item.pageNode.url == ('/' + currentWebsite.username + '/' + currentWebsite.name)) {
+                if (item.pageNode.url == ('/' + currentWebsitePage.username + '/' + currentWebsitePage.websiteName)) {
                     $('#newPageTreeId').treeview('selectNode', [item, {silent: false}]);
                     treeNode = item.pageNode;
                 }
@@ -280,15 +280,14 @@ define([
                     $scope.website = $scope.websites[i];
                 }
             }
-            //console.log($scope.website);
+            console.log($scope.website, treeNode);
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.name;
             $scope.websitePage.username = $scope.user.username;
-            $scope.websitePage.websiteName = $scope.website.name;
+            $scope.websitePage.websiteName = treeNode.sitename;
             $scope.websitePage.websiteId = $scope.website._id;
             $scope.websitePage.content = ""; // $scope.style.data[0].content;
-            $scope.websitePage.userId = $scope.website.userId;
+            $scope.websitePage.userId = $scope.user._id;
             $scope.websitePage.isModify = true;
-            console.log($scope.websitePage);
             for (var i = 0; i < $scope.websitePages.length; i++) {
                 var url1 = $scope.websitePages[i].url + '/';
                 var url2 = $scope.websitePage.url + '/';
@@ -300,6 +299,7 @@ define([
 
             currentWebsitePage = $scope.websitePage;
             currentWebsite = $scope.website;
+            console.log(currentWebsitePage);
             $uibModalInstance.close("page");
         }
     }]);
@@ -485,6 +485,7 @@ define([
                 }
                 var currentDataSource = dataSource.getUserDataSource($scope.user.username).getDataSourceById(dataSourceId);
                 //console.log(currentDataSource, dataSourceId);
+                //console.log(currentWebsite, getWebsiteByName(currentWebsitePage.websiteName));
                 util.post(config.apiUrlPrefix + 'website_pageinfo/upsert',
                     {
                         username: $scope.user.username,
@@ -621,6 +622,7 @@ define([
 
                 //console.log(currentWebsitePage);
                 // 设置全局用户页信息和站点信息
+                currentWebsite = getWebsiteByName(currentWebsitePage.websiteName);
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
 
@@ -717,6 +719,7 @@ define([
                             //console.log("-------------------------------");
                             //数据源未找到查找本地服务器页面
                             util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url:url}, function (data) {
+                                data = data || {};
                                 cb && cb(data.content);
                             }, errcb)
                         });
