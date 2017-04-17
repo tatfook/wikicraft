@@ -91,11 +91,11 @@
     .banner .col-md-4 {
         padding-bottom: 170px;
     }
-    .banner .col-md-3 {
-        background-color: rgba(255, 255, 255, .5);
-        padding: 55px 30px;
-        box-shadow: 0px 4px 30px 0px rgba(19, 61, 112, .30);
-    }
+    /*.banner .col-md-3 {*/
+        /*background-color: rgba(255, 255, 255, .5);*/
+        /*padding: 55px 30px;*/
+        /*box-shadow: 0px 4px 30px 0px rgba(19, 61, 112, .30);*/
+    /*}*/
     .banner .btn-primary {
         margin-top: 60px;
     }
@@ -188,6 +188,56 @@
     .whouse .col-md-3:nth-child(4) h4 {
         border-bottom: 2px solid #3977AD;
     }
+    /*注册表单改为登录表单*/
+    .form-login-box{
+        color: #333;
+        background-color: rgba(255, 255, 255, .5);
+        padding: 30px 60px;
+        box-shadow: 0px 4px 30px 0px rgba(19, 61, 112, .30);
+    }
+    .form-login-box a{
+        color: #3977AD;
+    }
+    .form-login-box a.btn-primary{
+        color: #FFF;
+        margin: 20px 0;
+    }
+    .otherLogin {
+        text-align: center;
+    }
+    .otherLogin .title{
+        z-index: 1;
+        position: relative;
+        padding: 20px 0 35px;
+        color: #333;
+    }
+    .otherLogin img{
+        margin-bottom: 5px;
+    }
+    .otherLogin .title:before{
+        content: "";
+        width: 25%;
+        height: 2px;
+        background-color: #D6E6F4;
+        position: absolute;
+        left: 0;
+        top: 40%;
+        z-index: -1;
+    }
+    .otherLogin .title:after{
+        content: "";
+        width: 25%;
+        height: 2px;
+        background-color: #D6E6F4;
+        position: absolute;
+        right: 0;
+        top: 40%;
+        z-index: -1;
+    }
+    .otherLogin .login-way{
+        display: flex;
+        justify-content: space-around;
+    }
     @media (max-width: 992px) {
         .paracraft, .banner {
             display: block;
@@ -204,7 +254,7 @@
         }
     }
     @media (min-width: 1200px){
-        .form-join-box{
+        .form-login-box{
             max-width: 400px;
         }
     }
@@ -250,28 +300,67 @@
             <h1>欢迎加入KeepWork</h1>
             <p>我们致力于为个人、老师、企业提供免费，可靠的作品创作与分享平台。</p>
         </div>
-        <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1 form-join-box">
+        <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
             <form>
                 <div class="form-group">
-                    <span id="mail-err" class="text-danger visible-hidden">*{{errMsg}}</span>
-                    <label class="sr-only" for="email">Email address</label>
-                    <input ng-model="email" ng-blur="checkUser()" type="email" class="form-control" id="email" placeholder="登录账号（推荐Email或手机号）">
+                    <span id="total-err" class="visible-hidden text-danger">*{{errMsg}}</span>
+                    <label class="sr-only">登录账号</label>
+                    <input type="email" class="form-control" name="email" placeholder="账号（已绑定的手机号或email）" ng-model="email">
                 </div>
                 <div class="form-group">
-                    <span id="pwd-err" class="text-danger visible-hidden">*{{errMsg}}</span>
-                    <label class="sr-only" for="password">Password</label>
-                    <input ng-model="password" type="password" class="form-control" id="password"
-                           placeholder="密码">
+                    <span id="pwd-err" class="visible-hidden text-danger">**</span>
+                    <label class="sr-only">密码</label>
+                    <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password">
                 </div>
-                <div class="form-group">
-                    <span id="webname-err" class="text-danger visible-hidden">*{{errMsg}}</span>
-                    <label class="sr-only" for="webName">webName</label>
-                    <input ng-model="username" type="text" class="form-control" id="webName" placeholder="个人网站名">
-                    <p class="web-info" ng-show="username">个人网址：http://keepwork.com/{{username?username:""}}</p>
+                <div class="checkbox clearfix">
+                    <label class="pull-left">
+                        <input class="pull-right" type="checkbox" checked="checked">记住密码
+                    </label>
+                    <a ng-click="findPwd(isModal)" class="pull-right">忘记密码？</a>
                 </div>
-                <span id="total-err" class="text-danger visible-hidden">*{{errMsg}}</span>
-                <a ng-show="!logining" ng-click="register()" class="btn btn-primary btn-lg btn-block">注册</a>
-                <a ng-show="logining" ng-click="login()" class="btn btn-primary btn-lg btn-block">登录</a>
+                <a ng-click="login()" class="btn btn-primary btn-block btn-lg">登录</a>
+                <div class="form-group clearfix">
+                    <div class="pull-right">
+                        没有账号？点击<a ng-click="goRegisterPage()" class="text-primary">注册</a>
+                    </div>
+                </div>
+                <div class="otherLogin">
+                    <div class="title">使用第三方账号登录</div>
+                    <div class="login-way">
+                        <a ng-click="qqLogin()">
+                            <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">
+                        </a>
+                        <a ng-click="wechatLogin()">
+                            <img ng-src="{{imgsPath+'icon/wiki_wechat.png'}}" alt="">
+                        </a>
+                        <a ng-click="sinaWeiboLogin()">
+                            <img ng-src="{{imgsPath+'icon/wiki_sina_weibo.png'}}" alt="">
+                        </a>
+                        <a ng-click="githubLogin()">
+                            <img ng-src="{{imgsPath+'icon/wiki_github_logo.png'}}" alt="">
+                        </a>
+                    </div>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<span id="mail-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
+                    <!--<label class="sr-only" for="email">Email address</label>-->
+                    <!--<input ng-model="email" ng-blur="checkUser()" type="email" class="form-control" id="email" placeholder="登录账号（推荐Email或手机号）">-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<span id="pwd-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
+                    <!--<label class="sr-only" for="password">Password</label>-->
+                    <!--<input ng-model="password" type="password" class="form-control" id="password"-->
+                           <!--placeholder="密码">-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<span id="webname-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
+                    <!--<label class="sr-only" for="webName">webName</label>-->
+                    <!--<input ng-model="username" type="text" class="form-control" id="webName" placeholder="个人网站名">-->
+                    <!--<p class="web-info" ng-show="username">个人网址：http://keepwork.com/{{username?username:""}}</p>-->
+                <!--</div>-->
+                <!--<span id="total-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
+                <!--<a ng-show="!logining" ng-click="register()" class="btn btn-primary btn-lg btn-block">注册</a>-->
+                <!--<a ng-show="logining" ng-click="login()" class="btn btn-primary btn-lg btn-block">登录</a>-->
             </form>
         </div>
         <img ng-src="{{imgsPath+'wiki_banner.jpg'}}" alt="">
