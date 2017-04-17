@@ -11,7 +11,7 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
         $scope.isModal=true;
 
         $scope.cancel = function () {
-            $uibModalInstance.dismiss();
+            $scope.dismiss();
         }
 
         var user = Account.getUser();
@@ -34,7 +34,7 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
             }
 
             currentDataSource.getTree(true, function (data) {
-                var filelist = []
+                var filelist = [];
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].type == "tree" || data[i].path.indexOf('images/') == 0) {
                         continue;
