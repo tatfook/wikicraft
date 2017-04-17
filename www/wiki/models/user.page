@@ -16,6 +16,8 @@ include_once("./user_trends.page")
 include_once("./user_active.page")
 include_once("./data_source.page")
 
+-- local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
+
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
 
@@ -173,6 +175,57 @@ function user:api_updateUserInfo(params)
 
 	self:db():updateOne({_id=params._id}, params, resume)
 
+	return errors:wrap(yield())
+end
+
+-- 找回密码
+function user:api_findPwdOne(params) 
+	if not params.email then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+email"]={params.email}}, resume)
+	local _, userinfo = yield()
+	if not userinfo then
+		return errors:wrap(errors.USER_NOT_EXIST)
+	end
+	local t = os.time()
+	local key = userinfo.password .. tostring(t)
+	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key
+
+	-- TODO 加时间限制
+	mem_cache:set(params.email, key)
+
+	local par = {}
+	par.to = params.email
+	par.subject = "keepwork找回密码"
+	par.body = [[
+		<div class="main-content">
+			<p>打开如下链接进行密码重置:</p>
+			<p><a href="%s">%s</a></p>
+		</div>
+	]]
+	par.body = string.format(par.body, url, url)
+	log(par)
+	util:sendEmail(par)
+	
+	return errors:wrap(nil)
+end
+
+-- 找回密码
+function user:api_findPwdTwo(params)
+	if (not params.email) or (not params.key) or (not params.password) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local key = mem_cache:get(params.email)
+	if key ~= params.key then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local password = self:encodePassword(params.password)
+	self:db():updateOne({["+email"]={params.email}}, {password=password}, resume)
+	
 	return errors:wrap(yield())
 end
 

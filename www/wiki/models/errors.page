@@ -15,6 +15,7 @@ errors.SUCCESS={id=0,message="success",}
 errors.SERVER_INNER_ERROR = {id=1,message="server inner error",}
 errors.REQUEST_PARAMS_ERROR = {id=2,message="request params error",}
 errors.NOT_FOUND = {id=3, message="not found",}
+errors.USER_NOT_EXIST = {id=4, message="user not exist",}
 
 function errors:new(message) 
 	return {

@@ -6,8 +6,9 @@ Date: 2017/3/13
 ]]
 
 NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
-local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
+mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
+log(mem_cache)
 
 -- 初始化数据库
 function init_db()

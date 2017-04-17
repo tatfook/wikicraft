@@ -297,10 +297,10 @@ define([
         if (mdwiki.template) {
             mdwiki.template.isPageTemplate = true;
         } else {
-            text = tplinfo.content + '\n' + text;
+            text = themeContent + '\n' + text;
             //console.log(text);
             blockList = mdwiki.parse(preprocessMDText(text));
-            mdwiki.templateLineCount = tplinfo.content.split('\n').length;
+            mdwiki.templateLineCount = themeContent.split('\n').length;
             for (var i = 0; i < blockList.length; i++) {
                 blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
                 blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
