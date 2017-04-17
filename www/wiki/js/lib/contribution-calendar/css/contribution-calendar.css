@@ -8,4 +8,7 @@
   height: 90px;
   padding-bottom: 0;
   padding-right: 0;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
