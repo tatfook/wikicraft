@@ -22,7 +22,7 @@ define([
 })
 
 /*
- ```@wiki/js/companybottomNav
+ ```@wiki/js/companyBottomNav
  {
  "companyName":"TATFOOK",
  "companyInfo":"端到端网络工业技术提供商",
