@@ -320,6 +320,16 @@ define([
             $rootScope.userinfo = $rootScope.user;
 
             $scope.enableTransform = true;
+            $scaleValue="";
+            $scope.scales=[
+                {"key":"100%","scaleValue":"1"},
+                {"key":"90%","scaleValue":"0.9"},
+                {"key":"80%","scaleValue":"0.8"},
+                {"key":"75%","scaleValue":"0.75"},
+                {"key":"67%","scaleValue":"0.67"},
+                {"key":"50%","scaleValue":"0.5"},
+                {"key":"33%","scaleValue":"0.33"}
+            ];
 
             // 判断对象是否为空
             function isEmptyObject(obj) {
@@ -1568,17 +1578,22 @@ define([
                     return scaleSize;
                 }
 
-                function resizeMod() {
+                function resizeMod(val) {
                     /*
                      if (!$scope.enableTransform) {
                      return;
                      }
                      */
-                    var scaleSize = getScaleSize();
+                    var scaleSize = val || getScaleSize();
                     $('#' + mdwiki.getMdWikiContainerId()).css({
                         "transform": "scale(" + scaleSize + ")",
                         "transform-origin": "left top"
                     });
+                }
+
+                $scope.changeScale=function (val) {
+                    $scope.enableTransform = false;
+                    resizeMod(val);
                 }
 
                 function setEditorHeight() {

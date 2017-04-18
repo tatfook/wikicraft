@@ -93,6 +93,13 @@
                             <div class="btn btn-default btn-sm toolbar-page-slide active" title="拆分"><img ng-src="{{imgsPath+'icon/wiki_split.png'}}" alt=""> 拆分</div>
                             <div class="btn btn-default btn-sm toolbar-page-design" title="预览"><img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt=""> 预览</div>
                         </div>
+                        <div class= "btn-group ">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_transform()" title="缩放">
+                                <img ng-src="{{imgsPath+'icon/wiki_scaleBtn.png'}}" alt="">
+                            </div>
+                            <select ng-init="scaleSelect = scales[0]" ng-model="scaleSelect" ng-options="scales.key for scales in scales" ng-change="changeScale(scaleSelect.scaleValue)" class="form-control resize-view">
+                            </select>
+                        </div>
                         <!---->
                         <div class= "btn-group">
                             <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
