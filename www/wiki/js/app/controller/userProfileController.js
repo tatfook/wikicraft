@@ -16,6 +16,8 @@ define(['app',
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 5;
+        $scope.userEmail="";
+        $scope.userPhone="";
 
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');
@@ -182,6 +184,39 @@ define(['app',
             }, function (error) {
                 Message.info(error.message);
             });
+        }
+
+        var sendEmail=function (email) {
+            util.post(config.apiUrlPrefix + 'user/verifyEmailOne', {email:email}, function (data) {
+                Message.info("邮件发送成功，请按邮件指引完成绑定");
+            },function (err) {
+                console.log(err);
+                Message.info(err.message);
+            });
+        }
+
+        //安全验证
+        $scope.bind=function (type) {
+            if(type=="email"){
+                $scope.emailErrMsg="";
+                var email=$scope.userEmail? $scope.userEmail.trim() : "";
+                if(!email){
+                    $scope.emailErrMsg="请输入需绑定的邮箱";
+                    return;
+                }
+
+                var reg=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if(!reg.test(email)){
+                    $scope.emailErrMsg="请输入正确的邮箱";
+                }else{
+                    sendEmail(email);
+                }
+                return;
+            }
+            if(type=="phone"){
+                console.log("手机绑定开发中");
+                return;
+            }
         }
 
         // 修改用户信息

@@ -71,11 +71,11 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
         }
 
         $scope.goUserCenter=function () {
-            util.go('usercenter');
+            util.go('usercenter',true);
         }
 
         $scope.goUserHome=function () {
-            util.go('/'+$scope.username);
+            util.goUserSite('/'+$scope.username);
         }
 
         $scope.goLicense=function () {

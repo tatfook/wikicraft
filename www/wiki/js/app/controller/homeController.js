@@ -125,17 +125,17 @@ define([
         $scope.login = function () {
             $scope.errMsg = "";
             var params = {
-                email: $scope.email? $scope.email.trim() : "",
+                username: $scope.username? $scope.username.trim() : "",
                 password: $scope.password?$scope.password.trim():"",
             };
-            if (!params.email || !params.password) {
+            if (!params.username || !params.password) {
                 $scope.errMsg = "用户名或密码错误";
                 $("#total-err").removeClass("visible-hidden");
                 return;
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
                 $auth.setToken(data.token);
-                Account.setUser(data.userInfo);
+                Account.setUser(data.userinfo);
                 console.log("登录成功");
                 /*
                  if (!data.userInfo.githubToken) {
@@ -143,9 +143,9 @@ define([
                  }
                  */
                 if ($scope.isModal) {
-                    $scope.$close(data.userInfo);
+                    $scope.$close(data.userinfo);
                 } else {
-                    util.goUserSite('/' + data.userInfo.username);
+                    util.goUserSite('/' + data.userinfo.username);
                 }
 
             }, function (error) {
