@@ -145,7 +145,7 @@ define([
                             var pageList = angular.fromJson(data.siteinfo.pageinfo || '[]');
                             for (var i = 0; i < pageList.length; i++) {
                                 if (pageList[i].url == themeUrl) {
-                                    $rootScope.siteinfo.themeContent = pageList[i].content;
+                                    $rootScope.tplinfo = pageList[i];
                                 }
 
                                 if (pageList[i].url == pageUrl) {

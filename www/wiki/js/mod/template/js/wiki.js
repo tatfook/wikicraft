@@ -6,9 +6,10 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/dataSource',
     'helper/markdownwiki',
     'text!wikimod/template/html/wiki.html'
-], function (app, util, storage, markdownwiki, htmlContent) {
+], function (app, util, storage, dataSource, markdownwiki, htmlContent) {
     var headerMD = markdownwiki({html:true, use_template:false});
     var sidebarMD = markdownwiki({html:true, use_template:false});
     var footerMD = markdownwiki({html:true, use_template:false});
@@ -19,10 +20,8 @@ define([
         app.registerController('wikiTemplateController', ['$rootScope','$scope','modal','Message', function ($rootScope, $scope, modal, Message) {
             //$rootScope.siteinfo = {username:"xiaoyao", name:"xiaoyao"};
             var modParams = wikiBlock.modParams || {};
-            if ($rootScope.siteinfo) {
-                $scope.urlPrefix = '/' + $rootScope.siteinfo.username + '/' + $rootScope.siteinfo.name + '/';
-            }
-            console.log("-----------wiki template----------------");
+
+            //console.log("-----------wiki template----------------");
             function setSelfPageContent(type, content) {
                 if (!content)
                     return;
@@ -45,9 +44,7 @@ define([
 
             }
             function init() {
-                console.log("-----------init wiki template----------------");
-                if (!$rootScope.siteinfo)
-                    return;
+                //console.log("-----------init wiki template----------------");
 
                 //console.log(modParams);
                 if (modParams.headerContent) {
@@ -63,19 +60,21 @@ define([
                     util.html('#_footerContentId', footerHtml, $scope);
                 }
 
-                /*
-                headerMD.bindRenderContainer('#_headerPageContentId');
-                sidebarMD.bindRenderContainer('#_sidebarPageContentId');
-                footerMD.bindRenderContainer('#_footerPageContentId');
-                */
-                util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_header'}, function (data) {
-                    data && data.content && util.html('#_headerPageContentId', headerPageMD.render(data.content), $scope);
+                var DataSource = dataSource.getUserDataSource($rootScope.userinfo.username);
+                var dataSourceId = $rootScope.userinfo.dataSourceId;
+                if ($rootScope.siteinfo && $rootScope.siteinfo.dataSourceId) {
+                    dataSourceId = $rootScope.siteinfo.dataSourceId;
+                }
+                var ds = DataSource.getDataSourceById(dataSourceId);
+                var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.websiteName + '/';
+                ds.getContent({path: pathPrefix + '_header'}, function (content) {
+                    util.html('#_headerPageContentId', headerPageMD.render(content||''), $scope);
                 });
-                util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_sidebar'}, function (data) {
-                    data && data.content && util.html('#_sidebarPageContentId', sidebarPageMD.render(data.content), $scope);
+                ds.getContent({path: pathPrefix + '_sidebar'}, function (content) {
+                    util.html('#_sidebarPageContentId', sidebarPageMD.render(content||''), $scope);
                 });
-                util.http("POST", config.apiUrlPrefix + 'website_pages/getWebsitePageByUrl', {url:$scope.urlPrefix + '_footer'}, function (data) {
-                    data && data.content && util.html('#_footerPageContentId', footerPageMD.render(data.content), $scope);
+                ds.getContent({path: pathPrefix + '_footer'}, function (content) {
+                    util.html('#_footerPageContentId', footerPageMD.render(content||''), $scope);
                 });
             }
 
@@ -102,9 +101,10 @@ define([
                     setSelfPageContent(type, data);
                 });
             }
+
             $scope.editSelfPage = function (type) {
-                var siteinfo = $rootScope.siteinfo;
-                var urlObj = {username: siteinfo.username, sitename:siteinfo.name, pagename:type};
+                var pageinfo = $rootScope.pageinfo;
+                var urlObj = {username: pageinfo.username, sitename:pageinfo.websiteName, pagename:type};
                 if (window.location.pathname == '/wiki/wikiEditor') {
                     $rootScope.$broadcast('changeEditorPage', urlObj);
                 } else {

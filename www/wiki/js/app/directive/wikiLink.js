@@ -37,12 +37,12 @@ define(['app'], function (app) {
                     return ;
                 }
 
-                var siteinfo = $rootScope.siteinfo;
+                var pageinfo = $rootScope.pageinfo;
                 // 存在点表明是外部链接，内部连接禁用点
                 if (href.indexOf('.') > 0) {
                     href = 'http://' + href;
-                } else {
-                    href = window.location.origin + '/' + siteinfo.username + '/' + siteinfo.name + '/' + href;
+                } else if(pageinfo && pageinfo.username && pageinfo.websiteName) {
+                    href = window.location.origin + '/' + pageinfo.username + '/' + pageinfo.websiteName + '/' + href;
                 }
 
                 //$element.attr('href', '#');

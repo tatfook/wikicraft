@@ -335,39 +335,6 @@ define([
                 currentRichTextObj && currentRichTextObj.focus();
             }
 
-            // 新建网站页
-            function newWebsitePage(urlObj) {
-                //console.log("---------newWebsitePage-------------");
-                if (!urlObj || urlObj.username != $scope.user.username || !urlObj.sitename)
-                    return;
-
-                var site = undefined;
-                for (var i = 0; i < allWebsites.length; i++) {
-                    if (urlObj.sitename == allWebsites[i].name) {
-                        site = allWebsites[i];
-                        break;
-                    }
-                }
-
-                if (!site)
-                    return;
-
-                var websitePage = {};
-                websitePage.url = '/' + site.username + '/' + site.name + '/' + urlObj.pagename;
-                websitePage.username = site.username;
-                websitePage.websiteName = site.name;
-                websitePage.websiteId = site._id;
-                websitePage.content = ""; // $scope.style.data[0].content;
-                websitePage.userId = site.userId;
-                websitePage.name = urlObj.pagename;
-
-                currentWebsitePage = websitePage;
-                currentWebsite = site;
-                allWebsitePages.push(currentWebsitePage);
-                initTree();
-                openPage();
-            }
-
             // 加载未提交到服务的页面
             function loadUnSavePage() {
                 storage.indexedDBGet(function (page) {
@@ -430,6 +397,7 @@ define([
                 // 获取站点及页列表
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;
+                    $rootScope.userinfo = userinfo;
                     loadSitePageInfo();
                 });
 
@@ -464,9 +432,6 @@ define([
                     currentWebsitePage.content = undefined;
                 }
 
-                currentWebsitePage.isModify = false;
-                currentWebsitePage.timestamp = (new Date()).getTime();
-
                 var saveFailedCB = function () {
                     currentWebsitePage.isModify = true;
                     currentWebsitePage.content = content;
@@ -486,6 +451,9 @@ define([
                 var currentDataSource = dataSource.getUserDataSource($scope.user.username).getDataSourceById(dataSourceId);
                 //console.log(currentDataSource, dataSourceId);
                 //console.log(currentWebsite, getWebsiteByName(currentWebsitePage.websiteName));
+                currentWebsitePage.isModify = false;
+                currentWebsitePage.timestamp = (new Date()).getTime();
+                currentWebsitePage.dataSourceId = dataSourceId;
                 util.post(config.apiUrlPrefix + 'website_pageinfo/upsert',
                     {
                         username: $scope.user.username,
@@ -519,12 +487,6 @@ define([
                     }
                 }
                 return null;
-            }
-
-            function getWebsiteTheme(site) {
-                var url = '/' + site.username + '/' + site.name + '/_theme';
-                var page = getWebsitePageByUrl(url);
-                return page ? page.content : '';
             }
 
             // 获得指定页
@@ -581,11 +543,6 @@ define([
                 currentWebsitePage = getWebsitePageByUrl(url);
                 currentWebsite = getWebsiteByName(sitename);
 
-                if (!currentWebsite) {
-                    openDefaultPage();
-                    return;
-                }
-
                 if (!currentWebsitePage) {
                     // 特殊页面允许自动创建
                     if (pagename != 'index' && pagename != '_header' && pagename != "_footer" && pagename != "_sidebar") {
@@ -594,12 +551,10 @@ define([
                     }
 
                     var websitePage = {};
-                    websitePage.url = '/' + currentWebsite.username + '/' + currentWebsite.name + '/' + pagename;
-                    websitePage.username = currentWebsite.username,
-                    websitePage.websiteName = currentWebsite.name;
-                    websitePage.websiteId = currentWebsite._id;
+                    websitePage.url = '/' + username + '/' + sitename + '/' + pagename;
+                    websitePage.username = username,
+                    websitePage.websiteName = sitename;
                     websitePage.content = ""; // $scope.style.data[0].content;
-                    websitePage.userId = currentWebsite.userId;
                     websitePage.name = pagename;
                     websitePage.isModify = true;
 
@@ -618,34 +573,33 @@ define([
                     openUrlPage();
                     return;
                 }
-                console.log("----------------open Page-------------------");
+                //console.log("----------------open Page-------------------");
 
                 //console.log(currentWebsitePage);
                 // 设置全局用户页信息和站点信息
+                var urlPrefix = '/' + currentWebsitePage.username + '/' + currentWebsitePage.websiteName + '/';
                 currentWebsite = getWebsiteByName(currentWebsitePage.websiteName);
                 $rootScope.siteinfo = currentWebsite;
                 $rootScope.pageinfo = currentWebsitePage;
+                $rootScope.tplinfo = getWebsitePageByUrl(urlPrefix + '_theme');
 
                 // 保存正在编辑的页面urlObj
-                if (currentWebsite) {
-                    $rootScope.siteinfo.themeContent = getWebsiteTheme(currentWebsite);
 
-                    var urlPrefix = '/' + currentWebsite.username + '/' + currentWebsite.name + '/';
-                    storage.sessionStorageSetItem('urlObj', {
-                        username: currentWebsite.username,
-                        sitename: currentWebsite.name,
-                        pagename: currentWebsitePage.url.substring(urlPrefix.length)
-                    });
-                }
+                storage.sessionStorageSetItem('urlObj', {
+                    username: currentWebsitePage.username,
+                    sitename: currentWebsitePage.websiteName,
+                    pagename: currentWebsitePage.url.substring(urlPrefix.length)
+                });
                 !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
 
                 function setEditorValue(content) {
                     currentWebsitePage.isFirstEditor = true;
-
+                    //console.log(currentWebsitePage);
                     if (!editorDocMap[currentWebsitePage.url]) {
                         editorDocMap[currentWebsitePage.url] = CodeMirror.Doc(content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[currentWebsitePage.url]);
+                    allWebstePageContent[currentWebsitePage.url] = editor.getValue();
                     CodeMirror.signal(editor, 'change', editor);
                     //editor.setValue(currentWebsitePage.content);
 
@@ -682,7 +636,7 @@ define([
                 }
 
                 getPageContent(currentWebsitePage.url, function (data) {
-                    setEditorValue(data);
+                    setEditorValue(data || "");
                 });
                 // storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
                 //     if (page) {
@@ -742,10 +696,10 @@ define([
                     showTags: true,
                     data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
-                        console.log(data.pageNode);
+                        //console.log(data.pageNode);
                         savePageContent(function () {
                             if (data.pageNode.isLeaf) {
-                                console.log("--------------------auto save--------------------");
+                                //console.log("--------------------auto save--------------------");
                                 if (!currentWebsitePage || currentWebsitePage.url != data.pageNode.url) {
                                     currentWebsite = getWebsiteById(data.pageNode.siteId);
                                     currentWebsitePage = getWebsitePageByUrl(data.pageNode.url);
@@ -1710,12 +1664,13 @@ define([
                     var content = editor.getValue();
                     //console.log(currentWebsitePage);
 
-                    if (!currentWebsitePage.isModify && content != currentWebsitePage.content &&
-                        (!currentWebsitePage.isFirstEditor || content.replace(/[\r\n]*/g, "") != currentWebsitePage.content.replace(/[\r\n]*/g, ""))) { // 解决 editor.setValue(text); text != editor.getValue() 问题
-                        //console.log("--------manual modify--------------");
+                    if (!currentWebsitePage.isModify && content != allWebstePageContent[currentWebsitePage.url]) {
+                        //console.log(currentWebsitePage);
+                        //console.log(content, allWebstePageContent[currentWebsitePage.url],content != allWebstePageContent[currentWebsitePage.url]);
                         currentWebsitePage.isModify = true;
                         initTree();
                     }
+
                     currentWebsitePage.isFirstEditor = undefined;
 
                     changeTimer && clearTimeout(changeTimer);
