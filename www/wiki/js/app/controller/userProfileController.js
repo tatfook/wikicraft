@@ -37,12 +37,18 @@ define(['app',
             return canvas;
         }
 
-        function init() {
+        function init(userinfo) {
+            $scope.user = userinfo || $scope.user;
             var changeBtn = $("#change-profile");
             var finishBtn = $("#finish");
             var cropper = $("#cropper");
             var dataForm = $("#data-form");
-            console.log($scope);
+
+            if($scope.user.email){
+                $scope.bindedEmail=true;
+            }else{
+                $scope.bindedEmail=false;
+            }
 
             $scope.fileUpload = function (e) {
                 var file = e.target.files[0];
@@ -360,6 +366,12 @@ define(['app',
                 });
             }
         }
+
+        Account.ensureAuthenticated(function () {
+            Account.getUser(function (userinfo) {
+                init(userinfo);
+            });
+        });
    }]);
 
     return htmlContent;

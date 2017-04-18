@@ -185,6 +185,10 @@ define([
             });
         }
 
+        $scope.findPwd=function () {
+            util.go("findPwd");
+        }
+
         // 收藏作品
         $scope.worksFavorite=function (event, site) {
             //console.log(event, site);

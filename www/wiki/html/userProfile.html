@@ -53,6 +53,11 @@
     }
 
     /*账户安全*/
+    p.form-control{
+        border: 0;
+        box-shadow: none;
+        padding-left: 0;
+    }
     /*我的动态*/
     .tab-content .status-row{
         padding:0;
@@ -437,13 +442,15 @@
                         <div class="form-group sr-only">
                             <legend>安全验证表单</legend>
                         </div>
+                        <div class="form-group"><div class="col-sm-6 col-sm-offset-3 text-danger">{{emailErrMsg}}</div></div>
                         <div class="form-group">
                             <label for="email" class="control-label col-sm-3">邮箱验证：</label>
                             <div class="col-sm-6">
-                                <input type="text" id="email" class="form-control" ng-model="userEmail">
+                                <input type="text" id="email" class="form-control" ng-model="userEmail" ng-show="!bindedEmail">
+                                <p ng-show="bindedEmail" class="form-control">{{user.email}} <span class="glyphicon glyphicon-ok text-success pull-right"></span></p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="bind('email')">验证</div>
+                                <div class="btn btn-block btn-primary" ng-click="bind('email')" ng-show="!bindedEmail">验证</div>
                             </div>
                         </div>
                         <div class="form-group">
