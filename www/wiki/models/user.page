@@ -323,28 +323,36 @@ end
 
 -- 登录
 function user:api_login(params) 
-	if (not params.email) or (not params.password) then
+	if (not params.username) or (not params.password) then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}	
 	end
 
-	self:db():findOne({email=params.email}, resume)
-	local err, data = yield()
-	if not data then 
-		return errors:wrap(err or "用户不存在", data)
+	self:db():findOne({["+email"]={params.username}}, resume)
+	local _, userinfo = yield()
+	if not userinfo then 
+		self:db():findOne({["+cellphone"]={params.username}}, resume)
+		 _, userinfo = yield()
+		if not userinfo then
+			self:db():findOne({["+username"]={params.username}}, resume)
+			 _, userinfo = yield()
+			if not userinfo then
+				return errors:wrap(err or "用户不存在", data)
+			end
+		end
 	end
 
-	if data.password ~= self:encodePassword(params.password) then
+	if userinfo.password ~= self:encodePassword(params.password) then
 		return errors:wrap("密码错误")
 	end
 	
 	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getByUserId({userId=data._id}).data
+	local dataSource = dataSourceDB:api_getByUserId({userId=userinfo._id}).data
 	if (not dataSource) or (#dataSource == 0) then
 		dataSourceDB:api_linkInnerGitlab({userId=data._id, username=data.username})
 	end
-	data.dataSource = dataSource
+	userinfo.dataSource = dataSource
 
-	return {error=errors.SUCCESS, data={token=createJWT(data), userInfo=data}}
+	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
 end
 	
 -- 注册
