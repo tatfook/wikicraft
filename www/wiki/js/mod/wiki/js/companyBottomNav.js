@@ -5,7 +5,7 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/wiki/html/companybottomNav.html'
+    'text!wikimod/wiki/html/companyBottomNav.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
         app.registerController('companybottomNavController',['$scope', function ($scope) {
