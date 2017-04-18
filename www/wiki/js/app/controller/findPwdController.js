@@ -8,8 +8,13 @@ define(['app',
     'helper/storage',
     'text!html/findPwd.html',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('findPwdController', ['$scope', 'Account', 'Message','modal', function ($scope, Account, Message,modal) {
-        $scope.step = 1;
+    app.registerController('findPwdController', ['$scope', '$location', 'Account', 'Message','modal', function ($scope, $location, Account, Message,modal) {
+        var getUrlParam=function (param) {
+            var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return r[2]; //返回参数值
+        }
+        $scope.step = getUrlParam("step") || 1;
         $scope.isModal=false;
         function init() {
             // $scope
@@ -17,24 +22,45 @@ define(['app',
         }
 
         $scope.$watch('viewContentLoaded', init);
-        $scope.sendEmail=function () {
-            console.log("给邮箱发送邮件");
+        var sendEmail=function (email) {
+            util.post(config.apiUrlPrefix + 'user/findPwdOne', {email:email}, function (data) {
+                Message.info("邮件发送成功，请查收。3s后该页面自动返回登录页");
+                setTimeout(function () {
+                    history.back();
+                },3000);
+            },function (err) {
+                console.log(err);
+                Message.info(err.message);
+            });
+        }
+
+        var savePwd=function (pwd) {
+            var key=getUrlParam("step");
+            var email=getUrlParam("email");
+            if(!key || !email || !pwd){
+                return ;
+            }
+            util.post(config.apiUrlPrefix + 'user/findPwdTwo', {email:email,key:key,password:pwd}, function (data) {
+                $scope.step++;
+            },function (err) {
+                console.log(err);
+                Message.info(err.message);
+            });
         }
 
         $scope.nextStep=function () {
             $scope.errorMsg="";
             if($scope.step==1){
-                if(!$scope.email){
+                var email=$scope.email? $scope.email.trim():"";
+                if(!email){
                     $scope.errorMsg="请输入您的邮箱";
                     return;
                 }
-                var email=$scope.email.trim();
                 var reg=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
                 if(!reg.test(email)){
                     $scope.errorMsg="请输入正确的邮箱";
                 }else{
-                    console.log("给邮箱发送邮件");
-                    $scope.step++;
+                    sendEmail(email);
                 }
             }else if($scope.step==2){
                 if (!$scope.pwd || !$scope.pwd1){
@@ -51,8 +77,9 @@ define(['app',
                     $scope.errorMsg="6-20位密码";
                     return;
                 }
-                console.log("保存密码");
-                $scope.step++;
+                savePwd(pwd);
+                // console.log("保存密码");
+                // $scope.step++;
             }else if($scope.step==3){
                 $scope.goLogin();
                 return;
@@ -71,7 +98,7 @@ define(['app',
                     console.log(result);
                 });
             }else{
-                util.go("login");
+                util.go("home");
             }
         }
         $scope.$watch('$viewContentLoaded', init);

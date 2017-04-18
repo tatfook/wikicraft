@@ -247,6 +247,13 @@ body,
 .treeview li:not(.node-selected) .badge{
     display: none;
 }
+select.resize-view {
+    width: auto;
+    height: 36px;
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
 
 @media (max-width: 1200px) {
     .wiki-toolbar{
