@@ -23,6 +23,7 @@ define([
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
         $scope.dataSourceId = $scope.website.dataSourceId && $scope.website.dataSourceId.toString();
+        $scope.dataSourceList = $scope.user.dataSource;
 
         $scope.changeDataSource = function () {
             $scope.website.dataSourceId = parseInt($scope.dataSourceId);
