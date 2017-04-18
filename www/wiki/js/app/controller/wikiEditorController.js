@@ -1579,11 +1579,6 @@ define([
                 }
 
                 function resizeMod(val) {
-                    /*
-                     if (!$scope.enableTransform) {
-                     return;
-                     }
-                     */
                     var scaleSize = val || getScaleSize();
                     $('#' + mdwiki.getMdWikiContainerId()).css({
                         "transform": "scale(" + scaleSize + ")",

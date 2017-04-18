@@ -16,12 +16,13 @@ define([
         $scope.websites = [];
 
         function getUserSiteList() {
-            util.http('POST', config.apiUrlPrefix + 'website', {userId: Account.getUser()._id || -1}, function (data) {
+            util.post('POST', config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id || -1}, function (data) {
                 $scope.websites = data;
             });
         }
 
-        function init() {
+        function init(userinfo) {
+            $scope.user = userinfo || $scope.user;
             // 获取项目列表
             getUserSiteList();
 
@@ -72,7 +73,11 @@ define([
             });
         }
 
-        Account.ensureAuthenticated(init);
+        Account.ensureAuthenticated(function () {
+            Account.getUser(function (userinfo) {
+                init(userinfo);
+            });
+        });
     }]);
 
     return htmlContent;
