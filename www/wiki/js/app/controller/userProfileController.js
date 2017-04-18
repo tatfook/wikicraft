@@ -42,6 +42,7 @@ define(['app',
             var finishBtn = $("#finish");
             var cropper = $("#cropper");
             var dataForm = $("#data-form");
+            console.log($scope);
 
             $scope.fileUpload = function (e) {
                 var file = e.target.files[0];

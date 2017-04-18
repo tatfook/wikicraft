@@ -124,6 +124,9 @@
     .setting-form .form-group-lg .form-control{
         height:42px;
     }
+    .setting-form .form-group-lg select.form-control{
+        padding:6px 16px;
+    }
     .setting-form .form-group-lg .btn-primary{
         padding:9px 52px;
     }
@@ -224,11 +227,10 @@
                 </div>
                 <h4 class="clearfix"><span class="col-sm-2">高级设置</span></h4>
                 <div class="form-group form-group-lg">
-                    <label for="dataOrigin" class="col-sm-2 control-label">数据源：</label>
+                    <label class="col-sm-2 control-label">数据源：</label>
                     <div class="col-sm-5">
-                        <select class="form-control" name="dataOrigin" id="dataOrigin">
-                            <option value="github">github</option>
-                            <option value="gitlab">gitlab</option>
+                        <select class="form-control" ng-model="dataSourceId" ng-change="changeDataSource()">
+                            <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
                         </select>
                     </div>
                     <div class="col-sm-5">
