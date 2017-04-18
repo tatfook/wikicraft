@@ -217,7 +217,7 @@ function user:api_verifyEmailTwo(params)
 
 	local email = mem_cache:get("verifyEmail" .. tostring(userId))
 	
-	self:db():updateOne({_id=userId, {email=email}, resume)
+	self:db():updateOne({_id=userId}, {email=email}, resume)
 	
 	return errors:wrap(yield())
 end
@@ -235,7 +235,7 @@ function user:api_findPwdOne(params)
 	end
 	local t = os.time()
 	local key = tostring(t) .. math.random(10000)
-	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key .. "&email=" 。。 params.email
+	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key .. "&email=" .. params.email
 
 	-- TODO 加时间限制
 	mem_cache:set(params.email, key)
