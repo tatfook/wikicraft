@@ -16,7 +16,7 @@ define([
         $scope.websites = [];
 
         function getUserSiteList() {
-            util.post('POST', config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id || -1}, function (data) {
+            util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id || -1}, function (data) {
                 $scope.websites = data;
             });
         }
