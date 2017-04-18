@@ -305,9 +305,8 @@ end
 	
 -- 注册
 function user:api_register(params)
-	local err, params = self:validateQuery(params)
 	-- 用户名 密码 邮箱为必填项
-	if err or (not params.email) or (not params.username) or (not params.password) then 
+	if (not params.username) or (not params.password) then 
 		return errors:wrap(err)
 	end
 	
@@ -317,20 +316,12 @@ function user:api_register(params)
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 	
-	-- 判断邮箱是否注册
-	self:db():findOne({email = params.email}, resume)
-	local err, data = yield()
-	
-	if data then 
-		return errors:wrap(errors:new("Email is already register"))
-	end
-	
 	-- 创建用户
 	self:db():insertOne(nil, {
 		username = params.username,
 		displayName = params.username,
 		password = self:encodePassword(params.password),
-		email = params.email,
+		 email = params.email,
 		cellphone = params.cellphone,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 		administrator = 0,
