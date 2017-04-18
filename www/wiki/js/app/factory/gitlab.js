@@ -154,13 +154,15 @@ define([
                 return;
             }
 
+            var rawBase = dataSource.apiBaseUrl.match(/http[s]?:\/\/[^\/]+/);
+            rawBase = rawBase && rawBase[0];
+
             gitlab.type = dataSource.type;
             gitlab.username = dataSource.dataSourceUsername;
             gitlab.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
             gitlab.projectName = dataSource.projectName || gitlab.projectName;
             gitlab.apiBase = dataSource.apiBaseUrl;
-            gitlab.host = gitlab.apiBase.match(/http[s]?:\/\/[^\/]+/);
-            gitlab.host = gitlab.host && gitlab.host[0];
+            gitlab.rawBase = dataSource.rawBaseUrl || rawBase;
 
             gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned:true}, function (projectList) {
                 // 查找项目是否存在

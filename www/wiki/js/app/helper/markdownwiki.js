@@ -264,6 +264,23 @@ define([
         })
     }
 
+    function isExistTemplate(mdwiki, text) {
+        var tokenList = mdwiki.md.parse(text, {});
+        var wikiCmdRE = /^\s*([\/@][\w_\/]+)/;
+        var wikiModNameRE = /^[\/@]+([\w_]+)/;
+        for (var i = 0; i < tokenList.length; i++) {
+            var token = tokenList[i];
+            if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)){
+                var cmdname = token.info.match(wikiCmdRE)[1];
+                var modName = cmdname.match(wikiModNameRE)[1];
+                if (modName == "template") {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // mdwiki render
     window.mdwikiRender = function (mdwikiName, text) {
         // 备份节点信息
@@ -278,38 +295,34 @@ define([
         var pageinfo = util.getAngularServices().$rootScope.pageinfo;
         var tplinfo = util.getAngularServices().$rootScope.tplinfo;
 
-        mdwiki.template = undefined;
+        var existTemplate = isExistTemplate(mdwiki, text);
         mdwiki.templateLineCount = 0;
+        mdwiki.template = undefined;
+
+        // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
+        if (!existTemplate && tplinfo && tplinfo.content && pageinfo.name[0] != "_" && mdwiki.options.use_template) {
+            text = tplinfo.content + '\n' + text;
+            mdwiki.templateLineCount = tplinfo.content.split('\n').length;
+        }
+
         var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
-        if ((mdwiki.template && mdwiki.template.blockCache.domNode) || !pageinfo ||          // 模板没有改变 被缓存  页面信息错误
-            (!mdwiki.template && (pageinfo.name[0] == "_" || !mdwiki.options.use_template    /* 模板不存在 且配置不使用默认模板(_pagename默认不是使用默认模板)*/
-            || !tplinfo || !tplinfo.content ))) {// 模板不存在 且默认模板也不存在
-            /*
-             console.log("-------------------");
-             console.log(mdwiki.template && mdwiki.template.blockCache.domNode);
-             console.log(!pageinfo);
-             console.log(!mdwiki.template && (pageinfo.name[0] == "_" || !tplinfo || !tplinfo.content || !mdwiki.options.use_template));
-             */
+        for (var i = 0; i < blockList.length; i++) {
+            blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
+            blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
+        }
+
+        if (mdwiki.template) {
+            if (mdwiki.templateLineCount) {
+                mdwiki.template.isPageTemplate = false;
+            } else {
+                mdwiki.template.isPageTemplate = true;
+            }
+            console.log(mdwiki.template.isPageTemplate);
+        }
+
+        if (!mdwiki.template || mdwiki.template.blockCache.domNode) {// 模板不存在 且默认模板也不存在
             setMdWikiContent(mdwiki);
             return;
-        }
-        //console.log("----------------template-----------------");
-        if (mdwiki.template) {
-            mdwiki.template.isPageTemplate = true;
-        } else {
-            text = tplinfo.content + '\n' + text;
-            //console.log(text);
-            blockList = mdwiki.parse(preprocessMDText(text));
-            mdwiki.templateLineCount = tplinfo.content.split('\n').length;
-            for (var i = 0; i < blockList.length; i++) {
-                blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
-                blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
-            }
-            if (!mdwiki.template) {
-                setMdWikiContent(mdwiki)
-                return;
-            }
-            mdwiki.template.isPageTemplate = false;
         }
 
         renderWikiBlock(mdwiki, mdwiki.template);

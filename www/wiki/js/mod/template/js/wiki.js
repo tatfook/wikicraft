@@ -86,6 +86,7 @@ define([
             }
 
             $scope.setSelfPage = function (type) {
+                //console.log(wikiBlock);
                 if (!wikiBlock.isPageTemplate) {
                     //$scope.editSelfPage(type);
                     Message.info("请在_theme文件编辑布局模块");

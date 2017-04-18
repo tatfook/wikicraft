@@ -22,6 +22,7 @@
                     <th>数据源名</th>
                     <th>类型</th>
                     <th>apiBaseUrl</th>
+                    <th>rawBaseUrl</th>
                     <th>Token</th>
                     <th>状态</th>
                     <th>操作</th>
@@ -32,6 +33,7 @@
                     <td>{{x.name}}</td>
                     <td>{{x.type}}</td>
                     <td>{{x.apiBaseUrl}}</td>
+                    <td>{{x.rawBaseUrl}}</td>
                     <td>{{x.dataSourceToken}}</td>
                     <td>{{x.dataSourceId ? "有效" : "无效"}}</td>
                     <td>
@@ -67,6 +69,12 @@
                     <label class="col-xs-2 control-label">ApiBaseUrl:</label>
                     <div class="col-xs-8">
                         <input ng-model="newDataSource.apiBaseUrl" type="text" class="form-control" placeholder="https://api.github.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">RawBaseUrl:</label>
+                    <div class="col-xs-8">
+                        <input ng-model="newDataSource.rawBaseUrl" type="text" class="form-control" placeholder="https://raw.githubusercontent.com/">
                     </div>
                 </div>
                 <div class="form-group">

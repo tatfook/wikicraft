@@ -154,6 +154,7 @@ define([
             github.defalultRepoName = dataSource.projectName || 'keepworkDataSource';
             github.defaultHttpHeader['Authorization'] = ' token ' + github.githubToken;
             github.apiBase = dataSource.apiBaseUrl;
+            github.rawBase = dataSource.rawBaseUrl || 'https://raw.githubusercontent.com/';
 
             self.setDefaultRepo(github.defalultRepoName, function (data) {
                 github.inited = true;
@@ -173,7 +174,7 @@ define([
         }
 
         github.getRawContentUrlPrefix = function (params) {
-            return 'https://raw.githubusercontent.com/' + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
+            return github.rawBase + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
         }
 
         // writeFile

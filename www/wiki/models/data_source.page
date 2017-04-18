@@ -24,6 +24,7 @@ function data_source:ctor()
 	self:addfield("dataSourceToken", "string")  -- 数据源ID
 	self:addfield("projectName", "string")  -- 项目名
 	self:addfield("apiBaseUrl", "string")  -- api url prefix
+	self:addfield("rawBaseUrl", "string")  -- raw url prefix
 	self:addfield("enable", "number")  -- 数据源ID
 end
 
@@ -95,6 +96,7 @@ function getInnerGitlabToken(params)
 		--dataSourceToken = gitlabToken.token,
 		enable = 1,
 		apiBaseUrl = params.urlPrefix,
+		rawBaseUrl = params.rawPrefix,
 	}
 
 	System.os.GetUrl({
@@ -157,6 +159,7 @@ function data_source:api_linkInnerGitlab(params)
 
 		local adminToken = wiki_config().data_source.inner_gitlab.token
 		local urlPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host .. "/api/v4"
+		local rawPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host
 		System.os.GetUrl({
 			url= urlPrefix .. "/users?username=" .. params.username, 
 			headers={['PRIVATE-TOKEN']= adminToken},
@@ -179,10 +182,10 @@ function data_source:api_linkInnerGitlab(params)
 					if code ~= 201 then
 						return
 					end
-					getInnerGitlabToken({userId=params.userId, username=params.username, urlPrefix=urlPrefix, token=adminToken, gitlabUserId=gitlabUser.id})
+					getInnerGitlabToken({userId=params.userId, username=params.username,rawPrefix=rawPrefix, urlPrefix=urlPrefix, token=adminToken, gitlabUserId=gitlabUser.id})
 				end)
 			else
-				getInnerGitlabToken({userId=params.userId, username=params.username, urlPrefix=urlPrefix, token=adminToken, gitlabUserId=data[1].id})
+				getInnerGitlabToken({userId=params.userId, username=params.username, rawPrefix=rawPrefix, urlPrefix=urlPrefix, token=adminToken, gitlabUserId=data[1].id})
 			end
 		end)
 	else 

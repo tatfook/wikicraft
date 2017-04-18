@@ -178,7 +178,54 @@ function user:api_updateUserInfo(params)
 	return errors:wrap(yield())
 end
 
--- 找回密码
+-- 找回密码1
+function user:api_verifyEmailOne(params) 
+	local userId = self:ensureAuthenticated()
+	if not params.email then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({_id=userId}, resume)
+	local _, userinfo = yield()
+	if not userinfo then
+		return errors:wrap(errors.USER_NOT_EXIST)
+	end
+
+	local url = "http://keepwork.com/wiki/verifyEmail"
+
+	-- TODO 加时间限制
+	mem_cache:set("verifyEmail" .. tostring(userId), params.email)
+
+	local par = {}
+	par.to = params.email
+	par.subject = "邮箱验证"
+	par.body = [[
+		<div class="main-content">
+			<p>打开如下链接进行邮箱验证:</p>
+			<p><a href="%s">%s</a></p>
+		</div>
+	]]
+	par.body = string.format(par.body, url, url)
+	util:sendEmail(par)
+	
+	return errors:wrap(nil)
+end
+
+-- 找回密码2
+function user:api_verifyEmailTwo(params)
+	local userId = self:ensureAuthenticated()
+	if not params.key then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local email = mem_cache:get("verifyEmail" .. tostring(userId))
+	
+	self:db():updateOne({_id=userId, {email=email}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 找回密码1
 function user:api_findPwdOne(params) 
 	if not params.email then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -190,8 +237,8 @@ function user:api_findPwdOne(params)
 		return errors:wrap(errors.USER_NOT_EXIST)
 	end
 	local t = os.time()
-	local key = userinfo.password .. tostring(t)
-	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key
+	local key = tostring(t) .. math.random(10000)
+	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key .. "&email=" 。。 params.email
 
 	-- TODO 加时间限制
 	mem_cache:set(params.email, key)
@@ -211,7 +258,7 @@ function user:api_findPwdOne(params)
 	return errors:wrap(nil)
 end
 
--- 找回密码
+-- 找回密码2
 function user:api_findPwdTwo(params)
 	if (not params.email) or (not params.key) or (not params.password) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
