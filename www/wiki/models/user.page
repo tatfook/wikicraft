@@ -178,7 +178,7 @@ function user:api_updateUserInfo(params)
 	return errors:wrap(yield())
 end
 
--- 找回密码1
+-- 邮箱验证1
 function user:api_verifyEmailOne(params) 
 	local userId = self:ensureAuthenticated()
 	if not params.email then
@@ -211,12 +211,9 @@ function user:api_verifyEmailOne(params)
 	return errors:wrap(nil)
 end
 
--- 找回密码2
+-- 邮箱验证2
 function user:api_verifyEmailTwo(params)
 	local userId = self:ensureAuthenticated()
-	if not params.key then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
 
 	local email = mem_cache:get("verifyEmail" .. tostring(userId))
 	
