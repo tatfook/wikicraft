@@ -40,6 +40,10 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
 
+        $scope.goUserIndexPage=function(username){
+            util.goUserSite('/'+username,true);
+        }
+
         // 收藏作品
         $scope.worksFavorite=function (event, site) {
             //console.log(event, site);
