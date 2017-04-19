@@ -6,9 +6,10 @@ define([
 ], function (app, util, htmlContent) {
 
     // 使用闭包使模块重复独立使用
-    function registerController(wikiBlock) {
+    function registerController(wikiblock) {
         app.registerController("personalHeaderController", ['$scope','Account','Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.user = Account.getUser();
 
             // 显示全部作品
@@ -67,10 +68,26 @@ define([
     }
 
     return {
-        render: function (mdwiki) {
-            mdwiki.viewEdit = false; // 关闭视图编辑功能
-            registerController(mdwiki);
+        render: function (wikiblock) {
+            wikiblock.viewEdit = false; // 关闭视图编辑功能
+            registerController(wikiblock);
             return htmlContent;
         }
     }
 });
+
+/*```@wiki/js/personalHeader
+{
+    "moduleKind":"header1"
+}
+```*/
+/*```@wiki/js/personalHeader
+{
+    "moduleKind":"header2",
+    "displayBgImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/blog_header_banner.jpg",
+    "displayName":"ParaCraft小组",
+    "location":"深圳",
+    "info":"成立于2017.4.19",
+    "introduce":"这里是一段描述介绍小组的文字，内容自定义。介绍自己的小组成员或者是邀请新成员加入小组等等。"
+}
+```*/
