@@ -1,8 +1,8 @@
 ﻿define([
     'app',
     'markdown-it',
-    'text!mod/packages/html/package_install.html',
-], function (app,markdownit, htmlContent) {
+    'text!mod/packages/html/packages_install.html',
+], function (app, markdownit, htmlContent) {
     app.factory('packagesInstallService', function () {
         var giturl = '';
 

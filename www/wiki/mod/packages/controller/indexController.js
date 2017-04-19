@@ -3,11 +3,11 @@ define([
     'text!mod/packages/html/index.html',
 ], function (app, htmlContent) {
     app.controller('packagesController', function ($scope, $http, $location, $rootScope) {
-        $scope.packages = [];
+        $scope.packages      = [];
         $scope.packagesStats = 0;
-        $scope.dayDownload = 0;
+        $scope.dayDownload   = 0;
         $scope.monthDownload = 0;
-        $scope.yearDownload = 0;
+        $scope.yearDownload  = 0;
 
         function loadPackage() {
             if ($location.url() == "/npl") {
@@ -17,6 +17,7 @@ define([
             } else {
                 $scope.projectType = 'paracraft';
             }
+
             //packagestats
             $http({
                 method: 'POST',
@@ -113,11 +114,13 @@ define([
         }
 
         $rootScope.$on('$locationChangeSuccess', function () {
-            loadPackage()
+            loadPackage();
+            return htmlContent;
         });
 
         function init() {
             loadPackage();
+            return htmlContent;
         }
 
         init();

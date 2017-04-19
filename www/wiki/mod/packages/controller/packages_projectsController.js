@@ -1,7 +1,7 @@
 define([
     'app',
-    'text!mod/package/html/packages_projects.html'
-], function (app) {
+    'text!mod/packages/html/packages_projects.html'
+], function (app, htmlContent) {
     app.factory('packagesService', function () {
         var packageId = 0;
         var page = 1;
@@ -35,9 +35,10 @@ define([
             }
         };
     })
-    .controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
+    .controller('packagesProjectsController', ['$scope', '$uibModal', '$http', 'Account', 'packagesService', '$location', '$rootScope',
+                                               function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
         var request = $location.search();
-
+        
         if (request.userid == undefined) {
             //Account.setRequireSignin(true);
             Account.ensureAuthenticated();
@@ -201,7 +202,7 @@ define([
                 }
             }
         });
-    })
+    }])
     .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
         $scope.projectName = '';
         $scope.projectDesc = '';
@@ -421,4 +422,6 @@ define([
             //alert('Page changed to: ' + $scope.currentPage);
         };
     });
+
+    return htmlContent;
 });
