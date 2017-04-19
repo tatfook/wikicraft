@@ -113,10 +113,66 @@
         }
     }
 </style>
-
+<style>
+    .org-works-list a{
+        color: inherit;
+    }
+    .org-works-list a:hover{
+        color: #3977AD;
+    }
+    .org-works-list h1{
+        font-size: 36px;
+        font-weight: normal;
+        margin: 60px 0 0;
+        color: #333;
+        padding-bottom: 25px;
+        position: relative;
+    }
+    .org-works-list h1:before{
+        content: '';
+        display: inline-block;
+        width: 2em;
+        height:1px;
+        background-color: #333;
+        position: absolute;
+        left:0;
+        bottom:0;
+    }
+    .org-works-list img{
+        width: 100%;
+    }
+    .org-works-list .navigation{
+        text-align: right;
+    }
+    .org-works-list .navigation a{
+        padding:0 5px;
+    }
+    .org-works-list .text {
+        background-color: #FAFAFA;
+        padding: 20px;
+        box-shadow: 0px 1px 3px 0px rgba(44, 62, 80, .35);
+    }
+    .org-works-list .hover-slide:hover {
+        transform: translate3d(0, -3px, 0);
+        transition: all .2s linear;
+    }
+    .org-works-list .hover-slide:hover .text {
+        box-shadow: 0 2px 5px 0 rgba(44, 62, 80, .35);
+    }
+    .org-works-list .col-md-12 h4 {
+        line-height: 40px;
+    }
+    .org-works-list img{
+        height:196.88px;
+        object-fit: cover;
+    }
+    .org-works-list .works{
+        margin:30px -15px;
+    }
+</style>
 
 <div class="container-fluid" ng-controller="workslistController">
-    <div class="personal-works-list">
+    <div class="personal-works-list" ng-show="modParams.moduleKind=='workslist1'">
         <h3><span class="title">{{modParams .title || "我的作品"}}</span></h3>
         <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
         <div class="carousel-content clearfix">
@@ -139,6 +195,32 @@
         </div>
         <div class="control right">
             <span class="glyphicon glyphicon-chevron-right" style="cursor: pointer" ng-click="getSiteList(requestParams.page+1)"></span>
+        </div>
+    </div>
+    <div class="org-works-list container" ng-show="modParams.moduleKind=='workslist2'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a>1</a>
+            <a>2</a>
+            <a>3</a>
+            <a>>></a>
+        </div>
+        <div class="clearfix works" ng-repeat="count in modParams.rowShow">
+            <div class="col-md-3 hover-slide col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in [1,2,3,4]">
+                <a ng-click="goUserSite(site)">
+                    <img ng-src="{{site.logoUrl || (imgsPath + '3DWorld.jpg')}}">
+                </a>
+                <div class="text clearfix">
+                    <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name || "xljfsdf"}}</a></h4>
+                    <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username || "Lixizhi"}}</a></p>
+                    <p class="pull-left info">
+                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
+                    </p>
+                    <p class="pull-right info" ng-click="worksFavorite($event, site)">
+                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

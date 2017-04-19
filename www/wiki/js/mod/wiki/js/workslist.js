@@ -86,3 +86,17 @@ define([
         }
     };
 });
+
+/*```@wiki/js/workslist
+{
+    "moduleKind":"workslist1"
+}
+```*/
+/*
+```@wiki/js/workslist
+    {
+        "moduleKind":"workslist2",
+        "rowShow":[1,2],
+        "title":"全部作品"
+    }
+```*/

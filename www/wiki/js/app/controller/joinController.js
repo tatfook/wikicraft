@@ -14,10 +14,14 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
         $scope.$watch('$viewContentLoaded', init);
 
         // 检查账号名（不可为纯数字，不可包含@符号）
-        $scope.checkInput=function () {
+        $scope.checkInput=function (type) {
             $scope.errMsg = "";
             var username=$scope.username?$scope.username : "";
             var pwd=$scope.password?$scope.password : "";
+            if(type==other){
+                username=$scope.otherUsername?$scope.otherUsername : "";
+                pwd=$scope.otherPassword?$scope.otherPassword : "";
+            }
             console.log(username);
             if(/^\d+$/.test(username)){
                 $scope.errMsg="*账户名不可为纯数字";
@@ -34,13 +38,20 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
         }
         
         // 注册
-        $scope.register = function () {
+        $scope.register = function (type) {
             $scope.errMsg = "";
 
             var params = {
                 username: $scope.username? $scope.username.trim():"",
                 password: $scope.password? $scope.password.trim():"",
             };
+
+            if(type=="other"){
+                params = {
+                    username: $scope.otherUsername? $scope.otherUsername.trim():"",
+                    password: $scope.otherPassword? $scope.otherPassword.trim():"",
+                };
+            }
 
             if(!params.username){
                 $scope.errMsg="*账户名为必填字段";

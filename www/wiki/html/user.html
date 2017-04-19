@@ -170,7 +170,7 @@
 <div class="container" ng-controller="userController">
     <div class="row">
         <div class="col-md-3 subnav col-xs-3">
-            <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
+            <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
             <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
             <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
             <p>{{userinfo.introduce}}</p>
@@ -283,7 +283,7 @@
                     <h3 class="title">活动<a href="#" class="pull-right">查看更多活动</a></h3>
                     <div class="active-row-box col-md-12">
                         <div class="col-md-12 active-row" ng-repeat="x in trendsList">
-                            <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_header.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
+                            <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
                         </div>
                     </div>
                 </div>

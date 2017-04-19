@@ -45,6 +45,10 @@ define([
             util.go('join');
         }
 
+        $scope.goUserIndexPage=function(username){
+            util.goUserSite('/'+username,true);
+        }
+
         // 注册
         $scope.register = function () {
             $scope.errMsg = "";

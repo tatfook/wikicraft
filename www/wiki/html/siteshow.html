@@ -32,6 +32,12 @@
         color: #3977AD;
         text-decoration: none;
     }
+    .works a{
+        color: #333;
+    }
+    .works a:hover{
+        color: #3977AD;
+    }
     .works img{
         width: 100%;
         height:196.88px;
@@ -66,7 +72,7 @@
                 <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || imgsPath + 'wiki_works.jpg' }}">
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>
-                    <p>作者： <span>{{site.username}}</span></p>
+                    <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username}}</a></p>
                     <p class="pull-left info">
                         <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount}}</span>
                     </p>

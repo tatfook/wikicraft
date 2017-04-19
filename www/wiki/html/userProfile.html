@@ -319,8 +319,8 @@
         <div class="panel-body">
             <div class="col-md-3 preview-zone">
                 <div class="preview">
-                    <img id='userPortraitId' ng-src="{{ user.portrait || imgsPath + 'wiki_photo.jpg'}}" alt=""
-                         style="width: 100%">
+                    <img id='userPortraitId' ng-src="{{ user.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt=""
+                         style="width: 100%;height: 100%;">
                 </div>
                 <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)"
                                                      type="file"></p>
@@ -591,7 +591,7 @@
                 <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
                     <div class="clearfix">
                         <div class="fans-profile" ng-repeat="fans in fansList">
-                            <img ng-src="{{fans.userinfo.portrait || imgsPath + 'wiki_photo.jpg'}}" alt="">
+                            <img ng-src="{{fans.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
                             <p>{{fans.userinfo.username}}</p>
                         </div>
                     </div>
