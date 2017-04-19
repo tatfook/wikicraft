@@ -13,7 +13,6 @@ local data_source = inherit(models.abstract.base, gettable("models.data_source")
 data_source.db_name = "data_source"
 
 local innerGitlabName = "内置gitlab"
-local innerGithubName = "内置github"
 
 function data_source:ctor()
 	self:addfield("userId", "number")   -- 用户ID 

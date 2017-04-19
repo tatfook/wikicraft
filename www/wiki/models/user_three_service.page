@@ -1,0 +1,41 @@
+<?npl
+--[[
+Title: user three service
+Author: wuxiangan
+Date: 2017/04/19
+]]
+
+
+include_once("./abstract/base.page")
+
+local user_three_service = inherit(models.abstract.base, gettable("models.user_three_service"))
+user_three_service.db_name = "user_three_service"
+
+
+function user_three_service:ctor()
+	self:addfield("userId", "number")        -- 用户ID 
+	self:addfield("serviceId", "number")     -- 第三方服务的id
+	self:addfield("serviceName", "string")   -- 第三方服务名称
+	self:addfield("token", "string")         -- 第三方服务token
+end
+
+function user_three_service:api_upsert(params)
+	if (not params.userId) or (not params.serviceId) or (not params.serviceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():upsert({["+userId+serviceId+serviceName"]={params.userId, params.serviceId, params.serviceName}}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+
+function user_three_service:api_getByService(params)
+	if (not params.serviceId) or (not params.serviceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+serviceId+serviceName"]={params.serviceId, params.serviceName}}, resume)
+	
+	return errors:wrap(yield())
+end

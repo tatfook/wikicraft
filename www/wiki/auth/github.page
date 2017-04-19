@@ -15,7 +15,7 @@ local params = {
 	client_secret = config.GITHUB_SECRET,
 	redirect_uri = request:get("redirectUri"),
 };
-
+log("-------------------")
 response:Begin();
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
