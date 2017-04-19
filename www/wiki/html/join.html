@@ -19,7 +19,7 @@
         margin-top: 80px;
         margin-bottom: 80px;
     }
-    .join-form form, .join-form .successInfo{
+    .join-form form, .join-form .successInfo,.completeMsg{
         width:65%;
         margin:0 auto;
     }
@@ -78,6 +78,22 @@
     }
     .visible-hidden{
         visibility: hidden;
+    }
+
+    .completeMsg form{
+        width: 100%;
+    }
+    .completeMsg p.info{
+        font-size: 12px;
+        color: #999;
+        margin: 20px 0 40px;
+    }
+    .completeMsg h2{
+        font-size: 20px;
+        color: #666;
+    }
+    .completeMsg .btn-primary{
+        margin-top: 65px;
     }
     @media(max-width: 768px){
         .container-fluid{
@@ -146,6 +162,25 @@
                 <p>请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开 <a ng-click="goUserCenter()">>>个人资料管理 << </a>，进行绑定。</p>
             </div>
             <div class="btn btn-primary" ng-click="goUserHome()">跳转个人首页</div>
+        </div>
+        <div class="completeMsg" ng-show="step==3">
+            <h2>完善账号信息</h2>
+            <p class="info">完善信息后可使用第三方账号登录页可使用本站账号密码登录。</p>
+            <form>
+                <div class="text-danger">{{errMsg}}</div>
+                <div class="form-group">
+                    <label class="sr-only">账户名</label>
+                    <input type="text" class="form-control" name="otherUsername" placeholder="账户名" ng-model="otherUsername" ng-blur="checkInput('other')">
+                    <p>账号名不可更改，不可为纯数字，不可包含@符号。</p>
+                    <p>您注册后的个人页面地址为：</p>
+                    <p class="user-link">http://keepwork.com/{{otherUsername || "账户名"}}</p>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">密码</label>
+                    <input type="password" class="form-control" name="otherPassword" placeholder="密码" ng-model="otherPassword" ng-blur="checkInput('other')">
+                </div>
+                <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg">确 定</div>
+            </form>
         </div>
     </div>
 </div>
