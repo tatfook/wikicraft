@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title ng-bind="title">keepwork.com</title>
-    <link rel="icon" href="/wiki/assets/icon/logo.ico" type="image/x-icon" />
+    <link rel="icon" href="/wiki/assets/imgs/icon/logo.ico" type="image/x-icon" />
 
     <!-- lib css -->
     <link href="/wiki/assets/css/main.css" rel="stylesheet">
