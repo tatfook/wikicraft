@@ -98,8 +98,7 @@ define([
             util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
                 console.log("注册成功")
                 $auth.setToken(data.token);
-                Account.setUser(data.userInfo);
-                //window.location.href = '/wiki/website';
+                Account.setUser(data.userinfo);
                 util.go('home');
             }, function (error) {
                 $scope.errMsg = error.message;
@@ -162,7 +161,22 @@ define([
             console.log("QQ登录");
 
             $auth.authenticate("qq").then(function (response) {
-                console.log(response);
+                var data = response.data || {};
+                if (data.error) {
+                    Message.info("认证失败:" + data.message);
+                    return;
+                }
+                if ($auth.isAuthenticated()) {
+                    Account.setUser(data.data);
+                    if ($scope.isModal) {
+                        $scope.$close(data.data);
+                    } else {
+                        util.goUserSite('/' + data.data.username);
+                    }
+                } else {
+                    // 用户不存在 注册用户并携带data.data信息
+                    // TODO
+                }
             }, function (response) {
                 console.log(response);
                 console.log("github认证失败!!!");
@@ -179,17 +193,22 @@ define([
 
         $scope.githubLogin = function () {
             $auth.authenticate("github").then(function (response) {
-                if (!response.data.token || !response.data.userInfo) {
-                    Message.info("github 登录失败!!!");
-                    return ;
-                }
                 console.log("github认证成功!!!");
-                $auth.setToken(response.data.token);
-                Account.setUser(response.data.userInfo);
-                if ($scope.isModal) {
-                    $scope.$close(response.data.userInfo);
+                var data = response.data || {};
+                if (data.error) {
+                    Message.info("认证失败:" + data.message);
+                    return;
+                }
+                if ($auth.isAuthenticated()) {
+                    Account.setUser(data.data);
+                    if ($scope.isModal) {
+                        $scope.$close(data.data);
+                    } else {
+                        util.goUserSite('/' + data.data.username);
+                    }
                 } else {
-                    util.goUserSite('/' + response.data.userInfo.username);
+                    // 用户不存在 注册用户并携带data.data信息
+                    // TODO
                 }
             }, function () {
                 console.log("github认证失败!!!");

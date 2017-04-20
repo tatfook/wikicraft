@@ -15,6 +15,7 @@ include_once("./user_fans.page")
 include_once("./user_trends.page")
 include_once("./user_active.page")
 include_once("./data_source.page")
+include_once("./user_three_service.page")
 
 -- local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
@@ -317,7 +318,6 @@ function user:api_setemail(params)
 
 	self:db():updateOne({_id=params._id}, {email=email}, resume)
 	return errors:wrap(yield())
-
 	]]
 end
 
@@ -373,7 +373,7 @@ function user:api_register(params)
 		username = params.username,
 		displayName = params.username,
 		password = self:encodePassword(params.password),
-		 email = params.email,
+		email = params.email,
 		cellphone = params.cellphone,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 		administrator = 0,
@@ -381,34 +381,27 @@ function user:api_register(params)
 		fansCount=0,
 		websiteCount=0,
 	}, resume)
-	local err, userInfo = yield()
-	if err then 
-		return errors:wrap(err,data)
+	local err, userinfo = yield()
+	if not userinfo then 
+		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 	
-	request.userid = userInfo._id
-
-	-- 创建个人站点
-	--[[
-		websiteDB:create({
-			name=params.username,
-			userId=userInfo._id, 
-			username=params.username, 
-			desc="个人站点", 
-			categoryId=0, 
-			categoryName="个人站点",
-			favoriteCount=0,
-		})
-	]]
-
 	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getByUserId({userId=userInfo._id}).data
+	local dataSource = dataSourceDB:api_getByUserId({userId=useruinfo._id}).data
 	if (not dataSource) or (#dataSource == 0) then
-		dataSourceDB:api_linkInnerGitlab({userId=userInfo._id, username=userInfo.username})
+		dataSourceDB:api_linkInnerGitlab({userId=userinfo._id})
 	end
-	userInfo.dataSource = dataSource
+	userinfo.dataSource = dataSource
 
-	return errors:wrap(nil, {token=createJWT(userInfo), userInfo=userInfo})
+	-- 第三方服务
+	local threeSerice = params.threeSerice
+	if threeSerice and threeSerice.serviceId and threeSerice.serviceName then
+		local userThreeServiceDB = models.user_three_service:new()
+		threeSerice.userId = userinfo._id
+		userThreeServiceDB:api_upsert(threeSerice)	
+	end
+
+	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo})
 end
 
 function user:api_getUserDataSource(params)

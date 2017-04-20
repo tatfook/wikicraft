@@ -281,6 +281,7 @@ define([
         $scope.$on("onUserProfile", function (event, user) {
             //console.log('onUserProfile');
             $scope.user = user;
+            $rootScope.isLogin = Account.isAuthenticated();
             init();
         });
 
@@ -290,7 +291,6 @@ define([
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             console.log("isAuthenticated");
-            $rootScope.isLogin = Account.isAuthenticated();
         });
     }]);
 
