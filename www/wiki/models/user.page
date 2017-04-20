@@ -354,7 +354,27 @@ function user:api_login(params)
 
 	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
 end
+
+function user:api_bindThreeService(params)
+	local threeService = params.threeService or {}
+	if (not params.username) or (not params.password) or (not threeService.serviceId) or (not threeService.serviceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	local password = self:encodePassword(params.password)
+	self:db():findOne({["+username+password"]={params.username, password}}, resume)
+	local _, userinfo = yield()
+	-- 用户不存在则注册
+	if not userinfo then
+		return self:api_register(params)
+	end
+	-- 用户存在则绑定
+	local userThreeServiceDB = models.user_three_service:new()
+	threeService.userId = userinfo._id
+	userThreeServiceDB:api_upsert(threeService)
 	
+	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo})
+end	
+
 -- 注册
 function user:api_register(params)
 	-- 用户名 密码 邮箱为必填项
@@ -394,11 +414,11 @@ function user:api_register(params)
 	userinfo.dataSource = dataSource
 
 	-- 第三方服务
-	local threeSerice = params.threeSerice
-	if threeSerice and threeSerice.serviceId and threeSerice.serviceName then
+	local threeService = params.threeService
+	if threeService and threeService.serviceId and threeService.serviceName then
 		local userThreeServiceDB = models.user_three_service:new()
-		threeSerice.userId = userinfo._id
-		userThreeServiceDB:api_upsert(threeSerice)	
+		threeService.userId = userinfo._id
+		userThreeServiceDB:api_upsert(threeService)
 	end
 
 	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo})

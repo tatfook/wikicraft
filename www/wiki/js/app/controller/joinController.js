@@ -2,13 +2,24 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlContent) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!html/join.html'
+], function (app, util, storage, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
+        var userThreeService = undefined;
         $scope.isModal=false;
         $scope.step=1;
 
         function init() {
+            console.log("==================join controller init======================");
+            userThreeService = storage.sessionStorageGetItem('userThreeService');
+            if (userThreeService) {
+                $scope.step = 3;
+            }
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -18,7 +29,7 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
             $scope.errMsg = "";
             var username=$scope.username?$scope.username : "";
             var pwd=$scope.password?$scope.password : "";
-            if(type==other){
+            if(type=="other"){
                 username=$scope.otherUsername?$scope.otherUsername : "";
                 pwd=$scope.otherPassword?$scope.otherPassword : "";
             }
@@ -50,6 +61,7 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
                 params = {
                     username: $scope.otherUsername? $scope.otherUsername.trim():"",
                     password: $scope.otherPassword? $scope.otherPassword.trim():"",
+                    threeService:userThreeService,
                 };
             }
 
@@ -69,12 +81,16 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
                 $scope.errMsg="*密码最少6位";
                 return;
             }
-
-            util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
-                console.log("注册成功")
-                $scope.step++;
+            var url = type == "other" ? "user/bindThreeService" : "user/register";
+            util.http("POST", config.apiUrlPrefix + url, params, function (data) {
+                console.log("注册成功");
                 $auth.setToken(data.token);
-                Account.setUser(data.userInfo);
+                Account.setUser(data.userinfo);
+                if (type == "other") {
+                    util.goUserSite('/'+params.username);
+                } else {
+                    $scope.step++;
+                }
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
@@ -95,32 +111,40 @@ define(['app', 'helper/util', 'text!html/join.html'], function (app, util, htmlC
 
         $scope.qqLogin = function () {
             console.log("QQ登录");
+            Authenticate("qq");
         }
 
         $scope.wechatLogin = function () {
             console.log("微信登录");
+            Authenticate("weixin");
         }
 
         $scope.sinaWeiboLogin = function () {
             console.log("新浪微博登录");
+            Authenticate("xinlangweibo");
         }
 
         $scope.githubLogin = function () {
-            $auth.authenticate("github").then(function (response) {
-                if (!response.data.token || !response.data.userInfo) {
-                    Message.info("github 登录失败!!!");
-                    return ;
-                }
-                console.log("github认证成功!!!");
-                $auth.setToken(response.data.token);
-                Account.setUser(response.data.userInfo);
-                if ($scope.isModal) {
-                    $scope.$close(response.data.userInfo);
+            console.log("github登录");
+            Authenticate("github");
+        }
+
+        function Authenticate(serviceName) {
+            Account.authenticate(serviceName, function (data) {
+                if ($auth.isAuthenticated()) {
+                    Account.setUser(data.data);
+                    if ($scope.isModal) {
+                        $scope.$close(data.data);
+                    } else {
+                        util.goUserSite('/' + data.data.username);
+                    }
                 } else {
-                    util.goUserSite('/' + response.data.userInfo.username);
+                    // 用户不存在 注册用户并携带data.data信息
+                    userThreeService = data.data;
+                    $scope.step = 3;
                 }
-            }, function () {
-                console.log("github认证失败!!!");
+            }, function (data) {
+
             });
         }
     }]);

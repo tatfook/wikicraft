@@ -9,7 +9,7 @@ local config = include("config.page")
 	
 local accessTokenUrl = 'https://github.com/login/oauth/access_token'
 local userApiUrl = 'https://api.github.com/user'
-local serviceName = "qq"
+local serviceName = "github"
 local params = {
 	code = request:get("code"),
 	client_id = request:get("clientId"),

@@ -39,17 +39,12 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
                 $auth.setToken(data.token);
-                Account.setUser(data.userInfo);
+                Account.setUser(data.userinfo);
                 console.log("登录成功");
-                /*
-                if (!data.userInfo.githubToken) {
-                    Account.githubAuthenticate();
-                }
-                */
                 if ($scope.isModal) {
-                    $scope.$close(data.userInfo);
+                    $scope.$close(data.userinfo);
                 } else {
-                    util.goUserSite('/' + data.userInfo.username);
+                    util.goUserSite('/' + data.userinfo.username);
                 }
 
             }, function (error) {
@@ -60,32 +55,40 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
 
         $scope.qqLogin = function () {
             console.log("QQ登录");
+            Authenticate("qq");
         }
 
         $scope.wechatLogin = function () {
             console.log("微信登录");
+            Authenticate("weixin");
         }
 
         $scope.sinaWeiboLogin = function () {
             console.log("新浪微博登录");
+            Authenticate("xinlangweibo");
         }
 
         $scope.githubLogin = function () {
-            $auth.authenticate("github").then(function (response) {
-                if (!response.data.token || !response.data.userInfo) {
-                    Message.info("github 登录失败!!!");
-                    return ;
-                }
-                console.log("github认证成功!!!");
-                $auth.setToken(response.data.token);
-                Account.setUser(response.data.userInfo);
-                if ($scope.isModal) {
-                    $scope.$close(response.data.userInfo);
+            console.log("github登录");
+            Authenticate("github");
+        }
+
+        function Authenticate(serviceName) {
+            Account.authenticate(serviceName, function (data) {
+                if ($auth.isAuthenticated()) {
+                    Account.setUser(data.data);
+                    if ($scope.isModal) {
+                        $scope.$close(data.data);
+                    } else {
+                        util.goUserSite('/' + data.data.username);
+                    }
                 } else {
-                    util.goUserSite('/' + response.data.userInfo.username);
+                    // 用户不存在 注册用户并携带data.data信息
+                    storage.sessionStorageSetItem("userThreeService", data.data);
+                    util.go("join");
                 }
-            }, function () {
-                console.log("github认证失败!!!");
+            }, function (data) {
+
             });
         }
 

@@ -158,12 +158,7 @@ define([
         }
 
         function Authenticate(serviceName) {
-            $auth.authenticate(serviceName).then(function (response) {
-                var data = response.data || {};
-                if (data.error) {
-                    Message.info("认证失败:" + data.message);
-                    return;
-                }
+            Account.authenticate(serviceName, function (data) {
                 if ($auth.isAuthenticated()) {
                     Account.setUser(data.data);
                     if ($scope.isModal) {
@@ -174,10 +169,11 @@ define([
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
                     // TODO
+                    storage.sessionStorageSetItem("userThreeService", data.data);
+                    util.go("join");
                 }
-            }, function (response) {
-                console.log(response);
-                console.log("认证失败!!!");
+            }, function (data) {
+
             });
         }
         $scope.qqLogin = function () {

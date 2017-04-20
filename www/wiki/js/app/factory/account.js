@@ -23,7 +23,7 @@ define([
              $auth.setStorageType("localStorage");
              }
              */
-            
+
             // 为认证且域名为子域名
             if (!$auth.isAuthenticated() && window.location.hostname != config.hostname && $.cookie('token')) {
                 $auth.setToken($.cookie('token'));
@@ -95,6 +95,22 @@ define([
                 // 是否认证
                 isAuthenticated: function () {
                     return $auth.isAuthenticated();
+                },
+
+                authenticate: function (serviceName, cb, errcb) {
+                    $auth.authenticate(serviceName).then(function (response) {
+                        var data = response.data || {};
+                        if (data.error) {
+                            Message.info("认证失败:" + data.message);
+                            errcb && errcb(data);
+                            return;
+                        } else {
+                            cb && cb(data);
+                        }
+                    }, function (response) {
+                        errcb && errcb(response.data);
+                        console.log("认证失败!!!");
+                    });
                 },
 
                 // 确保认证，未认证跳转登录页
