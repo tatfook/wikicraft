@@ -35,174 +35,169 @@ define([
             }
         };
     })
-    .controller('packagesProjectsController', ['$scope', '$uibModal', '$http', 'Account', 'packagesService', '$location', '$rootScope',
-                                               function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
-        var request = $location.search();
+    .controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
+        var params  = window.location.search.replace("?", "").split("&");
+        var request = {};
         
+        for (var i in params) {
+            var param = params[i].split("=");
+            request[param[0]] = param[1];
+        }
+
         if (request.userid == undefined) {
-            //Account.setRequireSignin(true);
             Account.ensureAuthenticated();
+
         } else {
             $scope.othersMode = true;
         }
 
-        $rootScope.$on('$locationChangeSuccess', function () {
-            if ($location.path() == "/npl") {
-                $scope.projectType = 'npl';
-            } else if ($location.path() == "/paracraft") {
-                $scope.projectType = 'paracraft';
-            } else {
-                $scope.projectType = 'paracraft';
-            }
+        var path = window.location.pathname;
+        path = path.replace("/wiki/mod/packages/packages_projects", "");
 
-            if ($scope.projectType == 'npl') {
-                $scope.editProfile = 'Edit profile';
-                $scope.create = 'Create';
-                $scope.myProjects = 'My npl packages';
-                $scope.downloadsA = 'Downloads:';
-                $scope.downloadsB = '';
-                $scope.deleteDesc = "Are you sure delete this project?";
-            } else if ($scope.projectType == 'paracraft') {
-                $scope.editProfile = '个人设置';
-                $scope.create = '新建';
-                $scope.myProjects = '我的paracraft模块';
-                $scope.downloadsA = '下载次数';
-                $scope.downloadsB = '次';
-                $scope.deleteDesc = "是否确定删除你的项目？";
-            }
+        if (path == "/npl") {
+            $scope.projectType = 'npl';
+        } else if (path == "/paracraft") {
+            $scope.projectType = 'paracraft';
+        } else {
+            $scope.projectType = 'paracraft';
+        }
 
-            packagesService.setProjectsType($scope.projectType);
+        if ($scope.projectType == 'npl') {
+            $scope.editProfile = 'Edit profile';
+            $scope.create = 'Create';
+            $scope.myProjects = 'My npl packages';
+            $scope.downloadsA = 'Downloads:';
+            $scope.downloadsB = '';
+            $scope.deleteDesc = "Are you sure delete this project?";
+        } else if ($scope.projectType == 'paracraft') {
+            $scope.editProfile = '个人设置';
+            $scope.create = '新建';
+            $scope.myProjects = '我的paracraft模块';
+            $scope.downloadsA = '下载次数';
+            $scope.downloadsB = '次';
+            $scope.deleteDesc = "是否确定删除你的项目？";
+        }
 
-            if (request.userid == undefined) {
+        packagesService.setProjectsType($scope.projectType);
 
-                //$scope.$watch(Account.getUser, function (newValue, oldValue) {
-                //    $scope.user = angular.copy(newValue);
-                //});
-                // 更改获取用户信息方式 getUser函数使用locationSession使用watch报错  add by wuxiangan
-                $scope.$on("onUserProfile", function (event, user) {
-                    $scope.user = angular.copy(user);
-                });
-            } else {
-                $http({
-                    method: 'POST',
-                    url: '/api/wiki/models/user/getminiprofile',
-                    data: {"_id": request.userid}
-                })
-                    .then(function (response) {
-                        $scope.user = response.data;
-                    }).then(function (response) {
-                });
-            }
+        $scope.ShowCreateProjectDialog = function () {
+            $uibModal.open({
+                templateUrl: '/wiki/mod/packages/partials/packages_project_create.html',
+                controller: "packagesProjectsCreateController",
+                size: 'lg'
+            }).result.then(function (params) {
+                alert(params.msg);
+                if ($scope.projectType == params.projectType) {
+                    packagesService.setForceUpdatePagin(1);
+                } else {
+                    $scope.projectType = params.projectType;
+                    packagesService.setProjectsType($scope.projectType);
+                }
 
-            $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
-                postData.page = newValue;
                 $scope.getProjects();
+            }, function (text, error) {
+
             });
+        };
 
-            $scope.items = [];
+        if (request.userid == undefined) {
+            $scope.$on("onUserProfile", function (event, user) {
+                $scope.user = angular.copy(user);
+            });
+        } else {
+            $http({
+                method: 'POST',
+                url: '/api/wiki/models/user/getminiprofile',
+                data: { "_id": request.userid }
+            })
+            .then(function (response) {
+                $scope.user = response.data;
+            }).then(function (response) {});
+        }
 
-            var postData = {
-                projectType: $scope.projectType,
-                page: 1,
-                amount: 4
-            };
+        $scope.items = [];
 
-            if (request.userid != undefined) {
-                postData.userid = request.userid;
-            }
+        var postData = {
+            projectType: $scope.projectType,
+            page: 1,
+            amount: 4
+        };
 
-            $scope.getProjects = function () {
-                $http({
-                    method: 'POST',
-                    url: '/api/mod/packages/models/packages',
-                    data: postData
-                })
-                    .then(function (response) {
-                            $scope.items = response.data;
+        if (request.userid != undefined) {
+            postData.userid = request.userid;
+        }
 
-                            for (index in $scope.items) {
-                                var gitRaw = "https://raw.githubusercontent.com";
-
-                                try {
-                                    var gitRoot = $scope.items[index].projectGitURL.split("//");
-                                    var gitRootStart = gitRoot[1].indexOf("/");
-                                    var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
-                                } catch (err) {
-                                    console.log("url format error");
-                                    return;
-                                }
-
-                                var gitIcon = gitRoot + '/master/icon.png'
-
-                                $scope.items[index].gitIcon = gitIcon;
-                            }
-                        },
-                        function (response) {
-                        });
-            }
-
+        $scope.$watch(packagesService.getPage, function (newValue, oldValue) {
+            postData.page = newValue;
             $scope.getProjects();
+        });
 
-            $scope.ShowCreateProjectDialog = function () {
-                $uibModal.open({
-                    templateUrl: '/wiki/mod/packages/partials/packages_project_create.html',
-                    controller: "packagesProjectsCreateController",
-                    size: 'lg'
-                }).result.then(function (params) {
-                    alert(params.msg);
-                    if ($scope.projectType == params.projectType) {
-                        packagesService.setForceUpdatePagin(1);
-                    } else {
-                        $scope.projectType = params.projectType;
-                        packagesService.setProjectsType($scope.projectType);
+        $scope.getProjects = function () {
+            $http({
+                method: 'POST',
+                url: '/api/mod/packages/models/packages',
+                data: postData
+            })
+            .then(function (response) {
+                $scope.items = response.data;
+
+                for (index in $scope.items) {
+                    var gitRaw = "https://raw.githubusercontent.com";
+
+                    try {
+                        var gitRoot = $scope.items[index].projectGitURL.split("//");
+                        var gitRootStart = gitRoot[1].indexOf("/");
+                        var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
+                    } catch (err) {
+                        console.log("url format error");
+                        return;
                     }
 
-                    $scope.getProjects();
-                }, function (text, error) {
+                    var gitIcon = gitRoot + '/master/icon.png'
 
-                });
-            };
-
-            $scope.ShowModifyProjectDialog = function (packageId) {
-                packagesService.setModifyPackageID(packageId);
-
-                $uibModal.open({
-                    templateUrl: '/wiki/mod/packages/partials/packages_project_modify.html',
-                    controller: "packagesProjectsModifyController",
-                    size: 'lg'
-                }).result.then(function (params) {
-                    alert(params.msg)
-                    $scope.projectType = params.projectType;
-                    $scope.getProjects();
-                }, function (text, error) {
-
-                });
-            }
-
-            $scope.DeleteProject = function (packageId) {
-                if (confirm($scope.deleteDesc)) {
-                    $http({
-                        method: "POST",
-                        url: "/api/mod/packages/models/packages/deletePackage",
-                        data: {
-                            packageId: packageId
-                        }
-                    })
-                        .then(function (response) {
-                            alert(response.data.msg);
-
-                            if (response.data.result == 1) {
-                                $scope.page = 1;
-                                packagesService.setForceUpdatePagin(1);
-                                $scope.getProjects();
-                            }
-                        }, function (response) {
-
-                        });
+                    $scope.items[index].gitIcon = gitIcon;
                 }
+            },
+            function (response) {});
+        }
+
+        $scope.getProjects();
+
+        $scope.ShowModifyProjectDialog = function (packageId) {
+            packagesService.setModifyPackageID(packageId);
+
+            $uibModal.open({
+                templateUrl: '/wiki/mod/packages/partials/packages_project_modify.html',
+                controller: "packagesProjectsModifyController",
+                size: 'lg'
+            }).result.then(function (params) {
+                alert(params.msg)
+                $scope.projectType = params.projectType;
+                $scope.getProjects();
+            }, function (text, error) {});
+        }
+
+        $scope.DeleteProject = function (packageId) {
+            if (confirm($scope.deleteDesc)) {
+                $http({
+                    method: "POST",
+                    url: "/api/mod/packages/models/packages/deletePackage",
+                    data: {
+                        packageId: packageId
+                    }
+                })
+                .then(function (response) {
+                    alert(response.data.msg);
+
+                    if (response.data.result == 1) {
+                        $scope.page = 1;
+                        packagesService.setForceUpdatePagin(1);
+                        $scope.getProjects();
+                    }
+                }, function (response) {});
             }
-        });
-    }])
+        }
+    })
     .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
         $scope.projectName = '';
         $scope.projectDesc = '';
@@ -211,13 +206,7 @@ define([
         $scope.projectType = packagesService.getProjectsType();
         $scope.projectTypeName = '';
         $scope.projectReleases = '';
-
-        /*
-         $scope.$watch(Account.getUser, function (newValue, oldValue) {
-         $scope.user = angular.copy(newValue);
-         });
-         */
-        // 更改获取用户信息方式 getUser函数使用locationSession使用watch报错  add by wuxiangan
+ 
         $scope.$on("onUserProfile", function (event, user) {
             $scope.user = angular.copy(user);
         });
@@ -246,7 +235,7 @@ define([
                 var gitRootStart = gitRoot[1].indexOf("/");
                 var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
             } catch (err) {
-                console.log("url format error");
+                alert("url format error");
                 return;
             }
 
