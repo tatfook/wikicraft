@@ -205,7 +205,7 @@ body {
   -moz-column-break-inside: avoid;
   page-break-inside: avoid;
   padding: 5px;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
 }
 .packages .packages-show .packages-columar li .packages-weight {
   padding-left: 65px;

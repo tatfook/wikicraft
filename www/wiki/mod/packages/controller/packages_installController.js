@@ -3,7 +3,7 @@
     'markdown-it',
     'text!mod/packages/html/packages_install.html',
 ], function (app, markdownit, htmlContent) {
-    app.factory('packagesInstallService', function () {
+    app.factory('packagesInstallService', [function () {
         var giturl = '';
 
         return {
@@ -14,8 +14,8 @@
                 return this.giturl;
             }
         }
-    })
-    .controller('packagesInstallController', function ($scope, $http, $location, $uibModal, Account, packagesInstallService) {
+    }])
+    .controller('packagesInstallController',["$scope", "$http", "$location", "$uibModal", "Account", "packagesInstallService", function ($scope, $http, $location, $uibModal, Account, packagesInstallService) {
         $scope.isadmin = false;
         $scope.isVerified = null;
 
@@ -260,8 +260,8 @@
             }
 
         });
-    })
-    .controller('localInstallDialogController', function ($scope, packagesInstallService, $sce, $uibModalInstance) {
+    }])
+    .controller('localInstallDialogController', ["$scope", "packagesInstallService", "$sce", "$uibModalInstance", function ($scope, packagesInstallService, $sce, $uibModalInstance) {
         var url = packagesInstallService.getGiturl();
 
         $scope.giturl = $sce.trustAsResourceUrl("http://" + url);
@@ -269,7 +269,7 @@
         $scope.close = function () {
             $uibModalInstance.close();
         }
-    });
+    }]);
 
     return htmlContent;
 });

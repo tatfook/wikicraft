@@ -169,6 +169,47 @@
     .org-works-list .works{
         margin:30px -15px;
     }
+    @media (max-width: 1200px) and (min-width: 992px){
+        .org-works-list img {
+            height: 159.38px;
+            object-fit: cover;
+        }
+    }
+    @media (max-width: 992px) and (min-width: 768px){
+        .org-works-list{
+            width: 100%;
+            padding:0;
+        }
+        .org-works-list .col-sm-6{
+            margin-bottom: 20px;
+        }
+        .org-works-list img {
+            height: 165px;
+            object-fit: cover;
+        }
+        .org-works-list .works{
+            margin: 30px 0;
+        }
+    }
+    @media (max-width: 768px){
+        .org-works-list{
+            padding:0;
+        }
+        .org-works-list .text{
+            padding:10px 15px;
+        }
+        .org-works-list .col-xs-10{
+            margin-bottom: 10px;
+        }
+        .org-works-list h1{
+            font-size: 28px;
+            padding-bottom: 10px;
+            margin-top: 15px;
+        }
+        .org-works-list .works {
+            margin: 15px -15px;
+        }
+    }
 </style>
 
 <div class="container-fluid" ng-controller="workslistController">
@@ -206,9 +247,9 @@
             <a>>></a>
         </div>
         <div class="clearfix works" ng-repeat="count in modParams.rowShow">
-            <div class="col-md-3 hover-slide col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in [1,2,3,4]">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in [1,2,3,4]">
                 <a ng-click="goUserSite(site)">
-                    <img ng-src="{{site.logoUrl || (imgsPath + '3DWorld.jpg')}}">
+                    <img ng-src="{{site.logoUrl || (imgsPath + 'personal_workslist_banner.jpg')}}">
                 </a>
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name || "xljfsdf"}}</a></h4>
