@@ -19,16 +19,6 @@
         $scope.isadmin = false;
         $scope.isVerified = null;
 
-        /*
-         $scope.$watch(Account.getUser, function (newValue, oldValue) {
-         $scope.user = angular.copy(newValue);
-
-         if ($scope.user != undefined && $scope.user.isadmin != undefined) {
-         $scope.isadmin = eval($scope.user.isadmin);
-         }
-         });
-         */
-        // 更改获取用户信息方式 getUser函数使用locationSession使用watch报错  add by wuxiangan
         $scope.$on("onUserProfile", function (event, user) {
             $scope.user = angular.copy(user);
 
@@ -37,10 +27,13 @@
             }
         });
 
-        if ($location.path() == "/npl") {
+        var path = window.location.pathname;
+        path = path.replace("/wiki/mod/packages/packages_install", "");
+
+        if (path == "/npl") {
             $scope.projectType = 'npl';
             $scope.myProjects = 'My npl packages';
-        } else if ($location.path() == "/paracraft") {
+        } else if (path == "/paracraft") {
             $scope.projectType = 'paracraft';
             $scope.myProjects = '我的paracraft模块';
         } else {
@@ -69,7 +62,13 @@
             location.href = "/wiki/mod/packages";
         }
 
-        var request = $location.search();
+        var params = window.location.search.replace("?", "").split("&");
+        var request = {};
+        
+        for (var i in params) {
+            var param = params[i].split("=");
+            request[param[0]] = param[1];
+        }
 
         if (request.id != undefined && !isNaN(request.id)) {
             $http({
@@ -79,25 +78,23 @@
                     packageId: request.id
                 }
             })
-                .then(function (response) {
-                        $scope.projectName = response.data.projectName;
-                        $scope.projectDesc = response.data.projectDesc;
-                        $scope.projectGitURL = response.data.projectGitURL;
-                        $scope.projectReleases = response.data.projectReleases;
-                        $scope.projectUpdate = response.data.projectUpdate;
-                        $scope.installTimes = response.data.installTimes;
-                        $scope.version = response.data.version;
-                        $scope.displayName = response.data.displayName;
-                        $scope.isVerified = eval(response.data.isVerified);
+            .then(function (response) {
+                    $scope.projectName = response.data.projectName;
+                    $scope.projectDesc = response.data.projectDesc;
+                    $scope.projectGitURL = response.data.projectGitURL;
+                    $scope.projectReleases = response.data.projectReleases;
+                    $scope.projectUpdate = response.data.projectUpdate;
+                    $scope.installTimes = response.data.installTimes;
+                    $scope.version = response.data.version;
+                    $scope.displayName = response.data.displayName;
+                    $scope.isVerified = eval(response.data.isVerified);
 
-                        $scope.getGit();
-                        //$scope.getPackageUserInfor(response.data.userId);
-                    },
-                    function (response) {
-
-                    });
+                    $scope.getGit();
+                    //$scope.getPackageUserInfor(response.data.userId);
+                },
+                function (response) {});
         } else {
-            return history.go(-1);
+            //return history.go(-1);
         }
 
         $scope.getPackageUserInfor = function (userId) {
@@ -161,13 +158,13 @@
                     return data; // never transform to json, return as it is
                 }],
             })
-                .then(function (response) {
-                        var html = $scope.getMarkDownRenderer().render(response.data);
-                        $('.install-wiki').html(html);
-                    },
-                    function (response) {
-                        return alert("You need to upload README.md in your git repositary");
-                    });
+            .then(function (response) {
+                var html = $scope.getMarkDownRenderer().render(response.data);
+                $('.install-wiki').html(html);
+            },
+            function (response) {
+                return alert("You need to upload README.md in your git repositary");
+            });
         }
 
         // if (packagesPageService.getPageName() == 'npl') {
@@ -245,7 +242,6 @@
         }
 
         $scope.$watch('isVerified', function (newValue, oldValue) {
-
             if (oldValue != null && newValue != oldValue) {
 
                 $http({
@@ -256,13 +252,11 @@
                         "isVerified": newValue.toString()
                     }
                 })
-                    .then(function (response) {
-                        if (response.data.error == -1) {
-                            $scope.isVerified = oldValue;
-                        }
-                        ;
-                    }).then(function (response) {
-                });
+                .then(function (response) {
+                    if (response.data.error == -1) {
+                        $scope.isVerified = oldValue;
+                    }
+                }).then(function (response) {});
             }
 
         });

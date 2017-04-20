@@ -9,15 +9,18 @@ define([
         $scope.monthDownload = 0;
         $scope.yearDownload  = 0;
 
-        function loadPackage() {
-            if ($location.url() == "/npl") {
-                $scope.projectType = 'npl';
-            } else if ($location.url() == "/paracraft") {
-                $scope.projectType = 'paracraft';
-            } else {
-                $scope.projectType = 'paracraft';
-            }
+        var path = window.location.pathname;
+        path = path.replace("/wiki/mod/packages/index", "");
 
+        if (path == "/npl") {
+            $scope.projectType = 'npl';
+        } else if (path == "/paracraft") {
+            $scope.projectType = 'paracraft';
+        } else {
+            $scope.projectType = 'paracraft';
+        }
+
+        function loadPackage() {
             //packagestats
             $http({
                 method: 'POST',
@@ -32,8 +35,7 @@ define([
                 } else {
                     alert(response.data.msg);
                 }
-            }, function (response) {
-            });
+            }, function (response) {});
 
             //daydownload
             $http({
@@ -47,8 +49,7 @@ define([
                 if (response.data.statsType != 'nil') {
                     $scope.dayDownload = response.data.quantity;
                 }
-            }, function (response) {
-            });
+            }, function (response) {});
 
             //monthdownload
             $http({
@@ -62,8 +63,7 @@ define([
                 if (response.data.statsType != 'nil') {
                     $scope.monthDownload = response.data.quantity;
                 }
-            }, function (response) {
-            });
+            }, function (response) {});
 
             //yeardownload
             $http({
@@ -77,8 +77,7 @@ define([
                 if (response.data.statsType != 'nil') {
                     $scope.yearDownload = response.data.quantity;
                 }
-            }, function (response) {
-            });
+            }, function (response) {});
 
             //get top20 packages
             $http({
@@ -109,18 +108,23 @@ define([
                     $scope.packages[index].gitIcon = gitIcon;
                 }
 
-            }, function (response) {
-            });
+            }, function (response) {});
         }
 
-        $rootScope.$on('$locationChangeSuccess', function () {
-            loadPackage();
-            return htmlContent;
-        });
+        //$rootScope.$on('$locationChangeSuccess', function () {
+        //    loadPackage();
+        //});
+
+        $scope.setPage = function (page) {
+            if (page == "npl") {
+                location.href = "/wiki/mod/packages/index/npl";
+            } else if (page == "paracraft") {
+                location.href = "/wiki/mod/packages/index/paracraft";
+            }
+        }
 
         function init() {
             loadPackage();
-            return htmlContent;
         }
 
         init();

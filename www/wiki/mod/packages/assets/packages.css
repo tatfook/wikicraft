@@ -27,6 +27,9 @@ body {
 .set-verify input {
   vertical-align: sub;
 }
+.package-profile {
+  width: 234px;
+}
 .packages-tabs {
   float: left;
   height: 30px;
@@ -627,10 +630,10 @@ body {
   /*width: 750px;*/
 }
 .modal-dialog .packages-from-modify {
-  height: 430px!important;
+  height: 465px!important;
 }
 .modal-dialog .packages-from {
-  height: 485px;
+  height: 535px;
 }
 .modal-dialog .packages-from h1 {
   text-align: center;

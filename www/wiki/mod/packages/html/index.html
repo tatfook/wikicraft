@@ -3,21 +3,20 @@
 <div class="container" style="padding-top: 10px">
 	<div class="row">
 		<div ng-controller="packagesController" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
 			<div ng-if="projectType == 'npl'" class="packages ">
 				<div class="packages-tabs hidden-xs hidden-sm">
-					<a class="active" href="#/npl">NPL</a>
-					<a href="#/paracraft">Paracraft</a>
+					<a class="active" href="javascript:;" ng-click="setPage('npl')">NPL</a>
+					<a href="javascript:;" ng-click="setPage('paracraft')">Paracraft</a>
 				</div>
 				<div class="my-projects hidden-xs hidden-sm">
-					<a href="/wiki/mod/packages/packages_projects#/npl">My npl packages</a>
+					<a href="/wiki/mod/packages/packages_projects/npl">My npl packages</a>
 				</div>
 				<div class="packages-tabs packages-tabs-sm hidden-md hidden-lg">
-					<a class="active" href="#/npl">NPL</a>
-					<a href="#/paracraft">Paracraft</a>
+					<a class="active" href="javascript:;" ng-click="setPage('npl')">NPL</a>
+					<a href="javascript:;" ng-click="setPage('paracraft')">Paracraft</a>
 				</div>
 				<div class="my-projects my-projects-sm hidden-md hidden-lg">
-					<a href="/wiki/mod/packages/packages_projects#/npl">My npl packages</a>
+					<a href="/wiki/mod/packages/packages_projects/npl">My npl packages</a>
 				</div>
 
 				<div class="head-line hidden-xs hidden-sm">
@@ -57,18 +56,18 @@
 					<ul class="packages-columar hidden-xs hidden-sm">
 						<li ng-repeat="package in packages">
 							<div class="packages-weight">
-								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">
+								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install/npl?id={{package._id}}">
 									<img ng-src="{{package.gitIcon}}" />
 									<div ng-show="package.isVerified == 'true'" class="verified">verified</div>
 								</a>
 								<div class="packages-details">
-									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
+									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install/npl?id={{package._id}}">{{package.projectName}}</a></h3>
 									<div class="description">
 										{{package.projectDesc}}
 									</div>
 									<div class="author">
 										<a class="version">{{package.version}}</a>
-										by <a ng-href="/wiki/mod/packages/packages_projects#/npl?userid={{package.userid}}">{{package.displayName}}</a>
+										by <a ng-href="/wiki/mod/packages/packages_projects/npl?userid={{package.userid}}">{{package.displayName}}</a>
 									</div>
 									<div class="downloads">Downloads:{{package.installTimes}}</div>
 								</div>
@@ -78,12 +77,12 @@
 					<ul class="packages-columar packages-columar-sm hidden-md hidden-lg">
 						<li ng-repeat="package in packages">
 							<div class="packages-weight">
-								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">
+								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install/npl?id={{package._id}}">
 									<img ng-src="{{package.gitIcon}}" />
 									<div ng-show="package.isVerified == 'true'" class="verified">verified</div>
 								</a>
 								<div class="packages-details">
-									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/npl?id={{package._id}}">{{package.projectName}}</a></h3>
+									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install/npl?id={{package._id}}">{{package.projectName}}</a></h3>
 									<div class="description">
 										{{package.projectDesc}}
 									</div>
@@ -113,18 +112,18 @@
 
 			<div ng-if="projectType == 'paracraft'" class="packages">
 				<div class="packages-tabs hidden-xs hidden-sm">
-					<a href="/wiki/mod/packages/index#/npl">NPL</a>
-					<a class="active" href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+                    <a href="javascript:;" ng-click="setPage('npl')">NPL</a>
+                    <a class="active" ng-click="setPage('paracraft')">Paracraft</a>
 				</div>
 				<div class="my-projects hidden-xs hidden-sm">
-					<a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
+					<a href="/wiki/mod/packages/packages_projects/paracraft">我的paracraft模块</a>
 				</div>
 				<div class="packages-tabs packages-tabs-sm hidden-md hidden-lg">
-					<a href="/wiki/mod/packages/index#/npl">NPL</a>
-					<a class="active" href="/wiki/mod/packages/index#/paracraft">Paracraft</a>
+					<a href="javascript:;" ng-click="setPage('npl')">NPL</a>
+					<a class="active" ng-click="setPage('paracraft')">Paracraft</a>
 				</div>
 				<div class="my-projects my-projects-sm hidden-md hidden-lg">
-					<a href="/wiki/mod/packages/packages_projects#/paracraft">我的paracraft模块</a>
+					<a href="/wiki/mod/packages/packages_projects/paracraft">我的paracraft模块</a>
 				</div>
 
 				<div class="head-line hidden-xs hidden-sm">
@@ -159,18 +158,18 @@
 					<ul class="packages-columar hidden-xs hidden-sm">
 						<li ng-repeat="package in packages">
 							<div class="packages-weight">
-								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
+								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install/paracraft?id={{package._id}}">
 									<img ng-src="{{package.gitIcon}}" />
 									<div ng-show="package.isVerified == 'true'" class="verified">已认证</div>
 								</a>
 								<div class="packages-details">
-									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
 									<div class="description">
 										{{package.projectDesc}}
 									</div>
 									<div class="author">
 										<a class="version">{{package.version}}</a>
-										by <a ng-href="/wiki/mod/packages/packages_projects#/paracraft?userid={{package.userid}}">{{package.displayName}}</a>
+										by <a ng-href="/wiki/mod/packages/packages_projects/paracraft?userid={{package.userid}}">{{package.displayName}}</a>
 									</div>
 									<div class="downloads">下载次数：{{package.installTimes}}</div>
 								</div>
@@ -180,18 +179,18 @@
 					<ul class="packages-columar packages-columar-sm hidden-md hidden-lg">
 						<li ng-repeat="package in packages">
 							<div class="packages-weight">
-								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">
+								<a class="package-logo" ng-href="/wiki/mod/packages/packages_install/paracraft?id={{package._id}}">
 									<img ng-src="{{package.gitIcon}}" />
 									<div ng-show="package.isVerified == 'true'" class="verified">已认证</div>
 								</a>
 								<div class="packages-details">
-									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install#/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
+									<h3><a class="name" ng-href="/wiki/mod/packages/packages_install/paracraft?id={{package._id}}">{{package.projectName}}</a></h3>
 									<div class="description">
 										{{package.projectDesc}}
 									</div>
 									<div class="author">
 										<a class="version">{{package.version}}</a>
-										by <a ng-href="/wiki/mod/packages/packages_projects#/paracraft?userid={{package.userid}}">{{package.displayName}}</a>
+										by <a ng-href="/wiki/mod/packages/packages_projects/paracraft?userid={{package.userid}}">{{package.displayName}}</a>
 									</div>
 									<div class="downloads">下载次数：{{package.installTimes}}</div>
 								</div>
