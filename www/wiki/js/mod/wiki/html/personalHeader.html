@@ -144,10 +144,13 @@
 	.org-header .user-msg {
 		position: absolute;
 		bottom: 0;
-		padding:30px 70px;
+		padding: 30px 70px;
 		background-color: #FFF;
 		box-shadow: 0 0 15px 0 rgba(75, 129, 183, .35);
 		text-align: center;
+		width: 620px;
+		left: 50%;
+		transform: translateX(-310px);
 	}
 	.org-header .align-left{
 		font-size: 16px;
@@ -172,6 +175,34 @@
 	}
 	.org-header .time{
 		margin-left: 25px;
+	}
+	@media (max-width: 768px) {
+		.org-header h1{
+			font-size: 32px;
+		}
+		.org-header,.org-header .profile{
+			height: 200px;
+		}
+		.org-header .user-msg{
+			width: 90%;
+			left: 5%;
+			transform: translateX(0);
+			padding: 10px 15px;
+			-webkit-box-shadow: none;
+			-moz-box-shadow: none;
+			box-shadow: none;
+		}
+		.org-header p.info{
+			margin-bottom: 15px;
+			font-size: 12px;
+		}
+		.org-header .align-left{
+			font-size: 14px;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			overflow: hidden;
+		}
 	}
 </style>
 
@@ -199,7 +230,7 @@
 		<div class="profile">
 			<img ng-src="{{modParams.displayBgImg}}" alt="">
 		</div>
-		<div class="user-msg col-xs-8 col-xs-offset-2 col-lg-4 col-lg-offset-4">
+		<div class="user-msg">
 			<h1>{{modParams.displayName}}</h1>
 			<p class="info"><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> {{modParams.location}}<span class="time">{{modParams.info}}</span></p>
 			<p class="align-left">{{modParams.introduce}}</p>

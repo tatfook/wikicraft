@@ -1,0 +1,98 @@
+<style>
+    .org-team{
+        background-color: #F9F9F9;
+        margin-bottom: 80px;
+    }
+    .org-team a{
+        color: inherit;
+    }
+    .org-team a:hover{
+        color: #3977AD;
+    }
+    .org-team h1{
+        font-size: 36px;
+        font-weight: normal;
+        margin: 60px 0 0;
+        color: #333;
+        padding-bottom: 25px;
+        position: relative;
+    }
+    .org-team h1:before{
+        content: '';
+        display: inline-block;
+        width: 2em;
+        height:1px;
+        background-color: #333;
+        position: absolute;
+        left:0;
+        bottom:0;
+    }
+    .org-team .navigation{
+        text-align: right;
+        position: absolute;
+        top: -30px;
+        right: 0;
+    }
+    .org-team .navigation a{
+        padding:0 5px;
+    }
+    .org-team .text{
+        padding: 20px 15px 0 0;
+        font-size: 18px;
+        color: #888;
+    }
+    .org-team .members{
+        display: flex;
+        margin: 0 -20px;
+        padding-top:20px;
+    }
+    .org-team .member-item{
+        flex:1;
+        padding:0 10px;
+        color: #666;
+    }
+    .org-team .member-item img{
+        width: 100%;
+        margin-bottom: 10px;
+    }
+</style>
+<div class="org-team" ng-controller="orgTeamController">
+    <div class="container">
+        <h1>PARACRAFT小组成员</h1>
+        <div class="text col-md-3 col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3">paracraft小组目前共有xxx位成员，小组成员有学生以及老师。她们提供了非常多优秀的作品。</div>
+        <div class="col-md-9 col-sm-8 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-9">
+            <div class="navigation">
+                <a>1</a>
+                <a>2</a>
+                <a>3</a>
+                <a>>></a>
+            </div>
+            <div class="members">
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi</p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi</p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi</p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi</p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi</p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
