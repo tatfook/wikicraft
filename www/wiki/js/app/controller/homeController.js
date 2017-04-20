@@ -157,10 +157,8 @@ define([
             });
         }
 
-        $scope.qqLogin = function () {
-            console.log("QQ登录");
-
-            $auth.authenticate("qq").then(function (response) {
+        function Authenticate(serviceName) {
+            $auth.authenticate(serviceName).then(function (response) {
                 var data = response.data || {};
                 if (data.error) {
                     Message.info("认证失败:" + data.message);
@@ -179,40 +177,27 @@ define([
                 }
             }, function (response) {
                 console.log(response);
-                console.log("github认证失败!!!");
+                console.log("认证失败!!!");
             });
+        }
+        $scope.qqLogin = function () {
+            console.log("QQ登录");
+            Authenticate("qq");
         }
 
         $scope.wechatLogin = function () {
             console.log("微信登录");
+            Authenticate("weixin");
         }
 
         $scope.sinaWeiboLogin = function () {
             console.log("新浪微博登录");
+            Authenticate("xinlangweibo");
         }
 
         $scope.githubLogin = function () {
-            $auth.authenticate("github").then(function (response) {
-                console.log("github认证成功!!!");
-                var data = response.data || {};
-                if (data.error) {
-                    Message.info("认证失败:" + data.message);
-                    return;
-                }
-                if ($auth.isAuthenticated()) {
-                    Account.setUser(data.data);
-                    if ($scope.isModal) {
-                        $scope.$close(data.data);
-                    } else {
-                        util.goUserSite('/' + data.data.username);
-                    }
-                } else {
-                    // 用户不存在 注册用户并携带data.data信息
-                    // TODO
-                }
-            }, function () {
-                console.log("github认证失败!!!");
-            });
+            console.log("github登录");
+            Authenticate("github");
         }
 
         $scope.findPwd=function () {

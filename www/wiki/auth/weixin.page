@@ -1,0 +1,49 @@
+﻿<?npl
+--[[
+Title: oauth handler for `satellizer oauth framework`
+Author: LiXizhi
+Date: 2016/5/10
+]]
+include_once("api.page")
+local config = include("config.page")
+
+local accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token'
+-- local userApiUrl = 'https://graph.qq.com/oauth2.0/me'
+local serviceName = "weixin"
+local params = {
+    grant_type="authorization_code",
+	code = request:get("code"),
+	client_id = request:get("clientId"),
+	client_secret = "31cfef471381c101ad2adbe70123a598",
+	redirect_uri = request:get("redirectUri"),
+}
+
+response:Begin()
+if not params.client_id then
+    return response:send_xml("keepwork.com认证")
+end
+-- Step 1. Exchange authorization code for access token.
+util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
+    data = util.parse_str(data)
+    log("auth step 1")
+	log(data)
+	if((not data) or (data.error)) then
+		return response:send({error=1, message="access token invaild"})
+	end
+
+	db.user_three_service:findOne({["+serviceId+serviceName"]={data.openid, serviceName}}, function(err, userThreeService)
+		-- 没有绑定
+		if not userThreeService then
+			db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {serviceId=data.openid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
+			return response:send({error=0, data={serviceId=data.openid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
+		end
+		db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
+			if not userinfo then
+				return response:send({error=0, data={serviceId=data.openid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
+			end
+			local token = createJWT(userinfo)
+			return response:send({token = token, data = userinfo, error=0, message="OK"})
+		end)
+	end)
+end)
+

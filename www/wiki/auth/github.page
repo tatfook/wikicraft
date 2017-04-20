@@ -9,6 +9,7 @@ local config = include("config.page")
 	
 local accessTokenUrl = 'https://github.com/login/oauth/access_token'
 local userApiUrl = 'https://api.github.com/user'
+local serviceName = "qq"
 local params = {
 	code = request:get("code"),
 	client_id = request:get("clientId"),
@@ -37,16 +38,16 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 		if(not data) then
 			return response:send({error=1, message= 'Failed to fetch user info' })
 		end
-
-		db.user_three_service:findOne({["+serviceId+serviceName"]={data.id, 'github'}}, function(err, userThreeService)
+		local githubId = tostring(githubId)
+		db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName}}, function(err, userThreeService)
 			-- 没有绑定
 			if not userThreeService then
-				db.user_three_service:insertOne({["+serviceId+serviceName"]={data.id, "github"}}, {serviceId=data.id, serviceName="github", token=accessToken.accessToken}, function(err, userThreeService)	end)
-				return response:send({error=0, data={serviceId=data.id, access_token=accessToken.access_token, serviceName="github"}, message="user not found"})
+				db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+				return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
 			end
 			db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
 				if not userinfo then
-					return response:send({error=0, data={serviceId=data.id, access_token=accessToken.access_token, serviceName="github"}, message="user not found"})
+					return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
 				end
 				local token = createJWT(userinfo)
 				return response:send({token = token, data = userinfo, error=0, message="OK"})

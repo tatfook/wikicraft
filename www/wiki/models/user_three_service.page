@@ -14,7 +14,7 @@ user_three_service.db_name = "user_three_service"
 
 function user_three_service:ctor()
 	self:addfield("userId", "number")        -- 用户ID 
-	self:addfield("serviceId", "number")     -- 第三方服务的id
+	self:addfield("serviceId", "string")     -- 第三方服务的id
 	self:addfield("serviceName", "string")   -- 第三方服务名称
 	self:addfield("token", "string")         -- 第三方服务token
 end
