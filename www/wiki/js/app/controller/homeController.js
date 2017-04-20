@@ -160,6 +160,13 @@ define([
 
         $scope.qqLogin = function () {
             console.log("QQ登录");
+
+            $auth.authenticate("qq").then(function (response) {
+                console.log(response);
+            }, function (response) {
+                console.log(response);
+                console.log("github认证失败!!!");
+            });
         }
 
         $scope.wechatLogin = function () {

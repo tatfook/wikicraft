@@ -1,6 +1,6 @@
 <?npl
 NPL.load("(gl)script/ide/System/Encoding/jwt.lua");
-local jwt = commonlib.gettable("System.Encoding.jwt");
+jwt = commonlib.gettable("System.Encoding.jwt");
 
 local wiki_config_;
 function wiki_config()
