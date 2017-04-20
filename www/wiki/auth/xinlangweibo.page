@@ -9,7 +9,7 @@ local config = include("config.page")
 
 local accessTokenUrl = 'https://api.weibo.com/oauth2/access_token'
 -- local userApiUrl = 'https://api.weibo.com/2/account/get_uid.json'
-local serviceName = "weixin"
+local serviceName = "xinlangweibo"
 local params = {
     grant_type="authorization_code",
 	code = request:get("code"),
@@ -22,9 +22,11 @@ response:Begin()
 if not params.client_id then
     return response:send_xml("keepwork.com认证")
 end
+log(params)
+local url = accessTokenUrl .. "?client_id=" .. params.client_id .. "&client_secret=" .. params.client_secret .. "&grant_type=authorization_code&redirect_uri=" .. params.redirect_uri .."&code=" .. params.code
 -- Step 1. Exchange authorization code for access token.
-util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
-    data = util.parse_str(data)
+util.GetUrl({url=url, form = params }, function(err, msg, data)
+    data = commonlib.Json.Decode(data)
     log("=====================xin lang wei bo authenticate======================")
 	log(data)
 	if((not data) or (data.error)) then

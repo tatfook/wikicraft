@@ -24,7 +24,7 @@ if not params.client_id then
 end
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
-    data = util.parse_str(data)
+    data = commonlib.Json.Decode(data)
     log("auth step 1")
 	log(data)
 	if((not data) or (data.error)) then
