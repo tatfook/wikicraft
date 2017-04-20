@@ -4,96 +4,54 @@ Title: oauth handler for `satellizer oauth framework`
 Author: LiXizhi
 Date: 2016/5/10
 ]]
-include_once("api.page");
-local config = include("config.page");
+include_once("api.page")
+local config = include("config.page")
 	
-local accessTokenUrl = 'https://github.com/login/oauth/access_token';
-local userApiUrl = 'https://api.github.com/user';
+local accessTokenUrl = 'https://github.com/login/oauth/access_token'
+local userApiUrl = 'https://api.github.com/user'
 local params = {
 	code = request:get("code"),
 	client_id = request:get("clientId"),
 	client_secret = config.GITHUB_SECRET,
 	redirect_uri = request:get("redirectUri"),
 };
-log("-------------------")
-response:Begin();
+
+response:Begin()
+if not params.client_id then
+    return response:send_xml("keepwork.com认证")
+end
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 	local accessToken = util.parse_str(data);
-	-- accessToken == {scope="user:email",access_token="25b6511fb14eacd48106ab16261dd01bdb1fe54e",token_type="bearer",}	
+    log("auth step 1")
+	log(accessToken)
 	if(accessToken and accessToken.error) then
-		response:send(accessToken);
-		return;
+		return response:send({error=1, message="access token invaild"})
 	end
-
+	
 	local headers = { ['User-Agent'] = 'Satellizer' };
-
 	-- Step 2. Retrieve profile information about the current user.
-	util.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, function(err, msg, profile)
-		log("github step 2")
-		if(not profile) then
-			LOG.std(nil, "debug", "github", msg);
-			return response:status(400):send({ message= 'Failed to fetch github profile' });
+	util.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, function(err, msg, data)
+		log("auth step 2")
+		log(data)
+		if(not data) then
+			return response:send({error=1, message= 'Failed to fetch user info' })
 		end
-		if(request:header('Authorization')) then
-			-- Step 3a. Link user accounts.
-			log("github step 3")
-			db.user:findOne({ githubId = profile.id }, function(err, user)
-				if (user) then
-					-- refresh access token
-					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
-						db.user:updateOne({_id = user._id}, {githubToken=accessToken, githubName=profile.login});
-					end
-					user.githubToken = accessToken
-					user.githubName = profile.login
-					local token, err = createJWT(user);
-					response:send({ token = token, userInfo=user });
+
+		db.user_three_service:findOne({["+serviceId+serviceName"]={data.id, 'github'}}, function(err, userThreeService)
+			-- 没有绑定
+			if not userThreeService then
+				db.user_three_service:insertOne({["+serviceId+serviceName"]={data.id, "github"}}, {serviceId=data.id, serviceName="github", token=accessToken.accessToken}, function(err, userThreeService)	end)
+				return response:send({error=0, data={serviceId=data.id, access_token=accessToken.access_token, serviceName="github"}, message="user not found"})
+			end
+			db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
+				if not userinfo then
+					return response:send({error=0, data={serviceId=data.id, access_token=accessToken.access_token, serviceName="github"}, message="user not found"})
 				end
-				-- 通过userID更新用户github信息
-				local token = request:header('Authorization'):match("%s+(%S+)");
-				local payload, err = decodeJWT(token);
-				db.user:findOne({_id=payload.id}, function(err, user)
-					if (not user) then
-						return response:status(400):send({ message= 'User not found' });
-					end
-					user.githubId = profile.id;
-					user.portrait = user.portrait or profile.avatar_url;
-					user.githubName = profile.login;
-					user.githubToken = accessToken;
-					db.user:updateOne(user, function(err, user)
-						local token = createJWT(user);
-						response:send({ token = token, userInfo=user});
-					end)
-				end);
-			end);
-		else
-			-- Step 3b. Create a new user account or return an existing one.
-			db.user:findOne({ githubId = profile.id }, function(err, user)
-				if (user) then
-					-- refresh access token
-					if(not commonlib.partialcompare(accessToken, user.githubToken)) then
-						db.user:updateOne({_id = user._id}, {githubToken=accessToken, githubName=profile.login});
-					end
-					user.githubToken = accessToken
-					user.githubName = profile.login
-					local token, err = createJWT(user);
-					response:send({ token = token, userInfo=user });
-				end
-				-- 由于用户名等同个人站点必须唯一，所以这里不能直接创建用户
-				--[[
-					db.user:insertOne({githubId = profile.id}, {
-						githubId = profile.id,
-						portrait = profile.avatar_url,
-						githubName = profile.login,
-						githubToken = accessToken,
-						joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
-					}, function(err, user) 
-						local token = createJWT(user);
-						response:send({ token = token, userInfo=user });
-					end);
-				]]
-			end);
-		end
+				local token = createJWT(userinfo)
+				return response:send({token = token, data = userinfo, error=0, message="OK"})
+			end)
+		end)
 	end);
 end);
 

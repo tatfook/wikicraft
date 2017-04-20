@@ -12,51 +12,48 @@ local userApiUrl = 'https://graph.qq.com/oauth2.0/me'
 local params = {
     grant_type="authorization_code",
 	code = request:get("code"),
-	client_id = "100302176",
+	client_id = request:get("clientId"),
 	client_secret = "31cfef471381c101ad2adbe70123a598",
-	redirect_uri = "http://dev.keepwork.com/api/wiki/auth/qq",
+	redirect_uri = request:get("redirectUri"),
 }
 
-log("-------------------")
 response:Begin()
+if not params.client_id then
+    return response:send_xml("keepwork.com认证")
+end
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
-    log("auth step 1")
     local accessToken = util.parse_str(data);
-	-- accessToken == {scope="user:email",access_token="25b6511fb14eacd48106ab16261dd01bdb1fe54e",token_type="bearer",}
+    log("auth step 1")
 	log(accessToken)
 	if((not accessToken) or (accessToken.error)) then
-		response:send(accessToken);
-		return;
+		return response:send({error=1, message="access token invaild"})
 	end
 
 	local headers = { ['User-Agent'] = 'Satellizer' };
-
 	-- Step 2. Retrieve profile information about the current user.
 	util.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, function(err, msg, data)
 		log("auth step 2")
-		if(not data) then
-			return response:status(400):send({ message= 'Failed to fetch user openid' });
-		end
 		log(data)
+		if((not data) or (not string.find(data,"callback"))) then
+			return response:send({error=1, message= 'Failed to fetch user openid' })
+		end
 		local leftStart, leftEnd = string.find(data, "%(")
 		local rightStart, rightEnd = string.find(data, "%)")
 		data = string.sub(data, leftEnd+1, rightStart-1)
 		data = commonlib.Json.Decode(data)
-		log(data)
 		db.user_three_service:findOne({["+serviceId+serviceName"]={data.openid, 'qq'}}, function(err, userThreeService)
 			-- 没有绑定
-			local token = jwt.encode({id=0}, '31cfef471381c101ad2adbe70123a598', nil,  3600)
-			log(token)
 			if not userThreeService then
-				return response:send({token=token})
+				db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, "qq"}}, {serviceId=data.openid, serviceName="qq", token=accessToken.accessToken}, function(err, userThreeService)	end)
+				return response:send({error=0, data={serviceId=data.openid, access_token=accessToken.access_token, serviceName="qq"}, message="user not found"})
 			end
 			db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
 				if not userinfo then
-					return response:send({token=token})
+					return response:send({error=0, data={serviceId=data.openid, access_token=accessToken.access_token, serviceName="qq"}, message="user not found"})
 				end
 				local token = createJWT(userinfo)
-				return response:send({token = token, userinfo = userinfo})
+				return response:send({token = token, data = userinfo, error=0, message="OK"})
 			end)
 		end)
 	end)
