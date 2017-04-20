@@ -2,7 +2,7 @@ define([
     'app',
     'text!mod/packages/html/index.html',
 ], function (app, htmlContent) {
-    app.controller('packagesController', function ($scope, $http, $location, $rootScope) {
+    app.controller('packagesController', ["$scope" , "$http" , "$location" , "$rootScope" , function ($scope, $http, $location, $rootScope) {
         $scope.packages      = [];
         $scope.packagesStats = 0;
         $scope.dayDownload   = 0;
@@ -128,7 +128,7 @@ define([
         }
 
         init();
-    });
+    }]);
 
     return htmlContent;
 });

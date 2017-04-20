@@ -2,7 +2,7 @@ define([
     'app',
     'text!mod/packages/html/packages_projects.html'
 ], function (app, htmlContent) {
-    app.factory('packagesService', function () {
+    app.factory('packagesService', [function () {
         var packageId = 0;
         var page = 1;
         var projectsType = "";
@@ -34,8 +34,8 @@ define([
                 forceUpdatePagin = _forceUpdatePagin;
             }
         };
-    })
-    .controller('packagesProjectsController', function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
+    }])
+    .controller('packagesProjectsController', ["$scope" , "$uibModal" , "$http" , "Account" , "packagesService" , "$location" , "$rootScope" , function ($scope, $uibModal, $http, Account, packagesService, $location, $rootScope) {
         var params  = window.location.search.replace("?", "").split("&");
         var request = {};
         
@@ -197,8 +197,8 @@ define([
                 }, function (response) {});
             }
         }
-    })
-    .controller('packagesProjectsCreateController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
+    }])
+    .controller('packagesProjectsCreateController', ["Account","$scope","$http","$uibModalInstance","packagesService",function (Account, $scope, $http, $uibModalInstance, packagesService) {
         $scope.projectName = '';
         $scope.projectDesc = '';
         $scope.version = '';
@@ -295,8 +295,8 @@ define([
                         return alert("You need to upload icon.png in your git repositary");
                     });
         }
-    })
-    .controller('packagesProjectsModifyController', function (Account, $scope, $http, $uibModalInstance, packagesService) {
+    }])
+    .controller('packagesProjectsModifyController', ["Account","$scope","$http","$uibModalInstance","packagesService",function (Account, $scope, $http, $uibModalInstance, packagesService) {
         $scope.projectName = '';
         $scope.projectDesc = '';
         $scope.projectGitURL = '';
@@ -369,8 +369,8 @@ define([
                 }, function (error) {
                 });
         }
-    })
-    .controller('Pagination', function ($scope, $log, $http, packagesService) {
+    }])
+    .controller('Pagination', ["$scope" , "$log" , "$http" , "packagesService" , function ($scope, $log, $http, packagesService) {
         $scope.$watch(packagesService.getProjectsType, function (newValue, oldValue) {
             $scope.projectType = newValue;
             $scope.getPackageStats();
@@ -410,7 +410,7 @@ define([
             packagesService.setPage($scope.currentPage);
             //alert('Page changed to: ' + $scope.currentPage);
         };
-    });
+    }]);
 
     return htmlContent;
 });
