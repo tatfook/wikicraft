@@ -98,8 +98,7 @@ define([
             util.http("POST", config.apiUrlPrefix + "user/register", params, function (data) {
                 console.log("注册成功")
                 $auth.setToken(data.token);
-                Account.setUser(data.userInfo);
-                //window.location.href = '/wiki/website';
+                Account.setUser(data.userinfo);
                 util.go('home');
             }, function (error) {
                 $scope.errMsg = error.message;
