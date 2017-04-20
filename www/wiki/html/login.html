@@ -3,7 +3,9 @@
         background-color: #F2F2F2;
     }
     .modal-lg{
-        width:25%;
+        width: 480px;
+        margin: 30px auto;
+        max-width: 90%;
     }
     .login-form{
         background-color: #FAFAFA;
@@ -28,6 +30,9 @@
     }
     .otherLogin {
         text-align: center;
+    }
+    .otherLogin a{
+        padding:0 15px;
     }
     .otherLogin .title{
         z-index: 1;
@@ -76,8 +81,12 @@
         .login-form form{
             width: 80%;
         }
+        .otherLogin a{
+            padding:0 5px;
+        }
         .otherLogin .title{
             margin: 20px 0;
+            padding:0;
         }
     }
 </style>
@@ -121,7 +130,6 @@
                 </a>
                 <a ng-click="githubLogin()">
                     <img ng-src="{{imgsPath+'icon/wiki_github_logo.png'}}" alt="">
-                    <p>github</p>
                 </a>
             </div>
         </form>
