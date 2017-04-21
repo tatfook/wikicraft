@@ -222,6 +222,7 @@ define(['app',
             }
             if(type=="phone"){
                 console.log("手机绑定开发中");
+                $('#phoneModal').modal({})
                 return;
             }
         }
