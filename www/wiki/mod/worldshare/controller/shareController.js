@@ -1,5 +1,7 @@
 /**
- * Created by wuxiangan on 2017/2/15.
+ * Title: shareController
+ * Author: Big
+ * Date: 2017/4/17
  */
 
 define([
