@@ -39,13 +39,33 @@ define([
         $authProvider.oauth2({
             name: 'qq',
             url: '/api/wiki/auth/qq',
-            //responseType:"token",
             clientId: '100302176',
             redirectUri: 'http://dev.keepwork.com/api/wiki/auth/qq',//window.location.origin,
             authorizationEndpoint: 'https://graph.qq.com/oauth2.0/authorize',
             oauthType: '2.0',
             scope:'get_user_info',
         });
+
+        $authProvider.oauth2({
+            name: 'weixin',
+            url: '/api/wiki/auth/weixin',
+            clientId: '100302176',
+            redirectUri: 'http://dev.keepwork.com/api/wiki/auth/weixin',//window.location.origin,
+            authorizationEndpoint: 'https://open.weixin.qq.com/connect/qrconnect',
+            oauthType: '2.0',
+            scope:'snsapi_login',
+        });
+        // 新浪微博
+        $authProvider.oauth2({
+            name: 'xinlangweibo',
+            url: '/api/wiki/auth/xinlangweibo',
+            clientId: '482627906',
+            redirectUri: 'http://dev.keepwork.com/api/wiki/auth/xinlangweibo',//window.location.origin,
+            authorizationEndpoint: 'https://api.weibo.com/oauth2/authorize',
+            oauthType: '2.0',
+            //scope:'email',
+        });
+
     }]);
 
     window.app = app;

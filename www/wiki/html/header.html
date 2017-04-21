@@ -450,7 +450,7 @@
                             </ol>
                         </li>
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
-                        <li class="icon dropdown share-dropdown" ng-show="isIconShow">
+                        <li class="icon dropdown share-dropdown">
                             <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             <div class="dropdown-menu">
                                 <div class="social-share" data-title="{{tit}}"></div>
@@ -468,8 +468,8 @@
                             <span class="glyphicon glyphicon-search text-muted"></span>
                         </li>
                         <li><a href="#">VIP</a></li>
-                        <li><a ng-click="goLoginPage()">登录</a></li>
-                        <li><a ng-click="goRegisterPage()" class="btn btn-primary">注册</a></li>
+                        <li><a ng-click="goLoginPage()" class="btn btn-primary">登录</a></li>
+                        <li><a ng-click="goRegisterPage()">注册</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
