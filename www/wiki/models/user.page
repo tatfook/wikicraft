@@ -179,6 +179,54 @@ function user:api_updateUserInfo(params)
 	return errors:wrap(yield())
 end
 
+-- 手机验证
+function user:api_verifyCellphoneOne(params)
+	if not params.cellphone then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local smsCode = tostring(math.random(1000,9999))
+	local smsParams = {to=params.cellphone, datas={smsCode,"3"}, templateId="1"}
+	sendTemplateSms(smsParams, resume)
+	local _, data = yield()
+	
+	if data.statusCode ~= "000000" then
+		return errors:wrap(errors:new(data.statusMsg))
+	end
+	
+	local value = {cellphone=params.cellphone, smsCode=smsCode}	
+	value = commonlib.Json.Encode(value)
+	mem_cache:set(data.templateSMS.smsMessageSid, value)
+
+	return errors:wrap(nil, {smsId=data.templateSMS.smsMessageSid})
+end
+
+-- 手机验证
+function user:api_verifyCellphoneTwo(params)
+	local userId = self:ensureAuthenticated()
+	if (not params.smsId) or (not params.smsCode) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local value = mem_cache:get(params.smsId)
+	value = commonlib.Json.Decode(value or "{}")
+	if value.smsCode ~= params.smsCode then
+		return errors:wap(errors:new("验证码错误"))
+	end
+
+	self:db():findOne({_id=userId}, resume)
+	local _, userinfo = yield()
+	if not userinfo then
+		return errors:wrap(errors.USER_NOT_EXIST)
+	end
+	
+	userinfo.cellphone = value.cellphone
+	self:db():updateOne({_id=userId}, userinfo, resume)
+	
+	return errors:wrap(yield())
+end
+
+
 -- 邮箱验证1
 function user:api_verifyEmailOne(params) 
 	local userId = self:ensureAuthenticated()
