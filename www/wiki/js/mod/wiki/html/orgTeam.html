@@ -27,40 +27,42 @@
         left:0;
         bottom:0;
     }
+    .org-team .team{
+        position: relative;
+    }
     .org-team .navigation{
         text-align: right;
         position: absolute;
-        top: -30px;
+        top: -15px;
         right: 0;
     }
     .org-team .navigation a{
         padding:0 5px;
     }
-    .org-team .text{
-        padding: 20px 15px 0 0;
-        font-size: 18px;
-        color: #888;
-    }
     .org-team .members{
         display: flex;
-        margin: 0 -20px;
-        padding-top:20px;
+        margin: 0 -10px;
+        padding-top:30px;
     }
     .org-team .member-item{
         flex:1;
         padding:0 10px;
-        color: #666;
+        font-size: 14px;
+        color: #333;
     }
     .org-team .member-item img{
         width: 100%;
         margin-bottom: 10px;
     }
+    .org-team .member-item .info{
+        font-size: 12px;
+        color: #999;
+    }
 </style>
 <div class="org-team" ng-controller="orgTeamController">
     <div class="container">
         <h1>PARACRAFT小组成员</h1>
-        <div class="text col-md-3 col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3">paracraft小组目前共有xxx位成员，小组成员有学生以及老师。她们提供了非常多优秀的作品。</div>
-        <div class="col-md-9 col-sm-8 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-9">
+        <div class="team">
             <div class="navigation">
                 <a>1</a>
                 <a>2</a>
@@ -70,27 +72,35 @@
             <div class="members">
                 <div class="member-item">
                     <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <p>LixiZhi</p>
+                    <a ng-click="goUserIndexPage">LixiZhi <span class="pull-right info">创建者</span></a>
                 </div>
                 <div class="member-item">
                     <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <p>LixiZhi</p>
+                    <a ng-click="goUserIndexPage">LixiZhi <span class="pull-right info">管理员</span></a>
                 </div>
                 <div class="member-item">
                     <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <p>LixiZhi</p>
+                    <p>LixiZhi <span class="pull-right info">管理员</span></p>
                 </div>
                 <div class="member-item">
                     <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <p>LixiZhi</p>
+                    <p>LixiZhi <span class="pull-right info">管理员</span></p>
                 </div>
                 <div class="member-item">
                     <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <p>LixiZhi</p>
+                    <p>LixiZhi <span class="pull-right info">成员</span></p>
                 </div>
                 <div class="member-item">
                     <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <p>LixiZhi</p>
+                    <p>LixiZhi <span class="pull-right info">成员</span></p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi <span class="pull-right info">成员</span></p>
+                </div>
+                <div class="member-item">
+                    <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="">
+                    <p>LixiZhi <span class="pull-right info">成员</span></p>
                 </div>
             </div>
         </div>

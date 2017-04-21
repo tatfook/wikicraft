@@ -1,7 +1,8 @@
 /**
- * Created by wuxiangan on 2017/2/15.
+ * Title: personController
+ * Author: Big
+ * Date: 2017/4/17
  */
-
 define([
     'app',
     'text!mod/worldshare/pages/person.page',

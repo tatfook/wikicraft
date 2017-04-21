@@ -2,18 +2,18 @@
 --[[
 Title: worlds
 Author: Big
-Date: 2016/12/07
+Date: 2017/4/17
 ]]
-
 include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page");
 include_once(WIKI_ROOT .. "models/user.page");
+include_once(WIKI_ROOT .. "models/data_source.page");
 include_once("./worlds_stats.page");
 include_once("./worlds_star.page");
 
 NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 
 local worlds    = inherit(models.abstract.multi_user_base, gettable("models.worlds"));
-local EncodingS = commonlib.gettable("System.Encoding");
+local Encoding = commonlib.gettable("System.Encoding");
 
 worlds.db_name = "worlds";
 
@@ -97,10 +97,10 @@ function worlds:get(params)
 			local compareResponse = commonlib.copy(response);
 
 			for i=1,#response do
-				-- LOG.std(nil,"debug","response[i].value",{"AAAA",response[i]});
+				-- LOG.std(nil,"debug","response[i].value",{"response",response[i]});
 
 				for j=i+1,#compareResponse do
-					-- LOG.std(nil,"debug","response[j].value",{"BBBB",compareResponse[j]});
+					-- LOG.std(nil,"debug","response[j].value",{"compareResponse",compareResponse[j]});
 
 					if(response[i].formatDate > compareResponse[j].formatDate) then
 						local new   = response[i];
@@ -175,7 +175,7 @@ function worlds:api_getOneOpus(params)
 	if(not err) then
 		local userParams = {};
 		userParams._id   = response.userid;
-
+		
 		local userInfor  = models.user:new():api_getminiprofile(userParams);
 
 		for key,value in pairs(userInfor) do
@@ -306,9 +306,9 @@ function worlds:api_getRecommendOpus(params)
 				end
 			end
 
-			return {error=0,data=responseB};
+			return {error = 0  , data=responseB};
 		else
-			return {error=-1,msg="database err"};
+			return {error = -1 , msg="database err"};
 		end
 	end
 end
@@ -316,7 +316,7 @@ end
 function worlds:api_refresh(params)
 	local err, query = self:validateQuery(params);
 	local userid;
-
+	
 	self:ensureAuthenticated();
 	userid = self:getUserId();
 
@@ -324,7 +324,7 @@ function worlds:api_refresh(params)
 		return {error=-1,msg="user is not exist"};
 	end
 
-	local userinfor = models.user:new():get({});
+	local userInfor = models.user:new():get({});
 
 	self:db():findOne({["+userid+worldsName"] = {userid,query.worldsName}},resume);
 	local err,response = yield(true);
@@ -337,8 +337,26 @@ function worlds:api_refresh(params)
 			local insertParams      = {};
 			insertParams.modDate    = query.modDate;
 			insertParams.worldsName = query.worldsName;
-			insertParams.giturl     = "https://github.com/"..userinfor["login"].."/".. worlds.base64(query.worldsName);
 			insertParams.revision   = query.revision;
+
+			local dataSource = models.data_source:new():api_getByUserId({userId = userid});
+			local defaultDataSource = {};
+
+			for key,value in ipairs(dataSource.data) do
+				log(value);
+				if(value._id == userInfor.dataSourceId) then
+						defaultDataSource = value;
+					break;
+				end
+			end
+
+			log(defaultDataSource);
+
+			if(defaultDataSource["type"] == "github") then
+				insertParams.giturl = "https://github.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base64(query.worldsName);
+			elseif(defaultDataSource["type"] == "gitlab") then
+				insertParams.giturl = "http://git.keepwork.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base64(query.worldsName);
+			end
 
 			worlds._super.create(self, insertParams);
 
@@ -427,13 +445,13 @@ function worlds:backup()
 	end
 end
 
--- =转成-p1p  +转成-p2p  /转成-p3p
+-- =转成-equal  +转成-plus  /转成-slash
 function worlds.base64(text)
 	if(text) then
-		text = EncodingS.base64(text);
-		text = text:gsub("[=]" ,"-p1p");
-		text = text:gsub("[%+]","-p2p");
-		text = text:gsub("[/]" ,"-p3p");
+		text = Encoding.base64(text);
+		text = text:gsub("[=]" ,"-equal");
+		text = text:gsub("[%+]","-plus");
+		text = text:gsub("[/]" ,"-slash");
 
 		--LOG.std(nil,"debug","text",text);
 
@@ -445,11 +463,11 @@ end
 
 function worlds.unbase64(text)
 	if(text) then
-		text = text:gsub("[-p1p]","=");
-		text = text:gsub("[-p2p]","+");
-		text = text:gsub("[-p3p]","/");
+		text = text:gsub("[-equal]","=");
+		text = text:gsub("[-plus]","+");
+		text = text:gsub("[-slash]","/");
 
-		return EncodingS.unbase64(text);
+		return Encoding.unbase64(text);
 	else
 		return nil;
 	end
