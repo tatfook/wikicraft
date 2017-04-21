@@ -94,9 +94,9 @@ define([
 ```*/
 /*
 ```@wiki/js/workslist
-    {
-        "moduleKind":"workslist2",
-        "rowShow":[1,2],
-        "title":"全部作品"
-    }
+{
+    "moduleKind":"workslist2",
+    "pageSize":8,
+    "title":"全部作品"
+}
 ```*/

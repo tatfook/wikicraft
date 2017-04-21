@@ -58,6 +58,34 @@
         font-size: 12px;
         color: #999;
     }
+    @media(min-width: 768px) and (max-width: 992px){
+        .org-team .container{
+            width: 100%;
+        }
+        .org-team .member-item .info{
+            width: 100%;
+        }
+        .org-team .member-item{
+            padding:0 6px;
+        }
+    }
+    @media (max-width: 768px) {
+        .org-team h1{
+            font-size: 28px;
+            padding-bottom: 10px;
+            margin-top: 15px;
+        }
+        .org-team .navigation{
+            top:0;
+        }
+        .org-team .members{
+            display: block;
+        }
+        .org-team .member-item{
+            float: left;
+            width: 50%;
+        }
+    }
 </style>
 <div class="org-team" ng-controller="orgTeamController">
     <div class="container">

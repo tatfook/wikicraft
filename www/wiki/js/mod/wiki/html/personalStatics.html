@@ -93,7 +93,7 @@
 </style>
 
 <div ng-controller="personalStaticsController">
-    <div class="personal-statics" ng-show="modParams.moduleKind=='statics1'">
+    <div class="personal-statics" ng-show="modParams.moduleKind=='statics1' || !modParams.moduleKind">
         <div class="msg-box clearfix">
             <div class="msg">
                 <img ng-src="{{imgsPath + 'personal_statics_works.png'}}" alt="">
