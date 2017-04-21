@@ -208,7 +208,7 @@
 
 <!-- 个人主页头部 -->
 <div ng-controller="personalHeaderController">
-	<div class="personal-header" ng-show="modParams.moduleKind=='header1'">
+	<div class="personal-header" ng-show="modParams.moduleKind=='header1' || !modParams.moduleKind">
 		<div class="profile">
 			<img ng-src="{{imgsPath + 'personal_header_banner.jpg'}}" alt="">
 		</div>
