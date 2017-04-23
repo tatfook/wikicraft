@@ -6,7 +6,7 @@
 
 define([
     'app',
-    'text!mod/worldshare/pages/client_login.page',
+    'text!mod/worldshare/html/client_login.html',
 ], function (app,htmlContent) {
 
     app.controller("clientLogin", function ($scope, $location, Account) {

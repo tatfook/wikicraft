@@ -31,6 +31,12 @@ function worlds:ctor()
 	self:addfield("opusId","number",false,10);
 	--recommend world
 	self:addfield("isRecommend","string",false,10);
+	--gitlab project id
+	self:addfield("gitlabProjectId","number",false,10);
+	--dataSourceType
+	self:addfield("dataSourceType","string",false,10);
+	--hasPreview
+	self:addfield("hasPreview","string",false);
 
 	---------- following is query only, not saved to columns ----------------
 	--page number
@@ -76,6 +82,15 @@ function worlds:get(params)
 
 	LOG.std(nil,"debug","modDate",query.sort);
 
+	for key,value in ipairs(response) do
+		log(value);
+		local userParams = {};
+		userParams._id = value.userid;
+		local userInfor  = models.user:new():api_getminiprofile(userParams);
+
+		value.userInfor = userInfor;
+	end
+
 	if(not err) then
 		if(query.sort == nil) then
 			return response;
@@ -91,8 +106,6 @@ function worlds:get(params)
 
 				modDateTable = {};
 			end
-
-			LOG.std(nil,"debug","response[i].value",{"AAAA",response});
 
 			local compareResponse = commonlib.copy(response);
 
@@ -170,11 +183,16 @@ function worlds:api_getOneOpus(params)
 	self:db():findOne({_id=query.opusId},resume);
 	local err,opusResponse = yield(true);
 
-	-- LOG.std(nil,"debug","opusResponse",opusResponse);
+	if(not opusResponse.viewTimes) then
+		opusResponse.viewTimes = 0;
+	end
+
+	self:db():updateOne({_id=query.opusId},{viewTimes = opusResponse.viewTimes + 1},resume);
+	local err,opusTimesResponse = yield(true);
 
 	if(not err) then
 		local userParams = {};
-		userParams._id   = response.userid;
+		userParams._id   = opusResponse.userid;
 		
 		local userInfor  = models.user:new():api_getminiprofile(userParams);
 
@@ -316,7 +334,7 @@ end
 function worlds:api_refresh(params)
 	local err, query = self:validateQuery(params);
 	local userid;
-	
+
 	self:ensureAuthenticated();
 	userid = self:getUserId();
 
@@ -330,7 +348,6 @@ function worlds:api_refresh(params)
 	local err,response = yield(true);
 
 	if(not err) then
-		-- log({"response",response});
 		if(not response or not next(response)) then
 			--LOG.std(nil,"debug","modDateTable",modDateTable);
 
@@ -338,19 +355,19 @@ function worlds:api_refresh(params)
 			insertParams.modDate    = query.modDate;
 			insertParams.worldsName = query.worldsName;
 			insertParams.revision   = query.revision;
+			insertParams.hasPreview = query.hasPreview;
+			insertParams.gitlabProjectId = query.gitlabProjectId;
+			insertParams.dataSourceType  = query.dataSourceType;
 
 			local dataSource = models.data_source:new():api_getByUserId({userId = userid});
 			local defaultDataSource = {};
 
 			for key,value in ipairs(dataSource.data) do
-				log(value);
 				if(value._id == userInfor.dataSourceId) then
 						defaultDataSource = value;
 					break;
 				end
 			end
-
-			log(defaultDataSource);
 
 			if(defaultDataSource["type"] == "github") then
 				insertParams.giturl = "https://github.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base64(query.worldsName);
@@ -377,6 +394,21 @@ function worlds:api_refresh(params)
 	end
 end
 
+function worlds:api_createReadme()
+	local err, query = self:validateQuery(params);
+	local userid;
+	
+	self:ensureAuthenticated();
+	userid = self:getUserId();
+
+	if(not userid) then
+		return {error=-1,msg="user is not exist"};
+	end
+
+	ParaIO.CreateDirectory("123123123/");
+
+end
+
 function worlds:create()
 end
 
@@ -389,6 +421,10 @@ function worlds:delete(params)
 
 	if(not userid) then
 		return {error=-1,msg="user is not exist"};
+	end
+
+	if(not query.worldsName) then
+		return {error=-1,msg="worldsName is not exist"};
 	end
 
 	self:db():deleteOne(query,resume);
@@ -404,45 +440,6 @@ function worlds:delete(params)
 end
 
 function worlds:update()
-end
-
-function worlds:backup()
-	local userinfor = models.user:new():get({});
-
-	if(not query["worldsNameForm"]) then
-		return {error=-1,msg="worlds name form is nil"};
-	end
-
-	local worldsNameForm = query["worldsNameForm"];
-
-	-- log({"worldsNameForm",worldsNameForm});
-	for key,value in ipairs(worldsNameForm) do
-		-- log(value);
-		self:db():findOne({["+userid+worldsName"] = {userid,value["worldsName"]}},resume);
-		local err,response = yield(true);
-
-		if(not err) then
-			-- log({"response",response});
-			if(not response or not next(response)) then
-				local insertParams      = {};
-				insertParams.worldsName = value["worldsName"];
-				insertParams.giturl     = "https://github.com/"..userinfor["login"].."/"..value["worldsName"];
-				insertParams.date 		= value["date"];
-
-				worlds._super.create(self, insertParams);
-			else
-				local rDate = string.gsub(response["date"],"-","");
-				local vDate = string.gsub(value["date"],"-","");
-
-				if(tonumber(rDate) < tonumber(vDate)) then
-					self:db():updateOne({["+userid+worldsName"] = {userid,value["worldsName"]}},
-										 {date = value["date"]},resume);
-
-					local err,response = yield(true);
-				end
-			end
-		end
-	end
 end
 
 -- =转成-equal  +转成-plus  /转成-slash

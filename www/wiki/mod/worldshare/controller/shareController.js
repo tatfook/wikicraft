@@ -1,12 +1,12 @@
 /**
  * Title: shareController
  * Author: Big
- * Date: 2017/4/17
+ * Date: 2017.4.17
  */
 
 define([
     'app',
-    'text!mod/worldshare/pages/share.page',
+    'text!mod/worldshare/html/share.html',
 ],  function (app,htmlContent) {
 
     var jiathis_config = {};
@@ -30,7 +30,7 @@ define([
         } else if (request.type == "opus" && request.opusId) {
             $scope.shareUrl = "http://" + $location.host() + ":8099/wiki/mod/worldshare/opus/#?opusId=" + request.opusId;
         } else {
-            history.go(-1);
+            //document.write("PARAMS ERROR");
             return;
         }
 
