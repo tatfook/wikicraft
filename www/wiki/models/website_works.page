@@ -13,11 +13,11 @@ website_works.db_name="website_works"
 
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
-	self:addfield("websiteType", "number")      -- 站点类型
+	self:addfield("websiteType", "number")    -- 站点类型
 	self:addfield("worksId", "number")        -- 组织内作品的ID
-	self:addfield("worksFlag", "number")     -- 热门 入围
-	self:addfield("createDate", "string", false, 64);
-	self:addfield("updateDate", "string", false, 64);
+	self:addfield("worksFlag", "number")      -- 热门 入围
+	self:addfield("createDate", "string", false, 64)
+	self:addfield("updateDate", "string", false, 64)
 end
 
 -- 通过websiteId删除
