@@ -443,13 +443,12 @@ define([
                 }
 
                 var saveFailedCB = function () {
-                    currentWebsitePage.isModify = true;
+                    //currentWebsitePage.isModify = true;
                     currentWebsitePage.content = content;
                     storage.indexedDBSetItem(currentWebsitePage);
                     errcb && errcb();
                 };
                 var saveSuccessCB = function () {
-                    currentWebsitePage.isModify = false;
                     storage.indexedDBDeleteItem(currentWebsitePage.url);
                     cb && cb();
                 }
@@ -458,18 +457,20 @@ define([
                 if (currentWebsite && currentWebsite.dataSourceId) {
                     dataSourceId = currentWebsite.dataSourceId;
                 }
-                var currentDataSource = dataSource.getUserDataSource($scope.user.username).getDataSourceById(dataSourceId);
-                //console.log(currentDataSource, dataSourceId);
-                //console.log(currentWebsite, getWebsiteByName(currentWebsitePage.websiteName));
                 currentWebsitePage.isModify = false;
                 currentWebsitePage.timestamp = (new Date()).getTime();
                 currentWebsitePage.dataSourceId = dataSourceId;
+                var currentDataSource = dataSource.getUserDataSource($scope.user.username).getDataSourceById(dataSourceId);
+                var pageinfo = getPageInfo(currentWebsitePage.websiteName);
+                currentWebsitePage.isModify = true;
+                //console.log(currentDataSource, dataSourceId);
+                //console.log(currentWebsite, getWebsiteByName(currentWebsitePage.websiteName));
                 util.post(config.apiUrlPrefix + 'website_pageinfo/upsert',
                     {
                         username: $scope.user.username,
                         websiteName: currentWebsitePage.websiteName,
                         dataSourceId: dataSourceId,
-                        pageinfo: getPageInfo(currentWebsitePage.websiteName),
+                        pageinfo: pageinfo,
                         isExistSite: currentWebsite ? 1 :0,
                     }, function () {
                         //console.log(currentWebsitePage);
@@ -707,7 +708,7 @@ define([
                     data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
                         //console.log(data.pageNode);
-                        savePageContent(function () {
+                        renderAutoSave(function () {
                             if (data.pageNode.isLeaf) {
                                 //console.log("--------------------auto save--------------------");
                                 if (!currentWebsitePage || currentWebsitePage.url != data.pageNode.url) {
@@ -861,6 +862,7 @@ define([
             $scope.cmd_savepage = function (cb, errcb) {
                 if (!isEmptyObject(currentWebsitePage)) {//修改
                     savePageContent(function () {
+                        currentWebsitePage.isModify = false;
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
