@@ -13,14 +13,15 @@ define([
             $scope.isAuthenticated = Account.isAuthenticated();
             //$scope.tipInfo = "登录后才能评论!!!";
             //$scope.comment = {pageId:$scope.pageinfo._id, websiteId:$scope.siteinfo._id, userId:$scope.user._id};
-            $scope.comment = {pageId:1, websiteId:1, userId:1};
+            $scope.comment = { pageId: 1, websiteId: 1, userId: 1};
 
             $scope.submitComment = function () {
-                $scope.isAuthenticated = true;
+                //$scope.isAuthenticated = true;
                 if (!$scope.isAuthenticated) {
-                    alert("登陆后才能评论!!!")
+                    alert("登陆后才能评论!")
                     return ;
                 }
+
                 $scope.comment.content = util.stringTrim($scope.comment.content);
                 if (!$scope.comment.content || $scope.comment.content.length == 0) {
                     return ;
