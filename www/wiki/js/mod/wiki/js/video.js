@@ -9,7 +9,7 @@ define([
     function registerController(wikiBlock) {
         app.registerController("videoController", ['$scope', '$sce', function ($scope, $sce) {
             function init() {
-                var url = "https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=s0386xlr78b&auto=0";
+                var url = wikiBlock.modParams.videoUrl || "http://static.video.qq.com/TPout.swf?vid=l01276tvc8i";
                 $scope.videoUrl = $sce.trustAsResourceUrl(url);
             }
 
@@ -26,6 +26,10 @@ define([
 });
 
 /*
-```@/wiki
+```@wiki/js/video
+{
+    "videoUrl":"video url address"
+}
 ```
-*/    
+*/
+// sed -i 's/\[[^\|]\+\](\([^)]*\.swf[^)]*\))/```@wiki\/js\/video\n{\n\t"videoUrl":"\1"\n}\n```/g' filename

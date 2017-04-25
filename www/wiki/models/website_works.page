@@ -6,7 +6,7 @@ Date: 2016/11/07
 ]]
 
 include_once("./abstract/base.page");
-include_once("./website.page");
+include_once("./user_works.page");
 
 local website_works = inherit(models.abstract.base, gettable("models.website_works"))
 website_works.db_name="website_works"
@@ -48,13 +48,12 @@ function website_works:api_get(query)
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
 	
-	local websiteDB = models.website:new()
-	local siteInfoList = {}
+	local userWorksDB = models.user_works:new()
 	for _, obj in ipairs(data) do
-		siteInfoList[#siteInfoList+1] = websiteDB:api_getById({websiteId=obj.worksId}).data
+		obj.worksInfo = userWorksDB:api_getById({worksId=obj.worksId}).data
 	end
 
-	return {error=errors.SUCCESS, data=siteInfoList}
+	return errors:wrap(nil, data)
 end
 
 -- 获取站点作品数量
