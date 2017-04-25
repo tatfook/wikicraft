@@ -19,6 +19,9 @@ define([
             }
             
             $scope.viewEditor = function () {
+                if (!wikiblock.isEditorEnable()) {
+                    return;
+                }
                 $uibModal.open({
                     template: `<style>
                                     .modal-dialog.modal-full .wangEditor-container{

@@ -185,6 +185,9 @@ define([
             cmdName: wikiBlock.cmdName,
             modParams: wikiBlock.modParams,
             editorMode: mdwiki.options.editorMode,
+            isEditorEnable: function () {
+                return mdwiki.options.editorMode;
+            },
             isPageTemplate: block.isPageTemplate,   // 是页内模板则可编辑   wiki tempate block 使用此字段判断当前是否可以编辑
             content: block.isTemplate ? defaultTemplateContent : undefined,
             render: function (htmlContent) {
@@ -406,7 +409,7 @@ define([
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
-            var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
             return htmlContent + scriptContent;
         }
@@ -415,7 +418,7 @@ define([
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
-            var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             mdwiki.clearBlockCache();
             $(selector).html(htmlContent);
         }
