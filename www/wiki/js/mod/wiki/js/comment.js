@@ -8,12 +8,13 @@ define([
     'text!wikimod/wiki/html/comment.html',
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("commentController", ['$scope', 'Account', function ($scope, Account) {
+        app.registerController("commentController", ['$scope', '$rootScope', 'Account', function ($scope, $rootScope, Account) {
             $scope.user = Account.getUser();
             $scope.isAuthenticated = Account.isAuthenticated();
-            //$scope.tipInfo = "登录后才能评论!!!";
-            //$scope.comment = {pageId:$scope.pageinfo._id, websiteId:$scope.siteinfo._id, userId:$scope.user._id};
-            $scope.comment = { pageId: 1, websiteId: 1, userId: 1};
+
+            console.log($rootScope);
+
+            $scope.comment = { url: util.parseUrl().pathname, websiteId: $rootScope.siteinfo._id, userId: $rootScope.userinfo._id };
 
             $scope.submitComment = function () {
                 //$scope.isAuthenticated = true;
@@ -33,7 +34,7 @@ define([
             }
 
             $scope.getCommentList = function () {
-                util.post(config.apiUrlPrefix + 'website_comment/getByPageId',{pageId:1}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname }, function (data) {
                     $scope.commentObj = data;
                 });
             }
