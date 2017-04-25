@@ -395,7 +395,15 @@ function worlds:api_refresh(params)
 			models.worlds_stats:new():inside_update(params);
 		else
 			self:db():updateOne({["+userid+worldsName"] = {userid,query.worldsName}},
-								 {revision = query.revision},resume);
+			{
+				modDate    = query.modDate,
+				revision   = query.revision,
+				preview    = query.preview,
+				hasPreview = query.hasPreview,
+				readme     = query.readme,
+				gitlabProjectId = query.gitlabProjectId,
+				dataSourceType  = query.dataSourceType,
+			},resume);
 
 			local err,response = yield(true);
 		end
