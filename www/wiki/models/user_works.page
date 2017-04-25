@@ -25,11 +25,11 @@ end
 
 -- 创建记录
 function user_works:api_upsert(params)
-	if (not params.userId) or (not params.worksName) then
+	if (not params.userId) or (not params.worksUrl) then
 		return errors:wrap(errros.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({["+userId+worksName"]={params.userId, params.worksName}}, params, resume)
+	self:db():insertOne(nil, params, resume)
 
 	return errors:wrap(yield())
 end

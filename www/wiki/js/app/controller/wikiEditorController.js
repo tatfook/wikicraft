@@ -40,6 +40,7 @@ define([
     var editorDocMap = {};           // 每个文件对应一个文档
     var isHTMLViewEditor = false;   // 是否h5视图编辑
     var currentRichTextObj = undefined; // 当前编辑的富文本
+    var treeNodeMap = {};            // 树节点映射
 
     function getCurrentDataSource(username) {
         var userDataSource = dataSource.getUserDataSource(username);
@@ -133,7 +134,6 @@ define([
                     treeNode.nodes.push(treeDataFn(undefined, pageNode.children[key]));
                 }
             }
-
             return treeNode;
         };
 
@@ -420,9 +420,16 @@ define([
             // 获取站点页信息
             function getPageInfo(websiteName) {
                 var temp = [];
-                for (var i = 0; i < allWebsitePages.length; i++) {
-                    if (allWebsitePages[i].websiteName == websiteName) {
-                        temp.push(allWebsitePages[i]);
+                var i, j;
+                for (i = 0; i < allWebsitePages.length; i++) {
+                    var pageinfo = allWebsitePages[i];
+                    if (pageinfo.websiteName == websiteName) {
+                        for (j = 0; j < temp.length; j++) {
+                            if (temp[j].url == pageinfo.url) {
+                                break;
+                            }
+                        }
+                        j == temp.length && temp.push(allWebsitePages[i]);
                     }
                 }
                 return angular.toJson(temp);
@@ -631,19 +638,9 @@ define([
                         return;
                     }
 
-                    var selectableNodes = $('#treeview').treeview('search', [currentWebsitePage.name, {
-                        ignoreCase: true,
-                        exactMatch: false,
-                        revealResults: true,  // reveal matching nodes
-                    }]);
-
-                    $.each(selectableNodes, function (index, item) {
-                        if (item.pageNode.url == currentWebsitePage.url) {
-                            $('#treeview').treeview('selectNode', [item, {silent: true}]);
-                        }
-                    });
-
-                    $('#treeview').treeview('clearSearch');
+                    var treeNode = treeNodeMap[currentWebsitePage.url];
+                    $('#treeview').treeview('expandNode', [ treeNode.parentId, { levels: 2, silent: true } ]);
+                    $('#treeview').treeview('selectNode', [treeNode.nodeId, {silent: true}]);
                 }
 
                 getPageContent(currentWebsitePage.url, function (data) {
@@ -723,6 +720,14 @@ define([
                             openPage();
                         });
                     },
+                    onNodeCollapsed: function (event, data) {
+                        //console.log(data);
+                        treeNodeMap[data.pageNode.url] = data;
+                        for (var i = 0; data.nodes && i < data.nodes.length; i++) {
+                            var node = data.nodes[i];
+                            treeNodeMap[node.pageNode.url] = node;
+                        }
+                    },
                     /*
                      onNodeUnselected: function (event, data) {
                      if (data.pageNode.isLeaf && data.pageNode.pageId == currentWebsitePage._id) {
@@ -733,6 +738,7 @@ define([
                      }
                      }*/
                 });
+                $('#treeview').treeview('collapseAll', { silent: false });
             }
 
             //命令处理函数
@@ -1344,7 +1350,7 @@ define([
             // 渲染自动保存
             function renderAutoSave(cb, errcb) {
                 var value = editor.getValue();
-                if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value) {
+                if (isEmptyObject(currentWebsitePage) || !currentWebsitePage.isModify) {
                     cb && cb();
                     return;
                 }

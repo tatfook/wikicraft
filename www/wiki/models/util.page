@@ -87,13 +87,13 @@ const.WORKS_STATE_NOPASS=0  -- 未审核
 const.WORKS_STATE_PASS=1    -- 审核
 
 -- 作品标记
-const.WORKS_FLAG_NORMAL=0  -- 普通
-const.WORKS_FLAG_UPGRADE=1 -- 入围
-const.WORKS_FLAG_HOT=2     -- 热门
+const.WEBSITE_WORKS_FLAG_NORMAL=0  -- 普通
+const.WEBSITE_WORKS_FLAG_UPGRADE=1 -- 入围
+const.WEBSITE_WORKS_FLAG_HOT=2     -- 热门
 
 -- 站点申请类型
-const.APPLY_TYPE_MEMBER=0     -- 成员申请
-const.APPLY_TYPE_WORKS=1      -- 作品申请
+const.WEBSITE_APPLY_TYPE_MEMBER=0     -- 成员申请
+const.WEBSITE_APPLY_TYPE_WORKS=1      -- 作品申请
 
 -- 站点用户角色
 const.WEBSITE_USER_ROLE_ADMIN=0   -- 拥有者

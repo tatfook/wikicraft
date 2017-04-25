@@ -139,17 +139,25 @@
                     <legend>提交作品</legend>
                 </div>
                 <div class="form-group form-group-md">
-                    <label for="work" class="col-sm-3 control-label">选择作品页面：</label>
+                    <label class="col-sm-3 control-label">选择作品页面：</label>
                     <div class="col-sm-8">
-                        <select name="work" id="work" class="form-control">
-                            <option value="index.html">index.html</option>
+                        <!--ui-select wiki-ui-select ng-model="selected" on-select="worksUrlSelected($item, $model)">
+                            <ui-select-match>
+                                <span ng-bind="$select.selected.url"></span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="item in (itemArray | filter: $select.search) track by item.id">
+                                <span ng-bind="item.url"></span>
+                            </ui-select-choices>
+                        </ui-select-->
+                        <select name="work" id="work" class="form-control" ng-model="works.worksUrl">
+                            <option ng-repeat="x in itemArray" value="{{x.url}}">{{x.url}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group form-group-md">
                     <label for="title" class="col-sm-3 control-label">标题：</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" id="title">
+                        <input type="text" class="form-control" id="title" ng-model="works.worksTitle">
                     </div>
                 </div>
                 <div class="form-group form-group-md">
@@ -170,12 +178,12 @@
                 <div class="form-group form-group-md">
                     <label for="intro" class="col-sm-3 control-label">介绍：</label>
                     <div class="col-sm-8">
-                        <textarea name="intro" id="intro" rows="10"></textarea>
+                        <textarea name="intro" id="intro" rows="10" ng-model="works.worksDesc"></textarea>
                     </div>
                 </div>
                 <div class="form-group form-group-md">
                     <div class="col-sm-offset-3 save-setting">
-                        <button class="btn btn-primary">提交</button>
+                        <button class="btn btn-primary" ng-click="clickSubitWorks()">提交</button>
                         <button class="btn btn-outline">取消</button>
                     </div>
                 </div>

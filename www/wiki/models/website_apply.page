@@ -10,6 +10,7 @@ include_once("./website.page");
 include_once("./website_member.page");
 include_once("./website_works.page");
 include_once("./user.page");
+include_once("./user_works.page");
 
 local website_apply = inherit(models.abstract.base, gettable("models.website_apply"))
 website_apply.db_name="website_apply"
@@ -55,29 +56,29 @@ function website_apply:api_memberApply(params)
 		return errors:wrap(nil)
 	end	
 
-	params.applyType = const.APPLY_TYPE_MEMBER
+	params.applyType = const.WEBSITE_APPLY_TYPE_MEMBER
 	
 	return self:createApply(params)
 end
 
 -- 作品申请
 function website_apply:api_worksApply(params)
-	log(params)
 	if (not params.websiteId) or (not params.applyId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local websiteWorksDB = models.website_works:new()
-	websiteWorksDB:db():find({["+websiteId+worksId"] = {params.websiteId, params.applyId}}, resume)
+	websiteWorksDB:db():findOne({["+websiteId+worksId"] = {params.websiteId, params.applyId}}, resume)
 	local err, data = yield()
 	-- 已经存在不管
 	if data and data._id then
 		return errors:wrap(nil)
 	end	
 
-	params.applyType = const.APPLY_TYPE_WORKS
+	params.applyType = const.WEBSITE_APPLY_TYPE_WORKS
 	
-	return self:createApply(params)
+	self:db():insertOne({["+websiteId+applyId+applyType"]={params.websiteId, params.applyId, params.applyType}}, params, resume)
+	return errors:wrap(yield())
 end
 
 -- 作品批量申请
@@ -173,38 +174,32 @@ function website_apply:api_getWorks(params)
 	params.applyType=const.APPLY_TYPE_WORKS
 	local query = {["+websiteId+applyType"]={params.websiteId, params.applyType}}
 	self:db():count(query, resume)
-	local err, total = yield()
-
-	if err then
-		return errors:wrap(err)
-	end
-
+	local _, total = yield()
 	total = total or 0
+
 	local skip, limit = util:pagination(params)
 	query = {["+websiteId+applyType"]={params.websiteId, params.applyType, skip=skip, limit=limit}}
 	self:db():find(query, resume)
 	local err, data = yield()
-	
 	if err or (not data) then
 		return errors:wrap(err or errors.NOT_FOUND)
 	end
 	
-	local siteList = {}
-	local websiteDB = models.website:new()
+	local userWorksDB = models.user_works:new()
 	for _, obj in pairs(data) do
-		siteList[#siteList+1] = websiteDB:api_getById({websiteId=obj.applyId}).data
+		obj.worksInfo = userWorksDB:api_getById({worksId=obj.applyId}).data
 	end
 		
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), siteList=siteList})
+	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), worksList=data})
 end
 
--- 同意成员加入
+-- 同意作品加入
 function website_apply:api_agreeWorks(params)
 	if (not params.websiteId) or (not params.applyId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.APPLY_TYPE_WORKS,params.applyId}}
+	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.WEBSITE_APPLY_TYPE_WORKS,params.applyId}}
 	self:db():deleteOne(query, resume)
 	local err, data = yield()
 	
@@ -220,11 +215,10 @@ function website_apply:api_refuseWorks(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.APPLY_TYPE_WORKS,params.applyId}}
+	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.WEBSITE_APPLY_TYPE_WORKS, params.applyId}}
 	self:db():deleteOne(query, resume)
-	local err, data = yield()
-
-	return self:api_getWorks(params)
+	
+	errors:wrap(yield())
 end
 
 

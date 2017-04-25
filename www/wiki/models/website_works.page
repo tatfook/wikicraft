@@ -13,7 +13,6 @@ website_works.db_name="website_works"
 
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
-	self:addfield("websiteType", "number")    -- 站点类型
 	self:addfield("worksId", "number")        -- 组织内作品的ID
 	self:addfield("worksFlag", "number")      -- 热门 入围
 	self:addfield("createDate", "string", false, 64)
@@ -178,14 +177,14 @@ function website_works:api_getLatestByWebsiteId(params)
 end
 
 -- 创建站点作品
-function website_works:create(params) 
+function website_works:upsert(params) 
 	if (not params.websiteId) or (not params.worksId) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = params.createDate
-
+	
 	self:db():insertOne({["+websiteId+worksId"]={params.websiteId, params.worksId}}, params, resume)
 	
 	return errors:wrap(yield())
