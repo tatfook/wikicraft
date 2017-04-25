@@ -96,7 +96,7 @@ define([
                 var htmlContent;
                 //console.log(pageUrl);
                 require([pageUrl], function (htmlContent) {
-                    if (pathname == "wikiEditor" || !md) {
+                    if (pathname != "test" || pathname == "wikiEditor" || !md) {
                         util.html('#__UserSitePageContent__', htmlContent, $scope);
                     } else {
                         md.bindRenderContainer('#__UserSitePageContent__');
@@ -188,11 +188,11 @@ define([
                 setWindowTitle(urlObj);
 
                 if (config.mainContent) {
-                    if (urlObj.pathname.indexOf("/wiki/mod/") == 0) {
+                    if (config.mainContentType == "wiki_page") {
+                        renderHtmlText(urlObj.pathname, md);
+                    } else {
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         config.mainContent = undefined;
-                    } else {
-                        renderHtmlText(urlObj.pathname, md);
                     }
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {

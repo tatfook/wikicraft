@@ -137,6 +137,7 @@
             // 为官网页面 则预先加载
             var pageurl = undefined;
             if (pathname.indexOf('/wiki/mod/') == 0) {
+                // mod 模块
                 var pagename = pathname.substring('/wiki/mod/'.length);
                 var paths = pagename.split('/');
                 if (paths.length > 1) {
@@ -144,15 +145,28 @@
                 } else {
                     pageurl = 'mod/' + paths[0] + '/controller/indexController';
                 }
+                config.mainContentType = "mod";
+            } else if(pathname.indexOf('/wiki/js/mod/') == 0) {
+                // wiki command mod
+                pageurl = 'wikimod' + pathname.substring('/wiki/js/mod'.length);
+                config.mainContentType = "wiki_mod";
             } else if (pathname.indexOf('/wiki/') == 0 || pathname == '/wiki') {
                 var pagename = pathname.substring('/wiki/'.length);
                 pageurl = 'controller/' + (pagename || 'home') + 'Controller';
+                config.mainContentType = "wiki_page";
+            } else {
+                config.mainContentType = "user_page";
+                config.mainContent = undefined;
             }
             console.log(pageurl);
             // 启动angular
             if (pageurl) {
                 require([pageurl], function (mainContent) {
-                    config.mainContent = mainContent;
+                    if (config.mainContentType == "wiki_mod") {
+                        config.mainContent = mainContent.render({});
+                    } else {
+                        config.mainContent = mainContent;
+                    }
                     angular.bootstrap(document, ['webapp']);
                 });
             } else {

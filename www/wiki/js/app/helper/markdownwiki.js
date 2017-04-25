@@ -465,7 +465,7 @@ define([
         }
         mdwiki.getBlockCache = function (text, token) {
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            var htmlContent = '<div id="' + idx + '"' + (token.type == "html_block" ? '' : '  contenteditable="true"') + '></div>';
+            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
             var blockCache = undefined;
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
