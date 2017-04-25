@@ -37,6 +37,10 @@ function worlds:ctor()
 	self:addfield("dataSourceType","string",false,10);
 	--hasPreview
 	self:addfield("hasPreview","string",false);
+	--readme
+	self:addfield("readme","string",false,1000);
+	--preview
+	self:addfield("preview","string",false,800);
 
 	---------- following is query only, not saved to columns ----------------
 	--page number
@@ -332,6 +336,8 @@ function worlds:api_getRecommendOpus(params)
 end
 
 function worlds:api_refresh(params)
+	LOG.std(nil,"debug","api_refresh",params);
+
 	local err, query = self:validateQuery(params);
 	local userid;
 
@@ -356,9 +362,11 @@ function worlds:api_refresh(params)
 			insertParams.worldsName = query.worldsName;
 			insertParams.revision   = query.revision;
 			insertParams.hasPreview = query.hasPreview;
+			insertParams.readme     = query.readme;
+			insertParams.preview    = query.preview;
 			insertParams.gitlabProjectId = query.gitlabProjectId;
 			insertParams.dataSourceType  = query.dataSourceType;
-
+			
 			local dataSource = models.data_source:new():api_getByUserId({userId = userid});
 			local defaultDataSource = {};
 
@@ -445,10 +453,17 @@ end
 -- =转成-equal  +转成-plus  /转成-slash
 function worlds.base64(text)
 	if(text) then
-		text = Encoding.base64(text);
-		text = text:gsub("[=]" ,"-equal");
-		text = text:gsub("[%+]","-plus");
-		text = text:gsub("[/]" ,"-slash");
+		local notLetter = string.find(text,"%A%A");
+
+		if(notLetter) then
+			text = Encoding.base64(text);
+
+			text = text:gsub("[=]"  , "-equal");
+			text = text:gsub("[%+]" , "-plus");
+			text = text:gsub("[/]"  , "-slash");
+		else
+			text = "world_" .. text;
+		end
 
 		--LOG.std(nil,"debug","text",text);
 
@@ -460,11 +475,18 @@ end
 
 function worlds.unbase64(text)
 	if(text) then
-		text = text:gsub("[-equal]","=");
-		text = text:gsub("[-plus]","+");
-		text = text:gsub("[-slash]","/");
+		local notLetter = string.find(text,"world_");
 
-		return Encoding.unbase64(text);
+		if(notLetter) then
+			text = text:gsub("[-equal]" , "=");
+			text = text:gsub("[-plus]"  , "+");
+			text = text:gsub("[-slash]" , "/");
+
+			return Encoding.unbase64(text);
+
+		else
+			return text;
+		end
 	else
 		return nil;
 	end
