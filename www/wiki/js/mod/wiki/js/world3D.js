@@ -11,7 +11,10 @@ define([
         app.registerController('world3DController',['$scope', function ($scope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
-            $scope.showModal=false;
+            $scope.showModal = false;
+
+            $scope.modParams.logoUrl = JSON.parse($scope.modParams.logoUrl);
+            $scope.modParams.logoUrl = $scope.modParams.logoUrl[0].previewUrl;
 
             $scope.checkEngine=function () {
                 if(true){// 判断是否安装了Paracraft
@@ -39,7 +42,7 @@ define([
 
             $scope.clickDownload = function() {
                 $scope.showModal=false;
-                window.open("www.paracraft.cn");
+                window.open("http://www.paracraft.cn");
             }
         }]);
     }
