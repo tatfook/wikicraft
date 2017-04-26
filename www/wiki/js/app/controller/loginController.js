@@ -29,10 +29,10 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
         $scope.login = function () {
             $scope.errMsg = "";
             var params = {
-                email: util.stringTrim($scope.email),
+                username: util.stringTrim($scope.username),
                 password: util.stringTrim($scope.password),
             };
-            if (!params.email || !params.password) {
+            if (!params.username || !params.password) {
                 $scope.errMsg = "用户名或密码错误";
                 $("#total-err").removeClass("visible-hidden");
                 return;

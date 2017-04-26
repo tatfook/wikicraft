@@ -320,7 +320,7 @@ define([
             } else {
                 mdwiki.template.isPageTemplate = true;
             }
-            console.log(mdwiki.template.isPageTemplate);
+            //console.log(mdwiki.template.isPageTemplate);
         }
 
         if (!mdwiki.template || mdwiki.template.blockCache.domNode) {// 模板不存在 且默认模板也不存在
@@ -409,7 +409,8 @@ define([
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
-            var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
             return htmlContent + scriptContent;
         }
@@ -418,7 +419,8 @@ define([
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
-            var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             mdwiki.clearBlockCache();
             $(selector).html(htmlContent);
         }

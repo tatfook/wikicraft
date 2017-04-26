@@ -29,3 +29,11 @@ define(['app', 'helper/util'], function (app, util) {
         }
     }
 });
+
+/*
+```@template/js/default
+{
+    "class": "container"
+}
+```
+*/
