@@ -6,7 +6,7 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!wikimod/wiki/html/submitWorks.html',
+    'text!wikimod/wiki/html/organizationSubmitWorks.html',
     'cropper'
 ], function (app, util, storage, htmlContent) {
 
@@ -17,7 +17,7 @@ define([
     }
 
     function registerController(wikiblock) {
-        app.registerController('submitWorkController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
+        app.registerController('organizationSubmitWorksController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
             var siteinfo = undefined;
@@ -153,7 +153,7 @@ define([
             }
 
             // 提交作品
-            $scope.clickSubitWorks = function () {
+            $scope.clickSubmitWorks = function () {
                 if (!siteinfo) {
                     Message.info("无权限提交!!!");
                     return;
@@ -174,6 +174,10 @@ define([
                     });
                 });
                 //console.log($scope.works);
+            }
+
+            $scope.clickCancelWorks = function () {
+                window.history.back();
             }
 
             // 路径过滤

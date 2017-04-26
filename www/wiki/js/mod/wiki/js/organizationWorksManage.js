@@ -6,7 +6,7 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!wikimod/wiki/html/worksManage.html'
+    'text!wikimod/wiki/html/organizationWorksManage.html'
 ], function (app, util, storage, htmlContent) {
 
     function getModParams(wikiblock) {
@@ -16,7 +16,7 @@ define([
     }
 
     function registerController(wikiblock) {
-        app.registerController('worksManageController',['$scope','Account', function ($scope, Account) {
+        app.registerController('organizationWorksManageController',['$scope','Account', function ($scope, Account) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
             var siteinfo = undefined;
@@ -45,15 +45,28 @@ define([
                     }
                 });
             });
+
+            // 跳作品页
+            $scope.goApplyWorksPage = function (apply) {
+                util.goUserSite(apply.worksInfo.worksUrl);
+            }
+
+            // 跳作品页
+            $scope.goWorksPage = function (works) {
+                util.goUserSite(works.worksInfo.worksUrl);
+            }
+
             // 同意作品申请
             $scope.agreeApply = function (apply) {
                 util.post(config.apiUrlPrefix + 'website_apply/agreeWorks', {websiteId:siteinfo._id, applyId:apply.worksInfo._id}, function () {
+                    apply.isDeleted = true;
                     console.log("作品审核通过");
                 });
             }
             // 拒绝作品申请
             $scope.refuseApply = function (apply) {
                 util.post(config.apiUrlPrefix + 'website_apply/refuseWorks', {websiteId:siteinfo._id, applyId:apply.worksInfo._id}, function () {
+                    apply.isDeleted = true;
                     console.log("作品审核拒绝");
                 });
             }

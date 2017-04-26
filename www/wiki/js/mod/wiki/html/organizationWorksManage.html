@@ -124,7 +124,7 @@
         }
     }
 </style>
-<div class="works-manage clearfix" ng-controller="worksManageController">
+<div class="works-manage clearfix" ng-controller="organizationWorksManageController">
     <div class="panel">
         <div class="panel-heading">作品管理</div>
         <div class="panel-body">
@@ -144,9 +144,9 @@
                                 <div class="clearfix">
                                     <div class="pull-left">
                                         <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle || "未命名"}}</a></h4>
-                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksInfo.worksTitle || ""}}</a></p>
+                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksInfo.username || ""}}</a></p>
                                     </div>
-                                    <div class="btn btn-primary pull-right">移除</div>
+                                    <div class="btn btn-primary pull-right" ng-click="removeWorks(works)">移除</div>
                                 </div>
                                 <p class="pull-left info">
                                     <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
@@ -161,7 +161,7 @@
                 <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
                     <div class="org-notify-item" ng-repeat="apply in applyList">
                         <div ng-hide="apply.isDeleted">
-                            <p><a class="stress">标题：{{apply.worksInfo.worksTitle}} </a><a> 作者：{{apply.worksInfo.worksTitle}}</a></p>
+                            <p><a class="stress" ng-click="goApplyWorksPage(apply)">标题：{{apply.worksInfo.worksTitle}} </a><a> 作者：{{apply.worksInfo.username}}</a></p>
                             <div class="notify-work">
                                 <img ng-src="{{ apply.worksInfo.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
                                 <div class="intro">

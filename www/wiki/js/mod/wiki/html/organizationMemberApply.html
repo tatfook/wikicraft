@@ -62,7 +62,7 @@
         }
     }
 </style>
-<div class="org-apply clearfix" ng-controller="orgApplyController">
+<div class="org-apply clearfix" ng-controller="organizationMemberApplyController">
     <div class="panel">
         <div class="panel-heading">申请加入</div>
         <div class="panel-body">
@@ -70,11 +70,11 @@
                 <p>申请加入#ParaCraft学习小组#</p>
                 <div class="intro">
                     <p>个人简介：</p>
-                    <textarea class="form-control"></textarea>
+                    <textarea ng-model="desc" class="form-control"></textarea>
                 </div>
                 <div>
-                    <div class="btn btn-primary">申请</div>
-                    <div class="btn btn-outline">取消</div>
+                    <div class="btn btn-primary" ng-click="clickMemberApply()">申请</div>
+                    <div class="btn btn-outline" ng-click="clickMemberCancel()">取消</div>
                 </div>
             </div>
         </div>

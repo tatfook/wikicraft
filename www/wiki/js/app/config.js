@@ -144,7 +144,7 @@
             config.mainContentType = "mod";
         } else if(pathname.indexOf('/wiki/js/mod/') == 0) {
             // wiki command mod
-            pageurl = 'wikimod' + pathname.substring('/wiki/js/mod/'.length);
+            pageurl = 'wikimod' + pathname.substring('/wiki/js/mod'.length);
             config.mainContentType = "wiki_mod";
         } else if (pathname.indexOf('/wiki/') == 0 || pathname == '/wiki') {
             var pagename = pathname.substring('/wiki/'.length);

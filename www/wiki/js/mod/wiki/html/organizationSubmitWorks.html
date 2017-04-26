@@ -130,7 +130,7 @@
         }
     }
 </style>
-<div class="submit-work clearfix" ng-controller="submitWorkController">
+<div class="submit-work clearfix" ng-controller="organizationSubmitWorksController">
     <div class="panel">
         <div class="panel-heading">提交作品</div>
         <div class="panel-body">
@@ -183,8 +183,8 @@
                 </div>
                 <div class="form-group form-group-md">
                     <div class="col-sm-offset-3 save-setting">
-                        <button class="btn btn-primary" ng-click="clickSubitWorks()">提交</button>
-                        <button class="btn btn-outline">取消</button>
+                        <button class="btn btn-primary" ng-click="clickSubmitWorks()">提交</button>
+                        <button class="btn btn-outline" ng-click="clickCancelWorks()">取消</button>
                     </div>
                 </div>
             </form>
