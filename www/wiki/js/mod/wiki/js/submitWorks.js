@@ -9,14 +9,19 @@ define([
     'text!wikimod/wiki/html/submitWorks.html',
     'cropper'
 ], function (app, util, storage, htmlContent) {
+
+    function getModParams(wikiblock) {
+        var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
+        modParams.sitename = "xiaoyao";
+        return angular.copy(modParams);
+    }
+
     function registerController(wikiblock) {
         app.registerController('submitWorkController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.modParams = angular.copy(wikiblock.modParams || {});
-            $scope.works = {};
+            var modParams = getModParams(wikiblock);
+            var siteinfo = undefined;
 
-            var siteinfo = storage.sessionStorageGetItem("belongToSite");
-            var lastUrl = storage.sessionStorageGetItem("lastUrl");
             function getResultCanvas(sourceCanvas) {
                 var canvas = document.createElement('canvas');
                 var context = canvas.getContext('2d');
@@ -125,11 +130,11 @@ define([
                 });
             }
 
-            function init(userinfo) {
+            function init() {
                 initImageUpload();
 
                 // 获取用户所有页面
-                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: userinfo.username}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: $scope.userinfo.username}, function (data) {
                     data = data || {};
                     var pageinfoList = data.pageinfoList || [];
                     var allWebsitePages = [];
@@ -142,16 +147,18 @@ define([
                             $scope.itemArray.push({id:i,url:allWebsitePages[i].url});
                         }
                     }
-                    console.log($scope.itemArray);
-                    console.log(allWebsitePages);
+                    //console.log($scope.itemArray);
+                    //console.log(allWebsitePages);
                 });
             }
 
+            // 提交作品
             $scope.clickSubitWorks = function () {
                 if (!siteinfo) {
                     Message.info("无权限提交!!!");
                     return;
                 }
+                $scope.works.username = $scope.user.username;
                 util.post(config.apiUrlPrefix + 'user_works/upsert', $scope.works, function (data) {
                     if (!data || !data._id) {
                         return;
@@ -161,12 +168,11 @@ define([
                         applyId: data._id,
                     }, function () {
                         Message.info("作品提交成功^-^");
-                        lastUrl && (window.location.href = lastUrl);
+                        window.history.back();
                     }, function () {
                         Message.info("作品提交失败...");
                     });
                 });
-
                 //console.log($scope.works);
             }
 
@@ -174,13 +180,21 @@ define([
             $scope.worksUrlSelected = function ($item, $model) {
                 $scope.works.worksUrl = $item.url;
             }
+
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
-                    init(userinfo);
+                    $scope.userinfo = userinfo;
+                    if (modParams.sitename) {
+                        util.post(config.apiUrlPrefix + "website/getByName", {username:$scope.userinfo.username, websiteName:modParams.sitename}, function (data) {
+                            siteinfo = data;
+                            siteinfo && init();
+                        });
+                    }
                 });
             });
         }]);
     }
+
     return {
         render: function(wikiblock){
             registerController(wikiblock);
