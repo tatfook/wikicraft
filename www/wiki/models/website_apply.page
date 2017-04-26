@@ -17,7 +17,7 @@ website_apply.db_name="website_apply"
 
 function website_apply:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
-	self:addfield("applyId", "number")        -- 申请ID
+	self:addfield("applyId", "number")        -- 申请ID  userId worksId
 	self:addfield("applyType", "number")      -- 申请类型 成员 作品 其它
 end
 
@@ -167,11 +167,11 @@ function website_apply:api_refuseMember(params)
 end
 
 -- 获得待审核的作品列表
-function website_apply:api_getWorks(params)
+function website_apply:api_getWorksByWebsiteId(params)
 	if not params.websiteId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	params.applyType=const.APPLY_TYPE_WORKS
+	params.applyType=const.WEBSITE_APPLY_TYPE_WORKS
 	local query = {["+websiteId+applyType"]={params.websiteId, params.applyType}}
 	self:db():count(query, resume)
 	local _, total = yield()
@@ -180,17 +180,14 @@ function website_apply:api_getWorks(params)
 	local skip, limit = util:pagination(params)
 	query = {["+websiteId+applyType"]={params.websiteId, params.applyType, skip=skip, limit=limit}}
 	self:db():find(query, resume)
-	local err, data = yield()
-	if err or (not data) then
-		return errors:wrap(err or errors.NOT_FOUND)
-	end
+	local _, applyList = yield()
 	
 	local userWorksDB = models.user_works:new()
-	for _, obj in pairs(data) do
+	for _, obj in pairs(applyList or {}) do
 		obj.worksInfo = userWorksDB:api_getById({worksId=obj.applyId}).data
 	end
 		
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), worksList=data})
+	return errors:wrap(nil, {total=total, applyList=applyList})
 end
 
 -- 同意作品加入
@@ -204,9 +201,9 @@ function website_apply:api_agreeWorks(params)
 	local err, data = yield()
 	
 	local websiteWorksDB = models.website_works:new()
-	websiteWorksDB:create({websiteId=params.websiteId, worksId=params.applyId, worksFlag=const.WORKS_FLAG_NORMAL})
+	websiteWorksDB:api_upsert({websiteId=params.websiteId, worksId=params.applyId, worksFlag=const.WEBSITE_WORKS_FLAG_NORMAL})
 	
-	return self:api_getWorks(params)
+	return errors:wrap(nil)
 end
 
 -- 拒绝成员加入

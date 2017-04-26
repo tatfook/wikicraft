@@ -12,7 +12,7 @@ user_works.db_name="user_works"
 
 -- key => +userId+worksName
 function user_works:ctor()
-	self:addfield("userId", "number")         -- userID
+	self:addfield("username", "string")       -- 用户名
 	self:addfield("worksTitle", "string")     -- 作品标题
 	self:addfield("worksName", "string")      -- 作品名
 	self:addfield("worksUrl", "string")       -- 作品容器页面url
@@ -25,8 +25,8 @@ end
 
 -- 创建记录
 function user_works:api_upsert(params)
-	if (not params.userId) or (not params.worksUrl) then
-		return errors:wrap(errros.REQUEST_PARAMS_ERROR)
+	if (not params.username) or (not params.worksUrl) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	self:db():insertOne(nil, params, resume)
@@ -41,7 +41,8 @@ function user_works:api_getById(params)
 	end
 
 	self:db():findOne({_id=params.worksId}, resume)
-
+	
+	return errors:wrap(yield())
 end
 
 

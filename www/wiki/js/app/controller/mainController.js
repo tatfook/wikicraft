@@ -86,7 +86,7 @@ define([
                         return ;
                     }
                     isFirstLocationChange = false;
-                    initContentInfo();
+                    config.loadMainContent(initContentInfo);
                 });
             }
 
@@ -140,9 +140,10 @@ define([
                         var themeUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/_theme';
                         var pageUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
 
-                        if (data.siteinfo) {
+                        if (data.siteinfo && data.pageinfo) {
                             dataSourceId = data.siteinfo.dataSourceId || dataSourceId;
-                            var pageList = angular.fromJson(data.siteinfo.pageinfo || '[]');
+                            var pageList = angular.fromJson(data.pageinfo.pageinfo || '[]');
+                            console.log(pageList);
                             for (var i = 0; i < pageList.length; i++) {
                                 if (pageList[i].url == themeUrl) {
                                     $rootScope.tplinfo = pageList[i];

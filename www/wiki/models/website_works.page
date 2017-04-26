@@ -15,6 +15,7 @@ function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
 	self:addfield("worksId", "number")        -- 组织内作品的ID
 	self:addfield("worksFlag", "number")      -- 热门 入围
+	self:addfield("visitCount", "number")     -- 该组织的点击量
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
 end
@@ -30,6 +31,37 @@ function website_works:api_deleteByWebsiteId(params)
 	return errors:wrap(yield())
 end
 
+-- 获取站点作品数量
+function website_works:api_getCountByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():count({["+websiteId"] = {params.websiteId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+
+-- 获取作品列表
+function website_works:api_getByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local total = self:api_getCountByWebsiteId(params).data or 0	
+	local skip, limit = util:pagination(params)	
+
+	self:db():find({["+websiteId"]={params.websiteId, skip=skip, limit=limit}}, resume)
+	local _, worksList = yield()
+
+	local userWorksDB = models.user_works:new()
+	for _, obj in ipairs(worksList or {}) do
+		obj.worksInfo  = userWorksDB:api_getById({worksId=obj.worksId}).data
+	end
+	
+	return errors:wrap(nil, {total=total, worksList=worksList})
+end
 
 -- 获取数量
 function website_works:api_getCount(query)
@@ -55,52 +87,6 @@ function website_works:api_get(query)
 	return errors:wrap(nil, data)
 end
 
--- 获取站点作品数量
-function website_works:api_getCountByWebsiteId(params)
-	if not params.websiteId then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
-	end
-	
-	self:db():count({["+websiteId"] = {params.websiteId}}, resume)
-	
-	return errors:wrap(yield())
-end
-
-
--- 获取作品列表
-function website_works:api_getByWebsiteId(params)
-	if not params.websiteId then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
-	end
-	
-	local skip, limit = util:pagination(params)	
-
-	self:db():find({["+websiteId"]={params.websiteId, skip=skip, limit=limit}}, resume)
-	local err, data = yield()
-
-	if err or (not data) then
-		return errors:wrap(err or errors.NOT_FOUND, data)
-	end
-	
-	local websiteDB = models.website:new()
-	local siteInfoList = {}
-	local siteinfo = nil
-
-	for _, obj in ipairs(data) do
-		siteinfo  = websiteDB:api_getById({websiteId=obj.worksId}).data
-		if siteinfo then
-			siteinfo.classifyInfo = obj
-			siteInfoList[#siteInfoList+1] = siteinfo
-		end
-	end
-	
-	local total = self:api_getCountByWebsiteId(params).data 
-	if not total then
-		return errors:wrap(errors.SERVER_INNER_ERROR)
-	end
-
-	return {error=errors.SUCCESS, data={total=total, pageCount=util:getPageCount(total,limit), siteList=siteInfoList}}
-end
 
 -- 获取入围作品的数量
 function website_works:api_getUpgradeCountByWebsiteId(params)
@@ -177,7 +163,7 @@ function website_works:api_getLatestByWebsiteId(params)
 end
 
 -- 创建站点作品
-function website_works:upsert(params) 
+function website_works:api_upsert(params) 
 	if (not params.websiteId) or (not params.worksId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -200,3 +186,38 @@ function website_works:api_updateById(params)
 	
 	return errors:wrap(yield())
 end
+
+-- 移除作品
+function website_works:api_deleteById(params)
+	if not params.id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params.id}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
