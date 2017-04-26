@@ -55,9 +55,34 @@ define([
                console.log("关注成功");
             });
         }
+        
+        $scope.isShowNavBar = function () {
+            if ($scope.user && $scope.userinfo && $scope.user.username == $scope.userinfo.username) {
+                return true;
+            }
+            return false;
+        }
 
         $scope.goUserSite = function (x) {
             util.goUserSite('/' + x.username + '/' + x.name, true);
+        }
+
+        $scope.goHelpPage = function () {
+            util.go("knowledge");
+        }
+
+        $scope.goNewWebsitePage = function () {
+            storage.sessionStorageSetItem('userCenterContentType', "newWebsite");
+            util.go("userCenter");
+        }
+        
+        $scope.goWebsitePage = function () {
+            storage.sessionStorageSetItem('userCenterContentType', "websiteManager");
+            util.go("userCenter");
+        }
+        
+        $scope.goEditorPage = function () {
+            util.go("wikiEditor");
         }
 
         $scope.$watch('$viewContentLoaded', function () {

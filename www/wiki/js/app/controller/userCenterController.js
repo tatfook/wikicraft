@@ -11,7 +11,8 @@ define(['app',
     'controller/dataSourceController',
     'controller/myVIPController',
     'controller/editWebsiteController',
-], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent) {
+    'controller/newWebsiteController',
+], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent, newWebsiteHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
@@ -69,13 +70,15 @@ define(['app',
             if (contentType == 'userProfile') {
                 $scope.showItem = subContentType || 'myProfile';
                 util.html('#userCenterSubPage', userProfileHtmlContent, $scope);
-            } else if (contentType == 'websiteManager' || contentType == "editWebsite") {
+            } else if (contentType == 'websiteManager' || contentType == "editWebsite" || contentType == "newWebsite") {
                 $scope.showItem = subContentType || 'myWebsite';
                 $scope.contentType = "websiteManager";
                 if (contentType == "websiteManager")
                     util.html('#userCenterSubPage', websiteHtmlContent, $scope);
                 else if (contentType == "editWebsite")
                     util.html('#userCenterSubPage', editWebsiteHtmlContent, $scope);
+                else if (contentType == "newWebsite")
+                    util.html("#userCenterSubPage", newWebsiteHtmlContent, $scope);
             } else if (contentType == 'VIP') {
                 $scope.showItem = subContentType || 'myVIP';
                 util.html('#userCenterSubPage', myVIPHtmlContent, $scope);
