@@ -563,13 +563,13 @@ function website:api_getDetailInfo(params)
 	self:db():findOne({["+userId+name"]={userinfo._id, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	
-	if not siteinfo then
-		return errors:wrap(nil, {userinfo=userinfo})
+	local dataSourceId = userinfo.dataSourceId
+	if siteinfo and siteinfo.dataSourceId then
+		dataSourceId = siteinfo.dataSourceId
 	end
 
 	local websitePageinfoDB = models.website_pageinfo:new()
-	local pageinfo = websitePageinfoDB:api_get({userId=siteinfo.userId, websiteName=siteinfo.name, dataSourceId=siteinfo.dataSourceId}).data or {}
-	siteinfo.pageinfo = pageinfo.content
+	local pageinfo = websitePageinfoDB:api_get({username=params.username, websiteName=params.sitename, dataSourceId=dataSourceId}).data or {}
 
 	local url = '/' .. params.username .. '/' .. params.sitename .. '/' .. (params.pagename or "index")
 	local websitePageDB = models.website_page:new()
@@ -584,7 +584,7 @@ function website:api_getDetailInfo(params)
 		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=siteinfo.name,url=url})
 	end
 
-	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageContent=pageContent})
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo, pageContent=pageContent})
 end
 
 

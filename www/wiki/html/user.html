@@ -210,6 +210,43 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="wiki_preview">
+                        <div ng-show="isShowNavBar()">
+                            <div class="col-xs-12">
+                                <div class="col-xs-12">
+                                    <div style="display: flex; justify-content: flex-end">
+                                        <a ng-click="goHelpPage()">
+                                            <img style="width:18px; height: 18px" ng-src="{{imgsPath + 'icon/wiki_help.png'}}"><span>&nbsp;帮助</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="col-xs-4">
+                                    <div style="display: flex; flex-direction: column; align-items: center">
+                                        <a ng-click="goNewWebsitePage()">
+                                            <img style="width: 112px; height: 103px;" ng-src="{{imgsPath + 'icon/wiki_new_site.png'}}">
+                                            <p style="text-align: center">新建网站</p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div style="display: flex; flex-direction: column; align-items: center">
+                                        <a ng-click="goWebsitePage()">
+                                            <img style="width: 112px; height: 103px;" src="{{imgsPath + 'icon/wiki_site_manage.png'}}">
+                                            <p style="text-align: center">网站管理</p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div style="display: flex; flex-direction: column; align-items: center">
+                                        <a ng-click="goEditorPage()">
+                                            <img style="width: 112px; height: 103px;" src="{{imgsPath + 'icon/wiki_editor.png'}}">
+                                            <p style="text-align: center">页面编辑器</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-12">
                             <h3 class="title">热门作品</h3>
                             <div class="img-text col-md-6" ng-repeat="x in hotSiteList">

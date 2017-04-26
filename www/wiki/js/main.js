@@ -129,55 +129,14 @@
     require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular, app) {
         // ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
         // 加载页面主体内容
-        function loadMainContent() {
-            var pathname = window.location.pathname;
-            if(config.islocalWinEnv()) {
-                pathname = window.location.hash ? window.location.hash.substring(1) : '/';
-            }
-            // 为官网页面 则预先加载
-            var pageurl = undefined;
-            if (pathname.indexOf('/wiki/mod/') == 0) {
-                // mod 模块
-                var pagename = pathname.substring('/wiki/mod/'.length);
-                var paths = pagename.split('/');
-                if (paths.length > 1) {
-                    pageurl = 'mod/' + paths[0] + '/controller/' + paths[1] + "Controller";
-                } else {
-                    pageurl = 'mod/' + paths[0] + '/controller/indexController';
-                }
-                config.mainContentType = "mod";
-            } else if(pathname.indexOf('/wiki/js/mod/') == 0) {
-                // wiki command mod
-                pageurl = 'wikimod' + pathname.substring('/wiki/js/mod'.length);
-                config.mainContentType = "wiki_mod";
-            } else if (pathname.indexOf('/wiki/') == 0 || pathname == '/wiki') {
-                var pagename = pathname.substring('/wiki/'.length);
-                pageurl = 'controller/' + (pagename || 'home') + 'Controller';
-                config.mainContentType = "wiki_page";
-            } else {
-                config.mainContentType = "user_page";
-                config.mainContent = undefined;
-            }
-            console.log(pageurl);
-            // 启动angular
-            if (pageurl) {
-                require([pageurl], function (mainContent) {
-                    if (config.mainContentType == "wiki_mod") {
-                        config.mainContent = mainContent.render({});
-                    } else {
-                        config.mainContent = mainContent;
-                    }
-                    angular.bootstrap(document, ['webapp']);
-                });
-            } else {
-                angular.bootstrap(document, ['webapp']);
-            }
-
-        }
 
         domReady(function () {
             config.init(function () {
-                loadMainContent();
+                config.loadMainContent(function () {
+                    angular.bootstrap(document, ['webapp']);
+                }, function () {
+                    angular.bootstrap(document, ['webapp']);
+                });
             });
         });
     });

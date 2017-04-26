@@ -5,7 +5,6 @@
     .works-manage .tab-pane a:hover{
         color: #3977AD;
     }
-
     .works-manage .btn{
         padding:9px 23px;
         font-size: 16px;
@@ -50,7 +49,6 @@
     .works-manage .tab-content{
         padding-bottom:35px;
     }
-
     .works-manage .tab-pane{
         padding: 40px;
     }
@@ -69,7 +67,6 @@
         -moz-box-shadow: 0 1px 3px 0 rgba(44, 62, 80, 0.35);
         box-shadow: 0 1px 3px 0 rgba(44, 62, 80, 0.35);
     }
-
     .works-manage .org-notify{
         padding:0;
     }
@@ -135,64 +132,45 @@
                 <li role="presentation" class="active"><a href="#org-works" aria-controls="org-works" role="tab" data-toggle="tab">作品列表</a></li>
                 <li role="presentation"><a href="#org-notify" aria-controls="org-notify" role="tab" data-toggle="tab">投稿管理</a></li>
             </ul>
-
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active clearfix" id="org-works">
-                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="item in [1,2]">
-                        <a ng-click="goUserSite(site)" class="work-profile">
-                            <img ng-src="{{site.logoUrl || (imgsPath + 'org_work.jpg')}}">
-                        </a>
-                        <div class="text clearfix">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name || "xljfsdf"}}</a></h4>
-                                    <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username || "Lixizhi"}}</a></p>
+                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList">
+                        <div ng-hide="works.isDeleted">
+                            <a ng-click="goWorksPage(works)" class="work-profile">
+                                <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'org_work.jpg')}}">
+                            </a>
+                            <div class="text clearfix">
+                                <div class="clearfix">
+                                    <div class="pull-left">
+                                        <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle || "未命名"}}</a></h4>
+                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksInfo.worksTitle || ""}}</a></p>
+                                    </div>
+                                    <div class="btn btn-primary pull-right">移除</div>
                                 </div>
-                                <div class="btn btn-primary pull-right">移除</div>
+                                <p class="pull-left info">
+                                    <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
+                                </p>
+                                <p class="pull-right info" ng-click="worksFavorite($event, works)">
+                                    <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
+                                </p>
                             </div>
-
-                            <p class="pull-left info">
-                                <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
-                            </p>
-                            <p class="pull-right info" ng-click="worksFavorite($event, site)">
-                                <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0">
-                        <a ng-click="goUserSite(site)" class="work-profile">
-                            <img ng-src="{{site.logoUrl || (imgsPath + 'org_work.jpg')}}">
-                        </a>
-                        <div class="text clearfix">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name || "xljfsdf"}}</a></h4>
-                                    <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username || "Lixizhi"}}</a></p>
-                                </div>
-                                <div class="btn btn-primary pull-right">移除</div>
-                            </div>
-
-                            <p class="pull-left info">
-                                <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
-                            </p>
-                            <p class="pull-right info" ng-click="worksFavorite($event, site)">
-                                <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
-                            </p>
                         </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
-                    <div class="org-notify-item" ng-repeat="item in [1,2]">
-                        <p><a class="stress">标题：《3D世界》 </a><a> 作者：Lixizhi</a></p>
-                        <div class="notify-work">
-                            <img ng-src="{{imgsPath+'org_work.jpg'}}" alt="" class="photo">
-                            <div class="intro">
-                                <p>介绍：</p>
-                                <p>这里是一段介绍文字，这里是一段介绍文字,这里是一段介绍文字，这里是一段介绍文字，这里是一段介绍文字，这里是一段介绍文字，这里是一段介绍文字</p>
+                    <div class="org-notify-item" ng-repeat="apply in applyList">
+                        <div ng-hide="apply.isDeleted">
+                            <p><a class="stress">标题：{{apply.worksInfo.worksTitle}} </a><a> 作者：{{apply.worksInfo.worksTitle}}</a></p>
+                            <div class="notify-work">
+                                <img ng-src="{{ apply.worksInfo.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
+                                <div class="intro">
+                                    <p>介绍：</p>
+                                    <p>{{apply.worksinfo.worksDesc}}</p>
+                                </div>
+                                <div class="btn btn-primary" ng-click="agreeApply(apply)">同意</div>
+                                <div class="btn btn-outline" ng-click="refuseApply(apply)">删除</div>
                             </div>
-                            <div class="btn btn-primary">同意</div>
-                            <div class="btn btn-outline">删除</div>
                         </div>
                     </div>
                 </div>

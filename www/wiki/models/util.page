@@ -83,8 +83,8 @@ const.FAVORITE_TYPE_USER = 0
 const.FAVORITE_TYPE_WEBSITE = 1
 
 -- 作品状态
-const.WORKS_STATE_NOPASS=0  -- 未审核
-const.WORKS_STATE_PASS=1    -- 审核
+const.WEBSITE_WORKS_STATE_NOPASS=0  -- 未审核
+const.WEBSITE_WORKS_STATE_PASS=1    -- 审核
 
 -- 作品标记
 const.WEBSITE_WORKS_FLAG_NORMAL=0  -- 普通
