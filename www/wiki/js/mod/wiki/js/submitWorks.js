@@ -5,14 +5,18 @@
 define([
     'app',
     'helper/util',
+    'helper/storage',
     'text!wikimod/wiki/html/submitWorks.html',
     'cropper'
-], function (app, util, htmlContent) {
+], function (app, util, storage, htmlContent) {
     function registerController(wikiblock) {
-        app.registerController('submitWorkController',['$scope','Message', function ($scope,Message) {
+        app.registerController('submitWorkController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
+            $scope.works = {};
 
+            var siteinfo = storage.sessionStorageGetItem("belongToSite");
+            var lastUrl = storage.sessionStorageGetItem("lastUrl");
             function getResultCanvas(sourceCanvas) {
                 var canvas = document.createElement('canvas');
                 var context = canvas.getContext('2d');
@@ -31,7 +35,7 @@ define([
                 return canvas;
             }
 
-            function init() {
+            function initImageUpload() {
                 var finishBtn = $("#finish");
                 var cropper = $("#cropper");
                 var changeBtn=$(".change-btn");
@@ -106,25 +110,75 @@ define([
                     cropper.addClass("sr-only");
                     finishBtn.addClass("sr-only");
 
-                    innerGitlab = dataSource.getDefaultDataSource();
-                    if (!innerGitlab || !innerGitlab.isInited()) {
+                    var defaultDataSource = dataSource.getDefaultDataSource();
+                    if (!defaultDataSource || !defaultDataSource.isInited()) {
                         Message.info("内部数据源失效");
                         return;
                     }
                     var imgUrl=$scope.imgUrl;
-                    console.log(imgUrl);
-                    // innerGitlab.uploadImage({content:imgUrl}, function (url) {
-                    //     $scope.website.logoUrl = url;
-                    //     util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
-                    //         $scope.website = data;
-                    //         Message.info("站点图片上传成功!!!");
-                    //     });
-                    // }, function () {
-                    //     Message.info("站点图片上传失败!!!");
-                    // });
+                    //console.log(imgUrl);
+                    defaultDataSource.uploadImage({content:imgUrl}, function (url) {
+                        $scope.works.worksLogo = url;
+                    }, function () {
+                        Message.info("站点图片上传失败!!!");
+                    });
                 });
             }
-            $scope.$watch('$viewContentLoaded',init);
+
+            function init(userinfo) {
+                initImageUpload();
+
+                // 获取用户所有页面
+                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: userinfo.username}, function (data) {
+                    data = data || {};
+                    var pageinfoList = data.pageinfoList || [];
+                    var allWebsitePages = [];
+                    for (var i = 0; i < pageinfoList.length; i++) {
+                        allWebsitePages = allWebsitePages.concat(angular.fromJson(pageinfoList[i] || '[]'));
+                    }
+                    $scope.itemArray = [];
+                    for (var i = 0; i < allWebsitePages.length; i++) {
+                        if (allWebsitePages[i].name[0] != "_") {
+                            $scope.itemArray.push({id:i,url:allWebsitePages[i].url});
+                        }
+                    }
+                    console.log($scope.itemArray);
+                    console.log(allWebsitePages);
+                });
+            }
+
+            $scope.clickSubitWorks = function () {
+                if (!siteinfo) {
+                    Message.info("无权限提交!!!");
+                    return;
+                }
+                util.post(config.apiUrlPrefix + 'user_works/upsert', $scope.works, function (data) {
+                    if (!data || !data._id) {
+                        return;
+                    }
+                    util.post(config.apiUrlPrefix + "website_apply/worksApply", {
+                        websiteId: siteinfo._id,
+                        applyId: data._id,
+                    }, function () {
+                        Message.info("作品提交成功^-^");
+                        lastUrl && (window.location.href = lastUrl);
+                    }, function () {
+                        Message.info("作品提交失败...");
+                    });
+                });
+
+                //console.log($scope.works);
+            }
+
+            // 路径过滤
+            $scope.worksUrlSelected = function ($item, $model) {
+                $scope.works.worksUrl = $item.url;
+            }
+            $scope.$watch('$viewContentLoaded',function () {
+                Account.getUser(function (userinfo) {
+                    init(userinfo);
+                });
+            });
         }]);
     }
     return {
@@ -133,7 +187,7 @@ define([
             return htmlContent;
         }
     };
-})
+});
 
 /*
  ```@wiki/js/submitWork

@@ -40,6 +40,8 @@ define([
     var editorDocMap = {};           // 每个文件对应一个文档
     var isHTMLViewEditor = false;   // 是否h5视图编辑
     var currentRichTextObj = undefined; // 当前编辑的富文本
+    var treeNodeMap = {};            // 树节点映射
+    var treeNodeExpandedMap = {};    // 展开节点
 
     function getCurrentDataSource(username) {
         var userDataSource = dataSource.getUserDataSource(username);
@@ -133,7 +135,6 @@ define([
                     treeNode.nodes.push(treeDataFn(undefined, pageNode.children[key]));
                 }
             }
-
             return treeNode;
         };
 
@@ -320,15 +321,15 @@ define([
             $rootScope.userinfo = $rootScope.user;
 
             $scope.enableTransform = true;
-            $scaleValue="";
-            $scope.scales=[
-                {"key":"100%","scaleValue":"1"},
-                {"key":"90%","scaleValue":"0.9"},
-                {"key":"80%","scaleValue":"0.8"},
-                {"key":"75%","scaleValue":"0.75"},
-                {"key":"67%","scaleValue":"0.67"},
-                {"key":"50%","scaleValue":"0.5"},
-                {"key":"33%","scaleValue":"0.33"}
+            $scaleValue = "";
+            $scope.scales = [
+                {"key": "100%", "scaleValue": "1"},
+                {"key": "90%", "scaleValue": "0.9"},
+                {"key": "80%", "scaleValue": "0.8"},
+                {"key": "75%", "scaleValue": "0.75"},
+                {"key": "67%", "scaleValue": "0.67"},
+                {"key": "50%", "scaleValue": "0.5"},
+                {"key": "33%", "scaleValue": "0.33"}
             ];
 
             // 判断对象是否为空
@@ -368,8 +369,12 @@ define([
                     initTree();
                 });
             }
+
             // 加载站点及页信息
             function loadSitePageInfo() {
+                var _initTree = function () {
+                    initTree();
+                }
                 util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: $scope.user.username}, function (data) {
                     data = data || {};
                     allWebsites = data.siteList || [];
@@ -384,19 +389,20 @@ define([
                     storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
                         console.log("open local indexdb success");
                         loadUnSavePage();
-                        initTree();
+                        _initTree();
                         dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
                             openPage();
                         });
                     }, function () {
                         console.log("open local indexdb failed");
-                        initTree();
+                        _initTree();
                         dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
                             openPage();
                         });
                     });
                 });
             }
+
             //初始化，读取用户站点列表及页面列表
             function init() {
                 console.log('---------------init---------------');
@@ -420,9 +426,16 @@ define([
             // 获取站点页信息
             function getPageInfo(websiteName) {
                 var temp = [];
-                for (var i = 0; i < allWebsitePages.length; i++) {
-                    if (allWebsitePages[i].websiteName == websiteName) {
-                        temp.push(allWebsitePages[i]);
+                var i, j;
+                for (i = 0; i < allWebsitePages.length; i++) {
+                    var pageinfo = allWebsitePages[i];
+                    if (pageinfo.websiteName == websiteName) {
+                        for (j = 0; j < temp.length; j++) {
+                            if (temp[j].url == pageinfo.url) {
+                                break;
+                            }
+                        }
+                        j == temp.length && temp.push(allWebsitePages[i]);
                     }
                 }
                 return angular.toJson(temp);
@@ -471,7 +484,7 @@ define([
                         websiteName: currentWebsitePage.websiteName,
                         dataSourceId: dataSourceId,
                         pageinfo: pageinfo,
-                        isExistSite: currentWebsite ? 1 :0,
+                        isExistSite: currentWebsite ? 1 : 0,
                     }, function () {
                         //console.log(currentWebsitePage);
                         currentDataSource.writeFile({
@@ -517,16 +530,16 @@ define([
                     openUrlPage(urlObj);
                 });
             });
-            
+
             function openDefaultPage() {
                 if (allWebsitePages.length == 0) {
                     allWebsitePages.push({
-                        websiteName:$scope.user.username,
-                        username:$scope.user.username,
-                        name:'index',
+                        websiteName: $scope.user.username,
+                        username: $scope.user.username,
+                        name: 'index',
                         url: '/' + $scope.user.username + '/' + $scope.user.username + '/index',
                         userId: $scope.user._id,
-                        isModify:true,
+                        isModify: true,
                     });
                 }
                 currentWebsitePage = allWebsitePages[0];
@@ -534,6 +547,7 @@ define([
                 initTree();
                 openPage();
             }
+
             // 打开url页
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj') || {};
@@ -564,7 +578,7 @@ define([
                     var websitePage = {};
                     websitePage.url = '/' + username + '/' + sitename + '/' + pagename;
                     websitePage.username = username,
-                    websitePage.websiteName = sitename;
+                        websitePage.websiteName = sitename;
                     websitePage.content = ""; // $scope.style.data[0].content;
                     websitePage.name = pagename;
                     websitePage.isModify = true;
@@ -631,19 +645,11 @@ define([
                         return;
                     }
 
-                    var selectableNodes = $('#treeview').treeview('search', [currentWebsitePage.name, {
-                        ignoreCase: true,
-                        exactMatch: false,
-                        revealResults: true,  // reveal matching nodes
-                    }]);
-
-                    $.each(selectableNodes, function (index, item) {
-                        if (item.pageNode.url == currentWebsitePage.url) {
-                            $('#treeview').treeview('selectNode', [item, {silent: true}]);
-                        }
-                    });
-
-                    $('#treeview').treeview('clearSearch');
+                    var treeNode = treeNodeMap[currentWebsitePage.url];
+                    if (treeNode) {
+                        $('#treeview').treeview('expandNode', [treeNode.parentId, {levels: 2, silent: false}]);
+                        $('#treeview').treeview('selectNode', [treeNode.nodeId, {silent: true}]);
+                    }
                 }
 
                 getPageContent(currentWebsitePage.url, function (data) {
@@ -682,11 +688,16 @@ define([
                             cb && cb(data);
                         }, function (data) {
                             //console.log("-------------------------------");
-                            //数据源未找到查找本地服务器页面
-                            util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url:url}, function (data) {
-                                data = data || {};
+                            var pageinfo = getWebsitePageByUrl(url);
+                            if (pageinfo && pageinfo.content) {
                                 cb && cb(data.content);
-                            }, errcb)
+                            } else {
+                                //数据源未找到查找本地服务器页面
+                                util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: url}, function (data) {
+                                    data = data || {};
+                                    cb && cb(data.content);
+                                }, errcb)
+                            }
                         });
                     } else {
                         //console.log("----------data source uninit-------------");
@@ -698,6 +709,7 @@ define([
             //初始化目录树  data:  $.parseJSON(getTree()),
             function initTree() {
                 console.log('@initTree');
+                var isFirstCollapsedAll = true;
                 $('#treeview').treeview({
                     color: "#3977AD",
                     selectedBackColor: "#3977AD",
@@ -708,6 +720,14 @@ define([
                     data: getTreeData($scope.user.username, allWebsitePages, false),
                     onNodeSelected: function (event, data) {
                         //console.log(data.pageNode);
+                        //console.log("---------onNodeSelected----------");
+                        if (data.pageNode.isLeaf) {
+                            if (currentWebsitePage && data.pageNode.url != currentWebsitePage.url) {
+                                $('#treeview').treeview('unselectNode', [treeNodeMap[currentWebsitePage.url].nodeId, {silent: true}]);
+                            }
+                        } else {
+                            $('#treeview').treeview('unselectNode', [data.nodeId, {silent: true}]);
+                        }
                         renderAutoSave(function () {
                             if (data.pageNode.isLeaf) {
                                 //console.log("--------------------auto save--------------------");
@@ -723,16 +743,36 @@ define([
                             openPage();
                         });
                     },
-                    /*
-                     onNodeUnselected: function (event, data) {
-                     if (data.pageNode.isLeaf && data.pageNode.pageId == currentWebsitePage._id) {
-                     setTimeout(function () {
-                     $('#treeview').treeview('selectNode', [data, {silent: true}]);
-                     },1000);
-                     editor.focus();
-                     }
-                     }*/
+                    onNodeUnselected: function (event, data) {
+                        // 不取消自己
+                        //console.log("---------onNodeUnselected----------");
+                        if (currentWebsitePage && data.pageNode.url == currentWebsitePage.url) {
+                            $('#treeview').treeview('selectNode', [treeNodeMap[currentWebsitePage.url].nodeId, {silent: true}]);
+                        }
+                    },
+                    onNodeCollapsed: function (event, data) {
+                        treeNodeMap[data.pageNode.url] = data;
+                        if (!isFirstCollapsedAll) {
+                            delete treeNodeExpandedMap[data.pageNode.url];
+                            console.log(treeNodeExpandedMap);
+                        }
+                        for (var i = 0; data.nodes && i < data.nodes.length; i++) {
+                            var node = data.nodes[i];
+                            treeNodeMap[node.pageNode.url] = node;
+                        }
+                        //console.log("------------------");
+                    },
+                    onNodeExpanded: function (event, data) {
+                        //console.log(treeNodeExpandedMap);
+                        treeNodeExpandedMap[data.pageNode.url] = true;
+                    },
                 });
+                $('#treeview').treeview('collapseAll', {silent: false});
+                isFirstCollapsedAll = false;
+                for (var key in treeNodeExpandedMap) {
+                    //console.log(key, treeNodeMap[key])
+                    $("#treeview").treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 2, silent: true}]);
+                }
             }
 
             //命令处理函数
@@ -877,7 +917,7 @@ define([
             $scope.cmd_remove = function () {
                 var currentDataSource = getCurrentDataSource($scope.user.username);
                 if (!isEmptyObject(currentWebsitePage)) {
-                    currentDataSource && currentDataSource.deleteFile({path:currentWebsitePage.url.substring(1)}, function () {
+                    currentDataSource && currentDataSource.deleteFile({path: currentWebsitePage.url.substring(1)}, function () {
                         storage.indexedDBDeleteItem(currentWebsitePage.url);
                         var currentPageIndex = allWebsitePages.length;
                         for (var i = 0; i < allWebsitePages.length; i++) {
@@ -1340,11 +1380,10 @@ define([
             }
 
 
-
             // 渲染自动保存
             function renderAutoSave(cb, errcb) {
                 var value = editor.getValue();
-                if (isEmptyObject(currentWebsitePage) || currentWebsitePage.content == value) {
+                if (isEmptyObject(currentWebsitePage) || !currentWebsitePage.isModify) {
                     cb && cb();
                     return;
                 }
@@ -1588,7 +1627,7 @@ define([
                     });
                 }
 
-                $scope.changeScale=function (val) {
+                $scope.changeScale = function (val) {
                     $scope.enableTransform = false;
                     resizeMod(val);
                 }
