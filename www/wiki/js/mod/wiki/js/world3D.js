@@ -8,12 +8,17 @@ define([
     'text!wikimod/wiki/html/world3D.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
-        app.registerController('world3DController',['$scope', function ($scope) {
+        app.registerController('world3DController',['$scope', '$http', function ($scope, $http) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.showModal = false;
 
             console.log($scope.modParams);
+            if ($scope.modParams.filesTotals <= 1048576) {
+                $scope.modParams.filesTotals = parseInt($scope.modParams.filesTotals / 1024) + "KB";
+            } else {
+                $scope.modParams.filesTotals = parseInt($scope.modParams.filesTotals / 1024 / 1024) + "M";
+            }
 
             $scope.modParams.logoUrl = JSON.parse($scope.modParams.logoUrl);
             $scope.modParams.logoUrl = $scope.modParams.logoUrl[0].previewUrl;
@@ -50,6 +55,15 @@ define([
                 $scope.showModal=false;
                 window.open("http://www.paracraft.cn");
             }
+            $scope.viewTimes = 0;
+            var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
+            $http({ method: "POST", url: viewTimesUrl, data: { opusId: $scope.modParams.opusId } })
+            .then(function (response) {
+                console.log(response);
+
+                $scope.viewTimes = response.data.data.viewTimes;
+            })
+            
         }]);
     }
     return {

@@ -30,13 +30,23 @@ define([
         }])
         .registerController('worldListController', ['$scope', function ($scope) {
             $scope.modParams = angular.copy(wikiblock.modParams || {});
-
+            console.log(wikiblock.modParams);
             $($scope.modParams).each(function () {
                 this.preview = JSON.parse(this.preview);
-            })
+
+                if (this.filesTotals) {
+                    if (this.filesTotals <= 1048576) {
+                        this.filesTotals = parseInt(this.filesTotals / 1024) + "KB";
+                    } else {
+                        this.filesTotals = parseInt(this.filesTotals / 1024 / 1024) + "M";
+                    }
+                } else {
+                    this.filesTotals = "0KB";
+                }
+            });
 
             $scope.opusTotals = $scope.modParams.length;
-            console.log($scope.modParams);
+            
             util.$apply($scope);
         }]);
     }
