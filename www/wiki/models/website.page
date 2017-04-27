@@ -105,7 +105,7 @@ function website:create(params)
 	params.memberCount = 1
 	params.dataSourceId = userinfo.dataSourceId
 
-	self:db():insertOne({name=params.name}, params, resume)	
+	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)	
 	local _, site = yield()
 	if not site then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
