@@ -13,14 +13,20 @@ define([
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.showModal = false;
 
+            console.log($scope.modParams);
+
             $scope.modParams.logoUrl = JSON.parse($scope.modParams.logoUrl);
             $scope.modParams.logoUrl = $scope.modParams.logoUrl[0].previewUrl;
+            var paracraftUrl = "paracraft://cmd/loadworld/" + $scope.modParams.worldName;
+
+            console.log(paracraftUrl);
 
             $scope.checkEngine=function () {
                 if(true){// 判断是否安装了Paracraft
                     $scope.showModal=true;
                 }
-                window.open("paracraft://cmd/loadworld " + $scope.modParams.worldUrl);
+
+                window.open(paracraftUrl);
             }
 
             $scope.closeModal=function () {

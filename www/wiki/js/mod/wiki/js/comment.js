@@ -12,44 +12,63 @@ define([
             $scope.user = Account.getUser();
             $scope.isAuthenticated = Account.isAuthenticated();
 
-            console.log($rootScope);
+            var path = util.parseUrl().pathname;
+            var params = path.split("/");
+            var urlObj = $rootScope.urlObj;
 
-            $scope.comment = { url: util.parseUrl().pathname, websiteId: $rootScope.siteinfo._id, userId: $rootScope.userinfo._id };
+            util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
+                username: params[1],
+                sitename: params[2],
+                pagename: params[3],
+                userId: $rootScope.user && $rootScope.user._id,
+            }, function (data) {
+                var currentScope = [];
+                data = data || {};
+               
+                currentScope.userinfo = data.userinfo;
+                currentScope.siteinfo = data.siteinfo;
 
-            $scope.submitComment = function () {
-                //$scope.isAuthenticated = true;
-                if (!$scope.isAuthenticated) {
-                    alert("登陆后才能评论!")
-                    return ;
+                render(currentScope);
+            });
+
+            function render(currentScope) {
+                $scope.comment = { url: util.parseUrl().pathname, websiteId: currentScope.siteinfo._id, userId: $rootScope.user._id };
+
+                $scope.submitComment = function () {
+                    //$scope.isAuthenticated = true;
+                    if (!$scope.isAuthenticated) {
+                        alert("登陆后才能评论!")
+                        return;
+                    }
+
+                    $scope.comment.content = util.stringTrim($scope.comment.content);
+                    if (!$scope.comment.content || $scope.comment.content.length == 0) {
+                        return;
+                    }
+                    util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
+                        console.log(data);
+                        $scope.getCommentList();
+                    });
                 }
 
-                $scope.comment.content = util.stringTrim($scope.comment.content);
-                if (!$scope.comment.content || $scope.comment.content.length == 0) {
-                    return ;
+                $scope.getCommentList = function () {
+                    util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname }, function (data) {
+                        $scope.commentObj = data;
+                    });
                 }
-                util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
-                    console.log(data);
+
+                $scope.deleteComment = function (comment) {
+                    util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
+                        $scope.getCommentList();
+                    })
+                }
+
+                function init() {
                     $scope.getCommentList();
-                });
-            }
+                }
 
-            $scope.getCommentList = function () {
-                util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname }, function (data) {
-                    $scope.commentObj = data;
-                });
+                init();
             }
-
-            $scope.deleteComment = function (comment) {
-                util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
-                    $scope.getCommentList();
-                })
-            }
-
-            function init() {
-                $scope.getCommentList();
-            }
-
-            init();
         }]);
     }
 
