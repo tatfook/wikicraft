@@ -174,118 +174,117 @@ define([
             //window.open("http://www.paracraft.cn");
         }
 
-        $scope.getRecommendOpus = function () {
-            $http({
-                method: 'POST',
-                url: '/api/mod/worldshare/models/worlds/getRecommendOpus',
-                data: postData,
-            }).then(function (response) {
-                $scope.recommendOpus = response.data.data;
+        //$scope.getRecommendOpus = function () {
+        //    $http({
+        //        method: 'POST',
+        //        url: '/api/mod/worldshare/models/worlds/getRecommendOpus',
+        //        data: postData,
+        //    }).then(function (response) {
+        //        $scope.recommendOpus = response.data.data;
 
-                for (var i in $scope.recommendOpus) {
-                    var previewUrl = $scope.recommendOpus[i].giturl.replace("github.com", "raw.githubusercontent.com");
-                    previewUrl = previewUrl + "/master/preview.jpg";
+        //        for (var i in $scope.recommendOpus) {
+        //            var previewUrl = $scope.recommendOpus[i].giturl.replace("github.com", "raw.githubusercontent.com");
+        //            previewUrl = previewUrl + "/master/preview.jpg";
 
-                    $scope.recommendOpus[i].preview = previewUrl;
-                }
-            }, function (response) {
-            });
-        }
+        //            $scope.recommendOpus[i].preview = previewUrl;
+        //        }
+        //    }, function (response) {
+        //    });
+        //}
 
-        $scope.getRecommendOpus();
+        //$scope.getRecommendOpus();
 
-        $scope.$watch(opusService.getPage, function (newValue, oldValue) {
-            postData.page = newValue;
-            $scope.getRecommendOpus();
-        });
+        //$scope.$watch(opusService.getPage, function (newValue, oldValue) {
+        //    postData.page = newValue;
+        //    $scope.getRecommendOpus();
+        //});
 
-        $scope.$watch('isRecommend', function (newValue, oldValue) {
-            if (oldValue != null && newValue != oldValue) {
-                $http({
-                    method: "POST",
-                    url: "/api/mod/worldshare/models/worlds/recommendOpus",
-                    data: {
-                        "opusId": $scope.opusId,
-                        "isRecommend": newValue.toString()
-                    }
-                })
-                    .then(function (response) {
-                        if (response.data.error == -1) {
-                            console.log("set fail");
-                            //$scope.isRecommend = oldValue;
-                        }
-                        ;
-                    }).then(function (response) {
-                });
-            }
-        });
+        //$scope.$watch('isRecommend', function (newValue, oldValue) {
+        //    if (oldValue != null && newValue != oldValue) {
+        //        $http({
+        //            method: "POST",
+        //            url: "/api/mod/worldshare/models/worlds/recommendOpus",
+        //            data: {
+        //                "opusId": $scope.opusId,
+        //                "isRecommend": newValue.toString()
+        //            }
+        //        })
+        //        .then(function (response) {
+        //            if (response.data.error == -1) {
+        //                console.log("set fail");
+        //                //$scope.isRecommend = oldValue;
+        //            }
+        //            ;
+        //        }).then(function (response) {
+        //        });
+        //    }
+        //});
 
-        $scope.setStar = function (_id) {
-            if ($scope.recommendOpus[_id].isMyStar) {
-                var method = "delete";
-            } else {
-                var method = "create";
-            }
+        //$scope.setStar = function (_id) {
+        //    if ($scope.recommendOpus[_id].isMyStar) {
+        //        var method = "delete";
+        //    } else {
+        //        var method = "create";
+        //    }
 
-            $http({
-                method: "PUT",
-                url: "/api/mod/worldshare/models/worlds_star",
-                data: {
-                    "method": method,
-                    "opusId": $scope.recommendOpus[_id]._id,
-                }
-            }).then(function (response) {
-                if (response.data.error == 0) {
-                    if (method == "create") {
-                        $scope.recommendOpus[_id].isMyStar = true;
-                        var quantity = $scope.recommendOpus[_id].starTotals.quantity;
-                        $scope.recommendOpus[_id].starTotals.quantity = quantity + 1
-                    } else if (method == "delete") {
-                        $scope.recommendOpus[_id].isMyStar = false;
-                        var quantity = $scope.recommendOpus[_id].starTotals.quantity;
-                        $scope.recommendOpus[_id].starTotals.quantity = quantity - 1
-                    }
-                } else {
-                    alert("设置失败");
-                }
-            }).then(function (response) {
-            });
-        }
+        //    $http({
+        //        method: "PUT",
+        //        url: "/api/mod/worldshare/models/worlds_star",
+        //        data: {
+        //            "method": method,
+        //            "opusId": $scope.recommendOpus[_id]._id,
+        //        }
+        //    }).then(function (response) {
+        //        if (response.data.error == 0) {
+        //            if (method == "create") {
+        //                $scope.recommendOpus[_id].isMyStar = true;
+        //                var quantity = $scope.recommendOpus[_id].starTotals.quantity;
+        //                $scope.recommendOpus[_id].starTotals.quantity = quantity + 1
+        //            } else if (method == "delete") {
+        //                $scope.recommendOpus[_id].isMyStar = false;
+        //                var quantity = $scope.recommendOpus[_id].starTotals.quantity;
+        //                $scope.recommendOpus[_id].starTotals.quantity = quantity - 1
+        //            }
+        //        } else {
+        //            alert("设置失败");
+        //        }
+        //    }).then(function (response) {});
+        //}
 
-        $scope.myStar = {
-            "display": "block",
-            "opacity": "1",
-        };
+        //$scope.myStar = {
+        //    "display": "block",
+        //    "opacity": "1",
+        //};
     }])
     .controller('recommendOpusPagination', ["$scope", "$http", "opusService", function ($scope, $http, opusService) {
         $scope.totalItems = 0;
         $scope.itemsPerPage = 1;
         $scope.currentPage = 1;
 
-        $scope.$watch(opusService.getUser, function (newValue, oldValue) {
-            if (newValue != undefined) {
-                $scope.userid = newValue._id;
-                $scope.getAllRecommendOpusStats();
-            }
-        });
+        //$scope.$watch(opusService.getUser, function (newValue, oldValue) {
+        //    if (newValue != undefined) {
+        //        $scope.userid = newValue._id;
+        //        $scope.getAllRecommendOpusStats();
+        //    }
+        //});
 
-        $scope.getAllRecommendOpusStats = function () {
-            $http({
-                method: 'POST',
-                url: '/api/mod/worldshare/models/worlds_stats/',
-                data: {
-                    statsType: "worldsRecommendTotalsUser" + opusService.getUser()._id,
-                }
-            }).then(function (response) {
-                if (response.data.statsType != 'nil') {
-                    $scope.totalItems = response.data.quantity;
-                } else {
-                    $scope.totalItems = 0;
-                }
-            }, function (response) {
-            });
+        //$scope.getAllRecommendOpusStats = function () {
+        //    $http({
+        //        method: 'POST',
+        //        url: '/api/mod/worldshare/models/worlds_stats/',
+        //        data: {
+        //            statsType: "worldsRecommendTotalsUser" + opusService.getUser()._id,
+        //        }
+        //    }).then(function (response) {
+        //        if (response.data.statsType != 'nil') {
+        //            $scope.totalItems = response.data.quantity;
+        //        } else {
+        //            $scope.totalItems = 0;
+        //        }
+        //    }, function (response) {
+        //    });
 
-        }
+        //}
 
         $scope.pageChanged = function () {
             opusService.setPage($scope.currentPage);

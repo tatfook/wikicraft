@@ -167,7 +167,7 @@
                                 DESC
                             </div>
                         </div>
-                        <button class="delete" ng-click="delete(opus._id)">删除</button>
+                        <button ng-show="!currentUserId || currentUserId == user._id" class="delete" ng-click="delete(opus._id)">删除</button>
                     </div>
                 </div>
             </div>

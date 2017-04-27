@@ -41,6 +41,8 @@ function worlds:ctor()
 	self:addfield("readme","string",false,1000);
 	--preview
 	self:addfield("preview","string",false,800);
+	--filesTotals
+	self:addfield("filesTotals","string",false,100);
 
 	---------- following is query only, not saved to columns ----------------
 	--page number
@@ -341,6 +343,8 @@ function worlds:api_refresh(params)
 	local err, query = self:validateQuery(params);
 	local userid;
 
+	LOG.std(nil,"debug","api_refresh",query);
+
 	self:ensureAuthenticated();
 	userid = self:getUserId();
 
@@ -348,10 +352,15 @@ function worlds:api_refresh(params)
 		return {error=-1,msg="user is not exist"};
 	end
 
+	if(not query.worldsName) then
+		return {error=-1,msg="worldsName is not exist"};
+	end
+
 	local userInfor = models.user:new():get({});
 
 	self:db():findOne({["+userid+worldsName"] = {userid,query.worldsName}},resume);
 	local err,response = yield(true);
+	--LOG.std(nil,"debug","response",response);
 
 	if(not err) then
 		if(not response or not next(response)) then
@@ -364,9 +373,10 @@ function worlds:api_refresh(params)
 			insertParams.hasPreview = query.hasPreview;
 			insertParams.readme     = query.readme;
 			insertParams.preview    = query.preview;
+			insertParams.filesTotals     = query.filesTotals;
 			insertParams.gitlabProjectId = query.gitlabProjectId;
 			insertParams.dataSourceType  = query.dataSourceType;
-			
+
 			local dataSource = models.data_source:new():api_getByUserId({userId = userid});
 			local defaultDataSource = {};
 
@@ -383,7 +393,8 @@ function worlds:api_refresh(params)
 				insertParams.giturl = "http://git.keepwork.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base64(query.worldsName);
 			end
 
-			worlds._super.create(self, insertParams);
+			local insertResponse = worlds._super.create(self, insertParams);
+			--LOG.std(nil,"debug","insertResponse",insertResponse);
 
 			local params  = {};
 			params.statsType = "worldsTotals";
@@ -393,6 +404,8 @@ function worlds:api_refresh(params)
 
 			params.statsType = "worldsTotalsUser" .. userid;
 			models.worlds_stats:new():inside_update(params);
+
+			return {err = 0, msg={opusId = insertResponse._id}}
 		else
 			self:db():updateOne({["+userid+worldsName"] = {userid,query.worldsName}},
 			{
@@ -401,28 +414,17 @@ function worlds:api_refresh(params)
 				preview    = query.preview,
 				hasPreview = query.hasPreview,
 				readme     = query.readme,
+				filesTotals     = query.filesTotals,
 				gitlabProjectId = query.gitlabProjectId,
 				dataSourceType  = query.dataSourceType,
 			},resume);
 
-			local err,response = yield(true);
+			local err,updateResponse = yield(true);
+			--LOG.std(nil,"debug","updateResponse",updateResponse);
+
+			return {err = 0, msg={opusId = updateResponse._id}}
 		end
 	end
-end
-
-function worlds:api_createReadme()
-	local err, query = self:validateQuery(params);
-	local userid;
-	
-	self:ensureAuthenticated();
-	userid = self:getUserId();
-
-	if(not userid) then
-		return {error=-1,msg="user is not exist"};
-	end
-
-	ParaIO.CreateDirectory("123123123/");
-
 end
 
 function worlds:create()
