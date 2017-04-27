@@ -5,13 +5,26 @@ define([
     'helper/storage',
     'text!wikimod/wiki/html/workslist.html',
 ], function (app, util, storage, htmlContent) {
+
+    function getModParams(wikiblock) {
+        var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
+        modParams.sitename = "xiaoyao";
+        return angular.copy(modParams);
+    }
+
     function registerController(wikiBlock) {
         app.registerController("workslistController", ['$rootScope', '$scope','Account','Message',function ($rootScope, $scope, Account, Message) {
             //console.log($rootScope.siteinfo);
 
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-            $scope.requestParams = {pageSize: 3, page: 0, websiteId: $rootScope.siteinfo._id};
+            $scope.requestParams = {pageSize: 3, page: 0};
+
+            var modParams = getModParams(wikiBlock);
+            var userinfo = $rootScope.userinfo;
+            var siteinfo = $rootScope.siteinfo;
+
+            $scope.modParams = modParams;
 
             $scope.getAllSiteList = function () {
                 var siteshowObj = {};
@@ -22,7 +35,7 @@ define([
                 window.location.href = config.frontEndRouteUrl + "#/siteshow";
             }
 
-            $scope.getSiteList = function (page) {
+            $scope.getList = function (page) {
                 var pageCount = 1;
                 if ($scope.siteTotal) {
                     pageCount = $scope.siteTotal / requestParams.pageSize + ($scope.siteTotal % requestParams.pageSize && 1);
@@ -33,49 +46,74 @@ define([
 
                 util.http("POST", $scope.requestUrl, $scope.requestParams, function (data) {
                     data = data || {};
-                    $scope.siteList = data.siteList;
-                    $scope.siteTotal = data.total;
+                    if (modParams.moduleKind == "personal") {
+                        $scope.siteList = data.siteList;
+                        $scope.siteTotal = data.total;
+                    } else if (modParams.moduleKind == "organization") {
+                        $scope.worksList = data.worksList;
+                        $scope.worksTotal = data.total;
+                    }
                 });
             }
 
-            $scope.modParams = angular.copy(wikiBlock.modParams || {});
 
             function init() {
-                var moduleParams = wikiBlock.modParams || {};
-                var pageSize = parseInt(moduleParams.pageSize || "3");
+                var pageSize = parseInt(modParams.pageSize || "3");
                 pageSize = pageSize < 1 ? 1 : pageSize;
-                $scope.workslistNavHeight = (200 + Math.floor((pageSize - 1) / 3) * 280) + "px";
-                $scope.workslistHeight = Math.ceil(pageSize / 3) * 280 + "px";
-
                 $scope.requestParams.pageSize = pageSize;
 
                 //console.log(moduleParams);
-                $scope.title = moduleParams.title || "全部作品";
-                if (moduleParams.type == "all") {   // 全部
-                    $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-                    $scope.requestParams.websiteId = $scope.siteinfo._id;
-                } else if (moduleParams.type == "latestUpdate") { // 最近更新
-                    $scope.requestUrl = config.apiUrlPrefix + "website_renewal";
-                    $scope.requestParams.websiteId = $scope.siteinfo._id;
-                } else if (moduleParams.type == "latestNew") {  // 最近加入
-                    $scope.requestUrl = config.apiUrlPrefix + "website_works/getLatestByWebsiteId";
-                    $scope.requestParams.websiteId = $scope.siteinfo._id;
-                } else if (moduleParams.type == "favorite") {   // 我的收藏
-                    $scope.requestUrl = config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId";
-                    $scope.requestParams.userId = $scope.userinfo._id;
-                } else if (moduleParams.type == "hot") { // 热门精选
-                    $scope.requestUrl = config.apiUrlPrefix + "website_works/getHotByWebsiteId";
-                    $scope.requestParams.websiteId = $scope.siteinfo._id;
-                } else if (moduleParams.type == "upgrade") {  // 入围作品
-                    $scope.requestUrl = config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId";
-                    $scope.requestParams.websiteId = $scope.siteinfo._id;
-                } else {
-                    $scope.requestUrl = config.apiUrlPrefix + "website/getByUserId";
-                    $scope.requestParams.userId = $scope.userinfo._id;
+                $scope.title = modParams.title || "全部作品";
+                if (modParams.moduleKind == "personal") {
+                    if (modParams.type == "all") {   // 全部
+                        $scope.requestUrl = config.apiUrlPrefix + "website/getAllByUsername";
+                        $scope.requestParams.username = siteinfo.username;
+                    }
+                } else if (modParams.moduleKind == "organization") {
+                    if (modParams.type == "all") {   // 全部
+                        $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
+                        $scope.requestParams.websiteId = siteinfo._id;
+                    } else if (modParams.type == "recommend") {  // 推荐
+                        $scope.requestUrl = config.apiUrlPrefix + 'website_works/getByWorksUrlList';
+                        $scope.requestParams.worksUrlList = modParams.worksUrlList || [];
+                        $scope.requestParams.websiteId = siteinfo._id;
+                    }
+                    /*
+                    else if (moduleParams.type == "latestUpdate") { // 最近更新
+                        $scope.requestUrl = config.apiUrlPrefix + "website_renewal";
+                        $scope.requestParams.websiteId = $scope.siteinfo._id;
+                    } else if (moduleParams.type == "latestNew") {  // 最近加入
+                        $scope.requestUrl = config.apiUrlPrefix + "website_works/getLatestByWebsiteId";
+                        $scope.requestParams.websiteId = $scope.siteinfo._id;
+                    } else if (moduleParams.type == "favorite") {   // 我的收藏
+                        $scope.requestUrl = config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId";
+                        $scope.requestParams.userId = $scope.userinfo._id;
+                    } else if (moduleParams.type == "hot") { // 热门精选
+                        $scope.requestUrl = config.apiUrlPrefix + "website_works/getHotByWebsiteId";
+                        $scope.requestParams.websiteId = $scope.siteinfo._id;
+                    } else if (moduleParams.type == "upgrade") {  // 入围作品
+                        $scope.requestUrl = config.apiUrlPrefix + "website_works/getUpgradeByWebsiteId";
+                        $scope.requestParams.websiteId = $scope.siteinfo._id;
+                    } else {
+                        $scope.requestUrl = config.apiUrlPrefix + "website/getByUserId";
+                        $scope.requestParams.userId = $scope.userinfo._id;
+                    }
+                    */
                 }
-                $scope.getSiteList();
+                $scope.getList();
             }
-            $scope.$watch("$viewContentLoaded", init);
+            $scope.$watch("$viewContentLoaded", function () {
+                if (!modParams.username ||  !modParams.sitename) {
+                    var urlObj = util.parseUrl();
+                    modParams.username = urlObj.username;
+                    modParams.sitename = urlObj.sitename;
+                }
+                util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                    userinfo = data.userinfo;
+                    siteinfo = data.siteinfo;
+                    init();
+                });
+            });
         }]);
     }
 
@@ -89,13 +127,13 @@ define([
 
 /*```@wiki/js/workslist
 {
-    "moduleKind":"workslist1"
+    "moduleKind":"personal"
 }
 ```*/
 /*
 ```@wiki/js/workslist
 {
-    "moduleKind":"workslist2",
+    "moduleKind":"organization",
     "pageSize":8,
     "title":"全部作品"
 }

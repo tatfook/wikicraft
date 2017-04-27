@@ -27,7 +27,10 @@ define([
             }
 
             $scope.clickMemberApply = function () {
-                console.log($scope.desc);
+                util.post(config.apiUrlPrefix + 'website_apply/memberApply', {websiteId:siteinfo._id, applyId:$scope.user._id}, function () {
+                    console.log("成员申请成功");
+                    history.back();
+                });
             }
 
             $scope.clickMemberCancel = function () {
@@ -36,9 +39,9 @@ define([
 
             $scope.$watch("$viewContentLoaded", function () {
                 Account.getUser(function (userinfo) {
-                    $scope.userinfo = userinfo;
+                    $scope.user = userinfo;
                     if (modParams.sitename) {
-                        util.post(config.apiUrlPrefix + "website/getByName", {username:$scope.userinfo.username, websiteName:modParams.sitename}, function (data) {
+                        util.post(config.apiUrlPrefix + "website/getByName", {username:"xiaoyao", websiteName:modParams.sitename}, function (data) {
                             siteinfo = data;
                             siteinfo && init();
                         });
@@ -47,13 +50,14 @@ define([
             });
         }]);
     }
+
     return {
         render: function(wikiblock){
             registerController(wikiblock);
             return htmlContent;
         }
     };
-})
+});
 
 /*
  ```@wiki/js/organizationMemberApply

@@ -115,14 +115,17 @@
     <div ng-controller="organizationStaticsController">
         <div class="org-statics" ng-show="modParams.moduleKind=='organization'">
             <div class="method">
-                <a class="btn btn-primary" ng-repeat="method in modParams.methods" href="{{method.link}}">{{method.name}}</a>
+                <a class="btn btn-primary" ng-click="goOrganizationManagePage()">组织管理</a>
+                <a class="btn btn-primary" ng-click="goWorksManagePage()">作品管理</a>
+                <a class="btn btn-primary" ng-click="goSubmitWorksPage()">提交作品</a>
+                <a class="btn btn-primary" ng-click="goMemberApplyPage()">申请加入</a>
             </div>
             <div class="msg-box clearfix">
                 <div class="msg">
                     <p class="text-primary">全部成员 <span>{{statics.fansCount || 0}}</span></p>
                 </div>
                 <div class="msg">
-                    <p class="text-primary">推荐作品 <span>{{statics.updatesCount || 0}}</span></p>
+                    <p class="text-primary">推荐作品 <span>{{statics.recommendWorksCount || 0}}</span></p>
                 </div>
                 <div class="msg">
                     <p class="text-primary">全部作品 <span>{{statics.worksCount || 0}}</span></p>

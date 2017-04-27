@@ -14,6 +14,7 @@ website_works.db_name="website_works"
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
 	self:addfield("worksId", "number")        -- 组织内作品的ID
+	self:addfield("worksUrl", "string")       -- 作品url
 	self:addfield("worksFlag", "number")      -- 热门 入围
 	self:addfield("visitCount", "number")     -- 该组织的点击量
 	self:addfield("createDate", "string", false, 64)
@@ -61,6 +62,27 @@ function website_works:api_getByWebsiteId(params)
 	end
 	
 	return errors:wrap(nil, {total=total, worksList=worksList})
+end
+
+-- 获取作品列表通过
+function website_works:api_getByWorksUrlList(params)
+	if (not params.websiteId) or (not params.worksUrlList) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local worksList = {}
+	for _, worksUrl in ipairs(params.worksUrlList) do
+		self:db():findOne({["+websiteId+worksUrl"]={params.websiteId, worksUrl}}, resume)
+		local _, works = yield()
+		worksList[#worksList+1] = works
+	end
+
+	local userWorksDB = models.user_works:new()
+	for _, obj in ipairs(worksList) do
+		obj.worksInfo  = userWorksDB:api_getById({worksId=obj.worksId}).data
+	end
+
+	return errors:wrap(nil, {total=#worksList, worksList=worksList})
 end
 
 -- 获取数量
@@ -171,6 +193,12 @@ function website_works:api_upsert(params)
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = params.createDate
 	
+	local userWorksDB = models.user_works:new()
+	local worksInfo = userWorksDB:api_getById({worksId=params.worksId}).data
+	if worksInfo then
+		params.worksUrl = worksInfo.worksUrl
+	end
+
 	self:db():insertOne({["+websiteId+worksId"]={params.websiteId, params.worksId}}, params, resume)
 	
 	return errors:wrap(yield())

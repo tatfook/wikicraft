@@ -99,15 +99,18 @@ define([
             var site = allWebsites[i];
             for (key in pageTree.children) {
                 if (key == site.name) {
+                    var node = pageTree.children[key];
+                    node.name = site.displayName + '(' + site.name + ')';
                     isExist = true;
                     break;
                 }
             }
+
             if (isExist)
                 continue;
 
             pageTree.children[site.name] = {
-                name: site.name,
+                name: site.displayName + '(' + site.name + ')',
                 children: {},
                 url: '/' + site.username + '/' + site.name,
                 siteId: site._id,

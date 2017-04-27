@@ -4,8 +4,15 @@
 define([
     'app',
     'helper/util',
+    'helper/storage',
     'text!wikimod/wiki/html/statics.html',
-], function (app, util, htmlContent) {
+], function (app, util, storage, htmlContent) {
+
+    function getModParams(wikiblock) {
+        var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
+        return angular.copy(modParams);
+    }
+
     function registerController(wikiBlock) {
         // 个人信息统计
         app.registerController("personalStaticsController", ['$scope','Account','Message', function ($scope, Account, Message) {
@@ -19,14 +26,53 @@ define([
 
             $scope.$watch("$viewContentLoaded", init);
         }]);
-        // 组织信息统计
-        app.registerController("organizationStaticsController", ['$scope','Account','Message', function ($scope, Account, Message) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.modParams = angular.copy(wikiBlock.modParams || {});
-            function init() {
-            }
 
-            $scope.$watch("$viewContentLoaded", init);
+        // 组织信息统计
+        app.registerController("organizationStaticsController", ['$scope', '$rootScope', 'Account','Message', function ($scope, $rootScope, Account, Message) {
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            var modParams = getModParams(wikiBlock);
+            var siteinfo = $rootScope.siteinfo;
+            var userinfo = $rootScope.userinfo;
+
+            function init() {
+                util.post(config.apiUrlPrefix + 'website/getStatics', {websiteId:siteinfo._id}, function (data) {
+                    $scope.statics = data || {};
+                    $scope.statics.recommendWorksCount = modParams.recommendWorksCount;
+                });
+            }
+            
+            $scope.$watch("$viewContentLoaded", function () {
+                if (!modParams.username ||  !modParams.sitename) {
+                    var urlObj = util.parseUrl();
+                    modParams.username = urlObj.username;
+                    modParams.sitename = urlObj.sitename;
+                }
+                util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                    userinfo = data.userinfo;
+                    siteinfo = data.siteinfo;
+                    init();
+                });
+            });
+            
+            $scope.goOrganizationManagePage = function () {
+                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
+                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationMemberManage';
+            }
+            
+            $scope.goWorksManagePage = function () {
+                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
+                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationWorksManage';
+            }
+            
+            $scope.goSubmitWorksPage = function () {
+                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
+                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationSubmitWorks';
+            }
+            
+            $scope.goMemberApplyPage = function () {
+                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
+                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationMemberApply';
+            }
         }]);
     }
 
@@ -50,24 +96,7 @@ define([
 ```@wiki/js/statics
 {
     "moduleKind":"organization",
-    "methods":[
-        {
-            "name":"组织管理",
-            "link":"http://keepwork.com"
-        },
-        {
-            "name":"作品管理",
-            "link":"http://keepwork.com"
-        },
-        {
-            "name":"提交作品",
-            "link":"http://keepwork.com"
-        },
-        {
-            "name":"申请加入",
-            "link":"http://keepwork.com"
-        }
-    ]
+    "recommendWorksCount":"0"
 }
 ```
 */

@@ -102,15 +102,10 @@ define([
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
-
-        $scope.goUserPersonalSite = function (username) {
-            if (username == 'wiki') {
-                util.goUserSite('/' + username + '/home');
-            } else {
-                util.goUserSite('/' + username + '/' + username);
-            }
+        
+        $scope.goUserPage = function () {
+            util.goUserSite('/' + $scope.urlObj.username);
         }
-
 
         //=======================================================
         $scope.clickMyHistory = function () {

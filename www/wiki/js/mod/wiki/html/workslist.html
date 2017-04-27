@@ -213,7 +213,7 @@
 </style>
 
 <div class="container-fluid" ng-controller="workslistController">
-    <div class="personal-works-list" ng-show="modParams.moduleKind=='workslist1'">
+    <div class="personal-works-list" ng-show="modParams.moduleKind=='personal'">
         <h3><span class="title">{{modParams .title || "我的作品"}}</span></h3>
         <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
         <div class="carousel-content clearfix">
@@ -238,7 +238,7 @@
             <span class="glyphicon glyphicon-chevron-right" style="cursor: pointer" ng-click="getSiteList(requestParams.page+1)"></span>
         </div>
     </div>
-    <div class="org-works-list container" ng-show="modParams.moduleKind=='workslist2'">
+    <div class="org-works-list container" ng-show="modParams.moduleKind=='organization'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation">
             <a>1</a>
@@ -247,18 +247,18 @@
             <a>>></a>
         </div>
         <div class="clearfix works">
-            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in [1,2,3,4]">
-                <a ng-click="goUserSite(site)">
-                    <img ng-src="{{site.logoUrl || (imgsPath + 'personal_workslist_banner.jpg')}}">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
+                <a ng-click="goWorksPage(works)">
+                    <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'personal_workslist_banner.jpg')}}">
                 </a>
                 <div class="text clearfix">
-                    <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name || "xljfsdf"}}</a></h4>
-                    <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username || "Lixizhi"}}</a></p>
+                    <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle}}</a></h4>
+                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksInfo.username}}</a></p>
                     <p class="pull-left info">
-                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>
+                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
                     </p>
                     <p class="pull-right info" ng-click="worksFavorite($event, site)">
-                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
+                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{works.favoriteCount || 0}}</span>
                     </p>
                 </div>
             </div>

@@ -141,6 +141,9 @@ function website:create(params)
 	local websitePageinfoDB = models.website_pageinfo:new()
 	websitePageinfoDB:api_upsert({username=site.username, websiteName=site.name, dataSourceId=site.dataSourceId, pageinfo=pageinfo})	
 	
+	local websiteMemberDB = models.website_member:new()
+	websiteMemberDB:api_upsert({websiteId=site._id, userId=userinfo._id, roleId=const.WEBSITE_USER_ROLE_ADMIN})
+
 	return errors:wrap(nil, site)
 end
 
@@ -168,10 +171,6 @@ function website:deleteById(websiteId)
 		return errors:wrap(nil)
 	end
 
-	-- 删除该网站上所有页
-	local websitePagesModel = models.website_pages:new()
-	websitePagesModel:api_deleteByWebsiteId({websiteId=websiteId})
- 
 	-- 删除更新表中该站点数据
 	local websiteRenewalModel =	models.website_renewal:new()
 	websiteRenewalModel:api_deleteByWebsiteId({websiteId=websiteId})
@@ -587,7 +586,28 @@ function website:api_getDetailInfo(params)
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo, pageContent=pageContent})
 end
 
+-- 获取用户,站点信息
+function website:api_getUserSiteInfo(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getByName({username=params.username}).data
+	
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
+	local _, siteinfo = yield()
+	
+	if not siteinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	return errors:wrap(nil,{userinfo=userinfo, siteinfo=siteinfo})
+end
 
 
 

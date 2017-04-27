@@ -1,0 +1,98 @@
+/**
+ * Created by wuxiangan on 2017/3/21.
+ */
+
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!wikimod/wiki/html/organizationMemberManage.html'
+], function (app, util, storage, htmlContent) {
+
+    function getModParams(wikiblock) {
+        var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
+        modParams.sitename = "xiaoyao";
+        return angular.copy(modParams);
+    }
+
+
+    function registerController(wikiblock) {
+        app.registerController('organizationMemberManageController',['$scope', function ($scope) {
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            var modParams = getModParams(wikiblock);
+
+            var siteinfo = {_id:3, userId:1};
+            function init() {
+                $scope.clickMember();
+            }
+
+            // 获取组织成员
+            $scope.clickMember = function () {
+                util.post(config.apiUrlPrefix + 'website_member/getByWebsiteId', {websiteId:siteinfo._id}, function (data) {
+                    data = data || {};
+                    $scope.memberList = data.memberList;
+                });
+            }
+
+            // 获取组织申请成员
+            $scope.clickApply = function () {
+                util.post(config.apiUrlPrefix + 'website_apply/getMemberByWebsiteId', {websiteId:siteinfo._id}, function (data) {
+                    data = data || {};
+                    $scope.applyList = data.applyList;
+                });
+            }
+
+            // 移除成员
+            $scope.removeMember = function (member) {
+                util.post(config.apiUrlPrefix + 'website_member/deleteById', {id:member._id}, function () {
+                   member.isDelete = true;
+                });
+            }
+
+            // 设置或取消管理员
+            $scope.setManager = function (member) {
+                if (member.roleId == 1) {
+                    util.post(config.apiUrlPrefix + 'website_member/unsetManager', {id:member._id}, function () {
+                        member.roleId = 2;  // 普通用户角色ID为1
+                    });
+                } else {
+                    util.post(config.apiUrlPrefix + 'website_member/setManager', {id:member._id}, function () {
+                        member.roleId = 1;  // 管理员角色ID为1
+                    });
+                }
+            }
+
+            // 同意成员加入
+            $scope.clickAgreeMemeber = function (apply) {
+                util.post(config.apiUrlPrefix + 'website_apply/agreeMember', {websiteId:apply.websiteId, applyId:apply.applyId}, function () {
+                    apply.isDelete = true;
+                    console.log("同意成员加入");
+                });
+            }
+
+            // 拒绝成员加入
+            $scope.clickRefuseMember = function (apply) {
+                util.post(config.apiUrlPrefix + 'website_apply/refuseMember', {websiteId:apply.websiteId, applyId:apply.applyId}, function () {
+                    apply.isDelete = true;
+                    console.log("拒绝成员加入");
+                });
+            }
+
+            $scope.$watch('$viewContentLoaded', function () {
+                init();
+            });
+        }]);
+    }
+
+    return {
+        render: function(wikiblock){
+            registerController(wikiblock);
+            return htmlContent;
+        }
+    };
+})
+
+/*
+ ```@wiki/js/orgManage
+ ```
+ */
