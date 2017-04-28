@@ -63,7 +63,7 @@ define([
                     var ds = DataSource.getDataSourceById(site.dataSourceId);
                     console.log(pageList, ds);
                     for (var i = 0; ds && i < pageList.length; i++) {
-                        ds.deleteFile({path:pageList[i].url.substring(1)});
+                        // ds.deleteFile({path:pageList[i].url.substring(1) + config.pageSuffixName});                  // 避免误删除造成错误
                         util.post(config.apiUrlPrefix + 'website_page/deleteByUrl', {url:pageList[i].url});
                     };
                     util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId: site._id}, function (data) {

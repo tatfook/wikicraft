@@ -102,16 +102,20 @@ define([
                 $scope.getList();
             }
             $scope.$watch("$viewContentLoaded", function () {
-                if (!modParams.username ||  !modParams.sitename) {
-                    var urlObj = util.parseUrl();
-                    modParams.username = urlObj.username;
-                    modParams.sitename = urlObj.sitename;
-                }
-                util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
-                    userinfo = data.userinfo;
-                    siteinfo = data.siteinfo;
+                if (userinfo && siteinfo) {
                     init();
-                });
+                } else {
+                    if (!modParams.username ||  !modParams.sitename) {
+                        var urlObj = util.parseUrl();
+                        modParams.username = urlObj.username;
+                        modParams.sitename = urlObj.sitename;
+                    }
+                    util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                        userinfo = data.userinfo;
+                        siteinfo = data.siteinfo;
+                        userinfo && siteinfo && init();
+                    });
+                }
             });
         }]);
     }

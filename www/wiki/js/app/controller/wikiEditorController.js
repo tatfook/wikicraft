@@ -30,6 +30,7 @@ define([
     'bootstrap-treeview',
 ], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
+    var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true});
     var editor;
     var allWebsites = [];
@@ -491,7 +492,7 @@ define([
                     }, function () {
                         //console.log(currentWebsitePage);
                         currentDataSource.writeFile({
-                            path: currentWebsitePage.url.substring(1),
+                            path: currentWebsitePage.url.substring(1) + pageSuffixName,
                             content: content
                         }, saveSuccessCB, saveFailedCB);
                     }, saveFailedCB);
@@ -545,7 +546,17 @@ define([
                         isModify: true,
                     });
                 }
-                currentWebsitePage = allWebsitePages[0];
+
+                console.log(currentWebsite);
+                if (currentWebsite) {
+                    for (var i = 0; i < allWebsitePages.length; i++) {
+                        if (currentWebsite.name == allWebsitePages[i].websiteName) {
+                            console.log("---------------------");
+                            currentWebsitePage = allWebsitePages[i];
+                        }
+                    }
+                }
+                currentWebsitePage || (currentWebsitePage = allWebsitePages[0]);
                 currentWebsite = getWebsiteByName(currentWebsitePage.websiteName);
                 initTree();
                 openPage();
@@ -557,8 +568,6 @@ define([
                 storage.sessionStorageRemoveItem('urlObj');
                 //console.log(urlObj);
 
-                currentWebsite = undefined;
-                currentWebsitePage = undefined;
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
                 var pagename = urlObj.pagename || 'index';
@@ -580,8 +589,8 @@ define([
 
                     var websitePage = {};
                     websitePage.url = '/' + username + '/' + sitename + '/' + pagename;
-                    websitePage.username = username,
-                        websitePage.websiteName = sitename;
+                    websitePage.username = username;
+                    websitePage.websiteName = sitename;
                     websitePage.content = ""; // $scope.style.data[0].content;
                     websitePage.name = pagename;
                     websitePage.isModify = true;
@@ -687,7 +696,7 @@ define([
                     //TODO currentDataSource.getRawContent({path:url.substring(1)}, function (data) {
                     //console.log(currentDataSource);
                     if (currentDataSource) {
-                        currentDataSource.getContent({path: url.substring(1)}, function (data) {
+                        currentDataSource.getContent({path: url.substring(1) + pageSuffixName}, function (data) {
                             //console.log(data);
                             cb && cb(data);
                         }, function (data) {
@@ -865,12 +874,12 @@ define([
                 var currentDataSource = getCurrentDataSource(currentWebsitePage.username);
                 if (currentDataSource) {
                     if (currentDataSource.getDataSourceType() == "github") {
-                        currentDataSource.getFile({path: currentWebsitePage.url.substring(1)}, function (data) {
+                        currentDataSource.getFile({path: currentWebsitePage.url.substring(1) + pageSuffixName}, function (data) {
                             console.log(data);
                             window.open(data.html_url);
                         });
                     } else {
-                        window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url.substring(1)}));
+                        window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url.substring(1) + pageSuffixName}));
                     }
                 }
             }
@@ -921,25 +930,43 @@ define([
             //删除
             $scope.cmd_remove = function () {
                 var currentDataSource = getCurrentDataSource($scope.user.username);
+                console.log(currentWebsitePage);
                 if (!isEmptyObject(currentWebsitePage)) {
-                    currentDataSource && currentDataSource.deleteFile({path: currentWebsitePage.url.substring(1)}, function () {
-                        storage.indexedDBDeleteItem(currentWebsitePage.url);
-                        var currentPageIndex = allWebsitePages.length;
-                        for (var i = 0; i < allWebsitePages.length; i++) {
-                            if (allWebsitePages[i].url == currentWebsitePage.url) {
-                                currentPageIndex = i;
-                                break;
-                            }
-                        }
-
-                        allWebsitePages.splice(currentPageIndex, 1);
-                        storage.sessionStorageRemoveItem('urlObj');
-                        currentWebsitePage = undefined;
-                        initTree();
-                        openPage();
-                    }, function () {
-
+                    currentDataSource && currentDataSource.deleteFile({path: currentWebsitePage.url.substring(1) + pageSuffixName}, function () {
+                        console.log("删除文件成功:" + currentWebsitePage.url);
+                    }, function (response) {
+                        console.log("删除文件失败:" + currentWebsitePage.url);
                     });
+
+                    storage.indexedDBDeleteItem(currentWebsitePage.url);
+                    var currentPageIndex = allWebsitePages.length;
+                    for (var i = 0; i < allWebsitePages.length; i++) {
+                        if (allWebsitePages[i].url == currentWebsitePage.url) {
+                            currentPageIndex = i;
+                            break;
+                        }
+                    }
+
+                    allWebsitePages.splice(currentPageIndex, 1);
+                    storage.sessionStorageRemoveItem('urlObj');
+
+                    var dataSourceId = $scope.user.dataSourceId;
+                    if (currentWebsite && currentWebsite.dataSourceId) {
+                        dataSourceId = currentWebsite.dataSourceId;
+                    }
+                    var pageinfo = getPageInfo(currentWebsitePage.websiteName);
+                    util.post(config.apiUrlPrefix + 'website_pageinfo/upsert',
+                        {
+                            username: $scope.user.username,
+                            websiteName: currentWebsitePage.websiteName,
+                            dataSourceId: dataSourceId,
+                            pageinfo: pageinfo,
+                            isExistSite: currentWebsite ? 1 : 0,
+                        });
+
+                    currentWebsitePage = undefined;
+                    initTree();
+                    openPage();
                 }
             }
 

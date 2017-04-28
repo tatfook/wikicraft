@@ -160,8 +160,8 @@ function RenderServerWikiScript()
 	local config = {}
 	config.officialDomain = "keepwork.com"
 	config.hostname = request:GetHost()
-	--config.bustVersion = getBustVersion()
-	config.bustVersion = os.time()
+	config.bustVersion = getBustVersion()
+	-- config.bustVersion = os.time()
 	config.dataSource = {}
 	config.dataSource.innerGitlab = {}
 	config.dataSource.innerGitlab.host = siteConfig.data_source.inner_gitlab.host

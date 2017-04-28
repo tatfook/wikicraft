@@ -51,15 +51,16 @@ define([
         }
         gitlab.getCommitUrlPrefix = function (params) {
             params = params || {}
-            return gitlab.rawBase + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/'+ (params.path || '');
+
+            return gitlab.rawBase + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/'+ (params.path || '');
         }
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {}
-            return gitlab.rawBase + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/raw/master/' + (params.path || '');
+            return gitlab.rawBase + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/raw/master/' + (params.path || '');
         }
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {}
-            return gitlab.rawBase + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName) + '/blob/master/' + (params.path || '');
+            return gitlab.rawBase + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/blob/master/' + (params.path || '');
         }
 
         // 获得文件列表
@@ -94,10 +95,20 @@ define([
             var url = gitlab.getFileUrlPrefix() + encodeURIComponent(params.path) + '/raw';
             params.ref = params.ref || "master";
             gitlab.httpRequest("GET", url, params, cb, errcb);
+
+            //gitlab.getRawContent(params, cb, errcb);
         }
 
         // 获取原始内容
         gitlab.getRawContent = function (params, cb, errcb) {
+
+            // var url = gitlab.getRawContentUrlPrefix(params);
+            // $http.get(url).then(function (response) {
+            //     cb && cb(response.data);
+            // }).catch(function (response) {
+            //     errcb && errcb(response);
+            // });
+
             gitlab.getContent(params, cb, errcb);
         }
 

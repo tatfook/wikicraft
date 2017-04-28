@@ -15,10 +15,11 @@ define([
     }
 
     function registerController(wikiblock) {
-        app.registerController('organizationMemberListController', ['$scope', function ($scope) {
+        app.registerController('organizationMemberListController', ['$scope', '$rootScope', function ($scope, $rootScope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
-            var siteinfo = undefined;
+            var userinfo = $rootScope.userinfo;
+            var siteinfo = $rootScope.siteinfo;
 
             // 初始化信息
             function init() {

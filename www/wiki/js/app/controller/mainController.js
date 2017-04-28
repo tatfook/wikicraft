@@ -143,7 +143,6 @@ define([
                         if (data.siteinfo && data.pageinfo) {
                             dataSourceId = data.siteinfo.dataSourceId || dataSourceId;
                             var pageList = angular.fromJson(data.pageinfo.pageinfo || '[]');
-                            console.log(pageList);
                             for (var i = 0; i < pageList.length; i++) {
                                 if (pageList[i].url == themeUrl) {
                                     $rootScope.tplinfo = pageList[i];
@@ -165,10 +164,16 @@ define([
                         userDataSource.init(data.userinfo.dataSource, data.userinfo.dataSourceId);
                         userDataSource.registerInitFinishCallback(function () {
                             var ds = userDataSource.getDataSourceById(dataSourceId);
-                            ds.getContent({path:pageUrl.substring(1)}, function (data) {
+                            ds.getRawContent({path:pageUrl.substring(1) + config.pageSuffixName}, function (data) {
+                                //console.log(data);
                                 renderContent(data);
                             }, function () {
-                                renderContent(pageContent);
+                                //console.log(pageContent);
+                                if ($rootScope.pageinfo && $rootScope.pageinfo.content) {
+                                    renderContent($rootScope.pageinfo.content);
+                                } else {
+                                    renderContent(pageContent);
+                                }
                             });
                         });
                     });

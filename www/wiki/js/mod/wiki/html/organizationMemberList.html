@@ -46,6 +46,8 @@
     }
     .org-team .member-item{
         flex:1;
+        display: flex;
+        flex-direction: column;
         padding:0 10px;
         font-size: 14px;
         color: #333;
@@ -99,8 +101,8 @@
             </div>
             <div class="members">
                 <div class="member-item" ng-repeat="member in memberList">
-                    <img ng-src="{{member.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" alt="">
-                    <a ng-click="goUserPage(member)">{{member.userInfo.username}}<span class="pull-right info">{{getRoleName(member)}}</span></a>
+                    <img ng-src="{{member.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                    <p>{{member.userInfo.username}}<span class="info" style="margin-left: 10px">{{getRoleName(member)}}</span></p>
                 </div>
             </div>
         </div>
