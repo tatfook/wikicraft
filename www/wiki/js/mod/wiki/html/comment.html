@@ -1,4 +1,4 @@
-<div class=" col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2" ng-controller="commentController">
+<div class="" ng-controller="commentController">
     <div class="row">
         <div class="col-xs-12">
             <!--评论模块-->
@@ -7,7 +7,7 @@
                     <h3>我要评论</h3>
                 </div>
                 <div style="display: flex; margin-top: 20px" ng-repeat="comment in commentObj.commentList">
-                    <div style="padding: 0px 20px">
+                    <div style="padding: 0px 20px;padding-left:0px;">
                         <img ng-src="{{comment.userInfo.protrait ||  imgsPath + 'wiki_works.jpg'}}" style="width: 80px; height: 80px">
                     </div>
                     <div style="border-bottom: 1px solid silver; padding-bottom: 20px; flex-grow: 1">
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="form-group" style="display: flex; justify-content: center; padding: 20px 0px">
-                    <div style="width: 60%">
+                    <div style="width: 100%">
                         <div style="color: red;">{{tipInfo}}</div>
                         <textarea class="form-control" ng-model="comment.content"></textarea>
                     </div>

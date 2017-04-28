@@ -63,6 +63,7 @@ define([
 
         if (request.userid) {
             postData.userid = request.userid;
+            $scope.currentUserId = request.userid;
         }
 
         var allPostData = angular.copy(postData);
@@ -78,6 +79,10 @@ define([
         $scope.allOpus = [];
 
         $scope.opusTotals = 0;
+
+        $scope.$on("onUserProfile", function (event, user) {
+            $scope.user = angular.copy(user);
+        });
 
         //$scope.getRecentlyOpus = function () {
         //    $http({
@@ -138,7 +143,49 @@ define([
         }
 
         $scope.delete = function (opusId) {
-            alert(opusId)
+            if (confirm("是否删除此作品？")) {
+                var opusInfor;
+                var defaultDataSource;
+
+                $($scope.allOpus).each(function () {
+                    if (this._id == opusId) {
+                        opusInfor = this;
+                        return;
+                    }
+                });
+
+                $($scope.user.dataSource).each(function () {
+                    if (this._id == $scope.user.dataSourceId) {
+                        defaultDataSource = this;
+                        return;
+                    }
+                });
+
+                $http({
+                    method: 'DELETE',
+                    url: location.origin + '/api/mod/worldshare/models/worlds/',
+                    header: {
+                        "content-type" : "application/json",
+                    },
+                    params: {
+                        worldsName : opusInfor.worldsName,
+                    }
+                })
+                .then(function (response) {
+                    $http({
+                        method: 'DELETE',
+                        url: defaultDataSource.apiBaseUrl + "/projects/" + opusInfor.gitlabProjectId,
+                        headers: {
+                            "PRIVATE-TOKEN" : defaultDataSource.dataSourceToken,
+                        }
+                    })
+                    .then(function (response) {
+                        location.reload();
+                    })
+                    .then(function (response) { })
+                })
+                .then(function (response) { });
+            }
         }
 
         $scope.$watch(personService.getPage, function (newValue, oldValue) {
