@@ -103,32 +103,34 @@ function getInnerGitlabToken(params)
 		headers={['PRIVATE-TOKEN']= params.token},
 		method = "GET",
 		json = true,
+	}, resume)
+
+	local code, msg, data = yield()
+	if code ~= 200 then
+		return
+	end	
+	for _, token in ipairs(data) do
+		if not token.revoked and token.active then
+			ds.dataSourceToken = token.token		
+			addInnerGitlab(ds)
+			return 
+		end
+	end
+	-- 没有有效token 则创建
+	System.os.GetUrl({
+		url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+		headers={['PRIVATE-TOKEN']= params.token},
+		method = "POST",
+		form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
+		json = true,
 	}, function(code, msg, data)
-		if code ~= 200 then
+		if code ~= 201 then
 			return
 		end	
-		for _, token in ipairs(data) do
-			if not token.revoked and token.active then
-				ds.dataSourceToken = token.token		
-				addInnerGitlab(ds)
-				return
-			end
-		end
-		-- 没有有效token 则创建
-		System.os.GetUrl({
-			url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
-			headers={['PRIVATE-TOKEN']= params.token},
-			method = "POST",
-			form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
-			json = true,
-		}, function(code, msg, data)
-			if code ~= 201 then
-				return
-			end	
-			ds.dataSourceToken = data.token
-			addInnerGitlab(ds)
-			end)
+		ds.dataSourceToken = data.token
+		addInnerGitlab(ds)
 		end)
+	end)
 	
 	return errors:wrap(nil)
 end
@@ -343,10 +345,148 @@ end
 
 
 
+-- 开启内部gitlab数据源
+function data_source:api_createInnerGitlab(params)
+	--[[
+		if not params.userId then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+		end
+		
+		local userDB = models.user:new()
+		userDB:db():findOne({_id=params.userId}, resume)
+		local _, userinfo = yield()
+		if not userinfo then
+			return errors:wrap(errors.SERVER_INNER_ERROR)
+		end
+		
+		-- 是否已存在
+		local ds = self:api_getInnerGitlabByUserId(params).data
+	]]
+	-- 不存在创建
+	if not ds then
+		params.name = "gitlab_" .. (params.name or userinfo.username)
+		params.username = params.name
+		params.email = params.name .. '@paraengine.com'
+		params.password = params.password or tostring(os.time())
+		params.confirm = false
+
+		local adminToken = wiki_config().data_source.inner_gitlab.token
+		local urlPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host .. "/api/v4"
+		local rawPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host
+		System.os.GetUrl({
+			url= urlPrefix .. "/users?username=" .. params.username, 
+			headers={['PRIVATE-TOKEN']= adminToken},
+			method = "GET",
+			json = true,
+		}, resume)
+		local code, msg, data = yield()
+		if code ~= 200 then
+			return errors:wrap(errors.SERVER_INNER_ERROR)
+		end
+		
+		local ds = {
+			userId = params.userId,
+			type = "gitlab",
+			name = innerGitlabName,
+			dataSourceId = nil,
+			dataSourceUsername = params.username,
+			enable = 1,
+			apiBaseUrl = urlPrefix,
+			rawBaseUrl = rawPrefix,
+		}
+		-- 不存在创建用户
+		if not data or #data == 0 then 
+			System.os.GetUrl({
+				url= urlPrefix .. "/users", 
+				headers={['PRIVATE-TOKEN']= adminToken},
+				method = "POST",
+				form = params,
+				json = true,
+			}, resume)
+			local code, msg, gitlabUser = yield()
+			-- log(gitlabUser)
+			if code ~= 201 then
+				return errors:wrap(errors.SERVER_INNER_ERROR)
+			end
+			ds.dataSourceId = gitlabUser.id
+		else
+			ds.dataSourceId = data[1].id
+		end
+		-- 获取token
+		System.os.GetUrl({
+			url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+			headers={['PRIVATE-TOKEN']= adminToken},
+			method = "GET",
+			json = true,
+		}, resume)
+		local code, msg, data = yield()
+		if code ~= 200 then
+			return errors:wrap()
+		end	
+		for _, token in ipairs(data) do
+			if not token.revoked and token.active then
+				ds.dataSourceToken = token.token		
+			end
+		end
+		-- 没有有效token 则创建
+		System.os.GetUrl({
+			url=params.urlPrefix .. "/users/" .. tostring(params.gitlabUserId) .. "/impersonation_tokens",
+			headers={['PRIVATE-TOKEN']= params.token},
+			method = "POST",
+			form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
+			json = true,
+		}, function(code, msg, data)
+			if code ~= 201 then
+				return
+			end	
+			ds.dataSourceToken = data.token
+			addInnerGitlab(ds)
+			end)
+		end)
+	else 
+		if ds.enable == 0 then
+			ds.enable = 1
+			self:api_upsert(ds)
+		end
+	end 
+
+	return errors:wrap(nil)
+end
 
 
+function data_source:getInnerGitlabToken(params) 
+	local ds = {
+		userId = params.userId,
+		type = "gitlab",
+		name = innerGitlabName,
+		dataSourceId = params.gitlabUserId,
+		dataSourceUsername = params.username,
+		--dataSourceToken = gitlabToken.token,
+		enable = 1,
+		apiBaseUrl = params.urlPrefix,
+		rawBaseUrl = params.rawPrefix,
+	}
+
+	
+	return errors:wrap(nil)
+end
 
 
+function data_source:addInnerGitlab(dataSource)
+	self:insertOne({["+userId+name"]={dataSource.userId,dataSource.name}},dataSource, resume)
+	local _, dataSourceInfo = yield()
+	
+		function(err, dataSourceInfo)	
+			db.user:findOne({_id=dataSource.userId},
+				function(err, userinfo)
+					if (not userinfo.dataSourceId) or (userinfo.dataSourceId == 0) then
+						userinfo.dataSourceId = dataSourceInfo._id
+						db.user:updateOne({_id=dataSource.userId}, userinfo, function() end)
+					end 
+				end)
+		end) 
+
+end
 
 
 

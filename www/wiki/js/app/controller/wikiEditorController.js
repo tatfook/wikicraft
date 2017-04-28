@@ -547,17 +547,16 @@ define([
                     });
                 }
 
-                console.log(currentWebsite);
                 if (currentWebsite) {
                     for (var i = 0; i < allWebsitePages.length; i++) {
                         if (currentWebsite.name == allWebsitePages[i].websiteName) {
-                            console.log("---------------------");
                             currentWebsitePage = allWebsitePages[i];
                         }
                     }
                 }
                 currentWebsitePage || (currentWebsitePage = allWebsitePages[0]);
                 currentWebsite = getWebsiteByName(currentWebsitePage.websiteName);
+                //console.log(currentWebsitePage);
                 initTree();
                 openPage();
             }
@@ -705,11 +704,13 @@ define([
                             //console.log(pageinfo);
                             if (pageinfo && pageinfo.content) {
                                 cb && cb(pageinfo.content);
+                                currentDataSource.writeFile({path:url.substring(1) + pageSuffixName, content:pageinfo.content});
                             } else {
                                 //数据源未找到查找本地服务器页面
                                 util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: url}, function (data) {
                                     data = data || {};
                                     cb && cb(data.content);
+                                    data.content && currentDataSource.writeFile({path:url.substring(1) + pageSuffixName, content:data.content});
                                 }, errcb)
                             }
                         });
