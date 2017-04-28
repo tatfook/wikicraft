@@ -343,7 +343,7 @@ define([
         // Enable some language-neutral replacement + quotes beautification
         options.typographer = options.typographer == null ? true : options.typographer;
         // Convert '\n' in paragraphs into <br>
-        options.breaks = options.breaks == null ? false : options.breaks;
+        options.breaks = options.breaks == null ? true : options.breaks;
         // 是否使用模板
         options.use_template = options.use_template == null ? true : options.use_template;
         //console.log("use_template:", options.use_template);
