@@ -12,7 +12,6 @@ define([
 
     function getModParams(wikiblock) {
         var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
-        modParams.sitename = "xiaoyao";
         return angular.copy(modParams);
     }
 
@@ -20,6 +19,7 @@ define([
         app.registerController('organizationSubmitWorksController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
+            var userinfo = undefined;
             var siteinfo = undefined;
 
             function getResultCanvas(sourceCanvas) {
@@ -134,7 +134,7 @@ define([
                 initImageUpload();
 
                 // 获取用户所有页面
-                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: $scope.userinfo.username}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: $scope.user.username}, function (data) {
                     data = data || {};
                     var pageinfoList = data.pageinfoList || [];
                     var allWebsitePages = [];
@@ -187,11 +187,12 @@ define([
 
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
-                    $scope.userinfo = userinfo;
-                    if (modParams.sitename) {
-                        util.post(config.apiUrlPrefix + "website/getByName", {username:$scope.userinfo.username, websiteName:modParams.sitename}, function (data) {
-                            siteinfo = data;
-                            siteinfo && init();
+                    $scope.user = userinfo;
+                    if (modParams.username && modParams.sitename) {
+                        util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                            userinfo = data.userinfo;
+                            siteinfo = data.siteinfo;
+                            userinfo && siteinfo && init();
                         });
                     }
                 });

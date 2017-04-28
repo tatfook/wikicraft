@@ -33,12 +33,21 @@ define([
             var modParams = getModParams(wikiBlock);
             var siteinfo = $rootScope.siteinfo;
             var userinfo = $rootScope.userinfo;
+            var visitorInfo = undefined;
+            $scope.modParams = modParams;
 
             function init() {
                 util.post(config.apiUrlPrefix + 'website/getStatics', {websiteId:siteinfo._id}, function (data) {
                     $scope.statics = data || {};
                     $scope.statics.recommendWorksCount = modParams.recommendWorksCount;
                 });
+
+                // $scope.user 为当前使用用户也是当前访问者
+                if ($scope.user && $scope.user._id) {
+                    util.post(config.apiUrlPrefix + 'website_member/getBySiteUserId', {websiteId:siteinfo._id, userId: $scope.user._id}, function (data) {
+                        visitorInfo = data;
+                    });
+                }
             }
             
             $scope.$watch("$viewContentLoaded", function () {
@@ -53,7 +62,31 @@ define([
                     init();
                 });
             });
-            
+
+            $scope.isVisitor = function () {
+                if (!visitorInfo) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            $scope.isMember = function () {
+                if (visitorInfo && visitorInfo.roleId <= 2) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            $scope.isManager = function () {
+                if (visitorInfo && visitorInfo.roleId <= 1) {
+                    return true;
+                }
+
+                return false;
+            }
+
             $scope.goOrganizationManagePage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationMemberManage';

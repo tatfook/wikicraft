@@ -11,7 +11,6 @@ define([
 
     function getModParams(wikiblock) {
         var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
-        modParams.sitename = "xiaoyao";
         return angular.copy(modParams);
     }
 
@@ -19,7 +18,9 @@ define([
         app.registerController('organizationWorksManageController',['$scope','Account', function ($scope, Account) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
+            var userinfo = undefined;
             var siteinfo = undefined;
+
             function init() {
                 // 获取作品列表
                 util.post(config.apiUrlPrefix + 'website_works/getByWebsiteId', {websiteId: siteinfo._id}, function (data) {
@@ -35,15 +36,13 @@ define([
             }
 
             $scope.$watch("$viewContentLoaded", function () {
-                Account.getUser(function (userinfo) {
-                    $scope.userinfo = userinfo;
-                    if (modParams.sitename) {
-                        util.post(config.apiUrlPrefix + "website/getByName", {username:$scope.userinfo.username, websiteName:modParams.sitename}, function (data) {
-                            siteinfo = data;
-                            siteinfo && init();
-                        });
-                    }
-                });
+                if (modParams.username && modParams.sitename) {
+                    util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                        userinfo = data.userinfo;
+                        siteinfo = data.siteinfo;
+                        userinfo && siteinfo && init();
+                    });
+                }
             });
 
             // 跳作品页

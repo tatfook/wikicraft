@@ -184,6 +184,17 @@ function website_member:api_deleteById(params)
 	return errors:wrap(yield())
 end
 
+-- 获取单个成员信息
+function website_member:api_getBySiteUserId(params)
+	if (not params.websiteId) or (not params.userId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+websiteId+userId"]={params.websiteId, params.userId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- 获得评委成员信息
 function website_member:api_getJudgeListByWebsiteId(params)
 	params.role = const.WEBSITE_USER_ROLE_JUDGE

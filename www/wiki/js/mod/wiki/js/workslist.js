@@ -8,7 +8,6 @@ define([
 
     function getModParams(wikiblock) {
         var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
-        modParams.sitename = "xiaoyao";
         return angular.copy(modParams);
     }
 

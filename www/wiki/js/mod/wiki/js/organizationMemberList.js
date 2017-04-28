@@ -51,9 +51,15 @@ define([
             }
 
             $scope.$watch('$viewContentLoaded', function () {
-                util.post(config.apiUrlPrefix + 'website/getByName', {username:modParams.username, websiteName:modParams.sitename}, function (data) {
-                   siteinfo = data;
-                   init();
+                if (!modParams.username ||  !modParams.sitename) {
+                    var urlObj = util.parseUrl();
+                    modParams.username = urlObj.username;
+                    modParams.sitename = urlObj.sitename;
+                }
+                util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                    userinfo = data.userinfo;
+                    siteinfo = data.siteinfo;
+                    userinfo && siteinfo && init();
                 });
             });
         }]);

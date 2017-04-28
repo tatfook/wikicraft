@@ -621,6 +621,7 @@ define([
                 !config.islocalWinEnv() && $location.path(currentWebsitePage.url);
 
                 function setEditorValue(content) {
+                    //console.log(content);
                     currentWebsitePage.isFirstEditor = true;
                     //console.log(currentWebsitePage);
                     if (!editorDocMap[currentWebsitePage.url]) {
@@ -692,8 +693,9 @@ define([
                         }, function (data) {
                             //console.log("-------------------------------");
                             var pageinfo = getWebsitePageByUrl(url);
+                            //console.log(pageinfo);
                             if (pageinfo && pageinfo.content) {
-                                cb && cb(data.content);
+                                cb && cb(pageinfo.content);
                             } else {
                                 //数据源未找到查找本地服务器页面
                                 util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: url}, function (data) {

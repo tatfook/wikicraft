@@ -11,7 +11,6 @@ define([
 
     function getModParams(wikiblock) {
         var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
-        modParams.sitename = "xiaoyao";
         return angular.copy(modParams);
     }
 
@@ -20,8 +19,9 @@ define([
         app.registerController('organizationMemberManageController',['$scope', function ($scope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
+            var userinfo = undefined;
+            var siteinfo = undefined;
 
-            var siteinfo = {_id:3, userId:1};
             function init() {
                 $scope.clickMember();
             }
@@ -79,7 +79,13 @@ define([
             }
 
             $scope.$watch('$viewContentLoaded', function () {
-                init();
+                if (modParams.username && modParams.sitename) {
+                    util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                        userinfo = data.userinfo;
+                        siteinfo = data.siteinfo;
+                        userinfo && siteinfo && init();
+                    });
+                }
             });
         }]);
     }

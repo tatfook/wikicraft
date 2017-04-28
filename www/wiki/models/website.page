@@ -428,22 +428,20 @@ function website:api_getStatics(params)
 	local websiteMemberDB = models.website_member:new()
 	local websiteRenewalDB = models.website_renewal:new()
 	local websiteWorksDB = models.website_works:new()
-	local websitePagesDB = models.website_pages:new()
 	local userFavoriteDB = models.user_favorite:new()
 
 	-- 获得站点的收藏量
 	local favoriteCount = userFavoriteDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
-	local pageCount = websitePagesDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local memberCount =  websiteMemberDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local weekRenewalCount =  websiteRenewalDB:api_getWeekCount({websiteId=params.websiteId}).data
 	local worksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local upgradeWorksCount = websiteWorksDB:api_getUpgradeCountByWebsiteId({websiteId=params.websiteId}).data
 	
 	-- 更新站点信息
-	self:db():updateOne({_id=params.websiteId}, {favoriteCount=favoriteCount, pageCount=pageCount, worksCount=worksCount, memberCount=memberCount}, resume)
+	self:db():updateOne({_id=params.websiteId}, {favoriteCount=favoriteCount, worksCount=worksCount, memberCount=memberCount}, resume)
 	local err, data = yield()
 
-	return errors:wrap(nil, {memberCount=memberCount, weekRenewalCount=weekRenewalCount, worksCount=worksCount, upgradeWorksCount=upgradeWorksCount, favoriteCount=favoriteCount, pageCount=pageCount})
+	return errors:wrap(nil, {memberCount=memberCount, weekRenewalCount=weekRenewalCount, worksCount=worksCount, upgradeWorksCount=upgradeWorksCount, favoriteCount=favoriteCount})
 end
 
 

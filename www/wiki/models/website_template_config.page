@@ -71,7 +71,7 @@ local template_config = {
 				_id=1,
 				name="组织模板",
 				categoryId=2,
-				--logoUrl="/wiki/assets/imgs/Organization.jpg",
+				logoUrl="/wiki/assets/imgs/organization.png",
 				filename="",
 				layoutTpl='',
 				-- 样式列表
@@ -80,7 +80,7 @@ local template_config = {
 						_id=1,
 						name="组织样式",
 						templateId=1,
-						--logoUrl="/wiki/assets/imgs/Organization.jpg",
+						logoUrl="/wiki/assets/imgs/organization.png",
 						filename="organization.html",
 						previewFilename="organizationPreview.html",
 						layoutTpl='',

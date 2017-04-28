@@ -115,10 +115,10 @@
     <div ng-controller="organizationStaticsController">
         <div class="org-statics" ng-show="modParams.moduleKind=='organization'">
             <div class="method">
-                <a class="btn btn-primary" ng-click="goOrganizationManagePage()">组织管理</a>
-                <a class="btn btn-primary" ng-click="goWorksManagePage()">作品管理</a>
-                <a class="btn btn-primary" ng-click="goSubmitWorksPage()">提交作品</a>
-                <a class="btn btn-primary" ng-click="goMemberApplyPage()">申请加入</a>
+                <a ng-show="isManager()" class="btn btn-primary" ng-click="goOrganizationManagePage()">组织管理</a>
+                <a ng-show="isManager()" class="btn btn-primary" ng-click="goWorksManagePage()">作品管理</a>
+                <a ng-show="isMember()" class="btn btn-primary" ng-click="goSubmitWorksPage()">提交作品</a>
+                <a ng-show="isVisitor()" class="btn btn-primary" ng-click="goMemberApplyPage()">申请加入</a>
             </div>
             <div class="msg-box clearfix">
                 <div class="msg">
