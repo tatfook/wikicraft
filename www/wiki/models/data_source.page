@@ -130,7 +130,6 @@ function getInnerGitlabToken(params)
 		ds.dataSourceToken = data.token
 		addInnerGitlab(ds)
 		end)
-	end)
 	
 	return errors:wrap(nil)
 end
@@ -441,7 +440,6 @@ function data_source:api_createInnerGitlab(params)
 			end	
 			ds.dataSourceToken = data.token
 			addInnerGitlab(ds)
-			end)
 		end)
 	else 
 		if ds.enable == 0 then
@@ -475,17 +473,6 @@ end
 function data_source:addInnerGitlab(dataSource)
 	self:insertOne({["+userId+name"]={dataSource.userId,dataSource.name}},dataSource, resume)
 	local _, dataSourceInfo = yield()
-	
-		function(err, dataSourceInfo)	
-			db.user:findOne({_id=dataSource.userId},
-				function(err, userinfo)
-					if (not userinfo.dataSourceId) or (userinfo.dataSourceId == 0) then
-						userinfo.dataSourceId = dataSourceInfo._id
-						db.user:updateOne({_id=dataSource.userId}, userinfo, function() end)
-					end 
-				end)
-		end) 
-
 end
 
 
