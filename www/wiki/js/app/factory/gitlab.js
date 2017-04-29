@@ -8,6 +8,10 @@ define([
     'helper/storage',
     'js-base64',
 ], function (app, dataSource, storage) {
+    function _encodeURIComponent(url) {
+        return encodeURIComponent(url);
+        //return encodeURIComponent(url).replace(/\./g,'%2E')
+    }
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,
@@ -22,6 +26,7 @@ define([
 
         // http请求
         gitlab.httpRequest = function (method, url, data, cb, errcb) {
+            console.log(url);
             var config = {
                 method: method,
                 url: this.apiBase + url,
@@ -79,7 +84,7 @@ define([
         // 写文件
         gitlab.writeFile = function (params, cb, errcb) {
             //params.content = Base64.encode(params.content);
-            var url = gitlab.getFileUrlPrefix() + encodeURIComponent(params.path);
+            var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
             params.commit_message = /*params.message ||*/ gitlab.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || "master";
             gitlab.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
@@ -92,9 +97,13 @@ define([
 
         // 获取文件
         gitlab.getContent = function (params, cb, errcb) {
-            var url = gitlab.getFileUrlPrefix() + encodeURIComponent(params.path).replace(/\./g,'%2E') + '/raw';
+            //var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path) + '/raw';
+            var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
             params.ref = params.ref || "master";
-            gitlab.httpRequest("GET", url, params, cb, errcb);
+            gitlab.httpRequest("GET", url, params, function (data) {
+                data.content = data.content && Base64.decode(data.content);
+                cb && cb(data.content);
+            }, errcb);
 
             //gitlab.getRawContent(params, cb, errcb);
         }

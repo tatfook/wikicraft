@@ -394,12 +394,7 @@ function user:api_login(params)
 		return errors:wrap("密码错误")
 	end
 	
-	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getByUserId({userId=userinfo._id}).data
-	if (not dataSource) or (#dataSource == 0) then
-		dataSourceDB:api_linkInnerGitlab({userId=data._id, username=data.username})
-	end
-	userinfo.dataSource = dataSource
+	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id})
 
 	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
 end
@@ -497,7 +492,7 @@ function user:api_getUserDataSource(params)
 		dataSource = dataSourceDB:api_createInnerGitlab({userId=params.userId}).data
 	end
 	
-	return errors:wrap(nil, dataSource)
+	return errors:wrap(nil, {dataSource})
 end
 
 -- 获取用户信息
