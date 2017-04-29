@@ -451,10 +451,7 @@ function user:api_register(params)
 	end
 
 	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id}).data
-	if not userinfo.dataSource  or #userinfo.dataSource == 0 then
-		return errors:wrap(errors.SERVER_INNER_ERROR)
-	end
-	if not userinfo.dataSourceId then
+	if userinfo.dataSource and #userinfo.dataSource > 0 and (not userinfo.dataSourceId) then
 		userinfo.dataSourceId = userinfo.dataSource[1]._id
 	end
 
@@ -490,9 +487,10 @@ function user:api_getUserDataSource(params)
 	local dataSource = dataSourceDB:api_getByUserId({userId=params.userId}).data
 	if (not dataSource) or (#dataSource == 0) then
 		dataSource = dataSourceDB:api_createInnerGitlab({userId=params.userId}).data
+		dataSource = {dataSource}
 	end
 	
-	return errors:wrap(nil, {dataSource})
+	return errors:wrap(nil, dataSource)
 end
 
 -- 获取用户信息
