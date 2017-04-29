@@ -18,6 +18,7 @@ define([
         app.registerController('organizationMemberApplyController',['$scope', 'Account', function ($scope, Account) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
+            console.log(modParams);
             var userinfo = undefined;
             var siteinfo = undefined;
 

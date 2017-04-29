@@ -148,7 +148,7 @@ function website_apply:api_agreeMember(params)
 	self:api_deleteByKey(params)
 
 	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:api_create({websiteId=params.websiteId, userId=params.applyId, role=const.WEBSITE_USER_ROLE_NORMAL})
+	websiteMemberDB:api_create({websiteId=params.websiteId, userId=params.applyId, roleId=const.WEBSITE_USER_ROLE_NORMAL})
 	
 	return errors:wrap(nil)
 end

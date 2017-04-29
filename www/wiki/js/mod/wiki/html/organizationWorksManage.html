@@ -129,8 +129,8 @@
         <div class="panel-heading">作品管理</div>
         <div class="panel-body">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#org-works" aria-controls="org-works" role="tab" data-toggle="tab">作品列表</a></li>
-                <li role="presentation"><a href="#org-notify" aria-controls="org-notify" role="tab" data-toggle="tab">投稿管理</a></li>
+                <li role="presentation" class="active"><a href="#org-works" ng-click="clickWorksList()" aria-controls="org-works" role="tab" data-toggle="tab">作品列表</a></li>
+                <li role="presentation"><a href="#org-notify" ng-click="clickWorksApply()" aria-controls="org-notify" role="tab" data-toggle="tab">投稿管理</a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
@@ -166,7 +166,7 @@
                                 <img ng-src="{{ apply.worksInfo.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
                                 <div class="intro">
                                     <p>介绍：</p>
-                                    <p>{{apply.worksinfo.worksDesc}}</p>
+                                    <p>{{apply.worksInfo.worksDesc}}</p>
                                 </div>
                                 <div class="btn btn-primary" ng-click="agreeApply(apply)">同意</div>
                                 <div class="btn btn-outline" ng-click="refuseApply(apply)">删除</div>

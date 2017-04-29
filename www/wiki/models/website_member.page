@@ -84,7 +84,7 @@ function website_member:api_create(params)
 	end
 	trends.userId = site.userId
 	trends.otherUserId = params.userId
-	trends.desc = userinfo.username .. "加入你的组织:" .. website.name
+	trends.desc = userinfo.username .. "加入你的组织:" .. site.name
 	userTrendsDB:api_upsert(trends)
 
 	return errors:wrap()
@@ -165,7 +165,7 @@ end
 -- 获得站点全部成员数量
 function website_member:api_getCountByWebsiteId(params) 
 	if not params.websiteId then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	self:db():count({["+websiteId"] = {params.websiteId}}, resume)

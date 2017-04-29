@@ -52,6 +52,8 @@ define([
             
             $scope.$watch("$viewContentLoaded", function () {
                 if (userinfo && siteinfo) {
+                    modParams.username = userinfo.username;
+                    modParams.sitename = siteinfo.name;
                     init();
                 } else {
                     if (!modParams.username ||  !modParams.sitename) {

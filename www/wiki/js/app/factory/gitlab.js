@@ -26,7 +26,7 @@ define([
 
         // http请求
         gitlab.httpRequest = function (method, url, data, cb, errcb) {
-            console.log(url);
+            //console.log(url);
             var config = {
                 method: method,
                 url: this.apiBase + url,

@@ -22,17 +22,7 @@ define([
             var siteinfo = undefined;
 
             function init() {
-                // 获取作品列表
-                util.post(config.apiUrlPrefix + 'website_works/getByWebsiteId', {websiteId: siteinfo._id}, function (data) {
-                    data = data || {};
-                    $scope.worksList = data.worksList;
-                });
-
-                // 获取审核列表
-                util.post(config.apiUrlPrefix + "website_apply/getWorksByWebsiteId", {websiteId: siteinfo._id}, function (data) {
-                    data = data || {};
-                    $scope.applyList = data.applyList;
-                });
+                $scope.clickWorksList();
             }
 
             $scope.$watch("$viewContentLoaded", function () {
@@ -44,6 +34,22 @@ define([
                     });
                 }
             });
+            // 作品列表
+            $scope.clickWorksList = function () {
+                // 获取作品列表
+                util.post(config.apiUrlPrefix + 'website_works/getByWebsiteId', {websiteId: siteinfo._id}, function (data) {
+                    data = data || {};
+                    $scope.worksList = data.worksList;
+                });
+            }
+            // 作品申请；列表
+            $scope.clickWorksApply = function () {
+                // 获取审核列表
+                util.post(config.apiUrlPrefix + "website_apply/getWorksByWebsiteId", {websiteId: siteinfo._id}, function (data) {
+                    data = data || {};
+                    $scope.applyList = data.applyList;
+                });
+            }
 
             // 跳作品页
             $scope.goApplyWorksPage = function (apply) {
