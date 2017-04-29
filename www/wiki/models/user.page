@@ -394,7 +394,7 @@ function user:api_login(params)
 		return errors:wrap("密码错误")
 	end
 	
-	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id})
+	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id}).data
 
 	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
 end
