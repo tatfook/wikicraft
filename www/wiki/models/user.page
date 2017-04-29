@@ -426,19 +426,18 @@ end
 
 -- 注册
 function user:api_register(params)
-	-- 用户名 密码 邮箱为必填项
+	-- 用户名 密码 为必填项
 	if (not params.username) or (not params.password) then 
 		return errors:wrap(err)
 	end
 	
-	local websiteDB = models.website:new()
 	-- 查找用户名是否可用
 	if self:api_checkUsername({username=params.username}).data == 0 then
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 	
 	-- 创建用户
-	self:db():insertOne(nil, {
+	self:db():insertOne({["+username"]={params.username}}, {
 		username = params.username,
 		displayName = params.username,
 		password = self:encodePassword(params.password),
@@ -456,12 +455,13 @@ function user:api_register(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
-	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getByUserId({userId=userinfo._id}).data
-	if (not dataSource) or (#dataSource == 0) then
-		dataSourceDB:api_linkInnerGitlab({userId=userinfo._id})
+	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id}).data
+	if not userinfo.dataSource  or #userinfo.dataSource == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
-	userinfo.dataSource = dataSource
+	if not userinfo.dataSourceId then
+		userinfo.dataSourceId = userinfo.dataSource[1]._id
+	end
 
 	-- 第三方服务
 	local threeService = params.threeService
@@ -470,6 +470,18 @@ function user:api_register(params)
 		threeService.userId = userinfo._id
 		userThreeServiceDB:api_upsert(threeService)
 	end
+
+	local indexPage = {}
+	indexPage.name = "简易教程1"
+	indexPage.websiteName = "新手教程"
+	indexPage.username = params.username
+	indexPage.url = "/" .. indexPage.username .. '/' .. indexPage.websiteName .. '/' .. indexPage.name
+	indexPage.contentUrl = "tutorial/index.md"	
+
+	local websitePageinfoDB = models.website_pageinfo:new()
+	local pageinfo = commonlib.Json.Encode({indexPage})	
+	local params = {username=indexPage.username, websiteName=indexPage.websiteName, dataSourceId=userinfo.dataSourceId, pageinfo=pageinfo, isExistSite=0}
+	websitePageinfoDB:db():insertOne({["+username+websiteName+dataSourceId"]={params.username, params.websiteName, params.dataSourceId}}, params, function() end)
 
 	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo})
 end
@@ -482,7 +494,7 @@ function user:api_getUserDataSource(params)
 	local dataSourceDB = models.data_source:new()
 	local dataSource = dataSourceDB:api_getByUserId({userId=params.userId}).data
 	if (not dataSource) or (#dataSource == 0) then
-		dataSourceDB:api_linkInnerGitlab({userId=params.userId})
+		dataSource = dataSourceDB:api_createInnerGitlab({userId=params.userId}).data
 	end
 	
 	return errors:wrap(nil, dataSource)

@@ -154,7 +154,7 @@ define([
             github.defalultRepoName = dataSource.projectName || 'keepworkDataSource';
             github.defaultHttpHeader['Authorization'] = ' token ' + github.githubToken;
             github.apiBase = dataSource.apiBaseUrl;
-            github.rawBase = dataSource.rawBaseUrl || 'https://raw.githubusercontent.com/';
+            github.rawBase = dataSource.rawBaseUrl || 'https://raw.githubusercontent.com';
 
             self.setDefaultRepo(github.defalultRepoName, function (data) {
                 github.inited = true;
@@ -174,7 +174,7 @@ define([
         }
 
         github.getRawContentUrlPrefix = function (params) {
-            return github.rawBase + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
+            return github.rawBase + '/' + github.githubName + '/' + github.defalultRepoName + '/master/' + params.path;
         }
 
         // writeFile
@@ -216,11 +216,23 @@ define([
         
         github.getRawContent = function (params, cb, errcb) {
             var url = github.getRawContentUrlPrefix(params);
-            $http.get(url).then(function (response) {
+            $http({
+                method: 'GET',
+                url: url,
+                skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
+            }).then(function (response) {
+                console.log(response);
                 cb && cb(response.data);
             }).catch(function (response) {
+                console.log(response);
                 errcb && errcb(response);
             });
+            // var url = github.getRawContentUrlPrefix(params);
+            // $http.get(url).then(function (response) {
+            //     cb && cb(response.data);
+            // }).catch(function (response) {
+            //     errcb && errcb(response);
+            // });
         }
 
         github.uploadImage = function (params, cb, errcb) {

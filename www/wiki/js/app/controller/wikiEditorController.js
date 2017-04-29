@@ -536,6 +536,7 @@ define([
             });
 
             function openDefaultPage() {
+                console.log("-------------open default page----------------");
                 if (allWebsitePages.length == 0) {
                     allWebsitePages.push({
                         websiteName: $scope.user.username,
@@ -663,10 +664,13 @@ define([
                         $('#treeview').treeview('selectNode', [treeNode.nodeId, {silent: true}]);
                     }
                 }
-
-                getPageContent(currentWebsitePage.url, function (data) {
-                    setEditorValue(data || "");
+                console.log("--------------open page--------------");
+                dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
+                    getPageContent(currentWebsitePage.url, function (data) {
+                        setEditorValue(data || "");
+                    });
                 });
+
                 // storage.indexedDBGetItem(currentWebsitePage.url, function (page) {
                 //     if (page) {
                 //         page.timestamp = page.timestamp || 0;
@@ -686,7 +690,7 @@ define([
 
             // 获得页面内容
             function getPageContent(url, cb, errcb) {
-                //console.log("-----------getPageContent-------------");
+                console.log("-----------getPageContent-------------", url, currentWebsitePage);
                 if (allWebstePageContent[url]) {
                     //console.log(allWebstePageContent[url]);
                     cb && cb(allWebstePageContent[url]);
@@ -705,6 +709,13 @@ define([
                             if (pageinfo && pageinfo.content) {
                                 cb && cb(pageinfo.content);
                                 currentDataSource.writeFile({path:url.substring(1) + pageSuffixName, content:pageinfo.content});
+                            } else if (pageinfo.contentUrl) {
+                                require(["text!html/" + pageinfo.contentUrl], function (content) {
+                                    cb && cb(content);
+                                }, function () {
+                                    console.log("require load file failed:", pageinfo.contentUrl);
+                                    errcb && errcb();
+                                });
                             } else {
                                 //数据源未找到查找本地服务器页面
                                 util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: url}, function (data) {
@@ -715,7 +726,7 @@ define([
                             }
                         });
                     } else {
-                        //console.log("----------data source uninit-------------");
+                        console.log("----------data source uninit-------------");
                         errcb && errcb();
                     }
                 }
@@ -785,8 +796,8 @@ define([
                 $('#treeview').treeview('collapseAll', {silent: false});
                 isFirstCollapsedAll = false;
                 for (var key in treeNodeExpandedMap) {
-                    //console.log(key, treeNodeMap[key])
-                    $("#treeview").treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 2, silent: true}]);
+                    console.log(key, treeNodeMap[key])
+                    treeNodeMap[key] && $("#treeview").treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 2, silent: true}]);
                 }
             }
 
@@ -1684,8 +1695,10 @@ define([
                 }
 
                 window.onresize = function () {
-                    setEditorHeight();
-                    resizeMod();
+                    if (util.parseUrl().pathname == "/wiki/wikiEditor") {
+                        setEditorHeight();
+                        resizeMod();
+                    }
                 }
 
                 editor.on("beforeChange", function (cm, changeObj) {

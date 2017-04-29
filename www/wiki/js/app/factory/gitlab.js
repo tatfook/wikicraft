@@ -92,7 +92,7 @@ define([
 
         // 获取文件
         gitlab.getContent = function (params, cb, errcb) {
-            var url = gitlab.getFileUrlPrefix() + encodeURIComponent(params.path) + '/raw';
+            var url = gitlab.getFileUrlPrefix() + encodeURIComponent(params.path).replace(/\./g,'%2E') + '/raw';
             params.ref = params.ref || "master";
             gitlab.httpRequest("GET", url, params, cb, errcb);
 
