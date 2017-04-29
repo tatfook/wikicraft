@@ -359,8 +359,8 @@ function data_source:api_createInnerGitlab(params)
 	end
 	
 	-- 是否已存在
-	-- local ds = self:api_getInnerGitlabByUserId(params).data
-	local ds = nil
+	local ds = self:api_getInnerGitlabByUserId(params).data
+
 	-- 不存在创建
 	if not ds then
 		params.name = "gitlab_" .. (params.name or userinfo.username)
@@ -384,7 +384,6 @@ function data_source:api_createInnerGitlab(params)
 			log(data)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
-		log("-----------------------------2")
 		data = data.data or {}
 		ds = {
 			userId = params.userId,
@@ -411,7 +410,6 @@ function data_source:api_createInnerGitlab(params)
 				log(data)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end
-			log("-----------------------------3")
 			ds.dataSourceId = data.data.id
 		else
 			ds.dataSourceId = data[1].id
@@ -429,7 +427,6 @@ function data_source:api_createInnerGitlab(params)
 			log(data)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end	
-		log("-----------------------------4")
 		data = data.data or {}
 		for _, token in ipairs(data) do
 			if not token.revoked and token.active then
@@ -451,18 +448,15 @@ function data_source:api_createInnerGitlab(params)
 				log(data)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end	
-			log("-----------------------------5")
 			data = data.data or {}
 			ds.dataSourceToken = data.token
 		end
-		log("-----------------------------6")
 		-- 创建数据库记录
 		self:db():insertOne({["+userId+name"]={ds.userId, ds.name}}, ds, resume)
 		local _, dataSourceInfo = yield()
 		if not dataSourceInfo then
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
-		log("-----------------------------7")
 		-- 更改用户信息
 		-- local userDB = models.user:new()
 		db.user:updateOne({_id=ds.userId}, {dataSourceId=dataSourceInfo._id}, resume)
@@ -470,7 +464,6 @@ function data_source:api_createInnerGitlab(params)
 		if err or (not data) then
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
-		log("-----------------------------8")
 		return errors:wrap(nil, dataSourceInfo)
 	else 
 		if ds.enable == 0 then
