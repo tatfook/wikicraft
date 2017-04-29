@@ -434,7 +434,7 @@ function data_source:api_createInnerGitlab(params)
 			end
 		end
 		-- 没有有效token 则创建
-		if not ds.dataSouceToken then 
+		if not ds.dataSourceToken then 
 			System.os.GetUrl({
 				url=urlPrefix .. "/users/" .. tostring(ds.dataSourceId) .. "/impersonation_tokens",
 				headers={['PRIVATE-TOKEN']= adminToken},
@@ -457,8 +457,8 @@ function data_source:api_createInnerGitlab(params)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
 		-- 更改用户信息
-		local userDB = models.user:new()
-		userDB:db():updateOne({_id=ds.userId}, {dataSourceId=dataSourceInfo._id}, resume)
+		-- local userDB = models.user:new()
+		db.user:updateOne({_id=ds.userId}, {dataSourceId=dataSourceInfo._id}, resume)
 		local err, data = yield()
 		if err or (not data) then
 			return errors:wrap(errors.SERVER_INNER_ERROR)
