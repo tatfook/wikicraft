@@ -30,7 +30,7 @@ end
 
 -- 创建数据源
 function data_source:api_upsert(params)
-	if (not params.userId) or (not params.type) then
+	if (not params.userId) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
