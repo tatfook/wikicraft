@@ -43,6 +43,7 @@ define([
     var currentRichTextObj = undefined; // 当前编辑的富文本
     var treeNodeMap = {};            // 树节点映射
     var treeNodeExpandedMap = {};    // 展开节点
+    var pagelistMap = {};            // 页列表映射
 
     function getCurrentDataSource(username) {
         var userDataSource = dataSource.getUserDataSource(username);
@@ -407,6 +408,7 @@ define([
                 });
             }
 
+
             //初始化，读取用户站点列表及页面列表
             function init() {
                 console.log('---------------init---------------');
@@ -418,10 +420,23 @@ define([
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;
                     $rootScope.userinfo = userinfo;
-                    loadSitePageInfo();
-                });
+                    //loadSitePageInfo();
 
-                return;
+                    // 获取用户所有站点
+                    util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: userinfo._id}, function (data) {
+                        allWebsites = data || [];
+                        //console.log(allWebsites);
+                        initTree();
+
+                        var tempContent = storage.localStorageGetItem("wikiEditorTempContent");
+                        if (tempContent) {
+                            editor.setValue(tempContent);
+                            storage.localStorageRemoveItem("wikiEditorTempContent");
+                        } else {
+                            openPage();
+                        }
+                    });
+                });
             }
 
             $scope.$watch('$viewContentLoaded', init);
@@ -492,7 +507,7 @@ define([
                     }, function () {
                         //console.log(currentWebsitePage);
                         currentDataSource.writeFile({
-                            path: currentWebsitePage.url.substring(1) + pageSuffixName,
+                            path: currentWebsitePage.url + pageSuffixName,
                             content: content
                         }, saveSuccessCB, saveFailedCB);
                     }, saveFailedCB);
@@ -537,6 +552,7 @@ define([
 
             function openDefaultPage() {
                 console.log("-------------open default page----------------");
+                /*
                 if (allWebsitePages.length == 0) {
                     allWebsitePages.push({
                         websiteName: $scope.user.username,
@@ -547,14 +563,18 @@ define([
                         isModify: true,
                     });
                 }
+                */
+                if (!allWebsites || allWebsites.length == 0) {
+                    return;
+                }
 
-                if (currentWebsite) {
-                    for (var i = 0; i < allWebsitePages.length; i++) {
-                        if (currentWebsite.name == allWebsitePages[i].websiteName) {
-                            currentWebsitePage = allWebsitePages[i];
-                        }
+                currentWebsite = currentWebsite || allWebsites[0];
+                for (var i = 0; i < allWebsitePages.length; i++) {
+                    if (currentWebsite.name == allWebsitePages[i].websiteName) {
+                        currentWebsitePage = allWebsitePages[i];
                     }
                 }
+
                 currentWebsitePage || (currentWebsitePage = allWebsitePages[0]);
                 currentWebsite = getWebsiteByName(currentWebsitePage.websiteName);
                 //console.log(currentWebsitePage);
@@ -562,12 +582,16 @@ define([
                 openPage();
             }
 
+            // 获取站点文件列表
+            function getSitePageList(path, cb, errcb) {
+            }
             // 打开url页
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj') || {};
                 storage.sessionStorageRemoveItem('urlObj');
                 //console.log(urlObj);
 
+                var currentDataSource = getCurrentDataSource(siteinfo.username);
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
                 var pagename = urlObj.pagename || 'index';
@@ -579,7 +603,13 @@ define([
 
                 currentWebsitePage = getWebsitePageByUrl(url);
                 currentWebsite = getWebsiteByName(sitename);
+                if (currentWebsite && !currentWebsite.isGetTree) {
+                    currentDataSource.getTree({recursive:true, path:'/' + siteinfo.username + '/' + siteinfo.name},function (data) {
+                        console.log(data);
+                    },function () {
 
+                    });
+                }
                 if (!currentWebsitePage) {
                     // 特殊页面允许自动创建
                     if (pagename != 'index' && pagename != '_header' && pagename != "_footer" && pagename != "_sidebar") {
@@ -666,7 +696,7 @@ define([
                 }
                 console.log("--------------open page--------------");
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
-                    getPageContent(currentWebsitePage.url, function (data) {
+                    getCurrentPageContent(currentWebsitePage, function (data) {
                         setEditorValue(data || "");
                     });
                 });
@@ -689,17 +719,22 @@ define([
             }
 
             // 获得页面内容
-            function getPageContent(url, cb, errcb) {
+            function getCurrentPageContent(cb, errcb) {
+                if (isEmptyObject(currentWebsitePage)) {
+                    return;
+                }
+
+                var url = currentWebsitePage.url;
                 console.log("-----------getPageContent-------------", url, currentWebsitePage);
                 if (allWebstePageContent[url]) {
                     //console.log(allWebstePageContent[url]);
                     cb && cb(allWebstePageContent[url]);
                 } else {
                     var currentDataSource = getCurrentDataSource($scope.user.username);
-                    //TODO currentDataSource.getRawContent({path:url.substring(1)}, function (data) {
+                    //TODO currentDataSource.getRawContent({path:url}, function (data) {
                     //console.log(currentDataSource);
                     if (currentDataSource) {
-                        currentDataSource.getContent({path: url.substring(1) + pageSuffixName}, function (data) {
+                        currentDataSource.getContent({path: url + pageSuffixName}, function (data) {
                             //console.log(data);
                             cb && cb(data);
                         }, function (data) {
@@ -708,7 +743,7 @@ define([
                             //console.log(pageinfo);
                             if (pageinfo && pageinfo.content) {
                                 cb && cb(pageinfo.content);
-                                currentDataSource.writeFile({path:url.substring(1) + pageSuffixName, content:pageinfo.content});
+                                currentDataSource.writeFile({path:url + pageSuffixName, content:pageinfo.content});
                             } else if (pageinfo.contentUrl) {
                                 require(["text!html/" + pageinfo.contentUrl], function (content) {
                                     cb && cb(content);
@@ -721,7 +756,7 @@ define([
                                 util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: url}, function (data) {
                                     data = data || {};
                                     cb && cb(data.content);
-                                    data.content && currentDataSource.writeFile({path:url.substring(1) + pageSuffixName, content:data.content});
+                                    data.content && currentDataSource.writeFile({path:url + pageSuffixName, content:data.content});
                                 }, errcb)
                             }
                         });
@@ -780,7 +815,7 @@ define([
                         treeNodeMap[data.pageNode.url] = data;
                         if (!isFirstCollapsedAll) {
                             delete treeNodeExpandedMap[data.pageNode.url];
-                            console.log(treeNodeExpandedMap);
+                            //console.log(treeNodeExpandedMap);
                         }
                         for (var i = 0; data.nodes && i < data.nodes.length; i++) {
                             var node = data.nodes[i];
@@ -886,12 +921,12 @@ define([
                 var currentDataSource = getCurrentDataSource(currentWebsitePage.username);
                 if (currentDataSource) {
                     if (currentDataSource.getDataSourceType() == "github") {
-                        currentDataSource.getFile({path: currentWebsitePage.url.substring(1) + pageSuffixName}, function (data) {
+                        currentDataSource.getFile({path: currentWebsitePage.url + pageSuffixName}, function (data) {
                             console.log(data);
                             window.open(data.html_url);
                         });
                     } else {
-                        window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url.substring(1) + pageSuffixName}));
+                        window.open(currentDataSource.getContentUrlPrefix({path: currentWebsitePage.url + pageSuffixName}));
                     }
                 }
             }
@@ -936,6 +971,9 @@ define([
                         errcb && errcb();
                         Message.info("文件保存失败");
                     });
+                } else {
+                    storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
+                    Message.info("已保存至临时文件!!!");
                 }
             }
 
@@ -944,7 +982,7 @@ define([
                 var currentDataSource = getCurrentDataSource($scope.user.username);
                 console.log(currentWebsitePage);
                 if (!isEmptyObject(currentWebsitePage)) {
-                    currentDataSource && currentDataSource.deleteFile({path: currentWebsitePage.url.substring(1) + pageSuffixName}, function () {
+                    currentDataSource && currentDataSource.deleteFile({path: currentWebsitePage.url + pageSuffixName}, function () {
                         console.log("删除文件成功:" + currentWebsitePage.url);
                     }, function (response) {
                         console.log("删除文件失败:" + currentWebsitePage.url);
@@ -1755,6 +1793,9 @@ define([
 
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
+                    if (!currentWebsitePage)
+                        return;
+
                     //console.log(changeObj);
                     foldWikiBlock(cm, changeObj);
 
