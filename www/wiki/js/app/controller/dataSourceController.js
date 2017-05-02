@@ -55,7 +55,7 @@ define(['app',
 
         // 删除数据源
         $scope.clickDeleteDataSource = function (x) {
-            util.post(config.apiUrlPrefix + 'data_source/deleteById', {dataSourceId:x._id}, function () {
+            util.post(config.apiUrlPrefix + 'data_source/deleteById', {id:x._id}, function () {
                 getUserDataSource();
             });
         }
