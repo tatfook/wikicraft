@@ -206,7 +206,7 @@ define([
                 return;
             }
 
-            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || dataSource.rawBaseUrl) {
+            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
                 console.log("data source init failed!!![params errors]");
                 errcb && errcb();
                 return;

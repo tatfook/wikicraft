@@ -123,6 +123,7 @@ define([
             var sitename = path.substring(path.lastIndexOf('/') + 1);
             var sha = undefined;
 
+            //console.log(path, sitename, path.substring(0, path.lastIndexOf('/')));
             github.getFile({path:path.substring(0, path.lastIndexOf('/'))}, function (data) {
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].type == "dir" && data[i].name == sitename){
@@ -185,7 +186,7 @@ define([
                 return;
             }
 
-            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || dataSource.rawBaseUrl) {
+            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
                 console.log("data source init failed!!![params errors]");
                 errcb && errcb();
                 return;
@@ -266,8 +267,8 @@ define([
                 method: 'GET',
                 url: url,
                 headers:{
-                    'pragma':'no-cache',
-                    'cache-control': 'no-cache',
+                    //'pragma':'no-cache',
+                    //'cache-control': 'no-cache',
                 },
                 skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
             }).then(function (response) {

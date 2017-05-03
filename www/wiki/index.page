@@ -7,11 +7,8 @@
     <title ng-bind="title">keepwork.com</title>
     <link rel="icon" href="/wiki/assets/imgs/icon/logo.ico" type="image/x-icon" />
 
-    <!-- lib css -->
+    <!-- main css -->
     <link href="/wiki/assets/css/main.css" rel="stylesheet">
-
-    <!--script src="js/lib/jquery/jquery.min.js"></script>
-    <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script-->
 </head>
 
 <body>

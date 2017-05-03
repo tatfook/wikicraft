@@ -132,6 +132,8 @@ define([
         dataSourceFactory: {},
         // 用户数据源映射
         dataSourceUserMap: {},
+        // 当前数据源
+        currentDataSource:undefined,
     };
 
     dataSource.registerDataSourceFactory = function (typ, factory) {
@@ -156,5 +158,20 @@ define([
 
         return this.getUserDataSource(this.defaultUsername).getDefaultDataSource();
     };
+
+    dataSource.setCurrentDataSource = function (username, dataSourceId) {
+        this.currentDataSource = this.getCurrentDataSource(username, dataSourceId);
+    }
+
+    dataSource.getCurrentDataSource = function (username, dataSourceId) {
+        if (username) {
+            if (dataSourceId) {
+                return this.getUserDataSource(username).getDataSourceById(dataSourceId);
+            } else {
+                return this.getUserDataSource(username).getDefaultDataSource();
+            }
+        }
+        return this.currentDataSource;
+    }
     return dataSource;
 });
