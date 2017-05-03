@@ -70,6 +70,11 @@ define([
                     util.html('#__wikiFooter__', footerHtmlContent, $scope);
                 }
 
+                // 页面重载回调
+                // $(window).on("beforeunload", function () {
+                //
+                // });
+
                 // 底部高度自适应
                 var winH=$(window).height();
                 var headerH=52;
@@ -133,47 +138,43 @@ define([
                         data = data || {};
                         // 这三种基本信息根化，便于用户页内模块公用
                         $rootScope.userinfo = data.userinfo;
-                        $rootScope.siteinfo = data.siteinfo;
+                        $rootScope.siteinfo = data.siteinfo || {};
 
-                        var dataSourceId = data.userinfo.dataSourceId;
-                        var pageContent = data.pageContent;
+                        var dataSourceId = data.siteinfo.dataSourceId || data.userinfo.dataSourceId;
+                        var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
                         var themeUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/_theme';
                         var pageUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
 
-                        if (data.siteinfo && data.pageinfo) {
-                            dataSourceId = data.siteinfo.dataSourceId || dataSourceId;
-                            var pageList = angular.fromJson(data.pageinfo.pageinfo || '[]');
-                            for (var i = 0; i < pageList.length; i++) {
-                                if (pageList[i].url == themeUrl) {
-                                    $rootScope.tplinfo = pageList[i];
-                                }
-
-                                if (pageList[i].url == pageUrl) {
-                                    $rootScope.pageinfo = pageList[i];
-                                }
-                            }
-                        }
-
-                        var renderContent = function (content) {
-                            $rootScope.$broadcast('userpageLoaded',{});
-                            content = md.render(content ||  '<div>用户页丢失!!!</div>');
-                            util.html('#__UserSitePageContent__', content, $scope);
-                        };
-
-                        var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
                         userDataSource.init(data.userinfo.dataSource, data.userinfo.dataSourceId);
                         userDataSource.registerInitFinishCallback(function () {
-                            var ds = userDataSource.getDataSourceById(dataSourceId);
-                            ds.getRawContent({path:pageUrl.substring(1) + config.pageSuffixName}, function (data) {
-                                //console.log(data);
-                                renderContent(data);
-                            }, function () {
-                                //console.log(pageContent);
-                                if ($rootScope.pageinfo && $rootScope.pageinfo.content) {
-                                    renderContent($rootScope.pageinfo.content);
-                                } else {
-                                    renderContent(pageContent);
+                            dataSource.setCurrentDataSource(data.userinfo.username, dataSourceId);
+                            var currentDataSource = dataSource.getCurrentDataSource();
+
+                            currentDataSource.getTree({path:'/' + urlObj.username + '/' + urlObj.sitename}, function (pagelist) {
+                                for (var i = 0; i < pagelist.length; i++) {
+                                    if (pagelist[i].url == themeUrl) {
+                                        $rootScope.tplinfo = pagelist[i];
+                                    }
+
+                                    if (pagelist[i].url == pageUrl) {
+                                        $rootScope.pageinfo = pagelist[i];
+                                    }
                                 }
+
+                                var renderContent = function (content) {
+                                    $rootScope.$broadcast('userpageLoaded',{});
+                                    content = md.render(content ||  '<div>用户页丢失!!!</div>');
+                                    util.html('#__UserSitePageContent__', content, $scope);
+                                };
+
+                                currentDataSource.getRawContent({path:pageUrl + config.pageSuffixName}, function (data) {
+                                    //console.log(data);
+                                    renderContent(data);
+                                }, function () {
+                                    renderContent();
+                                });
+                            }, function () {
+                                console.log("获取页列表失败!!!");
                             });
                         });
                     });
@@ -190,7 +191,6 @@ define([
                 var urlObj = $rootScope.urlObj;
                 // 置空用户页面内容
                 console.log(urlObj);
-
                 setWindowTitle(urlObj);
 
                 if (config.mainContent) {

@@ -19,11 +19,9 @@ define(['app',
         // 更改默认数据源
         $scope.changeDefaultDataSource = function () {
             //console.log("change default data source");
-            var user = angular.copy($scope.user);
-            user.dataSource = undefined;
-            user.dataSourceId = parseInt($scope.defaultDataSourceId);
-            util.post(config.apiUrlPrefix + 'user/updateUserInfo', user, function (data) {
-                dataSource.getUserDataSource($scope.user.username).setDefaultDataSourceId(user.dataSourceId);
+            $scope.user.dataSourceId = parseInt($scope.defaultDataSourceId);
+            util.post(config.apiUrlPrefix + 'user/updateUserInfo', $scope.user, function (data) {
+                dataSource.getUserDataSource($scope.user.username).setDefaultDataSourceId($scope.user.dataSourceId);
             });
         };
 

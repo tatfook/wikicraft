@@ -47,37 +47,54 @@ define([
                 typeof errcb == 'function' && errcb(response);
             });
         }
+        
+        gitlab.getLongPath = function (params) {
+            return gitlab.rootPath + (params.path || "");
+        }
 
         gitlab.getCommitUrlPrefix = function (params) {
             params = params || {};
-            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + (params.path || '');
+            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + gitlab.getLongPath(params);
         }
+
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {};
-            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/raw/master' + (params.path || '');
+            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/raw/master' + gitlab.getLongPath(params);
         }
+
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {};
-            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/blob/master' + (params.path || '');
+            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/blob/master' + gitlab.getLongPath(params);
         }
 
         // 获得文件列表
         gitlab.getTree = function (params, cb, errcb) {
             var url = '/projects/' + gitlab.projectId + '/repository/tree';
-            //gitlab.httpRequest("GET", url, {recursive:isRecursive}, cb, errcb);
-            var rootPath = gitlab.rootPath ? gitlab.rootPath.substring(1) : '';
-            var path = params.path || '';
-            params.path = rootPath + path;
+            var path = gitlab.getLongPath(params);
+            params.path = path.substring(1);
+            params.recursive = params.recursive == undefined ? true : params.recursive;
             gitlab.httpRequest("GET", url, params, function (data) {
                 var pagelist = [];
-                for (var i = 0; i < data.length(); i++) {
-                    var page = {url:data[i].path.substring(rootPath.length), pagename:data[i].name};
+                for (var i = 0; i < data.length; i++) {
+                    var path = '/' + data[i].path;
+                    var page = {pagename:data[i].name};
+                    var suffixIndex = path.lastIndexOf(".md");
+                    // 不是md文件不编辑
+                    if (suffixIndex < 0)
+                        continue;
+
+                    page.url = path.substring(gitlab.rootPath.length, path.lastIndexOf('.'));
                     var paths = page.url.split('/');
+                    if (paths.length < 3)
+                        continue;
+
                     page.username = paths[1];
                     page.sitename = paths[2];
+                    page.pagename = paths[paths.length-1];
+
                     pagelist.push(page);
-                    cb && cb(pagelist);
                 }
+                cb && cb(pagelist);
             }, errcb);
         }
 
@@ -90,7 +107,7 @@ define([
 
         // 获取文件操作的url prefix
         gitlab.getFileUrlPrefix = function () {
-            return '/projects/' + gitlab.projectId + '/repository/files' + gitlab.rootPath;
+            return '/projects/' + gitlab.projectId + '/repository/files/';
         }
         // 获取调教信息前缀 commit message prefix
         gitlab.getCommitMessagePrefix = function () {
@@ -99,7 +116,8 @@ define([
 
         // 写文件
         gitlab.writeFile = function (params, cb, errcb) {
-            var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
+            params.path = gitlab.getLongPath(params).substring(1);
+            var url = gitlab.getFileUrlPrefix()  + _encodeURIComponent(params.path);
             params.commit_message = gitlab.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || "master";
             gitlab.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
@@ -112,6 +130,7 @@ define([
 
         // 获取文件
         gitlab.getContent = function (params, cb, errcb) {
+            params.path = gitlab.getLongPath(params).substring(1);
             var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
             params.ref = params.ref || "master";
             gitlab.httpRequest("GET", url, params, function (data) {
@@ -140,6 +159,7 @@ define([
 
         // 删除文件
         gitlab.deleteFile = function (params, cb, errcb) {
+            params.path = gitlab.getLongPath(params).substring(1);
             var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
             params.commit_message =  gitlab.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || 'master';
@@ -154,7 +174,7 @@ define([
             if (!path) {
                 path = 'img_' + (new Date()).getTime();
             }
-            path = 'images/' + path;
+            path = '/images/' + path;
             /*data:image/png;base64,iVBORw0KGgoAAAANS*/
             content = content.split(',');
             if (content.length > 1) {
@@ -175,7 +195,7 @@ define([
                 content: content,
                 encoding: 'base64'
             }, function (data) {
-                cb && cb(gitlab.getRawContentUrlPrefix() + data.file_path);
+                cb && cb(gitlab.getRawContentUrlPrefix() + "/" + data.file_path);
             }, errcb);
         }
 
@@ -197,7 +217,7 @@ define([
             gitlab.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
             gitlab.projectName = dataSource.projectName || gitlab.projectName;
             gitlab.apiBaseUrl = dataSource.apiBaseUrl;
-            gitlab.rawBaseUrl = dataSource.rawBaseUrl;
+            gitlab.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
             gitlab.rootPath = dataSource.rootPath || '';
 
             gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned:true}, function (projectList) {
