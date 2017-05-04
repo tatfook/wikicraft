@@ -125,6 +125,12 @@
       <!--how many seconds to expire user token-->
       <number name='token_expire'>360000</number>
      </table>
+	 <table name='data_source'>
+	  <table name='inner_gitlab'>
+	   <string name='token'>14HUmpCrwfViyxUWQxts</string>
+	   <string name='host'>git.keepwork.com</string>
+	  </table>
+	 </table>
     </table>
     <table name='keepwork.com'>
 	 <table name='wiki'>
