@@ -145,6 +145,17 @@ function website:create(params)
 	return errors:wrap(nil, site)
 end
 
+-- 创建站点
+function website:api_create(params) 
+	if (not params.userId) or (not params.username) or (not params.name) or (not params.dataSourceId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
 -- 删除站点
 function website:delete(params) 
 	local site = self:get(params)

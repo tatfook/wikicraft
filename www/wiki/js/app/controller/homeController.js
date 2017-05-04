@@ -6,8 +6,9 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!html/home.html'
-], function (app, util, storage, htmlContent) {
+    'helper/dataSource',
+    'text!html/home.html',
+], function (app, util, storage, dataSource, htmlContent) {
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
         $scope.goUserSite = function (site) {
@@ -99,11 +100,46 @@ define([
                 console.log("注册成功")
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
-                util.go('home');
+                createTutorialSite(data.userinfo, function () {
+                    util.go('home');
+                }, function () {
+                });
+
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
                 $("#total-err").removeClass("visible-hidden");
+            });
+        }
+
+        // 创建新手引导站点及相关页面
+        function createTutorialSite(userinfo, cb, errcb) {
+            util.post(config.apiUrlPrefix + 'website/create', {
+                "userId": userinfo._id,
+                "username": userinfo.username,
+                "name":"tutorial",
+                "displayName":"新手教程",
+                "dataSourceId": userinfo.dataSourceId,
+            }, function (siteinfo) {
+                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+                userDataSource.init(userinfo.dataSource, userinfo.dataSourceId);
+                userDataSource.registerInitFinishCallback(function () {
+                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
+                    var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
+                    var tutorialPageList = [
+                        {
+                            "pagepath": pagepathPrefix + "index" + config.pageSuffixName,
+                            "contentUrl": "text!html/tutorial/index.md",
+                            "isUploaded": false,    // 是否已上传
+                            "uploadSuccess": false, // 上传成功
+                        }
+                    ];
+
+                    for (var i = 0; i < tutorialPageList.length; i++) {
+
+                    }
+                    currentDataSource.writeFile({});
+                });
             });
         }
 
