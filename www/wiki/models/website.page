@@ -111,8 +111,6 @@ function website:create(params)
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
 	end
 
-	local websiteDomainDB = models.website_domain:new()
-	websiteDomainDB:api_upsert({userId=site.userId,websiteId=site._id,domain=site.username .. '-' .. site.name})	
 	-- create index page by template content 	
 	local templateConfigDB = models.website_template_config:new()
 	local data = templateConfigDB:api_getTemplateStylePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId}).data
