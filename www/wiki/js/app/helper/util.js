@@ -84,15 +84,26 @@ define(['jquery'], function ($) {
         if (username) {
             username = username[1];
             domain = username;
-            sitename = paths.length > 1 ? paths[1] : undefined;
-            pagename = paths.length > 2 ? paths[2] : undefined;
+            username = username.split('-');
+            if (username.length > 1) {
+                sitename = username[1];
+                username = username[0];
+                pagename = paths[paths.length-1];
+                pagepath = '/' + username + '/' + sitename + pathname;
+            } else {
+                username = username[0];
+                sitename = paths.length > 1 ? paths[1] : undefined;
+                pagename = paths[paths.length-1];
+                pagepath = '/' + username + pathname;
+            }
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
             sitename = paths.length > 2 ? paths[2] : undefined;
             pagename = paths.length > 3 ? paths[3] : undefined;
+            pagepath = pathname;
         }
 
-        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname};
+        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname, pagepath: pagepath};
     }
 
     util.setLastUrlObj = function (urlObj) {
@@ -252,5 +263,7 @@ define(['jquery'], function ($) {
     util.isWikiEditorPage = function () {
         return util.parseUrl().pathname == '/wiki/wikiEditor';
     }
+
+    config = util;
     return util;
 });

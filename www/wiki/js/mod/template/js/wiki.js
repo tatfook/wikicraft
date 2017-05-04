@@ -67,13 +67,13 @@ define([
                 }
                 var ds = DataSource.getDataSourceById(dataSourceId);
                 var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.websiteName + '/';
-                ds.getContent({path: pathPrefix + '_header'}, function (content) {
+                ds.getRawContent({path: pathPrefix + '_header' + config.pageSuffixName}, function (content) {
                     util.html('#_headerPageContentId', headerPageMD.render(content||''), $scope);
                 });
-                ds.getContent({path: pathPrefix + '_sidebar'}, function (content) {
+                ds.getRawContent({path: pathPrefix + '_sidebar' + config.pageSuffixName}, function (content) {
                     util.html('#_sidebarPageContentId', sidebarPageMD.render(content||''), $scope);
                 });
-                ds.getContent({path: pathPrefix + '_footer'}, function (content) {
+                ds.getRawContent({path: pathPrefix + '_footer' + config.pageSuffixName}, function (content) {
                     util.html('#_footerPageContentId', footerPageMD.render(content||''), $scope);
                 });
             }

@@ -68,9 +68,7 @@
     };
     function initConfig() {
         var hostname = window.location.hostname;
-        if (config.islocalWinEnv()) {
-            hostname = "localhost:8900";
-        }
+
         if (!config.isLocal() && !config.isOfficialDomain()) {
             for (var i = 0; i < config.officialDomainList.length; i++) {
                 if (hostname.indexOf(config.officialDomainList[i]) >= 0) {
@@ -78,7 +76,11 @@
                 }
             }
         }
-        config.apiHost = window.location.hostname + window.location.host.substring(window.location.hostname.length);
+        if (config.islocalWinEnv()) {
+            config.apiHost = "localhost:8900";
+        } else {
+            config.apiHost = hostname + window.location.host.substring(window.location.hostname.length);
+        }
         config.apiUrlPrefix = 'http://' + config.apiHost + '/api/wiki/models/';
     }
 
@@ -129,7 +131,7 @@
     }
 
     config.loadMainContent = function(cb, errcb) {
-        var pathname = window.location.pathname;
+        var pathname = util.parseUrl().pagepath || window.location.pathname;
         if(config.islocalWinEnv()) {
             pathname = window.location.hash ? window.location.hash.substring(1) : '/';
         }

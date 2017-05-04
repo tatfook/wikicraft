@@ -23,6 +23,9 @@ define([
     'factory/github',
     'factory/gitlab',
     'factory/modal',
+
+    // helper
+    'helper/util',
 ], function () {
     return {};
 });
