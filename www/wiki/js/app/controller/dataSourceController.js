@@ -37,6 +37,7 @@ define(['app',
                 $scope.errMsg = "内置数据源不可更改!!!";
                 return;
             }
+
             $scope.errMsg = "";
 
             util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function () {

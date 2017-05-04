@@ -84,17 +84,20 @@ define(['jquery'], function ($) {
         if (username) {
             username = username[1];
             domain = username;
-            username = username.split('-');
+            var splitIndex = username.indexOf('-');
             if (username.length > 1) {
-                sitename = username[1];
-                username = username[0];
+                sitename = username.substring(splitIndex + 1);
+                username = username.substring(0, splitIndex);
                 pagename = paths[paths.length-1];
                 pagepath = '/' + username + '/' + sitename + pathname;
             } else {
-                username = username[0];
                 sitename = paths.length > 1 ? paths[1] : undefined;
                 pagename = paths[paths.length-1];
                 pagepath = '/' + username + pathname;
+            }
+            if (!pagename) {
+                pagename = "index";
+                pagepath += pagename;
             }
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
@@ -264,6 +267,6 @@ define(['jquery'], function ($) {
         return util.parseUrl().pathname == '/wiki/wikiEditor';
     }
 
-    config = util;
+    config.util = util;
     return util;
 });

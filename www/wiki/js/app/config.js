@@ -131,7 +131,7 @@
     }
 
     config.loadMainContent = function(cb, errcb) {
-        var pathname = util.parseUrl().pagepath || window.location.pathname;
+        var pathname = config.util.parseUrl().pagepath || window.location.pathname;
         if(config.islocalWinEnv()) {
             pathname = window.location.hash ? window.location.hash.substring(1) : '/';
         }
