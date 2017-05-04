@@ -185,7 +185,7 @@
                         <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addDomain()">添加</div>
                         <div class="col-sm-12 cname-list">
                             <div ng-show="!x.isDelete" ng-repeat="x in domainList" class="">
-                                <span>{{x.domain}}.keepwork.com</span>
+                                <span>{{x.domain}}</span>
                                 <span class="glyphicon glyphicon-remove" ng-click="removeDomain(x)" data-removeid="{{x.cname}}"></span>
                             </div>
                         </div>

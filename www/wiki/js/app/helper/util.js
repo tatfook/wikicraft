@@ -73,7 +73,8 @@ define(['jquery'], function ($) {
         var username = config.isOfficialDomain(hostname) ? undefined : hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
         var sitename = '';
         var pagename = '';
-        var domain = undefined;
+        var pagepath = '';
+        var domain = '';
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
@@ -83,7 +84,6 @@ define(['jquery'], function ($) {
         var paths = pathname.split('/');
         if (username) {
             username = username[1];
-            domain = username;
             var splitIndex = username.indexOf('-');
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
@@ -105,6 +105,7 @@ define(['jquery'], function ($) {
             pagename = paths.length > 3 ? paths[3] : undefined;
             pagepath = pathname;
         }
+        domain = hostname;
 
         return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname, pagepath: pagepath};
     }
