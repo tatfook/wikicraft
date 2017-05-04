@@ -79,8 +79,8 @@
         if (config.islocalWinEnv()) {
             config.apiHost = "localhost:8900";
         } else {
-            //config.apiHost = hostname + window.location.host.substring(window.location.hostname.length);
-            config.apiHost = "dev.keepwork.com"; // debug use
+            config.apiHost = hostname + window.location.host.substring(window.location.hostname.length);
+            //config.apiHost = "dev.keepwork.com"; // debug use
         }
         config.apiUrlPrefix = 'http://' + config.apiHost + '/api/wiki/models/';
     }
