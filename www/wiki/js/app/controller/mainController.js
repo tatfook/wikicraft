@@ -18,7 +18,7 @@ define([
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab) {
             console.log("mainController");
-
+            
             // 初始化基本信息
             function initBaseInfo() {
                 //配置一些全局服务
@@ -68,6 +68,12 @@ define([
                 }
                 if ($rootScope.frameFooterExist) {
                     util.html('#__wikiFooter__', footerHtmlContent, $scope);
+                }
+                
+                $rootScope.getBodyStyle = function () {
+                    return {
+                        "padding-top": $rootScope.frameHeaderExist ? "56px" : "0px",
+                    };
                 }
 
                 // 页面重载回调

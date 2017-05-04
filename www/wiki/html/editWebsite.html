@@ -166,14 +166,14 @@
                 <div class="form-group form-group-lg">
                     <label for="webName" class="col-sm-2 control-label">站点名称：</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="webName" ng-model="website.name" disabled>
+                        <input type="text" class="form-control" id="webName" ng-model="website.displayName">
                     </div>
                 </div>
                 <div class="form-group form-group-lg">
                     <label class="col-sm-2 control-label">独立域名：</label>
                     <div class="col-sm-5 user-domain">
-                        <input class="form-control" type="text" ng-model="website.domain" ng-blur="checkDomain()">
-                        <div>{{website.username + "-" + website.domain +".keepwork.com"}}</div>
+                        <input class="form-control" type="text" ng-model="website.name" ng-blur="checkDomain()" disabled>
+                        <div>{{website.username + "-" + website.name +".keepwork.com"}}</div>
                     </div>
                 </div>
                 <div class="form-group form-group-lg" id="cnameBox">

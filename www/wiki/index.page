@@ -11,7 +11,8 @@
     <link href="/wiki/assets/css/main.css" rel="stylesheet">
 </head>
 
-<body>
+<body ng-style="getBodyStyle()">
+
 <div ng-controller="mainController">
     <!--头部-->
     <div ng-show="frameHeaderExist">

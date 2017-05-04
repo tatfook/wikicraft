@@ -85,7 +85,7 @@ define(['jquery'], function ($) {
             username = username[1];
             domain = username;
             var splitIndex = username.indexOf('-');
-            if (username.length > 1) {
+            if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
                 username = username.substring(0, splitIndex);
                 pagename = paths[paths.length-1];

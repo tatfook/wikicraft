@@ -196,10 +196,7 @@ define([
                     $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
                 }
-                //console.log("render wiki block:" + wikiBlock.cmdName);
-                blockCache.renderContent = util.compile(htmlContent);
-                $('#' + blockCache.containerId).html(blockCache.renderContent);
-                //util.html('#' + blockCache.containerId).html(htmlContent);
+                util.html('#' + blockCache.containerId, htmlContent);
                 blockCache.domNode = $('#' + blockCache.containerId);
                 if (block.isTemplate) {
                     setMdWikiContent(mdwiki);
@@ -258,14 +255,12 @@ define([
                 //console.log("load and render block");
                 renderWikiBlock(mdwiki, block);
             } else {
-                $('#' + blockCache.containerId).html(blockCache.renderContent);
+                util.html('#' + blockCache.containerId, blockCache.renderContent);
             }
         }
         $(tempSelector).empty();
         //console.log($(selector), $(tempSelector), blockList);
-        setTimeout(function () {
-            util.getAngularServices().$rootScope.$apply();
-        })
+        util.$apply();
     }
 
     function isExistTemplate(mdwiki, text) {
@@ -328,7 +323,8 @@ define([
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         if (!existTemplate && tplinfo && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getCurrentDataSource();
-            currentDataSource.getContent({path:tplinfo.url + config.pageSuffixName}, function (content) {
+            currentDataSource.getRawContent({path:tplinfo.url + config.pageSuffixName}, function (content) {
+                //console.log(content);
                 text = content + '\n' + text;
                 mdwiki.templateLineCount = content.split('\n').length;
                 _render();
@@ -487,7 +483,6 @@ define([
                 }
                 if (!blockCache.isUsing) {  // 返回一个未被使用缓存块
                     blockCache.isUsing = true;
-                    //console.log(blockCache.renderContent);
                     return blockCache;
                 }
             }
@@ -496,12 +491,11 @@ define([
             blockCache = {
                 containerId: idx,
                 htmlContent: htmlContent,
-                renderContent: util.compile(mdwiki.md.render(text)),
+                renderContent: mdwiki.md.render(text),
                 isUsing: true,
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
-            //console.log(blockCache.renderContent);
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;

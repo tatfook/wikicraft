@@ -645,8 +645,8 @@ define([
                     //TODO currentDataSource.getRawContent({path:url}, function (data) {
                     //console.log(currentDataSource);
                     if (currentDataSource) {
-                        currentDataSource.getContent({path: url + pageSuffixName}, function (data) {
-                            console.log(data);
+                        currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
+                            //console.log(data);
                             cb && cb(data);
                         }, function (data) {
                             //console.log("-------------------------------");
