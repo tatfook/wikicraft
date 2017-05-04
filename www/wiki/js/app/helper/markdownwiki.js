@@ -4,9 +4,10 @@
 
 define([
     'helper/util',
+    'helper/dataSource',
     'markdown-it',
     'highlight',
-], function (util, markdownit, hljs) {
+], function (util, dataSource, markdownit, hljs) {
     var mdwikiMap = {
         count: 0,    // markdownwiki 数量
     };
@@ -297,38 +298,46 @@ define([
         var siteinfo = util.getAngularServices().$rootScope.siteinfo;
         var pageinfo = util.getAngularServices().$rootScope.pageinfo;
         var tplinfo = util.getAngularServices().$rootScope.tplinfo;
-
         var existTemplate = isExistTemplate(mdwiki, text);
         mdwiki.templateLineCount = 0;
         mdwiki.template = undefined;
 
-        // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
-        if (!existTemplate && tplinfo && tplinfo.content && pageinfo.name[0] != "_" && mdwiki.options.use_template) {
-            text = tplinfo.content + '\n' + text;
-            mdwiki.templateLineCount = tplinfo.content.split('\n').length;
-        }
-
-        var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
-        for (var i = 0; i < blockList.length; i++) {
-            blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
-            blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
-        }
-
-        if (mdwiki.template) {
-            if (mdwiki.templateLineCount) {
-                mdwiki.template.isPageTemplate = false;
-            } else {
-                mdwiki.template.isPageTemplate = true;
+        var _render = function () {
+            var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
+            for (var i = 0; i < blockList.length; i++) {
+                blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
+                blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
             }
-            //console.log(mdwiki.template.isPageTemplate);
+
+            if (mdwiki.template) {
+                if (mdwiki.templateLineCount) {
+                    mdwiki.template.isPageTemplate = false;
+                } else {
+                    mdwiki.template.isPageTemplate = true;
+                }
+            }
+
+            if (!mdwiki.template || mdwiki.template.blockCache.domNode) {// 模板不存在 且默认模板也不存在
+                setMdWikiContent(mdwiki);
+                return;
+            }
+
+            renderWikiBlock(mdwiki, mdwiki.template);
         }
 
-        if (!mdwiki.template || mdwiki.template.blockCache.domNode) {// 模板不存在 且默认模板也不存在
-            setMdWikiContent(mdwiki);
-            return;
+        // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
+        if (!existTemplate && tplinfo && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
+            var currentDataSource = dataSource.getCurrentDataSource();
+            currentDataSource.getContent({path:tplinfo.url}, function (content) {
+                text = content + '\n' + text;
+                mdwiki.templateLineCount = content.split('\n').length;
+                _render();
+            }, function () {
+                _render();
+            })
+        } else {
+            _render();
         }
-
-        renderWikiBlock(mdwiki, mdwiki.template);
     }
 
     // 新建mdwiki编辑器

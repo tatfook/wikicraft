@@ -9,15 +9,14 @@
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
     var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
-    var officialDomain = wiki_config.officialDomain || "keepwork.com";
     config = {
         // --------------------------------------前端配置 START----------------------------------------------
         localEnv:localEnv,                                                                                         // 是否本地调试环境
         localVMEnv:localVMEnv,                                                                                     // 本地虚拟机环境
         hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,      //  url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
-        officialDomain:officialDomain,                                                                            // 官方域名 因存在用户官方子域名和其它域名 故需记录
+        officialDomainList:["keepwork.com", "qiankunew.com"],                                                    // 官方域名 因存在用户官方子域名和其它域名 故需记录
         officialSubDomainList:[                                                                                  // 官方占用的子域名列表
-            "dev." + officialDomain,
+            "dev.keepwork.com",
         ],
         // 预加载模块列表
         preloadModuleList:[
@@ -65,23 +64,22 @@
         // bust version
         bustVersion: wiki_config.bustVersion,
 
-        dataSource:{
-            innerGitlab:{
-                host:wiki_config.dataSource && wiki_config.dataSource.innerGitlab.host,
-            }
-        },
         // --------------------------------------后端配置 END-------------------------------------
     };
     function initConfig() {
-        var domain = window.location.host;
+        var hostname = window.location.hostname;
         if (config.islocalWinEnv()) {
-            domain = "localhost:8900";
+            hostname = "localhost:8900";
         }
         if (!config.isLocal() && !config.isOfficialDomain()) {
-            domain = config.officialDomain;
+            for (var i = 0; i < config.officialDomainList.length; i++) {
+                if (hostname.indexOf(config.officialDomainList[i]) >= 0) {
+                    hostname = config.officialDomainList[i];
+                }
+            }
         }
-        config.apiHost = domain;
-        config.apiUrlPrefix = 'http://' + domain + '/api/wiki/models/';
+        config.apiHost = window.location.hostname + window.location.host.substring(window.location.hostname.length);
+        config.apiUrlPrefix = 'http://' + config.apiHost + '/api/wiki/models/';
     }
 
     //-----------------------------helper function-----------------------------------
@@ -89,8 +87,10 @@
         hostname = hostname || window.location.hostname;
         hostname = hostname.split(':')[0];
 
-        if (config.officialDomain == hostname)
-            return true;
+        for (var i = 0; i < config.officialDomainList.length; i++) {
+            if (config.officialDomainList[i] == hostname)
+                return true;
+        }
 
         for (var i = 0; i < config.officialSubDomainList.length; i++) {
             if (config.officialSubDomainList[i] == hostname)

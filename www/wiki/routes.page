@@ -158,13 +158,9 @@ function RenderServerWikiScript()
 	local siteConfig = wiki_config()
 	--log(siteConfig)
 	local config = {}
-	config.officialDomain = "keepwork.com"
 	config.hostname = request:GetHost()
 	config.bustVersion = getBustVersion()
 	-- config.bustVersion = os.time()
-	config.dataSource = {}
-	config.dataSource.innerGitlab = {}
-	config.dataSource.innerGitlab.host = siteConfig.data_source.inner_gitlab.host
 	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
 	echo(format('\t<script src="/wiki/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
 	echo(format('\t<script data-main="/wiki/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js"></script>\n', config.bustVersion))
