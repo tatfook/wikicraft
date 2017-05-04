@@ -212,7 +212,6 @@ define([
                     if (urlObj.domain) {
                         util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
                             if (data) {
-                                urlObj.pagename = urlObj.sitename;
                                 urlObj.username = data.username;
                                 urlObj.sitename = data.name;
                             }
