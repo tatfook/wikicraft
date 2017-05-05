@@ -257,11 +257,11 @@
                         <!-- Tab panes -->
                         <div class="tab-content website-model col-sm-10">
                             <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
-                                <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateId == template._id ? 'active' : ''">
-                                    <img ng-src="{{template.logoUrl || imgsPath + 'wiki_works.jpg'}}" ng-click="selectTemplate(template)" alt="">
+                                <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''">
+                                    <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-md-12 btn-group">
                                         <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
-                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateId == template._id ? 'active' : ''">选择</div>
+                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
                                         </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
@@ -273,7 +273,7 @@
                     <h4>选择美术效果：</h4>
                     <div class="website-model">
                         <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''">
-                            <img ng-src="{{ style.logoUrl || imgsPath + 'wiki_works.jpg'}}" ng-click="selectTemplate(template)" alt="">
+                            <img ng-src="{{ imgsPath + (style.logoUrl || 'wiki_works.jpg') }}" ng-click="selectTemplate(template)" alt="">
                             <div class="col-md-12 btn-group">
                                 <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style)">预览</div>
                                 <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)" ng-class="website.styleId == style._id ? 'active' : ''">选择</div>
@@ -299,14 +299,14 @@
                     <div class="col-sm-6">
                         功能模板：
                         <div class="label-img">
-                            <img ng-src="{{template.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <img ng-src="{{ imgsPath + (template.logoUrl || 'wiki_works.jpg') }}" alt="">
                             <div class="label">{{website.templateName}}</div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         美术模板：
                         <div class="label-img">
-                            <img ng-src="{{style.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <img ng-src="{{ imgsPath + (style.logoUrl || 'wiki_works.jpg') }}" alt="">
                             <div class="label">{{website.styleName}}</div>
                         </div>
                     </div>
@@ -321,7 +321,7 @@
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 7" class="btn btn-primary btn-prev" ng-click="prevStep()">上一步</button>
+                <button ng-show="step > 1 && step < 7" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
                 <button ng-show="step < 7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 6 ? '确认' : '下一步'}}</button>
                 <button ng-show="step==7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">完成</button>
             </div>

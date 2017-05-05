@@ -28,7 +28,7 @@
 
 可用以下URL访问你创建好的网页：
 
-[keepwork.com/用户名/站点名](http://keepwork.com)?? 或 ??[用户名-站点名.keepwork.com](http://keepwork.com)
+[keepwork.com/用户名/站点名](http://keepwork.com) 或 [用户名-站点名.keepwork.com](http://keepwork.com)
 
 可在以下图中所示地区查看URL地址：
 ![](http://keepwork.com/wiki/assets/imgs/tutorial/02.png)
@@ -58,4 +58,3 @@
 保存方式：快捷方式(ctrl+s)  或  点击工具栏保存按钮（如下图）
 
 ![](http://keepwork.com/wiki/assets/imgs/tutorial/06.png)
-

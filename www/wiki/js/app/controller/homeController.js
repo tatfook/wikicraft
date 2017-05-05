@@ -40,6 +40,12 @@ define([
             util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount', filterType:'personal'}, function (data) {
                 $scope.personalSiteObj = data;
             });
+
+            // Account.getUser(function (userinfo) {
+            //    createTutorialSite(userinfo, function () {
+            //        console.log("-------finish-----------");
+            //    });
+            // });
         }
 
         $scope.goRegisterPage = function () {
@@ -114,33 +120,44 @@ define([
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {
-            util.post(config.apiUrlPrefix + 'website/create', {
+            util.post(config.apiUrlPrefix + 'website/upsert', {
                 "userId": userinfo._id,
                 "username": userinfo.username,
                 "name":"tutorial",
                 "displayName":"新手教程",
                 "dataSourceId": userinfo.dataSourceId,
+                "categoryName": "个人站点",
+                "templateName": "教学模板",
+                "styleName": "默认样式",
             }, function (siteinfo) {
                 var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                userDataSource.init(userinfo.dataSource, userinfo.dataSourceId);
                 userDataSource.registerInitFinishCallback(function () {
                     var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
+                    //console.log(currentDataSource, siteinfo);
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var tutorialPageList = [
                         {
                             "pagepath": pagepathPrefix + "index" + config.pageSuffixName,
                             "contentUrl": "text!html/tutorial/index.md",
-                            "isUploaded": false,    // 是否已上传
-                            "uploadSuccess": false, // 上传成功
                         }
                     ];
+                    var fnList = [];
 
                     for (var i = 0; i < tutorialPageList.length; i++) {
-
+                        fnList.push((function (index) {
+                            return function (finish) {
+                                require([tutorialPageList[index].contentUrl], function (content) {
+                                    currentDataSource.writeFile({path:tutorialPageList[index].pagepath, content:content}, finish, finish);
+                                }, function () {
+                                    finish && finish();
+                                });
+                            }
+                        })(i));
                     }
-                    currentDataSource.writeFile({});
+
+                    util.batchRun(fnList, cb);
                 });
-            });
+            }, errcb);
         }
 
         //判断账号是否已存在（登录还是注册）

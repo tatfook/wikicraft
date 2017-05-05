@@ -57,37 +57,9 @@ function website:ctor()
 	self:addfield("dataSourceId", "number")
 end
 
--- 获取站点
-function website:get(params)
-	local query = util:formatQuery(params)
-	query.name = params and params.name  -- primary key
-
-	self:db():find(query, resume)
-	local err, data = yield()
-	
-	if err then
-		return errors:wrap(err, data)
-	end
-
-	return {error=errors.SUCCESS, data=data}
-end
-
--- 获得用户的个人站点
-function website:api_getPersonalSiteByUserId(params)
-	if not params.userId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():findOne({["+userId+categoryId"]={params.userId, 0}}, resume)
-	
-	return errors:wrap(yield())
-end
-
 -- 创建站点
 function website:create(params) 
-	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	local err, params = self:validateQuery(params)
-	if err or (not params.userId) or (not params.name) then 
+	if (not params.userId) or (not params.name) then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -97,47 +69,19 @@ function website:create(params)
 	if not userinfo then 
 		return errors:wrap(errors.NOT_FOUND)
 	end
-	userDB:updateWebsiteCount(userinfo._id, 1)
 
 	params.favoriteCount = 0
 	params.visitCount = 0
 	params.pageCount = 1
 	params.memberCount = 1
 	params.dataSourceId = userinfo.dataSourceId
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
 	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)	
 	local _, site = yield()
 	if not site then
 		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
 	end
-
-	-- create index page by template content 	
-	local templateConfigDB = models.website_template_config:new()
-	local data = templateConfigDB:api_getTemplateStylePage({categoryId=params.categoryId, templateId=params.templateId,styleId=params.styleId}).data
-	data = data or {content="", theme=""}
-	
-	-- 创建功能模板页
-	local indexPage = {}
-	indexPage.name = "index"
-	indexPage.url = "/" .. params.username .. '/' ..  site.name .. '/' .. indexPage.name
-	indexPage.username = params.username
-	indexPage.websiteName = params.name
-	indexPage.websiteId = site._id
-	indexPage.userId = params.userId
-	indexPage.content = data.content or ""
-	
-	local themePage = commonlib.copy(indexPage)
-	themePage.name = "_theme"
-	themePage.url = "/" .. params.username .. '/' ..  site.name .. '/' .. themePage.name
-	themePage.content = data.theme or ""	
-
-	local websitePageDB = models.website_page:new()
-	websitePageDB:api_upsert({url=indexPage.url, content=indexPage.content})
-	websitePageDB:api_upsert({url=themePage.url, content=themePage.content})
-
-	local pageinfo = commonlib.Json.Encode({indexPage, themePage})	
-	local websitePageinfoDB = models.website_pageinfo:new()
-	websitePageinfoDB:api_upsert({username=site.username, websiteName=site.name, dataSourceId=site.dataSourceId, pageinfo=pageinfo})	
 	
 	local websiteMemberDB = models.website_member:new()
 	websiteMemberDB:api_upsert({websiteId=site._id, userId=userinfo._id, roleId=const.WEBSITE_USER_ROLE_ADMIN})
@@ -146,31 +90,23 @@ function website:create(params)
 end
 
 -- 创建站点
-function website:api_create(params) 
+function website:api_upsert(params) 
 	if (not params.userId) or (not params.username) or (not params.name) or (not params.dataSourceId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
+	local _, site = yield()
 
-	return errors:wrap(yield())
-end
-
--- 删除站点
-function website:delete(params) 
-	local site = self:get(params)
-	if (not site.data) or (not site.data[1]) then
-		return self:get()
+	if not site then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
-	site = site.data[1]
 
-	self._super.delete(self, params)
-	local website_pages = models.website_pages:new()
-	-- 删除该网站上所有页
-	website_pages:db():delete({websiteName=site.name})
+	-- 设置站点管理员
+	local websiteMemberDB = models.website_member:new()
+	websiteMemberDB:api_upsert({websiteId=site._id, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
 
-	return self:get()
+	return errors:wrap(nil, site)
 end
 
 -- 删除一个站点
@@ -224,7 +160,7 @@ function website:api_deleteById(params)
 		
 	self:deleteById(websiteId)
 
-	return self:api_getByUserId({userId=userId})
+	return errors:wrap(nil)
 end
 
 -- 删除用户的所有站点
@@ -243,41 +179,14 @@ function website:deleteUserWebsite(userId)
 end
 
 -- 更新站点
-function website:update(params) 
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	local err, params = self:validateQuery(params)
-	if err then 
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():updateOne({name=params.name}, params, resume)
-	local err, data = yield()
-	return self:get()
-end
-
--- 更新站点
 function website:api_updateWebsite(params) 
 	self:ensureAuthenticated()
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	local err, params = self:validateQuery(params)
-	if err then 
+	if not params._id then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
 	params.name = nil   -- 防止名字被改
-	
-	local site = self:api_getById({websiteId=params._id}).data
-	if not site then
-		return errors:wrap(errors.NOT_FOUND)
-	end
-
-	if params.domain and params.domain ~= "" and site.domain ~= params.domain then
-		local websiteDomainDB = models.website_domain:new()
-		if site.domain then
-			 websiteDomainDB:api_deleteByDomain({domain=site.username .. "-" .. site.domain})
-		end
-		websiteDomainDB:api_upsert({userId=site.userId, websiteId=site._id, domain=site.username .. "-" .. params.domain})	
-	end
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
 	self:db():updateOne({_id=params._id}, params, resume)
 
@@ -375,7 +284,7 @@ function website:api_addVisitNum(params)
 		return {error=errors.SERVER_INNER_ERROR, data=nil}
 	end
 
-	site.visitCount = site.visitCount + 1
+	site.visitCount = (site.visitCount or 0) + 1
 	self:update(site)
 		
 	return errors:wrap(nil)	

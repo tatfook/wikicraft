@@ -37,7 +37,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="website in websites">
+                <tr ng-repeat="website in websites" ng-hide="website.isDelete">
                     <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.displayName || website.name}}</a></td>
                     <td>{{website.desc}}</td>
                     <!--<td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>-->

@@ -268,6 +268,37 @@ define(['jquery'], function ($) {
         return util.parseUrl().pathname == '/wiki/wikiEditor';
     }
 
+    // 执行批量
+    util.batchRun = function(fnList,finish) {
+        var isCall = [];
+        var _isFinish = function () {
+            if (isCall.length != fnList.length)
+                return false;
+
+            for (var i = 0; i < isCall.length; i++) {
+                if (!isCall[i])
+                    return false;
+            }
+
+            finish && finish();
+            return true;
+        }
+
+        var _finish = function (index) {
+            isCall[index] = true;
+            _isFinish();
+        }
+
+        for (var i = 0; i < fnList.length; i++) {
+            isCall.push(false);
+            (function (index) {
+                fnList[index] && (fnList[index])(function () {
+                    _finish(index);
+                });
+            })(i);
+        }
+    }
+
     config.util = util;
     return util;
 });

@@ -6,9 +6,10 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/siteStyle',
     'text!html/newWebsite.html',
     'controller/editWebsiteController',
-], function (app, util, storage, htmlContent, editWebsiteHtmlContent) {
+], function (app, util, storage, siteStyle, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', function ($rootScope, $scope, $sce, Account) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
@@ -20,6 +21,43 @@ define([
         $scope.subCategories = [];
         $scope.step = 1;
         $scope.nextStepDisabled = !$scope.website.name;
+
+        function createSite(siteinfo, cb , errcb) {
+            siteinfo.userId = $scope.user._id;
+            siteinfo.username = $scope.user.username;
+            siteinfo.dataSourceId = $scope.user.dataSourceId;
+
+            util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
+                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+                userDataSource.registerInitFinishCallback(function () {
+                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
+                    var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
+                    var contentUrlPrefix = "text!html/"
+                    var contentPageList = [];
+                    for (var i = 0; i < $scope.style.contents.length; i++) {
+                        var content = $scope.style.contents[i];
+                        contentPageList.push({
+                            "pagepath": pagepathPrefix + content.pagepath + config.pageSuffixName,
+                            "contentUrl": contentUrlPrefix + content.contentUrl,
+                        });
+                    }
+                    var fnList = [];
+                    for (var i = 0; i < contentPageList.length; i++) {
+                        fnList.push((function (index) {
+                            return function (finish) {
+                                require([contentPageList[index].contentUrl], function (content) {
+                                    currentDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, finish, finish);
+                                }, function () {
+                                    finish && finish();
+                                });
+                            }
+                        })(i));
+                    }
+
+                    util.batchRun(fnList, cb);
+                });
+            }, errcb);
+        }
 
         $scope.nextStep = function () {
             $scope.errMsg = "";
@@ -43,8 +81,8 @@ define([
                         return;
                     }
                     $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-                    util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: $scope.website.name}, function (data) {
-                        if (data == 0) {
+                    util.http('POST', config.apiUrlPrefix + 'website/getByName', {username:$scope.user.username, websiteName: $scope.website.name}, function (data) {
+                        if (data) {
                             $scope.errMsg = $scope.website.name + "已存在，请换个名字";
                         } else {
                             $scope.step++;
@@ -53,15 +91,15 @@ define([
                 }
                 return;
             } else if ($scope.step == 3) {
-                $scope.nextStepDisabled = !$scope.website.templateId;
+                $scope.nextStepDisabled = !$scope.website.templateName;
             } else if ($scope.step == 4) {
-                if (!$scope.website.templateId) {
+                if (!$scope.website.templateName) {
                     $scope.errMsg = "请选择站点类型和模板";
                     return;
                 }
-                $scope.nextStepDisabled = !$scope.website.styleId;
+                $scope.nextStepDisabled = !$scope.website.styleName;
             } else if ($scope.step == 5) {
-                if (!$scope.website.styleId) {
+                if (!$scope.website.styleName) {
                     $scope.errMsg = "请选择模板样式";
                     return ;
                 }
@@ -69,9 +107,16 @@ define([
                 $scope.website.userId = $scope.user._id;
                 $scope.website.username = $scope.user.username;
 
-                util.http('PUT', config.apiUrlPrefix + "website/new", $scope.website, function (data) {
-                    $scope.website = data;
+                //$scope.errMsg = "建站中...";
+                $scope.prevStepDisabled = true;
+                $scope.nextStepDisabled = true;
+                createSite($scope.website, function () {
                     $scope.step++;
+                    $scope.prevStepDisabled = false;
+                    $scope.nextStepDisabled = false;
+                }, function () {
+                    $scope.prevStepDisabled = false;
+                    $scope.nextStepDisabled = true;
                 });
                 return
             } else{
@@ -88,42 +133,54 @@ define([
 
         function init() {
             //util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
-            util.http('POST', config.apiUrlPrefix + 'website_template_config', {}, function (data) {
-                $scope.categories = data;
-                for (var i = 0; $scope.categories && i < $scope.categories.length; i++) {
-                    var cateory = $scope.categories[i];
-                    for (var j = 0; j < cateory.templates.length; j++) {
-                        var template = cateory.templates[j];
-                        template.content = $sce.trustAsHtml(template.content);
-                        for (var k = 0; k < template.styles.length; k++) {
-                            var style = template.styles[k];
-                            style.content = $sce.trustAsHtml(style.content);
-                        }
-                    }
-                    if ($scope.website.categoryId == $scope.categories[i]._id) {
-                        $scope.templates = $scope.categories[i].templates;
-                    }
-                }
-
-                for (var i = 0; $scope.templates && i < $scope.templates.length; i++) {
-                    if ($scope.website.templateId == $scope.templates[i]._id) {
-                        $scope.styles = $scope.templates[i].styles;
-                        break;
-                    }
-                }
-
-                $scope.templates = $scope.categories[0].templates;
-                $scope.styles = $scope.templates[0].styles;
-                $scope.website.categoryId = $scope.categories[0]._id;
-                $scope.website.categoryName = $scope.categories[0].name;
-                $scope.website.templateId = $scope.templates[0]._id;
-                $scope.website.templateName = $scope.templates[0].name;
-                $scope.website.styleId = $scope.styles[0]._id;
-                $scope.website.styleName = $scope.styles[0].name;
-                $scope.category = $scope.categories[0];
-                $scope.template = $scope.templates[0];
-                $scope.style = $scope.styles[0];
-            });
+            //util.http('POST', config.apiUrlPrefix + 'website_template_config', {}, function (data) {
+            //     $scope.categories = data;
+            //     for (var i = 0; $scope.categories && i < $scope.categories.length; i++) {
+            //         var cateory = $scope.categories[i];
+            //         for (var j = 0; j < cateory.templates.length; j++) {
+            //             var template = cateory.templates[j];
+            //             template.content = $sce.trustAsHtml(template.content);
+            //             for (var k = 0; k < template.styles.length; k++) {
+            //                 var style = template.styles[k];
+            //                 style.content = $sce.trustAsHtml(style.content);
+            //             }
+            //         }
+            //         if ($scope.website.categoryId == $scope.categories[i]._id) {
+            //             $scope.templates = $scope.categories[i].templates;
+            //         }
+            //     }
+            //
+            //     for (var i = 0; $scope.templates && i < $scope.templates.length; i++) {
+            //         if ($scope.website.templateId == $scope.templates[i]._id) {
+            //             $scope.styles = $scope.templates[i].styles;
+            //             break;
+            //         }
+            //     }
+            //
+            //     $scope.templates = $scope.categories[0].templates;
+            //     $scope.styles = $scope.templates[0].styles;
+            //     $scope.website.categoryId = $scope.categories[0]._id;
+            //     $scope.website.categoryName = $scope.categories[0].name;
+            //     $scope.website.templateId = $scope.templates[0]._id;
+            //     $scope.website.templateName = $scope.templates[0].name;
+            //     $scope.website.styleId = $scope.styles[0]._id;
+            //     $scope.website.styleName = $scope.styles[0].name;
+            //     $scope.category = $scope.categories[0];
+            //     $scope.template = $scope.templates[0];
+            //     $scope.style = $scope.styles[0];
+            // });
+            $scope.categories = siteStyle;
+            $scope.templates = $scope.categories[0].templates;
+            $scope.styles = $scope.templates[0].styles;
+            $scope.website.categoryId = $scope.categories[0]._id;
+            $scope.website.categoryName = $scope.categories[0].name;
+            $scope.website.templateId = $scope.templates[0]._id;
+            $scope.website.templateName = $scope.templates[0].name;
+            $scope.website.styleId = $scope.styles[0]._id;
+            $scope.website.styleName = $scope.styles[0].name;
+            $scope.category = $scope.categories[0];
+            $scope.template = $scope.templates[0];
+            $scope.style = $scope.styles[0];
         }
 
         // 文档加载完成
@@ -134,7 +191,7 @@ define([
         }
 
         $scope.getActiveStyleClass = function (category) {
-            return category._id == $scope.website.categoryId ? 'active' : '';
+            return category.name == $scope.website.categoryName ? 'active' : '';
         }
 
         $scope.selectCategory = function (category) {
