@@ -40,6 +40,19 @@ define(['app',
 
             $scope.errMsg = "";
 
+            // 格式化根路径
+            if ($scope.newDataSource.rootPath) {
+                var rootPath = $scope.newDataSource.rootPath;
+                var paths = rootPath.split('/');
+                var path = "";
+                for (var i = 0; i < paths.length; i++) {
+                    if (paths[i]) {
+                        path += "/" + paths[i];
+                    }
+                }
+                $scope.newDataSource.rootPath = path;
+            }
+
             util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function () {
                 Message.info("数据源添加成功");
                 $scope.newDataSource = {userId:$scope.user._id};
