@@ -54,6 +54,11 @@ define(['app',
 
         // 删除数据源
         $scope.clickDeleteDataSource = function (x) {
+            if (x.name == "内置gitlab" || x.name == "内置github") {
+                Message.info( "内置数据源不可删除!!!");
+                return;
+            }
+
             util.post(config.apiUrlPrefix + 'data_source/deleteById', {id:x._id}, function () {
                 getUserDataSource();
             });
