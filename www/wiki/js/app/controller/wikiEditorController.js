@@ -345,14 +345,14 @@ define([
                 urlParamsMap[url] = urlParams;
                 urlParams.deleteTimer && clearTimeout(urlParams.deleteTimer);
                 urlParams.deleteTimer = setTimeout(function () {
-                    storage.indexedDBDeleteItem(url);
+                    storage.indexedDBDeleteItem(config.pageStoreName, url);
                     urlParams.deleteTimer = undefined;
                 }, 300 * 1000);
             }
 
             // 加载未提交到服务的页面
             function loadUnSavePage() {
-                storage.indexedDBGet(function (page) {
+                storage.indexedDBGet(config.pageStoreName, function (page) {
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
                         serverPage = allPageMap[page.url] = page;
@@ -384,14 +384,8 @@ define([
                     allWebsites = data || [];
                     //console.log(allWebsites);
                     //初始化本地数据库indexDB
-                    storage.indexedDBOpen({storeName: 'websitePage', storeKey: 'url'}, function () {
-                        console.log("open local indexdb success");
+                    storage.indexedDBRegisterOpenCallback( function () {
                         loadUnSavePage();
-                        dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
-                            _openPage();
-                        });
-                    }, function () {
-                        console.log("open local indexdb failed");
                         dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
                             _openPage();
                         });
@@ -402,7 +396,7 @@ define([
 
             //初始化，读取用户站点列表及页面列表
             function init() {
-                console.log('---------------init---------------');
+                //console.log('---------------init---------------');
                 if (!Account.ensureAuthenticated()) {
                     return;
                 }
@@ -426,17 +420,18 @@ define([
                     return;
                 }
 
+                var page = angular.copy(currentPage);
                 var content = editor.getValue();
                 var saveFailedCB = function () {
-                    currentPage.content = content;
-                    storage.indexedDBSetItem(currentPage);
+                    page.content = content;
+                    page.isModify = true;
+                    storage.indexedDBSetItem(config.pageStoreName, page);
                     errcb && errcb();
                 };
                 var saveSuccessCB = function () {
-                    var page = angular.copy(currentPage);
                     page.content = content;
                     page.isModify = false;
-                    storage.indexedDBSetItem(page);
+                    storage.indexedDBSetItem(config.pageStoreName, page);
                     indexDBDeletePage(page.url);
 
                     cb && cb();
@@ -444,7 +439,7 @@ define([
 
                 var currentDataSource = dataSource.getCurrentDataSource();
                 currentDataSource.writeFile({
-                    path: currentPage.url + pageSuffixName,
+                    path: page.url + pageSuffixName,
                     content: content
                 }, saveSuccessCB, saveFailedCB);
             }
@@ -608,11 +603,12 @@ define([
                 }
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
                     getCurrentPageContent(function (data) {
+                        allWebstePageContent[currentPage.url] = data;
                         setEditorValue(data || "");
                     });
                 });
 
-                // storage.indexedDBGetItem(currentPage.url, function (page) {
+                // storage.indexedDBGetItem(config.pageStoreName, currentPage.url, function (page) {
                 //     if (page) {
                 //         page.timestamp = page.timestamp || 0;
                 //         currentPage.timestamp = currentPage.timestamp || 0; // (new Date()).getTime();
@@ -636,7 +632,7 @@ define([
                 }
 
                 var url = currentPage.url;
-                //console.log("-----------getPageContent-------------", url, currentPage);
+                //console.log("-----------getPageContent-------------", url, currentPage, allWebstePageContent);
                 if (allWebstePageContent[url]) {
                     //console.log(allWebstePageContent[url]);
                     cb && cb(allWebstePageContent[url]);
@@ -680,7 +676,7 @@ define([
 
             //初始化目录树  data:  $.parseJSON(getTree()),
             function initTree() {
-                console.log('@initTree');
+                //console.log('@initTree');
                 setTimeout(function () {
                     var isFirstCollapsedAll = true;
                     $('#treeview').treeview({
@@ -876,8 +872,9 @@ define([
             //保存页面
             $scope.cmd_savepage = function (cb, errcb) {
                 if (!isEmptyObject(currentPage)) {//修改
+                    var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
                     savePageContent(function () {
-                        currentPage.isModify = false;
+                        _currentPage.isModify = false;
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
@@ -903,7 +900,6 @@ define([
                     }, function (text, error) {
                         return;
                     });
-                    //Message.info("已保存至临时文件!!!");
                 }
             }
 
@@ -913,12 +909,12 @@ define([
                 console.log(currentPage);
                 if (!isEmptyObject(currentPage)) {
                     currentDataSource && currentDataSource.deleteFile({path: currentPage.url + pageSuffixName}, function () {
-                        console.log("删除文件成功:" + currentPage.url);
+                        console.log("删除文件成功:");
                     }, function (response) {
-                        console.log("删除文件失败:" + currentPage.url);
+                        console.log("删除文件失败:");
                     });
 
-                    storage.indexedDBDeleteItem(currentPage.url);
+                    storage.indexedDBDeleteItem(config.pageStoreName, currentPage.url);
 
                     delete allPageMap[currentPage.url];
                     storage.sessionStorageRemoveItem('urlObj');
@@ -1383,11 +1379,11 @@ define([
                 currentPage.timestamp = (new Date()).getTime();           // 更新时间戳
                 //console.log(currentPage);
                 //console.log('save storage ' + currentPage.url);
-                storage.indexedDBSetItem(currentPage, cb, errcb); // 每次改动本地保存
+                storage.indexedDBSetItem(config.pageStoreName, currentPage, cb, errcb); // 每次改动本地保存
             }
 
             function initEditor() {
-                console.log("initEditor");
+                //console.log("initEditor");
                 if (editor || (!document.getElementById("source"))) {
                     console.log("init editor failed");
                     return;

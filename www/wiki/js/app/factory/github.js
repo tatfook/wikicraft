@@ -262,21 +262,35 @@ define([
         }
         
         github.getRawContent = function (params, cb, errcb) {
-            var url = github.getRawContentUrlPrefix(params);
-            $http({
-                method: 'GET',
-                url: url,
-                headers:{
-                    //'pragma':'no-cache',
-                    //'cache-control': 'no-cache',
-                },
-                skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
-            }).then(function (response) {
-                console.log(response);
-                cb && cb(response.data);
-            }).catch(function (response) {
-                console.log(response);
-                errcb && errcb(response);
+            var _getRawContent = function () {
+                var url = github.getRawContentUrlPrefix(params);
+                $http({
+                    method: 'GET',
+                    url: url,
+                    headers:{
+                        //'pragma':'no-cache',
+                        //'cache-control': 'no-cache',
+                    },
+                    skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
+                }).then(function (response) {
+                    console.log(response);
+                    cb && cb(response.data);
+                }).catch(function (response) {
+                    console.log(response);
+                    errcb && errcb(response);
+                });
+            };
+
+            var index = params.path.lastIndexOf('.');
+            var url = index == -1 ? params.path : params.path.substring(0, index);
+            storage.indexedDBGetItem(config.pageStoreName, url, function (page) {
+                if (page) {
+                    cb && cb(page.content);
+                } else {
+                    _getRawContent(params, cb, errcb);
+                }
+            }, function () {
+                _getRawContent(params, cb, errcb);
             });
         }
 

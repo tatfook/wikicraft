@@ -76,43 +76,90 @@ define(['angular'], function (angular) {
     window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
     // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
 
-    storage.indexedDBOpen = function (option, cb, errcb) {
-        var db = window.indexedDB.open(option.dbName || 'wikicraftDB', option.version || 1);
-        storage.indexDBStoreName = option.storeName;
+    var indexedDB = {
+        name:"keepwork",
+        version: 1,
+        isOpen: false,
+        storeList:[
+            {
+                storeName:"sitepage",
+                storeKey:"url",
+            },
+        ],
+        openCallbackList:[],
+    }
+
+    // 打开数据库
+    indexedDB.open = function (cb, errcb) {
+        if (indexedDB.isOpen) {
+            cb && cb();
+            return;
+        }
+
+        var db = window.indexedDB.open(indexedDB.name || 'keepwork', indexedDB.version || 1);
+        var _openFinish = function () {
+            for (var i = 0; i < indexedDB.openCallbackList.length; i++) {
+                var callback = indexedDB.openCallbackList[i];
+                callback && callback();
+            }
+            indexedDB.openCallbackList = [];
+        };
 
         db.onerror = function (e) {
             console.log("index db open error");
             errcb && errcb();
         }
+        
         db.onsuccess = function (e) {
-            storage.indexDB = e.target.result;
-            //console.log('onsuccess');
+            console.log('index db open success');
+            indexedDB.indexDB = e.target.result;
+            indexedDB.isOpen = true;
+            _openFinish();
+
             cb && cb();
         }
+
         db.onupgradeneeded = function (e) {
-            storage.indexDB = e.target.result;
-            console.log('onupgradeneeded');
-            if (!option.storeName || !option.storeKey) {
-                console.log("opion error!!!");
-                return;
+            indexedDB.indexDB = e.target.result;
+            console.log('index db onupgradeneeded');
+
+            for (var i = 0; i < indexedDB.storeList.length; i++) {
+                var store = indexedDB.storeList[i];
+                if (!indexedDB.indexDB.objectStoreNames.contains(store.storeName)) {
+                    indexedDB.indexDB.createObjectStore(store.storeName,{keyPath:store.storeKey});
+                }
             }
-            if (!storage.indexDB.objectStoreNames.contains(option.storeName)) {
-                storage.indexDB.createObjectStore(option.storeName,{keyPath:option.storeKey});
-            }
+
+            indexedDB.isOpen = true;
+            _openFinish();
         }
     }
 
-    storage.indexedDBClose = function () {
-        storage.indexDB.close();
+    // 注册打开回调
+    indexedDB.registerOpenCallback = function (cb) {
+        if (indexedDB.isOpen) {
+            cb && cb();
+            return;
+        }
+
+        indexedDB.openCallbackList.push(cb);
     }
 
-    storage.indexedDBDelete = function (dbName) {
-        window.indexedDB.deleteDatabase(dbName || 'wikicraftDB');
+    // 关闭数据库
+    indexedDB.close = function () {
+        indexedDB.indexDB.close();
     }
 
-    storage.indexedDBGet = function (cb, errcb, finish) {
-        var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
-        var store=transaction.objectStore(storage.indexDBStoreName);
+    // 删除数据库
+    indexedDB.delete = function () {
+        window.indexedDB.deleteDatabase(this.name);
+    }
+
+    // 获取store 全部记录
+    indexedDB.getAllItem = function (storeName, cb, errcb, finish) {
+        //console.log(storeName, indexedDB.indexDB);
+        var transaction=indexedDB.indexDB.transaction([storeName], 'readwrite');
+        var store=transaction.objectStore(storeName);
         var request = store.openCursor();
         request.onsuccess = function(e) {
             var cursor = e.target.result
@@ -128,9 +175,9 @@ define(['angular'], function (angular) {
         }
     }
 
-    storage.indexedDBGetItem = function (key, cb, errcb) {
-        var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
-        var store=transaction.objectStore(storage.indexDBStoreName);
+    indexedDB.getItem = function (storeName, key,  cb, errcb) {
+        var transaction=indexedDB.indexDB.transaction([storeName], 'readwrite');
+        var store=transaction.objectStore(storeName);
         var request=store.get(key);
         request.onsuccess=function(e){
             cb && cb(e.target.result);
@@ -139,14 +186,12 @@ define(['angular'], function (angular) {
             errcb && errcb();
         }
     }
-    
-    storage.indexedDBSetItem = function (value, cb, errcb) {
-        //console.log(storage.indexDBStoreName);
-        var transaction=storage.indexDB.transaction([storage.indexDBStoreName],'readwrite');
-        var store=transaction.objectStore(storage.indexDBStoreName);
+
+    indexedDB.setItem = function (storeName, value,  cb, errcb) {
+        var transaction=indexedDB.indexDB.transaction([storeName], 'readwrite');
+        var store=transaction.objectStore(storeName);
         var request=store.put(value);
         request.onsuccess=function(e){
-            //console.log(value);
             cb && cb(e.target.result);
         };
         request.onerror = function () {
@@ -154,22 +199,23 @@ define(['angular'], function (angular) {
         }
     }
 
-    storage.indexedDBDeleteItem = function (key, cb, errcb) {
-        var transaction=storage.indexDB.transaction(storage.indexDBStoreName,'readwrite');
-        var store=transaction.objectStore(storage.indexDBStoreName);
+    indexedDB.deleteItem = function (storeName, key,  cb, errcb) {
+        var transaction=indexedDB.indexDB.transaction([storeName], 'readwrite');
+        var store=transaction.objectStore(storeName);
         var request=store.delete(key);
         request.onsuccess=function(e){
             cb && cb(e.target.result);
         };
+
         request.onerror = function () {
             errcb && errcb();
         }
     }
 
-    storage.indexedDBClear = function (cb, errcb) {
-        var transaction=storage.indexDB.transaction(storage.indexDBStoreName,'readwrite');
-        var store=transaction.objectStore(storage.indexDBStoreName);
-        var request = store.clear();
+    indexedDB.clearAllItem = function (storeName, cb, errcb) {
+        var transaction=indexedDB.indexDB.transaction([storeName], 'readwrite');
+        var store=transaction.objectStore(storeName);
+        var request=store.clear();
         request.onsuccess=function(e){
             cb && cb(e.target.result);
         };
@@ -177,6 +223,45 @@ define(['angular'], function (angular) {
             errcb && errcb();
         }
     }
+
+    storage.indexedDBOpen = function (cb, errcb) {
+        indexedDB.open(cb, errcb);
+    }
+
+    storage.indexedDBClose = function () {
+        indexedDB.close();
+    }
+
+    storage.indexedDBDelete = function () {
+        indexedDB.delete();
+    }
+
+    storage.indexedDBGet = function (storeName, cb, errcb, finish) {
+        indexedDB.getAllItem(storeName, cb, errcb, finish);
+    }
+
+    storage.indexedDBGetItem = function (storeName, key, cb, errcb) {
+        indexedDB.getItem(storeName, key, cb, errcb);
+    }
+    
+    storage.indexedDBSetItem = function (storeName, value, cb, errcb) {
+        indexedDB.setItem(storeName, value, cb, errcb);
+    }
+
+    storage.indexedDBDeleteItem = function (storeName, key, cb, errcb) {
+        indexedDB.deleteItem(storeName, key, cb, errcb);
+    }
+
+    storage.indexedDBClear = function (storeName, cb, errcb) {
+        indexedDB.clearAllItem(storeName, cb, errcb);
+    }
+
+    storage.indexedDBRegisterOpenCallback = function (cb) {
+        indexedDB.registerOpenCallback(cb);
+    }
+
+    // 打开数据库
+    storage.indexedDBOpen();
 
     return storage;
 });

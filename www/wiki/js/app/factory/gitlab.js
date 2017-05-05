@@ -153,8 +153,18 @@ define([
             // }).catch(function (response) {
             //     errcb && errcb(response);
             // });
-
-            gitlab.getContent(params, cb, errcb);
+            var index = params.path.lastIndexOf('.');
+            var url = index == -1 ? params.path : params.path.substring(0, index);
+            storage.indexedDBGetItem(config.pageStoreName, url, function (page) {
+                //console.log(page, url);
+                if (page) {
+                    cb && cb(page.content);
+                } else {
+                    gitlab.getContent(params, cb, errcb);
+                }
+            }, function () {
+                gitlab.getContent(params, cb, errcb);
+            });
         }
 
         // 删除文件
