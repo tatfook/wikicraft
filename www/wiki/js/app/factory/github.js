@@ -124,24 +124,27 @@ define([
             var sha = undefined;
 
             //console.log(path, sitename, path.substring(0, path.lastIndexOf('/')));
-            github.getFile({path:path.substring(0, path.lastIndexOf('/'))}, function (data) {
+            github.fileCURD("GET", {path:path.substring(0, path.lastIndexOf('/'))}, function (data) {
+                //console.log(data);
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].type == "dir" && data[i].name == sitename){
                         sha = data[i].sha;
                     }
                 }
-
+                //console.log(data);
                 if (!sha) {
                     errch && errch();
                     return;
                 }
 
                 var url = '/repos/' + github.githubName + '/' + github.defaultRepoName + '/git/trees/'+ sha + (recursive ? '?recursive=1' : '');
+                var _path = path;
                 github.httpRequest('GET', url, {}, function(data) {
                     data = data.tree;
                     var pagelist = [];
+                    //console.log(data);
                     for (var i = 0; i < data.length; i++) {
-                        var path = params.path + '/' + data[i].path;
+                        var path = _path + '/' + data[i].path;
                         var page = {};
                         var suffixIndex = path.lastIndexOf(".md");
                         // 不是md文件不编辑
@@ -159,6 +162,7 @@ define([
 
                         pagelist.push(page);
                     }
+                    //console.log(pagelist);
                     cb && cb(pagelist);
                 }, errch);
             }, errch)
@@ -273,7 +277,7 @@ define([
                     },
                     skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
                 }).then(function (response) {
-                    console.log(response);
+                    //console.log(response);
                     cb && cb(response.data);
                 }).catch(function (response) {
                     console.log(response);

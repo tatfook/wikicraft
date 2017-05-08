@@ -54,9 +54,9 @@ define(['app',
             }
 
             util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function () {
-                Message.info("数据源添加成功");
+                Message.info("操作成功");
                 $scope.newDataSource = {userId:$scope.user._id};
-                getUserDataSource();
+                //getUserDataSource();
             });
         }
 

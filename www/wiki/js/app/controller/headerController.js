@@ -10,7 +10,7 @@ define([
     'jquery-sharejs'
 ], function (app, util, storage, htmlContent) {
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
-        console.log("headerController");
+        //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
@@ -285,7 +285,7 @@ define([
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
-            console.log("isAuthenticated");
+            //console.log("isAuthenticated");
         });
     }]);
 

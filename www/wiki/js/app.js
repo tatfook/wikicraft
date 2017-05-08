@@ -10,7 +10,7 @@ define([
     'satellizer',
     'angular-toggle-switch',
 ], function (angular) {
-    console.log("app");
+    //console.log("app");
     var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']).run(function () {
         config.angularBootstrap = true;
     });

@@ -17,7 +17,7 @@ define([
 
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
         function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab) {
-            console.log("mainController");
+            //console.log("mainController");
             
             // 初始化基本信息
             function initBaseInfo() {
@@ -92,7 +92,7 @@ define([
                 var isFirstLocationChange = true;
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
-                    console.log("$locationChangeSuccess change");
+                    //console.log("$locationChangeSuccess change");
                     if (!isFirstLocationChange && window.location.pathname == '/wiki/wikiEditor') {
                         return ;
                     }

@@ -415,7 +415,7 @@ define([
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
-            var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
             return htmlContent + scriptContent;
         }
@@ -425,7 +425,7 @@ define([
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
-            var htmlContent = '<div id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+            var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             mdwiki.clearBlockCache();
             $(selector).html(htmlContent);
         }

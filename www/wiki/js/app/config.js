@@ -161,7 +161,7 @@
             config.mainContentType = "user_page";
             config.mainContent = undefined;
         }
-        console.log(pageurl);
+        //console.log(pageurl);
         // 启动angular
         if (pageurl) {
             require([pageurl], function (mainContent) {
