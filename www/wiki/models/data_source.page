@@ -76,6 +76,38 @@ function data_source:api_getInnerGitlabByUserId(params)
 	return errors:wrap(yield())
 end
 
+-- 获得最后一次提交记录
+function data_source:api_getGithubLastCommitId(params)
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST then
+		return errors:wrap(nil, params)
+	end
+
+	local headers = {["User-Agent"]="Satellizer",["Accept"]="application/vnd.github.full+json", ["Authorization"]= " token " .. params.dataSourceToken}
+	
+	System.os.GetUrl({
+		url= params.apiBaseUrl .. "/repos/" .. params.dataSourceUsername .. "/" .. (params.projectName or "keepworkDataSource") .. "/commits", 
+		headers=headers,
+		method = "GET",
+		json = true,
+	}, resume)
+	local code, data = yield()
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+	data =data.data
+
+	if not data or #data == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+
+	params.lastCommitId = data[1].sha
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
+	yield()
+	
+	return errors:wrap(nil, params)
+end
+
 -- 添加github数据源
 function data_source:api_setGithubDataSource(params)
 	if (not params.name) or (not params.dataSourceToken) or (not params.userId) or (not params.type) or (not params.apiBaseUrl) or (not params.rawBaseUrl) then
@@ -105,6 +137,38 @@ function data_source:api_setGithubDataSource(params)
 	end
 	
 	return errors:wrap(nil, data)
+end
+
+-- 获得最后一次提交记录
+function data_source:api_getGitlabLastCommitId(params)
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST then
+		return errors:wrap(nil, params)
+	end
+
+	local headers = {['PRIVATE-TOKEN']= params.dataSourceToken}
+	
+	System.os.GetUrl({
+		url= params.apiBaseUrl .. "/projects/" .. params.projectId .. "/repository/commits", 
+		headers=headers,
+		method = "GET",
+		json = true,
+	}, resume)
+	local code, data = yield()
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+	data =data.data
+
+	if not data or #data == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+
+	params.lastCommitId = data[1].id
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
+	yield()
+	
+	return errors:wrap(nil, params)
 end
 
 -- 设置gitlab数据源
@@ -289,12 +353,13 @@ end
 
 -- gitlab webhokk
 function data_source:api_gitlabWebhook(params)
-	if (not params) or (not params.user_id) or (not params.user_name) then
-		return 
-	end
-	
+	params = params or {}	
 	local dataSourceId = params.user_id
 	local dataSourceUsername = params.user_name
+	
+	if (not dataSourceId) or (not dataSourceUsername) then
+		return
+	end
 	
 	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"gitlab", dataSourceId, dataSourceUsername}}, resume)
 	local _, ds = yield()
@@ -314,7 +379,27 @@ end
 
 -- gitlab webhokk
 function data_source:api_githubWebhook(params)
-	log(params)
+	local dataSourceId = params.repository.owner.id
+	local dataSourceUsername = params.repository.owner.login
+
+	if (not dataSourceId) or (not dataSourceUsername) then
+		return
+	end
+
+	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"gitlab", dataSourceId, dataSourceUsername}}, resume)
+	local _, ds = yield()
+
+	if not ds then
+		return
+	end
+	
+	ds.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST
+	ds.lastCommitId = params.after
+	
+	self:db():updateOne({_id=ds._id}, ds, resume)
+	yield()
+
+	return
 end
 
 
