@@ -25,6 +25,9 @@ function data_source:ctor()
 	self:addfield("rootPath", "string")    -- 项目根路径
 	self:addfield("apiBaseUrl", "string")  -- api url prefix
 	self:addfield("rawBaseUrl", "string")  -- raw url prefix
+	self:addfield("lastCommitId", "string")  -- 最后一次提交id cdn加速
+	self:addfield("updateFlag", "string")  -- 谁做了最后的更新
+	self:addfield("pageinfo", "string")    -- pageinfo 用户页信息备份 保留
 	self:addfield("enable", "number")      -- 数据源ID
 end
 
@@ -284,7 +287,35 @@ function data_source:api_createInnerGitlab(params)
 	return errors:wrap(nil, ds)
 end
 
+-- gitlab webhokk
+function data_source:api_gitlabWebhook(params)
+	if (not params) or (not params.user_id) or (not params.user_name) then
+		return 
+	end
+	
+	local dataSourceId = params.user_id
+	local dataSourceUsername = params.user_name
+	
+	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"gitlab", dataSourceId, dataSourceUsername}}, resume)
+	local _, ds = yield()
 
+	if not ds then
+		return
+	end
+	
+	ds.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST
+	ds.lastCommitId = params.after
+	
+	self:db():updateOne({_id=ds._id}, ds, resume)
+	yield()
+
+	return
+end
+
+-- gitlab webhokk
+function data_source:api_githubWebhook(params)
+	log(params)
+end
 
 
 

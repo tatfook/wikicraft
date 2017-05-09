@@ -120,4 +120,6 @@ const.DATA_SOURCE_TYPE_GITLAB = "gitlab"
 const.WEBSITE_RENEWAL_TYPE_PERSONAL = 0
 const.WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
 
-
+-- 数据源更新标志
+const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST = 0  -- webhook 回调填此值
+const.DATA_SOURCE_UPDATE_FLAG_TRUST = 1     -- 用户或服务器更新 填此值

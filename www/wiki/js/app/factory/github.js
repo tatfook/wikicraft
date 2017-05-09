@@ -125,13 +125,14 @@ define([
 
             //console.log(path, sitename, path.substring(0, path.lastIndexOf('/')));
             github.fileCURD("GET", {path:path.substring(0, path.lastIndexOf('/'))}, function (data) {
-                //console.log(data);
+                //console.log(data, sitename, path);
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].type == "dir" && data[i].name == sitename){
                         sha = data[i].sha;
+                        //console.log(sha);
                     }
                 }
-                //console.log(data);
+                //console.log(sha);
                 if (!sha) {
                     errch && errch();
                     return;
@@ -190,12 +191,6 @@ define([
                 return;
             }
 
-            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
-                console.log("data source init failed!!![params errors]");
-                errcb && errcb();
-                return;
-            }
-
             github.type = dataSource.type || "github";
             github.githubToken = dataSource.dataSourceToken;
             github.githubName = dataSource.dataSourceUsername;
@@ -204,9 +199,48 @@ define([
             github.apiBaseUrl = dataSource.apiBaseUrl;
             github.rawBaseUrl = dataSource.rawBaseUrl || 'https://raw.githubusercontent.com';
             github.rootPath = dataSource.rootPath || '';
+            github.lastCommitId = dataSource.lastCommitId || "master";
+
+            if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
+                console.log("data source init failed!!![params errors]");
+                errcb && errcb();
+                return;
+            }
+
+            var _createWebhook = function () {
+                //var hookUrl = config.apiUrlPrefix + "data_source/githubWebhook";
+                var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/githubWebhook";
+                var isExist = false;
+                github.httpRequest("GET","/repos/"+github.githubName + "/" + github.defaultRepoName + "/hooks",{}, function (data) {
+                    //console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].config.url == hookUrl && data[i].name == "web" && data[i].active) {
+                            isExist = true;
+                        }
+                    }
+                    if (!isExist) {
+                        github.httpRequest("POST","/repos/"+github.githubName + "/" + github.defaultRepoName + "/hooks",{
+                            name:"web",
+                            active:true,
+                            events:["push"],
+                            config:{
+                                url:hookUrl,
+                                "content_type":"json"
+                            }
+                        }, function (data) {
+                            console.log(data);
+                            console.log("github create webhook success");
+                        }, function () {
+                            console.log("github create webhook failed");
+                        });
+                    }
+                });
+
+            }
 
             self.setDefaultRepo(github.defaultRepoName, function (data) {
                 github.inited = true;
+                _createWebhook();
                 cb && cb(data);
             }, errcb);
         }
@@ -219,11 +253,11 @@ define([
             return github.type;
         }
         github.getContentUrlPrefix = function (params) {
-            return github.apiBaseUrl + '/' + github.githubName + '/' + github.defaultRepoName + '/blob/master' + github.getLongPath(params);
+            return github.apiBaseUrl + '/' + github.githubName + '/' + github.defaultRepoName + '/blob/' + github.lastCommitId + github.getLongPath(params);
         }
 
         github.getRawContentUrlPrefix = function (params) {
-            return github.rawBaseUrl + '/' + github.githubName + '/' + github.defaultRepoName + '/master' + github.getLongPath(params);
+            return github.rawBaseUrl + '/' + github.githubName + '/' + github.defaultRepoName + '/' + github.lastCommitId + github.getLongPath(params);
         }
 
         // writeFile
@@ -242,6 +276,7 @@ define([
         // read file
         github.getFile = function (params, cb, errcb) {
             params.path = github.getLongPath(params).substring(1);
+            params.ref = github.lastCommitId;
             github.fileCURD("GET", {path:params.path}, function (data) {
                 //console.log(data)
                 data.content = data.content && Base64.decode(data.content);
