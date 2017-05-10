@@ -4,10 +4,11 @@
 
 define([
     'app',
+    'helper/util',
     'helper/dataSource',
     'helper/storage',
     'js-base64'
-], function (app, dataSource, storage) {
+], function (app, util, dataSource, storage) {
     app.factory('github', ['$http', function ($http) {
         var github = {
             inited: false,
@@ -207,7 +208,7 @@ define([
                 return;
             }
 
-            var _createWebhook = function () {
+            var createWebhook = function () {
                 //var hookUrl = config.apiUrlPrefix + "data_source/githubWebhook";
                 var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/githubWebhook";
                 var isExist = false;
@@ -228,20 +229,41 @@ define([
                                 "content_type":"json"
                             }
                         }, function (data) {
-                            console.log(data);
+                            //console.log(data);
                             console.log("github create webhook success");
                         }, function () {
                             console.log("github create webhook failed");
                         });
                     }
                 });
+            }
 
+            var updateDataSource = function () {
+                if (dataSource.projectName) {
+                    return;
+                }
+                dataSource.projectName = github.defaultRepoName;
+                util.post(config.apiUrlPrefix + "data_source/upsert", dataSource);
+            }
+
+            var getLastCommitId = function (cb, errcb) {
+                github.listCommits({}, function (data) {
+                    if (data && data.length > 0) {
+                        github.lastCommitId = data[0].sha;
+                    }
+                    cb && cb();
+                }, errcb)
+            };
+
+            var successCallback = function () {
+                createWebhook()
+                updateDataSource();
             }
 
             self.setDefaultRepo(github.defaultRepoName, function (data) {
                 github.inited = true;
-                _createWebhook();
-                cb && cb(data);
+                successCallback();
+                getLastCommitId(cb, errcb);
             }, errcb);
         }
 

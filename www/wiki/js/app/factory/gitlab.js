@@ -4,10 +4,11 @@
 
 define([
     'app',
+    'helper/util',
     'helper/dataSource',
     'helper/storage',
     'js-base64',
-], function (app, dataSource, storage) {
+], function (app, util, dataSource, storage) {
     function _encodeURIComponent(url) {
         return encodeURIComponent(url);
         //return encodeURIComponent(url).replace(/\./g,'%2E')
@@ -283,14 +284,37 @@ define([
                 });
             };
 
+            var updateDataSource = function () {
+                if (dataSource.projectName && dataSource.projectId) {
+                    return;
+                }
+                dataSource.projectName = gitlab.projectName;
+                dataSource.projectId = gitlab.projectId;
+                util.post(config.apiUrlPrefix + 'data_source/upsert', dataSource);
+            }
+
+            var getLastCommitId = function (cb, errcb) {
+                gitlab.listCommits({}, function (data) {
+                    if (data && data.length > 0) {
+                        gitlab.lastCommitId = data[0].id;
+                    }
+                    cb && cb();
+                }, errcb)
+            }
+
+            var successCallback = function () {
+                createWebhook();
+                updateDataSource();
+            }
+
             gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned: true}, function (projectList) {
                 // 查找项目是否存在
                 for (var i = 0; i < projectList.length; i++) {
                     if (projectList[i].name == gitlab.projectName) {
                         gitlab.projectId = projectList[i].id;
                         gitlab.inited = true;
-                        createWebhook();
-                        cb && cb(projectList[i]);
+                        successCallback();
+                        getLastCommitId(cb, errcb);
                         return;
                     }
                 }
@@ -305,8 +329,8 @@ define([
                     //console.log(data);
                     gitlab.projectId = data.id;
                     gitlab.inited = true;
-                    createWebhook();
-                    cb && cb(data);
+                    successCallback();
+                    getLastCommitId(cb, errcb);
                 }, errcb)
             }, errcb);
         };
