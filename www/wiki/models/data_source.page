@@ -386,7 +386,7 @@ function data_source:api_githubWebhook(params)
 		return
 	end
 
-	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"gitlab", dataSourceId, dataSourceUsername}}, resume)
+	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"github", dataSourceId, dataSourceUsername}}, resume)
 	local _, ds = yield()
 
 	if not ds then
