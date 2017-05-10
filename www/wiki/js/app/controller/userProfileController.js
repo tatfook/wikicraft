@@ -236,6 +236,42 @@ define(['app',
         // 账号安全
         $scope.clickAccountSafe = function () {
             $scope.showItem = 'accountSafe';
+
+            var getUserThresServiceList = function () {
+                util.post(config.apiUrlPrefix + 'user_three_service/getByUserId', {userId:$scope.user._id}, function (serviceList) {
+                    $scope.userThreeServiceList = serviceList || [];
+                });
+            }
+
+            $scope.isBindThreeService = function (serviceName) {
+                for (var i = 0; i < $scope.userThreeServiceList && $scope.userThreeServiceList.length; i++) {
+                    if ($scope.userThreeServiceList[i].serviceName == serviceName) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            $scope.bindThreeService = function(serviceName) {
+                var serviceIndex = undefined;
+                for (var i = 0; i < $scope.userThreeServiceList && $scope.userThreeServiceList.length; i++) {
+                    if ($scope.userThreeServiceList[i].serviceName == serviceName) {
+                        serviceIndex = i;
+                    }
+                }
+                // 已存在则解绑
+                if (serviceIndex) {
+                    util.post(config.apiUrlPrefix + 'user_three_service/deleteById', {id:$scope.userThreeServiceList[serviceIndex]._id}, function () {
+                       $scope.userThreeServiceList.splice(serviceIndex,1);
+                    });
+                } else {
+                    Account.authenticate(serviceName, function () {
+                        getUserThresServiceList();
+                    });
+                }
+            };
+
+            getUserThresServiceList();
         }
 
         // 我的动态

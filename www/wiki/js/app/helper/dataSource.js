@@ -35,6 +35,10 @@ define([
         defaultDataSourceId: undefined,
 
         init: function (dataSourceCfgList, defaultDataSourceId) {
+            if (this.isInitFinish) {
+                return;
+            }
+
             var self = this;
             self.dataSourceCfgList = dataSourceCfgList;
             self.defaultDataSourceId = defaultDataSourceId;
@@ -66,9 +70,9 @@ define([
                     initFinish(i);
                     return;
                 }
+                self.registerDataSource(dataSourceCfg.name, dataSourceInstance);
                 dataSourceInstance.init(dataSourceCfg, function () {
                     console.log(dataSourceCfg.name + " data source init success");
-                    self.registerDataSource(dataSourceCfg.name, dataSourceInstance);
                     initFinish(i);
                 }, function () {
                     console.log(dataSourceCfg.name + " data source init failed");

@@ -18,6 +18,7 @@ include_once("./website_works.page")
 include_once("./website_template_style.page")
 include_once("./website_template_config.page")
 include_once("./website_domain.page")
+include_once("./data_source.page")
 
 local website = inherit(models.abstract.base, gettable("models.website"))
 
@@ -460,7 +461,8 @@ function website:api_getDetailInfo(params)
 	end
 
 	local userDB = models.user:new()
-	local userinfo = userDB:api_getByName({username=params.username}).data
+	local userinfo = userDB:db():findOne({["+username"] = {params.username}}, resume)
+	local _, userinfo = yield()
 	
 	if not userinfo then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -474,13 +476,15 @@ function website:api_getDetailInfo(params)
 		dataSourceId = siteinfo.dataSourceId
 	end
 
-	local websitePageinfoDB = models.website_pageinfo:new()
-	local pageinfo = websitePageinfoDB:api_get({username=params.username, websiteName=params.sitename, dataSourceId=dataSourceId}).data or {}
+	local dataSourceDB = models.data_source:new()
+	local dataSource = dataSourceDB:api_getById({id=dataSourceId}).data
+	if not dataSource then
+		return errors:wrap(errors.SERVER_INNER_ERROR, {message="data source not found"})
+	end
+	dataSource = dataSourceDB:api_getLastCommitId(dataSource).data
+	dataSource.dataSourceToken = nil
+	userinfo.dataSource = {dataSource}
 
-	local url = '/' .. params.username .. '/' .. params.sitename .. '/' .. (params.pagename or "index")
-	local websitePageDB = models.website_page:new()
-	local pageContent = websitePageDB:api_getByUrl({url=url}).data	
-	
 	-- 增加站点访问量
 	self:api_addVisitNum({websiteName=params.sitename})
 
@@ -490,7 +494,7 @@ function website:api_getDetailInfo(params)
 		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=params.sitename,url=url})
 	end
 
-	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo, pageinfo=pageinfo, pageContent=pageContent})
+	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
 
 -- 获取用户,站点信息

@@ -6,8 +6,9 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!html/join.html'
-], function (app, util, storage, htmlContent) {
+    'helper/dataSource',
+    'text!html/join.html',
+], function (app, util, storage, dataSource, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         var userThreeService = undefined;
@@ -86,15 +87,67 @@ define([
                 console.log("注册成功");
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
-                if (type == "other") {
-                    util.goUserSite('/'+params.username);
+                var _go = function () {
+                    if (type == "other") {
+                        util.goUserSite('/'+params.username);
+                    } else {
+                        $scope.step++;
+                    }
+                }
+                if (data.isNewUser) {
+                    createTutorialSite(data.userinfo, _go, _go)
                 } else {
-                    $scope.step++;
+                    _go();
                 }
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
             });
+        }
+
+        // 创建新手引导站点及相关页面
+        function createTutorialSite(userinfo, cb, errcb) {
+            util.post(config.apiUrlPrefix + 'website/upsert', {
+                "userId": userinfo._id,
+                "username": userinfo.username,
+                "name": "tutorial",
+                "displayName": "新手教程",
+                "dataSourceId": userinfo.dataSourceId,
+                "categoryName": "个人站点",
+                "templateName": "教学模板",
+                "styleName": "默认样式",
+            }, function (siteinfo) {
+                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+                userDataSource.registerInitFinishCallback(function () {
+                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
+                    //console.log(currentDataSource, siteinfo);
+                    var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
+                    var tutorialPageList = [
+                        {
+                            "pagepath": pagepathPrefix + "index" + config.pageSuffixName,
+                            "contentUrl": "text!html/tutorial/index.md",
+                        }
+                    ];
+                    var fnList = [];
+
+                    for (var i = 0; i < tutorialPageList.length; i++) {
+                        fnList.push((function (index) {
+                            return function (finish) {
+                                require([tutorialPageList[index].contentUrl], function (content) {
+                                    currentDataSource.writeFile({
+                                        path: tutorialPageList[index].pagepath,
+                                        content: content
+                                    }, finish, finish);
+                                }, function () {
+                                    finish && finish();
+                                });
+                            }
+                        })(i));
+                    }
+
+                    util.batchRun(fnList, cb);
+                });
+            }, errcb);
         }
 
         $scope.goUserCenter=function () {

@@ -95,15 +95,15 @@ define(['jquery'], function ($) {
                 pagename = paths[paths.length-1];
                 pagepath = '/' + username + pathname;
             }
-            if (!pagename) {
-                pagename = "index";
-                pagepath += pagename;
-            }
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
             sitename = paths.length > 2 ? paths[2] : undefined;
             pagename = paths.length > 3 ? paths[3] : undefined;
             pagepath = pathname;
+        }
+        if (username != "wiki" && !pagename) {
+            pagename = "index";
+            pagepath += (pagepath[pagepath.length-1] == "/" ? "" : "/") + pagename;
         }
         domain = hostname;
 

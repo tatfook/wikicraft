@@ -34,6 +34,7 @@ define(['app'], function (app) {
 
                 if (href.indexOf('http://') == 0 || href.indexOf('https://') == 0) {
                     $element.attr('href', href);
+                    $element.attr('target','_blank');
                     return ;
                 }
 
@@ -41,8 +42,9 @@ define(['app'], function (app) {
                 // 存在点表明是外部链接，内部连接禁用点
                 if (href.indexOf('.') > 0) {
                     href = 'http://' + href;
-                } else if(pageinfo && pageinfo.username && pageinfo.websiteName) {
-                    href = window.location.origin + '/' + pageinfo.username + '/' + pageinfo.websiteName + '/' + href;
+                    $element.attr('target','_blank');
+                } else if(pageinfo && pageinfo.username && pageinfo.sitename) {
+                    href = window.location.origin + '/' + pageinfo.username + '/' + pageinfo.sitename + '/' + href;
                 }
 
                 //$element.attr('href', '#');
