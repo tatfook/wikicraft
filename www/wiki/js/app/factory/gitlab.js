@@ -238,7 +238,7 @@ define([
             gitlab.lastCommitId = dataSource.lastCommitId || "master";
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
-                console.log("data source init failed!!![params errors]");
+                console.log("gitlab data source init failed!!!");
                 errcb && errcb();
                 return;
             }

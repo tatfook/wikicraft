@@ -43,8 +43,8 @@ define(['app'], function (app) {
                 if (href.indexOf('.') > 0) {
                     href = 'http://' + href;
                     $element.attr('target','_blank');
-                } else if(pageinfo && pageinfo.username && pageinfo.websiteName) {
-                    href = window.location.origin + '/' + pageinfo.username + '/' + pageinfo.websiteName + '/' + href;
+                } else if(pageinfo && pageinfo.username && pageinfo.sitename) {
+                    href = window.location.origin + '/' + pageinfo.username + '/' + pageinfo.sitename + '/' + href;
                 }
 
                 //$element.attr('href', '#');

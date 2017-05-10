@@ -203,7 +203,7 @@ define([
             github.lastCommitId = dataSource.lastCommitId || "master";
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
-                console.log("data source init failed!!![params errors]");
+                console.log("github data source init failed!!!");
                 errcb && errcb();
                 return;
             }
