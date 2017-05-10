@@ -238,6 +238,7 @@ define(['jquery'], function ($) {
         }
     }
 
+    // 跳转wiki页
     util.go = function (pageName, isOpen) {
         var url;
 
@@ -252,7 +253,11 @@ define(['jquery'], function ($) {
         } else {
             window.location.href = url;
         }
+    }
 
+    // 跳转至mod页
+    util.goMod = function (path, isOpen) {
+        util.go("/wiki/js/mod/" + path, isOpen);
     }
 
     util.isOfficialPage = function () {
