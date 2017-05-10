@@ -292,6 +292,7 @@ define([
 
         var siteinfo = util.getAngularServices().$rootScope.siteinfo;
         var pageinfo = util.getAngularServices().$rootScope.pageinfo;
+        var tplinfo = util.getAngularServices().$rootScope.tplinfo;
         var existTemplate = isExistTemplate(mdwiki, text);
         mdwiki.templateLineCount = 0;
         mdwiki.template = undefined;
@@ -320,7 +321,7 @@ define([
         }
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
-        if (!existTemplate && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
+        if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getCurrentDataSource();
             currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName}, function (content) {
                 //console.log(content);

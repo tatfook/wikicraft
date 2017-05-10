@@ -56,7 +56,7 @@ define(['app',
             util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function () {
                 Message.info("操作成功");
                 $scope.newDataSource = {userId:$scope.user._id};
-                //getUserDataSource();
+                getUserDataSource();
             });
         }
 
@@ -73,7 +73,8 @@ define(['app',
             }
 
             util.post(config.apiUrlPrefix + 'data_source/deleteById', {id:x._id}, function () {
-                getUserDataSource();
+                //getUserDataSource();
+                x.isDelete = true;
             });
         }
 
@@ -87,6 +88,7 @@ define(['app',
         }
 
         function init() {
+            getUserDataSource();
         }
 
         $scope.$watch('viewContentLoaded', init);

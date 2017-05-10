@@ -146,6 +146,7 @@ define([
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo || {};
                         $rootScope.pageinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename, pagepath:urlObj.pagepath};
+                        $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var dataSourceId = data.siteinfo.dataSourceId || data.userinfo.dataSourceId;
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
@@ -199,7 +200,7 @@ define([
                 } else if(urlObj.username == 'wiki') {
                     renderHtmlText(urlObj.pathname, md);
                 } else {
-                    if (urlObj.domain) {
+                    if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                         util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
                             if (data) {
                                 urlObj.username = data.username;

@@ -33,7 +33,7 @@ define([
                 $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
                 //console.log(urlObj);
-                if (urlObj.domain) {
+                if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                     console.log(urlObj.domain);
                     util.post(config.apiUrlPrefix + 'website/getByDomain', {domain: urlObj.domain}, function (data) {
                         console.log(data);
