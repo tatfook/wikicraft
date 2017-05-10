@@ -54,6 +54,17 @@ function data_source:api_deleteById(params)
 	return errors:wrap(yield())
 end
 
+-- 获取数据源
+function data_source:api_getById(params)
+	if not params.id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({_id=params.id}, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- 获取用户的数据源
 function data_source:api_getByUserId(params)
 	if not params.userId then
@@ -218,6 +229,23 @@ function data_source:api_setDataSource(params)
 	end
 
 	return errors:wrap()
+end
+
+-- 设置数据源
+function data_source:api_getLastCommitId(params) 
+	if not params.type then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+
+	if params.type == const.DATA_SOURCE_TYPE_GITHUB then
+		return self:api_getGithubLastCommitId(params)
+	elseif params.type == const.DATA_SOURCE_TYPE_GITLAB then
+		return self:api_getGitlabLastCommitId(params)
+	else 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+
+	return errors:wrap(nil, params)
 end
 
 -- 开启内部gitlab数据源

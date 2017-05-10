@@ -491,6 +491,14 @@ function user:api_getUserDataSource(params)
 		dataSource = {dataSource}
 	end
 	
+	-- 不是认证用户 屏蔽数据源
+	local userId = checkAuthenticated()
+	if userId ~= params.userId then
+		for _, value in ipairs(dataSource) do
+			value.dataSourceToken = nil
+		end
+	end
+
 	return errors:wrap(nil, dataSource)
 end
 
