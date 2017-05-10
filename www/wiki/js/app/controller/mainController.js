@@ -145,42 +145,27 @@ define([
                         // 这三种基本信息根化，便于用户页内模块公用
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo || {};
+                        $rootScope.pageinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename, pagepath:urlObj.pagepath};
+                        $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var dataSourceId = data.siteinfo.dataSourceId || data.userinfo.dataSourceId;
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
-                        var themeUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/_theme';
-                        var pageUrl = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
 
                         userDataSource.init(data.userinfo.dataSource, data.userinfo.dataSourceId);
                         userDataSource.registerInitFinishCallback(function () {
                             dataSource.setCurrentDataSource(data.userinfo.username, dataSourceId);
                             var currentDataSource = dataSource.getCurrentDataSource();
+                            var renderContent = function (content) {
+                                $rootScope.$broadcast('userpageLoaded',{});
+                                content = md.render(content ||  '<div>用户页丢失!!!</div>');
+                                util.html('#__UserSitePageContent__', content, $scope);
+                            };
 
-                            currentDataSource.getTree({path:'/' + urlObj.username + '/' + urlObj.sitename}, function (pagelist) {
-                                for (var i = 0; i < pagelist.length; i++) {
-                                    if (pagelist[i].url == themeUrl) {
-                                        $rootScope.tplinfo = pagelist[i];
-                                    }
-
-                                    if (pagelist[i].url == pageUrl) {
-                                        $rootScope.pageinfo = pagelist[i];
-                                    }
-                                }
-
-                                var renderContent = function (content) {
-                                    $rootScope.$broadcast('userpageLoaded',{});
-                                    content = md.render(content ||  '<div>用户页丢失!!!</div>');
-                                    util.html('#__UserSitePageContent__', content, $scope);
-                                };
-
-                                currentDataSource.getRawContent({path:pageUrl + config.pageSuffixName}, function (data) {
-                                    //console.log(data);
-                                    renderContent(data);
-                                }, function () {
-                                    renderContent();
-                                });
+                            currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
+                                //console.log(data);
+                                renderContent(data);
                             }, function () {
-                                console.log("获取页列表失败!!!");
+                                renderContent();
                             });
                         });
                     });
@@ -215,7 +200,7 @@ define([
                 } else if(urlObj.username == 'wiki') {
                     renderHtmlText(urlObj.pathname, md);
                 } else {
-                    if (urlObj.domain) {
+                    if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                         util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
                             if (data) {
                                 urlObj.username = data.username;

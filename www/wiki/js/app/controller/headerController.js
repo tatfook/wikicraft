@@ -33,7 +33,7 @@ define([
                 $scope.urlObj.sitename = urlObj.sitename;
                 $scope.urlObj.pagename = urlObj.pagename;
                 //console.log(urlObj);
-                if (urlObj.domain) {
+                if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                     console.log(urlObj.domain);
                     util.post(config.apiUrlPrefix + 'website/getByDomain', {domain: urlObj.domain}, function (data) {
                         console.log(data);
@@ -45,17 +45,17 @@ define([
                     });
                 }
             }
-            if($rootScope.pageinfo){
-                var params = {
-                    userId: $rootScope.pageinfo.userId,
-                    websiteId: $rootScope.pageinfo.websiteId
-                };
-                storage.sessionStorageSetItem('pageinfo',params);
-                util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
-                    $scope.totalItems = data.total;
-                    $scope.fansList = data.fansList || [];
-                });
-            }
+            // if($rootScope.pageinfo){
+            //     var params = {
+            //         userId: $rootScope.pageinfo.userId,
+            //         websiteId: $rootScope.pageinfo.websiteId
+            //     };
+            //     storage.sessionStorageSetItem('pageinfo',params);
+            //     util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
+            //         $scope.totalItems = data.total;
+            //         $scope.fansList = data.fansList || [];
+            //     });
+            // }
         }
 
         $scope.$watch('$viewContentLoaded', init);

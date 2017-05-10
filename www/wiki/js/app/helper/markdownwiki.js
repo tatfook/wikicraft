@@ -321,9 +321,9 @@ define([
         }
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
-        if (!existTemplate && tplinfo && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
+        if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getCurrentDataSource();
-            currentDataSource.getRawContent({path:tplinfo.url + config.pageSuffixName}, function (content) {
+            currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName}, function (content) {
                 //console.log(content);
                 text = content + '\n' + text;
                 mdwiki.templateLineCount = content.split('\n').length;
