@@ -35,6 +35,11 @@
     .join-form .form-group{
         position: relative;
     }
+    .join-form .input-err{
+        position: absolute;
+        right: 0;
+        top: 44px;
+    }
     .otherLogin {
         text-align: center;
     }
@@ -120,13 +125,21 @@
             <div class="form-group">
                 <label class="sr-only">账户名</label>
                 <input type="text" class="form-control" name="username" placeholder="账户名" ng-model="username" ng-blur="checkInput()">
-                <p>账号名不可更改，不可为纯数字，不可包含@符号。</p>
-                <p>您注册后的个人页面地址为：</p>
-                <p class="user-link">http://keepwork.com/{{username || "账户名"}}</p>
+                <p>登录账号注册后不可更改</p>
+                <p>可以使用英文字母、数字组合（例如：keep123）</p>
+                <p>系统默认个人网址地址：</p>
+                <p class="user-link">http://keepwork.com/{{username || "???"}}</p>
+                <div class="text-danger input-err">
+                    {{nameErrMsg}}
+                </div>
             </div>
             <div class="form-group">
                 <label class="sr-only">密码</label>
+                <input type="password" style="display: none;" name="password">
                 <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password" ng-blur="checkInput()">
+                <div class="text-danger input-err">
+                    {{pwdErrMsg}}
+                </div>
             </div>
             <div class="checkbox clearfix">
                 <label>
@@ -156,7 +169,7 @@
             <h2><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt=""> 恭喜您注册成功！</h2>
             <div class="params">
                 <p>账号：{{username}}</p>
-                <p>个人网址：http://keepwork.com/{{username}}</p>
+                <p>系统默认个人网址地址：http://keepwork.com/{{username}}</p>
             </div>
             <div class="params">
                 <p>请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开 <a ng-click="goUserCenter()">>>个人资料管理 << </a>，进行绑定。</p>
@@ -171,13 +184,21 @@
                 <div class="form-group">
                     <label class="sr-only">账户名</label>
                     <input type="text" class="form-control" name="otherUsername" placeholder="账户名" ng-model="otherUsername" ng-blur="checkInput('other')">
-                    <p>账号名不可更改，不可为纯数字，不可包含@符号。</p>
-                    <p>您注册后的个人页面地址为：</p>
-                    <p class="user-link">http://keepwork.com/{{otherUsername || "账户名"}}</p>
+                    <p>登录账号注册后不可更改</p>
+                    <p>可以使用英文字母、数字组合（例如：keep123）</p>
+                    <p>系统默认个人网址地址：</p>
+                    <p class="user-link">http://keepwork.com/{{otherUsername || "???"}}</p>
+                    <div class="text-danger input-err">
+                        {{nameErrMsg}}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="sr-only">密码</label>
+                    <input type="password" name="otherPassword" style="display: none">
                     <input type="password" class="form-control" name="otherPassword" placeholder="密码" ng-model="otherPassword" ng-blur="checkInput('other')">
+                    <div class="text-danger input-err">
+                        {{pwdErrMsg}}
+                    </div>
                 </div>
                 <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg">确 定</div>
             </form>

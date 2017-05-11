@@ -173,6 +173,32 @@ define([
         }
     }]);
 
+    app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {
+        $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        $scope.video_insert = function () {
+            $rootScope.video = $scope.video;
+            $uibModalInstance.close("video");
+        }
+
+        $scope.videoLocal = function () {
+            var currentDataSource = getCurrentDataSource($scope.user.username);
+            $('#uploadVideoId').change(function (e) {
+                var fileReader = new FileReader();
+                fileReader.onload = function () {
+                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result}, function (url) {
+                        $scope.video.url = url;
+                    });
+                };
+                fileReader.readAsDataURL(e.target.files[0]);
+            });
+        }
+    }]);
+
     app.registerController('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.link = {url: '', txt: ''};
 
@@ -1296,6 +1322,14 @@ define([
                     console.log('text:' + text);
                     console.log('error:' + error);
                     return;
+                });
+            }
+            
+            //视频
+            $scope.cmd_video=function () {
+                $uibModal.open({
+                    templateUrl: config.htmlPath + "editorInsertVideo.html",
+                    controller: "videoCtrl",
                 });
             }
 

@@ -17,12 +17,10 @@ a:hover {
 }
 
 
- 
- .wikiEditor img {
-  vertical-align: middle;
-  width:90%;
-}
+ .result-html img{
+    width:80%;
 
+}
 
 .modal-dialog.modal-full {
     width:100%;
@@ -60,6 +58,32 @@ a:hover {
     padding:0;
 }
 
+@media(min-width:1024px){
+    .wikiEditor img{
+        width:auto;
+
+    }
+}
+
+@media(min-width:768px) and (max-width:1024px){
+    .wikiEditor img{
+        width:90%;
+
+    }
+}
+@media(min-width:480px) and (max-width:768px){
+    .wikiEditor img{
+        width:100%;
+
+    }
+}
+
+@media(max-width:480px){
+    .wikiEditor img{
+        width:100%;
+
+    }
+}
 
 body{
     font-family: "微软雅黑";
@@ -76,11 +100,6 @@ h2{
 h3{
     font-size: 18px;
     font-weight: bold;
-    text-overflow: ellipsis;
-    width: 100%;
-    float: left;
-    white-space: nowrap;
-    overflow: hidden;
 }
 h4{
     font-size: 16px;
