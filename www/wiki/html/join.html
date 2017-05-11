@@ -126,6 +126,7 @@
             </div>
             <div class="form-group">
                 <label class="sr-only">密码</label>
+                <input type="password" style="display: none;" name="password">
                 <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password" ng-blur="checkInput()">
             </div>
             <div class="checkbox clearfix">
@@ -177,6 +178,7 @@
                 </div>
                 <div class="form-group">
                     <label class="sr-only">密码</label>
+                    <input type="password" name="otherPassword" style="display: none">
                     <input type="password" class="form-control" name="otherPassword" placeholder="密码" ng-model="otherPassword" ng-blur="checkInput('other')">
                 </div>
                 <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg">确 定</div>

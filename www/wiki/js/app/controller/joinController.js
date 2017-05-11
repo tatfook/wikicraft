@@ -34,7 +34,14 @@ define([
                 username=$scope.otherUsername?$scope.otherUsername : "";
                 pwd=$scope.otherPassword?$scope.otherPassword : "";
             }
-            console.log(username);
+            if(username.length>30){
+                $scope.errMsg="*账户名最长30个字符";
+                return;
+            }
+            if (!/^[a-z_0-9]+$/.test(username)){
+                $scope.errMsg="*账户名只允许包含小写字母、数字、下划线";
+                return;
+            }
             if(/^\d+$/.test(username)){
                 $scope.errMsg="*账户名不可为纯数字";
                 return;
@@ -68,6 +75,14 @@ define([
 
             if(!params.username){
                 $scope.errMsg="*账户名为必填字段";
+                return;
+            }
+            if(params.username.length>30){
+                $scope.errMsg="*账户名最长30个字符";
+                return;
+            }
+            if (!/^[a-z_0-9]+$/.test(params.username)){
+                $scope.errMsg="*账户名只允许包含小写字母、数字、下划线";
                 return;
             }
             if(/^\d+$/.test(params.username)){
