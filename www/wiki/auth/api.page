@@ -62,11 +62,10 @@ function checkAuthenticated()
 	if(request.userid~=nil) then
 		return request.userid;
 	end
-	request.userid = false;
+	request.userid = nil;
 	local authHeader = request:header('Authorization');
 	if (authHeader) then
 		local token = authHeader:match("%s+(%S+)");
-		local config = include("config.page");
 		local payload, err = decodeJWT(token);
 		if(payload) then
 			request.userid = payload.id;

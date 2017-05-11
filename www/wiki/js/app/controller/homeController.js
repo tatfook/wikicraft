@@ -49,6 +49,7 @@ define([
         }
 
         $scope.goRegisterPage = function () {
+            storage.sessionStorageRemoveItem('userThreeService');
             util.go('join');
         }
 
@@ -212,6 +213,7 @@ define([
 
         function Authenticate(serviceName) {
             Account.authenticate(serviceName, function (data) {
+                //console.log(data);
                 if ($auth.isAuthenticated()) {
                     Account.setUser(data.data);
                     if ($scope.isModal) {

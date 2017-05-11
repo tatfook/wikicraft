@@ -28,10 +28,17 @@ local url = accessTokenUrl .. "?client_id=" .. params.client_id .. "&client_secr
 util.GetUrl({url=url, form = params }, function(err, msg, data)
     data = commonlib.Json.Decode(data)
     log("=====================xin lang wei bo authenticate======================")
-	log(data)
 	if((not data) or (data.error)) then
 		return response:send({error=1, message="access token invaild"})
 	end
+
+	-- 是否已经登录
+	local userId = checkAuthenticated()
+	if userId then
+		db.user_three_service:insertOne({["+serviceId+serviceName"]={data.uid, serviceName}}, {userId=userId, serviceId=data.uid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
+		return response:send({token = token, error=0, message="OK"})
+	end
+	-- 未登录
 
 	db.user_three_service:findOne({["+serviceId+serviceName"]={data.uid, serviceName}}, function(err, userThreeService)
 		-- 没有绑定

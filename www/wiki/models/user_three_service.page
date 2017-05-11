@@ -25,7 +25,7 @@ function user_three_service:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():insertOne({["+userId+serviceName"]={params.userId, params.serviceName}}, params, resume)
+	self:db():insertOne({["+serviceId+serviceName"]={params.serviceId, params.serviceName}}, params, resume)
 	
 	return errors:wrap(yield())
 end

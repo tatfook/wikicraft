@@ -244,7 +244,8 @@ define(['app',
             }
 
             $scope.isBindThreeService = function (serviceName) {
-                for (var i = 0; i < $scope.userThreeServiceList && $scope.userThreeServiceList.length; i++) {
+                //console.log($scope.userThreeServiceList, serviceName);
+                for (var i = 0; $scope.userThreeServiceList && i < $scope.userThreeServiceList.length; i++) {
                     if ($scope.userThreeServiceList[i].serviceName == serviceName) {
                         return true;
                     }
@@ -254,13 +255,13 @@ define(['app',
 
             $scope.bindThreeService = function(serviceName) {
                 var serviceIndex = undefined;
-                for (var i = 0; i < $scope.userThreeServiceList && $scope.userThreeServiceList.length; i++) {
+                for (var i = 0; $scope.userThreeServiceList && i < $scope.userThreeServiceList.length; i++) {
                     if ($scope.userThreeServiceList[i].serviceName == serviceName) {
                         serviceIndex = i;
                     }
                 }
                 // 已存在则解绑
-                if (serviceIndex) {
+                if (serviceIndex >= 0) {
                     util.post(config.apiUrlPrefix + 'user_three_service/deleteById', {id:$scope.userThreeServiceList[serviceIndex]._id}, function () {
                        $scope.userThreeServiceList.splice(serviceIndex,1);
                     });
@@ -270,6 +271,10 @@ define(['app',
                     });
                 }
             };
+
+            $scope.getBindServiceClass = function (serviceName) {
+                return $scope.isBindThreeService(serviceName) ? "btn-outline" : "btn-primary";
+            }
 
             getUserThresServiceList();
         }

@@ -31,6 +31,14 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 		return response:send({error=1, message="access token invaild"})
 	end
 
+	-- 是否已经登录
+	local userId = checkAuthenticated()
+	if userId then
+		db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {userId=userId, serviceId=data.openid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
+		return response:send({token = token, error=0, message="OK"})
+	end
+	-- 未登录
+
 	db.user_three_service:findOne({["+serviceId+serviceName"]={data.openid, serviceName}}, function(err, userThreeService)
 		-- 没有绑定
 		if not userThreeService then
