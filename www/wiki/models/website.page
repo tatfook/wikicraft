@@ -279,16 +279,16 @@ function website:api_addVisitNum(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({name=params.websiteName}, resume)
+	self:db():findOne({["+name"]={params.websiteName}}, resume)
 	local err, site = yield()
 	if not site then
 		return {error=errors.SERVER_INNER_ERROR, data=nil}
 	end
 
 	site.visitCount = (site.visitCount or 0) + 1
-	self:update(site)
+	self:db():updateOne({_id=site._id}, site, resume)
 		
-	return errors:wrap(nil)	
+	return errors:wrap(yield())	
 end
 
 -- 获得建站历史
@@ -467,7 +467,8 @@ function website:api_getDetailInfo(params)
 	if not userinfo then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+	userinfo.password = nil
+
 	self:db():findOne({["+userId+name"]={userinfo._id, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	
