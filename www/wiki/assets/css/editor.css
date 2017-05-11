@@ -255,6 +255,15 @@ select.resize-view {
     border-bottom-left-radius: 0;
 }
 
+.toolbar-brand{
+    padding:7px 12px;
+    background-color: #FFF;
+    border: 1px solid #DCDCDC;
+}
+.toolbar-brand img{
+    width:114px;
+}
+
 @media (max-width: 1200px) {
     .wiki-toolbar{
         padding:15px 0;

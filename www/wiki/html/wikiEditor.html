@@ -4,6 +4,104 @@
             <div id="wikiEditor" ng-controller="wikiEditorController">
                 <div id="toolbarview" class="well well-sm nopadding wiki-toolbar" style="z-index:99;">
                     <div id="codeToolbar" class="btn-toolbar" role="toolbar">
+                        <!--<div class="btn-group">
+                            <div class="dropdown toolbar-brand">
+                                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <img ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
+                                </a>
+                                <ul class="dropdown-menu nodot-dropdown">
+                                    <li><a ng-click="goHomePage()">keepwork.com</a></li>
+                                    <li><a ng-click="goModPackagePage()">Mod扩展</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <div type="button" class="btn btn-default btn-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）">
+                                <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt=""> 保存
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）">
+                                <img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt=""> 新建页
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_undo()" title="撤销（Ctrl+Z）">
+                                <img ng-src="{{imgsPath+'icon/wiki_revoked.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_redo()" title="重做（Ctrl+Y）">
+                                <img ng-src="{{imgsPath+'icon/wiki_redo.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_find()" title="查找（Ctrl+F）">
+                                <img ng-src="{{imgsPath+'icon/wiki_search.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_replace()" title="替换（Shift+Ctrl+F）">
+                                <img ng-src="{{imgsPath+'icon/wiki_replace.png'}}" alt="">
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="btn btn-default btn-sm" ng-click="cmd_headline(1)" title="标题1（Shift+Ctrl+1）" style="font-weight:bold;">
+                                <img ng-src="{{imgsPath+'icon/wiki_H1.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" ng-click="cmd_headline(2)" title="标题2（Shift+Ctrl+2）" style="font-weight:bold;">
+                                <img ng-src="{{imgsPath+'icon/wiki_H2.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" ng-click="cmd_headline(3)" title="标题3（Shift+Ctrl+3）" style="font-weight:bold;">
+                                <img ng-src="{{imgsPath+'icon/wiki_H3.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="加粗（Ctrl+B）"  ng-click="cmd_bold()">
+                                <img ng-src="{{imgsPath+'icon/wiki_bold.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="斜体（Ctrl+I）" ng-click="cmd_italic()">
+                                <img ng-src="{{imgsPath+'icon/wiki_italic.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="下划线" ng-click="cmd_underline()">
+                                <img ng-src="{{imgsPath+'icon/wiki_underline.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm" title="删除线" ng-click="cmd_strikethrough()">
+                                <img ng-src="{{imgsPath+'icon/wiki_deleteline.png'}}" alt="">
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_listul()" title="无序列表（Ctrl+.）">
+                                <img ng-src="{{imgsPath+'icon/wiki_disorder.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_listol()" title="有序列表（Ctrl+/）">
+                                <img ng-src="{{imgsPath+'icon/wiki_order.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_blockqote()" title="引用内容（Ctrl+]）">
+                                <img ng-src="{{imgsPath+'icon/wiki_quots.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_tabel()" title="表格（Shift+Ctrl+T）">
+                                <img ng-src="{{imgsPath+'icon/wiki_table.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_horizontal()" title="水平分隔线（Ctrl+H）">
+                                <img ng-src="{{imgsPath+'icon/wiki_segment.png'}}" alt="">
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_link()" title="链接（Alt+L）">
+                                <img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_image()" title="图片（Alt+P）">
+                                <img ng-src="{{imgsPath+'icon/wiki_img.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="" title="视频（）">
+                                <img ng-src="{{imgsPath+'icon/wiki_video.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_code()" title="代码（Alt+C）">
+                                <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="btn btn-default wiki-btn" title="模块" ng-click="openWikiBlock()"><img ng-src="{{imgsPath+'icon/wiki_model.png'}}" alt=""> 模块</div>
+                        </div>
+                        <div class= "btn-group  pull-right">
+                            <div class="btn btn-default toolbar-page-version wiki-btn" title="版本">版本</div>
+                            <div class="btn btn-default toolbar-page-hotkey wiki-btn" title="热键表">热键</div>
+                            <div class="btn btn-default toolbar-page-knowledge wiki-btn" title="知识库">知识库</div>
+                        </div>-->
+
+
                         <div class="btn-group">
                             <div type="button" class="btn btn-default btn-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）">
                                 <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt="">
@@ -22,7 +120,7 @@
                             </div>
                         </div>
                         <!---->
-                        <div class= "btn-group ">
+                        <div class= "btn-group">
                             <div class="btn btn-default btn-sm" ng-click="cmd_headline(1)" title="标题1（Shift+Ctrl+1）" style="font-weight:bold;">
                                 <img ng-src="{{imgsPath+'icon/wiki_H1.png'}}" alt="">
                             </div>
@@ -67,6 +165,9 @@
                             </div>
                             <div class="btn btn-default btn-sm"  ng-click="cmd_image()" title="图片（Alt+P）">
                                 <img ng-src="{{imgsPath+'icon/wiki_img.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_video()" title="视频（）">
+                                <img ng-src="{{imgsPath+'icon/wiki_video.png'}}" alt="">
                             </div>
                             <div class="btn btn-default btn-sm"  ng-click="cmd_code()" title="代码（Alt+C）">
                                 <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">

@@ -1,0 +1,44 @@
+<!--Created by Karlwu on 2016-12-18-->
+<style>
+    .nav-btn-tabs{
+        text-align: center;
+        margin-bottom: 13px;
+    }
+    .nav-btn-tabs>li{
+        display: inline-block;
+        margin: 0 5px;
+    }
+    .nav-btn-tabs>li.active>a.btn{
+        color: #3977AD;
+        border-color: #3977AD;
+    }
+    .nav-btn-tabs>li>a.btn:focus,.nav-btn-tabs>li>a.btn:hover{
+        background-color: transparent;
+        border-color: #3977AD;
+    }
+    .nav-btn-tabs>li>a.btn{
+        font-size: 16px;
+        padding:8px;
+        border:1px solid #DCDCDC;
+        color: #666;
+    }
+</style>
+<div>
+    <form name="videoForm" role="form" ng-submit="video_insert()" novalidate>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+        <h4 class="modal-title">插入视频</h4>
+    </div>
+    <div class="modal-body">
+        <p>请输入视频地址（url）：</p>
+        <p>
+            <input id="url" type="text" class="form-control" name="url" ng-model="video.url" placeholder="http://...">
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="btn btn-primary btn-fill">确定</button>
+    </div>
+    </form>
+</div>
