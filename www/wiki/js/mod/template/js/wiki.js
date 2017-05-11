@@ -66,7 +66,7 @@ define([
                     dataSourceId = $rootScope.siteinfo.dataSourceId;
                 }
                 var ds = DataSource.getDataSourceById(dataSourceId);
-                var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.websiteName + '/';
+                var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.sitename + '/';
                 ds.getRawContent({path: pathPrefix + '_header' + config.pageSuffixName}, function (content) {
                     util.html('#_headerPageContentId', headerPageMD.render(content||''), $scope);
                 });
@@ -105,7 +105,7 @@ define([
 
             $scope.editSelfPage = function (type) {
                 var pageinfo = $rootScope.pageinfo;
-                var urlObj = {username: pageinfo.username, sitename:pageinfo.websiteName, pagename:type};
+                var urlObj = {username: pageinfo.username, sitename:pageinfo.sitename, pagename:type};
                 if (window.location.pathname == '/wiki/wikiEditor') {
                     $rootScope.$broadcast('changeEditorPage', urlObj);
                 } else {

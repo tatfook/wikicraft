@@ -177,25 +177,11 @@ define([
         $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('');
         }
 
         $scope.video_insert = function () {
-            $rootScope.video = $scope.video;
-            $uibModalInstance.close("video");
-        }
-
-        $scope.videoLocal = function () {
-            var currentDataSource = getCurrentDataSource($scope.user.username);
-            $('#uploadVideoId').change(function (e) {
-                var fileReader = new FileReader();
-                fileReader.onload = function () {
-                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result}, function (url) {
-                        $scope.video.url = url;
-                    });
-                };
-                fileReader.readAsDataURL(e.target.files[0]);
-            });
+            $uibModalInstance.close($scope.videoUrl);
         }
     }]);
 
@@ -1330,6 +1316,12 @@ define([
                 $uibModal.open({
                     templateUrl: config.htmlPath + "editorInsertVideo.html",
                     controller: "videoCtrl",
+                }).result.then(function (result) {
+                    if (result) {
+                        var videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"'+ result + '"\n}\n```';
+                        editor.replaceSelection(videoContent);
+                        editor.focus();
+                    }
                 });
             }
 
