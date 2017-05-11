@@ -1,0 +1,111 @@
+<style>
+    body{
+        background-color: #F2F2F2;
+    }
+    .modal-lg{
+        width: 480px;
+        margin: 30px auto;
+        max-width: 90%;
+    }
+    .login-form{
+        background-color: #FAFAFA;
+        box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
+        padding: 40px 0 60px;
+    }
+    .login-form .close{
+        position: absolute;
+        right:15px;
+        top:15px;
+    }
+    .login-form.col-sm-6{
+        margin-top: 80px;
+        margin-bottom: 80px;
+    }
+    .login-form form{
+        width:68%;
+        margin:0 auto;
+    }
+    .login-form .btn-primary{
+        margin: 20px 0;
+    }
+    .otherLogin {
+        text-align: center;
+    }
+    .otherLogin a{
+        padding:0 15px;
+    }
+    .otherLogin .title{
+        z-index: 1;
+        position: relative;
+        margin: 40px 0;
+    }
+    .otherLogin img{
+        margin-bottom: 5px;
+    }
+    .otherLogin .title:before{
+        content: "";
+        width: 25%;
+        height: 1px;
+        background-color: #DDD;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        z-index: -1;
+    }
+    .otherLogin .title:after{
+        content: "";
+        width: 25%;
+        height: 1px;
+        background-color: #DDD;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        z-index: -1;
+    }
+    a.text-primary{
+        color: #3977AD;
+        border-bottom: 1px solid #3977AD;
+    }
+    .visible-hidden{
+        visibility: hidden;
+    }
+    @media(max-width: 768px){
+        .container-fluid{
+            padding:0;
+        }
+        .login-form.col-sm-6{
+            margin: 0 0 10px;
+            box-shadow: none;
+            padding: 20px 0;
+        }
+        .login-form form{
+            width: 80%;
+        }
+        .otherLogin a{
+            padding:0 5px;
+        }
+        .otherLogin .title{
+            margin: 20px 0;
+            padding:0;
+        }
+    }
+</style>
+
+<div ng-controller="loginController" ng-class="{'container-fluid':!isModal}">
+    <div class="login-form" ng-class="{'col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 responsive':!isModal}">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()" ng-show="isModal"><span aria-hidden="true">&times;</span></button>
+        <form class="clearfix">
+            <div class="form-group">
+                <span id="total-err" class="visible-hidden text-danger">*{{errMsg}}</span>
+                <label class="sr-only">登录账号</label>
+                <input type="text" class="form-control" name="email" placeholder="登录账号（推荐email或手机号）" ng-model="username">
+            </div>
+            <div class="form-group">
+                <span id="pwd-err" class="visible-hidden text-danger">**</span>
+                <label class="sr-only">密码</label>
+                <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password">
+            </div>
+            <a ng-click="login()" class="btn btn-primary btn-block btn-lg">登录</a>
+        </form>
+    </div>
+</div>

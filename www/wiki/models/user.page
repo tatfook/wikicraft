@@ -25,29 +25,26 @@ user.db_name = "user"
 
 
 function user:ctor()
-	self:addfield("username", "string", false, 30)
-	self:addfield("displayName", "string", false, 30)
-	self:addfield("signature", "string")
-	self:addfield("introduce", "string", false)
-	self:addfield("email", "string", false, 30) -- private email, can be used to login
+	self:addfield("username", "string", false, 30)     -- 用户名  唯一不可改
+	self:addfield("displayName", "string", false, 30)  -- 显示名
+	self:addfield("introduce", "string", false)     -- 简介
+	self:addfield("email", "string", false, 30)     -- 邮箱
 	self:addfield("password", "string", false, 256) -- hashed password
-	self:addfield("cellphone", "string", false, 12) -- hashed password
+	self:addfield("cellphone", "string", false, 12) -- 手机
 	self:addfield("sex", "string", false, 12)
 	self:addfield("dataSourceId", "number", false) -- 数据源ID  
-	self:addfield("githubDS", "number", false) -- github 数据源是否开启  
-	self:addfield("githubId", "number", false) -- github 
-	self:addfield("githubToken", "table", false) -- github access token
-	self:addfield("githubName", "string", false) -- github access token
-	self:addfield("githubRepoName", "string", false) -- github access token
 	self:addfield("portrait", "string", false, 200) -- picture url
-	self:addfield("comment", "string", false, 300)
-	self:addfield("company", "string", false, 30)
+	self:addfield("roleId", "number")
 	self:addfield("location", "string", false, 50)
 	self:addfield("joindate", "string", false, 30)
-	self:addfield("isadmin", "boolean", false);
+	-- 以下字段不明确用途会废弃
+	self:addfield("comment", "string", false, 300)
+	self:addfield("company", "string", false, 30)
 	self:addfield("favoriteCount", "number")   -- 收藏量
 	self:addfield("fansCount", "number")  -- 粉丝数量
 	self:addfield("websiteCount", "number") -- 作品数量
+	self:addfield("signature", "string")
+	self:addfield("isadmin", "boolean", false)
 end
 
 -- 发送邀请邮件
@@ -440,6 +437,7 @@ function user:api_register(params)
 		email = params.email,
 		cellphone = params.cellphone,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
+		roleId = const.USER_ROLE_NORMAL,
 		administrator = 0,
 		favoriteCount=0,
 		fansCount=0,
@@ -750,9 +748,87 @@ end
 
 
 
+-- 管理员相关接口
+-- 登录
+function user:api_adminLogin(params)
+	if (not params.username) or (not params.password) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.password = self:encodePassword(params.password) 
+	
+	self:db():findOne({["+username+password"] = {params.username, params.password}}, resume)
 
+	local _, userinfo = yield()
 
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
+		return errors:wrap(errors:new("用户不是管理员"))
+	end
+
+	return errors:wrap(nil,{token=createJWT(userinfo), userinfo=userinfo})
+end
+
+function user:adminAuth() 
+	local userId = ensureAuthenticated()
+	self:db():findOne({_id=userId}, resume)
+	local _, userinfo = yield()
+	if not userinfo then
+		response:status(401):send({ message = "未认证"})
+		exit()
+	end
+
+	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
+		response:status(401):send({ message = "无权限访问"})
+		exit()
+	end
+	
+	return userinfo
+end
+
+-- 获取用户列表
+function user:api_adminGet(params)
+	local userinfo = self:adminAuth()
+	
+	local skip, limit = util:pagination(params)
+
+	self:db():count({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	local _, total = yield()
+	
+	self:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	local _, userList = yield()
+	
+	return errors:wrap(nil, {total=total, userList = userList})
+end
+
+-- 设置异常用户
+function user:api_adminSetExceptionUser(params)
+	local userinfo = self:adminAuth()
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():updateOne({_id = params.userId}, {roleId=const.USER_ROLE_EXCEPTION}, function() end)
+	
+	-- TODO 添加到异常列表中
+	return errors:wrap(nil)
+end
+
+-- 设置异常用户
+function user:api_adminUnsetExceptionUser(params)
+	local userinfo = self:adminAuth()
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():updateOne({_id = params.userId}, {roleId=const.USER_ROLE_NORMAL}, function() end)
+	
+	-- TODO 异常列表中移除
+	return errors:wrap(nil)
+end
 
 
 
