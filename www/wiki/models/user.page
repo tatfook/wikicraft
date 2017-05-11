@@ -424,6 +424,10 @@ function user:api_register(params)
 		return errors:wrap(err)
 	end
 	
+	if #params.username < 4 or #params.username > 30 then
+		return errors:wrap(errors:new("用户名不合法"))
+	end
+	
 	-- 查找用户名是否可用
 	if self:api_checkUsername({username=params.username}).data == 0 then
 		return errors:wrap(errors:new("用户名已存在"))

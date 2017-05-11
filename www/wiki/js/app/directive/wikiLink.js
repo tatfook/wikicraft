@@ -38,13 +38,12 @@ define(['app'], function (app) {
                     return ;
                 }
 
-                var pageinfo = $rootScope.pageinfo;
                 // 存在点表明是外部链接，内部连接禁用点
                 if (href.indexOf('.') > 0) {
                     href = 'http://' + href;
                     $element.attr('target','_blank');
                 } else if(pageinfo && pageinfo.username && pageinfo.sitename) {
-                    href = window.location.origin + '/' + pageinfo.username + '/' + pageinfo.sitename + '/' + href;
+                    href = window.location.origin + href;
                 }
 
                 //$element.attr('href', '#');
