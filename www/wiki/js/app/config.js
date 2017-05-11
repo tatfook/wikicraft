@@ -161,11 +161,11 @@
             config.mainContentType = "user_page";
             config.mainContent = undefined;
         }
-        //console.log(pageurl);
+        //console.log(pageurl, config.mainContentType);
         // 启动angular
         if (pageurl) {
             require([pageurl], function (mainContent) {
-                if (config.mainContentType == "wiki_mod") {
+                if (typeof(mainContent) == "object") {
                     config.mainContent = mainContent.render({});
                 } else {
                     config.mainContent = mainContent;

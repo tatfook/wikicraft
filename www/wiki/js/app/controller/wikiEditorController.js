@@ -172,6 +172,7 @@ define([
             });
         }
     }]);
+
     app.registerController('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.link = {url: '', txt: ''};
 
@@ -195,8 +196,8 @@ define([
         $scope.selected.getBindField = function () {
             return 'url';
         }
-
     }]);
+
     app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
         $scope.table = {rows: 2, cols: 2, alignment: 0};
 
@@ -209,6 +210,7 @@ define([
             $uibModalInstance.close("table");
         }
     }]);
+
     app.registerController('pageCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
         $scope.website = {};             //当前选中站点
         $scope.websitePage = {};        //当前选中页面
@@ -355,6 +357,9 @@ define([
                 storage.indexedDBGet(config.pageStoreName, function (page) {
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
+                        if (!getCurrentWebsite(page.username, page.sitename)) {
+                            return;
+                        }
                         serverPage = allPageMap[page.url] = page;
                     }
                     serverPage.isModify = page.isModify;
@@ -517,7 +522,7 @@ define([
                 var sitename = urlObj.sitename;
                 var pagename = urlObj.pagename || 'index';
                 var pagepath = urlObj.pagepath || pagename;
-                var url = '/' + username + '/' + sitename + '/' + pagepath;
+                var url = urlObj.url || ('/' + username + '/' + sitename + '/' + pagepath);
                 if (!username || !sitename || username != $scope.user.username) {
                     openTempFile();
                     return;
@@ -533,7 +538,7 @@ define([
                 });
 
                 var _openUrlPage = function () {
-                    var url = '/' + username + '/' + sitename + '/' + pagepath;
+                    //var url = '/' + username + '/' + sitename + '/' + pagepath;
                     currentPage = getPageByUrl(url);
                     currentSite = getCurrentWebsite();
                     //console.log(currentPage);
@@ -579,6 +584,7 @@ define([
                     sitename: currentPage.sitename,
                     pagepath: currentPage.pagepath,
                     pagename: currentPage.pagename,
+                    url:currentPage.url,
                 });
                 !config.islocalWinEnv() && $location.path(currentPage.url);
 
@@ -603,10 +609,15 @@ define([
                     $('#btUrl').val(window.location.origin + currentPage.url);
 
                     var treeNode = treeNodeMap[currentPage.url];
-                    //console.log(treeNode);
+                    //console.log(currentPage, treeNode);
                     if (treeNode) {
-                        $('#treeview').treeview('expandNode', [treeNode.parentId, {levels: 2, silent: false}]);
                         $('#treeview').treeview('selectNode', [treeNode.nodeId, {silent: true}]);
+                        while (treeNode.parentId != undefined){
+                            treeNode = $('#treeview').treeview('getNode', treeNode.parentId);
+                            if (!treeNode.state.expanded) {
+                                $('#treeview').treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
+                            }
+                        };
                     }
                 }
 
@@ -735,6 +746,7 @@ define([
                                 delete treeNodeExpandedMap[data.pageNode.url];
                                 //console.log(treeNodeExpandedMap);
                             }
+                            console.log("node collapsed", data.pageNode.url);
                             for (var i = 0; data.nodes && i < data.nodes.length; i++) {
                                 var node = data.nodes[i];
                                 treeNodeMap[node.pageNode.url] = node;
@@ -743,6 +755,7 @@ define([
                         },
                         onNodeExpanded: function (event, data) {
                             //console.log(treeNodeExpandedMap);
+                            console.log("node expand",data.pageNode.url);
                             treeNodeExpandedMap[data.pageNode.url] = true;
                             getSitePageList({path:data.pageNode.url, username:data.pageNode.username, sitename:data.pageNode.sitename});
                         },
@@ -751,7 +764,7 @@ define([
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
                         //console.log(key, treeNodeMap[key]);
-                        treeNodeMap[key] && $("#treeview").treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 2, silent: true}]);
+                        treeNodeMap[key] && $("#treeview").treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }
                 });
             }

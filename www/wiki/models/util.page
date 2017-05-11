@@ -123,3 +123,9 @@ const.WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
 -- 数据源更新标志
 const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST = 0  -- webhook 回调填此值
 const.DATA_SOURCE_UPDATE_FLAG_TRUST = 1     -- 用户或服务器更新 填此值
+
+-- 用户角色
+const.USER_ROLE_EXCEPTION = -1              -- 异常用户
+const.USER_ROLE_NORMAL = 0                  -- 普通用户
+const.USER_ROLE_MANAGER = 1                 -- 管理员
+const.USER_ROLE_ADMINISTRATOR = 10          -- 超管
