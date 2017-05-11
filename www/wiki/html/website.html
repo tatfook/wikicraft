@@ -1,6 +1,7 @@
 <style>
     .website-table {
         text-align: center;
+        padding:20px 70px;
     }
     .website-table table {
         margin-bottom: 120px;
@@ -14,6 +15,11 @@
     .website-table tbody > tr:hover a {
         color: #3977AD;
     }
+    .new-web-btn {
+        margin-bottom: 20px;
+        font-size: 16px;
+        padding: 9px 27px;
+    }
 </style>
 
 <div ng-controller="websiteController">
@@ -22,39 +28,32 @@
             我的站点
         </div>
         <div class="panel-body website-table">
+            <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
             <table class="table table-hover table-bordered">
                 <thead>
                 <tr>
                     <th>站点名称</th>
                     <th>站点备注</th>
-                    <!--<th>独立域名</th>-->
-                    <th>类型</th>
-                    <th>模板</th>
-                    <th>样式</th>
-                    <th>标签</th>
+                    <th>站点地址</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="website in websites" ng-hide="website.isDelete">
-                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.displayName || website.name}}</a></td>
-                    <td>{{website.desc}}</td>
-                    <!--<td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.domain ? (website.domain + '.paracraft.wiki') : ""}}</a></td>-->
-                    <td>{{website.categoryName || '/'}}</td>
-                    <td>{{website.templateName || '/'}}</td>
-                    <td>{{website.styleName || '/'}}</td>
-                    <td>{{website.tags}}</td>
-                    <td>{{website.createDate}}</td>
+                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.displayName || website.name}}</a></td><!--站点名称-->
+                    <td>{{website.desc}}</td><!--站点备注-->
+                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">keepwork.com/{{user.username}}/{{website.name}}</a></td><!--站点地址-->
+                    <td>{{website.createDate}}</td><!--创建时间-->
                     <td>
+                        <a class="btn"  ng-click="goWebsiteIndexPage(website.name)">打开</a>
                         <a class="btn"  ng-click="goEditWebsitePagePage(website)">编辑</a>
                         <a class="btn"  ng-click="goEditWebsitePage(website)">设置</a>
                         <a class="btn"  ng-click="deleteWebsite(website)">删除</a>
-                    </td>
+                    </td><!--操作-->
                 </tr>
                 </tbody>
             </table>
-            <a class="btn btn-primary" ng-click="goNewWebsitePage()">新建网站</a>
         </div>
     </div>
 </div>

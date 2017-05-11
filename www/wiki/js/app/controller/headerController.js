@@ -229,7 +229,7 @@ define([
             var $config = {
                 url                 : window.location.href, // 网址，默认使用 window.location.href
                 description         : description, // 描述, 默认读取head标签：<meta name="description" content="PHP弱类型的实现原理分析" />
-                sites               : ['qq', 'qzone','tencent' , 'weibo', 'wechat'], // 启用的站点（weibo qq wechat tencent douban qzone linkedin diandian facebook twitter google）
+                sites               : ['qq', 'qzone', 'weibo', 'wechat'], // 启用的站点（weibo qq wechat tencent douban qzone linkedin diandian facebook twitter google）
                 disabled            : [], // 禁用的站点
                 wechatQrcodeTitle   : "", // 微信二维码提示文字
                 wechatQrcodeHelper  : '扫描二维码打开网页'
