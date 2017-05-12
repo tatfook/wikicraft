@@ -17,6 +17,7 @@
         officialDomainList:["keepwork.com", "qiankunew.com"],                                                    // 官方域名 因存在用户官方子域名和其它域名 故需记录
         officialSubDomainList:[                                                                                  // 官方占用的子域名列表
             "dev.keepwork.com",
+            "test.keepwork.com",
         ],
         // 预加载模块列表
         preloadModuleList:[
