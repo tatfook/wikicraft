@@ -8,6 +8,11 @@ Date: 2017/3/13
 NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
 mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
+-- 定义一个全局变量空间  其它全局变量放到此变量里病注释使用情况
+KEEPWORK={}
+-- KEEPWORK.config 用户程序配置
+
+include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
 WIKI_ENV="www"
 

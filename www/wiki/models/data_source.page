@@ -273,9 +273,10 @@ function data_source:api_createInnerGitlab(params)
 		params.password = params.password or tostring(os.time())
 		params.confirm = false
 
-		local adminToken = wiki_config().data_source.inner_gitlab.token
+		local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
 		local urlPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host .. "/api/v4"
 		local rawPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host
+
 		-- 获取用户
 		System.os.GetUrl({
 			url= urlPrefix .. "/users?username=" .. params.username, 

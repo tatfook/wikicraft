@@ -13,7 +13,8 @@ Properties/
 *.ffs_db
 *.rp
 *.suo
-release/
+rls/
 test/
+config.page
 /packages
 *.secret

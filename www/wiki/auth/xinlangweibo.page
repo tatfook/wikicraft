@@ -5,7 +5,6 @@ Author: LiXizhi
 Date: 2016/5/10
 ]]
 include_once("api.page")
-local config = include("config.page")
 
 local accessTokenUrl = 'https://api.weibo.com/oauth2/access_token'
 -- local userApiUrl = 'https://api.weibo.com/2/account/get_uid.json'

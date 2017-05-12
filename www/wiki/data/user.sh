@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #serverAddr="http://localhost:8099"
-serverAddr="http://test.keepwork.com"
+#serverAddr="http://test.keepwork.com"
+serverAddr="http://keepwork.com"
 
 curl -H "Content-Type: application/json" -X POST  --data '{"username":"lixizhi", "password":"1234567", "email":"lixizhi@paraengine.com"}'  "${serverAddr}/api/wiki/models/user/register"
 

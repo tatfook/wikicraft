@@ -23,7 +23,7 @@ start_server() {
 	local server_type=$1
 	
 	if [ $server_type = "test" ]; then
-		node r.js -o r_package.js
+		#node r.js -o r_package.js
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${build_dst_dir}/" port="8099" logfile="test_log.log" 
 	elif [ $server_type = "dev" ]; then 
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${build_src_dir}/" port="8900" logfile="dev_log.log"

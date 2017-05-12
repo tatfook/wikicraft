@@ -5,7 +5,6 @@ Author: LiXizhi
 Date: 2016/5/10
 ]]
 include_once("api.page")
-local config = include("config.page")
 
 local accessTokenUrl = 'https://graph.qq.com/oauth2.0/token'
 local userApiUrl = 'https://graph.qq.com/oauth2.0/me'
@@ -14,7 +13,7 @@ local params = {
     grant_type="authorization_code",
 	code = request:get("code"),
 	client_id = request:get("clientId"),
-	client_secret = "31cfef471381c101ad2adbe70123a598",
+	client_secret = KEEPWORK["config"]["default"]["threeService"]["qq"]["client_secret"],
 	redirect_uri = request:get("redirectUri"),
 }
 

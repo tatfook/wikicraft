@@ -42,7 +42,6 @@ function ensureAuthenticated()
 		exit();
 	end
 	local token = request:header('Authorization'):match("%s+(%S+)");
-	local config = include("config.page");
 	local payload, err = decodeJWT(token);
 	if(not payload) then
 		if(err == "Invalid signature") then
