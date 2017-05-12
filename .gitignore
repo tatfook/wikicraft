@@ -13,8 +13,7 @@ Properties/
 *.ffs_db
 *.rp
 *.suo
-/packages
-
-webserver.config.xml
 release/
 test/
+/packages
+*.secret
