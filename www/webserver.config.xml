@@ -84,9 +84,9 @@
       <table name='wiki'>
         <table name='secrets'>
           <!--token secret for this website-->
-          <string name='TOKEN_SECRET'>1234567890paracraftwiki</string>
+          <string name='TOKEN_SECRET'>ask_admin</string>
           <!--OAuth 2.0-->
-          <string name='GITHUB_SECRET'>c0ed1cc56931c99452c643a867d699d5657b4313</string>
+          <string name='GITHUB_SECRET'>ask admin or webserver.config.xml.secret</string>
         </table>
         <table name='clientid'>
           <string name='GITHUB_CLIENTID'>44ed8acc9b71e36f47d8</string>
@@ -100,13 +100,13 @@
           <!--email username-->
           <string name='username'>noreply@keepwork.com</string>
           <!--email password-->
-          <string name='password'>KeepWork1234567</string>
+          <string name='password'>ask_admin</string>
           <!--email from-->
           <string name='from'>noreply@keepwork.com</string>
 	  </table>
 	 <table name='data_source'>
 	  <table name='inner_gitlab'>
-	   <string name='token'>14HUmpCrwfViyxUWQxts</string>
+	   <string name='token'>ask admin or webserver.config.xml.secret</string>
 	   <string name='host'>git.keepwork.com</string>
 	  </table>
 	 </table>
@@ -115,9 +115,9 @@
 	 <table name='wiki'>
       <table name='secrets'>
         <!--token secret for this website-->
-        <string name='TOKEN_SECRET'>1234567890</string>
+        <string name='TOKEN_SECRET'>ask admin or webserver.config.xml.secret</string>
         <!--OAuth 2.0-->
-        <string name='GITHUB_SECRET'>cf3ca47ea05649e868f377fd103eb113de1be417</string>
+        <string name='GITHUB_SECRET'>ask admin or webserver.config.xml.secret</string>
       </table>
       <table name='clientid'>
         <string name='GITHUB_CLIENTID'>60516ce6357ada9725df</string>
@@ -127,7 +127,7 @@
      </table>
 	 <table name='data_source'>
 	  <table name='inner_gitlab'>
-	   <string name='token'>14HUmpCrwfViyxUWQxts</string>
+	   <string name='token'>ask admin or webserver.config.xml.secret</string>
 	   <string name='host'>git.keepwork.com</string>
 	  </table>
 	 </table>
@@ -136,9 +136,9 @@
 	 <table name='wiki'>
       <table name='secrets'>
         <!--token secret for this website-->
-        <string name='TOKEN_SECRET'>1234567890</string>
+        <string name='TOKEN_SECRET'>ask_admin</string>
         <!--OAuth 2.0-->
-        <string name='GITHUB_SECRET'>1134a7f3be96538930692296ca64f30b342fcef9</string>
+        <string name='GITHUB_SECRET'>ask admin or webserver.config.xml.secret</string>
       </table>
       <table name='clientid'>
         <string name='GITHUB_CLIENTID'>2219fe9cb6d105dd30fb</string>
@@ -148,7 +148,7 @@
      </table>
 	 <table name='data_source'>
 	  <table name='inner_gitlab'>
-	   <string name='token'>14HUmpCrwfViyxUWQxts</string>
+	   <string name='token'>ask admin or webserver.config.xml.secret</string>
 	   <string name='host'>git.keepwork.com</string>
 	  </table>
 	 </table>
