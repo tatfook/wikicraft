@@ -130,6 +130,12 @@
     .setting-form .form-group-lg .btn-primary{
         padding:9px 52px;
     }
+    .setting-form .form-group-lg p.info-msg{
+        height: 42px;
+        line-height: 42px;
+        font-weight: bold;
+        font-size: 16px;
+    }
     .setting-form .save-setting{
         text-align: center;
         margin: 45px 0;
@@ -170,10 +176,15 @@
                     </div>
                 </div>
                 <div class="form-group form-group-lg">
-                    <label class="col-sm-2 control-label">独立域名：</label>
-                    <div class="col-sm-5 user-domain">
-                        <input class="form-control" type="text" ng-model="website.name" ng-blur="checkDomain()" disabled>
-                        <div>{{website.username + "-" + website.name +".keepwork.com"}}</div>
+                    <label for="webName" class="col-sm-2 control-label">网站地址：</label>
+                    <div class="col-sm-5">
+                        <p class="info-msg">keepwork.com/{{user.username}}/{{website.name}}</p>
+                    </div>
+                </div>
+                <div class="form-group form-group-lg">
+                    <label for="webName" class="col-sm-2 control-label">独立域名：</label>
+                    <div class="col-sm-5">
+                        <p class="info-msg">{{user.username}}-{{website.name}}.keepwork.com</p>
                     </div>
                 </div>
                 <div class="form-group form-group-lg" id="cnameBox">

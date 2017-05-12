@@ -16,12 +16,14 @@
         margin: 40px 0;
     }
     .step-footer .btn-primary{
-        padding: 9px 42px;
+        padding: 9px 0;
+        width: 140px;
     }
     .step-footer .btn-prev{
         background-color: #FFF;
         color: #666;
         border-color: #666;
+        margin-right: 20px;
     }
     .step-footer .btn-prev:hover{
         background-color: #666;
@@ -33,8 +35,7 @@
         padding-left: 0;
     }
     .step-content .step2 .form-control{
-        margin-bottom: 0;
-        margin-right: 8px;
+        margin: 10px .5em;
     }
     .step-content .label-selected{
         color: #3977AD;
@@ -51,9 +52,16 @@
     .step-content .error-msg-box{
         padding-left: 0;
         line-height:34px;
+        margin-top: 10px;
     }
     .step-content .btn-tag{
         padding:0;
+    }
+    .step-content .info{
+        font-size: 12px;
+    }
+    .step-content .info.col-sm-12{
+        padding-left: 0;
     }
     .labels-box{
         min-height: 130px;
@@ -160,10 +168,16 @@
         background-color: rgba(0,0,0,.35);
     }
     .congratulation{
-        text-align: center;
+        text-align: left;
+        margin-left: 30%;
     }
-    .congratulation h4{
-        font-weight: normal;
+    .congratulation h4 {
+        font-size: 20px;
+        margin-bottom: 60px;
+    }
+    .congratulation img{
+        vertical-align: middle;
+        margin-right: .5em;
     }
     .congratulation a {
         color: #3977AD;
@@ -189,11 +203,13 @@
                         <div class="form-group">
                             <label for="webName" class="control-label col-sm-2">站点名称：</label>
                             <div class="col-sm-5">
-                                <input id="webName" ng-model="website.displayName" ng-change="checkWebsiteDisplayName()" type="text" class="form-control">
+                                <input id="webName" ng-model="website.displayName" ng-change="checkWebsiteDisplayName()" type="text" class="form-control inline-form-control">
                                 <p class="errorMsg text-danger">{{errMsg}}</p>
                             </div>
-                            <div class="col-sm-5 info">
-                                *为你的网站起一个名字吧，这个名字将用来称呼你的网站，可随时在网站设置中修改
+                            <div class="col-sm-5 info col-sm-offset-2">
+                                <p>*这个名字可以用来称呼你的网站（例如：我的一个站点）</p>
+                                <p>*随时可以在网站设置中修改</p>
+                                <p>*可以使用中文、字母、数字、符号，首位不可使用空格</p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -205,22 +221,17 @@
                     </form>
                 </div>
                 <div ng-show="step == 2" class="step2">
-                    <p>系统将会为你生成单独的访问地址名称，请设定：</p>
+                    <p>设定网站的访问地址</p>
                     <div class="col-sm-7 form-group">
-                        <input ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
+                        http://keepwork.com/{{user.username}}/<input ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
                     </div>
                     <div class="col-sm-5 error-msg-box">
                         <p class="text-danger">{{errMsg}}</p>
                     </div>
-                    <div class="col-sm-12">
-                        <p>新建的网站可以使用以下地址访问：</p>
-                        <h4>http://{{user.username}}-{{website.name}}.keepwork.com</h4>
-                        <h4>http://keepwork.com/{{user.username}}/{{website.name}}</h4>
-                    </div>
-
-                    <div class="col-sm-12 info">
-                        <p>*创建网站后，可在网站设置页面中添加域名转发功能， 将其他域名指定到本网站。</p>
-                        <p>*您也可以向本站申请高级域名服务。获得类似： http://project.keepwork.com 这样的域名。<a href="#">马上申请</a></p>
+                    <div class="col-sm-12 info no-padding-left">
+                        <p>*可使用小写字母、数字、连字符“_”（例如：my_site123）</p>
+                        <p>设定后不可修改</p>
+                        <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
                     </div>
                 </div>
                 <div ng-show="step == 3">
@@ -312,18 +323,16 @@
                     </div>
                 </div>
                 <div ng-show="step == 7" class="congratulation">
-                    <h4>恭喜你！成功创建了 {{website.displayName}} 网站。 </h4>
-                    <h4>
-                        <p>可以通过<a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://' + user.username + '-' + website.name + '.keepwork.com'}}</a>或者</p>
-                        <p><a ng-click="goWebsiteIndexPage()" target="_blank">{{'http://keepwork.com/' + user.username + '/' + website.name}}</a>来进行访问、编辑。</p>
-                    </h4>
-                    <h4>您可以在 <a ng-click="goEditWebsitePage()">【网站设置】</a>中添加CNAME转发规则，将您拥有的其他域名定向到该网站 </h4>
+                    <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">恭喜你，网站创建成功！ </h4>
+                    <p>网站名：{{website.displayName}}</p>
+                    <p>网址：http://keepwork.com/{{user.username}}/{{website.name}}</p>
                 </div>
             </div>
             <div class="step-footer">
                 <button ng-show="step > 1 && step < 7" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
                 <button ng-show="step < 7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 6 ? '确认' : '下一步'}}</button>
-                <button ng-show="step==7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">完成</button>
+                <button ng-show="step==7" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">返回网站管理</button>
+                <button ng-show="step==7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goWebsiteIndexPage()">打开网站</button>
             </div>
         </div>
     </div>
