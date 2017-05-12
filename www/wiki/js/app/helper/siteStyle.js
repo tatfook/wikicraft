@@ -22,10 +22,12 @@ define([], function () {
                                     pagepath:"index",
                                     contentUrl:"templates/resume.md"
                                 },
+                                /*
                                 {
-                                    pagepath:"_theme",
+                                    pagepath:"theme",
                                     contentUrl:"templates/wiki_theme.md"
                                 },
+                                */
                             ],
                         },
                     ],
