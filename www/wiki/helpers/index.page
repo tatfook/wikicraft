@@ -24,7 +24,6 @@ function init_db()
 	end
 
 	WIKI_ENV = name
-
 	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
 end
 

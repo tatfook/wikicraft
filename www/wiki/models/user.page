@@ -380,7 +380,7 @@ function user:api_login(params)
 		self:db():findOne({["+cellphone"]={params.username}}, resume)
 		 _, userinfo = yield()
 		if not userinfo then
-			self:db():findOne({["+username"]={params.username}}, resume)
+			self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
 			 _, userinfo = yield()
 			if not userinfo then
 				return errors:wrap(err or "用户不存在", data)
@@ -423,7 +423,7 @@ function user:api_register(params)
 	if (not params.username) or (not params.password) then 
 		return errors:wrap(err)
 	end
-	
+	params.username = string.lower(params.username)
 	if #params.username < 4 or #params.username > 30 then
 		return errors:wrap(errors:new("用户名不合法"))
 	end
