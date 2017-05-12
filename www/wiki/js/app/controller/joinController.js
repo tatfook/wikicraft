@@ -14,6 +14,7 @@ define([
         var userThreeService = undefined;
         $scope.isModal=false;
         $scope.step=1;
+        $scope.agree=true;
 
         function init() {
             console.log("==================join controller init======================");
