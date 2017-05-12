@@ -18,6 +18,13 @@
         text-decoration: none;
         border-bottom: 2px solid #3977AD;
     }
+    .modal textarea{
+        height: 120px;
+    }
+    .modal .control-label{
+        padding-right: 0;
+        text-align: left;
+    }
     @media (max-width: 992px) {
         footer a{
             margin: 0 10px;
@@ -45,15 +52,62 @@
         <div class="container">
             <div class="logo pull-left">KEEPWORK</div>
             <div class="links">
-                <a href="#">关于我们</a>
                 <a href="#">联系方式</a>
-                <a href="#">合作伙伴/Paracraft</a>
+                <a href="http://www.paracraft.cn/?lang=zh" target="_blank">Paracraft</a>
                 <a href="#">更新信息</a>
-                <a href="https://github.com/tatfook/wikicraft/issues" target="_blank">问题反馈</a>
-                <a href="https://github.com/tatfook/wikicraft/issues" target="_blank">投诉</a>
+                <a data-toggle="modal" data-target="#feedbackModal">问题反馈</a>
+                <a data-toggle="modal" data-target="#complaintsModal">投诉</a>
                 <span>粤ICP备06084303号</span>
                 <span>{{"更新时间: " + serverUpdateTime}}</span>
             </div>
         </div>
     </footer>
+
+    <!-- Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">问题反馈</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="feedback" class="control-label col-xs-2">反馈内容：</label>
+                            <textarea id="feedback" class="col-xs-8"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="complaintsModal" tabindex="-1" role="dialog" aria-labelledby="complaintsModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">投诉</h4>
+                </div>
+                <div class="modal-body">
+                    <p>你将要投诉的是#username#发布的#url#</p>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="feedback" class="control-label col-xs-2">投诉原因：</label>
+                            <textarea id="complains" class="col-xs-8"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
