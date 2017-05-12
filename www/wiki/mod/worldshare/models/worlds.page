@@ -43,6 +43,8 @@ function worlds:ctor()
 	self:addfield("preview","string",false,800);
 	--filesTotals
 	self:addfield("filesTotals","string",false,100);
+	--commitId
+	self:addfield("commitId","string",false,100);
 
 	---------- following is query only, not saved to columns ----------------
 	--page number
@@ -373,6 +375,7 @@ function worlds:api_refresh(params)
 			insertParams.hasPreview = query.hasPreview;
 			insertParams.readme     = query.readme;
 			insertParams.preview    = query.preview;
+			insertParams.commitId   = query.commitId;
 			insertParams.filesTotals     = query.filesTotals;
 			insertParams.gitlabProjectId = query.gitlabProjectId;
 			insertParams.dataSourceType  = query.dataSourceType;
@@ -414,6 +417,7 @@ function worlds:api_refresh(params)
 				preview    = query.preview,
 				hasPreview = query.hasPreview,
 				readme     = query.readme,
+				commitId   = query.commitId;
 				filesTotals     = query.filesTotals,
 				gitlabProjectId = query.gitlabProjectId,
 				dataSourceType  = query.dataSourceType,
@@ -471,11 +475,13 @@ function worlds.base64(text)
 			text = text:gsub("[=]"  , "-equal");
 			text = text:gsub("[%+]" , "-plus");
 			text = text:gsub("[/]"  , "-slash");
+
+			text = "world_base64_" .. text;
 		else
 			text = "world_" .. text;
 		end
 
-		--LOG.std(nil,"debug","text",text);
+		LOG.std(nil,"debug","text",text);
 
 		return text;
 	else
@@ -485,16 +491,19 @@ end
 
 function worlds.unbase64(text)
 	if(text) then
-		local notLetter = string.find(text,"world_");
+		local notLetter = string.find(text,"world_base64_");
 
 		if(notLetter) then
+			text = text:gsub("world_base64_","");
+
 			text = text:gsub("[-equal]" , "=");
 			text = text:gsub("[-plus]"  , "+");
 			text = text:gsub("[-slash]" , "/");
 
 			return Encoding.unbase64(text);
-
 		else
+			text = text:gsub("world_","");
+
 			return text;
 		end
 	else
