@@ -737,6 +737,9 @@ function user:api_getDetailByName(params)
 	local userFansDB = models.user_fans:new()
 	local fansObj = userFansDB:api_getFansByUserId({userId=userinfo._id}).data
 	
+	-- 获得用户关注
+	local followObj = userFansDB:api_getFollowByUserId({userId=userinfo._id}).data
+
 	-- 获取用户动态
 	local userTrendsDB = models.user_trends:new()
 	local trendsObj = userTrendsDB:api_get({userId=userinfo._id}).data
@@ -745,7 +748,7 @@ function user:api_getDetailByName(params)
 	local userActiveDB = models.user_active:new()
 	local activeObj = userActiveDB:api_getByUserId({userId=userinfo._id}).data
 
-	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, fansObj=fansObj, trendsObj=trendsObj})
+	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, followObj=followObj, fansObj=fansObj, trendsObj=trendsObj})
 end
 
 

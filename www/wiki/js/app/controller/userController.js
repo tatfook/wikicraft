@@ -34,8 +34,10 @@ define([
                 //$scope.allSiteTotal = data.allSiteObj.total;
                 $scope.fansList = data.fansObj.userList;
                 $scope.fansCount = data.fansObj.total;
-                $scope.trendsCount = data.trendsObj.total;
+                $scope.followList = data.followObj.userList;
+                $scope.followTotal = data.followObj.total;
                 $scope.trendsList = data.trendsObj.trendsList;
+                $scope.trendsCount = data.trendsObj.total;
                 $scope.active = data.activeObj;
                 if(data.activeObj){
                     data.activeObj.before="calendarSibling";//插入在某个子元素的前面，默认在子元素的尾部，

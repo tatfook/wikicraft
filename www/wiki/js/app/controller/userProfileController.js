@@ -354,7 +354,7 @@ define(['app',
             $scope.showItem = 'myFans';
             $scope.currentPage = 1;
 
-            util.post(config.apiUrlPrefix + "website/getWebsiteListByUserId", {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + "website/getAllByUserId", {userId: $scope.user._id}, function (data) {
                 $scope.siteList = data;
                 $scope.totalFavoriteCount = 0;
                 for (var i = 0; i < $scope.siteList.length; i++) {

@@ -52,4 +52,26 @@ function user_fans:api_getFansByUserId(params)
 	return errors:wrap(nil,{total=total, userList=data})
 end
 
+-- 获得用户关注
+function user_fans:api_getFollowByUserId(params)
+	if not params.userId then 
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
+	end
 
+	local skip, limit = util:pagination(params)	
+
+	self:db():count({["+fansUserId"]=params.userId}, resume)
+	local err, total = yield()
+	total = total or 0
+
+	self:db():find({["+fansUserId"]=params.userId, skip=skip, limit=limit}, resume)
+	local err, data = yield()
+	data = data or {}
+
+	local userDB = models.user:new()
+	for _, value in pairs(data) do
+		value['userinfo'] = userDB:api_getById({userId=value.fansUserId}).data
+	end
+
+	return errors:wrap(nil,{total=total, userList=data})
+end

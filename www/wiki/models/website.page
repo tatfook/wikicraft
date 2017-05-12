@@ -96,6 +96,7 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
 

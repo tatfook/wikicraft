@@ -78,8 +78,8 @@ define([
                 });
             }
 
-            init();
-            //$scope.$watch('$viewContentLoaded', init);
+            //init();
+            $scope.$watch('$viewContentLoaded', init);
 
             $scope.isSelfPageShow = function (type) {
                 return wikiBlock.editorMode;

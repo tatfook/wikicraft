@@ -758,7 +758,7 @@ define([
                                 delete treeNodeExpandedMap[data.pageNode.url];
                                 //console.log(treeNodeExpandedMap);
                             }
-                            console.log("node collapsed", data.pageNode.url);
+                            //console.log("node collapsed", data.pageNode.url);
                             for (var i = 0; data.nodes && i < data.nodes.length; i++) {
                                 var node = data.nodes[i];
                                 treeNodeMap[node.pageNode.url] = node;
@@ -767,7 +767,7 @@ define([
                         },
                         onNodeExpanded: function (event, data) {
                             //console.log(treeNodeExpandedMap);
-                            console.log("node expand",data.pageNode.url);
+                            //console.log("node expand",data.pageNode.url);
                             treeNodeExpandedMap[data.pageNode.url] = true;
                             getSitePageList({path:data.pageNode.url, username:data.pageNode.username, sitename:data.pageNode.sitename});
                         },
@@ -919,24 +919,25 @@ define([
                         Message.info("文件保存失败");
                     });
                 } else {
-                    $uibModal.open({
-                        //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                        templateUrl: config.htmlPath + "editorNewPage.html",
-                        controller: "pageCtrl",
-                    }).result.then(function (provider) {
-                        //console.log(provider);
-                        if (provider == "page") {
-                            //console.log(currentPage);
-                            allPageMap[currentPage.url] = currentPage;
-                            allWebstePageContent[currentPage.url] = editor.getValue();
-                            $scope.cmd_savepage(function () {
-                                openPage();
-                                storage.localStorageRemoveItem("wikiEditorTempContent");
-                            });
-                        }
-                    }, function (text, error) {
-                        return;
-                    });
+                    storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
+                    // $uibModal.open({
+                    //     //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                    //     templateUrl: config.htmlPath + "editorNewPage.html",
+                    //     controller: "pageCtrl",
+                    // }).result.then(function (provider) {
+                    //     //console.log(provider);
+                    //     if (provider == "page") {
+                    //         //console.log(currentPage);
+                    //         allPageMap[currentPage.url] = currentPage;
+                    //         allWebstePageContent[currentPage.url] = editor.getValue();
+                    //         $scope.cmd_savepage(function () {
+                    //             openPage();
+                    //             storage.localStorageRemoveItem("wikiEditorTempContent");
+                    //         });
+                    //     }
+                    // }, function (text, error) {
+                    //     return;
+                    // });
                 }
             }
 
