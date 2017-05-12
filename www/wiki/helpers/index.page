@@ -9,6 +9,7 @@ NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
 mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
 include_once(WIKI_ROOT .. "helpers/sms.page")
+WIKI_ENV="www"
 
 -- 初始化数据库
 function init_db()
@@ -21,6 +22,8 @@ function init_db()
 	if pos then
 		name = string.sub(WIKI_ROOT, 1, pos-1)
 	end
+
+	WIKI_ENV = name
 
 	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
 end

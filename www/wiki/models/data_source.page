@@ -267,7 +267,7 @@ function data_source:api_createInnerGitlab(params)
 
 	-- 不存在创建
 	if not ds then
-		params.name = "gitlab_" .. (params.name or userinfo.username)
+		params.name = "gitlab_" .. (WIKI_ENV or "") .. "_" .. (params.name or userinfo.username)
 		params.username = params.name
 		params.email = params.name .. '@paraengine.com'
 		params.password = params.password or tostring(os.time())

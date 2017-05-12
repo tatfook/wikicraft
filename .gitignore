@@ -14,4 +14,7 @@ Properties/
 *.rp
 *.suo
 /packages
-www_build/
+
+webserver.config.xml
+release/
+test/
