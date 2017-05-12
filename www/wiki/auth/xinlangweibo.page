@@ -13,7 +13,8 @@ local params = {
     grant_type="authorization_code",
 	code = request:get("code"),
 	client_id = request:get("clientId"),
-	client_secret = "93787d1c3a3f3ac20d1c7b7b2b541e02",
+	-- client_secret = "93787d1c3a3f3ac20d1c7b7b2b541e02",
+	client_secret = KEEPWORK["config"]["default"]["threeService"]["xinlangweibo"]["client_secret"],
 	redirect_uri = request:get("redirectUri"),
 }
 

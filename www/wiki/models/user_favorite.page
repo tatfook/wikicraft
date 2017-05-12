@@ -190,7 +190,7 @@ end
 
 -- 获得用户收藏的作品
 function user_favorite:api_getFavoriteWebsiteListByUserId(params) 
-	local userId = self:ensureAuthenticated()
+	-- local userId = self:ensureAuthenticated()
 	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -212,10 +212,10 @@ function user_favorite:api_getFavoriteWebsiteListByUserId(params)
 	local websiteDB = models.website:new()
 	for _, value in pairs(data) do
 		value["siteinfo"] = websiteDB:api_getById({websiteId=value.favoriteId}).data
-		value["userInfo"] = userDB:api_getById({userId=value.favoriteUserId}).data
+		-- value["userInfo"] = userDB:api_getById({userId=value.favoriteUserId}).data
 	end
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit),favoriteList=data})
+	return errors:wrap(nil, {total=total, favoriteList=data})
 end
 
 -- 获得用户的粉丝数

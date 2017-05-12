@@ -533,8 +533,9 @@ function user:api_getById(params)
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
+	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource(params).data
+	-- data.dataSource = self:api_getUserDataSource(params).data
 	return errors:wrap(nil, data)
 end
 
@@ -552,7 +553,7 @@ function user:api_getByName(params)
 	
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
+	-- data.dataSource = self:api_getUserDataSource({userId=data._id}).data
 	return errors:wrap(nil, data)
 end
 
@@ -738,7 +739,11 @@ function user:api_getDetailByName(params)
 	local fansObj = userFansDB:api_getFansByUserId({userId=userinfo._id}).data
 	
 	-- 获得用户关注
-	local followObj = userFansDB:api_getFollowByUserId({userId=userinfo._id}).data
+	local followUserObj = userFansDB:api_getFollowByUserId({userId=userinfo._id}).data
+	-- 获取用户收藏的站点
+	local userFavoriteDB = models.user_favorite:new()
+	local followSiteObj = userFavoriteDB:api_getFavoriteWebsiteListByUserId({userId=userinfo._id}).data
+	local followObj = {followUserObj=followUserObj, followSiteObj=followSiteObj}
 
 	-- 获取用户动态
 	local userTrendsDB = models.user_trends:new()

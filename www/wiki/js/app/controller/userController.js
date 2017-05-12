@@ -32,10 +32,16 @@ define([
                 $scope.hotSiteList = data.hotSiteObj.siteList;
                 $scope.allSiteList = data.allSiteList;
                 //$scope.allSiteTotal = data.allSiteObj.total;
+                // 粉丝
                 $scope.fansList = data.fansObj.userList;
                 $scope.fansCount = data.fansObj.total;
-                $scope.followList = data.followObj.userList;
-                $scope.followTotal = data.followObj.total;
+                // 关注的用户
+                $scope.followUserList = data.followObj.followUserObj.userList;
+                $scope.followUserTotal = data.followObj.followUserObj.total;
+                // 关注的站点
+                $scope.followSiteList = data.followObj.followSiteObj.favoriteList;
+                $scope.followSiteTotal = data.followObj.followSiteObj.total;
+                // 用户动态
                 $scope.trendsList = data.trendsObj.trendsList;
                 $scope.trendsCount = data.trendsObj.total;
                 $scope.active = data.activeObj;
