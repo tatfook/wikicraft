@@ -54,10 +54,18 @@ define([
             util.go('wikiEditor');
         }
 
+        //显示删除模态框
+        $scope.showDeleteModal = function (site) {
+            $('#deleteModal').modal("show");
+            $scope.deletingWebsite=site;
+        }
+
         // 删除网站
         $scope.deleteWebsite = function (site) {
             util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId: site._id}, function (data) {
                 site.isDelete = true;
+                $('#deleteModal').modal("hide");
+                $scope.deletingWebsite="";
             });
         }
 
