@@ -95,6 +95,10 @@ function website:api_upsert(params)
 	if (not params.userId) or (not params.username) or (not params.name) or (not params.dataSourceId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+	
+	if #params.name > 30 then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)

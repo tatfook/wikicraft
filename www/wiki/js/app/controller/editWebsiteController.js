@@ -206,10 +206,10 @@ define([
                 var imgUrl=$scope.imgUrl;
                 innerGitlab.uploadImage({content:imgUrl}, function (url) {
                     $scope.website.logoUrl = url;
-                    util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
-                        $scope.website = data;
-                        Message.info("站点图片上传成功!!!");
-                    });
+                    // util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
+                    //     $scope.website = data;
+                    //     Message.info("站点图片上传成功!!!");
+                    // });
                 }, function () {
                     Message.info("站点图片上传失败!!!");
                 });

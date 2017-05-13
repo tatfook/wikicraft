@@ -10,7 +10,8 @@ mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
 -- 定义一个全局变量空间  其它全局变量放到此变量里病注释使用情况
 KEEPWORK={}
--- KEEPWORK.config 用户程序配置
+-- KEEPWORK.config     用户程序配置
+-- KEEPWORK.startTime  启动时间
 
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
@@ -47,6 +48,7 @@ function getBustVersion()
 	if not version then 
 		version = os.time()
 		mem_cache:set("bustVersion", version)
+		KEEPWORK["serverUpdateTime"] = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH-mm-ss")
 	end
 
 	return version

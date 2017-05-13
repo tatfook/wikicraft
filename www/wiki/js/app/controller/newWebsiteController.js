@@ -32,7 +32,7 @@ define([
                 userDataSource.registerInitFinishCallback(function () {
                     var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
-                    var contentUrlPrefix = "text!html/"
+                    var contentUrlPrefix = "text!html/";
                     var contentPageList = [];
                     for (var i = 0; i < $scope.style.contents.length; i++) {
                         var content = $scope.style.contents[i];
@@ -44,17 +44,19 @@ define([
                     var fnList = [];
                     for (var i = 0; i < contentPageList.length; i++) {
                         fnList.push((function (index) {
-                            return function (finish) {
+                            return function (cb, errcb) {
                                 require([contentPageList[index].contentUrl], function (content) {
-                                    currentDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, finish, finish);
+                                    currentDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
                                 }, function () {
-                                    finish && finish();
+                                    console.log("local server request md file failed");
+                                    // 本地文件请求失败直接跳过
+                                    errcb && errcb();
                                 });
                             }
                         })(i));
                     }
 
-                    util.batchRun(fnList, cb);
+                    util.sequenceRun(fnList, undefined, cb);
                 });
             }, errcb);
         }
@@ -64,6 +66,10 @@ define([
             if ($scope.step == 1) {
                 if (!$scope.website.displayName) {
                     $scope.errMsg = "站点名为必填字段";
+                    return;
+                }
+                if ($scope.website.displayName.length > 100) {
+                    $scope.errMsg = "名称过长";
                     return;
                 }
                 $scope.websiteNameErrMsg = "";
@@ -79,6 +85,10 @@ define([
                     if (!isValid) {
                         $scope.errMsg = "域名只能为数字和字母组合";
                         return;
+                    }
+                    if ($scope.website.name.length > 30) {
+                        $scope.errMsg = "域名过长";
+                        return ;
                     }
                     $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
                     util.http('POST', config.apiUrlPrefix + 'website/getByName', {username:$scope.user.username, websiteName: $scope.website.name}, function (data) {

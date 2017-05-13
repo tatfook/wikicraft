@@ -136,9 +136,9 @@ define(['app',
                 defaultDataSource.uploadImage({content:imgUrl}, function (url) {
                     $scope.user.portrait = url;
                     $('#userPortraitId').attr('src', imgUrl);
-                    util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
-                        Message.info("图片上传成功");
-                    })
+                    // util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function () {
+                    //     Message.info("图片上传成功");
+                    // });
                 }, function () {
                     Message.info("图片上传失败");
                 });

@@ -304,6 +304,38 @@ define(['jquery'], function ($) {
         }
     }
 
+    // 顺序执行
+    util.sequenceRun = function (fnList, delay, cb, errcb) {
+        delay = delay == undefined ? 1000 : delay;
+        var index = 0;
+        var retryCount = {};
+        var _sequenceRun = function () {
+            if (fnList.length <= index) {
+                finish && finish();
+                return;
+            }
+            var indexStr = "retry_" + index;
+            // 失败次数过多
+            if (retryCount[indexStr] && retryCount[indexStr]> 3) {
+                errcb && errcb();
+                return;
+            }
+
+            var fn = fnList[index];
+            fn && fn(function () {
+                index++;
+                _sequenceRun();
+                //setTimeout(_sequenceRun,delay);
+            }, function () {
+                retryCount[indexStr] = retryCount[indexStr] ? (retryCount[indexStr] +1) : 1;
+                setTimeout(_sequenceRun,delay);
+            });
+        };
+
+        _sequenceRun();
+    };
+
+
     config.util = util;
     return util;
 });

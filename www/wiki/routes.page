@@ -159,6 +159,7 @@ function RenderServerWikiScript()
 	--log(siteConfig)
 	local config = {}
 	config.hostname = request:GetHost()
+	config.startTime = KEEPWORK.startTime
 	if config.hostname == "dev.keepwork.com" then
 		config.bustVersion = os.time()
 	else 
