@@ -15,8 +15,8 @@ website_member.db_name = "website_member"
 function website_member:ctor()
 	-- (websiteId, userId) key
 	self:addfield("websiteId","number")    -- 站点ID
+	self:addfield("websiteType", "string") -- 站点类型
 	self:addfield("userId", "number")      -- 成员ID
-	-- 
 	self:addfield("roleId", "number")      -- 角色
 	self:addfield("desc", "string")        -- 角色
 	self:addfield("createDate", "string", false, 64)
@@ -229,6 +229,64 @@ function website_member:api_getWebsiteListByUserId(params)
 	
 	return errors:wrap(nil,{total=total, siteList=data})
 end
+
+
+-- 获得用户加入的站点列表
+function website_member:api_getWebsiteListByUserId(params)
+	local skip, limit = util:pagination(params)
+	
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():count({["+userId"]={params.userId}}, resume)
+	local err, total = yield()
+
+	self:db():find({["+userId"]={params.userId, skip=skip, limit=limit}}, resume)
+	local err, data = yield()
+	
+	local websiteDB = models.website:new()
+	for _, value in ipairs(data) do
+		value["siteinfo"] = websiteDB:api_getById({websiteId=value.websiteId}).data
+	end
+	
+	return errors:wrap(nil,{total=total, siteList=data})
+end
+
+-- 获取用户加入的组织列表
+function website_member:api_getOrganizationListByUserId(params)
+	local skip, limit = util:pagination(params)
+	
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():count({["+userId+websiteType"]=params.userId, const.WEBSITE_TYPE_ORGANIZATION}, resume)
+	local _, total = yield()
+
+	self:db():find({["+userId+websiteType"]={params.userId, const.WEBSITE_TYPE_ORGANIZATION, skip=skip, limit=limit}}, resume)
+	local err, data = yield()
+	
+	local websiteDB = models.website:new()
+	for _, value in ipairs(data) do
+		value["siteinfo"] = websiteDB:api_getById({websiteId=value.websiteId}).data
+	end
+	
+	return errors:wrap(nil,{total=total, siteList=data})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

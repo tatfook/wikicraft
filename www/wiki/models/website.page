@@ -106,7 +106,7 @@ function website:api_upsert(params)
 
 	-- 设置站点管理员
 	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:api_upsert({websiteId=site._id, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
+	websiteMemberDB:api_upsert({websiteId=site._id, websiteType=const.WEBSITE_TYPE_ORGANIZATION, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
 
 	return errors:wrap(nil, site)
 end

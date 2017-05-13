@@ -222,7 +222,7 @@
             <div class="message-row">
                 <h4>加入的组织：</h4>
                 <ul class="list-item">
-                    <li ng-repeat="x in joinOrganizationList"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
+                    <li ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
                 </ul>
             </div>
         </div>
