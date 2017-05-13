@@ -219,12 +219,6 @@
                             <div ng-repeat="tag in tags" class="label-selected">{{tag}}<span ng-click="removeTag(tag)" class="glyphicon glyphicon-remove text-danger"></span></div>
                         </div>
                     </div>
-                    <div class="col-sm-5">
-                        <p>常用标签：</p>
-                        <div class="labels-common-used">
-                            <span ng-click="addTag(tag)" ng-repeat="tag in commonTags">#{{tag}}#</span>
-                        </div>
-                    </div>
                 </div>
                 <div class="form-group form-group-lg border-bottom">
                     <div class="col-sm-12 save-setting">
@@ -244,7 +238,7 @@
                             <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
                         </select>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-12 save-setting">
                         <button ng-click="modifyWebsite()" class="btn btn-primary">保存</button>
                     </div>
                 </div>

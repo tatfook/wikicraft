@@ -143,10 +143,10 @@
             </div>
             <div class="checkbox clearfix">
                 <label>
-                    <input class="pull-right" type="checkbox" checked="checked">申请即视为同意 <a ng-click="goLicense()">《KeepWork用户协议》</a>
+                    <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()">《KeepWork用户协议》</a>
                 </label>
             </div>
-            <a ng-click="register()" class="btn btn-primary btn-block btn-lg">注册</a>
+            <a ng-click="register()" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree">注册</a>
             <div class="otherLogin">
                 <div class="title">使用第三方账号登录</div>
                 <div class="login-way">

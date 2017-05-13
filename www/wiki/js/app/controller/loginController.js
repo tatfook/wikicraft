@@ -73,6 +73,10 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
             Authenticate("github");
         }
 
+        $scope.cancel = function () {
+            $scope.$dismiss();
+        }
+
         function Authenticate(serviceName) {
             Account.authenticate(serviceName, function (data) {
                 if ($auth.isAuthenticated()) {

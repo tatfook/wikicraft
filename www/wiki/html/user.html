@@ -11,6 +11,11 @@
     body{
         background-color: #F1F1F1;
     }
+    .ellipsis-1{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     .subnav {
         padding: 20px 40px;
         background-color: #FFF;
@@ -100,6 +105,12 @@
     }
     .main-content .active-row-box{
         border: 1px solid #DCDCDC;
+    }
+    .main-content .btn-outline{
+        border: 1px solid #DCDCDC;
+        margin-top: 20px;
+        padding: 12px 0;
+        border-radius: 0;
     }
     .main-content .active-row>img{
         width: 40px;
@@ -197,21 +208,45 @@
             width: 100%;
         }
     }
-
+    .contributeCalendar{
+        position: relative;
+    }
+    .contributeCalendar:before{
+        content: "";
+        display: inline-block;
+        width: 1px;
+        height: 50px;
+        background-color: #DCDCDC;
+        position: absolute;
+        left: 62px;
+        top: 65px;
+        z-index: 2;
+    }
+    .contributeCalendar:after{
+        content: '';
+        display: inline-block;
+        width: 45px;
+        height: 50px;
+        left: 42px;
+        top: 65px;
+        background-color: #FFF;
+        position: absolute;
+        z-index: 1;
+    }
 </style>
 
 <div class="container" ng-controller="userController">
     <div class="row">
         <div class="col-md-3 subnav col-xs-3">
             <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
-            <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}<a href="#" class="info pull-right">投诉</a></h3>
+            <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}</h3>
             <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
             <p>{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary" ng-click="favoriteUser()">关 注</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{userinfo.email}}</a></p>
-                <p><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{"http://keepwork.com/" + userinfo.username}}</a></p>
+                <p class="ellipsis-1"><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon"><a href="#" class="text-primary" title="http://keepwork.com/{{userinfo.username}}">{{"http://keepwork.com/" + userinfo.username}}</a></p>
             </div>
             <div class="message-row">
                 <h4>创建的组织：</h4>
@@ -284,7 +319,7 @@
                             <h3 class="title">活动次数</h3>
                             <div id="contributeCalendar" class="contributeCalendar col-md-12 user-activation">
                                 <div class="col-md-12" id="calendarSibling">
-                                    <div class="pull-left"><a href="#" target="_blank">查看数据统计方法</a></div>
+                                    <div class="pull-left"><a title="在编辑器页面点击保存一次即为一条统计数据">查看数据统计方法</a></div>
                                     <div class="pull-right">
                                         弱
                                         <ul class="legend clearfix">
@@ -300,15 +335,16 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <h3 class="title">活动<a href="#" class="pull-right">查看更多活动</a></h3>
+                            <h3 class="title">活动</h3>
                             <div class="active-row-box col-md-12">
                                 <div class="col-md-12 active-row" ng-repeat="x in trendsList">
                                     <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
                                 </div>
                             </div>
+                            <div class="btn btn-block btn-outline col-md-12">查看更多活动</div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="wiki_works">
+                    <div role="tabpanel" class="tab-pane clearfix" id="wiki_works">
                         <div class="img-text col-md-6" ng-repeat="x in allSiteList">
                             <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                             <div class="text">
@@ -329,7 +365,7 @@
                     <div role="tabpanel" class="tab-pane clearfix" id="wiki_concern">
                         <div class="col-xs-12">
                             <h3 class="title">关注的作者</h3>
-                            <div class="img-text col-md-6" ng-repeat="x in allSiteList">
+                            <div class="img-text col-md-6" ng-repeat="x in followUserList">
                                 <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
@@ -348,7 +384,7 @@
                         </div>
                         <div class="col-xs-12">
                             <h3 class="title">关注的网站</h3>
-                            <div class="img-text col-md-6" ng-repeat="x in allSiteList">
+                            <div class="img-text col-md-6" ng-repeat="x in followSiteList">
                                 <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
@@ -366,7 +402,7 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane col-md-12 fans" id="wiki_fans">
+                    <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
                         <div class="col-md-12 fans-row" ng-repeat="x in fansList">
                             <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
                             <div class="intro">
