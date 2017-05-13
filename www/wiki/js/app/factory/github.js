@@ -209,8 +209,8 @@ define([
             }
 
             var createWebhook = function () {
-                //var hookUrl = config.apiUrlPrefix + "data_source/githubWebhook";
-                var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/githubWebhook";
+                var hookUrl = config.apiUrlPrefix + "data_source/githubWebhook";
+                //var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/githubWebhook";
                 var isExist = false;
                 github.httpRequest("GET","/repos/"+github.githubName + "/" + github.defaultRepoName + "/hooks",{}, function (data) {
                     //console.log(data);

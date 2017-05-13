@@ -255,8 +255,8 @@ define([
             // };
 
             var createWebhook = function () {
-                //var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
-                var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
+                var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
+                //var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
                 var isExist = false;
                 gitlab.httpRequest("GET", "/projects/" + gitlab.projectId + "/hooks", {}, function (data) {
                     //console.log(data);
