@@ -1,8 +1,10 @@
 #!/bin/bash
 
 current_dir=`pwd`
-build_src_dir="www"
-build_dst_dir="test"
+rls_dir="rls"
+test_dir="test"
+dev_dir="www"
+build_dir="www_build"
 
 #test_server() {
 #	echo $current_dir
@@ -23,10 +25,15 @@ start_server() {
 	local server_type=$1
 	
 	if [ $server_type = "test" ]; then
-		#node r.js -o r_package.js
-		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${build_dst_dir}/" port="8099" logfile="test_log.log" 
+		rm -fr ${test_dir}
+		cp -fr ${build_dir} ${test_dir}
+		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
+	elif [ $server_type = "rls" ]; then 
+		rm -fr ${rls_dir}
+		cp -fr ${build_dir} ${rls_dir}
+		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
-		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${build_src_dir}/" port="8900" logfile="dev_log.log"
+		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
 	else
 		start_server "test"
 		start_server "dev"
@@ -43,6 +50,11 @@ stop_server() {
 		fi
 	elif [ $server_type = "dev" ]; then 
 		pid=`ps uax | grep "npl.*port=8900.*" | grep -v grep | awk '{print $2}'`
+		if [ ! -z $pid ]; then
+			kill -9 $((pid))
+		fi
+	elif [ $server_type = "rls" ]; then 
+		pid=`ps uax | grep "npl.*port=8088.*" | grep -v grep | awk '{print $2}'`
 		if [ ! -z $pid ]; then
 			kill -9 $((pid))
 		fi
@@ -67,8 +79,12 @@ main() {
 	if [ -z $server_type  ]; then 
 		server_type="all"
 	fi
-
-	if [ "$1" == "start" ]; then
+	if [ "$1" == "build" ]; then
+		if [ -e ${build_dir} ]; then
+			rm -fr ${build_dir}
+		fi
+		node r.js -o r_package.js
+	elif [ "$1" == "start" ]; then
 		echo "start server :"$server_type
 		start_server $server_type
 	elif [ "$1" == "stop" ]; then

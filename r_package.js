@@ -4,7 +4,7 @@
 
 ({
     appDir:"www",
-    dir:'test',
+    dir:'www_build',
     baseUrl:'wiki/js',
     //name:'main',
     optimizeCss: 'standard',

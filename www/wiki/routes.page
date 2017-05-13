@@ -155,16 +155,15 @@ function RenderServerWikiContent()
 end
 
 function RenderServerWikiScript() 
-	local siteConfig = wiki_config()
-	--log(siteConfig)
 	local config = {}
 	config.hostname = request:GetHost()
-	config.startTime = KEEPWORK.startTime
+	config.serverUpdateTime = KEEPWORK.serverUpdateTime
 	if config.hostname == "dev.keepwork.com" then
 		config.bustVersion = os.time()
 	else 
 		config.bustVersion = getBustVersion()
 	end
+	log(config)
 	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
 	echo(format('\t<script src="/wiki/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
 	echo(format('\t<script data-main="/wiki/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js"></script>\n', config.bustVersion))

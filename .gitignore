@@ -15,6 +15,7 @@ Properties/
 *.suo
 rls/
 test/
+www_build/
 config.page
 /packages
 *.secret

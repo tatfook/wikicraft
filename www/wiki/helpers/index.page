@@ -39,6 +39,7 @@ function init_wiki_module()
 	if not isWebServerStart then
 		mem_cache:set("isWebServerStart", true)
 		include_once(WIKI_ROOT .. "helpers/wiki_module.page")
+		KEEPWORK["serverUpdateTime"] = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
 	end
 end
 
@@ -48,7 +49,6 @@ function getBustVersion()
 	if not version then 
 		version = os.time()
 		mem_cache:set("bustVersion", version)
-		KEEPWORK["serverUpdateTime"] = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH-mm-ss")
 	end
 
 	return version
