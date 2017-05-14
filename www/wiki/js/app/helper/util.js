@@ -311,7 +311,7 @@ define(['jquery'], function ($) {
         var retryCount = {};
         var _sequenceRun = function () {
             if (fnList.length <= index) {
-                finish && finish();
+                cb && cb();
                 return;
             }
             var indexStr = "retry_" + index;
