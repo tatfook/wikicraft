@@ -16,6 +16,7 @@ define([
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
+        $scope.totalItems=0;
 
         // 通过站点名搜索
         $scope.searchWebsite = function () {
