@@ -192,22 +192,20 @@ define([
             $uibModalInstance.dismiss('cancel');
         }
 
+        $scope.urlSelected = function ($item, $model) {
+            $scope.url = $item.url;
+        }
+
         $scope.link_insert = function () {
-            $rootScope.link = {url: $scope.selected.url, txt: ''};
+            $rootScope.link = {url: $scope.url || "", txt: ''};
             $uibModalInstance.close("link");
         }
 
         var itemArray = [];
-        var websites = allWebsitePages || [];
-        for (var i = 0; i < websites.length; i++) {
-            itemArray.push({id: i, url: websites[i].url});
+        for (var key in allPageMap) {
+            itemArray.push({url: allPageMap[key].url});
         }
         $scope.itemArray = itemArray;
-        $scope.selected = $scope.itemArray[0];
-
-        $scope.selected.getBindField = function () {
-            return 'url';
-        }
     }]);
 
     app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {

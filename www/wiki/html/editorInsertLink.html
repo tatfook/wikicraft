@@ -10,11 +10,11 @@
             <div class="row">
                 <div class="form-group span12" style="padding: 0 15px;">
                     <label for="url">链接</label>
-                    <ui-select wiki-ui-select ng-model="selected" id="url" name="url">
+                    <ui-select wiki-ui-select ng-model="selected" id="url" name="url" on-select="urlSelected($item, $model)">
                         <ui-select-match>
                             <span ng-bind="$select.selected.url"></span>
                         </ui-select-match>
-                        <ui-select-choices repeat="item in (itemArray | filter: $select.search) track by item.id">
+                        <ui-select-choices repeat="item in (itemArray | filter: $select.search) track by $index">
                             <span ng-bind="item.url"></span>
                         </ui-select-choices>
                     </ui-select>

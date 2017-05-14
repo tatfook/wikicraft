@@ -37,7 +37,7 @@ define(['app'], function (app) {
                     $element.attr('target','_blank');
                     return ;
                 }
-
+                var pageinfo = $rootScope.pageinfo;
                 // 存在点表明是外部链接，内部连接禁用点
                 if (href.indexOf('.') > 0) {
                     href = 'http://' + href;
