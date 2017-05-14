@@ -61,6 +61,9 @@ define([
         
         // 注册
         $scope.register = function (type) {
+            if(!$scope.agree){
+                return;
+            }
             $scope.errMsg = "";
             $scope.nameErrMsg = "";
             $scope.pwdErrMsg = "";

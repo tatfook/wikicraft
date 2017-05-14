@@ -80,6 +80,10 @@ define([
             if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
                 return;
             }
+            if (tagName.length>30){
+                $scope.errMsg="标签最长30个字符";
+                return;
+            }
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
         }

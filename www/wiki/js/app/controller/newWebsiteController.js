@@ -244,6 +244,11 @@ define([
             if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
                 return;
             }
+            if (tagName.length>30){
+                $scope.errMsg="标签最长30个字符";
+                return;
+            }
+            $scope.errMsg="";
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
         }
@@ -257,9 +262,18 @@ define([
         }
 
         $scope.checkWebsiteDisplayName = function () {
-            if (!$scope.website.displayName || $scope.website.displayName.replace(/(^\s*)|(\s*$)/g, "") == "") {
+            var displayName=$scope.website.displayName?$scope.website.displayName:$scope.website.displayName.trim();
+            if (!displayName) {
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="请填入站点名称";
                 return;
             }
+            if(displayName.length>30){
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="站点名称最长30个字符";
+                return;
+            }
+            $scope.errMsg="";
             $scope.nextStepDisabled = false;
         }
 
@@ -268,11 +282,18 @@ define([
                 return;
             }
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-            if (/^['\d\w']+$/.test($scope.website.name)){
+            if($scope.website.name.length>30){
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="访问地址最长30个字符";
+                return;
+            }
+            if (/^[a-z0-9]+$/.test($scope.website.name)){
                 $scope.nextStepDisabled = false;
                 $scope.website.domain = $scope.website.name;
+                $scope.errMsg="";
             }else{
                 $scope.nextStepDisabled = true;
+                $scope.errMsg="访问地址不符合规范";
             }
         }
 

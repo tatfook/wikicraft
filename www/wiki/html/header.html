@@ -395,7 +395,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="dropdown-footer"><a href="#">查看更多></a></div>
+                                <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myTrends')"><a href="#">查看更多></a></div>
                             </div>
                         </li>
                         <li class="dropdown">
@@ -407,7 +407,7 @@
                                         <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
                                     </li>
                                 </ul>
-                                <div class="dropdown-footer"><a href="#">查看更多></a></div>
+                                <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myCollection')"><a href="#">查看更多></a></div>
                             </div>
                         </li>
                         <li class="dropdown">
@@ -419,7 +419,7 @@
                                         <a href="{{x.url}}" class="text-muted">{{x.websiteName}}</a>
                                     </li>
                                 </ul>
-                                <div class="dropdown-footer"><a href="#">查看更多></a></div>
+                                <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myHistory')"><a href="#">查看更多></a></div>
                             </ul>
                         </li>
                     </ul>

@@ -11,7 +11,7 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
         $scope.isModal=true;
 
         $scope.cancel = function () {
-            $scope.dismiss();
+            $scope.$dismiss();
         }
 
         var user = Account.getUser();

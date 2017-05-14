@@ -229,14 +229,14 @@
                         <p class="text-danger">{{errMsg}}</p>
                     </div>
                     <div class="col-sm-12 info no-padding-left">
-                        <p>*可使用小写字母、数字、连字符“_”（例如：my_site123）</p>
+                        <p>*可使用小写字母、数字（例如：mysite123）</p>
                         <p>设定后不可修改</p>
                         <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
                     </div>
                 </div>
                 <div ng-show="step == 3">
                     <div class="col-sm-6">
-                        <p>本站标签：</p>
+                        <p>本站标签：<span class="text-danger">{{errMsg}}</span></p>
                         <div class="col-sm-10 no-padding-left">
                             <input type="text" class="form-control" ng-model="tag">
                         </div>
