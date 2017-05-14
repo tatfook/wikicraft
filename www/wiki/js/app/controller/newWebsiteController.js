@@ -56,7 +56,7 @@ define([
                         })(i));
                     }
 
-                    util.sequenceRun(fnList, undefined, cb);
+                    util.sequenceRun(fnList, undefined, cb, cb);
                 });
             }, errcb);
         }
