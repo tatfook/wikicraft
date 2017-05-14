@@ -13,7 +13,7 @@ define([
         var github = {
             inited: false,
             githubName: '',
-            defaultRepoName: 'keepworkDataSource',
+            defaultRepoName: 'keepwork_datasource',
             apiBaseUrl: 'https://api.github.com',
             rawBaseUrl:'',
             rootPath:'',
@@ -74,7 +74,7 @@ define([
 
         // 设置默认库
         github.setDefaultRepo = function (repoName, cb, errcb) {
-            github.defaultRepoName = repoName || 'keepworkDataSource';
+            github.defaultRepoName = repoName || 'keepwork_datasource';
             //console.log(storage.sessionStorageGetItem('githubRepoExist'));
             // 会话期记录是否已存在数据源库，避免重复请求
             var repoKey = 'githubRepoExist_' + github.defaultRepoName;
