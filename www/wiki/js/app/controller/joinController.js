@@ -174,7 +174,7 @@ define([
         }
 
         $scope.goUserCenter=function () {
-            util.go('usercenter',true);
+            util.go('userCenter',true);
         }
 
         $scope.goUserHome=function () {

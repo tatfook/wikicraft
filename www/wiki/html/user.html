@@ -240,7 +240,7 @@
         <div class="col-md-3 subnav col-xs-3">
             <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
             <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}</h3>
-            <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于2016.9.12</span></p>
+            <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于{{userinfo.joindate || "2016.9.12"}}</span></p>
             <p>{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary" ng-click="favoriteUser()">关 注</div>
             <div class="message-row">
@@ -257,7 +257,7 @@
             <div class="message-row">
                 <h4>加入的组织：</h4>
                 <ul class="list-item">
-                    <li ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
+                    <li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
                 </ul>
             </div>
         </div>

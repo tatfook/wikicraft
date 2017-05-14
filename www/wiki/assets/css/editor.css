@@ -244,6 +244,11 @@ body,
 .treeview .node-selected .badge{
     background-color: transparent;
 }
+.treeview .list-group-item{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .treeview li:not(.node-selected) .badge{
     display: none;
 }
