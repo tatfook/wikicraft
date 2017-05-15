@@ -13,4 +13,9 @@ Properties/
 *.ffs_db
 *.rp
 *.suo
+rls/
+test/
+www_build/
+config.page
 /packages
+*.secret
