@@ -1,0 +1,32 @@
+<?npl
+--[[
+Title: wiki module test
+Author: wuxiangan
+Date: 2017/3/14
+]]
+
+function main()
+	local wikiModuleList = {
+		{
+			name="wikiModuleExample",
+			classifyName="demo",
+			content=[[
+                ```@example/js/example
+                {
+                "title": "title",
+                "content": "hello wiki module!!!"
+                }
+                ```
+            ]],
+			wikiCmdName="@example/js/example",
+			logoUrl="",
+			desc="wiki module example",
+			flag=1,
+		},
+	}
+		
+	regitsterWikiModuleList(wikiModuleList)
+end
+
+-- main()
+
