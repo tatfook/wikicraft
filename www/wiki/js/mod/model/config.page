@@ -1,0 +1,28 @@
+<?npl
+--[[
+Title: the config of mod of model
+Author: leio
+Date: 2017/3/28
+]]
+
+function main()
+	local wikiModuleList = {
+		{
+			name="3D模型",
+			classifyName="3D模型",
+			content=[[
+                ```@model/main
+                ```
+            ]],
+			wikiCmdName="@model/main",
+			logoUrl="model/assets/imgs/model_logo.png",
+			desc="在网页中预览3D模型",
+			flag=1,
+		},
+	}
+		
+	regitsterWikiModuleList(wikiModuleList)
+end
+
+main()
+
