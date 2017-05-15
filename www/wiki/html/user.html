@@ -245,8 +245,8 @@
             <div class="btn btn-block btn-primary" ng-click="favoriteUser()">关 注</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
-                <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{userinfo.email}}</a></p>
-                <p class="ellipsis-1"><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon"><a href="#" class="text-primary" title="http://keepwork.com/{{userinfo.username}}">{{"http://keepwork.com/" + userinfo.username}}</a></p>
+                <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="mailto:{{userinfo.email}}" target="_blank" class="text-primary">{{userinfo.email}}</a></p>
+                <p class="ellipsis-1" title="http://keepwork.com/{{userinfo.username}}"><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon">{{"http://keepwork.com/" + userinfo.username}}</p>
             </div>
             <div class="message-row">
                 <h4>创建的组织：</h4>
@@ -284,7 +284,7 @@
                         <a href="#wiki_preview" aria-controls="preview" role="tab" data-toggle="tab">概况</a>
                     </li>
                     <li role="presentation">
-                        <a href="#wiki_works" aria-controls="wiki_works" role="tab" data-toggle="tab">网站<span class="info">{{allSiteTotal}}</span></a>
+                        <a href="#wiki_works" aria-controls="wiki_works" role="tab" data-toggle="tab">网站<span class="info">({{allSiteTotal}})</span></a>
                     </li>
                     <li role="presentation">
                         <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab">关注</a>

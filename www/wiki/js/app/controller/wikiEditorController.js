@@ -1566,6 +1566,9 @@ define([
                         "Alt-C": function (cm) {
                             $scope.cmd_code();
                         },
+                        "Ctrl-M": function (cm) {
+                            $scope.openWikiBlock();
+                        },
                     }
                 });
 
