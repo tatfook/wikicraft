@@ -20,7 +20,7 @@ define([
             username: '',   // gitlab 用户名                        // gitlab username
             lastCommitId: "master",                                // 最新commitId  替代master  用于cdn加速
             projectId: undefined,                                  // project id
-            projectName: 'keepwork_datasource',                   // repository name
+            projectName: 'keepworkdatasource',                   // repository name
             apiBaseUrl: 'http://git.keepwork.com/api/v4',     // api base url
             rawBaseUrl: 'http://git.keepwork.com',              // raw base url
             rootPath: '',                                           // 根路径

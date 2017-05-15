@@ -8,6 +8,7 @@ Date: 2017/03/02
 NPL.load("(gl)script/ide/DateTime.lua")
 local timehelp = commonlib.timehelp
 include_once("./abstract/base.page")
+include_once("./website.page")
 
 local user_visit_history = inherit(models.abstract.base, gettable("models.user_visit_history"))
 user_visit_history.db_name = 'user_visit_history'
@@ -53,8 +54,13 @@ function user_visit_history:api_get(params)
 	value['limit'] = limit
 	value['skip'] = skip
 	self:db():find({[key]=value}, resume)
-	local err, data = yield()
+	local _, data = yield()
 	
+	local websiteDB = models.website:new() 
+	for _, value in ipairs(data or {}) do
+		value["siteinfo"] = websiteDB:api_getByName({username=value.visitUsername, websiteName=value.visitSitename}).data
+	end
+
 	return errors:wrap(nil, {total=total, visitList=data})
 end
 

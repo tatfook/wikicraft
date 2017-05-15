@@ -286,11 +286,7 @@ define([
                 $scope.errInfo = '页面名包含非法字符(.)';
                 return false;
             }
-            for (var i = 0; i < allWebsites.length; i++) {
-                if (treeNode.siteId == allWebsites[i]._id) {
-                    $scope.website = allWebsites[i];
-                }
-            }
+
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.pagename;
             $scope.websitePage.username = $scope.user.username;
             $scope.websitePage.sitename = treeNode.sitename;
@@ -308,8 +304,6 @@ define([
             }
 
             currentPage = $scope.websitePage;
-            currentSite = $scope.website;
-            //console.log(currentPage);
             $uibModalInstance.close("page");
         }
     }]);
@@ -538,8 +532,8 @@ define([
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
                 var pagename = urlObj.pagename || 'index';
-                var pagepath = urlObj.pagepath || pagename;
-                var url = urlObj.url || ('/' + username + '/' + sitename + '/' + pagepath);
+                var pagepath = urlObj.pagepath || ('/' + username + '/' + sitename + '/' + pagename);
+                var url = urlObj.url || pagepath;
                 if (!username || !sitename || username != $scope.user.username) {
                     openTempFile();
                     return;
@@ -892,6 +886,7 @@ define([
                         //console.log(provider);
                         if (provider == "page") {
                             allPageMap[currentPage.url] = currentPage;
+                            currentSite = getCurrentWebsite();
                             initTree();
                             openPage(false);
                         }

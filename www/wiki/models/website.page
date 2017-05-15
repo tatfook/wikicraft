@@ -264,9 +264,8 @@ function website:api_getByName(params)
 	end
 
 	self:db():findOne({['+username+name']={params.username, params.websiteName}}, resume)
-	local err, data = yield()
 	
-	return errors:wrap(err, data)		
+	return errors:wrap(yield())		
 end
 
 -- 通过站点ID获得站点
@@ -359,27 +358,6 @@ function website:api_getStatics(params)
 	local worksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	
 	return errors:wrap(nil, {memberCount=memberCount, worksCount=worksCount})
-end
-
-
--- 获得用户信息和站点通过站点名
-function website:api_getUserAndSiteBySitename(params)
-	if not params.sitename then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	local siteinfo = self:api_getByName({websiteName=params.sitename}).data
-	if not siteinfo then
-		return errors:wrap(errors.NOT_FOUND)
-	end
-	
-	local userDB = models.user:new()
-	local userinfo = userDB:api_getById({userId=siteinfo.userId}).data
-	if not userinfo then
-		return  errors:wrap(errros.NOT_FOUND)
-	end
-
-	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
 
 -- 检查用户站点是否存在

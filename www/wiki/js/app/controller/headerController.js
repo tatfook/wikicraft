@@ -33,9 +33,9 @@ define([
                 $scope.urlObj.pagename = urlObj.sitename && urlObj.pagename;
                 //console.log(urlObj);
                 if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-                    console.log(urlObj.domain);
+                    //console.log(urlObj.domain);
                     util.post(config.apiUrlPrefix + 'website/getByDomain', {domain: urlObj.domain}, function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if (data) {
                             $scope.urlObj.pagename = $scope.urlObj.sitename;
                             $scope.urlObj.username = data.username;
@@ -163,6 +163,7 @@ define([
         // 页面编辑页面
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
+            console.log(storage.sessionStorageGetItem("urlObj"));
             util.go("wikiEditor");
         }
 

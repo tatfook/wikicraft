@@ -14,6 +14,8 @@ data_source.db_name = "data_source"
 
 local innerGitlabName = "内置gitlab"
 
+local defaultProjectName = "keepworkdatasource"
+
 function data_source:ctor()
 	self:addfield("userId", "number")   -- 用户ID 
 	self:addfield("name", "string")     -- 数据源名
@@ -141,6 +143,7 @@ function data_source:api_setGithubDataSource(params)
 	data =data.data
 	params.dataSourceId = data.id
 	params.dataSourceUsername = data.login
+	params.projectName = params.projectName or defaultProjectName
 	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
 	local _, data = yield()
 	if not data then
@@ -204,6 +207,7 @@ function data_source:api_setGitlabDataSource(params)
 	data = data.data
 	params.dataSourceId = data.id
 	params.dataSourceUsername = data.username
+	params.projectName = params.projectName or defaultProjectName
 	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
 	local _, data = yield()
 	

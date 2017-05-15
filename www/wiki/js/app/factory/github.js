@@ -13,7 +13,7 @@ define([
         var github = {
             inited: false,
             githubName: '',
-            defaultRepoName: 'keepwork_datasource',
+            defaultRepoName: 'keepworkdatasource',
             apiBaseUrl: 'https://api.github.com',
             rawBaseUrl:'',
             rootPath:'',
