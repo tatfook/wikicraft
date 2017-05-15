@@ -22,7 +22,7 @@ define([
 
             $scope.modParams.logoUrl = JSON.parse($scope.modParams.logoUrl);
             $scope.modParams.logoUrl = $scope.modParams.logoUrl[0].previewUrl;
-            var paracraftUrl = "paracraft://cmd/loadworld/" + $scope.modParams.worldName;
+            var paracraftUrl = "paracraft://cmd/loadworld " + $scope.modParams.worldUrl;
 
             console.log(paracraftUrl);
 
@@ -30,7 +30,7 @@ define([
                 if(true){// 判断是否安装了Paracraft
                     $scope.showModal=true;
                 }
-
+                //alert(paracraftUrl);
                 window.open(paracraftUrl);
             }
 
