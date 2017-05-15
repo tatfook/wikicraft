@@ -174,7 +174,7 @@ define([
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
+            if (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg'
@@ -220,7 +220,10 @@ define([
         $scope.logout = function () {
             Account.logout();
             $rootScope.isLogin = false;
-            util.go('home');
+            console.log(window.location.pathname);
+            if (/^\/wiki/.test(window.location.pathname)){
+                util.go('home');
+            }
         };
         
         $scope.clickShare=function () {

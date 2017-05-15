@@ -31,7 +31,7 @@ define([
                 $scope.joinOrganizationList = data.joinOrganizationObj.siteList;
                 $scope.hotSiteList = data.hotSiteObj.siteList;
                 $scope.allSiteList = data.allSiteList;
-                //$scope.allSiteTotal = data.allSiteObj.total;
+                $scope.allSiteTotal = data.allSiteList.length;
                 // 粉丝
                 $scope.fansList = data.fansObj.userList;
                 $scope.fansCount = data.fansObj.total;
