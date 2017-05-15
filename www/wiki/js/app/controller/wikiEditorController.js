@@ -217,6 +217,10 @@ define([
 
         $scope.table_insert = function () {
             $rootScope.table = $scope.table;
+            if ($scope.table.rows < 1 || $scope.table.cols < 1) {
+                $scope.errInfo = "表格行,列必须为大于0的整数";
+                return;
+            }
             $uibModalInstance.close("table");
         }
     }]);
@@ -448,6 +452,9 @@ define([
 
                 currentSite = getCurrentWebsite(page.username, page.sitename);
                 var currentDataSource = dataSource.getCurrentDataSource(page.username, currentSite && currentSite.dataSourceId);
+
+                util.post(config.apiUrlPrefix + 'user_active/addActiveCount', {userId:$scope.user._id});
+
                 currentDataSource.writeFile({
                     path: page.url + pageSuffixName,
                     content: content

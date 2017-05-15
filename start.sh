@@ -80,17 +80,22 @@ main() {
 		server_type="all"
 	fi
 	if [ "$1" == "build" ]; then
+		# 打包  ./start.sh build
 		if [ -e ${build_dir} ]; then
 			rm -fr ${build_dir}
 		fi
 		node r.js -o r_package.js
 	elif [ "$1" == "start" ]; then
+		# etc:  ./start.sh start dev|test|rls
 		echo "start server :"$server_type
 		start_server $server_type
 	elif [ "$1" == "stop" ]; then
+		# etc:  ./start.sh stop dev|test|rls
 		echo "stop server :"$server_type  
 		stop_server $server_type
 	else
+		# etc:  ./start.sh restart dev|test|rls
+		# $server_type为空 重启 dev 和 test  不重启rls
 		echo "restart server :"$server_type
 		restart_server $server_type
 	fi

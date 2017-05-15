@@ -126,7 +126,7 @@ define([
             gitlab.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
                 // 已存在
                 gitlab.httpRequest("PUT", url, params, function (data) {
-                    console.log(data);
+                    //console.log(data);
                     cb && cb(data);
                 }, errcb)
             }, function () {

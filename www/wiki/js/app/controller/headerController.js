@@ -32,7 +32,7 @@ define([
             if (!config.islocalWinEnv()) {
                 $scope.urlObj.username = urlObj.username;
                 $scope.urlObj.sitename = urlObj.sitename;
-                $scope.urlObj.pagename = urlObj.pagename;
+                $scope.urlObj.pagename = urlObj.sitename && urlObj.pagename;
                 //console.log(urlObj);
                 if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                     console.log(urlObj.domain);
