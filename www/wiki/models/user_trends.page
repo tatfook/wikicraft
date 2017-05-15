@@ -1,0 +1,178 @@
+<?npl
+--[[
+Title: user profile
+Author: wuxiangan
+Date: 2017/03/15
+]]
+include_once("./abstract/base.page")
+include_once("./website.page")
+include_once("./user_favorite.page")
+include_once("./user.page")
+
+-- 暂时不用
+local user_trends = inherit(models.abstract.base, gettable("models.user_trends"))
+
+user_trends.db_name = "user_trends";
+
+
+function user_trends:ctor() 
+	self:addfield("userId", "number")          -- 用户ID
+	self:addfield("websiteId","number")        -- 站点ID
+	self:addfield("otherUserId", "number")   -- 站点用户ID
+	self:addfield("trendsType", "number")      -- 动态类型
+	self:addfield("desc", "string")            -- 描述
+	self:addfield("state", "string")           -- 是否已读
+
+	self:addfield("updateDate", "string")      -- 更新日期
+end
+
+-- 创建或更新动态
+function user_trends:api_upsert(params)
+	if (not params.userId) or (not params.websiteId) or (not params.otherUserId) or (not params.trendsType) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH-mm-ss")
+	params.state = params.state or "unread"
+	
+	self:db():insertOne({["+userId+websiteId+otherUserId+trendsType"]={params.userId, params.websiteId,params.otherUserId, params.trendsType}}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 作品更新动态
+function user_trends:api_websiteRenewal(params)
+	if (not params.websiteId) or (not params.otherUserId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local websiteDB = models.website:new()
+	local site = websiteDB:api_getById({websiteId=params.websiteId}).data	
+	if not site then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	params.trendsType = const.USER_TRENDS_TYPE_FAVORITE
+	-- params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.desc = "你的收藏的作品" .. site.name .. "已经更新"
+
+	local userFavoriteDB = models.user_favorite:new()
+	userFavoriteDB:db():find({['+favoriteUserId+favoriteType']={params.otherUserId,const.FAVORITE_TYPE_WEBSITE}}, resume)
+	local err, data = yield()
+	
+	for _, obj in ipairs(data) do
+		params.userId = obj.userId
+		self:api_upsert(params)	
+	end
+	
+	return errors:wrap(nil)
+end
+
+-- 作品收藏动态
+function user_trends:api_worksFavorite(params)
+	if (not params.userId) or (not params.websiteId) or (not params.otherUserId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local websiteDB = models.website:new()
+	local site = websiteDB:api_getById({websiteId=params.websiteId}).data	
+	if not site then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=params.otherUserId}).data
+	if not userinfo then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	params.trendsType=const.USER_TRENDS_TYPE_WORKS
+	params.desc = "你的作品" .. site.name .. "已被" .. userinfo.username .. "收藏"
+
+	return self:api_upsert(params)
+end
+
+-- 组织添加成员
+--function user_trends:api_OrganizationAddMember(params)
+--end
+
+-- 获取用户动态
+function user_trends:api_get(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local skip, limit = util:pagination(params)	
+	-- 获取组织动态
+	self:db():count({['+userId-updateDate']={params.userId}}, resume)
+	local err, total = yield()
+	total = total or 0
+
+	self:db():find({['+userId-updateDate']={params.userId, skip=skip, limit=limit}}, resume)
+	local err, trendsList = yield()
+	
+	local userDB = models.user:new()
+	for _, value in ipairs(trendsList) do
+		value.userinfo = userDB:api_getById({userId=value.otherUserId}).data
+	end
+	return errors:wrap(nil, {total = total, trendsList=trendsList})	
+end
+
+-- 获取用户未读动态
+function user_trends:api_getUnread(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local skip, limit = util:pagination(params)	
+	-- 获取组织动态
+	self:db():count({['+userId+state-updateDate']={params.userId, "unread"}}, resume)
+	local err, total = yield()
+	total = total or 0
+
+	self:db():find({['+userId+state-updateDate']={params.userId, "unread", skip=skip, limit=limit}}, resume)
+	local err, trendsList = yield()
+
+	return errors:wrap(nil, {total = total, trendsList=trendsList})	
+end
+
+-- 删除动态
+function user_trends:api_delete(params)
+	if not params.trendsId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["_id"]={params.trendsId}}, resume)	
+	
+	return errors:wrap(yield())
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

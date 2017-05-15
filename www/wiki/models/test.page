@@ -1,0 +1,41 @@
+<?npl
+--[[
+Title: wiki module
+Author: wuxiangan
+Date: 2017/2/27
+]]
+
+
+include_once("./abstract/base.page")
+
+local test = inherit(models.abstract.base, gettable("models.test"))
+
+
+function test:api_test()
+	local result = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
+	for _, value in ipairs(result) do
+		log("----------")
+		include_once(WIKI_ROOT ..'js/mod/'.. value.filename)
+	end
+	return result
+end
+
+
+function test:api_sendEmail(params)
+	local par = {}
+	-- par.to = params.friendMail
+	par.to = "765485868@qq.com"
+	par.subject = "wikicraft好友邀请"
+	par.body = [[
+		<div class="main-content">
+			<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
+			<p>wikicraft 是一款强大的网站构建平台。</p>
+			<p>#username#的作品：</p>
+			<p><a href="#">作品链接</a></p>
+			<p><a href="#">作品链接</a></p>
+			<div class="btn">点击注册</div>
+		</div>
+	]]
+	
+	util:sendEmail(par)
+end

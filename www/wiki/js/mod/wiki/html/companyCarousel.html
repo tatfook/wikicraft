@@ -1,0 +1,50 @@
+<style>
+    .companyCarousel .carousel-indicators-box{
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        height: 45px;
+        background-color: rgba(0,0,0,.3);
+        z-index: 16;
+    }
+    .companyCarousel .carousel-indicators{
+        bottom: 15px;
+        margin-bottom: 0;
+    }
+    .companyCarousel .carousel-indicators li{
+        width: 45px;
+        height: 5px;
+        background-color: #D1D4D5;
+        border: 0;
+        margin: 0 10px;
+        border-radius: 0;
+    }
+    .companyCarousel .carousel-indicators .active{
+        background-color: #FED048;
+    }
+</style>
+<div class="companyCarousel" ng-controller="companyCarouselController">
+    <div id="companyCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <div class="carousel-indicators-box">
+            <ol class="carousel-indicators">
+                <li data-target="#companyCarousel" ng-repeat="imgItem in modParams.carouselImg track by $index" data-slide-to="{{$index}}" ng-class="($index==0) ? 'active' : ''"></li>
+            </ol>
+        </div>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            <div class="item" ng-repeat="imgItem in modParams.carouselImg track by $index" ng-class="($index==0) ? 'active' : ''">
+                <img ng-src="{{imgItem}}" alt="...">
+            </div>
+        </div>
+        <!-- Controls -->
+        <a class="left carousel-control" href="#companyCarousel" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#companyCarousel" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>

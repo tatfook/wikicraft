@@ -1,0 +1,113 @@
+<style>
+    footer{
+        background-color: #FAFAFA;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+    }
+    footer a{
+        margin: 0 25px;
+        padding: 0 5px 5px;
+        color: #3977ad;
+    }
+    footer span{
+        margin:0 25px;
+        padding: 0 5px 5px;
+    }
+    footer a:focus,footer a:hover{
+        text-decoration: none;
+        border-bottom: 2px solid #3977AD;
+    }
+    .modal textarea{
+        height: 120px;
+    }
+    .modal .control-label{
+        padding-right: 0;
+        text-align: left;
+    }
+    @media (max-width: 992px) {
+        footer a{
+            margin: 0 10px;
+        }
+    }
+    @media (max-width: 768px) {
+        footer{
+            line-height: 30px;
+            height: auto;
+            padding: 10px 0;
+        }
+        footer a, footer span{
+            font-size: 12px;
+            margin: 0;
+        }
+        footer .links{
+            padding-left: 76px;
+            text-align: left;
+        }
+    }
+</style>
+
+<div ng-controller="footerController">
+    <footer>
+        <div class="container">
+            <div class="logo pull-left">KEEPWORK</div>
+            <div class="links">
+                <a ng-click="goContact()">联系方式</a>
+                <a href="http://www.paracraft.cn/?lang=zh" target="_blank">Paracraft</a>
+                <a href="#">更新信息</a>
+                <a data-toggle="modal" data-target="#feedbackModal">问题反馈</a>
+                <a data-toggle="modal" data-target="#complaintsModal">投诉</a>
+                <span>粤ICP备06084303号</span>
+                <span>{{"更新时间: " + serverUpdateTime}}</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">问题反馈</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="feedback" class="control-label col-xs-2">反馈内容：</label>
+                            <textarea id="feedback" class="col-xs-8"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="complaintsModal" tabindex="-1" role="dialog" aria-labelledby="complaintsModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">投诉</h4>
+                </div>
+                <div class="modal-body">
+                    <p>你将要投诉的是#username#发布的#url#</p>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="feedback" class="control-label col-xs-2">投诉原因：</label>
+                            <textarea id="complains" class="col-xs-8"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

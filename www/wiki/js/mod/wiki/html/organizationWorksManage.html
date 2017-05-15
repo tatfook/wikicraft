@@ -1,0 +1,180 @@
+<style>
+    .works-manage .tab-pane a{
+        color: inherit;
+    }
+    .works-manage .tab-pane a:hover{
+        color: #3977AD;
+    }
+    .works-manage .btn{
+        padding:9px 23px;
+        font-size: 16px;
+        margin-left: 20px;
+    }
+    .works-manage .btn-outline{
+        border: 1px solid;
+        color: #666;
+    }
+    .works-manage .btn-outline:hover{
+        background-color: #666;
+        color: #FFF;
+    }
+    .works-manage .panel{
+        background-color: #FFF;
+        box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
+        margin: 80px auto;
+        max-width: 750px;
+        width: 70%;
+        min-width: 700px;
+    }
+    .works-manage .panel-heading{
+        font-weight: bold;
+        font-size: 16px;
+        color: #666;
+        height: 60px;
+        line-height: 60px;
+        padding: 0 15px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .works-manage .panel-body{
+        padding: 0;
+        margin-top: -1px;
+    }
+    .works-manage .panel-body .nav-tabs{
+        font-size: 16px;
+        margin-left: -2px;
+    }
+    .works-manage .panel-body .nav-tabs>li>a{
+        border-radius: 0;
+    }
+    .works-manage .tab-content{
+        padding-bottom:35px;
+    }
+    .works-manage .tab-pane{
+        padding: 40px;
+    }
+    .works-manage .work{
+        padding: 0 20px 20px;
+    }
+    .works-manage .work .work-profile>img{
+        width: 100%;
+        height:210px;
+        object-fit: cover;
+    }
+    .works-manage .text{
+        padding:25px 30px;
+        background-color: #F9F9F9;
+        -webkit-box-shadow: 0 1px 3px 0 rgba(44, 62, 80, 0.35);
+        -moz-box-shadow: 0 1px 3px 0 rgba(44, 62, 80, 0.35);
+        box-shadow: 0 1px 3px 0 rgba(44, 62, 80, 0.35);
+    }
+    .works-manage .org-notify{
+        padding:0;
+    }
+    .works-manage .org-notify-item{
+        border-bottom: 1px solid #DCDCDC;
+        padding: 40px 40px 0;
+    }
+    .works-manage .org-notify-item:last-child{
+        border-bottom:none;
+    }
+    .works-manage .org-notify-item .stress{
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
+    .works-manage .notify-work{
+        display: flex;
+        align-items:center;
+        padding:20px 0;
+    }
+    .works-manage .notify-work img{
+        width: 210px;
+        height:140px;
+        object-fit: cover;
+    }
+    .works-manage .notify-work .intro{
+        flex: 1;
+        padding: 0 0 0 20px;
+    }
+    @media (max-width: 768px) {
+        .works-manage .panel{
+            margin: 0;
+            width: 100%;
+            max-width: 100%;
+            box-shadow: none;
+            min-width: inherit;
+        }
+        .works-manage .tab-pane{
+            padding: 15px 0 0;
+        }
+        .works-manage .notify-work{
+            display: block;
+            text-align: left;
+            padding:0;
+        }
+        .works-manage .notify-work .intro{
+            padding-left: 0;
+        }
+        .works-manage .org-notify-item{
+            padding: 15px;
+        }
+        .works-manage .btn{
+            margin-left: 0;
+            margin-right: 20px;
+        }
+    }
+</style>
+<div class="works-manage clearfix" ng-controller="organizationWorksManageController">
+    <div class="panel">
+        <div class="panel-heading">作品管理</div>
+        <div class="panel-body">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#org-works" ng-click="clickWorksList()" aria-controls="org-works" role="tab" data-toggle="tab">作品列表</a></li>
+                <li role="presentation"><a href="#org-notify" ng-click="clickWorksApply()" aria-controls="org-notify" role="tab" data-toggle="tab">投稿管理</a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active clearfix" id="org-works">
+                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList">
+                        <div ng-hide="works.isDeleted">
+                            <a ng-click="goWorksPage(works)" class="work-profile">
+                                <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'org_work.jpg')}}">
+                            </a>
+                            <div class="text clearfix">
+                                <div class="clearfix">
+                                    <div class="pull-left">
+                                        <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle || "未命名"}}</a></h4>
+                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksInfo.username || ""}}</a></p>
+                                    </div>
+                                    <div class="btn btn-primary pull-right" ng-click="removeWorks(works)">移除</div>
+                                </div>
+                                <p class="pull-left info">
+                                    <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
+                                </p>
+                                <p class="pull-right info" ng-click="worksFavorite($event, works)">
+                                    <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
+                    <div class="org-notify-item" ng-repeat="apply in applyList">
+                        <div ng-hide="apply.isDeleted">
+                            <p><a class="stress" ng-click="goApplyWorksPage(apply)">标题：{{apply.worksInfo.worksTitle}} </a><a> 作者：{{apply.worksInfo.username}}</a></p>
+                            <div class="notify-work">
+                                <img ng-src="{{ apply.worksInfo.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
+                                <div class="intro">
+                                    <p>介绍：</p>
+                                    <p>{{apply.worksInfo.worksDesc}}</p>
+                                </div>
+                                <div class="btn btn-primary" ng-click="agreeApply(apply)">同意</div>
+                                <div class="btn btn-outline" ng-click="refuseApply(apply)">删除</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

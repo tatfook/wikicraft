@@ -1,0 +1,89 @@
+<?npl
+--[[
+Title: wiki module favorite
+Author: wuxiangan
+Date: 2017/3/9
+]]
+
+
+include_once("./abstract/base.page")
+include_once("./wiki_module.page")
+
+local wiki_module_favorite = inherit(models.abstract.base, gettable("models.wiki_module_favorite"))
+wiki_module_favorite.db_name = "wiki_module_favorite"
+
+
+function wiki_module_favorite:ctor()
+	self:addfield("userId", "number")
+	self:addfield("moduleId", "number")
+end
+
+-- 获取用户的收藏
+function wiki_module_favorite:api_getByUserId(params) 
+	if not params.userId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local skip, limit = util:pagination(params)	
+
+	self:db():count({['+userId']={params.userId}},resume)
+	local err, total = yield()
+
+	local wikiModuleDB = models.wiki_module:new()
+
+	self:db():find({['+userId']={params.userId, skip=skip, limit=limit}},resume)
+	local err, data = yield()
+	
+	local moduleList = {}
+	for _, value in pairs(data) do
+		moduleList[#moduleList+1] = wikiModuleDB:api_getById({moduleId=value.moduleId}).data
+	end		
+
+	return errors:wrap(nil, {total=total, moduleList=moduleList})
+end
+
+-- 更新模块收藏数 
+function wiki_module_favorite:updateFavorite(moduleId)
+	local wikiModuleDB = models.wiki_module:new()
+	
+	self:db():count({['+moduleId']={moduleId}}, resume)
+	local err, count = yield()
+
+	if err then 
+		return 
+	end
+	
+	wikiModuleDB:db():updateOne({_id=moduleId},{favoriteCount=count}, resume)
+	local err, data = yield()
+
+	return 
+end
+
+-- wiki module收藏
+function wiki_module_favorite:api_favorite(params) 
+	if (not params.userId) or (not params.moduleId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({['+userId+moduleId']={params.userId, params.moduleId}}, params, resume)
+	local err, data = yield()
+
+	self:updateFavorite(params.moduleId)	
+
+	return errors:wrap(nil)
+end
+
+-- 取消wiki module收藏
+function wiki_module_favorite:api_unfavorite(params)
+	if (not params.userId) or (not params.moduleId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({['+userId+moduleId']={params.userId, params.moduleId}}, resume)	
+
+	local err, data = yield()
+
+	self:updateFavorite(params.moduleId)	
+
+	return errors:wrap(nil)
+end

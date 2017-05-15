@@ -27,6 +27,9 @@ body {
 .set-verify input {
   vertical-align: sub;
 }
+.package-profile {
+  width: 234px;
+}
 .packages-tabs {
   float: left;
   height: 30px;
@@ -202,7 +205,7 @@ body {
   -moz-column-break-inside: avoid;
   page-break-inside: avoid;
   padding: 5px;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
 }
 .packages .packages-show .packages-columar li .packages-weight {
   padding-left: 65px;
@@ -407,6 +410,12 @@ body {
 .packages-install .install-infor-sm {
   padding-top: 5px;
 }
+.packages-install .install-infor-sm > p {
+  max-width: 95%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .packages-install .install-infor-sm .infor-main .infor-details {
   width: 100%;
 }
@@ -569,6 +578,7 @@ body {
 }
 .packages-projects .projects .projects-list .item .project-infor {
   float: left;
+  width: 54%;
 }
 .packages-projects .projects .projects-list .item .project-infor a {
   font-size: 18px;
@@ -582,12 +592,13 @@ body {
 .packages-projects .projects .projects-list .item .project-infor p {
   font-size: 14px;
   margin: 0px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .packages-projects .projects .projects-list .item .project-downloads {
-  float: left;
   font-size: 14px;
-  margin-top: 26px;
-  margin-left: 10px;
 }
 .packages-projects .projects .projects-list .item .project-operation {
   float: right;
@@ -619,10 +630,10 @@ body {
   /*width: 750px;*/
 }
 .modal-dialog .packages-from-modify {
-  height: 430px!important;
+  height: 465px!important;
 }
 .modal-dialog .packages-from {
-  height: 485px;
+  height: 535px;
 }
 .modal-dialog .packages-from h1 {
   text-align: center;

@@ -1,0 +1,28 @@
+<div ng-controller="knowledgeController">
+    <!--头部-->
+    <div style="position: absolute; top: 0px; left: 0px; right: 0px; height: 60px; border-bottom: 1px solid #dddddd">
+        <div class="container-fluid">
+            <div class="col-xs-4 col-sm-2">
+                <h3>WIKICRAFT</h3>
+            </div>
+        </div>
+    </div>
+    <!--正文-->
+    <div style="position: absolute; top: 60px; bottom: 0px; left: 0px; width: 15%; border-right: 1px solid #dddddd; min-width: 180px;">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#classify" data-toggle="tab"><i class="fa fa-align-justify" aria-hidden="true"></i>目录</a></li>
+        </ul>
+        <div id="classify" class="tab-content">
+            <div id="treeview"></div>
+        </div>
+    </div>
+    <div style="position: absolute; top: 60px; bottom: 0px; right: 0px; width: 85%; left: 200px; overflow-y: auto">
+        <!--title-->
+        <div style="text-align: center">
+            <h3>{{articleTitle}}</h3>
+        </div>
+        <div style="max-width: 980px; margin-left: auto; margin-right: auto; margin-top: 10px">
+            <div id="articleContent"></div>
+        </div>
+    </div>
+</div>

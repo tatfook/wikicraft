@@ -1,0 +1,37 @@
+<style type="text/css">
+	.client-login{
+		min-height: 300px;
+	}
+
+	.client-login .go-on{
+	    margin: 0 auto;
+	    margin-top: 80px;
+	    height: 50px;
+    	padding: 0 20px;
+	    display: block;
+        background-color: #0099FF;
+	    color: #FFF;
+	    border: none;
+	    border-radius: 5px;
+	}
+
+	.client-login .desc{
+		margin-top: 50px;
+		text-align: center;
+	}
+
+</style>
+
+<div class="container">
+	<div class="row">
+		<div class="client-login" ng-controller="clientLogin">
+			<div ng-if="type == 1">
+				<button class="go-on" ng-click="linkGithub()">点击继续绑定Github</button>
+				<div class="desc">如果你没有Github账号，请根据指引注册。</div>
+			</div>
+			<div ng-if="type == 2">
+				<div class="desc">Github账号绑定成功，请返回Paracraft客户端。</div>
+			</div>
+		</div>
+	</div>
+</div>

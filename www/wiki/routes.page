@@ -15,10 +15,13 @@ Mapping of CRUD AJAX operations:
 
 Everything else is mapped to `wiki.page` as standard html file.
 ]]
-local path = pagename() or "";
--- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
-WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
+
 WIKI_ROOT = dirname(__FILE__);
+WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
+-- 加载helper相关文件
+include_once(WIKI_ROOT .. 'helpers/index.page')
+
+local path = pagename() or "";
 local ajax_type, ajax_path = path:match("^/?api/(%w+)/(.+)");
 
 if(ajax_type == "mod") then
@@ -104,6 +107,7 @@ end
 ?>
 
 <?npl
+include_once(WIKI_ROOT .. "auth/api.page")
 
 -- 解析URL
 function parseURL() 
@@ -114,33 +118,29 @@ function parseURL()
 		sitename = nil
 	end
 	if sitename and sitena ~= "www" then 
-		local _pagename = request:url():match("^/?([^/]*)")
+		local _pagename, subpage = request:url():match("^/?([^/]*)(.*)")
 	else
 		local url = commonlib.Encoding.url_decode(request:url())
-		sitename, _pagename = url:match("^/?([^/]+)/?([^/]*)");	
+		sitename, _pagename, subpage = url:match("^/?([^/]+)/?([^/]*)(.*)");
 	end
 
-	return sitename, _pagename
+	return sitename, _pagename, subpage
 end
 
 function RenderServerWikiContent() 
 	local sitename, _pagename = parseURL()
-	log(sitename)
-	log(_pagename)
-
 	if (not sitename) or (not _pagename) then
 		return 
 	end
 
-	log(sitename)
-	log(_pagename)
+	--log(sitename)
+	--log(_pagename)
+	--log(subpage)
 	if sitename == nil or sitename == "wiki" or sitename == "api" then
 		if _pagename == "mod" then
 			include_once(WIKI_ROOT .. "mod/routes.page");
-		elseif _pagename == "module" then
-			include_once(WIKI_ROOT .. "module/routes.page");
 		else
-			local filename = WIKI_ROOT .. 'pages/' .. _pagename .. ".page";
+			local filename = WIKI_ROOT .. 'pages/' .. _pagename .. subpage .. ".page";
 			if file_exists(filename) then
 				include(filename);
 			end
@@ -154,11 +154,29 @@ function RenderServerWikiContent()
 	end
 end
 
-local sitename, _pagename = parseURL()
-
-if _pagename == "module" then
-	include(WIKI_ROOT .. "module.page")  -- 为模块的话，用自己的框架页，默认框架包含头部和尾部，混合很难共用
-else
-	include(WIKI_ROOT .. "index.page")
+function RenderServerWikiScript() 
+	local config = {}
+	config.hostname = request:GetHost()
+	config.serverUpdateTime = KEEPWORK.serverUpdateTime
+	if config.hostname == "dev.keepwork.com" then
+		config.bustVersion = os.time()
+	else 
+		config.bustVersion = getBustVersion()
+	end
+	log(config)
+	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
+	echo(format('\t<script src="/wiki/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
+	echo(format('\t<script data-main="/wiki/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js"></script>\n', config.bustVersion))
 end
+
+-- 加载通用页
+include(WIKI_ROOT .. "index.page")
 ?>
+
+
+
+
+
+
+
+

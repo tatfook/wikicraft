@@ -1,0 +1,67 @@
+<style>
+    body{
+        background-color: #F1F1F1;
+    }
+    .findpwd-content{
+        padding-top: 80px;
+        width:340px;
+        margin: 0 auto;
+    }
+    .findpwd-content h3{
+        margin-bottom:30px;
+    }
+    .findpwd-content p{
+        line-height:25px;
+    }
+    .findpwd-content .btn-lg{
+        font-size: 16px;
+        padding: 10px 41px;
+        margin-top: 45px;
+        margin-bottom: 10px;
+    }
+    .findpwd-content h4>span{
+        font-size: 14px;
+        font-weight: normal;
+    }
+</style>
+<div class="container-fluid findpwd-content" ng-controller="findPwdController">
+    <div class="send-email" ng-show="step==1">
+        <h3>找回Keepwork账号</h3>
+        <p>请输入注册时填写的邮箱，我们会将重置密码链接通过邮件发送给您。</p>
+        <div class="form-group">
+            <input ng-model="email" type="text" class="form-control" required>
+        </div>
+        <div class="form-group text-danger">{{errorMsg}}</div>
+        <div class="form-group">
+            <button class="btn btn-primary btn-lg" ng-click="nextStep()">提 交</button>
+        </div>
+        <a ng-click="goLogin()">返回登录</a>
+    </div>
+    <div class="reset-password" ng-show="step==2">
+        <h3>重置Keepwork密码</h3>
+        <p>你将重置#username#的密码。</p>
+        <form id="resetPwd">
+            <div class="form-group">
+                <lebel class="control-label">新密码：</lebel>
+                <input ng-model="pwd" type="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <lebel class="control-label">重复输入：</lebel>
+                <input ng-model="pwd1" type="password" class="form-control" required>
+            </div>
+            <div class="form-group text-danger">{{errorMsg}}</div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-lg" ng-click="nextStep()">确 认</button>
+            </div>
+        </form>
+        <a ng-click="goLogin()">返回登录</a>
+    </div>
+    <div class="finish" ng-show="step==3">
+        <h4>恭喜您！<p>已成功重置#username#密码，</p></h4>
+        <p>请返回首页，以新密码登录</p>
+        <div class="form-group">
+            <button class="btn btn-primary btn-lg" ng-click="goLogin()">返回首页</button>
+        </div>
+    </div>
+</div>
+

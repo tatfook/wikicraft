@@ -1,0 +1,207 @@
+<style>
+    body{
+        background-color: #F2F2F2;
+    }
+    .join-form{
+        background-color: #FAFAFA;
+        box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
+        padding: 40px 0 60px;
+    }
+    .join-form p{
+        margin: 0;
+        color: #666;
+    }
+    .join-form p.user-link{
+        color: #f35d5d;
+        font-weight: bold;
+    }
+    .join-form.col-sm-6{
+        margin-top: 80px;
+        margin-bottom: 80px;
+    }
+    .join-form form, .join-form .successInfo,.completeMsg{
+        width:65%;
+        margin:0 auto;
+    }
+    .join-form .form-control{
+        margin-bottom: 10px;
+    }
+    .join-form .checkbox{
+        margin: 25px 0;
+    }
+    .join-form .btn-primary{
+        margin: 20px 0;
+    }
+    .join-form .form-group{
+        position: relative;
+    }
+    .join-form .input-err{
+        position: absolute;
+        right: 0;
+        top: 44px;
+    }
+    .otherLogin {
+        text-align: center;
+    }
+    .otherLogin .title{
+        z-index: 1;
+        position: relative;
+        margin: 40px 0;
+    }
+    .otherLogin img{
+        margin-bottom: 5px;
+    }
+    .otherLogin .title:before{
+        content: "";
+        width: 25%;
+        height: 1px;
+        background-color: #DDD;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        z-index: -1;
+    }
+    .otherLogin .title:after{
+        content: "";
+        width: 25%;
+        height: 1px;
+        background-color: #DDD;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        z-index: -1;
+    }
+    .otherLogin a{
+        padding:0 15px;
+    }
+    .join-form .params{
+        margin: 40px 0;
+    }
+    a.text-primary{
+        color: #3977AD;
+        border-bottom: 1px solid #3977AD;
+    }
+    .visible-hidden{
+        visibility: hidden;
+    }
+
+    .completeMsg form{
+        width: 100%;
+    }
+    .completeMsg p.info{
+        font-size: 12px;
+        color: #999;
+        margin: 20px 0 40px;
+    }
+    .completeMsg h2{
+        font-size: 20px;
+        color: #666;
+    }
+    .completeMsg .btn-primary{
+        margin-top: 65px;
+    }
+    @media(max-width: 768px){
+        .container-fluid{
+            padding:0;
+        }
+        .join-form.col-sm-6{
+            margin: 0 0 10px;
+            box-shadow: none;
+            padding: 20px 0;
+        }
+        .join-form form{
+            width: 80%;
+        }
+        .otherLogin .title{
+            margin: 20px 0;
+        }
+    }
+</style>
+
+<div ng-controller="joinController" class="container-fluid">
+    <div class="join-form col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 responsive">
+        <form ng-show="step==1" class="clearfix">
+            <div class="text-danger">{{errMsg}}</div>
+            <div class="form-group">
+                <label class="sr-only">账户名</label>
+                <input type="text" class="form-control" name="username" placeholder="账户名" ng-model="username" ng-blur="checkInput()">
+                <p>登录账号注册后不可更改</p>
+                <p>可以使用英文字母、数字组合（例如：keep123）</p>
+                <p>系统默认个人网址地址：</p>
+                <p class="user-link">http://keepwork.com/{{username || "???"}}</p>
+                <div class="text-danger input-err">
+                    {{nameErrMsg}}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="sr-only">密码</label>
+                <input type="password" style="display: none;" name="password">
+                <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password" ng-blur="checkInput()">
+                <div class="text-danger input-err">
+                    {{pwdErrMsg}}
+                </div>
+            </div>
+            <div class="checkbox clearfix">
+                <label>
+                    <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()">《KeepWork用户协议》</a>
+                </label>
+            </div>
+            <a ng-click="register()" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree">注册</a>
+            <div class="otherLogin">
+                <div class="title">使用第三方账号登录</div>
+                <div class="login-way">
+                    <a ng-click="qqLogin()">
+                        <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">
+                    </a>
+                    <a ng-click="wechatLogin()">
+                        <img ng-src="{{imgsPath+'icon/wiki_wechat.png'}}" alt="">
+                    </a>
+                    <a ng-click="sinaWeiboLogin()">
+                        <img ng-src="{{imgsPath+'icon/wiki_sina_weibo.png'}}" alt="">
+                    </a>
+                    <a ng-click="githubLogin()">
+                        <img ng-src="{{imgsPath+'icon/wiki_github_logo.png'}}" alt="">
+                    </a>
+                </div>
+            </div>
+        </form>
+        <div class="successInfo" ng-show="step==2">
+            <h2><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt=""> 恭喜您注册成功！</h2>
+            <div class="params">
+                <p>账号：{{username}}</p>
+                <p>系统默认个人网址地址：http://keepwork.com/{{username}}</p>
+            </div>
+            <div class="params">
+                <p>请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开 <a ng-click="goUserCenter()">>>个人资料管理 << </a>，进行绑定。</p>
+            </div>
+            <div class="btn btn-primary" ng-click="goUserHome()">跳转个人首页</div>
+        </div>
+        <div class="completeMsg" ng-show="step==3">
+            <h2>完善账号信息</h2>
+            <p class="info">完善信息后可使用第三方账号登录页可使用本站账号密码登录。</p>
+            <form>
+                <div class="text-danger">{{errMsg}}</div>
+                <div class="form-group">
+                    <label class="sr-only">账户名</label>
+                    <input type="text" class="form-control" name="otherUsername" placeholder="账户名" ng-model="otherUsername" ng-blur="checkInput('other')">
+                    <p>登录账号注册后不可更改</p>
+                    <p>可以使用英文字母、数字组合（例如：keep123）</p>
+                    <p>系统默认个人网址地址：</p>
+                    <p class="user-link">http://keepwork.com/{{otherUsername || "???"}}</p>
+                    <div class="text-danger input-err">
+                        {{nameErrMsg}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">密码</label>
+                    <input type="password" name="otherPassword" style="display: none">
+                    <input type="password" class="form-control" name="otherPassword" placeholder="密码" ng-model="otherPassword" ng-blur="checkInput('other')">
+                    <div class="text-danger input-err">
+                        {{pwdErrMsg}}
+                    </div>
+                </div>
+                <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg">确 定</div>
+            </form>
+        </div>
+    </div>
+</div>

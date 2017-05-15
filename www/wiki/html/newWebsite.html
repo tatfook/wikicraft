@@ -1,0 +1,339 @@
+<style>
+    .model-select{
+        border: 1px solid #DCDCDC;
+    }
+    .model-select .tab-content{
+        border-left: 1px solid #DCDCDC;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    .step-content {
+        min-height: 325px;
+        padding: 25px 70px 0;
+    }
+    .step-footer {
+        text-align: center;
+        margin: 40px 0;
+    }
+    .step-footer .btn-primary{
+        padding: 9px 0;
+        width: 140px;
+    }
+    .step-footer .btn-prev{
+        background-color: #FFF;
+        color: #666;
+        border-color: #666;
+        margin-right: 20px;
+    }
+    .step-footer .btn-prev:hover{
+        background-color: #666;
+        color: #FFF;
+    }
+    .step-content .step2 .col-sm-7{
+        display: flex;
+        align-items: center;
+        padding-left: 0;
+    }
+    .step-content .step2 .form-control{
+        margin: 10px .5em;
+    }
+    .step-content .label-selected{
+        color: #3977AD;
+        background-color: #DBDBDB;
+        float: left;
+        margin: 5px;
+        padding: 6px 18px;
+        font-size: 16px;
+    }
+    .step-content .errorMsg{
+        position: absolute;
+        bottom:-10px;
+    }
+    .step-content .error-msg-box{
+        padding-left: 0;
+        line-height:34px;
+        margin-top: 10px;
+    }
+    .step-content .btn-tag{
+        padding:0;
+    }
+    .step-content .info{
+        font-size: 12px;
+    }
+    .step-content .info.col-sm-12{
+        padding-left: 0;
+    }
+    .labels-box{
+        min-height: 130px;
+        background-color: #F9f9f9;
+        border: 1px solid #DCDCDC;
+        padding: 6px 15px;
+    }
+    .labels-common-used{
+        min-height: 190px;
+        background-color: #f9f9f9;
+        border: 1px solid #DCDCDC;
+        padding: 6px 15px;
+    }
+    .labels-common-used span{
+        margin: 5px 0;
+        text-align: center;
+        display: inline-block;
+        min-width: 30%;
+        font-size: 16px;
+        color: #3977AD;
+    }
+    .website-model .label {
+        background-color: rgba(0,0,0,.35);
+        padding: 11px 18px;
+        position: absolute;
+        left: 15px;
+        font-weight: normal;
+        top: 0;
+        font-size: 18px;
+        border-radius: 0;
+        color: #FFF;
+    }
+    .website-model .btn-group{
+        background-color: #F9F9F9;
+        box-shadow: 0 1px 3px 0 rgba(44,62,80,.35);
+        padding:0;
+    }
+    .website-model .btn-group .btn-lg{
+        font-size: 16px;
+        border-radius: 0;
+        margin:0;
+    }
+    .website-model .active>img{
+        border: 1px solid #3977AD;
+        border-bottom:none;
+    }
+    .website-model .active>.btn-group{
+        border: 1px solid #3977AD;
+        border-top: none;
+    }
+    .website-model .btn-group .btn-lg.active{
+        background-color: #eee;
+        color: #3977AD;
+        box-shadow: none;
+    }
+    .website-model img{
+        width:100%;
+        height:180px;
+        object-fit: cover;
+        cursor: pointer;
+    }
+    .model-select .nav-tabs{
+        border-bottom: none;
+        color: black;
+        padding-right: 0;
+        padding-top: 35px;
+    }
+    .model-select .nav-tabs>li{
+        text-align: center;
+        width: 100%;
+    }
+    .model-select .nav-tabs>li.active>a{
+        border: none;
+        left: 0;
+        background-color: #DCDCDC;
+        margin-right: 0;
+    }
+    .confirm-msg .col-sm-12,.confirm-msg .col-sm-6{
+        color: #3977AD;
+        font-size: 16px;
+        padding: 10px 0;
+    }
+    .confirm-msg .col-sm-12 span{
+        color: #333;
+        font-size: 14px;
+    }
+    .confirm-msg .label-img{
+        display: inline-block;
+        position: relative;
+        vertical-align: text-top;
+    }
+    .confirm-msg .label-img>img{
+        height:180px;
+        object-fit: cover;
+    }
+    .confirm-msg .label-img .label{
+        position: absolute;
+        padding: 11px 18px;
+        left: 0;
+        top: 0;
+        font-weight: normal;
+        border-radius: 0;
+        font-size: 18px;
+        background-color: rgba(0,0,0,.35);
+    }
+    .congratulation{
+        text-align: left;
+        margin-left: 30%;
+    }
+    .congratulation h4 {
+        font-size: 20px;
+        margin-bottom: 60px;
+    }
+    .congratulation img{
+        vertical-align: middle;
+        margin-right: .5em;
+    }
+    .congratulation a {
+        color: #3977AD;
+    }
+    .no-padding-left{
+        padding-left:0;
+    }
+
+</style>
+
+<div ng-controller="newWebsiteController">
+    <div class="col-md-10 main-content">
+        <div class="panel-heading">
+            新建网站
+        </div>
+        <div class="panel-body">
+            <div class="step-content clearfix">
+                <div ng-show="step == 1">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group sr-only">
+                            <legend>新建网站第一步表单</legend>
+                        </div>
+                        <div class="form-group">
+                            <label for="webName" class="control-label col-sm-2">站点名称：</label>
+                            <div class="col-sm-5">
+                                <input id="webName" ng-model="website.displayName" ng-change="checkWebsiteDisplayName()" type="text" class="form-control inline-form-control">
+                                <p class="errorMsg text-danger">{{errMsg}}</p>
+                            </div>
+                            <div class="col-sm-5 info col-sm-offset-2">
+                                <p>*这个名字可以用来称呼你的网站（例如：我的一个站点）</p>
+                                <p>*随时可以在网站设置中修改</p>
+                                <p>*可以使用中文、字母、数字、符号，首位不可使用空格</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="webIntro" class="control-label col-sm-2">网站介绍：</label>
+                            <div class="col-sm-5">
+                                <textarea id="webIntro" ng-model="website.desc" rows="6"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div ng-show="step == 2" class="step2">
+                    <p>设定网站的访问地址</p>
+                    <div class="col-sm-7 form-group">
+                        http://keepwork.com/{{user.username}}/<input ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
+                    </div>
+                    <div class="col-sm-5 error-msg-box">
+                        <p class="text-danger">{{errMsg}}</p>
+                    </div>
+                    <div class="col-sm-12 info no-padding-left">
+                        <p>*可使用小写字母、数字（例如：mysite123）</p>
+                        <p>设定后不可修改</p>
+                        <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
+                    </div>
+                </div>
+                <div ng-show="step == 3">
+                    <div class="col-sm-6">
+                        <p>本站标签：<span class="text-danger">{{errMsg}}</span></p>
+                        <div class="col-sm-10 no-padding-left">
+                            <input type="text" class="form-control" ng-model="tag">
+                        </div>
+                        <div class="col-sm-2 btn-tag">
+                            <div class="btn btn-primary btn-block" ng-click="addTag(tag)">添 加</div>
+                        </div>
+                        <div class="col-sm-12 labels-box">
+                            <div ng-repeat="tag in tags" class="label-selected">#{{tag}}#<span ng-click="removeTag(tag)" class="glyphicon glyphicon-remove text-danger"></span></div>
+                        </div>
+                        <p class="info col-sm-12">*为你的网站添加描述标签，这些标签会决定网站被如何搜索到, 你可以随时在网站设置中修改</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>常用标签：</p>
+                        <div class="labels-common-used">
+                            <span ng-click="addTag(tag)" ng-repeat="tag in commonTags" style="cursor: pointer">#{{tag}}#</span>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="step == 4">
+                    <h4>选择功能模板：</h4>
+                    <div role="tabpanel" class="clearfix model-select">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs col-sm-2" role="tablist">
+                            <li role="presentation" ng-repeat="category in categories" ng-class="getActiveStyleClass(category)">
+                                <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name}}</a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content website-model col-sm-10">
+                            <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
+                                <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''">
+                                    <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
+                                    <div class="col-md-12 btn-group">
+                                        <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
+                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                                        </div>
+                                    <span class="label">{{template.name}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="step == 5">
+                    <h4>选择美术效果：</h4>
+                    <div class="website-model">
+                        <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''">
+                            <img ng-src="{{ imgsPath + (style.logoUrl || 'wiki_works.jpg') }}" ng-click="selectTemplate(template)" alt="">
+                            <div class="col-md-12 btn-group">
+                                <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style)">预览</div>
+                                <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)" ng-class="website.styleId == style._id ? 'active' : ''">选择</div>
+                            </div>
+                            <span class="label">{{style.name}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="step == 6" class="confirm-msg">
+                    <h4>信息确认：</h4>
+                    <div class="col-sm-12">
+                        站点名称：<span>{{website.displayName}}</span>
+                    </div>
+                    <div class="col-sm-12">
+                        网站介绍：<span>{{website.desc}}</span>
+                    </div>
+                    <div class="col-sm-12">
+                        URL：<span>{{'/' + user.username + '/' + website.name + '/index'}}</span>
+                    </div>
+                    <div class="col-sm-12">
+                        标签：<span>{{website.tags}}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        功能模板：
+                        <div class="label-img">
+                            <img ng-src="{{ imgsPath + (template.logoUrl || 'wiki_works.jpg') }}" alt="">
+                            <div class="label">{{website.templateName}}</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        美术模板：
+                        <div class="label-img">
+                            <img ng-src="{{ imgsPath + (style.logoUrl || 'wiki_works.jpg') }}" alt="">
+                            <div class="label">{{website.styleName}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="step == 7" class="congratulation">
+                    <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">恭喜你，网站创建成功！ </h4>
+                    <p>网站名：{{website.displayName}}</p>
+                    <p>网址：http://keepwork.com/{{user.username}}/{{website.name}}</p>
+                </div>
+            </div>
+            <div class="step-footer">
+                <button ng-show="step > 1 && step < 7" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
+                <button ng-show="step < 7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 6 ? '确认' : '下一步'}}</button>
+                <button ng-show="step==7" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">返回网站管理</button>
+                <button ng-show="step==7" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goWebsiteIndexPage()">打开网站</button>
+            </div>
+        </div>
+    </div>
+</div>

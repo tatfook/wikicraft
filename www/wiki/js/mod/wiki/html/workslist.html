@@ -1,0 +1,269 @@
+<style>
+    .personal-works-list{
+        position: relative;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .personal-works-list .carousel-item {
+        float: left;
+        width: 29%;
+        border: 1px solid #DCDCDC;
+        margin: 0 2%;
+    }
+    .personal-works-list .carousel-item>img{
+        width: 100%;
+        object-fit: cover;
+    }
+    .personal-works-list .control{
+        position: absolute;
+        top: 60%;
+        color: #DCDCDC;
+    }
+    .personal-works-list .msg{
+        padding: 20px 30px;
+    }
+    .personal-works-list h4{
+        margin: 0;
+        font-weight: bold;
+        text-align: left;
+    }
+    .personal-works-list .work-msg{
+        line-height: 40px;
+        color: #666;
+    }
+    .personal-works-list .work-msg img{
+        vertical-align: text-bottom;
+    }
+    .personal-works-list span.title{
+        border-bottom: 2px solid #FF7A7A;
+        color: #FF7A7A;
+        padding:4px 10px;
+    }
+    @media(min-width: 768px){
+        .personal-works-list{
+            width: 700px;
+        }
+        .personal-works-list .control{
+            font-size: 30px;
+        }
+        .personal-works-list .control.left{
+            left: -25px;
+        }
+        .personal-works-list .control.right{
+            right: -25px;
+        }
+        .personal-works-list .header-img{
+            margin: 30px 0;
+        }
+        .personal-works-list .carousel-item>img{
+            height: 110px;
+        }
+        .personal-works-list .msg{
+            padding: 12px 10px 0;
+        }
+    }
+    @media(min-width: 992px){
+        .personal-works-list{
+            width: 800px;
+        }
+        .personal-works-list .control{
+            font-size: 40px;
+        }
+        .personal-works-list .control.left{
+            left: -55px;
+        }
+        .personal-works-list .control.right{
+            right: -55px;
+        }
+        .personal-works-list .header-img{
+            margin: 60px 0;
+        }
+        .personal-works-list .carousel-item>img{
+            height: 170px;
+        }
+        .personal-works-list .msg{
+            padding: 20px 30px;
+        }
+    }
+    @media(min-width: 1170px){
+        .personal-works-list{
+            width: 1035px;
+        }
+        .personal-works-list .control{
+            font-size: 60px;
+        }
+        .personal-works-list .control.left{
+            left: -60px;
+        }
+        .personal-works-list .control.right{
+            right: -60px;
+        }
+    }
+    @media (max-width: 768px) {
+        .personal-works-list{
+            width: 100%;
+        }
+        .personal-works-list .header-img{
+            margin: 10px 0 0;
+            width: 180px;
+        }
+        .personal-works-list .carousel-item{
+            width: 100%;
+            margin: 10px 0;
+        }
+    }
+</style>
+<style>
+    .org-works-list a{
+        color: inherit;
+    }
+    .org-works-list a:hover{
+        color: #3977AD;
+    }
+    .org-works-list h1{
+        font-size: 36px;
+        font-weight: normal;
+        margin: 60px 0 0;
+        color: #333;
+        padding-bottom: 25px;
+        position: relative;
+    }
+    .org-works-list h1:before{
+        content: '';
+        display: inline-block;
+        width: 2em;
+        height:1px;
+        background-color: #333;
+        position: absolute;
+        left:0;
+        bottom:0;
+    }
+    .org-works-list img{
+        width: 100%;
+    }
+    .org-works-list .navigation{
+        text-align: right;
+    }
+    .org-works-list .navigation a{
+        padding:0 5px;
+    }
+    .org-works-list .text {
+        background-color: #FAFAFA;
+        padding: 20px;
+        box-shadow: 0px 1px 3px 0px rgba(44, 62, 80, .35);
+    }
+    .org-works-list .hover-slide:hover {
+        transform: translate3d(0, -3px, 0);
+        transition: all .2s linear;
+    }
+    .org-works-list .hover-slide:hover .text {
+        box-shadow: 0 2px 5px 0 rgba(44, 62, 80, .35);
+    }
+    .org-works-list .col-md-12 h4 {
+        line-height: 40px;
+    }
+    .org-works-list img{
+        height:196.88px;
+        object-fit: cover;
+    }
+    .org-works-list .works{
+        margin:30px -15px;
+    }
+    @media (max-width: 1200px) and (min-width: 992px){
+        .org-works-list img {
+            height: 159.38px;
+            object-fit: cover;
+        }
+    }
+    @media (max-width: 992px) and (min-width: 768px){
+        .org-works-list{
+            width: 100%;
+            padding:0;
+        }
+        .org-works-list .col-sm-6{
+            margin-bottom: 20px;
+        }
+        .org-works-list img {
+            height: 165px;
+            object-fit: cover;
+        }
+        .org-works-list .works{
+            margin: 30px 0;
+        }
+    }
+    @media (max-width: 768px){
+        .org-works-list{
+            padding:0;
+        }
+        .org-works-list .text{
+            padding:10px 15px;
+        }
+        .org-works-list .col-xs-10{
+            margin-bottom: 10px;
+        }
+        .org-works-list h1{
+            font-size: 28px;
+            padding-bottom: 10px;
+            margin-top: 15px;
+        }
+        .org-works-list .works {
+            margin: 15px -15px;
+        }
+    }
+</style>
+
+<div class="container-fluid" ng-controller="workslistController">
+    <div class="personal-works-list" ng-show="modParams.moduleKind=='personal'">
+        <h3><span class="title">{{modParams .title || "我的作品"}}</span></h3>
+        <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
+        <div class="carousel-content clearfix">
+            <div class="carousel-item" ng-repeat="x in siteList">
+                <img ng-src="{{x.logoUrl || imgsPath+'personal_workslist_banner.jpg'}}" alt="作品名">
+                <div class="msg">
+                    <h4>{{x.name}}</h4>
+                    <div class="clearfix work-msg">
+                        <div class="pull-left">作者：{{x.username}}</div>
+                        <div class="pull-right">
+                            <img ng-src="{{imgsPath+'personal_workslist_star_empty.png'}}" alt="">
+                            <span>收藏 {{x.favoriteCount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="control left">
+            <span class="glyphicon glyphicon-chevron-left" style="cursor: pointer" ng-click="getSiteList(requestParams.page-1)"></span>
+        </div>
+        <div class="control right">
+            <span class="glyphicon glyphicon-chevron-right" style="cursor: pointer" ng-click="getSiteList(requestParams.page+1)"></span>
+        </div>
+    </div>
+    <div class="org-works-list container" ng-show="modParams.moduleKind=='organization'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a>1</a>
+            <a>2</a>
+            <a>3</a>
+            <a>>></a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
+                <a ng-click="goWorksPage(works)">
+                    <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'personal_workslist_banner.jpg')}}">
+                </a>
+                <div class="text clearfix">
+                    <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle}}</a></h4>
+                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksInfo.username}}</a></p>
+                    <p class="pull-left info">
+                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
+                    </p>
+                    <p class="pull-right info" ng-click="worksFavorite($event, site)">
+                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{works.favoriteCount || 0}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

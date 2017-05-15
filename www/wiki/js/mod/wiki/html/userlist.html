@@ -1,0 +1,29 @@
+
+<div ng-controller="userlistController">
+    <!--c成员信息-->
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10" style="display: flex; justify-content: space-between; align-items: center;height: 90px">
+            <div style="font-size: 30px">{{moduleParams.title}}</div>
+            <div style="font-size: 18px; align-self: flex-end">
+                <a ng-click="getAllUserList()">更多</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+            <div class="row">
+                <div class="col-md-4" ng-repeat="user in userObj.userList">
+                    <div style="display: flex; align-items: center; padding: 10px 0px">
+                        <img ng-src="{{user.portrait || '/wiki/assets/imgs/ManPortrait.jpg'}}" class="img-circle" style="height: 60px">
+                        <div style="margin-left: 12px">
+                            <div style="font-size: 18px">{{user.username}}</div>
+                            <div style="font-size: 12px">{{user.desc}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 120px"></div>
+</div>

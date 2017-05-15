@@ -1,0 +1,14 @@
+.contributeCalendar svg{
+  margin-top:20px;
+  padding:30px 45px;
+  font-size:12px;
+  min-width: 700px;
+  margin: 0 auto;
+  display: block;
+  height: 90px;
+  padding-bottom: 0;
+  padding-right: 0;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}

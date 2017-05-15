@@ -1,0 +1,126 @@
+<style>
+    body{
+        background-color: #F1F1F1;
+    }
+    h4.title{
+        border-left:4px solid #3977AD;
+        padding-left: 10px;
+    }
+    .vip-level{
+        border: 1px solid #DCDCDC;
+        margin:80px auto;
+    }
+    .vip-level .panel{
+        border: none;
+        padding:0;
+        box-shadow: none;
+        margin-bottom: 0;
+    }
+    .vip-level .panel-heading{
+        background-color: transparent;
+    }
+    .vip-level .table-bordered>tbody>tr>td, .vip-level .table-bordered>tbody>tr>th, .vip-level .table-bordered>tfoot>tr>td, .vip-level .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .vip-level .table-bordered>thead>tr>th{
+        background-color: #DCDCDC;
+        border-color: #FFF;
+        width: 50%;
+        text-align: center;
+    }
+</style>
+<div class="container vip-level" ng-controller="VIPLevelController">
+    <div class="row">
+        <div class="panel panel-default col-sm-12">
+            <div class="panel-heading">会员等级说明</div>
+            <div class="panel-body col-md-6">
+                <div class="col-md-12">
+                    <h4 class="title">等级经验值</h4>
+                    <p>每个等级的经验值=100+3^lev</p>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <td class="text-primary">等级</td>
+                            <td class="text-primary">经验</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>103</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>109</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>127</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>181</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>343</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>89</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>2287</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>6661</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>19783</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>59149</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <h4 class="title">如何获得经验值？</h4>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td>每日登录</td>
+                            <td>经验值+<span class="text-danger">5</span></td>
+                        </tr>
+                        <tr>
+                            <td>被人收藏</td>
+                            <td>经验值+<span class="text-danger">1</span></td>
+                        </tr>
+                        <tr>
+                            <td>被人浏览</td>
+                            <td>经验值+<span class="text-danger">3</span></td>
+                        </tr>
+                        <tr>
+                            <td>分享给别人</td>
+                            <td>经验值+<span class="text-danger">1</span></td>
+                        </tr>
+                        <tr>
+                            <td>阅读别人</td>
+                            <td>经验值+<span class="text-danger">1</span></td>
+                        </tr>
+                        <tr>
+                            <td>阅读别人</td>
+                            <td>经验值+<span class="text-danger">1</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <h4 class="title">升级有什么好处？</h4>
+                    <p>VIP的额外经验好处</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

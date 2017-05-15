@@ -1,0 +1,58 @@
+﻿<?npl
+--[[
+Title: oauth handler for `satellizer oauth framework`
+Author: LiXizhi
+Date: 2016/5/10
+]]
+include_once("api.page")
+
+local accessTokenUrl = 'https://api.weibo.com/oauth2/access_token'
+-- local userApiUrl = 'https://api.weibo.com/2/account/get_uid.json'
+local serviceName = "xinlangweibo"
+local params = {
+    grant_type="authorization_code",
+	code = request:get("code"),
+	client_id = request:get("clientId"),
+	-- client_secret = "93787d1c3a3f3ac20d1c7b7b2b541e02",
+	client_secret = KEEPWORK["config"]["default"]["threeService"]["xinlangweibo"]["client_secret"],
+	redirect_uri = request:get("redirectUri"),
+}
+
+response:Begin()
+if not params.client_id then
+    return response:send_xml("keepwork.com认证")
+end
+log(params)
+local url = accessTokenUrl .. "?client_id=" .. params.client_id .. "&client_secret=" .. params.client_secret .. "&grant_type=authorization_code&redirect_uri=" .. params.redirect_uri .."&code=" .. params.code
+-- Step 1. Exchange authorization code for access token.
+util.GetUrl({url=url, form = params }, function(err, msg, data)
+    data = commonlib.Json.Decode(data)
+    log("=====================xin lang wei bo authenticate======================")
+	if((not data) or (data.error)) then
+		return response:send({error=1, message="access token invaild"})
+	end
+
+	-- 是否已经登录
+	local userId = checkAuthenticated()
+	if userId then
+		db.user_three_service:insertOne({["+serviceId+serviceName"]={data.uid, serviceName}}, {userId=userId, serviceId=data.uid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
+		return response:send({token = token, error=0, message="OK"})
+	end
+	-- 未登录
+
+	db.user_three_service:findOne({["+serviceId+serviceName"]={data.uid, serviceName}}, function(err, userThreeService)
+		-- 没有绑定
+		if not userThreeService then
+			db.user_three_service:insertOne({["+serviceId+serviceName"]={data.uid, serviceName}}, {serviceId=data.uid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
+			return response:send({error=0, data={serviceId=data.uid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
+		end
+		db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
+			if not userinfo then
+				return response:send({error=0, data={serviceId=data.uid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
+			end
+			local token = createJWT(userinfo)
+			return response:send({token = token, data = userinfo, error=0, message="OK"})
+		end)
+	end)
+end)
+

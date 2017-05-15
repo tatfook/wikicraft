@@ -1,0 +1,64 @@
+<?npl
+--[[
+Title: user three service
+Author: wuxiangan
+Date: 2017/04/19
+]]
+
+
+include_once("./abstract/base.page")
+
+local user_three_service = inherit(models.abstract.base, gettable("models.user_three_service"))
+user_three_service.db_name = "user_three_service"
+
+
+function user_three_service:ctor()
+	self:addfield("userId", "number")        -- 用户ID 
+	self:addfield("serviceId", "string")     -- 第三方服务的id
+	self:addfield("serviceName", "string")   -- 第三方服务名称
+	self:addfield("token", "string")         -- 第三方服务token
+end
+
+-- 插入记录
+function user_three_service:api_upsert(params)
+	if (not params.userId) or (not params.serviceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():insertOne({["+serviceId+serviceName"]={params.serviceId, params.serviceName}}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 删除第三方服务
+function user_three_service:api_deleteById(params)
+	if not params.id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params.id}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 获得用户的第三方服务列表
+function user_three_service:api_getByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():find({["+userId"]={params.userId}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 获得第三方服务
+function user_three_service:api_getByService(params)
+	if (not params.serviceId) or (not params.serviceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+serviceId+serviceName"]={params.serviceId, params.serviceName}}, resume)
+	
+	return errors:wrap(yield())
+end

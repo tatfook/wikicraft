@@ -1,178 +1,249 @@
-<div ng-controller="editWebsiteCtrl" class="container">
-    <div style="display: flex">
-        <div>
-            <ul class="nav nav-tabs nav-stacked">
-                <li class="active"><a href="#EditWebsiteBasicSetUp" data-toggle="tab">基本设置</a></li>
-                <li><a href="#EditWebsiteAdvancedSetUp" data-toggle="tab">高级设置</a></li>
-                <li><a href="#EditWebsiteMemberManager" data-toggle="tab" ng-click="memberManager()">成员管理</a></li>
-                <li><a href="#EditWebsiteWorksManager" data-toggle="tab" ng-click="worksManager()">作品管理</a></li>
-            </ul>
+<style>
+    .setting-form .form-control{
+        margin-bottom: 0;
+    }
+    .setting-form .labels-box{
+        height: auto;
+        min-height: 130px;
+        background-color: #F9f9f9;
+        border: 1px solid #DCDCDC;
+        padding: 6px 15px;
+    }
+    .setting-form .add-label{
+        padding-left: 0;
+        margin-bottom: 25px;
+    }
+    .setting-form .label-selected{
+        color: #3977AD;
+        background-color: #DBDBDB;
+        float: left;
+        margin: 5px;
+        padding: 6px 18px;
+        font-size: 16px;
+    }
+    .labels-box{
+        height: 130px;
+        background-color: #F9f9f9;
+        border: 1px solid #DCDCDC;
+        padding: 6px 15px;
+    }
+    .setting-form .labels-common-used{
+        min-height: 165px;
+        background-color: #f9f9f9;
+        border: 1px solid #DCDCDC;
+        padding: 6px 15px;
+    }
+    .setting-form .labels-common-used span{
+        margin: 5px 0;
+        text-align: center;
+        display: inline-block;
+        min-width: 30%;
+        font-size: 16px;
+        color: #3977AD;
+        cursor: pointer;
+    }
+    .setting-form .add-cname{
+        padding-left: 0;
+    }
+    .setting-form .cname-list{
+        padding-left: 0;
+    }
+    .setting-form .cname-list>div{
+        padding-top: 10px;
+    }
+    .setting-form .cname-list span.glyphicon{
+        font-size: 12px;
+        color: #999;
+        margin-left: 10px;
+    }
+    .setting-form .user-domain{
+        line-height: 32px;
+    }
+    .setting-form .form-group form-group-lg:last-child{
+        text-align: center;
+    }
+    .setting-form .border-bottom{
+        margin-bottom: 25px;
+        border-bottom:1px solid #DCDCDC;
+    }
+    .setting-form .new-cname{
+        margin-top: 10px;
+    }
+    .setting-form .new-cname .glyphicon-remove{
+        position: absolute;
+        right:20px;
+        top:10px;
+        color: #CCC;
+    }
+    .setting-form .new-cname .form-control{
+        padding-right: 20px;
+    }
+    .setting-form .preview-zone img{
+        width:280px;
+        height:210px;
+    }
+    .setting-form .preview-zone a{
+        position: absolute;
+        left:310px;
+        bottom: 27px;
+        font-size: 16px;
+    }
+    .setting-form .preview-zone a.btn{
+        left: 350px;
+        bottom:10px;
+    }
+    .setting-form .preview-zone input[type="file"] {
+        position: absolute;
+        left:310px;
+        bottom: 27px;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 1;
+    }
+    .setting-form .preview{
+        width: 280px;
+        height:210px;
+        margin-bottom: 30px;
+    }
+    .setting-form .cropper-zone{
+        width: 320px;
+        height: 240px;
+        position: absolute;
+        left: 15px;
+        top: 0;
+    }
+    .setting-form .form-group-lg{
+        margin-bottom: 30px;
+    }
+    .setting-form .form-group-lg .control-label{
+        font-weight: normal;
+        font-size: 16px;
+    }
+    .setting-form .save-origin{
+        text-align: left;
+    }
+    .setting-form .form-group-lg .form-control{
+        height:42px;
+    }
+    .setting-form .form-group-lg select.form-control{
+        padding:6px 16px;
+    }
+    .setting-form .form-group-lg .btn-primary{
+        padding:9px 52px;
+    }
+    .setting-form .form-group-lg p.info-msg{
+        height: 42px;
+        line-height: 42px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    .setting-form .save-setting{
+        text-align: center;
+        margin: 45px 0;
+    }
+</style>
+
+<div ng-controller="editWebsiteController" class="container col-sm-9 col-md-10">
+    <div class="col-xs-12 panel main-content">
+        <div class="panel-heading">
+            网站设置
         </div>
-
-        <div class="tab-content" style="flex-grow: 1;">
-            <div class="tab-pane fade in active" id="EditWebsiteBasicSetUp">
-                <div class="pane panel-default">
-                    <div class="form-group">
-                        <label class="control-label">网站LOGO:</label>
-                        <div style="display: flex; justify-content: center">
-                            <img src='/wiki/assets/imgs/ManPortrait.jpg' id='websiteLogo' style="width: 80px; height: 80px">
-                            <input type="file" accept='image/*' class="btn" id="uploadPictureBtn" style="align-self: flex-end">
+        <div class="panel-body">
+            <span style="color: red">{{errMsg}}</span>
+            <form class="form-horizontal setting-form" role="form">
+                <div class="form-group form-group-lg sr-only">
+                    <legend>网站设置</legend>
+                </div>
+                <h4 class="clearfix"><span class="col-sm-2">常用设置</span></h4>
+                <div class="form-group form-group-lg">
+                    <label class="col-sm-2 control-label">站点图标：</label>
+                    <div class="col-sm-10 preview-zone">
+                        <div class="preview">
+                            <img ng-src="{{website.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                        </div>
+                        <p class="crop-control">
+                            <input class="change-btn" onchange="angular.element(this).scope().fileUpload(event)" type="file">
+                            <a class="change-btn">点击修改</a>
+                            <a id="finish" class="btn btn-primary sr-only">确 定</a>
+                        </p>
+                        <div id="cropper" class="cropper-zone sr-only visible-hidden">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">站点描述:</label>
-                        <textarea rows="2" ng-model="website.desc" class="form-control"></textarea>
+                </div>
+                <div class="form-group form-group-lg">
+                    <label for="webName" class="col-sm-2 control-label">站点名称：</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="webName" ng-model="website.displayName">
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">站点TAG:</label>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <input type="text" ng-model="tag" class="form-control">
+                </div>
+                <div class="form-group form-group-lg">
+                    <label for="webName" class="col-sm-2 control-label">网站地址：</label>
+                    <div class="col-sm-5">
+                        <p class="info-msg">keepwork.com/{{user.username}}/{{website.name}}</p>
+                    </div>
+                </div>
+                <div class="form-group form-group-lg">
+                    <label for="webName" class="col-sm-2 control-label">独立域名：</label>
+                    <div class="col-sm-5">
+                        <p class="info-msg">{{user.username}}-{{website.name}}.keepwork.com</p>
+                    </div>
+                </div>
+                <div class="form-group form-group-lg" id="cnameBox">
+                    <label for="cname" class="col-sm-2 control-label">Cname转发：</label>
+                    <div class="col-sm-5">
+                        <div class="col-sm-8 add-cname">
+                            <input type="text" class="form-control" id="cname" ng-model="domain">
+                        </div>
+                        <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addDomain()">添加</div>
+                        <div class="col-sm-12 cname-list">
+                            <div ng-show="!x.isDelete" ng-repeat="x in domainList" class="">
+                                <span>{{x.domain}}</span>
+                                <span class="glyphicon glyphicon-remove" ng-click="removeDomain(x)" data-removeid="{{x.cname}}"></span>
                             </div>
-                            <div class="col-md-2">
-                                <button class="form-control btn btn-default" ng-click="addTag(tag)" >添加</button>
-                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="btn-group" style="margin: 5px" ng-repeat="tag in tags">
-                            <button class="btn">{{tag}}</button>
-                            <button class="btn" ng-click="removeTag(tag)"><span class="glyphicon glyphicon-remove"></span></button>
+                </div>
+                <div class="form-group form-group-lg">
+                    <label for="intro" class="col-sm-2 control-label">网站介绍：</label>
+                    <div class="col-sm-5">
+                        <textarea id="intro" rows="6" ng-model="website.desc"></textarea>
+                    </div>
+                </div>
+                <div class="form-group form-group-lg">
+                    <label class="col-sm-2 control-label">本站标签：</label>
+                    <div class="col-sm-5">
+                        <div class="col-sm-8 add-label">
+                            <input type="text" class="col-sm-8 form-control" ng-model="tag">
+                        </div>
+                        <div class="col-sm-4 btn btn-primary" ng-click="addTag(tag)">添加</div>
+                        <div class="col-sm-12 labels-box">
+                            <div ng-repeat="tag in tags" class="label-selected">{{tag}}<span ng-click="removeTag(tag)" class="glyphicon glyphicon-remove text-danger"></span></div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <button class="btn btn-default" ng-click="modifyWebsite()">修改</button>
+                </div>
+                <div class="form-group form-group-lg border-bottom">
+                    <div class="col-sm-12 save-setting">
+                        <button ng-click="modifyWebsite()" class="btn btn-primary">保存</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="tab-pane fade in" id="EditWebsiteAdvancedSetUp">
-                <div class="pane panel-default">
-                    <div class="panel-heading">
-                        高级设置
+            </form>
+            <form class="form-horizontal setting-form" role="form">
+                <div class="form-group form-group-lg sr-only">
+                    <legend>网站高级设置</legend>
+                </div>
+                <h4 class="clearfix"><span class="col-sm-2">高级设置</span></h4>
+                <div class="form-group form-group-lg">
+                    <label class="col-sm-2 control-label">数据源：</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" ng-model="dataSourceId" ng-change="changeDataSource()">
+                            <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
+                        </select>
                     </div>
-                    <div>
-                        高级设置
+                    <div class="col-sm-12 save-setting">
+                        <button ng-click="modifyWebsite()" class="btn btn-primary">保存</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="tab-pane fade in" id="EditWebsiteMemberManager">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        成员管理
-                    </div>
-                    <div class="panel-body">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>用户ID</th>
-                                <th>用户名</th>
-                                <th>角色</th>
-                                <th>角色设定</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="user in userRoleObj.userList">
-                                <td>{{user._id}}</td>
-                                <td>{{user.username}}</td>
-                                <td>{{getRoleName(user.roleInfo.roleId)}}</td>
-                                <td>
-                                    <select ng-model="user.roleInfo.roleUIIndex" ng-change="roleSelect(user)">
-                                        <option ng-repeat="role in roleList" value="{{$index}}">{{role.name}}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="pane panel-default">
-                    <div class="panel-heading">
-                        成员申请
-                    </div>
-                    <div>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>用户ID</th>
-                                <th>用户名</th>
-                                <th>加入许可</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="user in userObj.userList">
-                                <td>{{user._id}}</td>
-                                <td>{{user.username}}</td>
-                                <td>
-                                    <button class="btn btn-default" ng-click="agreeMember(user._id)">同意</button>
-                                    <button class="btn btn-default" ng-click="refuseMember(user._id)">拒绝</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade in" id="EditWebsiteWorksManager">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        作品分类
-                    </div>
-                    <div class="panel-body">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>作品ID</th>
-                                <th>作品名</th>
-                                <th>分类</th>
-                                <th>设置分类</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="site in worksObj.siteList">
-                                <td>{{site._id}}</td>
-                                <td>{{site.name}}</td>
-                                <td>{{getClassifyName(site.classifyInfo.worksFlag)}}</td>
-                                <td>
-                                    <select ng-change="classifySelect(site)" ng-model="site.classifyInfo.worksFlag">
-                                        <option ng-repeat="classifyName in classifyList" value="{{$index}}">{{classifyName}}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="pane panel-default">
-                    <div class="panel-heading">
-                        作品申请
-                    </div>
-                    <div>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>作品ID</th>
-                                <th>作品名</th>
-                                <th>加入许可</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="site in siteObj.siteList">
-                                <td>{{site._id}}</td>
-                                <td>{{site.name}}</td>
-                                <td>
-                                    <button class="btn btn-default" ng-click="agreeWorks(site._id)">同意</button>
-                                    <button class="btn btn-default" ng-click="refuseWorks(site._id)">拒绝</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

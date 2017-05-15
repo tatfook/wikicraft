@@ -1,0 +1,136 @@
+<style>
+    .personal-statics{
+        background-color: #E0EFFD;
+    }
+    .personal-statics .msg-box{
+        max-width: 930px;
+        margin: 0 auto;
+        padding: 55px 0;
+    }
+    .personal-statics .msg{
+        width: 33.3333%;
+        text-align: center;
+        float: left;
+    }
+    .personal-statics .msg p{
+        line-height: 35px;
+    }
+    .personal-statics .msg p>span{
+        font-size: 18px;
+    }
+    .personal-statics .text-primary{
+        color: #0081BA;
+    }
+    @media (max-width: 768px) {
+        .personal-statics .msg-box{
+            padding: 15px 0 0;
+            font-size: 12px;
+        }
+        .personal-statics .msg>img{
+            width: 40px;
+        }
+    }
+</style>
+<style>
+    .org-statics{
+        background-color: #F9FDFF;
+        text-align: center;
+        -webkit-box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        -moz-box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        margin-bottom: 3px;
+    }
+    .org-statics .msg-box{
+        max-width: 930px;
+        margin: 0 auto;
+        padding: 27px 0;
+    }
+    .org-statics .msg{
+        width: 33.3333%;
+        text-align: center;
+        float: left;
+    }
+    .org-statics .msg p{
+        line-height: 35px;
+        font-size: 16px;
+        color: #666;
+    }
+    .org-statics .msg p>span{
+        font-size: 24px;
+        color: #ff7b7b;
+        margin-left: 20px;
+    }
+    .org-statics .text-primary{
+        color: #0081BA;
+    }
+    .org-statics .method{
+        padding-top: 20px;
+    }
+    .org-statics .btn-primary{
+        margin: 0 10px;
+        padding: 10.5px 33px;
+        border-radius: 10px;
+        font-size: 18px;
+    }
+    @media (max-width: 768px) {
+        .org-statics .btn-primary{
+            margin: 0 6px;
+            padding: 6.5px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .org-statics .msg-box{
+            padding:10px 0;
+        }
+        .org-statics .msg p{
+            font-size: 14px;
+        }
+        .org-statics .msg p>span{
+            font-size: 18px;
+            margin-left: 10px;
+        }
+    }
+</style>
+<div>
+    <!--个人信息统计-->
+    <div ng-controller="personalStaticsController">
+        <div class="personal-statics" ng-show="modParams.moduleKind=='personal' || !modParams.moduleKind">
+            <div class="msg-box clearfix">
+                <div class="msg">
+                    <img ng-src="{{imgsPath + 'personal_statics_works.png'}}" alt="">
+                    <p class="text-primary">我的作品 <span>{{statics.websiteCount || 0}}</span></p>
+                </div>
+                <div class="msg">
+                    <img ng-src="{{imgsPath + 'personal_statics_concern.png'}}" alt="">
+                    <p class="text-primary">我的关注 <span>{{statics.favoriteCount || 0}}</span></p>
+                </div>
+                <div class="msg">
+                    <img ng-src="{{imgsPath + 'personal_statics_fans.png'}}" alt="">
+                    <p class="text-primary">我的粉丝 <span>{{statics.fansCount || 0}}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--组织信息统计-->
+    <div ng-controller="organizationStaticsController">
+        <div class="org-statics" ng-show="modParams.moduleKind=='organization'">
+            <div class="method">
+                <a ng-show="isManager()" class="btn btn-primary" ng-click="goOrganizationManagePage()">组织管理</a>
+                <a ng-show="isManager()" class="btn btn-primary" ng-click="goWorksManagePage()">作品管理</a>
+                <a ng-show="isMember()" class="btn btn-primary" ng-click="goSubmitWorksPage()">提交作品</a>
+                <a ng-show="isVisitor()" class="btn btn-primary" ng-click="goMemberApplyPage()">申请加入</a>
+            </div>
+            <div class="msg-box clearfix">
+                <div class="msg">
+                    <p class="text-primary">全部成员 <span>{{statics.memberCount || 0}}</span></p>
+                </div>
+                <div class="msg">
+                    <p class="text-primary">推荐作品 <span>{{statics.recommendWorksCount || 0}}</span></p>
+                </div>
+                <div class="msg">
+                    <p class="text-primary">全部作品 <span>{{statics.worksCount || 0}}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

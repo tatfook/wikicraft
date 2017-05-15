@@ -1,0 +1,69 @@
+﻿<?npl
+--[[
+Title: oauth handler for `satellizer oauth framework`
+Author: LiXizhi
+Date: 2016/5/10
+]]
+include_once("api.page")
+
+local accessTokenUrl = 'https://graph.qq.com/oauth2.0/token'
+local userApiUrl = 'https://graph.qq.com/oauth2.0/me'
+local serviceName = "qq"
+local params = {
+    grant_type="authorization_code",
+	code = request:get("code"),
+	client_id = request:get("clientId"),
+	client_secret = KEEPWORK["config"]["default"]["threeService"]["qq"]["client_secret"],
+	redirect_uri = request:get("redirectUri"),
+}
+
+response:Begin()
+if not params.client_id then
+    return response:send_xml("keepwork.com认证")
+end
+-- Step 1. Exchange authorization code for access token.
+util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
+    local accessToken = util.parse_str(data)
+    log("auth step 1")
+	log(accessToken)
+	if((not accessToken) or (accessToken.error)) then
+		return response:send({error=1, message="access token invaild"})
+	end
+
+	local headers = { ['User-Agent'] = 'Satellizer' };
+	-- Step 2. Retrieve profile information about the current user.
+	util.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, function(err, msg, data)
+		log("auth step 2")
+		log(data)
+		if((not data) or (not string.find(data,"callback"))) then
+			return response:send({error=1, message= 'Failed to fetch user openid' })
+		end
+		local leftStart, leftEnd = string.find(data, "%(")
+		local rightStart, rightEnd = string.find(data, "%)")
+		data = string.sub(data, leftEnd+1, rightStart-1)
+		data = commonlib.Json.Decode(data)
+		
+		-- 是否已经登录
+		local userId = checkAuthenticated()
+		if userId then
+			db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {userId=userId, serviceId=data.openid, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+			return response:send({token = token, error=0, message="OK"})
+		end
+		-- 未登录
+		db.user_three_service:findOne({["+serviceId+serviceName"]={data.openid, serviceName}}, function(err, userThreeService)
+			-- 没有绑定
+			if not userThreeService then
+				db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {serviceId=data.openid, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+				return response:send({error=0, data={serviceId=data.openid, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
+			end
+			db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
+				if not userinfo then
+					return response:send({error=0, data={serviceId=data.openid, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
+				end
+				local token = createJWT(userinfo)
+				return response:send({token = token, data = userinfo, error=0, message="OK"})
+			end)
+		end)
+	end)
+end)
+

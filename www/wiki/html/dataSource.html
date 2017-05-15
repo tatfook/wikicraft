@@ -1,0 +1,135 @@
+<style>
+    .data-source {
+        padding: 15px 80px;
+    }
+    .data-source h4{
+        margin: 30px 0 20px;
+    }
+    .data-source .form-group-md .control-label {
+        width: 111px;
+        padding: 7px 0 0 15px;
+        font-size: 16px;
+        font-weight: normal;
+    }
+    .data-source .form-group-md select.form-control,.data-source .form-group-md input.form-control {
+        height: 42px;
+        line-height: 42px;
+    }
+    .bottom-boder{
+        border-bottom:1px solid #DCDCDC;
+    }
+    .data-source .btn-submit{
+        text-align: center;
+    }
+    .data-source .btn-primary{
+        padding:10px 45px;
+    }
+    .data-source table{
+        table-layout: fixed;
+    }
+    .data-source .table>tbody>tr>td, .data-source .table>tbody>tr>th, .data-source .table>tfoot>tr>td, .data-source .table>tfoot>tr>th, .data-source .table>thead>tr>td, .data-source .table>thead>tr>th{
+        text-align: center;
+        vertical-align: middle;
+        -ms-word-wrap:break-word;
+        word-wrap:break-word;
+    }
+    .data-source .set-width{
+        width: 130px;
+    }
+</style>
+<div ng-controller="dataSourceController">
+    <div class="col-md-10 panel main-content">
+        <div class="panel-heading">
+            数据源配置
+        </div>
+        <div class="panel-body data-source bottom-boder">
+            <form role="form" class="form-horizontal">
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">默认数据源：</label>
+                    <div class="col-xs-7">
+                        <select class="form-control" ng-model="defaultDataSourceId" ng-change="changeDefaultDataSource()">
+                            <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <h4>已配置的数据源</h4>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>数据源名</th>
+                    <th>类型</th>
+                    <th>apiBaseUrl</th>
+                    <th>rawBaseUrl</th>
+                    <th>Token</th>
+                    <th>状态</th>
+                    <th class="set-width">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in dataSourceList" ng-hide="x.isDelete">
+                    <td>{{x.name}}</td>
+                    <td>{{x.type}}</td>
+                    <td>{{x.apiBaseUrl}}</td>
+                    <td>{{x.rawBaseUrl}}</td>
+                    <td>{{x.dataSourceToken}}</td>
+                    <td>{{x.dataSourceId ? "有效" : "无效"}}</td>
+                    <td>
+                        <div>
+                            <a class="btn" ng-click="clickModifyDataSource(x)">修改</a>
+                            <a class="btn" ng-click="clickDeleteDataSource(x)">删除</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-body data-source">
+            <h4>增改数据源</h4>
+            <form role="form" class="form-horizontal">
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">数据源类型：</label>
+                    <div class="col-xs-7">
+                        <select class="form-control" ng-model="newDataSource.type">
+                            <option ng-repeat="x in dataSourceTypeList" value="{{x}}">{{x}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">数据源名:</label>
+                    <div class="col-xs-7">
+                        <input ng-model="newDataSource.name" type="text" class="form-control" placeholder="github">
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">ApiBaseUrl:</label>
+                    <div class="col-xs-7">
+                        <input ng-model="newDataSource.apiBaseUrl" type="text" class="form-control" placeholder="https://api.github.com">
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">RawBaseUrl:</label>
+                    <div class="col-xs-7">
+                        <input ng-model="newDataSource.rawBaseUrl" type="text" class="form-control" placeholder="https://raw.githubusercontent.com">
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">Token:</label>
+                    <div class="col-xs-7">
+                        <input ng-model="newDataSource.dataSourceToken" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-xs-2 control-label">根路径:</label>
+                    <div class="col-xs-7">
+                        <input ng-model="newDataSource.rootPath" type="text" class="form-control" placeholder="keepwork/root(可选)">
+                    </div>
+                </div>
+                <div class="form-group form-group-md btn-submit">
+                    <button class="btn btn-primary" ng-click="clickNewDataSource()">提交</button>
+                    <span style="color: red">{{errMsg}}</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

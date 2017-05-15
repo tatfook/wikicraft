@@ -4,6 +4,8 @@ Author: wuxiangan
 Date: 2016/11/14
 ]]
 
+-- NPL.load("(gl)script/ide/System/os/GetUrl.lua")
+
 util={}
 
 -- 分页实现
@@ -51,7 +53,29 @@ function util:formatQuery(query)
 	return result
 end
 
+-- 发送邮件
+function util:sendEmail(params, callback)
+	local emailConfig = wiki_config().email 
+	-- log(emailConfig)
+	par = {}
+	par.url = emailConfig.url
+	par.username = emailConfig.username
+	par.password = emailConfig.password
+	par.from = emailConfig.from
+	-- par.url = "smtp://smtp.sina.com"
+	-- par.username = "wxaxiaoyao@sina.com"
+	-- par.password = "wuxiangan" 
+	-- par.from = par.username
 
+	par.to = params.to
+	par.subject = params.subject
+	par.body = params.body
+	
+	callback = callback or (function(err, msg) log(err); log(msg); end)
+	System.os.SendEmail(par, callback)	
+end
+
+-- 自定义常量
 const={}
 
 -- 收藏
@@ -59,22 +83,49 @@ const.FAVORITE_TYPE_USER = 0
 const.FAVORITE_TYPE_WEBSITE = 1
 
 -- 作品状态
-const.WORKS_STATE_NOPASS=0  -- 未审核
-const.WORKS_STATE_PASS=1    -- 审核
+const.WEBSITE_WORKS_STATE_NOPASS=0  -- 未审核
+const.WEBSITE_WORKS_STATE_PASS=1    -- 审核
 
 -- 作品标记
-const.WORKS_FLAG_NORMAL=0 -- 普通
-const.WORKS_FLAG_UPGRADE=1 -- 入围
-const.WORKS_FLAG_HOT=2     -- 热门
+const.WEBSITE_WORKS_FLAG_NORMAL=0  -- 普通
+const.WEBSITE_WORKS_FLAG_UPGRADE=1 -- 入围
+const.WEBSITE_WORKS_FLAG_HOT=2     -- 热门
 
 -- 站点申请类型
-const.APPLY_TYPE_MEMBER=0     -- 成员申请
-const.APPLY_TYPE_WORKS=1      -- 作品申请
-
-
+const.WEBSITE_APPLY_TYPE_MEMBER=0     -- 成员申请
+const.WEBSITE_APPLY_TYPE_WORKS=1      -- 作品申请
 
 -- 站点用户角色
 const.WEBSITE_USER_ROLE_ADMIN=0   -- 拥有者
 const.WEBSITE_USER_ROLE_MANAGER=1 -- 管理员
 const.WEBSITE_USER_ROLE_NORMAL=2  -- 普通用户
 const.WEBSITE_USER_ROLE_JUDGE=10  -- 裁判
+
+-- 用户动态类型常量
+const.USER_TRENDS_TYPE_ORGANIZATION = 0
+const.USER_TRENDS_TYPE_FAVORITE = 1
+const.USER_TRENDS_TYPE_WORKS = 2
+
+-- 站点类型
+const.WEBSITE_TYPE_PERSONAL = '个人网站'
+const.WEBSITE_TYPE_COMPANY = '企业网站'
+const.WEBSITE_TYPE_ORGANIZATION = '组织网站'
+const.WEBSITE_TYPE_GAME = '比赛网站'
+
+-- 数据源类型
+const.DATA_SOURCE_TYPE_GITHUB = "github"
+const.DATA_SOURCE_TYPE_GITLAB = "gitlab"
+
+-- 站点更新所属类型
+const.WEBSITE_RENEWAL_TYPE_PERSONAL = 0
+const.WEBSITE_RENEWAL_TYPE_ORGANIZATION = 1
+
+-- 数据源更新标志
+const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST = 0  -- webhook 回调填此值
+const.DATA_SOURCE_UPDATE_FLAG_TRUST = 1     -- 用户或服务器更新 填此值
+
+-- 用户角色
+const.USER_ROLE_EXCEPTION = -1              -- 异常用户
+const.USER_ROLE_NORMAL = 0                  -- 普通用户
+const.USER_ROLE_MANAGER = 1                 -- 管理员
+const.USER_ROLE_ADMINISTRATOR = 10          -- 超管

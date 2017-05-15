@@ -1,0 +1,64 @@
+<?npl
+--[[
+Title: user profile
+Author: wuxiangan
+Date: 2017/03/15
+]]
+include_once("./abstract/base.page")
+
+-- 暂时不用
+local user_active = inherit(models.abstract.base, gettable("models.user_active"))
+
+user_active.db_name = "user_active";
+
+
+function user_active:ctor() 
+	self:addfield("userId", "number")      -- 用户ID
+	self:addfield("year", "string")        -- 站点ID
+	self:addfield("active", "table")      -- 动态类型
+end
+
+
+function user_active:api_upsert(params)
+	if (not params.userId) or (not params.year) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+userId+year"]={params.userId, params.year}}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 通过userid获得活动记录
+function user_active:api_getByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	local year  = params.year or ParaGlobal.GetDateFormat("yyyy")
+	
+	self:db():findOne({["+userId+year"]={params.userId, year}}, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 添加活动记录
+function user_active:api_addActiveCount(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local date = params.date or ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	local year = params.year or ParaGlobal.GetDateFormat("yyyy")
+	local count = params.count or 1
+
+	local active = self:api_getByUserId({userId=params.userId, year=year}).data	
+	
+	if not active then
+		active = {userId=params.userId, year=year,active={}}
+	end
+
+	active.active[date] = active.active[date] or 0
+	active.active[date] = active.active[date] + count		
+
+	return self:api_upsert(active)
+end

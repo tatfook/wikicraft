@@ -1,0 +1,62 @@
+<?npl
+--[[
+Title: load helper file
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
+mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
+
+-- 定义一个全局变量空间  其它全局变量放到此变量里病注释使用情况
+KEEPWORK={}
+-- KEEPWORK.config     用户程序配置
+-- KEEPWORK.startTime  启动时间
+
+include_once(WIKI_ROOT .. "helpers/config.page")
+include_once(WIKI_ROOT .. "helpers/sms.page")
+WIKI_ENV="www"
+
+-- 初始化数据库
+function init_db()
+	if(db) then
+		return;
+	end
+
+	local pos = string.find(WIKI_ROOT,"/")
+	local name = WIKI_ROOT
+	if pos then
+		name = string.sub(WIKI_ROOT, 1, pos-1)
+	end
+
+	WIKI_ENV = name
+	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
+end
+
+-- 初始wiki module
+function init_wiki_module()
+	local isWebServerStart = mem_cache:get("isWebServerStart")
+	if not isWebServerStart then
+		mem_cache:set("isWebServerStart", true)
+		include_once(WIKI_ROOT .. "helpers/wiki_module.page")
+		KEEPWORK["serverUpdateTime"] = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
+	end
+end
+
+-- 获取bust version
+function getBustVersion()
+	local version = mem_cache:get("bustVersion")
+	if not version then 
+		version = os.time()
+		mem_cache:set("bustVersion", version)
+	end
+
+	return version
+end
+
+function init()
+	init_db()
+	init_wiki_module()
+end
+
+init()

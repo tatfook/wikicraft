@@ -1,0 +1,291 @@
+<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=3.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<style type="text/css">
+	.all-worlds{
+	    height: 44px;	
+	}
+
+	.all-worlds .isadmin{
+		display: block;
+	}
+
+	.information,.about, .comment{
+		max-width: 1000px;
+        margin:0 auto;
+	}
+
+	.information{
+		margin-top: 45px;
+		margin-bottom: 37px;
+		position: relative;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #000;
+	}
+
+	.information .cover,.information .desc{
+		float: left;
+	}
+
+	.information .cover{
+		width: 200px;
+		height: 200px;
+		background-color: #f3f3f3;
+	}
+
+	.information .cover div{
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	    height: 100%;
+	}
+
+	.information .cover div img{
+		height: 100%;
+	}
+
+	.information .desc{
+		width: auto;
+		margin-left: 26px;
+		color: #000;
+	}
+
+	.information .desc h1{
+	    font-size: 32px;
+        font-weight: bold;
+        margin-left: -15px;
+        margin-bottom: 20px;
+        margin-top: 6px;
+	}
+
+	.information .desc .username,.information .desc .blocks-total{
+		font-size: 14px;
+	}
+
+	.information .desc .username{
+	    font-size: 18px;
+        margin-bottom: 20px;
+	}
+
+    .information .desc .pageview {
+        font-size: 12px;
+        color: #999999;
+    }
+
+    .information .desc .world-info {
+        position: absolute;
+        right: 0;
+        top: 25px;
+        color: #999999;
+    }
+
+	.information .play{
+		position: absolute;
+	    bottom: 25px;
+	}
+
+	.information .play .infor-button{
+		width: 150px;
+		height: 40px;
+        margin-right: 25px;
+        font-size: 16px;
+	}
+
+	.menu button{
+		height: 40px;
+		border: solid 1px #000;
+		background: none;
+		border-radius: 5px 5px 0px 0px;
+		padding:0 15px;
+		margin-right: -5px;
+	}
+
+	.about{
+		max-width: 1000px;
+		height: auto;
+		margin-bottom: 35px;
+		margin-top: -1px;
+	}
+
+    .comment {
+        
+    }
+
+    .mask {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: rgba(0,0,0,.3);
+    }
+
+    .model-main {
+        position: absolute;
+        background-color: #FFF;
+        width: 390px;
+        left: 50%;
+        align-self: center;
+        transform: translate(-195px,0);
+        padding: 20px 58px 30px;
+        text-align: center;
+        z-index: 1;
+    }
+
+    .model-main .close-icon {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+    }
+
+    .model-main p {
+        line-height: 30px;
+    }
+
+    .model-main .btn-default {
+        font-size: 16px;
+        padding: 8px 37px;
+        border: 1px solid #3977AD;
+        color: #333;
+    }
+
+	/*@media (max-width: 768px){
+		.information{
+			margin-top: -5px;
+		}
+
+		.information .cover{
+			width: 100%;
+		}
+
+		.information .cover,.information .desc{
+			float: none;
+		}
+
+		.information .desc{
+			margin-left: 0px;
+		}
+
+		.information .desc .home-url{
+			text-align: center;
+			margin-left: 0;
+		}
+
+		.information .desc h1{
+			font-size: 25px;
+			text-align: center;
+		}
+
+		.information .desc .username,.information .desc .blocks-total{
+			text-align: center;
+		}
+
+		.information .share,.information .play{
+			position: initial;
+			text-align: center;
+				margin-top: 15px;
+		}
+
+		.recommend .opus-box{
+		    padding: 15px 5px;
+		}
+
+		.recommend .opus-box .opus{
+			width: 100%;
+		}
+
+		.recommend .opus .opus-hover .img{
+			width: 100%;
+		}
+	}
+
+	@media (min-width: 768px){
+		.information .cover{
+			width: 188px;
+		}
+
+		.information .cover,.information .desc{
+			float: left;
+		}
+
+		.information .desc{
+			margin-left: 100px;
+		}
+
+		.information .desc .home-url{
+			margin-left: 30%;
+		}
+
+		.information .desc h1{
+			font-size: 32px;
+		}
+
+		.information .share,.information .play{
+			position: absolute;
+		}
+
+		.recommend .opus{
+			width: 320px;
+		}
+
+		.recommend .opus .opus-hover .img{
+			width: 258px;
+			height: 335px;
+		}
+
+	}
+
+	@media (min-width: 992px){
+		.recommend .opus{
+			width: 245px;
+		}
+
+		.recommend .opus .opus-hover .img{
+			width: 183px;
+			height: 238px;
+		}
+	}*/
+</style>
+<div class="container">
+	<div ng-controller="opusController">
+        <div class="isadmin" ng-show="isadmin">
+            是否推荐？<input type="checkbox" ng-model="isRecommend" name="">
+        </div>
+
+		<div class="information clearfix">
+			<div class="cover" ng-repeat="img in preview">
+				<preview image-src="{{img.previewUrl}}" has-preview="{{img.hasPreview}}"></preview>
+			</div>
+			<div class="desc">
+				<h1>《{{opusName}}》</h1>
+				<div class="username">
+					作者：<a ng-href="/wiki/mod/worldshare/person?userid={{userid}}">{{displayName}}</a>
+                </div>
+                <div class="pageview">
+                    <img ng-src="/wiki/mod/worldshare/assets/pageview.png"/>
+                    浏览量   {{viewTimes}}
+                </div>
+                <div class="play">
+                    <a class="btn btn-default infor-button" target="_blank" ng-href="{{giturl}}">下载</a>
+                    <button class="btn btn-primary infor-button" ng-click="checkEngine()">进入</button>
+                </div>
+                <div class="world-info">
+                    <span>块数 4233</span>
+                    <span>文件 21KB</span>
+                    <span>时间 {{modDate}}</span>
+                </div>
+			</div>
+		</div>
+        <div class="mask" ng-show="showModal" ng-click="closeModal()"></div>
+        <div class="model-main" ng-show="showModal">
+            <button type="button" class="close close-icon"><span aria-hidden="true" ng-click="clickDownload()">&times;</span></button>
+            <p>如果您的设备没有自动使用Paracraft启动3D世界，请安装Paracraft</p>
+            <div class="btn btn-lg btn-default" ng-click="closeModal()">点击下载</div>
+        </div>
+		<div class="about">
+			暂无介绍
+		</div>
+        <div class="comment">
+            
+        </div>
+	</div>
+</div>

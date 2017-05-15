@@ -1,0 +1,196 @@
+<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=3.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<style type="text/css">
+	.recently{
+        display: none;
+	}
+
+    .subjects{
+        max-width: 1000px;
+        padding: 15px;
+        margin: 0 auto;
+        margin-bottom: 30px;
+	}
+
+	.subjects .p-title{
+		font-size: 18px;
+		height: 46px;
+        border-bottom: 1px solid #000;
+        padding-top: 5px;
+        font-weight: 600;
+        margin-bottom: 29px;
+	}
+
+    .subjects .p-title .subjects-total {
+        font-size: 14px;
+        color: #999999;
+        float: right;
+        margin-top: 7px;
+    }
+
+	.subjects .content{}
+
+	.subjects .content .opus{
+        width: 100%;
+	}
+
+    .subjects .content .opus-inner {
+		height: 140px;
+	    margin-bottom: 29px;
+ 	    background-color: #fafafa;
+        box-shadow: 1px 0px 6px #e6e8ea;
+        position: relative;
+    }
+
+	/*@media (max-width: 768px){
+		.subjects .content .opus{
+			height: 320px;
+		}
+	}
+
+	@media (min-width: 768px){
+		.subjects .content .opus{
+			height: 524px;
+		}
+	}
+
+	@media (min-width: 992px){
+		.subjects .content .opus{
+			height: 260px;
+		}
+	}*/
+
+	.subjects .content .opus .cover{
+		width: 140px;
+        height: 100%;
+        float:left;
+	}
+
+	.subjects .content .opus .cover .ng-isolate-scope{
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+        background: #f3f3f3;
+	}
+
+	.subjects .content .opus .cover .ng-isolate-scope div{
+		height: 100%;
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	}
+
+	.subjects .content .opus .cover .ng-isolate-scope img{
+		height: 100%;
+	}
+
+	.subjects .content .opus .desc{
+	    width: 830px;
+        height: 100%;
+        padding-top: 20px;
+        padding-left: 28px;
+        float: left;
+	}
+
+    .subjects .content .opus .desc .opus-title{
+        font-size: 20px;
+        text-decoration: none;
+        color: #000;
+        font-weight: 600;
+        margin-left: -10px;
+        margin-bottom: 3px
+    }
+
+    .subjects .content .opus .desc .opus-title a {
+        color: #000;
+    }
+
+    .subjects .content .opus .desc .opus-info {
+        margin-bottom: 9px;
+    }
+
+	.subjects .content .opus .desc .opus-info span{
+        font-size: 14px;
+        color : #999999;
+        border-right: 1px solid #999999;
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-left: -3px;
+	}
+
+    .subjects .content .opus .desc .opus-info span:first-child {
+        padding-left: 0;
+        margin-left: 0px;
+    }
+
+    .subjects .content .opus .desc .opus-info span:last-child {
+        border: none;
+    }
+
+    .subjects .content .opus .delete{
+        position: absolute;
+        left: 860px;
+        top: 20px;
+        width: 80px;
+        height: 32px;
+        border: 1px solid #a9a9a9;
+        border-radius: 3px;
+        color: #a9a9a9;
+        background: none;
+    }
+</style>
+
+<div class="container">
+	<div ng-controller="personController">
+        <div class="subjects">
+            <div class="p-title">
+                作品列表
+                <div class="subjects-total">作品数 {{opusTotals}}</div>
+            </div>
+            <div class="row content">
+                <div ng-repeat="opus in allOpus" class="col-xs-12 col-sm-6 col-md-3 col-md-4 opus">
+                    <div class="opus-inner">
+                        <div class="cover" ng-repeat="img in opus.preview">
+                            <preview image-src="{{img.previewUrl}}" has-preview="{{img.hasPreview}}"></preview>
+                        </div>
+                        <div class="desc">
+                            <div class="opus-title">《<a ng-href="/wiki/mod/worldshare/opus?opusId={{opus._id}}">{{opus.worldsName}}</a>》</div>
+                            <div class="opus-info">
+                                <span>作者  {{opus.userInfor.displayName}}</span>
+                                <span>块数  4233</span>
+                                <span>文件  5M</span>
+                                <span>{{opus.strDate}}</span>
+                            </div>
+                            <div>
+                                DESC
+                            </div>
+                        </div>
+                        <button ng-show="!currentUserId || currentUserId == user._id" class="delete" ng-click="delete(opus._id)">删除</button>
+                    </div>
+                </div>
+            </div>
+            <div ng-controller="allOpusPagination" class="pagination">
+                <ul uib-pagination boundary-links="true" items-per-page="itemsPerPage" ng-change="pageChanged()" total-items="totalItems" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+            </div>
+        </div>
+
+		<div class="recently">
+			<div class="p-title">
+				最近更新
+			</div>
+			<div class="row content">
+				<div ng-repeat="opus in recentlyOpus" class="col-xs-12 col-sm-6 col-md-3 col-md-4 opus">
+					<div class="cover">
+						<preview preview-src="opus.preview"></preview>
+					</div>
+					<div class="desc">
+						<a ng-href="/wiki/mod/worldshare/opus?opusId={{opus._id}}">{{opus.worldsName}}</a>
+						<span>{{opus.strDate}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

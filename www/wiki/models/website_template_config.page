@@ -16,11 +16,31 @@ local template_config = {
 	-- 分类列表
 	{
 		_id=1,
-		name="作品网站",
+		name="个人网站",
 		-- 模板列表
 		templates={
 			{
 				_id=1,
+				name="WIKI模板",
+				categoryId=1,
+				logoUrl="/wiki/assets/imgs/wiki_resume_site_template.png",
+				filename="",
+				layoutTpl='',
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="默认样式",
+						templateId=1,
+						logoUrl="/wiki/assets/imgs/wiki_resume_site_template.png",
+						filename="resume.html",
+						layoutTpl='',
+						theme="wiki_theme.html",
+					},
+				},
+			},
+			{
+				_id=2,
 				name="图书模板",
 				categoryId=1,
 				logoUrl="",
@@ -30,8 +50,8 @@ local template_config = {
 				styles={
 					{
 						_id=1,
-						name="图书样式",
-						templateId=1,
+						name="默认样式",
+						templateId=2,
 						logoUrl="",
 						--filename="works.html",
 						filename="works.html",
@@ -44,40 +64,83 @@ local template_config = {
 	},
 	{
 		_id=2,
-		name="组织网站",
+		name="企业网站",
+		-- 模板列表
 		templates={
 			{
 				_id=1,
-				name="组织模板",
+				name="企业模板1",
 				categoryId=2,
-				logoUrl="/wiki/assets/imgs/Organization.jpg",
+				logoUrl="/wiki/assets/imgs/wiki_company_template.jpg",
 				filename="",
 				layoutTpl='',
 				-- 样式列表
 				styles={
 					{
 						_id=1,
-						name="组织样式",
+						name="默认样式",
 						templateId=1,
-						logoUrl="/wiki/assets/imgs/Organization.jpg",
-						-- filename="organization.html",
-						filename="moduleOrganization.html",
+						logoUrl="/wiki/assets/imgs/wiki_company_template.jpg",
+						filename="company.html",
+						layoutTpl='',
+					},
+				},
+			},
+			{
+				_id=2,
+				name="企业模板2",
+				categoryId=2,
+				logoUrl="/wiki/assets/imgs/wiki_company_second_template.png",
+				filename="",
+				layoutTpl='',
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="默认样式",
+						templateId=2,
+						logoUrl="/wiki/assets/imgs/wiki_company_second_template.png",
+						filename="companySecond.html",
+						layoutTpl='',
+					},
+				},
+			},
+		},
+	},
+	{
+		_id=3,
+		name="组织网站",
+		templates={
+			{
+				_id=1,
+				name="组织模板",
+				categoryId=3,
+				logoUrl="/wiki/assets/imgs/wiki_organization_template.png",
+				filename="",
+				layoutTpl='',
+				-- 样式列表
+				styles={
+					{
+						_id=1,
+						name="默认样式",
+						templateId=1,
+						logoUrl="/wiki/assets/imgs/wiki_organization_template.png",
+						filename="organization.html",
 						previewFilename="organizationPreview.html",
 						layoutTpl='',
 					},
 				},
 			},
-
 		},
 	},
 	{
-		_id=3,
+		_id=4,
 		name="比赛网站",
 		templates={
 			{
 				_id=1,
 				name="3D大赛模板",
-				categoryId=3,
+				categoryId=4,
 				logoUrl="",
 				filename="",
 				layoutTpl='',
@@ -85,11 +148,10 @@ local template_config = {
 				styles={
 					{
 						_id=1,
-						name="3D大赛样式",
+						name="默认样式",
 						templateId=1,
 						logoUrl="",
-						--filename="game.html",
-						filename="moduleGame.html",
+						filename="game.html",
 						previewFilename="gamePreview.html",
 						layoutTpl='',
 					},
@@ -122,20 +184,21 @@ function website_template_config:getFileContent(filename)
 	
 	file:close()
 	
+	-- log(content)
 	return content	
 end
 
 -- 获取个人站点模板内容
 function website_template_config:getPersonalPage()
-	-- local filename = "personal.html"
-	local filename = "modulePersonal.html"
+	local filename = "personal.html"
 	local content = self:getFileContent(filename)
 
-	return errors:wrap(nil, content)
+	return errors:wrap(nil, {content=content})
 end
 
 -- 通过模板文件获得模板内容  用于预览
 function website_template_config:api_getTemplatePageByFilename(params)
+	log(params)
 	if not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -144,7 +207,7 @@ function website_template_config:api_getTemplatePageByFilename(params)
 end
 
 -- 获取模板页
-function website_template_config:api_getTemplatePage(params)
+function website_template_config:api_getTemplateStylePage(params)
 	if not params.categoryId or params.categoryId == 0 then 
 		return self:getPersonalPage()
 	end
@@ -165,9 +228,14 @@ function website_template_config:api_getTemplatePage(params)
 	if (not filename) or (filename:len() == 0) then
 		return errors:wrap(errors.NOT_FOUND, nil)
 	end
-	
-	local content = self:getFileContent(filename)	
 
-	return {error=errors.SUCCESS, data=content}
+	style.content = self:getFileContent(filename)	
+
+	filename = style and style.theme
+	if filename and filename:len() > 0 then 
+		style.theme = self:getFileContent(filename)
+	end
+
+	return {error=errors.SUCCESS, data=style}
 end
 

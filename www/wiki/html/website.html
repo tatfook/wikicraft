@@ -1,60 +1,92 @@
-<div ng-controller="websiteCtrl" >
-    <div>
-        <div>
-            <div class="pull-left">
-                <h3><b>网站管理</b></h3>
-            </div>
-            <div class="pull-right" style="margin: 30px 0px">
-                <button class="btn btn-default" ng-click="goCreateWebsitePage()"><span class="glyphicon glyphicon-plus"></span>新建网站</button>
-            </div>
-            <div class="clearfix"></div>
+<style>
+    .website-table {
+        text-align: center;
+        padding:20px 70px;
+    }
+    .website-table table {
+        margin-bottom: 120px;
+    }
+    .website-table table > thead > tr > th {
+        text-align: center;
+    }
+    .website-table tbody > tr > td {
+        vertical-align: middle;
+    }
+    .website-table tbody > tr:hover a {
+        color: #3977AD;
+    }
+    .new-web-btn {
+        margin-bottom: 20px;
+        font-size: 16px;
+        padding: 9px 27px;
+    }
+    .delete-modal h3{
+        text-align: center;
+        font-weight: normal;
+    }
+    .delete-modal span.icon{
+        width: 32px;
+        height: 32px;
+        border: 2px solid;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 30px;
+        color: #ED381C;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+</style>
+
+<div ng-controller="websiteController">
+    <div class="col-md-10 panel main-content">
+        <div class="panel-heading">
+            我的站点
         </div>
-		<!--
-        <div style="display: flex; justify-content: center; ">
-            <div ng-show="websites.length==0" class="text-info">
-                马上拥有你的个人作品网站，永久免费
-            </div>
-            <div ng-show="websites.length>=max_free_count">
-                每个用户最多可创建{{max_free_count}}个免费个人作品网站
-            </div>
+        <div class="panel-body website-table">
+            <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>站点名称</th>
+                    <th>站点备注</th>
+                    <th>站点地址</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="website in websites" ng-hide="website.isDelete">
+                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.displayName || website.name}}</a></td><!--站点名称-->
+                    <td>{{website.desc}}</td><!--站点备注-->
+                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">keepwork.com/{{user.username}}/{{website.name}}</a></td><!--站点地址-->
+                    <td>{{website.createDate}}</td><!--创建时间-->
+                    <td>
+                        <a class="btn"  ng-click="goWebsiteIndexPage(website.name)">打开</a>
+                        <a class="btn"  ng-click="goEditWebsitePagePage(website)">编辑</a>
+                        <a class="btn"  ng-click="goEditWebsitePage(website)">设置</a>
+                        <a class="btn"  ng-click="showDeleteModal(website)">删除</a>
+                    </td><!--操作-->
+                </tr>
+                </tbody>
+            </table>
         </div>
-		-->
     </div>
 
-    <div style="margin: 30px 0px">
-        <table class="table table-hover table-striped">
-            <caption style="text-align: center"><h4>我的站点</h4></caption>
-            <thead>
-            <tr>
-                <td>站点名称</td>
-                <td>站点备注</td>
-                <td>独立域名</td>
-                <td>类型</td>
-                <td>模板</td>
-                <td>样式</td>
-                <td>标签</td>
-                <td>创建时间</td>
-                <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="website in websites">
-                <!--<td><a href='{{"/" + website.name}}' target="_blank">{{website.name}}</a></td>-->
-                <td><a ng-click="goWebsiteIndexPage(website.name)">{{website.name}}</a></td>
-                <td>{{website.desc}}</td>
-                <td><a href='{{website.domain ? (website.domain + ".wikicraft.cn") : ""}}' target="_blank">{{website.domain ? (website.domain + '.wikicraft.cn') : ""}}</a></td>
-                <td>{{website.categoryName}}</td>
-                <td>{{website.templateName}}</td>
-                <td>{{website.styleName}}</td>
-                <td>{{website.tags}}</td>
-                <td>{{website.createDate}}</td>
-                <td>
-                    <button class="btn btn-default" data-toggle="tooltip" title="编辑网站页面" ng-click="goEditWebsitePagePage(website)"><span class="glyphicon glyphicon-plus"></span></button>
-                    <button class="btn btn-default" data-toggle="tooltip" title="修改站点" ng-click="goEditWebsitePage(website)"><span class="glyphicon glyphicon-edit"></span></button>
-                    <button class="btn btn-default" data-toggle="tooltip" title="删除站点" ng-click="deleteWebsite(website._id)"><span class="glyphicon glyphicon-remove"></span></button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="modal fade delete-modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">删除提醒</h4>
+                </div>
+                <div class="modal-body">
+                    <h3><span class="icon">!</span>确定删除？</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" ng-click="deleteWebsite(deletingWebsite)">确 定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

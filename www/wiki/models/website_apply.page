@@ -10,13 +10,14 @@ include_once("./website.page");
 include_once("./website_member.page");
 include_once("./website_works.page");
 include_once("./user.page");
+include_once("./user_works.page");
 
 local website_apply = inherit(models.abstract.base, gettable("models.website_apply"))
 website_apply.db_name="website_apply"
 
 function website_apply:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
-	self:addfield("applyId", "number")        -- 申请ID
+	self:addfield("applyId", "number")        -- 申请ID  userId worksId
 	self:addfield("applyType", "number")      -- 申请类型 成员 作品 其它
 end
 
@@ -32,12 +33,22 @@ function website_apply:api_deleteByWebsiteId(params)
 end
 
 -- 创建申请记录
-function website_apply:createApply(params)
+function website_apply:api_upsert(params)
 	if (not params.websiteId) or (not params.applyId) or (not params.applyType) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
 	self:db():insertOne({["+websiteId+applyId+applyType"]={params.websiteId, params.applyId, params.applyType}}, params, resume)
+	return errors:wrap(yield())
+end
+
+-- 删除申请记录
+function website_apply:api_deleteByKey(params)
+	if (not params.websiteId) or (not params.applyId) or (not params.applyType) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["+websiteId+applyId+applyType"]={params.websiteId, params.applyId, params.applyType}}, resume)
 	return errors:wrap(yield())
 end
 
@@ -55,29 +66,30 @@ function website_apply:api_memberApply(params)
 		return errors:wrap(nil)
 	end	
 
-	params.applyType = const.APPLY_TYPE_MEMBER
+	params.applyType = const.WEBSITE_APPLY_TYPE_MEMBER
 	
-	return self:createApply(params)
+	self:db():insertOne({["+websiteId+applyId+applyType"]={params.websiteId, params.applyId, params.applyType}}, params, resume)
+	return errors:wrap(yield())
 end
 
 -- 作品申请
 function website_apply:api_worksApply(params)
-	log(params)
 	if (not params.websiteId) or (not params.applyId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local websiteWorksDB = models.website_works:new()
-	websiteWorksDB:db():find({["+websiteId+worksId"] = {params.websiteId, params.applyId}}, resume)
+	websiteWorksDB:db():findOne({["+websiteId+worksId"] = {params.websiteId, params.applyId}}, resume)
 	local err, data = yield()
 	-- 已经存在不管
 	if data and data._id then
 		return errors:wrap(nil)
 	end	
 
-	params.applyType = const.APPLY_TYPE_WORKS
+	params.applyType = const.WEBSITE_APPLY_TYPE_WORKS
 	
-	return self:createApply(params)
+	self:db():insertOne({["+websiteId+applyId+applyType"]={params.websiteId, params.applyId, params.applyType}}, params, resume)
+	return errors:wrap(yield())
 end
 
 -- 作品批量申请
@@ -104,36 +116,26 @@ function website_apply:get(params)
 end 
 
 -- 获取待审核的成员
-function website_apply:api_getMember(params)
+function website_apply:api_getMemberByWebsiteId(params)
 	if not params.websiteId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	params.applyType=const.APPLY_TYPE_MEMBER
+	params.applyType=const.WEBSITE_APPLY_TYPE_MEMBER
 	local query = {["+websiteId+applyType"]={params.websiteId, params.applyType}}
 	self:db():count(query, resume)
-	local err, total = yield()
+	local _, total = yield()
 
-	if err then
-		return errors:wrap(err)
-	end
-
-	total = total or 0
 	local skip, limit = util:pagination(params)
 	query = {["+websiteId+applyType"]={params.websiteId, params.applyType, skip=skip, limit=limit}}
 	self:db():find(query, resume)
-	local err, data = yield()
+	local _, data = yield()
 	
-	if err or (not data) then
-		return errors:wrap(err or errors.NOT_FOUND)
-	end
-	
-	local userList = {}
 	local userDB = models.user:new()
-	for _, obj in pairs(data) do
-		userList[#userList+1] = userDB:api_getById({userId=obj.applyId}).data
+	for _, obj in ipairs(data or {}) do
+		obj.userInfo = userDB:api_getById({userId=obj.applyId}).data
 	end
 		
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), userList=userList})
+	return errors:wrap(nil, {total=total, applyList=data})
 end
 
 -- 同意成员加入
@@ -142,14 +144,13 @@ function website_apply:api_agreeMember(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.APPLY_TYPE_MEMBER,params.applyId}}
-	self:db():deleteOne(query, resume)
-	local err, data = yield()
-	
+	params.applyType = const.WEBSITE_APPLY_TYPE_MEMBER
+	self:api_deleteByKey(params)
+
 	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:create({websiteId=params.websiteId, userId=params.applyId, role=const.WEBSITE_USER_ROLE_NORMAL})
+	websiteMemberDB:api_create({websiteId=params.websiteId, userId=params.applyId, roleId=const.WEBSITE_USER_ROLE_NORMAL})
 	
-	return self:api_getMember(params)
+	return errors:wrap(nil)
 end
 
 -- 拒绝成员加入
@@ -158,60 +159,47 @@ function website_apply:api_refuseMember(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.APPLY_TYPE_MEMBER,params.applyId}}
-	self:db():deleteOne(query, resume)
-	yield()
-
-	return self:api_getMember(params)
+	params.applyType = const.WEBSITE_APPLY_TYPE_MEMBER
+	return self:api_deleteByKey(params)
 end
 
 -- 获得待审核的作品列表
-function website_apply:api_getWorks(params)
+function website_apply:api_getWorksByWebsiteId(params)
 	if not params.websiteId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	params.applyType=const.APPLY_TYPE_WORKS
+	params.applyType=const.WEBSITE_APPLY_TYPE_WORKS
 	local query = {["+websiteId+applyType"]={params.websiteId, params.applyType}}
 	self:db():count(query, resume)
-	local err, total = yield()
-
-	if err then
-		return errors:wrap(err)
-	end
-
+	local _, total = yield()
 	total = total or 0
+
 	local skip, limit = util:pagination(params)
 	query = {["+websiteId+applyType"]={params.websiteId, params.applyType, skip=skip, limit=limit}}
 	self:db():find(query, resume)
-	local err, data = yield()
+	local _, applyList = yield()
 	
-	if err or (not data) then
-		return errors:wrap(err or errors.NOT_FOUND)
-	end
-	
-	local siteList = {}
-	local websiteDB = models.website:new()
-	for _, obj in pairs(data) do
-		siteList[#siteList+1] = websiteDB:api_getById({websiteId=obj.applyId}).data
+	local userWorksDB = models.user_works:new()
+	for _, obj in pairs(applyList or {}) do
+		obj.worksInfo = userWorksDB:api_getById({worksId=obj.applyId}).data
 	end
 		
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), siteList=siteList})
+	return errors:wrap(nil, {total=total, applyList=applyList})
 end
 
--- 同意成员加入
+-- 同意作品加入
 function website_apply:api_agreeWorks(params)
 	if (not params.websiteId) or (not params.applyId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.APPLY_TYPE_WORKS,params.applyId}}
-	self:db():deleteOne(query, resume)
-	local err, data = yield()
+	params.applyType=const.WEBSITE_APPLY_TYPE_WORKS
+	self:api_deleteByKey(params)
 	
 	local websiteWorksDB = models.website_works:new()
-	websiteWorksDB:create({websiteId=params.websiteId, worksId=params.applyId, worksFlag=const.WORKS_FLAG_NORMAL})
+	websiteWorksDB:api_upsert({websiteId=params.websiteId, worksId=params.applyId, worksFlag=const.WEBSITE_WORKS_FLAG_NORMAL})
 	
-	return self:api_getWorks(params)
+	return errors:wrap(nil)
 end
 
 -- 拒绝成员加入
@@ -220,11 +208,8 @@ function website_apply:api_refuseWorks(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local query={["+websiteId+applyType+applyId"]={params.websiteId, const.APPLY_TYPE_WORKS,params.applyId}}
-	self:db():deleteOne(query, resume)
-	local err, data = yield()
-
-	return self:api_getWorks(params)
+	params.applyType=const.WEBSITE_APPLY_TYPE_WORKS
+	return self:api_deleteByKey(params)
 end
 
 

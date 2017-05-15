@@ -21,7 +21,9 @@
     <rule match='{"^[^%./]*/$", "^[^%.]+$", "robots.txt"}' with="WebServer.redirecthandler" params='{"/index.page"}'></rule>
     <!--npl server page example-->
     <rule match="%.page$" with="WebServer.npl_page_handler" params='%CD%'></rule>
-    <rule match="%.html$" with="WebServer.npl_page_handler" params='%CD%'></rule>
+	<rule match='{"%.html$", "%.md$"}' with="WebServer.npl_page_handler" params='%CD%'></rule>
+	<!--rule match="%.html$" with="WebServer.npl_page_handler" params='%CD%'></rule>
+	<rule match="%.md$" with="WebServer.npl_page_handler" params='%CD%'></rule-->
     <!--filehandler example, base dir is where the root file directory is. 
     @param %CD%:  means current file's directory, 
     @param nocache: when to add no cache headers on client side, turn this on only on dev server
@@ -82,9 +84,9 @@
       <table name='wiki'>
         <table name='secrets'>
           <!--token secret for this website-->
-          <string name='TOKEN_SECRET'>1234567890paracraftwiki</string>
+          <string name='TOKEN_SECRET'>ask_admin</string>
           <!--OAuth 2.0-->
-          <string name='GITHUB_SECRET'>c0ed1cc56931c99452c643a867d699d5657b4313</string>
+          <string name='GITHUB_SECRET'>ask admin or webserver.config.xml.secret</string>
         </table>
         <table name='clientid'>
           <string name='GITHUB_CLIENTID'>44ed8acc9b71e36f47d8</string>
@@ -92,10 +94,64 @@
         <!--how many seconds to expire user token-->
         <number name='token_expire'>3600000</number>
       </table>  
+	  <table name="email">
+          <!--email server url-->
+		  <string name='url'>smtp.exmail.qq.com</string>
+          <!--email username-->
+          <string name='username'>noreply@keepwork.com</string>
+          <!--email password-->
+          <string name='password'>ask_admin</string>
+          <!--email from-->
+          <string name='from'>noreply@keepwork.com</string>
+	  </table>
+	 <table name='data_source'>
+	  <table name='inner_gitlab'>
+	   <string name='token'>ask admin or webserver.config.xml.secret</string>
+	   <string name='host'>git.keepwork.com</string>
+	  </table>
+	 </table>
     </table>
-    <table name='paracraft.wiki'>
+    <table name='qiankunew.com'>
+	 <table name='wiki'>
+      <table name='secrets'>
+        <!--token secret for this website-->
+        <string name='TOKEN_SECRET'>ask admin or webserver.config.xml.secret</string>
+        <!--OAuth 2.0-->
+        <string name='GITHUB_SECRET'>ask admin or webserver.config.xml.secret</string>
+      </table>
+      <table name='clientid'>
+        <string name='GITHUB_CLIENTID'>60516ce6357ada9725df</string>
+      </table>
+      <!--how many seconds to expire user token-->
+      <number name='token_expire'>360000</number>
+     </table>
+	 <table name='data_source'>
+	  <table name='inner_gitlab'>
+	   <string name='token'>ask admin or webserver.config.xml.secret</string>
+	   <string name='host'>git.keepwork.com</string>
+	  </table>
+	 </table>
     </table>
-    <table name='wikicraft.cn'>
+    <table name='keepwork.com'>
+	 <table name='wiki'>
+      <table name='secrets'>
+        <!--token secret for this website-->
+        <string name='TOKEN_SECRET'>ask_admin</string>
+        <!--OAuth 2.0-->
+        <string name='GITHUB_SECRET'>ask admin or webserver.config.xml.secret</string>
+      </table>
+      <table name='clientid'>
+        <string name='GITHUB_CLIENTID'>2219fe9cb6d105dd30fb</string>
+      </table>
+      <!--how many seconds to expire user token-->
+      <number name='token_expire'>360000</number>
+     </table>
+	 <table name='data_source'>
+	  <table name='inner_gitlab'>
+	   <string name='token'>ask admin or webserver.config.xml.secret</string>
+	   <string name='host'>git.keepwork.com</string>
+	  </table>
+	 </table>
     </table>
   </config>
 </WebServer>

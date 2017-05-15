@@ -1,0 +1,28 @@
+<style>
+    body{
+        background-color: #F1F1F1;
+    }
+    .main-content{
+        padding-top: 80px;
+    }
+    .main-content .panel-default>.panel-heading{
+        background-color: transparent;
+    }
+    .main-content .panel-body{
+        min-height: 500px;
+    }
+    .main-content .contact-way{
+        font-weight: bold;
+    }
+</style>
+
+<div ng-controller="contactController" class="main-content">
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">联系我们</div>
+            <div class="panel-body">
+                <p>如有任何问题，请发送邮件到 <span class="contact-way">admin@keepwork.com</span></p>
+            </div>
+        </div>
+    </div>
+</div>

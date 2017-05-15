@@ -1,0 +1,44 @@
+<div ng-controller="worksHeaderController">
+	<div class="row">
+		<div class="row">
+			<div class="col-xs-3">
+				<img ng-src="{{siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}">
+			</div>
+			<div class="col-xs-6">
+				<div style="text-align: center">
+					<h3>{{siteinfo.name || "这是一本书籍"}}</h3>
+				</div>
+				<div style="position: relative">
+					<div>
+						<div>作者：{{userinfo.username}}</div>
+						<div>页数：{{siteinfo.pageCount || 0}}</div>
+						<!--div>阅读：0</div-->
+						<div>收藏：{{siteinfo.favoriteCount || 0}}</div>
+					</div>
+					<div style="position: absolute; bottom: 0px; left: 50%">
+						<button class="btn btn-default"><span class="glyphicon glyphicon-link"></span></button>
+						<button class="btn btn-default"><span class="glyphicon glyphicon-star-empty"></span></button>
+						<button class="btn btn-default"><span class="glyphicon glyphicon-phone"></span></button>
+					</div>
+				</div>
+				<div style="display: flex; justify-content: flex-end">
+					<a>开始阅读</a>
+				</div>
+			</div>
+			<div class="col-xs-3">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12" style="margin-top: 20px">
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#Introduction" data-toggle="tab">介绍</a></li>
+				</ul>
+				<div class="tab-content" style="height: 300px; border: 1px solid silver">
+					<div class="tab-pane fade in active" id="Introduction">
+						<p>测试书籍</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

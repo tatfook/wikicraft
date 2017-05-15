@@ -1,0 +1,421 @@
+<style>
+    body{
+        min-width:1170px;
+    }
+    .row {
+        padding: 30px 0;
+    }
+    .row img {
+        width: 100%;
+    }
+    body{
+        background-color: #F1F1F1;
+    }
+    .ellipsis-1{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .subnav {
+        padding: 20px 40px;
+        background-color: #FFF;
+        width: 24%;
+        margin-right: 1%;
+    }
+    .subnav .message-row{
+        border-top: 1px solid #DCDCDC;
+        padding: 20px 0;
+    }
+    img.icon{
+        width: 20px;
+        margin-right: 10px;
+    }
+    .subnav a.text-primary{
+        color:#3977AD;
+        font-size: 12px;
+    }
+    .subnav ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .subnav ul>li{
+        line-height: 28px;
+    }
+
+    .main-content{
+        background-color: #FFF;
+        padding: 0 0 40px 0;
+    }
+    .main-content .nav-tabs>li.active>a{
+        border-top: 1px solid transparent;
+    }
+    .main-content .nav-tabs>li:first-child.active>a{
+        border-left: none;
+    }
+    .main-content h3.title{
+        padding-left: 10px;
+        border-left: 4px solid #3977AD;
+        margin: 20px 0;
+    }
+    .main-content h3.title>a{
+        color: #3977AD;
+        font-size: 14px;
+        font-weight: normal;
+    }
+    .main-content .tab-content{
+        padding-top: 20px;
+    }
+    .img-text{
+        display: flex;
+        align-items: center;
+        background-color: #F9F9F9;
+        border: 1px solid #e5e7e9;
+        padding: 0;
+        width: 48%;
+        margin: 0 1% 20px;
+    }
+    .img-text .text{
+        flex: 1;
+    }
+    .main-content .img-text img{
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+    }
+    .main-content .img-text .text{
+        padding: 0 5px 0 15px;
+        max-height: 140px;
+        overflow: hidden;
+    }
+    .main-content .img-text .col-md-12,.main-content .img-text .col-md-6{
+        padding: 0;
+        line-height: 32px;
+    }
+    .main-content .img-text p{
+        margin-bottom: 0;
+        line-height: 32px;
+    }
+    .main-content svg{
+        margin-bottom: 10px;
+    }
+    .main-content .active-row{
+        height: 80px;
+        line-height: 80px;
+    }
+    .main-content .active-row-box{
+        border: 1px solid #DCDCDC;
+    }
+    .main-content .btn-outline{
+        border: 1px solid #DCDCDC;
+        margin-top: 20px;
+        padding: 12px 0;
+        border-radius: 0;
+    }
+    .main-content .active-row>img{
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .main-content .user-activation{
+        border: 1px solid #DCDCDC;
+        padding: 20px 15px;
+    }
+    .main-content .legend{
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+    }
+    .main-content .legend>li{
+        float: left;
+        width: 10px;
+        height: 10px;
+        list-style: none;
+    }
+
+    .main-content .fans{
+        margin-top: -20px;
+        padding: 0;
+    }
+    .fans-row{
+        padding: 23px 80px;
+        border: 1px solid #DCDCDC;
+        display: flex;
+        align-items: center;
+        border-bottom: none;
+    }
+    .fans-row:last-child{
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .fans-row > img{
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 13px;
+    }
+    .fans-row .intro{
+        flex: 1;
+    }
+    .fans-row .btn{
+        font-size: 16px;
+        padding: 6px 21px;
+    }
+    .fans-row img.icon{
+        width: 13px;
+    }
+    .info{
+        font-size: 12px;
+        color: #666;
+        font-weight:normal;
+    }
+    .bar-nav{
+        margin-bottom: 20px;
+        text-align: center;
+        padding: 30px 60px 30px 35px;
+        position: relative;
+    }
+    .bar-nav .col-xs-4{
+        cursor: pointer;
+    }
+    .bar-nav img{
+        width: auto;
+    }
+    .bar-nav p{
+        margin-bottom: 0;
+        line-height: 40px;
+        height: 30px;
+    }
+    .bar-nav p.help{
+        position: absolute;
+        right: 40px;
+        top: 1px;
+        color: #999;
+        cursor: pointer;
+    }
+    .bar-nav span.icon{
+        display: inline-block;
+        width:18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        border: 1px solid;
+        border-radius: 50%;
+    }
+    @media (max-width: 1200px){
+        .container {
+            width: 100%;
+        }
+    }
+    .contributeCalendar{
+        position: relative;
+    }
+    .contributeCalendar:before{
+        content: "";
+        display: inline-block;
+        width: 1px;
+        height: 50px;
+        background-color: #DCDCDC;
+        position: absolute;
+        left: 62px;
+        top: 65px;
+        z-index: 2;
+    }
+    .contributeCalendar:after{
+        content: '';
+        display: inline-block;
+        width: 45px;
+        height: 50px;
+        left: 42px;
+        top: 65px;
+        background-color: #FFF;
+        position: absolute;
+        z-index: 1;
+    }
+</style>
+
+<div class="container" ng-controller="userController">
+    <div class="row">
+        <div class="col-md-3 subnav col-xs-3">
+            <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
+            <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}</h3>
+            <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于{{userinfo.joindate || "2016.9.12"}}</span></p>
+            <p>{{userinfo.introduce}}</p>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser()">关 注</div>
+            <div class="message-row">
+                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
+                <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="#" class="text-primary">{{userinfo.email}}</a></p>
+                <p class="ellipsis-1"><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon"><a href="#" class="text-primary" title="http://keepwork.com/{{userinfo.username}}">{{"http://keepwork.com/" + userinfo.username}}</a></p>
+            </div>
+            <div class="message-row">
+                <h4>创建的组织：</h4>
+                <ul class="list-item">
+                    <li ng-repeat="x in selfOrganizationList"><a href="#" class="text-muted">{{x.name}}</a></li>
+                </ul>
+            </div>
+            <div class="message-row">
+                <h4>加入的组织：</h4>
+                <ul class="list-item">
+                    <li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9 col-xs-9">
+            <div class="main-content clearfix bar-nav" ng-show="true">
+                <div class="col-xs-4" ng-click="goNewWebsitePage()">
+                    <img ng-src="{{imgsPath + 'icon/wiki_new_site.png'}}" alt="">
+                    <p>新建网站</p>
+                </div>
+                <div class="col-xs-4" ng-click="goWebsitePage()">
+                    <img ng-src="{{imgsPath + 'icon/wiki_site_manage.png'}}" alt="">
+                    <p>网站管理</p>
+                </div>
+                <div class="col-xs-4" ng-click="goEditorPage()">
+                    <img ng-src="{{imgsPath + 'icon/wiki_editor.png'}}" alt="">
+                    <p>页面编辑器</p>
+                </div>
+                <p class="help" ng-click="goHelpPage()"><span class="icon">?</span> 知识库</p>
+            </div>
+            <div class="main-content">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#wiki_preview" aria-controls="preview" role="tab" data-toggle="tab">概况</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#wiki_works" aria-controls="wiki_works" role="tab" data-toggle="tab">网站<span class="info">{{allSiteTotal}}</span></a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab">关注</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#wiki_fans" aria-controls="wiki_fans" role="tab" data-toggle="tab">粉丝<span class="info">{{fansTotal}}</span></a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active clearfix" id="wiki_preview">
+                        <div class="col-md-12">
+                            <h3 class="title">热门作品</h3>
+                            <div class="img-text col-md-6" ng-repeat="x in hotSiteList">
+                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <div class="text">
+                                    <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.favoriteCount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h3 class="title">活动次数</h3>
+                            <div id="contributeCalendar" class="contributeCalendar col-md-12 user-activation">
+                                <div class="col-md-12" id="calendarSibling">
+                                    <div class="pull-left"><a title="在编辑器页面点击保存一次即为一条统计数据">查看数据统计方法</a></div>
+                                    <div class="pull-right">
+                                        弱
+                                        <ul class="legend clearfix">
+                                            <li style="background-color: #eee"></li>
+                                            <li style="background-color: #E8D8F8"></li>
+                                            <li style="background-color: #B5CdE6"></li>
+                                            <li style="background-color: #77A4D0"></li>
+                                            <li style="background-color: #3977AD"></li>
+                                        </ul>
+                                        强
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h3 class="title">活动</h3>
+                            <div class="active-row-box col-md-12">
+                                <div class="col-md-12 active-row" ng-repeat="x in trendsList">
+                                    <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
+                                </div>
+                            </div>
+                            <div class="btn btn-block btn-outline col-md-12">查看更多活动</div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane clearfix" id="wiki_works">
+                        <div class="img-text col-md-6" ng-repeat="x in allSiteList">
+                            <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                            <div class="text">
+                                <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                <p>作者：{{x.username}} </p>
+                                <p>{{x.desc}}</p>
+                                <div class="col-md-12 info">
+                                    <div class="col-md-6">
+                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.favoriteCount}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane clearfix" id="wiki_concern">
+                        <div class="col-xs-12">
+                            <h3 class="title">关注的作者</h3>
+                            <div class="img-text col-md-6" ng-repeat="x in followUserList">
+                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <div class="text">
+                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.favoriteCount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <h3 class="title">关注的网站</h3>
+                            <div class="img-text col-md-6" ng-repeat="x in followSiteList">
+                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <div class="text">
+                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 收藏 {{x.favoriteCount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
+                        <div class="col-md-12 fans-row" ng-repeat="x in fansList">
+                            <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
+                            <div class="intro">
+                                <h4>{{x.userinfo.username}}</h4>
+                                <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
+                            </div>
+                            <div class="btn btn-primary">关 注</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>

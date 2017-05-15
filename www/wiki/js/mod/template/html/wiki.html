@@ -1,0 +1,35 @@
+<div ng-controller="wikiTemplateController" class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <!--div class="col-xs-offset-2 col-xs-8">
+            </div-->
+            <div ng-show="isSelfPageShow('_header')" style="display: flex; justify-content: flex-end; background-color: silver">
+                <button class="btn btn-default" ng-click="setSelfPage('_header')">设置</button>
+                <button class="btn btn-default" ng-click="editSelfPage('_header')">编辑</button>
+            </div>
+            <div id="_headerContentId"></div>
+            <div id="_headerPageContentId"></div>
+        </div>
+        <!--content-->
+        <div class="col-xs-offset-2 col-xs-8">
+            TemplateContent
+        </div>
+        <div class="col-xs-2">
+            <div ng-show="isSelfPageShow('_sidebar')" style="display: flex; justify-content: flex-end; background-color: silver">
+                <button class="btn btn-default" ng-click="setSelfPage('_sidebar')">设置</button>
+                <button class="btn btn-default" ng-click="editSelfPage('_sidebar')">编辑</button>
+            </div>
+            <div id="_sidebarContentId"></div>
+            <div id="_sidebarPageContentId"></div>
+        </div>
+        <!--footer-->
+        <div class="col-xs-offset-2 col-xs-8">
+            <div ng-show="isSelfPageShow('_footer')" style="display: flex; justify-content: flex-end; background-color: silver">
+                <button class="btn btn-default" ng-click="setSelfPage('_footer')">设置</button>
+                <button class="btn btn-default" ng-click="editSelfPage('_footer')">编辑</button>
+            </div>
+            <div id="_footerContentId"></div>
+            <div id="_footerPageContentId"></div>
+        </div>
+    </div>
+</div>

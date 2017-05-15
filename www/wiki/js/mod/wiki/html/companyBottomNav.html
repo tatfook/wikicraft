@@ -1,0 +1,41 @@
+<style>
+    .companybottomNav{
+        background-color: #323232;
+        padding: 50px 0;
+        margin-top: 80px;
+    }
+    .companybottomNav .list-title a{
+        color: #FFF;
+    }
+    .companybottomNav a{
+        color: #A0A0A0;
+        height:32px;
+        line-height: 32px;
+    }
+    .companybottomNav a:hover{
+        color: #FFF;
+    }
+    .companybottomNav .container{
+        padding:0 15px;
+    }
+    .companybottomNav ul{
+        float: left;
+        margin: 0;
+        padding: 0 78px 0 0;
+    }
+    .companybottomNav ul li{
+        list-style:none;
+    }
+</style>
+<div class="companybottomNav" ng-controller="companybottomNavController">
+    <div class="container">
+        <ul ng-repeat="navItem in modParams.navItems">
+            <li class="list-title">
+                <a href="{{navItem.url}}" target="_blank">{{navItem.name}}</a>
+            </li>
+            <li ng-repeat="subNavItem in navItem.subUrl">
+                <a href="{{subNavItem.url}}">{{subNavItem.name}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

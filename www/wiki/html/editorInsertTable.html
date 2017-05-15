@@ -1,3 +1,8 @@
+<style>
+    .modal-header{
+        border-bottom: none;
+    }
+</style>
 <!--Created by Karlwu on 2016-11-12-->
 <div>
     <form name="tableForm" role="form" ng-submit="table_insert()" novalidate>
@@ -6,7 +11,7 @@
         <h4 class="modal-title">插入表格</h4>
     </div>
     <div class="modal-body">
-        <div  class="container">
+        <div>
             <div class="row">
                 <div class="form-group col-xs-12">
                     <label for="rows">行数</label>
@@ -38,10 +43,9 @@
         </div>
     </div>
     <div class="modal-footer">
-        <!--<button class="btn"  data-dismiss="modal">取消</button>-->
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal" ng-click="cancel()">取消</button>
-        <!-- SUBMIT BUTTON -->
+        <span style="color: red; padding-right: 10px">{{errInfo}}</span>
         <button type="submit" class="btn btn-primary btn-fill">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
     </div>
     </form>
 </div>

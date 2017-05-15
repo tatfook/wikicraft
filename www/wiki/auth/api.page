@@ -1,8 +1,6 @@
 <?npl
 NPL.load("(gl)script/ide/System/Encoding/jwt.lua");
-local jwt = commonlib.gettable("System.Encoding.jwt");
-
-include_once(WIKI_ROOT.."config/db.page");
+jwt = commonlib.gettable("System.Encoding.jwt");
 
 local wiki_config_;
 function wiki_config()
@@ -31,6 +29,7 @@ end
 -- call this function to ensure we are authenticated in json request
 -- @return userid, the request.userid also contains the userid
 function ensureAuthenticated()
+	-- request.userid = 1 -- debug use
 	if(request.userid~=nil) then
 		if(not request.userid) then
 			response:status(401):send({ message = 'Auth failed' });	
@@ -39,10 +38,10 @@ function ensureAuthenticated()
 		return request.userid;
 	end
 	if (not request:header('Authorization')) then
-		return response:status(401):send({ message = 'Please make sure your request has an Authorization header' });
+		response:status(401):send({ message = 'Please make sure your request has an Authorization header' });
+		exit();
 	end
 	local token = request:header('Authorization'):match("%s+(%S+)");
-	local config = include("config.page");
 	local payload, err = decodeJWT(token);
 	if(not payload) then
 		if(err == "Invalid signature") then
@@ -63,11 +62,9 @@ function checkAuthenticated()
 	if(request.userid~=nil) then
 		return request.userid;
 	end
-	request.userid = false;
 	local authHeader = request:header('Authorization');
 	if (authHeader) then
 		local token = authHeader:match("%s+(%S+)");
-		local config = include("config.page");
 		local payload, err = decodeJWT(token);
 		if(payload) then
 			request.userid = payload.id;

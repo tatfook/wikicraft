@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name=title content="来源于keepwork.com">
+    <meta name="site" content="keepwork.com" />
+    <title ng-bind="title">keepwork.com</title>
+    <link rel="icon" href="/wiki/assets/imgs/icon/logo.ico" type="image/x-icon" />
+    <!-- lib css -->
+    <link href="assets/css/main.css" rel="stylesheet" type="text/css">
+
+    <!--script src="js/lib/jquery/jquery.min.js"></script>
+    <script src="js/lib/jquery.zeroclipboard/jquery.zeroclipboard.min.js"></script-->
+    <!-- 全局配置 -->
+    <script src="js/app/config.js"></script>
+</head>
+
+<body ng-style="getBodyStyle()">
+
+<div ng-controller="mainController">
+    <div ng-show="frameHeaderExist">
+        <div id="__wikiHeader__"></div>
+    </div>
+
+    <!-- 信息提示 -->
+    <div>
+        <div id="messageTipId" class="alert" style="display: none; position: fixed; right: 20%; width: 60%; z-index: 10;">
+            <a id="messageTipCloseId" href="#" class="close" ng-click="hide()">&times;</a>
+            <div id="messageTipConentId"></div>
+        </div>
+    </div>
+
+    <!--页面主题内容-->
+    <div style="z-index: 1" id="__mainContent__">
+        <!--用户站点内容体-->
+        <div>
+            <div id="__UserSitePageContentContainer__">
+                <div id="__UserSitePageContent__"></div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="frameFooterExist">
+        <div id="__wikiFooter__"></div>
+    </div>
+</div>
+
+<!-- lib脚本 -->
+<script data-main="js/main.js" src="js/lib/requirejs/require.js"></script>
+</body>
+</html>
+<!---->

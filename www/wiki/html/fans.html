@@ -1,0 +1,63 @@
+<style>
+    body{
+        background-color: #F1F1F1;
+    }
+    .fans-box{
+        padding: 0;
+        padding-top: 80px;
+    }
+    .fans-box .container{
+        background-color: #FFF;
+        padding:0;
+    }
+    .fans-box .panel-heading{
+        border-bottom:1px solid #DCDCDC;
+        color: #3977AD;
+    }
+    .fans-box .panel-body{
+        width:70%;
+        margin: 0 auto;
+    }
+    .fans-row{
+        padding: 23px 0;
+        border-bottom: 1px solid #DCDCDC;
+        display: flex;
+        align-items: center;
+    }
+    .fans-row:last-child{
+        border-bottom: none;
+    }
+    .fans-row > img{
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        margin-right: 13px;
+    }
+    .fans-row .intro{
+        flex: 1;
+    }
+    .fans-row .btn{
+        font-size: 16px;
+        padding: 6px 21px;
+    }
+    .fans-row img.icon{
+        width: 13px;
+    }
+</style>
+<div class="fans-box" ng-controller="fansController">
+    <div class="container panel">
+        <div class="panel-heading">
+            <h5>作品收藏 > 粉丝</h5>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-12 fans-row" ng-repeat="fans in fansList">
+                <img ng-src="{{fans.userinfo.portrait || imgsPath + 'wiki_photo.jpg'}}" alt="">
+                <div class="intro">
+                    <h4>{{fans.userinfo.username}}</h4>
+                    <p><img ng-src="{{imgsPath + 'icon/wiki_location.png'}}" alt="" class="icon"> {{fans.userinfo.location || "深圳"}}</p>
+                </div>
+                <div class="btn btn-primary">关 注</div>
+            </div>
+        </div>
+    </div>
+</div>
