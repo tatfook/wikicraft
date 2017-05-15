@@ -11,8 +11,8 @@ define([
 ], function (app, util, storage, htmlContent) {
     //console.log("load userController file");
 
-    app.registerController('userController', ['$scope','Account', function ($scope, Account) {
-
+    app.registerController('userController', ['$scope','Account','Message', function ($scope, Account, Message) {
+        $scope.concerned=false;
         function init(userinfo) {
             var username = $scope.urlObj.username;
             if (!username && userinfo && userinfo.username) {
@@ -28,8 +28,11 @@ define([
                 // 用户信息
                 $scope.userinfo = data.userinfo;
                 $scope.selfOrganizationList = data.selfOrganizationObj.siteList;
+                $scope.selfOrganizationCount = data.selfOrganizationObj.siteList.length;
                 $scope.joinOrganizationList = data.joinOrganizationObj.siteList;
+                $scope.joinOrganizationCount = data.joinOrganizationObj.siteList.length;
                 $scope.hotSiteList = data.hotSiteObj.siteList;
+                $scope.hotSiteTotal=data.hotSiteObj.siteList.length;
                 $scope.allSiteList = data.allSiteList;
                 $scope.allSiteTotal = data.allSiteList.length;
                 // 粉丝
@@ -54,14 +57,22 @@ define([
             });
         }
 
-        $scope.favoriteUser = function () {
+        $scope.favoriteUser = function (concerned) {
             if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == $scope.userinfo._id) {
+                Message.info("自己不关注自己");
                 return; // 自己不关注自己
             }
 
-            util.post(config.apiUrlPrefix + 'user_fans/upsert', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
-               console.log("关注成功");
-            });
+            if(concerned){//取消关注
+                Message.info("取消关注成功");
+                $scope.concerned=false;
+            }else{
+                util.post(config.apiUrlPrefix + 'user_fans/upsert', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
+                    console.log("关注成功");
+                    Message.info("关注成功");
+                    $scope.concerned=true;
+                });
+            }
         }
         
         $scope.isShowNavBar = function () {
@@ -69,6 +80,10 @@ define([
                 return true;
             }
             return false;
+        }
+
+        $scope.loadActivity = function () {
+            Message.info("暂无更多活动");
         }
 
         $scope.goUserSite = function (x) {
