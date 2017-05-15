@@ -551,6 +551,15 @@ define([
                 var _openUrlPage = function () {
                     //var url = '/' + username + '/' + sitename + '/' + pagepath;
                     currentPage = getPageByUrl(url);
+                    if (!currentPage) {
+                        var url = '/' + username + '/' + sitename;
+                        for (var key in allPageMap) {
+                            if (key.indexOf(url) >= 0) {
+                                currentPage = allPageMap[key];
+                                break;
+                            }
+                        }
+                    }
                     currentSite = getCurrentWebsite();
                     //console.log(currentPage);
                     if (!currentPage) {

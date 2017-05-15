@@ -51,6 +51,7 @@ define([
         // 编辑网站页面
         $scope.goEditWebsitePagePage = function (website) {
             //window.location.href="/wiki/wikiEditor";
+            storage.sessionStorageSetItem("urlObj",{username:website.username, sitename:website.name});
             util.go('wikiEditor');
         }
 
