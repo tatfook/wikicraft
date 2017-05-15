@@ -274,8 +274,9 @@ function data_source:api_createInnerGitlab(params)
 		params.confirm = false
 
 		local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
-		local urlPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host .. "/api/v4"
-		local rawPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host
+		local gitlabHost = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["host"]
+		local urlPrefix = "http://" .. gitlabHost .. "/api/v4"
+		local rawPrefix = "http://" .. gitlabHost
 
 		-- 获取用户
 		System.os.GetUrl({

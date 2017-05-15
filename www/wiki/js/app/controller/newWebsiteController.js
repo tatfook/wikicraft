@@ -113,6 +113,7 @@ define([
                     $scope.errMsg = "请选择模板样式";
                     return ;
                 }
+                $scope.website.logoUrl = $scope.imgsPath + $scope.style.logoUrl;
             } else if ($scope.step == 6) {
                 $scope.website.userId = $scope.user._id;
                 $scope.website.username = $scope.user.username;

@@ -100,7 +100,9 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
 
@@ -280,14 +282,14 @@ end
 
 -- 增加访问计数
 function website:api_addVisitNum(params)
-	if not params.websiteName then 
+	if (not params.username) or (not params.sitename) then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({["+name"]={params.websiteName}}, resume)
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local err, site = yield()
 	if not site then
-		return {error=errors.SERVER_INNER_ERROR, data=nil}
+		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	site.visitCount = (site.visitCount or 0) + 1
@@ -458,8 +460,25 @@ function website:api_getByDomain(params)
 	return errors:wrap(yield())
 end
 
+-- 访问站点
+function website:api_visitWebsite(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
--- 获取站点详细信息
+	-- 增加站点访问量
+	self:api_addVisitNum({username=params.username, sitename=params.sitename})
+
+	-- 添加访问记录
+	if params.userId then
+		local userVisitHistoryDB = models.user_visit_history:new()
+		userVisitHistoryDB:api_upsert({userId=params.userId, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
+	end
+	
+	return errors:wrap()
+end
+
+-- 获取站点详细信息, 
 function website:api_getDetailInfo(params)
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -491,14 +510,7 @@ function website:api_getDetailInfo(params)
 	dataSource.dataSourceToken = nil
 	userinfo.dataSource = {dataSource}
 
-	-- 增加站点访问量
-	self:api_addVisitNum({websiteName=params.sitename})
-
-	-- 添加访问记录
-	if params.userId then
-		local userVisitHistoryDB = models.user_visit_history:new()
-		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=params.sitename,url=url})
-	end
+	self:api_visitWebsite(params)
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
@@ -510,7 +522,8 @@ function website:api_getUserSiteInfo(params)
 	end
 
 	local userDB = models.user:new()
-	local userinfo = userDB:api_getByName({username=params.username}).data
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo = yield()
 	
 	if not userinfo then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)

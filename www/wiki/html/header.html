@@ -461,7 +461,7 @@
                         <li class="icon collect-icon" ng-show="isIconShow">
                             <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="doWorksFavorite($event,false)" alt="">
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
-                            <span class="text-muted" ng-click="goFans()">{{totalItems}}</span>
+                            <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">

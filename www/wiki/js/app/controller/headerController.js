@@ -16,8 +16,6 @@ define([
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
-        $scope.totalItems=0;
-
         // 通过站点名搜索
         $scope.searchWebsite = function () {
             storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', websiteName: $scope.search});
@@ -46,17 +44,18 @@ define([
                     });
                 }
             }
-            // if($rootScope.pageinfo){
-            //     var params = {
-            //         userId: $rootScope.pageinfo.userId,
-            //         websiteId: $rootScope.pageinfo.websiteId
-            //     };
-            //     storage.sessionStorageSetItem('pageinfo',params);
-            //     util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
-            //         $scope.totalItems = data.total;
-            //         $scope.fansList = data.fansList || [];
-            //     });
-            // }
+            // 获取用户粉丝数量
+            if (Account.isAuthenticated()) {
+                $scope.userFansCount = storage.sessionStorageGetItem("userFansCount");
+                if ($scope.userFansCount == undefined || $scope.userFansCount== null) {
+                    util.post(config.apiUrlPrefix + 'user_fans/getFansCountByUserId', {userId:$scope.user._id}, function (data) {
+                        $scope.userFansCount = data || 0;
+                        if (typeof(data) == "number") {
+                            storage.sessionStorageSetItem("userFansCount", data);
+                        }
+                    });
+                }
+            }
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -241,15 +240,13 @@ define([
         // 收藏作品
         $scope.doWorksFavorite=function (event,doCollect) {
             var worksFavoriteRequest = function(isFavorite) {
-                //console.log($scope.user);
-                //console.log($rootScope.pageinfo);
-                if (!$rootScope.pageinfo) {
+                if (!$rootScope.siteinfo) {
                     return;
                 }
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: $rootScope.pageinfo.userId,
-                    favoriteWebsiteId: $rootScope.pageinfo.websiteId,
+                    favoriteUserId: $rootScope.siteinfo.userId,
+                    favoriteWebsiteId: $rootScope.siteinfo._id,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
@@ -260,11 +257,9 @@ define([
 
             if (doCollect){
                 worksFavoriteRequest(true);
-                $scope.totalItems++;
                 $scope.isCollect=true;
             }else{
                 worksFavoriteRequest(false);
-                $scope.totalItems--;
                 $scope.isCollect=false;
             }
         };
