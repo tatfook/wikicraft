@@ -571,7 +571,7 @@ function user:api_getByEmail(params)
 	
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
+	-- data.dataSource = self:api_getUserDataSource({userId=data._id}).data
 	return errors:wrap(nil, data)
 end
 

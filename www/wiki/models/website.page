@@ -111,9 +111,15 @@ function website:api_upsert(params)
 	end
 
 	-- 设置站点管理员
-	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:api_upsert({websiteId=site._id, websiteType=const.WEBSITE_TYPE_ORGANIZATION, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
-
+	if site.categoryName == "组织网站" then
+		local websiteMemberDB = models.website_member:new()
+		websiteMemberDB:api_upsert({websiteId=site._id, websiteType=const.WEBSITE_TYPE_ORGANIZATION, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
+	end
+		
+	-- 用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=site.userId, siteId=site._id}
+	
 	return errors:wrap(nil, site)
 end
 

@@ -17,24 +17,21 @@ user_trends.db_name = "user_trends";
 
 function user_trends:ctor() 
 	self:addfield("userId", "number")          -- 用户ID
-	self:addfield("websiteId","number")        -- 站点ID
-	self:addfield("otherUserId", "number")   -- 站点用户ID
+	self:addfield("siteId","number")           -- 站点ID
 	self:addfield("trendsType", "number")      -- 动态类型
 	self:addfield("desc", "string")            -- 描述
-	self:addfield("state", "string")           -- 是否已读
 
-	self:addfield("updateDate", "string")      -- 更新日期
+	self:addfield("updateDate", "string")      -- 更新日期  -- 根据日期统计数量
 end
 
 -- 创建或更新动态
 function user_trends:api_upsert(params)
-	if (not params.userId) or (not params.websiteId) or (not params.otherUserId) or (not params.trendsType) then
+	if (not params.userId) or (not params.siteId) or (not params.trendsType) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH-mm-ss")
-	params.state = params.state or "unread"
 	
-	self:db():insertOne({["+userId+websiteId+otherUserId+trendsType"]={params.userId, params.websiteId,params.otherUserId, params.trendsType}}, params, resume)
+	self:db():insertOne({["+userId+siteId+trendsType"]={params.userId, params.siteId,params.siteUserId, params.trendsType}}, params, resume)
 	
 	return errors:wrap(yield())
 end
