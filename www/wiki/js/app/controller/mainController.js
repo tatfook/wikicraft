@@ -12,7 +12,8 @@ define([
     'controller/headerController',
     'controller/footerController',
     'controller/userController',
-], function (app, markdownwiki, storage, util, dataSource, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent) {
+    'controller/notfoundController',
+], function (app, markdownwiki, storage, util, dataSource, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
@@ -158,7 +159,7 @@ define([
                             var currentDataSource = dataSource.getCurrentDataSource();
                             var renderContent = function (content) {
                                 $rootScope.$broadcast('userpageLoaded',{});
-                                content = md.render(content ||  '<div>用户页丢失!!!</div>');
+                                content = md.render(content ||  notfoundHtmlContent);
                                 util.html('#__UserSitePageContent__', content, $scope);
                             };
 
