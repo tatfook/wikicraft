@@ -59,13 +59,11 @@ define([
         $authProvider.oauth2({
             name: 'xinlangweibo',
             url: '/api/wiki/auth/xinlangweibo',
-            clientId: '482627906',
+            clientId: '2411934420',
             redirectUri: window.location.origin + '/api/wiki/auth/xinlangweibo',//window.location.origin,
             authorizationEndpoint: 'https://api.weibo.com/oauth2/authorize',
             oauthType: '2.0',
-            //scope:'email',
         });
-
     }]);
 
     window.app = app;

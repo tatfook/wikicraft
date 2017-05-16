@@ -157,7 +157,7 @@ end
 function RenderServerWikiScript() 
 	local config = {}
 	config.hostname = request:GetHost()
-	config.serverUpdateTime = KEEPWORK.serverUpdateTime
+	config.serverUpdateTime = getServerUpdateTime()
 	if config.hostname == "dev.keepwork.com" then
 		config.bustVersion = os.time()
 	else 

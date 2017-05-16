@@ -11,7 +11,6 @@ mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 -- 定义一个全局变量空间  其它全局变量放到此变量里病注释使用情况
 KEEPWORK={}
 -- KEEPWORK.config     用户程序配置
--- KEEPWORK.startTime  启动时间
 
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
@@ -39,7 +38,6 @@ function init_wiki_module()
 	if not isWebServerStart then
 		mem_cache:set("isWebServerStart", true)
 		include_once(WIKI_ROOT .. "helpers/wiki_module.page")
-		KEEPWORK["serverUpdateTime"] = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
 	end
 end
 
@@ -53,6 +51,18 @@ function getBustVersion()
 
 	return version
 end
+
+-- 获取服务器启动日期
+function getServerUpdateTime()
+	local serverUpdateTime = mem_cache:get("serverUpdateTime")
+	if not serverUpdateTime then
+		serverUpdateTime = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
+		mem_cache:set("serverUpdateTime", serverUpdateTime)
+	end 
+	-- KEEPWORK["serverUpdateTime"] = serverUpdateTime
+	return serverUpdateTime
+end
+
 
 function init()
 	init_db()
