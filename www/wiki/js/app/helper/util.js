@@ -2,7 +2,10 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['jquery'], function ($) {
+define([
+    'jquery',
+    'helper/loading',
+], function ($,Loading) {
     var util = {
         colorList:["rgb(145,185,114)","rgb(185,150,114)","rgb(185,114,178)","rgb(185,127,114)","rgb(114,185,160)","rgb(114,134,185)"],
         stack:[],   // 堆栈操作模拟
