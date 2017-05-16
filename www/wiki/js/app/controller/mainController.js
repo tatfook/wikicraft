@@ -102,6 +102,7 @@ define([
             }
 
             function renderHtmlText(pathname, md) {
+                pathname = util.snakeToHump(pathname);
                 pathname = pathname.replace('/wiki/', '');
                 var pageUrl = 'controller/' + pathname + 'Controller';
                 var htmlContent;

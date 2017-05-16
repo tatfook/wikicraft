@@ -737,6 +737,7 @@ define([
                                 }
                             } else {
                                 $('#treeview').treeview('unselectNode', [data.nodeId, {silent: true}]);
+                                $('#treeview').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
                             }
                             renderAutoSave(function () {
                                 if (data.pageNode.isLeaf) {

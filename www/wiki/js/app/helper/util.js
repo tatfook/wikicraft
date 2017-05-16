@@ -241,7 +241,7 @@ define(['jquery'], function ($) {
     // 跳转wiki页
     util.go = function (pageName, isOpen) {
         var url;
-
+        pageName = util.humpToSnake(pageName);
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#/wiki/' + pageName;
         } else {
@@ -257,6 +257,7 @@ define(['jquery'], function ($) {
 
     // 跳转至mod页
     util.goMod = function (path, isOpen) {
+        path = util.humpToSnake(path);
         util.go("/wiki/js/mod/" + path, isOpen);
     }
 
@@ -267,10 +268,6 @@ define(['jquery'], function ($) {
             return true;
         }
         return false;
-    }
-
-    util.isWikiEditorPage = function () {
-        return util.parseUrl().pathname == '/wiki/wikiEditor';
     }
 
     // 执行批量
@@ -335,6 +332,39 @@ define(['jquery'], function ($) {
         _sequenceRun();
     };
 
+    // 书写格式转换
+    // 下划线转驼峰
+    util.snakeToHump = function (str) {
+        if (!str) {
+            return str;
+        }
+        var wordsList = str.split('_');
+        var resultStr = wordsList[0];
+        for (var i = 1; i < wordsList.length; i++) {
+            var word = wordsList[i];
+            if (word[0] >= 'a' && word[0] <= 'z') {
+                resultStr += word[0].toUpperCase() + word.substring(1);
+            } else {
+                resultStr += word;
+            }
+        }
+        return resultStr;
+    }
+    // 驼峰转下划线
+    util.humpToSnake = function (str) {
+        if (!str) {
+            return str;
+        }
+        var resultStr = "";
+        for (var i = 0; i < str.length; i++) {
+            if (str[i] >= "A" && str[i] <= "Z") {
+                resultStr += '_' + str[i].toLowerCase();
+            } else {
+                resultStr += str[i];
+            }
+        }
+        return resultStr;
+    }
 
     config.util = util;
     return util;

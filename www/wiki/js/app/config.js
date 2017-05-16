@@ -68,6 +68,11 @@
         bustVersion: wiki_config.bustVersion,
 
         // --------------------------------------后端配置 END-------------------------------------
+
+        routeMap:{
+            // wiki page
+            "/wiki/test":"controller/testController",
+        }
     };
     function initConfig() {
         var hostname = window.location.hostname;
@@ -141,6 +146,8 @@
         }
         // 为官网页面 则预先加载
         var pageurl = undefined;
+        var rawPathname = pathname;
+        var pathname = config.util.snakeToHump(pathname);
         if (pathname.indexOf('/wiki/mod/') == 0) {
             // mod 模块
             var pagename = pathname.substring('/wiki/mod/'.length);
@@ -163,6 +170,11 @@
             config.mainContentType = "user_page";
             config.mainContent = undefined;
         }
+
+        if (config.routeMap[rawPathname]) {
+            pageurl = config.routeMap[rawPathname];  // 优先配置路由
+        }
+
         //console.log(pageurl, config.mainContentType);
         // 启动angular
         if (pageurl) {
