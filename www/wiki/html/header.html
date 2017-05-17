@@ -376,8 +376,8 @@
                                         <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
                                             <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
                                         </li>
-                                        <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
+                                        <li role="presentation" ng-class="trendsType == 'attent' ? 'active' : ''">
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('attent')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
                                             <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
@@ -403,7 +403,7 @@
                                ng-click="clickMyFavorite()">关注</a>
                             <div class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
-                                    <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
+                                    <li ng-repeat="x in favoriteWebsiteObj.siteList">
                                         <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
                                     </li>
                                 </ul>

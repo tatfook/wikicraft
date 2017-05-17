@@ -8,6 +8,26 @@ define([], function () {
         {
             name:"个人网站",
             templates:[
+                {
+                    name:"空模板",
+                    logoUrl:"wiki_blank_template.png",
+                    styles:[
+                        {
+                            name:"默认样式",
+                            logoUrl:"wiki_blank_template.png",
+                            contents:[
+                                {
+                                    pagepath:"index",
+                                    contentUrl:"templates/blank.md"
+                                },
+                                {
+                                    pagepath:"_theme",
+                                    contentUrl:"templates/blank_theme.md"
+                                },
+                            ]
+                        }
+                    ],
+                },
                 // 个人网站wiki模板
                 {
                     name:"wiki模板",
@@ -24,7 +44,7 @@ define([], function () {
                                 },
                                 {
                                     pagepath:"_theme",
-                                    contentUrl:"templates/wiki_theme.md"
+                                    contentUrl:"templates/resume_theme.md"
                                 },
                             ],
                         },

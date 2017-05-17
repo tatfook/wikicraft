@@ -64,10 +64,13 @@ define([
             }
 
             if(concerned){//取消关注
-                Message.info("取消关注成功");
-                $scope.concerned=false;
+                util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
+                    console.log("取消关注成功");
+                    Message.info("取消关注成功");
+                    $scope.concerned=false;
+                });
             }else{
-                util.post(config.apiUrlPrefix + 'user_fans/upsert', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
+                util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
                     console.log("关注成功");
                     Message.info("关注成功");
                     $scope.concerned=true;
@@ -109,7 +112,7 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded', function () {
-            console.log("------------------init user controller----------------------");
+            //console.log("------------------init user controller----------------------");
             if ($scope.urlObj.username) {
                 init();
             } else {

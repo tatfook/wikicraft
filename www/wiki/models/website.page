@@ -6,6 +6,7 @@ Date: 2016/10/10
 ]]
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./user_active.page")
 include_once("./user_favorite.page")
 include_once("./user_visit_history.page")
 include_once("./website_pages.page")
@@ -118,7 +119,9 @@ function website:api_upsert(params)
 		
 	-- 用户动态
 	local userTrendsDB = models.user_trends:new()
-	local trend = {userId=site.userId, siteId=site._id}
+	local trend = {userId=site.userId, objectId=site._id, trendsType=const.USER_TRENDS_TYPE_CREATE_SITE}
+	trend.desc = site.username .. "创建站点" .. site.name
+	userTrendsDB:api_upsert(trend)
 	
 	return errors:wrap(nil, site)
 end
@@ -129,6 +132,11 @@ function website:deleteById(websiteId)
 	if not site then
 		return errors:wrap(nil)
 	end
+
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=site.userId, objectId=site._id, trendsType=const.USER_TRENDS_TYPE_DELETE_SITE}
+	trend.desc = site.username .. "删除站点" .. site.name
+	userTrendsDB:api_upsert(trend)
 
 	-- 删除更新表中该站点数据
 	local websiteRenewalModel =	models.website_renewal:new()
@@ -190,6 +198,30 @@ function website:deleteUserWebsite(userId)
 	end
 	
 	return nil
+end
+
+-- 更新站点页面信息
+function website:api_updateWebsitePageinfo(params)
+	if (not params.userId) or (not params.siteId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local site = self:api_getById({websiteId=params.siteId}).data
+	if not site then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	-- 更新活动计数
+	local userActiveDB = models.user_active:new()
+	userActiveDB:api_addActiveCount(params)
+	
+	-- 更新用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=params.userId, objectId=params.siteId, trendsType=const.USER_TRENDS_TYPE_UPDATE_SITE}
+	trend.desc = site.username .. "更新站点" .. site.name
+	userTrendsDB:api_upsert(trend)
+	
+	return errors:wrap()
 end
 
 -- 更新站点
@@ -285,8 +317,8 @@ function website:api_getById(params)
 	return errors:wrap(yield())		
 end
 
--- 增加访问计数
-function website:api_addVisitNum(params)
+-- 更新访问计数
+function website:api_updateVisitNum(params)
 	if (not params.username) or (not params.sitename) then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -298,6 +330,24 @@ function website:api_addVisitNum(params)
 	end
 
 	site.visitCount = (site.visitCount or 0) + 1
+	self:db():updateOne({_id=site._id}, site, resume)
+		
+	return errors:wrap(yield())	
+end
+
+-- 更新收藏数量
+function website:api_updateFavoriteNumById(params)
+	if not params.websiteId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({_id=params.websiteId}, resume)
+	local err, site = yield()
+	if not site then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	site.favoriteCount = (site.favoriteCount or 0) + (params.count or 1)
 	self:db():updateOne({_id=site._id}, site, resume)
 		
 	return errors:wrap(yield())	
@@ -451,7 +501,7 @@ function website:api_visitWebsite(params)
 	end
 
 	-- 增加站点访问量
-	self:api_addVisitNum({username=params.username, sitename=params.sitename})
+	self:api_updateVisitNum({username=params.username, sitename=params.sitename})
 
 	-- 添加访问记录
 	if params.userId then

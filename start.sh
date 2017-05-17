@@ -25,12 +25,16 @@ start_server() {
 	local server_type=$1
 	
 	if [ $server_type = "test" ]; then
-		rm -fr ${test_dir}
-		cp -fr ${build_dir} ${test_dir}
+		if [ -e ${build_dir} ]; then
+			rm -fr ${test_dir}
+			cp -fr ${build_dir} ${test_dir}
+		fi
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
 	elif [ $server_type = "rls" ]; then 
-		rm -fr ${rls_dir}
-		cp -fr ${build_dir} ${rls_dir}
+		if [ -e ${build_dir} ]; then
+			rm -fr ${rls_dir}
+			cp -fr ${build_dir} ${rls_dir}
+		fi
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"

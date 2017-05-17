@@ -60,7 +60,7 @@ define([
         var treeData = [];
         for (var key in pageMap) {
             var page = pageMap[key];
-            if (page.isDelete) {
+            if (page.isDelete || !page.url) {
                 continue;
             }
 
@@ -371,6 +371,7 @@ define([
                         serverPage = allPageMap[page.url] = page;
                     }
                     serverPage.isModify = page.isModify;
+                    console.log(page);
                     allWebstePageContent[page.url] = page.content;
                     if (!serverPage.isModify) {   // 没有修改删除本地
                         indexDBDeletePage(page.url);
@@ -433,6 +434,7 @@ define([
                     page.content = content;
                     page.isModify = true;
                     storage.indexedDBSetItem(config.pageStoreName, page);
+                    console.log("---------save failed-------");
                     errcb && errcb();
                 };
                 var saveSuccessCB = function () {
@@ -440,14 +442,15 @@ define([
                     page.isModify = false;
                     storage.indexedDBSetItem(config.pageStoreName, page);
                     indexDBDeletePage(page.url);
-
+                    console.log("---------save success-------");
                     cb && cb();
                 };
 
                 currentSite = getCurrentWebsite(page.username, page.sitename);
                 var currentDataSource = dataSource.getCurrentDataSource(page.username, currentSite && currentSite.dataSourceId);
-
-                util.post(config.apiUrlPrefix + 'user_active/addActiveCount', {userId:$scope.user._id});
+                if (currentSite) {
+                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', {userId:currentSite.userId, siteId:currentSite._id});
+                }
 
                 currentDataSource.writeFile({
                     path: page.url + pageSuffixName,
@@ -538,51 +541,57 @@ define([
                     openTempFile();
                     return;
                 }
-
                 currentPage = getPageByUrl(url);
                 currentSite = getCurrentWebsite(username, sitename);
+
+                var _openUrlPage = function () {
+                    var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
+                    currentPage = getPageByUrl(url);
+                    //console.log(url, pagepath, urlObj);
+                    if (currentPage) {
+                        currentSite = getCurrentWebsite();
+                        openPage();
+                        return;
+                    }
+                    // 不存在 不新建
+                    if (!currentPage && pagename[0] != '_') {
+                        var url = '/' + username + '/' + sitename;
+                        for (var key in allPageMap) {
+                            if (key.indexOf(url) >= 0) {
+                                currentPage = allPageMap[key];
+                                currentSite = getCurrentWebsite();
+                                openPage();
+                                return;
+                            }
+                        }
+
+                        if (!currentPage) {
+                            openTempFile();
+                            return;
+                        }
+                    }
+
+                    // 新建
+                    var page = {};
+                    page.url = url;
+                    page.username = username;
+                    page.sitename = sitename;
+                    page.pagename = pagename;
+                    page.isModify = true;
+                    currentPage = page;
+                    currentSite = getCurrentWebsite();
+                    //console.log(currentPage);
+                    allPageMap[page.url] = page;
+                    allWebstePageContent[page.url] = "";
+                    initTree();
+                    openPage();
+                }
 
                 // 获取站点页列表
                 dataSource.setCurrentDataSource(username, currentSite.dataSourceId);
                 getSitePageList({path:"/" + username + '/' +  sitename, username:username, sitename:sitename}, function () {
                     _openUrlPage();
                 });
-
-                var _openUrlPage = function () {
-                    //var url = '/' + username + '/' + sitename + '/' + pagepath;
-                    currentPage = getPageByUrl(url);
-                    if (!currentPage) {
-                        var url = '/' + username + '/' + sitename;
-                        for (var key in allPageMap) {
-                            if (key.indexOf(url) >= 0) {
-                                currentPage = allPageMap[key];
-                                break;
-                            }
-                        }
-                    }
-                    currentSite = getCurrentWebsite();
-                    //console.log(currentPage);
-                    if (!currentPage) {
-                        // 特殊页面允许自动创建
-                        if (pagename[0] != '_') {
-                            openTempFile();
-                            return;
-                        }
-                        var page = {};
-                        page.url = '/' + username + '/' + sitename + '/' + pagepath;
-                        page.username = username;
-                        page.sitename = sitename;
-                        page.pagename = pagename;
-                        page.isModify = true;
-
-                        currentPage = page;
-                        allPageMap[page.url] = page;
-                        initTree();
-                        openPage();
-                    } else {
-                        openPage();
-                    }
-                }
             }
 
             // 打开页
@@ -674,7 +683,7 @@ define([
 
                 var url = currentPage.url;
                 //console.log("-----------getPageContent-------------", url, currentPage, allWebstePageContent);
-                if (allWebstePageContent[url]) {
+                if (allWebstePageContent[url] != undefined) {
                     //console.log(allWebstePageContent[url]);
                     cb && cb(allWebstePageContent[url]);
                 } else {
@@ -685,29 +694,7 @@ define([
                         currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
                             //console.log(data);
                             cb && cb(data);
-                        }, function (data) {
-                            //console.log("-------------------------------");
-                            var pageinfo = getPageByUrl(url);
-                            //console.log(pageinfo);
-                            if (pageinfo && pageinfo.content) {
-                                cb && cb(pageinfo.content);
-                                currentDataSource.writeFile({path:url + pageSuffixName, content:pageinfo.content});
-                            } else if (pageinfo.contentUrl) {
-                                require(["text!html/" + pageinfo.contentUrl], function (content) {
-                                    cb && cb(content);
-                                }, function () {
-                                    console.log("require load file failed:", pageinfo.contentUrl);
-                                    errcb && errcb();
-                                });
-                            } else {
-                                //数据源未找到查找本地服务器页面
-                                util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: url}, function (data) {
-                                    data = data || {};
-                                    cb && cb(data.content);
-                                    data.content && currentDataSource.writeFile({path:url + pageSuffixName, content:data.content});
-                                }, errcb)
-                            }
-                        });
+                        }, errcb);
                     } else {
                         console.log("----------data source uninit-------------");
                         errcb && errcb();
@@ -1779,7 +1766,7 @@ define([
                     //console.log(currentPage);
 
                     if (!currentPage.isModify && content != allWebstePageContent[currentPage.url]) {
-                        //console.log(currentPage);
+                        console.log(currentPage);
                         //console.log(content, allWebstePageContent[currentPage.url],content != allWebstePageContent[currentPage.url]);
                         currentPage.isModify = true;
                         initTree();

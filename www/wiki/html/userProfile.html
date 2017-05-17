@@ -615,7 +615,7 @@
     <div ng-show="showItem == 'myHistory'" class="col-xs-12 main-content panel">
         <div class="panel-heading">我的历史</div>
         <div class="panel-body timeline">
-            <div class="img-text" ng-repeat="site in visitHistoryList">
+            <div class="img-text" ng-repeat="site in visitHistoryList" ng-show="site.siteinfo">
                 <img ng-src="{{site.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                 <div class="text">
                     <h4><a href="#">{{site.siteinfo.name}}</a></h4>
@@ -630,7 +630,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="time"><span>{{site.siteinfo.createDate}}</span><span></span></div>
+                <div class="time"><span>{{site.updateDate}}</span><span></span></div>
                 <div class="rubbish"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
             </div>
         </div>
@@ -653,9 +653,9 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
                     <div class="clearfix">
-                        <div class="fans-profile" ng-repeat="fans in fansList">
-                            <img ng-src="{{fans.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
-                            <p>{{fans.userinfo.username}}</p>
+                        <div class="fans-profile" ng-repeat="x in favoriteList">
+                            <img ng-src="{{x.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
+                            <p>{{x.userinfo.username}}</p>
                         </div>
                     </div>
                     <div class="pagination-box">

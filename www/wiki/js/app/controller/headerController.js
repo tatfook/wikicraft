@@ -48,11 +48,10 @@ define([
             if (Account.isAuthenticated()) {
                 $scope.userFansCount = storage.sessionStorageGetItem("userFansCount");
                 if ($scope.userFansCount == undefined || $scope.userFansCount== null) {
-                    util.post(config.apiUrlPrefix + 'user_fans/getFansCountByUserId', {userId:$scope.user._id}, function (data) {
-                        $scope.userFansCount = data || 0;
-                        if (typeof(data) == "number") {
-                            storage.sessionStorageSetItem("userFansCount", data);
-                        }
+                    util.post(config.apiUrlPrefix + 'user_fans/getCountByUserId', {userId:$scope.user._id}, function (data) {
+                        data = data || 0;
+                        $scope.userFansCount = data;
+                        storage.sessionStorageSetItem("userFansCount", data);
                     });
                 }
             }
@@ -78,12 +77,6 @@ define([
         $scope.clickPageList = function () {
             if ($scope.urlObj.username == "wiki")
                 return;
-
-            if (urlObj.sitename) {
-                util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName', {websiteName: urlObj.sitename}, function (data) {
-                    $scope.userSitePageList = data || [];
-                });
-            }
         }
 
         $scope.selectPage = function (page) {
@@ -121,7 +114,7 @@ define([
         $scope.clickMyFavorite = function () {
             if (!Account.isAuthenticated())
                 return;
-            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + "user_favorite/getByUserId", {userId: $scope.user._id}, function (data) {
                 //console.log(data);
                 $scope.favoriteWebsiteObj = data;
             });
@@ -132,31 +125,33 @@ define([
                 return;
 
             // 用户动态
-            util.post(config.apiUrlPrefix + 'user_trends/getUnread', {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + 'user_trends/get', {userId: $scope.user._id}, function (data) {
+                data = data || {};
                 $scope.trendsList = data.trendsList;
                 $scope.trendsCount = data.total;
             });
         }
         $scope.isShowTrend = function (trends) {
-            var trendsTypeList = ["organization", "favorite", "works"];
-            return trends.state == 'unread' && $scope.trendsType == trendsTypeList[trends.trendsType];
+            if ($scope.trendsType == "organization") {
+                if (trends.trendsType =20 || trends.trendsType ==21) {
+                    return true;
+                }
+                return false;
+            } else if ($scope.trendsType == "attent") {
+                if (trends.trendsType ==10 || trends.trendsType == 11) {
+                    return true;
+                }
+                return false;
+            } else if ($scope.trendsType == "works") {
+                if (trends.trendsType == 1 || trends.trendsType == 2 || trends.trendsType == 3 || trends.trendsType == 4 || trends.trendsType == 5) {
+                    return true;
+                }
+                return false;
+            }
         }
         // 选择动态类型
         $scope.selectTrendsType = function (trendsType) {
-            //console.log(trendsType);
             $scope.trendsType = trendsType;
-        }
-        // 读取动态
-        $scope.rendTrends = function (trends) {
-            trends.state = 'read';
-            util.post(config.apiUrlPrefix + 'user_trends/upsert', trends);
-
-            for (var i = 0; i < $scope.trendsList.length; i++) {
-                if ($scope.trendsList[i]._id = trends._id) {
-                    $scope.trendsList[i].state = 'read';
-                    break;
-                }
-            }
         }
         // 用户动态=======================================end=========================================
 
@@ -202,12 +197,12 @@ define([
         };
 
         $scope.goVIPLevel = function () {
-            util.go("VIPLevel");
+            util.go("VipLevel");
         };
 
         $scope.goUserCenterPage = function (contentType, subContentType) {
             console.log(contentType, subContentType);
-            if (window.location.pathname == '/wiki/userCenter') {
+            if (util.snakeToHump(window.location.pathname) == '/wiki/userCenter') {
                 $rootScope.$broadcast('userCenterContentType', contentType);
                 subContentType && $rootScope.$broadcast('userCenterSubContentType', subContentType);
             } else {

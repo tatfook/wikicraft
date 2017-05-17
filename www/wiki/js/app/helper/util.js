@@ -203,7 +203,7 @@ define([
                 console.log(data);
                 errorCallback && errorCallback(data.error);
             }
-            Loading.hideLoading();
+            //Loading.hideLoading();
         }).catch(function (response) {
             console.log(response);
             //Loading.hideLoading();
@@ -266,9 +266,19 @@ define([
     }
 
     util.isOfficialPage = function () {
-        var pathname = window.location.pathname;
-        var hostname = window.location.hostname;
-        if (config.isOfficialDomain(hostname) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+        var urlObj = util.parseUrl();
+        var pathname = urlObj.pathname;
+        var domain = urlObj.domain;
+        if (config.isOfficialDomain(domain) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+            return true;
+        }
+        return false;
+    }
+    // 是否是编辑器页
+    util.isEditorPage = function () {
+        var pathname = util.parseUrl().pathname;
+        pathname = util.snakeToHump(pathname);
+        if (pathname == "/wiki/wikiEditor") {
             return true;
         }
         return false;

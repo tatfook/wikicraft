@@ -301,41 +301,40 @@ define(['app',
             }
         }
 
-        // 我的收藏
+        // 我的关注
         $scope.clickMyCollection = function () {
             $scope.showItem = 'myCollection';
-            $scope.currentPage = 1;
-            var isPersonalSite = true;
-
-            function getSiteList(isPersonalSite, page) {
-                var url = config.apiUrlPrefix + "user_favorite/getFavoriteUserListByUserId";
-                var params = {userId: $scope.user._id, page: $scope.currentPage, pageSize: $scope.pageSize};
-                if (!isPersonalSite) {
-                    url = config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId";
-                }
-
-                util.post(url, params, function (data) {
-                    $scope.totalItems = data.total;
-                    $scope.favoriteList = data.favoriteList;
-                });
-            };
-
+            var attentType = "user"; // or site
             $scope.clickCollectionUser = function () {
                 console.log('clickCollectionUser');
-                $scope.currentPage = 1;
-                isPersonalSite = true;
-                getSiteList(isPersonalSite, $scope.currentPage);
+                if (attentType != "user") {
+                    attentType = "user";
+                    $scope.currentPage = 1;
+                }
+                util.post(config.apiUrlPrefix + 'user_fans/getByFansUserId', {fansUserId:$scope.user._id, page:$scope.currentPage}, function (data) {
+                    data = data || {};
+                    $scope.userList = data.userList;
+                });
             };
 
             $scope.clickCollectionWorks = function () {
                 console.log('clickCollectionWorks');
-                $scope.currentPage = 1;
-                isPersonalSite = false;
-                getSiteList(isPersonalSite, $scope.currentPage);
+                if (attentType != "work") {
+                    attentType = "work";
+                    $scope.currentPage = 1;
+                }
+                util.post(config.apiUrlPrefix + 'user_favorite/getByUserId', {userId:$scope.user._id, page:$scope.currentPage}, function () {
+                    data = data ||{};
+                    $scope.siteList = data.siteList;
+                })
             };
-
+            // 实现分页
             $scope.collectionPageChanged = function () {
-                getSiteList(isPersonalSite, $scope.currentPage);
+                if (attentType == "user") {
+                    $scope.clickCollectionUser();
+                } else {
+                    $scope.clickCollectionWorks();
+                }
             };
 
             $scope.clickCollectionUser();
@@ -359,7 +358,7 @@ define(['app',
                 $scope.siteList = data;
                 $scope.totalFavoriteCount = 0;
                 for (var i = 0; i < $scope.siteList.length; i++) {
-                    $scope.totalFavoriteCount += $scope.siteList[i].favoriteCount;
+                    $scope.totalFavoriteCount += ($scope.siteList[i].favoriteCount || 0);
                 }
                 if ($scope.siteList.length > 0) {
                     $scope.currentFansSite = $scope.siteList[0];
@@ -369,14 +368,13 @@ define(['app',
 
             function getFansList() {
                 var params = {
-                    userId: $scope.user._id,
-                    websiteId: $scope.currentFansSite._id,
+                    siteId: $scope.currentFansSite._id,
                     page: $scope.currentPage,
                     pageSize: $scope.pageSize
                 };
-                util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
-                    $scope.totalItems = data.total;
-                    $scope.fansList = data.fansList || [];
+                util.http("POST", config.apiUrlPrefix + "user_favorite/getBySiteId", params, function (data) {
+                    $scope.totalItems = data.total || 0;
+                    $scope.favoriteList = data.favoriteList || [];
                 });
             }
 
