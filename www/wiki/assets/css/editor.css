@@ -147,10 +147,8 @@ body,
 }
 
 .btn-toolbar{
-    margin-top:5px;
-    margin-bottom:5px;
-    margin-left:10px;
-    margin-right:10px;
+    margin: 0;
+    padding: 15px 60px;
 }
 
 .nopadding{
@@ -213,13 +211,17 @@ body,
 }
 
 .wiki-toolbar{
-    padding:15px 80px;
+    padding:0;
 }
-.wiki-toolbar .btn-toolbar:first-child{
-    margin-bottom: 15px;
+.wiki-toolbar .btn-toolbar:nth-child(2){
+    padding-bottom: 0;
+    background-color: #FFF;
 }
 .wiki-toolbar .btn-group{
     margin-left: 10px;
+}
+.wiki-toolbar .btn-group:first-child{
+    margin-left: 0;
 }
 .wiki-toolbar .btn-default{
     border: 1px solid #DCDCDC;
@@ -230,11 +232,16 @@ body,
 .wiki-toolbar .wiki-btn{
     padding: 7px 25px;
 }
+.btn-toolbar .btn-default.active{
+    background-color: #3977Ad;
+    color: #FFF;
+    box-shadow: none;
+}
 
 .border{
-    width: 15px;
+    width: 40px;
     height: 100%;
-    background-color: #f7f7f7;
+    background-color: #FFF;
     z-index: 1;
     position: absolute;
     right: 0;
@@ -268,7 +275,33 @@ select.resize-view {
 .toolbar-brand img{
     width:114px;
 }
-
+.treeview-container{
+    max-height: 100%;
+    overflow-y: auto;
+    /* float: left; */
+    width: 16%;
+    position: absolute;
+    left:0;
+}
+.code-view{
+    padding-left: 16%;
+}
+.code-view.nofile{
+    padding-left: 0;
+    margin-left: -15px;
+}
+.state-change .active img:first-child{
+    display: none;
+}
+.state-change .btn-default:not(.active) img:last-child{
+    display: none;
+}
+.toolbar-page-file.active{
+    margin-right: 177px;
+}
+#srcview{
+    padding-right: 40px;
+}
 @media (max-width: 1200px) {
     .wiki-toolbar{
         padding:15px 0;

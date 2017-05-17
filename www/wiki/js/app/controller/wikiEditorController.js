@@ -321,19 +321,25 @@ define([
 
             //console.log("wikiEditorController");
             $rootScope.frameFooterExist = false;
+            $rootScope.frameHeaderExist = false;
             $rootScope.userinfo = $rootScope.user;
 
             $scope.enableTransform = true;
             $scaleValue = "";
             $scope.scales = [
-                {"key": "100%", "scaleValue": "1"},
-                {"key": "90%", "scaleValue": "0.9"},
-                {"key": "80%", "scaleValue": "0.8"},
-                {"key": "75%", "scaleValue": "0.75"},
-                {"key": "67%", "scaleValue": "0.67"},
-                {"key": "50%", "scaleValue": "0.5"},
-                {"key": "33%", "scaleValue": "0.33"}
+                {"id":0,"showValue": "25%", "scaleValue": "0.25"},
+                {"id":1,"showValue": "50%", "scaleValue": "0.5"},
+                {"id":2,"showValue": "75%", "scaleValue": "0.75"},
+                {"id":3,"showValue": "100%", "scaleValue": "1"},
+                {"id":4,"showValue": "125%", "scaleValue": "1.25"},
+                {"id":5,"showValue": "150%", "scaleValue": "1.5"},
+                {"id":6,"showValue": "200%", "scaleValue": "2"},
+                {"id":7,"showValue": "实际大小", "scaleValue": "1", "special":true}
             ];
+            $scope.showFile=true;
+            $scope.showCode=true;
+            $scope.showView=true;
+            $scope.full=false;
 
             // 判断对象是否为空
             function isEmptyObject(obj) {
@@ -1308,7 +1314,7 @@ define([
                     return;
                 });
             }
-            
+
             //视频
             $scope.cmd_video=function () {
                 $uibModal.open({
@@ -1646,6 +1652,8 @@ define([
                         mdwiki.render(text);
                         renderAutoSave();
                         resizeMod();
+                        $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
+
                         timer = undefined;
                     }, 100);
                 });
@@ -1661,6 +1669,12 @@ define([
                     $(".result-html").css("width", winWidth + "px");
                     var boxWidth = $("#preview").width();                                                              //30为#preview的padding宽度
                     var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
+                    $scope.scales.push({
+                        "id":$scope.scales.length,
+                        "showValue":"适合宽度",
+                        "scaleValue":scaleSize,
+                        "special":true
+                    });
                     return scaleSize;
                 }
 
@@ -1670,11 +1684,120 @@ define([
                         "transform": "scale(" + scaleSize + ")",
                         "transform-origin": "left top"
                     });
+                    if (scaleSize<=$scope.scales[0].scaleValue){//显示的最小比例时，禁用缩小按钮
+                        $scope.forbidScale=true;
+                        $scope.forbidEnlarge=false;
+                    }else if(scaleSize>=$scope.scales[$scope.scales.length-3].scaleValue){//显示的最大比例时，禁用放大按钮
+                        $scope.forbidEnlarge=true;
+                        $scope.forbidScale=false;
+                    }else{
+                        $scope.forbidScale=false;
+                        $scope.forbidEnlarge=false;
+                    }
                 }
 
+                // 下拉框选择比例
                 $scope.changeScale = function (val) {
                     $scope.enableTransform = false;
                     resizeMod(val);
+                }
+
+                // 特殊情况（实际大小、适应宽度）查找比例
+                function findSize(larger,nowSize) {
+                    var i;
+                    if (larger){//找比当前状态比例 大 一档的比例
+                        for(i=0;i<$scope.scales.length-2;i++){
+                            if($scope.scales[i].scaleValue>nowSize){
+                                break;
+                            }
+                        }
+                    }else{//找比当前状态比例 小 一档的比例
+                        for(i=$scope.scales.length-3;i>=0;i--){
+                            if($scope.scales[i].scaleValue<nowSize){
+                                break;
+                            }
+                        }
+                    }
+                    return $scope.scales[i].id;
+                }
+
+                //缩小
+                $scope.scale = function () {
+                    var toSize=1;
+                    if(!$scope.forbidScale){
+                        var nowSize=$scope.scales[$scope.scaleSelect.id].scaleValue;
+                        if($scope.scaleSelect.special == true){//特殊情况需要找比例
+                            toSize=findSize(false,nowSize);
+                        }else{//非特殊情况
+                            toSize=$scope.scaleSelect.id-1;
+                        }
+                        
+                        $scope.scaleSelect=$scope.scales[toSize];
+                        resizeMod($scope.scales[toSize].scaleValue);
+                        if (toSize <= 0){
+                            $scope.forbidScale=true;
+                        }
+                    }
+                }
+
+                // 放大
+                $scope.enlarge = function () {
+                    var toSize=1;
+                    if(!$scope.forbidEnlarge){
+                        var nowSize=$scope.scales[$scope.scaleSelect.id].scaleValue;
+                        if($scope.scaleSelect.special == true){//特殊情况需要找比例
+                            toSize=findSize(true,nowSize);
+                        }else{//非特殊情况
+                            toSize=$scope.scaleSelect.id+1;
+                        }
+                        $scope.scaleSelect=$scope.scales[toSize];
+                        resizeMod($scope.scales[toSize].scaleValue);
+                        if (toSize >= ($scope.scales.length-3)){
+                            $scope.forbidEnlarge=true;
+                        }
+                    }
+                }
+
+                $scope.adaptive = function () {
+                    resizeMod($scope.scales[$scope.scales.length-1].scaleValue);
+                    $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
+                }
+
+                // 全屏
+                $scope.fullScreen = function () {
+                    $scope.full = $scope.full ? false : true;
+                    if($scope.full){
+                        launchFullscreen();
+                    }else{
+                        exitFullscreen();
+                    }
+                }
+
+                // 全屏
+                function launchFullscreen() {
+                    var element=document.documentElement;
+                    if(element.requestFullscreen) {
+                        element.requestFullscreen();
+                    } else if(element.mozRequestFullScreen) {
+                        element.mozRequestFullScreen();
+                    } else if(element.msRequestFullscreen){
+                        element.msRequestFullscreen();
+                    } else if(element.webkitRequestFullscreen) {
+                        element.webkitRequestFullScreen();
+                    }
+                }
+
+                // 退出全屏
+                function exitFullscreen() {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
                 }
 
                 function setEditorHeight() {
@@ -1698,6 +1821,7 @@ define([
                 window.onresize = function () {
                     if (util.parseUrl().pathname == "/wiki/wikiEditor") {
                         setEditorHeight();
+                        $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
                         resizeMod();
                     }
                 }
@@ -1834,104 +1958,70 @@ define([
 
                 var showTreeview = true;
 
-                function initView(activity) {
-
-                    $("#srcview").removeClass('col-xs-12');
-                    $("#srcview").removeClass('col-xs-10');
-                    $("#srcview").removeClass('col-xs-5');
-                    $("#srcview").removeClass('col-xs-6');
-
-                    $("#preview").removeClass('col-xs-12');
-                    $("#preview").removeClass('col-xs-10');
-                    $("#preview").removeClass('col-xs-5');
-                    $("#preview").removeClass('col-xs-6');
-
-                    if (activity == true) {
-                        $('.toolbar-page-slide').removeClass('active');
-                        $('.toolbar-page-code').removeClass('active');
-                        $('.toolbar-page-design').removeClass('active');
+                function initView() {
+                    console.log($scope.showFile);
+                    if ($scope.showFile){
+                        $(".code-view").removeClass("nofile");
+                        $(".toolbar-page-file").addClass("active");
+                        $("#treeview").show();
+                    }else{
+                        $(".code-view").addClass("nofile");
+                        $(".toolbar-page-file").removeClass("active");
+                        $("#treeview").hide();
                     }
+                    if ($scope.showCode && $scope.showView){
+                        $(".toolbar-page-slide").addClass("active");
+                        $(".toolbar-page-code").removeClass("active");
+                        $(".toolbar-page-design").removeClass("active");
 
-                    if ($("#treeview").is(":hidden")) {
-                        if ($("#preview").is(":hidden")) {
-                            $("#srcview").addClass('col-xs-12');
-                        } else {
-                            $("#srcview").addClass('col-xs-6');
-                        }
-                        if ($("#srcview").is(":hidden")) {
-                            $("#preview").addClass('col-xs-12');
-                            resizeMod();
-                        } else {
-                            $("#preview").addClass('col-xs-6');
-                            resizeMod();
-                        }
-                    } else {
-                        if ($("#preview").is(":hidden")) {
-                            $("#srcview").addClass('col-xs-10');
-                        } else {
-                            $("#srcview").addClass('col-xs-5');
-                        }
-                        if ($("#srcview").is(":hidden")) {
-                            $("#preview").addClass('col-xs-10');
-                            resizeMod();
-                        } else {
-                            $("#preview").addClass('col-xs-5');
-                            resizeMod();
-                        }
+                        $("#srcview").show();
+                        $("#preview").show();
+                        $("#srcview").addClass("col-xs-6");
+                        $("#preview").addClass("col-xs-6");
+                        resizeMod();
+                    }else if ($scope.showCode && !$scope.showView){
+                        $(".toolbar-page-code").addClass("active");
+                        $(".toolbar-page-slide").removeClass("active");
+                        $(".toolbar-page-design").removeClass("active");
+
+                        $("#preview").hide();
+                        $("#srcview").show();
+                        $("#srcview").removeClass("col-xs-6");
+                        $("#srcview").addClass("col-xs-12");
+                    }else if(!$scope.showCode && $scope.showView){
+                        $(".toolbar-page-design").addClass("active");
+                        $(".toolbar-page-slide").removeClass("active");
+                        $(".toolbar-page-code").removeClass("active");
+
+                        $("#srcview").hide();
+                        $("#preview").show();
+                        $("#preview").removeClass("col-xs-6");
+                        $("#preview").addClass("col-xs-12");
+                        resizeMod();
                     }
                 }
 
                 $('.toolbar-page-file').on('click', function () {
-                    if ($("#treeview").is(":hidden")) {
-                        $('#treeview').show('fast', function () {
-                            initView(false);
-                            if ($("#treeview").is(":hidden")) {
-                                $('.toolbar-page-file').removeClass('active');
-                            } else {
-                                $('.toolbar-page-file').addClass('active');
-                            }
-                        });
-                    } else {
-                        $('#treeview').hide('fast', function () {
-                            initView(false);
-                            if ($("#treeview").is(":hidden")) {
-                                $('.toolbar-page-file').removeClass('active');
-                            } else {
-                                $('.toolbar-page-file').addClass('active');
-                            }
-                        });
-                    }
+                    $scope.showFile = $scope.showFile ? false : true;
+                    initView();
                 });
 
                 $('.toolbar-page-code').on('click', function () {
-                    $('#srcview').show();
-                    $("#preview").hide('fast', function () {
-                        initView(true);
-                        $('.toolbar-page-code').addClass('active');
-                        $('.toolbar-page-view').attr("disabled", true);
-                        $('#codeToolbar button').attr("disabled", false);
-                    });
+                    $scope.showCode = true;
+                    $scope.showView = false;
+                    initView();
                 });
 
                 $('.toolbar-page-slide').on('click', function () {
-                    $('#srcview').show();
-                    $("#preview").show('fast', function () {
-                        initView(true);
-                        $('.toolbar-page-slide').addClass('active');
-                        $('.toolbar-page-view').attr("disabled", false);
-                        $('#codeToolbar button').attr("disabled", false);
-                    });
+                    $scope.showCode = true;
+                    $scope.showView = true;
+                    initView();
                 });
 
                 $('.toolbar-page-design').on('click', function () {
-                    $('#preview').show();
-                    $("#srcview").hide('fast', function () {
-                        initView(true);
-                        $('.toolbar-page-design').addClass('active');
-                        $('.toolbar-page-view').attr("disabled", false);
-                        $('#codeToolbar button').attr("disabled", true);
-
-                    });
+                    $scope.showCode = false;
+                    $scope.showView = true;
+                    initView();
                 });
 
 //获取剪贴板数据方法
