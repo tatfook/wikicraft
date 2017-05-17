@@ -736,13 +736,13 @@ function user:api_getDetailByName(params)
 
 	-- 获得用户粉丝
 	local userFansDB = models.user_fans:new()
-	local fansObj = userFansDB:api_getFansByUserId({userId=userinfo._id}).data
+	local fansObj = userFansDB:api_getByUserId({userId=userinfo._id}).data
 	
 	-- 获得用户关注
-	local followUserObj = userFansDB:api_getFollowByUserId({userId=userinfo._id}).data
+	local followUserObj = userFansDB:api_getByFansUserId({fansUserId=userinfo._id}).data
 	-- 获取用户收藏的站点
 	local userFavoriteDB = models.user_favorite:new()
-	local followSiteObj = userFavoriteDB:api_getFavoriteWebsiteListByUserId({userId=userinfo._id}).data
+	local followSiteObj = userFavoriteDB:api_getByUserId({userId=userinfo._id}).data
 	local followObj = {followUserObj=followUserObj, followSiteObj=followSiteObj}
 
 	-- 获取用户动态
