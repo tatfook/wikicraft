@@ -13,7 +13,7 @@ define([
         var hostnameList = ['wxa.'+ hostname, 'lxz.' + hostname];
         var hostnameIndex = 0;
         $scope.defaultHostname = hostname;
-        $scope.defaultGitHostname = "git." + hostname;
+        $scope.defaultGitHostname = "git." + (hostname.indexOf("keepwork.com") >= 0 ? "keepwork.com" : "qiankunew.com");
         var urlPrefix = "http://" + (config.isLocal() ? "localhost:8900" : $scope.defaultHostname);
         var gitlabDataSource = undefined;
 
