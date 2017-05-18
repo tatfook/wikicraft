@@ -64,6 +64,11 @@ define([
         $scope.nextStep = function () {
             $scope.errMsg = "";
             if ($scope.step == 1) {
+                if (/^\s+/.test($scope.website.displayName)){
+                    $scope.nextStepDisabled = true;
+                    $scope.errMsg="首位不能为空格";
+                    return;
+                }
                 if (!$scope.website.displayName) {
                     $scope.errMsg = "站点名为必填字段";
                     return;
@@ -263,6 +268,11 @@ define([
         }
 
         $scope.checkWebsiteDisplayName = function () {
+            if (/^\s+/.test($scope.website.displayName)){
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="首位不能为空格";
+                return;
+            }
             var displayName=$scope.website.displayName?$scope.website.displayName:$scope.website.displayName.trim();
             if (!displayName) {
                 $scope.nextStepDisabled = true;

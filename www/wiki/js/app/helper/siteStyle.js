@@ -6,7 +6,7 @@ define([], function () {
     var siteStyle = [
         // 个人网站分类
         {
-            name:"个人网站",
+            name:"个 人",
             templates:[
                 {
                     name:"空模板",
@@ -30,7 +30,7 @@ define([], function () {
                 },
                 // 个人网站wiki模板
                 {
-                    name:"wiki模板",
+                    name:"个人简历",
                     logoUrl:"wiki_resume_site_template.png",
                     styles:[
                         // 默认样式
@@ -74,7 +74,7 @@ define([], function () {
 
         // 企业网站分类
         {
-            name:"企业网站",
+            name:"企 业",
             templates:[
                 {
                     name:"企业模板1",
@@ -114,7 +114,7 @@ define([], function () {
 
         // 组织网站分类
         {
-            name:"组织网站",
+            name:"组 织",
             templates: [
                 {
                     name:"组织模板",
@@ -137,7 +137,7 @@ define([], function () {
 
         // 组织网站分类
         {
-            name:"比赛网站",
+            name:"比 赛",
             templates: [
                 {
                     name:"3D大赛模板",
