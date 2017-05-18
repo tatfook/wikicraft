@@ -98,6 +98,8 @@
         background-color: #F9F9F9;
         box-shadow: 0 1px 3px 0 rgba(44,62,80,.35);
         padding:0;
+        border: 1px solid transparent;
+        border-top: none;
     }
     .website-model .btn-group .btn-lg{
         font-size: 16px;
@@ -122,6 +124,8 @@
         height:180px;
         object-fit: cover;
         cursor: pointer;
+        border: 1px solid transparent;
+        border-bottom: none;
     }
     .model-select .nav-tabs{
         border-bottom: none;
@@ -203,7 +207,7 @@
                         <div class="form-group">
                             <label for="webName" class="control-label col-sm-2">站点名称：</label>
                             <div class="col-sm-5">
-                                <input id="webName" ng-model="website.displayName" ng-change="checkWebsiteDisplayName()" type="text" class="form-control inline-form-control">
+                                <input id="webName" ng-model="website.displayName" ng-change="checkWebsiteDisplayName()" ng-trim="false" type="text" class="form-control inline-form-control">
                                 <p class="errorMsg text-danger">{{errMsg}}</p>
                             </div>
                             <div class="col-sm-5 info col-sm-offset-2">
@@ -268,7 +272,7 @@
                         <!-- Tab panes -->
                         <div class="tab-content website-model col-sm-10">
                             <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
-                                <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''">
+                                <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
                                     <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-md-12 btn-group">
                                         <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
@@ -283,7 +287,7 @@
                 <div ng-show="step == 5">
                     <h4>选择美术效果：</h4>
                     <div class="website-model">
-                        <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''">
+                        <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''" style="margin-bottom: 20px;">
                             <img ng-src="{{ imgsPath + (style.logoUrl || 'wiki_works.jpg') }}" ng-click="selectTemplate(template)" alt="">
                             <div class="col-md-12 btn-group">
                                 <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style)">预览</div>
