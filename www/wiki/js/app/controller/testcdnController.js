@@ -87,21 +87,29 @@ define([
             });
         }
         
-        $scope.testFileWithBust = function (filename) {
-            http("GET", urlPrefix + '/wiki/test/'+ filename +'?bust=' + (new Date()).getTime(), {}, function (data) {
-                console.log("测试"+filename+"文件(?bust)请求成功 ", data);
+        $scope.testFileWithBust = function (filename, bust) {
+            bust = bust || (new Date()).getTime();
+            http("GET", urlPrefix + '/wiki/test/'+ filename +'?bust=' + bust, {}, function (data) {
+                console.log("测试"+filename + "?bust=" + bust +"文件请求成功 ", data);
             }, function () {
-                console.log("测试"+filename+"文件(?bust)请求失败");
+                console.log("测试"+filename + "?bust=" + bust +"文件请求失败");
             });
         }
 
+        $scope.updateJsFileBust = function () {
+            $scope.jsBust = (new Date()).getTime();
+        }
+        $scope.updateCssFileBust = function () {
+            $scope.cssBust = (new Date()).getTime();
+        }
         $scope.testJsFile = function () {
             $scope.jsTime = (new Date()).toString();
             $scope.testFile('cdntest.js');
         }
         $scope.testJsFileWithBust = function () {
             $scope.jsWithBustTime = (new Date()).toString();
-            $scope.testFileWithBust('cdntest.js')
+            $scope.jsBust || $scope.updateJsFileBust();
+            $scope.testFileWithBust('cdntest.js', $scope.jsBust);
         }
         $scope.testCssFile = function () {
             $scope.cssTime = (new Date()).toString();
@@ -109,7 +117,8 @@ define([
         }
         $scope.testCssFileWithBust = function () {
             $scope.cssWithBustTime = (new Date()).toString();
-            $scope.testFileWithBust('cdntest.css')
+            $scope.cssBust || $scope.updateCssFileBust();
+            $scope.testFileWithBust('cdntest.css', $scope.cssBust);
         }
 
         var gitFilePath = '/test/page.md';
