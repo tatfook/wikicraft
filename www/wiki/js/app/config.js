@@ -18,6 +18,8 @@
         officialSubDomainList:[                                                                                  // 官方占用的子域名列表
             "dev.keepwork.com",
             "test.keepwork.com",
+            "dev.qiankunew.com",
+            "test.qiankunew.com",
         ],
         // 预加载模块列表
         preloadModuleList:[

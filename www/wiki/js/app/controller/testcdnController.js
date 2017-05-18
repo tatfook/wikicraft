@@ -10,10 +10,11 @@ define([
 ], function (app, util, dataSource, htmlContent) {
     app.controller('testcdnController', ['$scope', '$http', 'Account', 'gitlab', function ($scope, $http, Account, gitlab) {
         var hostname = config.isLocal() ? "keepwork.com" : window.location.hostname;
-        var hostnameList = ['wxa.'+ hostname, 'lxz.' + hostname];
+        var domain = hostname.indexOf("keepwork.com") >= 0 ? "keepwork.com" : "qiankunew.com";
+        var hostnameList = ['wxa.'+ domain, 'lxz.' + domain];
         var hostnameIndex = 0;
         $scope.defaultHostname = hostname;
-        $scope.defaultGitHostname = "git." + (hostname.indexOf("keepwork.com") >= 0 ? "keepwork.com" : "qiankunew.com");
+        $scope.defaultGitHostname = "git." + domain;
         var urlPrefix = "http://" + (config.isLocal() ? "localhost:8900" : $scope.defaultHostname);
         var gitlabDataSource = undefined;
 
@@ -33,6 +34,15 @@ define([
             });
         }
 
+        $scope.getTestHostname = function () {
+            return "TEST." + domain.toUpperCase();
+        }
+        $scope.getDevHostname = function () {
+            return "DEV." + domain.toUpperCase();
+        }
+        $scope.getHostname = function () {
+            return domain.toUpperCase();
+        }
         // 更改域名
         $scope.changeHostname = function (hostname) {
             $scope.defaultHostname = hostname || hostnameList[hostnameIndex];
@@ -41,12 +51,15 @@ define([
             urlPrefix = "http://" + (config.isLocal() ? "localhost:8900" : $scope.defaultHostname);
         }
 
+        $scope.setTestHostname = function () {
+            $scope.changeHostname("test." + domain);
+        }
         $scope.setDevHostname = function () {
-            $scope.changeHostname("dev." + hostname);
+            $scope.changeHostname("dev." + domain);
         }
 
         $scope.setHostname = function () {
-            $scope.changeHostname(hostname);
+            $scope.changeHostname(domain);
         }
 
         $scope.testApi = function () {
