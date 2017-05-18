@@ -94,7 +94,7 @@ define([
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
                     //console.log("$locationChangeSuccess change");
-                    if (!isFirstLocationChange && window.location.pathname == '/wiki/wikiEditor') {
+                    if (!isFirstLocationChange && util.snakeToHump(window.location.pathname) == '/wiki/wikiEditor') {
                         return ;
                     }
                     isFirstLocationChange = false;

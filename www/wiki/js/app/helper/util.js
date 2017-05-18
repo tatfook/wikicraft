@@ -208,7 +208,7 @@ define([
             console.log(response);
             //Loading.hideLoading();
             // 网络错误
-            //errorCallback && errorCallback(response.data);
+            errorCallback && errorCallback(response.data);
         });
     }
 

@@ -116,6 +116,21 @@ define([
         gitlab.getCommitMessagePrefix = function () {
             return "keepwork commit: ";
         }
+        // 设置lastCommitId
+        gitlab.setLastCommitId = function (lastCommitId) {
+            gitlab.lastCommitId = lastCommitId;
+        }
+        // 获取lastCommitId
+        gitlab.getLastCommitId = function (cb, errcb) {
+            gitlab.listCommits({}, function (data) {
+                if (data && data.length > 0) {
+                    gitlab.lastCommitId = data[0].id;
+                } else {
+                    gitlab.lastCommitId = "master";
+                }
+                cb && cb();
+            }, errcb);
+        }
 
         // 写文件
         gitlab.writeFile = function (params, cb, errcb) {
@@ -293,15 +308,6 @@ define([
                 util.post(config.apiUrlPrefix + 'data_source/upsert', dataSource);
             }
 
-            var getLastCommitId = function (cb, errcb) {
-                gitlab.listCommits({}, function (data) {
-                    if (data && data.length > 0) {
-                        gitlab.lastCommitId = data[0].id;
-                    }
-                    cb && cb();
-                }, errcb)
-            }
-
             var successCallback = function () {
                 createWebhook();
                 updateDataSource();
@@ -314,7 +320,7 @@ define([
                         gitlab.projectId = projectList[i].id;
                         gitlab.inited = true;
                         successCallback();
-                        getLastCommitId(cb, errcb);
+                        gitlab.getLastCommitId(cb, errcb);
                         return;
                     }
                 }
@@ -330,7 +336,7 @@ define([
                     gitlab.projectId = data.id;
                     gitlab.inited = true;
                     successCallback();
-                    getLastCommitId(cb, errcb);
+                    gitlab.getLastCommitId(cb, errcb);
                 }, errcb)
             }, errcb);
         };

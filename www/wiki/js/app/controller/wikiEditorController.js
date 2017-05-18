@@ -371,7 +371,7 @@ define([
                         serverPage = allPageMap[page.url] = page;
                     }
                     serverPage.isModify = page.isModify;
-                    console.log(page);
+                    //console.log(page);
                     allWebstePageContent[page.url] = page.content;
                     if (!serverPage.isModify) {   // 没有修改删除本地
                         indexDBDeletePage(page.url);

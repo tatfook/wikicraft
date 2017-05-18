@@ -11,6 +11,9 @@ mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 -- 定义一个全局变量空间  其它全局变量放到此变量里病注释使用情况
 KEEPWORK={}
 -- KEEPWORK.config     用户程序配置
+-- KEEPWROK.mem_cache  缓存
+
+KEEPWORK["mem_cache"] = mem_cache
 
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
