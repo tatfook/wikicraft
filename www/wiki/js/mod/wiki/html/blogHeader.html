@@ -31,7 +31,6 @@
     }
     .blog-header h1{
         font-size: 60px;
-        color: #FF7A7A;
         margin: 0;
     }
     .blog-header .btn-lg{
@@ -43,14 +42,15 @@
         margin-left: 25px;
     }
 </style>
-<div class="blog-header" ng-controller="blogHeaderController">
+<div class="blog-header template-theme" ng-class="themeClass" ng-controller="blogHeaderController">
     <div class="profile">
-        <img ng-src="{{imgsPath+'blog_header_banner.jpg'}}" alt="">
+        <img ng-src="{{imgsPath+'blog_header_banner.jpg'}}" alt="" ng-show="modParams.theme!='red'">
+        <img ng-src="{{imgsPath+'blog_header_banner_red.jpg'}}" alt="" ng-show="modParams.theme=='red'">
     </div>
     <div class="user-msg col-xs-8 col-xs-offset-2 col-lg-4 col-lg-offset-4">
-        <h1>{{userinfo.displayName || userinfo.username || "USERNAME"}}</h1>
+        <h1 class="theme-font-color">{{userinfo.displayName || userinfo.username || "USERNAME"}}</h1>
         <p class="info"><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> {{userinfo.location || "深圳"}}<span class="time">注册于2016.9.12</span></p>
         <p class="align-left">{{modParams.introduce || "我是一个边学习边分享的人。关于读书、关于影视剧、关于足球， 所学，所思，所感，所闻，分享一切有趣的、有用的。"}}</p>
-        <div class="btn btn-primary btn-lg">收藏网站</div>
+        <div class="btn btn-primary btn-lg theme-btn">收藏网站</div>
     </div>
 </div>
