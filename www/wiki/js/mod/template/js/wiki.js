@@ -106,7 +106,7 @@ define([
             $scope.editSelfPage = function (type) {
                 var pageinfo = $rootScope.pageinfo;
                 var urlObj = {username: pageinfo.username, sitename:pageinfo.sitename, pagename:type};
-                if (window.location.pathname == '/wiki/wikiEditor') {
+                if (util.isEditorPage()) {
                     $rootScope.$broadcast('changeEditorPage', urlObj);
                 } else {
                     storage.sessionStorageSetItem("urlObj", urlObj);

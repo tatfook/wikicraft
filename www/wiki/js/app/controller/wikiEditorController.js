@@ -731,6 +731,13 @@ define([
                             } else {
                                 $('#treeview').treeview('unselectNode', [data.nodeId, {silent: true}]);
                                 $('#treeview').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                                if (treeNodeExpandedMap[data.pageNode.url]) {
+                                    treeNodeExpandedMap[data.pageNode.url] = false;
+                                } else {
+                                    treeNodeExpandedMap[data.pageNode.url] = true;
+                                }
+                                getSitePageList({path:data.pageNode.url, username:data.pageNode.username, sitename:data.pageNode.sitename});
+                                //console.log("--------------");
                             }
                             renderAutoSave(function () {
                                 if (data.pageNode.isLeaf) {
@@ -755,12 +762,12 @@ define([
                             }
                         },
                         onNodeCollapsed: function (event, data) {
+                            //console.log("node collapsed", data.pageNode.url);
                             treeNodeMap[data.pageNode.url] = data;
                             if (!isFirstCollapsedAll) {
                                 delete treeNodeExpandedMap[data.pageNode.url];
                                 //console.log(treeNodeExpandedMap);
                             }
-                            //console.log("node collapsed", data.pageNode.url);
                             for (var i = 0; data.nodes && i < data.nodes.length; i++) {
                                 var node = data.nodes[i];
                                 treeNodeMap[node.pageNode.url] = node;
