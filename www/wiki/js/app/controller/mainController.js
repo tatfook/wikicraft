@@ -42,6 +42,7 @@ define([
                 });
 
                 $rootScope.imgsPath = config.imgsPath;
+                $rootScope.cssPath = config.cssPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
                 if (config.isLocal()) {
@@ -57,7 +58,7 @@ define([
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
 
-                $rootScope.getImagePath = function(imgUrl,imgsPath) {
+                $rootScope.getImageUrl = function(imgUrl,imgsPath) {
                     if (imgUrl.indexOf("://") >= 0) {
                         return imgUrl;
                     }
@@ -67,6 +68,18 @@ define([
 
                     return (imgsPath || $rootScope.imgsPath) + imgUrl + "?bust=" + config.bustVersion;
                 }
+
+                $rootScope.getCssUrl = function(cssUrl, cssPath) {
+                    if (cssUrl.indexOf("://") >= 0) {
+                        return cssUrl;
+                    }
+                    if (cssUrl.indexOf("/wiki/") >= 0) {
+                        return cssUrl + "?bust=" + config.bustVersion;
+                    }
+
+                    return (cssPath || $rootScope.cssPath) + cssUrl + "?bust=" + config.bustVersion;
+                }
+
             }
 
             function initView() {

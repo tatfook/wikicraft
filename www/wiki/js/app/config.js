@@ -57,7 +57,7 @@
 
         // html 路径
         htmlPath: pathPrefix + 'html/',
-        cssPath: pathPrefix + 'assets/css',
+        cssPath: pathPrefix + 'assets/css/',
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
