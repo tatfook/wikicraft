@@ -50,7 +50,8 @@
         'factory': 'app/factory',
         'helper': 'app/helper',
         // html dir
-        'html': '../html'
+        'html': '../html',
+		'css': '../assets/css'
     },
     shim: {
         'angular': {

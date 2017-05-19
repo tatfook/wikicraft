@@ -66,6 +66,7 @@
             'helper': config.jsAppHelperPath,
             // html dir
             'html': config.htmlPath,
+            'css': config.cssPath,
             'wikimod': config.wikiModPath,
 
             // mod dir

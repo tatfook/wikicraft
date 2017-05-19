@@ -28,7 +28,7 @@ function user_trends:api_upsert(params)
 	if (not params.userId) or (not params.objectId) or (not params.trendsType) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH-mm-ss")
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
 	
 	self:db():insertOne({["+userId+objectId+trendsType"]={params.userId, params.objectId,params.trendsType}}, params, resume)
 	

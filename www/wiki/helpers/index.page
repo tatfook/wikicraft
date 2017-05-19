@@ -48,7 +48,7 @@ end
 function getBustVersion()
 	local version = mem_cache:get("bustVersion")
 	if not version then 
-		version = os.time()
+		version = tostring(os.time())
 		mem_cache:set("bustVersion", version)
 	end
 

@@ -21,7 +21,7 @@
     <rule match='{"^[^%./]*/$", "^[^%.]+$", "robots.txt"}' with="WebServer.redirecthandler" params='{"/index.page"}'></rule>
     <!--npl server page example-->
     <rule match="%.page$" with="WebServer.npl_page_handler" params='%CD%'></rule>
-	<rule match='{"%.html$", "%.md$"}' with="WebServer.npl_page_handler" params='%CD%'></rule>
+	<!--rule match='{"%.html$", "%.md$"}' with="WebServer.npl_page_handler" params='%CD%'></rule-->
 	<!--rule match="%.html$" with="WebServer.npl_page_handler" params='%CD%'></rule>
 	<rule match="%.md$" with="WebServer.npl_page_handler" params='%CD%'></rule-->
     <!--filehandler example, base dir is where the root file directory is. 

@@ -56,9 +56,21 @@ define([
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
+
+                $rootScope.getImagePath = function(imgUrl,imgsPath) {
+                    if (imgUrl.indexOf("://") >= 0) {
+                        return imgUrl;
+                    }
+                    if (imgUrl.indexOf("/wiki/") >= 0) {
+                        return imgUrl + "?bust=" + config.bustVersion;
+                    }
+
+                    return (imgsPath || $rootScope.imgsPath) + imgUrl + "?bust=" + config.bustVersion;
+                }
             }
 
             function initView() {
+
                 // 信息提示框
                 $("#messageTipCloseId").click(function () {
                     Message.hide();
@@ -195,7 +207,10 @@ define([
                     }
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {
-                        util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                        Account.getUser(function (userinfo) {
+                            util.goUserSite("/" + userinfo.username);
+                        });
+                        //util.html('#__UserSitePageContent__', userHtmlContent, $scope);
                     } else {
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }

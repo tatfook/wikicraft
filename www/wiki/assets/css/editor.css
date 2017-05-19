@@ -5,7 +5,7 @@
 @import "../../js/lib/codemirror/addon/display/fullscreen.css";
 @import "../../js/lib/codemirror/addon/fold/foldgutter.css";
 @import "../../js/lib/codemirror/addon/lint/lint.css";
-@import "fontawesome/css/font-awesome.min.css";
+@import "../../js/lib/fontawesome/css/font-awesome.min.css";
 
 html,
 body,

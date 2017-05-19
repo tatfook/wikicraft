@@ -28,7 +28,7 @@ define([
             }
             httpRespone.then(function (response) {
                 var data = response.data;
-                console.log(response);
+                //console.log(response);
                 callback && callback(data);
             }).catch(function (response) {
                 errorCallback && errorCallback(response.data);
