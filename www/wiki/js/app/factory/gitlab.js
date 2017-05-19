@@ -128,7 +128,7 @@ define([
                 } else {
                     gitlab.lastCommitId = "master";
                 }
-                cb && cb();
+                cb && cb(gitlab.lastCommitId);
             }, errcb);
         }
 

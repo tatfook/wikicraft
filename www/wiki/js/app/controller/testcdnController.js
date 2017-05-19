@@ -28,6 +28,7 @@ define([
             }
             httpRespone.then(function (response) {
                 var data = response.data;
+                console.log(response);
                 callback && callback(data);
             }).catch(function (response) {
                 errorCallback && errorCallback(response.data);
@@ -134,6 +135,7 @@ define([
             gitFileConentIndex %= gitFileContentList.length;
             console.log("当前git文件内容为:" + gitFileContentList[gitFileConentIndex]);
         };
+
         $scope.uploadFile = function () {
             if (!gitlabDataSource) {
                 console.log("数据源不可用");
@@ -161,13 +163,24 @@ define([
                 console.log("master获取文件失败");
             });
         }
-
+        $scope.updateGitFileCommitId = function () {
+            if (!gitlabDataSource) {
+                console.log("数据源不可用");
+                return;
+            }
+            gitlabDataSource.getLastCommitId(function (data) {
+                $scope.lastCommitId = data;
+                console.log("更新commitId成功:", $scope.lastCommitId);
+            }, function () {
+                console.log("更新commitId失败");
+            });
+        }
         $scope.openGitFile = function () {
             if (!gitlabDataSource) {
                 console.log("数据源不可用");
                 return;
             }
-            gitlabDataSource.setLastCommitId("master");
+            //gitlabDataSource.setLastCommitId("master");
             window.open(gitlabDataSource.getContentUrlPrefix({path:gitFilePath}));
         }
 
@@ -176,9 +189,7 @@ define([
                 console.log("数据源不可用");
                 return;
             }
-            gitlabDataSource.getLastCommitId(function () {
-                window.open(gitlabDataSource.getContentUrlPrefix({path:gitFilePath}));
-            });
+            window.open(gitlabDataSource.getContentUrlPrefix({path:gitFilePath}));
         }
 
         $scope.downloadFileWithCommitId = function () {
@@ -187,14 +198,11 @@ define([
                 return;
             }
             $scope.gitDownloadWithShaTime = (new Date()).toString();
-            gitlabDataSource.getLastCommitId(function () {
-                gitlabDataSource.getRawContent({path:gitFilePath}, function (data) {
-                    console.log("commitId获取文件内容为:"+data);
-                }, function () {
-                    console.log("commitId获取文件失败");
-                });
+            gitlabDataSource.setLastCommitId($scope.lastCommitId || "master");
+            gitlabDataSource.getRawContent({path:gitFilePath}, function (data) {
+                console.log("commitId("+ ($scope.lastCommitId || "master")+ ")获取文件内容为:"+data);
             }, function () {
-                console.log("commitId获取文件失败");
+                console.log("commitId("+ ($scope.lastCommitId || "master") + ")获取文件失败");
             });
         }
 
