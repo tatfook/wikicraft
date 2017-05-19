@@ -1662,19 +1662,19 @@ define([
                 setEditorHeight();
 
                 function getScaleSize() {
-                    if (!$scope.enableTransform) {
-                        return 1;
-                    }
                     var winWidth = $(window).width();
                     $(".result-html").css("width", winWidth + "px");
                     var boxWidth = $("#preview").width();                                                              //30为#preview的padding宽度
                     var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
-                    $scope.scales.push({
-                        "id":$scope.scales.length,
-                        "showValue":"适合宽度",
-                        "scaleValue":scaleSize,
-                        "special":true
-                    });
+                    if($scope.scales[$scope.scales.length-1].showValue!="适合宽度"){
+                        $scope.scales.push({
+                            "id":$scope.scales.length,
+                            "showValue":"适合宽度",
+                            "scaleValue":scaleSize,
+                            "special":true
+                        });
+                    }
+
                     return scaleSize;
                 }
 
@@ -1731,7 +1731,7 @@ define([
                         }else{//非特殊情况
                             toSize=$scope.scaleSelect.id-1;
                         }
-                        
+
                         $scope.scaleSelect=$scope.scales[toSize];
                         resizeMod($scope.scales[toSize].scaleValue);
                         if (toSize <= 0){
@@ -1785,6 +1785,7 @@ define([
                     } else if(element.webkitRequestFullscreen) {
                         element.webkitRequestFullScreen();
                     }
+                    setEditorHeight();
                 }
 
                 // 退出全屏
@@ -1800,15 +1801,33 @@ define([
                     }
                 }
 
+                // 全屏和取消全屏时调整编辑器高度
+                document.addEventListener("fullscreenchange", function(e) {
+                    setTimeout(function () {
+                        setEditorHeight();
+                    });
+                });
+                document.addEventListener("mozfullscreenchange", function(e) {
+                    setTimeout(function () {
+                        setEditorHeight();
+                    });
+                });
+                document.addEventListener("webkitfullscreenchange", function(e) {
+                    setTimeout(function () {
+                        setEditorHeight();
+                    });
+
+                });
+                document.addEventListener("msfullscreenchange", function(e) {
+                    setTimeout(function () {
+                        setEditorHeight();
+                    });
+                });
+
                 function setEditorHeight() {
                     setTimeout(function () {
                         var wikiEditorContainer = $('#wikiEditorContainer')[0];
                         var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
-                        /*
-                         console.log(wikiEditorContainer.offsetTop);
-                         console.log(wikiEditorPageContainer.clientHeight);
-                         console.log($(window).height());
-                         */
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                         editor.setSize('auto', height);
                         $('#wikiEditorContainer').css('height', height);
@@ -1959,7 +1978,6 @@ define([
                 var showTreeview = true;
 
                 function initView() {
-                    console.log($scope.showFile);
                     if ($scope.showFile){
                         $(".code-view").removeClass("nofile");
                         $(".toolbar-page-file").addClass("active");
@@ -1988,6 +2006,7 @@ define([
                         $("#srcview").show();
                         $("#srcview").removeClass("col-xs-6");
                         $("#srcview").addClass("col-xs-12");
+                        resizeMod();
                     }else if(!$scope.showCode && $scope.showView){
                         $(".toolbar-page-design").addClass("active");
                         $(".toolbar-page-slide").removeClass("active");
@@ -1999,30 +2018,33 @@ define([
                         $("#preview").addClass("col-xs-12");
                         resizeMod();
                     }
+                    var scaleSize=getScaleSize();
+                    $scope.scales[$scope.scales.length-1].scaleValue=scaleSize;
+                    $scope.scaleSelect=$scope.scales[$scope.scales.length-1];//比例的初始状态为 “适合宽度”
                 }
 
-                $('.toolbar-page-file').on('click', function () {
+                $scope.toggleFile = function () {
                     $scope.showFile = $scope.showFile ? false : true;
                     initView();
-                });
+                };
 
-                $('.toolbar-page-code').on('click', function () {
+                $scope.showCodeView = function () {
                     $scope.showCode = true;
                     $scope.showView = false;
                     initView();
-                });
+                };
 
-                $('.toolbar-page-slide').on('click', function () {
+                $scope.codeAndPreview = function () {
                     $scope.showCode = true;
                     $scope.showView = true;
                     initView();
-                });
+                };
 
-                $('.toolbar-page-design').on('click', function () {
+                $scope.showPreview = function () {
                     $scope.showCode = false;
                     $scope.showView = true;
                     initView();
-                });
+                };
 
 //获取剪贴板数据方法
                 function getClipboardText(event) {
