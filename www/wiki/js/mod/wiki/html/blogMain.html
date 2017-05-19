@@ -12,8 +12,6 @@
         position: absolute;
         right: 10%;
         top: 20px;
-        color: #3977AD;
-        background-color: #EFEFEF;
         border-radius: 10px;
         padding: 11px 32px;
     }
@@ -50,10 +48,11 @@
         margin-top: 10px;
     }
 </style>
-<div class="blog-main clearfix" ng-controller="blogMainController">
+<div class="blog-main clearfix template-theme" ng-class="themeClass" ng-controller="blogMainController">
     <div class="header col-xs-10 col-xs-offset-1 col-lg-6 col-lg-offset-3">
-        <img ng-src="{{imgsPath+'blog_writingBtnBg.jpg'}}" alt="">
-        <div class="btn btn-default btn-lg">写日志</div>
+        <img ng-src="{{imgsPath+'blog_writingBtnBg.jpg'}}" alt="" ng-show="!modParams.theme">
+        <img ng-src="{{imgsPath+'blog_writingBtnBg_'+modParams.theme+'.jpg'}}" alt="" ng-show="modParams.theme">
+        <div class="btn btn-lg theme-font-color theme-btn-outline">写日志</div>
     </div>
     <div class="blog-list col-xs-10 col-xs-offset-1 col-lg-6 col-lg-offset-3">
         <div class="blog-item">
@@ -63,15 +62,18 @@
                     <p class="info">2017年3月22日 16:51</p>
                 </div>
                 <div class="icon">
-                    <img ng-src="{{imgsPath+'icon/blog_collection.png'}}" alt="">
+                    <img ng-src="{{imgsPath+'icon/blog_collection.png'}}" alt="关注数" ng-show="!modParams.theme">
+                    <img ng-src="{{imgsPath+'icon/blog_collection_'+modParams.theme+'.png'}}" alt="关注数" ng-show="modParams.theme">
                     <p>263</p>
                 </div>
                 <div class="icon">
-                    <img ng-src="{{imgsPath+'icon/blog_comment.png'}}" alt="">
+                    <img ng-src="{{imgsPath+'icon/blog_comment.png'}}" alt="评论数" ng-show="!modParams.theme">
+                    <img ng-src="{{imgsPath+'icon/blog_comment_'+modParams.theme+'.png'}}" alt="评论数" ng-show="modParams.theme">
                     <p>263</p>
                 </div>
                 <div class="icon">
-                    <img ng-src="{{imgsPath+'icon/blog_goodicon.png'}}" alt="">
+                    <img ng-src="{{imgsPath+'icon/blog_goodicon.png'}}" alt="点赞数" ng-show="!modParams.theme">
+                    <img ng-src="{{imgsPath+'icon/blog_goodicon_'+modParams.theme+'.png'}}" alt="点赞数" ng-show="modParams.theme">
                     <p>263</p>
                 </div>
             </div>

@@ -7,6 +7,7 @@
 @import "../../js/lib/wangEditor/css/wangEditor.min.css";
 @import "editor.css";
 @import "markdownit.css";
+@import "theme.css";
 
 a:hover {
     cursor: pointer;
