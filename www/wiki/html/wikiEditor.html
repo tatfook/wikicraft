@@ -104,17 +104,17 @@
 
                     <div class="btn-toolbar" role="toolbar">
                         <div class="btn-group state-change">
-                            <div class="btn btn-default btn-sm toolbar-page-file active" title="文件">
+                            <div class="btn btn-default btn-sm toolbar-page-file active" title="文件" ng-click="toggleFile()">
                                 <img ng-src="{{imgsPath+'icon/wiki_file.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_file_active.png'}}" alt="">文件夹
                             </div>
-                            <div class="btn btn-default btn-sm toolbar-page-code" title="代码">
+                            <div class="btn btn-default btn-sm toolbar-page-code" title="代码" ng-click="showCodeView()">
                                 <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_code_active.png'}}" alt=""> 代码</div>
-                            <div class="btn btn-default btn-sm toolbar-page-slide active" title="拆分">
+                            <div class="btn btn-default btn-sm toolbar-page-slide active" title="拆分" ng-click="codeAndPreview()">
                                 <img ng-src="{{imgsPath+'icon/wiki_split.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_split_active.png'}}" alt=""> 拆分</div>
-                            <div class="btn btn-default btn-sm toolbar-page-design" title="预览">
+                            <div class="btn btn-default btn-sm toolbar-page-design" title="预览" ng-click="showPreview()">
                                 <img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_preview_active.png'}}" alt=""> 预览</div>
                         </div>
