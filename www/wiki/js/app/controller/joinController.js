@@ -155,20 +155,20 @@ define([
 
                     for (var i = 0; i < tutorialPageList.length; i++) {
                         fnList.push((function (index) {
-                            return function (finish) {
+                            return function (cb, errcb) {
                                 require([tutorialPageList[index].contentUrl], function (content) {
                                     currentDataSource.writeFile({
                                         path: tutorialPageList[index].pagepath,
                                         content: content
-                                    }, finish, finish);
+                                    }, cb, errcb);
                                 }, function () {
-                                    finish && finish();
+                                    errcb && errcb();
                                 });
                             }
                         })(i));
                     }
 
-                    util.batchRun(fnList, cb);
+                    util.sequenceRun(fnList, undefined, cb, cb);
                 });
             }, errcb);
         }
