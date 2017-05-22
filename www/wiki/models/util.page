@@ -55,18 +55,12 @@ end
 
 -- 发送邮件
 function util:sendEmail(params, callback)
-	local emailConfig = wiki_config().email 
-	-- log(emailConfig)
+	local emailCfg = KEEPWORK["config"]["default"]["threeService"]["email"]
 	par = {}
-	par.url = emailConfig.url
-	par.username = emailConfig.username
-	par.password = emailConfig.password
-	par.from = emailConfig.from
-	-- par.url = "smtp://smtp.sina.com"
-	-- par.username = "wxaxiaoyao@sina.com"
-	-- par.password = "wuxiangan" 
-	-- par.from = par.username
-
+	par.url = emailCfg.url
+	par.username = emailCfg.username
+	par.password = emailCfg.password
+	par.from = emailCfg.from
 	par.to = params.to
 	par.subject = params.subject
 	par.body = params.body

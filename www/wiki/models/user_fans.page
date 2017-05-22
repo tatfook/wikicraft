@@ -27,6 +27,22 @@ function user_fans:api_upsert(params)
 	return errors:wrap(yield())
 end
 
+-- 是否已经关注
+function user_fans:api_isAttented(params)
+	if (not params.userId) or (not params.fansUserId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, resume)
+	local _, data = yield()
+	
+	if not data then
+		return errors:wrap(nil, 0)
+	end
+
+	return errors:wrap(nil, 1)
+end
+
 -- 关注用户
 function user_fans:api_attent(params)
 	if (not params.userId) or (not params.fansUserId) then

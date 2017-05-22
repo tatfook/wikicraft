@@ -239,7 +239,7 @@ function user:api_verifyEmailOne(params)
 		return errors:wrap(errors.USER_NOT_EXIST)
 	end
 
-	local url = "http://keepwork.com/wiki/verifyEmail"
+	local url = "http://" .. request:GetHost() .. "/api/wiki/models/user/verifyEmailTwo?userId=" .. tostring(userId)
 
 	-- TODO 加时间限制
 	mem_cache:set("verifyEmail" .. tostring(userId), params.email)
@@ -261,11 +261,17 @@ end
 
 -- 邮箱验证2
 function user:api_verifyEmailTwo(params)
-	local userId = self:ensureAuthenticated()
+	local userId = params.userId
 
+	response:set_header("Location", "http://www.paracraft.cn/")
+	response:status(301):send_headers();
 	local email = mem_cache:get("verifyEmail" .. tostring(userId))
 	
-	self:db():updateOne({_id=userId}, {email=email}, resume)
+	if not email then
+		return errors:wrap(nil)
+	end
+
+	self:db():updateOne({_id=tonumber(userId)}, {email=email}, resume)
 	
 	return errors:wrap(yield())
 end
@@ -465,18 +471,6 @@ function user:api_register(params)
 		threeService.userId = userinfo._id
 		userThreeServiceDB:api_upsert(threeService)
 	end
-
-	local indexPage = {}
-	indexPage.name = "简易教程1"
-	indexPage.websiteName = "新手教程"
-	indexPage.username = params.username
-	indexPage.url = "/" .. indexPage.username .. '/' .. indexPage.websiteName .. '/' .. indexPage.name
-	indexPage.contentUrl = "tutorial/index.md"	
-
-	local websitePageinfoDB = models.website_pageinfo:new()
-	local pageinfo = commonlib.Json.Encode({indexPage})	
-	local params = {username=indexPage.username, websiteName=indexPage.websiteName, dataSourceId=userinfo.dataSourceId, pageinfo=pageinfo, isExistSite=0}
-	websitePageinfoDB:db():insertOne({["+username+websiteName+dataSourceId"]={params.username, params.websiteName, params.dataSourceId}}, params, function() end)
 
 	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo, isNewUser=1})
 end
