@@ -28,17 +28,17 @@ function user_fans:api_upsert(params)
 end
 
 -- 关注用户
-function api_attent(params)
+function user_fans:api_attent(params)
 	if (not params.userId) or (not params.fansUserId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
 	end
 
-	self:db():insertOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, params, resume)
-		
+	self:api_upsert(params)	
+
 	local userDB = models.user:new()
 	local userinfo = userDB:api_getById({userId=params.userId}).data
 	local fansUserInfo = userDB:api_getById({userId=params.fansUserId}).data
-	if not userifno or (not fansUserInfo) then
+	if not userinfo or (not fansUserInfo) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	-- 创建用户动态
@@ -47,21 +47,22 @@ function api_attent(params)
 	trend.desc = userinfo.username .. "关注" .. fansUserInfo.username
 	userTrendsDB:api_upsert(trend)
 
-	return errors:wrap(yield())
+	return errors:wrap()
 end
 
 -- 取消关注
-function api_unattent(params)
+function user_fans:api_unattent(params)
 	if (not params.userId) or (not params.fansUserId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
 	end
 
 	self:db():deleteOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, params, resume)
+	yield()
 	
 	local userDB = models.user:new()
 	local userinfo = userDB:api_getById({userId=params.userId}).data
 	local fansUserInfo = userDB:api_getById({userId=params.fansUserId}).data
-	if not userifno or (not fansUserInfo) then
+	if not userinfo or (not fansUserInfo) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	-- 创建用户动态
@@ -70,7 +71,7 @@ function api_unattent(params)
 	trend.desc = userinfo.username .. "取消关注" .. fansUserInfo.username
 	userTrendsDB:api_upsert(trend)
 
-	return errors:wrap(yield())
+	return errors:wrap()
 end
 
 -- 获取用户的粉丝数

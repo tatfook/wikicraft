@@ -525,10 +525,8 @@ function user:api_getById(params)
 	if not params.userId then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
-	userId = params.userId
 
-	self:db():findOne({_id=userId}, resume)
+	self:db():findOne({_id=params.userId}, resume)
 	local err, data = yield()
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
