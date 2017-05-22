@@ -56,7 +56,7 @@ function user_fans:api_unattent(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
 	end
 
-	self:db():deleteOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, params, resume)
+	self:db():deleteOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, resume)
 	yield()
 	
 	local userDB = models.user:new()
