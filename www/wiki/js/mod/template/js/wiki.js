@@ -23,8 +23,7 @@ define([
 
             //console.log("-----------wiki template----------------");
             function setSelfPageContent(type, content) {
-                if (!content)
-                    return;
+                content = content || "";
 
                 var md = markdownwiki({html:true, use_template:false});
                 var id = "#" + type + "ContentId";
