@@ -20,6 +20,7 @@ define([
             var modParams = getModParams(wikiblock);
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
+            $scope.modParams=modParams;
 
             // 初始化信息
             function init() {

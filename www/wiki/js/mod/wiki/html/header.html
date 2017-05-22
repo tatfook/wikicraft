@@ -205,6 +205,64 @@
 		}
 	}
 </style>
+<style>
+	.gameHeader{
+		position: relative;
+		color: #FFF5D4;
+	}
+	.gameHeader .banner-bg{
+		max-height: 480px;
+		overflow: hidden;
+	}
+	.gameHeader .banner-info{
+		position: absolute;
+		bottom: 30px;
+		right: 55%;
+		border: 3px solid #FFF5D2;
+		padding: 40px;
+		background-color: rgba(0, 0, 0, 0.2);
+	}
+	.gameHeader .banner-info:before{
+		content: '';
+		display: inline-block;
+		width: 22px;
+		height: 26px;
+		position: absolute;
+		left: 20px;
+		top: 16px;
+		border-color: #FFF5D2;
+		border-width: 4px 0 0px 4px;
+		border-style: solid;
+	}
+	.gameHeader .banner-info:after{
+		content: '';
+		display: inline-block;
+		width: 22px;
+		height: 26px;
+		position: absolute;
+		right: 20px;
+		bottom: 16px;
+		border-color: #FFF5D2;
+		border-width: 0 4px 4px 0;
+		border-style: solid;
+	}
+	.gameHeader h1{
+		font-size: 60px;
+		color: #FFEA81;
+		text-shadow: 0px 7px 0 #280f27;
+	}
+	.gameHeader p.message{
+		font-size: 20px;
+		margin:20px 0 50px;
+		text-align: center;
+	}
+	.gameHeader .game-time{
+		display: -webkit-flex;
+		display: flex;
+		justify-content: space-around;
+		text-align: center;
+	}
+</style>
 
 <div>
 	<!-- 个人主页头部 -->
@@ -238,6 +296,24 @@
 				<h1>{{modParams.displayName}}</h1>
 				<p class="info"><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> {{modParams.location}}<span class="time">{{modParams.info}}</span></p>
 				<p class="align-left">{{modParams.introduce}}</p>
+			</div>
+		</div>
+	</div>
+	<!--大赛头部-->
+	<div ng-controller="gameHeaderController">
+		<div class="gameHeader" ng-show="modParams.moduleKind=='game'">
+			<div class="banner-bg">
+				<img ng-src="{{modParams.bgImg || getImageUrl('gameheader_banner.jpg',imgsPath)}}" alt="">
+			</div>
+			<div class="banner-info">
+				<h1>{{modParams.title || "全国3D创作大赛"}}</h1>
+				<p class="message">{{modParams.message || "用ParaCraft创意空间制作电影作品参与比赛"}}</p>
+				<div class="game-time">
+					<div class="time-item" ng-repeat="stage in modParams.stages">
+						<p>{{stage.name}}</p>
+						<p>{{stage.time}}</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

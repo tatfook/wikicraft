@@ -57,6 +57,18 @@ define([
 
             $scope.$watch("$viewContentLoaded", init);
         }]);
+
+        // 比赛类头部控制器
+        app.registerController("gameHeaderController", ['$scope', function ($scope) {
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.modParams = angular.copy(wikiblock.modParams || {});
+
+            function init() {
+                console.log("----------init game header---------");
+            }
+
+            $scope.$watch("$viewContentLoaded", init);
+        }]);
     }
 
     return {
@@ -84,6 +96,29 @@ define([
     "location":"深圳",
     "info":"成立于2017.4.19",
     "introduce":"这里是一段描述介绍小组的文字，内容自定义。介绍自己的小组成员或者是邀请新成员加入小组等等。"
+}
+```
+*/
+/*
+```@wiki/js/header
+{
+    "moduleKind":"game",
+    "bgImg":"",
+    "title":"",
+    "stages":[
+        {
+            "name":"投稿期",
+            "time":"5月1日-5月30日"
+        },
+        {
+            "name":"评选期",
+            "time":"5月1日-5月30日"
+        },
+        {
+            "name":"公布结果",
+            "time":"5月1日-5月30日"
+        }
+    ]
 }
 ```
 */
