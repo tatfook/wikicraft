@@ -28,6 +28,26 @@ define([], function () {
                         }
                     ],
                 },
+                {
+                    name:"基本模板",
+                    logoUrl:"wiki_basic_template.png",
+                    styles:[
+                        {
+                            name:"默认样式",
+                            logoUrl:"wiki_basic_template.png",
+                            contents:[
+                                {
+                                    pagepath:"index",
+                                    contentUrl:"templates/basic.md"
+                                },
+                                {
+                                    pagepath:"_theme",
+                                    contentUrl:"templates/basic_theme.md"
+                                },
+                            ]
+                        }
+                    ],
+                },
                 // 个人网站wiki模板
                 {
                     name:"个人简历",
@@ -52,6 +72,7 @@ define([], function () {
                 },
 
                 // 个人网站图书模板
+                /*
                 {
                     name:"图书模板",
                     logoUrl:"",
@@ -69,6 +90,7 @@ define([], function () {
                         },
                     ],
                 },
+                */
             ],
         },
 

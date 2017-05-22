@@ -34,10 +34,13 @@ function main()
 			name="个人站点头部",
 			classifyName="header",
 			content=[[
-                ```@wiki/js/personalHeader
+                ```@wiki/js/header
+                {
+                    "moduleKind":"personal"
+                }
                 ```
             ]],
-			wikiCmdName="@wiki/js/personalHeader",
+			wikiCmdName="@wiki/js/header",
 			logoUrl="wiki/assets/imgs/personal_header.jpg",
 			desc="个人站点头部",
 			flag=1,
@@ -47,10 +50,13 @@ function main()
 			name="信息统计",
 			classifyName="statics",
 			content=[[
-                ```@wiki/js/personalStatics
+                ```@wiki/js/statics
+                {
+                    "moduleKind":"personal"
+                }
                 ```
             ]],
-			wikiCmdName="@wiki/js/personalStatics",
+			wikiCmdName="@wiki/js/statics",
 			logoUrl="wiki/assets/imgs/personal_statics.png",
 			desc="个人统计信息",
 			flag=1,

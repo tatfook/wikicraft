@@ -1,2 +1,5 @@
-```@template/js/wiki
+```@template/js/default
+{
+    "class":"container"
+}
 ```
