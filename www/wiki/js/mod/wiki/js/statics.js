@@ -112,6 +112,11 @@ define([
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationMemberApply';
             }
+
+            // 主题配置
+            var theme="template-theme-"+$scope.modParams.theme;
+            $scope.themeClass=new Object();
+            $scope.themeClass[theme]=true;
         }]);
     }
 
