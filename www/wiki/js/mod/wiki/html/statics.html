@@ -57,7 +57,7 @@
     }
     .org-statics .msg p>span{
         font-size: 24px;
-        color: #ff7b7b;
+        /*color: #ff7b7b;*/
         margin-left: 20px;
     }
     .org-statics .text-primary{
@@ -117,6 +117,12 @@
         color: #FFF;
     }
 </style>
+<style>
+    .game-msg{
+        display: flex;
+        justify-content: center;
+    }
+</style>
 <div>
     <!--个人信息统计-->
     <div ng-controller="personalStaticsController">
@@ -159,10 +165,23 @@
             </div>
         </div>
     </div>
-    <!--大赛按钮-->
-    <div ng-controller="gameBtnsController">
+
+    <div ng-controller="staticsController">
+        <!--大赛按钮-->
         <div class="game-btns" ng-show="modParams.moduleKind=='game'">
             <a href="{{btn.link}}" class="large-btn" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
+        </div>
+
+        <!--大赛信息统计-->
+        <div class="org-statics template-theme" ng-class="themeClass" ng-show="modParams.moduleKind=='gameStatics'">
+            <div class="method">
+                <a class="btn btn-primary theme-btn" href="{{btn.link}}" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
+            </div>
+            <div class="msg-box clearfix game-msg">
+                <div class="msg" ng-repeat="message in modParams.messages">
+                    <p class="text-primary">{{message.info}} <span class="theme-font-color">{{message.count}}</span></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
