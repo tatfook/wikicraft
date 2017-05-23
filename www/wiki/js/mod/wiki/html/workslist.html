@@ -211,6 +211,21 @@
         }
     }
 </style>
+<style>
+    .org-works-list .oneline-text{
+        padding: 0px 15px;
+        position: absolute;
+        bottom: 0;
+        right: 15px;
+        left: 15px;
+        background-color: rgba(0,0,0,.5);
+        color: #FFF;
+    }
+    .org-works-list .oneline-text h4 .pull-right{
+        font-size: 14px;
+        font-weight: normal;
+    }
+</style>
 
 <div class="container-fluid" ng-controller="workslistController">
     <div class="personal-works-list" ng-show="modParams.moduleKind=='personal'">
@@ -260,6 +275,27 @@
                     <p class="pull-right info" ng-click="worksFavorite($event, site)">
                         <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{works.favoriteCount || 0}}</span>
                     </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="org-works-list container" ng-show="modParams.moduleKind=='game'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a href="{{modParams.moreLink}}" target="_blank">查看更多</a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="work in modParams.worksList">
+                <a href="{{work.imgLink}}" target="_blank">
+                    <img ng-src="{{works.imgUrl || getImageUrl('game_workImg.jpg',imgsPath)}}">
+                </a>
+                <div class="text clearfix oneline-text">
+                    <h4>
+                        <a class="title" href="{{work.workLink}}" ng-show="work.workLink">{{work.workName || "未完成"}}</a>
+                        <span class="title" ng-show="!work.workLink">{{work.workName}}</span>
+                        <a href="{{work.authorLink}}" class="pull-right" ng-show="work.authorLink">{{work.author}}</a>
+                        <span class="pull-right" ng-show="!work.authorLink">{{work.author}}</span>
+                    </h4>
                 </div>
             </div>
         </div>

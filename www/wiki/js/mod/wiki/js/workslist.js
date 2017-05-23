@@ -140,4 +140,48 @@ define([
     "pageSize":8,
     "title":"全部作品"
 }
-```*/
+```
+*/
+/*
+```@wiki/js/workslist
+{
+"moduleKind":"game",
+"title":"全部作品",
+"moreLink":"http://www.baidu.com",
+"worksList":[
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"#",
+        "workName":"作品名",
+        "authorLink":"#",
+        "author":"作者"
+    },
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"",
+        "workName":"作品名",
+        "authorLink":"",
+        "author":"作者"
+    },
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"",
+        "workName":"作品名",
+        "authorLink":"",
+        "author":"作者"
+    },
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"",
+        "workName":"作品名",
+        "authorLink":"",
+        "author":"作者"
+    }
+]
+}
+```
+*/

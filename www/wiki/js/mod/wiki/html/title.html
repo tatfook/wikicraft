@@ -1,0 +1,26 @@
+<style>
+    .title1 h1{
+        font-size: 36px;
+        position: relative;
+        padding-bottom: 30px;
+        margin-bottom: 20px;
+        font-weight: normal;
+    }
+    .title1 h1:before{
+        content: '';
+        width: 50px;
+        height: 1px;
+        background-color: #000;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+<div ng-controller="titleController">
+    <div class="title1 container" ng-show="modParams.moduleKind=='title1'">
+        <h1>{{modParams.title}}</h1>
+        <div class="content">
+            <p ng-repeat="param in modParams.params">{{param}}</p>
+        </div>
+    </div>
+</div>
