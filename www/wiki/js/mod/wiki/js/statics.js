@@ -118,6 +118,15 @@ define([
             $scope.themeClass=new Object();
             $scope.themeClass[theme]=true;
         }]);
+
+        app.registerController("gameBtnsController",['$scope',function ($scope) {
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.modParams = angular.copy(wikiBlock.modParams || {});
+            function init() {
+            }
+
+            $scope.$watch("$viewContentLoaded", init);
+        }])
     }
 
     return {
@@ -143,4 +152,19 @@ define([
     "recommendWorksCount":"0"
 }
 ```
+ ```@wiki/js/statics
+ {
+    "moduleKind":"game",
+    "btns":[
+        {
+            "link":"#",
+            "text":"我要参赛"
+        },
+         {
+             "link":"#",
+             "text":"教学视频"
+         }
+    ]
+ }
+ ```
 */

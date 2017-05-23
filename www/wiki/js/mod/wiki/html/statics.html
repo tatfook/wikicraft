@@ -91,6 +91,32 @@
         }
     }
 </style>
+<style>
+    .game-btns {
+        padding: 30px 0;
+        text-align: center;
+        background-color: #FFFDFA;
+        -webkit-box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        -moz-box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+    }
+    .game-btns .large-btn{
+        border: 2px solid #F57270;
+        padding: 14.5px 61px;
+        font-size: 24px;
+        margin-right: 100px;
+        border-radius: 5px;
+        color: #F57270;
+        display: inline-block;
+    }
+    .game-btns .large-btn:last-child{
+    margin-right: 0;
+    }
+    .game-btns .large-btn:hover{
+        background-color: #F57270;
+        color: #FFF;
+    }
+</style>
 <div>
     <!--个人信息统计-->
     <div ng-controller="personalStaticsController">
@@ -131,6 +157,12 @@
                     <p class="text-primary">全部作品 <span>{{statics.worksCount || 0}}</span></p>
                 </div>
             </div>
+        </div>
+    </div>
+    <!--大赛按钮-->
+    <div ng-controller="gameBtnsController">
+        <div class="game-btns" ng-show="modParams.moduleKind=='game'">
+            <a href="{{btn.link}}" class="large-btn" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
         </div>
     </div>
 </div>
