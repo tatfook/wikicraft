@@ -171,6 +171,7 @@ define([
                     Message.info("无权限提交!!!");
                     return;
                 }
+                $scope.works.websiteId = siteinfo._id;
                 $scope.works.username = $scope.user.username;
                 util.post(config.apiUrlPrefix + 'user_works/upsert', $scope.works, function (data) {
                     if (!data || !data._id) {
@@ -201,7 +202,8 @@ define([
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;
-                    //init();
+                    modParams.username = "xiaoyao";
+                    modParams.sitename = "xiaoyao";
                     if (modParams.username && modParams.sitename) {
                         util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
                             userinfo = data.userinfo;
