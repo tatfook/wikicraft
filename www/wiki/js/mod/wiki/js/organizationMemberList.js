@@ -65,6 +65,11 @@ define([
                 });
             });
         }]);
+        
+        app.registerController("memberListController",["$scope",function ($scope) {
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.modParams = getModParams(wikiblock);
+        }])
     }
 
     return {
@@ -82,4 +87,29 @@ define([
     "sitename": "xiaoyao"
  }
  ```
+ */
+/*
+```@wiki/js/organizationMemberList
+ {
+    "moduleKind":"game",
+    "title":"评委成员",
+    "memberList":[
+        {
+            "imgUrl":"",
+            "username":"用户名",
+            "level":"创建者"
+        },
+        {
+             "imgUrl":"",
+             "username":"用户名",
+             "level":"创建者"
+        },
+        {
+             "imgUrl":"",
+             "username":"用户名",
+             "level":"创建者"
+        }
+    ]
+ }
+```
  */
