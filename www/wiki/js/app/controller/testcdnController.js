@@ -74,9 +74,9 @@ define([
 
         $scope.updateFileContent = function (filename) {
             http('POST', urlPrefix + '/api/wiki/models/test/updateFileContent', {filename:filename}, function (data) {
-                console.log("更新js文件请求成功 ", data);
+                console.log("更新" + filename + "文件请求成功 ", data);
             }, function () {
-                console.log("更新js文件请求失败");
+                console.log("更新" + filename + "文件请求失败");
             });
         }
 

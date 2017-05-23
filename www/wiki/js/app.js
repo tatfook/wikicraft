@@ -39,7 +39,7 @@ define([
         $authProvider.oauth2({
             name: 'qq',
             url: '/api/wiki/auth/qq',
-            clientId: '100302176',
+            clientId: '101403344',
             redirectUri: window.location.origin + '/api/wiki/auth/qq',//window.location.origin,
             authorizationEndpoint: 'https://graph.qq.com/oauth2.0/authorize',
             oauthType: '2.0',
