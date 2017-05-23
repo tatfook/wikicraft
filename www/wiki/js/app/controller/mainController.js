@@ -17,13 +17,42 @@ define([
 ], function (app, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
     var md = markdownwiki({html: true});
 
-    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
-        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab) {
+    app.controller('mainController', [
+        '$scope',
+        '$rootScope',
+        '$location',
+        '$http',
+        '$auth',
+        '$compile',
+        'Account',
+        'Message',
+        'github',
+        'modal',
+        'gitlab',
+        'confirmDialog',
+        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
             //console.log("mainController");
             
             // 初始化基本信息
             function initBaseInfo() {
                 //配置一些全局服务
+                config.services = {
+                    $rootScope: $rootScope,
+                    $http: $http,
+                    $compile: $compile,
+                    $auth: $auth,
+                    $location:$location,
+
+                    storage: storage,
+                    Account: Account,
+                    Message: Message,
+                    github: github,
+                    gitlab:gitlab,
+                    dataSource:dataSource,
+                    loading:loading,
+                    confirmDialog:confirmDialog,
+                };
+
                 util.setAngularServices({
                     $rootScope: $rootScope,
                     $http: $http,
@@ -41,6 +70,7 @@ define([
                     gitlab:gitlab,
                     dataSource:dataSource,
                     loading:loading,
+                    confirmDialog:confirmDialog,
                 });
 
                 $rootScope.imgsPath = config.imgsPath;

@@ -181,8 +181,10 @@ define([
                         websiteId: siteinfo._id,
                         applyId: data._id,
                     }, function () {
-                        Message.info("作品提交成功^-^");
-                        window.history.back();
+                        var finish = function () {
+                            window.history.back();
+                        };
+                        config.services.confirmDialog({title:"作品提交", content:"作品提交成功", cancelBtn:false}, finish, finish);
                     }, function () {
                         Message.info("作品提交失败...");
                     });
