@@ -6,7 +6,12 @@
         text-align: center;
         padding: 60px 0;
     }
+    .notfound img{
+        width: 30%;
+        height: auto;
+        cursor: pointer;
+    }
 </style>
-<div ng-controller="notfoundController" class="notfound">
+<div ng-controller="notfoundController" class="notfound" ng-click="goHome()">
     <img ng-src="{{imgsPath+'wiki_404.jpg'}}" alt="">
 </div>

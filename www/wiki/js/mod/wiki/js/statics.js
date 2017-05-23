@@ -118,6 +118,20 @@ define([
             $scope.themeClass=new Object();
             $scope.themeClass[theme]=true;
         }]);
+
+        app.registerController("staticsController",['$scope',function ($scope) {
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.modParams = angular.copy(wikiBlock.modParams || {});
+            function init() {
+            }
+
+            $scope.$watch("$viewContentLoaded", init);
+
+            // 主题配置
+            var theme="template-theme-"+$scope.modParams.theme;
+            $scope.themeClass=new Object();
+            $scope.themeClass[theme]=true;
+        }]);
     }
 
     return {
@@ -142,5 +156,41 @@ define([
     "moduleKind":"organization",
     "recommendWorksCount":"0"
 }
+```
+```@wiki/js/statics
+ {
+    "moduleKind":"game",
+    "btns":[
+        {
+            "link":"#",
+            "text":"我要参赛"
+        },
+         {
+             "link":"#",
+             "text":"教学视频"
+         }
+    ]
+ }
+```
+```@wiki/js/statics
+ {
+ "moduleKind":"gameStatics",
+ "btns":[
+     {
+         "link":"#",
+         "text":"我要投稿"
+     }
+ ],
+ "messages":[
+    {
+         "info":"参赛作者",
+         "count":"20"
+    },
+     {
+         "info":"参赛成员",
+         "count":"20"
+     }
+ ]
+ }
 ```
 */

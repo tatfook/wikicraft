@@ -9,6 +9,10 @@ define([
     'text!html/notfound.html'
 ], function (app, util, storage, htmlContent) {
     app.controller('notfoundController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
+        $scope.goHome=function () {
+            util.go("home");
+        };
+        
         function init() {
 
         }
