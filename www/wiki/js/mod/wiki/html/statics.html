@@ -122,6 +122,31 @@
         display: flex;
         justify-content: center;
     }
+    .game-statics{
+        background-color: #fffdfa;
+    }
+    .game-statics-btns {
+        padding: 30px 0 3px;
+        text-align: center;
+        background-color: #FFFDFA;
+    }
+    .game-statics-btns .large-btn{
+        border: 2px solid #F57270;
+        padding: 14.5px 61px;
+        font-size: 24px;
+        margin-right: 100px;
+        border-radius: 5px;
+        color: #F57270;
+        background-color: transparent;
+        display: inline-block;
+    }
+    .game-statics-btns .large-btn:last-child{
+        margin-right: 0;
+    }
+    .game-statics-btns .large-btn:hover{
+        background-color: #F57270;
+        color: #FFF;
+    }
 </style>
 <div>
     <!--个人信息统计-->
@@ -173,9 +198,9 @@
         </div>
 
         <!--大赛信息统计-->
-        <div class="org-statics template-theme" ng-class="themeClass" ng-show="modParams.moduleKind=='gameStatics'">
-            <div class="method">
-                <a class="btn btn-primary theme-btn" href="{{btn.link}}" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
+        <div class="org-statics template-theme game-statics" ng-class="themeClass" ng-show="modParams.moduleKind=='gameStatics'">
+            <div class="game-statics-btns">
+                <a class="btn btn-primary large-btn" href="{{btn.link}}" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
             </div>
             <div class="msg-box clearfix game-msg">
                 <div class="msg" ng-repeat="message in modParams.messages">
