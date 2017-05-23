@@ -226,6 +226,11 @@
         font-weight: normal;
     }
 </style>
+<style>
+    .game-works-list .col-md-3{
+        margin-bottom: 20px;
+    }
+</style>
 
 <div class="container-fluid" ng-controller="workslistController">
     <div class="personal-works-list" ng-show="modParams.moduleKind=='personal'">
@@ -296,6 +301,28 @@
                         <a href="{{work.authorLink}}" class="pull-right" ng-show="work.authorLink">{{work.author}}</a>
                         <span class="pull-right" ng-show="!work.authorLink">{{work.author}}</span>
                     </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game2'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a href="{{modParams.moreLink}}">查看更多</a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="work in modParams.worksList">
+                <a href="{{work.workLink}}">
+                    <img ng-src="{{work.imgUrl || getImageUrl('personal_workslist_banner.jpg',imgsPath)}}">
+                </a>
+                <div class="text clearfix">
+                    <h4><a class="title" href="{{work.workLink}}">{{work.workName}}</a></h4>
+                    <p>
+                        <a href="{{work.authorLink}}">作者：{{work.author}}</a>
+                        <span class="info pull-right">
+                            <span class="glyphicon glyphicon-eye-open"></span> {{work.info}} <span>{{work.count}}</span>
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>

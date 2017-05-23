@@ -185,3 +185,59 @@ define([
 }
 ```
 */
+/*
+```@wiki/js/workslist
+ {
+ "moduleKind":"game2",
+ "title":"全部作品",
+ "moreLink":"http://www.baidu.com",
+ "worksList":[
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ }
+ ]
+ }
+```
+ */
