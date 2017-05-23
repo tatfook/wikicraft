@@ -81,7 +81,20 @@ define([
             $scope.$watch('$viewContentLoaded', init);
 
             $scope.isSelfPageShow = function (type) {
-                return wikiBlock.editorMode;
+                return $scope.isEditorEnable();
+            }
+
+            // 是否可以编辑模板
+            $scope.isEditorEnable = function () {
+                if (!wikiBlock.editorMode) {
+                    return false;
+                }
+
+                if (wikiBlock.isPageTemplate ||  ($rootScope.pageinfo && $rootScope.pageinfo.pagename == "_theme")) {
+                    return true;
+                }
+
+                return false;
             }
 
             $scope.setSelfPage = function (type) {
