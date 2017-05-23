@@ -2199,6 +2199,14 @@ define([
                     });
                 });
 
+                $scope.goHomePage = function () {
+                    util.go("home");
+                };
+
+                $scope.goModPackagePage = function () {
+                    util.go("mod/packages",true);
+                };
+
                 editor.on("paste", function (editor, e) {
                     if (!(e.clipboardData && e.clipboardData.items)) {
                         alert("该浏览器不支持操作");

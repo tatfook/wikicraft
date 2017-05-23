@@ -148,7 +148,7 @@ body,
 
 .btn-toolbar{
     margin: 0;
-    padding: 15px 60px;
+    padding: 5px 60px 15px;
 }
 
 .nopadding{
@@ -219,6 +219,7 @@ body,
 }
 .wiki-toolbar .btn-group{
     margin-left: 10px;
+    margin-top: 10px;
 }
 .wiki-toolbar .btn-group:first-child{
     margin-left: 0;
@@ -278,13 +279,13 @@ select.resize-view {
 .treeview-container{
     max-height: 100%;
     overflow-y: auto;
-    width: 16%;
+    width: 300px;
     position: absolute;
     left:0;
     z-index: 1;
 }
 .code-view{
-    padding-left: 16%;
+    padding-left: 300px;
 }
 .code-view.nofile{
     padding-left: 0;
@@ -297,15 +298,20 @@ select.resize-view {
     display: none;
 }
 .toolbar-page-file.active{
-    margin-right: 177px;
+    margin-right: 173px;
+}
+
+#codeToolbar{
+    padding-left:190px;
+}
+.brand-btn-group{
+    position: absolute;
+    left: 35px;
 }
 #srcview{
     padding-right: 40px;
 }
 @media (max-width: 1200px) {
-    .wiki-toolbar{
-        padding:15px 0;
-    }
     .wiki-toolbar .btn-group:first-child{
         margin-left: 0;
     }
@@ -326,10 +332,34 @@ select.resize-view {
         width:300px;
         padding:6.5px 12px;
     }
+    .toolbar-page-file.active{
+        margin-right: 80px;
+    }
+    .treeview-container{
+        width: 150px;
+    }
+    .code-view{
+        padding-left: 150px;
+    }
+    .btn-toolbar{
+        padding:5px 15px 10px;
+    }
 }
-@media(min-width: 1200px) and (max-width:1301px){
-    .wiki-toolbar{
-        padding:15px 29px;
+@media(min-width: 1200px) and (max-width:1350px){
+    .btn-toolbar{
+        padding:5px 15px 10px;
+    }
+    .toolbar-page-file.active{
+        margin-right: 110px;
+    }
+    .code-view{
+        padding-left: 192px;
+    }
+    .treeview-container{
+        width: 205px;
+    }
+    .wiki-toolbar .wiki-btn{
+        padding: 7px 8px;
     }
 }
 @media(min-width: 1302px){
@@ -340,5 +370,18 @@ select.resize-view {
 @media(max-width:1370px){
     input.btn-link{
         width:330px;
+    }
+}
+@media(min-width: 768px) and (max-width: 992px){
+    .toolbar-page-file.active{
+        margin-right:0;
+    }
+    .wiki-toolbar .btn-link{
+        width: 155px;
+    }
+}
+@media(min-width: 1630px) and (max-width: 1900px){
+    .wiki-toolbar .wiki-btn {
+        padding: 7px 9px;
     }
 }
