@@ -44,5 +44,6 @@ define(['jquery'], function ($) {
         $("#js-spinner-mask").hide();
     };
 
+    config.loading = loading;
     return loading;
 });

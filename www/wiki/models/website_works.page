@@ -13,8 +13,14 @@ website_works.db_name="website_works"
 
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
-	self:addfield("worksId", "number")        -- 组织内作品的ID
-	self:addfield("worksUrl", "string")       -- 作品url
+	-- self:addfield("worksId", "number")        -- 组织内作品的ID  暂时不建用户表
+	self:addfield("worksUsername", "string")       -- 作品作者
+	self:addfield("worksTitle", "string")     -- 作品标题
+	self:addfield("worksName", "string")      -- 作品名
+	self:addfield("worksUrl", "string")       -- 作品容器页面url
+	self:addfield("worksLogo", "string")      -- 作品logo
+	self:addfield("worksDesc", "string")      -- 作品描述
+	self:addfield("worksState", "string")     -- 作品状态
 	self:addfield("worksFlag", "number")      -- 热门 入围
 	self:addfield("visitCount", "number")     -- 该组织的点击量
 	self:addfield("createDate", "string", false, 64)
@@ -29,6 +35,17 @@ function website_works:api_deleteByWebsiteId(params)
 	
 	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
 	
+	return errors:wrap(yield())
+end
+
+-- 提交作品申请
+function website_works:api_submitWorksApply(params)
+	if (not params.websiteId) or (params.worksUrl) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
+
 	return errors:wrap(yield())
 end
 
@@ -56,11 +73,6 @@ function website_works:api_getByWebsiteId(params)
 	self:db():find({["+websiteId"]={params.websiteId, skip=skip, limit=limit}}, resume)
 	local _, worksList = yield()
 
-	local userWorksDB = models.user_works:new()
-	for _, obj in ipairs(worksList or {}) do
-		obj.worksInfo  = userWorksDB:api_getById({worksId=obj.worksId}).data
-	end
-	
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
@@ -75,11 +87,6 @@ function website_works:api_getByWorksUrlList(params)
 		self:db():findOne({["+websiteId+worksUrl"]={params.websiteId, worksUrl}}, resume)
 		local _, works = yield()
 		worksList[#worksList+1] = works
-	end
-
-	local userWorksDB = models.user_works:new()
-	for _, obj in ipairs(worksList) do
-		obj.worksInfo  = userWorksDB:api_getById({worksId=obj.worksId}).data
 	end
 
 	return errors:wrap(nil, {total=#worksList, worksList=worksList})
@@ -101,11 +108,6 @@ function website_works:api_get(query)
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
 	
-	local userWorksDB = models.user_works:new()
-	for _, obj in ipairs(data) do
-		obj.worksInfo = userWorksDB:api_getById({worksId=obj.worksId}).data
-	end
-
 	return errors:wrap(nil, data)
 end
 
@@ -131,7 +133,7 @@ function website_works:api_getUpgradeByWebsiteId(params)
 	local query = {["+websiteId+worksFlag"] = {params.websiteId, const.WORKS_FLAG_UPGRADE,skip=skip, limit=limit}}	
 	local siteObj = self:api_get(query)
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit), siteList=siteObj.data})
+	return errors:wrap(nil, {total=total, siteList=siteObj.data})
 end
 
 -- 获取热门作品的数量
@@ -155,7 +157,7 @@ function website_works:api_getHotByWebsiteId(params)
 	local query = {["+websiteId+worksFlag"] = {params.websiteId, const.WORKS_FLAG_HOT,skip=skip, limit=limit}}	
 	local siteObj = self:api_get(query)
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit), siteList=siteObj.data})
+	return errors:wrap(nil, {total=total, siteList=siteObj.data})
 end
 
 -- 获得最近加入的数量
@@ -186,20 +188,14 @@ end
 
 -- 创建站点作品
 function website_works:api_upsert(params) 
-	if (not params.websiteId) or (not params.worksId) then
+	if (not params.websiteId) or (not params.worksUrl) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = params.createDate
 	
-	local userWorksDB = models.user_works:new()
-	local worksInfo = userWorksDB:api_getById({worksId=params.worksId}).data
-	if worksInfo then
-		params.worksUrl = worksInfo.worksUrl
-	end
-
-	self:db():insertOne({["+websiteId+worksId"]={params.websiteId, params.worksId}}, params, resume)
+	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
 	
 	return errors:wrap(yield())
 end

@@ -8,12 +8,13 @@ define([
     'helper/storage',
     'helper/util',
     'helper/dataSource',
+    'helper/loading',
     'controller/homeController',
     'controller/headerController',
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-], function (app, markdownwiki, storage, util, dataSource, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
+], function (app, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
@@ -39,6 +40,7 @@ define([
                     github: github,
                     gitlab:gitlab,
                     dataSource:dataSource,
+                    loading:loading,
                 });
 
                 $rootScope.imgsPath = config.imgsPath;
@@ -134,6 +136,7 @@ define([
                 var htmlContent;
                 //console.log(pageUrl);
                 require([pageUrl], function (htmlContent) {
+                    //util.html('#__UserSitePageContent__', htmlContent, $scope);
                     if (pathname != "test" || pathname == "wikiEditor" || !md) {
                         util.html('#__UserSitePageContent__', htmlContent, $scope);
                     } else {
