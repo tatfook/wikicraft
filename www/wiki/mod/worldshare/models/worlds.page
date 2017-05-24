@@ -10,10 +10,12 @@ include_once(WIKI_ROOT .. "models/data_source.page");
 include_once("./worlds_stats.page");
 include_once("./worlds_star.page");
 
-NPL.load("(gl)script/ide/System/Encoding/base64.lua");
+--NPL.load("(gl)script/ide/System/Encoding/base64.lua");
+NPL.load("(gl)script/ide/System/Encoding/basexx.lua");
 
 local worlds    = inherit(models.abstract.multi_user_base, gettable("models.worlds"));
-local Encoding = commonlib.gettable("System.Encoding");
+--local Encoding = commonlib.gettable("System.Encoding");
+local Encoding  = commonlib.gettable("System.Encoding.basexx");
 
 worlds.db_name = "worlds";
 
@@ -82,16 +84,15 @@ function worlds:get(params)
 		query.sort = nil;
 	end
 
+	LOG.std(nil,"debug","query",query);
+
 	local skip  = query.page == 1 and 0 or query.page*query.amount-query.amount;
 	local limit = query.amount;
 
 	self:db():find({["+userid"] = {userid,limit=limit,skip=skip}},resume);
 	local err,response = yield(true);
 
-	LOG.std(nil,"debug","modDate",query.sort);
-
 	for key,value in ipairs(response) do
-		log(value);
 		local userParams = {};
 		userParams._id = value.userid;
 		local userInfor  = models.user:new():api_getminiprofile(userParams);
@@ -101,7 +102,7 @@ function worlds:get(params)
 
 	if(not err) then
 		if(query.sort == nil) then
-			return response;
+			return {error = {id = 0} , data = response};
 		elseif(query.sort == "modDate") then
 			local modDateTable = {};
 
@@ -132,10 +133,10 @@ function worlds:get(params)
 				end
 			end
 
-			return response;
+			return {error = {id = 0} , data = response};
 		end
 	else
-		return {error=-1,msg="database err"};
+		return {error = {id = -1}, msg="database err"};
 	end
 end
 
@@ -391,9 +392,9 @@ function worlds:api_refresh(params)
 			end
 
 			if(defaultDataSource["type"] == "github") then
-				insertParams.giturl = "https://github.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base64(query.worldsName);
+				insertParams.giturl = "https://github.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base32(query.worldsName);
 			elseif(defaultDataSource["type"] == "gitlab") then
-				insertParams.giturl = "http://git.keepwork.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base64(query.worldsName);
+				insertParams.giturl = "http://git.keepwork.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base32(query.worldsName);
 			end
 
 			local insertResponse = worlds._super.create(self, insertParams);
@@ -465,18 +466,18 @@ function worlds:update()
 end
 
 -- =转成-equal  +转成-plus  /转成-slash
-function worlds.base64(text)
+function worlds.base32(text)
 	if(text) then
 		local notLetter = string.find(text,"%A%A");
 
 		if(notLetter) then
-			text = Encoding.base64(text);
+			text = Encoding.to_base32(text);
 
 			text = text:gsub("[=]"  , "-equal");
 			text = text:gsub("[%+]" , "-plus");
 			text = text:gsub("[/]"  , "-slash");
 
-			text = "world_base64_" .. text;
+			text = "world_base32_" .. text;
 		else
 			text = "world_" .. text;
 		end
@@ -489,18 +490,18 @@ function worlds.base64(text)
 	end
 end
 
-function worlds.unbase64(text)
+function worlds.unbase32(text)
 	if(text) then
-		local notLetter = string.find(text,"world_base64_");
+		local notLetter = string.find(text,"world_base32_");
 
 		if(notLetter) then
-			text = text:gsub("world_base64_","");
+			text = text:gsub("world_base32_","");
 
 			text = text:gsub("[-equal]" , "=");
 			text = text:gsub("[-plus]"  , "+");
 			text = text:gsub("[-slash]" , "/");
 
-			return Encoding.unbase64(text);
+			return Encoding.from_base32(text);
 		else
 			text = text:gsub("world_","");
 
