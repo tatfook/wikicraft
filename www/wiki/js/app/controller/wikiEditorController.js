@@ -376,6 +376,7 @@ define([
                         }
                         serverPage = allPageMap[page.url] = page;
                     }
+
                     serverPage.isModify = page.isModify;
                     //console.log(page);
                     allWebstePageContent[page.url] = page.content;
@@ -428,6 +429,7 @@ define([
 
             // 保存页
             function savePageContent(cb, errcb) {
+                console.log(currentPage);
                 // 不能修改别人页面
                 if (isEmptyObject(currentPage) || !currentPage.isModify || currentPage.username != $scope.user.username) {
                     cb && cb();
@@ -602,6 +604,7 @@ define([
 
             // 打开页
             function openPage() {
+                //console.log(currentPage);
                 if (!currentPage) {
                     openUrlPage();
                     return;
@@ -630,6 +633,7 @@ define([
                         editorDocMap[currentPage.url] = CodeMirror.Doc(content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[currentPage.url]);
+                    //console.log(currentPage);
                     allWebstePageContent[currentPage.url] = editor.getValue();
                     CodeMirror.signal(editor, 'change', editor);
 
@@ -658,9 +662,17 @@ define([
 
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
                     getCurrentPageContent(function (data) {
+                        //console.log(data);
                         allWebstePageContent[currentPage.url] = data;
                         setEditorValue(data || "");
-                    }, openTempFile);
+                    }, function () {
+                        if (isEmptyObject(currentPage)) {
+                            openTempFile();
+                            return;
+                        }
+                        allWebstePageContent[currentPage.url] = "";
+                        setEditorValue("");
+                    });
                 });
 
                 // storage.indexedDBGetItem(config.pageStoreName, currentPage.url, function (page) {
@@ -686,7 +698,7 @@ define([
                     errcb && errcb();
                     return;
                 }
-
+                //console.log(allWebstePageContent);
                 var url = currentPage.url;
                 //console.log("-----------getPageContent-------------", url, currentPage, allWebstePageContent);
                 if (allWebstePageContent[url] != undefined) {
@@ -722,7 +734,7 @@ define([
                         showTags: true,
                         data: getTreeData($scope.user.username, allPageMap, false),
                         onNodeSelected: function (event, data) {
-                            //console.log(data.pageNode);
+                            console.log(data.pageNode);
                             //console.log("---------onNodeSelected----------");
                             if (data.pageNode.isLeaf) {
                                 if (currentPage && data.pageNode.url != currentPage.url) {
@@ -895,6 +907,7 @@ define([
                     }).result.then(function (provider) {
                         //console.log(provider);
                         if (provider == "page") {
+                            console.log(currentPage);
                             allPageMap[currentPage.url] = currentPage;
                             currentSite = getCurrentWebsite();
                             initTree();
@@ -917,6 +930,7 @@ define([
 
             //保存页面
             $scope.cmd_savepage = function (cb, errcb) {
+                console.log(currentPage);
                 if (!isEmptyObject(currentPage)) {//修改
                     var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
                     savePageContent(function () {
@@ -1438,6 +1452,12 @@ define([
                     cb && cb();
                     return;
                 }
+
+                if (!currentPage.isModify) {
+                    cb && cb();
+                    return;
+                }
+
                 currentPage.content = content;                             // 更新内容
                 currentPage.timestamp = (new Date()).getTime();           // 更新时间戳
                 //console.log(currentPage);

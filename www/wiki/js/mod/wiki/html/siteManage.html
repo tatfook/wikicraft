@@ -1,0 +1,26 @@
+<style>
+    .site-btn-group {
+        padding: 30px 0 3px;
+        text-align: center;
+        background-color: #FFFDFA;
+    }
+    .site-btn-group .large-btn{
+        border: 2px solid #F57270;
+        padding: 14.5px 61px;
+        font-size: 24px;
+        margin-right: 60px;
+        border-radius: 5px;
+        color: #F57270;
+        background-color: transparent;
+        display: inline-block;
+    }
+</style>
+
+<div ng-controller="siteManageController">
+    <div class="site-btn-group">
+        <a ng-show="isManager()" class="btn btn-primary large-btn" ng-click="goOrganizationManagePage()">组织管理</a>
+        <a ng-show="isManager()" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">作品管理</a>
+        <a ng-show="isMember()"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">提交作品</a>
+        <a ng-show="isVisitor()" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">申请加入</a>
+    </div>
+</div>

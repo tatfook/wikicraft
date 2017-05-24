@@ -8,13 +8,12 @@ define([
     // 使用闭包使模块重复独立使用
     function registerController(wikiblock) {
         // 个人主页头部控制器
-        app.registerController("personalHeaderController", ['$scope','Account','Message', function ($scope, Account, Message) {
+        app.registerController("headerController", ['$scope','Account','Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.user = Account.getUser();
 
             function init() {
-                console.log("----------init personal header---------");
             }
 
             $scope.attention = function () {
@@ -39,32 +38,6 @@ define([
                     Message.info("关注成功");
                     console.log(data);  // 申请成功
                 });
-            }
-
-            $scope.$watch("$viewContentLoaded", init);
-        }]);
-
-        // 组织主页头部控制器
-        app.registerController("organizationHeaderController", ['$scope','Account','Message', function ($scope, Account, Message) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.modParams = angular.copy(wikiblock.modParams || {});
-            $scope.user = Account.getUser();
-
-
-            function init() {
-                console.log("----------init organization header---------");
-            }
-
-            $scope.$watch("$viewContentLoaded", init);
-        }]);
-
-        // 比赛类头部控制器
-        app.registerController("gameHeaderController", ['$scope', function ($scope) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.modParams = angular.copy(wikiblock.modParams || {});
-
-            function init() {
-                console.log("----------init game header---------");
             }
 
             $scope.$watch("$viewContentLoaded", init);

@@ -220,7 +220,9 @@ define([
                                 content = md.render(content ||  notfoundHtmlContent);
                                 util.html('#__UserSitePageContent__', content, $scope);
                             };
-
+                            if (config.isLocal()) {
+                                currentDataSource.setLastCommitId("master");
+                            }
                             currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
                                 //console.log(data);
                                 renderContent(data);
