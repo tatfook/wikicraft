@@ -21,10 +21,10 @@
     }
 </style>
 <div ng-controller="titleController">
-    <div class="title1 container" ng-show="modParams.moduleKind=='title1'">
+    <div class="title1 container" ng-show="modParams.moduleKind=='title'">
         <h1>{{modParams.title}}</h1>
         <div class="content">
-            <p ng-repeat="param in modParams.params">{{param}}</p>
+            <p ng-bind-html="content"></p>
         </div>
     </div>
 </div>

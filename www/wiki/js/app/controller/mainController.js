@@ -4,6 +4,7 @@
 
 define([
     'app',
+    'markdown-it',
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
@@ -14,7 +15,7 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-], function (app, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
+], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
     var md = markdownwiki({html: true});
 
     app.controller('mainController', [
@@ -42,7 +43,7 @@ define([
                     $compile: $compile,
                     $auth: $auth,
                     $location:$location,
-
+                    markdownit:markdownit({}),
                     storage: storage,
                     Account: Account,
                     Message: Message,
