@@ -31,8 +31,9 @@ define([
 
                 if (wikiBlock.moduleKind == "organization") {
                     util.post(config.apiUrlPrefix + 'website/getStatics', {websiteId:siteinfo._id}, function (data) {
-                        $scope.statics = data || {};
-                        $scope.statics.recommendWorksCount = modParams.recommendWorksCount;
+                        data = data || {};
+                        $scope.modParams.userCount = data.userCount;
+                        $scope.modParams.worksCount = data.worksCount;
                     });
                 }
             }
@@ -103,7 +104,7 @@ define([
 ```
 ```@wiki/js/statics
  {
- "moduleKind":"gameStatics",
+ "moduleKind":"gameDemo",
  "btns":[
      {
          "link":"#",

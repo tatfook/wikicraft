@@ -413,7 +413,7 @@ function website:api_getStatics(params)
 	local memberCount =  websiteMemberDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local worksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	
-	return errors:wrap(nil, {memberCount=memberCount, worksCount=worksCount})
+	return errors:wrap(nil, {userCount=memberCount, worksCount=worksCount})
 end
 
 -- 检查用户站点是否存在

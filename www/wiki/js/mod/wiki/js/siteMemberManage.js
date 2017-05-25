@@ -36,15 +36,15 @@ define([
 
             // 获取组织申请成员
             $scope.clickApply = function () {
-                util.post(config.apiUrlPrefix + 'website_apply/getMemberByWebsiteId', {websiteId:siteinfo._id}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_member/getApplyByWebsiteId', {websiteId:siteinfo._id}, function (data) {
                     data = data || {};
-                    $scope.applyList = data.applyList;
+                    $scope.applyList = data.memberList;
                 });
             }
 
             // 移除成员
             $scope.removeMember = function (member) {
-                util.post(config.apiUrlPrefix + 'website_member/deleteById', {id:member._id}, function () {
+                util.post(config.apiUrlPrefix + 'website_member/deleteById', member, function () {
                    member.isDelete = true;
                 });
             }
@@ -52,11 +52,11 @@ define([
             // 设置或取消管理员
             $scope.setManager = function (member) {
                 if (member.roleId == 1) {
-                    util.post(config.apiUrlPrefix + 'website_member/unsetManager', {id:member._id}, function () {
+                    util.post(config.apiUrlPrefix + 'website_member/unsetManager', member, function () {
                         member.roleId = 2;  // 普通用户角色ID为1
                     });
                 } else {
-                    util.post(config.apiUrlPrefix + 'website_member/setManager', {id:member._id}, function () {
+                    util.post(config.apiUrlPrefix + 'website_member/setManager', member, function () {
                         member.roleId = 1;  // 管理员角色ID为1
                     });
                 }
@@ -64,7 +64,7 @@ define([
 
             // 同意成员加入
             $scope.clickAgreeMemeber = function (apply) {
-                util.post(config.apiUrlPrefix + 'website_apply/agreeMember', {websiteId:apply.websiteId, applyId:apply.applyId}, function () {
+                util.post(config.apiUrlPrefix + 'website_member/agreeMemberApply', apply, function () {
                     apply.isDelete = true;
                     console.log("同意成员加入");
                 });
@@ -72,7 +72,7 @@ define([
 
             // 拒绝成员加入
             $scope.clickRefuseMember = function (apply) {
-                util.post(config.apiUrlPrefix + 'website_apply/refuseMember', {websiteId:apply.websiteId, applyId:apply.applyId}, function () {
+                util.post(config.apiUrlPrefix + 'website_member/deleteById', apply, function () {
                     apply.isDelete = true;
                     console.log("拒绝成员加入");
                 });

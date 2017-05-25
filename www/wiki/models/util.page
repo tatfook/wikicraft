@@ -77,8 +77,12 @@ const.FAVORITE_TYPE_USER = 0
 const.FAVORITE_TYPE_WEBSITE = 1
 
 -- 作品状态
-const.WEBSITE_WORKS_STATE_NOPASS=0  -- 未审核
-const.WEBSITE_WORKS_STATE_PASS=1    -- 审核
+const.WEBSITE_WORKS_STATE_APPLY="apply"      -- 申请状态
+const.WEBSITE_WORKS_STATE_NORMAL="normal"    -- 正常
+
+-- 作品状态
+const.WEBSITE_MEMBER_STATE_APPLY="apply"      -- 申请状态
+const.WEBSITE_MEMBER_STATE_NORMAL="normal"    -- 正常
 
 -- 作品标记
 const.WEBSITE_WORKS_FLAG_NORMAL=0  -- 普通
@@ -90,10 +94,9 @@ const.WEBSITE_APPLY_TYPE_MEMBER=0     -- 成员申请
 const.WEBSITE_APPLY_TYPE_WORKS=1      -- 作品申请
 
 -- 站点用户角色
-const.WEBSITE_USER_ROLE_ADMIN=0   -- 拥有者
-const.WEBSITE_USER_ROLE_MANAGER=1 -- 管理员
-const.WEBSITE_USER_ROLE_NORMAL=2  -- 普通用户
-const.WEBSITE_USER_ROLE_JUDGE=10  -- 裁判
+const.WEBSITE_USER_ROLE_ADMIN="创建者"   -- 拥有者
+const.WEBSITE_USER_ROLE_MANAGER="管理员" -- 管理员
+const.WEBSITE_USER_ROLE_NORMAL="成员"    -- 普通用户
 
 -- 用户动态类型常量
 const.USER_TRENDS_TYPE_CREATE_SITE = 0

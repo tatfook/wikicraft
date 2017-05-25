@@ -17,10 +17,18 @@
 </style>
 
 <div ng-controller="siteManageController">
-    <div class="site-btn-group">
-        <a ng-show="isManager()" class="btn btn-primary large-btn" ng-click="goOrganizationManagePage()">组织管理</a>
-        <a ng-show="isManager()" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">作品管理</a>
-        <a ng-show="isMember()"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">提交作品</a>
-        <a ng-show="isVisitor()" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">申请加入</a>
+    <div class="site-btn-group" ng-show='modParams.moduleKind == "siteManage" || !modParams.moduleKind'>
+        <a ng-show="modParams.memberManage" class="btn btn-primary large-btn" ng-click="goMemberManagePage()">{{modParams.memberManageText || "成员管理"}}</a>
+        <a ng-show="modParams.worksManage" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">{{modParams.worksManageText || "作品管理"}}</a>
+        <a ng-show="modParams.worksApply"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">{{modParams.worksApplyText || "提交作品"}}</a>
+        <a ng-show="modParams.memberApply" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">{{modParams.memberApplyText || "申请加入"}}</a>
+    </div>
+
+    <div class="site-btn-group" ng-show='modParams.moduleKind == "siteManageDemo"'>
+        <a ng-show="modParams.memberManage" class="btn btn-primary large-btn" ng-click="goMemberManagePage()">{{modParams.memberManageText || "成员管理"}}</a>
+        <a ng-show="modParams.worksManage" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">{{modParams.worksManageText || "作品管理"}}</a>
+        <a ng-show="modParams.worksApply"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">{{modParams.worksApplyText || "提交作品"}}</a>
+        <a ng-show="modParams.memberApply" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">{{modParams.memberApplyText || "申请加入"}}</a>
+        <a ng-show="modParams.tutorialVideo" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">{{modParams.tutorialVideoText || "教学视屏"}}</a>
     </div>
 </div>

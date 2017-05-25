@@ -34,6 +34,7 @@ define([
                     });
                 }
             });
+
             // 作品列表
             $scope.clickWorksList = function () {
                 // 获取作品列表
@@ -45,9 +46,9 @@ define([
             // 作品申请；列表
             $scope.clickWorksApply = function () {
                 // 获取审核列表
-                util.post(config.apiUrlPrefix + "website_apply/getWorksByWebsiteId", {websiteId: siteinfo._id}, function (data) {
+                util.post(config.apiUrlPrefix + "website_works/getApplyByWebsiteId", {websiteId: siteinfo._id}, function (data) {
                     data = data || {};
-                    $scope.applyList = data.applyList;
+                    $scope.applyList = data.worksList;
                 });
             }
 
@@ -63,21 +64,21 @@ define([
 
             // 同意作品申请
             $scope.agreeApply = function (apply) {
-                util.post(config.apiUrlPrefix + 'website_apply/agreeWorks', {websiteId:siteinfo._id, applyId:apply.worksInfo._id}, function () {
+                util.post(config.apiUrlPrefix + 'website_works/agreeWorksApply', apply, function () {
                     apply.isDeleted = true;
                     console.log("作品审核通过");
                 });
             }
             // 拒绝作品申请
             $scope.refuseApply = function (apply) {
-                util.post(config.apiUrlPrefix + 'website_apply/refuseWorks', {websiteId:siteinfo._id, applyId:apply.worksInfo._id}, function () {
+                util.post(config.apiUrlPrefix + 'website_works/deleteById', apply, function () {
                     apply.isDeleted = true;
                     console.log("作品审核拒绝");
                 });
             }
             // 移除作品
             $scope.removeWorks = function (works) {
-                util.post(config.apiUrlPrefix + 'website_works/deleteById', {id:works._id}, function () {
+                util.post(config.apiUrlPrefix + 'website_works/deleteById', works, function () {
                     works.isDeleted = true;
                     console.log("成功移除作品")
                 });

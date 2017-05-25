@@ -123,7 +123,7 @@
 </style>
 <div class="org-manage clearfix" ng-controller="siteMemberManageController">
     <div class="panel">
-        <div class="panel-heading">组织管理</div>
+        <div class="panel-heading">成员管理</div>
         <div class="panel-body">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#member" ng-click="clickMember()" aria-controls="member" role="tab" data-toggle="tab">成员列表</a></li>
@@ -135,10 +135,10 @@
                 <div role="tabpanel" class="tab-pane active" id="member">
                     <div ng-repeat="member in memberList">
                         <div ng-hide="member.isDelete" class="notify-item member-item">
-                            <img ng-src="{{member.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
+                            <img ng-src="{{member.userLogo || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
                             <div class="user-msg">
-                                <h4><a>{{member.userInfo.username}}</a></h4>
-                                <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">深圳</span></p>
+                                <h4><a>{{member.username}}</a></h4>
+                                <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{member.location}}</span></p>
                             </div>
                             <div class="btn btn-primary" ng-click="setManager(member)">{{(member.roleId == 0 || member.roleId == 1) ? '取消管理员' : '设定管理员'}}</div>
                             <div class="btn btn-outline" ng-click="removeMember(member)">删除</div>
@@ -148,10 +148,10 @@
                 <div role="tabpanel" class="tab-pane" id="notify">
                     <div ng-repeat="apply in applyList">
                         <div ng-hide="apply.isDelete" class="notify-item">
-                            <img ng-src="{{apply.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
+                            <img ng-src="{{apply.userLogo || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
                             <div class="user-msg">
-                                <h4><a>{{apply.userInfo.username}}</a></h4>
-                                <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{apply.userInfo.location}}</span></p>
+                                <h4><a>{{apply.username}}</a></h4>
+                                <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{apply.location}}</span></p>
                             </div>
                             <p class="notify-msg">申请加入ParaCraft学习小组</p>
                             <div class="btn btn-primary" ng-click="clickAgreeMemeber(apply)">同意</div>

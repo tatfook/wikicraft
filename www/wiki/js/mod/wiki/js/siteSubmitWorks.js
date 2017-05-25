@@ -172,22 +172,16 @@ define([
                     return;
                 }
                 $scope.works.websiteId = siteinfo._id;
-                $scope.works.username = $scope.user.username;
-                util.post(config.apiUrlPrefix + 'user_works/upsert', $scope.works, function (data) {
-                    if (!data || !data._id) {
-                        return;
-                    }
-                    util.post(config.apiUrlPrefix + "website_apply/worksApply", {
-                        websiteId: siteinfo._id,
-                        applyId: data._id,
-                    }, function () {
-                        var finish = function () {
-                            window.history.back();
-                        };
-                        config.services.confirmDialog({title:"作品提交", content:"作品提交成功", cancelBtn:false}, finish, finish);
-                    }, function () {
-                        Message.info("作品提交失败...");
-                    });
+                $scope.works.worksUsername = $scope.user.username;
+
+                var finish = function () {
+                    window.history.back();
+                };
+
+                util.post(config.apiUrlPrefix + 'website_works/submitWorksApply', $scope.works, function (data) {
+                    config.services.confirmDialog({title:"作品提交", content:"作品提交成功", cancelBtn:false}, finish, finish);
+                },function () {
+                    config.services.confirmDialog({title:"作品提交", content:"作品提交失败", cancelBtn:false});
                 });
                 //console.log($scope.works);
             }
@@ -204,8 +198,6 @@ define([
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;
-                    modParams.username = "xiaoyao";
-                    modParams.sitename = "xiaoyao";
                     if (modParams.username && modParams.sitename) {
                         util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
                             userinfo = data.userinfo;

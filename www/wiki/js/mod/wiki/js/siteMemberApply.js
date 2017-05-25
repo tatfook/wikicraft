@@ -27,9 +27,20 @@ define([
             }
 
             $scope.clickMemberApply = function () {
-                util.post(config.apiUrlPrefix + 'website_apply/memberApply', {websiteId:siteinfo._id, applyId:$scope.user._id}, function () {
-                    console.log("成员申请成功");
+                var finish = function () {
                     history.back();
+                };
+                var apply = {
+                    websiteId: siteinfo._id,
+                    username: $scope.user.username,
+                    location: $scope.user.location,
+                    userDesc: $scope.userDesc,
+                };
+
+                util.post(config.apiUrlPrefix + 'website_member/submitMemberApply', apply, function () {
+                    config.services.confirmDialog({title:"成员申请", content:"成员申请成功", cancelBtn:false}, finish);
+                }, function () {
+                    config.services.confirmDialog({title:"成员申请", content:"成员申请失败", cancelBtn:false}, finish);
                 });
             }
 

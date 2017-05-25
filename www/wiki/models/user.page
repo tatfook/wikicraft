@@ -718,7 +718,7 @@ function user:api_getDetailByName(params)
 	
 	-- 加入的组织
 	local websiteMemberDB = models.website_member:new()
-	local joinOrganizationObj = websiteMemberDB:api_getOrganizationListByUserId({userId=userinfo._id}).data	
+	local joinOrganizationObj = websiteMemberDB:api_getOrganizationListByUsername({username=userinfo.username}).data	
 	
 	-- 获取热门作品
 	local hotSiteObj = websiteDB:api_getSiteList({username=userinfo.username,sortBy="-favoriteCount"}).data	

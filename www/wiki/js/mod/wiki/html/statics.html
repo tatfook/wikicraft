@@ -173,13 +173,13 @@
         <div class="org-statics template-theme" ng-class="themeClass" >
             <div class="msg-box clearfix">
                 <div class="msg">
-                    <p class="text-primary">全部成员 <span>{{statics.memberCount || 0}}</span></p>
+                    <p class="text-primary">{{modParams.userCountText || "全部成员"}} <span class="theme-font-color">{{message.userCount || 0}}</span></p>
                 </div>
                 <div class="msg">
-                    <p class="text-primary">推荐作品 <span>{{statics.recommendWorksCount || 0}}</span></p>
+                    <p class="text-primary">{{modParams.recommendWorksCountText || "推荐作品"}} <span class="theme-font-color">{{message.recommendWorksCount || 0}}</span></p>
                 </div>
                 <div class="msg">
-                    <p class="text-primary">全部作品 <span>{{statics.worksCount || 0}}</span></p>
+                    <p class="text-primary">{{modParams.worksCountText || "全部作品"}} <span class="theme-font-color">{{message.worksCount || 0}}</span></p>
                 </div>
             </div>
         </div>
@@ -199,8 +199,14 @@
                 <a class="btn btn-primary large-btn" href="{{btn.link}}" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
             </div>
             <div class="msg-box clearfix game-msg">
-                <div class="msg" ng-repeat="message in modParams.messages">
-                    <p class="text-primary">{{message.info}} <span class="theme-font-color">{{message.count}}</span></p>
+                <div class="msg">
+                    <p class="text-primary">{{modParams.userCountText || "参赛作者"}} <span class="theme-font-color">{{message.userCount || 0}}</span></p>
+                </div>
+                <div class="msg">
+                    <p class="text-primary">{{modParams.userCountText || "参赛作品"}} <span class="theme-font-color">{{message.worksCount || 0}}</span></p>
+                </div>
+                <div class="msg">
+                    <p class="text-primary">{{modParams.riseCountText || "入围作品"}} <span class="theme-font-color">{{message.riseCount || 0}}</span></p>
                 </div>
             </div>
         </div>

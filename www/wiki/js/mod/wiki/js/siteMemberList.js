@@ -21,55 +21,46 @@ define([
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
             $scope.modParams=modParams;
+            console.log("--------------------");
 
             // 初始化信息
             function init() {
+                console.log("--------------------");
+                $scope.memberList = $scope.modParams.memberList || [];
                 util.post(config.apiUrlPrefix + 'website_member/getByWebsiteId', {
                     page: 1,
                     pageSize: 8,
                     websiteId: siteinfo._id
                 }, function (data) {
                     data = data || {};
-                    $scope.memberList = data.memberList;
+                    $scope.memberList = $scope.memberList.concat(data.memberList);
                 });
-            }
-
-            // 获得角色名
-            $scope.getRoleName = function (member) {
-                if (member.roleId == 0) {
-                    return "创建者";
-                } else if (member.roleId == 1) {
-                    return "管理员";
-                } else if (member.roleId == 2) {
-                    return "成员";
-                }
-
-                return "未知";
             }
 
             // 跳至用户页
             $scope.goUserPage = function (member) {
-                util.goUserSite('/' + member.userInfo.username);
+                util.go('/' + member.username);
             }
 
             $scope.$watch('$viewContentLoaded', function () {
-                if (!modParams.username ||  !modParams.sitename) {
-                    var urlObj = util.parseUrl();
-                    modParams.username = urlObj.username;
-                    modParams.sitename = urlObj.sitename;
+                if (userinfo && siteinfo) {
+                    modParams.username = userinfo.username;
+                    modParams.sitename = siteinfo.name;
+                    init();
+                } else {
+                    if (!modParams.username ||  !modParams.sitename) {
+                        var urlObj = util.parseUrl();
+                        modParams.username = urlObj.username;
+                        modParams.sitename = urlObj.sitename;
+                    }
+                    util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
+                        userinfo = data.userinfo;
+                        siteinfo = data.siteinfo;
+                        userinfo && siteinfo && init();
+                    });
                 }
-                util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
-                    userinfo = data.userinfo;
-                    siteinfo = data.siteinfo;
-                    userinfo && siteinfo && init();
-                });
             });
         }]);
-        
-        app.registerController("memberListController",["$scope",function ($scope) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.modParams = getModParams(wikiblock);
-        }])
     }
 
     return {
@@ -91,7 +82,7 @@ define([
 /*
 ```@wiki/js/organizationMemberList
  {
-    "moduleKind":"game",
+    "moduleKind":"gameDemo",
     "title":"评委成员",
     "memberList":[
         {

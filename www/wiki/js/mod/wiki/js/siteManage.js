@@ -30,17 +30,36 @@ define([
 
             function init() {
                 // $scope.user 为当前使用用户也是当前访问者
-                if ($scope.user && $scope.user._id) {
-                    util.post(config.apiUrlPrefix + 'website_member/getBySiteUserId', {websiteId:siteinfo._id, userId: $scope.user._id}, function (data) {
-                        visitorInfo = data;
-                    });
+                $scope.modParams.memberApply = false;
+                $scope.modParams.worksApply = false;
+                $scope.modParams.memberManage = false;
+                $scope.modParams.worksManage = false;
+
+                if ($scope.modParams.moduleKind == "siteManageDemo") {
+                    $scope.modParams.worksApply = true;
+                    $scope.modParams.tutorialVideo = true;
+                } else {
+                    if ($scope.user && $scope.user._id) {
+                        util.post(config.apiUrlPrefix + 'website_member/getBySiteUsername', {websiteId:siteinfo._id, username: $scope.user.username}, function (data) {
+                            visitorInfo = data;
+
+                            if (!visitorInfo) {  // 访客
+                                $scope.modParams.memberApply = true;
+                            } else if (visitorInfo.username == $scope.user.username || visitorInfo.roleName == "管理员") { // 管理员
+                                $scope.modParams.memberApply = true;
+                                $scope.modParams.worksApply = true;
+                                $scope.modParams.memberManage = true;
+                                $scope.modParams.worksManage = true;
+                            } else if (visitorInfo.roleName == "成员") { // 成员
+                                $scope.modParams.memberApply = true;
+                                $scope.modParams.worksApply = true;
+                            }
+                        });
+                    }
                 }
             }
 
             $scope.$watch("$viewContentLoaded", function () {
-                modParams.username = "xiaoyao";
-                modParams.sitename = "xiaoyao";
-
                 if (userinfo && siteinfo) {
                     modParams.username = userinfo.username;
                     modParams.sitename = siteinfo.name;
@@ -59,34 +78,7 @@ define([
                 }
             });
 
-            $scope.isVisitor = function () {
-                return true;
-                if (!visitorInfo) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            $scope.isMember = function () {
-                return true;
-                if (visitorInfo && visitorInfo.roleId <= 2) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            $scope.isManager = function () {
-                return true;
-                if (visitorInfo && visitorInfo.roleId <= 1) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            $scope.goOrganizationManagePage = function () {
+            $scope.goMemberManagePage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 util.go('/wiki/js/mod/wiki/js/siteMemberManage');
             }

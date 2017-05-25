@@ -138,22 +138,22 @@
                     <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList">
                         <div ng-hide="works.isDeleted">
                             <a ng-click="goWorksPage(works)" class="work-profile">
-                                <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'org_work.jpg')}}">
+                                <img ng-src="{{works.worksLogo || (imgsPath + 'org_work.jpg')}}">
                             </a>
                             <div class="text clearfix">
                                 <div class="clearfix">
                                     <div class="pull-left">
-                                        <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle || "未命名"}}</a></h4>
-                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksInfo.username || ""}}</a></p>
+                                        <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksTitle || "未命名"}}</a></h4>
+                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
                                     </div>
                                     <div class="btn btn-primary pull-right" ng-click="removeWorks(works)">移除</div>
                                 </div>
                                 <p class="pull-left info">
                                     <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
                                 </p>
-                                <p class="pull-right info" ng-click="worksFavorite($event, works)">
+                                <!--p class="pull-right info" ng-click="worksFavorite($event, works)">
                                     <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
-                                </p>
+                                </p-->
                             </div>
                         </div>
                     </div>
@@ -161,12 +161,12 @@
                 <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
                     <div class="org-notify-item" ng-repeat="apply in applyList">
                         <div ng-hide="apply.isDeleted">
-                            <p><a class="stress" ng-click="goApplyWorksPage(apply)">标题：{{apply.worksInfo.worksTitle}} </a><a> 作者：{{apply.worksInfo.username}}</a></p>
+                            <p><a class="stress" ng-click="goApplyWorksPage(apply)">标题：{{apply.worksTitle}} </a><a> 作者：{{apply.worksUsername}}</a></p>
                             <div class="notify-work">
-                                <img ng-src="{{ apply.worksInfo.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
+                                <img ng-src="{{ apply.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
                                 <div class="intro">
                                     <p>介绍：</p>
-                                    <p>{{apply.worksInfo.worksDesc}}</p>
+                                    <p>{{apply.worksDesc}}</p>
                                 </div>
                                 <div class="btn btn-primary" ng-click="agreeApply(apply)">同意</div>
                                 <div class="btn btn-outline" ng-click="refuseApply(apply)">删除</div>

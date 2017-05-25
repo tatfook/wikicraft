@@ -13,8 +13,6 @@ define([
 
     function registerController(wikiBlock) {
         app.registerController("workslistController", ['$rootScope', '$scope','Account','Message',function ($rootScope, $scope, Account, Message) {
-            //console.log($rootScope.siteinfo);
-
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
             $scope.requestParams = {pageSize: 3, page: 0};
@@ -50,7 +48,7 @@ define([
                         $scope.siteTotal = data.total;
                     } else if (modParams.moduleKind == "organization") {
                         $scope.worksList = data.worksList;
-                        $scope.worksTotal = data.total;
+                        $scope.worksTotal = data.total || 0;
                     }
                 });
             }
@@ -68,13 +66,16 @@ define([
                         $scope.requestUrl = config.apiUrlPrefix + "website/getAllByUsername";
                         $scope.requestParams.username = siteinfo.username;
                     }
-                } else if (modParams.moduleKind == "organization") {
+                } else if (modParams.moduleKind == "organization" || modParams.moduleKind == "game") {
                     if (modParams.type == "all") {   // 全部
                         $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
                         $scope.requestParams.websiteId = siteinfo._id;
-                    } else if (modParams.type == "recommend") {  // 推荐
+                    } else if (modParams.type == "custom") {  // 推荐
                         $scope.requestUrl = config.apiUrlPrefix + 'website_works/getByWorksUrlList';
                         $scope.requestParams.worksUrlList = modParams.worksUrlList || [];
+                        $scope.requestParams.websiteId = siteinfo._id;
+                    } else if (modParams.type == "latestJoin") {  // 推荐
+                        $scope.requestUrl = config.apiUrlPrefix + 'website_works/getLatestByWebsiteId';
                         $scope.requestParams.websiteId = siteinfo._id;
                     }
                     /*
@@ -98,14 +99,6 @@ define([
                         $scope.requestParams.userId = $scope.userinfo._id;
                     }
                     */
-                } else if (modParams.moduleKind == "game") {
-                    if (modParams.type == "all") {   // 全部
-                        $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-                        $scope.requestParams.websiteId = siteinfo._id;
-                    } else if (modParams.type == "latestJoin") {  // 推荐
-                        $scope.requestUrl = config.apiUrlPrefix + 'website_works/getLatestByWebsiteId';
-                        $scope.requestParams.websiteId = siteinfo._id;
-                    }
                 }
                 $scope.getList();
             }
@@ -146,6 +139,7 @@ define([
 {
     "moduleKind":"organization",
     "pageSize":8,
+    "type":"all",
     "title":"全部作品"
 }
 ```
@@ -153,7 +147,7 @@ define([
 /*
 ```@wiki/js/workslist
 {
-"moduleKind":"game",
+"moduleKind":"gameDemo",
 "title":"全部作品",
 "moreLink":"http://www.baidu.com",
 "worksList":[
@@ -196,8 +190,9 @@ define([
 /*
 ```@wiki/js/workslist
  {
- "moduleKind":"game2",
+ "moduleKind":"game",
  "title":"全部作品",
+ "type":"all",
  "moreLink":"http://www.baidu.com",
  "worksList":[
  {

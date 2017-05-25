@@ -270,11 +270,11 @@
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
                 <a ng-click="goWorksPage(works)">
-                    <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'personal_workslist_banner.jpg')}}">
+                    <img ng-src="{{works.worksLogo || (imgsPath + 'personal_workslist_banner.jpg')}}">
                 </a>
                 <div class="text clearfix">
-                    <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle}}</a></h4>
-                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksInfo.username}}</a></p>
+                    <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksTitle}}</a></h4>
+                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksUsername}}</a></p>
                     <p class="pull-left info">
                         <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
                     </p>
@@ -285,7 +285,31 @@
             </div>
         </div>
     </div>
-    <div class="org-works-list container" ng-show="modParams.moduleKind=='game'">
+
+    <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a>查看更多</a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
+                <a ng-click="goWorksPage(works)">
+                    <img ng-src="{{works.worksLogo || getImageUrl('personal_workslist_banner.jpg', imgsPath)}}">
+                </a>
+                <div class="text clearfix">
+                    <h4><a class="title"  ng-click="goWorksPage(works)">{{works.worksName}}</a></h4>
+                    <p>
+                        <a ng-click="goUserPage(works)">作者：{{works.worksUsername}}</a>
+                        <span class="info pull-right">
+                            <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount}}</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-works-list container" ng-show="modParams.moduleKind=='gameDemo'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation">
             <a href="{{modParams.moreLink}}" target="_blank">查看更多</a>
@@ -302,28 +326,6 @@
                         <a href="{{work.authorLink}}" class="pull-right" ng-show="work.authorLink">{{work.author}}</a>
                         <span class="pull-right" ng-show="!work.authorLink">{{work.author}}</span>
                     </h4>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game2'">
-        <h1>{{modParams.title || "全部作品"}}</h1>
-        <div class="navigation">
-            <a href="{{modParams.moreLink}}">查看更多</a>
-        </div>
-        <div class="clearfix works">
-            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="work in modParams.worksList">
-                <a href="{{work.workLink}}">
-                    <img ng-src="{{work.imgUrl || getImageUrl('personal_workslist_banner.jpg',imgsPath)}}">
-                </a>
-                <div class="text clearfix">
-                    <h4><a class="title" href="{{work.workLink}}">{{work.workName}}</a></h4>
-                    <p>
-                        <a href="{{work.authorLink}}">作者：{{work.author}}</a>
-                        <span class="info pull-right">
-                            <span class="glyphicon glyphicon-eye-open"></span> {{work.info}} <span>{{work.count}}</span>
-                        </span>
-                    </p>
                 </div>
             </div>
         </div>

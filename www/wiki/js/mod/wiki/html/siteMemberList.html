@@ -98,27 +98,49 @@
         float: left;
     }
 </style>
-<div class="org-team" ng-controller="siteMemberListController" ng-show="modParams.moduleKind=='organize' || !modParams.moduleKind">
-    <div class="container">
-        <h1>{{modParams.title || "PARACRAFT小组成员"}}</h1>
-        <div class="team">
-            <div class="navigation">
-                <a>1</a>
-                <a>2</a>
-                <a>3</a>
-                <a>>></a>
-            </div>
-            <div class="members">
-                <div class="member-item" ng-repeat="member in memberList">
-                    <img ng-src="{{member.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" style="width: 103px; height: 103px;" alt="">
-                    <p>{{member.userInfo.username}}<span class="info" style="margin-left: 10px">{{getRoleName(member)}}</span></p>
+
+<div ng-controller="siteMemberListController">
+    <div class="org-team" ng-show="modParams.moduleKind=='organization'">
+        <div class="container">
+            <h1>{{modParams.title || "PARACRAFT小组成员"}}</h1>
+            <div class="team">
+                <div class="navigation">
+                    <a>1</a>
+                    <a>2</a>
+                    <a>3</a>
+                    <a>>></a>
+                </div>
+                <div class="members">
+                    <div class="member-item" ng-repeat="member in memberList">
+                        <img ng-src="{{member.userLogo || imgsPath+'personsal_header_profile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                        <p>{{member.username}}<span class="info" style="margin-left: 10px">{{member.roleName || "成员"}}</span></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div ng-controller="memberListController">
-    <div class="org-team game-members" ng-show="modParams.moduleKind=='game'">
+
+    <div class="org-team" ng-show="modParams.moduleKind=='game'">
+        <div class="container">
+            <h1>{{modParams.title || "评委成员"}}</h1>
+            <div class="team">
+                <div class="navigation">
+                    <a>1</a>
+                    <a>2</a>
+                    <a>3</a>
+                    <a>>></a>
+                </div>
+                <div class="members">
+                    <div class="member-item" ng-repeat="member in memberList">
+                        <img ng-src="{{member.userLogo || imgsPath+'personsal_header_profile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                        <p>{{member.username}}<span class="info" style="margin-left: 10px">{{member.roleName || "成员"}}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-team game-members" ng-show="modParams.moduleKind=='gameDemo'">
         <div class="container">
             <h1>{{modParams.title || "评委成员"}}</h1>
             <div class="team">
@@ -130,8 +152,8 @@
                 </div>
                 <div class="members">
                     <div class="member-item" ng-repeat="member in modParams.memberList">
-                        <img ng-src="{{member.imgUrl || imgsPath+'game_userProfile.jpg'}}" style="width: 103px; height: 103px;" alt="">
-                        <p>{{member.username}}<span class="info pull-right">{{member.level}}</span></p>
+                        <img ng-src="{{member.userLogo || imgsPath+'game_userProfile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                        <p>{{member.username}}<span class="info pull-right">{{member.roleName || "成员"}}</span></p>
                     </div>
                 </div>
             </div>
