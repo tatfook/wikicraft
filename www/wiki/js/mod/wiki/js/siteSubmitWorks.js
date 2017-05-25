@@ -6,9 +6,10 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!wikimod/wiki/html/organizationSubmitWorks.html',
+    'helper/dataSource',
+    'text!wikimod/wiki/html/siteSubmitWorks.html',
     'cropper'
-], function (app, util, storage, htmlContent) {
+], function (app, util, storage, dataSource, htmlContent) {
 
     function getModParams(wikiblock) {
         var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
@@ -16,8 +17,9 @@ define([
     }
 
     function registerController(wikiblock) {
-        app.registerController('organizationSubmitWorksController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
+        app.registerController('submitWorksController',['$scope', 'Account', 'Message', function ($scope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.works = {};
             var modParams = getModParams(wikiblock);
             var userinfo = undefined;
             var siteinfo = undefined;
@@ -132,24 +134,35 @@ define([
 
             function init() {
                 initImageUpload();
+                // 获取用户所有站点
+                var finish = function () {
+                    config.loading.hideLoading();
+                };
 
-                // 获取用户所有页面
-                util.post(config.apiUrlPrefix + 'website_pageinfo/getByUsername', {username: $scope.user.username}, function (data) {
-                    data = data || {};
-                    var pageinfoList = data.pageinfoList || [];
-                    var allWebsitePages = [];
-                    for (var i = 0; i < pageinfoList.length; i++) {
-                        allWebsitePages = allWebsitePages.concat(angular.fromJson(pageinfoList[i] || '[]'));
-                    }
-                    $scope.itemArray = [];
-                    for (var i = 0; i < allWebsitePages.length; i++) {
-                        if (allWebsitePages[i].name[0] != "_") {
-                            $scope.itemArray.push({id:i,url:allWebsitePages[i].url});
+                config.loading.showLoading();
+                util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}, function (data) {
+                    var siteList = data || [];
+                    var userDataSource = dataSource.getUserDataSource($scope.user.username);
+                    $scope.pageList = [];
+                    userDataSource.registerInitFinishCallback(function () {
+                        var fnList = [];
+                        for (var i = 0; i < siteList.length; i++) {
+                            fnList.push((function (index) {
+                                return function (cb, errcb) {
+                                    var siteinfo = siteList[index];
+                                    var DataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId || $scope.user.dataSourceId);
+                                    DataSource.getTree({path:'/' + siteinfo.username + '/' + siteinfo.name}, function (data) {
+                                        $scope.pageList = $scope.pageList.concat(data || []);
+                                        //console.log($scope.pageList);
+                                        cb && cb();
+                                    }, errcb)
+                                }
+                            })(i));
                         }
-                    }
-                    //console.log($scope.itemArray);
-                    //console.log(allWebsitePages);
-                });
+
+                        util.sequenceRun(fnList, undefined, finish, finish);
+                    });
+                }, finish);
             }
 
             // 提交作品
@@ -158,6 +171,7 @@ define([
                     Message.info("无权限提交!!!");
                     return;
                 }
+                $scope.works.websiteId = siteinfo._id;
                 $scope.works.username = $scope.user.username;
                 util.post(config.apiUrlPrefix + 'user_works/upsert', $scope.works, function (data) {
                     if (!data || !data._id) {
@@ -167,8 +181,10 @@ define([
                         websiteId: siteinfo._id,
                         applyId: data._id,
                     }, function () {
-                        Message.info("作品提交成功^-^");
-                        window.history.back();
+                        var finish = function () {
+                            window.history.back();
+                        };
+                        config.services.confirmDialog({title:"作品提交", content:"作品提交成功", cancelBtn:false}, finish, finish);
                     }, function () {
                         Message.info("作品提交失败...");
                     });
@@ -188,6 +204,8 @@ define([
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;
+                    modParams.username = "xiaoyao";
+                    modParams.sitename = "xiaoyao";
                     if (modParams.username && modParams.sitename) {
                         util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
                             userinfo = data.userinfo;
@@ -209,6 +227,10 @@ define([
 });
 
 /*
- ```@wiki/js/submitWork
- ```
+```@wiki/js/submitWork
+{
+    "username":"keepwork",
+    "sitename":"game",
+}
+```
  */

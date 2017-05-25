@@ -8,12 +8,13 @@ define([
     // 使用闭包使模块重复独立使用
     function registerController(wikiblock) {
         // 比赛类活动奖励控制器
-        app.registerController("titleController", ['$scope', function ($scope) {
+        app.registerController("titleController", ['$scope','$sce', function ($scope, $sce) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
 
             function init() {
                 console.log("----------init game rewards---------");
+                $scope.content = $sce.trustAsHtml(config.services.markdownit.render($scope.modParams.content || ""));
             }
 
             $scope.$watch("$viewContentLoaded", init);
@@ -31,11 +32,9 @@ define([
 /*
 ```@wiki/js/title
 {
-    "moduleKind":"title1",
+    "moduleKind":"title",
     "title":"大赛简介",
-    "params":[
-    "比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍"
-    ]
+    "content":"比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍比赛介绍"
 }
 ```
 */

@@ -185,6 +185,11 @@ define([
             return github.rootPath + (params.path || "");
         }
 
+        // 设置lastCommitId
+        github.setLastCommitId = function (lastCommitId) {
+            github.lastCommitId = lastCommitId;
+        }
+
         github.init = function (dataSource, cb, errcb) {
             var self = github;
             if (github.inited) {

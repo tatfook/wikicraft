@@ -148,43 +148,6 @@ define([
         }
 
         function init() {
-            //util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
-            //util.http('POST', config.apiUrlPrefix + 'website_template_config', {}, function (data) {
-            //     $scope.categories = data;
-            //     for (var i = 0; $scope.categories && i < $scope.categories.length; i++) {
-            //         var cateory = $scope.categories[i];
-            //         for (var j = 0; j < cateory.templates.length; j++) {
-            //             var template = cateory.templates[j];
-            //             template.content = $sce.trustAsHtml(template.content);
-            //             for (var k = 0; k < template.styles.length; k++) {
-            //                 var style = template.styles[k];
-            //                 style.content = $sce.trustAsHtml(style.content);
-            //             }
-            //         }
-            //         if ($scope.website.categoryId == $scope.categories[i]._id) {
-            //             $scope.templates = $scope.categories[i].templates;
-            //         }
-            //     }
-            //
-            //     for (var i = 0; $scope.templates && i < $scope.templates.length; i++) {
-            //         if ($scope.website.templateId == $scope.templates[i]._id) {
-            //             $scope.styles = $scope.templates[i].styles;
-            //             break;
-            //         }
-            //     }
-            //
-            //     $scope.templates = $scope.categories[0].templates;
-            //     $scope.styles = $scope.templates[0].styles;
-            //     $scope.website.categoryId = $scope.categories[0]._id;
-            //     $scope.website.categoryName = $scope.categories[0].name;
-            //     $scope.website.templateId = $scope.templates[0]._id;
-            //     $scope.website.templateName = $scope.templates[0].name;
-            //     $scope.website.styleId = $scope.styles[0]._id;
-            //     $scope.website.styleName = $scope.styles[0].name;
-            //     $scope.category = $scope.categories[0];
-            //     $scope.template = $scope.templates[0];
-            //     $scope.style = $scope.styles[0];
-            // });
             $scope.categories = siteStyle;
             $scope.templates = $scope.categories[0].templates;
             $scope.styles = $scope.templates[0].styles;
@@ -316,14 +279,14 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
-            util.goUserSite('/' + $scope.user.username + '/' + $scope.website.name + '/index');
+            util.go('/' + $scope.user.username + '/' + $scope.website.name + '/index');
         }
 
         //网站设置
         $scope.goEditWebsitePage = function () {
             storage.sessionStorageSetItem("editWebsiteParams", $scope.website);
             storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
-            util.go('userCenter', true);
+            util.go('/wiki/userCenter', true);
             //window.open(window.location.href);
         }
     }];

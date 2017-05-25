@@ -6,7 +6,7 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!wikimod/wiki/html/organizationMemberManage.html'
+    'text!wikimod/wiki/html/siteMemberManage.html'
 ], function (app, util, storage, htmlContent) {
 
     function getModParams(wikiblock) {
@@ -16,7 +16,7 @@ define([
 
 
     function registerController(wikiblock) {
-        app.registerController('organizationMemberManageController',['$scope', function ($scope) {
+        app.registerController('siteMemberManageController',['$scope', function ($scope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
             var userinfo = undefined;

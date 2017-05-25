@@ -121,56 +121,42 @@
         }
     }
 </style>
-<div class="org-manage clearfix" ng-controller="orgManageController">
+<div class="org-manage clearfix" ng-controller="siteMemberManageController">
     <div class="panel">
         <div class="panel-heading">组织管理</div>
         <div class="panel-body">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#member" aria-controls="member" role="tab" data-toggle="tab">成员列表</a></li>
-                <li role="presentation"><a href="#notify" aria-controls="notify" role="tab" data-toggle="tab">申请通知</a></li>
+                <li role="presentation" class="active"><a href="#member" ng-click="clickMember()" aria-controls="member" role="tab" data-toggle="tab">成员列表</a></li>
+                <li role="presentation"><a href="#notify" ng-click="clickApply()" aria-controls="notify" role="tab" data-toggle="tab">申请通知</a></li>
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="member">
-                    <div class="notify-item member-item" ng-repeat="item in [1,2,3,4]">
-                        <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
-                        <div class="user-msg">
-                            <h4><a>Kaitlyn</a></h4>
-                            <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">深圳</span></p>
+                    <div ng-repeat="member in memberList">
+                        <div ng-hide="member.isDelete" class="notify-item member-item">
+                            <img ng-src="{{member.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
+                            <div class="user-msg">
+                                <h4><a>{{member.userInfo.username}}</a></h4>
+                                <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">深圳</span></p>
+                            </div>
+                            <div class="btn btn-primary" ng-click="setManager(member)">{{(member.roleId == 0 || member.roleId == 1) ? '取消管理员' : '设定管理员'}}</div>
+                            <div class="btn btn-outline" ng-click="removeMember(member)">删除</div>
                         </div>
-                        <div class="btn btn-primary">设定管理员</div>
-                        <div class="btn btn-outline">删除</div>
-                    </div>
-                    <div class="notify-item member-item">
-                        <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
-                        <div class="user-msg">
-                            <h4>Kaitlyn</h4>
-                            <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">深圳</span></p>
-                        </div>
-                        <div class="btn btn-primary">设定管理员</div>
-                        <div class="btn btn-outline">删除</div>
-                    </div>
-                    <div class="notify-item member-item">
-                        <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
-                        <div class="user-msg">
-                            <h4>Kaitlyn</h4>
-                            <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">深圳</span></p>
-                        </div>
-                        <div class="btn btn-primary">设定管理员</div>
-                        <div class="btn btn-outline">删除</div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="notify">
-                    <div class="notify-item" ng-repeat="item in [1,2,3,4]">
-                        <img ng-src="{{imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
-                        <div class="user-msg">
-                            <h4><a>Kaitlyn</a></h4>
-                            <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">深圳</span></p>
+                    <div ng-repeat="apply in applyList">
+                        <div ng-hide="apply.isDelete" class="notify-item">
+                            <img ng-src="{{apply.userInfo.portrait || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
+                            <div class="user-msg">
+                                <h4><a>{{apply.userInfo.username}}</a></h4>
+                                <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{apply.userInfo.location}}</span></p>
+                            </div>
+                            <p class="notify-msg">申请加入ParaCraft学习小组</p>
+                            <div class="btn btn-primary" ng-click="clickAgreeMemeber(apply)">同意</div>
+                            <div class="btn btn-outline" ng-click="clickRefuseMember(apply)">删除</div>
                         </div>
-                        <p class="notify-msg">申请加入ParaCraft学习小组</p>
-                        <div class="btn btn-primary">同意</div>
-                        <div class="btn btn-outline">删除</div>
                     </div>
                 </div>
             </div>

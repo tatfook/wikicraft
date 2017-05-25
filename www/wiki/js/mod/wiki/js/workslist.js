@@ -98,6 +98,14 @@ define([
                         $scope.requestParams.userId = $scope.userinfo._id;
                     }
                     */
+                } else if (modParams.moduleKind == "game") {
+                    if (modParams.type == "all") {   // 全部
+                        $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
+                        $scope.requestParams.websiteId = siteinfo._id;
+                    } else if (modParams.type == "latestJoin") {  // 推荐
+                        $scope.requestUrl = config.apiUrlPrefix + 'website_works/getLatestByWebsiteId';
+                        $scope.requestParams.websiteId = siteinfo._id;
+                    }
                 }
                 $scope.getList();
             }

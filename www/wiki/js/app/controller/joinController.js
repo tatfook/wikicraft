@@ -112,7 +112,7 @@ define([
                 Account.setUser(data.userinfo);
                 var _go = function () {
                     if (type == "other") {
-                        util.goUserSite('/'+params.username);
+                        util.go('/'+params.username);
                     } else {
                         $scope.step++;
                     }
@@ -212,7 +212,7 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.goUserSite('/' + data.data.username);
+                        util.go('/' + data.data.username);
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息

@@ -6,7 +6,7 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'text!wikimod/wiki/html/organizationWorksManage.html'
+    'text!wikimod/wiki/html/siteWorksManage.html'
 ], function (app, util, storage, htmlContent) {
 
     function getModParams(wikiblock) {
@@ -15,7 +15,7 @@ define([
     }
 
     function registerController(wikiblock) {
-        app.registerController('organizationWorksManageController',['$scope','Account', function ($scope, Account) {
+        app.registerController('siteWorksManageController',['$scope','Account', function ($scope, Account) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiblock);
             var userinfo = undefined;

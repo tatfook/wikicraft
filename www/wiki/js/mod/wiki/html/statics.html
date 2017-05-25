@@ -148,10 +148,10 @@
         color: #FFF;
     }
 </style>
-<div>
+<div ng-controller="staticsController">
     <!--个人信息统计-->
-    <div ng-controller="personalStaticsController">
-        <div class="personal-statics" ng-show="modParams.moduleKind=='personal' || !modParams.moduleKind">
+    <div ng-show="modParams.moduleKind=='personal' || !modParams.moduleKind">
+        <div class="personal-statics" >
             <div class="msg-box clearfix">
                 <div class="msg">
                     <img ng-src="{{imgsPath + 'personal_statics_works.png'}}" alt="">
@@ -169,14 +169,8 @@
         </div>
     </div>
     <!--组织信息统计-->
-    <div ng-controller="organizationStaticsController">
-        <div class="org-statics template-theme" ng-class="themeClass" ng-show="modParams.moduleKind=='organization'">
-            <div class="method">
-                <a ng-show="isManager()" class="btn btn-primary theme-btn" ng-click="goOrganizationManagePage()">组织管理</a>
-                <a ng-show="isManager()" class="btn btn-primary theme-btn" ng-click="goWorksManagePage()">作品管理</a>
-                <a ng-show="isMember()" class="btn btn-primary theme-btn" ng-click="goSubmitWorksPage()">提交作品</a>
-                <a ng-show="isVisitor()" class="btn btn-primary theme-btn" ng-click="goMemberApplyPage()">申请加入</a>
-            </div>
+    <div ng-show="modParams.moduleKind=='organization'">
+        <div class="org-statics template-theme" ng-class="themeClass" >
             <div class="msg-box clearfix">
                 <div class="msg">
                     <p class="text-primary">全部成员 <span>{{statics.memberCount || 0}}</span></p>
@@ -191,14 +185,16 @@
         </div>
     </div>
 
-    <div ng-controller="staticsController">
+    <div ng-show="modParams.moduleKind=='gameDemo'">
         <!--大赛按钮-->
-        <div class="game-btns" ng-show="modParams.moduleKind=='game'">
+        <div class="game-btns" >
             <a href="{{btn.link}}" class="large-btn" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
         </div>
+    </div>
 
-        <!--大赛信息统计-->
-        <div class="org-statics template-theme game-statics" ng-class="themeClass" ng-show="modParams.moduleKind=='gameStatics'">
+    <!--大赛信息统计-->
+    <div ng-show="modParams.moduleKind=='game'">
+        <div class="org-statics template-theme game-statics" ng-class="themeClass" >
             <div class="game-statics-btns">
                 <a class="btn btn-primary large-btn" href="{{btn.link}}" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
             </div>

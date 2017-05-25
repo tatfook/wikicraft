@@ -251,7 +251,7 @@
 		border-style: solid;
 	}
 	.gameHeader h1{
-		font-size: 60px;
+		font-size: 44px;
 		color: #FFEA81;
 		text-shadow: 0px 7px 0 #280f27;
 	}
@@ -268,10 +268,10 @@
 	}
 </style>
 
-<div>
+<div ng-controller="headerController">
 	<!-- 个人主页头部 -->
-	<div ng-controller="personalHeaderController">
-		<div class="personal-header" ng-show="modParams.moduleKind=='personal' || !modParams.moduleKind">
+	<div ng-show="modParams.moduleKind=='personal' || !modParams.moduleKind">
+		<div class="personal-header">
 			<div class="profile">
 				<img ng-src="{{imgsPath + 'personal_header_banner.jpg'}}" alt="">
 			</div>
@@ -291,8 +291,8 @@
 		</div>
 	</div>
 	<!-- 组织主页头部 -->
-	<div ng-controller="organizationHeaderController">
-		<div class="org-header" ng-show="modParams.moduleKind=='organization'">
+	<div ng-show="modParams.moduleKind=='organization'">
+		<div class="org-header" >
 			<div class="profile">
 				<img ng-src="{{modParams.displayBgImg}}" alt="">
 			</div>
@@ -304,8 +304,8 @@
 		</div>
 	</div>
 	<!--大赛头部-->
-	<div ng-controller="gameHeaderController">
-		<div class="gameHeader" ng-show="modParams.moduleKind=='game'">
+	<div ng-show="modParams.moduleKind=='game'">
+		<div class="gameHeader">
 			<div class="banner-bg">
 				<img ng-src="{{modParams.bgImg || getImageUrl('gameheader_banner.jpg',imgsPath)}}" alt="">
 			</div>

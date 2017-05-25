@@ -242,14 +242,17 @@ define([
         }
     }
 
-    // 跳转wiki页
-    util.go = function (pageName, isOpen) {
-        var url;
-        pageName = util.humpToSnake(pageName);
+    // 跳转
+    util.go = function (url, isOpen) {
+        if (url[0] != '/') {
+            url = "/wiki/" + url;
+        }
+
+        url = util.humpToSnake(url);
         if (config.islocalWinEnv()) {
-            url = config.frontEndRouteUrl + '#/wiki/' + pageName;
+            url = config.frontEndRouteUrl + '#' + url;
         } else {
-            url = "http://" + config.apiHost + "/wiki/" + pageName;
+            url = "http://" + config.apiHost + url;
         }
 
         if (isOpen) {
