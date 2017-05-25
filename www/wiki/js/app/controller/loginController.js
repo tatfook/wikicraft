@@ -2,7 +2,12 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!html/login.html'
+], function (app, util, storage,  htmlContent) {
     app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.isModal=false;

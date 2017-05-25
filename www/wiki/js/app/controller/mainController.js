@@ -224,6 +224,11 @@ define([
                             if (config.isLocal()) {
                                 currentDataSource.setLastCommitId("master");
                             }
+
+                            if (window.location.search || window.location.search.indexOf('branch=master')) {
+                                currentDataSource.setLastCommitId('master');
+                            }
+
                             currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
                                 //console.log(data);
                                 renderContent(data);

@@ -251,7 +251,7 @@ define([
         url = util.humpToSnake(url);
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#' + url;
-        } else {
+        } else if (url.indexOf('://') < 0){
             url = "http://" + config.apiHost + url;
         }
 
