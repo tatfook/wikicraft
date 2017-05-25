@@ -163,11 +163,11 @@ define([], function () {
             templates: [
                 {
                     name:"3D大赛模板",
-                    logoUrl:"",
+                    logoUrl:"wiki_game_template.jpg",
                     styles:[
                         {
                             name:"默认样式",
-                            logoUrl:"",
+                            logoUrl:"wiki_game_template.jpg",
                             contents:[
                                 {
                                     pagepath:"index",

@@ -21,11 +21,9 @@ define([
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
             $scope.modParams=modParams;
-            console.log("--------------------");
 
             // 初始化信息
             function init() {
-                console.log("--------------------");
                 $scope.memberList = $scope.modParams.memberList || [];
                 util.post(config.apiUrlPrefix + 'website_member/getByWebsiteId', {
                     page: 1,

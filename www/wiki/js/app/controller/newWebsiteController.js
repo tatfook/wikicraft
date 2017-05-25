@@ -279,7 +279,7 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
-            util.go('/' + $scope.user.username + '/' + $scope.website.name + '/index');
+            util.go('/' + $scope.user.username + '/' + $scope.website.name + '/index?branch=master');
         }
 
         //网站设置

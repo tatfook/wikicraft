@@ -41,5 +41,6 @@
 
 ```@wiki/js/siteMemberList
 {
+"moduleKind":"organization"
 }
 ```

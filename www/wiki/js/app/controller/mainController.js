@@ -225,7 +225,7 @@ define([
                                 currentDataSource.setLastCommitId("master");
                             }
 
-                            if (window.location.search || window.location.search.indexOf('branch=master')) {
+                            if (window.location.search && window.location.search.indexOf('branch=master') >= 0) {
                                 currentDataSource.setLastCommitId('master');
                             }
 
