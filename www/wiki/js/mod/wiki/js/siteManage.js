@@ -90,12 +90,22 @@ define([
 
             $scope.goSubmitWorksPage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
-                util.go('/wiki/js/mod/wiki/js/siteSubmitWorks');
+                if ($scope.modParams.worksApplyUrl) {
+                    util.go($scope.modParams.worksApplyUrl)
+                } else {
+                    util.go('/wiki/js/mod/wiki/js/siteSubmitWorks');
+                }
             }
 
             $scope.goMemberApplyPage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 util.go( '/wiki/js/mod/wiki/js/siteMemberApply');
+            }
+
+            $scope.goTutorialVideoPage = function () {
+                if ($scope.modParams.tutorialVideoUrl) {
+                    util.go($scope.modParams.tutorialVideoUrl, true);
+                }
             }
         }]);
     }

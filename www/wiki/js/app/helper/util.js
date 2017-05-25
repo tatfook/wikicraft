@@ -244,7 +244,7 @@ define([
 
     // 跳转
     util.go = function (url, isOpen) {
-        if (url[0] != '/') {
+        if (url[0] != '/' && url.indexOf('://') < 0) {
             url = "/wiki/" + url;
         }
 

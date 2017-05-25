@@ -185,19 +185,9 @@
         </div>
     </div>
 
-    <div ng-show="modParams.moduleKind=='gameDemo'">
-        <!--大赛按钮-->
-        <div class="game-btns" >
-            <a href="{{btn.link}}" class="large-btn" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
-        </div>
-    </div>
-
     <!--大赛信息统计-->
     <div ng-show="modParams.moduleKind=='game'">
         <div class="org-statics template-theme game-statics" ng-class="themeClass" >
-            <div class="game-statics-btns">
-                <a class="btn btn-primary large-btn" href="{{btn.link}}" ng-repeat="btn in modParams.btns">{{btn.text}}</a>
-            </div>
             <div class="msg-box clearfix game-msg">
                 <div class="msg">
                     <p class="text-primary">{{modParams.userCountText || "参赛作者"}} <span class="theme-font-color">{{message.userCount || 0}}</span></p>
