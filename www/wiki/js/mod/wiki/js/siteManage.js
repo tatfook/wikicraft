@@ -38,6 +38,11 @@ define([
                 if ($scope.modParams.moduleKind == "siteManageDemo") {
                     $scope.modParams.worksApply = true;
                     $scope.modParams.tutorialVideo = true;
+                } else if ($scope.modParams.moduleKind == "siteManagePreview") {
+                    $scope.modParams.memberApply = true;
+                    $scope.modParams.worksApply = true;
+                    $scope.modParams.memberManage = true;
+                    $scope.modParams.worksManage = true;
                 } else {
                     if ($scope.user && $scope.user._id) {
                         util.post(config.apiUrlPrefix + 'website_member/getBySiteUsername', {websiteId:siteinfo._id, username: $scope.user.username}, function (data) {
@@ -121,6 +126,7 @@ define([
 /*
 ```@wiki/js/siteManage
 {
+"moduleKind":"siteManageDemo"
 }
 ```
 */
