@@ -2165,7 +2165,7 @@ define([
 
                 $('.toolbar-page-preview').on('click', function () {
                     editor.focus();
-                    var url = $('#btUrl').val();
+                    var url = $('#btUrl').val() + "?branch=master";
 
                     if (url && currentPage.isModify) {
                         var tmpWin = window.open();

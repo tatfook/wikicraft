@@ -28,6 +28,7 @@ function data_source:ctor()
 	self:addfield("apiBaseUrl", "string")  -- api url prefix
 	self:addfield("rawBaseUrl", "string")  -- raw url prefix
 	self:addfield("lastCommitId", "string")  -- 最后一次提交id cdn加速
+	self:addfield("lastCommitIdUpdateTime", "number")  -- 最后一次提交id更新时间 cdn加速
 	self:addfield("updateFlag", "string")  -- 谁做了最后的更新
 	self:addfield("pageinfo", "string")    -- pageinfo 用户页信息备份 保留
 	self:addfield("enable", "number")      -- 数据源ID
@@ -80,6 +81,7 @@ end
 
 -- 获取内部gitlab数据源
 function data_source:api_getInnerGitlabByUserId(params)
+	local curTime = os.time()
 	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -91,7 +93,7 @@ end
 
 -- 获得最后一次提交记录
 function data_source:api_getGithubLastCommitId(params)
-	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST then
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
 		return errors:wrap(nil, params)
 	end
 
@@ -155,7 +157,9 @@ end
 
 -- 获得最后一次提交记录
 function data_source:api_getGitlabLastCommitId(params)
-	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST then
+	local curTime = os.time()
+	
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
 		return errors:wrap(nil, params)
 	end
 
@@ -179,6 +183,7 @@ function data_source:api_getGitlabLastCommitId(params)
 
 	params.lastCommitId = data[1].id
 	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	params.lastCommitIdUpdateTime = curTime
 	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
 	yield()
 	

@@ -101,6 +101,8 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.favoriteCount = 0
+	params.visitCount = 0
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
@@ -433,11 +435,6 @@ function website:api_getSiteList(params)
 	
 	local key = '';
 	local value = {};
-	-- 个人站点
-	if params.categoryId then
-		key = key .. '+categoryId'
-		value[#value+1] = tonumber(params.categoryId)
-	end
 	
 	if params.websiteName then
 		key = key .. '+name'
@@ -470,7 +467,7 @@ function website:api_getSiteList(params)
 	value["skip"] = skip
 	value['limit'] = limit
 
-	-- log({[key]=value})
+	log({[key]=value})
 	self:db():find({[key]=value}, resume)
 	local err, data = yield()
 	
