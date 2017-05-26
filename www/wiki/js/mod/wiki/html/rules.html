@@ -65,7 +65,7 @@
                 </div>
                 <div class="rule-content">
                     <h2>{{rule.title}}</h2>
-                    <p>{{rule.describe}}</p>
+                    <p ng-bind-html="getRenderText(rule.describe)"></p>
                 </div>
             </div>
         </div>

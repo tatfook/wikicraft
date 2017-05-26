@@ -21,6 +21,7 @@ define([
     app.controller('mainController', [
         '$scope',
         '$rootScope',
+        '$sce',
         '$location',
         '$http',
         '$auth',
@@ -31,7 +32,7 @@ define([
         'modal',
         'gitlab',
         'confirmDialog',
-        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
+        function ($scope, $rootScope, $sce, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -39,6 +40,7 @@ define([
                 //配置一些全局服务
                 config.services = {
                     $rootScope: $rootScope,
+                    $sce:$sce,
                     $http: $http,
                     $compile: $compile,
                     $auth: $auth,
@@ -112,7 +114,10 @@ define([
 
                     return (cssPath || $rootScope.cssPath) + cssUrl + "?bust=" + config.bustVersion;
                 }
-
+                
+                $rootScope.getRenderText = function (text) {
+                    return $sce.trustAsHtml(config.services.markdownit.render(text || ""));
+                }
             }
 
             function initView() {

@@ -48,13 +48,13 @@ define([
                         util.post(config.apiUrlPrefix + 'website_member/getBySiteUsername', {websiteId:siteinfo._id, username: $scope.user.username}, function (data) {
                             visitorInfo = data;
 
-                            if (!visitorInfo) {  // 访客
-                                $scope.modParams.memberApply = true;
-                            } else if (visitorInfo.username == $scope.user.username || visitorInfo.roleName == "管理员") { // 管理员
+                            if (siteinfo.username == $scope.user.username || (visitorInfo && visitorInfo.roleName == "管理员")) { // 管理员
                                 $scope.modParams.memberApply = true;
                                 $scope.modParams.worksApply = true;
                                 $scope.modParams.memberManage = true;
                                 $scope.modParams.worksManage = true;
+                            } else if (!visitorInfo) {  // 访客
+                                $scope.modParams.memberApply = true;
                             } else if (visitorInfo.roleName == "成员") { // 成员
                                 $scope.modParams.memberApply = true;
                                 $scope.modParams.worksApply = true;
