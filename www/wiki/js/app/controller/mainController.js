@@ -267,7 +267,7 @@ define([
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {
                         Account.getUser(function (userinfo) {
-                            util.goUserSite("/" + userinfo.username);
+                            util.go("/" + userinfo.username);
                         });
                         //util.html('#__UserSitePageContent__', userHtmlContent, $scope);
                     } else {

@@ -61,6 +61,7 @@ define([
 
         if(config.islocalWinEnv()) {
             pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            pathname = pathname.substring(0, pathname.indexOf('?'));
             /*
             var $location = util.getAngularServices().$location;
             if ($location) {
