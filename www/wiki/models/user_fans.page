@@ -139,7 +139,7 @@ function user_fans:api_getByFansUserId(params)
 
 	local userDB = models.user:new()
 	for _, value in ipairs(data or {}) do
-		value['userinfo'] = userDB:api_getById({userId=value.fansUserId}).data
+		value['userinfo'] = userDB:api_getById({userId=value.userId}).data
 	end
 
 	return errors:wrap(nil,{total=total, userList=data})

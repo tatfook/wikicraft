@@ -50,7 +50,7 @@ define([
         $authProvider.oauth2({
             name: 'weixin',
             url: '/api/wiki/auth/weixin',
-            clientId: '100302176',
+            clientId: 'wxc97e44ce7c18725e',
             //redirectUri: window.location.origin + '/api/wiki/auth/weixin',//window.location.origin,
             redirectUri: window.location.origin  +  '/wiki/login',
             authorizationEndpoint: 'https://open.weixin.qq.com/connect/qrconnect',

@@ -68,6 +68,12 @@ define([
                 $scope.concerned = !$scope.concerned;
                 return;
             }
+
+            if (!Account.isAuthenticated()) {
+                Message.info("登录后才能关注");
+                return; // 自己不关注自己
+            }
+            
             if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == $scope.userinfo._id) {
                 Message.info("自己不关注自己");
                 return; // 自己不关注自己
