@@ -49,15 +49,17 @@ define([
                             visitorInfo = data;
 
                             if (siteinfo.username == $scope.user.username || (visitorInfo && visitorInfo.roleName == "管理员")) { // 管理员
-                                $scope.modParams.memberApply = true;
+                                //$scope.modParams.memberApply = true;
                                 $scope.modParams.worksApply = true;
                                 $scope.modParams.memberManage = true;
                                 $scope.modParams.worksManage = true;
                             } else if (!visitorInfo) {  // 访客
                                 $scope.modParams.memberApply = true;
                             } else if (visitorInfo.roleName == "成员") { // 成员
-                                $scope.modParams.memberApply = true;
+                                //$scope.modParams.memberApply = true;
                                 $scope.modParams.worksApply = true;
+                            } else {
+                                //$scope.modParams.memberApply = true;
                             }
                         });
                     }

@@ -27,9 +27,7 @@ define([
                     util.http("POST", config.apiUrlPrefix + "user/getStatics", {userId: $scope.userinfo._id}, function (data) {
                         $scope.statics = data || {};
                     });
-                }
-
-                if (wikiBlock.moduleKind == "organization") {
+                } else {
                     util.post(config.apiUrlPrefix + 'website/getStatics', {websiteId:siteinfo._id}, function (data) {
                         data = data || {};
                         $scope.modParams.userCount = data.userCount;
