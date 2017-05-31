@@ -49,15 +49,23 @@ define([
                 });
             }
 
+            $scope.isManager = function (member) {
+                //console.log(member);
+                if (member.roleName == "管理员" || member.roleName == "创建者") {
+                    return true;
+                }
+                return false;
+            }
+
             // 设置或取消管理员
             $scope.setManager = function (member) {
-                if (member.roleId == 1) {
+                if ($scope.isManager(member)) {
                     util.post(config.apiUrlPrefix + 'website_member/unsetManager', member, function () {
-                        member.roleId = 2;  // 普通用户角色ID为1
+                        member.roleName = "成员";  // 普通用户角色ID为1
                     });
                 } else {
                     util.post(config.apiUrlPrefix + 'website_member/setManager', member, function () {
-                        member.roleId = 1;  // 管理员角色ID为1
+                        member.roleName = "管理员";  // 管理员角色ID为1
                     });
                 }
             }

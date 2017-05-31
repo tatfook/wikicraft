@@ -140,7 +140,7 @@
                                 <h4><a>{{member.username}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{member.location}}</span></p>
                             </div>
-                            <div class="btn btn-primary" ng-click="setManager(member)">{{(member.roleId == 0 || member.roleId == 1) ? '取消管理员' : '设定管理员'}}</div>
+                            <div class="btn btn-primary" ng-click="setManager(member)">{{ isManager(member) ? '取消管理员' : '设定管理员'}}</div>
                             <div class="btn btn-outline" ng-click="removeMember(member)">删除</div>
                         </div>
                     </div>

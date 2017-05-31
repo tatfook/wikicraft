@@ -181,7 +181,7 @@ function website_works:api_getUpgradeByWebsiteId(params)
 	local query = {["+websiteId+worksFlag"] = {params.websiteId, const.WORKS_FLAG_UPGRADE,skip=skip, limit=limit}}	
 	local siteObj = self:api_get(query)
 	
-	return errors:wrap(nil, {total=total, siteList=siteObj.data})
+	return errors:wrap(nil, {total=total, worksList=siteObj.data})
 end
 
 -- 获取热门作品的数量
@@ -205,7 +205,7 @@ function website_works:api_getHotByWebsiteId(params)
 	local query = {["+websiteId+worksFlag"] = {params.websiteId, const.WORKS_FLAG_HOT,skip=skip, limit=limit}}	
 	local siteObj = self:api_get(query)
 	
-	return errors:wrap(nil, {total=total, siteList=siteObj.data})
+	return errors:wrap(nil, {total=total, worksList=siteObj.data})
 end
 
 -- 获得最近加入的数量
@@ -229,9 +229,9 @@ function website_works:api_getLatestByWebsiteId(params)
 	local skip, limit = util:pagination(params)
 	local total = self:api_getLatestCountByWebsiteId(params).data
 	local query = {["+websiteId-createDate"]={params.websiteId, gt=startDate, skip=skip, limit=limit}}
-	local siteList = self:api_get(query).data
+	local worksList = self:api_get(query).data
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total, limit), siteList=siteList})
+	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
 

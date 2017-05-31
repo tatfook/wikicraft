@@ -1944,10 +1944,12 @@ define([
 
                     currentPage.isFirstEditor = undefined;
 
+                    /*
                     changeTimer && clearTimeout(changeTimer);
                     changeTimer = setTimeout(function () {
                         savePageContent();                               // 每分钟提交一次server
                     }, 60000);
+                    */
                 }
 
                 editor.on('scroll', function (cm) {

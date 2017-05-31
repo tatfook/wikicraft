@@ -301,7 +301,7 @@
                     <p>
                         <a ng-click="goUserPage(works)">作者：{{works.worksUsername}}</a>
                         <span class="info pull-right">
-                            <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount}}</span>
+                            <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount || 0}}</span>
                         </span>
                     </p>
                 </div>

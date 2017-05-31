@@ -316,7 +316,7 @@ define([
             gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned: true}, function (projectList) {
                 // 查找项目是否存在
                 for (var i = 0; i < projectList.length; i++) {
-                    if (projectList[i].name == gitlab.projectName) {
+                    if (projectList[i].name.toLowerCase() == gitlab.projectName.toLowerCase()) {
                         gitlab.projectId = projectList[i].id;
                         gitlab.inited = true;
                         successCallback();

@@ -46,7 +46,7 @@ define([
                     if (modParams.moduleKind == "personal") {
                         $scope.siteList = data.siteList;
                         $scope.siteTotal = data.total;
-                    } else if (modParams.moduleKind == "organization") {
+                    } else {
                         $scope.worksList = data.worksList;
                         $scope.worksTotal = data.total || 0;
                     }
