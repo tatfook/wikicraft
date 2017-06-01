@@ -25,6 +25,12 @@ define([
                 $scope.worldsTotal = $scope.opusLists.length;
 
                 $($scope.opusLists).each(function () {
+                    if (this.filesTotals <= 1048576) {
+                        this.filesTotals = parseInt(this.filesTotals / 1024) + "KB";
+                    } else {
+                        this.filesTotals = parseInt(this.filesTotals / 1024 / 1024) + "M";
+                    }
+
                     this.preview = JSON.parse(this.preview)[0].previewUrl;
                 });
             }, function (response) { });

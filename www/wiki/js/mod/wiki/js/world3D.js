@@ -13,7 +13,7 @@ define([
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.showModal = false;
 
-            console.log($scope.modParams);
+            //console.log($scope.modParams);
             if ($scope.modParams.filesTotals <= 1048576) {
                 $scope.modParams.filesTotals = parseInt($scope.modParams.filesTotals / 1024) + "KB";
             } else {
@@ -43,12 +43,12 @@ define([
                     return undefined;
 
                 if (url.indexOf("http") == 0)
-                    return url;
+                    return url + "?ver=" + $scope.modParams.version;
 
                 if (url[0] == '/')
                     url = url.substring(1);
 
-                return $scope.imgsPath + url;
+                return $scope.imgsPath + url + "?ver=" + $scope.modParams.version;
             }
 
             $scope.clickDownload = function() {
@@ -57,13 +57,12 @@ define([
             }
             $scope.viewTimes = 0;
             var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
-            $http({ method: "POST", url: viewTimesUrl, data: { opusId: $scope.modParams.opusId } })
-            .then(function (response) {
-                console.log(response);
+            var params = { opusId: $scope.modParams.opusId };
 
-                $scope.viewTimes = response.data.data.viewTimes;
-            })
-            
+            util.http("POST", viewTimesUrl, params, function (response) {
+                //console.log(response);
+                $scope.viewTimes = response.viewTimes;
+            }, function (response) { });
         }]);
     }
     return {
