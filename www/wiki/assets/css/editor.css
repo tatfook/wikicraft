@@ -269,12 +269,16 @@ select.resize-view {
 }
 
 .toolbar-brand{
-    padding:7px 12px;
+    padding:6px 12px;
     background-color: #FFF;
     border: 1px solid #DCDCDC;
 }
-.toolbar-brand img{
+.toolbar-brand img.show-md{
     width:114px;
+}
+.toolbar-brand img.show-sm{
+    width: 24px;
+    box-shadow: 0 0 10px rgba(57, 119, 173, .35);
 }
 .treeview-container{
     max-height: 100%;
@@ -285,7 +289,7 @@ select.resize-view {
     z-index: 1;
 }
 .code-view{
-    padding-left: 300px;
+    padding-left: 285px;
 }
 .code-view.nofile{
     padding-left: 0;
@@ -298,90 +302,218 @@ select.resize-view {
     display: none;
 }
 .toolbar-page-file.active{
-    margin-right: 173px;
+    margin-right: 213px;
 }
 
-#codeToolbar{
-    padding-left:190px;
-}
-.brand-btn-group{
-    position: absolute;
-    left: 35px;
-}
 #srcview{
     padding-right: 40px;
 }
-@media (max-width: 1200px) {
-    .wiki-toolbar .btn-group:first-child{
-        margin-left: 0;
+@media(max-width: 992px){
+    .show-sm{
+        display: inline-block;
     }
-    .wiki-toolbar .btn-default{
-        border: 1px solid #DCDCDC;
-        padding: 5px 5px;
+    .show-md{
+        display: none;
     }
-    .wiki-toolbar .btn-default img{
-        width: 20px;
-    }
-    .wiki-toolbar .wiki-btn{
-        padding: 5px 10px;
-    }
-    .wiki-toolbar .wiki-btn img{
-        width:18px;
-    }
-    .wiki-toolbar .btn-link{
-        width:300px;
-        padding:6.5px 12px;
-    }
-    .toolbar-page-file.active{
-        margin-right: 80px;
-    }
-    .treeview-container{
-        width: 150px;
-    }
-    .code-view{
-        padding-left: 150px;
-    }
-    .btn-toolbar{
-        padding:5px 15px 10px;
-    }
-}
-@media(min-width: 1200px) and (max-width:1350px){
-    .btn-toolbar{
-        padding:5px 15px 10px;
-    }
-    .toolbar-page-file.active{
-        margin-right: 110px;
-    }
-    .code-view{
-        padding-left: 192px;
-    }
-    .treeview-container{
-        width: 205px;
-    }
-    .wiki-toolbar .wiki-btn{
-        padding: 7px 8px;
-    }
-}
-@media(min-width: 1302px){
-    input.btn-link{
-        width:357px;
-    }
-}
-@media(max-width:1370px){
-    input.btn-link{
-        width:330px;
-    }
-}
-@media(min-width: 768px) and (max-width: 992px){
     .toolbar-page-file.active{
         margin-right:0;
     }
     .wiki-toolbar .btn-link{
         width: 155px;
     }
-}
-@media(min-width: 1630px) and (max-width: 1900px){
+    .btn-group-sm>.btn, .btn-sm{
+        padding:3px;
+    }
+    .btn-toolbar{
+        padding:5px 10px 10px;
+    }
+    .toolbar-brand img.show-sm {
+        width: 32px;
+    }
+    .toolbar-brand{
+        padding:0;
+        margin-right: 10px;
+    }
     .wiki-toolbar .wiki-btn {
-        padding: 7px 9px;
+        padding: 5px 7px;
+    }
+    .wiki-toolbar .btn-group:nth-child(3){
+        margin-right: 10px;
+    }
+    .wiki-toolbar .btn-link{
+        width: 165px;
+        padding:6px 12px;
+    }
+    .toolbar-page-file.active{
+        margin-right: 0;
+    }
+    .code-view{
+        padding-left: 155px;
+    }
+    .treeview-container{
+        width: 170px;
+    }
+    select.resize-view{
+        height:32px;
+    }
+}
+@media(min-width: 992px) {
+    .show-sm{
+        display: inline-block;
+    }
+    .show-md{
+        display: none;
+    }
+    .btn-toolbar{
+        padding:5px 10px 10px;
+    }
+    .btn-group-sm>.btn, .btn-sm{
+        padding:3px;
+    }
+    .wiki-toolbar .wiki-btn {
+        padding: 5px 7px;
+    }
+    .toolbar-brand img.show-sm {
+        width: 32px;
+    }
+    .toolbar-brand{
+        padding:0;
+        margin-right: 10px;
+    }
+    .wiki-toolbar .btn-group{
+        margin-left: 0;
+    }
+    .wiki-toolbar .btn-group:nth-child(3){
+        margin-right: 10px;
+    }
+    .wiki-toolbar .btn-link{
+        width: 165px;
+        padding:6px 12px;
+    }
+    .toolbar-page-file.active{
+        margin-right: 92px;
+    }
+    .code-view{
+        padding-left: 155px;
+    }
+    .treeview-container{
+        width: 170px;
+    }
+    select.resize-view{
+        height:32px;
+    }
+}
+@media(min-width: 1024px) {
+    .wiki-toolbar .btn-group{
+        margin-left: 10px;
+    }
+    .wiki-toolbar .btn-group:nth-child(3) {
+        margin-right: 0px;
+    }
+    .toolbar-brand{
+        margin-right: 0;
+    }
+    .toolbar-page-file.active{
+        margin-right: 132px;
+    }
+    .code-view{
+        padding-left: 195px;
+    }
+    .treeview-container{
+        width: 210px;
+    }
+    .wiki-toolbar .btn-link{
+        width: 212px;
+    }
+}
+@media(min-width: 1280px){
+    .show-sm{
+        display: none;
+    }
+    .show-md{
+        display: inline-block;
+    }
+
+    .btn-group-sm>.btn, .btn-sm{
+        padding:4px;
+    }
+    .wiki-toolbar .wiki-btn{
+        padding: 6px 7px;
+    }
+    .wiki-toolbar .btn-link {
+        padding: 7px 12px;
+        width:315px;
+    }
+    select.resize-view{
+        height: 34px;
+    }
+    .btn-toolbar{
+        padding:5px 15px 10px;
+    }
+    .toolbar-page-file.active{
+        margin-right: 165px;
+    }
+    .code-view{
+        padding-left: 235px;
+    }
+    .treeview-container{
+        width: 250px;
+    }
+    .toolbar-brand {
+        padding: 6px 12px;
+        background-color: #FFF;
+        border: 1px solid #DCDCDC;
+    }
+}
+@media(min-width: 1400px){
+    .btn-group-sm>.btn, .btn-sm{
+        padding:4px 5px;
+    }
+    .wiki-toolbar .wiki-btn{
+         padding: 6px 16px;
+     }
+    .wiki-toolbar .btn-link{
+        width:355px;
+    }
+    .toolbar-page-file.active{
+        margin-right: 183px;
+    }
+    .code-view{
+        padding-left: 255px;
+    }
+    .treeview-container{
+        width: 270px;
+    }
+}
+@media(min-width: 1600px){
+    .btn-group-sm>.btn, .btn-sm{
+        padding:5px 9px;
+    }
+    .wiki-toolbar .wiki-btn{
+        padding: 7px 19px;
+    }
+    .btn-toolbar{
+        padding:5px 30px 10px;
+    }
+    .toolbar-brand {
+        padding: 7px 12px;
+    }
+    select.resize-view {
+        height: 36px;
+    }
+    .wiki-toolbar .btn-link{
+        width:370px;
+    }
+    .wiki-toolbar .btn-link {
+        padding: 8px 12px;
+    }
+    .toolbar-page-file.active{
+        margin-right: 180px;
+    }
+    .code-view{
+        padding-left: 275px;
+    }
+    .treeview-container{
+        width: 290px;
     }
 }
