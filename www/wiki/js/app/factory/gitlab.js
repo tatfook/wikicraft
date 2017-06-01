@@ -36,19 +36,35 @@ define([
                 headers: this.httpHeader,
                 skipAuthorization: true,  // 跳过插件satellizer认证
             };
+
+            data = data || {};
+            data.per_page = 100;
+
             if (method == "POST" || method == "PUT") {
                 config.data = data;
             } else {
                 config.params = data;
             }
 
-            $http(config).then(function (response) {
-                //console.log(response);
-                typeof cb == 'function' && cb(response.data);
-            }).catch(function (response) {
+            var result = undefined;
+            var success = function (response) {
+                var headers = response.headers();
+                if (headers["x-next-page"] && data.isFetchAll) {
+                    data.page = parseInt(headers["x-next-page"]);
+                    result = (result || []).concat(response.data);
+                    console.log(result);
+                    $http(config).then(success).catch(failed);
+                } else {
+                    result = result ? (result.concat(response.data)) : response.data;
+                    typeof cb == 'function' && cb(result);
+                }
+            };
+            var failed = function (response) {
                 console.log(response);
                 typeof errcb == 'function' && errcb(response);
-            });
+            };
+
+            $http(config).then(success).catch(failed);
         }
 
         gitlab.getLongPath = function (params) {
@@ -76,6 +92,7 @@ define([
             var path = gitlab.getLongPath(params);
             params.path = path.substring(1);
             params.recursive = params.recursive == undefined ? true : params.recursive;
+            params.isFetchAll = params.recursive;
             gitlab.httpRequest("GET", url, params, function (data) {
                 var pagelist = [];
                 for (var i = 0; i < data.length; i++) {
