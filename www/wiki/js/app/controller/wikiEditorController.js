@@ -2228,6 +2228,10 @@ define([
                     util.go("home");
                 };
 
+                $scope.goUserPage = function () {
+                    util.goUserSite('/' + $scope.user.username);
+                }
+
                 $scope.goModPackagePage = function () {
                     util.go("mod/packages",true);
                 };
