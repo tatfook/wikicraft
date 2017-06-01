@@ -27,6 +27,7 @@ define([
             siteinfo.username = $scope.user.username;
             siteinfo.dataSourceId = $scope.user.dataSourceId;
 
+            config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
                 var userDataSource = dataSource.getUserDataSource(siteinfo.username);
                 userDataSource.registerInitFinishCallback(function () {
@@ -56,9 +57,19 @@ define([
                         })(i));
                     }
 
-                    util.sequenceRun(fnList, undefined, cb, cb);
+                    util.sequenceRun(fnList, undefined, function(){
+                        config.loading.hideLoading();
+                        cb && cb();
+                    }, function () {
+                        util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId:siteinfo._id});
+                        config.loading.hideLoading();
+                        errcb && errcb();
+                    });
                 });
-            }, errcb);
+            }, function () {
+                config.loading.hideLoading();
+                errcb && errcb();
+            });
         }
 
         $scope.nextStep = function () {

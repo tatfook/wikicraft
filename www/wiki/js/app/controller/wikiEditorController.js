@@ -1970,7 +1970,7 @@ define([
                             if (editor.heightAtLine(block.textPosition.from) >= initHegiht)
                                 break;
                         }
-                        //console.log(index, $('#' + block.blockCache.containerId)[0].offsetTop);
+                        block = blockList[index];
                         $('#preview').scrollTop($('#' + block.blockCache.containerId)[0].offsetTop * scaleSize);
                     }, 100);
                 });
@@ -1995,9 +1995,12 @@ define([
                                 block = blockList[index];
                                 if (block.blockCache.isTemplate)
                                     continue;
-                                if (scrollTop <= $('#' + block.blockCache.containerId)[0].offsetTop * scaleSize)
+                                if (scrollTop <= $('#' + block.blockCache.containerId)[0].offsetTop * scaleSize) {
+                                    //console.log(scrollTop, $('#' + block.blockCache.containerId)[0].offsetTop,scaleSize);
                                     break;
+                                }
                             }
+                            block = blockList[index];
                             editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(block.textPosition.from) - initHeight);
                         }, 100);
                     }
