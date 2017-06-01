@@ -233,6 +233,8 @@ define([
             $scope.errMsg="";
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
+            $scope.tag="";
+            $("input").focus();
         }
 
         $scope.removeTag = function (tagName) {
