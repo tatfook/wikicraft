@@ -3,7 +3,7 @@
  */
 
 ({
-    appDir:"www",
+    appDir:"temp_www_build",
     dir:'www_build',
     baseUrl:'wiki/js',
     //name:'main',
