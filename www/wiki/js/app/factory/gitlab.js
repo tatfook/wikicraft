@@ -36,47 +36,65 @@ define([
                 headers: this.httpHeader,
                 skipAuthorization: true,  // 跳过插件satellizer认证
             };
+
+            data = data || {};
+            data.per_page = 100;
+
             if (method == "POST" || method == "PUT") {
                 config.data = data;
             } else {
                 config.params = data;
             }
 
-            $http(config).then(function (response) {
-                //console.log(response);
-                typeof cb == 'function' && cb(response.data);
-            }).catch(function (response) {
+            var result = undefined;
+            var success = function (response) {
+                var headers = response.headers();
+                if (headers["x-next-page"] && data.isFetchAll) {
+                    data.page = parseInt(headers["x-next-page"]);
+                    result = (result || []).concat(response.data);
+                    console.log(result);
+                    $http(config).then(success).catch(failed);
+                } else {
+                    result = result ? (result.concat(response.data)) : response.data;
+                    typeof cb == 'function' && cb(result);
+                }
+            };
+            var failed = function (response) {
                 console.log(response);
                 typeof errcb == 'function' && errcb(response);
-            });
+            };
+
+            $http(config).then(success).catch(failed);
         }
 
         gitlab.getLongPath = function (params) {
-            return gitlab.rootPath + (params.path || "");
+            return this.rootPath + (params.path || "");
         }
 
         gitlab.getCommitUrlPrefix = function (params) {
             params = params || {};
-            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + gitlab.getLongPath(params);
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + this.getLongPath(params);
         }
 
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {};
-            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/raw/' + (params.sha || gitlab.lastCommitId) + gitlab.getLongPath(params);
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/raw/' + (params.sha || this.lastCommitId) + this.getLongPath(params);
         }
 
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {};
-            return gitlab.rawBaseUrl + '/' + (params.username || gitlab.username) + '/' + (params.projectName || gitlab.projectName).toLowerCase() + '/blob/'+ (params.sha || gitlab.lastCommitId) + gitlab.getLongPath(params);
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/blob/'+ (params.sha || this.lastCommitId) + this.getLongPath(params);
         }
 
         // 获得文件列表
         gitlab.getTree = function (params, cb, errcb) {
-            var url = '/projects/' + gitlab.projectId + '/repository/tree';
-            var path = gitlab.getLongPath(params);
+            var self = this;
+            var url = '/projects/' + self.projectId + '/repository/tree';
+            var path = self.getLongPath(params);
             params.path = path.substring(1);
             params.recursive = params.recursive == undefined ? true : params.recursive;
-            gitlab.httpRequest("GET", url, params, function (data) {
+            params.isFetchAll = params.recursive;
+            self.httpRequest("GET", url, params, function (data) {
                 var pagelist = [];
                 for (var i = 0; i < data.length; i++) {
                     var path = '/' + data[i].path;
@@ -86,7 +104,7 @@ define([
                     if (suffixIndex < 0)
                         continue;
 
-                    page.url = path.substring(gitlab.rootPath.length, path.lastIndexOf('.'));
+                    page.url = path.substring(self.rootPath.length, path.lastIndexOf('.'));
                     var paths = page.url.split('/');
                     if (paths.length < 3)
                         continue;
@@ -104,13 +122,13 @@ define([
         // commit
         gitlab.listCommits = function (data, cb, errcb) {
             //data.ref_name = data.ref_name || 'master';
-            var url = '/projects/' + gitlab.projectId + '/repository/commits';
-            gitlab.httpRequest('GET', url, data, cb, errcb);
+            var url = '/projects/' + this.projectId + '/repository/commits';
+            this.httpRequest('GET', url, data, cb, errcb);
         };
 
         // 获取文件操作的url prefix
         gitlab.getFileUrlPrefix = function () {
-            return '/projects/' + gitlab.projectId + '/repository/files/';
+            return '/projects/' + this.projectId + '/repository/files/';
         }
         // 获取调教信息前缀 commit message prefix
         gitlab.getCommitMessagePrefix = function () {
@@ -118,43 +136,46 @@ define([
         }
         // 设置lastCommitId
         gitlab.setLastCommitId = function (lastCommitId) {
-            gitlab.lastCommitId = lastCommitId;
+            this.lastCommitId = lastCommitId;
         }
         // 获取lastCommitId
         gitlab.getLastCommitId = function (cb, errcb) {
-            gitlab.listCommits({}, function (data) {
+            var self = this;
+            self.listCommits({}, function (data) {
                 if (data && data.length > 0) {
-                    gitlab.lastCommitId = data[0].id;
+                    self.lastCommitId = data[0].id;
                 } else {
-                    gitlab.lastCommitId = "master";
+                    self.lastCommitId = "master";
                 }
-                cb && cb(gitlab.lastCommitId);
+                cb && cb(self.lastCommitId);
             }, errcb);
         }
 
         // 写文件
         gitlab.writeFile = function (params, cb, errcb) {
-            params.path = gitlab.getLongPath(params).substring(1);
-            var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
-            params.commit_message = gitlab.getCommitMessagePrefix() + params.path;
+            var self = this;
+            params.path = self.getLongPath(params).substring(1);
+            var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+            params.commit_message = self.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || "master";
-            gitlab.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
+            self.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
                 // 已存在
-                gitlab.httpRequest("PUT", url, params, function (data) {
+                self.httpRequest("PUT", url, params, function (data) {
                     //console.log(data);
                     cb && cb(data);
                 }, errcb)
             }, function () {
-                gitlab.httpRequest("POST", url, params, cb, errcb)
+                self.httpRequest("POST", url, params, cb, errcb)
             });
         }
 
         // 获取文件
         gitlab.getContent = function (params, cb, errcb) {
-            params.path = gitlab.getLongPath(params).substring(1);
-            var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
-            params.ref = params.ref || gitlab.lastCommitId;
-            gitlab.httpRequest("GET", url, params, function (data) {
+            var self = this;
+            params.path = self.getLongPath(params).substring(1);
+            var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+            params.ref = params.ref || self.lastCommitId;
+            self.httpRequest("GET", url, params, function (data) {
                 data.content = data.content && Base64.decode(data.content);
                 cb && cb(data.content);
             }, errcb);
@@ -164,8 +185,9 @@ define([
 
         // 获取原始内容
         gitlab.getRawContent = function (params, cb, errcb) {
+            var self = this;
             var _getRawContent = function () {
-                var url = gitlab.getRawContentUrlPrefix(params);
+                var url = self.getRawContentUrlPrefix(params);
                 $http({
                     method: 'GET',
                     url: url,
@@ -196,15 +218,17 @@ define([
 
         // 删除文件
         gitlab.deleteFile = function (params, cb, errcb) {
-            params.path = gitlab.getLongPath(params).substring(1);
-            var url = gitlab.getFileUrlPrefix() + _encodeURIComponent(params.path);
-            params.commit_message = gitlab.getCommitMessagePrefix() + params.path;
+            var self = this;
+            params.path = self.getLongPath(params).substring(1);
+            var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+            params.commit_message = self.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || "master";
-            gitlab.httpRequest("DELETE", url, params, cb, errcb)
+            self.httpRequest("DELETE", url, params, cb, errcb)
         }
 
         // 上传图片
         gitlab.uploadImage = function (params, cb, errcb) {
+            var self = this;
             //params path, content
             var path = params.path;
             var content = params.content;
@@ -226,31 +250,32 @@ define([
                 content = content[0];
             }
             //console.log(content);
-            gitlab.writeFile({
+            self.writeFile({
                 path: path,
-                message: gitlab.getCommitMessagePrefix() + path,
+                message: self.getCommitMessagePrefix() + path,
                 content: content,
                 encoding: 'base64'
             }, function (data) {
-                cb && cb(gitlab.getRawContentUrlPrefix({sha:"master"}) + "/" + data.file_path);
+                cb && cb(self.getRawContentUrlPrefix({sha:"master"}) + "/" + data.file_path);
             }, errcb);
         }
 
         // 初始化
         gitlab.init = function (dataSource, cb, errcb) {
-            if (gitlab.inited) {
+            var self = this;
+            if (self.inited) {
                 cb && cb();
                 return;
             }
 
-            gitlab.type = dataSource.type;
-            gitlab.username = dataSource.dataSourceUsername;
-            gitlab.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
-            gitlab.projectName = dataSource.projectName || gitlab.projectName;
-            gitlab.apiBaseUrl = dataSource.apiBaseUrl;
-            gitlab.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
-            gitlab.rootPath = dataSource.rootPath || '';
-            gitlab.lastCommitId = dataSource.lastCommitId || "master";
+            self.type = dataSource.type;
+            self.username = dataSource.dataSourceUsername;
+            self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
+            self.projectName = dataSource.projectName || self.projectName;
+            self.apiBaseUrl = dataSource.apiBaseUrl;
+            self.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
+            self.rootPath = dataSource.rootPath || '';
+            self.lastCommitId = dataSource.lastCommitId || "master";
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
                 console.log("gitlab data source init failed!!!");
@@ -273,7 +298,7 @@ define([
                 var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
                 //var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
                 var isExist = false;
-                gitlab.httpRequest("GET", "/projects/" + gitlab.projectId + "/hooks", {}, function (data) {
+                self.httpRequest("GET", "/projects/" + self.projectId + "/hooks", {}, function (data) {
                     //console.log(data);
                     for (var i = 0; i < data.length; i++) {
                         //gitlab.httpRequest("DELETE", "/projects/" + gitlab.projectId + "/hooks/" + data[i].id, {});
@@ -284,7 +309,7 @@ define([
                     // return;
                     // 不存在创建
                     if (!isExist) {
-                        gitlab.httpRequest("POST", "/projects/" + gitlab.projectId + "/hooks", {
+                        self.httpRequest("POST", "/projects/" + self.projectId + "/hooks", {
                             url: hookUrl,
                             push_events: true,
                             enable_ssl_verification: false,
@@ -303,8 +328,8 @@ define([
                 if (dataSource.projectName && dataSource.projectId) {
                     return;
                 }
-                dataSource.projectName = gitlab.projectName;
-                dataSource.projectId = gitlab.projectId;
+                dataSource.projectName = self.projectName;
+                dataSource.projectId = self.projectId;
                 util.post(config.apiUrlPrefix + 'data_source/upsert', dataSource);
             }
 
@@ -313,42 +338,42 @@ define([
                 updateDataSource();
             }
 
-            gitlab.httpRequest("GET", "/projects", {search: gitlab.projectName, owned: true}, function (projectList) {
+            self.httpRequest("GET", "/projects", {search: self.projectName, owned: true}, function (projectList) {
                 // 查找项目是否存在
                 for (var i = 0; i < projectList.length; i++) {
-                    if (projectList[i].name.toLowerCase() == gitlab.projectName.toLowerCase()) {
-                        gitlab.projectId = projectList[i].id;
-                        gitlab.inited = true;
+                    if (projectList[i].name.toLowerCase() == self.projectName.toLowerCase()) {
+                        self.projectId = projectList[i].id;
+                        self.inited = true;
                         successCallback();
-                        gitlab.getLastCommitId(cb, errcb);
+                        self.getLastCommitId(cb, errcb);
                         return;
                     }
                 }
 
                 // 不存在则创建项目
-                gitlab.httpRequest("POST", "/projects", {
-                    name: gitlab.projectName,
+                self.httpRequest("POST", "/projects", {
+                    name: self.projectName,
                     visibility: 'public',
                     request_access_enabled: true,
                     //public_jobs:true,
                 }, function (data) {
                     //console.log(data);
-                    gitlab.projectId = data.id;
-                    gitlab.inited = true;
+                    self.projectId = data.id;
+                    self.inited = true;
                     successCallback();
-                    gitlab.getLastCommitId(cb, errcb);
+                    self.getLastCommitId(cb, errcb);
                 }, errcb)
             }, errcb);
         };
 
         // 是否已经初始化
         gitlab.isInited = function () {
-            return gitlab.inited;
+            return this.inited;
         };
 
         // 获取数据源类型：gitlab
         gitlab.getDataSourceType = function () {
-            return gitlab.type;
+            return this.type;
         };
 
         // 数据源工厂

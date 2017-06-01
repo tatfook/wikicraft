@@ -231,6 +231,8 @@ define([
         if (!$(selector).length) {
             $(container).prepend('<div id="' + mdwiki.getMdWikiContentContainerId() + '"></div>');
         }
+
+        var start = 0;
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
             if (block.isTemplate) {
@@ -239,6 +241,11 @@ define([
                 }
                 continue;
             }
+
+            for (var j = start; j < block.textPosition.from; j++) {
+                $(selector).append('<br/>');
+            }
+            start = block.textPosition.to + 1;
 
             var blockCache = block.blockCache;
             //console.log(blockCache);

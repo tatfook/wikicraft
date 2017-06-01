@@ -7,16 +7,18 @@
                         <div class="btn-group brand-btn-group">
                             <div class="dropdown toolbar-brand">
                                 <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <img ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
+                                    <img class="show-md" ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
+                                    <img class="show-sm" ng-src="{{imgsPath+'icon/logo_sm.png'}}" alt="">
                                 </a>
                                 <ul class="dropdown-menu nodot-dropdown">
                                     <li><a ng-click="goHomePage()">keepwork.com</a></li>
+                                    <li><a ng-click="goUserPage()">我的主页</a></li>
                                     <li><a ng-click="goModPackagePage()">Mod扩展</a></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="btn-group">
+                        <div class="btn-group show-md">
                             <div type="button" class="btn btn-default btn-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）">
                                 <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt=""> 保存
                             </div>
@@ -25,6 +27,12 @@
                             </div>
                         </div>
                         <div class="btn-group">
+                            <div type="button" class="btn btn-default btn-sm show-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）">
+                                <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt="">
+                            </div>
+                            <div class="btn btn-default btn-sm show-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）">
+                                <img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt="">
+                            </div>
                             <div class="btn btn-default btn-sm"  ng-click="cmd_undo()" title="撤销（Ctrl+Z）">
                                 <img ng-src="{{imgsPath+'icon/wiki_revoked.png'}}" alt="">
                             </div>
@@ -85,7 +93,7 @@
                             <div class="btn btn-default btn-sm"  ng-click="cmd_image()" title="图片（Alt+P）">
                                 <img ng-src="{{imgsPath+'icon/wiki_img.png'}}" alt="">
                             </div>
-                            <div class="btn btn-default btn-sm"  ng-click="" title="视频（）">
+                            <div class="btn btn-default btn-sm"  ng-click="cmd_video()" title="视频（）">
                                 <img ng-src="{{imgsPath+'icon/wiki_video.png'}}" alt="">
                             </div>
                             <div class="btn btn-default btn-sm"  ng-click="cmd_code()" title="代码（Alt+C）">

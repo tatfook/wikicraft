@@ -97,6 +97,13 @@ const.WEBSITE_APPLY_TYPE_WORKS=1      -- 作品申请
 const.WEBSITE_USER_ROLE_ADMIN="创建者"   -- 拥有者
 const.WEBSITE_USER_ROLE_MANAGER="管理员" -- 管理员
 const.WEBSITE_USER_ROLE_NORMAL="成员"    -- 普通用户
+const.WEBSITE_USER_ROLE_VISITOR="访客"    -- 访客
+
+-- 优先级
+const.RECORD_LEVEL_STEP = 5              -- 间隔
+const.RECORD_LEVEL_HIGH = 10000          -- 高优先级
+const.RECORD_LEVEL_MIDDLE = 1000         -- 中优先级
+const.RECORD_LEVEL_LOW = 100             -- 低优先级
 
 -- 用户动态类型常量
 const.USER_TRENDS_TYPE_CREATE_SITE = 0
@@ -110,10 +117,10 @@ const.USER_TRENDS_TYPE_JOIN_ORGANIZATION = 20
 const.USER_TRENDS_TYPE_LEAVE_ORGANIZATION = 21
 
 -- 站点类型
-const.WEBSITE_TYPE_PERSONAL = '个 人'
-const.WEBSITE_TYPE_COMPANY = '企 业'
-const.WEBSITE_TYPE_ORGANIZATION = '组 织'
-const.WEBSITE_TYPE_GAME = '比 赛'
+const.WEBSITE_TYPE_PERSONAL = 'personal'
+const.WEBSITE_TYPE_COMPANY = 'company'
+const.WEBSITE_TYPE_ORGANIZATION = 'organization'
+const.WEBSITE_TYPE_GAME = 'game'
 
 -- 数据源类型
 const.DATA_SOURCE_TYPE_GITHUB = "github"

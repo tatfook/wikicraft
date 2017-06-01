@@ -710,9 +710,9 @@ function user:api_getDetailByName(params)
 
 	-- 获取创建的组织列表
 	local websiteDB = models.website:new()
-	websiteDB:db():count({["+userId+categoryName"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION}}, resume)
+	websiteDB:db():count({["+userId+type"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION}}, resume)
 	local err, selfOrganiztionTotal = yield()
-	websiteDB:db():find({["+userId+categoryName"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION, limit=limit}}, resume)
+	websiteDB:db():find({["+userId+type"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION, limit=limit}}, resume)
 	local err, selfOrganiztionList = yield()
 	local selfOrganizationObj = {total=selfOrganiztionTotal, siteList=selfOrganiztionList}
 	

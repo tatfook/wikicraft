@@ -7,6 +7,7 @@ define([], function () {
         // 个人网站分类
         {
             name:"个 人",
+            classify:"personal",
             templates:[
                 {
                     name:"空模板",
@@ -97,6 +98,7 @@ define([], function () {
         // 企业网站分类
         {
             name:"企 业",
+            classify:"company",
             templates:[
                 {
                     name:"企业模板1",
@@ -137,6 +139,7 @@ define([], function () {
         // 组织网站分类
         {
             name:"组 织",
+            classify:"organization",
             templates: [
                 {
                     name:"组织模板",
@@ -160,6 +163,7 @@ define([], function () {
         // 组织网站分类
         {
             name:"比 赛",
+            classify:"game",
             templates: [
                 {
                     name:"3D大赛模板",

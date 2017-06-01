@@ -27,6 +27,7 @@ define([
             siteinfo.username = $scope.user.username;
             siteinfo.dataSourceId = $scope.user.dataSourceId;
 
+            config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
                 var userDataSource = dataSource.getUserDataSource(siteinfo.username);
                 userDataSource.registerInitFinishCallback(function () {
@@ -56,9 +57,19 @@ define([
                         })(i));
                     }
 
-                    util.sequenceRun(fnList, undefined, cb, cb);
+                    util.sequenceRun(fnList, undefined, function(){
+                        config.loading.hideLoading();
+                        cb && cb();
+                    }, function () {
+                        util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId:siteinfo._id});
+                        config.loading.hideLoading();
+                        errcb && errcb();
+                    });
                 });
-            }, errcb);
+            }, function () {
+                config.loading.hideLoading();
+                errcb && errcb();
+            });
         }
 
         $scope.nextStep = function () {
@@ -153,6 +164,7 @@ define([
             $scope.styles = $scope.templates[0].styles;
             $scope.website.categoryId = $scope.categories[0]._id;
             $scope.website.categoryName = $scope.categories[0].name;
+            $scope.website.type = $scope.categories[0].classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
             $scope.website.styleId = $scope.styles[0]._id;
@@ -179,6 +191,7 @@ define([
             $scope.styles = category.templates[0].styles;
             $scope.website.categoryId = category._id;
             $scope.website.categoryName = category.name;
+            $scope.website.type = category.classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
             $scope.website.styleId = $scope.styles[0]._id;
@@ -220,6 +233,8 @@ define([
             $scope.errMsg="";
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
+            $scope.tag="";
+            $("input").focus();
         }
 
         $scope.removeTag = function (tagName) {

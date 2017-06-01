@@ -88,7 +88,14 @@ main() {
 		if [ -e ${build_dir} ]; then
 			rm -fr ${build_dir}
 		fi
+		temp_build_dir="temp_${build_dir}"
+		if [ -e ${temp_build_dir} ]; then
+			rm -fr ${temp_build_dir}
+		fi
+
+		cp -fr ${dev_dir} ${temp_build_dir}
 		node r.js -o r_package.js
+		rm -fr ${temp_build_dir}
 	elif [ "$1" == "start" ]; then
 		# etc:  ./start.sh start dev|test|rls
 		echo "start server :"$server_type
