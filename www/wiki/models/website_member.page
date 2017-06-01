@@ -18,9 +18,10 @@ function website_member:ctor()
 	self:addfield("websiteType", "string") -- 站点类型
 	self:addfield("username", "string")    -- 成员名
 	self:addfield("userLogo", "string")    -- 成员logo
-	self:addfield("roleName", "string")      -- 角色
+	self:addfield("roleName", "string")    -- 角色
 	self:addfield("desc", "string")        -- 角色
-	self:addfield("state", "string")        -- 角色
+	self:addfield("state", "string")       -- 角色
+	self:addfield("level", "number")       -- 角色
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
 end
@@ -53,6 +54,8 @@ function website_member:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.level = params.level or 0
+	params.state = params.state or const.WEBSITE_MEMBER_STATE_NORMAL
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.createDate = params.createDate or params.updateDate
 
@@ -64,12 +67,15 @@ end
 -- 提交成员申请
 function website_member:api_submitMemberApply(params)
 	params.state = const.WEBSITE_MEMBER_STATE_APPLY
+	params.roleName = const.WEBSITE_USER_ROLE_VISITOR
 	return self:api_upsert(params)
 end
 
 -- 同意申请
 function website_member:api_agreeMemberApply(params)
 	params.state = const.WEBSITE_MEMBER_STATE_NORMAL
+	params.roleName = const.WEBSITE_USER_ROLE_NORMAL
+	params.level = const.RECORD_LEVEL_LOW
 	return self:api_upsert(params)
 end
 
@@ -122,7 +128,7 @@ function website_member:api_setManager(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():updateOne({_id=params._id}, {roleName=const.WEBSITE_USER_ROLE_MANAGER}, resume)
+	self:db():updateOne({_id=params._id}, {level=const.RECORD_LEVEL_MIDDLE, roleName=const.WEBSITE_USER_ROLE_MANAGER}, resume)
 
 	return errors:wrap(yield())
 end
@@ -133,7 +139,7 @@ function website_member:api_unsetManager(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():updateOne({_id=params._id}, {roleName=const.WEBSITE_USER_ROLE_NORMAL}, resume)
+	self:db():updateOne({_id=params._id}, {level=const.RECORD_LEVEL_LOW, roleName=const.WEBSITE_USER_ROLE_NORMAL}, resume)
 
 	return errors:wrap(yield())
 end
@@ -164,7 +170,7 @@ function website_member:api_getByWebsiteId(params)
 	local total = self:api_getCount(query).data
 
 	local skip, limit = util:pagination(params)
-	query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL, skip=skip, limit=limit}}
+	query = {["+websiteId+state-level"]={params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL, gt=0, skip=skip, limit=limit}}
 	local memberList = self:api_get(query).data
 
 	return errors:wrap(err, {total=total, memberList=memberList})		

@@ -153,6 +153,7 @@ define([
             $scope.styles = $scope.templates[0].styles;
             $scope.website.categoryId = $scope.categories[0]._id;
             $scope.website.categoryName = $scope.categories[0].name;
+            $scope.website.type = $scope.categories[0].classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
             $scope.website.styleId = $scope.styles[0]._id;
@@ -179,6 +180,7 @@ define([
             $scope.styles = category.templates[0].styles;
             $scope.website.categoryId = category._id;
             $scope.website.categoryName = category.name;
+            $scope.website.type = category.classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
             $scope.website.styleId = $scope.styles[0]._id;

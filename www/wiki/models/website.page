@@ -29,6 +29,7 @@ website.db_name = "website"
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
+	self:addfield("type", "string", false, 30)
 	self:addfield("displayName", "string", false, 30)
 	self:addfield("userId", "number", false)
 	self:addfield("username", "string", false)
@@ -114,10 +115,8 @@ function website:api_upsert(params)
 	end
 
 	-- 设置站点管理员
-	if site.categoryName == "组织网站" then
-		local websiteMemberDB = models.website_member:new()
-		websiteMemberDB:api_upsert({websiteId=site._id, websiteType=const.WEBSITE_TYPE_ORGANIZATION, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
-	end
+	local websiteMemberDB = models.website_member:new()
+	websiteMemberDB:api_upsert({websiteId=site._id, websiteType=site.type, username=site.username, roleName=const.WEBSITE_USER_ROLE_ADMIN, level=const.RECORD_LEVEL_HIGH})
 		
 	-- 用户动态
 	local userTrendsDB = models.user_trends:new()

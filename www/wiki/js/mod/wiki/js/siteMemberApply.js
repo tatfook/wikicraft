@@ -32,6 +32,7 @@ define([
                 };
                 var apply = {
                     websiteId: siteinfo._id,
+                    websiteType: siteinfo.type,
                     username: $scope.user.username,
                     location: $scope.user.location,
                     userDesc: $scope.userDesc,
