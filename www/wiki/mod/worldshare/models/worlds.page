@@ -2,7 +2,7 @@
 --[[
 Title: worlds
 Author: Big
-Date: 2017/4/17
+Date: 2017/6/1
 ]]
 include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page");
 include_once(WIKI_ROOT .. "models/user.page");
@@ -66,7 +66,7 @@ function worlds:get(params)
 		userid = self:getUserId();
 
 		if(not userid) then
-			return {error=-1,msg="user is not exist"};
+			return {err = -1, msg = "user is not exist"};
 		end
 	else
 		userid = query.userid;
@@ -84,7 +84,7 @@ function worlds:get(params)
 		query.sort = nil;
 	end
 
-	LOG.std(nil,"debug","query",query);
+	--LOG.std(nil,"debug","query",query);
 
 	local skip  = query.page == 1 and 0 or query.page*query.amount-query.amount;
 	local limit = query.amount;
@@ -133,60 +133,23 @@ function worlds:get(params)
 				end
 			end
 
-			return {error = {id = 0} , data = response};
+			if(response) then
+				return {error = {id = 0} , data = response};
+			else
+				return {error = {id = -1} , msg="response is nil"};
+			end
 		end
 	else
 		return {error = {id = -1}, msg="database err"};
 	end
 end
 
-function worlds:formatDate(modDateTable)
-	local newModDate = "";
-
-	if(#modDateTable[1] ~= 4 and #modDateTable[1] < 4) then
-		local num = 4 - #modDateTable[1];
-		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[1];
-	elseif(#modDateTable[1] == 4) then
-		newModDate = newModDate .. modDateTable[1];
-	end
-
-	if(#modDateTable[2] ~= 2 and #modDateTable[2] < 2) then
-		local num = 2 - #modDateTable[2];
-		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[2];
-	elseif(#modDateTable[2] == 2) then
-		newModDate = newModDate .. modDateTable[2];
-	end
-
-	if(#modDateTable[3] ~= 2 and #modDateTable[3] < 2) then
-		local num = 2 - #modDateTable[3];
-		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[3];
-	elseif(#modDateTable[3] == 2) then
-		newModDate = newModDate .. modDateTable[2];
-	end
-
-	if(#modDateTable[4] ~= 2 and #modDateTable[4] < 2) then
-		local num = 2 - #modDateTable[4];
-		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[4];
-	elseif(#modDateTable[4] == 2) then
-		newModDate = newModDate .. modDateTable[4];
-	end
-
-	if(#modDateTable[5] ~= 2 and #modDateTable[5] < 2) then
-		local num = 2 - #modDateTable[5];
-		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[5];
-	elseif(#modDateTable[5] == 2) then
-		newModDate = newModDate .. modDateTable[5];
-	end
-
-	return newModDate;
-end
-
 function worlds:api_getOneOpus(params)
 	local err, query = self:validateQuery(params);
-	LOG.std(nil,"debug","queryapi_getOneOpus",query);
+	--LOG.std(nil,"debug","queryapi_getOneOpus",query);
 
 	if(not query.opusId) then
-		return {error = -1,msg = "opusId is not set"};
+		return {error = {id = -1} , msg = "opusId is not set"};
 	end
 
 	self:db():findOne({_id=query.opusId},resume);
@@ -211,152 +174,32 @@ function worlds:api_getOneOpus(params)
 			end
 		end
 
-		return {error=0,data=opusResponse};
-	else
-		return {error=0,msg="database err"};
-	end
-end
-
-function worlds:api_recommendOpus(params)
-	local err, query = self:validateQuery(params);
-	local userid;
-
-	self:ensureAuthenticated();
-	userid = self:getUserId();
-
-	if(not userid) then
-		return {error=-1,msg="user is not exist"};
-	end
-
-	local userinfor = models.user:new():get({});
-
-	if(userinfor.isadmin == nil or userinfor == false) then
-		return {error=-1,msg="prohibit not administrator operation"};
-	end
-
-	if(not query.opusId) then
-		return {error=-1,msg="opusId is not set"};
-	end
-
-	if(not query.isRecommend) then
-		return {error=-1,msg="isRecommend is not set"};
-	end
-
-	if(query.isRecommend == "true")then
-		local params  = {};
-		params.method = "add";
-
-		params.statsType = "worldsRecommendTotals";
-		models.worlds_stats:new():inside_update(params);
-
-		params.statsType = "worldsRecommendTotalsUser" .. userid;
-		models.worlds_stats:new():inside_update(params);
-	elseif(query.isRecommend == "false")then
-		local params  = {};
-		params.method = "minus";
-
-		params.statsType = "worldsRecommendTotals";
-		models.worlds_stats:new():inside_update(params);
-
-		params.statsType = "worldsRecommendTotalsUser" .. userid;
-		models.worlds_stats:new():inside_update(params);
-	end
-
-	self:db():updateOne({_id = query.opusId},
-					    {isRecommend = query.isRecommend},resume);
-
-	local err,response = yield(true);
-
-	if(not err) then
-		return {error=0,msg="set successful"};
-	else
-		return {error=-1,msg="set fail"};
-	end
-end
-
-function worlds:api_getRecommendOpus(params)
-	local err, query = self:validateQuery(params);
-	-- LOG.std(nil,"debug","queryapi_getRecommendOpus",query);
-
-	self:ensureAuthenticated();
-	local userid = self:getUserId();
-
-	if(not query.opusId) then
-		return {error=-1,msg="opusId is not set"};
-	end
-
-	if(not query.page) then
-		query.page = 1;
-	end
-
-	if(not query.amount) then
-		query.amount = 2;
-	end
-
-	if(not query.sort) then
-		query.sort = "_id";
-	end
-
-	local skip  = query.page == 1 and 0 or query.page*query.amount-query.amount;
-	local limit = query.amount;
-
-	self:db():findOne({_id = query.opusId},resume);
-	local err,responseA = yield(true);
-
-	-- LOG.std(nil,"debug","responseA",responseA);
-
-	if(not err) then
-		self:db():find({["+userid+isRecommend"] = {responseA.userid,"true",limit=limit,skip=skip}},resume);
-		local err,responseB = yield(true);
-
-		-- LOG.std(nil,"debug","responseB",responseB);
-
-		if(not err) then
-			for key,value in ipairs(responseB) do
-				local params = {};
-				params.statsType = "worldsStarTotals" .. value._id;
-
-				local stats = models.worlds_stats:new():get(params);
-				value.starTotals = stats;
-
-				if(userid)then
-					local starParams = {};
-					starParams.opusId = value._id;
-
-					local res = models.worlds_star:new():get(starParams);
-					
-					if(res.error == 1)then
-						value.isMyStar = false;
-					elseif(res.error == 0)then
-						value.isMyStar = true;
-					end
-				end
-			end
-
-			return {error = 0  , data=responseB};
+		if(opusResponse) then
+			return {error = {id = 0} , data = opusResponse};
 		else
-			return {error = -1 , msg="database err"};
+			return {error = {id = -1} , msg = "opusResponse is empty"};
 		end
+	else
+		return {error = {id = -1} , msg = "database err"};
 	end
 end
 
 function worlds:api_refresh(params)
-	LOG.std(nil,"debug","api_refresh",params);
-
+	--LOG.std(nil,"debug","api_refresh",params);
 	local err, query = self:validateQuery(params);
 	local userid;
 
-	LOG.std(nil,"debug","api_refresh",query);
+	--LOG.std(nil,"debug","api_refresh",query);
 
 	self:ensureAuthenticated();
 	userid = self:getUserId();
 
 	if(not userid) then
-		return {error=-1,msg="user is not exist"};
+		return {error = {id = -1} , msg = "user is not exist"};
 	end
 
 	if(not query.worldsName) then
-		return {error=-1,msg="worldsName is not exist"};
+		return {error = {id = -1} , msg = "worldsName is not exist"};
 	end
 
 	local userInfor = models.user:new():get({});
@@ -409,7 +252,11 @@ function worlds:api_refresh(params)
 			params.statsType = "worldsTotalsUser" .. userid;
 			models.worlds_stats:new():inside_update(params);
 
-			return {err = 0, msg={opusId = insertResponse._id}}
+			if(insertResponse) then
+				return {error = {id = 0} , data = {opusId = insertResponse._id}};
+			else
+				return {error = {id = -1} , msg = "insertResponse is nil"};
+			end
 		else
 			self:db():updateOne({["+userid+worldsName"] = {userid,query.worldsName}},
 			{
@@ -427,7 +274,11 @@ function worlds:api_refresh(params)
 			local err,updateResponse = yield(true);
 			--LOG.std(nil,"debug","updateResponse",updateResponse);
 
-			return {err = 0, msg={opusId = updateResponse._id}}
+			if(updateResponse) then
+				return {error = {id = 0} , data = {opusId = updateResponse._id}};
+			else
+				return {error = {id = -1} , msg = "updateResponse is nil"};
+			end
 		end
 	end
 end
@@ -443,11 +294,11 @@ function worlds:delete(params)
 	userid = self:getUserId();
 
 	if(not userid) then
-		return {error=-1,msg="user is not exist"};
+		return {error = {id = -1} , msg = "user is not exist"};
 	end
 
 	if(not query.worldsName) then
-		return {error=-1,msg="worldsName is not exist"};
+		return {error = {id = -1} , msg = "worldsName is not exist"};
 	end
 
 	self:db():deleteOne(query,resume);
@@ -459,6 +310,9 @@ function worlds:delete(params)
 		params.method = "minus";
 
 		models.worlds_stats:new():update(params);
+		return {error = {id = 0} , msg = "delete success"};
+	else
+		return {error = {id = -1} , msg = "delete fail"};
 	end
 end
 
@@ -482,7 +336,7 @@ function worlds.base32(text)
 			text = "world_" .. text;
 		end
 
-		LOG.std(nil,"debug","text",text);
+		--LOG.std(nil,"debug","text",text);
 
 		return text;
 	else
@@ -521,3 +375,167 @@ function worlds.strRepeat(num,str)
 
 	return strRepeat;
 end
+
+function worlds:formatDate(modDateTable)
+	local newModDate = "";
+
+	if(#modDateTable[1] ~= 4 and #modDateTable[1] < 4) then
+		local num = 4 - #modDateTable[1];
+		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[1];
+	elseif(#modDateTable[1] == 4) then
+		newModDate = newModDate .. modDateTable[1];
+	end
+
+	if(#modDateTable[2] ~= 2 and #modDateTable[2] < 2) then
+		local num = 2 - #modDateTable[2];
+		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[2];
+	elseif(#modDateTable[2] == 2) then
+		newModDate = newModDate .. modDateTable[2];
+	end
+
+	if(#modDateTable[3] ~= 2 and #modDateTable[3] < 2) then
+		local num = 2 - #modDateTable[3];
+		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[3];
+	elseif(#modDateTable[3] == 2) then
+		newModDate = newModDate .. modDateTable[2];
+	end
+
+	if(#modDateTable[4] ~= 2 and #modDateTable[4] < 2) then
+		local num = 2 - #modDateTable[4];
+		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[4];
+	elseif(#modDateTable[4] == 2) then
+		newModDate = newModDate .. modDateTable[4];
+	end
+
+	if(#modDateTable[5] ~= 2 and #modDateTable[5] < 2) then
+		local num = 2 - #modDateTable[5];
+		newModDate = newModDate .. self.strRepeat(num,0) .. modDateTable[5];
+	elseif(#modDateTable[5] == 2) then
+		newModDate = newModDate .. modDateTable[5];
+	end
+
+	return newModDate;
+end
+
+--function worlds:api_getRecommendOpus(params)
+--	local err, query = self:validateQuery(params);
+--	-- LOG.std(nil,"debug","queryapi_getRecommendOpus",query);
+--
+--	self:ensureAuthenticated();
+--	local userid = self:getUserId();
+--
+--	if(not query.opusId) then
+--		return {error=-1,msg="opusId is not set"};
+--	end
+--
+--	if(not query.page) then
+--		query.page = 1;
+--	end
+--
+--	if(not query.amount) then
+--		query.amount = 2;
+--	end
+--
+--	if(not query.sort) then
+--		query.sort = "_id";
+--	end
+--
+--	local skip  = query.page == 1 and 0 or query.page*query.amount-query.amount;
+--	local limit = query.amount;
+--
+--	self:db():findOne({_id = query.opusId},resume);
+--	local err,responseA = yield(true);
+--
+--	-- LOG.std(nil,"debug","responseA",responseA);
+--
+--	if(not err) then
+--		self:db():find({["+userid+isRecommend"] = {responseA.userid,"true",limit=limit,skip=skip}},resume);
+--		local err,responseB = yield(true);
+--
+--		-- LOG.std(nil,"debug","responseB",responseB);
+--
+--		if(not err) then
+--			for key,value in ipairs(responseB) do
+--				local params = {};
+--				params.statsType = "worldsStarTotals" .. value._id;
+--
+--				local stats = models.worlds_stats:new():get(params);
+--				value.starTotals = stats;
+--
+--				if(userid)then
+--					local starParams = {};
+--					starParams.opusId = value._id;
+--
+--					local res = models.worlds_star:new():get(starParams);
+--					
+--					if(res.error == 1)then
+--						value.isMyStar = false;
+--					elseif(res.error == 0)then
+--						value.isMyStar = true;
+--					end
+--				end
+--			end
+--
+--			return {error = 0  , data=responseB};
+--		else
+--			return {error = -1 , msg="database err"};
+--		end
+--	end
+--end
+
+--function worlds:api_recommendOpus(params)
+--	local err, query = self:validateQuery(params);
+--	local userid;
+--
+--	self:ensureAuthenticated();
+--	userid = self:getUserId();
+--
+--	if(not userid) then
+--		return {error=-1,msg="user is not exist"};
+--	end
+--
+--	local userinfor = models.user:new():get({});
+--
+--	if(userinfor.isadmin == nil or userinfor == false) then
+--		return {error=-1,msg="prohibit not administrator operation"};
+--	end
+--
+--	if(not query.opusId) then
+--		return {error=-1,msg="opusId is not set"};
+--	end
+--
+--	if(not query.isRecommend) then
+--		return {error=-1,msg="isRecommend is not set"};
+--	end
+--
+--	if(query.isRecommend == "true")then
+--		local params  = {};
+--		params.method = "add";
+--
+--		params.statsType = "worldsRecommendTotals";
+--		models.worlds_stats:new():inside_update(params);
+--
+--		params.statsType = "worldsRecommendTotalsUser" .. userid;
+--		models.worlds_stats:new():inside_update(params);
+--	elseif(query.isRecommend == "false")then
+--		local params  = {};
+--		params.method = "minus";
+--
+--		params.statsType = "worldsRecommendTotals";
+--		models.worlds_stats:new():inside_update(params);
+--
+--		params.statsType = "worldsRecommendTotalsUser" .. userid;
+--		models.worlds_stats:new():inside_update(params);
+--	end
+--
+--	self:db():updateOne({_id = query.opusId},
+--					    {isRecommend = query.isRecommend},resume);
+--
+--	local err,response = yield(true);
+--
+--	if(not err) then
+--		return {error=0,msg="set successful"};
+--	else
+--		return {error=-1,msg="set fail"};
+--	end
+--end
