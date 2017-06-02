@@ -24,6 +24,7 @@ function data_source:ctor()
 	self:addfield("dataSourceUsername", "string")  -- 数据源用户名
 	self:addfield("dataSourceToken", "string")     -- 数据源ID
 	self:addfield("projectName", "string") -- 项目名
+	self:addfield("projectId", "number") -- 项目id
 	self:addfield("rootPath", "string")    -- 项目根路径
 	self:addfield("apiBaseUrl", "string")  -- api url prefix
 	self:addfield("rawBaseUrl", "string")  -- raw url prefix
@@ -440,10 +441,6 @@ function data_source:api_githubWebhook(params)
 
 	return
 end
-
-
-
-
 
 
 

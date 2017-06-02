@@ -376,13 +376,14 @@ define([
                         }
                         serverPage = allPageMap[page.url] = page;
                     }
+                    if (!page.isModify) {   // 没有修改删除本地
+                        indexDBDeletePage(page.url);
+                        return;
+                    }
 
                     serverPage.isModify = page.isModify;
                     //console.log(page);
                     allWebstePageContent[page.url] = page.content;
-                    if (!serverPage.isModify) {   // 没有修改删除本地
-                        indexDBDeletePage(page.url);
-                    }
                 }, undefined, function () {
                     initTree();
                 });
@@ -1865,7 +1866,7 @@ define([
                 }
 
                 window.onresize = function () {
-                    if (util.parseUrl().pathname == "/wiki/wikiEditor") {
+                    if (util.humpToSnake(util.parseUrl().pathname) == "/wiki/wikiEditor") {
                         setEditorHeight();
                         $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
                         resizeMod();

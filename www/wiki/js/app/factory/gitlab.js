@@ -272,6 +272,7 @@ define([
             self.username = dataSource.dataSourceUsername;
             self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
             self.projectName = dataSource.projectName || self.projectName;
+            self.projectId = dataSource.projectId || undefined;
             self.apiBaseUrl = dataSource.apiBaseUrl;
             self.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
             self.rootPath = dataSource.rootPath || '';
@@ -282,17 +283,6 @@ define([
                 errcb && errcb();
                 return;
             }
-
-            // var _getLastCommitId = function (cb, errcb, finish) {
-            //     gitlab.listCommits({}, function (data) {
-            //         if (data && data.length > 0){
-            //             gitlab.lastCommitId = data[0].id;
-            //         }
-            //         console.log(gitlab.lastCommitId);
-            //         cb && cb();
-            //         finish && finish();
-            //     }, finish);
-            // };
 
             var createWebhook = function () {
                 var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";

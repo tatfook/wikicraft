@@ -532,13 +532,23 @@ function website:api_getDetailInfo(params)
 	end
 
 	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getById({id=dataSourceId}).data
-	if not dataSource then
-		return errors:wrap(errors.SERVER_INNER_ERROR, {message="data source not found"})
+	local dataSourceList = dataSourceDB:api_getByUserId({userId=userinfo._id}).data
+	for key, value in ipairs(dataSourceList) do
+		if value._id == dataSourceId then
+			dataSourceList[key] = dataSourceDB:api_getLastCommitId(value).data
+		end
+		dataSourceList[key].dataSourceToken = nil
 	end
-	dataSource = dataSourceDB:api_getLastCommitId(dataSource).data
-	dataSource.dataSourceToken = nil
-	userinfo.dataSource = {dataSource}
+	--[[
+		local dataSource = dataSourceDB:api_getById({id=dataSourceId}).data
+		if not dataSource then
+			return errors:wrap(errors.SERVER_INNER_ERROR, {message="data source not found"})
+		end
+		dataSource = dataSourceDB:api_getLastCommitId(dataSource).data
+		dataSource.dataSourceToken = nil
+		userinfo.dataSource = {dataSource}
+	]]
+	userinfo.dataSource = dataSourceList
 
 	self:api_visitWebsite(params)
 

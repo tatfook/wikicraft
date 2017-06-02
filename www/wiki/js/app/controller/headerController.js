@@ -6,9 +6,10 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/dataSource',
     'text!html/header.html',
     'jquery-sharejs'
-], function (app, util, storage, htmlContent) {
+], function (app, util, storage, dataSource,  htmlContent) {
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
@@ -77,10 +78,21 @@ define([
         $scope.clickPageList = function () {
             if ($scope.urlObj.username == "wiki")
                 return;
+            
+            var userDataSource = dataSource.getUserDataSource($scope.urlObj.username)
+            var currentDataSource = userDataSource && userDataSource.getDataSourceById($rootScope.siteinfo.dataSourceId);
+            if (!currentDataSource) {
+                console.log(userDataSource,$rootScope.siteinfo._id );
+                return;
+            }
+            
+            currentDataSource.getTree({path:'/' + $scope.urlObj.username + '/' + $scope.urlObj.sitename}, function (data) {
+                $scope.userSitePageList = data || [];
+            });
         }
 
         $scope.selectPage = function (page) {
-            $scope.urlObj.pagename = page.name;
+            $scope.urlObj.pagename = page.pagename;
             $scope.goUrlSite();
         }
 
