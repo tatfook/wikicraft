@@ -252,7 +252,7 @@
                 <h4>创建的组织：</h4>
                 <p ng-show="selfOrganizationCount==0">暂未创建组织</p>
                 <ul class="list-item">
-                    <li ng-repeat="x in selfOrganizationList"><a href="#" class="text-muted">{{x.name}}</a></li>
+                    <li ng-repeat="x in selfOrganizationList"><a href="{{'/'+x.username+'/'+x.name+'/index'}}" class="text-muted">{{x.displayName}}</a></li>
                 </ul>
             </div>
             <div class="message-row">

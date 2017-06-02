@@ -51,6 +51,8 @@
     }
     .works-manage .tab-pane{
         padding: 40px;
+        height:460px;
+        overflow-y: auto;
     }
     .works-manage .work{
         padding: 0 20px 20px;
@@ -95,6 +97,29 @@
     .works-manage .notify-work .intro{
         flex: 1;
         padding: 0 0 0 20px;
+        overflow: hidden;
+    }
+    .works-manage .notify-work p.introduce{
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        -ms-word-wrap:break-word;
+        word-wrap:break-word;
+    }
+    .works-manage .work-item{
+        display: flex;
+        align-items:center;
+    }
+    .works-manage .work-item .work-msg{
+        flex: 1;
+        overflow: hidden;
+    }
+    .works-manage .work-item h4{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height:1.5;
     }
     @media (max-width: 768px) {
         .works-manage .panel{
@@ -141,12 +166,12 @@
                                 <img ng-src="{{works.worksLogo || (imgsPath + 'org_work.jpg')}}">
                             </a>
                             <div class="text clearfix">
-                                <div class="clearfix">
-                                    <div class="pull-left">
-                                        <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksTitle || "未命名"}}</a></h4>
+                                <div class="work-item">
+                                    <div class="work-msg">
+                                        <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle || "未命名"}}">{{works.worksTitle || "未命名"}}</a></h4>
                                         <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
                                     </div>
-                                    <div class="btn btn-primary pull-right" ng-click="removeWorks(works)">移除</div>
+                                    <div class="btn btn-primary" ng-click="removeWorks(works)">移除</div>
                                 </div>
                                 <p class="pull-left info">
                                     <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
@@ -166,7 +191,7 @@
                                 <img ng-src="{{ apply.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
                                 <div class="intro">
                                     <p>介绍：</p>
-                                    <p>{{apply.worksDesc}}</p>
+                                    <p class="introduce" title="{{apply.worksDesc}}">{{apply.worksDesc}}</p>
                                 </div>
                                 <div class="btn btn-primary" ng-click="agreeApply(apply)">同意</div>
                                 <div class="btn btn-outline" ng-click="refuseApply(apply)">删除</div>
