@@ -30,6 +30,7 @@ define([
     'bootstrap-treeview',
 ], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
     //console.log("wiki editor controller!!!");
+    var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true});
     var editor;
@@ -60,7 +61,7 @@ define([
         var treeData = [];
         for (var key in pageMap) {
             var page = pageMap[key];
-            if (page.isDelete || !page.url) {
+            if (page.isDelete || !page.url || page.url.indexOf('/' + username) != 0) {
                 continue;
             }
 
@@ -97,6 +98,11 @@ define([
         for (var i = 0; i < allWebsites.length; i++) {
             var isExist = false;
             var site = allWebsites[i];
+
+            if (site.username != username) {
+                continue;
+            }
+
             for (key in pageTree.children) {
                 if (key == site.name) {
                     var node = pageTree.children[key];
@@ -393,36 +399,151 @@ define([
                 var _openPage = function () {
                     initTree();
                     openPage();
-                }
+                };
+                
+                var fnList = [];
+                
+                // 获取自己的站点列表
+                fnList.push(function (finish) {
+                    if ($scope.user && $scope.user._id) {
+                        // 获取用户所有站点
+                        util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}, function (data) {
+                            allWebsites = (allWebsites || []).concat(data || []);
+                            finish && finish();
+                        }, finish);
+                    } else {
+                        finish && finish();
+                    }
+                });
 
-                // 获取用户所有站点
-                util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}, function (data) {
-                    allWebsites = data || [];
-                    //console.log(allWebsites);
+                // 获取他人站点列表
+                fnList.push(function (finish) {
+                    if (otherUserinfo && otherUserinfo._id) {
+                        util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: otherUserinfo._id}, function (data) {
+                            allWebsites = (allWebsites || []).concat(data || []);
+                            finish && finish();
+                        }, finish);
+                    } else {
+                        finish && finish();
+                    }
+                });
+                
+                fnList.push(function (finish) {
+                    dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(finish);
+                });
+
+                fnList.push(function (finish) {
+                    if (otherUserinfo) {
+                        dataSource.getUserDataSource(otherUserinfo.username).registerInitFinishCallback(finish);
+                    } else {
+                        finish && finish();
+                    }
+                });
+
+                util.batchRun(fnList, function () {
                     //初始化本地数据库indexDB
                     storage.indexedDBRegisterOpenCallback( function () {
                         loadUnSavePage();
-                        dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
-                            _openPage();
-                        });
+                        _openPage();
                     });
                 });
+            }
+
+            // 用户是否存在
+            function isUserExist() {
+                if ($scope.user && $scope.user.username) {
+                    return true;
+                }
+                return false;
+            }
+
+            // 其它用户是否存在
+            function isOtherUserExist() {
+                if (otherUserinfo && otherUserinfo.username) {
+                    return true;
+                }
+                return false;
+            }
+
+            // 通过用户名获取treeID
+            function getTreeId(username) {
+                if (isUserExist() && $scope.user.username == username) {
+                    return '#mytree';
+                }
+
+                if (isOtherUserExist() && otherUserinfo.username == username) {
+                    return "#othertree";
+                }
+                console.log("get tree id errors:", username);
+                return '#mytree';
+            }
+
+            // 通过用户名获取userinfo
+            function getUserinfo(username) {
+                if (isUserExist() && $scope.user.username == username) {
+                    return $scope.user;
+                }
+
+                if (isOtherUserExist() && otherUserinfo.username == username) {
+                    return otherUserinfo;
+                }
+                console.log("get tree info errors:", username);
+                return $scope.user || otherUserinfo;
             }
 
 
             //初始化，读取用户站点列表及页面列表
             function init() {
                 //console.log('---------------init---------------');
-                if (!Account.ensureAuthenticated()) {
+                var otherUsername = storage.sessionStorageGetItem('otherUsername') || "wxatest";
+                var fnList = [];
+                if (!Account.ensureAuthenticated() && !otherUsername) {
                     return;
                 }
                 initEditor();
-                // 获取站点及页列表
-                Account.getUser(function (userinfo) {
-                    $scope.user = userinfo;
-                    $rootScope.userinfo = userinfo;
+
+                // 获取自己用户信息
+                fnList.push(function (finish) {
+                   Account.getUser(function (userinfo) {
+                       $scope.user = userinfo;
+                       finish && finish();
+                   }, finish);
+                });
+                // 获取他人用户信息
+                fnList.push(function (finish) {
+                    if (otherUsername && (!$scope.user || $scope.user.username != otherUsername)) {
+                        util.post(config.apiUrlPrefix + 'user/getByName', {username:otherUsername}, function (data) {
+                            otherUserinfo = data;
+                            finish && finish();
+                        }, finish);
+                    } else {
+                        finish && finish();
+                    }
+                });
+
+                util.batchRun(fnList, function () {
+                    $rootScope.userinfo = otherUserinfo || $scope.user;
+                    if (otherUserinfo && otherUserinfo.dataSource && (!$scope.user || $scope.user.username != otherUserinfo.username)) {
+                        var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
+                        userDataSource.init(otherUserinfo.dataSource, otherUserinfo.dataSourceId);
+                    }
                     loadSitePageInfo();
                 });
+                // // 获取站点及页列表
+                // Account.getUser(function (userinfo) {
+                //     $scope.user = userinfo;
+                //     $rootScope.userinfo = userinfo;
+                //     if (urlObj && userinfo.username != urlObj.username) {
+                //         util.post(config.apiUrlPrefix + 'user/getByName', {username:urlObj.username}, function (data) {
+                //            otherUserinfo = data;
+                //            if (otherUserinfo && otherUserinfo.dataSource) {
+                //                var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
+                //                userDataSource.init(otherUserinfo.dataSource, otherUserinfo.dataSourceId);
+                //            }
+                //         });
+                //     }
+                //     loadSitePageInfo();
+                // });
             }
 
             $scope.$watch('$viewContentLoaded', init);
@@ -430,7 +551,7 @@ define([
 
             // 保存页
             function savePageContent(cb, errcb) {
-                console.log(currentPage);
+                //console.log(currentPage);
                 // 不能修改别人页面
                 if (isEmptyObject(currentPage) || !currentPage.isModify || currentPage.username != $scope.user.username) {
                     cb && cb();
@@ -613,6 +734,7 @@ define([
 
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
+                $rootScope.userinfo = getUserinfo(currentPage.username);
                 $rootScope.siteinfo = currentSite;
                 $rootScope.pageinfo = currentPage;
                 $rootScope.tplinfo = getPageByUrl('/' + currentPage.username + '/' + currentPage.sitename + '/_theme');
@@ -649,13 +771,14 @@ define([
                     $('#btUrl').val(window.location.origin + currentPage.url);
 
                     var treeNode = treeNodeMap[currentPage.url];
+                    var treeid = getTreeId(currentPage.username);
                     //console.log(currentPage, treeNode);
                     if (treeNode) {
-                        $('#treeview').treeview('selectNode', [treeNode.nodeId, {silent: true}]);
+                        $(treeid).treeview('selectNode', [treeNode.nodeId, {silent: true}]);
                         while (treeNode.parentId != undefined){
-                            treeNode = $('#treeview').treeview('getNode', treeNode.parentId);
+                            treeNode = $(treeid).treeview('getNode', treeNode.parentId);
                             if (!treeNode.state.expanded) {
-                                $('#treeview').treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
+                                $(treeid).treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
                             }
                         };
                     }
@@ -726,24 +849,25 @@ define([
                 //console.log('@initTree');
                 setTimeout(function () {
                     var isFirstCollapsedAll = true;
-                    $('#treeview').treeview({
+                    var treeview = {
                         color: "#3977AD",
                         selectedBackColor: "#3977AD",
                         showBorder: false,
                         enableLinks: false,
                         levels: 4,
                         showTags: true,
-                        data: getTreeData($scope.user.username, allPageMap, false),
+                        //data: getTreeData($scope.user.username, allPageMap, false),
                         onNodeSelected: function (event, data) {
-                            console.log(data.pageNode);
+                            //console.log(data.pageNode);
                             //console.log("---------onNodeSelected----------");
+                            var treeid = getTreeId(data.pageNode.username);
                             if (data.pageNode.isLeaf) {
                                 if (currentPage && data.pageNode.url != currentPage.url) {
-                                    $('#treeview').treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
+                                    $(treeid).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                                 }
                             } else {
-                                $('#treeview').treeview('unselectNode', [data.nodeId, {silent: true}]);
-                                $('#treeview').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                                $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
+                                $(treeid).treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
                                 if (treeNodeExpandedMap[data.pageNode.url]) {
                                     treeNodeExpandedMap[data.pageNode.url] = false;
                                 } else {
@@ -770,8 +894,9 @@ define([
                         onNodeUnselected: function (event, data) {
                             // 不取消自己
                             //console.log("---------onNodeUnselected----------");
+                            var treeid = getTreeId(data.pageNode.username);
                             if (currentPage && data.pageNode.url == currentPage.url) {
-                                $('#treeview').treeview('selectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
+                                $(treeid).treeview('selectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                             }
                         },
                         onNodeCollapsed: function (event, data) {
@@ -793,12 +918,24 @@ define([
                             treeNodeExpandedMap[data.pageNode.url] = true;
                             getSitePageList({path:data.pageNode.url, username:data.pageNode.username, sitename:data.pageNode.sitename});
                         },
-                    });
-                    $('#treeview').treeview('collapseAll', {silent: false});
+                    };
+                    if (isUserExist()) {
+                        var mytree = angular.copy(treeview);
+                        mytree.data = getTreeData($scope.user.username, allPageMap, false);
+                        $('#mytree').treeview(mytree);
+                        $('#mytree').treeview('collapseAll', {silent: false});
+                    }
+                    if (isOtherUserExist()) {
+                        var othertree = angular.copy(treeview);
+                        othertree.data = getTreeData(otherUserinfo.username, allPageMap, false);
+                        $('#othertree').treeview(othertree);
+                        $('#othertree').treeview('collapseAll', {silent: false});
+                    }
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
                         //console.log(key, treeNodeMap[key]);
-                        treeNodeMap[key] && $("#treeview").treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
+                        var treeid = getTreeId(node.pageNode.username);
+                        treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }
                 });
             }

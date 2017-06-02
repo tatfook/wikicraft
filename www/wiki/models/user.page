@@ -527,7 +527,7 @@ function user:api_getById(params)
 	end
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource(params).data
+	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
 	for _, value in ipairs(data.dataSource) do
 		value.dataSourceToken = nil
 	end
@@ -549,8 +549,8 @@ function user:api_getByName(params)
 	
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource(params).data
-	for _, value in ipairs(data.dataSource) do
+	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
+	for _, value in ipairs(data.dataSource or {}) do
 		value.dataSourceToken = nil
 	end
 
@@ -571,7 +571,7 @@ function user:api_getByEmail(params)
 	
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource(params).data
+	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
 	for _, value in ipairs(data.dataSource) do
 		value.dataSourceToken = nil
 	end

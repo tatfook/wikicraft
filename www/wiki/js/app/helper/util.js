@@ -290,7 +290,7 @@ define([
         return false;
     }
 
-    // 执行批量
+    // 执行批量  function(finishCB){}
     util.batchRun = function(fnList,finish) {
         var isCall = [];
         var _isFinish = function () {
@@ -321,7 +321,7 @@ define([
         }
     }
 
-    // 顺序执行
+    // 顺序执行 function(cb,errcb){}
     util.sequenceRun = function (fnList, delay, cb, errcb) {
         delay = delay == undefined ? 1000 : delay;
         var index = 0;
