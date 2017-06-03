@@ -31,7 +31,7 @@ define([
                         this.filesTotals = parseInt(this.filesTotals / 1024 / 1024) + "M";
                     }
 
-                    this.preview = JSON.parse(this.preview)[0].previewUrl;
+                    this.preview = JSON.parse(this.preview)[0].previewUrl + "?ver=" + this.revision;
                 });
             }, function (response) { });
         }]);

@@ -1,3 +1,22 @@
+<style>
+    @media (min-width:1025px) {
+        .paracraft {
+            width: 1000px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+
+        .paracraft .p-field-size{
+            width: auto!important;
+        }
+
+        .paracraft .p-field-size textarea{
+             width:600px;
+             height:140px;
+        }
+    }
+</style>
+
 <div class="" ng-controller="commentController">
     <div class="row">
         <div class="col-xs-12">
@@ -6,27 +25,27 @@
                 <div style="border-bottom: 1px solid silver;">
                     <h3>我要评论</h3>
                 </div>
-                <div style="display: flex; margin-top: 20px" ng-repeat="comment in commentObj.commentList">
+                <div style="display: flex; margin-top: 20px;margin-bottom: 20px;" ng-repeat="comment in commentObj.commentList">
                     <div style="padding: 0px 20px;padding-left:0px;">
                         <img ng-src="{{comment.userInfo.protrait ||  imgsPath + 'wiki_works.jpg'}}" style="width: 80px; height: 80px">
                     </div>
                     <div style="border-bottom: 1px solid silver; padding-bottom: 20px; flex-grow: 1">
+                        <div style="color: silver; margin: 10px; float:right">
+                            <!--<span>{{'#' + comment._id}}</span>-->
+                            <span>{{comment.createTime}}</span>
+                            <a ng-show="user._id == comment.userId" style="color: silver" ng-click="deleteComment(comment)">删除</a>
+                        </div>
                         <div style="display: flex; justify-content: space-between">
                             <h4><b>{{comment.userInfo.username}}</b></h4>
                         </div>
                         <div>
                             {{comment.content}}
                         </div>
-                        <div style="color: silver; margin: 10px">
-                            <span>{{'#' + comment._id}}</span>
-                            <span>{{comment.createTime}}</span>
-                            <a ng-show="user._id == comment.userId" style="color: silver" ng-click="deleteComment(comment)">删除</a>
-                        </div>
                     </div>
                 </div>
 
-                <div class="form-group" style="display: flex; justify-content: center; padding: 20px 0px">
-                    <div style="width: 100%">
+                <div class="form-group" style="display: flex; padding: 20px 0px">
+                    <div class="p-field-size" style="width: 100%">
                         <div style="color: red;">{{tipInfo}}</div>
                         <textarea class="form-control" ng-model="comment.content"></textarea>
                     </div>
