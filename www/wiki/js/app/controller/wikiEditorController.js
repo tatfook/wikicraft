@@ -375,6 +375,9 @@ define([
             // 加载未提交到服务的页面
             function loadUnSavePage() {
                 storage.indexedDBGet(config.pageStoreName, function (page) {
+					if (!isUserExist() || !page.username || !page.sitename || !page.pagename || !page.url || (page.username != $scope.user.username)) {
+						return;
+					}
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
                         if (!getCurrentWebsite(page.username, page.sitename)) {
@@ -491,6 +494,13 @@ define([
                 return $scope.user || otherUserinfo;
             }
 
+			// 是否是用户自己的页面
+			function isSelfPage() {
+				if (!isUserExist() || isEmptyObject(currentPage) || $scope.user.username != currentPage.username) {
+					return false;
+				}
+				return true;
+			}
 
             //初始化，读取用户站点列表及页面列表
             function init() {
@@ -553,7 +563,7 @@ define([
             function savePageContent(cb, errcb) {
                 //console.log(currentPage);
                 // 不能修改别人页面
-                if (isEmptyObject(currentPage) || !currentPage.isModify || currentPage.username != $scope.user.username) {
+                if (!isUserExist() || isEmptyObject(currentPage) || !currentPage.isModify || currentPage.username != $scope.user.username) {
                     cb && cb();
                     return;
                 }
@@ -667,13 +677,13 @@ define([
                 var pagename = urlObj.pagename || 'index';
                 var pagepath = urlObj.pagepath || ('/' + username + '/' + sitename + '/' + pagename);
                 var url = urlObj.url || pagepath;
-                if (!username || !sitename || username != $scope.user.username) {
+                if (!username || !sitename) {
                     openTempFile();
                     return;
                 }
                 currentPage = getPageByUrl(url);
                 currentSite = getCurrentWebsite(username, sitename);
-
+				
                 var _openUrlPage = function () {
                     var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                     currentPage = getPageByUrl(url);
@@ -683,23 +693,28 @@ define([
                         openPage();
                         return;
                     }
+					// 访问其它人不存在页面不新建
+					if (username != $scope.user.username) {
+						openTempFile();
+						return;
+					}
                     // 不存在 不新建
-                    if (!currentPage && pagename[0] != '_') {
-                        var url = '/' + username + '/' + sitename;
-                        for (var key in allPageMap) {
-                            if (key.indexOf(url) >= 0) {
-                                currentPage = allPageMap[key];
-                                currentSite = getCurrentWebsite();
-                                openPage();
-                                return;
-                            }
-                        }
+                    //if (!currentPage && pagename[0] != '_') {
+                    //    var url = '/' + username + '/' + sitename;
+                    //    for (var key in allPageMap) {
+                    //        if (key.indexOf(url) >= 0) {
+                    //            currentPage = allPageMap[key];
+                    //            currentSite = getCurrentWebsite();
+                    //            openPage();
+                    //            return;
+                    //        }
+                    //    }
 
-                        if (!currentPage) {
-                            openTempFile();
-                            return;
-                        }
-                    }
+                    //    if (!currentPage) {
+                    //        openTempFile();
+                    //        return;
+                    //    }
+                    //}
 
                     // 新建
                     var page = {};
@@ -718,7 +733,7 @@ define([
                 }
 
                 // 获取站点页列表
-                dataSource.setCurrentDataSource(username, currentSite.dataSourceId);
+                dataSource.setCurrentDataSource(username, currentSite && currentSite.dataSourceId);
                 getSitePageList({path:"/" + username + '/' +  sitename, username:username, sitename:sitename}, function () {
                     _openUrlPage();
                 });
@@ -768,20 +783,22 @@ define([
                         }
                     }
 
-                    $('#btUrl').val(window.location.origin + currentPage.url);
-
-                    var treeNode = treeNodeMap[currentPage.url];
-                    var treeid = getTreeId(currentPage.username);
-                    //console.log(currentPage, treeNode);
-                    if (treeNode) {
-                        $(treeid).treeview('selectNode', [treeNode.nodeId, {silent: true}]);
-                        while (treeNode.parentId != undefined){
-                            treeNode = $(treeid).treeview('getNode', treeNode.parentId);
-                            if (!treeNode.state.expanded) {
-                                $(treeid).treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
-                            }
-                        };
-                    }
+					// init tree user settimeout(function(){}, 0)
+					setTimeout(function() {
+						$('#btUrl').val(window.location.origin + currentPage.url);
+						var treeNode = treeNodeMap[currentPage.url];
+						var treeid = getTreeId(currentPage.username);
+						//console.log(treeid, treeNodeMap, currentPage);
+						if (treeNode) {
+							$(treeid).treeview('selectNode', [treeNode.nodeId, {silent: true}]);
+							while (treeNode.parentId != undefined){
+								treeNode = $(treeid).treeview('getNode', treeNode.parentId);
+								if (!treeNode.state.expanded) {
+									$(treeid).treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
+								}
+							};
+						}
+					}, 10);
                 }
 
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
@@ -863,7 +880,7 @@ define([
                             var treeid = getTreeId(data.pageNode.username);
                             if (data.pageNode.isLeaf) {
                                 if (currentPage && data.pageNode.url != currentPage.url) {
-                                    $(treeid).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
+                                    $(getTreeId(currentPage.username)).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                                 }
                             } else {
                                 $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
@@ -931,8 +948,10 @@ define([
                         $('#othertree').treeview(othertree);
                         $('#othertree').treeview('collapseAll', {silent: false});
                     }
+					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
+						var node = treeNodeMap[key]
                         //console.log(key, treeNodeMap[key]);
                         var treeid = getTreeId(node.pageNode.username);
                         treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
@@ -1031,7 +1050,7 @@ define([
                             window.open(data.html_url);
                         });
                     } else {
-                        window.open(currentDataSource.getContentUrlPrefix({path: currentPage.url + pageSuffixName}));
+                        window.open(currentDataSource.getContentUrlPrefix({path: currentPage.url + pageSuffixName, sha:"master"}));
                     }
                 }
             }
@@ -1069,6 +1088,11 @@ define([
             //保存页面
             $scope.cmd_savepage = function (cb, errcb) {
                 console.log(currentPage);
+				if (!isSelfPage()) {
+					cb && cb();
+					//Message.info("不能保存它人页面");
+					return ;
+				}
                 if (!isEmptyObject(currentPage)) {//修改
                     var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
                     savePageContent(function () {
@@ -1591,7 +1615,7 @@ define([
                     return;
                 }
 
-                if (!currentPage.isModify) {
+                if (!currentPage.isModify || !isSelfPage()) {
                     cb && cb();
                     return;
                 }
@@ -2074,7 +2098,7 @@ define([
                     //console.log(currentPage);
 
                     if (!currentPage.isModify && content != allWebstePageContent[currentPage.url]) {
-                        console.log(currentPage);
+                        //console.log(currentPage);
                         //console.log(content, allWebstePageContent[currentPage.url],content != allWebstePageContent[currentPage.url]);
                         currentPage.isModify = true;
                         initTree();

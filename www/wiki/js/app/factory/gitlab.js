@@ -186,13 +186,16 @@ define([
         // 获取原始内容
         gitlab.getRawContent = function (params, cb, errcb) {
             var self = this;
+            var index = params.path.lastIndexOf('.');
+            var url = index == -1 ? params.path : params.path.substring(0, index);
             var _getRawContent = function () {
-                var url = self.getRawContentUrlPrefix(params);
+                var apiurl = self.getRawContentUrlPrefix(params);
                 $http({
                     method: 'GET',
-                    url: url,
+                    url: apiurl,
                     skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
-                }).then(function (response) {
+				}).then(function (response) {
+					storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
                     cb && cb(response.data);
                 }).catch(function (response) {
                     errcb && errcb(response);
@@ -200,8 +203,6 @@ define([
             }
             // _getRawContent();
             // return;
-            var index = params.path.lastIndexOf('.');
-            var url = index == -1 ? params.path : params.path.substring(0, index);
             storage.indexedDBGetItem(config.pageStoreName, url, function (page) {
                 //console.log(page, url);
                 if (page) {
