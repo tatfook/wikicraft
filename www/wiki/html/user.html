@@ -259,7 +259,7 @@
                 <h4>加入的组织：</h4>
                 <p ng-show="joinOrganizationCount==0">暂未加入组织</p>
                 <ul class="list-item">
-                    <li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="#" class="text-muted">{{x.siteinfo.name}}</a></li>
+                    <li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="#" class="text-muted">{{x.siteinfo.displayName}}</a></li>
                 </ul>
             </div>
         </div>
@@ -353,7 +353,7 @@
                         <div class="img-text col-md-6" ng-repeat="x in allSiteList">
                             <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
                             <div class="text">
-                                <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                 <p>作者：{{x.username}} </p>
                                 <p>{{x.desc}}</p>
                                 <div class="col-md-12 info">
