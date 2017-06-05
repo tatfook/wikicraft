@@ -505,7 +505,7 @@ define([
             //初始化，读取用户站点列表及页面列表
             function init() {
                 //console.log('---------------init---------------');
-                var otherUsername = storage.sessionStorageGetItem('otherUsername') || "wxatest";
+                var otherUsername = storage.sessionStorageGetItem('otherUsername');
                 var fnList = [];
                 if (!Account.ensureAuthenticated() && !otherUsername) {
                     return;
