@@ -109,8 +109,8 @@ define([
         getDataSourceById: function (dataSourceId) {
             var self = this;
             // 当数据源id不存在时, 返回inner server 存贮
-            if (dataSourceId == 0) {
-                return innerServerDS;
+            if (!dataSourceId || !self.dataSourceCfgList) {
+                return undefined;
             }
 
             for (var i = 0; i < self.dataSourceCfgList.length; i++) {

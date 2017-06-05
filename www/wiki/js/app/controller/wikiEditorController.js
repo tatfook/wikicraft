@@ -512,6 +512,8 @@ define([
                 }
                 initEditor();
 
+				console.log(otherUsername);
+
                 // 获取自己用户信息
                 fnList.push(function (finish) {
                    Account.getUser(function (userinfo) {

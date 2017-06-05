@@ -236,6 +236,8 @@ define([
 
                             currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
                                 //console.log(data);
+								//console.log("otherUsername:", urlObj.username);
+								storage.sessionStorageSetItem("otherUsername", urlObj.username);
                                 renderContent(data);
                             }, function () {
                                 renderContent();
@@ -256,6 +258,10 @@ define([
                 // 置空用户页面内容
                 console.log(urlObj);
                 setWindowTitle(urlObj);
+				
+				if (!util.isEditorPage()) {
+					storage.sessionStorageRemoveItem("otherUsername");
+				}
 
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
