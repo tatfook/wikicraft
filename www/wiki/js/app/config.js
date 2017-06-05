@@ -8,7 +8,7 @@
     var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
-    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
+    var pathPrefix = (localEnv && !localVMEnv) ? '/www/wiki/' : (wiki_config.webroot || '/wiki/');
     config = {
         // --------------------------------------前端配置 START----------------------------------------------
         localEnv:localEnv,                                                                                         // 是否本地调试环境
