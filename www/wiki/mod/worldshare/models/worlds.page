@@ -40,7 +40,7 @@ function worlds:ctor()
 	--hasPreview
 	self:addfield("hasPreview","string",false);
 	--readme
-	self:addfield("readme","string",false,1000);
+	--self:addfield("readme","string",false,1000);
 	--preview
 	self:addfield("preview","string",false,800);
 	--filesTotals
@@ -217,7 +217,7 @@ function worlds:api_refresh(params)
 			insertParams.worldsName = query.worldsName;
 			insertParams.revision   = query.revision;
 			insertParams.hasPreview = query.hasPreview;
-			insertParams.readme     = query.readme;
+			--insertParams.readme     = query.readme;
 			insertParams.preview    = query.preview;
 			insertParams.commitId   = query.commitId;
 			insertParams.filesTotals     = query.filesTotals;
@@ -264,7 +264,7 @@ function worlds:api_refresh(params)
 				revision   = query.revision,
 				preview    = query.preview,
 				hasPreview = query.hasPreview,
-				readme     = query.readme,
+				--readme     = query.readme,
 				commitId   = query.commitId;
 				filesTotals     = query.filesTotals,
 				gitlabProjectId = query.gitlabProjectId,
