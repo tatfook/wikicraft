@@ -18,6 +18,7 @@ local worlds    = inherit(models.abstract.multi_user_base, gettable("models.worl
 local Encoding  = commonlib.gettable("System.Encoding.basexx");
 
 worlds.db_name = "worlds";
+worlds.max_items_per_user = 1000;
 
 function worlds:ctor()
 	self:addfield("userid","number",false,10);
@@ -227,6 +228,8 @@ function worlds:api_refresh(params)
 			local dataSource = models.data_source:new():api_getByUserId({userId = userid});
 			local defaultDataSource = {};
 
+			LOG.std("worlds","debug","DataSource :",dataSource);
+
 			for key,value in ipairs(dataSource.data) do
 				if(value._id == userInfor.dataSourceId) then
 						defaultDataSource = value;
@@ -240,17 +243,20 @@ function worlds:api_refresh(params)
 				insertParams.giturl = "http://git.keepwork.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base32(query.worldsName);
 			end
 
+			LOG.std("worlds","debug","insertParams :", insertParams);
+			LOG.std("worlds","debug","worlds._super :", worlds._super);
+			log(worlds._super, true);
 			local insertResponse = worlds._super.create(self, insertParams);
 			--LOG.std(nil,"debug","insertResponse",insertResponse);
 
-			local params  = {};
-			params.statsType = "worldsTotals";
-			params.method = "add";
-
-			models.worlds_stats:new():inside_update(params);
-
-			params.statsType = "worldsTotalsUser" .. userid;
-			models.worlds_stats:new():inside_update(params);
+--			local params  = {};
+--			params.statsType = "worldsTotals";
+--			params.method = "add";
+--
+--			models.worlds_stats:new():inside_update(params);
+--
+--			params.statsType = "worldsTotalsUser" .. userid;
+--			models.worlds_stats:new():inside_update(params);
 
 			if(insertResponse) then
 				return {error = {id = 0} , data = {opusId = insertResponse._id}};
