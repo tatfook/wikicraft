@@ -289,11 +289,26 @@ define([
 
         $scope.$on("userpageLoaded", function (event, data) {
             init();
+            var container=document.getElementById("js-prev-container");
+            var content=document.getElementById("js-prev-content");
+            var ellipsis=document.getElementById("js-prev-ellipsis");
+            prevEllipsis(container,content,ellipsis);
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             //console.log("isAuthenticated");
         });
+
+        //导航条面包屑超出宽度，省略前面部分，显示后面部分
+        function prevEllipsis(container,content,ellipsis){
+            var containerW=container.clientWidth;
+            var contentW=content.clientWidth;
+            var minus=containerW-contentW;
+            if(minus<0){
+                content.style.transform="translateX("+minus+"px)";
+                ellipsis.style.display="inline";
+            }
+        }
     }]);
 
     return htmlContent;
