@@ -243,9 +243,9 @@ function worlds:api_refresh(params)
 				insertParams.giturl = "http://git.keepwork.com/" .. defaultDataSource["dataSourceUsername"] .. "/" .. worlds.base32(query.worldsName);
 			end
 
-			LOG.std("worlds","debug","insertParams :", insertParams);
-			LOG.std("worlds","debug","worlds._super :", worlds._super);
-			log(worlds._super, true);
+			--LOG.std("worlds","debug","insertParams :", insertParams);
+			--LOG.std("worlds","debug","worlds._super :", worlds._super);
+			--log(worlds._super, true);
 			local insertResponse = worlds._super.create(self, insertParams);
 			--LOG.std(nil,"debug","insertResponse",insertResponse);
 
