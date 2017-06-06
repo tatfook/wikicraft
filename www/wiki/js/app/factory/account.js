@@ -33,8 +33,8 @@ define([
             function initDataSource(user) {
                 dataSource.setDefaultUsername(user.username);
                 var DataSource = dataSource.getUserDataSource(user.username);
-                if (!user.dataSource || user.dataSource.length == 0) {
-                    util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId: user._id}, function (data) {
+				if (!user.dataSource || user.dataSource.length == 0) {
+					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
                         user.dataSource = data || [];
                         storage.localStorageSetItem("userinfo", user);
                         DataSource.init(user.dataSource, user.dataSourceId);

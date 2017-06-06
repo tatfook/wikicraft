@@ -16,6 +16,7 @@ include_once("./user_fans.page")
 include_once("./user_trends.page")
 include_once("./user_active.page")
 include_once("./data_source.page")
+include_once("./site_data_source.page")
 include_once("./user_three_service.page")
 
 -- local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
@@ -398,7 +399,14 @@ function user:api_login(params)
 		return errors:wrap("密码错误")
 	end
 	
-	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id}).data
+	local siteDataSourceDB = models.site_data_source:new()
+	if not userinfo.dataSourceId then
+		local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=userinfo.username}).data
+		if siteDataSourceDB then
+			userinfo.dataSourceId = siteDataSource._id
+		end
+	end
+	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
 
 	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
 end
@@ -459,10 +467,13 @@ function user:api_register(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
-	userinfo.dataSource = self:api_getUserDataSource({userId=userinfo._id}).data
-	if userinfo.dataSource and #userinfo.dataSource > 0 and (not userinfo.dataSourceId) then
-		userinfo.dataSourceId = userinfo.dataSource[1]._id
+	local siteDataSourceDB = models.site_data_source:new()
+	local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=userinfo.username}).data
+	if siteDataSourceDB then
+		userinfo.dataSourceId = siteDataSource._id
 	end
+
+	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
 
 	-- 第三方服务
 	local threeService = params.threeService
@@ -475,28 +486,18 @@ function user:api_register(params)
 	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo, isNewUser=1})
 end
 
+-- 获取用户数据源列表
 function user:api_getUserDataSource(params)
-	if not params.userId then
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getByUserId({userId=params.userId}).data
-	if (not dataSource) or (#dataSource == 0) then
-		dataSource = dataSourceDB:api_createInnerGitlab({userId=params.userId}).data
-		dataSource = {dataSource}
-	end
+	local siteDataSourceDB = models.site_data_source:new()
+	local dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
 	
-	-- 不是认证用户 屏蔽数据源
-	--[[
-		local userId = checkAuthenticated()
-		if userId ~= params.userId then
-			for _, value in ipairs(dataSource) do
-				value.dataSourceToken = nil
-			end
-		end
-
-	]]
+	for _, value in ipairs(dataSource or {}) do
+		value.dataSourceToken = nil
+	end
 
 	return errors:wrap(nil, dataSource)
 end
@@ -510,7 +511,14 @@ function user:api_getProfile()
 		return errors:wrap(nil)
 	end
 
-	data.dataSource = self:api_getUserDataSource({userId=userId}).data
+	local siteDataSourceDB = models.site_data_source:new()
+	local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=data.username}).data
+	if siteDataSourceDB then
+		data.dataSourceId = siteDataSource._id
+	end
+
+	data.dataSource = siteDataSourceDB:api_getByUsername({username=data.username}).data
+
 	return errors:wrap(nil, data)
 end
 
@@ -527,10 +535,7 @@ function user:api_getById(params)
 	end
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
-	for _, value in ipairs(data.dataSource) do
-		value.dataSourceToken = nil
-	end
+	data.dataSource = self:api_getUserDataSource({username=data.username}).data
 	
 	return errors:wrap(nil, data)
 end
@@ -549,10 +554,7 @@ function user:api_getByName(params)
 	
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
-	for _, value in ipairs(data.dataSource or {}) do
-		value.dataSourceToken = nil
-	end
+	data.dataSource = self:api_getUserDataSource({username=data.username}).data
 
 	return errors:wrap(nil, data)
 end
@@ -571,10 +573,7 @@ function user:api_getByEmail(params)
 	
 	data.password = nil
 
-	data.dataSource = self:api_getUserDataSource({userId=data._id}).data
-	for _, value in ipairs(data.dataSource) do
-		value.dataSourceToken = nil
-	end
+	data.dataSource = self:api_getUserDataSource({username=data.username}).data
 
 	return errors:wrap(nil, data)
 end

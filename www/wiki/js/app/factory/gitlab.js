@@ -21,6 +21,7 @@ define([
             lastCommitId: "master",                                // 最新commitId  替代master  用于cdn加速
             projectId: undefined,                                  // project id
             projectName: 'keepworkdatasource',                   // repository name
+			projectMap:{},                                      // 项目列表
             apiBaseUrl: 'http://git.keepwork.com/api/v4',     // api base url
             rawBaseUrl: 'http://git.keepwork.com',              // raw base url
             rootPath: '',                                           // 根路径
@@ -268,16 +269,19 @@ define([
                 cb && cb();
                 return;
             }
-
+			console.log(dataSource);
             self.type = dataSource.type;
             self.username = dataSource.dataSourceUsername;
             self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
-            self.projectName = dataSource.projectName || self.projectName;
-            self.projectId = dataSource.projectId || undefined;
             self.apiBaseUrl = dataSource.apiBaseUrl;
             self.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
-            self.rootPath = dataSource.rootPath || '';
+            // 移到站点中
+			self.rootPath = dataSource.rootPath || '';
             self.lastCommitId = dataSource.lastCommitId || "master";
+            self.projectName = dataSource.projectName || self.projectName;
+            self.projectId = dataSource.projectId || undefined;
+			self.visibility = dataSource.visibility || "public";
+			self.dataSource = dataSource;
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
                 console.log("gitlab data source init failed!!!");
@@ -285,77 +289,111 @@ define([
                 return;
             }
 
-            var createWebhook = function () {
-                var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
-                //var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
-                var isExist = false;
-                self.httpRequest("GET", "/projects/" + self.projectId + "/hooks", {}, function (data) {
-                    //console.log(data);
-                    for (var i = 0; i < data.length; i++) {
-                        //gitlab.httpRequest("DELETE", "/projects/" + gitlab.projectId + "/hooks/" + data[i].id, {});
-                        if (data[i].url == hookUrl && data[i].push_events) {
-                            isExist = true;
-                        }
-                    }
-                    // return;
-                    // 不存在创建
-                    if (!isExist) {
-                        self.httpRequest("POST", "/projects/" + self.projectId + "/hooks", {
-                            url: hookUrl,
-                            push_events: true,
-                            enable_ssl_verification: false,
-                        }, function () {
-                            console.log("webhook create success");
-                        }, function () {
-                            console.log("webhook create failed");
-                        });
-                    }
-                }, function () {
+			self.setDefaultProject({projectName:self.projectName, visibility:self.visibility}, function() {
+				self.inited = true;
+				cb && cb();
+			}, errcb);
 
-                });
-            };
+			return;
+        };
 
-            var updateDataSource = function () {
-                if (dataSource.projectName && dataSource.projectId) {
-                    return;
-                }
-                dataSource.projectName = self.projectName;
-                dataSource.projectId = self.projectId;
-                util.post(config.apiUrlPrefix + 'data_source/upsert', dataSource);
-            }
+		// 创建webhook
+		gitlab.createWebhook = function (projectId) {
+			var self = this;
+			var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
+			//var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
+			var isExist = false;
+			self.httpRequest("GET", "/projects/" + projectId + "/hooks", {}, function (data) {
+				//console.log(data);
+				for (var i = 0; i < data.length; i++) {
+					//gitlab.httpRequest("DELETE", "/projects/" + gitlab.projectId + "/hooks/" + data[i].id, {});
+					if (data[i].url == hookUrl && data[i].push_events) {
+						isExist = true;
+					}
+				}
+				// return;
+				// 不存在创建
+				if (!isExist) {
+					self.httpRequest("POST", "/projects/" + projectId + "/hooks", {
+						url: hookUrl,
+						push_events: true,
+						enable_ssl_verification: false,
+					}, function () {
+						console.log("webhook create success");
+					}, function () {
+						console.log("webhook create failed");
+					});
+				}
+			}, function () {
 
-            var successCallback = function () {
-                createWebhook();
-                updateDataSource();
-            }
+			});
+		};
 
-            self.httpRequest("GET", "/projects", {search: self.projectName, owned: true}, function (projectList) {
+		// 设置默认项目
+		gitlab.setDefaultProject = function(params, cb, errcb) {
+			if (!params.projectName) {
+				errcb && errcb();
+				return;
+			}
+
+			var self = this;
+			var projectName = params.projectName;
+			var visibility = params.visibility || "public";
+			self.projectName = projectName;
+		
+			var successCallback = function(params) {
+				self.createWebhook(params.projectId);
+				self.projectName[projectName] = {
+					projectId:params.projectId,
+					lastCommitId:params.lastCommitId || "master",
+				};
+				// 更新项目ID
+                util.post(config.apiUrlPrefix + 'site_data_source/updateById', {_id:self.dataSource._id, projectId:params.projectId});
+
+				self.projectId = params.projectId;
+				cb && cb();	
+				return;
+			}
+
+
+			if (self.projectMap[projectName]) {
+				self.projectId = self.projectMap[projectName].projectId;
+				self.lastCommitId = self.projectMap[projectName].lastCommitId;
+				cb && cb();
+				return;
+			}
+
+            self.httpRequest("GET", "/projects", {search: projectName, owned: true}, function (projectList) {
+				var project = undefined;
+				var method = "POST";
+				var url = "/projects";
+				var data = {name:projectName, visibility: visibility, request_access_enabled:true};
+
                 // 查找项目是否存在
                 for (var i = 0; i < projectList.length; i++) {
-                    if (projectList[i].name.toLowerCase() == self.projectName.toLowerCase()) {
-                        self.projectId = projectList[i].id;
-                        self.inited = true;
-                        successCallback();
-                        self.getLastCommitId(cb, errcb);
-                        return;
+                    if (projectList[i].name.toLowerCase() == projectName.toLowerCase()) {
+                        project = projectList[i];
+                        break;
                     }
                 }
-
-                // 不存在则创建项目
-                self.httpRequest("POST", "/projects", {
-                    name: self.projectName,
-                    visibility: 'public',
-                    request_access_enabled: true,
-                    //public_jobs:true,
-                }, function (data) {
-                    //console.log(data);
-                    self.projectId = data.id;
-                    self.inited = true;
-                    successCallback();
-                    self.getLastCommitId(cb, errcb);
-                }, errcb)
+				// 不存在或需要修改
+				if (!project || project.visibility != visibility) {
+					//console.log(project);
+					method = "PUT";
+					url += "/" + project.id;
+					data.id = project.id;
+					
+					// 不存在则创建项目 存在更新
+					self.httpRequest(method, url, data, function (project) {
+						//console.log(project);
+						successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
+						//self.getLastCommitId(cb, errcb);
+					}, errcb)
+				} else {
+					successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
+				}
             }, errcb);
-        };
+		}
 
         // 是否已经初始化
         gitlab.isInited = function () {

@@ -169,11 +169,9 @@ define([
 
     dataSource.getCurrentDataSource = function (username, dataSourceId) {
         if (username) {
-            if (dataSourceId) {
-                return this.getUserDataSource(username).getDataSourceById(dataSourceId);
-            } else {
-                return this.getUserDataSource(username).getDefaultDataSource();
-            }
+            var currentDataSource = this.getUserDataSource(username).getDataSourceById(dataSourceId);
+			var defaultDataSource = this.getUserDataSource(username).getDefaultDataSource();
+			return currentDataSource || defaultDataSource;
         }
         return this.currentDataSource;
     }
