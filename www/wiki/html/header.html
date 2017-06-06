@@ -69,10 +69,28 @@
         border-radius: 2px;
     }
     /*导航条面包屑*/
+    .navbar-default .nav-bread-crumb{
+        max-width: 230px;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-left: 15px;
+    }
     .navbar-default .nav-bread-crumb .breadcrumb {
         background-color: transparent;
-        padding: 15px;
+        padding: 15px 0;
         margin-bottom: 0;
+        display: inline-block;
+    }
+    .navbar-default .prev-ellipsis{
+        position: absolute;
+        background-color: #FFF;
+        z-index: 1;
+        display:none;
+        margin: 0;
+        padding:0;
+        list-style: none;
+        left:0;
+        top:15px;
     }
     .navbar-default .nav-bread-crumb > a {
         display: inline-block;
@@ -424,12 +442,13 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
-                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
+                        <li class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
                             <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
                             <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
-                        <li class="nav-bread-crumb">
-                            <ol class="breadcrumb">
+                        <li id="js-prev-container" class="nav-bread-crumb">
+                            <ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>
+                            <ol id="js-prev-content" class="breadcrumb">
                                 <li><a ng-click="goUserPage()">{{urlObj.username || ''}}</a></li>
                                 <li class="dropdown" ng-show="urlObj.sitename">
                                     <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
