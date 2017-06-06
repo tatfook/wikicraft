@@ -163,12 +163,12 @@
                     <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList">
                         <div ng-hide="works.isDeleted">
                             <a ng-click="goWorksPage(works)" class="work-profile">
-                                <img ng-src="{{works.worksLogo || (imgsPath + 'org_work.jpg')}}">
+                                <img ng-src="{{works.worksLogo || (imgsPath + 'wiki_cover.jpg')}}">
                             </a>
                             <div class="text clearfix">
                                 <div class="work-item">
                                     <div class="work-msg">
-                                        <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle || "未命名"}}">{{works.worksTitle || "未命名"}}</a></h4>
+                                        <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
                                         <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
                                     </div>
                                     <div class="btn btn-primary" ng-click="removeWorks(works)">移除</div>
@@ -188,13 +188,13 @@
                         <div ng-hide="apply.isDeleted">
                             <p><a class="stress" ng-click="goApplyWorksPage(apply)">标题：{{apply.worksTitle}} </a><a> 作者：{{apply.worksUsername}}</a></p>
                             <div class="notify-work">
-                                <img ng-src="{{ apply.worksLogo || imgsPath+'org_work.jpg'}}" alt="" class="photo">
+                                <img ng-src="{{ apply.worksLogo || imgsPath+'wiki_cover.jpg'}}" alt="" class="photo">
                                 <div class="intro">
                                     <p>介绍：</p>
                                     <p class="introduce" title="{{apply.worksDesc}}">{{apply.worksDesc}}</p>
                                 </div>
                                 <div class="btn btn-primary" ng-click="agreeApply(apply)">同意</div>
-                                <div class="btn btn-outline" ng-click="refuseApply(apply)">删除</div>
+                                <div class="btn btn-outline" ng-click="refuseApply(apply)">拒绝</div>
                             </div>
                         </div>
                     </div>

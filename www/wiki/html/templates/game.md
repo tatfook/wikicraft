@@ -36,7 +36,8 @@
 {
 "moduleKind":"game",
 "title":"入围作品",
-"type":"custom"
+"type":"custom",
+"moreLink":"#"
 }
 ```
 
@@ -44,7 +45,8 @@
 {
 "moduleKind":"game",
 "title":"最新上传",
-"type":"latestJoin"
+"type":"latestJoin",
+"moreLink":"#"
 }
 ```
 
@@ -52,7 +54,8 @@
 {
 "moduleKind":"game",
 "title":"全部作品",
-"type":"all"
+"type":"all",
+"moreLink":"#"
 }
 ```
 
