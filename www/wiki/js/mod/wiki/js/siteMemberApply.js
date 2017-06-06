@@ -56,6 +56,7 @@ define([
                         util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
                             userinfo = data.userinfo;
                             siteinfo = data.siteinfo;
+                            $scope.siteinfo=siteinfo;
                             userinfo && siteinfo && init();
                         });
                     }

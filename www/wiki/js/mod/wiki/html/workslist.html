@@ -245,7 +245,7 @@
         <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
         <div class="carousel-content clearfix">
             <div class="carousel-item" ng-repeat="x in siteList">
-                <img ng-src="{{x.logoUrl || imgsPath+'personal_workslist_banner.jpg'}}" alt="作品名">
+                <img ng-src="{{x.logoUrl || imgsPath+'wiki_cover.jpg'}}" alt="作品名">
                 <div class="msg">
                     <h4>{{x.name}}</h4>
                     <div class="clearfix work-msg">
@@ -275,17 +275,17 @@
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
-                <a ng-click="goWorksPage(works)">
-                    <img ng-src="{{works.worksLogo || (imgsPath + 'personal_workslist_banner.jpg')}}">
+                <a href="{{works.worksUrl}}" target="_blank">
+                    <img ng-src="{{works.worksLogo || (imgsPath + 'wiki_cover.jpg')}}">
                 </a>
                 <div class="text clearfix">
-                    <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle}}">{{works.worksTitle}}</a></h4>
+                    <h4><a class="title"  href="{{works.worksUrl}}" target="_blank" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
                     <p>作者： <a ng-click="goUserPage(works)">{{works.worksUsername}}</a></p>
                     <p class="pull-left info">
                         <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
                     </p>
-                    <p class="pull-right info" ng-click="worksFavorite($event, site)">
-                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{works.favoriteCount || 0}}</span>
+                    <p class="pull-right info" ng-click="worksFavorite($event, works)">
+                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 关注 <span>{{works.favoriteCount || 0}}</span>
                     </p>
                 </div>
             </div>
@@ -295,12 +295,12 @@
     <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation">
-            <a>查看更多</a>
+            <a href="{{modParams.moreLink}}" target="_blank">查看更多</a>
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
-                <a ng-click="goWorksPage(works)">
-                    <img ng-src="{{works.worksLogo || getImageUrl('personal_workslist_banner.jpg', imgsPath)}}">
+                <a href="{{works.worksUrl}}" target="_blank">
+                    <img ng-src="{{works.worksLogo || getImageUrl('wiki_cover.jpg', imgsPath)}}">
                 </a>
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksName}}">{{works.worksName}}</a></h4>
@@ -323,7 +323,7 @@
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="work in modParams.worksList">
                 <a href="{{work.imgLink}}" target="_blank">
-                    <img ng-src="{{work.imgUrl || getImageUrl('game_workImg.jpg',imgsPath)}}">
+                    <img ng-src="{{work.imgUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}">
                 </a>
                 <div class="text clearfix oneline-text">
                     <h4>

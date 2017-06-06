@@ -32,6 +32,15 @@ define([
                 window.location.href = config.frontEndRouteUrl + "#/siteshow";
             }
 
+            $scope.goUserPage = function (work) {
+                util.goUserSite('/' + work.worksUsername, true);
+            }
+
+            // 收藏作品
+            $scope.worksFavorite=function (event, site) {
+                Message.info("开发中");
+            };
+
             $scope.getList = function (page) {
                 var pageCount = 1;
                 if ($scope.siteTotal) {
