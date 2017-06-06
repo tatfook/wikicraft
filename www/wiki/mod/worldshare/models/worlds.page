@@ -25,7 +25,7 @@ function worlds:ctor()
 	--giturl
 	self:addfield("giturl", "string", false, 300);
 	--worlds name
-	self:addfield("worldsName","string",false,30);
+	self:addfield("worldsName","string",false,100);
 	--worlds modify date
 	self:addfield("revision","string",false,30);
 	--worlds update data
