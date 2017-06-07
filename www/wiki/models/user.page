@@ -406,7 +406,7 @@ function user:api_login(params)
 			userinfo.dataSourceId = siteDataSource._id
 		end
 	end
-	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
+	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
 
 	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
 end
