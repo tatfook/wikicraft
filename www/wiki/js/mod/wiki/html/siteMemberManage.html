@@ -1,10 +1,21 @@
 <style>
+    .org-manage .breadcrumb{
+        max-width: 750px;
+        width: 70%;
+        margin: 60px auto 0;
+        background-color: transparent;
+        padding-left: 0;
+        font-size: 16px;
+    }
+    .org-manage .breadcrumb img{
+        vertical-align: text-bottom;
+        margin-right: 5px;
+    }
     .org-manage .panel{
         background-color: #FFF;
         box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
-        margin: 80px auto;
+        margin: 0 auto 80px;
         max-width: 750px;
-        min-width:700px;
         width: 70%;
     }
     .org-manage .panel-heading{
@@ -91,6 +102,10 @@
         vertical-align: text-top;
     }
     @media (max-width: 768px){
+        .org-manage .breadcrumb{
+            width: 100%;
+            margin: 0;
+        }
         .org-manage .panel{
             margin: 0;
             width: 100%;
@@ -126,6 +141,10 @@
     }
 </style>
 <div class="org-manage clearfix" ng-controller="siteMemberManageController">
+    <ol class="breadcrumb">
+        <li><a ng-click="goHomePage()"><img ng-src="{{getImageUrl('icon/left_icon.png',imgsPath)}}" alt="">首页</a></li>
+        <li>成员管理</li>
+    </ol>
     <div class="panel">
         <div class="panel-heading">成员管理</div>
         <div class="panel-body">

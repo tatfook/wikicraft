@@ -10,6 +10,28 @@
         font-size: 16px;
         margin-left: 20px;
     }
+    .works-manage .breadcrumb{
+        max-width: 750px;
+        width: 70%;
+        min-width: 700px;
+        margin: 60px auto 0;
+        background-color: transparent;
+        padding-left: 0;
+        font-size: 16px;
+    }
+    .works-manage .breadcrumb img{
+        vertical-align: text-bottom;
+        margin-right: 5px;
+    }
+    .works-manage .search-bar{
+        position: relative;
+        margin: 12px 0;
+    }
+    .works-manage .glyphicon-search{
+        position: absolute;
+        right: 5px;
+        top: 10px;
+    }
     .works-manage .btn-outline{
         border: 1px solid;
         color: #666;
@@ -21,7 +43,7 @@
     .works-manage .panel{
         background-color: #FFF;
         box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
-        margin: 80px auto;
+        margin: 0 auto 80px;
         max-width: 750px;
         width: 70%;
         min-width: 700px;
@@ -122,6 +144,11 @@
         line-height:1.5;
     }
     @media (max-width: 768px) {
+        .works-manage .breadcrumb{
+            width: 100%;
+            margin: 0;
+            min-width: inherit;
+        }
         .works-manage .panel{
             margin: 0;
             width: 100%;
@@ -150,8 +177,17 @@
     }
 </style>
 <div class="works-manage clearfix" ng-controller="siteWorksManageController">
+    <ol class="breadcrumb">
+        <li><a ng-click="goHomePage()"><img ng-src="{{getImageUrl('icon/left_icon.png',imgsPath)}}" alt="">首页</a></li>
+        <li>作品管理</li>
+    </ol>
     <div class="panel">
-        <div class="panel-heading">作品管理</div>
+        <div class="panel-heading">作品管理
+            <a class="search-bar pull-right">
+                <input type="text" class="form-control" ng-model="search" placeholder="">
+                <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
+            </a>
+        </div>
         <div class="panel-body">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#org-works" ng-click="clickWorksList()" aria-controls="org-works" role="tab" data-toggle="tab">作品列表</a></li>

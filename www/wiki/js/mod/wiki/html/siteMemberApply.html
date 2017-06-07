@@ -1,8 +1,20 @@
 <style>
+    .org-apply .breadcrumb{
+        max-width: 750px;
+        width: 70%;
+        margin: 60px auto 0;
+        background-color: transparent;
+        padding-left: 0;
+        font-size: 16px;
+    }
+    .org-apply .breadcrumb img{
+        vertical-align: text-bottom;
+        margin-right: 5px;
+    }
     .org-apply .panel{
         background-color: #FFF;
         box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
-        margin: 80px auto;
+        margin: 0 auto 80px;
         max-width: 750px;
         width: 70%;
     }
@@ -42,6 +54,10 @@
         margin: 0 auto;
     }
     @media(max-width: 768px){
+        .org-apply .breadcrumb{
+            width: 100%;
+            margin: 0;
+        }
         .org-apply .panel{
             width: 100%;
             margin: 0;
@@ -63,6 +79,10 @@
     }
 </style>
 <div class="org-apply clearfix" ng-controller="siteMemberApplyController">
+    <ol class="breadcrumb">
+        <li><a ng-click="goHomePage()"><img ng-src="{{getImageUrl('icon/left_icon.png',imgsPath)}}" alt="">首页</a></li>
+        <li>申请加入</li>
+    </ol>
     <div class="panel">
         <div class="panel-heading">申请加入</div>
         <div class="panel-body">

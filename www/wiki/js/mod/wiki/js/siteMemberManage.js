@@ -86,6 +86,10 @@ define([
                 });
             }
 
+            $scope.goHomePage = function () {
+                util.go("/"+siteinfo.username+"/"+siteinfo.name);
+            }
+
             $scope.$watch('$viewContentLoaded', function () {
                 if (modParams.username && modParams.sitename) {
                     util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {

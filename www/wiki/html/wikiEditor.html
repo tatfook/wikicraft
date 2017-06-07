@@ -8,6 +8,7 @@
                             <div class="dropdown toolbar-brand">
                                 <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                     <img class="show-md" ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
+                                    <span class="caret show-md"></span>
                                     <img class="show-sm" ng-src="{{imgsPath+'icon/logo_sm.png'}}" alt="">
                                 </a>
                                 <ul class="dropdown-menu nodot-dropdown">
@@ -116,6 +117,8 @@
                                 <img ng-src="{{imgsPath+'icon/wiki_file.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_file_active.png'}}" alt="">文件夹
                             </div>
+                        </div>
+                        <div class="btn-group state-change">
                             <div class="btn btn-default btn-sm toolbar-page-code" title="代码" ng-click="showCodeView()">
                                 <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_code_active.png'}}" alt=""> 代码</div>
@@ -165,7 +168,7 @@
                     </div>
                 </div>
                 <div id="wikiEditorContainer">
-                    <div class="treeview-container full-height nopadding nomargin" style="max-height: 100%; overflow-y: auto">
+                    <div id="treeview" class="treeview-container full-height nopadding nomargin" style="max-height: 100%; overflow-y: auto">
                         <div>
                             <div id="mytree"></div>
                         </div>

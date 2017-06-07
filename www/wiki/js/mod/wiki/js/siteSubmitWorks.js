@@ -195,6 +195,10 @@ define([
                 $scope.works.worksUrl = $item.url;
             }
 
+            $scope.goHomePage = function () {
+                util.go("/"+siteinfo.username+"/"+siteinfo.name);
+            }
+
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;

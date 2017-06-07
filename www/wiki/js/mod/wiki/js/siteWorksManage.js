@@ -83,6 +83,10 @@ define([
                     console.log("成功移除作品")
                 });
             }
+            
+            $scope.goHomePage = function () {
+                util.go("/"+siteinfo.username+"/"+siteinfo.name);
+            }
         }]);
     }
 

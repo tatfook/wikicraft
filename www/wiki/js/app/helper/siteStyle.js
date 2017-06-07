@@ -51,7 +51,7 @@ define([], function () {
                 },
                 // 个人网站wiki模板
                 {
-                    name:"个人简历",
+                    name:"简历模板",
                     logoUrl:"wiki_resume_site_template.png",
                     styles:[
                         // 默认样式
@@ -166,7 +166,7 @@ define([], function () {
             classify:"game",
             templates: [
                 {
-                    name:"3D大赛模板",
+                    name:"大赛模板",
                     logoUrl:"wiki_game_template.jpg",
                     styles:[
                         {

@@ -280,6 +280,12 @@ select.resize-view {
     width: 24px;
     box-shadow: 0 0 10px rgba(57, 119, 173, .35);
 }
+.toolbar-brand .caret{
+    position: absolute;
+    border-top: 6px dashed #3977ad;
+    right: 3px;
+    bottom: 10px;
+}
 .treeview-container{
     max-height: 100%;
     overflow-y: auto;
@@ -302,7 +308,7 @@ select.resize-view {
     display: none;
 }
 .toolbar-page-file.active{
-    margin-right: 213px;
+    margin-right: 202px;
 }
 
 #srcview{
@@ -383,6 +389,9 @@ select.resize-view {
     .wiki-toolbar .btn-group{
         margin-left: 0;
     }
+    .wiki-toolbar .state-change:first-child{
+        margin-right: 10px;
+    }
     .wiki-toolbar .btn-group:nth-child(3){
         margin-right: 10px;
     }
@@ -391,7 +400,7 @@ select.resize-view {
         padding:6px 12px;
     }
     .toolbar-page-file.active{
-        margin-right: 92px;
+        margin-right: 81px;
     }
     .code-view{
         padding-left: 155px;
@@ -407,6 +416,9 @@ select.resize-view {
     .wiki-toolbar .btn-group{
         margin-left: 10px;
     }
+    .wiki-toolbar .state-change:first-child{
+        margin-right: 0;
+    }
     .wiki-toolbar .btn-group:nth-child(3) {
         margin-right: 0px;
     }
@@ -414,7 +426,7 @@ select.resize-view {
         margin-right: 0;
     }
     .toolbar-page-file.active{
-        margin-right: 132px;
+        margin-right: 121px;
     }
     .code-view{
         padding-left: 195px;
@@ -451,7 +463,7 @@ select.resize-view {
         padding:5px 15px 10px;
     }
     .toolbar-page-file.active{
-        margin-right: 165px;
+        margin-right: 154px;
     }
     .code-view{
         padding-left: 235px;
@@ -476,7 +488,7 @@ select.resize-view {
         width:355px;
     }
     .toolbar-page-file.active{
-        margin-right: 183px;
+        margin-right: 172px;
     }
     .code-view{
         padding-left: 255px;
@@ -508,7 +520,7 @@ select.resize-view {
         padding: 8px 12px;
     }
     .toolbar-page-file.active{
-        margin-right: 180px;
+        margin-right: 169px;
     }
     .code-view{
         padding-left: 275px;

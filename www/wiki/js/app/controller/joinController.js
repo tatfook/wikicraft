@@ -223,6 +223,13 @@ define([
 
             });
         }
+
+        //回车注册
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13"){
+                $scope.register();
+            }
+        });
     }]);
     return htmlContent;
 });
