@@ -223,7 +223,7 @@ define([
                             var currentDataSource = dataSource.getCurrentDataSource();
                             var renderContent = function (content) {
                                 $rootScope.$broadcast('userpageLoaded',{});
-                                content = md.render(content ||  notfoundHtmlContent);
+                                content = md.render((content!=undefined)?content :  notfoundHtmlContent);
                                 util.html('#__UserSitePageContent__', content, $scope);
                             };
                             if (config.isLocal()) {
