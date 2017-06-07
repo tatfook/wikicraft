@@ -64,18 +64,18 @@ define([
 
         if ($scope.projectType == 'npl') {
             $scope.editProfile = 'Edit profile';
-            $scope.create = 'Create';
-            $scope.myProjects = 'My npl packages';
-            $scope.downloadsA = 'Downloads:';
-            $scope.downloadsB = '';
-            $scope.deleteDesc = "Are you sure delete this project?";
+            $scope.create      = 'Create';
+            $scope.myProjects  = 'My npl packages';
+            $scope.downloadsA  = 'Downloads:';
+            $scope.downloadsB  = '';
+            $scope.deleteDesc  = "Are you sure delete this project?";
         } else if ($scope.projectType == 'paracraft') {
             $scope.editProfile = '个人设置';
-            $scope.create = '新建';
-            $scope.myProjects = '我的paracraft模块';
-            $scope.downloadsA = '下载次数';
-            $scope.downloadsB = '次';
-            $scope.deleteDesc = "是否确定删除你的项目？";
+            $scope.create      = '新建';
+            $scope.myProjects  = '我的paracraft模块';
+            $scope.downloadsA  = '下载次数';
+            $scope.downloadsB  = '次';
+            $scope.deleteDesc  = "是否确定删除你的项目？";
         }
 
         packagesService.setProjectsType($scope.projectType);
@@ -83,7 +83,7 @@ define([
         $scope.ShowCreateProjectDialog = function () {
             $uibModal.open({
                 templateUrl: '/wiki/mod/packages/partials/packages_project_create.html',
-                controller: "packagesProjectsCreateController",
+                controller:  "packagesProjectsCreateController",
                 size: 'lg'
             }).result.then(function (params) {
                 alert(params.msg);
@@ -95,9 +95,7 @@ define([
                 }
 
                 $scope.getProjects();
-            }, function (text, error) {
-
-            });
+            }, function (text, error) {});
         };
 
         if (request.userid == undefined) {
@@ -199,11 +197,11 @@ define([
         }
     }])
     .controller('packagesProjectsCreateController', ["Account","$scope","$http","$uibModalInstance","packagesService",function (Account, $scope, $http, $uibModalInstance, packagesService) {
-        $scope.projectName = '';
-        $scope.projectDesc = '';
-        $scope.version = '';
-        $scope.projectGitURL = '';
-        $scope.projectType = packagesService.getProjectsType();
+        $scope.projectName     = '';
+        $scope.projectDesc     = '';
+        $scope.version         = '';
+        $scope.projectGitURL   = '';
+        $scope.projectType     = packagesService.getProjectsType();
         $scope.projectTypeName = '';
         $scope.projectReleases = '';
  
@@ -227,73 +225,75 @@ define([
             }
         });
 
+        $scope.close = function(){
+            $uibModalInstance.close();
+        };
+
         $scope.confirm = function () {
             var gitRaw = "https://raw.githubusercontent.com";
 
             try {
-                var gitRoot = $scope.projectGitURL.split("//");
+                var gitRoot      = $scope.projectGitURL.split("//");
                 var gitRootStart = gitRoot[1].indexOf("/");
-                var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
+                var gitRoot      = gitRaw + gitRoot[1].substring(gitRootStart);
             } catch (err) {
                 alert("url format error");
                 return;
             }
 
-            var getIcon = gitRoot + '/master/icon.png';
+            var getIcon   = gitRoot + '/master/icon.png';
             var getREADME = gitRoot + '/master/README.md';
 
             $http({
                 method: 'GET',
                 url: getREADME,
                 headers: {
-                    'Authorization': undefined,
+                    'Authorization': undefined
                 }, // remove auth header for this request
                 skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
                 transformResponse: [function (data) {
                     return data; // never transform to json, return as it is
-                }],
+                }]
             })
-                .then(function (response) {
-                    },
-                    function (response) {
-                        return alert("You need to upload README.md in your git repositary");
-                    });
+            .then(function (response) {},
+            function () {
+                return alert("You need to upload README.md in your git repository");
+            });
 
             $http({
                 method: 'GET',
                 url: getIcon,
                 headers: {
-                    'Authorization': undefined,
+                    'Authorization': undefined
                 }, // remove auth header for this request
                 skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
                 transformResponse: [function (data) {
                     return data; // never transform to json, return as it is
-                }],
+                }]
             })
-                .then(function (response) {
-                        $http.post('/api/mod/packages/models/packages/createPackage', {
-                                projectName: $scope.projectName,
-                                projectDesc: $scope.projectDesc,
-                                version: $scope.version,
-                                projectGitURL: $scope.projectGitURL,
-                                projectReleases: $scope.projectReleases,
-                                projectType: $scope.projectType,
-                                displayName: $scope.user.displayName
-                            })
-                            .then(function (response) {
-                                if (response.data.result == 1) {
-                                    returnData = {};
-                                    returnData.msg = response.data.msg;
-                                    returnData.projectType = $scope.projectType;
-                                    $uibModalInstance.close(returnData);
-                                }
-                            }, function (error) {
-                            });
+            .then(function () {
+                $http.post('/api/mod/packages/models/packages/createPackage', {
+                        projectName:     $scope.projectName,
+                        projectDesc:     $scope.projectDesc,
+                        version:         $scope.version,
+                        projectGitURL:   $scope.projectGitURL,
+                        projectReleases: $scope.projectReleases,
+                        projectType:     $scope.projectType,
+                        displayName:     $scope.user.displayName
+                    })
+                    .then(function (response) {
+                        if (response.data.result == 1) {
+                            returnData = {};
+                            returnData.msg = response.data.msg;
+                            returnData.projectType = $scope.projectType;
+                            $uibModalInstance.close(returnData);
+                        }
+                    }, function (error) {});
 
-                    },
-                    function (response) {
-                        return alert("You need to upload icon.png in your git repositary");
-                    });
+            },
+            function () {
+                return alert("You need to upload icon.png in your git repository");
+            });
         }
     }])
     .controller('packagesProjectsModifyController', ["Account","$scope","$http","$uibModalInstance","packagesService",function (Account, $scope, $http, $uibModalInstance, packagesService) {
@@ -348,6 +348,10 @@ define([
             }
         });
 
+        $scope.close = function(){
+            $uibModalInstance.close();
+        };
+
         $scope.confirm = function () {
             $http.post('/api/mod/packages/models/packages/modifyPackage', {
                     projectName: $scope.projectName,
@@ -391,17 +395,16 @@ define([
                     projectType: $scope.projectType
                 }
             })
-                .then(function (response) {
-                    if (response.data.statsType != 'nil') {
-                        $scope.totalItems = response.data.quantity;
-                    } else {
-                        $scope.totalItems = 0;
-                    }
+            .then(function (response) {
+                if (response.data.statsType != 'nil') {
+                    $scope.totalItems = response.data.quantity;
+                } else {
+                    $scope.totalItems = 0;
+                }
 
-                    $scope.itemsPerPage = 4;
-                    $scope.currentPage = 1;
-                }, function (response) {
-                });
+                $scope.itemsPerPage = 4;
+                $scope.currentPage = 1;
+            }, function (response) {});
         }
 
         $scope.getPackageStats();

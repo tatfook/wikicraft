@@ -56,6 +56,9 @@ define([
                     });
                 }
             }
+
+            var container=document.getElementById("js-prev-container");
+            container.style.overflow="visible";
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -308,6 +311,7 @@ define([
                 content.style.transform="translateX("+minus+"px)";
                 ellipsis.style.display="inline";
             }
+            container.style.overflow="visible";
         }
     }]);
 
