@@ -42,7 +42,7 @@
                     <div class="item" ng-repeat="item in items">
                         <div class="project-icon"><img ng-src="{{item.gitIcon}}" class="img-responsive"></div>
                         <div class="project-infor">
-                            <a ng-href="/wiki/mod/packages/packages_install/#/{{projectType}}?id={{item._id}}">{{item.projectName}}</a>
+                            <a ng-href="/wiki/mod/packages/packages_install/{{projectType}}?id={{item._id}}">{{item.projectName}}</a>
                             <p>{{item.projectDesc}}</p>
                             <div class="project-downloads">{{downloadsA}}{{item.installTimes}}{{downloadsB}}</div>
                         </div>
@@ -71,7 +71,7 @@
                     <div class="item" ng-repeat="item in items">
                         <div class="project-icon"><img ng-src="{{item.gitIcon}}"></div>
                         <div class="project-infor">
-                            <a ng-href="/wiki/mod/packages/packages_install/#/{{projectType}}?id={{item._id}}">{{item.projectName}}</a>
+                            <a ng-href="/wiki/mod/packages/packages_install/{{projectType}}?id={{item._id}}">{{item.projectName}}</a>
                             <p>{{item.projectDesc}}</p>
                             <div class="project-downloads">{{downloadsA}}{{item.installTimes}}{{downloadsB}}</div>
                         </div>
