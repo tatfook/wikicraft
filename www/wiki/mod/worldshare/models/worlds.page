@@ -6,7 +6,7 @@ Date: 2017/6/1
 ]]
 include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page");
 include_once(WIKI_ROOT .. "models/user.page");
-include_once(WIKI_ROOT .. "models/data_source.page");
+include_once(WIKI_ROOT .. "models/site_data_source.page");
 include_once("./worlds_stats.page");
 include_once("./worlds_star.page");
 
