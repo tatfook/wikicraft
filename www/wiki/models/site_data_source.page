@@ -53,7 +53,7 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 	end
 
 	local dataSourceDB = models.data_source:new()
-	local ds = dataSourceDB:api_createInnerGitlab(params).data
+	local ds = dataSourceDB:api_createInnerGitlab({username=params.username}).data
 	
 	if not ds then
 		return errors:wrap(errors.SERVER_INNER_ERROR)

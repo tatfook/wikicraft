@@ -377,7 +377,13 @@ define([
                     }
                 }
 				// 不存在或需要修改
-				if (!project || project.visibility != visibility) {
+				if (!project) {
+					self.httpRequest(method, url, data, function (project) {
+						//console.log(project);
+						successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
+						//self.getLastCommitId(cb, errcb);
+					}, errcb);
+				} else if (project.visibility != visibility) {
 					//console.log(project);
 					method = "PUT";
 					url += "/" + project.id;
@@ -388,7 +394,7 @@ define([
 						//console.log(project);
 						successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
 						//self.getLastCommitId(cb, errcb);
-					}, errcb)
+					}, errcb);
 				} else {
 					successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
 				}
