@@ -79,39 +79,6 @@ function data_source:api_getByUsername(params)
 	return errors:wrap(yield())
 end
 
-
--- 获得最后一次提交记录
-function data_source:api_getGithubLastCommitId(params)
-	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
-		return errors:wrap(nil, params)
-	end
-
-	local headers = {["User-Agent"]="Satellizer",["Accept"]="application/vnd.github.full+json", ["Authorization"]= " token " .. params.dataSourceToken}
-	
-	System.os.GetUrl({
-		url= params.apiBaseUrl .. "/repos/" .. params.dataSourceUsername .. "/" .. (params.projectName or "keepworkDataSource") .. "/commits", 
-		headers=headers,
-		method = "GET",
-		json = true,
-	}, resume)
-	local code, data = yield()
-	if code ~= 200 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-	data =data.data
-
-	if not data or #data == 0 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-
-	params.lastCommitId = data[1].sha
-	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
-	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
-	yield()
-	
-	return errors:wrap(nil, params)
-end
-
 -- 添加github数据源
 function data_source:api_setGithubDataSource(params)
 	if (not params.name) or (not params.dataSourceToken) or (not params.username) or (not params.type) or (not params.apiBaseUrl) or (not params.rawBaseUrl) then
@@ -143,40 +110,6 @@ function data_source:api_setGithubDataSource(params)
 	return errors:wrap(nil, data)
 end
 
--- 获得最后一次提交记录
-function data_source:api_getGitlabLastCommitId(params)
-	local curTime = os.time()
-	
-	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
-		return errors:wrap(nil, params)
-	end
-
-	local headers = {['PRIVATE-TOKEN']= params.dataSourceToken}
-	
-	System.os.GetUrl({
-		url= params.apiBaseUrl .. "/projects/" .. params.projectId .. "/repository/commits", 
-		headers=headers,
-		method = "GET",
-		json = true,
-	}, resume)
-	local code, data = yield()
-	if code ~= 200 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-	data =data.data
-
-	if not data or #data == 0 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-
-	params.lastCommitId = data[1].id
-	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
-	params.lastCommitIdUpdateTime = curTime
-	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
-	yield()
-	
-	return errors:wrap(nil, params)
-end
 
 -- 设置gitlab数据源
 function data_source:api_setGitlabDataSource(params)
@@ -225,23 +158,6 @@ function data_source:api_setDataSource(params)
 	end
 
 	return errors:wrap()
-end
-
--- 设置数据源
-function data_source:api_getLastCommitId(params) 
-	if not params.type then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
-	end
-
-	if params.type == const.DATA_SOURCE_TYPE_GITHUB then
-		return self:api_getGithubLastCommitId(params)
-	elseif params.type == const.DATA_SOURCE_TYPE_GITLAB then
-		return self:api_getGitlabLastCommitId(params)
-	else 
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
-	end
-
-	return errors:wrap(nil, params)
 end
 
 -- 获取内部gitlab数据源

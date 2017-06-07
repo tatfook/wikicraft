@@ -19,7 +19,7 @@ include_once("./website_works.page")
 include_once("./website_template_style.page")
 include_once("./website_template_config.page")
 include_once("./website_domain.page")
-include_once("./data_source.page")
+include_once("./site_data_source.page")
 
 local website = inherit(models.abstract.base, gettable("models.website"))
 
@@ -523,7 +523,7 @@ function website:api_getDetailInfo(params)
 	end
 	userinfo.password = nil
 
-	self:db():findOne({["+userId+name"]={userinfo._id, params.sitename}}, resume)
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	
 	local dataSourceId = userinfo.dataSourceId
@@ -531,23 +531,12 @@ function website:api_getDetailInfo(params)
 		dataSourceId = siteinfo.dataSourceId
 	end
 
-	local dataSourceDB = models.data_source:new()
-	local dataSourceList = dataSourceDB:api_getByUserId({userId=userinfo._id}).data
-	for key, value in ipairs(dataSourceList) do
-		if value._id == dataSourceId then
-			dataSourceList[key] = dataSourceDB:api_getLastCommitId(value).data
-		end
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:api_updateLastCommitId({_id=dataSourceId})
+	local dataSourceList = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
+	for key, value in ipairs(dataSourceList or {}) do
 		dataSourceList[key].dataSourceToken = nil
 	end
-	--[[
-		local dataSource = dataSourceDB:api_getById({id=dataSourceId}).data
-		if not dataSource then
-			return errors:wrap(errors.SERVER_INNER_ERROR, {message="data source not found"})
-		end
-		dataSource = dataSourceDB:api_getLastCommitId(dataSource).data
-		dataSource.dataSourceToken = nil
-		userinfo.dataSource = {dataSource}
-	]]
 	userinfo.dataSource = dataSourceList
 
 	self:api_visitWebsite(params)

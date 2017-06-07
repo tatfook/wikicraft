@@ -29,14 +29,17 @@ start_server() {
 			rm -fr ${test_dir}
 			cp -fr ${build_dir} ${test_dir}
 		fi
+		ulimit -c unlimited
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
 	elif [ $server_type = "rls" ]; then 
 		if [ -e ${build_dir} ]; then
 			rm -fr ${rls_dir}
 			cp -fr ${build_dir} ${rls_dir}
 		fi
+		ulimit -c unlimited
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
+		ulimit -c unlimited
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
 	else
 		start_server "test"

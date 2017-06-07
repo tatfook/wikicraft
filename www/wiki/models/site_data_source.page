@@ -71,9 +71,13 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 	self:db():insertOne({["+username+sitename"]={siteDataSource.username, siteDataSource.sitename}}, siteDataSource, resume)
 	local _, siteDataSource = yield()
 	
+	if not siteDataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
 	-- 更新用户默认数据源
 	local userDB = models.user:new()
-	userDB:updateOne({["+username"]={params.username}}, {dataSourceId=siteDataSource._id}, resume)
+	userDB:db():updateOne({["+username"]={params.username}}, {dataSourceId=siteDataSource._id}, resume)
 	yield()
 
 	return errors:wrap(nil, siteDataSource)
@@ -122,8 +126,125 @@ function site_data_source:api_getByUsername(params)
 	return errors:wrap(nil, siteDataSourceList)
 end
 
+-- 获取单个数据源
+function site_data_source:api_getById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
 
+	self:db():findOne({_id = params._id}, resume)
+	local _, siteDataSource = yield()
+	if not siteDataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local dataSourceDB = models.data_source:new()
+	dataSourceDB:db():findOne({_id=siteDataSource.dataSourceId}, resume)
+	local dataSource = yield()
 
+	if not dataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	siteDataSource.name = dataSource.name
+	siteDataSource.type = dataSource.type
+	siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
+	siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
+	siteDataSource.dataSourceToken = dataSource.dataSourceToken
+	siteDataSource.apiBaseUrl = dataSource.apiBaseUrl
+	siteDataSource.rawBaseUrl = dataSource.rawBaseUrl
+	
+	return errors:wrap(nil, siteDataSource)
+end
+
+-- 获得最后一次提交记录
+function site_data_source:api_updateGitlabLastCommitId(params)
+	local curTime = os.time()
+	
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
+		return errors:wrap(nil, params)
+	end
+
+	local headers = {['PRIVATE-TOKEN']= params.dataSourceToken}
+	
+	System.os.GetUrl({
+		url= params.apiBaseUrl .. "/projects/" .. params.projectId .. "/repository/commits", 
+		headers=headers,
+		method = "GET",
+		json = true,
+	}, resume)
+	local code, data = yield()
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+	data =data.data
+
+	if not data or #data == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+
+	params.lastCommitId = data[1].id
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	params.lastCommitIdUpdateTime = curTime
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
+	yield()
+	
+	return errors:wrap(nil, params)
+end
+
+-- 获得最后一次提交记录
+function site_data_source:api_updateGithubLastCommitId(params)
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
+		return errors:wrap(nil, params)
+	end
+
+	local headers = {["User-Agent"]="Satellizer",["Accept"]="application/vnd.github.full+json", ["Authorization"]= " token " .. params.dataSourceToken}
+	
+	System.os.GetUrl({
+		url= params.apiBaseUrl .. "/repos/" .. params.dataSourceUsername .. "/" .. (params.projectName or "keepworkDataSource") .. "/commits", 
+		headers=headers,
+		method = "GET",
+		json = true,
+	}, resume)
+	local code, data = yield()
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+	data =data.data
+
+	if not data or #data == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+
+	params.lastCommitId = data[1].sha
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
+	yield()
+	
+	return errors:wrap(nil, params)
+end
+
+-- 设置数据源
+function site_data_source:api_updateLastCommitId(params) 
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+	
+	local siteDataSource = self:api_getById(params).data
+	if not siteDataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+
+	if siteDataSource.type == const.DATA_SOURCE_TYPE_GITHUB then
+		return self:api_updateGithubLastCommitId(siteDataSource)
+	elseif params.type == const.DATA_SOURCE_TYPE_GITLAB then
+		return self:api_updateGitlabLastCommitId(siteDataSource)
+	else 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, siteDataSource)
+	end
+
+	return errors:wrap(nil, siteDataSource)
+end
 
 
 
