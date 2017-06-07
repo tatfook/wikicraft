@@ -180,7 +180,7 @@ function data_source:api_createInnerGitlab(params)
 	local username = params.username
 	-- 是否已存在
 	local ds = self:api_getInnerGitlabByUsername(params).data
-	log(ds)
+	LOG.std(nil, "error", "keepwork", ds)
 
 	-- 不存在创建
 	if not ds then
@@ -204,10 +204,6 @@ function data_source:api_createInnerGitlab(params)
 		}, resume)
 		local code, data = yield()
 		if code ~= 200 then
-			log(params)
-			log(adminToken)
-			log(urlPrefix)
-			log(code)
 			LOG.std(nil, "error", "keepwork", data)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
@@ -234,7 +230,6 @@ function data_source:api_createInnerGitlab(params)
 			}, resume)
 			local code, data = yield()
 			if code ~= 201 then
-				log(data)
 				LOG.std(nil, "error", "keepwork", data)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end
@@ -252,7 +247,7 @@ function data_source:api_createInnerGitlab(params)
 		}, resume)
 		local code, data = yield()
 		if code ~= 200 then
-			log(data)
+			LOG.std(nil, "error", "keepwork", data)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end	
 		data = data.data or {}
@@ -273,7 +268,7 @@ function data_source:api_createInnerGitlab(params)
 			}, resume)
 			local code, data = yield()
 			if code ~= 201 then
-				log(data)
+				LOG.std(nil, "error", "keepwork", data)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end	
 			data = data.data or {}
@@ -282,14 +277,8 @@ function data_source:api_createInnerGitlab(params)
 		-- 创建数据库记录
 		self:db():insertOne({["+username+name"]={ds.username, ds.name}}, ds, resume)
 		local _, dataSourceInfo = yield()
+		LOG.std(nil, "error", "keepwork", dataSourceInfo)
 		if not dataSourceInfo then
-			return errors:wrap(errors.SERVER_INNER_ERROR)
-		end
-		-- 更改用户信息
-		-- local userDB = models.user:new()
-		db.user:updateOne({["+username"]={ds.username}}, {dataSourceId=dataSourceInfo._id}, resume)
-		local err, data = yield()
-		if err or (not data) then
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
 		return errors:wrap(nil, dataSourceInfo)

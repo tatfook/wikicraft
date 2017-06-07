@@ -34,7 +34,7 @@ function data_upgrade:api_updateUserDataSource(user)
 
 	local websiteDB = models.website:new()
 	local allSiteList = websiteDB:api_getAllByUsername({username=user.username}).data
-	for _, site in ipairs(allSiteList) do
+	for _, site in ipairs(allSiteList or {}) do
 		websiteDB:db():updateOne({_id=site._id}, {_unset={"dataSourceId"}}, resume)
 		yield()		
 	end
