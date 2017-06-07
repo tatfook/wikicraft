@@ -225,10 +225,10 @@ function worlds:api_refresh(params)
 			insertParams.gitlabProjectId = query.gitlabProjectId;
 			insertParams.dataSourceType  = query.dataSourceType;
 
-			local dataSource = models.data_source:new():api_getByUserId({userId = userid});
+			local dataSource = models.site_data_source:new():api_getByUsername({username = userInfor.username});
 			local defaultDataSource = {};
 
-			LOG.std("worlds","debug","DataSource :",dataSource);
+			--LOG.std("worlds","debug","DataSource :",dataSource);
 
 			for key,value in ipairs(dataSource.data) do
 				if(value._id == userInfor.dataSourceId) then
