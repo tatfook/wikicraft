@@ -41,7 +41,8 @@
     .works img{
         width: 100%;
         height:196.88px;
-        object-fit: contain;
+        object-fit: cover;
+        object-position: top;
     }
     .hover-slide:hover {
         transform: translate3d(0, -3px, 0);
@@ -68,8 +69,8 @@
     <div class="container">
         <h3 class="title">作品集</h3>
         <div class="row works">
-            <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList">
-                <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || imgsPath + 'wiki_cover.jpg' }}">
+            <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList" ng-show="site.name!='tutorial'">
+                <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}">
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>
                     <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username}}</a></p>

@@ -302,7 +302,7 @@
                             <h3 class="title">热门作品</h3>
                             <p ng-show="hotSiteTotal==0">暂无热门作品</p>
                             <div class="img-text col-md-6" ng-repeat="x in hotSiteList">
-                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
@@ -351,7 +351,7 @@
                     <div role="tabpanel" class="tab-pane clearfix" id="wiki_works">
                         <p ng-show="allSiteTotal==0">暂未创建网站</p>
                         <div class="img-text col-md-6" ng-repeat="x in allSiteList">
-                            <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                            <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                             <div class="text">
                                 <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                 <p>作者：{{x.username}} </p>
@@ -372,7 +372,7 @@
                             <h3 class="title">关注的作者</h3>
                             <p ng-show="followUserTotal==0">暂未关注他人</p>
                             <div class="img-text col-md-6" ng-repeat="x in followUserList">
-                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
@@ -392,7 +392,7 @@
                             <h3 class="title">关注的网站</h3>
                             <p ng-show="followSiteTotal==0">暂无关注的网站</p>
                             <div class="img-text col-md-6" ng-repeat="x in followSiteList">
-                                <img ng-src="{{x.logoUrl || imgsPath+'wiki_works.jpg'}}" alt="">
+                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
@@ -412,7 +412,7 @@
                     <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
                         <p ng-show="fansCount==0">暂无粉丝</p>
                         <div class="col-md-12 fans-row" ng-repeat="x in fansList">
-                            <img ng-src="{{x.userinfo.portrait || imgsPath+'wiki_works.jpg'}}" alt="">
+                            <img ng-src="{{x.userinfo.portrait || getImageUrl('wiki_default_profile.jpg',imgsPath)}}" alt="">
                             <div class="intro">
                                 <h4>{{x.userinfo.username}}</h4>
                                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
