@@ -79,12 +79,14 @@ define([
 
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {};
-            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/raw/' + (params.sha || this.lastCommitId) + this.getLongPath(params);
+			var authStr = this.dataSource == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/raw/' + (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {};
-            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/blob/'+ (params.sha || this.lastCommitId) + this.getLongPath(params);
+			var authStr = this.dataSource == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/blob/'+ (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
         // 获得文件列表
@@ -194,6 +196,8 @@ define([
                 $http({
                     method: 'GET',
                     url: apiurl,
+                    //url: apiurl + "?private_token=" + self.dataSource.dataSourceToken,
+					//headers:self.httpHeader,
                     skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
 				}).then(function (response) {
 					storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
@@ -258,7 +262,9 @@ define([
                 content: content,
                 encoding: 'base64'
             }, function (data) {
-                cb && cb(self.getRawContentUrlPrefix({sha:"master"}) + "/" + data.file_path);
+				//var imgUrl = self.getRawContentUrlPrefix({sha:"master"}) + '/' + data.file_path + (self.dataSource.visibility  == "private" ? ("?private_token=" + self.dataSource.dataSourceToken) : ""); 
+				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path}); 
+                cb && cb(imgUrl);
             }, errcb);
         }
 
@@ -367,6 +373,7 @@ define([
 				var project = undefined;
 				var method = "POST";
 				var url = "/projects";
+				visibility = "private";
 				var data = {name:projectName, visibility: visibility, request_access_enabled:true};
 
                 // 查找项目是否存在
@@ -376,6 +383,7 @@ define([
                         break;
                     }
                 }
+
 				// 不存在或需要修改
 				if (!project) {
 					self.httpRequest(method, url, data, function (project) {
