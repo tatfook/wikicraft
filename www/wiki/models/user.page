@@ -402,7 +402,7 @@ function user:api_login(params)
 	local siteDataSourceDB = models.site_data_source:new()
 	if not userinfo.dataSourceId then
 		local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=userinfo.username}).data
-		if siteDataSourceDB then
+		if siteDataSource then
 			userinfo.dataSourceId = siteDataSource._id
 		end
 	end
@@ -469,7 +469,7 @@ function user:api_register(params)
 
 	local siteDataSourceDB = models.site_data_source:new()
 	local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=userinfo.username}).data
-	if siteDataSourceDB then
+	if siteDataSource then
 		userinfo.dataSourceId = siteDataSource._id
 	end
 
