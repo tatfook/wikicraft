@@ -233,6 +233,21 @@
         position: absolute;
         z-index: 1;
     }
+    .delete-modal h3{
+        text-align: center;
+        font-weight: normal;
+    }
+    .delete-modal span.icon{
+        width: 32px;
+        height: 32px;
+        border: 2px solid;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 30px;
+        color: #ED381C;
+        margin-right: 10px;
+        font-weight: bold;
+    }
 </style>
 
 <div class="container" ng-controller="userController">
@@ -242,7 +257,7 @@
             <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}</h3>
             <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于{{userinfo.joindate || ""}}</span></p>
             <p>{{userinfo.introduce}}</p>
-            <div class="btn btn-block btn-primary" ng-click="favoriteUser(concerned)">{{concerned?"取消关注":"关 注"}}</div>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo)">{{concerned?"取消关注":"关 注"}}</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="mailto:{{userinfo.email}}" target="_blank" class="text-primary">{{userinfo.email}}</a></p>
@@ -252,14 +267,19 @@
                 <h4>创建的组织：</h4>
                 <p ng-show="selfOrganizationCount==0">暂未创建组织</p>
                 <ul class="list-item">
-                    <li ng-repeat="x in selfOrganizationList"><a href="{{'/'+x.username+'/'+x.name+'/index'}}" class="text-muted">{{x.displayName}}</a></li>
+                    <li ng-repeat="x in selfOrganizationList">
+                        <a href="{{'/'+x.username+'/'+x.name+'/index'}}" class="text-muted">{{x.displayName}}</a>
+                    </li>
                 </ul>
             </div>
             <div class="message-row">
                 <h4>加入的组织：</h4>
-                <p ng-show="joinOrganizationCount==0">暂未加入组织</p>
+                <p ng-show="(joinOrganizationCount-selfOrganizationCount)==0 || !joinOrganizationCount">暂未加入组织</p>
                 <ul class="list-item">
-					<li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="x.userId == x.siteinfo.userId"><a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name = '/index'}}" class="text-muted">{{x.siteinfo.displayName}}</a></li>
+					<li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="userinfo._id == x.siteinfo.userId || x.isDelete">
+                        <a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name + '/index'}}" class="text-muted">{{x.siteinfo.displayName}}</a>
+                        <a class="pull-right" ng-click="showExitModal(x)" ng-show="user._id==userinfo._id">退出</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -292,7 +312,7 @@
                         <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab">关注</a>
                     </li>
                     <li role="presentation">
-                        <a href="#wiki_fans" aria-controls="wiki_fans" role="tab" data-toggle="tab">粉丝<span class="info">{{fansTotal}}</span></a>
+                        <a href="#wiki_fans" aria-controls="wiki_fans" role="tab" data-toggle="tab">粉丝<span class="info">({{fansCount || 0}})</span></a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
@@ -374,15 +394,15 @@
                             <div class="img-text col-md-6" ng-repeat="x in followUserList">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
-                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
-                                    <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc}}</p>
+                                    <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
+                                    <p>作者： <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
+                                    <p>{{x.userinfo.desc || "暂无简介"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.userinfo.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.userinfo.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
@@ -414,15 +434,30 @@
                         <div class="col-md-12 fans-row" ng-repeat="x in fansList">
                             <img ng-src="{{x.userinfo.portrait || getImageUrl('wiki_default_profile.jpg',imgsPath)}}" alt="">
                             <div class="intro">
-                                <h4>{{x.userinfo.username}}</h4>
+                                <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
                             </div>
-                            <div class="btn btn-primary">关 注</div>
+                            <div class="btn btn-primary" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?"取消关注":"关 注"}}</div>
                         </div>
                     </div>
                 </div>
             </div>
-
+        </div>
+    </div>
+    <div class="modal fade delete-modal" id="exitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">删除提醒</h4>
+                </div>
+                <div class="modal-body">
+                    <h3><span class="icon">!</span>确定删除？</h3>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" onclick="angular.element(this).scope().exitOrg(angular.element(this).scope().deletingOrg)">确 定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                </div>
             </div>
         </div>
     </div>

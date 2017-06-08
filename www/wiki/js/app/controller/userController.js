@@ -12,7 +12,6 @@ define([
     //console.log("load userController file");
 
     app.registerController('userController', ['$scope','Account','Message', function ($scope, Account, Message) {
-        $scope.concerned=false;
         function init(userinfo) {
             var username = $scope.urlObj.username;
             if (!username && userinfo && userinfo.username) {
@@ -63,7 +62,7 @@ define([
             });
         }
 
-        $scope.favoriteUser = function (concerned) {
+        $scope.favoriteUser = function (fansUser) {
             if (!$scope.userinfo) {
                 $scope.concerned = !$scope.concerned;
                 return;
@@ -71,25 +70,27 @@ define([
 
             if (!Account.isAuthenticated()) {
                 Message.info("登录后才能关注");
-                return; // 自己不关注自己
+                return; // 登录后才能关注
             }
-            
-            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == $scope.userinfo._id) {
+
+            fansUser = fansUser ? fansUser : $scope.userinfo;//关注该页面的用户，或者关注这个用户的粉丝
+
+            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == fansUser._id) {
                 Message.info("自己不关注自己");
                 return; // 自己不关注自己
             }
 
-            if(concerned){//取消关注
-                util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
+            if(fansUser.concerned){//取消关注
+                util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
                     console.log("取消关注成功");
                     Message.info("取消关注成功");
-                    $scope.concerned=false;
+                    fansUser.concerned=false;
                 });
             }else{
-                util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
+                util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
                     console.log("关注成功");
                     Message.info("关注成功");
-                    $scope.concerned=true;
+                    fansUser.concerned=true;
                 });
             }
         }
@@ -109,6 +110,9 @@ define([
             util.goUserSite('/' + x.username + '/' + x.name, true);
         }
 
+        $scope.goUserIndexPage = function (name) {
+            util.go("/"+name);
+        }
         $scope.goHelpPage = function () {
             util.go("knowledge");
         }
@@ -125,6 +129,21 @@ define([
         
         $scope.goEditorPage = function () {
             util.go("wikiEditor");
+        }
+
+        //显示退出组织模态框
+        $scope.showExitModal = function (organization) {
+            $('#exitModal').modal("show");
+            $scope.deletingOrg=organization;
+        }
+
+        // 退出组织
+        $scope.exitOrg = function (org) {
+            util.post(config.apiUrlPrefix + 'website_member/deleteById', org, function () {
+                org.isDelete = true;
+                $scope.joinOrganizationCount--;
+                $('#exitModal').modal("hide");
+            });
         }
 
         $scope.$watch('$viewContentLoaded', function () {
