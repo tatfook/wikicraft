@@ -373,7 +373,6 @@ define([
 				var project = undefined;
 				var method = "POST";
 				var url = "/projects";
-				visibility = "private";
 				var data = {name:projectName, visibility: visibility, request_access_enabled:true};
 
                 // 查找项目是否存在
