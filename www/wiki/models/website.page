@@ -50,7 +50,7 @@ function website:ctor()
 	self:addfield("fork", "string", false, 200)
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
-	self:addfield("githubRepoName", "string")   -- 网站单独github数据源
+	self:addfield("visibility", "string") -- private 私有  public 共有
 	self:addfield("private", "number")	
 	self:addfield("visitCount", "number")
 	self:addfield("favoriteCount", "number")

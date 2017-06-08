@@ -1,0 +1,44 @@
+<?npl
+--[[
+Title: site data source
+Author: wuxiangan
+Date: 2017/06/08
+]]
+
+
+include_once("./abstract/base.page")
+
+local site_group = inherit(models.abstract.base, gettable("models.site_group"))
+site_group.db_name = "site_group"
+
+
+function site_group:ctor()
+	self:addfield("username", "string")            -- 用户名  组的所属者
+	self:addfield("sitename", "string")            -- 站点名
+	self:addfield("groupname", "string")           -- 组名 
+	self:addfield("level", "number")            -- 权限级别
+end
+
+-- 创建一个站点组
+function site_group:api_upsert(params)
+	if (not params.username) or (not params.sitename) or (params.groupname) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
+
+	self:db():insertOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, params, resume)
+	
+	return errors:wrap(yield())
+end
+
+-- 删除一个站点组
+function site_group:api_deleteById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end

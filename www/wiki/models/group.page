@@ -1,0 +1,51 @@
+<?npl
+--[[
+Title: site data source
+Author: wuxiangan
+Date: 2017/06/08
+]]
+
+
+include_once("./abstract/base.page")
+
+local group = inherit(models.abstract.base, gettable("models.group"))
+group.db_name = "group"
+
+function group:ctor()
+	self:addfield("groupname", "string")           -- 组名 
+	self:addfield("username", "string")            -- 用户名  组的所属者
+end
+
+-- 创建组
+function group:api_upsert(params)
+	if not params.groupname or (not params.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:db():insertOne({["+username+groupname"]={params.username, params.groupname}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 删除用户组
+function group:api_deleteByName(params)
+	if not params.groupname or (not params.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:db():deleteOne({["+username+groupname"]={params.username, params.groupname}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除用户所有组
+function group:api_deleteByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({["+username"]={params.username}}, resume)
+
+	return errors:wrap(yield())
+end
