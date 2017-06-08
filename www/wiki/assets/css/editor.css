@@ -314,6 +314,22 @@ select.resize-view {
 #srcview{
     padding-right: 40px;
 }
+/*删除确认弹窗*/
+.delete-modal h3{
+    text-align: center;
+    font-weight: normal;
+}
+.delete-modal span.icon{
+    width: 32px;
+    height: 32px;
+    border: 2px solid;
+    display: inline-block;
+    border-radius: 50%;
+    line-height: 30px;
+    color: #ED381C;
+    margin-right: 10px;
+    font-weight: bold;
+}
 @media(max-width: 992px){
     .show-sm{
         display: inline-block;
