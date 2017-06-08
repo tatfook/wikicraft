@@ -37,10 +37,10 @@ define([
 					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
                         user.dataSource = data || [];
                         storage.localStorageSetItem("userinfo", user);
-                        DataSource.init(user.dataSource, user.dataSourceId);
+                        DataSource.init(user.dataSource, user.defaultDataSourceSitename);
                     });
                 } else {
-                    DataSource.init(user.dataSource, user.dataSourceId);
+                    DataSource.init(user.dataSource, user.defaultDataSourceSitename);
                 }
             }
 
@@ -63,7 +63,9 @@ define([
                         }, function () {
                             errcb && errcb();
                         });
-                    }
+					} else {
+						errcb && errcb();
+					}
 
                     return userinfo;
                 },

@@ -33,7 +33,8 @@ function user:ctor()
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- 手机
 	self:addfield("sex", "string", false, 12)
-	self:addfield("dataSourceId", "number", false) -- 数据源ID  
+	self:addfield("dataSourceId", "number", false) -- 数据源ID   
+	self:addfield("defaultDataSourceSitename", "string")    -- 默认数据源的站点名 
 	self:addfield("portrait", "string", false, 200) -- picture url
 	self:addfield("roleId", "number")
 	self:addfield("location", "string", false, 50)

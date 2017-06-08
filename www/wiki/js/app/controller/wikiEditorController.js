@@ -48,12 +48,12 @@ define([
     var pagelistMap = {};            // 页列表映射
     var urlParamsMap = {};            // url 参数映射
 
-    function getCurrentDataSource(username) {
-        var userDataSource = dataSource.getUserDataSource(username);
-        if (currentSite && currentSite.dataSourceId) {
-            return userDataSource.getDataSourceById(currentSite.dataSourceId);
-        }
-        return userDataSource.getDefaultDataSource();
+    function getCurrentDataSource() {
+		if (currentPage && currentPage.username) {
+			return dataSource.getDataSource(currentPage.username, currentPage.sitename);
+		}
+
+		return dataSource.getDefaultDataSource()
     }
 
     function getTreeData(username, pageMap, isDir) {
@@ -166,7 +166,7 @@ define([
         }
 
         $scope.imageLocal = function () {
-            var currentDataSource = getCurrentDataSource($scope.user.username);
+            var currentDataSource = getCurrentDataSource();
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
@@ -512,7 +512,7 @@ define([
                 }
                 initEditor();
 
-				console.log(otherUsername);
+				//console.log(otherUsername);
 
                 // 获取自己用户信息
                 fnList.push(function (finish) {
@@ -537,7 +537,7 @@ define([
                     $rootScope.userinfo = otherUserinfo || $scope.user;
                     if (otherUserinfo && otherUserinfo.dataSource && (!$scope.user || $scope.user.username != otherUserinfo.username)) {
                         var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
-                        userDataSource.init(otherUserinfo.dataSource, otherUserinfo.dataSourceId);
+                        userDataSource.init(otherUserinfo.dataSource, otherUserinfo.defaultDataSourceSitename);
                     }
                     loadSitePageInfo();
                 });
@@ -570,6 +570,7 @@ define([
                     return;
                 }
 
+                var currentDataSource = getCurrentDataSource();
                 var page = angular.copy(currentPage);
                 var content = editor.getValue();
                 var saveFailedCB = function () {
@@ -589,7 +590,6 @@ define([
                 };
 
                 currentSite = getCurrentWebsite(page.username, page.sitename);
-                var currentDataSource = dataSource.getCurrentDataSource(page.username, currentSite && currentSite.dataSourceId);
                 if (currentSite) {
                     util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', {userId:currentSite.userId, siteId:currentSite._id});
                 }
@@ -632,8 +632,8 @@ define([
 
             // 获取站点文件列表
             function getSitePageList(params, cb, errcb) {
-                var siteinfo = getCurrentWebsite(params.username, params.sitename);
-                var currentDataSource = dataSource.getCurrentDataSource(params.username, siteinfo && siteinfo.dataSourceId);
+				//console.log(params);
+                var currentDataSource = dataSource.getDataSource(params.username, params.sitename);
                 if (!currentDataSource) {
                     console.log("current data source unset!!!");
                     return;
@@ -735,7 +735,6 @@ define([
                 }
 
                 // 获取站点页列表
-                dataSource.setCurrentDataSource(username, currentSite && currentSite.dataSourceId);
                 getSitePageList({path:"/" + username + '/' +  sitename, username:username, sitename:sitename}, function () {
                     _openUrlPage();
                 });
@@ -755,7 +754,6 @@ define([
                 $rootScope.siteinfo = currentSite;
                 $rootScope.pageinfo = currentPage;
                 $rootScope.tplinfo = getPageByUrl('/' + currentPage.username + '/' + currentPage.sitename + '/_theme');
-                dataSource.setCurrentDataSource(currentPage.username, currentSite && currentSite.dataSourceId)
                 // 保存正在编辑的页面urlObj
                 storage.sessionStorageSetItem('urlObj', {
                     username: currentPage.username,
@@ -848,8 +846,7 @@ define([
                     //console.log(allWebstePageContent[url]);
                     cb && cb(allWebstePageContent[url]);
                 } else {
-                    currentSite = getCurrentWebsite(currentPage.username, currentPage.sitename);
-                    var currentDataSource = dataSource.getCurrentDataSource(currentPage.username, currentSite && currentSite.dataSourceId);
+                    var currentDataSource = getCurrentDataSource();
                     //console.log(currentDataSource);
                     if (currentDataSource) {
                         currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
@@ -1043,8 +1040,7 @@ define([
                     return;
                 }
 
-                currentSite = getCurrentWebsite(currentPage.username, currentPage.sitename);
-                var currentDataSource = dataSource.getCurrentDataSource(currentPage.username, currentSite && currentSite.dataSourceId);
+                var currentDataSource = getCurrentDataSource();
                 if (currentDataSource) {
                     if (currentDataSource.getDataSourceType() == "github") {
                         currentDataSource.getFile({path: currentPage.url + pageSuffixName}, function (data) {
@@ -1136,7 +1132,7 @@ define([
                 }else{
                     if (!isEmptyObject(currentPage)) {
                         currentSite = getCurrentWebsite(currentPage.username, currentPage.sitename);
-                        var currentDataSource = dataSource.getCurrentDataSource(currentPage.username, currentSite && currentSite.dataSourceId);
+                        var currentDataSource = getCurrentDataSource();
 
                         currentDataSource && currentDataSource.deleteFile({path: currentPage.url + pageSuffixName}, function () {
                             console.log("删除文件成功:");
@@ -1541,7 +1537,7 @@ define([
                     return false;
                 }
 
-                var currentDataSource = getCurrentDataSource($scope.user.username);
+                var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
                     alert('数据源服务失效，图片无法上传');
                 } else {

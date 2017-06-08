@@ -13,13 +13,14 @@ include_once("./data_source.page")
 local site_data_source = inherit(models.abstract.base, gettable("models.site_data_source"))
 site_data_source.db_name = "site_data_source"
 
-local defaultProjectName = "keepworkdatasource"
-local defaultSitename = "__keepwork__"
+local projectNamePrefix = "keepwork"
+local defaultProjectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
+local defaultSitename = const.DEFAULT_DATA_SOURCE_SITENAME
 
 function site_data_source:ctor()
 	self:addfield("username", "string")            -- 用户名 
 	self:addfield("sitename", "string")            -- 站点名
-	self:addfield("dataSourceId", "number")        -- 数据源ID
+	self:addfield("dataSourceName", "string")        -- 数据源名
 	self:addfield("visibility", "string")          -- 是否为私有项目 private - 是 public - 否
 	self:addfield("projectName", "string")         -- 项目名
 	self:addfield("projectId", "number")           -- 项目id
@@ -27,7 +28,6 @@ function site_data_source:ctor()
 	self:addfield("lastCommitId", "string")        -- 最后一次提交id cdn加速
 	self:addfield("lastCommitIdUpdateTime", "number")  -- 最后一次提交id更新时间 cdn加速
 	self:addfield("updateFlag", "string")          -- 谁做了最后的更新
-	self:addfield("enable", "number")              -- 数据源ID
 end
 
 -- 获取默认内置数据源
@@ -62,7 +62,7 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 	local siteDataSource = {
 		username=params.username,
 		sitename=defaultSitename,
-		dataSourceId=ds._id,
+		dataSourceName=ds.name,
 		projectName=defaultProjectName,
 		rootPath="",
 		lastCommitId="master", 
@@ -77,7 +77,7 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 	
 	-- 更新用户默认数据源
 	local userDB = models.user:new()
-	userDB:db():updateOne({["+username"]={params.username}}, {dataSourceId=siteDataSource._id}, resume)
+	userDB:db():updateOne({["+username"]={params.username}}, {dataSourceName=siteDataSource._id}, resume)
 	yield()
 
 	return errors:wrap(nil, siteDataSource)
@@ -110,8 +110,9 @@ function site_data_source:api_getByUsername(params)
 
 	for _, siteDataSource in ipairs(siteDataSourceList or {}) do
 		for _, dataSource in ipairs(dataSourceList or {}) do
-			if dataSource._id == siteDataSource.dataSourceId then
-				siteDataSource.name = dataSource.name
+			if dataSource.name == (siteDataSource.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME) then
+				siteDataSource.dataSourceId = dataSource._id
+				siteDataSource.dataSourceName = dataSource.name
 				siteDataSource.type = dataSource.type
 				siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
 				siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
@@ -139,14 +140,14 @@ function site_data_source:api_getById(params)
 	end
 	
 	local dataSourceDB = models.data_source:new()
-	dataSourceDB:db():findOne({_id=siteDataSource.dataSourceId}, resume)
+	dataSourceDB:db():findOne({["+username+name"]={siteDataSource.username, siteDataSource.dataSourceName}}, resume)
 	local dataSource = yield()
 
 	if not dataSource then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	siteDataSource.name = dataSource.name
+	siteDataSource.dataSourceId= dataSource._id
 	siteDataSource.type = dataSource.type
 	siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
 	siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
@@ -186,7 +187,7 @@ function site_data_source:api_updateGitlabLastCommitId(params)
 	params.lastCommitId = data[1].id
 	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
 	params.lastCommitIdUpdateTime = curTime
-	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	yield()
 	
 	return errors:wrap(nil, params)
@@ -218,7 +219,7 @@ function site_data_source:api_updateGithubLastCommitId(params)
 
 	params.lastCommitId = data[1].sha
 	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
-	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	yield()
 	
 	return errors:wrap(nil, params)
@@ -246,7 +247,20 @@ function site_data_source:api_updateLastCommitId(params)
 	return errors:wrap(nil, siteDataSource)
 end
 
+-- 创建站点数据源
+function site_data_source:api_createSiteDataSource(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.dataSourceName = params.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME
+	params.projectName = params.projectName or (projectNamePrefix + string.lower(params.sitename))
+	params.visibility = params.visibility or "private"
+	
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 
+	return errors:wrap(yield())
+end
 
 
 

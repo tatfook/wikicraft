@@ -13,7 +13,7 @@ include_once("./site_data_source.page")
 local data_source = inherit(models.abstract.base, gettable("models.data_source"))
 data_source.db_name = "data_source"
 
-local innerGitlabName = "内置gitlab"
+local innerGitlabName = const.DEFAULT_DATA_SOURCE_NAME
 
 function data_source:ctor()
 	self:addfield("username", "string")            -- 用户名 
@@ -24,14 +24,6 @@ function data_source:ctor()
 	self:addfield("dataSourceToken", "string")     -- 数据源ID
 	self:addfield("apiBaseUrl", "string")          -- api url prefix
 	self:addfield("rawBaseUrl", "string")          -- raw url prefix
-
-	-- self:addfield("projectName", "string")      -- 项目名
-	-- self:addfield("projectId", "number")        -- 项目id
-	-- self:addfield("rootPath", "string")         -- 项目根路径
-	-- self:addfield("lastCommitId", "string")     -- 最后一次提交id cdn加速
-	-- self:addfield("lastCommitIdUpdateTime", "number")  -- 最后一次提交id更新时间 cdn加速
-	-- self:addfield("updateFlag", "string")       -- 谁做了最后的更新
-	-- self:addfield("enable", "number")           -- 数据源ID
 end
 
 

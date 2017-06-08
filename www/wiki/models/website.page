@@ -57,7 +57,6 @@ function website:ctor()
 	self:addfield("pageCount", "number")
 	self:addfield("memberCount", "number")
 	self:addfield("worksCount", "number")
-	self:addfield("dataSourceId", "number")
 end
 
 -- 创建站点
@@ -113,6 +112,10 @@ function website:api_upsert(params)
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+	
+	if params.visibility == "private" then 
+		models.site_data_source:new():api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
+	end
 
 	-- 设置站点管理员
 	local websiteMemberDB = models.website_member:new()
@@ -125,6 +128,30 @@ function website:api_upsert(params)
 	userTrendsDB:api_upsert(trend)
 	
 	return errors:wrap(nil, site)
+end
+
+-- 设置网站私有行性
+function website:setPrivate(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.visibility = params.visibility or "public"
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:db():findOne({["+username+sitename"]={params.username, params.sitename}}, resume)
+	local _, siteDataSource = yield()
+	if (not siteDataSource) and (params.visibility == "public") then
+		LOG.std(nil,"error", "keepwork", "data errors")
+	elseif (not siteDataSource) and (params.visibility == "private") then
+		siteDataSourceDB:createSiteDataSource(params)
+	else
+		siteDataSourceDB:db():updateOne({_id=siteDataSource._id}, {visibility=params.visibility}, resume)	
+		yield()
+	end
+
+	self:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	
+	return errors:wrap(yield())
 end
 
 -- 删除一个站点

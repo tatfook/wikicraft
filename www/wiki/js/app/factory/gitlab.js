@@ -275,7 +275,7 @@ define([
                 cb && cb();
                 return;
             }
-			console.log(dataSource);
+			//console.log(dataSource);
             self.type = dataSource.type;
             self.username = dataSource.dataSourceUsername;
             self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;

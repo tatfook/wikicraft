@@ -214,16 +214,14 @@ define([
                         $rootScope.pageinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename, pagepath:urlObj.pagepath};
                         $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
-                        var dataSourceId = data.siteinfo.dataSourceId || data.userinfo.dataSourceId;
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
 
-                        userDataSource.init(data.userinfo.dataSource, data.userinfo.dataSourceId);
+                        userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
                         userDataSource.registerInitFinishCallback(function () {
-                            dataSource.setCurrentDataSource(data.userinfo.username, dataSourceId);
-                            var currentDataSource = dataSource.getCurrentDataSource();
+                            var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
                             var renderContent = function (content) {
                                 $rootScope.$broadcast('userpageLoaded',{});
-                                content = md.render((content!=undefined)?content :  notfoundHtmlContent);
+                                content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
                                 util.html('#__UserSitePageContent__', content, $scope);
                             };
                             if (config.isLocal()) {
