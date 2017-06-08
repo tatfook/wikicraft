@@ -115,6 +115,8 @@ define([
                         }
                     });
                 }
+                $scope.website.visibility = $scope.visibility ? "private" : "public";
+                console.log($scope.website.visibility);
                 return;
             } else if ($scope.step == 3) {
                 $scope.nextStepDisabled = !$scope.website.templateName;

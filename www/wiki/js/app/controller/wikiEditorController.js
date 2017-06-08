@@ -130,7 +130,7 @@ define([
             treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + '*') : pageNode.name;
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
-            treeNode.tags = ["<div onclick='angular.element(this).scope().cmd_remove(event)' >&times;</div>"];
+            treeNode.tags = ["<div onclick='angular.element(this).scope().cmd_remove()'>&times;</div>"];
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
             if (!pageNode.isLeaf) {
@@ -1130,25 +1130,29 @@ define([
             }
 
             //删除
-            $scope.cmd_remove = function () {
-                if (!isEmptyObject(currentPage)) {
-                    currentSite = getCurrentWebsite(currentPage.username, currentPage.sitename);
-                    var currentDataSource = dataSource.getCurrentDataSource(currentPage.username, currentSite && currentSite.dataSourceId);
+            $scope.cmd_remove = function (confirmed) {
+                if (!confirmed){
+                    $('#deleteModal').modal("show");
+                }else{
+                    if (!isEmptyObject(currentPage)) {
+                        currentSite = getCurrentWebsite(currentPage.username, currentPage.sitename);
+                        var currentDataSource = dataSource.getCurrentDataSource(currentPage.username, currentSite && currentSite.dataSourceId);
 
-                    currentDataSource && currentDataSource.deleteFile({path: currentPage.url + pageSuffixName}, function () {
-                        console.log("删除文件成功:");
-                    }, function (response) {
-                        console.log("删除文件失败:");
-                    });
+                        currentDataSource && currentDataSource.deleteFile({path: currentPage.url + pageSuffixName}, function () {
+                            console.log("删除文件成功:");
+                        }, function (response) {
+                            console.log("删除文件失败:");
+                        });
 
-                    storage.indexedDBDeleteItem(config.pageStoreName, currentPage.url);
+                        storage.indexedDBDeleteItem(config.pageStoreName, currentPage.url);
 
-                    delete allPageMap[currentPage.url];
-                    storage.sessionStorageRemoveItem('urlObj');
-                    currentPage = undefined;
-
-                    initTree();
-                    openPage();
+                        delete allPageMap[currentPage.url];
+                        storage.sessionStorageRemoveItem('urlObj');
+                        currentPage = undefined;
+                        $('#deleteModal').modal("hide");
+                        initTree();
+                        openPage();
+                    }
                 }
             }
 
