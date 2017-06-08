@@ -513,7 +513,7 @@ function user:api_getProfile()
 
 	local siteDataSourceDB = models.site_data_source:new()
 	local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=data.username}).data
-	if siteDataSourceDB then
+	if siteDataSource then
 		data.dataSourceId = siteDataSource._id
 	end
 

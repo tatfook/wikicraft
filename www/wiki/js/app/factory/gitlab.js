@@ -374,6 +374,7 @@ define([
 				var method = "POST";
 				var url = "/projects";
 				var data = {name:projectName, visibility: visibility, request_access_enabled:true};
+				//var data = {name:projectName, visibility: visibility};
 
                 // 查找项目是否存在
                 for (var i = 0; i < projectList.length; i++) {

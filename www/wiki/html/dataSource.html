@@ -73,7 +73,7 @@
                     <td>{{x.apiBaseUrl}}</td>
                     <td>{{x.rawBaseUrl}}</td>
                     <td>{{x.dataSourceToken}}</td>
-                    <td>{{x.dataSourceId ? "有效" : "无效"}}</td>
+                    <td>{{x.dataSourceUserId ? "有效" : "无效"}}</td>
                     <td>
                         <div>
                             <a class="btn" ng-click="clickModifyDataSource(x)">修改</a>
@@ -117,12 +117,6 @@
                     <label class="col-xs-2 control-label">Token:</label>
                     <div class="col-xs-7">
                         <input ng-model="newDataSource.dataSourceToken" type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group form-group-md">
-                    <label class="col-xs-2 control-label">根路径:</label>
-                    <div class="col-xs-7">
-                        <input ng-model="newDataSource.rootPath" type="text" class="form-control" placeholder="keepwork/root(可选)">
                     </div>
                 </div>
                 <div class="form-group form-group-md btn-submit">
