@@ -47,7 +47,7 @@
                 <div class="form-group form-group-md">
                     <label class="col-xs-2 control-label">默认数据源：</label>
                     <div class="col-xs-7">
-                        <select class="form-control" ng-model="defaultDataSourceId" ng-change="changeDefaultDataSource()">
+                        <select class="form-control" ng-model="defaultDataSourceName" ng-change="changeDefaultDataSource()">
                             <option ng-repeat="x in dataSourceList" value="{{x._id}}">{{x.name || '内置GItlab'}}</option>
                         </select>
                     </div>

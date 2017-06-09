@@ -101,6 +101,14 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo = yield()
+
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
 	params.favoriteCount = 0
 	params.visitCount = 0
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")

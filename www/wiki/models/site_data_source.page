@@ -20,7 +20,7 @@ local defaultSitename = const.DEFAULT_DATA_SOURCE_SITENAME
 function site_data_source:ctor()
 	self:addfield("username", "string")            -- 用户名 
 	self:addfield("sitename", "string")            -- 站点名
-	self:addfield("dataSourceName", "string")        -- 数据源名
+	self:addfield("dataSourceName", "string")      -- 数据源名
 	self:addfield("visibility", "string")          -- 是否为私有项目 private - 是 public - 否
 	self:addfield("projectName", "string")         -- 项目名
 	self:addfield("projectId", "number")           -- 项目id
@@ -262,6 +262,22 @@ function site_data_source:api_createSiteDataSource(params)
 	return errors:wrap(yield())
 end
 
+-- 获取站点数据源
+function site_data_source:api_getSiteDataSource(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	params.sitename = params.sitename or const.DEFAULT_DATA_SOURCE_SITENAME
+	self:db():findOne({["+username+sitename"]={params.username, params.sitename}}, resume)
+	local _, siteDataSource = yield()
+
+	if not siteDataSource then
+		return self:api_getDefaultSiteDataSource()
+	end
+	
+	return errors:wrap(nil, siteDataSource)
+end
 
 
 

@@ -89,6 +89,98 @@ define([
             return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/blob/'+ (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
+		// groups
+		// get group list
+		gitlab.getGroupList = function (params, cb, errcb) {
+			var self = this;			
+			var url = '/groups';
+			
+			self.httpRequest("GET", url, {owned:true, isFetchAll:true, search:params.search}, function(data){
+				for (var i = 0; i < (data || []).length; i++) {
+					data[i].name = data[i].name.substring((self.username+'_').length);
+				}
+				cb && cb(data);
+			}, function(){
+				errcb && errcb();
+			});
+		}
+		// create group
+		//gitlab.createGroup = function(params, cb, errcb) {
+			//var self = this;
+			//var url = '/groups';
+			//var groupname = self.username + "_" + params.name;
+
+			//self.getGroupList({search:groupname}, function(data){
+				//// 是否存在， 存在就返回
+				//for (var i=0; i < (data || []).length; i++)	{
+					//if (data[i].name == params.name) {
+						//return ;
+					//}
+				//}	
+				
+				//self.httpRequest("POST", url, {
+					//name:groupname,
+					//path:groupname,
+					//visibility: "public",
+					//request_access_enabled: true, 
+				//}, cb, errcb)
+			//}, errcb);
+		//}
+		// update group
+		gitlab.createGroup = function(params, cb, errcb) {
+			var self = this;
+			var url = '/groups'; 
+			var method = "POST";
+
+			if (params.id) {
+				method = "PUT";
+				url += "/" + params.id;
+			}
+
+			self.httpRequest(method, url, params, cb, errcb)
+		}
+		// delete group
+		gitlab.deleteGroup = function(params, cb, errcb) {
+			var self = this;
+			var url = '/groups/' + params.id;
+
+			self.httpRequest("DELETE", url, params, cb, errcb)
+		}
+		// list all group member
+		gitlab.getGroupMemberList = function(params, cb, errcb) {
+			var self = this;
+			var url = '/groups/' + params.id + '/members';
+			
+			self.httpRequest("GET", url, params, function(data){
+				cb && cb(data);
+			}, errcb);
+		}
+		// create group member
+		gitlab.upsertGroupMember = function(params, cb, errcb) {
+			var self = this;
+			var url = '/groups/' + params.id + '/members';
+			var method = "POST";
+
+			if (params.user_id) {
+				method = "PUT";
+				url += "/" + params.user_id;
+			}
+			self.httpRequest(method, url, params, cb, errcb);
+		}
+		// delete group member
+		gitlab.deleteGroupMember = function(params, cb, errcb) {
+			var self = this;
+			var url = '/groups/' + params.id + '/members/' + params.user_id;
+			var method = "DELETE";
+			self.httpRequest(method, url, params, cb, errcb);
+		}
+		// add group to project
+		gitlab.addProjectGroup = function(params, cb, errcb) {
+			self.httpRequest("POST", "/projects/" + this.projectId + "/share", params, cb, errcb);
+		}
+		gitlab.deleteProjectGroup = function(params, cb, errcb) {
+			self.httpRequest("DELETE","/projects/" + this.projectId + "/share/" + params.groupId, params, cb, errcb);
+		}
         // 获得文件列表
         gitlab.getTree = function (params, cb, errcb) {
             var self = this;
