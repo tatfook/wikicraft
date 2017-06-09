@@ -68,7 +68,7 @@ function site_data_source:api_getDefaultSiteDataSource(params)
 	local _, siteDataSource = yield()
 
 	if not siteDataSource then
-		siteDataSource = self:api_createDefaultSiteDataSource(params)
+		siteDataSource = self:api_createDefaultSiteDataSource(params).data
 	end
 
 	return errors:wrap(nil, siteDataSource)
