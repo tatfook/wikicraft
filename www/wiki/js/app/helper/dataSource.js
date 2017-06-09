@@ -103,6 +103,7 @@ define([
         },
 
         getDataSourceBySitename: function (sitename) {
+			sitename = sitename || this.defaultSitename;
 			//console.log(this.defaultSitename);
             return this.dataSourceInstMap[sitename] || this.dataSourceInstMap[this.defaultSitename];
         },
@@ -129,6 +130,10 @@ define([
     dataSource.registerDataSourceFactory = function (typ, factory) {
         dataSource.dataSourceFactory[typ] = factory;
     };
+
+	dataSource.getDataSourceInstance = function(typ) {
+		return dataSource.dataSourceFactory[typ] && dataSource.dataSourceFactory[typ]();	
+	}
 
     dataSource.getUserDataSource = function (name) {
         if (!dataSource.dataSourceUserMap[name]) {

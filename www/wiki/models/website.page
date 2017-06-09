@@ -121,9 +121,11 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	local siteDataSourceDB = models.site_data_source:new()
 	if params.visibility == "private" then 
-		models.site_data_source:new():api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
+		siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
 	end
+	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
 
 	-- 设置站点管理员
 	local websiteMemberDB = models.website_member:new()

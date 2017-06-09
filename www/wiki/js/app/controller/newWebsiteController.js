@@ -25,13 +25,12 @@ define([
         function createSite(siteinfo, cb , errcb) {
             siteinfo.userId = $scope.user._id;
             siteinfo.username = $scope.user.username;
-            siteinfo.dataSourceId = $scope.user.dataSourceId;
-
+			siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
             config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
-                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                userDataSource.registerInitFinishCallback(function () {
-                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
+                var defaultDataSource = dataSource.getDataSource(siteinfo.username);
+				var dataSourceInst = dataSource.getDataSourceInstance();
+                var callback = function () {
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var contentUrlPrefix = "text!html/";
                     var contentPageList = [];
@@ -47,7 +46,7 @@ define([
                         fnList.push((function (index) {
                             return function (cb, errcb) {
                                 require([contentPageList[index].contentUrl], function (content) {
-                                    currentDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
+                                    defaultDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
                                 }, function () {
                                     console.log("local server request md file failed");
                                     // 本地文件请求失败直接跳过
@@ -65,7 +64,15 @@ define([
                         config.loading.hideLoading();
                         errcb && errcb();
                     });
-                });
+                };
+				if (siteinfo.dataSource) {
+					dataSourceInst.init(siteinfo.dataSource, function() {
+						defaultDataSource = dataSourceInst;
+						callback():
+					}, errcb);
+				} else {
+					callback();
+				}
             }, function () {
                 config.loading.hideLoading();
                 errcb && errcb();
@@ -144,8 +151,9 @@ define([
                     $scope.prevStepDisabled = false;
                     $scope.nextStepDisabled = false;
                 }, function () {
+					console.log("创建失败，请稍后重试...");
                     $scope.prevStepDisabled = false;
-                    $scope.nextStepDisabled = true;
+                    $scope.nextStepDisabled = false;
                 });
                 return
             } else{
