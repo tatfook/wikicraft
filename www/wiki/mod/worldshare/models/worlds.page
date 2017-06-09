@@ -2,11 +2,11 @@
 --[[
 Title: worlds
 Author: Big
-Date: 2017/6/1
+Date: 2017/6/9
 ]]
 include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page");
 include_once(WIKI_ROOT .. "models/user.page");
-include_once(WIKI_ROOT .. "models/site_data_source.page");
+-- include_once(WIKI_ROOT .. "models/site_data_source.page");
 include_once("./worlds_stats.page");
 include_once("./worlds_star.page");
 
@@ -225,10 +225,10 @@ function worlds:api_refresh(params)
 			insertParams.gitlabProjectId = query.gitlabProjectId;
 			insertParams.dataSourceType  = query.dataSourceType;
 
-			local dataSource = models.site_data_source:new():api_getByUsername({username = userInfor.username});
+			local dataSource = models.user:new():api_getDefaultSiteDataSource({username = userInfor.username});
 			local defaultDataSource = {};
 
-			--LOG.std("worlds","debug","DataSource :",dataSource);
+			LOG.std("worlds","debug","DataSource :",dataSource);
 
 			for key,value in ipairs(dataSource.data) do
 				if(value._id == userInfor.dataSourceId) then
