@@ -30,6 +30,34 @@ function site_data_source:ctor()
 	self:addfield("updateFlag", "string")          -- 谁做了最后的更新
 end
 
+-- 拷贝数据源信息到站点数据源
+function site_data_source:copyDataSourceToSite(siteDataSource, dataSource)
+	if not siteDataSource then
+		return 
+	end
+	
+	-- siteDataSource.dataSourceName 必须存在
+	local dataSourceName = siteDataSource.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME
+	if not dataSource then
+		dataSource = models.data_source:new():api_getByName({username=siteDataSource.username, name=dataSourceName}).data	
+	end
+
+	if not dataSource then
+		return 
+	end
+
+	siteDataSource.dataSourceId = dataSource._id
+	siteDataSource.dataSourceName = dataSource.name
+	siteDataSource.type = dataSource.type
+	siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
+	siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
+	siteDataSource.dataSourceToken = dataSource.dataSourceToken
+	siteDataSource.apiBaseUrl = dataSource.apiBaseUrl
+	siteDataSource.rawBaseUrl = dataSource.rawBaseUrl
+	
+	return
+end
+
 -- 获取默认内置数据源
 function site_data_source:api_getDefaultSiteDataSource(params)
 	if not params.username then
@@ -40,7 +68,7 @@ function site_data_source:api_getDefaultSiteDataSource(params)
 	local _, siteDataSource = yield()
 
 	if not siteDataSource then
-		return self:api_createDefaultSiteDataSource(params)
+		siteDataSource = self:api_createDefaultSiteDataSource(params)
 	end
 
 	return errors:wrap(nil, siteDataSource)
@@ -75,11 +103,7 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	-- 更新用户默认数据源
-	local userDB = models.user:new()
-	userDB:db():updateOne({["+username"]={params.username}}, {dataSourceName=siteDataSource._id}, resume)
-	yield()
-
+	self:copyDataSourceToSite(siteDataSource, ds)
 	return errors:wrap(nil, siteDataSource)
 end
 
@@ -111,14 +135,7 @@ function site_data_source:api_getByUsername(params)
 	for _, siteDataSource in ipairs(siteDataSourceList or {}) do
 		for _, dataSource in ipairs(dataSourceList or {}) do
 			if dataSource.name == (siteDataSource.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME) then
-				siteDataSource.dataSourceId = dataSource._id
-				siteDataSource.dataSourceName = dataSource.name
-				siteDataSource.type = dataSource.type
-				siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
-				siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
-				siteDataSource.dataSourceToken = dataSource.dataSourceToken
-				siteDataSource.apiBaseUrl = dataSource.apiBaseUrl
-				siteDataSource.rawBaseUrl = dataSource.rawBaseUrl
+				self:copyDataSourceToSite(siteDataSource, dataSource)
 				break
 			end
 		end	
@@ -147,14 +164,8 @@ function site_data_source:api_getById(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	siteDataSource.dataSourceId= dataSource._id
-	siteDataSource.type = dataSource.type
-	siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
-	siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
-	siteDataSource.dataSourceToken = dataSource.dataSourceToken
-	siteDataSource.apiBaseUrl = dataSource.apiBaseUrl
-	siteDataSource.rawBaseUrl = dataSource.rawBaseUrl
-	
+	self:copyDataSourceToSite(siteDataSource, dataSource)
+
 	return errors:wrap(nil, siteDataSource)
 end
 
@@ -258,8 +269,10 @@ function site_data_source:api_createSiteDataSource(params)
 	params.visibility = params.visibility or "private"
 	
 	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
-
-	return errors:wrap(yield())
+	local _, siteDataSource = yield()
+	
+	self:copyDataSourceToSite(siteDataSource, nil)
+	return errors:wrap(nil, siteDataSource)
 end
 
 -- 获取站点数据源
@@ -276,6 +289,7 @@ function site_data_source:api_getSiteDataSource(params)
 		return self:api_getDefaultSiteDataSource(params)
 	end
 	
+	self:copyDataSourceToSite(siteDataSource, nil)
 	return errors:wrap(nil, siteDataSource)
 end
 
