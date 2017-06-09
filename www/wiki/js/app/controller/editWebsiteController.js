@@ -14,6 +14,11 @@ define([
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
         $scope.domainList=[];
+        $scope.groupUser="";
+        $scope.nowGroup={"groupName":"","userList":[]};//当前编辑的分组
+        $scope.groups=[{"groupName":"全体","userList":["username","username1","username2"]}];
+        $scope.groupAuths =[{"groupName":"全体","auth":"浏览"}];
+        $scope.authorities=["浏览","编辑","拒绝"];
         var innerGitlab = undefined;
 
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
@@ -99,6 +104,43 @@ define([
         // 修改网站设置
         $scope.modifyWebsite = function () {
             sendModifyWebsiteRequest();
+        }
+
+        $scope.createGroup = function () {
+            $scope.groups.push($scope.nowGroup);
+            console.log("写入数据库");
+            $scope.nowGroup={"groupName":"","userList":[]};
+        }
+
+        $scope.addUser = function () {
+            //判断该用户是否存在
+            //用户若存在，添加
+            if (true){
+                $scope.nowGroup.userList.push($scope.groupUser);
+            }else{//用户不存在，报错
+
+            }
+            $scope.groupUser="";
+            console.log($scope.nowGroup.userList);
+        }
+
+        $scope.removeUser = function (username) {
+            var index=$scope.nowGroup.userList.indexOf(username);
+            if(index>=0){
+                $scope.nowGroup.userList.splice(index,1);
+            }
+        }
+        
+        $scope.editGroup = function (group,finish) {
+            if(!finish){
+                $scope.nowGroup=group;
+                $scope.editing=true;
+                console.log("1");
+            }else{
+                $scope.nowGroup={"groupName":"","userList":[]};
+                $scope.editing=false;
+                console.log("2");
+            }
         }
 
         function getResultCanvas(sourceCanvas) {

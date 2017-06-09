@@ -299,7 +299,7 @@
                 </div>
                 <p class="help" ng-click="goHelpPage()"><span class="icon">?</span> 知识库</p>
             </div>
-            <div class="main-content">
+            <div class="main-content" style="min-height: 490px;">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
@@ -430,7 +430,7 @@
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
-                        <p ng-show="fansCount==0">暂无粉丝</p>
+                        <p ng-show="fansCount==0" style="text-align: center;margin-top: 40px;">暂无粉丝</p>
                         <div class="col-md-12 fans-row" ng-repeat="x in fansList">
                             <img ng-src="{{x.userinfo.portrait || getImageUrl('wiki_default_profile.jpg',imgsPath)}}" alt="">
                             <div class="intro">
