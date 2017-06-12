@@ -135,15 +135,13 @@ define([
                 "username": userinfo.username,
                 "name": "tutorial",
                 "displayName": "新手教程",
-                "dataSourceId": userinfo.dataSourceId,
                 "categoryName": "个人站点",
                 "templateName": "教学模板",
                 "styleName": "默认样式",
             }, function (siteinfo) {
-                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                userDataSource.registerInitFinishCallback(function () {
-                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
-                    //console.log(currentDataSource, siteinfo);
+				var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+				//console.log(siteinfo, dataSourceInst);
+                dataSourceInst.init(siteinfo.dataSource, function () {
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var tutorialPageList = [
                         {
@@ -157,7 +155,7 @@ define([
                         fnList.push((function (index) {
                             return function (cb, errcb) {
                                 require([tutorialPageList[index].contentUrl], function (content) {
-                                    currentDataSource.writeFile({
+                                    dataSourceInst.writeFile({
                                         path: tutorialPageList[index].pagepath,
                                         content: content
                                     }, cb, errcb);
@@ -169,7 +167,7 @@ define([
                     }
 
                     util.sequenceRun(fnList, undefined, cb, cb);
-                });
+                }, errcb);
             }, errcb);
         }
 

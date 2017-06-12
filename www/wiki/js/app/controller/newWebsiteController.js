@@ -29,7 +29,7 @@ define([
             config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
                 var defaultDataSource = dataSource.getDataSource(siteinfo.username);
-				var dataSourceInst = dataSource.getDataSourceInstance();
+				var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
                 var callback = function () {
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var contentUrlPrefix = "text!html/";

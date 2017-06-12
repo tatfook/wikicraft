@@ -93,7 +93,7 @@ end
 
 -- 创建站点
 function website:api_upsert(params) 
-	if (not params.userId) or (not params.username) or (not params.name) or (not params.dataSourceId) then
+	if (not params.userId) or (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	

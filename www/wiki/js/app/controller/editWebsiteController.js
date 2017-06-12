@@ -118,6 +118,18 @@ define([
 				$scope.groups = data;	
 			});
 		}
+		
+		$scope.deleteGroup = function(group) {
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+			if (!siteDataSource) {
+				return;
+			}
+			if (!group || !group.id) {
+				return
+			}
+
+
+		}
         $scope.createGroup = function () {
 			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			if (!siteDataSource) {
