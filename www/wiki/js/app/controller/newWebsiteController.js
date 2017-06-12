@@ -68,7 +68,7 @@ define([
 				if (siteinfo.dataSource) {
 					dataSourceInst.init(siteinfo.dataSource, function() {
 						defaultDataSource = dataSourceInst;
-						callback():
+						callback();
 					}, errcb);
 				} else {
 					callback();

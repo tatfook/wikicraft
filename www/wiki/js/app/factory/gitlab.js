@@ -97,7 +97,7 @@ define([
 			
 			self.httpRequest("GET", url, {owned:true, isFetchAll:true, search:params.search}, function(data){
 				for (var i = 0; i < (data || []).length; i++) {
-					data[i].name = data[i].name.substring((self.username+'_').length);
+					data[i].name = data[i].name.substring((self.username+'_group_').length);
 				}
 				cb && cb(data);
 			}, function(){
@@ -127,11 +127,12 @@ define([
 			//}, errcb);
 		//}
 		// update group
-		gitlab.createGroup = function(params, cb, errcb) {
+		gitlab.upsertGroup = function(params, cb, errcb) {
 			var self = this;
 			var url = '/groups'; 
 			var method = "POST";
-
+			params.path = self.username + "_group_"  + params.name;
+			params.name = params.path;
 			if (params.id) {
 				method = "PUT";
 				url += "/" + params.id;

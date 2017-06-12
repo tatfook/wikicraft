@@ -15,8 +15,9 @@ define([
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
         $scope.domainList=[];
         $scope.groupUser="";
-        $scope.nowGroup={"groupName":"","userList":[]};//当前编辑的分组
-        $scope.groups=[{"groupName":"全体","userList":["username","username1","username2"]}];
+        $scope.nowGroup={"name":"","userList":[]};//当前编辑的分组
+        $scope.groups= []; // [{"name":"全体","userList":["username","username1","username2"]}];
+		$scope.groupUser = {};
         $scope.groupAuths =[{"groupName":"全体","auth":"浏览"}];
         $scope.authorities=["浏览","编辑","拒绝"];
         var innerGitlab = undefined;
@@ -26,9 +27,6 @@ define([
         //console.log(siteinfo);
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
-
-        $scope.dataSourceId = $scope.website.dataSourceId && $scope.website.dataSourceId.toString();
-        $scope.dataSourceList = $scope.user.dataSource;
 
         $scope.changeDataSource = function () {
             $scope.website.dataSourceId = parseInt($scope.dataSourceId);
@@ -106,15 +104,64 @@ define([
             sendModifyWebsiteRequest();
         }
 
+		function initGroup() {
+			getGroupList();
+		}
+
+		function getGroupList() {
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+			if (!siteDataSource) {
+				return;
+			}
+			
+			siteDataSource.getGroupList({owned:true}, function(data){
+				$scope.groups = data;	
+			});
+		}
         $scope.createGroup = function () {
-            $scope.groups.push($scope.nowGroup);
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+			if (!siteDataSource) {
+				return;
+			}
+			var group = $scope.nowGroup;
+
+			siteDataSource.upsertGroup({name:group.name, request_access_enabled:true}, function(data){
+				$scope.groups.push($scope.nowGroup);
+				console.log(data);
+			}, function(){
+
+			});
             console.log("写入数据库");
             $scope.nowGroup={"groupName":"","userList":[]};
         }
 
         $scope.addUser = function () {
-            //判断该用户是否存在
-            //用户若存在，添加
+			var group = $scope.nowGroup;
+			var groupUser = $scope.groupUser;
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+
+			if (!siteDataSource || !group.id || !groupUser.name) {
+				return;
+			}
+
+			util.post(config.apiUrlPrefix + 'dataSource/get', {username:groupUser.name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
+				if (!dataSourceUser) {
+					console.log("数据源用户不存在");
+					return;
+				}
+
+				var params = {
+					id:group.id,
+					user_id:dataSourceUser.dataSourceUserId,
+					access_level:30,
+				}
+				siteDataSource.upsertGroupMember(params, function(){
+					
+				}, function(){
+
+				});
+			});
+
             if (true){
                 $scope.nowGroup.userList.push($scope.groupUser);
             }else{//用户不存在，报错
@@ -161,7 +208,9 @@ define([
             return canvas;
         }
 
+		
         function init() {
+			initGroup();
             util.post(config.apiUrlPrefix + "website_domain/getByWebsiteId", {websiteId:$scope.website._id}, function (data) {
                $scope.domainList = data;
                for (var i = 0; i < data.length; i++) {

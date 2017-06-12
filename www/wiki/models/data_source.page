@@ -351,8 +351,24 @@ function data_source:api_githubWebhook(params)
 	return
 end
 
+-- 获得记录
+function data_source:api_get(params)
+	local key = ""
+	local value = {}
 
+	if params.username then
+		key = key .. "+username"
+		value[#value+1] = params.username
+	end
+	
+	if params.apiBaseUrl then
+		key = key .. "+apiBaseUrl"
+		value[#value+1] = params.apiBaseUrl
+	end
 
+	self:db():find({[key]=value}, resume)
 
+	return errors:wrap(yield())
+end
 
 

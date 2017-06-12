@@ -302,7 +302,7 @@
                                     <label class="col-sm-2 control-label">分组成员：</label>
                                     <div class="col-sm-5">
                                         <div class="col-sm-8 add-cname">
-                                            <input type="text" class="form-control" ng-model="groupUser">
+                                            <input type="text" class="form-control" ng-model="groupUser.name">
                                         </div>
                                         <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addUser()">添加</div>
                                         <div class="col-sm-12 labels-box">
@@ -328,7 +328,7 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="group in groups">
-                                    <td><a ng-click="" class="text-primary">{{group.groupName}}</a></td><!--分组名-->
+                                    <td><a ng-click="" class="text-primary">{{group.name}}</a></td><!--分组名-->
                                     <td><span ng-repeat="user in group.userList">{{user}}、</span></td><!--成员-->
                                     <td>
                                         <a ng-click="editGroup(group,false)">编辑</a>
