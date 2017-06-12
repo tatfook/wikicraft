@@ -139,9 +139,10 @@ define([
                 "templateName": "教学模板",
                 "styleName": "默认样式",
             }, function (siteinfo) {
-				var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
-				//console.log(siteinfo, dataSourceInst);
-                dataSourceInst.init(siteinfo.dataSource, function () {
+				//var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+                userDataSource.registerInitFinishCallback(function() {
+					var dataSourceInst = userDataSource.getDataSourceBySitename(siteinfo.name);
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var tutorialPageList = [
                         {
@@ -167,7 +168,7 @@ define([
                     }
 
                     util.sequenceRun(fnList, undefined, cb, cb);
-                }, errcb);
+                });
             }, errcb);
         }
 

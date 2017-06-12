@@ -126,6 +126,7 @@ function website:api_upsert(params)
 		siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
 	end
 	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
+	LOG.std(nil, "error", "keepwork", site.dataSource)
 
 	-- 设置站点管理员
 	local websiteMemberDB = models.website_member:new()

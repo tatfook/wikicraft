@@ -481,7 +481,11 @@ define([
 				if (!project) {
 					self.httpRequest(method, url, data, function (project) {
 						//console.log(project);
-						successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
+						if (project) {
+							successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
+						} else {
+							cb && cb();
+						}
 						//self.getLastCommitId(cb, errcb);
 					}, errcb);
 				} else if (project.visibility != visibility) {

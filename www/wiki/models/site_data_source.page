@@ -71,6 +71,8 @@ function site_data_source:api_getDefaultSiteDataSource(params)
 		siteDataSource = self:api_createDefaultSiteDataSource(params).data
 	end
 
+	self:copyDataSourceToSite(siteDataSource, nil)
+	-- LOG.std(nil, "error", "keepwork", siteDataSource)
 	return errors:wrap(nil, siteDataSource)
 end
 
@@ -81,16 +83,18 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 	end
 
 	local dataSourceDB = models.data_source:new()
-	local ds = dataSourceDB:api_createInnerGitlab({username=params.username}).data
+	local dataSource = dataSourceDB:api_createInnerGitlab({username=params.username}).data
 	
-	if not ds then
+	if not dataSource then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
+
+	LOG.std(nil,"error", "keepwork", dataSource)
 
 	local siteDataSource = {
 		username=params.username,
 		sitename=defaultSitename,
-		dataSourceName=ds.name,
+		dataSourceName=dataSource.name,
 		projectName=defaultProjectName,
 		rootPath="",
 		lastCommitId="master", 
@@ -103,7 +107,9 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:copyDataSourceToSite(siteDataSource, ds)
+	self:copyDataSourceToSite(siteDataSource, dataSource)
+	LOG.std(nil, "error", "keepwork", siteDataSource)
+
 	return errors:wrap(nil, siteDataSource)
 end
 
