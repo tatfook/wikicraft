@@ -333,14 +333,11 @@ define([
             $scope.enableTransform = true;
             $scaleValue = "";
             $scope.scales = [
-                {"id":0,"showValue": "25%", "scaleValue": "0.25"},
+                {"id":0,"showValue": "45%", "scaleValue": "0.25"},
                 {"id":1,"showValue": "50%", "scaleValue": "0.5"},
                 {"id":2,"showValue": "75%", "scaleValue": "0.75"},
                 {"id":3,"showValue": "100%", "scaleValue": "1"},
-                {"id":4,"showValue": "125%", "scaleValue": "1.25"},
-                {"id":5,"showValue": "150%", "scaleValue": "1.5"},
-                {"id":6,"showValue": "200%", "scaleValue": "2"},
-                {"id":7,"showValue": "实际大小", "scaleValue": "1", "special":true}
+                {"id":4,"showValue": "实际大小", "scaleValue": "1", "special":true}
             ];
             $scope.showFile=true;
             $scope.showCode=true;
@@ -1852,24 +1849,52 @@ define([
                 editor.focus();
                 setEditorHeight();
 
-                function getScaleSize() {
-                    var winWidth = $(window).width();
-                    $(".result-html").css("width", winWidth + "px");
-                    var boxWidth = $("#preview").width();                                                              //30为#preview的padding宽度
-                    var scaleSize = (boxWidth >= winWidth) ? 1 : (boxWidth / winWidth);
-                    if($scope.scales[$scope.scales.length-1].showValue!="适合宽度"){
-                        $scope.scales.push({
-                            "id":$scope.scales.length,
-                            "showValue":"适合宽度",
-                            "scaleValue":scaleSize,
-                            "special":true
-                        });
+                //previewWidth>=1200  =>  result-width=previewWidth
+                //previewWidth<1200    =>  result-width=min(1200,winWidth)
+                function getResultSize(winWidth,boxWidth) {
+                    if(boxWidth<1200){
+                        var resultSize=(winWidth>1200)? 1200 : winWidth;
                     }
 
+                    return resultSize? resultSize:boxWidth;
+                }
+
+                function resizeResult(resultWidth) {
+                    if(resultWidth){
+                        $(".result-html").css("width", resultWidth + "px");
+                    }
+                }
+
+                function getScaleSize(scroll) {
+                    var winWidth = $(window).width();
+                    var boxWidth = $("#preview").width();//30为#preview的padding宽度
+                    var resultWidth=getResultSize(winWidth,boxWidth);
+                    var scaleSize = boxWidth / resultWidth;
+
+                    if(!scroll || scroll!="scroll"){
+                        resizeResult(resultWidth);//设置result-html宽度
+
+                        var len=$scope.scales.length-1;
+                        if(!$scope.scales[len].resultWidth || $scope.scales[len].resultWidth != winWidth){//设置实际大小的result-html的宽度为浏览器窗口大小宽度
+                            $scope.scales[len].resultWidth = winWidth;
+                        }
+                        if($scope.scales[len].showValue!="适合宽度"){
+                            $scope.scales.push({
+                                "id":$scope.scales.length,
+                                "showValue":"适合宽度",
+                                "scaleValue":scaleSize,
+                                "special":true,
+                                "resultWidth":resultWidth
+                            });
+                        }
+                    }
                     return scaleSize;
                 }
 
-                function resizeMod(val) {
+                function resizeMod(val,scaleItem) {
+                    if (scaleItem && scaleItem.resultWidth){
+                        resizeResult(scaleItem.resultWidth);
+                    }
                     var scaleSize = val || getScaleSize();
                     $('#' + mdwiki.getMdWikiContainerId()).css({
                         "transform": "scale(" + scaleSize + ")",
@@ -1888,9 +1913,9 @@ define([
                 }
 
                 // 下拉框选择比例
-                $scope.changeScale = function (val) {
+                $scope.changeScale = function (scaleItem) {
                     $scope.enableTransform = false;
-                    resizeMod(val);
+                    resizeMod(scaleItem.scaleValue,scaleItem);
                 }
 
                 // 特殊情况（实际大小、适应宽度）查找比例
@@ -2121,7 +2146,7 @@ define([
                         return;
                     scrollTimer && clearTimeout(scrollTimer);
                     scrollTimer = setTimeout(function () {
-                        var scaleSize = getScaleSize();
+                        var scaleSize = getScaleSize("scroll");
                         var initHegiht = editor.getScrollInfo().top + editor.heightAtLine(0);
                         var index = 0;
                         var block;
@@ -2149,7 +2174,7 @@ define([
                             return;
                         scrollTimer && clearTimeout(scrollTimer);
                         scrollTimer = setTimeout(function () {
-                            var scaleSize = getScaleSize();
+                            var scaleSize = getScaleSize("scroll");
                             var initHeight = editor.getScrollInfo().top + editor.heightAtLine(0);
                             var index = 0;
                             var block;

@@ -155,7 +155,7 @@
                             <div class="btn btn-default btn-sm"  ng-click="enlarge()" title="放大" ng-disabled="forbidEnlarge">
                                 <img ng-src="{{imgsPath+'icon/wiki_enlarge.png'}}" alt="">
                             </div>
-                            <select ng-init="scaleSelect = scales[0]" ng-model="scaleSelect" ng-options="scales.showValue for scales in scales" ng-change="changeScale(scaleSelect.scaleValue)" class="form-control resize-view">
+                            <select ng-init="scaleSelect = scales[0]" ng-model="scaleSelect" ng-options="scales.showValue for scales in scales" ng-change="changeScale(scaleSelect)" class="form-control resize-view">
                             </select>
                         </div>
                     </div>
@@ -182,7 +182,7 @@
                             <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
                             <div class="border"></div>
                         </div>
-                        <section id="preview" class="col-xs-6 full-height" style="max-height: 100%; overflow-y: auto;overflow-x: hidden;padding: 0;">
+                        <section id="preview" class="col-xs-6 full-height" style="max-height: 100%; height: 100%;overflow-y: auto;overflow-x: auto;padding: 0;">
                             <div class="result-html full-height"></div>
                             <pre class="hljs result-src full-height"><code class="result-src-content full-height"></code></pre>
                             <pre class="hljs result-debug full-height"><code class="result-debug-content full-height"></code></pre>
