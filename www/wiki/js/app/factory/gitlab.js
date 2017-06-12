@@ -138,7 +138,10 @@ define([
 				url += "/" + params.id;
 			}
 
-			self.httpRequest(method, url, params, cb, errcb)
+			self.httpRequest(method, url, params, function(data){
+				data.name = data.name.substring((self.username+'_group_').length);
+				cb && cb(data);
+			}, errcb)
 		}
 		// delete group
 		gitlab.deleteGroup = function(params, cb, errcb) {

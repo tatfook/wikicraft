@@ -22,6 +22,7 @@ define([
         $scope.authorities=["浏览","编辑","拒绝"];
         var innerGitlab = undefined;
 
+		var siteDataSource = undefined;
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
         var currentDomain = siteinfo.domain;
         //console.log(siteinfo);
@@ -105,6 +106,7 @@ define([
         }
 
 		function initGroup() {
+			siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			getGroupList();
 		}
 
@@ -116,6 +118,7 @@ define([
 			
 			siteDataSource.getGroupList({owned:true}, function(data){
 				$scope.groups = data;	
+				//console.log($scope.groups);
 			});
 		}
 		
@@ -128,23 +131,22 @@ define([
 				return
 			}
 
-
+			group.isDelete = true;
+			siteDataSource.deleteGroup({id:group.id});
 		}
+
         $scope.createGroup = function () {
-			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			if (!siteDataSource) {
 				return;
 			}
 			var group = $scope.nowGroup;
 
 			siteDataSource.upsertGroup({name:group.name, request_access_enabled:true}, function(data){
-				$scope.groups.push($scope.nowGroup);
+				$scope.groups.push(data);
 				console.log(data);
 			}, function(){
 
 			});
-            console.log("写入数据库");
-            $scope.nowGroup={"groupName":"","userList":[]};
         }
 
         $scope.addUser = function () {
@@ -156,7 +158,7 @@ define([
 				return;
 			}
 
-			util.post(config.apiUrlPrefix + 'dataSource/get', {username:groupUser.name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
+			util.post(config.apiUrlPrefix + 'data_source/get', {username:groupUser.name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
 				if (!dataSourceUser) {
 					console.log("数据源用户不存在");
 					return;
@@ -167,27 +169,22 @@ define([
 					user_id:dataSourceUser.dataSourceUserId,
 					access_level:30,
 				}
+				groupUser.user_id = params.user_id;
 				siteDataSource.upsertGroupMember(params, function(){
-					
+					group = group || [];
+					$scope.nowGroup.userList.push(groupUser);
 				}, function(){
 
 				});
 			});
-
-            if (true){
-                $scope.nowGroup.userList.push($scope.groupUser);
-            }else{//用户不存在，报错
-
-            }
-            $scope.groupUser="";
-            console.log($scope.nowGroup.userList);
         }
 
-        $scope.removeUser = function (username) {
-            var index=$scope.nowGroup.userList.indexOf(username);
-            if(index>=0){
-                $scope.nowGroup.userList.splice(index,1);
-            }
+        $scope.removeUser = function (groupUser) {
+			if (!siteDataSource) {
+				return;
+			}
+			siteDataSource.deleteGroupMember(groupUser);
+			groupUser.isDelete = true;
         }
         
         $scope.editGroup = function (group,finish) {
