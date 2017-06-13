@@ -45,7 +45,6 @@
         padding-top:30px;
     }
     .org-team .member-item{
-        flex:1;
         display: flex;
         flex-direction: column;
         padding:0 10px;
@@ -145,13 +144,11 @@
             <h1>{{modParams.title || "评委成员"}}</h1>
             <div class="team">
                 <div class="navigation">
-                    <a>1</a>
-                    <a>2</a>
-                    <a>3</a>
-                    <a>>></a>
+                    <a ng-repeat="page in modParams.paging" ng-click="modParams.changePage(page)">{{page}}</a>
+                    <a ng-click="modParams.changePage(modParams.nowPage+1)" ng-disabled="modParams.nowPage==modParams.paging.length" class="btn">>></a>
                 </div>
                 <div class="members">
-                    <div class="member-item" ng-repeat="member in modParams.memberList">
+                    <div class="member-item" ng-repeat="member in modParams.memberList | limitTo:modParams.step:((modParams.nowPage-1)*modParams.step)">
                         <img ng-src="{{member.userLogo || imgsPath+'game_userProfile.jpg'}}" style="width: 103px; height: 103px;" alt="">
                         <p>{{member.username}}<span class="info pull-right">{{member.roleName || "成员"}}</span></p>
                     </div>

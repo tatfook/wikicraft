@@ -20,6 +20,7 @@ define([
             var modParams = getModParams(wikiblock);
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
+            $scope.start=0;
             $scope.modParams=modParams;
 
             // 初始化信息
@@ -58,6 +59,28 @@ define([
                     });
                 }
             });
+
+            if($scope.modParams.moduleKind=="gameDemo"){
+                $scope.modParams.nowPage=1;
+                $scope.modParams.step=8;
+                $scope.modParams.paging=getPaging($scope.modParams.step,$scope.modParams.memberList.length);
+
+                $scope.modParams.changePage=function (page) {
+                    if(page <= $scope.modParams.paging.length){
+                        $scope.modParams.nowPage=page;
+                    }
+                }
+            }
+
+            function getPaging (step,objLen) {
+                var result=[];
+                var index=1;
+                while(index<=(Math.ceil(objLen/step))){
+                    result.push(index);
+                    index++;
+                }
+                return result;
+            }
         }]);
     }
 
@@ -70,7 +93,7 @@ define([
 })
 
 /*
- ```@wiki/js/organizationMemberList
+ ```@wiki/js/siteMemberList
  {
     "username": "xiaoyao",
     "sitename": "xiaoyao"
@@ -78,27 +101,70 @@ define([
  ```
  */
 /*
-```@wiki/js/organizationMemberList
+ ```@wiki/js/siteMemberList
  {
-    "moduleKind":"gameDemo",
-    "title":"评委成员",
-    "memberList":[
-        {
-            "imgUrl":"",
-            "username":"用户名",
-            "level":"创建者"
-        },
-        {
-             "imgUrl":"",
-             "username":"用户名",
-             "level":"创建者"
-        },
-        {
-             "imgUrl":"",
-             "username":"用户名",
-             "level":"创建者"
-        }
-    ]
+ "moduleKind":"game",
+ "title":"比赛评委成员"
  }
-```
+ ```
+ */
+/*
+ ```@wiki/js/siteMemberList
+ {
+ "moduleKind":"gameDemo",
+ "title":"评委成员（手动配置）",
+ "memberList":[
+ {
+ "imgUrl":"",
+ "username":"用户名1",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名2",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名3",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名4",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名5",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名6",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名7",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名8",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名9",
+ "roleName":"创建者"
+ },
+ {
+ "imgUrl":"",
+ "username":"用户名10",
+ "roleName":"成员"
+ }
+ ]
+ }
+ ```
  */
