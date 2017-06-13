@@ -307,8 +307,8 @@
                                         <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addUser()">添加</div>
                                         <div class="col-sm-12 labels-box">
                                             <div ng-show="!x.isDelete" ng-repeat="x in nowGroup.userList" class="label-selected">
-                                                <span>{{x}} </span>
-                                                <span class="glyphicon glyphicon-remove text-danger" ng-click="removeUser(x)" data-removeid="{{x}}"></span>
+                                                <span>{{x.name}} </span>
+                                                <span class="glyphicon glyphicon-remove text-danger" ng-click="removeUser(nowGroup, x)" data-removeid="{{x}}"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -329,7 +329,7 @@
                                 <tbody>
 								<tr ng-repeat="group in groups" ng-hide="group.isDelete">
                                     <td><a ng-click="" class="text-primary">{{group.name}}</a></td><!--分组名-->
-                                    <td><span ng-repeat="user in group.userList">{{user}}、</span></td><!--成员-->
+                                    <td><span ng-repeat="user in group.userList" ng-hide="user.isDelete">{{user.name}}、</span></td><!--成员-->
                                     <td>
                                         <a ng-click="editGroup(group,false)">编辑</a>
                                         <a ng-click="deleteGroup(group)">删除</a>
@@ -346,21 +346,19 @@
                                 <div class="form-group form-group-lg">
                                     <label class="col-sm-2 control-label">选择分组：</label>
                                     <div class="col-sm-5">
-                                        <select class="form-control" ng-model="selectGroup">
-                                            <option ng-repeat="x in groups" value="{{x.groupName}}">{{x.groupName || '暂未设置分组'}}</option>
+                                        <select class="form-control" ng-model="selectGroup" ng-options="x.name for x in groups">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group form-group-lg">
                                     <label class="col-sm-2 control-label">选择权限：</label>
                                     <div class="col-sm-5">
-                                        <select class="form-control" ng-model="selectGroup">
-                                            <option ng-repeat="x in authorities" value="{{x}}">{{x || '暂未设置权限'}}</option>
+                                        <select class="form-control" ng-model="selectLevel" ng-options="x.name for x in authorities">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-12 save-setting">
-                                    <button class="btn btn-primary save-btn" ng-click="createAuthority()">添加</button>
+                                    <button class="btn btn-primary save-btn" ng-click="createShareGroup(selectGroup, selectLevel)">添加</button>
                                 </div>
                             </form>
                             <table class="table table-hover table-bordered">
@@ -372,11 +370,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="group in groupAuths">
-                                    <td><a ng-click="" class="text-primary">{{group.groupName}}</a></td><!--分组名-->
-                                    <td>{{group.auth}}</td><!--成员-->
+                                <tr ng-repeat="group in groupAuths" ng-hide="group.isDelete">
+                                    <td><a ng-click="" class="text-primary">{{group.groupname}}</a></td><!--分组名-->
+                                    <td>{{group.dataSourceLevelName}}</td><!--成员-->
                                     <td>
-                                        <a ng-click="editGroup(group,false)">删除</a>
+                                        <a ng-click="deleteShareGroup(group)">删除</a>
                                     </td><!--操作-->
                                 </tr>
                                 </tbody>

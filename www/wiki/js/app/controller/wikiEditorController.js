@@ -511,6 +511,9 @@ define([
 
 				//console.log(otherUsername);
 
+				var callback = function() {
+
+				}
                 // 获取自己用户信息
                 fnList.push(function (finish) {
                    Account.getUser(function (userinfo) {
@@ -533,6 +536,18 @@ define([
                 util.batchRun(fnList, function () {
                     $rootScope.userinfo = otherUserinfo || $scope.user;
                     if (otherUserinfo && otherUserinfo.dataSource && (!$scope.user || $scope.user.username != otherUserinfo.username)) {
+						if ($scope.user) {
+							for (var i=0; i < otherUserinfo.dataSource.length; i++) {
+								var ds1 = otherUserinfo.dataSource[i];
+								for (var j = 0; j < $scope.user.dataSource.length; j++) {
+									var ds2 = $scope.user.dataSource[j];
+									if (ds1.apiBaseUrl == ds2.apiBaseUrl) {
+										ds1.dataSourceToken = ds2.dataSourceToken;
+										ds1.isInited = true;
+									}
+								}
+							} 
+						}
                         var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
                         userDataSource.init(otherUserinfo.dataSource, otherUserinfo.defaultDataSourceSitename);
                     }
@@ -562,7 +577,7 @@ define([
             function savePageContent(cb, errcb) {
                 //console.log(currentPage);
                 // 不能修改别人页面
-                if (!isUserExist() || isEmptyObject(currentPage) || !currentPage.isModify || currentPage.username != $scope.user.username) {
+                if (!isUserExist() || isEmptyObject(currentPage) || !currentPage.isModify) {
                     cb && cb();
                     return;
                 }
@@ -581,6 +596,7 @@ define([
                     page.content = content;
                     page.isModify = false;
                     storage.indexedDBSetItem(config.pageStoreName, page);
+					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url);
                     console.log("---------save success-------");
                     cb && cb();
@@ -1082,12 +1098,6 @@ define([
 
             //保存页面
             $scope.cmd_savepage = function (cb, errcb) {
-                console.log(currentPage);
-				if (!isSelfPage()) {
-					cb && cb();
-					//Message.info("不能保存它人页面");
-					return ;
-				}
                 if (!isEmptyObject(currentPage)) {//修改
                     var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
                     savePageContent(function () {
@@ -2160,7 +2170,9 @@ define([
                                 break;
                         }
                         block = blockList[index];
-                        $('#preview').scrollTop($('#' + block.blockCache.containerId)[0].offsetTop * scaleSize);
+						if ($('#' + block.blockCache.containerId)[0]) {
+							$('#preview').scrollTop($('#' + block.blockCache.containerId)[0].offsetTop * scaleSize);
+						}
                     }, 100);
                 });
 

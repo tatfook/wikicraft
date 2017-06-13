@@ -53,7 +53,7 @@ define([
                 if (headers["x-next-page"] && data.isFetchAll) {
                     data.page = parseInt(headers["x-next-page"]);
                     result = (result || []).concat(response.data);
-                    console.log(result);
+                    //console.log(result);
                     $http(config).then(success).catch(failed);
                 } else {
                     result = result ? (result.concat(response.data)) : response.data;
@@ -79,13 +79,13 @@ define([
 
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {};
-			var authStr = this.dataSource == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
             return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/raw/' + (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {};
-			var authStr = this.dataSource == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
             return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/blob/'+ (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
@@ -156,19 +156,30 @@ define([
 			var url = '/groups/' + params.id + '/members';
 			
 			self.httpRequest("GET", url, params, function(data){
+				for (var i = 0; i < (data || []).length; i++) {
+					var user = data[i];
+					if (user.username == self.username) {
+						user.isDelete = true;
+					}
+					user.name = user.name.substring(user.name.lastIndexOf('_')+1);
+				}
 				cb && cb(data);
 			}, errcb);
 		}
 		// create group member
-		gitlab.upsertGroupMember = function(params, cb, errcb) {
+		gitlab.createGroupMember = function(params, cb, errcb) {
 			var self = this;
 			var url = '/groups/' + params.id + '/members';
 			var method = "POST";
 
-			if (params.user_id) {
-				method = "PUT";
-				url += "/" + params.user_id;
-			}
+			self.httpRequest(method, url, params, cb, errcb);
+		}
+		// update group member
+		gitlab.updateGroupMember = function(params, cb, errcb) {
+			var self = this;
+			var url = '/groups/' + params.id + '/members/' + params.user_id;
+			var method = "PUT";
+
 			self.httpRequest(method, url, params, cb, errcb);
 		}
 		// delete group member
@@ -179,11 +190,24 @@ define([
 			self.httpRequest(method, url, params, cb, errcb);
 		}
 		// add group to project
+		// {id: group_id, group_access}
 		gitlab.addProjectGroup = function(params, cb, errcb) {
-			self.httpRequest("POST", "/projects/" + this.projectId + "/share", params, cb, errcb);
+			this.httpRequest("POST", "/projects/" + this.projectId + "/share", params, cb, errcb);
 		}
+		// {group_id, }
 		gitlab.deleteProjectGroup = function(params, cb, errcb) {
-			self.httpRequest("DELETE","/projects/" + this.projectId + "/share/" + params.groupId, params, cb, errcb);
+			this.httpRequest("DELETE","/projects/" + this.projectId + "/share/" + params.group_id, params, cb, errcb);
+		}
+		gitlab.getProjectGroupList = function(params, cb, errcb) {
+			var self = this;
+			this.httpRequest("GET", "/projects/" + this.projectId, {}, function(data){
+				var groupList = data.shared_with_groups || [];
+				for (var i = 0; i < groupList.length; i++) {
+					var group = groupList[i];
+					group.group_name = group.group_name.substring((self.username+'_group_').length);
+				}
+				cb && cb(groupList);
+			});
 		}
         // 获得文件列表
         gitlab.getTree = function (params, cb, errcb) {
@@ -296,7 +320,8 @@ define([
 					//headers:self.httpHeader,
                     skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
 				}).then(function (response) {
-					storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
+					//storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
+					storage.sessionStorageSetItem(url, response.data);
                     cb && cb(response.data);
                 }).catch(function (response) {
                     errcb && errcb(response);
@@ -304,18 +329,24 @@ define([
             }
             // _getRawContent();
             // return;
-            storage.indexedDBGetItem(config.pageStoreName, url, function (page) {
-                //console.log(page, url);
-                if (page) {
-                    cb && cb(page.content);
-                } else {
-                    _getRawContent();
-                    //gitlab.getContent(params, cb, errcb);
-                }
-            }, function () {
-                _getRawContent();
-                //gitlab.getContent(params, cb, errcb);
-            });
+			var content = storage.sessionStorageGetItem(url);
+			if (!content) {
+				_getRawContent();
+			} else {
+				cb && cb(content);
+			}
+            //storage.indexedDBGetItem(config.pageStoreName, url, function (page) {
+                ////console.log(page, url);
+                //if (page) {
+                    //cb && cb(page.content);
+                //} else {
+                    //_getRawContent();
+                    ////gitlab.getContent(params, cb, errcb);
+                //}
+            //}, function () {
+                //_getRawContent();
+                ////gitlab.getContent(params, cb, errcb);
+            //});
         }
 
         // 删除文件
@@ -390,6 +421,11 @@ define([
                 errcb && errcb();
                 return;
             }
+			
+			if (dataSource.isInited) {
+				cb && cb();
+				return;
+			}
 
 			self.setDefaultProject({projectName:self.projectName, visibility:self.visibility}, function() {
 				self.inited = true;
@@ -458,6 +494,7 @@ define([
 			}
 
 
+			//console.log(self.projectMap);
 			if (self.projectMap[projectName]) {
 				self.projectId = self.projectMap[projectName].projectId;
 				self.lastCommitId = self.projectMap[projectName].lastCommitId;

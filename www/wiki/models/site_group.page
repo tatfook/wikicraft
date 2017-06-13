@@ -16,12 +16,14 @@ function site_group:ctor()
 	self:addfield("username", "string")            -- 用户名  组的所属者
 	self:addfield("sitename", "string")            -- 站点名
 	self:addfield("groupname", "string")           -- 组名 
-	self:addfield("level", "number")            -- 权限级别
+	self:addfield("dataSourceGroupId")
+	self:addfield("dataSourceLevel", "number")               -- 权限级别
+	self:addfield("dataSourceLevelName", "string")           -- 级别名
 end
 
 -- 创建一个站点组
 function site_group:api_upsert(params)
-	if (not params.username) or (not params.sitename) or (params.groupname) then
+	if (not params.username) or (not params.sitename) or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
@@ -40,5 +42,17 @@ function site_group:api_deleteById(params)
 
 	self:db():deleteOne({_id=params._id}, resume)
 
+	return errors:wrap(yield())
+end
+
+
+-- 删除一个组
+function site_group:api_deleteByName(params)
+	if (not params.username) or (not params.sitename) or (not params.groupname) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, resume)
+	
 	return errors:wrap(yield())
 end

@@ -12,8 +12,10 @@ local group = inherit(models.abstract.base, gettable("models.group"))
 group.db_name = "group"
 
 function group:ctor()
-	self:addfield("groupname", "string")           -- 组名 
 	self:addfield("username", "string")            -- 用户名  组的所属者
+	self:addfield("groupname", "string")           -- 组名 
+	self:addfield("dataSourceGroupId", "number")   -- 数据源组id
+	self:addfield("dataSourceLevel", "number")     -- 数据源权限级别
 end
 
 -- 创建组

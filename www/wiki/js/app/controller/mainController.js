@@ -215,35 +215,56 @@ define([
                         $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
+						var callback = function() {
+							userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
+							userDataSource.registerInitFinishCallback(function () {
+								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
+								var renderContent = function (content) {
+									$rootScope.$broadcast('userpageLoaded',{});
+									content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
+									util.html('#__UserSitePageContent__', content, $scope);
+									config.loading.hideLoading();
+								};
+								if (config.isLocal()) {
+									currentDataSource.setLastCommitId("master");
+								}
 
-                        userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
-                        userDataSource.registerInitFinishCallback(function () {
-                            var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
-                            var renderContent = function (content) {
-                                $rootScope.$broadcast('userpageLoaded',{});
-                                content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
-                                util.html('#__UserSitePageContent__', content, $scope);
-                            };
-                            if (config.isLocal()) {
-                                currentDataSource.setLastCommitId("master");
-                            }
+								if (window.location.search && window.location.search.indexOf('branch=master') >= 0) {
+									currentDataSource.setLastCommitId('master');
+								}
 
-                            if (window.location.search && window.location.search.indexOf('branch=master') >= 0) {
-                                currentDataSource.setLastCommitId('master');
-                            }
-
-                            currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
-                                //console.log(data);
-								//console.log("otherUsername:", urlObj.username);
-								storage.sessionStorageSetItem("otherUsername", urlObj.username);
-                                renderContent(data);
-                            }, function () {
-                                renderContent();
-                            });
-                        });
+								currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
+									//console.log(data);
+									//console.log("otherUsername:", urlObj.username);
+									storage.sessionStorageSetItem("otherUsername", urlObj.username);
+									renderContent(data);
+								}, function () {
+									renderContent();
+								});
+							});
+						}
+						// 使用自己的token
+						if (Account.isAuthenticated()) {
+							Account.getUser(function(userinfo){
+								for (var i=0; i < data.userinfo.dataSource.length; i++) {
+									var ds1 = data.userinfo.dataSource[i];
+									for (var j = 0; j < userinfo.dataSource.length; j++) {
+										var ds2 = userinfo.dataSource[j];
+										if (ds1.apiBaseUrl == ds2.apiBaseUrl) {
+											ds1.dataSourceToken = ds2.dataSourceToken;
+											ds1.isInited = true;
+										}
+									}
+								} 
+								callback();
+							})
+						} else {
+							callback();
+						}
                     });
                 } else if (urlObj.username){
                     util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+					config.loading.hideLoading();
                 }
             }
 
@@ -280,6 +301,7 @@ define([
                 } else if(urlObj.username == 'wiki') {
                     renderHtmlText(urlObj.pathname, md);
                 } else {
+					config.loading.showLoading();
                     if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                         util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
                             if (data) {
