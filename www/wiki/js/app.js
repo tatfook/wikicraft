@@ -51,11 +51,13 @@ define([
             name: 'weixin',
             url: '/api/wiki/auth/weixin',
             clientId: 'wxc97e44ce7c18725e',
+            appid: 'wxc97e44ce7c18725e',
             //redirectUri: window.location.origin + '/api/wiki/auth/weixin',//window.location.origin,
             redirectUri: window.location.origin  +  '/wiki/login',
             authorizationEndpoint: 'https://open.weixin.qq.com/connect/qrconnect',
             oauthType: '2.0',
             scope:'snsapi_login',
+			requiredUrlParams: ['scope', "appid"],
         });
         // 新浪微博
         $authProvider.oauth2({
