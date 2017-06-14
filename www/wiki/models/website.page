@@ -60,35 +60,17 @@ function website:ctor()
 end
 
 -- 创建站点
-function website:create(params) 
-	if (not params.userId) or (not params.name) then 
+function website:api_create(params) 
+	if (not params.userId) or (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	-- 用户网站数量加1
-	local userDB = models.user:new()
-	local userinfo = userDB:api_getById({userId=params.userId}).data
-	if not userinfo then 
-		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	params.favoriteCount = 0
 	params.visitCount = 0
-	params.pageCount = 1
-	params.memberCount = 1
-	params.dataSourceId = userinfo.dataSourceId
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
-	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)	
-	local _, site = yield()
-	if not site then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
-	end
-	
-	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:api_upsert({websiteId=site._id, userId=userinfo._id, roleId=const.WEBSITE_USER_ROLE_ADMIN})
-
-	return errors:wrap(nil, site)
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)	
+	return errors:wrap(yield())
 end
 
 -- 创建站点
@@ -122,9 +104,7 @@ function website:api_upsert(params)
 	end
 	
 	local siteDataSourceDB = models.site_data_source:new()
-	if params.visibility == "private" then 
-		siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
-	end
+	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
 	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
 	LOG.std(nil, "error", "keepwork", site.dataSource)
 
@@ -148,20 +128,12 @@ function website:setPrivate(params)
 	end
 	
 	params.visibility = params.visibility or "public"
+
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:db():findOne({["+username+sitename"]={params.username, params.sitename}}, resume)
-	local _, siteDataSource = yield()
-	if (not siteDataSource) and (params.visibility == "public") then
-		LOG.std(nil,"error", "keepwork", "data errors")
-	elseif (not siteDataSource) and (params.visibility == "private") then
-		siteDataSourceDB:createSiteDataSource(params)
-	else
-		siteDataSourceDB:db():updateOne({_id=siteDataSource._id}, {visibility=params.visibility}, resume)	
-		yield()
-	end
+	siteDataSourceDB:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)	
+	yield()
 
 	self:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
-	
 	return errors:wrap(yield())
 end
 

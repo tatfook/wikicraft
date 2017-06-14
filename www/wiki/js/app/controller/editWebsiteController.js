@@ -134,7 +134,7 @@ define([
 						var group = data[index];
 						siteDataSource.getGroupMemberList(group, function(data){
 							group.userList = (group.userList || []).concat(data || []);
-							console.log($scope.groups);
+							//console.log($scope.groups);
 						});
 					})(i);
 				}

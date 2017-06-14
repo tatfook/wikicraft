@@ -4,19 +4,12 @@
 
 define([
     'jquery',
-], function ($,Loading) {
+], function ($) {
     var util = {
-        colorList:["rgb(145,185,114)","rgb(185,150,114)","rgb(185,114,178)","rgb(185,127,114)","rgb(114,185,160)","rgb(114,134,185)"],
         stack:[],   // 堆栈操作模拟
         id:0,       // ID产生器 局部唯一性
         lastUrlObj:{}, // 记录最近一次URL信息
     };
-    // 获取一个随机颜色
-    util.getRandomColor = function (index) {
-        index = index || 0;
-        index %= this.colorList.length;
-        return this.colorList[index];
-    }
 
     util.getId = function () {
         this.id = this.id > 1000000 ? 0 : this.id+1;

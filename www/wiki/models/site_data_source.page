@@ -272,7 +272,7 @@ function site_data_source:api_createSiteDataSource(params)
 	
 	params.dataSourceName = params.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME
 	params.projectName = params.projectName or (projectNamePrefix .. string.lower(params.sitename))
-	params.visibility = params.visibility or "private"
+	params.visibility = params.visibility or "public"
 	
 	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	local _, siteDataSource = yield()

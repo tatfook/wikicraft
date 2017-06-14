@@ -9,6 +9,11 @@ include_once("./abstract/base.page")
 
 local test = inherit(models.abstract.base, gettable("models.test"))
 local testDir = WIKI_ROOT .. "test/"
+
+function test:api_helloworld(params)
+	return "hello world"
+end
+ 
 -- 用户cdn测试api接口 返回一个自增id
 function test:api_get()
 	local testObj = KEEPWORK["mem_cache"]:get("test") or {}

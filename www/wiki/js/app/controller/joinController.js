@@ -130,7 +130,7 @@ define([
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {
-            util.post(config.apiUrlPrefix + 'website/upsert', {
+            util.post(config.apiUrlPrefix + 'website/create', {
                 "userId": userinfo._id,
                 "username": userinfo.username,
                 "name": "tutorial",
