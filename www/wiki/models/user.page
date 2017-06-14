@@ -522,11 +522,6 @@ function user:api_getProfile()
 	end
 
 	local siteDataSourceDB = models.site_data_source:new()
-	local siteDataSource = siteDataSourceDB:api_getDefaultSiteDataSource({username=data.username}).data
-	if siteDataSource then
-		data.dataSourceId = siteDataSource._id
-	end
-
 	data.dataSource = siteDataSourceDB:api_getByUsername({username=data.username}).data
 
 	return errors:wrap(nil, data)
