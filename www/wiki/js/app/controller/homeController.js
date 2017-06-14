@@ -33,11 +33,11 @@ define([
                 $scope.wikicraft = data || {};
             });
             
-            util.http("POST", config.apiUrlPrefix + 'website/getFavoriteSortList', {page:1, pageSize:4}, function (data) {
+            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount'}, function (data) {
                 $scope.siteObj = data;
             });
 
-            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount', filterType:'personal'}, function (data) {
+            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount'}, function (data) {
                 $scope.personalSiteObj = data;
             });
 

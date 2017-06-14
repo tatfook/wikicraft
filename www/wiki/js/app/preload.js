@@ -23,6 +23,7 @@ define([
     'factory/github',
     'factory/gitlab',
     'factory/modal',
+    'factory/confirmDialog',
 
     // helper
     'helper/util',

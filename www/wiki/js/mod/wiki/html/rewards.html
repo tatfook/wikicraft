@@ -1,0 +1,52 @@
+<style>
+    .game-rewards{
+        margin-bottom: 40px;
+    }
+    .game-rewards h1{
+        font-size: 36px;
+        position: relative;
+        padding-bottom: 30px;
+        margin-bottom: 20px;
+        font-weight: normal;
+    }
+    .game-rewards h1:before{
+        content: '';
+        width: 50px;
+        height: 1px;
+        background-color: #000;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+    .game-rewards .rewards-container{
+        margin: 0 -15px;
+        text-align: center;
+    }
+    .game-rewards h2 {
+        font-size: 30px;
+        color: #FF7B7B;
+    }
+    .game-rewards h2 span{
+        font-size: 18px;
+    }
+    .game-rewards .reward img{
+        width: 100%;
+        height: auto;
+    }
+    .game-rewards p.info{
+        font-size: 14px;
+        color: #999;
+    }
+</style>
+<div ng-controller="rewardsController">
+    <div class="game-rewards container" ng-show="modParams.moduleKind=='game'">
+        <h1 class="title">{{modParams.title}}</h1>
+        <div class="rewards-container">
+            <div class="reward col-md-3 col-xs-12" ng-repeat="reward in modParams.rewards">
+                <h2>{{reward.title}} <span>{{reward.num}}</span> </h2>
+                <p class="info">{{reward.describe}}</p>
+                <img ng-src="{{reward.imgUrl || getImageUrl('game_rewards1.jpg', imgsPath)}}" alt="">
+            </div>
+        </div>
+    </div>
+</div>

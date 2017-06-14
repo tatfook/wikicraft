@@ -13,12 +13,15 @@ local website_member = inherit(models.abstract.base, gettable("models.website_me
 website_member.db_name = "website_member"
 
 function website_member:ctor()
-	-- (websiteId, userId) key
+	-- (websiteId, username) key
 	self:addfield("websiteId","number")    -- 站点ID
 	self:addfield("websiteType", "string") -- 站点类型
-	self:addfield("userId", "number")      -- 成员ID
-	self:addfield("roleId", "number")      -- 角色
+	self:addfield("username", "string")    -- 成员名
+	self:addfield("userLogo", "string")    -- 成员logo
+	self:addfield("roleName", "string")    -- 角色
 	self:addfield("desc", "string")        -- 角色
+	self:addfield("state", "string")       -- 角色
+	self:addfield("level", "number")       -- 角色
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
 end
@@ -34,17 +37,46 @@ function website_member:api_deleteByWebsiteId(params)
 	return errors:wrap(yield())
 end
 
+-- 删除记录
+function website_member:api_deleteById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():delete({_id=params._id}, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- 创建记录
 function website_member:api_upsert(params)
-	if (not params.websiteId) or (not params.userId) then
+	if (not params.websiteId) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.level = params.level or 0
+	params.state = params.state or const.WEBSITE_MEMBER_STATE_NORMAL
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.createDate = params.createDate or params.updateDate
 
-	self:db():insertOne({["+websiteId+userId"]={params.websiteId, params.userId}}, params, resume)
+	self:db():insertOne({["+websiteId+username"]={params.websiteId, params.username}}, params, resume)
 
 	return errors:wrap(yield())
+end
+
+-- 提交成员申请
+function website_member:api_submitMemberApply(params)
+	params.state = const.WEBSITE_MEMBER_STATE_APPLY
+	params.roleName = const.WEBSITE_USER_ROLE_VISITOR
+	return self:api_upsert(params)
+end
+
+-- 同意申请
+function website_member:api_agreeMemberApply(params)
+	params.state = const.WEBSITE_MEMBER_STATE_NORMAL
+	params.roleName = const.WEBSITE_USER_ROLE_NORMAL
+	params.level = const.RECORD_LEVEL_LOW
+	return self:api_upsert(params)
 end
 
 -- 添加成员
@@ -90,60 +122,42 @@ function website_member:api_create(params)
 	return errors:wrap()
 end
 
-
--- 更新
-function website_member:api_updateById(params)
+-- 设定为管理员
+function website_member:api_setManager(params)
 	if not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
-	params.updateDate = params.createDate
-	self:db():updateOne({_id=params._id}, params, resume)
-	
-	return errors:wrap(yield())
-end
 
--- 设定为管理员
-function website_member:api_unsetManager(params)
-	if not params.id then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():updateOne({_id=params.id}, {roleId=WEBSITE_USER_ROLE_MANAGER}, resume)
+	self:db():updateOne({_id=params._id}, {level=const.RECORD_LEVEL_MIDDLE, roleName=const.WEBSITE_USER_ROLE_MANAGER}, resume)
 
 	return errors:wrap(yield())
 end
 
 -- 解除管理员
-function website_member:api_setManager(params)
-	if not params.id then
+function website_member:api_unsetManager(params)
+	if not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():updateOne({_id=params.id}, {roleId=WEBSITE_USER_ROLE_NORMAL}, resume)
+	self:db():updateOne({_id=params._id}, {level=const.RECORD_LEVEL_LOW, roleName=const.WEBSITE_USER_ROLE_NORMAL}, resume)
 
 	return errors:wrap(yield())
 end
 
--- 获得数量
-function website_member:api_getCount(query)
-	self:db():count(query, resume)
-    local err, data = yield()
-
-	return errors:wrap(err, data or 0)
-end
-
--- 获得列表
-function website_member:api_get(query)
-	self:db():find(query, resume)
-	local _, data = yield()
-
-	local userDB = models.user:new()
-	for _, obj in ipairs(data or {}) do
-		obj.userInfo = userDB:api_getById({userId=obj.userId}).data
+-- 获得站点成员申请列表
+function website_member:api_getApplyByWebsiteId(params)
+	if not params.websiteId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
-	
-	return errors:wrap(nil, data)
+
+	local query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_APPLY}}
+	local total = self:api_getCount(query).data
+
+	local skip, limit = util:pagination(params)
+	query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_APPLY, skip=skip, limit=limit}}
+	local memberList = self:api_get(query).data
+
+	return errors:wrap(err, {total=total, memberList=memberList})		
 end
 
 -- 获得站点成员列表
@@ -152,14 +166,30 @@ function website_member:api_getByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
-	local query = {["+websiteId"]={params.websiteId}}
+	local query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL}}
 	local total = self:api_getCount(query).data
 
 	local skip, limit = util:pagination(params)
-	query = {["+websiteId"]={params.websiteId, skip=skip, limit=limit}}
+	query = {["+websiteId+state-level"]={params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL, gt=0, skip=skip, limit=limit}}
 	local memberList = self:api_get(query).data
 
 	return errors:wrap(err, {total=total, memberList=memberList})		
+end
+
+-- 获得数量
+function website_member:api_getCount(query)
+	self:db():count(query, resume)
+    local _, data = yield()
+
+	return errors:wrap(nil, data or 0)
+end
+
+-- 获得列表
+function website_member:api_get(query)
+	self:db():find(query, resume)
+	local _, data = yield()
+
+	return errors:wrap(nil, data)
 end
 
 -- 获得站点全部成员数量
@@ -168,29 +198,29 @@ function website_member:api_getCountByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():count({["+websiteId"] = {params.websiteId}}, resume)
+	self:db():count({["+websiteId+state"] = {params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL}}, resume)
 
 	return errors:wrap(yield())
 end
 
 -- 删除站点成员
 function website_member:api_deleteById(params)
-	if not params.id then
+	if not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():deleteOne({_id=params.id}, resume)
+	self:db():deleteOne({_id=params._id}, resume)
 
 	return errors:wrap(yield())
 end
 
 -- 获取单个成员信息
-function website_member:api_getBySiteUserId(params)
-	if (not params.websiteId) or (not params.userId) then
+function website_member:api_getBySiteUsername(params)
+	if (not params.websiteId) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({["+websiteId+userId"]={params.websiteId, params.userId}}, resume)
+	self:db():findOne({["+websiteId+username"]={params.websiteId, params.username}}, resume)
 	
 	return errors:wrap(yield())
 end
@@ -198,51 +228,28 @@ end
 -- 获得评委成员信息
 function website_member:api_getJudgeListByWebsiteId(params)
 	params.role = const.WEBSITE_USER_ROLE_JUDGE
-	local query = {["+websiteId+roleId"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE}}
+	local query = {["+websiteId+roleName"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE}}
 	local total = self:api_getCount(query).data
 	
 	local skip, limit = util:pagination(params)
-	query = {["+websiteId+roleId"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE, skip=skip, limit=limit}}
+	query = {["+websiteId+roleName"]={params.websiteId, const.WEBSITE_USER_ROLE_JUDGE, skip=skip, limit=limit}}
 	local userList = self:api_get(query).data
 
 	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit), userList=userList})
 end
 
 -- 获得用户加入的站点列表
-function website_member:api_getWebsiteListByUserId(params)
+function website_member:api_getWebsiteListByUsername(params)
 	local skip, limit = util:pagination(params)
 	
-	if not params.userId then
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():count({["+userId"]={params.userId}}, resume)
+	self:db():count({["+userId+state"]={params.username, const.WEBSITE_MEMBER_STATE_NORMAL}}, resume)
 	local err, total = yield()
 
-	self:db():find({["+userId"]={params.userId, skip=skip, limit=limit}}, resume)
-	local err, data = yield()
-	
-	local websiteDB = models.website:new()
-	for _, value in ipairs(data) do
-		value["siteinfo"] = websiteDB:api_getById({websiteId=value.websiteId}).data
-	end
-	
-	return errors:wrap(nil,{total=total, siteList=data})
-end
-
-
--- 获得用户加入的站点列表
-function website_member:api_getWebsiteListByUserId(params)
-	local skip, limit = util:pagination(params)
-	
-	if not params.userId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():count({["+userId"]={params.userId}}, resume)
-	local err, total = yield()
-
-	self:db():find({["+userId"]={params.userId, skip=skip, limit=limit}}, resume)
+	self:db():find({["+userId+state"]={params.username, const.WEBSITE_MEMBER_STATE_NORMAL, skip=skip, limit=limit}}, resume)
 	local err, data = yield()
 	
 	local websiteDB = models.website:new()
@@ -254,17 +261,17 @@ function website_member:api_getWebsiteListByUserId(params)
 end
 
 -- 获取用户加入的组织列表
-function website_member:api_getOrganizationListByUserId(params)
+function website_member:api_getOrganizationListByUsername(params)
 	local skip, limit = util:pagination(params)
 	
-	if not params.userId then
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():count({["+userId+websiteType"]=params.userId, const.WEBSITE_TYPE_ORGANIZATION}, resume)
+	self:db():count({["+username+state+websiteType"]=params.username, const.WEBSITE_MEMBER_STATE_NORMAL, const.WEBSITE_TYPE_ORGANIZATION}, resume)
 	local _, total = yield()
 
-	self:db():find({["+userId+websiteType"]={params.userId, const.WEBSITE_TYPE_ORGANIZATION, skip=skip, limit=limit}}, resume)
+	self:db():find({["+username+state+websiteType"]={params.username, const.WEBSITE_MEMBER_STATE_NORMAL, const.WEBSITE_TYPE_ORGANIZATION, skip=skip, limit=limit}}, resume)
 	local err, data = yield()
 	
 	local websiteDB = models.website:new()

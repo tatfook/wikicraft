@@ -1,0 +1,309 @@
+<?npl
+--[[
+Title: site data source
+Author: wuxiangan
+Date: 2017/06/06
+]]
+
+
+include_once("./abstract/base.page")
+include_once("./user.page")
+include_once("./data_source.page")
+
+local site_data_source = inherit(models.abstract.base, gettable("models.site_data_source"))
+site_data_source.db_name = "site_data_source"
+
+local projectNamePrefix = "keepwork"
+local defaultProjectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
+local defaultSitename = const.DEFAULT_DATA_SOURCE_SITENAME
+
+function site_data_source:ctor()
+	self:addfield("username", "string")            -- 用户名 
+	self:addfield("sitename", "string")            -- 站点名
+	self:addfield("dataSourceName", "string")      -- 数据源名
+	self:addfield("visibility", "string")          -- 是否为私有项目 private - 是 public - 否
+	self:addfield("projectName", "string")         -- 项目名
+	self:addfield("projectId", "number")           -- 项目id
+	self:addfield("rootPath", "string")            -- 项目根路径
+	self:addfield("lastCommitId", "string")        -- 最后一次提交id cdn加速
+	self:addfield("lastCommitIdUpdateTime", "number")  -- 最后一次提交id更新时间 cdn加速
+	self:addfield("updateFlag", "string")          -- 谁做了最后的更新
+end
+
+-- 拷贝数据源信息到站点数据源
+function site_data_source:copyDataSourceToSite(siteDataSource, dataSource)
+	if not siteDataSource then
+		return 
+	end
+	
+	-- siteDataSource.dataSourceName 必须存在
+	local dataSourceName = siteDataSource.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME
+	if not dataSource then
+		dataSource = models.data_source:new():api_getByName({username=siteDataSource.username, name=dataSourceName}).data	
+	end
+
+	if not dataSource then
+		return 
+	end
+
+	siteDataSource.dataSourceId = dataSource._id
+	siteDataSource.dataSourceName = dataSource.name
+	siteDataSource.type = dataSource.type
+	siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
+	siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
+	siteDataSource.dataSourceToken = dataSource.dataSourceToken
+	siteDataSource.apiBaseUrl = dataSource.apiBaseUrl
+	siteDataSource.rawBaseUrl = dataSource.rawBaseUrl
+	
+	return
+end
+
+-- 获取默认内置数据源
+function site_data_source:api_getDefaultSiteDataSource(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username+sitename"]={params.username, defaultSitename}}, resume)
+	local _, siteDataSource = yield()
+
+	if not siteDataSource then
+		siteDataSource = self:api_createDefaultSiteDataSource(params).data
+	end
+
+	self:copyDataSourceToSite(siteDataSource, nil)
+	-- LOG.std(nil, "error", "keepwork", siteDataSource)
+	return errors:wrap(nil, siteDataSource)
+end
+
+-- 创建内置站点数据源
+function site_data_source:api_createDefaultSiteDataSource(params) 
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local dataSourceDB = models.data_source:new()
+	local dataSource = dataSourceDB:api_createInnerGitlab({username=params.username}).data
+	
+	if not dataSource then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	LOG.std(nil,"error", "keepwork", dataSource)
+
+	local siteDataSource = {
+		username=params.username,
+		sitename=defaultSitename,
+		dataSourceName=dataSource.name,
+		projectName=defaultProjectName,
+		rootPath="",
+		lastCommitId="master", 
+	}
+	
+	self:db():insertOne({["+username+sitename"]={siteDataSource.username, siteDataSource.sitename}}, siteDataSource, resume)
+	local _, siteDataSource = yield()
+	
+	if not siteDataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:copyDataSourceToSite(siteDataSource, dataSource)
+	LOG.std(nil, "error", "keepwork", siteDataSource)
+
+	return errors:wrap(nil, siteDataSource)
+end
+
+
+-- 更新项目ID
+function site_data_source:api_updateById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():updateOne({_id=params._id}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 获取用户站点数据源列表
+function site_data_source:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local dataSourceDB = models.data_source:new()
+	local dataSourceList = dataSourceDB:api_getByUsername(params).data
+	
+	self:db():find({["+username"]={params.username}}, resume)
+	local _, siteDataSourceList = yield()
+
+	for _, siteDataSource in ipairs(siteDataSourceList or {}) do
+		for _, dataSource in ipairs(dataSourceList or {}) do
+			if dataSource.name == (siteDataSource.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME) then
+				self:copyDataSourceToSite(siteDataSource, dataSource)
+				break
+			end
+		end	
+	end
+	
+	return errors:wrap(nil, siteDataSourceList)
+end
+
+-- 获取单个数据源
+function site_data_source:api_getById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+
+	self:db():findOne({_id = params._id}, resume)
+	local _, siteDataSource = yield()
+	if not siteDataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local dataSourceDB = models.data_source:new()
+	dataSourceDB:db():findOne({["+username+name"]={siteDataSource.username, siteDataSource.dataSourceName}}, resume)
+	local dataSource = yield()
+
+	if not dataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:copyDataSourceToSite(siteDataSource, dataSource)
+
+	return errors:wrap(nil, siteDataSource)
+end
+
+-- 获得最后一次提交记录
+function site_data_source:api_updateGitlabLastCommitId(params)
+	local curTime = os.time()
+	
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
+		return errors:wrap(nil, params)
+	end
+
+	local headers = {['PRIVATE-TOKEN']= params.dataSourceToken}
+	
+	System.os.GetUrl({
+		url= params.apiBaseUrl .. "/projects/" .. params.projectId .. "/repository/commits", 
+		headers=headers,
+		method = "GET",
+		json = true,
+	}, resume)
+	local code, data = yield()
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+	data =data.data
+
+	if not data or #data == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+
+	params.lastCommitId = data[1].id
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	params.lastCommitIdUpdateTime = curTime
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	yield()
+	
+	return errors:wrap(nil, params)
+end
+
+-- 获得最后一次提交记录
+function site_data_source:api_updateGithubLastCommitId(params)
+	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST and (curTime - (params.lastCommitIdUpdateTime or 0) < 300) then
+		return errors:wrap(nil, params)
+	end
+
+	local headers = {["User-Agent"]="Satellizer",["Accept"]="application/vnd.github.full+json", ["Authorization"]= " token " .. params.dataSourceToken}
+	
+	System.os.GetUrl({
+		url= params.apiBaseUrl .. "/repos/" .. params.dataSourceUsername .. "/" .. (params.projectName or "keepworkDataSource") .. "/commits", 
+		headers=headers,
+		method = "GET",
+		json = true,
+	}, resume)
+	local code, data = yield()
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+	data =data.data
+
+	if not data or #data == 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, params)
+	end
+
+	params.lastCommitId = data[1].sha
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	yield()
+	
+	return errors:wrap(nil, params)
+end
+
+-- 设置数据源
+function site_data_source:api_updateLastCommitId(params) 
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+	
+	local siteDataSource = self:api_getById(params).data
+	if not siteDataSource then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+	end
+
+	if siteDataSource.type == const.DATA_SOURCE_TYPE_GITHUB then
+		return self:api_updateGithubLastCommitId(siteDataSource)
+	elseif params.type == const.DATA_SOURCE_TYPE_GITLAB then
+		return self:api_updateGitlabLastCommitId(siteDataSource)
+	else 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR, siteDataSource)
+	end
+
+	return errors:wrap(nil, siteDataSource)
+end
+
+-- 创建站点数据源
+function site_data_source:api_createSiteDataSource(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.dataSourceName = params.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME
+	params.projectName = params.projectName or (projectNamePrefix .. string.lower(params.sitename))
+	params.visibility = params.visibility or "public"
+	
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	local _, siteDataSource = yield()
+	
+	self:copyDataSourceToSite(siteDataSource, nil)
+	return errors:wrap(nil, siteDataSource)
+end
+
+-- 获取站点数据源
+function site_data_source:api_getSiteDataSource(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	params.sitename = params.sitename or const.DEFAULT_DATA_SOURCE_SITENAME
+	self:db():findOne({["+username+sitename"]={params.username, params.sitename}}, resume)
+	local _, siteDataSource = yield()
+
+	if not siteDataSource then
+		return self:api_getDefaultSiteDataSource(params)
+	end
+	
+	self:copyDataSourceToSite(siteDataSource, nil)
+	return errors:wrap(nil, siteDataSource)
+end
+
+
+
+
+
+
+
+
+

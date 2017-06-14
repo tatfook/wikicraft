@@ -78,9 +78,8 @@ define(['app',
             });
         }
 
-        function getUserDataSource() {
-            util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId:$scope.user._id}, function (data) {
-                console.log(data);
+		function getUserDataSource() {
+			util.post(config.apiUrlPrefix + 'data_source/getByUsername', {username:$scope.user.username}, function (data) {
                 $scope.dataSourceList = data;
                 $scope.user.dataSource = data;
                 Account.setUser($scope.user);

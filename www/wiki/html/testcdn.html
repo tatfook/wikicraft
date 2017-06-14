@@ -1,0 +1,71 @@
+<div ng-controller="testcdnController">
+    <div class="container">
+        <div style="margin-top: 40px">
+            <h3>CDN 测试</h3>
+        </div>
+
+        <h4>{{defaultHostname}} 域测试</h4>
+        <div class="row">
+            <div class="col-xs-6">切换子域：</div>
+            <div class="col-xs-2 btn btn-default" ng-click="setTestHostname()">{{getTestHostname()}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="setDevHostname()">{{getDevHostname()}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="setHostname()">{{getHostname()}}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">API接口：</div>
+            <div class="col-xs-5">请求时间:{{apiTime}}</div>
+            <div class="col-xs-offset-2 col-xs-2 btn btn-default" ng-click="testApi()">测试</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">js文件请求：</div>
+            <div class="col-xs-5">请求时间:{{jsTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="updateFileContent('cdntest.js')">更新js</div>
+            <div class="col-xs-2 btn btn-default" ng-click="testJsFile()">测试</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">js文件请求(带?bust)：</div>
+            <div class="col-xs-5">请求时间:{{jsWithBustTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="updateJsFileBust()">更新bust</div>
+            <div class="col-xs-2 btn btn-default" ng-click="testJsFileWithBust()">测试</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">css文件请求：</div>
+            <div class="col-xs-5">请求时间:{{cssTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="updateFileContent('cdntest.css')">更新css</div>
+            <div class="col-xs-2 btn btn-default" ng-click="testCssFile()">测试</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">css文件请求(带?bust)：</div>
+            <div class="col-xs-5">请求时间:{{cssWithBustTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="updateCssFileBust()">更新bust</div>
+            <div class="col-xs-2 btn btn-default" ng-click="testCssFileWithBust()">测试</div>
+        </div>
+
+        <h4>{{defaultGitHostname}} 域测试</h4>
+        <div class="row">
+            <div class="col-xs-3">文件上传(master)：</div>
+            <div class="col-xs-5">请求时间:{{gitUploadTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="updateGitFile()">更新内容</div>
+            <div class="col-xs-2 btn btn-default" ng-click="uploadFile()">测试</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">文件下载(master)：</div>
+            <div class="col-xs-5">请求时间:{{gitDownloadTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="openGitFile()">git文件</div>
+            <div class="col-xs-2 btn btn-default" ng-click="downloadFile()">测试</div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3">文件下载(commitID)：</div>
+            <div class="col-xs-5">请求时间:{{gitDownloadWithShaTime}}</div>
+            <div class="col-xs-2 btn btn-default" ng-click="updateGitFileCommitId()">更新sha</div>
+            <div class="col-xs-2 btn btn-default" ng-click="downloadFileWithCommitId()">测试</div>
+        </div>
+    </div>
+</div>

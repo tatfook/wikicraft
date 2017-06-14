@@ -112,7 +112,7 @@ define([
                 Account.setUser(data.userinfo);
                 var _go = function () {
                     if (type == "other") {
-                        util.goUserSite('/'+params.username);
+                        util.go('/'+params.username);
                     } else {
                         $scope.step++;
                     }
@@ -130,20 +130,19 @@ define([
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {
-            util.post(config.apiUrlPrefix + 'website/upsert', {
+            util.post(config.apiUrlPrefix + 'website/create', {
                 "userId": userinfo._id,
                 "username": userinfo.username,
                 "name": "tutorial",
                 "displayName": "新手教程",
-                "dataSourceId": userinfo.dataSourceId,
                 "categoryName": "个人站点",
                 "templateName": "教学模板",
                 "styleName": "默认样式",
             }, function (siteinfo) {
-                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                userDataSource.registerInitFinishCallback(function () {
-                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
-                    //console.log(currentDataSource, siteinfo);
+				//var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+                userDataSource.registerInitFinishCallback(function() {
+					var dataSourceInst = userDataSource.getDataSourceBySitename(siteinfo.name);
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var tutorialPageList = [
                         {
@@ -155,20 +154,20 @@ define([
 
                     for (var i = 0; i < tutorialPageList.length; i++) {
                         fnList.push((function (index) {
-                            return function (finish) {
+                            return function (cb, errcb) {
                                 require([tutorialPageList[index].contentUrl], function (content) {
-                                    currentDataSource.writeFile({
+                                    dataSourceInst.writeFile({
                                         path: tutorialPageList[index].pagepath,
                                         content: content
-                                    }, finish, finish);
+                                    }, cb, errcb);
                                 }, function () {
-                                    finish && finish();
+                                    errcb && errcb();
                                 });
                             }
                         })(i));
                     }
 
-                    util.batchRun(fnList, cb);
+                    util.sequenceRun(fnList, undefined, cb, cb);
                 });
             }, errcb);
         }
@@ -212,7 +211,7 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.goUserSite('/' + data.data.username);
+                        util.go('/' + data.data.username);
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
@@ -223,6 +222,13 @@ define([
 
             });
         }
+
+        //回车注册
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13"){
+                $scope.register();
+            }
+        });
     }]);
     return htmlContent;
 });

@@ -1,0 +1,66 @@
+<?npl
+--[[
+Title: site data source
+Author: wuxiangan
+Date: 2017/06/08
+]]
+
+
+include_once("./abstract/base.page")
+
+local group_user = inherit(models.abstract.base, gettable("models.group_user"))
+group_user.db_name = "group_user"
+
+function group_user:ctor()
+	self:addfield("username", "string")            -- 用户名  组的所属者
+	self:addfield("groupname", "string")           -- 组名 
+	self:addfield("memberName", "string")          -- 成员名 
+	self:addfield("level", "number")               -- 权限级别
+	self:addfield("visibility", "string")          -- 是否为私有项目 private - 是 public - 否  gitlab存在此子段不明意思
+end
+
+-- 添加组成员
+function group_user:api_upsert(params)
+	if (not params.groupname) or (not params.username) or (not params.memberName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
+	self:db():insertOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 删除组成员
+function group_user:api_deleteMember(params)
+	if (not params.groupname) or (not params.username) or (not params.memberName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:db():deleteOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除组全部成员
+function group_user:api_deleteGroup(params)
+	if (not params.groupname) or (not params.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:db():deleteOne({["+username+groupname"]={params.username, params.groupname}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除用户全部租成员
+function group_user:api_delete(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+		
+	self:db():deleteOne({["+username"]={params.username}}, resume)
+
+	return errors:wrap(yield())
+end

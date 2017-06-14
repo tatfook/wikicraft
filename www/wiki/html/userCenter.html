@@ -136,7 +136,7 @@
                 <li class="list-group-item">
                     <div class="panel panel-primary">
                         <div class="panel-heading" ng-click='selectContentType("userProfile")'>
-                            个人中心
+                            设置中心
                         </div>
                         <div class="panel-body" ng-class='getExpandClass("userProfile")'>
                             <ul class="list-group">
@@ -144,21 +144,6 @@
                                    ng-click="clickUserCenterItem(item)"
                                    ng-class="getActiveStyleClass(item)"
                                    class="list-group-item" >{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading" ng-click='selectContentType("VIP")'>
-                            VIP
-                        </div>
-                        <div class="panel-body " ng-class='getExpandClass("VIP")'>
-                            <ul class="list-group">
-                                <a ng-repeat="item in vipItemList"
-                                   ng-click="clickUserCenterItem(item)"
-                                   ng-class="getActiveStyleClass(item)"
-                                   class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
                             </ul>
                         </div>
                     </div>
@@ -186,6 +171,21 @@
                         <div class="panel-body" ng-class='getExpandClass("dataSource")'>
                             <ul class="list-group">
                                 <a ng-repeat="item in dataSourceItemList"
+                                   ng-click="clickUserCenterItem(item)"
+                                   ng-class="getActiveStyleClass(item)"
+                                   class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" ng-click='selectContentType("VIP")'>
+                            VIP
+                        </div>
+                        <div class="panel-body " ng-class='getExpandClass("VIP")'>
+                            <ul class="list-group">
+                                <a ng-repeat="item in vipItemList"
                                    ng-click="clickUserCenterItem(item)"
                                    ng-class="getActiveStyleClass(item)"
                                    class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>

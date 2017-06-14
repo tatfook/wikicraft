@@ -1,0 +1,159 @@
+<style>
+    .org-team{
+        background-color: #F9F9F9;
+        margin-bottom: 80px;
+    }
+    .org-team a{
+        color: inherit;
+    }
+    .org-team a:hover{
+        color: #3977AD;
+    }
+    .org-team h1{
+        font-size: 36px;
+        font-weight: normal;
+        margin: 60px 0 0;
+        color: #333;
+        padding-bottom: 25px;
+        position: relative;
+    }
+    .org-team h1:before{
+        content: '';
+        display: inline-block;
+        width: 2em;
+        height:1px;
+        background-color: #333;
+        position: absolute;
+        left:0;
+        bottom:0;
+    }
+    .org-team .team{
+        position: relative;
+    }
+    .org-team .navigation{
+        text-align: right;
+        position: absolute;
+        top: -15px;
+        right: 0;
+    }
+    .org-team .navigation a{
+        padding:0 5px;
+    }
+    .org-team .members{
+        display: flex;
+        margin: 0 -10px;
+        padding-top:30px;
+    }
+    .org-team .member-item{
+        display: flex;
+        flex-direction: column;
+        padding:0 10px;
+        font-size: 14px;
+        color: #333;
+    }
+    .org-team .member-item img{
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .org-team .member-item .info{
+        font-size: 12px;
+        color: #999;
+    }
+    @media(min-width: 768px) and (max-width: 992px){
+        .org-team .container{
+            width: 100%;
+        }
+        .org-team .member-item .info{
+            width: 100%;
+        }
+        .org-team .member-item{
+            padding:0 6px;
+        }
+    }
+    @media (max-width: 768px) {
+        .org-team h1{
+            font-size: 28px;
+            padding-bottom: 10px;
+            margin-top: 15px;
+        }
+        .org-team .navigation{
+            top:0;
+        }
+        .org-team .members{
+            display: block;
+        }
+        .org-team .member-item{
+            float: left;
+            width: 50%;
+        }
+    }
+</style>
+<style>
+    .game-members .members{
+        width: 100%;
+        display:inline-block;
+    }
+    .game-members .member-item{
+        float: left;
+    }
+</style>
+
+<div ng-controller="siteMemberListController">
+    <div class="org-team" ng-show="modParams.moduleKind=='organization'">
+        <div class="container">
+            <h1>{{modParams.title || "PARACRAFT小组成员"}}</h1>
+            <div class="team">
+                <div class="navigation">
+                    <a>1</a>
+                    <a>2</a>
+                    <a>3</a>
+                    <a>>></a>
+                </div>
+                <div class="members">
+                    <div class="member-item" ng-repeat="member in memberList">
+                        <img ng-src="{{member.userLogo || imgsPath+'personsal_header_profile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                        <p>{{member.username}}<span class="info" style="margin-left: 10px">{{member.roleName || "成员"}}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-team" ng-show="modParams.moduleKind=='game'">
+        <div class="container">
+            <h1>{{modParams.title || "评委成员"}}</h1>
+            <div class="team">
+                <div class="navigation">
+                    <a>1</a>
+                    <a>2</a>
+                    <a>3</a>
+                    <a>>></a>
+                </div>
+                <div class="members">
+                    <div class="member-item" ng-repeat="member in memberList">
+                        <img ng-src="{{member.userLogo || imgsPath+'personsal_header_profile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                        <p>{{member.username}}<span class="info" style="margin-left: 10px">{{member.roleName || "成员"}}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-team game-members" ng-show="modParams.moduleKind=='gameDemo'">
+        <div class="container">
+            <h1>{{modParams.title || "评委成员"}}</h1>
+            <div class="team">
+                <div class="navigation">
+                    <a ng-repeat="page in modParams.paging" ng-click="modParams.changePage(page)">{{page}}</a>
+                    <a ng-click="modParams.changePage(modParams.nowPage+1)" ng-disabled="modParams.nowPage==modParams.paging.length" class="btn">>></a>
+                </div>
+                <div class="members">
+                    <div class="member-item" ng-repeat="member in modParams.memberList | limitTo:modParams.step:((modParams.nowPage-1)*modParams.step)">
+                        <img ng-src="{{member.userLogo || imgsPath+'game_userProfile.jpg'}}" style="width: 103px; height: 103px;" alt="">
+                        <p>{{member.username}}<span class="info pull-right">{{member.roleName || "成员"}}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

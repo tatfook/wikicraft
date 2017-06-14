@@ -8,7 +8,7 @@
     <link rel="icon" href="/wiki/assets/imgs/icon/logo.ico" type="image/x-icon" />
 
     <!-- main css -->
-    <link href="/wiki/assets/css/main.css" rel="stylesheet">
+	<? RenderServerWikiCss() ?>
 </head>
 
 <body ng-style="getBodyStyle()">

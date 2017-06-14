@@ -4,7 +4,7 @@ MAINTAINER xuntian "li.zq@foxmail.com"
 RUN apt-get -y update && apt-get -y install nginx && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ADD nginx_config /etc/nginx/sites-available/default
-ADD ./ /opt/wikicraft
+ADD ./ /opt/wikicraft/
 
 EXPOSE 80
 EXPOSE 8099

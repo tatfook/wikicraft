@@ -23,8 +23,7 @@ define([
 
             //console.log("-----------wiki template----------------");
             function setSelfPageContent(type, content) {
-                if (!content)
-                    return;
+                content = content || "";
 
                 var md = markdownwiki({html:true, use_template:false});
                 var id = "#" + type + "ContentId";
@@ -82,12 +81,25 @@ define([
             $scope.$watch('$viewContentLoaded', init);
 
             $scope.isSelfPageShow = function (type) {
-                return wikiBlock.editorMode;
+                return $scope.isEditorEnable();
+            }
+
+            // 是否可以编辑模板
+            $scope.isEditorEnable = function () {
+                if (!wikiBlock.editorMode) {
+                    return false;
+                }
+
+                if (wikiBlock.isPageTemplate ||  ($rootScope.pageinfo && $rootScope.pageinfo.pagename == "_theme")) {
+                    return true;
+                }
+
+                return false;
             }
 
             $scope.setSelfPage = function (type) {
                 //console.log(wikiBlock);
-                if (!wikiBlock.isPageTemplate) {
+                if (!wikiBlock.isPageTemplate && $rootScope.pageinfo.pagename != "_theme") {
                     //$scope.editSelfPage(type);
                     Message.info("请在_theme文件编辑布局模块");
                     return;
@@ -106,7 +118,7 @@ define([
             $scope.editSelfPage = function (type) {
                 var pageinfo = $rootScope.pageinfo;
                 var urlObj = {username: pageinfo.username, sitename:pageinfo.sitename, pagename:type};
-                if (window.location.pathname == '/wiki/wikiEditor') {
+                if (util.isEditorPage()) {
                     $rootScope.$broadcast('changeEditorPage', urlObj);
                 } else {
                     storage.sessionStorageSetItem("urlObj", urlObj);

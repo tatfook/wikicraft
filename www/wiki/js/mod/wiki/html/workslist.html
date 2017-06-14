@@ -140,6 +140,7 @@
     }
     .org-works-list img{
         width: 100%;
+        box-shadow: 0px -1px 2px 1px rgba(44, 62, 80, .35);
     }
     .org-works-list .navigation{
         text-align: right;
@@ -151,6 +152,12 @@
         background-color: #FAFAFA;
         padding: 20px;
         box-shadow: 0px 1px 3px 0px rgba(44, 62, 80, .35);
+    }
+    .org-works-list .text h4{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.5;
     }
     .org-works-list .hover-slide:hover {
         transform: translate3d(0, -3px, 0);
@@ -211,6 +218,26 @@
         }
     }
 </style>
+<style>
+    .org-works-list .oneline-text{
+        padding: 0px 15px;
+        position: absolute;
+        bottom: 0;
+        right: 15px;
+        left: 15px;
+        background-color: rgba(0,0,0,.5);
+        color: #FFF;
+    }
+    .org-works-list .oneline-text h4 .pull-right{
+        font-size: 14px;
+        font-weight: normal;
+    }
+</style>
+<style>
+    .game-works-list .col-md-3{
+        margin-bottom: 20px;
+    }
+</style>
 
 <div class="container-fluid" ng-controller="workslistController">
     <div class="personal-works-list" ng-show="modParams.moduleKind=='personal'">
@@ -218,7 +245,7 @@
         <!--<img class="header-img" ng-src="{{imgsPath+'personal_workslist_header.png'}}" alt="我的作品">-->
         <div class="carousel-content clearfix">
             <div class="carousel-item" ng-repeat="x in siteList">
-                <img ng-src="{{x.logoUrl || imgsPath+'personal_workslist_banner.jpg'}}" alt="作品名">
+                <img ng-src="{{x.logoUrl || imgsPath+'wiki_cover.jpg'}}" alt="作品名">
                 <div class="msg">
                     <h4>{{x.name}}</h4>
                     <div class="clearfix work-msg">
@@ -248,18 +275,86 @@
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
-                <a ng-click="goWorksPage(works)">
-                    <img ng-src="{{works.worksInfo.worksLogo || (imgsPath + 'personal_workslist_banner.jpg')}}">
+                <a href="{{works.worksUrl}}" target="_blank">
+                    <img ng-src="{{works.worksLogo || (imgsPath + 'wiki_cover.jpg')}}">
                 </a>
                 <div class="text clearfix">
-                    <h4><a class="title" ng-click="goWorksPage(works)">{{works.worksInfo.worksTitle}}</a></h4>
-                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksInfo.username}}</a></p>
+                    <h4><a class="title"  href="{{works.worksUrl}}" target="_blank" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
+                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksUsername}}</a></p>
                     <p class="pull-left info">
                         <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
                     </p>
-                    <p class="pull-right info" ng-click="worksFavorite($event, site)">
-                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{works.favoriteCount || 0}}</span>
+                    <p class="pull-right info" ng-click="worksFavorite($event, works)">
+                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 关注 <span>{{works.favoriteCount || 0}}</span>
                     </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a href="{{modParams.moreLink}}">查看更多</a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
+                <a href="{{works.worksUrl}}" target="_blank">
+                    <img ng-src="{{works.worksLogo || getImageUrl('wiki_cover.jpg', imgsPath)}}">
+                </a>
+                <div class="text clearfix">
+                    <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksName}}">{{works.worksName}}</a></h4>
+                    <p>
+                        <a ng-click="goUserPage(works)">作者：{{works.worksUsername}}</a>
+                        <span class="info pull-right">
+                            <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount || 0}}</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='gameStatic'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a href="{{modParams.moreLink}}">查看更多</a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in modParams.worksList">
+                <a href="{{works.worksUrl}}" target="_blank">
+                    <img ng-src="{{works.worksLogo || getImageUrl('wiki_cover.jpg', imgsPath)}}">
+                </a>
+                <div class="text clearfix">
+                    <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksName}}">{{works.workName || "未命名"}}</a></h4>
+                    <p>
+                        <a ng-click="goUserPage(works)">作者：{{works.worksUsername || "无名"}}</a>
+                        <span class="info pull-right">
+                            <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount || 0}}</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="org-works-list container" ng-show="modParams.moduleKind=='gameDemo'">
+        <h1>{{modParams.title || "全部作品"}}</h1>
+        <div class="navigation">
+            <a href="{{modParams.moreLink}}" target="_blank">查看更多</a>
+        </div>
+        <div class="clearfix works">
+            <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="work in modParams.worksList">
+                <a href="{{work.imgLink}}">
+                    <img ng-src="{{work.imgUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}">
+                </a>
+                <div class="text clearfix oneline-text">
+                    <h4>
+                        <a class="title" href="{{work.workLink}}" ng-show="work.workLink">{{work.workName || "未完成"}}</a>
+                        <span class="title" ng-show="!work.workLink">{{work.workName}}</span>
+                        <a href="{{work.authorLink}}" class="pull-right" ng-show="work.authorLink">{{work.author}}</a>
+                        <span class="pull-right" ng-show="!work.authorLink">{{work.author}}</span>
+                    </h4>
                 </div>
             </div>
         </div>

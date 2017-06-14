@@ -25,14 +25,21 @@ start_server() {
 	local server_type=$1
 	
 	if [ $server_type = "test" ]; then
-		rm -fr ${test_dir}
-		cp -fr ${build_dir} ${test_dir}
+		if [ -e ${build_dir} ]; then
+			rm -fr ${test_dir}
+			cp -fr ${build_dir} ${test_dir}
+		fi
+		ulimit -c unlimited
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
 	elif [ $server_type = "rls" ]; then 
-		rm -fr ${rls_dir}
-		cp -fr ${build_dir} ${rls_dir}
+		if [ -e ${build_dir} ]; then
+			rm -fr ${rls_dir}
+			cp -fr ${build_dir} ${rls_dir}
+		fi
+		ulimit -c unlimited
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
+		ulimit -c unlimited
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
 	else
 		start_server "test"
@@ -84,7 +91,14 @@ main() {
 		if [ -e ${build_dir} ]; then
 			rm -fr ${build_dir}
 		fi
+		temp_build_dir="temp_${build_dir}"
+		if [ -e ${temp_build_dir} ]; then
+			rm -fr ${temp_build_dir}
+		fi
+
+		cp -fr ${dev_dir} ${temp_build_dir}
 		node r.js -o r_package.js
+		rm -fr ${temp_build_dir}
 	elif [ "$1" == "start" ]; then
 		# etc:  ./start.sh start dev|test|rls
 		echo "start server :"$server_type

@@ -11,8 +11,7 @@ define([
 ], function (app, util, storage, htmlContent) {
     //console.log("load userController file");
 
-    app.registerController('userController', ['$scope','Account', function ($scope, Account) {
-
+    app.registerController('userController', ['$scope','Account','Message', function ($scope, Account, Message) {
         function init(userinfo) {
             var username = $scope.urlObj.username;
             if (!username && userinfo && userinfo.username) {
@@ -28,10 +27,13 @@ define([
                 // 用户信息
                 $scope.userinfo = data.userinfo;
                 $scope.selfOrganizationList = data.selfOrganizationObj.siteList;
+                $scope.selfOrganizationCount = data.selfOrganizationObj.siteList.length;
                 $scope.joinOrganizationList = data.joinOrganizationObj.siteList;
+                $scope.joinOrganizationCount = data.joinOrganizationObj.siteList.length;
                 $scope.hotSiteList = data.hotSiteObj.siteList;
+                $scope.hotSiteTotal=data.hotSiteObj.siteList.length;
                 $scope.allSiteList = data.allSiteList;
-                //$scope.allSiteTotal = data.allSiteObj.total;
+                $scope.allSiteTotal = data.allSiteList.length;
                 // 粉丝
                 $scope.fansList = data.fansObj.userList;
                 $scope.fansCount = data.fansObj.total;
@@ -51,17 +53,46 @@ define([
                 }else{
                     contributionCalendar("contributeCalendar",{before:"calendarSibling"});
                 }
+
+                if ($scope.user && $scope.user._id) {
+                    util.post(config.apiUrlPrefix + "user_fans/isAttented", {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function (data) {
+                        $scope.concerned = data;
+                    });
+                }
             });
         }
 
-        $scope.favoriteUser = function () {
-            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == $scope.userinfo._id) {
+        $scope.favoriteUser = function (fansUser) {
+            if (!$scope.userinfo) {
+                $scope.concerned = !$scope.concerned;
+                return;
+            }
+
+            if (!Account.isAuthenticated()) {
+                Message.info("登录后才能关注");
+                return; // 登录后才能关注
+            }
+
+            fansUser = fansUser ? fansUser : $scope.userinfo;//关注该页面的用户，或者关注这个用户的粉丝
+
+            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == fansUser._id) {
+                Message.info("自己不关注自己");
                 return; // 自己不关注自己
             }
 
-            util.post(config.apiUrlPrefix + 'user_fans/upsert', {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function () {
-               console.log("关注成功");
-            });
+            if(fansUser.concerned){//取消关注
+                util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
+                    console.log("取消关注成功");
+                    Message.info("取消关注成功");
+                    fansUser.concerned=false;
+                });
+            }else{
+                util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
+                    console.log("关注成功");
+                    Message.info("关注成功");
+                    fansUser.concerned=true;
+                });
+            }
         }
         
         $scope.isShowNavBar = function () {
@@ -71,10 +102,17 @@ define([
             return false;
         }
 
+        $scope.loadActivity = function () {
+            Message.info("暂无更多活动");
+        }
+
         $scope.goUserSite = function (x) {
             util.goUserSite('/' + x.username + '/' + x.name, true);
         }
 
+        $scope.goUserIndexPage = function (name) {
+            util.go("/"+name);
+        }
         $scope.goHelpPage = function () {
             util.go("knowledge");
         }
@@ -93,8 +131,23 @@ define([
             util.go("wikiEditor");
         }
 
+        //显示退出组织模态框
+        $scope.showExitModal = function (organization) {
+            $('#exitModal').modal("show");
+            $scope.deletingOrg=organization;
+        }
+
+        // 退出组织
+        $scope.exitOrg = function (org) {
+            util.post(config.apiUrlPrefix + 'website_member/deleteById', org, function () {
+                org.isDelete = true;
+                $scope.joinOrganizationCount--;
+                $('#exitModal').modal("hide");
+            });
+        }
+
         $scope.$watch('$viewContentLoaded', function () {
-            console.log("------------------init user controller----------------------");
+            //console.log("------------------init user controller----------------------");
             if ($scope.urlObj.username) {
                 init();
             } else {

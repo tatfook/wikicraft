@@ -231,6 +231,8 @@ define([
         if (!$(selector).length) {
             $(container).prepend('<div id="' + mdwiki.getMdWikiContentContainerId() + '"></div>');
         }
+
+        var start = 0;
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
             if (block.isTemplate) {
@@ -239,6 +241,11 @@ define([
                 }
                 continue;
             }
+
+            for (var j = start; j < block.textPosition.from; j++) {
+                $(selector).append('<br/>');
+            }
+            start = block.textPosition.to + 1;
 
             var blockCache = block.blockCache;
             //console.log(blockCache);
@@ -322,7 +329,7 @@ define([
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
-            var currentDataSource = dataSource.getCurrentDataSource();
+            var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
             currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName}, function (content) {
                 //console.log(content);
                 text = content + '\n' + text;

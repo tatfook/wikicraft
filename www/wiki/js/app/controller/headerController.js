@@ -6,9 +6,10 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/dataSource',
     'text!html/header.html',
     'jquery-sharejs'
-], function (app, util, storage, htmlContent) {
+], function (app, util, storage, dataSource,  htmlContent) {
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
@@ -16,8 +17,6 @@ define([
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
-        $scope.totalItems=0;
-
         // 通过站点名搜索
         $scope.searchWebsite = function () {
             storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', websiteName: $scope.search});
@@ -35,9 +34,9 @@ define([
                 $scope.urlObj.pagename = urlObj.sitename && urlObj.pagename;
                 //console.log(urlObj);
                 if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-                    console.log(urlObj.domain);
+                    //console.log(urlObj.domain);
                     util.post(config.apiUrlPrefix + 'website/getByDomain', {domain: urlObj.domain}, function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if (data) {
                             $scope.urlObj.pagename = $scope.urlObj.sitename;
                             $scope.urlObj.username = data.username;
@@ -46,17 +45,20 @@ define([
                     });
                 }
             }
-            // if($rootScope.pageinfo){
-            //     var params = {
-            //         userId: $rootScope.pageinfo.userId,
-            //         websiteId: $rootScope.pageinfo.websiteId
-            //     };
-            //     storage.sessionStorageSetItem('pageinfo',params);
-            //     util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
-            //         $scope.totalItems = data.total;
-            //         $scope.fansList = data.fansList || [];
-            //     });
-            // }
+            // 获取用户粉丝数量
+            if (Account.isAuthenticated()) {
+                $scope.userFansCount = storage.sessionStorageGetItem("userFansCount");
+                if ($scope.userFansCount == undefined || $scope.userFansCount== null) {
+                    util.post(config.apiUrlPrefix + 'user_fans/getCountByUserId', {userId:$scope.user._id}, function (data) {
+                        data = data || 0;
+                        $scope.userFansCount = data;
+                        storage.sessionStorageSetItem("userFansCount", data);
+                    });
+                }
+            }
+
+            var container=document.getElementById("js-prev-container");
+            container.style.overflow="visible";
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -79,16 +81,21 @@ define([
         $scope.clickPageList = function () {
             if ($scope.urlObj.username == "wiki")
                 return;
-
-            if (urlObj.sitename) {
-                util.post(config.apiUrlPrefix + 'website_pages/getByWebsiteName', {websiteName: urlObj.sitename}, function (data) {
-                    $scope.userSitePageList = data || [];
-                });
+            
+            var userDataSource = dataSource.getUserDataSource($scope.urlObj.username)
+            var currentDataSource = userDataSource && userDataSource.getDataSourceById($rootScope.siteinfo.dataSourceId);
+            if (!currentDataSource) {
+                console.log(userDataSource,$rootScope.siteinfo._id );
+                return;
             }
+            
+            currentDataSource.getTree({path:'/' + $scope.urlObj.username + '/' + $scope.urlObj.sitename}, function (data) {
+                $scope.userSitePageList = data || [];
+            });
         }
 
         $scope.selectPage = function (page) {
-            $scope.urlObj.pagename = page.name;
+            $scope.urlObj.pagename = page.pagename;
             $scope.goUrlSite();
         }
 
@@ -122,7 +129,7 @@ define([
         $scope.clickMyFavorite = function () {
             if (!Account.isAuthenticated())
                 return;
-            util.post(config.apiUrlPrefix + "user_favorite/getFavoriteWebsiteListByUserId", {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + "user_favorite/getByUserId", {userId: $scope.user._id}, function (data) {
                 //console.log(data);
                 $scope.favoriteWebsiteObj = data;
             });
@@ -133,37 +140,40 @@ define([
                 return;
 
             // 用户动态
-            util.post(config.apiUrlPrefix + 'user_trends/getUnread', {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + 'user_trends/get', {userId: $scope.user._id}, function (data) {
+                data = data || {};
                 $scope.trendsList = data.trendsList;
                 $scope.trendsCount = data.total;
             });
         }
         $scope.isShowTrend = function (trends) {
-            var trendsTypeList = ["organization", "favorite", "works"];
-            return trends.state == 'unread' && $scope.trendsType == trendsTypeList[trends.trendsType];
+            if ($scope.trendsType == "organization") {
+                if (trends.trendsType =20 || trends.trendsType ==21) {
+                    return true;
+                }
+                return false;
+            } else if ($scope.trendsType == "attent") {
+                if (trends.trendsType ==10 || trends.trendsType == 11) {
+                    return true;
+                }
+                return false;
+            } else if ($scope.trendsType == "works") {
+                if (trends.trendsType == 1 || trends.trendsType == 2 || trends.trendsType == 3 || trends.trendsType == 4 || trends.trendsType == 5) {
+                    return true;
+                }
+                return false;
+            }
         }
         // 选择动态类型
         $scope.selectTrendsType = function (trendsType) {
-            //console.log(trendsType);
             $scope.trendsType = trendsType;
-        }
-        // 读取动态
-        $scope.rendTrends = function (trends) {
-            trends.state = 'read';
-            util.post(config.apiUrlPrefix + 'user_trends/upsert', trends);
-
-            for (var i = 0; i < $scope.trendsList.length; i++) {
-                if ($scope.trendsList[i]._id = trends._id) {
-                    $scope.trendsList[i].state = 'read';
-                    break;
-                }
-            }
         }
         // 用户动态=======================================end=========================================
 
         // 页面编辑页面
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
+            console.log(storage.sessionStorageGetItem("urlObj"));
             util.go("wikiEditor");
         }
 
@@ -174,7 +184,7 @@ define([
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
+            if (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg'
@@ -202,12 +212,12 @@ define([
         };
 
         $scope.goVIPLevel = function () {
-            util.go("VIPLevel");
+            util.go("VipLevel");
         };
 
         $scope.goUserCenterPage = function (contentType, subContentType) {
             console.log(contentType, subContentType);
-            if (window.location.pathname == '/wiki/userCenter') {
+            if (util.snakeToHump(window.location.pathname) == '/wiki/userCenter') {
                 $rootScope.$broadcast('userCenterContentType', contentType);
                 subContentType && $rootScope.$broadcast('userCenterSubContentType', subContentType);
             } else {
@@ -220,7 +230,10 @@ define([
         $scope.logout = function () {
             Account.logout();
             $rootScope.isLogin = false;
-            util.go('home');
+            console.log(window.location.pathname);
+            if (/^\/wiki/.test(window.location.pathname)){
+                util.go('home');
+            }
         };
         
         $scope.clickShare=function () {
@@ -241,15 +254,13 @@ define([
         // 收藏作品
         $scope.doWorksFavorite=function (event,doCollect) {
             var worksFavoriteRequest = function(isFavorite) {
-                //console.log($scope.user);
-                //console.log($rootScope.pageinfo);
-                if (!$rootScope.pageinfo) {
+                if (!$rootScope.siteinfo) {
                     return;
                 }
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: $rootScope.pageinfo.userId,
-                    favoriteWebsiteId: $rootScope.pageinfo.websiteId,
+                    favoriteUserId: $rootScope.siteinfo.userId,
+                    favoriteWebsiteId: $rootScope.siteinfo._id,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
@@ -260,11 +271,9 @@ define([
 
             if (doCollect){
                 worksFavoriteRequest(true);
-                $scope.totalItems++;
                 $scope.isCollect=true;
             }else{
                 worksFavoriteRequest(false);
-                $scope.totalItems--;
                 $scope.isCollect=false;
             }
         };
@@ -283,11 +292,27 @@ define([
 
         $scope.$on("userpageLoaded", function (event, data) {
             init();
+            var container=document.getElementById("js-prev-container");
+            var content=document.getElementById("js-prev-content");
+            var ellipsis=document.getElementById("js-prev-ellipsis");
+            prevEllipsis(container,content,ellipsis);
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
             //console.log("isAuthenticated");
         });
+
+        //导航条面包屑超出宽度，省略前面部分，显示后面部分
+        function prevEllipsis(container,content,ellipsis){
+            var containerW=container.clientWidth;
+            var contentW=content.clientWidth;
+            var minus=containerW-contentW;
+            if(minus<0){
+                content.style.transform="translateX("+minus+"px)";
+                ellipsis.style.display="inline";
+            }
+            container.style.overflow="visible";
+        }
     }]);
 
     return htmlContent;

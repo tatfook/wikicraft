@@ -9,6 +9,10 @@
 "introduce":"这里是一段描述介绍小组的文字，内容自定义。介绍自己的小组成员或者是邀请新成员加入小组等等。"
 }
 ```
+```@wiki/js/siteManage
+{
+}
+```
 
 ```@wiki/js/statics
 {
@@ -35,7 +39,8 @@
 }
 ```
 
-```@wiki/js/organizationMemberList
+```@wiki/js/siteMemberList
 {
+"moduleKind":"organization"
 }
 ```

@@ -25,12 +25,12 @@ define([
         function createSite(siteinfo, cb , errcb) {
             siteinfo.userId = $scope.user._id;
             siteinfo.username = $scope.user.username;
-            siteinfo.dataSourceId = $scope.user.dataSourceId;
-
+			siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
+            config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
-                var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                userDataSource.registerInitFinishCallback(function () {
-                    var currentDataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId);
+                var defaultDataSource = dataSource.getDataSource(siteinfo.username);
+				var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+                var callback = function () {
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var contentUrlPrefix = "text!html/";
                     var contentPageList = [];
@@ -46,7 +46,7 @@ define([
                         fnList.push((function (index) {
                             return function (cb, errcb) {
                                 require([contentPageList[index].contentUrl], function (content) {
-                                    currentDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
+                                    defaultDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
                                 }, function () {
                                     console.log("local server request md file failed");
                                     // 本地文件请求失败直接跳过
@@ -56,14 +56,37 @@ define([
                         })(i));
                     }
 
-                    util.sequenceRun(fnList, undefined, cb, cb);
-                });
-            }, errcb);
+                    util.sequenceRun(fnList, undefined, function(){
+                        config.loading.hideLoading();
+                        cb && cb();
+                    }, function () {
+                        util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId:siteinfo._id});
+                        config.loading.hideLoading();
+                        errcb && errcb();
+                    });
+                };
+				if (siteinfo.dataSource) {
+					dataSourceInst.init(siteinfo.dataSource, function() {
+						defaultDataSource = dataSourceInst;
+						callback();
+					}, errcb);
+				} else {
+					callback();
+				}
+            }, function () {
+                config.loading.hideLoading();
+                errcb && errcb();
+            });
         }
 
         $scope.nextStep = function () {
             $scope.errMsg = "";
             if ($scope.step == 1) {
+                if (/^\s+/.test($scope.website.displayName)){
+                    $scope.nextStepDisabled = true;
+                    $scope.errMsg="首位不能为空格";
+                    return;
+                }
                 if (!$scope.website.displayName) {
                     $scope.errMsg = "站点名为必填字段";
                     return;
@@ -99,6 +122,8 @@ define([
                         }
                     });
                 }
+                $scope.website.visibility = $scope.visibility ? "private" : "public";
+                //console.log($scope.website.visibility);
                 return;
             } else if ($scope.step == 3) {
                 $scope.nextStepDisabled = !$scope.website.templateName;
@@ -113,6 +138,7 @@ define([
                     $scope.errMsg = "请选择模板样式";
                     return ;
                 }
+                $scope.website.logoUrl = $scope.imgsPath + $scope.style.logoUrl;
             } else if ($scope.step == 6) {
                 $scope.website.userId = $scope.user._id;
                 $scope.website.username = $scope.user.username;
@@ -125,8 +151,9 @@ define([
                     $scope.prevStepDisabled = false;
                     $scope.nextStepDisabled = false;
                 }, function () {
+					console.log("创建失败，请稍后重试...");
                     $scope.prevStepDisabled = false;
-                    $scope.nextStepDisabled = true;
+                    $scope.nextStepDisabled = false;
                 });
                 return
             } else{
@@ -142,48 +169,12 @@ define([
         }
 
         function init() {
-            //util.http('POST', config.apiUrlPrefix+'website_category',{}, function (data) {
-            //util.http('POST', config.apiUrlPrefix + 'website_template_config', {}, function (data) {
-            //     $scope.categories = data;
-            //     for (var i = 0; $scope.categories && i < $scope.categories.length; i++) {
-            //         var cateory = $scope.categories[i];
-            //         for (var j = 0; j < cateory.templates.length; j++) {
-            //             var template = cateory.templates[j];
-            //             template.content = $sce.trustAsHtml(template.content);
-            //             for (var k = 0; k < template.styles.length; k++) {
-            //                 var style = template.styles[k];
-            //                 style.content = $sce.trustAsHtml(style.content);
-            //             }
-            //         }
-            //         if ($scope.website.categoryId == $scope.categories[i]._id) {
-            //             $scope.templates = $scope.categories[i].templates;
-            //         }
-            //     }
-            //
-            //     for (var i = 0; $scope.templates && i < $scope.templates.length; i++) {
-            //         if ($scope.website.templateId == $scope.templates[i]._id) {
-            //             $scope.styles = $scope.templates[i].styles;
-            //             break;
-            //         }
-            //     }
-            //
-            //     $scope.templates = $scope.categories[0].templates;
-            //     $scope.styles = $scope.templates[0].styles;
-            //     $scope.website.categoryId = $scope.categories[0]._id;
-            //     $scope.website.categoryName = $scope.categories[0].name;
-            //     $scope.website.templateId = $scope.templates[0]._id;
-            //     $scope.website.templateName = $scope.templates[0].name;
-            //     $scope.website.styleId = $scope.styles[0]._id;
-            //     $scope.website.styleName = $scope.styles[0].name;
-            //     $scope.category = $scope.categories[0];
-            //     $scope.template = $scope.templates[0];
-            //     $scope.style = $scope.styles[0];
-            // });
             $scope.categories = siteStyle;
             $scope.templates = $scope.categories[0].templates;
             $scope.styles = $scope.templates[0].styles;
             $scope.website.categoryId = $scope.categories[0]._id;
             $scope.website.categoryName = $scope.categories[0].name;
+            $scope.website.type = $scope.categories[0].classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
             $scope.website.styleId = $scope.styles[0]._id;
@@ -210,6 +201,7 @@ define([
             $scope.styles = category.templates[0].styles;
             $scope.website.categoryId = category._id;
             $scope.website.categoryName = category.name;
+            $scope.website.type = category.classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
             $scope.website.styleId = $scope.styles[0]._id;
@@ -251,6 +243,8 @@ define([
             $scope.errMsg="";
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
+            $scope.tag="";
+            $("input").focus();
         }
 
         $scope.removeTag = function (tagName) {
@@ -262,6 +256,11 @@ define([
         }
 
         $scope.checkWebsiteDisplayName = function () {
+            if (/^\s+/.test($scope.website.displayName)){
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="首位不能为空格";
+                return;
+            }
             var displayName=$scope.website.displayName?$scope.website.displayName:$scope.website.displayName.trim();
             if (!displayName) {
                 $scope.nextStepDisabled = true;
@@ -305,14 +304,14 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
-            util.goUserSite('/' + $scope.user.username + '/' + $scope.website.name + '/index');
+            util.go('/' + $scope.user.username + '/' + $scope.website.name + '/index?branch=master');
         }
 
         //网站设置
         $scope.goEditWebsitePage = function () {
             storage.sessionStorageSetItem("editWebsiteParams", $scope.website);
             storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
-            util.go('userCenter', true);
+            util.go('/wiki/userCenter', true);
             //window.open(window.location.href);
         }
     }];

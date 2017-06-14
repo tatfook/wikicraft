@@ -6,6 +6,7 @@ Date: 2016/11/01
 ]]
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./user_trends.page")
 
 local user_fans = inherit(models.abstract.base, gettable("models.user_fans"))
 
@@ -21,15 +22,87 @@ function user_fans:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local err, params = self:validateQuery(params)
 	self:db():insertOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, params, resume)
 	
 	return errors:wrap(yield())
 end
 
+-- 是否已经关注
+function user_fans:api_isAttented(params)
+	if (not params.userId) or (not params.fansUserId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, resume)
+	local _, data = yield()
+	
+	if not data then
+		return errors:wrap(nil, 0)
+	end
+
+	return errors:wrap(nil, 1)
+end
+
+-- 关注用户
+function user_fans:api_attent(params)
+	if (not params.userId) or (not params.fansUserId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
+	end
+
+	self:api_upsert(params)	
+
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=params.userId}).data
+	local fansUserInfo = userDB:api_getById({userId=params.fansUserId}).data
+	if not userinfo or (not fansUserInfo) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	-- 创建用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=params.userId, objectId=params.fansUserId, trendsType=const.USER_TRENDS_TYPE_ATTENT_USER}
+	trend.desc = userinfo.username .. "关注" .. fansUserInfo.username
+	userTrendsDB:api_upsert(trend)
+
+	return errors:wrap()
+end
+
+-- 取消关注
+function user_fans:api_unattent(params)
+	if (not params.userId) or (not params.fansUserId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
+	end
+
+	self:db():deleteOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, resume)
+	yield()
+	
+	local userDB = models.user:new()
+	local userinfo = userDB:api_getById({userId=params.userId}).data
+	local fansUserInfo = userDB:api_getById({userId=params.fansUserId}).data
+	if not userinfo or (not fansUserInfo) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	-- 创建用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=params.userId, objectId=params.fansUserId, trendsType=const.USER_TRENDS_TYPE_ATTENT_USER}
+	trend.desc = userinfo.username .. "取消关注" .. fansUserInfo.username
+	userTrendsDB:api_upsert(trend)
+
+	return errors:wrap()
+end
+
+-- 获取用户的粉丝数
+function user_fans:api_getCountByUserId(params)
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():count({["+userId"]={params.userId}}, resume)
+	
+	return errors:wrap(yield())
+end
 
 -- 获得用户的粉丝
-function user_fans:api_getFansByUserId(params) 
+function user_fans:api_getByUserId(params) 
 	if not params.userId then 
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
@@ -37,15 +110,13 @@ function user_fans:api_getFansByUserId(params)
 	local skip, limit = util:pagination(params)	
 
 	self:db():count({["+userId"]=params.userId}, resume)
-	local err, total = yield()
-	total = total or 0
+	local _, total = yield()
 
 	self:db():find({["+userId"]=params.userId, skip=skip, limit=limit}, resume)
-	local err, data = yield()
-	data = data or {}
+	local _, data = yield()
 
 	local userDB = models.user:new()
-	for _, value in pairs(data) do
+	for _, value in ipairs(data or {}) do
 		value['userinfo'] = userDB:api_getById({userId=value.fansUserId}).data
 	end
 
@@ -53,24 +124,22 @@ function user_fans:api_getFansByUserId(params)
 end
 
 -- 获得用户关注
-function user_fans:api_getFollowByUserId(params)
-	if not params.userId then 
+function user_fans:api_getByFansUserId(params)
+	if not params.fansUserId then 
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
 	local skip, limit = util:pagination(params)	
 
-	self:db():count({["+fansUserId"]=params.userId}, resume)
-	local err, total = yield()
-	total = total or 0
+	self:db():count({["+fansUserId"]=params.fansUserId}, resume)
+	local _, total = yield()
 
-	self:db():find({["+fansUserId"]=params.userId, skip=skip, limit=limit}, resume)
-	local err, data = yield()
-	data = data or {}
+	self:db():find({["+fansUserId"]=params.fansUserId, skip=skip, limit=limit}, resume)
+	local _, data = yield()
 
 	local userDB = models.user:new()
-	for _, value in pairs(data) do
-		value['userinfo'] = userDB:api_getById({userId=value.fansUserId}).data
+	for _, value in ipairs(data or {}) do
+		value['userinfo'] = userDB:api_getById({userId=value.userId}).data
 	end
 
 	return errors:wrap(nil,{total=total, userList=data})

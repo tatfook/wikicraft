@@ -14,6 +14,10 @@
         border-radius: 50%;
         object-fit: cover;
     }
+    .navbar-brand{
+        background-color: #FFF;
+        z-index:2;
+    }
     .navbar-brand img{
         width:115px;
     }
@@ -69,10 +73,29 @@
         border-radius: 2px;
     }
     /*导航条面包屑*/
+    .navbar-default .nav-bread-crumb{
+        max-width: 230px;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-left: 15px;
+    }
     .navbar-default .nav-bread-crumb .breadcrumb {
         background-color: transparent;
-        padding: 15px;
+        padding: 15px 0;
         margin-bottom: 0;
+        display: inline-block;
+    }
+    .navbar-default .prev-ellipsis{
+        position: absolute;
+        background-color: #FFF;
+        z-index: 1;
+        display:none;
+        margin: 0;
+        list-style: none;
+        left:-15px;
+        top:15px;
+        padding-left:15px;
+        padding-right: 3px;
     }
     .navbar-default .nav-bread-crumb > a {
         display: inline-block;
@@ -342,12 +365,12 @@
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5>{{user.username}}</h5>
                                 <div class="level clearfix">
-                                    <p class="info clearfix"><span class="pull-left">等级5</span><span class="pull-right">2324/2536</span>
+                                    <p class="info clearfix"><span class="pull-left">等级0</span><span class="pull-right">2324/2536</span>
                                     </p>
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="50"
-                                             aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
-                                            <span class="sr-only">50% Complete</span>
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="0"
+                                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                            <span class="sr-only">0% Complete</span>
                                         </div>
                                     </div>
                                     <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
@@ -376,8 +399,8 @@
                                         <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
                                             <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
                                         </li>
-                                        <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
+                                        <li role="presentation" ng-class="trendsType == 'attent' ? 'active' : ''">
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('attent')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
                                             <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
@@ -400,10 +423,10 @@
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-                               ng-click="clickMyFavorite()">收藏夹</a>
+                               ng-click="clickMyFavorite()">关注</a>
                             <div class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
-                                    <li ng-repeat="x in favoriteWebsiteObj.favoriteList">
+                                    <li ng-repeat="x in favoriteWebsiteObj.siteList">
                                         <a ng-click="goUserSite(x.siteinfo)" class="text-muted">{{x.siteinfo.name}}</a>
                                     </li>
                                 </ul>
@@ -424,12 +447,13 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
-                        <li class="hidden-xs search-bar" ng-class="{active:stretch}">
+                        <li class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
                             <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
                             <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
-                        <li class="nav-bread-crumb">
-                            <ol class="breadcrumb">
+                        <li id="js-prev-container" class="nav-bread-crumb">
+                            <ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>
+                            <ol id="js-prev-content" class="breadcrumb">
                                 <li><a ng-click="goUserPage()">{{urlObj.username || ''}}</a></li>
                                 <li class="dropdown" ng-show="urlObj.sitename">
                                     <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
@@ -445,7 +469,7 @@
                                        aria-expanded="true">{{urlObj.pagename || ''}}</a>
                                     <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
                                         <li ng-repeat="page in userSitePageList">
-                                            <a ng-click="selectPage(page)">{{page.name}}</a>
+                                            <a ng-click="selectPage(page)">{{page.pagename}}</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -461,7 +485,7 @@
                         <li class="icon collect-icon" ng-show="isIconShow">
                             <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="doWorksFavorite($event,false)" alt="">
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
-                            <span class="text-muted" ng-click="goFans()">{{totalItems}}</span>
+                            <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">

@@ -6,6 +6,7 @@ Date: 2016/10/10
 ]]
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./user_active.page")
 include_once("./user_favorite.page")
 include_once("./user_visit_history.page")
 include_once("./website_pages.page")
@@ -18,7 +19,7 @@ include_once("./website_works.page")
 include_once("./website_template_style.page")
 include_once("./website_template_config.page")
 include_once("./website_domain.page")
-include_once("./data_source.page")
+include_once("./site_data_source.page")
 
 local website = inherit(models.abstract.base, gettable("models.website"))
 
@@ -28,6 +29,7 @@ website.db_name = "website"
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
+	self:addfield("type", "string", false, 30)
 	self:addfield("displayName", "string", false, 30)
 	self:addfield("userId", "number", false)
 	self:addfield("username", "string", false)
@@ -48,51 +50,32 @@ function website:ctor()
 	self:addfield("fork", "string", false, 200)
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
-	self:addfield("githubRepoName", "string")   -- 网站单独github数据源
+	self:addfield("visibility", "string") -- private 私有  public 共有
 	self:addfield("private", "number")	
 	self:addfield("visitCount", "number")
 	self:addfield("favoriteCount", "number")
 	self:addfield("pageCount", "number")
 	self:addfield("memberCount", "number")
 	self:addfield("worksCount", "number")
-	self:addfield("dataSourceId", "number")
 end
 
 -- 创建站点
-function website:create(params) 
-	if (not params.userId) or (not params.name) then 
+function website:api_create(params) 
+	if (not params.userId) or (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	-- 用户网站数量加1
-	local userDB = models.user:new()
-	local userinfo = userDB:api_getById({userId=params.userId}).data
-	if not userinfo then 
-		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	params.favoriteCount = 0
 	params.visitCount = 0
-	params.pageCount = 1
-	params.memberCount = 1
-	params.dataSourceId = userinfo.dataSourceId
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
-	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)	
-	local _, site = yield()
-	if not site then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=site}
-	end
-	
-	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:api_upsert({websiteId=site._id, userId=userinfo._id, roleId=const.WEBSITE_USER_ROLE_ADMIN})
-
-	return errors:wrap(nil, site)
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)	
+	return errors:wrap(yield())
 end
 
 -- 创建站点
 function website:api_upsert(params) 
-	if (not params.userId) or (not params.username) or (not params.name) or (not params.dataSourceId) then
+	if (not params.userId) or (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
@@ -100,19 +83,58 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo = yield()
+
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.favoriteCount = 0
+	params.visitCount = 0
+	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
 
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+	
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
+	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
+	LOG.std(nil, "error", "keepwork", site.dataSource)
 
 	-- 设置站点管理员
 	local websiteMemberDB = models.website_member:new()
-	websiteMemberDB:api_upsert({websiteId=site._id, websiteType=const.WEBSITE_TYPE_ORGANIZATION, userId=site.userId, roleId=const.WEBSITE_USER_ROLE_ADMIN})
-
+	websiteMemberDB:api_upsert({websiteId=site._id, websiteType=site.type, username=site.username, roleName=const.WEBSITE_USER_ROLE_ADMIN, level=const.RECORD_LEVEL_HIGH})
+		
+	-- 用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=site.userId, objectId=site._id, trendsType=const.USER_TRENDS_TYPE_CREATE_SITE}
+	trend.desc = site.username .. "创建站点" .. site.name
+	userTrendsDB:api_upsert(trend)
+	
 	return errors:wrap(nil, site)
+end
+
+-- 设置网站私有行性
+function website:setPrivate(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.visibility = params.visibility or "public"
+
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)	
+	yield()
+
+	self:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	return errors:wrap(yield())
 end
 
 -- 删除一个站点
@@ -121,6 +143,11 @@ function website:deleteById(websiteId)
 	if not site then
 		return errors:wrap(nil)
 	end
+
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=site.userId, objectId=site._id, trendsType=const.USER_TRENDS_TYPE_DELETE_SITE}
+	trend.desc = site.username .. "删除站点" .. site.name
+	userTrendsDB:api_upsert(trend)
 
 	-- 删除更新表中该站点数据
 	local websiteRenewalModel =	models.website_renewal:new()
@@ -182,6 +209,30 @@ function website:deleteUserWebsite(userId)
 	end
 	
 	return nil
+end
+
+-- 更新站点页面信息
+function website:api_updateWebsitePageinfo(params)
+	if (not params.userId) or (not params.siteId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local site = self:api_getById({websiteId=params.siteId}).data
+	if not site then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	-- 更新活动计数
+	local userActiveDB = models.user_active:new()
+	userActiveDB:api_addActiveCount(params)
+	
+	-- 更新用户动态
+	local userTrendsDB = models.user_trends:new()
+	local trend = {userId=params.userId, objectId=params.siteId, trendsType=const.USER_TRENDS_TYPE_UPDATE_SITE}
+	trend.desc = site.username .. "更新站点" .. site.name
+	userTrendsDB:api_upsert(trend)
+	
+	return errors:wrap()
 end
 
 -- 更新站点
@@ -262,9 +313,8 @@ function website:api_getByName(params)
 	end
 
 	self:db():findOne({['+username+name']={params.username, params.websiteName}}, resume)
-	local err, data = yield()
 	
-	return errors:wrap(err, data)		
+	return errors:wrap(yield())		
 end
 
 -- 通过站点ID获得站点
@@ -278,19 +328,37 @@ function website:api_getById(params)
 	return errors:wrap(yield())		
 end
 
--- 增加访问计数
-function website:api_addVisitNum(params)
-	if not params.websiteName then 
+-- 更新访问计数
+function website:api_updateVisitNum(params)
+	if (not params.username) or (not params.sitename) then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({["+name"]={params.websiteName}}, resume)
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local err, site = yield()
 	if not site then
-		return {error=errors.SERVER_INNER_ERROR, data=nil}
+		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	site.visitCount = (site.visitCount or 0) + 1
+	self:db():updateOne({_id=site._id}, site, resume)
+		
+	return errors:wrap(yield())	
+end
+
+-- 更新收藏数量
+function website:api_updateFavoriteNumById(params)
+	if not params.websiteId then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({_id=params.websiteId}, resume)
+	local err, site = yield()
+	if not site then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	site.favoriteCount = (site.favoriteCount or 0) + (params.count or 1)
 	self:db():updateOne({_id=site._id}, site, resume)
 		
 	return errors:wrap(yield())	
@@ -356,28 +424,7 @@ function website:api_getStatics(params)
 	local memberCount =  websiteMemberDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	local worksCount =  websiteWorksDB:api_getCountByWebsiteId({websiteId=params.websiteId}).data
 	
-	return errors:wrap(nil, {memberCount=memberCount, worksCount=worksCount})
-end
-
-
--- 获得用户信息和站点通过站点名
-function website:api_getUserAndSiteBySitename(params)
-	if not params.sitename then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	local siteinfo = self:api_getByName({websiteName=params.sitename}).data
-	if not siteinfo then
-		return errors:wrap(errors.NOT_FOUND)
-	end
-	
-	local userDB = models.user:new()
-	local userinfo = userDB:api_getById({userId=siteinfo.userId}).data
-	if not userinfo then
-		return  errors:wrap(errros.NOT_FOUND)
-	end
-
-	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
+	return errors:wrap(nil, {userCount=memberCount, worksCount=worksCount})
 end
 
 -- 检查用户站点是否存在
@@ -397,11 +444,6 @@ function website:api_getSiteList(params)
 	
 	local key = '';
 	local value = {};
-	-- 个人站点
-	if params.categoryId then
-		key = key .. '+categoryId'
-		value[#value+1] = tonumber(params.categoryId)
-	end
 	
 	if params.websiteName then
 		key = key .. '+name'
@@ -434,7 +476,7 @@ function website:api_getSiteList(params)
 	value["skip"] = skip
 	value['limit'] = limit
 
-	-- log({[key]=value})
+	log({[key]=value})
 	self:db():find({[key]=value}, resume)
 	local err, data = yield()
 	
@@ -458,8 +500,25 @@ function website:api_getByDomain(params)
 	return errors:wrap(yield())
 end
 
+-- 访问站点
+function website:api_visitWebsite(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
--- 获取站点详细信息
+	-- 增加站点访问量
+	self:api_updateVisitNum({username=params.username, sitename=params.sitename})
+
+	-- 添加访问记录
+	if params.userId then
+		local userVisitHistoryDB = models.user_visit_history:new()
+		userVisitHistoryDB:api_upsert({userId=params.userId, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
+	end
+	
+	return errors:wrap()
+end
+
+-- 获取站点详细信息, 
 function website:api_getDetailInfo(params)
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -474,7 +533,7 @@ function website:api_getDetailInfo(params)
 	end
 	userinfo.password = nil
 
-	self:db():findOne({["+userId+name"]={userinfo._id, params.sitename}}, resume)
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	
 	local dataSourceId = userinfo.dataSourceId
@@ -482,23 +541,15 @@ function website:api_getDetailInfo(params)
 		dataSourceId = siteinfo.dataSourceId
 	end
 
-	local dataSourceDB = models.data_source:new()
-	local dataSource = dataSourceDB:api_getById({id=dataSourceId}).data
-	if not dataSource then
-		return errors:wrap(errors.SERVER_INNER_ERROR, {message="data source not found"})
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:api_updateLastCommitId({_id=dataSourceId})
+	local dataSourceList = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
+	for key, value in ipairs(dataSourceList or {}) do
+		dataSourceList[key].dataSourceToken = nil
 	end
-	dataSource = dataSourceDB:api_getLastCommitId(dataSource).data
-	dataSource.dataSourceToken = nil
-	userinfo.dataSource = {dataSource}
+	userinfo.dataSource = dataSourceList
 
-	-- 增加站点访问量
-	self:api_addVisitNum({websiteName=params.sitename})
-
-	-- 添加访问记录
-	if params.userId then
-		local userVisitHistoryDB = models.user_visit_history:new()
-		userVisitHistoryDB:api_upsert({userId=params.userId, websiteName=params.sitename,url=url})
-	end
+	self:api_visitWebsite(params)
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
@@ -510,7 +561,8 @@ function website:api_getUserSiteInfo(params)
 	end
 
 	local userDB = models.user:new()
-	local userinfo = userDB:api_getByName({username=params.username}).data
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo = yield()
 	
 	if not userinfo then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)

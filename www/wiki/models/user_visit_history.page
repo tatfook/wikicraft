@@ -8,25 +8,30 @@ Date: 2017/03/02
 NPL.load("(gl)script/ide/DateTime.lua")
 local timehelp = commonlib.timehelp
 include_once("./abstract/base.page")
+include_once("./website.page")
 
 local user_visit_history = inherit(models.abstract.base, gettable("models.user_visit_history"))
 user_visit_history.db_name = 'user_visit_history'
 
 function user_visit_history:ctor()
+	-- 用户ID
 	self:addfield("userId", "number")
-	self:addfield("websiteName","string")
+	-- 用户访问的站点信息
+	self:addfield("visitUsername","string")
+	self:addfield("visitSitename","string")
 	self:addfield("url","string")
 	self:addfield("updateDate", "string")
 end
 
 -- 创建一条访问记录
 function user_visit_history:api_upsert(params)
-	if not params.userId or (not params.websiteName) then
+	if (not params.userId) or (not params.visitSitename) or (not params.visitUsername) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	-- params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	self:db():insertOne({['+userId+websiteName']={params.userId, params.websiteName}}, params, resume)
+	self:db():insertOne({['+userId+visitUsername+visitSitename']={params.userId, params.visitUsername, params.visitSitename}}, params, resume)
 	
 	return errors:wrap(yield())
 end
@@ -49,11 +54,16 @@ function user_visit_history:api_get(params)
 	value['limit'] = limit
 	value['skip'] = skip
 	self:db():find({[key]=value}, resume)
-	local err, data = yield()
+	local _, data = yield()
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit),visitList=data})
+	local websiteDB = models.website:new() 
+	for _, value in ipairs(data or {}) do
+		value["siteinfo"] = websiteDB:api_getByName({username=value.visitUsername, websiteName=value.visitSitename}).data
+	end
 
+	return errors:wrap(nil, {total=total, visitList=data})
 end
+
 -- 获得用户一天访问记录
 function user_visit_history:api_getCurrentDay(params)
 	local skip, limit = util:pagination(params)
@@ -83,6 +93,6 @@ function user_visit_history:api_getCurrentDay(params)
 	self:db():find({[key]=value}, resume)
 	local err, data = yield()
 	
-	return errors:wrap(nil, {total=total, pageCount=util:getPageCount(total,limit),visitList=data})
+	return errors:wrap(nil, {total=total, visitList=data})
 end
 

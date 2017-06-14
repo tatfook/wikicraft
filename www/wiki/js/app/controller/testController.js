@@ -5,34 +5,18 @@
 define([
     'app',
     'helper/util',
+	'helper/dataSource',
     'text!html/test.html',
-    'wangEditor',
-    'to-markdown',
-], function (app, util, htmlContent, wangEditor, toMarkdown) {
-    console.log("testController");
-
-    console.log("-------------------");
-    console.log(toMarkdown('<div>hello world</div>', {
-        converters:[
-            {
-                filter: 'div',
-                replacement: function(content) {
-                    console.log("================");
-                    return '\n' + content + '\n';
-                }
-            },
-        ]
-    }));
-    app.registerController("testController", ['$scope','modal', function ($scope, modal) {
+], function (app, util, dataSource,  htmlContent) {
+    app.registerController("testController", ['$scope','$http', function ($scope, $http) {
         function init() {
-            console.log("init testController");
-
+			$http.get(config.apiUrlPrefix + 'test/helloworld', {cache:true}).success(function(response){
+				console.log(response);
+			});
         }
-        //init();
         $scope.$watch("$viewContentLoaded", init);
     }]);
-
-
+    
     return htmlContent;
 });
 

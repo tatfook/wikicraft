@@ -1,0 +1,73 @@
+<style>
+    .game-rules h1{
+        font-size: 36px;
+        position: relative;
+        padding-bottom: 30px;
+        margin-bottom: 20px;
+        font-weight: normal;
+    }
+    .game-rules h1:before{
+        content: '';
+        width: 50px;
+        height: 1px;
+        background-color: #000;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+    .game-rules h2{
+        font-size: 20px;
+        font-weight: bold;
+        color: #666;
+        height: 40px;
+        margin: 0;
+        padding-top: 7px;
+    }
+    .game-rules p{
+        font-size: 16px;
+        color: #666;
+    }
+    .game-rules .rule{
+        margin-bottom: 30px;
+    }
+    .game-rules .serial{
+        width: 55px;
+        float: left;
+        min-height: 50px;
+        color: #FF7978;
+        font-size: 30px;
+        padding-left: 10px;
+        position: relative;
+        margin-right: 10px;
+    }
+    .game-rules .serial:before{
+        content: '';
+        display: inline-block;
+        width: 2px;
+        height: 70px;
+        background-color: #999;
+        position: absolute;
+        transform: rotate(45deg);
+        top: 0px;
+        right: 27px;
+    }
+    .game-rules .rule-content{
+        padding-left: 65px;
+    }
+</style>
+<div ng-controller="gameRulesController">
+    <div class="game-rules container" ng-show="modParams.moduleKind=='game'">
+        <h1 class="title">{{modParams.title}}</h1>
+        <div class="rules-container">
+            <div class="rule" ng-repeat="rule in modParams.rules">
+                <div class="serial">
+                    {{$index+1}}
+                </div>
+                <div class="rule-content">
+                    <h2>{{rule.title}}</h2>
+                    <p ng-bind-html="getRenderText(rule.describe)"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
