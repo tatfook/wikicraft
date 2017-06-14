@@ -968,7 +968,6 @@ define([
                         var treeid = getTreeId(node.pageNode.username);
                         treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }
-					console.log(treeNodeMap);
                 });
             }
 

@@ -155,6 +155,16 @@ define([
 			});
 		}
 		
+		// 设置可见性
+		$scope.setVisibility = function(visibility) {
+			if (!siteDataSource || siteDataSource.dataSource.sitename != siteinfo.name) {
+				Message.info("非独立数据源不可设置可见性");
+				return;
+			}
+			siteDataSource.setProjectVisibility({visibility:visibility});
+		}
+
+		// 创建共享组 		
 		$scope.createShareGroup = function(group, level) {
 			//console.log(group);
 			//console.log(level);
@@ -193,7 +203,6 @@ define([
 				})
 			});
 		}
-
 
 		$scope.deleteGroup = function(group) {
 			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
