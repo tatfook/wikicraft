@@ -2273,6 +2273,17 @@ define([
                     initView();
                 };
 
+                $scope.newWebsite = function () {
+                    modal('controller/newWebsiteController', {
+                        controller: 'newWebsiteController',
+                        size: 'lg'
+                    }, function (wikiBlock) {
+                        console.log(wikiBlock);
+                    }, function (result) {
+                        console.log(result);
+                    });
+                }
+
                 $scope.showCodeView = function () {
                     $scope.showCode = true;
                     $scope.showView = false;

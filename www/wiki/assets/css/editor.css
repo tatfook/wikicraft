@@ -274,6 +274,14 @@ body,
 }
 .treeview .list-group-item:hover .badge{
     display: inline-block;
+    position: absolute;
+    right: 0;
+    padding-right: 0 5px;
+    background-color: #FFF;
+    border-radius: 0;
+    margin: -3px 0;
+    height: 26px;
+    line-height: 24px;
 }
 .treeview img.show-parent{
     width: 16px;

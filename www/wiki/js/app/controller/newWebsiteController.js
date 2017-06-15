@@ -182,6 +182,10 @@ define([
             $scope.category = $scope.categories[0];
             $scope.template = $scope.templates[0];
             $scope.style = $scope.styles[0];
+
+            if((config.localEnv && window.location.hash != "#/wiki/user_center") || (!config.localEnv && window.location.pathname !="/wiki/user_center")){
+                $scope.isModal=true;
+            }
         }
 
         // 文档加载完成
@@ -304,7 +308,14 @@ define([
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (websiteName) {
+            if ($scope.isModal){
+                $scope.cancel();
+            }
             util.go('/' + $scope.user.username + '/' + $scope.website.name + '/index?branch=master');
+        }
+
+        $scope.cancel = function () {
+            $scope.$dismiss();
         }
 
         //网站设置
