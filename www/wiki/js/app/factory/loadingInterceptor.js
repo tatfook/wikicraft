@@ -8,21 +8,39 @@ define(['app'], function (app) {
 			httpCount:0,
 		};
 
-		loadingInterceptor.request = function(config) {
+		function showLoading() {
 			loadingInterceptor.httpCount++;
 			if (window.config.loading) {
 				window.config.loading.show();
 			}	
 			//console.log(loadingInterceptor.httpCount);
-			return config;
 		}
 
-		loadingInterceptor.response = function(response) {
+		function hideLoading() {
 			if (window.config.loading) {
 				loadingInterceptor.httpCount--;
 				loadingInterceptor.httpCount == 0 && window.config.loading.hide();
 			}	
 			//console.log(loadingInterceptor.httpCount);
+		}
+
+		loadingInterceptor.request = function(config) {
+			showLoading();
+			return config;
+		}
+
+		loadingInterceptor.requestError = function(rejection) {
+			hideLoading();
+			return rejection;
+		}
+		
+		loadingInterceptor.responseError= function(rejection) {
+			hideLoading();
+			return rejection;
+		}
+
+		loadingInterceptor.response = function(response) {
+			hideLoading();
 			return response;
 		}
 		
