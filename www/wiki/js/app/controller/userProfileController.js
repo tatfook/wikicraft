@@ -323,10 +323,10 @@ define(['app',
                     attentType = "work";
                     $scope.currentPage = 1;
                 }
-                util.post(config.apiUrlPrefix + 'user_favorite/getByUserId', {userId:$scope.user._id, page:$scope.currentPage}, function () {
+                util.post(config.apiUrlPrefix + 'user_favorite/getByUserId', {userId:$scope.user._id, page:$scope.currentPage}, function (data) {
                     data = data ||{};
                     $scope.siteList = data.siteList;
-                })
+                });
             };
             // 实现分页
             $scope.collectionPageChanged = function () {
@@ -374,7 +374,7 @@ define(['app',
                 };
                 util.http("POST", config.apiUrlPrefix + "user_favorite/getBySiteId", params, function (data) {
                     $scope.totalItems = data.total || 0;
-                    $scope.favoriteList = data.favoriteList || [];
+                    $scope.userList = data.userList || [];
                 });
             }
 

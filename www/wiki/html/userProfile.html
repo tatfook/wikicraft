@@ -581,7 +581,7 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active img-text-box collection-pane" id="wiki_user">
                     <div class="col-sm-12">
-                        <div class="img-text col-md-6 col-sm-12" ng-repeat="x in favoriteList">
+                        <div class="img-text col-md-6 col-sm-12" ng-repeat="x in siteList">
                             <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                             <div class="text">
                                 <h4><a href="#">{{x.siteinfo.name}}</a><span class="pull-right info">关注于2017-03-02</span></h4>
@@ -653,7 +653,7 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
                     <div class="clearfix">
-                        <div class="fans-profile" ng-repeat="x in favoriteList">
+                        <div class="fans-profile" ng-repeat="x in userList">
                             <img ng-src="{{x.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
                             <p>{{x.userinfo.username}}</p>
                         </div>

@@ -271,8 +271,7 @@ define([
             var worksFavoriteRequest = function(isFavorite) {
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: site.userId,
-                    favoriteWebsiteId: site._id,
+                    siteId: site._id,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
