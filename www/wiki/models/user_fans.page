@@ -109,10 +109,10 @@ function user_fans:api_getByUserId(params)
 
 	local skip, limit = util:pagination(params)	
 
-	self:db():count({["+userId"]=params.userId}, resume)
+	self:db():count({["+userId"]={params.userId}}, resume)
 	local _, total = yield()
 
-	self:db():find({["+userId"]=params.userId, skip=skip, limit=limit}, resume)
+	self:db():find({["+userId"]={params.userId, skip=skip, limit=limit}}, resume)
 	local _, data = yield()
 
 	local userDB = models.user:new()
@@ -131,10 +131,10 @@ function user_fans:api_getByFansUserId(params)
 
 	local skip, limit = util:pagination(params)	
 
-	self:db():count({["+fansUserId"]=params.fansUserId}, resume)
+	self:db():count({["+fansUserId"]={params.fansUserId}}, resume)
 	local _, total = yield()
 
-	self:db():find({["+fansUserId"]=params.fansUserId, skip=skip, limit=limit}, resume)
+	self:db():find({["+fansUserId"]={params.fansUserId, skip=skip, limit=limit}}, resume)
 	local _, data = yield()
 
 	local userDB = models.user:new()

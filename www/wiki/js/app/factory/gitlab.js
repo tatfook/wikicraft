@@ -61,7 +61,7 @@ define([
                 }
             };
             var failed = function (response) {
-                console.log(response);
+                //console.log(response);
                 typeof errcb == 'function' && errcb(response);
             };
 
@@ -283,10 +283,14 @@ define([
             params.branch = params.branch || "master";
             self.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
                 // 已存在
-                self.httpRequest("PUT", url, params, function (data) {
-                    //console.log(data);
-                    cb && cb(data);
-                }, errcb)
+				if (data && data.blob_id) {
+					self.httpRequest("PUT", url, params, function (data) {
+						//console.log(data);
+						cb && cb(data);
+					}, errcb)
+				} else {
+					self.httpRequest("POST", url, params, cb, errcb)
+				}
             }, function () {
                 self.httpRequest("POST", url, params, cb, errcb)
             });
