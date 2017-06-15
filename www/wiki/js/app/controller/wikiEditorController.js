@@ -131,9 +131,9 @@ define([
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [
-                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_remove()'>&times;</span>",
+                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close()'>&times;</span>",
                 "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()'></span>",
-                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_remove()'></span>",
+                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh()'></span>",
             ];
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
@@ -154,9 +154,9 @@ define([
             treeData[i].icon = 'fa fa-globe';
             treeData[i].tags=[];
             treeData[i].tags.push([
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_remove()' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_remove()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_remove()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage()' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
             ]);
         }
         return treeData;
@@ -891,6 +891,7 @@ define([
                     var treeview = {
                         color: "#3977AD",
                         selectedBackColor: "#3977AD",
+                        onhoverColor:"#D6D6D6",
                         showBorder: false,
                         enableLinks: false,
                         levels: 4,
@@ -1168,6 +1169,26 @@ define([
                     }
                 }
             }
+
+            //关闭
+            $scope.cmd_close = function () {
+                Message.info("关闭功能开发中");
+            };
+
+            //关闭全部已打开
+            $scope.cmd_closeAll = function () {
+                Message.info("关闭功能开发中");
+            };
+
+            //刷新
+            $scope.cmd_refresh = function () {
+                Message.info("刷新功能开发中");
+            };
+
+            //新建文件夹
+            $scope.cmd_newFile = function () {
+                Message.info("新建文件夹功能开发中");
+            };
 
             //撤销
             $scope.cmd_undo = function () {
