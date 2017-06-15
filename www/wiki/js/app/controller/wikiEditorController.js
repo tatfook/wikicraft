@@ -2224,11 +2224,12 @@ define([
                     if ($scope.showFile){
                         $(".code-view").removeClass("nofile");
                         $(".toolbar-page-file").addClass("active");
-                        $(".toolbar-page-file").addClass("active");
+                        $(".toolbar-new-site").addClass("active");
                         $("#treeview").show();
                     }else{
                         $(".code-view").addClass("nofile");
                         $(".toolbar-page-file").removeClass("active");
+                        $(".toolbar-new-site").removeClass("active");
                         $("#treeview").hide();
                     }
                     if ($scope.showCode && $scope.showView){
@@ -2271,6 +2272,17 @@ define([
                     $scope.showFile = $scope.showFile ? false : true;
                     initView();
                 };
+
+                $scope.newWebsite = function () {
+                    modal('controller/newWebsiteController', {
+                        controller: 'newWebsiteController',
+                        size: 'lg'
+                    }, function (wikiBlock) {
+                        console.log(wikiBlock);
+                    }, function (result) {
+                        console.log(result);
+                    });
+                }
 
                 $scope.showCodeView = function () {
                     $scope.showCode = true;
