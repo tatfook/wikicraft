@@ -183,7 +183,7 @@ define([
             $scope.template = $scope.templates[0];
             $scope.style = $scope.styles[0];
 
-            if((config.localEnv && window.location.hash != "#/wiki/user_center") || (!config.localEnv && window.location.pathname !="/wiki/user_center")){
+            if((util.getPathname() !="/wiki/user_center")){
                 $scope.isModal=true;
             }
         }

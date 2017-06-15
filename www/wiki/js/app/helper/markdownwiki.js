@@ -332,6 +332,7 @@ define([
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
             currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName}, function (content) {
                 //console.log(content);
+				content = content || "";
                 text = content + '\n' + text;
                 mdwiki.templateLineCount = content.split('\n').length;
                 _render();
@@ -590,7 +591,7 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-            //console.log(tokenList);
+            console.log(tokenList);
             //console.log(blockList);
             return blockList;
         }

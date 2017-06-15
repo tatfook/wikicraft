@@ -385,6 +385,10 @@ define([
         }
         return resultStr;
     }
+	// 获取当前路径
+	util.getPathname = function() {
+		return util.humpToSnake(util.parseUrl().pathname);
+	}
 
     config.util = util;
     return util;
