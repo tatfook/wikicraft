@@ -292,6 +292,16 @@ define([
             }
         }
 
+        $scope.changeSiteType = function (finish) {
+            console.log($scope.changeType);
+            if(finish){
+                console.log("确定更改");
+                $('#ensureModal').modal("hide");
+            }else{
+                $('#ensureModal').modal("show");
+            }
+        }
+
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');
             var context = canvas.getContext('2d');

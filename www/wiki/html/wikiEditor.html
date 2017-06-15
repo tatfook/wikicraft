@@ -114,8 +114,11 @@
                     <div class="btn-toolbar" role="toolbar">
                         <div class="btn-group state-change">
                             <div class="btn btn-default btn-sm toolbar-page-file active" title="文件" ng-click="toggleFile()">
-                                <img ng-src="{{imgsPath+'icon/wiki_file.png'}}" alt="">
-                                <img ng-src="{{imgsPath+'icon/wiki_file_active.png'}}" alt="">文件夹
+                                <img ng-src="{{imgsPath+'icon/wiki_scan.png'}}" alt="">
+                                <img ng-src="{{imgsPath+'icon/wiki_scan_active.png'}}" alt=""> 浏览
+                            </div>
+                            <div class="btn btn-default toolbar-new-site btn-sm show" title="新建网站" ng-click="newWebsite()">
+                                <img ng-src="{{imgsPath+'icon/wiki_newWebsite.png'}}" alt=""> 新建网站
                             </div>
                         </div>
                         <div class="btn-group state-change">
@@ -128,7 +131,7 @@
                             <div class="btn btn-default btn-sm toolbar-page-design" title="预览" ng-click="showPreview()">
                                 <img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt="">
                                 <img ng-src="{{imgsPath+'icon/wiki_preview_active.png'}}" alt=""> 预览</div>
-                        </div>
+                            </div>
                         <div class= "btn-group">
                             <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
                             <!--&lt;!&ndash;button type="button" class="btn btn-default btn-sm toolbar-page-copyurl" title="复制网址"><i class="fa fa-external-link" ></i>&nbsp;复制网址</button>-->

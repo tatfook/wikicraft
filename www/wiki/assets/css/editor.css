@@ -249,17 +249,44 @@ body,
     top: 0;
     border-right: 1px solid #eee;
 }
-.treeview .node-selected .badge{
+.treeview .badge{
     background-color: transparent;
+    padding: 0;
+    font-size: 15px;
+    min-width: 0;
+    line-height:20px;
+}
+.treeview .badge .close-icon{
+    position: absolute;
+    top: 2px;
+    left: 23px;
+    font-size: 18px;
 }
 .treeview .list-group-item{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    /*height:38px;*/
+    /*line-height: 30px;*/
 }
 .treeview li:not(.node-selected) .badge{
     display: none;
 }
+.treeview .list-group-item:hover .badge{
+    display: inline-block;
+}
+.treeview img.show-parent{
+    width: 16px;
+    height: auto;
+    margin-left: 5px;
+    margin-bottom: 1px;
+}
+/*.treeview .node-parent .show-empty-node{*/
+    /*display: none;*/
+/*}*/
+/*.treeview .node-empty .show-parent{*/
+    /*display: none;*/
+/*}*/
 select.resize-view {
     width: auto;
     height: 36px;
@@ -313,6 +340,7 @@ select.resize-view {
 
 #srcview{
     padding-right: 40px;
+    padding-left:0;
 }
 /*删除确认弹窗*/
 .delete-modal h3{
@@ -373,7 +401,7 @@ select.resize-view {
         padding-left: 155px;
     }
     .treeview-container{
-        width: 170px;
+        width: 155px;
     }
     select.resize-view{
         height:32px;
@@ -416,13 +444,13 @@ select.resize-view {
         padding:6px 12px;
     }
     .toolbar-page-file.active{
-        margin-right: 81px;
+        margin-right: 66px;
     }
     .code-view{
         padding-left: 155px;
     }
     .treeview-container{
-        width: 170px;
+        width: 155px;
     }
     select.resize-view{
         height:32px;
@@ -442,13 +470,13 @@ select.resize-view {
         margin-right: 0;
     }
     .toolbar-page-file.active{
-        margin-right: 121px;
+        margin-right: 106px;
     }
     .code-view{
         padding-left: 195px;
     }
     .treeview-container{
-        width: 210px;
+        width: 195px;
     }
     .wiki-toolbar .btn-link{
         width: 212px;
@@ -479,13 +507,13 @@ select.resize-view {
         padding:5px 15px 10px;
     }
     .toolbar-page-file.active{
-        margin-right: 154px;
+        margin-right: 139px;
     }
     .code-view{
         padding-left: 235px;
     }
     .treeview-container{
-        width: 250px;
+        width: 235px;
     }
     .toolbar-brand {
         padding: 6px 12px;
@@ -504,13 +532,13 @@ select.resize-view {
         width:355px;
     }
     .toolbar-page-file.active{
-        margin-right: 172px;
+        margin-right: 157px;
     }
     .code-view{
         padding-left: 255px;
     }
     .treeview-container{
-        width: 270px;
+        width: 255px;
     }
 }
 @media(min-width: 1600px){
@@ -536,12 +564,12 @@ select.resize-view {
         padding: 8px 12px;
     }
     .toolbar-page-file.active{
-        margin-right: 169px;
+        margin-right: 154px;
     }
     .code-view{
         padding-left: 275px;
     }
     .treeview-container{
-        width: 290px;
+        width: 275px;
     }
 }
