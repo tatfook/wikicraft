@@ -9,7 +9,7 @@ define([
     'helper/dataSource',
     'text!html/join.html',
 ], function (app, util, storage, dataSource, htmlContent) {
-    app.registerController('joinController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
+    app.registerController('joinController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
         var userThreeService = undefined;
         $scope.isModal=false;
@@ -17,7 +17,6 @@ define([
         $scope.agree=true;
 
         function init() {
-            console.log("==================join controller init======================");
             userThreeService = storage.sessionStorageGetItem('userThreeService');
             if (userThreeService) {
                 $scope.step = 3;
@@ -130,46 +129,71 @@ define([
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {
-            util.post(config.apiUrlPrefix + 'website/create', {
-                "userId": userinfo._id,
-                "username": userinfo.username,
-                "name": "tutorial",
-                "displayName": "新手教程",
-                "categoryName": "个人站点",
-                "templateName": "教学模板",
-                "styleName": "默认样式",
-            }, function (siteinfo) {
-				//var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
-				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                userDataSource.registerInitFinishCallback(function() {
-					var dataSourceInst = userDataSource.getDataSourceBySitename(siteinfo.name);
-                    var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
-                    var tutorialPageList = [
-                        {
-                            "pagepath": pagepathPrefix + "index" + config.pageSuffixName,
-                            "contentUrl": "text!html/tutorial/index.md",
-                        }
-                    ];
-                    var fnList = [];
+			var _createTutorialSite = function() {
+				util.post(config.apiUrlPrefix + 'website/create', {
+					"userId": userinfo._id,
+					"username": userinfo.username,
+					"name": "tutorial",
+					"displayName": "新手教程",
+					"categoryName": "个人站点",
+					"templateName": "教学模板",
+					"styleName": "默认样式",
+				}, function (siteinfo) {
+					//var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+					var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+					userDataSource.registerInitFinishCallback(function() {
+						var dataSourceInst = userDataSource.getDataSourceBySitename(siteinfo.name);
+						var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
+						var tutorialPageList = [
+							{
+								"pagepath": pagepathPrefix + "index" + config.pageSuffixName,
+								"contentUrl": "text!html/tutorial/index.md",
+							}
+						];
+						var fnList = [];
 
-                    for (var i = 0; i < tutorialPageList.length; i++) {
-                        fnList.push((function (index) {
-                            return function (cb, errcb) {
-                                require([tutorialPageList[index].contentUrl], function (content) {
-                                    dataSourceInst.writeFile({
-                                        path: tutorialPageList[index].pagepath,
-                                        content: content
-                                    }, cb, errcb);
-                                }, function () {
-                                    errcb && errcb();
-                                });
-                            }
-                        })(i));
-                    }
+						for (var i = 0; i < tutorialPageList.length; i++) {
+							fnList.push((function (index) {
+								return function (cb, errcb) {
+									require([tutorialPageList[index].contentUrl], function (content) {
+										dataSourceInst.writeFile({
+											path: tutorialPageList[index].pagepath,
+											content: content
+										}, cb, errcb);
+									}, function () {
+										errcb && errcb();
+									});
+								}
+							})(i));
+						}
 
-                    util.sequenceRun(fnList, undefined, cb, cb);
-                });
-            }, errcb);
+						util.sequenceRun(fnList, undefined, cb, cb);
+					});
+				}, errcb);
+			}
+			var getDefaultDataSourceFailedCount = 0;
+			var _getDefaultDataSource = function() {
+				util.post(config.apiUrlPrefix + 'user/getDefaultSiteDataSource', {username:userinfo.username}, function(data){
+					if (data) {
+						userinfo.dataSource = [data];
+						_createTutorialSite();
+						return;
+					} else {
+						getDefaultDataSourceFailedCount++;
+						if (getDefaultDataSourceFailedCount>3) {
+							errcb && errcb();
+							return;
+						} else {
+							_getDefaultDataSource();
+						}
+					}
+				}, errcb);
+			}
+			if (!userinfo.dataSource || userinfo.dataSource.length == 0) {
+				_getDefaultDataSource();
+			} else {
+				_createTutorialSite();
+			}
         }
 
         $scope.goUserCenter=function () {
