@@ -17,7 +17,7 @@ define([
 
     app.registerController = app.controller;
 
-    app.config(['$controllerProvider', '$authProvider', function ($controllerProvider, $authProvider) {
+    app.config(['$controllerProvider', '$httpProvider', '$authProvider', function ($controllerProvider, $httpProvider, $authProvider) {
         // 提供动态注册控制器接口
         app.registerController = function (name, constructor) {
             if (config.angularBootstrap) {
@@ -26,6 +26,9 @@ define([
                 app.controller(name, constructor);
             }
         };
+		
+		// 注册loading拦截器
+		$httpProvider.interceptors.push("loadingInterceptor");
 
         // github 认证配置
         $authProvider.github({

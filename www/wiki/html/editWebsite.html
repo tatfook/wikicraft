@@ -153,6 +153,15 @@
         padding: 0;
         margin: 0 15px;
     }
+    .setting-form h4.light-title{
+        font-weight: normal;
+    }
+    .setting-form .change-type{
+        border: 1px solid #EF325E;
+        padding: 5px 30px;
+        margin: 20px 15px;
+        /* margin-bottom: 20px; */
+    }
     .setting-form .nav-tabs>li.active>a{
         border-top:1px solid #DDD;
     }
@@ -166,6 +175,21 @@
     }
     .authority-tab .table>thead>tr>th{
         text-align: center;
+    }
+    .ensure-modal h3{
+        text-align: center;
+        font-weight: normal;
+    }
+    .ensure-modal span.icon{
+        width: 32px;
+        height: 32px;
+        border: 2px solid;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 30px;
+        color: #ED381C;
+        margin-right: 10px;
+        font-weight: bold;
     }
 </style>
 
@@ -278,6 +302,19 @@
                     <p>例如：成员username同时存在于“管理员”与“黑名单”中，则按照黑名单处理</p>
                     <p>*超级管理员不受分组配置影响</p>
                 </div>
+                <div class="change-type">
+                    <h4 class="light-title">项目类型：</h4>
+                    <div class="form-group clearfix">
+                        <div class="col-sm-12">
+                            <h4 class="light-title"><input type="radio" ng-model="changeType" value="public" ng-change="changeSiteType()" name="siteType"> 公有项目</h4>
+                            <p>默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <h4 class="light-title"><input type="radio" ng-model="changeType" value="private" ng-change="changeSiteType()" name="siteType"> 私有项目</h4>
+                            <p>默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="authority">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
@@ -381,6 +418,23 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade ensure-modal" id="ensureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">项目类型</h4>
+                </div>
+                <div class="modal-body">
+                    <h3><span class="icon">!</span>确定更改项目类型？</h3>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" onclick="angular.element(this).scope().changeSiteType(true)">确 定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                 </div>
             </div>
         </div>

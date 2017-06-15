@@ -122,7 +122,7 @@ function website:api_upsert(params)
 end
 
 -- 设置网站私有行性
-function website:setPrivate(params)
+function website:api_setVisibility(params)
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -132,8 +132,7 @@ function website:setPrivate(params)
 	local siteDataSourceDB = models.site_data_source:new()
 	siteDataSourceDB:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)	
 	yield()
-
-	self:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	self:db():updateOne({["+username+name"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)
 	return errors:wrap(yield())
 end
 

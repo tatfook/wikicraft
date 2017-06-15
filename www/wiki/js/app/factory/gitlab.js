@@ -467,6 +467,15 @@ define([
 			});
 		};
 
+		// 设置项目可见性
+		gitlab.setProjectVisibility = function(params, cb, errcb) {
+			var self = this;
+			var url = '/projects/' + self.projectId;
+			var data = {name:self.projectName, visibility:params.visibility || "public"};
+
+			self.httpRequest("PUT", url, data, cb, errcb);
+		}
+
 		// 设置默认项目
 		gitlab.setDefaultProject = function(params, cb, errcb) {
 			if (!params.projectName) {

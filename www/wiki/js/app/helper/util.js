@@ -175,15 +175,15 @@ define([
     }
 
 // GET PUT POST DELETE
-    util.http = function(method, url, params, callback, errorCallback) {
+    util._http = function(method, url, params, isUseCache, callback, errorCallback) {
         var $http = this.angularServices.$http;
         var httpRespone = undefined;
         //Loading.showLoading();
         // 在此带上认证参数
         if (method == 'POST') {
-            httpRespone = $http({method:method,url:url,data:params}); //$http.post(url, params);
+            httpRespone = $http({method:method,url:url, cache: isUseCache, data:params}); //$http.post(url, params);
         } else {
-            httpRespone = $http({method:method,url:url,params:params});
+            httpRespone = $http({method:method,url:url, cache: isUseCache, params:params});
         }
         httpRespone.then(function (response) {
             var data = response.data;
@@ -208,12 +208,19 @@ define([
         });
     }
 
+    util.http = function(method, url, params, callback, errorCallback) {
+		util._http(method, url, params, false, callback, errorCallback);
+	}
+
     util.post = function (url, params, callback, errorCallback) {
         this.http("POST", url, params, callback, errorCallback);
     }
 
     util.get = function (url, params, callback, errorCallback) {
         this.http("GET", url, params, callback, errorCallback);
+    }
+	util.getByCache = function (url, params, callback, errorCallback) {
+        this._http("GET", url, params, true, callback, errorCallback);
     }
 
     util.pagination = function (page, params, pageCount) {

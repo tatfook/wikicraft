@@ -57,6 +57,7 @@ define([
                 if ($scope.user && $scope.user._id) {
                     util.post(config.apiUrlPrefix + "user_fans/isAttented", {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function (data) {
                         $scope.concerned = data;
+                        $scope.userinfo.concerned=data;
                     });
                 }
             });

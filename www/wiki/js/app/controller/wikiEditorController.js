@@ -130,7 +130,11 @@ define([
             treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + '*') : pageNode.name;
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
-            treeNode.tags = ["<div onclick='angular.element(this).scope().cmd_remove()'>&times;</div>"];
+            treeNode.tags = [
+                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_remove()'>&times;</span>",
+                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()'></span>",
+                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_remove()'></span>",
+            ];
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
             if (!pageNode.isLeaf) {
@@ -148,6 +152,12 @@ define([
 
         for (var i = 0; i < treeData.length; i++) {
             treeData[i].icon = 'fa fa-globe';
+            treeData[i].tags=[];
+            treeData[i].tags.push([
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_remove()' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_remove()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_remove()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
+            ]);
         }
         return treeData;
     }
@@ -2213,6 +2223,7 @@ define([
                 function initView() {
                     if ($scope.showFile){
                         $(".code-view").removeClass("nofile");
+                        $(".toolbar-page-file").addClass("active");
                         $(".toolbar-page-file").addClass("active");
                         $("#treeview").show();
                     }else{

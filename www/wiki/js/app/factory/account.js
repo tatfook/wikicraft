@@ -57,7 +57,7 @@ define([
                         return userinfo;
                     }
                     if ($auth.isAuthenticated()) {
-                        util.post(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
+                        util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
                             //console.log(data);
                             cb && cb(data);
                         }, function () {

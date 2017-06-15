@@ -105,6 +105,7 @@ define([
         }
 
 		function initGroup() {
+            $scope.changeType = siteinfo.visibility;
 			siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			getGroupList();
 		}
@@ -155,6 +156,22 @@ define([
 			});
 		}
 		
+		// 设置可见性
+		$scope.setVisibility = function(visibility) {
+			if (!siteDataSource || siteDataSource.dataSource.sitename != siteinfo.name) {
+				Message.info("非独立数据源不可设置可见性");
+				return;
+			}
+			if (visibility == siteinfo.visibility) {
+				return;
+			}
+			siteDataSource.setProjectVisibility({visibility:visibility}, function(){
+				$scope.website.visibility = visibility;
+				util.post(config.apiUrlPrefix + 'website/setVisibility', {username:siteinfo.username, sitename:siteinfo.name, visibility:visibility});
+			});
+		}
+
+		// 创建共享组 		
 		$scope.createShareGroup = function(group, level) {
 			//console.log(group);
 			//console.log(level);
@@ -193,7 +210,6 @@ define([
 				})
 			});
 		}
-
 
 		$scope.deleteGroup = function(group) {
 			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
@@ -280,6 +296,16 @@ define([
                 $scope.nowGroup={userList:[]};
 				$scope.groupUser={};
                 $scope.editing=false;
+            }
+        }
+
+        $scope.changeSiteType = function (finish) {
+            //console.log($scope.changeType);
+            if(finish){
+                $('#ensureModal').modal("hide");
+				$scope.setVisibility($scope.changeType);
+            }else{
+                $('#ensureModal').modal("show");
             }
         }
 
