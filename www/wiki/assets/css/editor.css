@@ -286,13 +286,13 @@ body,
     top: 1px;
 }
 .treeview .list-group-item:hover .badge>img.show-parent:nth-child(1){
-    right: 48px;
+    right: 0;
 }
 .treeview .list-group-item:hover .badge>img.show-parent:nth-child(2){
     right: 24px;
 }
 .treeview .list-group-item:hover .badge>img.show-parent:nth-child(3){
-    right: 0px;
+    right: 48px;
 }
 .treeview img.show-parent{
     width: 16px;
@@ -368,6 +368,23 @@ select.resize-view {
 #srcview{
     padding-right: 10px;
     padding-left:0;
+}
+
+.opened{
+    color: #3977AD;
+}
+.opened .list-group{
+    margin-bottom: 0;
+}
+.opened .list-group-item{
+    border: none;
+}
+.opened .list-group-item:not(.node-selected):hover{
+    background-color: #D6D6D6;
+}
+.opened .node-selected{
+    background-color: #3977AD;
+    color: #FFF;
 }
 /*删除确认弹窗*/
 .delete-modal h3{

@@ -165,9 +165,9 @@ define([
             treeData[i].icon = 'fa fa-globe';
             treeData[i].tags=[];
             treeData[i].tags.push([
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
                 "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
             ]);
         }
         return treeData;
@@ -365,6 +365,7 @@ define([
             $scope.showCode=true;
             $scope.showView=true;
             $scope.full=false;
+            $scope.opens={};
 
             // 判断对象是否为空
             function isEmptyObject(obj) {
@@ -800,6 +801,18 @@ define([
             function openPage() {
                 //console.log(currentPage);
                 if (!currentPage) {
+                    var urlObj=storage.sessionStorageGetItem('urlObj') || {};
+                    $scope.opens[urlObj.url]={
+                        pageNode:
+                            {
+                                name:urlObj.pagename,
+                                sitename:urlObj.sitename,
+                                url:urlObj.url,
+                                isLeaf:true
+                            },
+                        selected:true,
+                        itemId:urlObj.url.split("/").join("")
+                    };
                     openUrlPage();
                     return;
                 }
@@ -939,6 +952,19 @@ define([
                                 if (currentPage && data.pageNode.url != currentPage.url) {
                                     $(getTreeId(currentPage.username)).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                                 }
+
+                                //取消当前已选择
+                                var nowActive=$("#openedTree .node-selected");
+                                // $scope.opens[nowActive.dataset.url].selected=false;
+                                nowActive.removeClass("node-selected");
+                                //选中新打开项
+                                var itemId=data.pageNode.url.split("/").join("");
+                                if ($scope.opens[data.pageNode.url]){//已打开过的手动激活选中状态
+                                    $("#"+itemId).addClass("node-selected");
+                                }
+                                $scope.opens[data.pageNode.url]=data;
+                                $scope.opens[data.pageNode.url].selected=true;
+                                $scope.opens[data.pageNode.url].itemId=itemId;
                             } else {
                                 $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
                                 $(treeid).treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
@@ -1039,6 +1065,26 @@ define([
                 }
                 return;
             }
+
+            //已打开列表树中打开网页编辑
+            $scope.openPageTree = function (data) {
+                renderAutoSave(function () {
+                    if (data.pageNode.isLeaf) {
+                        //console.log("--------------------auto save--------------------");
+                        if (!currentPage || currentPage.url != data.pageNode.url) {
+                            currentPage = getPageByUrl(data.pageNode.url);
+                            currentSite = getCurrentWebsite();
+                            openPage();
+                        }
+                        editor.focus();
+                    }
+                }, function () {
+                    Message.warning("自动保存失败");
+                    openPage();
+                });
+                $("#openedTree .node-selected").removeClass("node-selected");
+                $("#"+data.itemId).addClass("node-selected");
+            };
 
             $scope.openWikiBlock = function () {
                 function formatWikiCmd(text) {
