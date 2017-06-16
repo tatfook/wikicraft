@@ -59,12 +59,8 @@ define([
                     util.html('#_footerContentId', footerHtml, $scope);
                 }
 
-                var DataSource = dataSource.getUserDataSource($rootScope.userinfo.username);
-                var dataSourceId = $rootScope.userinfo.dataSourceId;
-                if ($rootScope.siteinfo && $rootScope.siteinfo.dataSourceId) {
-                    dataSourceId = $rootScope.siteinfo.dataSourceId;
-                }
-                var ds = DataSource.getDataSourceById(dataSourceId);
+				var pageinfo = $rootScope.pageinfo;
+                var ds = dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
                 var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.sitename + '/';
                 ds.getRawContent({path: pathPrefix + '_header' + config.pageSuffixName}, function (content) {
                     util.html('#_headerPageContentId', headerPageMD.render(content||''), $scope);
@@ -90,7 +86,8 @@ define([
                     return false;
                 }
 
-                if (wikiBlock.isPageTemplate ||  ($rootScope.pageinfo && $rootScope.pageinfo.pagename == "_theme")) {
+                //if (wikiBlock.isPageTemplate ||  ($rootScope.pageinfo && $rootScope.pageinfo.pagename == "_theme")) {
+                if ($rootScope.pageinfo && $rootScope.pageinfo.pagename == "_theme") {
                     return true;
                 }
 
