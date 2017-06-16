@@ -225,13 +225,19 @@ define([
 		}
 
         $scope.createGroup = function () {
-			if (!siteDataSource) {
+			var group = $scope.nowGroup;
+			if (!siteDataSource || !group.name) {
 				return;
 			}
-			var group = $scope.nowGroup;
-
+			// 是否存在
+			for (var i = 0; i < ($scope.groups || []).length; i++) {
+				if ($scope.groups[i].name == group.name) {
+					return;
+				}
+			}
 			siteDataSource.upsertGroup({name:group.name, request_access_enabled:true}, function(data){
 				$scope.groups.push(data);
+				$scope.nowGroup = {};
 				console.log(data);
 			}, function(){
 
