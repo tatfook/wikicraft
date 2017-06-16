@@ -57,6 +57,7 @@ define([
     }
 
     function getTreeData(username, pageMap, isDir) {
+		//console.log(pageMap);
         var pageTree = {url: '/' + username, children: {}};
         var treeData = [];
         for (var key in pageMap) {
@@ -87,8 +88,8 @@ define([
                 treeNode.isLeaf = false;
                 if (j == paths.length - 1) {
                     subTreeNode.isLeaf = true;
-                    if (!isDir && page.isModify) {
-                        subTreeNode.isEditor = true;
+                    if (!isDir) {
+                        subTreeNode.isEditor = page.isModify;
 						subTreeNode.isConflict = page.isConflict;
                     }
                 }
@@ -128,7 +129,16 @@ define([
 
         var treeDataFn = function (treeNode, pageNode) {
             treeNode = treeNode || {};
-            treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + (pageNode.isConflict ? '*<-' : '*')) : pageNode.name;
+            treeNode.text = pageNode.name;
+			//console.log(pageNode);
+			if (pageNode.isLeaf) {
+				if (pageNode.isModify) {
+					treeNode.text += "*";
+				}
+				if (pageNode.isConflict) {
+					treeNode.text += "<-";
+				}
+			}
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [
@@ -403,9 +413,14 @@ define([
                         serverPage = allPageMap[page.url] = page;
                     }
 
-                    if (!page.isModify || (currentTime - (page.updateTime) >= 300 * 1000)) {   // 没有修改删除本地
-                        indexDBDeletePage(page.url);
-                        return;
+					//console.log(page)
+                    if (!page.isModify) {   // 没有修改删除本地
+						if (currentTime - (page.timestamp || 0) >= 300 * 1000) {
+							indexDBDeletePage(page.url);
+							return;
+						} else {
+							indexDBDeletePage(page.url, true);
+						}
                     }
 
                     serverPage.isModify = page.isModify;
@@ -606,18 +621,17 @@ define([
                 var currentDataSource = getCurrentDataSource();
                 var page = angular.copy(currentPage);
                 var content = editor.getValue();
+				page.timestamp = (new Date()).getTime();
+				page.content = content;
                 var saveFailedCB = function () {
-                    page.content = content;
                     page.isModify = true;
                     storage.indexedDBSetItem(config.pageStoreName, page);
                     console.log("---------save failed-------");
                     errcb && errcb();
                 };
                 var saveSuccessCB = function () {
-                    page.content = content;
                     page.isModify = false;
 					page.isConflict = false;
-					page.blobId = undefined;
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
@@ -682,14 +696,10 @@ define([
                                 allPageMap[data[i].url] = data[i];
 							} else {
 								var page = allPageMap[data[i].url];
-								if (!page.blobId) {
-									page.blobId = data[i].blobId;
-								} else {
-									if (page.blobId != data[i].blobId) {
-										page.newBlobId = data[i].blobId;
-										page.isConflict = true;
-									}
+								if (page.blobId && page.blobId != data[i].blobId) {
+									page.isConflict = true;
 								}
+								page.blobId = data[i].blobId;
 							}
                         }
                         //console.log(allPageMap);
@@ -1147,7 +1157,6 @@ define([
                     savePageContent(function () {
                         _currentPage.isModify = false;
 						_currentPage.isConflict = false;
-						_currentPage.blobId = undefined;
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
@@ -1230,7 +1239,6 @@ define([
 					allWebstePageContent[currentPage.url] = data || "";
 					//console.log(data, currentPage);
 					page.isConflict = false;
-					page.blobId = undefined;
 					initTree();
 					if (!isEmptyObject(currentPage) && url == currentPage.url) {
 						//console.log("---------");
@@ -1713,10 +1721,6 @@ define([
                     cb && cb();
                     return;
                 }
-
-				if (!currentPage.blobId) {
-					currentPage.blobId = currentPage.newBlobId;
-				} 
 
                 currentPage.content = content;                             // 更新内容
                 currentPage.timestamp = (new Date()).getTime();            // 更新时间戳

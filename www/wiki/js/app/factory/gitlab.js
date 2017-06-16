@@ -341,6 +341,7 @@ define([
             // _getRawContent();
             // return;
 			var content = storage.sessionStorageGetItem(apiurl);
+			//content = undefined;
 			if (!content) {
 				_getRawContent();
 			} else {
