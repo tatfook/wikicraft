@@ -173,6 +173,27 @@
                 </div>
                 <div id="wikiEditorContainer">
                     <div id="treeview" class="treeview-container full-height nopadding nomargin" style="max-height: 100%; overflow-y: auto">
+                        <div class="opened treeview" id="openedTree">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <span class="icon expand-icon glyphicon glyphicon-minus"></span>
+                                    已打开
+                                    <span class="badge">
+                                        <img class="show-parent" onclick="angular.element(this).scope().cmd_closeAll()" src="/www/wiki/assets/imgs/icon/wiki_closeAll.png">
+                                        <img class="show-parent" onclick="angular.element(this).scope().cmd_newFile()" src="/www/wiki/assets/imgs/icon/wiki_saveAll.png">
+                                    </span>
+                                </li>
+                                <li class="list-group-item" id="{{nodeItem.itemId}}" ng-repeat="(nodeId, nodeItem) in opens" ng-class="{'node-selected':nodeItem.selected}" ng-click="openPageTree(nodeItem)">
+                                    <span class="indent"></span>
+                                    <span class="icon glyphicon"></span>
+                                    <span class="icon node-icon fa fa-file-o"></span>
+                                    {{nodeItem.pageNode.name}}({{nodeItem.pageNode.sitename}})
+                                    <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close()">×</span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove()"></span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh()"></span></span>
+                                </li>
+                            </ul>
+                        </div>
                         <div>
                             <div id="mytree"></div>
                         </div>
