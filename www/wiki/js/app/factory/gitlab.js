@@ -49,6 +49,12 @@ define([
 
             var result = undefined;
             var success = function (response) {
+				//console.log(response);
+				if (response.status < 200 || response.status >=300) {
+					errcb && errcb(response);
+					return;
+				}
+
                 var headers = response.headers();
                 if (headers["x-next-page"] && data.isFetchAll) {
                     data.page = parseInt(headers["x-next-page"]);

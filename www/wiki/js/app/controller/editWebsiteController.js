@@ -179,6 +179,14 @@ define([
 				Message.info("请选择组和权限!!!");
 				return;
 			}
+
+			for (var i = 0; i < ($scope.groupAuths || []).length; i++) {
+				if (group.name == $scope.groupAuths[i].groupname) {
+					Message.info("组已存在");
+					return;
+				}
+			}
+
 			var params = {
 				group_id: group.id,
 				group_access: level.level,
@@ -278,7 +286,8 @@ define([
 				groupUser.id = params.user_id;
 				siteDataSource.createGroupMember(params, function(){
 					groupUser.isDelete = false;
-					$scope.nowGroup.userList.push(groupUser);
+					$scope.nowGroup.userList.push(angular.copy(groupUser));
+					groupUser.name = "";
 				}, function(){
 					Message.info("用户添加失败");
 				});
@@ -289,7 +298,7 @@ define([
 			if (!siteDataSource) {
 				return;
 			}
-			console.log(groupUser);
+			//console.log(groupUser);
 			siteDataSource.deleteGroupMember({id:group.id, user_id:groupUser.id});
 			groupUser.isDelete = true;
         }

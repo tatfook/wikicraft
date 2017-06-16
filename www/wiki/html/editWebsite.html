@@ -332,7 +332,10 @@
                                 <div class="form-group form-group-lg">
                                     <label for="groupName" class="col-sm-2 control-label">分组名称：</label>
                                     <div class="col-sm-5">
-                                        <input type="text" class="form-control" id="groupName" ng-model="nowGroup.name">
+										<div class="col-sm-8 add-cname">
+											<input type="text" class="form-control" id="groupName" ng-model="nowGroup.name">
+										</div>
+										<div class="btn btn-primary btn-add-cname col-sm-4" ng-click="createGroup()">创建</div>
                                     </div>
                                 </div>
                                 <div class="form-group form-group-lg">
@@ -350,10 +353,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 save-setting">
+                                <!--div class="col-sm-12 save-setting">
                                     <div class="btn btn-primary save-btn" ng-click="createGroup()" ng-show="!editing">创建</div>
                                     <div class="btn btn-primary save-btn" ng-click="editGroup(nowGroup,true)" ng-show="editing">确定</div>
-                                </div>
+                                </div-->
                             </form>
                             <table class="table table-hover table-bordered">
                                 <thead>
