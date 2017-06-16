@@ -13,6 +13,12 @@ define([
 			$http.get(config.apiUrlPrefix + 'test/helloworld', {cache:true}).success(function(response){
 				console.log(response);
 			});
+			$http.get(config.apiUrlPrefix + 'test/helloworld', {cache:true}).success(function(response){
+				console.log(response);
+			});
+			$http.get(config.apiUrlPrefix + 'test/helloworld', {cache:true}).success(function(response){
+				console.log(response);
+			});
         }
         $scope.$watch("$viewContentLoaded", init);
     }]);

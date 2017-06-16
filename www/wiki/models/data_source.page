@@ -295,7 +295,7 @@ function data_source:api_gitlabWebhook(params)
 	local dataSourceUserId = params.user_id
 	local dataSourceUsername = params.user_name
 	local projectId = params.project_id
-	local projectName = params.project.name
+	local projectName = string.lower(params.project.name)
 	local lastCommitId = params.after
 
 	if (not dataSourceUserId) or (not dataSourceUsername) or (not projectName) or (not projectId) then
@@ -310,7 +310,7 @@ function data_source:api_gitlabWebhook(params)
 	end
 	local dataSourceId = dataSource._id
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:db():findOne({["+username+dataSourceId+projectName"]={dataSource.username, dataSourceId, projectName}}, resume)
+	siteDataSourceDB:db():findOne({["+username+dataSourceName+projectName"]={dataSource.username, dataSourceName, projectName}}, resume)
 	local _, siteDataSource = yield()
 	if not siteDataSource then
 		return 

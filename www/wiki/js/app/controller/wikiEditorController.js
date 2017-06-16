@@ -89,6 +89,7 @@ define([
                     subTreeNode.isLeaf = true;
                     if (!isDir && page.isModify) {
                         subTreeNode.isEditor = true;
+						subTreeNode.isConflict = page.isConflict;
                     }
                 }
                 treeNode = subTreeNode;
@@ -127,13 +128,13 @@ define([
 
         var treeDataFn = function (treeNode, pageNode) {
             treeNode = treeNode || {};
-            treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + '*') : pageNode.name;
+            treeNode.text = (pageNode.isLeaf && pageNode.isEditor) ? (pageNode.name + (pageNode.isConflict ? '*<-' : '*')) : pageNode.name;
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [
                 "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close()'>&times;</span>",
                 "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()'></span>",
-                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh()'></span>",
+                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")'></span>",
             ];
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
@@ -605,6 +606,8 @@ define([
                 var saveSuccessCB = function () {
                     page.content = content;
                     page.isModify = false;
+					page.isConflict = false;
+					page.blobId = undefined;
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url);
@@ -667,7 +670,17 @@ define([
                         for (var i = 0; i < data.length; i++) {
                             if (!allPageMap[data[i].url]) {
                                 allPageMap[data[i].url] = data[i];
-                            }
+							} else {
+								var page = allPageMap[data[i].url];
+								if (!page.blobId) {
+									page.blobId = data[i].blobId;
+								} else {
+									if (page.blobId != data[i].blobId) {
+										page.newBlobId = data[i].blobId;
+										page.isConflict = true;
+									}
+								}
+							}
                         }
                         //console.log(allPageMap);
                         pagelistMap[params.path] = data;
@@ -795,6 +808,7 @@ define([
                     }
                     editor.swapDoc(editorDocMap[currentPage.url]);
                     //console.log(currentPage);
+					editor.setValue(content);
                     allWebstePageContent[currentPage.url] = editor.getValue();
                     CodeMirror.signal(editor, 'change', editor);
 
@@ -1113,6 +1127,8 @@ define([
                     var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
                     savePageContent(function () {
                         _currentPage.isModify = false;
+						_currentPage.isConflict = false;
+						_currentPage.blobId = undefined;
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
@@ -1181,8 +1197,27 @@ define([
             };
 
             //刷新
-            $scope.cmd_refresh = function () {
-                Message.info("刷新功能开发中");
+            $scope.cmd_refresh = function (url) {
+				var page = getPageByUrl(url);
+				//console.log(page);
+				if (!page) {
+					return ;
+				}
+				var siteDataSource = dataSource.getDataSource(page.username, page.sitename);
+				if (!siteDataSource){
+					return ;
+				}
+				siteDataSource.getRawContent({path:currentPage.url + pageSuffixName}, function (data) {
+					allWebstePageContent[currentPage.url] = data || "";
+					//console.log(data, currentPage);
+					page.isConflict = false;
+					page.blobId = undefined;
+					initTree();
+					if (!isEmptyObject(currentPage) && url == currentPage.url) {
+						//console.log("---------");
+						openPage();
+					}
+				});
             };
 
             //新建文件夹
@@ -1660,8 +1695,12 @@ define([
                     return;
                 }
 
+				if (!currentPage.blobId) {
+					currentPage.blobId = currentPage.newBlobId;
+				} 
+
                 currentPage.content = content;                             // 更新内容
-                currentPage.timestamp = (new Date()).getTime();           // 更新时间戳
+                currentPage.timestamp = (new Date()).getTime();            // 更新时间戳
                 //console.log(currentPage);
                 //console.log('save storage ' + currentPage.url);
                 storage.indexedDBSetItem(config.pageStoreName, currentPage, cb, errcb); // 每次改动本地保存

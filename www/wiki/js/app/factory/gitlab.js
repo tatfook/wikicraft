@@ -235,6 +235,7 @@ define([
                     page.username = paths[1];
                     page.sitename = paths[2];
                     page.pagename = paths[paths.length - 1];
+					page.blobId = data[i].id; // 文档sha
 
                     pagelist.push(page);
                 }
@@ -339,6 +340,7 @@ define([
 			} else {
 				cb && cb(content);
 			}
+			// 由于浏览器会缓存 所以此代码需加上
             //storage.indexedDBGetItem(config.pageStoreName, url, function (page) {
                 ////console.log(page, url);
                 //if (page) {

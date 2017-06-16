@@ -62,3 +62,15 @@ function data_upgrade:api_dataSourceUpgrade()
 	end
 end
 
+-- dataSourceId => dataSourceName
+function data_upgrade:api_dataSourceIdToName(params) 
+    local siteDataSourceDB = models.site_data_source:new() 
+    siteDataSourceDB:db():find({_id={gt=0, limit=100000}}, resume)
+    local _, siteDataSourceList = yield() 
+    for _, siteDataSource in ipairs(siteDataSourceList or {}) do
+        if (not siteDataSource.dataSourceName) then
+            siteDataSourceDB:db():updateOne({_id=siteDataSource._id},{dataSourceName=const.DEFAULT_DATA_SOURCE_NAME}, resume)
+            yield()            
+        end
+    end
+end
