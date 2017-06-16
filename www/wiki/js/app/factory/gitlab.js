@@ -321,9 +321,9 @@ define([
         gitlab.getRawContent = function (params, cb, errcb) {
             var self = this;
             var index = params.path.lastIndexOf('.');
-            var url = index == -1 ? params.path : params.path.substring(0, index);
+            //var url = index == -1 ? params.path : params.path.substring(0, index);
+			var apiurl = self.getRawContentUrlPrefix(params);
             var _getRawContent = function () {
-                var apiurl = self.getRawContentUrlPrefix(params);
                 $http({
                     method: 'GET',
                     url: apiurl,
@@ -332,7 +332,7 @@ define([
                     skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
 				}).then(function (response) {
 					//storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
-					storage.sessionStorageSetItem(url, response.data);
+					storage.sessionStorageSetItem(apiurl, response.data);
                     cb && cb(response.data);
                 }).catch(function (response) {
                     errcb && errcb(response);
@@ -340,7 +340,7 @@ define([
             }
             // _getRawContent();
             // return;
-			var content = storage.sessionStorageGetItem(url);
+			var content = storage.sessionStorageGetItem(apiurl);
 			if (!content) {
 				_getRawContent();
 			} else {
@@ -439,7 +439,7 @@ define([
 				return;
 			}
 
-			self.setDefaultProject({projectName:self.projectName, visibility:self.visibility}, function() {
+			self.setDefaultProject({projectName:self.projectName, visibility:self.visibility, lastCommitId:self.lastCommitId}, function() {
 				self.inited = true;
 				cb && cb();
 			}, errcb);
@@ -502,12 +502,17 @@ define([
 		
 			var successCallback = function(params) {
 				self.createWebhook(params.projectId);
-				self.projectName[projectName] = {
+				self.projectMap[projectName] = {
 					projectId:params.projectId,
 					lastCommitId:params.lastCommitId || "master",
 				};
 				// 更新项目ID
                 util.post(config.apiUrlPrefix + 'site_data_source/updateById', {_id:self.dataSource._id, projectId:params.projectId});
+
+				self.getLastCommitId(function(lastCommitId){
+					self.projectMap[projectName].lastCommitId = lastCommitId;
+					self.lastCommitId = lastCommitId;
+				});
 
 				self.projectId = params.projectId;
 				cb && cb();	
@@ -559,7 +564,6 @@ define([
 					self.httpRequest(method, url, data, function (project) {
 						//console.log(project);
 						successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});
-						//self.getLastCommitId(cb, errcb);
 					}, errcb);
 				} else {
 					successCallback({projectId:project.id, projectName:params.projectName,lastCommitId:params.lastCommitId});

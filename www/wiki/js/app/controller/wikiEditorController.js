@@ -371,22 +371,30 @@ define([
             }
 
             // 删除本地indexDB记录 缓存5分钟(应该大于浏览器缓存时间), 解决浏览器缓存导致读取的不是最新内容问题
-            function indexDBDeletePage(url) {
+			// 刷新页面 会执行loadUnSavePage() 加载该内容 故getRawContent无需读indexdb
+            function indexDBDeletePage(url, isDelay) {
                 var urlParams = urlParamsMap[url] || {};
                 urlParamsMap[url] = urlParams;
                 urlParams.deleteTimer && clearTimeout(urlParams.deleteTimer);
-                urlParams.deleteTimer = setTimeout(function () {
-                    storage.indexedDBDeleteItem(config.pageStoreName, url);
-                    urlParams.deleteTimer = undefined;
-                }, 300 * 1000);
+				if (isDelay) {
+					urlParams.deleteTimer = setTimeout(function () {
+						storage.indexedDBDeleteItem(config.pageStoreName, url);
+						urlParams.deleteTimer = undefined;
+					}, 300 * 1000);
+				} else {
+					storage.indexedDBDeleteItem(config.pageStoreName, url);
+					urlParams.deleteTimer = undefined;
+				}
             }
 
             // 加载未提交到服务的页面
             function loadUnSavePage() {
+				var currentTime = (new Date()).getTime();
                 storage.indexedDBGet(config.pageStoreName, function (page) {
 					if (!isUserExist() || !page.username || !page.sitename || !page.pagename || !page.url || (page.username != $scope.user.username)) {
 						return;
 					}
+					
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
                         if (!getCurrentWebsite(page.username, page.sitename)) {
@@ -394,7 +402,8 @@ define([
                         }
                         serverPage = allPageMap[page.url] = page;
                     }
-                    if (!page.isModify) {   // 没有修改删除本地
+
+                    if (!page.isModify || (currentTime - (page.updateTime) >= 300 * 1000)) {   // 没有修改删除本地
                         indexDBDeletePage(page.url);
                         return;
                     }
@@ -611,7 +620,7 @@ define([
 					page.blobId = undefined;
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
-                    indexDBDeletePage(page.url);
+                    indexDBDeletePage(page.url, true);
                     console.log("---------save success-------");
                     cb && cb();
                 };
