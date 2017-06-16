@@ -17,12 +17,12 @@
     <div class="modal-body newpage-modal">
         <div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6" ng-hide="hidePageTree">
                     <div>
                         <div id="newPageTreeId"></div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div ng-class="hidePageTree?'col-md-10':'col-md-6'">
                     <!-- NAME -->
                     <div class="form-group">
                         <label>页面名</label>

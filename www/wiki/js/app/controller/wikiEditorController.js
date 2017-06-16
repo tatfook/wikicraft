@@ -155,7 +155,7 @@ define([
             treeData[i].icon = 'fa fa-globe';
             treeData[i].tags=[];
             treeData[i].tags.push([
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage()' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
                 "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
                 "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
             ]);
@@ -262,15 +262,16 @@ define([
                     treeNode = data.pageNode;
                 }
             });
-            if (currentPage) {
-                var selectableNodes = $('#newPageTreeId').treeview('search', [currentPage.sitename, {
+            var currentInfo=$scope.nowHoverPage || currentPage;
+            if (currentInfo) {
+                var selectableNodes = $('#newPageTreeId').treeview('search', [currentInfo.sitename, {
                     ignoreCase: true,
                     exactMatch: false,
                     revealResults: true,  // reveal matching nodes
                 }]);
 
                 $.each(selectableNodes, function (index, item) {
-                    if (item.pageNode.url == ('/' + currentPage.username + '/' + currentPage.sitename)) {
+                    if (item.pageNode.url == ('/' + currentInfo.username + '/' + currentInfo.sitename)) {
                         $('#newPageTreeId').treeview('selectNode', [item, {silent: false}]);
                         treeNode = item.pageNode;
                     }
@@ -1091,12 +1092,21 @@ define([
                 }
             }
 
-            $scope.cmd_newpage = function () {
+            $scope.cmd_newpage = function (hidePageTree) {
+                $scope.hidePageTree=hidePageTree ? true : false;
+                var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
+                if (hidePageTree){
+                    $scope.nowHoverPage={
+                        sitename:$("#mytree").treeview("getNode",nodeid).pageNode.sitename,
+                        username:$scope.user.username
+                    };
+                }
                 function openNewPage() {
                     $uibModal.open({
                         //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
                         templateUrl: config.htmlPath + "editorNewPage.html",
                         controller: "pageCtrl",
+                        scope: $scope
                     }).result.then(function (provider) {
                         //console.log(provider);
                         if (provider == "page") {
