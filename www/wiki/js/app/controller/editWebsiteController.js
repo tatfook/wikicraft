@@ -434,7 +434,7 @@ define([
                     return;
                 }
                 var imgUrl=$scope.imgUrl;
-                innerGitlab.uploadImage({content:imgUrl}, function (url) {
+                siteDataSource.uploadImage({content:imgUrl}, function (url) {
                     $scope.website.logoUrl = url;
                     // util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                     //     $scope.website = data;

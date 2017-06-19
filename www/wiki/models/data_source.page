@@ -292,28 +292,25 @@ end
 -- gitlab webhokk
 function data_source:api_gitlabWebhook(params)
 	params = params or {}	
-	local dataSourceUserId = params.user_id
-	local dataSourceUsername = params.user_name
+	-- 提交者的用户名, 没有用
+	-- local dataSourceUserId = params.user_id
+	-- local dataSourceUsername = params.user_name
 	local projectId = params.project_id
 	local projectName = string.lower(params.project.name)
+	local dataSourceUsername = string.lower(params.project.namespace)
 	local lastCommitId = params.after
 
-	if (not dataSourceUserId) or (not dataSourceUsername) or (not projectName) or (not projectId) then
+	-- 内部数据源可以这样获取用户名
+	local username = string.sub(dataSourceUsername, string.len("gitlab_" .. WIKI_ENV .. "_") + 1, string.len(dataSourceUsername))
+
+	if (not projectName) or (not projectId) then
 		LOG.std(nil, "error", "keepwork", "params errors") 
 		return
 	end
-	-- 不止一条记录
-	self:db():findOne({["+type+dataSourceUserId+dataSourceUsername"]={"gitlab", dataSourceUserId, dataSourceUsername}}, resume)
-	local _, dataSource = yield()
 
-	if not dataSource then
-		LOG.std(nil, "error", "keepwork", "data source not exist")
-		return
-	end
-
-	local dataSourceId = dataSource._id
+	-- 直接根据projectId projectName来获取站点数据源  在不搭建自己的gitlab服务器时没有问题, 当搭建自己gitlab时可能查找不正确 TODO
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:db():findOne({["+username+projectName"]={dataSource.username, projectName}}, resume)
+	siteDataSourceDB:db():findOne({["+username+projectName"]={username, projectName}}, resume)
 	local _, siteDataSource = yield()
 	if not siteDataSource then
 		LOG.std(nil, "error", "keepwork", "site data source not exist")

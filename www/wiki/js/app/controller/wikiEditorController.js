@@ -546,11 +546,6 @@ define([
                 }
                 initEditor();
 
-				//console.log(otherUsername);
-
-				var callback = function() {
-
-				}
                 // 获取自己用户信息
                 fnList.push(function (finish) {
                    Account.getUser(function (userinfo) {
@@ -816,6 +811,8 @@ define([
                     openUrlPage();
                     return;
                 }
+				// 打开currentPage 
+				//
 
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
