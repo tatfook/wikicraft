@@ -426,7 +426,7 @@ define([
             self.lastCommitId = dataSource.lastCommitId || "master";
             self.projectName = dataSource.projectName || self.projectName;
             self.projectId = dataSource.projectId || undefined;
-			self.visibility = dataSource.visibility || "public";
+			self.visibility = dataSource.visibility || "private";
 			self.dataSource = dataSource;
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
@@ -498,7 +498,7 @@ define([
 
 			var self = this;
 			var projectName = params.projectName;
-			var visibility = params.visibility || "public";
+			var visibility = params.visibility || "private";
 			self.projectName = projectName;
 		
 			var successCallback = function(params) {

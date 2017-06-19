@@ -535,13 +535,11 @@ function website:api_getDetailInfo(params)
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	
-	local dataSourceId = userinfo.dataSourceId
-	if siteinfo and siteinfo.dataSourceId then
-		dataSourceId = siteinfo.dataSourceId
-	end
-
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:api_updateLastCommitId({_id=dataSourceId})
+	local siteDataSource = siteDataSourceDB:api_getSiteDataSource(params).data
+	if siteDataSource then
+		siteDataSourceDB:api_updateLastCommitId(siteDataSource)
+	end
 	local dataSourceList = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
 	for key, value in ipairs(dataSourceList or {}) do
 		dataSourceList[key].dataSourceToken = nil
