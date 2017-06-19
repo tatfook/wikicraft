@@ -105,7 +105,7 @@ define([
         }
 
 		function initGroup() {
-            $scope.changeType = siteinfo.visibility;
+            $scope.changeType = siteinfo.visibility || "public";
 			siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			getGroupList();
 		}
@@ -160,6 +160,7 @@ define([
 		$scope.setVisibility = function(visibility) {
 			if (!siteDataSource || siteDataSource.dataSource.sitename != siteinfo.name) {
 				Message.info("非独立数据源不可设置可见性");
+                $scope.changeType = $scope.changeType=="private" ? "public":"private";
 				return;
 			}
 			if (visibility == siteinfo.visibility) {
@@ -317,14 +318,18 @@ define([
         }
 
         $scope.changeSiteType = function (finish) {
-            //console.log($scope.changeType);
             if(finish){
                 $('#ensureModal').modal("hide");
 				$scope.setVisibility($scope.changeType);
             }else{
                 $('#ensureModal').modal("show");
             }
-        }
+        };
+
+        $scope.cancelChange = function () {
+          $scope.changeType = $scope.changeType=="private" ? "public":"private";
+          $('#ensureModal').modal("hide");
+        };
 
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');

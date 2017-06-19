@@ -361,9 +361,9 @@ define([
                 {"id":3,"showValue": "100%", "scaleValue": "1"},
                 {"id":4,"showValue": "实际大小", "scaleValue": "1", "special":true}
             ];
-            $scope.showFile=true;
-            $scope.showCode=true;
-            $scope.showView=true;
+                $scope.showFile=true;
+                $scope.showCode=true;
+                $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
 
@@ -545,7 +545,6 @@ define([
                     return;
                 }
                 initEditor();
-
                 // 获取自己用户信息
                 fnList.push(function (finish) {
                    Account.getUser(function (userinfo) {
@@ -797,17 +796,19 @@ define([
                 //console.log(currentPage);
                 if (!currentPage) {
                     var urlObj=storage.sessionStorageGetItem('urlObj') || {};
-                    $scope.opens[urlObj.url]={
-                        pageNode:
-                            {
-                                name:urlObj.pagename,
-                                sitename:urlObj.sitename,
-                                url:urlObj.url,
-                                isLeaf:true
-                            },
-                        selected:true,
-                        itemId:urlObj.url.split("/").join("")
-                    };
+                    if (urlObj.url){
+                        $scope.opens[urlObj.url]={
+                            pageNode:
+                                {
+                                    name:urlObj.pagename,
+                                    sitename:urlObj.sitename,
+                                    url:urlObj.url,
+                                    isLeaf:true
+                                },
+                            selected:true,
+                            itemId:urlObj.url.split("/").join("")
+                        };
+                    }
                     openUrlPage();
                     return;
                 }
@@ -1260,11 +1261,16 @@ define([
             //关闭
             $scope.cmd_close = function () {
                 Message.info("关闭功能开发中");
+                // openTempFile();
             };
 
             //关闭全部已打开
             $scope.cmd_closeAll = function () {
                 Message.info("关闭功能开发中");
+            };
+
+            $scope.cmd_saveAll = function () {
+                Message.info("保存全部功能开发中");
             };
 
             //刷新
@@ -1779,6 +1785,17 @@ define([
                     return;
                 }
 
+                var winWidth = $(window).width();
+                if (winWidth<992){
+                    $scope.showFile=false;
+                    $scope.showCode=true;
+                    $scope.showView=false;
+                }else{
+                    $scope.showFile=true;
+                    $scope.showCode=true;
+                    $scope.showView=true;
+                }
+                initView();
                 function wikiCmdFold(cm, start) {
                     var line = cm.getLine(start.line);
                     if ((!line) || (!line.match(/^```[@\/]/)))

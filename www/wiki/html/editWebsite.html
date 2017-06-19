@@ -153,7 +153,7 @@
         padding: 0;
         margin: 0 15px;
     }
-    .setting-form h4.light-title{
+    .setting-form h4.light-title>label{
         font-weight: normal;
     }
     .setting-form .change-type{
@@ -306,12 +306,12 @@
                     <h4 class="light-title">项目类型：</h4>
                     <div class="form-group clearfix">
                         <div class="col-sm-12">
-                            <h4 class="light-title"><input type="radio" ng-model="changeType" value="public" ng-change="changeSiteType()" name="siteType"> 公有项目</h4>
+                            <h4 class="light-title"><input id="publicItem" type="radio" ng-model="changeType" value="public" ng-change="changeSiteType()" name="siteType"> <label for="publicItem">公有项目</label></h4>
                             <p>默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。</p>
                         </div>
                         <div class="col-sm-12">
-                            <h4 class="light-title"><input type="radio" ng-model="changeType" value="private" ng-change="changeSiteType()" name="siteType"> 私有项目</h4>
-                            <p>默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。</p>
+                            <h4 class="light-title"><input id="privateItem" type="radio" ng-model="changeType" value="private" ng-change="changeSiteType()" name="siteType"> <label for="privateItem">私有项目</label></h4>
+                            <p>默认不允许未登录用户浏览。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员；可以为部分人设定浏览权限，则他们可以浏览您创建的内容，其他未授权用户均无法浏览</p>
                         </div>
                     </div>
                 </div>
@@ -433,11 +433,11 @@
                     <h4 class="modal-title" id="exampleModalLabel">项目类型</h4>
                 </div>
                 <div class="modal-body">
-                    <h3><span class="icon">!</span>确定更改项目类型？</h3>
+                    <h3><span class="icon">!</span>确定设为{{changeType=="private" ? "私有项目" : "公有项目"}}？</h3>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" onclick="angular.element(this).scope().changeSiteType(true)">确 定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button class="btn btn-danger" ng-click="changeSiteType(true)">确 定</button>
+                    <button type="button" class="btn btn-default" ng-click="cancelChange()">取 消</button>
                 </div>
             </div>
         </div>
