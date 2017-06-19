@@ -181,7 +181,8 @@ define([
 			}
 
 			for (var i = 0; i < ($scope.groupAuths || []).length; i++) {
-				if (group.name == $scope.groupAuths[i].groupname) {
+				if (!$scope.groupAuths[i].isDelete && group.name == $scope.groupAuths[i].groupname) {
+					//console.log($scope.groupAuths[i]);
 					Message.info("组已存在");
 					return;
 				}
@@ -201,9 +202,9 @@ define([
 					dataSourceGroupId: group.id,
 					dataSourceLevel: level.level,	
 					dataSourceLevelName: level.name,
-				}
+				};
+				$scope.groupAuths.push(params);
 				util.post(config.apiUrlPrefix + 'site_group/upsert', params, function(){
-					$scope.groupAuths.push(params);
 				});
 			});
 		}
@@ -213,8 +214,8 @@ define([
 				return;
 
 			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
+				group.isDelete = true;
 				util.post(config.apiUrlPrefix + "site_group/deleteByName", group, function() {
-					group.isDelete = true;
 				})
 			});
 		}
@@ -286,6 +287,7 @@ define([
 				groupUser.id = params.user_id;
 				siteDataSource.createGroupMember(params, function(){
 					groupUser.isDelete = false;
+					$scope.nowGroup.userList = $scope.nowGroup.userList || [];
 					$scope.nowGroup.userList.push(angular.copy(groupUser));
 					groupUser.name = "";
 				}, function(){

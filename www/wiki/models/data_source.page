@@ -299,20 +299,24 @@ function data_source:api_gitlabWebhook(params)
 	local lastCommitId = params.after
 
 	if (not dataSourceUserId) or (not dataSourceUsername) or (not projectName) or (not projectId) then
+		LOG.std(nil, "error", "keepwork", "params errors") 
 		return
 	end
-	
+	-- 不止一条记录
 	self:db():findOne({["+type+dataSourceUserId+dataSourceUsername"]={"gitlab", dataSourceUserId, dataSourceUsername}}, resume)
 	local _, dataSource = yield()
 
 	if not dataSource then
+		LOG.std(nil, "error", "keepwork", "data source not exist")
 		return
 	end
+
 	local dataSourceId = dataSource._id
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:db():findOne({["+username+dataSourceName+projectName"]={dataSource.username, dataSourceName, projectName}}, resume)
+	siteDataSourceDB:db():findOne({["+username+projectName"]={dataSource.username, projectName}}, resume)
 	local _, siteDataSource = yield()
 	if not siteDataSource then
+		LOG.std(nil, "error", "keepwork", "site data source not exist")
 		return 
 	end
 
