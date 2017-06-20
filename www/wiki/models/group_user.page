@@ -16,7 +16,6 @@ function group_user:ctor()
 	self:addfield("groupname", "string")           -- 组名 
 	self:addfield("memberName", "string")          -- 成员名 
 	self:addfield("level", "number")               -- 权限级别
-	self:addfield("visibility", "string")          -- 是否为私有项目 private - 是 public - 否  gitlab存在此子段不明意思
 end
 
 -- 添加组成员

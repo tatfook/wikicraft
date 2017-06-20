@@ -200,13 +200,11 @@ define([
 					groupname: group.name,
 					sitename: siteinfo.name,
 				    username: siteinfo.username,
-					dataSourceGroupId: group.id,
-					dataSourceLevel: level.level,	
-					dataSourceLevelName: level.name,
+					level: level.level,	
+					levelName: level.name,
 				};
 				$scope.groupAuths.push(params);
-				util.post(config.apiUrlPrefix + 'site_group/upsert', params, function(){
-				});
+				util.post(config.apiUrlPrefix + 'site_group/upsert', params);
 			});
 		}
 
@@ -216,8 +214,7 @@ define([
 
 			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
 				group.isDelete = true;
-				util.post(config.apiUrlPrefix + "site_group/deleteByName", group, function() {
-				})
+				util.post(config.apiUrlPrefix + "site_group/deleteByName", group);
 			});
 		}
 
@@ -231,7 +228,9 @@ define([
 			}
 
 			group.isDelete = true;
-			siteDataSource.deleteGroup({id:group.id});
+			siteDataSource.deleteGroup({id:group.id}, function(){
+				util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
+			});
 		}
 
         $scope.createGroup = function () {
@@ -245,10 +244,17 @@ define([
 					return;
 				}
 			}
+			// 创建组
 			siteDataSource.upsertGroup({name:group.name, request_access_enabled:true}, function(data){
+				util.post(config.apiUrlPrefix + 'group/upsert', {
+					username:siteinfo.username,
+					groupname:group.name,
+					dataSourceUserId:data.id, // 需不需要存
+					visibility:"public",
+				});
 				$scope.groups.push(data);
 				$scope.nowGroup = {};
-				console.log(data);
+				//console.log(data);
 			}, function(){
 
 			});
@@ -290,6 +296,14 @@ define([
 					groupUser.isDelete = false;
 					$scope.nowGroup.userList = $scope.nowGroup.userList || [];
 					$scope.nowGroup.userList.push(angular.copy(groupUser));
+
+					util.post(config.apiUrlPrefix + "group_user/upsert", {
+						username:siteinfo.username,
+						groupname:group.name,
+						memberName:groupUser.name,
+						level:40,
+					});
+
 					groupUser.name = "";
 				}, function(){
 					Message.info("用户添加失败");
@@ -298,11 +312,17 @@ define([
         }
 
         $scope.removeUser = function (group, groupUser) {
-			if (!siteDataSource) {
+			if (!siteDataSource || !group || !groupUser) {
 				return;
 			}
 			//console.log(groupUser);
-			siteDataSource.deleteGroupMember({id:group.id, user_id:groupUser.id});
+			siteDataSource.deleteGroupMember({id:group.id, user_id:groupUser.id}, function() {
+				util.post(config.apiUrlPrefix + "group_user/deleteMember", {
+					username:siteinfo.username,
+					groupname:group.name,
+					memberName:groupUser.name,
+				});
+			});
 			groupUser.isDelete = true;
         }
         

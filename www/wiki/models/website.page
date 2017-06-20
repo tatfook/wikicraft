@@ -304,6 +304,24 @@ function website:api_getAllByUsername(params)
 	return errors:wrap(yield())
 end
 
+-- 获取站点及数据源通过站点名
+function website:api_getWithDataSourceByName(params)
+	if (not site.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
+	local _, siteinfo = yield()
+
+	if not siteinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local siteDataSourceDB = models.site_data_source:new()
+	siteinfo.dataSource = siteDataSourceDB:api_getSiteDataSource(params).data
+
+	return errors:wrap(nil, siteinfo)
+end
 
 -- 通过站点名获得站点
 function website:api_getByName(params)
