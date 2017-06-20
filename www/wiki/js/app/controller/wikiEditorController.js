@@ -142,9 +142,9 @@ define([
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [
-                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close()'>&times;</span>",
-                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()'></span>",
-                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")'></span>",
+                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
+                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
+                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
             ];
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
@@ -165,9 +165,9 @@ define([
             treeData[i].icon = 'fa fa-globe';
             treeData[i].tags=[];
             treeData[i].tags.push([
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"'+ treeData[i].pageNode.sitename +'"'+")' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
             ]);
         }
         return treeData;
@@ -361,9 +361,9 @@ define([
                 {"id":3,"showValue": "100%", "scaleValue": "1"},
                 {"id":4,"showValue": "实际大小", "scaleValue": "1", "special":true}
             ];
-                $scope.showFile=true;
-                $scope.showCode=true;
-                $scope.showView=true;
+            $scope.showFile=true;
+            $scope.showCode=true;
+            $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
 
@@ -936,7 +936,7 @@ define([
                     var treeview = {
                         color: "#3977AD",
                         selectedBackColor: "#3977AD",
-                        onhoverColor:"#D6D6D6",
+                        onhoverColor:"#E6E6E6",
                         showBorder: false,
                         enableLinks: false,
                         levels: 4,
@@ -1259,14 +1259,23 @@ define([
             }
 
             //关闭
-            $scope.cmd_close = function () {
-                Message.info("关闭功能开发中");
-                // openTempFile();
+            $scope.cmd_close = function (url) {
+                console.log("判断是否已保存");
+                $scope.opens[url]=undefined;
+                delete $scope.opens[url];
+                util.$apply();
+                currentPage={};
+                sessionStorage.setItem("urlObj",{});
+                openPage();
             };
 
             //关闭全部已打开
-            $scope.cmd_closeAll = function () {
-                Message.info("关闭功能开发中");
+            $scope.cmd_closeAll = function (website) {
+                for (url in $scope.opens){
+                    if ((website && url.split("/")[2]==website) || !website){
+                        $scope.cmd_close(url);
+                    }
+                }
             };
 
             $scope.cmd_saveAll = function () {

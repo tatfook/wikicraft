@@ -380,7 +380,7 @@ select.resize-view {
     border: none;
 }
 .opened .list-group-item:not(.node-selected):hover{
-    background-color: #D6D6D6;
+    background-color: #E6E6E6;
 }
 .opened .node-selected{
     background-color: #3977AD;

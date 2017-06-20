@@ -254,8 +254,11 @@
     <div class="row">
         <div class="col-md-3 subnav col-xs-3">
             <img class="profile" ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
-            <h3 class="clearfix">{{userinfo.displayName || userinfo.username}}</h3>
-            <p class="info clearfix">{{userinfo.displayName || userinfo.username}}<span class="pull-right">注册于{{userinfo.joindate || ""}}</span></p>
+            <h3 class="clearfix ellipsis-1" title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</h3>
+            <p class="info clearfix ellipsis-1">
+                <span title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</span>
+                <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
+            </p>
             <p>{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo)">{{userinfo.concerned?"取消关注":"关 注"}}</div>
             <div class="message-row">
