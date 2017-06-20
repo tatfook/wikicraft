@@ -95,3 +95,15 @@ define([
 }
 ```
 */
+/*
+ ```@wiki/js/header
+ {
+ "moduleKind":"game2",
+ "bgImg":"",
+ "title":"PAC全国3D创作大赛",
+ "subTitle":"———— 2017 * 夏季赛 ————",
+ "message":"用ParaCraft创意空间制作电影作品参赛",
+ "time":"2017年6月1日——2017年10月15日"
+ }
+ ```
+ */

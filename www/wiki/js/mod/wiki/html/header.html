@@ -251,9 +251,11 @@
 		border-style: solid;
 	}
 	.gameHeader h1{
-		font-size: 44px;
+		font-size: 46px;
+		font-weight: normal;
 		color: #FFEA81;
-		text-shadow: 0px 7px 0 #280f27;
+		text-shadow: 0 7px 0 #280f27;
+		margin: 0;
 	}
 	.gameHeader p.message{
 		font-size: 20px;
@@ -265,6 +267,57 @@
 		display: flex;
 		justify-content: space-around;
 		text-align: center;
+	}
+</style>
+<style>
+	.gameHeader-second .banner-info{
+		text-align: center;
+	}
+	.gameHeader-second h2{
+		text-align: center;
+	}
+	.gameHeader-second p.message{
+		text-align: justify;
+		font-size: 16px;
+		font-weight: lighter;
+		text-align: center;
+		letter-spacing: .4em;
+	}
+	.gameHeader-second .game-time {
+		border: 1px solid #B08E68;
+		padding: 0 35px;
+		display: inline-block;
+		height: 36px;
+		line-height: 36px;
+		background: -webkit-linear-gradient(left,transparent, rgb(63, 22, 48),transparent);
+		position: relative;
+		border-right: 0;
+		border-left: 0;
+		margin-bottom: 0;
+	}
+	.gameHeader-second .game-time:before{
+		content: '';
+		display: inline-block;
+		width: 20px;
+		height: 34px;
+		border: 1px solid #B08E68;
+		position: absolute;
+		left: 0px;
+		background-color: transparent;
+		border-left: 0;
+		border-radius: 0 100% 100% 0/50% 50%;
+	}
+	.gameHeader-second .game-time:after{
+		content: '';
+		display: inline-block;
+		width: 20px;
+		height: 34px;
+		border: 1px solid #B08E68;
+		position: absolute;
+		right: 0px;
+		background-color: transparent;
+		border-right: 0;
+		border-radius: 100% 0 0px 100%/50% 50%;
 	}
 </style>
 
@@ -318,6 +371,20 @@
 						<p>{{stage.time}}</p>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+	<!--大赛头部2-->
+	<div ng-show="modParams.moduleKind=='game2'">
+		<div class="gameHeader gameHeader-second">
+			<div class="banner-bg">
+				<img ng-src="{{modParams.bgImg || getImageUrl('gameheader_banner.jpg',imgsPath)}}" alt="">
+			</div>
+			<div class="banner-info">
+				<h1>{{modParams.title}}</h1>
+				<h2>{{modParams.subTitle}}</h2>
+				<p class="message">{{modParams.message}}</p>
+				<h3 class="game-time">{{modParams.time}}</h3>
 			</div>
 		</div>
 	</div>
