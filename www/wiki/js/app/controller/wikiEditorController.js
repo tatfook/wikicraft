@@ -89,7 +89,7 @@ define([
                 if (j == paths.length - 1) {
                     subTreeNode.isLeaf = true;
                     if (!isDir) {
-                        subTreeNode.isEditor = page.isModify;
+                        subTreeNode.isModify = page.isModify;
 						subTreeNode.isConflict = page.isConflict;
                     }
                 }
