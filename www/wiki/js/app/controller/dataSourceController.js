@@ -31,6 +31,14 @@ define(['app',
                 $scope.errMsg = "内置数据源不可更改!!!";
                 return;
             }
+			
+			var isModify = false;
+			for (var i = 0; i < ($scope.dataSourceList || []).length; i++) {
+				var temp = $scope.dataSourceList[i];
+				if ($scope.newDataSource.name == temp.name) {
+					isModify = true;
+				}
+			}
 
             $scope.errMsg = "";
 
@@ -47,9 +55,9 @@ define(['app',
                 //$scope.newDataSource.rootPath = path;
             //}
 
-            util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function () {
+            util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function (data) {
                 Message.info("操作成功");
-				$scope.dataSourceList.push(angular.copy($scope.newDataSource));
+				!isModify && $scope.dataSourceList.push(angular.copy(data));
 				$scope.newDataSource = {username:$scope.user.username};
                 //getUserDataSource();
             });
@@ -67,9 +75,12 @@ define(['app',
                 return;
             }
 
-            util.post(config.apiUrlPrefix + 'data_source/deleteById', {username:x.username, dataSourceName:x.name}, function () {
-                //getUserDataSource();
-                x.isDelete = true;
+            util.post(config.apiUrlPrefix + 'data_source/deleteByName', {username:x.username, dataSourceName:x.name}, function () {
+				for (var i = 0; i < $scope.dataSourceList.length; i++) {
+					if (x.name == $scope.dataSourceList[i].name) {
+						$scope.dataSourceList.splice(i, 1);
+					}
+				}
             });
         }
 
