@@ -1260,13 +1260,17 @@ define([
 
             //关闭
             $scope.cmd_close = function (url) {
-                console.log("判断是否已保存");
-                $scope.opens[url]=undefined;
-                delete $scope.opens[url];
-                util.$apply();
-                currentPage={};
-                sessionStorage.setItem("urlObj",{});
-                openPage();
+                if (allPageMap[url].isModify){
+                    var result=window.confirm("当前有修改未保存，确定关闭？");
+                }
+                if(!allPageMap[url].isModify || result){
+                    $scope.opens[url]=undefined;
+                    delete $scope.opens[url];
+                    util.$apply();
+                    currentPage={};
+                    sessionStorage.setItem("urlObj",{});
+                    openPage();
+                }
             };
 
             //关闭全部已打开
@@ -2047,7 +2051,7 @@ define([
                         resizeResult(resultWidth);//设置result-html宽度
 
                         var len=$scope.scales.length-1;
-                        if(!$scope.scales[len].resultWidth || $scope.scales[len].resultWidth != winWidth){//设置实际大小的result-html的宽度为浏览器窗口大小宽度
+                        if(!$scope.scales[len].resultWidth || ($scope.scales[len].resultWidth != winWidth && $scope.scales[len].showValue == "实际大小")){//设置实际大小的result-html的宽度为浏览器窗口大小宽度
                             $scope.scales[len].resultWidth = winWidth;
                         }
                         if($scope.scales[len].showValue!="适合宽度"){
@@ -2058,6 +2062,8 @@ define([
                                 "special":true,
                                 "resultWidth":resultWidth
                             });
+                        }else if ($scope.scales[len].showValue=="适合宽度" && $scope.scales[len].resultWidth!=resultWidth){
+                            $scope.scales[len].resultWidth=resultWidth;
                         }
                     }
                     return scaleSize;
@@ -2065,6 +2071,7 @@ define([
 
                 function resizeMod(val,scaleItem) {
                     if (scaleItem && scaleItem.resultWidth){
+                        console.log("111111");
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
@@ -2087,6 +2094,7 @@ define([
                 // 下拉框选择比例
                 $scope.changeScale = function (scaleItem) {
                     $scope.enableTransform = false;
+                    console.log(scaleItem);
                     resizeMod(scaleItem.scaleValue,scaleItem);
                 }
 
@@ -2147,7 +2155,7 @@ define([
                 }
 
                 $scope.adaptive = function () {
-                    resizeMod($scope.scales[$scope.scales.length-1].scaleValue);
+                    resizeMod($scope.scales[$scope.scales.length-1].scaleValue,$scope.scales[$scope.scales.length-1]);
                     $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
                 }
 
