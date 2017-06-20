@@ -306,7 +306,7 @@ end
 
 -- 获取站点及数据源通过站点名
 function website:api_getWithDataSourceByName(params)
-	if (not site.username) or (not params.sitename) then
+	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -319,6 +319,9 @@ function website:api_getWithDataSourceByName(params)
 
 	local siteDataSourceDB = models.site_data_source:new()
 	siteinfo.dataSource = siteDataSourceDB:api_getSiteDataSource(params).data
+	if siteinfo.dataSource then
+		siteinfo.dataSource.dataSourceToken = nil	
+	end
 
 	return errors:wrap(nil, siteinfo)
 end

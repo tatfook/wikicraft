@@ -149,8 +149,8 @@ define([
 					group.sitename = siteinfo.name;
 					group.groupname = group.group_name;
 					group.dataSourceGroupId = group.group_id;
-					group.dataSourceLevel = group.group_access_level;
-					group.dataSourceLevelName = getLevelName(group.dataSourceLevel);
+					group.level = group.group_access_level;
+					group.levelName = getLevelName(group.level);
 				}
 				$scope.groupAuths = data;
 			});
@@ -209,7 +209,7 @@ define([
 		}
 
 		$scope.deleteShareGroup = function(group) {
-			if (!siteDataSource) 
+			if (!siteDataSource || !group) 
 				return;
 
 			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
@@ -228,6 +228,12 @@ define([
 			}
 
 			group.isDelete = true;
+			for (var i = 0; i < $scope.groups.length; i++) {
+				if (group.name == $scope.groups[i].name) {
+					$scope.groups.splice(i,1);
+					break;
+				}
+			}
 			siteDataSource.deleteGroup({id:group.id}, function(){
 				util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
 			});
@@ -240,7 +246,8 @@ define([
 			}
 			// 是否存在
 			for (var i = 0; i < ($scope.groups || []).length; i++) {
-				if ($scope.groups[i].name == group.name) {
+				if (!$scope.groups[i].isDelete && $scope.groups[i].name == group.name) {
+					Message.info("组已存在");
 					return;
 				}
 			}

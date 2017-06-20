@@ -49,6 +49,17 @@ function data_source:api_deleteById(params)
 	return errors:wrap(yield())
 end
 
+-- 删除用户数据源
+function data_source:api_deleteByName(params)
+	if (not params.username) or (not params.dataSourceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["+username+name"]={params.username, params.dataSourceName}}, resume)
+
+	return errors:wrap(yield())
+end
+
 -- 获取数据源
 function data_source:api_getById(params)
 	if not params.id then

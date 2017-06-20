@@ -8,6 +8,7 @@ Date: 2017/06/08
 
 include_once("./abstract/base.page")
 include_once("./group_user.page")
+include_once("./website.page")
 
 local site_group = inherit(models.abstract.base, gettable("models.site_group"))
 site_group.db_name = "site_group"
@@ -66,12 +67,23 @@ function site_group:api_getByMemberName(params)
 	local groupUserDB = models.group_user:new()
 	groupUserDB:db():find({["+memberName+level"]={params.memberName, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
 	local _, groupList = yield()
+	local result = {}
+	local websiteDB = models.website:new()
 	
+	-- log(groupList)
+
 	for _, group in ipairs(groupList or {}) do
-		self:db():finOne({["+username+groupname+level"]={group.username, group.groupname, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
+		result[#result+1] = {} 
+		result[#result]["groupUser"] = group
+		self:db():findOne({["+username+groupname+level"]={group.username, group.groupname, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
 		local _, siteGroup = yield()	
-		
+		if siteGroup then
+			result[#result]["siteGroup"] = siteGroup
+			result[#result]["siteinfo"] = websiteDB:api_getWithDataSourceByName(siteGroup).data
+		end
 	end
+	
+	return errors:wrap(nil, result)
 end 
 
 

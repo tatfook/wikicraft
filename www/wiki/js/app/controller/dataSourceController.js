@@ -10,19 +10,13 @@ define(['app',
     'text!html/dataSource.html',
 ], function (app, util, storage,dataSource, htmlContent) {
     app.registerController('dataSourceController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message) {
-        $scope.dataSourceList = $scope.user.dataSource;
-        $scope.defaultDataSourceId = $scope.user.dataSourceId && $scope.user.dataSourceId.toString();
-
         $scope.dataSourceTypeList = ["github", "gitlab"];
-        $scope.newDataSource = {userId:$scope.user._id};
 
         // 更改默认数据源
         $scope.changeDefaultDataSource = function () {
             //console.log("change default data source");
-            $scope.user.dataSourceId = parseInt($scope.defaultDataSourceId);
-            util.post(config.apiUrlPrefix + 'user/updateUserInfo', $scope.user, function (data) {
-                dataSource.getUserDataSource($scope.user.username).setDefaultDataSourceId($scope.user.dataSourceId);
-            });
+			console.log($scope.defaultDataSourceName);
+            //util.post(config.apiUrlPrefix + 'user/updateUserInfo', $scope.user);
         };
 
         // 添加新的数据源
@@ -41,22 +35,23 @@ define(['app',
             $scope.errMsg = "";
 
             // 格式化根路径
-            if ($scope.newDataSource.rootPath) {
-                var rootPath = $scope.newDataSource.rootPath;
-                var paths = rootPath.split('/');
-                var path = "";
-                for (var i = 0; i < paths.length; i++) {
-                    if (paths[i]) {
-                        path += "/" + paths[i];
-                    }
-                }
-                $scope.newDataSource.rootPath = path;
-            }
+            //if ($scope.newDataSource.rootPath) {
+                //var rootPath = $scope.newDataSource.rootPath;
+                //var paths = rootPath.split('/');
+                //var path = "";
+                //for (var i = 0; i < paths.length; i++) {
+                    //if (paths[i]) {
+                        //path += "/" + paths[i];
+                    //}
+                //}
+                //$scope.newDataSource.rootPath = path;
+            //}
 
             util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function () {
                 Message.info("操作成功");
-                $scope.newDataSource = {userId:$scope.user._id};
-                getUserDataSource();
+				$scope.dataSourceList.push(angular.copy($scope.newDataSource));
+				$scope.newDataSource = {username:$scope.user.username};
+                //getUserDataSource();
             });
         }
 
@@ -72,7 +67,7 @@ define(['app',
                 return;
             }
 
-            util.post(config.apiUrlPrefix + 'data_source/deleteById', {id:x._id}, function () {
+            util.post(config.apiUrlPrefix + 'data_source/deleteById', {username:x.username, dataSourceName:x.name}, function () {
                 //getUserDataSource();
                 x.isDelete = true;
             });
@@ -81,16 +76,21 @@ define(['app',
 		function getUserDataSource() {
 			util.post(config.apiUrlPrefix + 'data_source/getByUsername', {username:$scope.user.username}, function (data) {
                 $scope.dataSourceList = data;
-                $scope.user.dataSource = data;
-                Account.setUser($scope.user);
             });
         }
 
         function init() {
+			$scope.defaultDataSourceName = $scope.user.defaultDataSourceName;
+			$scope.newDataSource = {username:$scope.user.username};
             getUserDataSource();
         }
 
-        $scope.$watch('viewContentLoaded', init);
+		$scope.$watch('viewContentLoaded', function(){
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				init();
+			});
+		});
 
     }]);
 
