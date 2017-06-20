@@ -164,7 +164,7 @@ end
 -- 更新用户信息
 function user:api_updateUserInfo(params)
 	_, params = self:validateQuery(params)
-	if not params._id then
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -176,7 +176,7 @@ function user:api_updateUserInfo(params)
 	params.isadmin = nil
 	params.dataSource = nil
 
-	self:db():updateOne({_id=params._id}, params, resume)
+	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
 	return errors:wrap(yield())
 end

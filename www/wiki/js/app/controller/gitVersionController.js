@@ -2,7 +2,12 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util, htmlContent) {
+define([
+	'app',
+   	'helper/util', 
+    'helper/dataSource',
+	'text!html/gitVersion.html'
+], function (app, util, dataSource, htmlContent) {
     app.registerController('gitVersionController', ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
         $scope.dtStartOpened = false;
         $scope.dtEndOpened = false;
@@ -14,35 +19,27 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
             $scope.$dismiss();
         }
 
-        var user = Account.getUser();
-        var currentDataSource = Account.innerGitlab;
-        $scope.isGitlabType = true;
-
-        $scope.$watch('$viewContentLoaded', init);
-
-        $scope.$on('onDataSource', function (event, data) {
-            if (data.type == "innerGitlab" && $scope.isGitlabType) {
-                currentDataSource = data.dataSource;
-                init();
-            }
-        });
+		$scope.$watch('$viewContentLoaded', function(){
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				var userDataSource = dataSource.getUserDataSource(userinfo.username);
+				userDataSource.registerInitFinishCallback(function(){
+					init();
+				});
+			});
+		});
 
         // 获得git文件列表
         function init() {
-            if (!currentDataSource || !currentDataSource.isInited()) {
-                return;
-            }
-
-            currentDataSource.getTree(true, function (data) {
-                var filelist = [];
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i].type == "tree" || data[i].path.indexOf('images/') == 0) {
-                        continue;
-                    }
-                    filelist.push({path: data[i].path});
-                }
-                $scope.filelist = filelist;
-            });
+			var username = $scope.user.username;
+			var dataSourceList = dataSource.getDataSourceList($scope.user.username);
+			$scope.filelist = [];
+			for (var i = 0; i < (dataSourceList || []).length; i++) {
+				var siteDataSource = dataSourceList[i];
+				siteDataSource.getTree({path:'/'+ username}, function (data) {
+					$scope.filelist = $scope.filelist.concat(data || []);
+				});
+			}
         }
 
         $scope.dtStartOpen = function () {
@@ -141,7 +138,7 @@ define(['app', 'helper/util', 'text!html/gitVersion.html'], function (app, util,
         }
         // 路径过滤
         $scope.pathSelected = function ($item, $model) {
-            $scope.path = $item.path;
+            $scope.url = $item.url;
         }
     }]);
 

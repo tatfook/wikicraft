@@ -114,6 +114,14 @@ define([
         getDefaultDataSource: function () {
             return this.getDataSourceBySitename(this.defaultSitename);
         },
+		getDataSourceList: function() {
+			var dataSourceList = [];
+			for (var key in this.dataSourceInstMap) {
+				dataSourceList.push(this.dataSourceInstMap[key]);
+			}
+
+			return dataSourceList;
+		}
     };
 
     dataSource = {
@@ -158,6 +166,10 @@ define([
 
         return this.getUserDataSource(this.defaultUsername).getDefaultDataSource();
     };
+
+	dataSource.getDataSourceList = function(username) {
+		return this.getUserDataSource(username).getDataSourceList();
+	}
 
     return dataSource;
 });

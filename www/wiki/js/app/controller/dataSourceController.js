@@ -14,9 +14,12 @@ define(['app',
 
         // 更改默认数据源
         $scope.changeDefaultDataSource = function () {
-            //console.log("change default data source");
-			console.log($scope.defaultDataSourceName);
-            //util.post(config.apiUrlPrefix + 'user/updateUserInfo', $scope.user);
+			//console.log($scope.defaultDataSourceName);
+			$scope.user.defaultDataSourceName = $scope.defaultDataSourceName;
+            util.post(config.apiUrlPrefix + 'user/updateUserInfo', {
+				username:$scope.user.username,
+				defaultDataSourceName:$scope.defaultDataSourceName,
+			});
         };
 
         // 添加新的数据源

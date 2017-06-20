@@ -158,9 +158,9 @@
                         <!--input type="text" class="form-control" ng-model="path"-->
                         <div>
                             <ui-select ng-model="seleected" ng-disabled on-select="pathSelected($item, $model)">
-                                <ui-select-match placeholder="文件过滤(必填)">{{$select.selected.path}}</ui-select-match>
+                                <ui-select-match placeholder="文件过滤(必填)">{{$select.selected.url}}</ui-select-match>
                                 <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index">
-                                    <span ng-bind="file.path"></span>
+                                    <span ng-bind="file.url"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>

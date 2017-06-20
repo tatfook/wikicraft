@@ -125,6 +125,16 @@ function site_data_source:api_updateById(params)
 	return errors:wrap(yield())
 end
 
+-- 删除站点数据源
+function site_data_source:api_deleteByName(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["+username+sitename"]={params.username, params.sitename}}, resume)
+
+	return errors:wrap(yield())
+end
 
 -- 获取用户站点数据源列表
 function site_data_source:api_getByUsername(params)
@@ -270,6 +280,7 @@ function site_data_source:api_createSiteDataSource(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	-- LOG.std(nil, "error", "keepwork", params)
 	params.dataSourceName = params.dataSourceName or const.DEFAULT_DATA_SOURCE_NAME
 	params.projectName = params.projectName or (projectNamePrefix .. string.lower(params.sitename))
 	params.visibility = params.visibility or "public"
