@@ -190,41 +190,44 @@
                     'Authorization': undefined
                 }, // remove auth header for this request
                 skipAuthorization: true // this is added by our satellizer module, so disable it for cross site requests.
-            })
-            .then(function (response) {
-                $http({
-                    method: "POST",
-                    url: '/api/mod/packages/models/packages/download',
-                    data: {
-                        packageId: request.id,
-                        projectType: $scope.projectType
-                    }
-                })
-                    .then(function (response) {
-                        if (response.data.result == 1) {
-                            packagesInstallService.setGiturl(
-                                '127.0.0.1:8099/localInstall#?'
-                                + 'projectReleases=' + encodeURIComponent($scope.projectReleases)
-                                + '&gitIcon=' + encodeURIComponent($scope.gitIcon)
-                                + '&projectName=' + encodeURIComponent($scope.projectName)
-                                + '&displayName=' + encodeURIComponent($scope.displayName)
-                                + '&version=' + encodeURIComponent($scope.version)
-                                + '&packagesId=' + encodeURIComponent(request.id)
-                                + '&projectType=' + encodeURIComponent($scope.projectType)
-                                + '&homepage=' + encodeURIComponent(window.location.href)
-                            );
+            }).then(
+                function (response) {
+                    if (response.status == 200) {
+                        $http({
+                            method: "POST",
+                            url: '/api/mod/packages/models/packages/download',
+                            data: {
+                                packageId: request.id,
+                                projectType: $scope.projectType
+                            }
+                        })
+                        .then(function (response) {
+                            if (response.data.result == 1) {
+                                packagesInstallService.setGiturl(
+                                    '127.0.0.1:8099/localInstall#?'
+                                    + 'projectReleases=' + encodeURIComponent($scope.projectReleases)
+                                    + '&gitIcon=' + encodeURIComponent($scope.gitIcon)
+                                    + '&projectName=' + encodeURIComponent($scope.projectName)
+                                    + '&displayName=' + encodeURIComponent($scope.displayName)
+                                    + '&version=' + encodeURIComponent($scope.version)
+                                    + '&packagesId=' + encodeURIComponent(request.id)
+                                    + '&projectType=' + encodeURIComponent($scope.projectType)
+                                    + '&homepage=' + encodeURIComponent(window.location.href)
+                                );
 
-                            $uibModal.open({
-                                templateUrl: '/wiki/mod/packages/partials/local_install_dialog.html',
-                                controller: 'localInstallDialogController',
-                                size: 'lg'
-                            }).result.then(function (params) {}, function (params) {});
-                        }
-                    }, function (response) {
-                    });
-            }, function (response) {
-                alert("`直接安装`需要您启动Paracraft客户端并打开`Mod加载`界面，但是没有检测到正在运行的Paracraft客户端, 请`直接下载`或启动后重试");
-            });
+                                $uibModal.open({
+                                    templateUrl: '/wiki/mod/packages/partials/local_install_dialog.html',
+                                    controller: 'localInstallDialogController',
+                                    size: 'lg'
+                                }).result.then(function (params) { }, function (params) { });
+                            }
+                        }, function (response) { });
+                    } else {
+                        alert("`直接安装`需要您启动Paracraft客户端并打开`Mod加载`界面，但是没有检测到正在运行的Paracraft客户端, 请`直接下载`或启动后重试");
+                    }
+                }, function (response) {
+                    alert("`直接安装`需要您启动Paracraft客户端并打开`Mod加载`界面，但是没有检测到正在运行的Paracraft客户端, 请`直接下载`或启动后重试");
+                });
         }
 
         $scope.$watch('isVerified', function (newValue, oldValue) {
