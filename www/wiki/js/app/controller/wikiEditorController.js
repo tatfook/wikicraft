@@ -166,8 +166,8 @@ define([
             treeData[i].tags=[];
             treeData[i].tags.push([
                 "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"'+ treeData[i].pageNode.sitename +'"'+")' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
             ]);
         }
         return treeData;
@@ -333,6 +333,90 @@ define([
 
             currentPage = $scope.websitePage;
             $uibModalInstance.close("page");
+        }
+    }]);
+
+    app.registerController('fileCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
+        $scope.website = {};             //当前选中站点
+        $scope.websiteFile = {};        //当前选中文件夹
+        $scope.errInfo = "";             // 错误提示
+        var treeNode = undefined;       // 目录节点
+
+        $scope.$watch('$viewContentLoaded', init);
+        //初始化目录树  data:  $.parseJSON(getTree()),
+        function initTree() {
+            //console.log('@initTree');
+            $('#newFileTreeId').treeview({
+                color: "#428bca",
+                showBorder: false,
+                enableLinks: false,
+                data: getTreeData($scope.user.username, allPageMap, true),
+                onNodeSelected: function (event, data) {
+                    //console.log(data);
+                    treeNode = data.pageNode;
+                }
+            });
+            var currentInfo=$scope.nowHoverFile;
+            if (currentInfo) {
+                var selectableNodes = $('#newFileTreeId').treeview('search', [currentInfo.sitename, {
+                    ignoreCase: true,
+                    exactMatch: false,
+                    revealResults: true,  // reveal matching nodes
+                }]);
+
+                $.each(selectableNodes, function (index, item) {
+                    if (item.pageNode.url == ('/' + currentInfo.username + '/' + currentInfo.sitename)) {
+                        $('#newFileTreeId').treeview('selectNode', [item, {silent: false}]);
+                        treeNode = item.pageNode;
+                    }
+                });
+                $('#newFileTreeId').treeview('clearSearch');
+            }
+        }
+
+        //初始化
+        function init() {
+            initTree();
+        }
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        $scope.file_new = function () {
+            if (!treeNode) {
+                $scope.errInfo = '请选择站点';
+                return false;
+            }
+
+            if ($scope.websiteFile.filename === undefined || $scope.websiteFile.filename.length == 0) {
+                $scope.errInfo = '请填写页面名';
+                return false;
+            }
+
+            if ($scope.websiteFile.filename.indexOf('.') >= 0) {
+                $scope.errInfo = '页面名包含非法字符(.)';
+                return false;
+            }
+
+            $scope.websiteFile.url = treeNode.url + '/' + $scope.websiteFile.filename;
+            $scope.websiteFile.username = $scope.user.username;
+            $scope.websiteFile.sitename = treeNode.sitename;
+            $scope.websiteFile.isModify = true;
+            for (var key in allPageMap) {
+                if (!allPageMap[key])
+                    continue;
+
+                var url1 = allPageMap[key].url + '/';
+                var url2 = $scope.websitePage.url + '/';
+                if (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0) {
+                    $scope.errInfo = '文件路径已存在';
+                    return false;
+                }
+            }
+
+            // currentPage = $scope.websitePage;
+            $uibModalInstance.close("file");
         }
     }]);
 
@@ -793,7 +877,6 @@ define([
 
             // 打开页
             function openPage() {
-                //console.log(currentPage);
                 if (!currentPage) {
                     var urlObj=storage.sessionStorageGetItem('urlObj') || {};
                     if (urlObj.url){
@@ -965,6 +1048,7 @@ define([
                                 $scope.opens[data.pageNode.url].selected=true;
                                 $scope.opens[data.pageNode.url].itemId=itemId;
                                 $scope.opens[data.pageNode.url].url=data.pageNode.url;
+                                $scope.opens[data.pageNode.url].isModify = allPageMap[data.pageNode.url].isModify;
                             } else {
                                 $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
                                 $(treeid).treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
@@ -1123,7 +1207,8 @@ define([
                 //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
-                    size: 'lg'
+                    size: 'lg',
+                    backdrop:true
                 }, function (wikiBlock) {
                     //console.log(result);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
@@ -1162,8 +1247,9 @@ define([
                 var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
                 if (hidePageTree){
                     $scope.nowHoverPage={
+                        name:$("#mytree").treeview("getNode",nodeid).text,
                         sitename:$("#mytree").treeview("getNode",nodeid).pageNode.sitename,
-                        username:$scope.user.username
+                        username:$scope.user.username,
                     };
                 }
                 function openNewPage() {
@@ -1193,8 +1279,7 @@ define([
                     Message.warning("自动保存失败");
                     openNewPage();
                 });
-
-            }
+            };
 
             //保存页面
             $scope.cmd_savepage = function (cb, errcb) {
@@ -1236,6 +1321,12 @@ define([
             //删除
             $scope.cmd_remove = function (confirmed) {
                 if (!confirmed){
+                    var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
+                    var node=$("#mytree").treeview("getNode",nodeid);
+                    $scope.deleteNode = {
+                        sitename: node.pageNode.sitename,
+                        name: node.pageNode.name
+                    };
                     $('#deleteModal').modal("show");
                 }else{
                     if (!isEmptyObject(currentPage)) {
@@ -1270,8 +1361,8 @@ define([
                     $scope.opens[url]=undefined;
                     delete $scope.opens[url];
                     util.$apply();
-                    currentPage={};
-                    sessionStorage.setItem("urlObj",{});
+                    currentPage = undefined;
+                    storage.sessionStorageRemoveItem('urlObj');
                     openPage();
                 }
             };
@@ -1323,8 +1414,45 @@ define([
             };
 
             //新建文件夹
-            $scope.cmd_newFile = function () {
+            $scope.cmd_newFile = function (hidePageTree) {
                 Message.info("新建文件夹功能开发中");
+                // $scope.hidePageTree=hidePageTree ? true : false;
+                // var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
+                // if (hidePageTree){
+                //     $scope.nowHoverPage={
+                //         name:$("#mytree").treeview("getNode",nodeid).text,
+                //         sitename:$("#mytree").treeview("getNode",nodeid).pageNode.sitename,
+                //         username:$scope.user.username,
+                //     };
+                //     console.log($("#mytree").treeview("getNode",nodeid));
+                // }
+                // function openNewFile() {
+                //     $uibModal.open({
+                //         //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                //         templateUrl: config.htmlPath + "editorNewFile.html",
+                //         controller: "fileCtrl",
+                //         scope: $scope
+                //     }).result.then(function (provider) {
+                //         //console.log(provider);
+                //         if (provider == "file") {
+                //             // console.log(currentPage);
+                //             // allPageMap[currentPage.url] = currentPage;
+                //             // currentSite = getCurrentWebsite();
+                //             // initTree();
+                //             // openPage(false);
+                //         }
+                //     }, function (text, error) {
+                //         return;
+                //     });
+                // }
+                //
+                // savePageContent(function () {
+                //     //Message.warning("自动保存成功");
+                //     openNewFile();
+                // }, function () {
+                //     Message.warning("自动保存失败");
+                //     openNewFile();
+                // });
             };
 
             //撤销
@@ -1768,7 +1896,8 @@ define([
                 // util.go("gitVersion");
                 modal('controller/gitVersionController', {
                     controller: 'gitVersionController',
-                    size: 'lg'
+                    size: 'lg',
+                    backdrop: true
                 }, function (wikiBlock) {
                     console.log(wikiBlock);
                 }, function (result) {
