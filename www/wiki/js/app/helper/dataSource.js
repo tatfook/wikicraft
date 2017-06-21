@@ -35,9 +35,9 @@ define([
 		defaultSitename:"__keepwork__",
 
         init: function (dataSourceCfgList, defaultSitename) {
-            if (this.isInitFinish) {
-                return;
-            }
+			if (this.isInitFinish) {
+				return;
+			}
 
             var self = this;
             self.dataSourceCfgList = dataSourceCfgList;

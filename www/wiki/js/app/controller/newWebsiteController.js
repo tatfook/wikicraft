@@ -28,9 +28,9 @@ define([
 			siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
             config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
-                var defaultDataSource = dataSource.getDataSource(siteinfo.username);
-				var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
                 var callback = function () {
+					var defaultDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
                     var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
                     var contentUrlPrefix = "text!html/";
                     var contentPageList = [];
@@ -66,9 +66,11 @@ define([
                     });
                 };
 				if (siteinfo.dataSource) {
+					var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+					userDataSource.registerDataSource(siteinfo.name, dataSourceInst);
 					dataSourceInst.init(siteinfo.dataSource, function() {
-						defaultDataSource = dataSourceInst;
-						callback();
+						Account.initDataSource(callback, callback);
+						//callback();
 					}, errcb);
 				} else {
 					callback();
@@ -189,7 +191,12 @@ define([
         }
 
         // 文档加载完成
-        $scope.$watch('$viewContentLoaded', init);
+		$scope.$watch('$viewContentLoaded', function(){
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				init();
+			});
+		});
 
         function createWebsiteRequest() {
 

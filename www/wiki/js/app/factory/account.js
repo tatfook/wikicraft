@@ -6,9 +6,9 @@ define([
     'app',
     'helper/storage',
     'helper/util',
-    'helper/dataSource'
+    'helper/dataSource',
 ], function (app, storage, util, dataSource) {
-    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'github', 'Message',
+    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'gitlab', 'github', 'Message',
         function ($auth, $rootScope, $http, $uibModal, github, Message) {
             var account = undefined;
             var angularService = util.getAngularServices();
@@ -36,7 +36,7 @@ define([
 				if (!user.dataSource || user.dataSource.length == 0) {
 					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
                         user.dataSource = data || [];
-                        storage.localStorageSetItem("userinfo", user);
+                        //storage.localStorageSetItem("userinfo", user);
                         DataSource.init(user.dataSource, user.defaultDataSourceSitename);
                     });
                 } else {
@@ -45,17 +45,32 @@ define([
             }
 
             account = {
-                user: {},
+                user: undefined,
+
+				initDataSource: function(cb, errcb) {
+					var user = this.user;
+					if (!user || !user.username) {
+						errcb && errcb();
+						return;
+					}
+					var DataSource = dataSource.getUserDataSource(user.username);
+					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
+						user.dataSource = data || [];
+                        storage.localStorageSetItem("userinfo", user);
+                        DataSource.init(user.dataSource, user.defaultDataSourceSitename);
+						cb && cb();
+                    }, errcb);
+				},
+
                 // 获取用户信息
                 getUser: function (cb, errcb) {
-                    var userinfo = this.user || storage.localStorageGetItem("userinfo");
-
-                    //console.log(userinfo);
+                    var userinfo = this.user || storage.sessionStorageGetItem("userinfo");
 
                     if (userinfo && userinfo._id && userinfo.username) {
                         cb && cb(userinfo);
                         return userinfo;
                     }
+
                     if ($auth.isAuthenticated()) {
                         util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
                             //console.log(data);
@@ -76,7 +91,6 @@ define([
                         return;
                     }
                     this.user = user;
-                    //console.log(user);
                     initDataSource(user);
 
                     $rootScope.isLogin = $auth.isAuthenticated();
@@ -87,7 +101,7 @@ define([
                         $.cookie('token', token, {path: '/', expires: 365, domain: '.' + config.hostname});
                     }
                     this.send("onUserProfile", this.user);
-                    storage.localStorageSetItem("userinfo", this.user);
+                    storage.sessionStorageSetItem("userinfo", this.user);
                 },
                 // 广播 TODO 需了解angualar 监听相关功能
                 send: function (msg, data) {

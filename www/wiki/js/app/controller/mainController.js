@@ -216,7 +216,6 @@ define([
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
 						var callback = function() {
-							userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
 							userDataSource.registerInitFinishCallback(function () {
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
@@ -246,16 +245,19 @@ define([
 						// 使用自己的token
 						if (Account.isAuthenticated()) {
 							Account.getUser(function(userinfo){
-								for (var i=0; i < data.userinfo.dataSource.length; i++) {
-									var ds1 = data.userinfo.dataSource[i];
-									for (var j = 0; j < userinfo.dataSource.length; j++) {
-										var ds2 = userinfo.dataSource[j];
-										if (ds1.apiBaseUrl == ds2.apiBaseUrl) {
-											ds1.dataSourceToken = ds2.dataSourceToken;
-											ds1.isInited = true;
+								if (userinfo.username != data.userinfo.username) {
+									for (var i=0; i < data.userinfo.dataSource.length; i++) {
+										var ds1 = data.userinfo.dataSource[i];
+										for (var j = 0; j < userinfo.dataSource.length; j++) {
+											var ds2 = userinfo.dataSource[j];
+											if (ds1.apiBaseUrl == ds2.apiBaseUrl) {
+												ds1.dataSourceToken = ds2.dataSourceToken;
+												ds1.isInited = true;
+											}
 										}
-									}
-								} 
+									} 
+									userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
+								}
 								callback();
 							})
 						} else {

@@ -454,7 +454,7 @@ define([
 			var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
 			//var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
 			var isExist = false;
-			self.httpRequest("GET", "/projects/" + projectId + "/hooks", {}, function (data) {
+			self.httpRequest("GET", "/projects/" + self.projectId + "/hooks", {}, function (data) {
 				//console.log(data);
 				for (var i = 0; i < data.length; i++) {
 					//gitlab.httpRequest("DELETE", "/projects/" + gitlab.projectId + "/hooks/" + data[i].id, {});
@@ -465,7 +465,7 @@ define([
 				// return;
 				// 不存在创建
 				if (!isExist) {
-					self.httpRequest("POST", "/projects/" + projectId + "/hooks", {
+					self.httpRequest("POST", "/projects/" + self.projectId + "/hooks", {
 						url: hookUrl,
 						push_events: true,
 						enable_ssl_verification: false,
@@ -502,11 +502,13 @@ define([
 			self.projectName = projectName;
 		
 			var successCallback = function(params) {
-				self.createWebhook(params.projectId);
+				self.projectId = params.projectId;
 				self.projectMap[projectName] = {
 					projectId:params.projectId,
 					lastCommitId:params.lastCommitId || "master",
 				};
+
+				self.createWebhook();
 				// 更新项目ID
                 util.post(config.apiUrlPrefix + 'site_data_source/updateById', {_id:self.dataSource._id, projectId:params.projectId});
 
@@ -515,7 +517,6 @@ define([
 					self.lastCommitId = lastCommitId;
 				});
 
-				self.projectId = params.projectId;
 				cb && cb();	
 				return;
 			}

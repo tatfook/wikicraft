@@ -61,7 +61,12 @@ define([
             container.style.overflow="visible";
         }
 
-        $scope.$watch('$viewContentLoaded', init);
+		$scope.$watch('$viewContentLoaded', function() {
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				init();
+			}, init);
+		});
 
         $scope.selectSite = function (site) {
             $scope.urlObj.sitename = site.name;
