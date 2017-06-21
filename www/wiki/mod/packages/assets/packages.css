@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: 'icomoon';
   src: url('icomoon.woff2') format('woff');
 }
@@ -347,6 +347,9 @@ body {
 .packages-install .infor-logo img {
   width: 66px;
 }
+.packages-install .install-wiki img[alt="image"] {
+  width: 100%;
+}
 .packages-install .install-infor {
   padding-top: 45px;
   width: 100%;
@@ -587,6 +590,7 @@ body {
   width: 100%;
   border-bottom: 1px solid #E7E7E7;
   padding-top: 30px;
+  position: relative;
 }
 .packages-projects .projects .projects-list .item::after {
   display: block;
@@ -597,6 +601,9 @@ body {
   float: left;
   width: 50px;
   margin-right: 10px;
+}
+.packages-projects .projects .projects-list .item .project-icon img {
+  width: 100%;
 }
 .packages-projects .projects .projects-list .item .project-infor {
   float: left;
@@ -623,8 +630,8 @@ body {
   font-size: 14px;
 }
 .packages-projects .projects .projects-list .item .project-operation {
-  float: right;
-  padding-top: 18px;
+  position: absolute;
+  right: 0;
 }
 .packages-projects .projects .projects-list .item .project-operation span,
 .packages-projects .projects .projects-list .item .project-operation a {
