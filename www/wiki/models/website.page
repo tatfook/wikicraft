@@ -104,9 +104,9 @@ function website:api_upsert(params)
 	end
 	
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility})
+	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName})
 	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
-	LOG.std(nil, "error", "keepwork", site.dataSource)
+	-- LOG.std(nil, "error", "keepwork", site.dataSource)
 
 	-- 设置站点管理员
 	local websiteMemberDB = models.website_member:new()
@@ -174,6 +174,10 @@ function website:deleteById(websiteId)
 	websitePageinfoDB:api_delete({websiteName=site.name, userId=site.userId})
 
 	-- 删除页面内容 TODO
+
+	-- 删除数据源记录
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:api_deleteByName({username=site.username, sitename=site.name})
 
 	-- 删除站点
 	self:db():deleteOne({_id=websiteId}, resume)
@@ -304,6 +308,27 @@ function website:api_getAllByUsername(params)
 	return errors:wrap(yield())
 end
 
+-- 获取站点及数据源通过站点名
+function website:api_getWithDataSourceByName(params)
+	if (not params.username) or (not params.sitename) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
+	local _, siteinfo = yield()
+
+	if not siteinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local siteDataSourceDB = models.site_data_source:new()
+	siteinfo.dataSource = siteDataSourceDB:api_getSiteDataSource(params).data
+	if siteinfo.dataSource then
+		siteinfo.dataSource.dataSourceToken = nil	
+	end
+
+	return errors:wrap(nil, siteinfo)
+end
 
 -- 通过站点名获得站点
 function website:api_getByName(params)

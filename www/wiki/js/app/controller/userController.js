@@ -20,6 +20,7 @@ define([
             if (!username) {
                 return;
             }
+			username = username.toLowerCase();
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
                     return ;

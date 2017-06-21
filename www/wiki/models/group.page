@@ -15,7 +15,7 @@ function group:ctor()
 	self:addfield("username", "string")            -- 用户名  组的所属者
 	self:addfield("groupname", "string")           -- 组名 
 	self:addfield("dataSourceGroupId", "number")   -- 数据源组id
-	self:addfield("dataSourceLevel", "number")     -- 数据源权限级别
+	self:addfield("visibility", "string")          -- 数据源组可见性
 end
 
 -- 创建组

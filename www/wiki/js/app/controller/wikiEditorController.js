@@ -89,7 +89,7 @@ define([
                 if (j == paths.length - 1) {
                     subTreeNode.isLeaf = true;
                     if (!isDir) {
-                        subTreeNode.isEditor = page.isModify;
+                        subTreeNode.isModify = page.isModify;
 						subTreeNode.isConflict = page.isConflict;
                     }
                 }
@@ -142,9 +142,9 @@ define([
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [
-                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close()'>&times;</span>",
-                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()'></span>",
-                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")'></span>",
+                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
+                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
+                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
             ];
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
@@ -165,9 +165,9 @@ define([
             treeData[i].icon = 'fa fa-globe';
             treeData[i].tags=[];
             treeData[i].tags.push([
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"'+ treeData[i].pageNode.sitename +'"'+")' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile()' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' ng-src='' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
             ]);
         }
         return treeData;
@@ -545,12 +545,6 @@ define([
                     return;
                 }
                 initEditor();
-
-				//console.log(otherUsername);
-
-				var callback = function() {
-
-				}
                 // 获取自己用户信息
                 fnList.push(function (finish) {
                    Account.getUser(function (userinfo) {
@@ -802,20 +796,24 @@ define([
                 //console.log(currentPage);
                 if (!currentPage) {
                     var urlObj=storage.sessionStorageGetItem('urlObj') || {};
-                    $scope.opens[urlObj.url]={
-                        pageNode:
-                            {
-                                name:urlObj.pagename,
-                                sitename:urlObj.sitename,
-                                url:urlObj.url,
-                                isLeaf:true
-                            },
-                        selected:true,
-                        itemId:urlObj.url.split("/").join("")
-                    };
+                    if (urlObj.url){
+                        $scope.opens[urlObj.url]={
+                            pageNode:
+                                {
+                                    name:urlObj.pagename,
+                                    sitename:urlObj.sitename,
+                                    url:urlObj.url,
+                                    isLeaf:true
+                                },
+                            selected:true,
+                            itemId:urlObj.url.split("/").join("")
+                        };
+                    }
                     openUrlPage();
                     return;
                 }
+				// 打开currentPage 
+				//
 
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
@@ -938,7 +936,7 @@ define([
                     var treeview = {
                         color: "#3977AD",
                         selectedBackColor: "#3977AD",
-                        onhoverColor:"#D6D6D6",
+                        onhoverColor:"#E6E6E6",
                         showBorder: false,
                         enableLinks: false,
                         levels: 4,
@@ -1261,13 +1259,31 @@ define([
             }
 
             //关闭
-            $scope.cmd_close = function () {
-                Message.info("关闭功能开发中");
+            $scope.cmd_close = function (url) {
+                if (allPageMap[url].isModify){
+                    var result=window.confirm("当前有修改未保存，确定关闭？");
+                }
+                if(!allPageMap[url].isModify || result){
+                    $scope.opens[url]=undefined;
+                    delete $scope.opens[url];
+                    util.$apply();
+                    currentPage={};
+                    sessionStorage.setItem("urlObj",{});
+                    openPage();
+                }
             };
 
             //关闭全部已打开
-            $scope.cmd_closeAll = function () {
-                Message.info("关闭功能开发中");
+            $scope.cmd_closeAll = function (website) {
+                for (url in $scope.opens){
+                    if ((website && url.split("/")[2]==website) || !website){
+                        $scope.cmd_close(url);
+                    }
+                }
+            };
+
+            $scope.cmd_saveAll = function () {
+                Message.info("保存全部功能开发中");
             };
 
             //刷新
@@ -1782,6 +1798,17 @@ define([
                     return;
                 }
 
+                var winWidth = $(window).width();
+                if (winWidth<992){
+                    $scope.showFile=false;
+                    $scope.showCode=true;
+                    $scope.showView=false;
+                }else{
+                    $scope.showFile=true;
+                    $scope.showCode=true;
+                    $scope.showView=true;
+                }
+                initView();
                 function wikiCmdFold(cm, start) {
                     var line = cm.getLine(start.line);
                     if ((!line) || (!line.match(/^```[@\/]/)))
@@ -2024,7 +2051,7 @@ define([
                         resizeResult(resultWidth);//设置result-html宽度
 
                         var len=$scope.scales.length-1;
-                        if(!$scope.scales[len].resultWidth || $scope.scales[len].resultWidth != winWidth){//设置实际大小的result-html的宽度为浏览器窗口大小宽度
+                        if(!$scope.scales[len].resultWidth || ($scope.scales[len].resultWidth != winWidth && $scope.scales[len].showValue == "实际大小")){//设置实际大小的result-html的宽度为浏览器窗口大小宽度
                             $scope.scales[len].resultWidth = winWidth;
                         }
                         if($scope.scales[len].showValue!="适合宽度"){
@@ -2035,6 +2062,8 @@ define([
                                 "special":true,
                                 "resultWidth":resultWidth
                             });
+                        }else if ($scope.scales[len].showValue=="适合宽度" && $scope.scales[len].resultWidth!=resultWidth){
+                            $scope.scales[len].resultWidth=resultWidth;
                         }
                     }
                     return scaleSize;
@@ -2042,6 +2071,7 @@ define([
 
                 function resizeMod(val,scaleItem) {
                     if (scaleItem && scaleItem.resultWidth){
+                        console.log("111111");
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
@@ -2064,6 +2094,7 @@ define([
                 // 下拉框选择比例
                 $scope.changeScale = function (scaleItem) {
                     $scope.enableTransform = false;
+                    console.log(scaleItem);
                     resizeMod(scaleItem.scaleValue,scaleItem);
                 }
 
@@ -2124,7 +2155,7 @@ define([
                 }
 
                 $scope.adaptive = function () {
-                    resizeMod($scope.scales[$scope.scales.length-1].scaleValue);
+                    resizeMod($scope.scales[$scope.scales.length-1].scaleValue,$scope.scales[$scope.scales.length-1]);
                     $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
                 }
 

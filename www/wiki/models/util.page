@@ -145,7 +145,7 @@ const.USER_ROLE_ADMINISTRATOR = 10          -- 超管
 const.SITE_PRIVILEGE_GUEST_LEVEL=10        -- 禁止读写
 const.SITE_PRIVILEGE_REPORTER_LEVEL=20     -- 读
 const.SITE_PRIVILEGE_DEVELOPER_LEVEL=30    -- 读写
-const.SITE_PRIVILEGE_MASTER_LEVEL=40       -- 
+const.SITE_PRIVILEGE_MASTER_LEVEL=40       -- 读写
 const.SITE_PRIVILEGE_OWNER_LEVEL=50        -- 
 
 -- 默认数据源名

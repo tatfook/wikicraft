@@ -380,7 +380,7 @@ select.resize-view {
     border: none;
 }
 .opened .list-group-item:not(.node-selected):hover{
-    background-color: #D6D6D6;
+    background-color: #E6E6E6;
 }
 .opened .node-selected{
     background-color: #3977AD;
@@ -446,6 +446,47 @@ select.resize-view {
     }
     select.resize-view{
         height:32px;
+    }
+
+    .wiki-toolbar{
+        max-width:100%;
+        overflow-x: auto;
+    }
+    .btn-toolbar{
+        min-width: 992px;
+    }
+    .wiki-toolbar .btn-group{
+        margin-left: 0;
+    }
+    .wiki-toolbar .wiki-btn {
+        padding: 5px 7px;
+    }
+    .code-view.col-xs-12{
+        margin: 0;
+        padding: 0 15px;
+    }
+    .code-view > .col-xs-6{
+        width: 100%;
+        padding: 0;
+    }
+    .treeview-container{
+        z-index: 5;
+        width: 100%;
+        min-height: 100%;
+        background-color: #FFF;
+    }
+    .CodeMirror-gutters,.CodeMirror-gutter-wrapper,.border{
+        display: none;
+    }
+    #srcview{
+        display: none;
+        padding-right: 0;
+    }
+    .result-html{
+        width: 100% !important;
+    }
+    .result-html .wikiEditor{
+        transform: scale(1) !important;
     }
 }
 @media(min-width: 992px) {
@@ -577,6 +618,7 @@ select.resize-view {
     }
     .code-view{
         padding-left: 255px;
+        padding-right:0;
     }
     .treeview-container{
         width: 255px;
