@@ -56,7 +56,8 @@ define([
 					var DataSource = dataSource.getUserDataSource(user.username);
 					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
 						user.dataSource = data || [];
-                        storage.localStorageSetItem("userinfo", user);
+                        //storage.localStorageSetItem("userinfo", user);
+						console.log(user);
                         DataSource.init(user.dataSource, user.defaultDataSourceSitename);
 						cb && cb();
                     }, errcb);
@@ -90,8 +91,9 @@ define([
                     if (!user) {
                         return;
                     }
+
                     this.user = user;
-                    initDataSource(user);
+                    this.initDataSource();
 
                     $rootScope.isLogin = $auth.isAuthenticated();
                     $rootScope.user = user;
@@ -103,6 +105,7 @@ define([
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);
                 },
+
                 // 广播 TODO 需了解angualar 监听相关功能
                 send: function (msg, data) {
                     $rootScope.$broadcast(msg, data);
@@ -230,7 +233,7 @@ define([
             }
 
             account.getUser(function (user) {
-                console.log(user);
+                //console.log(user);
                 account.setUser(user);
             });
 
