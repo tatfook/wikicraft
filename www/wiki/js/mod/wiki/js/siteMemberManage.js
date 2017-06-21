@@ -68,7 +68,7 @@ define([
                         member.roleName = "管理员";  // 管理员角色ID为1
                     });
                 }
-            }
+            };
 
             // 同意成员加入
             $scope.clickAgreeMemeber = function (apply) {
@@ -76,7 +76,7 @@ define([
                     apply.isDelete = true;
                     console.log("同意成员加入");
                 });
-            }
+            };
 
             // 拒绝成员加入
             $scope.clickRefuseMember = function (apply) {
@@ -84,11 +84,15 @@ define([
                     apply.isDelete = true;
                     console.log("拒绝成员加入");
                 });
-            }
+            };
 
             $scope.goHomePage = function () {
                 util.go("/"+siteinfo.username+"/"+siteinfo.name);
-            }
+            };
+
+            $scope.goUserPage = function (username) {
+                util.goUserSite('/' + username,true);
+            };
 
             $scope.$watch('$viewContentLoaded', function () {
                 if (modParams.username && modParams.sitename) {

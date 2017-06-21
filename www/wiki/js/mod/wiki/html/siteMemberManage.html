@@ -160,7 +160,7 @@
                         <div ng-hide="member.isDelete" class="notify-item member-item">
                             <img ng-src="{{member.userLogo || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
                             <div class="user-msg">
-                                <h4><a>{{member.username}}</a></h4>
+                                <h4><a ng-click="goUserPage(member.username)">{{member.username}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{member.location}}</span></p>
                             </div>
                             <div class="btn btn-primary" ng-click="setManager(member)">{{ isManager(member) ? '取消管理员' : '设定管理员'}}</div>
@@ -173,7 +173,7 @@
                         <div ng-hide="apply.isDelete" class="notify-item">
                             <img ng-src="{{apply.userLogo || imgsPath+'personsal_header_profile.jpg'}}" alt="" class="profile">
                             <div class="user-msg">
-                                <h4><a>{{apply.username}}</a></h4>
+                                <h4><a ng-click="goUserPage(apply.username)">{{apply.username}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> <span class="info">{{apply.location}}</span></p>
                             </div>
                             <p class="notify-msg">申请加入{{siteinfo.displayName}}</p>

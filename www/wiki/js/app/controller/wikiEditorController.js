@@ -798,6 +798,7 @@ define([
                     var urlObj=storage.sessionStorageGetItem('urlObj') || {};
                     if (urlObj.url){
                         $scope.opens[urlObj.url]={
+                            url:urlObj.url,
                             pageNode:
                                 {
                                     name:urlObj.pagename,
@@ -963,6 +964,7 @@ define([
                                 $scope.opens[data.pageNode.url]=data;
                                 $scope.opens[data.pageNode.url].selected=true;
                                 $scope.opens[data.pageNode.url].itemId=itemId;
+                                $scope.opens[data.pageNode.url].url=data.pageNode.url;
                             } else {
                                 $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
                                 $(treeid).treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
@@ -1249,6 +1251,7 @@ define([
                         storage.indexedDBDeleteItem(config.pageStoreName, currentPage.url);
 
                         delete allPageMap[currentPage.url];
+                        delete $scope.opens[currentPage.url];
                         storage.sessionStorageRemoveItem('urlObj');
                         currentPage = undefined;
                         $('#deleteModal').modal("hide");
@@ -1283,7 +1286,17 @@ define([
             };
 
             $scope.cmd_saveAll = function () {
-                Message.info("保存全部功能开发中");
+                var tempCurrentPage=currentPage;
+                for (url in $scope.opens){
+                    currentPage=$scope.opens[url];
+                    $scope.cmd_savepage(function () {
+                        allPageMap[url].isModify=false;
+                        allPageMap[url].isConflict=false;
+                        $scope.opens[url].isModify = false;
+                        initTree();
+                    });
+                }
+                currentPage=tempCurrentPage;
             };
 
             //刷新
@@ -2308,6 +2321,7 @@ define([
                         //console.log(currentPage);
                         //console.log(content, allWebstePageContent[currentPage.url],content != allWebstePageContent[currentPage.url]);
                         currentPage.isModify = true;
+                        $scope.opens[currentPage.url].isModify = true;
                         initTree();
                     }
 
@@ -2436,7 +2450,8 @@ define([
                 $scope.newWebsite = function () {
                     modal('controller/newWebsiteController', {
                         controller: 'newWebsiteController',
-                        size: 'lg'
+                        size: 'lg',
+                        backdrop: 'static'
                     }, function (wikiBlock) {
                         console.log(wikiBlock);
                     }, function (result) {
@@ -2615,7 +2630,7 @@ define([
 
                 $scope.goUserPage = function () {
                     util.goUserSite('/' + $scope.user.username);
-                }
+                };
 
                 $scope.goModPackagePage = function () {
                     util.go("mod/packages",true);

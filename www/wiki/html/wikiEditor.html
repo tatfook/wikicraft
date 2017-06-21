@@ -63,12 +63,12 @@
                             <div class="btn btn-default btn-sm" title="斜体（Ctrl+I）" ng-click="cmd_italic()">
                                 <img ng-src="{{imgsPath+'icon/wiki_italic.png'}}" alt="">
                             </div>
-                            <div class="btn btn-default btn-sm" title="下划线" ng-click="cmd_underline()">
+                            <!--<div class="btn btn-default btn-sm" title="下划线" ng-click="cmd_underline()">
                                 <img ng-src="{{imgsPath+'icon/wiki_underline.png'}}" alt="">
                             </div>
                             <div class="btn btn-default btn-sm" title="删除线" ng-click="cmd_strikethrough()">
                                 <img ng-src="{{imgsPath+'icon/wiki_deleteline.png'}}" alt="">
-                            </div>
+                            </div>-->
                         </div>
                         <div class="btn-group">
                             <div class="btn btn-default btn-sm"  ng-click="cmd_listul()" title="无序列表（Ctrl+.）">
@@ -179,15 +179,15 @@
                                     <span class="icon expand-icon glyphicon glyphicon-minus"></span>
                                     已打开
                                     <span class="badge">
-                                        <img class="show-parent" onclick="angular.element(this).scope().cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
-                                        <img class="show-parent" onclick="angular.element(this).scope().cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
+                                        <img class="show-parent" ng-click="cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
+                                        <img class="show-parent" ng-click="cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
                                     </span>
                                 </li>
                                 <li class="list-group-item" id="{{nodeItem.itemId}}" ng-repeat="(nodeId, nodeItem) in opens" ng-class="{'node-selected':nodeItem.selected}" ng-click="openPageTree(nodeItem)">
                                     <span class="indent"></span>
                                     <span class="icon glyphicon"></span>
                                     <span class="icon node-icon fa fa-file-o"></span>
-                                    {{nodeItem.pageNode.name}}({{nodeItem.pageNode.sitename}})
+                                    {{nodeItem.pageNode.name}}({{nodeItem.pageNode.sitename}})<span ng-show="nodeItem.isModify">*</span>
                                     <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.pageNode.url)" title="关闭">×</span></span>
                                     <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove()" title="删除"></span></span>
                                     <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh()" title="刷新"></span></span>
@@ -225,7 +225,7 @@
                                 <h3><span class="icon">!</span>确定删除？</h3>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-danger" onclick="angular.element(this).scope().cmd_remove(true)">确 定</button>
+                                <button class="btn btn-danger" ng-click="cmd_remove(true)">确 定</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                             </div>
                         </div>
