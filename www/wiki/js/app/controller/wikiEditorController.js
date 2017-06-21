@@ -1207,7 +1207,8 @@ define([
                 //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
-                    size: 'lg'
+                    size: 'lg',
+                    backdrop:true
                 }, function (wikiBlock) {
                     //console.log(result);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
@@ -1895,7 +1896,8 @@ define([
                 // util.go("gitVersion");
                 modal('controller/gitVersionController', {
                     controller: 'gitVersionController',
-                    size: 'lg'
+                    size: 'lg',
+                    backdrop: true
                 }, function (wikiBlock) {
                     console.log(wikiBlock);
                 }, function (result) {
