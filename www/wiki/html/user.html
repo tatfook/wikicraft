@@ -277,10 +277,10 @@
             </div>
             <div class="message-row">
                 <h4>加入的组织：</h4>
-                <p ng-show="(joinOrganizationCount-selfOrganizationCount)==0 || !joinOrganizationCount">暂未加入组织</p>
+                <p ng-show="!joinOrganizationCount">暂未加入组织</p>
                 <ul class="list-item">
-					<li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="userinfo._id == x.siteinfo.userId || x.isDelete">
-                        <a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name + '/index'}}" class="text-muted">{{x.siteinfo.displayName}}</a>
+					<li class="ellipsis-1" ng-repeat="x in joinOrganizationList">
+                        <a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name + '/index'}}" class="text-muted pull-left">{{x.siteinfo.displayName}}</a>
                         <a class="pull-right" ng-click="showExitModal(x)" ng-show="user._id==userinfo._id">退出</a>
                     </li>
                 </ul>

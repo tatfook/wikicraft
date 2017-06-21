@@ -402,6 +402,10 @@ select.resize-view {
     margin-right: 10px;
     font-weight: bold;
 }
+.delete-modal .siteinfo{
+    font-weight: normal;
+    color: #666;
+}
 @media(max-width: 992px){
     .show-sm{
         display: inline-block;
