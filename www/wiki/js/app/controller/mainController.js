@@ -157,28 +157,11 @@ define([
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
                     //console.log("$locationChangeSuccess change");
-                    if (!isFirstLocationChange && util.snakeToHump(window.location.pathname) == '/wiki/wikiEditor') {
+                    if (!isFirstLocationChange && util.isEditorPage()) {
                         return ;
                     }
                     isFirstLocationChange = false;
                     config.loadMainContent(initContentInfo);
-                });
-            }
-
-            function renderHtmlText(pathname, md) {
-                pathname = util.snakeToHump(pathname);
-                pathname = pathname.replace('/wiki/', '');
-                var pageUrl = 'controller/' + pathname + 'Controller';
-                var htmlContent;
-                //console.log(pageUrl);
-                require([pageUrl], function (htmlContent) {
-                    //util.html('#__UserSitePageContent__', htmlContent, $scope);
-                    if (pathname != "test" || pathname == "wikiEditor" || !md) {
-                        util.html('#__UserSitePageContent__', htmlContent, $scope);
-                    } else {
-                        md.bindRenderContainer('#__UserSitePageContent__');
-                        md.render(htmlContent);
-                    }
                 });
             }
 
@@ -286,7 +269,8 @@ define([
 
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
-                        renderHtmlText(urlObj.pathname, md);
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        //config.mainContent = undefined;
                     } else {
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         config.mainContent = undefined;
@@ -300,8 +284,6 @@ define([
                     } else {
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
-                } else if(urlObj.username == 'wiki') {
-                    renderHtmlText(urlObj.pathname, md);
                 } else {
 					config.loading.showLoading();
                     if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {

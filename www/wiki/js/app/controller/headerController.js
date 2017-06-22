@@ -25,7 +25,7 @@ define([
         }
 
         function init() {
-            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikiEditor'}];
+            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikieditor'}];
             var urlObj = util.parseUrl();
 
             if (!config.islocalWinEnv()) {
@@ -179,7 +179,7 @@ define([
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
             console.log(storage.sessionStorageGetItem("urlObj"));
-            util.go("wikiEditor");
+            util.go("wikieditor");
         }
 
         // 用户主页

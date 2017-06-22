@@ -119,7 +119,7 @@ define([
                     $rootScope.$broadcast('changeEditorPage', urlObj);
                 } else {
                     storage.sessionStorageSetItem("urlObj", urlObj);
-                    util.go('wikiEditor');
+                    util.go('wikieditor');
                 }
             }
         }]);

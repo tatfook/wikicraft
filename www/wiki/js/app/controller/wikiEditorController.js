@@ -2352,7 +2352,7 @@ define([
                 }
 
                 window.onresize = function () {
-                    if (util.humpToSnake(util.parseUrl().pathname) == "/wiki/wiki_editor") {
+                    if (util.isEditorPage()) {
                         setEditorHeight();
                         $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
                         resizeMod();

@@ -130,7 +130,7 @@ define([
         }
         
         $scope.goEditorPage = function () {
-            util.go("wikiEditor");
+            util.go("wikieditor");
         }
 
         //显示退出组织模态框

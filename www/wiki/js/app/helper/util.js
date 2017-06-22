@@ -305,7 +305,7 @@ define([
     util.isEditorPage = function () {
         var pathname = util.parseUrl().pathname;
         pathname = util.snakeToHump(pathname);
-        if (pathname == "/wiki/wikiEditor") {
+        if (pathname == "/wiki/wikieditor") {
             return true;
         }
         return false;

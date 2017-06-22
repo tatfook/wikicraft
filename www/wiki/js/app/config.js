@@ -75,7 +75,8 @@
         routeMap:{
             // wiki page
             "/wiki/test":"controller/testController",
-        }
+            "/wiki/wikieditor":"controller/wikiEditorController",
+        },
     };
     function initConfig() {
         var hostname = window.location.hostname;
@@ -142,6 +143,10 @@
         return this.wikiModuleRenderMap[moduleName];
     }
 
+	config.getPage = function() {
+
+	}
+
     config.loadMainContent = function(cb, errcb) {
         var pathname = config.util.parseUrl().pagepath || window.location.pathname;
         if(config.islocalWinEnv()) {
@@ -174,11 +179,12 @@
             config.mainContent = undefined;
         }
 
+		rawPathname = rawPathname.toLowerCase();
         if (config.routeMap[rawPathname]) {
             pageurl = config.routeMap[rawPathname];  // 优先配置路由
         }
 
-        //console.log(pageurl, config.mainContentType);
+        console.log(pageurl, config.mainContentType);
         // 启动angular
         if (pageurl) {
             require([pageurl], function (mainContent) {
