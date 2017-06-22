@@ -1809,45 +1809,59 @@ define([
                 return new Blob([ab], {type: mimeString});
             }
 
+			// 文件上传
+			$scope.cmd_file_upload = function(fileObj, cb) {
+                var currentDataSource = getCurrentDataSource();
+                if (!currentDataSource) {
+					Message.info("无法获取数据源信息，稍后重试....");
+					return;
+                }
+				var username = $scope.user.username;
+
+				var path = "/" + username + "_files/" + fileObj.name;
+				if (window.FileReader) {
+					var fileReader = new FileReader();
+					var cursor = editor.getCursor();
+					fileReader.onloadstart = function () {
+						console.log("onloadstart");
+						line_keyword(cursor.line, '***uploading...0/' + fileObj.size + ')***', 2);
+					};
+					fileReader.onprogress = function (p) {
+						console.log("onprogress");
+						line_keyword(cursor.line, '***uploading...' + p.loaded + '/' + fileObj.size + ')***', 2);
+					};
+					fileReader.onload = function () {
+						console.log("load complete");
+						line_keyword(cursor.line, '***uploading...' + fileObj.size + '/' + fileObj.size + ')***', 2);
+						if (/image\/\w+/.test(fileObj.type)) {
+							currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
+								//console.log(img_url);
+								line_keyword(cursor.line, '![](' + img_url + ')', 2);
+								cb && cb(img_url);
+							});
+						} else {
+							currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
+								line_keyword(cursor.line, '!['+ fileObj.name +'](' + linkUrl + ')', 2);
+								cb && cb(linkCtrl);
+							}, function(response){
+								Message.info(response.data.message);
+								console.log(data);
+							});	
+						}
+					}
+					fileReader.readAsDataURL(fileObj);
+				} else {
+					alert('浏览器不支持');
+				}
+			}
+
             //图片上传
             $scope.cmd_image_upload = function (fileObj, cb) {
                 if (!/image\/\w+/.test(fileObj.type)) {
                     alert("这不是图片！");
                     return false;
                 }
-
-                var currentDataSource = getCurrentDataSource();
-                if (!currentDataSource) {
-                    alert('数据源服务失效，图片无法上传');
-                } else {
-                    //支持chrome IE10
-                    if (window.FileReader) {
-                        var fileReader = new FileReader();
-                        var cursor = editor.getCursor();
-                        fileReader.onloadstart = function () {
-                            console.log("onloadstart");
-                            line_keyword(cursor.line, '***uploading...0/' + fileObj.size + ')***', 2);
-                        };
-                        fileReader.onprogress = function (p) {
-                            console.log("onprogress");
-                            line_keyword(cursor.line, '***uploading...' + p.loaded + '/' + fileObj.size + ')***', 2);
-                        };
-                        fileReader.onload = function () {
-                            console.log("load complete");
-                            line_keyword(cursor.line, '***uploading...' + fileObj.size + '/' + fileObj.size + ')***', 2);
-                            currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                                //console.log(img_url);
-                                line_keyword(cursor.line, '![](' + img_url + ')', 2);
-                                if (cb) {
-                                    cb(img_url);
-                                }
-                            });
-                        }
-                        fileReader.readAsDataURL(fileObj);
-                    } else {
-                        alert('浏览器不支持');
-                    }
-                }
+				$scope.cmd_file_upload(fileObj, cb);
             }
 
             //代码
@@ -2780,7 +2794,7 @@ define([
                 //文件上传
                 function fileUpload(fileObj) {
                     console.log(fileObj);
-                    $scope.cmd_image_upload(fileObj);
+                    $scope.cmd_file_upload(fileObj);
                     return;
                 }
 

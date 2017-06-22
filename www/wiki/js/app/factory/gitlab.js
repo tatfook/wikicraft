@@ -50,18 +50,19 @@ define([
             var result = undefined;
             var success = function (response) {
 				//console.log(response);
-				if (response.status < 200 || response.status >=300) {
+				if (response.status != 304 && (response.status < 200 || response.status >=300)) {
 					errcb && errcb(response);
 					return;
 				}
 
-                var headers = response.headers();
-                if (headers["x-next-page"] && data.isFetchAll) {
+                var headers = (typeof(response.headers) == "function") && response.headers();
+                if (headers && headers["x-next-page"] && data.isFetchAll) {
                     data.page = parseInt(headers["x-next-page"]);
                     result = (result || []).concat(response.data);
                     //console.log(result);
                     $http(config).then(success).catch(failed);
                 } else {
+					console.log(response);
                     result = result ? (result.concat(response.data)) : response.data;
                     typeof cb == 'function' && cb(result);
                 }
@@ -290,6 +291,7 @@ define([
             params.branch = params.branch || "master";
             self.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
                 // 已存在
+				console.log(data);
 				if (data && data.blob_id) {
 					self.httpRequest("PUT", url, params, function (data) {
 						//console.log(data);
@@ -407,6 +409,20 @@ define([
                 cb && cb(imgUrl);
             }, errcb);
         }
+
+		gitlab.uploadFile = function(params, cb, errcb) {
+			var self = this;
+			var path = params.path;
+			self.writeFile(params,function(){
+				params.path = self.getLongPath(params).substring(1);
+				var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+				params.ref = "master";
+				self.httpRequest("GET", url, params, function (data) {
+					var linkUrl = self.getRawContentUrlPrefix({sha:data.last_commit_id, path:path});
+					cb && cb(linkUrl);
+				}, errcb);
+			}, errcb);
+		}
 
         // 初始化
         gitlab.init = function (dataSource, cb, errcb) {

@@ -280,7 +280,6 @@ define([
                         Account.getUser(function (userinfo) {
                             util.go("/" + userinfo.username);
                         });
-                        //util.html('#__UserSitePageContent__', userHtmlContent, $scope);
                     } else {
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
