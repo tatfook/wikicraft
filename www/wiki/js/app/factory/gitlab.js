@@ -50,7 +50,7 @@ define([
             var result = undefined;
             var success = function (response) {
 				//console.log(response);
-				if (response.status != 304 && (response.status < 200 || response.status >=300)) {
+				if (response.status < 200 || response.status >=300) {
 					errcb && errcb(response);
 					return;
 				}
