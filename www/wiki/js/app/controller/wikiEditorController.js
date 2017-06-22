@@ -38,15 +38,15 @@ define([
     var allWebsitePages = [];
     var allWebstePageContent = {};
     var allPageMap = {};                  // 页面映射
-    var currentSite = undefined;     // 当前站点
-    var currentPage = undefined;        // 当前页面
-    var editorDocMap = {};           // 每个文件对应一个文档
-    var isHTMLViewEditor = false;   // 是否h5视图编辑
-    var currentRichTextObj = undefined; // 当前编辑的富文本
+    var currentSite = undefined;          // 当前站点
+    var currentPage = undefined;          // 当前页面
+    var editorDocMap = {};                // 每个文件对应一个文档
+    var isHTMLViewEditor = false;         // 是否h5视图编辑
+    var currentRichTextObj = undefined;   // 当前编辑的富文本
     var treeNodeMap = {};            // 树节点映射
     var treeNodeExpandedMap = {};    // 展开节点
     var pagelistMap = {};            // 页列表映射
-    var urlParamsMap = {};            // url 参数映射
+    var urlParamsMap = {};           // url 参数映射
 
     function getCurrentDataSource() {
 		if (currentPage && currentPage.username) {
@@ -72,7 +72,7 @@ define([
             var length = isDir ? paths.length - 1 : paths.length;
             for (var j = 2; j < length; j++) {
                 var path = paths[j];
-                if (!path) {
+                if (!path || path == ".gitignore") {
                     continue;
                 }
                 subTreeNode = treeNode.children[path] || {
@@ -336,10 +336,10 @@ define([
     }]);
 
     app.registerController('fileCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
-        $scope.file = {};             //当前选中站点
-        $scope.websiteFile= {};        //当前选中文件夹
-        $scope.errInfo = "";             // 错误提示
-        var treeNode = undefined;       // 目录节点
+        $scope.file = {};                //当前选中站点
+        $scope.websiteFile= {};          //当前选中文件夹
+        $scope.errInfo = "";             //错误提示
+        var treeNode = undefined;        //目录节点
 
         $scope.$watch('$viewContentLoaded', init);
         //初始化目录树  data:  $.parseJSON(getTree()),
@@ -397,23 +397,23 @@ define([
                 return false;
             }
 
-            $scope.websiteFile.url = treeNode.url + '/' + $scope.websiteFile.filename;
+            $scope.websiteFile.url = treeNode.url + '/' + $scope.websiteFile.filename + "/.gitignore";
             $scope.websiteFile.username = $scope.user.username;
             $scope.websiteFile.sitename = treeNode.sitename;
-            $scope.websiteFile.isModify = true;
-            for (var key in allPageMap) {
-                if (!allPageMap[key])
-                    continue;
-                var url1 = allPageMap[key].url + '/';
-                var url2 = $scope.websiteFile.url + '/';
-                if (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0) {
-                    $scope.errInfo = '文件路径已存在';
-                    return false;
-                }
-            }
-
-            currentPage = $scope.websiteFile;
-            $uibModalInstance.close("file");
+			$scope.websiteFile.pagename = ".gitignore";
+			var path = $scope.websiteFile.url + config.pageSuffixName;
+			var currentDataSource = dataSource.getDataSource(treeNode.username, treeNode.sitename);
+			if (!currentDataSource) {
+				console.log(treeNode);
+			} else {
+				currentDataSource.writeFile({path:path, content:"占位文件"}, function(){
+					console.log("创建成功");
+					allPageMap[$scope.websiteFile.url] = angular.copy($scope.websiteFile);
+				}, function() {
+					console.log("创建失败");
+				});
+			}
+			$uibModalInstance.close("file");
         }
     }]);
 
@@ -1419,33 +1419,16 @@ define([
                     $scope.nowHoverFile=$("#mytree").treeview("getNode",nodeid);
                     // console.log($("#mytree").treeview("getNode",nodeid));
                 }
-                function openNewFile() {
-                    $uibModal.open({
-                        //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                        templateUrl: config.htmlPath + "editorNewFile.html",
-                        controller: "fileCtrl",
-                        scope: $scope
-                    }).result.then(function (provider) {
-                        //console.log(provider);
-                        if (provider == "file") {
-                            console.log(currentPage);
-                            allPageMap[currentPage.url] = currentPage;
-                            currentSite = getCurrentWebsite();
-                            initTree();
-                            openPage(false);
-                        }
-                    }, function (text, error) {
-                        return;
-                    });
-                }
-
-                savePageContent(function () {
-                    //Message.warning("自动保存成功");
-                    openNewFile();
-                }, function () {
-                    Message.warning("自动保存失败");
-                    openNewFile();
-                });
+				$uibModal.open({
+					//templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+					templateUrl: config.htmlPath + "editorNewFile.html",
+					controller: "fileCtrl",
+					scope: $scope
+				}).result.then(function (provider) {
+					initTree();
+				}, function (text, error) {
+					return;
+				});
             };
 
             //撤销
