@@ -140,13 +140,13 @@ define([
         }
 
         // 退出组织
-        $scope.exitOrg = function (org) {
-            util.post(config.apiUrlPrefix + 'website_member/deleteById', org, function () {
-                org.isDelete = true;
+        $scope.exitOrg = function () {
+            util.post(config.apiUrlPrefix + 'website_member/deleteById', $scope.deletingOrg, function () {
+                $scope.deletingOrg.isDelete = true;
                 $scope.joinOrganizationCount--;
                 $('#exitModal').modal("hide");
             });
-        }
+        };
 
         $scope.$watch('$viewContentLoaded', function () {
             //console.log("------------------init user controller----------------------");
