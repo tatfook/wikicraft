@@ -57,7 +57,6 @@ define([
     }
 
     function getTreeData(username, pageMap, isDir) {
-		//console.log(pageMap);
         var pageTree = {url: '/' + username, children: {}};
         var treeData = [];
         for (var key in pageMap) {
@@ -337,15 +336,14 @@ define([
     }]);
 
     app.registerController('fileCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
-        $scope.website = {};             //当前选中站点
-        $scope.websiteFile = {};        //当前选中文件夹
+        $scope.file = {};             //当前选中站点
+        $scope.websiteFile= {};        //当前选中文件夹
         $scope.errInfo = "";             // 错误提示
         var treeNode = undefined;       // 目录节点
 
         $scope.$watch('$viewContentLoaded', init);
         //初始化目录树  data:  $.parseJSON(getTree()),
         function initTree() {
-            //console.log('@initTree');
             $('#newFileTreeId').treeview({
                 color: "#428bca",
                 showBorder: false,
@@ -356,12 +354,12 @@ define([
                     treeNode = data.pageNode;
                 }
             });
-            var currentInfo=$scope.nowHoverFile;
+            var currentInfo=$scope.nowHoverFile.pageNode;
             if (currentInfo) {
                 var selectableNodes = $('#newFileTreeId').treeview('search', [currentInfo.sitename, {
                     ignoreCase: true,
                     exactMatch: false,
-                    revealResults: true,  // reveal matching nodes
+                    revealResults: true  // reveal matching nodes
                 }]);
 
                 $.each(selectableNodes, function (index, item) {
@@ -381,7 +379,7 @@ define([
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
-        }
+        };
 
         $scope.file_new = function () {
             if (!treeNode) {
@@ -406,16 +404,15 @@ define([
             for (var key in allPageMap) {
                 if (!allPageMap[key])
                     continue;
-
                 var url1 = allPageMap[key].url + '/';
-                var url2 = $scope.websitePage.url + '/';
+                var url2 = $scope.websiteFile.url + '/';
                 if (url1.indexOf(url2) == 0 || url2.indexOf(url1) == 0) {
                     $scope.errInfo = '文件路径已存在';
                     return false;
                 }
             }
 
-            // currentPage = $scope.websitePage;
+            currentPage = $scope.websiteFile;
             $uibModalInstance.close("file");
         }
     }]);
@@ -1415,44 +1412,40 @@ define([
 
             //新建文件夹
             $scope.cmd_newFile = function (hidePageTree) {
-                Message.info("新建文件夹功能开发中");
-                // $scope.hidePageTree=hidePageTree ? true : false;
-                // var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
-                // if (hidePageTree){
-                //     $scope.nowHoverPage={
-                //         name:$("#mytree").treeview("getNode",nodeid).text,
-                //         sitename:$("#mytree").treeview("getNode",nodeid).pageNode.sitename,
-                //         username:$scope.user.username,
-                //     };
-                //     console.log($("#mytree").treeview("getNode",nodeid));
-                // }
-                // function openNewFile() {
-                //     $uibModal.open({
-                //         //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                //         templateUrl: config.htmlPath + "editorNewFile.html",
-                //         controller: "fileCtrl",
-                //         scope: $scope
-                //     }).result.then(function (provider) {
-                //         //console.log(provider);
-                //         if (provider == "file") {
-                //             // console.log(currentPage);
-                //             // allPageMap[currentPage.url] = currentPage;
-                //             // currentSite = getCurrentWebsite();
-                //             // initTree();
-                //             // openPage(false);
-                //         }
-                //     }, function (text, error) {
-                //         return;
-                //     });
-                // }
-                //
-                // savePageContent(function () {
-                //     //Message.warning("自动保存成功");
-                //     openNewFile();
-                // }, function () {
-                //     Message.warning("自动保存失败");
-                //     openNewFile();
-                // });
+                // Message.info("新建文件夹功能开发中");
+                $scope.hidePageTree=hidePageTree ? true : false;
+                var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
+                if (hidePageTree){
+                    $scope.nowHoverFile=$("#mytree").treeview("getNode",nodeid);
+                    // console.log($("#mytree").treeview("getNode",nodeid));
+                }
+                function openNewFile() {
+                    $uibModal.open({
+                        //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                        templateUrl: config.htmlPath + "editorNewFile.html",
+                        controller: "fileCtrl",
+                        scope: $scope
+                    }).result.then(function (provider) {
+                        //console.log(provider);
+                        if (provider == "file") {
+                            console.log(currentPage);
+                            allPageMap[currentPage.url] = currentPage;
+                            currentSite = getCurrentWebsite();
+                            initTree();
+                            openPage(false);
+                        }
+                    }, function (text, error) {
+                        return;
+                    });
+                }
+
+                savePageContent(function () {
+                    //Message.warning("自动保存成功");
+                    openNewFile();
+                }, function () {
+                    Message.warning("自动保存失败");
+                    openNewFile();
+                });
             };
 
             //撤销
