@@ -291,7 +291,6 @@ define([
             params.branch = params.branch || "master";
             self.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
                 // 已存在
-				console.log(data);
 				if (data && data.blob_id) {
 					self.httpRequest("PUT", url, params, function (data) {
 						//console.log(data);
@@ -413,11 +412,16 @@ define([
 		gitlab.uploadFile = function(params, cb, errcb) {
 			var self = this;
 			var path = params.path;
-			self.writeFile(params,function(){
+			var content = params.content || "";
+            content = content.split(',');
+			content = content.length > 1 ? content[1] : content[0];
+			content = Base64.decode(content);
+			//console.log(content);
+			self.writeFile({path:path, content:content},function(){
 				params.path = self.getLongPath(params).substring(1);
 				var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
 				params.ref = "master";
-				self.httpRequest("GET", url, params, function (data) {
+				self.httpRequest("GET", url, {path:path, ref:"master"}, function (data) {
 					var linkUrl = self.getRawContentUrlPrefix({sha:data.last_commit_id, path:path});
 					cb && cb(linkUrl);
 				}, errcb);
