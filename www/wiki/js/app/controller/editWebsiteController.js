@@ -200,8 +200,9 @@ define([
 					groupname: group.name,
 					sitename: siteinfo.name,
 				    username: siteinfo.username,
-					level: level.level,	
+					level: level.level,
 					levelName: level.name,
+					dataSourceGroupId:group.id,
 				};
 				$scope.groupAuths.push(params);
 				util.post(config.apiUrlPrefix + 'site_group/upsert', params);
@@ -209,6 +210,7 @@ define([
 		}
 
 		$scope.deleteShareGroup = function(group) {
+			console.log(group);
 			if (!siteDataSource || !group) 
 				return;
 

@@ -81,31 +81,52 @@ define([
 
         var paths = pathname.split('/');
         if (username) {
+			// 用户页
             username = username[1];
             var splitIndex = username.indexOf('-');
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
                 username = username.substring(0, splitIndex);
-                pagename = paths[paths.length-1];
+                pagename = paths.length > 1 ? paths[paths.length-1] : undefined;
+				username = username.toLowerCase();
+				sitename = sitename.toLowerCase();
                 pagepath = '/' + username + '/' + sitename + pathname;
             } else {
                 sitename = paths.length > 1 ? paths[1] : undefined;
-                pagename = paths[paths.length-1];
-                pagepath = '/' + username + pathname;
+                pagename = paths.length > 2 ? paths[paths.length-1] : undefined;
+				username = username.toLowerCase();
+				if (sitename) {
+					sitename = sitename.toLowerCase();
+					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring(sitename.length+2);
+				}
             }
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
             sitename = paths.length > 2 ? paths[2] : undefined;
-            pagename = paths.length > 3 ? paths[3] : undefined;
-            pagepath = pathname;
+            pagename = paths.length > 3 ? paths[paths.length-1] : undefined;
+			if (username != "wiki") {
+				username = username.toLowerCase();
+				if (sitename) {
+					sitename = sitename.toLowerCase();
+					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring((username+sitename).length+3);
+				}
+			}
         }
+
         if (username != "wiki" && !pagename) {
             pagename = "index";
             pagepath += (pagepath[pagepath.length-1] == "/" ? "" : "/") + pagename;
         }
         domain = hostname;
 
-        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname, pagepath: pagepath};
+        return {
+			domain:domain, 
+			username:username, 
+			sitename:sitename, 
+			pagename:pagename, 
+			pathname:pathname, 
+			pagepath:pagepath
+		};
     }
 
     util.setLastUrlObj = function (urlObj) {
