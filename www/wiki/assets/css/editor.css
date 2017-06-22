@@ -259,7 +259,7 @@ body,
 .treeview .badge .close-icon{
     position: absolute;
     top: 2px;
-    left: 23px;
+    left: 8px;
     font-size: 18px;
 }
 .treeview .list-group-item{
