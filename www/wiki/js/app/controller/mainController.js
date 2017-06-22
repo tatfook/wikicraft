@@ -216,6 +216,7 @@ define([
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
 						var callback = function() {
+							userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
 							userDataSource.registerInitFinishCallback(function () {
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
@@ -256,7 +257,6 @@ define([
 											}
 										}
 									} 
-									userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
 								}
 								callback();
 							})
