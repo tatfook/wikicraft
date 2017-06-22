@@ -79,8 +79,8 @@ define([
         }
 
         gitlab.getCommitUrlPrefix = function (params) {
-            params = params || {};
-            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + this.getLongPath(params);
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + "/commit/" + params.sha + authStr;
         }
 
         gitlab.getRawContentUrlPrefix = function (params) {

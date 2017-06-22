@@ -1,9 +1,3 @@
-```@template/js/wiki
-{
-"headerContent": "```@wiki/js/resumeHeader\n{\n    \"username\":\"用户名\",\n    \"baseInfo\":\"性别 学历 工作经验 地点\",\n    \"company\":\"公司名\",\n    \"cellphone\":\"电话号码\",\n    \"email\":\"邮箱\",\n    \"introduce\":\"个人简介\"\n}\n```"
-}
-```
-
 ```@wiki/js/resumeDetail
 {
     "workList":[

@@ -15,6 +15,8 @@ define([
         $scope.commits = [];
         $scope.isModal=true;
 
+		var currentDataSource = undefined;
+
         $scope.cancel = function () {
             $scope.$dismiss();
         }
@@ -40,6 +42,9 @@ define([
 					$scope.filelist = $scope.filelist.concat(data || []);
 				});
 			}
+			//util.post(config.apiUrlPrefix + "website/getAllByUserId", {userId:$scope.user._id}, function(data){
+				//$scope.siteList = data || [];	
+			//});
         }
 
         $scope.dtStartOpen = function () {
@@ -50,11 +55,20 @@ define([
         };
 
         $scope.submit = function () {
-            if (!$scope.path || $scope.path.length == 0) {
-                return;
-            }
+			if (!$scope.selectItem) {
+				return;
+			}
+
+			currentDataSource = dataSource.getDataSource($scope.selectItem.username, $scope.selectItem.sitename);
+            //if (!$scope.selectSitename) {
+                //return;
+            //}
+			//var currentDataSource = dataSource.getDataSource($scope.user.username, $scope.selectSitename);
+			if (!currentDataSource) {
+				return;
+			}
             var params = {
-                path: $scope.path,
+                //path: $scope.selectItem.url + config.pageSuffixName,
                 since: $scope.dtStart && ($scope.dtStart.toLocaleDateString().replace(/\//g, '-') + 'T00:00:00Z'),
                 until: $scope.dtEnd && ($scope.dtEnd.toLocaleDateString().replace(/\//g, '-') + 'T23:59:59Z'),
             };
@@ -66,14 +80,14 @@ define([
                 var commits = [];
                 for (var i = 0; i < data.length; i++) {
                     var commit = data[i];
-                    if ($scope.isGitlabType) {
-                        if (commit.message == (messagePrefix + $scope.path)) {
-                            commits.push({
-                                sha: commit.id,
-                                message: commit.message,
-                                date: commit.committed_date,
-                            });
-                        }
+                    if (currentDataSource.getDataSourceType() == "gitlab") {
+						if (commit.message.indexOf($scope.selectItem.url.substring(1) + config.pageSuffixName) >= 0) {
+							commits.push({
+								sha: commit.id,
+								message: commit.message,
+								date: commit.committed_date,
+							});
+						}
                     } else {
                         //. github
                         commits.push({
@@ -91,29 +105,29 @@ define([
         }
 
         $scope.viewCommit = function (commit) {
-            if ($scope.isGitlabType) {
-                window.open(currentDataSource.getCommitUrlPrefix() + 'commit/' +commit.sha)
+			if (!currentDataSource) 
+				return;
+
+			if (currentDataSource.getDataSourceType() == "gitlab") {
+				window.open(currentDataSource.getCommitUrlPrefix({sha:commit.sha}));
             } else {
                 window.open(commit.html_url);
             }
         }
 
         $scope.rollbackFile = function (commit) {
-            if ($scope.isGitlabType) {
-                currentDataSource.getContent({path:$scope.path, ref:commit.sha}, function (data) {
-                    currentDataSource.writeFile({path:$scope.path, content:data}, function () {
-                        util.http('POST', config.apiUrlPrefix + 'website_pages/updateContentAndShaByUrl', {
-                            url: '/' + $scope.path,
-                            content: data,
-                        }, function () {
-                            console.log("rollback success");
-                            Message.info("文件回滚成功!!!");
-                        });
+			if (!currentDataSource) 
+				return;
+			var path = $scope.selectItem.url + config.pageSuffixName;
+			if (currentDataSource.getDataSourceType() == "gitlab") {
+                currentDataSource.getContent({path:path, ref:commit.sha}, function (data) {
+                    currentDataSource.writeFile({path:path, content:data}, function () {
+						Message.info("文件回滚成功!!!");
                     }, function () {
-                        console.log("rollback failed");
+						Message.info("文件回滚失败!!!");
                     });
                 }, function () {
-                    console.log("rollback failed");
+					Message.info("文件回滚失败!!!");
                 });
             } else {
                 currentDataSource.getSingleCommit(commit.sha, function (result) {
@@ -136,9 +150,10 @@ define([
                 });
             }
         }
+
         // 路径过滤
         $scope.pathSelected = function ($item, $model) {
-            $scope.url = $item.url;
+            $scope.selectItem = $item;
         }
     }]);
 

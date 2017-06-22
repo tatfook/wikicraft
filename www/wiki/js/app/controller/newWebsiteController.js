@@ -307,10 +307,8 @@ define([
             }
         }
 
-        $scope.goPreviewPage = function (style) {
-            var url = window.location.href;
-            var hash = window.location.hash;
-            window.open(url.replace(hash, '') + '?' + style.previewFilename + '#/preview');
+        $scope.goPreviewPage = function (url) {
+            window.open(url);
         }
 
         // 访问网站
