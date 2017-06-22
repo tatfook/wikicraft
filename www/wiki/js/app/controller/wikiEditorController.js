@@ -132,10 +132,10 @@ define([
 			//console.log(pageNode);
 			if (pageNode.isLeaf) {
 				if (pageNode.isModify) {
-					treeNode.text += "*";
+					treeNode.text += " *";
 				}
 				if (pageNode.isConflict) {
-					treeNode.text += "<-";
+					treeNode.text += " !";
 				}
 			}
             treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
@@ -336,45 +336,15 @@ define([
     }]);
 
     app.registerController('fileCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
-        $scope.file = {};                //当前选中站点
         $scope.websiteFile= {};          //当前选中文件夹
         $scope.errInfo = "";             //错误提示
         var treeNode = undefined;        //目录节点
 
         $scope.$watch('$viewContentLoaded', init);
-        //初始化目录树  data:  $.parseJSON(getTree()),
-        function initTree() {
-            $('#newFileTreeId').treeview({
-                color: "#428bca",
-                showBorder: false,
-                enableLinks: false,
-                data: getTreeData($scope.user.username, allPageMap, true),
-                onNodeSelected: function (event, data) {
-                    //console.log(data);
-                    treeNode = data.pageNode;
-                }
-            });
-            var currentInfo=$scope.nowHoverFile.pageNode;
-            if (currentInfo) {
-                var selectableNodes = $('#newFileTreeId').treeview('search', [currentInfo.sitename, {
-                    ignoreCase: true,
-                    exactMatch: false,
-                    revealResults: true  // reveal matching nodes
-                }]);
-
-                $.each(selectableNodes, function (index, item) {
-                    if (item.pageNode.url == ('/' + currentInfo.username + '/' + currentInfo.sitename)) {
-                        $('#newFileTreeId').treeview('selectNode', [item, {silent: false}]);
-                        treeNode = item.pageNode;
-                    }
-                });
-                $('#newFileTreeId').treeview('clearSearch');
-            }
-        }
 
         //初始化
         function init() {
-            initTree();
+            treeNode=$scope.nowHoverFile.pageNode;
         }
 
         $scope.cancel = function () {
@@ -382,18 +352,13 @@ define([
         };
 
         $scope.file_new = function () {
-            if (!treeNode) {
-                $scope.errInfo = '请选择站点';
-                return false;
-            }
-
             if ($scope.websiteFile.filename === undefined || $scope.websiteFile.filename.length == 0) {
-                $scope.errInfo = '请填写页面名';
+                $scope.errInfo = '请填写文件名';
                 return false;
             }
 
             if ($scope.websiteFile.filename.indexOf('.') >= 0) {
-                $scope.errInfo = '页面名包含非法字符(.)';
+                $scope.errInfo = '文件名包含非法字符(.)';
                 return false;
             }
 
@@ -401,19 +366,9 @@ define([
             $scope.websiteFile.username = $scope.user.username;
             $scope.websiteFile.sitename = treeNode.sitename;
 			$scope.websiteFile.pagename = ".gitignore";
-			var path = $scope.websiteFile.url + config.pageSuffixName;
-			var currentDataSource = dataSource.getDataSource(treeNode.username, treeNode.sitename);
-			if (!currentDataSource) {
-				console.log(treeNode);
-			} else {
-				currentDataSource.writeFile({path:path, content:"占位文件"}, function(){
-					console.log("创建成功");
-					allPageMap[$scope.websiteFile.url] = angular.copy($scope.websiteFile);
-				}, function() {
-					console.log("创建失败");
-				});
-			}
-			$uibModalInstance.close("file");
+console.log($scope.websiteFile);
+            $uibModalInstance.close($scope.websiteFile);
+
         }
     }]);
 
@@ -486,7 +441,7 @@ define([
 					if (!isUserExist() || !page.username || !page.sitename || !page.pagename || !page.url || (page.username != $scope.user.username)) {
 						return;
 					}
-					
+
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
                         if (!getCurrentWebsite(page.username, page.sitename)) {
@@ -518,9 +473,9 @@ define([
                     initTree();
                     openPage();
                 };
-                
+
                 var fnList = [];
-                
+
                 // 获取自己的站点列表
                 fnList.push(function (finish) {
                     if ($scope.user && $scope.user._id) {
@@ -545,7 +500,7 @@ define([
                         finish && finish();
                     }
                 });
-                
+
                 fnList.push(function (finish) {
                     dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(finish);
                 });
@@ -658,7 +613,7 @@ define([
 										ds1.isInited = true;
 									}
 								}
-							} 
+							}
 						}
                         var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
                         userDataSource.init(otherUserinfo.dataSource, otherUserinfo.defaultDataSourceSitename);
@@ -817,7 +772,7 @@ define([
                 }
                 currentPage = getPageByUrl(url);
                 currentSite = getCurrentWebsite(username, sitename);
-				
+
                 var _openUrlPage = function () {
                     var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                     currentPage = getPageByUrl(url);
@@ -893,7 +848,7 @@ define([
                     openUrlPage();
                     return;
                 }
-				// 打开currentPage 
+				// 打开currentPage
 				//
 
                 //console.log(currentPage);
@@ -1285,6 +1240,8 @@ define([
                     savePageContent(function () {
                         _currentPage.isModify = false;
 						_currentPage.isConflict = false;
+						$scope.opens[_currentPage.url].isModify = false;
+						$scope.opens[_currentPage.url].isConflict = false;
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
@@ -1417,15 +1374,27 @@ define([
                 var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
                 if (hidePageTree){
                     $scope.nowHoverFile=$("#mytree").treeview("getNode",nodeid);
-                    // console.log($("#mytree").treeview("getNode",nodeid));
                 }
 				$uibModal.open({
 					//templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
 					templateUrl: config.htmlPath + "editorNewFile.html",
 					controller: "fileCtrl",
 					scope: $scope
-				}).result.then(function (provider) {
-					initTree();
+				}).result.then(function (websiteFile) {
+                    var path = websiteFile.url + config.pageSuffixName;
+                    var currentDataSource = dataSource.getDataSource(websiteFile.username, websiteFile.sitename);
+                    if (!currentDataSource) {
+                        console.log(websiteFile);
+                    } else {
+                        currentDataSource.writeFile({path:path, content:"占位文件"}, function(){
+                            console.log("创建成功");
+                            initTree();
+                            allPageMap[websiteFile.url] = angular.copy(websiteFile);
+                            console.log(allPageMap);
+                        }, function() {
+                            console.log("创建失败");
+                        });
+                    }
 				}, function (text, error) {
 					return;
 				});
@@ -2441,8 +2410,10 @@ define([
                 }
 
                 editor.on('scroll', function (cm) {
+                    console.log("1111");
                     if (isScrollPreview)
                         return;
+                    console.log(scrollTimer);
                     scrollTimer && clearTimeout(scrollTimer);
                     scrollTimer = setTimeout(function () {
                         var scaleSize = getScaleSize("scroll");
@@ -2466,6 +2437,7 @@ define([
                 });
 
                 $('#preview').on('scroll mouseenter mouseleave', function (e) {
+                    console.log("222222222");
                     if (e.type == 'mouseenter') {
                         isScrollPreview = true;
                     } else if (e.type == 'mouseleave') {
@@ -2711,21 +2683,23 @@ define([
 
                     $.event.add(window, "scroll", function () {
                         var p = $(window).scrollTop();
-                        if (p > wellStartPos) {
-                            $('.well').css('position', 'fixed');
-                            $('.well').css('top', '0px');
-                            $('.well').css('left', '0px');
-                            $('.well').css('right', '0px');
-
-//                $('.treeview').css('position', 'fixed');
-//                $('.treeview').css('top',p + $('#toolbarview').height());
-                        } else {
-                            $('.well').css('position', 'static');
-                            $('.well').css('top', '');
-
-//                $('.treeview').css('position','static');
-//                $('.treeview').css('top','');
-                        }
+                        console.log(p);
+                        console.log(wellStartPos);
+//                         if (p > wellStartPos) {
+//                             $('.well').css('position', 'fixed');
+//                             $('.well').css('top', '0px');
+//                             $('.well').css('left', '0px');
+//                             $('.well').css('right', '0px');
+//
+// //                $('.treeview').css('position', 'fixed');
+// //                $('.treeview').css('top',p + $('#toolbarview').height());
+//                         } else {
+//                             $('.well').css('position', 'static');
+//                             $('.well').css('top', '');
+//
+// //                $('.treeview').css('position','static');
+// //                $('.treeview').css('top','');
+//                         }
                     });
                 });
 
