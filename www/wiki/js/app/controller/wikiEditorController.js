@@ -152,8 +152,8 @@ define([
                 treeNode.tags = [];
                 treeNode.tags.push([
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
 			}
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
@@ -302,7 +302,12 @@ define([
 
         //初始化
         function init() {
-            initTree();
+			if ($scope.hidePageTree) {
+				treeNode = $scope.nowHoverPage.pageNode;
+			} else {
+				initTree();
+			}
+			//console.log(treeNode);
         }
 
         $scope.cancel = function () {
@@ -377,7 +382,7 @@ define([
             $scope.websiteFile.username = $scope.user.username;
             $scope.websiteFile.sitename = treeNode.sitename;
 			$scope.websiteFile.pagename = ".gitignore";
-console.log($scope.websiteFile);
+			//console.log($scope.websiteFile);
             $uibModalInstance.close($scope.websiteFile);
 
         }
@@ -1193,15 +1198,13 @@ console.log($scope.websiteFile);
                 }
             }
 
-            $scope.cmd_newpage = function (hidePageTree) {
+            $scope.cmd_newpage = function (hidePageTree, url) {
+				if (hidePageTree && !treeNodeMap[url]) {
+					return;
+				}
                 $scope.hidePageTree=hidePageTree ? true : false;
-                var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
                 if (hidePageTree){
-                    $scope.nowHoverPage={
-                        name:$("#mytree").treeview("getNode",nodeid).text,
-                        sitename:$("#mytree").treeview("getNode",nodeid).pageNode.sitename,
-                        username:$scope.user.username,
-                    };
+                    $scope.nowHoverPage=treeNodeMap[url];
                 }
                 function openNewPage() {
                     $uibModal.open({
@@ -1315,11 +1318,14 @@ console.log($scope.websiteFile);
                 if (page.isModify){
                     result=window.confirm("当前有修改未保存，确定关闭？");
                 }
+
                 if(!page.isModify || result){
 					delete $scope.opens[url];
 					if (!isEmptyObject(currentPage) && currentPage.url != url) {
 						return;
 					}
+					storage.sessionStorageRemoveItem('urlObj');
+					currentPage = undefined;
 					for (var url in $scope.opens){
 						currentPage = $scope.opens[url];
 					}
@@ -1328,9 +1334,13 @@ console.log($scope.websiteFile);
             };
 
             //关闭全部已打开
-            $scope.cmd_closeAll = function (website) {
-                for (url in $scope.opens){
-					$scope.cmd_close(url);
+            $scope.cmd_closeAll = function (url) {
+				console.log(url);
+				url = url || "";
+                for (key in $scope.opens){
+					if (key.indexOf(url) >= 0) {
+						$scope.cmd_close(key);
+					}
                 }
             };
 
@@ -1398,12 +1408,13 @@ console.log($scope.websiteFile);
             };
 
             //新建文件夹
-            $scope.cmd_newFile = function (hidePageTree) {
-                // Message.info("新建文件夹功能开发中");
+            $scope.cmd_newFile = function (hidePageTree, url) {
+				if (!treeNodeMap[url]) {
+					return;
+				}
                 $scope.hidePageTree=hidePageTree ? true : false;
-                var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
                 if (hidePageTree){
-                    $scope.nowHoverFile=$("#mytree").treeview("getNode",nodeid);
+                    $scope.nowHoverFile=treeNodeMap[url];
                 }
 				$uibModal.open({
 					//templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
@@ -1420,7 +1431,7 @@ console.log($scope.websiteFile);
                             console.log("创建成功");
                             initTree();
                             allPageMap[websiteFile.url] = angular.copy(websiteFile);
-                            console.log(allPageMap);
+                            //console.log(allPageMap);
                         }, function() {
                             console.log("创建失败");
                         });
