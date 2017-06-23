@@ -1910,6 +1910,7 @@ console.log($scope.websiteFile);
                     $scope.showFile=false;
                     $scope.showCode=true;
                     $scope.showView=false;
+                    $scope.phoneEditor = true;
                 }else{
                     $scope.showFile=true;
                     $scope.showCode=true;
@@ -2346,8 +2347,17 @@ console.log($scope.websiteFile);
                         setEditorHeight();
                         $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
                         resizeMod();
+
+                        var winWidth = $(window).width();
+                        console.log(winWidth);
+                        if (winWidth<992){
+                            $scope.phoneEditor = true;
+                            console.log($scope.phoneEditor);
+                        }else {
+                            $scope.phoneEditor = false;
+                        }
                     }
-                }
+                };
 
                 editor.on("beforeChange", function (cm, changeObj) {
                     //console.log(changeObj);
@@ -2534,6 +2544,14 @@ console.log($scope.websiteFile);
                         $("#preview").removeClass("col-xs-6");
                         $("#preview").addClass("col-xs-12");
                         resizeMod();
+                    }else{
+                        $(".toolbar-page-design").removeClass("active");
+                        $(".toolbar-page-slide").removeClass("active");
+                        $(".toolbar-page-code").removeClass("active");
+
+                        $("#srcview").hide();
+                        $("#preview").hide();
+                        resizeMod();
                     }
                     var scaleSize=getScaleSize();
                     $scope.scales[$scope.scales.length-1].scaleValue=scaleSize;
@@ -2542,6 +2560,15 @@ console.log($scope.websiteFile);
 
                 $scope.toggleFile = function () {
                     $scope.showFile = $scope.showFile ? false : true;
+                    if ($scope.phoneEditor){
+                        $scope.showFile = true;
+                        $scope.showCode = false;
+                        $scope.showView = false;
+                    }
+                    console.log($scope.phoneEditor);
+                    console.log($scope.showFile);
+                    console.log($scope.showCode);
+                    console.log($scope.showView);
                     initView();
                 };
 
@@ -2560,6 +2587,9 @@ console.log($scope.websiteFile);
                 $scope.showCodeView = function () {
                     $scope.showCode = true;
                     $scope.showView = false;
+                    if ($scope.phoneEditor){
+                        $scope.showFile = false;
+                    }
                     initView();
                 };
 
@@ -2572,6 +2602,9 @@ console.log($scope.websiteFile);
                 $scope.showPreview = function () {
                     $scope.showCode = false;
                     $scope.showView = true;
+                    if ($scope.phoneEditor){
+                        $scope.showFile = false;
+                    }
                     initView();
                 };
 
