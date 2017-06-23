@@ -2330,6 +2330,7 @@ console.log($scope.websiteFile);
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                         editor.setSize('auto', height);
                         $('#wikiEditorContainer').css('height', height);
+                        $('.full-height').css('height', height);
 
                         var w = $("#__mainContent__");
                         w.css("min-height", "0px");
@@ -2699,8 +2700,6 @@ console.log($scope.websiteFile);
 
                     $.event.add(window, "scroll", function () {
                         var p = $(window).scrollTop();
-                        console.log(p);
-                        console.log(wellStartPos);
 //                         if (p > wellStartPos) {
 //                             $('.well').css('position', 'fixed');
 //                             $('.well').css('top', '0px');
