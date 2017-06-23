@@ -122,6 +122,7 @@ define([
                 sitename: site.name,
                 username: site.username,
                 children: {},
+				isLeaf: false,
             }
         }
         //console.log(pageTree.children);
@@ -140,11 +141,20 @@ define([
 			}
             treeNode.icon = (pageNode.isLeaf && pageNode.isModify) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
-            treeNode.tags = [
-                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
-                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
-            ];
+			if (pageNode.isLeaf) {
+				treeNode.tags = [
+					"<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
+					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
+					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
+				];
+			} else {
+				treeNode.tags = [
+					"<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+					"<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+					"<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+				];
+				
+			}
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
             if (!pageNode.isLeaf) {
@@ -160,15 +170,15 @@ define([
             treeData.push(treeDataFn(undefined, pageTree.children[key]));
         }
 
-        for (var i = 0; i < treeData.length; i++) {
-            treeData[i].icon = 'fa fa-globe';
-            treeData[i].tags=[];
-            treeData[i].tags.push([
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"'+ treeData[i].pageNode.sitename +'"'+")' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
-                "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
-            ]);
-        }
+        //for (var i = 0; i < treeData.length; i++) {
+            //treeData[i].icon = 'fa fa-globe';
+            //treeData[i].tags=[];
+            //treeData[i].tags.push([
+                //"<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"'+ treeData[i].pageNode.sitename +'"'+")' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                //"<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                //"<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+            //]);
+        //}
         return treeData;
     }
 
@@ -663,6 +673,7 @@ console.log($scope.websiteFile);
                 var saveSuccessCB = function () {
                     page.isModify = false;
 					page.isConflict = false;
+					page.blobId = undefined;
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
@@ -827,29 +838,46 @@ console.log($scope.websiteFile);
                 });
             }
 
+			// 添加到打开列表
+			function addOpenList(page) {
+				setTimeout(function(){
+					var pageNode = treeNodeMap[page.url] && treeNodeMap[page.url].pageNode;
+					//console.log(pageNode);
+					if (!pageNode || !pageNode.isLeaf) {
+						return;
+					}
+					page.itemId = page.itemId || page.url.split("/").join("");
+					$scope.opens[page.url]= page;
+					util.$apply();
+					//取消当前已选择
+					setTimeout(function(){
+						var nowActive=$("#openedTree .node-selected");
+						nowActive.removeClass("node-selected");
+						$("#"+page.itemId).addClass("node-selected");
+					}, 10);
+				});
+			}
+
+            //已打开列表树中打开网页编辑
+            $scope.clickOpenPage = function (page) {
+				if (!isEmptyObject(currentPage) && currentPage.url == page.url) {
+					return;
+				}
+
+                renderAutoSave(function () {
+					currentPage = getPageByUrl(page.url);
+					currentSite = getCurrentWebsite();
+					openPage();
+					editor.focus();
+                });
+            };
+
             // 打开页
             function openPage() {
                 if (!currentPage) {
-                    var urlObj=storage.sessionStorageGetItem('urlObj') || {};
-                    if (urlObj.url){
-                        $scope.opens[urlObj.url]={
-                            url:urlObj.url,
-                            pageNode:
-                                {
-                                    name:urlObj.pagename,
-                                    sitename:urlObj.sitename,
-                                    url:urlObj.url,
-                                    isLeaf:true
-                                },
-                            selected:true,
-                            itemId:urlObj.url.split("/").join("")
-                        };
-                    }
                     openUrlPage();
                     return;
                 }
-				// 打开currentPage
-				//
 
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
@@ -886,6 +914,9 @@ console.log($scope.websiteFile);
                             editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
                         }
                     }
+
+					// 打开currentPage
+					addOpenList(currentPage);
 
 					// init tree user settimeout(function(){}, 0)
 					setTimeout(function() {
@@ -987,20 +1018,6 @@ console.log($scope.websiteFile);
                                     $(getTreeId(currentPage.username)).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                                 }
 
-                                //取消当前已选择
-                                var nowActive=$("#openedTree .node-selected");
-                                // $scope.opens[nowActive.dataset.url].selected=false;
-                                nowActive.removeClass("node-selected");
-                                //选中新打开项
-                                var itemId=data.pageNode.url.split("/").join("");
-                                if ($scope.opens[data.pageNode.url]){//已打开过的手动激活选中状态
-                                    $("#"+itemId).addClass("node-selected");
-                                }
-                                $scope.opens[data.pageNode.url]=data;
-                                $scope.opens[data.pageNode.url].selected=true;
-                                $scope.opens[data.pageNode.url].itemId=itemId;
-                                $scope.opens[data.pageNode.url].url=data.pageNode.url;
-                                $scope.opens[data.pageNode.url].isModify = allPageMap[data.pageNode.url].isModify;
                             } else {
                                 $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
                                 $(treeid).treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
@@ -1102,25 +1119,6 @@ console.log($scope.websiteFile);
                 return;
             }
 
-            //已打开列表树中打开网页编辑
-            $scope.openPageTree = function (data) {
-                renderAutoSave(function () {
-                    if (data.pageNode.isLeaf) {
-                        //console.log("--------------------auto save--------------------");
-                        if (!currentPage || currentPage.url != data.pageNode.url) {
-                            currentPage = getPageByUrl(data.pageNode.url);
-                            currentSite = getCurrentWebsite();
-                            openPage();
-                        }
-                        editor.focus();
-                    }
-                }, function () {
-                    Message.warning("自动保存失败");
-                    openPage();
-                });
-                $("#openedTree .node-selected").removeClass("node-selected");
-                $("#"+data.itemId).addClass("node-selected");
-            };
 
             $scope.openWikiBlock = function () {
                 function formatWikiCmd(text) {
@@ -1240,8 +1238,7 @@ console.log($scope.websiteFile);
                     savePageContent(function () {
                         _currentPage.isModify = false;
 						_currentPage.isConflict = false;
-						$scope.opens[_currentPage.url].isModify = false;
-						$scope.opens[_currentPage.url].isConflict = false;
+						_currentPage.blobId = undefined;
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
@@ -1251,6 +1248,7 @@ console.log($scope.websiteFile);
                     });
                 } else {
                     storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
+					errcb && errcb();
                     // $uibModal.open({
                     //     //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
                     //     templateUrl: config.htmlPath + "editorNewPage.html",
@@ -1308,15 +1306,22 @@ console.log($scope.websiteFile);
 
             //关闭
             $scope.cmd_close = function (url) {
-                if (allPageMap[url].isModify){
-                    var result=window.confirm("当前有修改未保存，确定关闭？");
+				var page = $scope.opens[url];
+				if (!page) {
+					return;
+				}
+				var result = false;
+                if (page.isModify){
+                    result=window.confirm("当前有修改未保存，确定关闭？");
                 }
-                if(!allPageMap[url].isModify || result){
-                    $scope.opens[url]=undefined;
-                    delete $scope.opens[url];
-                    util.$apply();
-                    currentPage = undefined;
-                    storage.sessionStorageRemoveItem('urlObj');
+                if(!page.isModify || result){
+					delete $scope.opens[url];
+					if (!isEmptyObject(currentPage) && currentPage.url != url) {
+						return;
+					}
+					for (var url in $scope.opens){
+						currentPage = $scope.opens[url];
+					}
                     openPage();
                 }
             };
@@ -1324,24 +1329,43 @@ console.log($scope.websiteFile);
             //关闭全部已打开
             $scope.cmd_closeAll = function (website) {
                 for (url in $scope.opens){
-                    if ((website && url.split("/")[2]==website) || !website){
-                        $scope.cmd_close(url);
-                    }
+					$scope.cmd_close(url);
                 }
             };
 
             $scope.cmd_saveAll = function () {
                 var tempCurrentPage=currentPage;
+				var fnList = [];
+				var callback = undefined;
                 for (url in $scope.opens){
-                    currentPage=$scope.opens[url];
-                    $scope.cmd_savepage(function () {
-                        allPageMap[url].isModify=false;
-                        allPageMap[url].isConflict=false;
-                        $scope.opens[url].isModify = false;
-                        initTree();
-                    });
+					callback = (function(url){
+						return function(cb, errcb) {
+							currentPage=$scope.opens[url];
+							$scope.cmd_savepage(function () {
+								allPageMap[url].isModify=false;
+								allPageMap[url].isConflict=false;
+								allPageMap[url].blobId=undefined;
+								cb && cb();
+							}, errcb);
+						}
+					})(url);
+					fnList.push(callback);
                 }
-                currentPage=tempCurrentPage;
+
+				//console.log($scope.opens);
+				//console.log(fnList);
+				callback = function(){
+					initTree();
+					currentPage=tempCurrentPage;
+				}
+				
+				util.sequenceRun(fnList, undefined, function(){
+					callback();
+					Message.info("全部保存成功");
+				}, function() {
+					callback();
+					Message.info("全部保存失败");
+				});
             };
 
             //刷新

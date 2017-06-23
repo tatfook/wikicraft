@@ -183,14 +183,14 @@
                                         <img class="show-parent" ng-click="cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
                                     </span>
                                 </li>
-                                <li class="list-group-item" id="{{nodeItem.itemId}}" ng-repeat="(nodeId, nodeItem) in opens" ng-class="{'node-selected':nodeItem.selected}" ng-click="openPageTree(nodeItem)">
+                                <li class="list-group-item" id="{{nodeItem.itemId}}" ng-repeat="(nodeId, nodeItem) in opens" ng-click="clickOpenPage(nodeItem)">
                                     <span class="indent"></span>
                                     <span class="icon glyphicon"></span>
                                     <span class="icon node-icon fa fa-file-o"></span>
-                                    {{nodeItem.pageNode.name}}({{nodeItem.pageNode.sitename}})<span ng-show="nodeItem.isModify">*</span>
-                                    <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.pageNode.url)" title="关闭">×</span></span>
-                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove()" title="删除"></span></span>
-                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh()" title="刷新"></span></span>
+                                    {{nodeItem.pagename}}({{nodeItem.sitename}})<span ng-show="nodeItem.isModify">*</span><span ng-show="nodeItem.isConflict">!</span>
+                                    <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.url)" title="关闭">×</span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove(nodeItem.url)" title="删除"></span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh(nodeItem.url)" title="刷新"></span></span>
                                 </li>
                             </ul>
                         </div>
