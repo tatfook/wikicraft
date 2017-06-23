@@ -1359,6 +1359,7 @@ console.log($scope.websiteFile);
 					allWebstePageContent[currentPage.url] = data || "";
 					//console.log(data, currentPage);
 					page.isConflict = false;
+					page.isModify = false;
 					initTree();
 					if (!isEmptyObject(currentPage) && url == currentPage.url) {
 						//console.log("---------");
@@ -2768,7 +2769,12 @@ console.log($scope.websiteFile);
 
                 //文件上传
                 function fileUpload(fileObj) {
-                    console.log(fileObj);
+                    //console.log(fileObj);
+					// 此判断无意义
+					if (fileObj.name.indexOf(".exe") >= 0  || fileObj.name.indexOf(".bat") >= 0) {
+						Message.info("不支持可执行程序上传!!!");
+						return;
+					}
                     $scope.cmd_file_upload(fileObj);
                     return;
                 }

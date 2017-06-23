@@ -418,13 +418,16 @@ define([
 			content = Base64.decode(content);
 			//console.log(content);
 			self.writeFile({path:path, content:content},function(){
-				var tempPath = self.getLongPath({path:path}).substring(1);
-				var url = self.getFileUrlPrefix() + _encodeURIComponent(tempPath);
-				params.ref = "master";
-				self.httpRequest("GET", url, {path:tempPath, ref:"master"}, function (data) {
-					var linkUrl = self.getRawContentUrlPrefix({sha:data.last_commit_id, path:path});
-					cb && cb(linkUrl);
-				}, errcb);
+				var linkUrl = self.getRawContentUrlPrefix({sha:"master", path:path});
+				cb && cb(linkUrl);
+				// commit id replace master implement
+				//var tempPath = self.getLongPath({path:path}).substring(1);
+				//var url = self.getFileUrlPrefix() + _encodeURIComponent(tempPath);
+				//params.ref = "master";
+				//self.httpRequest("GET", url, {path:tempPath, ref:"master"}, function (data) {
+					//var linkUrl = self.getRawContentUrlPrefix({sha:data.last_commit_id, path:path});
+					//cb && cb(linkUrl);
+				//}, errcb);
 			}, errcb);
 		}
 
