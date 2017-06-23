@@ -140,11 +140,22 @@ define([
 			}
             treeNode.icon = (pageNode.isLeaf && pageNode.isModify) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
-            treeNode.tags = [
-                "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-                "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
-                "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
-            ];
+            if(pageNode.isLeaf){
+                treeNode.tags = [
+                    "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
+                    "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
+                    "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
+                ];
+            }else{
+                console.log(treeNode);
+                treeNode.tags=[];
+                treeNode.tags.push([
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"'+ pageNode.sitename +'"'+")' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true)' src='"+angular.element("#mytree").scope().imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+                ]);
+                console.log(treeNode);
+            }
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
             if (!pageNode.isLeaf) {
@@ -2349,10 +2360,8 @@ console.log($scope.websiteFile);
                         resizeMod();
 
                         var winWidth = $(window).width();
-                        console.log(winWidth);
                         if (winWidth<992){
                             $scope.phoneEditor = true;
-                            console.log($scope.phoneEditor);
                         }else {
                             $scope.phoneEditor = false;
                         }
