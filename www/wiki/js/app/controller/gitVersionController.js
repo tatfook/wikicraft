@@ -39,7 +39,13 @@ define([
 			for (var i = 0; i < (dataSourceList || []).length; i++) {
 				var siteDataSource = dataSourceList[i];
 				siteDataSource.getTree({path:'/'+ username}, function (data) {
-					$scope.filelist = $scope.filelist.concat(data || []);
+					for (var i = 0; i < (data || []).length; i++) {
+						if (data[i].pagename.indexOf(".gitignore") >= 0) {
+							continue;
+						}
+						$scope.filelist.push(data[i]);
+					}
+					//$scope.filelist = $scope.filelist.concat(data || []);
 				});
 			}
 			//util.post(config.apiUrlPrefix + "website/getAllByUserId", {userId:$scope.user._id}, function(data){

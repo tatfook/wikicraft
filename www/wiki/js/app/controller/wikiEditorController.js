@@ -138,7 +138,7 @@ define([
 					treeNode.text += " !";
 				}
 			}
-            treeNode.icon = (pageNode.isLeaf && pageNode.isEditor) ? 'fa fa-edit' : 'fa fa-file-o';
+            treeNode.icon = (pageNode.isLeaf && pageNode.isModify) ? 'fa fa-edit' : 'fa fa-file-o';
             treeNode.pageNode = pageNode;
             treeNode.tags = [
                 "<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
@@ -1355,11 +1355,15 @@ console.log($scope.websiteFile);
 				if (!siteDataSource){
 					return ;
 				}
-				siteDataSource.getRawContent({path:currentPage.url + pageSuffixName}, function (data) {
-					allWebstePageContent[currentPage.url] = data || "";
-					//console.log(data, currentPage);
+				siteDataSource.getRawContent({path:url + pageSuffixName}, function (data) {
+					var content = data || "";
+					allWebstePageContent[url] = content;
 					page.isConflict = false;
 					page.isModify = false;
+					page.blobId = undefined;
+					page.content = content;                                    // 更新内容
+					page.timestamp = (new Date()).getTime();                   // 更新时间戳
+					storage.indexedDBSetItem(config.pageStoreName, page);      // 每次改动本地保存
 					initTree();
 					if (!isEmptyObject(currentPage) && url == currentPage.url) {
 						//console.log("---------");
