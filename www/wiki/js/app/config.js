@@ -184,7 +184,7 @@
             pageurl = config.routeMap[rawPathname];  // 优先配置路由
         }
 
-        console.log(pageurl, config.mainContentType);
+        //console.log(pageurl, config.mainContentType);
         // 启动angular
         if (pageurl) {
             require([pageurl], function (mainContent) {

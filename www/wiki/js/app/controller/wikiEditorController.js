@@ -1787,7 +1787,8 @@ console.log($scope.websiteFile);
                 }
 				var username = $scope.user.username;
 
-				var path = "/" + username + "_files/" + fileObj.name;
+				//var path = "/" + username + "_files/" + fileObj.name;
+				var path = fileObj.name;
 				if (window.FileReader) {
 					var fileReader = new FileReader();
 					var cursor = editor.getCursor();
@@ -1810,7 +1811,7 @@ console.log($scope.websiteFile);
 							});
 						} else {
 							currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
-								line_keyword(cursor.line, '!['+ fileObj.name +'](' + linkUrl + ')', 2);
+								line_keyword(cursor.line, '['+ fileObj.name +'](' + linkUrl + ')', 2);
 								cb && cb(linkCtrl);
 							}, function(response){
 								Message.info(response.data.message);
@@ -2451,7 +2452,7 @@ console.log($scope.websiteFile);
                 });
 
                 $('#preview').on('scroll mouseenter mouseleave', function (e) {
-                    console.log("222222222");
+                    //console.log("222222222");
                     if (e.type == 'mouseenter') {
                         isScrollPreview = true;
                     } else if (e.type == 'mouseleave') {
