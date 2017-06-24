@@ -1,0 +1,449 @@
+* {
+    font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+.green {
+    color: #3B3;
+}
+
+.blue {
+    color: #09E;
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+.templatemo-container {
+    display: table;
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+}
+
+.left-container {
+    display: table-cell;
+    float: none;
+    width: 18%;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    padding-right: 0;
+}
+
+.right-container {
+    display: table-cell;
+    float: none;
+    width: 82%;
+    padding-bottom: 20px;
+    padding-left: 0;
+    padding-right: 30px;
+    vertical-align: top;
+}
+
+.black-bg {
+    color: black;
+    background-color: white;
+}
+
+.white-bg {
+    background-color: white;
+}
+
+.tm-left-inner-container {
+    margin-right: 30px;
+}
+
+.tm-right-inner-container {
+    margin-left: 30px;
+    max-width: 710px;
+}
+
+.templatemo-logo {
+    display: table;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.logo-left-container {
+    display: table-cell;
+    width: 38%;
+}
+
+.logo-right-container {
+    display: table-cell;
+    width: 62%;
+}
+
+.templatemo-logo h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 250px;
+}
+
+.templatemo-logo .col-lg-6, .templatemo-logo .col-md-6, .templatemo-logo .col-sm-6 {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 20px;
+}
+
+.logo-left {
+    border-top: 1px solid gray;
+    border-right: none;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    float: right;
+    padding: 20px 30px 20px 100px;
+    text-align: right;
+}
+
+.logo-right {
+    border-top: 1px solid gray;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+    border-left: none;
+    float: left;
+    padding: 20px 100px 20px 30px;
+}
+
+.templatemo-nav {
+    clear: both;
+    font-size: 16px;
+    font-weight: 300;
+    float: right;
+    min-width: 250px;
+}
+
+    .templatemo-nav > li > a {
+        border: 2px solid #8C8C8C;
+        border-radius: 8px;
+        color: grey;
+        padding: 15px 50px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s;
+    }
+
+.copyrights {
+    text-indent: -9999px;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+    overflow: hidden;
+}
+
+.templatemo-nav > li > a:hover, .templatemo-nav > li > a:focus, .templatemo-nav > li > a.active {
+    background-color: #fff;
+    color: #000;
+    font-weight: 700;
+}
+
+.templatemo-nav > li > a > .fa {
+    margin-right: 10px;
+}
+
+.templatemo-header {
+    clear: both;
+    font-size: 30px;
+    margin-top: 0;
+}
+
+article {
+    margin-top: 40px;
+}
+
+    article p {
+        margin-bottom: 15px;
+        text-align: justify;
+    }
+
+footer {
+    margin-top: 40px;
+    overflow: hidden;
+}
+
+    footer p {
+        margin-bottom: 0;
+    }
+
+    footer .col-lg-6, footer .col-md-6 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+.templatemo-social {
+    text-align: right;
+}
+
+    .templatemo-social i {
+        border: 1px solid #ccc;
+        padding-top: 7px;
+        padding-bottom: 5px;
+        text-align: center;
+        width: 30px;
+        height: 30px;
+        transition: background-color 0.3s;
+    }
+
+    .templatemo-social a {
+        color: #757575;
+    }
+
+        .templatemo-social a:hover i {
+            background-color: #000;
+            color: #fff;
+        }
+
+.row .templatemo-item {
+    margin-top: 0;
+}
+
+.templatemo-item p {
+    margin-top: 20px;
+}
+
+.templatemo-item ul {
+    margin-bottom: 20px;
+}
+
+    .templatemo-item ul li {
+        list-style: none;
+    }
+
+.fa.templatemo-service-icon {
+    font-size: 100px;
+}
+
+.templatemo-testimonial {
+    overflow: hidden;
+}
+
+    .templatemo-testimonial .fa {
+        color: #C8B55E;
+        padding: 5px;
+    }
+
+.templatemo-border-left {
+    border-left: 3px solid #C8B55E;
+    padding-left: 10px;
+}
+
+.templatemo-border-right {
+    border-right: 3px solid #C8B55E;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.templatemo-testimonial footer {
+    color: #777;
+}
+
+    .templatemo-testimonial footer:before {
+        content: '\2014 \00A0';
+    }
+
+.form-control:focus {
+    border-color: #DEB215;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(234, 231, 60, 0.6);
+}
+
+iframe {
+    border: none;
+}
+
+#map-canvas {
+    height: 350px;
+    margin-bottom: 30px;
+}
+
+.margin-bottom-60 {
+    margin-bottom: 60px;
+}
+
+/* Media Queries
+----------------------------------------*/
+@media screen and (max-width: 991px) {
+    .templatemo-social {
+        margin-top: 15px;
+        text-align: left;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .templatemo-logo, .templatemo-container {
+        display: block;
+    }
+
+    .logo-left-container, .logo-right-container, .left-container, .right-container {
+        display: block;
+        width: 100%;
+    }
+
+    .left-container, .right-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .logo-left, .logo-right, .templatemo-nav {
+        float: none;
+    }
+
+    .logo-left {
+        border-right: 1px solid gray;
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+    }
+
+    .logo-right {
+        border-left: 1px solid gray;
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+    }
+
+    .tm-left-inner-container {
+        margin-right: 0;
+    }
+
+    .tm-right-inner-container {
+        margin-left: 0;
+    }
+
+    .templatemo-nav {
+        max-width: 100%;
+    }
+
+        .templatemo-nav > li > a {
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+    h1 {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .templatemo-logo h1 {
+        border: none;
+        max-width: none;
+    }
+
+    .left-container, .right-container {
+        padding-top: 40px;
+    }
+
+    .templatemo-logo .col-lg-6, .templatemo-logo .col-md-6, .templatemo-logo .col-sm-6 {
+        padding-top: 0;
+    }
+}
+
+body {
+    padding: 0;
+    font: 14px "Î¢ÈíÑÅºÚ";
+   
+}
+.pbody{padding:1px;height:750px}
+ 
+ #upimg { background:white ; width: 40%; float: left }
+.uprow {
+    margin-right: -15px;
+    margin-left: 26px;
+}
+ 
+ #baseinfo { background: white; width: 60% ; margin-left:300px }
+ #baseinfo ul li {
+
+        display:inline-block;
+    }
+#text-control {
+    width:100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /*-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);*/
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    /*-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;*/
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+
+
+
+
+}
+/*align textarea with label*/
+.aligntext {
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: -88px;
+}
+/*leftmenu*/
+.left_menu {
+    
+}
+
+.left_menu_uc {
+    line-height: 28px;
+    position: relative;
+    float: left;
+    width: 130px;
+    height: 768px;
+    border-right: 1px solid #949694;
+}
+
+    .left_menu_uc ul {
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+        position: absolute;
+        top: 15px;
+        left: 5px;
+        margin-left: 10px;
+        height: 25px;
+        text-align: center;
+    }
+
+    .left_menu_uc li {
+        display: block;
+        cursor: pointer;
+        width: 114px;
+        color: #FFFFFF;
+        font-weight: bold;
+        margin-bottom: 5px;
+        height: 25px;
+        line-height: 25px;
+        background-color: #B3B3BF;
+    }
+
+        .left_menu_uc li.hover {
+            padding: 0px;
+            background: #fff;
+            width: 116px;
+            border: 1px solid #828282;
+            border-right: 0;
+            color: #000000;
+            height: 25px;
+            line-height: 25px;
+        }
+
+.l_contentbox {
+    margin-top: 0px;
+    border-top: none;
+    padding: 20px;
+    border-left: 0;
+    margin-left: 130px;
+    height:768px
+}
