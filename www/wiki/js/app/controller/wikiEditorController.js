@@ -914,12 +914,12 @@ define([
                     CodeMirror.signal(editor, 'change', editor);
 
                     // 折叠wiki命令
-                    for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
-                        var lineValue = editor.getLine(i);
-                        if (lineValue.indexOf('```@') == 0 || lineValue.indexOf('```/') == 0) {
-                            editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
-                        }
-                    }
+					//for (var i = editor.firstLine(), e = editor.lastLine(); i <= e; i++) {
+						//var lineValue = editor.getLine(i);
+						//if (lineValue.indexOf('```@') == 0 || lineValue.indexOf('```/') == 0) {
+							//editor.foldCode(CodeMirror.Pos(i, 0), null, "fold");
+						//}
+					//}
 
 					// 打开currentPage
 					addOpenList(currentPage);
@@ -2475,7 +2475,6 @@ define([
                 }
 
                 editor.on('scroll', function (cm) {
-                    console.log("1111");
                     if (isScrollPreview)
                         return;
                     console.log(scrollTimer);
@@ -2502,7 +2501,6 @@ define([
                 });
 
                 $('#preview').on('scroll mouseenter mouseleave', function (e) {
-                    //console.log("222222222");
                     if (e.type == 'mouseenter') {
                         isScrollPreview = true;
                     } else if (e.type == 'mouseleave') {
