@@ -314,7 +314,7 @@ define([
             $uibModalInstance.dismiss('cancel');
         }
 
-        $scope.website_new = function () {
+         $scope.website_new = function () {
             if (!treeNode) {
                 $scope.errInfo = '请选择站点';
                 return false;
@@ -325,10 +325,10 @@ define([
                 return false;
             }
 
-            if ($scope.websitePage.pagename.indexOf('.') >= 0) {
-                $scope.errInfo = '页面名包含非法字符(.)';
-                return false;
-            }
+             if (!/^[a-zA-Z0-9_]+$/.test($scope.websitePage.pagename)){
+                 $scope.errInfo = '页面名包含只支持数字、字母、下划线(_)';
+                 return false;
+             }
 
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.pagename;
             $scope.websitePage.username = $scope.user.username;
