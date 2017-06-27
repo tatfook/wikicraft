@@ -155,6 +155,7 @@ define([
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
+                treeNode.icon = 'fa fa-globe';
 			}
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
@@ -1089,6 +1090,8 @@ define([
                         othertree.data = getTreeData(otherUserinfo.username, allPageMap, false);
                         $('#othertree').treeview(othertree);
                         $('#othertree').treeview('collapseAll', {silent: false});
+                    }else{
+                        $('#othertree').html("<p style='text-align: center;'>暂无参与的项目</p>");
                     }
 					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
