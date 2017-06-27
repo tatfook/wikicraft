@@ -349,6 +349,10 @@ define(['app',
             });
         }
 
+        $scope.deleteHistory = function () {
+            Message.info("删除历史功能开发中");
+        };
+
         // 我的粉丝
         $scope.clickMyFans = function () {
             $scope.showItem = 'myFans';
