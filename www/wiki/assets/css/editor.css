@@ -370,19 +370,19 @@ select.resize-view {
     padding-left:0;
 }
 
-.opened{
+.opened,.joined-treeview{
     color: #3977AD;
 }
-.opened .list-group{
+.opened .list-group,.joined-treeview .list-group{
     margin-bottom: 0;
 }
-.opened .list-group-item{
+.opened .list-group-item, .joined-treeview .list-group-item{
     border: none;
 }
-.opened .list-group-item:not(.node-selected):hover{
+.opened .list-group-item:not(.node-selected):hover, .joined-treeview .list-group-item:not(.node-selected):hover{
     background-color: #E6E6E6;
 }
-.opened .node-selected{
+.opened .node-selected, .joined-treeview .node-selected{
     background-color: #3977AD;
     color: #FFF;
 }

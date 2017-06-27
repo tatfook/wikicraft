@@ -42,7 +42,7 @@ define([
                 $scope.followUserList = data.followObj.followUserObj.userList;
                 $scope.followUserTotal = data.followObj.followUserObj.total;
                 // 关注的站点
-                $scope.followSiteList = data.followObj.followSiteObj.favoriteList;
+                $scope.followSiteList = data.followObj.followSiteObj.siteList;
                 $scope.followSiteTotal = data.followObj.followSiteObj.total;
                 // 用户动态
                 $scope.trendsList = data.trendsObj.trendsList;
