@@ -2218,7 +2218,6 @@ define([
 
                 function resizeMod(val,scaleItem) {
                     if (scaleItem && scaleItem.resultWidth){
-                        console.log("111111");
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
