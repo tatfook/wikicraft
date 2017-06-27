@@ -72,6 +72,16 @@ define([
             authorizationEndpoint: 'https://api.weibo.com/oauth2/authorize',
             oauthType: '2.0',
         });
+        // keepwork微博
+        $authProvider.oauth2({
+            name: 'keepwork',
+            url: '/api/wiki/models/oauth_app/callback',
+            clientId: '1000000',
+            //redirectUri: window.location.origin + '/api/wiki/auth/xinlangweibo',//window.location.origin,
+            redirectUri: window.location.origin  +  '/wiki/login',
+            authorizationEndpoint: 'http://localhost:8900/wiki/oauth',
+            oauthType: '2.0',
+        });
     }]);
 
     window.app = app;

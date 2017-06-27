@@ -1,0 +1,17 @@
+<div ng-controller="oauthController">
+	<div class="container">
+		<div ng-show="!isAuth")>
+			<h3>
+				授予{{oauthApp.appName}}应用访问权限:
+			</h3>
+			<p>
+				获取你人用户信息
+			</p>
+		</div>
+		<div ng-show="isAuth">
+			<p>{{message}}</p>
+		</div>
+		<button class="btn btn-default" ng-click="agree()">同意</button>
+		<button class="btn btn-default" ng-click="refuse()">拒绝</button>
+	</div>
+</div>
