@@ -32,11 +32,11 @@ function website_pageinfo:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local userId = self:ensureAuthenticated() -- 此函数只能是授权用户操作自己的页面
+	local username = self:ensureAuthenticated() -- 此函数只能是授权用户操作自己的页面
 	local userDB = models.user:new()
 	local userinfo = userDB:api_getByName({username=params.username}).data
 
-	if (not userinfo) or (userId ~= userinfo._id) then
+	if (not userinfo) or (username ~= userinfo.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 

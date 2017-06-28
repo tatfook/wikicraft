@@ -12,29 +12,11 @@ function wiki_config()
 	return wiki_config_;
 end
 
--- from user.id to site token
-function createJWT(user)
-	local id = user and user._id;
-	if(id) then
-		-- hash func "HA256"
-		return jwt.encode({id=id}, wiki_config().wiki.secrets.TOKEN_SECRET, nil,  wiki_config().wiki.token_expire or 3600);
-	end
-end
-
--- @return user:{id}, err: 
-function decodeJWT(token)
-	return jwt.decode(token, wiki_config().wiki.secrets.TOKEN_SECRET, true);
-end
-
 -- call this function to ensure we are authenticated in json request
 -- @return userid, the request.userid also contains the userid
 function ensureAuthenticated()
 	-- request.userid = 1 -- debug use
-	if(request.userid~=nil) then
-		if(not request.userid) then
-			response:status(401):send({ message = 'Auth failed' });	
-			exit();
-		end
+	if(request.username~=nil) then
 		return request.userid;
 	end
 	if (not request:header('Authorization')) then
@@ -53,22 +35,22 @@ function ensureAuthenticated()
 		end
 		exit();
 	end
-	request.userid = payload.id;
-	return request.userid;
+	request.username = payload.username;
+	return request.username;
 end
 
 -- @return userid or false if not authenticated
 function checkAuthenticated()
-	if(request.userid~=nil) then
-		return request.userid;
+	if(request.username~=nil) then
+		return request.username;
 	end
 	local authHeader = request:header('Authorization');
 	if (authHeader) then
 		local token = authHeader:match("%s+(%S+)");
 		local payload, err = decodeJWT(token);
 		if(payload) then
-			request.userid = payload.id;
+			request.username = payload.username;
 		end	
 	end
-	return request.userid;
+	return request.username;
 end

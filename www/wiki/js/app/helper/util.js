@@ -210,7 +210,7 @@ define([
             var data = response.data;
             //console.log(data);
             // debug use by wxa
-            if (!data.error) {
+            if (!data || !data.error) {
                 console.log(url);
             }
             if (data.error.id == 0) {
