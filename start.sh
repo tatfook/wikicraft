@@ -21,6 +21,14 @@ build_dir="www_build"
 #	mv ${temp_db_dir} ${db_dir}
 #}
 
+backup_file() {
+	local typ=$1
+	local curtime=`date +%Y-%m-%d_%H-%M-%S`
+	mkdir -p "log"
+	cp  "${typ}_log.log" "log/${typ}_log_${curtime}.log"
+	cat "${typ}_log.log" | grep -i "<runtime" >> "log/${typ}_error.log"
+}
+
 start_server() {
 	local server_type=$1
 	
@@ -30,6 +38,7 @@ start_server() {
 			cp -fr ${build_dir} ${test_dir}
 		fi
 		ulimit -c unlimited
+		backup_file ${test_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
 	elif [ $server_type = "rls" ]; then 
 		if [ -e ${build_dir} ]; then
@@ -37,9 +46,11 @@ start_server() {
 			cp -fr ${build_dir} ${rls_dir}
 		fi
 		ulimit -c unlimited
+		backup_file ${rls_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
 		ulimit -c unlimited
+		backup_file ${dev_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
 	else
 		start_server "test"
