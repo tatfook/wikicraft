@@ -1915,7 +1915,6 @@ define([
                 CodeMirror.signal(editor, 'change', editor);
             }
 
-
             // 渲染自动保存
             function renderAutoSave(cb, errcb) {
                 var content = editor.getValue();
@@ -2555,6 +2554,7 @@ define([
 
                         $("#srcview").show();
                         $("#preview").show();
+                        $("#resize-bar").show();
                         $("#srcview").addClass("col-xs-6");
                         $("#preview").addClass("col-xs-6");
                         resizeMod();
@@ -2564,6 +2564,7 @@ define([
                         $(".toolbar-page-design").removeClass("active");
 
                         $("#preview").hide();
+                        $("#resize-bar").hide();
                         $("#srcview").show();
                         $("#srcview").removeClass("col-xs-6");
                         $("#srcview").addClass("col-xs-12");
@@ -2590,6 +2591,7 @@ define([
                     var scaleSize=getScaleSize();
                     $scope.scales[$scope.scales.length-1].scaleValue=scaleSize;
                     $scope.scaleSelect=$scope.scales[$scope.scales.length-1];//比例的初始状态为 “适合宽度”
+                    util.$apply();
                 }
 
                 $scope.toggleFile = function () {
@@ -2599,10 +2601,6 @@ define([
                         $scope.showCode = false;
                         $scope.showView = false;
                     }
-                    console.log($scope.phoneEditor);
-                    console.log($scope.showFile);
-                    console.log($scope.showCode);
-                    console.log($scope.showView);
                     initView();
                 };
 
@@ -2624,12 +2622,15 @@ define([
                     if ($scope.phoneEditor){
                         $scope.showFile = false;
                     }
+                    $("#srcview").width("100%");
                     initView();
                 };
 
                 $scope.codeAndPreview = function () {
                     $scope.showCode = true;
                     $scope.showView = true;
+                    $("#srcview").width("50%");
+                    $("#preview").width("50%");
                     initView();
                 };
 
@@ -2639,6 +2640,7 @@ define([
                     if ($scope.phoneEditor){
                         $scope.showFile = false;
                     }
+                    $("#preview").width("100%");
                     initView();
                 };
 
@@ -2858,7 +2860,44 @@ define([
                     }
                 }, false);
 
+                // 编辑器拖拽改变大小
+                var col1=$("#srcview");
+                var col2=$("#preview");
+                var col1Width=col1.width();
+                var col2Width=col2.width();
+                var startX=0;
 
+                $("#resize-bar").on("mousedown",function(event){
+                    col1Width=parseInt(col1.width(),10);
+                    col2Width=parseInt(col2.width(),10);
+                    startX=event.clientX;
+                    $(".CodeMirror").on("mousemove",mousemoveEvent);
+                    $(".result-html").on("mousemove",mousemoveEvent);
+                    $(".code-view").on("mouseup",mouseupEvent);
+                });
+
+                var mousemoveEvent=function(event){
+                    col1.width(col1Width + event.clientX - startX);
+                    col2.width(col2Width - event.clientX + startX);
+                    if (col1.width()<200){
+                        $scope.showCode = false;
+                        $("#preview").width("100%");
+                        mouseupEvent();
+                    }
+                    if(col2.width()<200){
+                        $scope.showView = false;
+                        $("#srcview").width("100%");
+                        mouseupEvent();
+                    }
+                    initView();
+                };
+
+                var mouseupEvent = function(){
+                    $(".CodeMirror").off("mousemove",mousemoveEvent);
+                    $(".result-html").off("mousemove",mousemoveEvent);
+                    $(".CodeMirror").off("mouseup",mouseupEvent);
+                    $(".result-html").off("mouseup",mouseupEvent);
+                };
                 return editor;
             }
         }]);

@@ -243,11 +243,14 @@ body,
     width: 10px;
     height: 100%;
     background-color: #FFF;
-    z-index: 1;
+    z-index: 6;
     position: absolute;
     right: 0;
     top: 0;
     border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
+
+    cursor: col-resize;
 }
 .treeview .badge{
     background-color: transparent;
@@ -345,7 +348,6 @@ select.resize-view {
 }
 .code-view.nofile{
     padding-left: 0;
-    margin-left: -15px;
 }
 .state-change .active img:first-child{
     display: none;
@@ -366,7 +368,7 @@ select.resize-view {
 }
 
 #srcview{
-    padding-right: 10px;
+    padding-right: 0;
     padding-left:0;
 }
 
