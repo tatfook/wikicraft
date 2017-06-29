@@ -35,9 +35,9 @@ define([
     var mdwiki = markdownwiki({editorMode: true, breaks: true});
     var editor;
     var allWebsites = [];
-    var allWebsitePages = [];
     var allWebstePageContent = {};
     var allPageMap = {};                  // 页面映射
+	var allSiteMap = {};               // 所有站点映射
     var currentSite = undefined;          // 当前站点
     var currentPage = undefined;          // 当前页面
     var editorDocMap = {};                // 每个文件对应一个文档
@@ -48,6 +48,14 @@ define([
     var pagelistMap = {};            // 页列表映射
     var urlParamsMap = {};           // url 参数映射
 
+	// 判断对象是否为空
+	function isEmptyObject(obj) {
+		for (var key in obj) {
+			return false;
+		}
+		return true;
+	}
+
     function getCurrentDataSource() {
 		if (currentPage && currentPage.username) {
 			return dataSource.getDataSource(currentPage.username, currentPage.sitename);
@@ -56,12 +64,38 @@ define([
 		return dataSource.getDefaultDataSource()
     }
 
-    function getTreeData(username, pageMap, isDir) {
+	function setSite(siteinfo) {
+		var key = siteinfo.username + "_" + siteinfo.name;
+		allSiteMap[key] = siteinfo;
+	}
+
+	function getSite(username, sitename) {
+		return allSiteMap[username + "_" + sitename];
+	}
+
+	function getCurrentSite(username, sitename) {
+		if (!isEmptyObject(currentPage)) {
+			username = username || currentPage.username;
+			sitename = sitename || currentPage.sitename;
+		}
+
+		if (!username || !sitename)
+			return null;
+
+		return getSite(username, sitename);
+	}
+
+	// 获得指定页
+	function getPageByUrl(url) {
+		return allPageMap[url];
+	}
+
+    function getTreeData(username, sitename,  pageMap, isDir) {
         var pageTree = {url: '/' + username, children: {}};
         var treeData = [];
         for (var key in pageMap) {
             var page = pageMap[key];
-            if (page.isDelete || !page.url || page.url.indexOf('/' + username) != 0) {
+            if (page.isDelete || !page.url || (username && page.username != username) || (sitename && page.sitename != sitename)) {
                 continue;
             }
 
@@ -96,11 +130,11 @@ define([
             }
         }
         // 加上所有站点
-        for (var i = 0; i < allWebsites.length; i++) {
+        for (var key in allSiteMap) {
             var isExist = false;
-            var site = allWebsites[i];
+            var site = allSiteMap[key];
 
-            if (site.username != username) {
+            if ((username && site.username != username) || (sitename && site.name != sitename)) {
                 continue;
             }
 
@@ -277,7 +311,7 @@ define([
                 color: "#428bca",
                 showBorder: false,
                 enableLinks: false,
-                data: getTreeData($scope.user.username, allPageMap, true),
+                data: getTreeData($scope.user.username, undefined, allPageMap, true),
                 onNodeSelected: function (event, data) {
                     //console.log(data);
                     treeNode = data.pageNode;
@@ -420,13 +454,6 @@ define([
             $scope.full=false;
             $scope.opens={};
 
-            // 判断对象是否为空
-            function isEmptyObject(obj) {
-                for (var key in obj) {
-                    return false;
-                }
-                return true;
-            }
 
             // 格式化html文本
             function formatHtmlView(cmd, value) {
@@ -461,7 +488,7 @@ define([
 
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
-                        if (!getCurrentWebsite(page.username, page.sitename)) {
+                        if (!getCurrentSite(page.username, page.sitename)) {
                             return;
                         }
                         serverPage = allPageMap[page.url] = page;
@@ -498,7 +525,9 @@ define([
                     if ($scope.user && $scope.user._id) {
                         // 获取用户所有站点
                         util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}, function (data) {
-                            allWebsites = (allWebsites || []).concat(data || []);
+							for (var i = 0; i < (data || []).length; i++) {
+								setSite(data[i]);
+							}
                             finish && finish();
                         }, finish);
                     } else {
@@ -515,7 +544,7 @@ define([
 							data = data || [];
 							for (var i = 0; i < data.length; i++) {
 								data[i].siteinfo.isEditable = true;
-								allWebsites.push(data[i].siteinfo);
+								setSite(data[i].siteinfo);
 							}
 							finish && finish();
 						}, finish);
@@ -525,9 +554,20 @@ define([
 				});
                 // 获取他人站点列表
                 fnList.push(function (finish) {
-                    if (otherUserinfo && otherUserinfo._id) {
-                        util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: otherUserinfo._id}, function (data) {
-                            allWebsites = (allWebsites || []).concat(data || []);
+					var urlObj = storage.sessionStorageGetItem('urlObj'); 
+					//console.log(urlObj);
+					if (urlObj && $scope.user.username != urlObj.username && urlObj.sitename) {
+						util.post(config.apiUrlPrefix + 'website/getWithDataSourceByName', {
+							username:urlObj.username,
+							sitename:urlObj.sitename,
+						}, function (data) {
+							if (data) {
+								data.isReadable = true;
+								if (!getSite(data.username, data.name)) {
+									setSite(data);
+								}
+							}
+							
                             finish && finish();
                         }, finish);
                     } else {
@@ -535,23 +575,17 @@ define([
                     }
                 });
 
-                fnList.push(function (finish) {
-                    dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(finish);
-                });
-
-                fnList.push(function (finish) {
-                    if (otherUserinfo) {
-                        dataSource.getUserDataSource(otherUserinfo.username).registerInitFinishCallback(finish);
-                    } else {
-                        finish && finish();
-                    }
-                });
 
                 util.batchRun(fnList, function () {
 					// 初始化其它站点的数据源
 					var fnlist = [];
-					for (var i = 0; i < allWebsites.length; i++) {
-						var tempSiteinfo = allWebsites[i];
+					// 自身数据源初始化完毕
+					fnlist.push(function (finish) {
+						dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(finish);
+					});
+					// 其它数据源初始化完毕
+					for (var key in allSiteMap) {
+						var tempSiteinfo = allSiteMap[key];
 						if (tempSiteinfo.username == $scope.user.username) {
 							continue;
 						}
@@ -561,7 +595,7 @@ define([
 								Account.setDataSourceToken(siteinfo.dataSource);
 								dataSource.registerDataSource(siteinfo.dataSource, finish, finish);
 							}
-						})(allWebsites[i]));
+						})(tempSiteinfo));
 					}
 					util.batchRun(fnlist, function() {
 						//初始化本地数据库indexDB
@@ -590,15 +624,18 @@ define([
             }
 
             // 通过用户名获取treeID
-            function getTreeId(username) {
-                if (isUserExist() && $scope.user.username == username) {
-                    return '#mytree';
-                }
-
-                if (isOtherUserExist() && otherUserinfo.username == username) {
-                    return "#othertree";
-                }
-                return '#editableTree';
+            function getTreeId(username, sitename) {
+				var siteinfo = getSite(username, sitename);
+				if (!siteinfo) {
+					return "myTree";
+				}
+			
+				if (siteinfo.isEditable) {
+					return "#editableTree";
+				} else if (siteinfo.isReadable) {
+					return "#readableTree";
+				}
+                return '#myTree';
             }
 
             // 通过用户名获取userinfo
@@ -610,7 +647,7 @@ define([
                 if (isOtherUserExist() && otherUserinfo.username == username) {
                     return otherUserinfo;
                 }
-                console.log("get tree info errors:", username);
+                //console.log("get tree info errors:", username);
                 return $scope.user || otherUserinfo;
             }
 
@@ -625,69 +662,18 @@ define([
             //初始化，读取用户站点列表及页面列表
             function init() {
                 //console.log('---------------init---------------');
-				var otherUsername = storage.sessionStorageGetItem('otherUsername');
-                var fnList = [];
-                if (!Account.ensureAuthenticated() && !otherUsername) {
-                    return;
-                }
                 initEditor();
-                // 获取自己用户信息
-                fnList.push(function (finish) {
-                   Account.getUser(function (userinfo) {
-                       $scope.user = userinfo;
-                       finish && finish();
-                   }, finish);
-                });
-                // 获取他人用户信息
-                fnList.push(function (finish) {
-                    if (otherUsername && (!$scope.user || $scope.user.username != otherUsername)) {
-                        util.post(config.apiUrlPrefix + 'user/getByName', {username:otherUsername}, function (data) {
-                            otherUserinfo = data;
-                            finish && finish();
-                        }, finish);
-                    } else {
-                        finish && finish();
-                    }
-                });
 
-                util.batchRun(fnList, function () {
-                    $rootScope.userinfo = otherUserinfo || $scope.user;
-                    if (otherUserinfo && otherUserinfo.dataSource && (!$scope.user || $scope.user.username != otherUserinfo.username)) {
-						if ($scope.user) {
-							for (var i=0; i < otherUserinfo.dataSource.length; i++) {
-								var ds1 = otherUserinfo.dataSource[i];
-								for (var j = 0; j < $scope.user.dataSource.length; j++) {
-									var ds2 = $scope.user.dataSource[j];
-									if (ds1.apiBaseUrl == ds2.apiBaseUrl) {
-										ds1.dataSourceToken = ds2.dataSourceToken;
-										ds1.isInited = true;
-									}
-								}
-							}
-						}
-                        var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
-                        userDataSource.init(otherUserinfo.dataSource, otherUserinfo.defaultDataSourceSitename);
-                    }
-                    loadSitePageInfo();
-                });
-                // // 获取站点及页列表
-                // Account.getUser(function (userinfo) {
-                //     $scope.user = userinfo;
-                //     $rootScope.userinfo = userinfo;
-                //     if (urlObj && userinfo.username != urlObj.username) {
-                //         util.post(config.apiUrlPrefix + 'user/getByName', {username:urlObj.username}, function (data) {
-                //            otherUserinfo = data;
-                //            if (otherUserinfo && otherUserinfo.dataSource) {
-                //                var userDataSource = dataSource.getUserDataSource(otherUserinfo.username);
-                //                userDataSource.init(otherUserinfo.dataSource, otherUserinfo.dataSourceId);
-                //            }
-                //         });
-                //     }
-                //     loadSitePageInfo();
-                // });
+				// 加载站点列表
+				loadSitePageInfo();
             }
 
-            $scope.$watch('$viewContentLoaded', init);
+			$scope.$watch('$viewContentLoaded', function(){
+				Account.getUser(function(userinfo){
+					$scope.user = userinfo;
+					init();
+				}, init);
+			});
             //init();
 
             // 保存页
@@ -721,7 +707,7 @@ define([
                     cb && cb();
                 };
 
-                currentSite = getCurrentWebsite(page.username, page.sitename);
+                currentSite = getCurrentSite(page.username, page.sitename);
                 if (currentSite) {
                     util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', {userId:currentSite.userId, siteId:currentSite._id});
                 }
@@ -732,27 +718,6 @@ define([
                 }, saveSuccessCB, saveFailedCB);
             }
 
-            function getCurrentWebsite(username, sitename) {
-                if (!isEmptyObject(currentPage)) {
-                    username = username || currentPage.username;
-                    sitename = sitename || currentPage.sitename;
-                }
-
-                if (!username || !sitename)
-                    return null;
-
-                for (var i = 0; i < allWebsites.length; i++) {
-                    if (allWebsites[i].username == username && allWebsites[i].name == sitename) {
-                        return allWebsites[i];
-                    }
-                }
-                return null;
-            }
-
-            // 获得指定页
-            function getPageByUrl(url) {
-                return allPageMap[url];
-            }
 
             $scope.$on("changeEditorPage", function (event, urlObj) {
                 renderAutoSave(function () {
@@ -822,14 +787,14 @@ define([
                     return;
                 }
                 currentPage = getPageByUrl(url);
-                currentSite = getCurrentWebsite(username, sitename);
+                currentSite = getCurrentSite(username, sitename);
 
                 var _openUrlPage = function () {
                     var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                     currentPage = getPageByUrl(url);
                     //console.log(url, pagepath, urlObj);
                     if (currentPage) {
-                        currentSite = getCurrentWebsite();
+                        currentSite = getCurrentSite();
                         openPage();
                         return;
                     }
@@ -844,7 +809,7 @@ define([
                     //    for (var key in allPageMap) {
                     //        if (key.indexOf(url) >= 0) {
                     //            currentPage = allPageMap[key];
-                    //            currentSite = getCurrentWebsite();
+                    //            currentSite = getCurrentSite();
                     //            openPage();
                     //            return;
                     //        }
@@ -864,7 +829,7 @@ define([
                     page.pagename = pagename;
                     page.isModify = true;
                     currentPage = page;
-                    currentSite = getCurrentWebsite();
+                    currentSite = getCurrentSite();
                     //console.log(currentPage);
                     allPageMap[page.url] = page;
                     allWebstePageContent[page.url] = "";
@@ -906,7 +871,7 @@ define([
 
                 renderAutoSave(function () {
 					currentPage = getPageByUrl(page.url);
-					currentSite = getCurrentWebsite();
+					currentSite = getCurrentSite();
 					openPage();
 					editor.focus();
                 });
@@ -962,7 +927,7 @@ define([
 					setTimeout(function() {
 						$('#btUrl').val(window.location.origin + currentPage.url);
 						var treeNode = treeNodeMap[currentPage.url];
-						var treeid = getTreeId(currentPage.username);
+						var treeid = getTreeId(currentPage.username, currentPage.sitename);
 						//console.log(treeid, treeNodeMap, currentPage);
 						if (treeNode) {
 							$(treeid).treeview('selectNode', [treeNode.nodeId, {silent: true}]);
@@ -1048,14 +1013,15 @@ define([
                         enableLinks: false,
                         levels: 4,
                         showTags: true,
+						data:[],
                         //data: getTreeData($scope.user.username, allPageMap, false),
                         onNodeSelected: function (event, data) {
                             //console.log(data.pageNode);
                             //console.log("---------onNodeSelected----------");
-                            var treeid = getTreeId(data.pageNode.username);
+                            var treeid = getTreeId(data.pageNode.username, data.pageNode.sitename);
                             if (data.pageNode.isLeaf) {
                                 if (currentPage && data.pageNode.url != currentPage.url) {
-                                    $(getTreeId(currentPage.username)).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
+                                    $(getTreeId(currentPage.username, currentPage.sitename)).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                                 }
 
                             } else {
@@ -1074,7 +1040,7 @@ define([
                                     //console.log("--------------------auto save--------------------");
                                     if (!currentPage || currentPage.url != data.pageNode.url) {
                                         currentPage = getPageByUrl(data.pageNode.url);
-                                        currentSite = getCurrentWebsite();
+                                        currentSite = getCurrentSite();
                                         openPage();
                                     }
                                     editor.focus();
@@ -1087,13 +1053,13 @@ define([
                         onNodeUnselected: function (event, data) {
                             // 不取消自己
                             //console.log("---------onNodeUnselected----------");
-                            var treeid = getTreeId(data.pageNode.username);
+                            var treeid = getTreeId(data.pageNode.username, data.pageNode.sitename);
                             if (currentPage && data.pageNode.url == currentPage.url) {
                                 $(treeid).treeview('selectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                             }
                         },
                         onNodeCollapsed: function (event, data) {
-                            console.log("node collapsed", data.pageNode.url);
+                            //console.log("node collapsed", data.pageNode.url);
 							
                             treeNodeMap[data.pageNode.url] = data;
                             if (!isFirstCollapsedAll) {
@@ -1113,41 +1079,41 @@ define([
                             getSitePageList({path:data.pageNode.url, username:data.pageNode.username, sitename:data.pageNode.sitename});
                         },
                     };
-                    if (isUserExist()) {
-                        var mytree = angular.copy(treeview);
-                        mytree.data = getTreeData($scope.user.username, allPageMap, false);
-                        $('#mytree').treeview(mytree);
-                        $('#mytree').treeview('collapseAll', {silent: false});
 
-						var editableTree = angular.copy(treeview);
-						for (var i = 0; i < allWebsites.length; i++) {
-							if (allWebsites[i].username != $scope.user.username) {
-								editableTree.data = (editableTree.data || []).concat(getTreeData(allWebsites[i].username, allPageMap, false));
-							}
+					var myTree = angular.copy(treeview);
+					var readableTree = angular.copy(treeview);
+					var editableTree = angular.copy(treeview);
+
+					//console.log(allPageMap);
+					for (var key in allSiteMap) {
+						var siteinfo = allSiteMap[key];
+						if (siteinfo.isEditable) {
+							editableTree.data = (editableTree.data || []).concat(getTreeData(siteinfo.username, siteinfo.name, allPageMap, false));
+						} else if (siteinfo.isReadable) {
+							readableTree.data = (readableTree.data || []).concat(getTreeData(siteinfo.username, siteinfo.name, allPageMap, false));
+						} else {
+							myTree.data = (myTree.data || []).concat(getTreeData(siteinfo.username, siteinfo.name, allPageMap, false));
 						}
-						console.log("----------------");
-                        $('#editableTree').treeview(editableTree);
-                        $('#editableTree').treeview('collapseAll', {silent: false});
-                    }
-					
-                    if (isOtherUserExist()) {
-                        var othertree = angular.copy(treeview);
-                        othertree.data = getTreeData(otherUserinfo.username, allPageMap, false);
-                        $('#othertree').treeview(othertree);
-                        $('#othertree').treeview('collapseAll', {silent: false});
-                    }else{
-                        $('#othertree').html("<p style='text-align: center;'>暂无参与的项目</p>");
-                    }
+					}
 
+					$('#myTree').treeview(myTree);
+					$('#myTree').treeview('collapseAll', {silent: false});
+
+					$('#editableTree').treeview(editableTree);
+					$('#editableTree').treeview('collapseAll', {silent: false});
+
+					$('#readableTree').treeview(readableTree);
+					$('#readableTree').treeview('collapseAll', {silent: false});
+					
 					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
 						var node = treeNodeMap[key]
-                        console.log(key, treeNodeMap[key]);
+                        //console.log(key, treeNodeMap[key]);
 						if (!node) {
 							continue;
 						}
-                        var treeid = getTreeId(node.pageNode.username);
+                        var treeid = getTreeId(node.pageNode.username, node.pageNode.sitename);
                         treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }
                 });
@@ -1269,7 +1235,7 @@ define([
                         if (provider == "page") {
                             console.log(currentPage);
                             allPageMap[currentPage.url] = currentPage;
-                            currentSite = getCurrentWebsite();
+                            currentSite = getCurrentSite();
                             initTree();
                             openPage(false);
                         }
@@ -1338,7 +1304,7 @@ define([
                     $('#deleteModal').modal("show");
                 }else{
                     if (!isEmptyObject(currentPage)) {
-                        currentSite = getCurrentWebsite(currentPage.username, currentPage.sitename);
+                        currentSite = getCurrentSite(currentPage.username, currentPage.sitename);
                         var currentDataSource = getCurrentDataSource();
 
                         currentDataSource && currentDataSource.deleteFile({path: currentPage.url + pageSuffixName}, function () {

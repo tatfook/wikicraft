@@ -45,7 +45,7 @@ function authenticated()
 
 	local token = request:header('Authorization'):match("%s+(%S+)");
 	local payload = decodeJWT(token)
-	log(payload)
+	-- log(payload)
 	if(not payload) then
 		return false
 	end

@@ -17,7 +17,7 @@ end
 function ensureAuthenticated()
 	-- request.userid = 1 -- debug use
 	if(request.username~=nil) then
-		return request.userid;
+		return request.username;
 	end
 	if (not request:header('Authorization')) then
 		response:status(401):send({ message = 'Please make sure your request has an Authorization header' });
