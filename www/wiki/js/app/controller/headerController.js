@@ -192,7 +192,8 @@ define([
             if (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
-                    size: 'lg'
+                    size: 'lg',
+                    backdrop: true
                 }, function (result) {
                     console.log(result);
                     // nowPage.replaceSelection(login.content);

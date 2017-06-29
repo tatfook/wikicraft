@@ -7,8 +7,13 @@ define([
     'helper/util',
     'text!html/oauth.html',
 ], function (app, util, htmlContent) {
-    app.registerController("oauthController", ['$scope', "Account", function ($scope, Account) {
+    app.registerController("oauthController", ['$scope', "Account", 'modal', function ($scope, Account, modal) {
+    	$scope.checkAll = true;
         function init() {
+			$scope.logined = Account.isAuthenticated();
+			if (!$scope.logined){
+				return;
+			}
 			var queryArgs = util.getQueryObject();
 
 			console.log(queryArgs);
@@ -54,7 +59,18 @@ define([
 			}
         }
 		$scope.$watch("$viewContentLoaded", function(){
-			Account.ensureAuthenticated();
+			if (!Account.isAuthenticated()){
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    size: 'lg',
+                    backdrop: true
+                }, function (result) {
+                    init();
+                }, function (result) {
+                    return;
+                });
+			}
+			// Account.ensureAuthenticated();
 			Account.getUser(function(userinfo){
 				$scope.user = userinfo;
 				init();
