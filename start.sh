@@ -52,9 +52,6 @@ start_server() {
 		ulimit -c unlimited
 		backup_file ${dev_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
-	else
-		start_server "test"
-		start_server "dev"
 	fi
 }
 
@@ -76,9 +73,6 @@ stop_server() {
 		if [ ! -z $pid ]; then
 			kill -9 $((pid))
 		fi
-	else
-		stop_server "test"
-		stop_server "dev"
 	fi
 }
 
