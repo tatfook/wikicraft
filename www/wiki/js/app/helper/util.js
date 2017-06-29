@@ -81,31 +81,52 @@ define([
 
         var paths = pathname.split('/');
         if (username) {
+			// 用户页
             username = username[1];
             var splitIndex = username.indexOf('-');
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
                 username = username.substring(0, splitIndex);
-                pagename = paths[paths.length-1];
+                pagename = paths.length > 1 ? paths[paths.length-1] : undefined;
+				username = username.toLowerCase();
+				sitename = sitename.toLowerCase();
                 pagepath = '/' + username + '/' + sitename + pathname;
             } else {
                 sitename = paths.length > 1 ? paths[1] : undefined;
-                pagename = paths[paths.length-1];
-                pagepath = '/' + username + pathname;
+                pagename = paths.length > 2 ? paths[paths.length-1] : undefined;
+				username = username.toLowerCase();
+				if (sitename) {
+					sitename = sitename.toLowerCase();
+					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring(sitename.length+2);
+				}
             }
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
             sitename = paths.length > 2 ? paths[2] : undefined;
-            pagename = paths.length > 3 ? paths[3] : undefined;
-            pagepath = pathname;
+            pagename = paths.length > 3 ? paths[paths.length-1] : undefined;
+			if (username != "wiki") {
+				username = username.toLowerCase();
+				if (sitename) {
+					sitename = sitename.toLowerCase();
+					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring((username+sitename).length+3);
+				}
+			}
         }
+
         if (username != "wiki" && !pagename) {
             pagename = "index";
             pagepath += (pagepath[pagepath.length-1] == "/" ? "" : "/") + pagename;
         }
         domain = hostname;
 
-        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname, pagepath: pagepath};
+        return {
+			domain:domain, 
+			username:username, 
+			sitename:sitename, 
+			pagename:pagename, 
+			pathname:pathname, 
+			pagepath:pagepath
+		};
     }
 
     util.setLastUrlObj = function (urlObj) {
@@ -189,7 +210,7 @@ define([
             var data = response.data;
             //console.log(data);
             // debug use by wxa
-            if (!data.error) {
+            if (!data || !data.error) {
                 console.log(url);
             }
             if (data.error.id == 0) {
@@ -284,7 +305,7 @@ define([
     util.isEditorPage = function () {
         var pathname = util.parseUrl().pathname;
         pathname = util.snakeToHump(pathname);
-        if (pathname == "/wiki/wikiEditor") {
+        if (pathname == "/wiki/wikieditor") {
             return true;
         }
         return false;
@@ -388,6 +409,44 @@ define([
 	// 获取当前路径
 	util.getPathname = function() {
 		return util.humpToSnake(util.parseUrl().pathname);
+	}
+
+	// 获取查询参数
+	util.getQueryObject = function(search, decode) {
+		//decode = decode == undefined ? true : decode;
+		search = search || window.location.search.substring(1);
+		var result = {};
+		var argList = search.split("&");
+		for (var i = 0; i < argList.length; i++) {
+			var key_value = argList[i].split("=");
+			if (key_value.length > 0) {
+				result[key_value[0]] = key_value[1] || "";
+				if (decode) {
+					console.log(result[key_value[0]]);
+					result[key_value[0]] = decodeURIComponent(result[key_value[0]]);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	// 根据obj获取查询串
+	util.getQueryString = function(searchObj, encode) {
+		var search = "";
+		var value = undefined;
+		//encode = encode == undefined ? true : encode;
+		searchObj = searchObj || {};
+		for (key in searchObj) {
+			value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
+			if (search.length == 0) {
+				search += key + "=" + value;
+			} else {
+				search += "&" + key + "=" + value;
+			}
+		}
+
+		return search;
 	}
 
     config.util = util;

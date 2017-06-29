@@ -55,13 +55,14 @@ define([
 					return;
 				}
 
-                var headers = response.headers();
-                if (headers["x-next-page"] && data.isFetchAll) {
+                var headers = (typeof(response.headers) == "function") && response.headers();
+                if (headers && headers["x-next-page"] && data.isFetchAll) {
                     data.page = parseInt(headers["x-next-page"]);
                     result = (result || []).concat(response.data);
                     //console.log(result);
                     $http(config).then(success).catch(failed);
                 } else {
+					//console.log(response);
                     result = result ? (result.concat(response.data)) : response.data;
                     typeof cb == 'function' && cb(result);
                 }
@@ -79,8 +80,8 @@ define([
         }
 
         gitlab.getCommitUrlPrefix = function (params) {
-            params = params || {};
-            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + this.getLongPath(params);
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+            return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + "/commit/" + params.sha + authStr;
         }
 
         gitlab.getRawContentUrlPrefix = function (params) {
@@ -381,7 +382,7 @@ define([
             if (!path) {
                 path = 'img_' + (new Date()).getTime();
             }
-            path = '/images/' + path;
+            path = '/'+ self.dataSource.username +'_images/' + path;
             /*data:image/png;base64,iVBORw0KGgoAAAANS*/
             content = content.split(',');
             if (content.length > 1) {
@@ -407,6 +408,28 @@ define([
                 cb && cb(imgUrl);
             }, errcb);
         }
+
+		gitlab.uploadFile = function(params, cb, errcb) {
+			var self = this;
+			var path = '/' + self.dataSource.username + '_files/' +params.path;
+			var content = params.content || "";
+            content = content.split(',');
+			content = content.length > 1 ? content[1] : content[0];
+			content = Base64.decode(content);
+			//console.log(content);
+			self.writeFile({path:path, content:content},function(){
+				var linkUrl = self.getRawContentUrlPrefix({sha:"master", path:path});
+				cb && cb(linkUrl);
+				// commit id replace master implement
+				//var tempPath = self.getLongPath({path:path}).substring(1);
+				//var url = self.getFileUrlPrefix() + _encodeURIComponent(tempPath);
+				//params.ref = "master";
+				//self.httpRequest("GET", url, {path:tempPath, ref:"master"}, function (data) {
+					//var linkUrl = self.getRawContentUrlPrefix({sha:data.last_commit_id, path:path});
+					//cb && cb(linkUrl);
+				//}, errcb);
+			}, errcb);
+		}
 
         // 初始化
         gitlab.init = function (dataSource, cb, errcb) {
@@ -454,7 +477,7 @@ define([
 			var hookUrl = config.apiUrlPrefix + "data_source/gitlabWebhook";
 			//var hookUrl = "http://dev.keepwork.com/api/wiki/models/data_source/gitlabWebhook";
 			var isExist = false;
-			self.httpRequest("GET", "/projects/" + projectId + "/hooks", {}, function (data) {
+			self.httpRequest("GET", "/projects/" + self.projectId + "/hooks", {}, function (data) {
 				//console.log(data);
 				for (var i = 0; i < data.length; i++) {
 					//gitlab.httpRequest("DELETE", "/projects/" + gitlab.projectId + "/hooks/" + data[i].id, {});
@@ -465,7 +488,7 @@ define([
 				// return;
 				// 不存在创建
 				if (!isExist) {
-					self.httpRequest("POST", "/projects/" + projectId + "/hooks", {
+					self.httpRequest("POST", "/projects/" + self.projectId + "/hooks", {
 						url: hookUrl,
 						push_events: true,
 						enable_ssl_verification: false,
@@ -502,11 +525,13 @@ define([
 			self.projectName = projectName;
 		
 			var successCallback = function(params) {
-				self.createWebhook(params.projectId);
+				self.projectId = params.projectId;
 				self.projectMap[projectName] = {
 					projectId:params.projectId,
 					lastCommitId:params.lastCommitId || "master",
 				};
+
+				self.createWebhook();
 				// 更新项目ID
                 util.post(config.apiUrlPrefix + 'site_data_source/updateById', {_id:self.dataSource._id, projectId:params.projectId});
 
@@ -515,7 +540,6 @@ define([
 					self.lastCommitId = lastCommitId;
 				});
 
-				self.projectId = params.projectId;
 				cb && cb();	
 				return;
 			}

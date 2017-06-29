@@ -56,7 +56,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 				if not userinfo then
 					return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
 				end
-				local token = createJWT(userinfo)
+				local token = encodeJWT({username=userinfo.username})
 				return response:send({token = token, data = userinfo, error=0, message="OK"})
 			end)
 		end)

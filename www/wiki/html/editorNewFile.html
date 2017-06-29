@@ -1,0 +1,45 @@
+ <!--Created by Karlwu on 2016-11-11-->
+ <style>
+     .newfile-modal .col-md-6:last-child{
+         border-left:1px solid #DCDCDC;
+     }
+     .modal-header .now-page{
+         font-weight: normal;
+         color: #666;
+     }
+     .modal-header .modal-title{
+         text-overflow: ellipsis;
+         white-space: nowrap;
+         overflow: hidden;
+     }
+     /*.newpage-modal .treeview .list-group-item:first-child{*/
+         /*background-color: #3977AD;*/
+         /*color: #FFF;*/
+     /*}*/
+ </style>
+<div>
+    <form name="pageForm" ng-submit="file_new()">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+        <h4 class="modal-title">新建文件夹 <span ng-show="hidePageTree" class="now-page">&gt; {{nowHoverFile.pageNode.name}}</span></h4>
+    </div>
+    <div class="modal-body newfile-modal">
+        <div>
+            <div class="row">
+                <div class="col-md-10">
+                    <!-- NAME -->
+                    <div class="form-group">
+                        <label>文件名</label>
+                        <input type="text" name="name" class="form-control" ng-model="websiteFile.filename">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="modal-footer">
+            <span style="color: red; padding-right: 10px">{{errInfo}}</span>
+            <button type="submit" class="btn btn-primary btn-fill">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        </div>
+    </form>
+</div>

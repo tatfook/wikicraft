@@ -280,14 +280,14 @@
                 <p ng-show="(joinOrganizationCount-selfOrganizationCount)==0 || !joinOrganizationCount">暂未加入组织</p>
                 <ul class="list-item">
 					<li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="userinfo._id == x.siteinfo.userId || x.isDelete">
-                        <a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name + '/index'}}" class="text-muted">{{x.siteinfo.displayName}}</a>
+                        <a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name + '/index'}}" class="text-muted pull-left">{{x.siteinfo.displayName}}</a>
                         <a class="pull-right" ng-click="showExitModal(x)" ng-show="user._id==userinfo._id">退出</a>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="col-md-9 col-xs-9">
-            <div class="main-content clearfix bar-nav" ng-show="true">
+            <div class="main-content clearfix bar-nav" ng-show="user._id==userinfo._id">
                 <div class="col-xs-4" ng-click="goNewWebsitePage()">
                     <img ng-src="{{imgsPath + 'icon/wiki_new_site.png'}}" alt="">
                     <p>新建网站</p>
@@ -372,19 +372,42 @@
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix" id="wiki_works">
-                        <p ng-show="allSiteTotal==0">暂未创建网站</p>
-                        <div class="img-text col-md-6" ng-repeat="x in allSiteList">
-                            <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
-                            <div class="text">
-                                <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
-                                <p>作者：{{x.username}} </p>
-                                <p>{{x.desc}}</p>
-                                <div class="col-md-12 info">
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                        <div class="col-xs-12">
+                            <h3 class="title">创建的网站</h3>
+                            <p ng-show="allSiteTotal==0">暂未创建网站</p>
+                            <div class="img-text col-md-6" ng-repeat="x in allSiteList">
+                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
+                                <div class="text">
+                                    <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <h3 class="title">参与的网站</h3>
+                            <p ng-show="joinSiteTotal==0 || !joinSiteTotal">暂无参与的网站</p>
+                            <div class="img-text col-md-6" ng-repeat="x in joinSiteList">
+                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
+                                <div class="text">
+                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -417,15 +440,15 @@
                             <div class="img-text col-md-6" ng-repeat="x in followSiteList">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
-                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
-                                    <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc}}</p>
+                                    <h4><a ng-click="goUserSite(x)">{{x.name || "作品名未知"}}</a></h4>
+                                    <p>作者：{{x.username || "作者未知"}} </p>
+                                    <p>{{x.desc || "暂无描述"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
@@ -458,7 +481,7 @@
                     <h3><span class="icon">!</span>确定删除？</h3>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" onclick="angular.element(this).scope().exitOrg(angular.element(this).scope().deletingOrg)">确 定</button>
+                    <button class="btn btn-danger" ng-click="exitOrg()">确 定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                 </div>
             </div>

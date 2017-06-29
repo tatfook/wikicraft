@@ -42,7 +42,7 @@ define([
                 $scope.followUserList = data.followObj.followUserObj.userList;
                 $scope.followUserTotal = data.followObj.followUserObj.total;
                 // 关注的站点
-                $scope.followSiteList = data.followObj.followSiteObj.favoriteList;
+                $scope.followSiteList = data.followObj.followSiteObj.siteList;
                 $scope.followSiteTotal = data.followObj.followSiteObj.total;
                 // 用户动态
                 $scope.trendsList = data.trendsObj.trendsList;
@@ -130,7 +130,7 @@ define([
         }
         
         $scope.goEditorPage = function () {
-            util.go("wikiEditor");
+            util.go("wikieditor");
         }
 
         //显示退出组织模态框
@@ -140,13 +140,13 @@ define([
         }
 
         // 退出组织
-        $scope.exitOrg = function (org) {
-            util.post(config.apiUrlPrefix + 'website_member/deleteById', org, function () {
-                org.isDelete = true;
+        $scope.exitOrg = function () {
+            util.post(config.apiUrlPrefix + 'website_member/deleteById', $scope.deletingOrg, function () {
+                $scope.deletingOrg.isDelete = true;
                 $scope.joinOrganizationCount--;
                 $('#exitModal').modal("hide");
             });
-        }
+        };
 
         $scope.$watch('$viewContentLoaded', function () {
             //console.log("------------------init user controller----------------------");

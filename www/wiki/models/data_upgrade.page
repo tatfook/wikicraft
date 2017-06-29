@@ -74,3 +74,17 @@ function data_upgrade:api_dataSourceIdToName(params)
         end
     end
 end
+
+-- 重置用户密码
+function data_upgrade:api_resetPassword(params)
+    if not params.username or (not params.password) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end 
+            
+    local password = ParaMisc.md5(params.password or "") 
+    local userDB = models.user:new()
+
+    userDB:db():updateOne({["+username"]={params.username}}, {password=password}, resume)
+
+    return errors:wrap(yield())
+end

@@ -36,6 +36,7 @@
     }
     .step-content .step2 .form-control{
         margin: 10px .5em;
+        min-width: 120px;
     }
     .step-content .label-selected{
         color: #3977AD;
@@ -307,7 +308,7 @@
                                 <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
                                     <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-md-12 btn-group">
-                                        <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
+                                        <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(template.previewUrl)">预览</div>
                                         <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
                                         </div>
                                     <span class="label">{{template.name}}</span>
@@ -322,7 +323,7 @@
                         <div class="col-sm-4" ng-repeat="style in styles" ng-class="website.styleId == style._id ? 'active' : ''" style="margin-bottom: 20px;">
                             <img ng-src="{{ imgsPath + (style.logoUrl || 'wiki_works.jpg') }}" ng-click="selectTemplate(template)" alt="">
                             <div class="col-md-12 btn-group">
-                                <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style)">预览</div>
+                                <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(style.previewUrl)">预览</div>
                                 <div class="btn col-sm-6 btn-lg" ng-click="selectStyle(style)" ng-class="website.styleId == style._id ? 'active' : ''">选择</div>
                             </div>
                             <span class="label">{{style.name}}</span>

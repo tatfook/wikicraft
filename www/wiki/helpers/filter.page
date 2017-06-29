@@ -1,0 +1,123 @@
+<?npl
+--[[
+Title: request filter
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+API_URL_PREFIX="api/wiki/models/"
+
+-- 访问频率限制函数
+function requestCountLimit(count, time) 
+	local validCount = count or 5
+	local validTime = time or 300
+	return function() 
+		local ip = request:getpeername()
+		local key = "filter_" .. ip
+		local curTime = os.time()
+		local limitObj = mem_cache:get(key) or {count=0, level=1, validCount=validCount,validTime=curTime + validTime}
+		local result = true
+
+		-- 访问次数加1
+		limitObj.count = limitObj.count + 1
+		-- 访问次数超了 时间未超  禁止请求
+		if (limitObj.count > limitObj.validCount) and (curTime < limitObj.validTime)  then
+			result = false  
+		elseif (limitObj.count > limitObj.validCount) and (curTime > limitObj.validTime) then
+			limitObj.count = 1
+			limitObj.level = limitObj.level + 1
+			limitObj.validTime =  limitObj.level * validTime + curTime
+		elseif (limitObj.count <= limitObj.validCount) and (curTime > limitObj.validTime) then
+			limitObj.validTime = curTime + limitObj.level * validTime + curTime 
+		else
+		end
+		mem_cache:set(key, limitObj)
+
+		return result
+	end
+end
+
+-- 认证函数
+function authenticated()
+	if (not request:header('Authorization')) then
+		return false
+	end
+
+	local token = request:header('Authorization'):match("%s+(%S+)");
+	local payload = decodeJWT(token)
+	log(payload)
+	if(not payload) then
+		return false
+	end
+	request.username = payload.username
+	return true
+end
+
+function testFilter() 
+	log("test filter")
+	return true
+end
+
+KEEPWORK["request_before_filter"] = {
+	["wiki/test"] = {
+		testFilter,
+	},
+	-- 登录限制
+	[API_URL_PREFIX .. "user/login"] = {
+		requestCountLimit(),
+	},
+	-- 注册限制
+	[API_URL_PREFIX .. "user/register"] = {
+		requestCountLimit(),
+	},
+	-- 获得用户配置信息
+	[API_URL_PREFIX .. "user/getProfile"] = {
+		authenticated,
+	}
+}
+
+
+KEEPWORK["request_after_filter"] ={
+	["wiki/test"] = {
+		testFilter,
+	},
+}
+
+-- 请求前滤器
+function request_before_filter()
+	local filter = KEEPWORK["request_before_filter"]
+	local url = pagename() or ""
+	local filterfuncs = filter[url]	
+	
+	for _, func in ipairs(filterfuncs or {}) do
+		if not func() then
+			response:status(401):send({message="prohibit access"})
+			exit()
+		end
+	end
+end
+
+-- 请求后过滤
+function request_after_filter()
+	local filter = KEEPWORK["request_after_filter"]
+	local url = pagename() or ""
+	local filterfuncs = filter[url]	
+	
+	for _, func in ipairs(filterfuncs or {}) do
+		func()
+	end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+

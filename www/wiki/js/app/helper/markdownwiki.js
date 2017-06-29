@@ -237,6 +237,10 @@ define([
             var block = blockList[i];
             if (block.isTemplate) {
                 if (block.isPageTemplate) {
+					for (var j = start; j < block.textPosition.from; j++) {
+						$(selector).append('<br/>');
+					}
+					start = block.textPosition.to + 1;
                     $(selector).append("<div></div>");
                 }
                 continue;

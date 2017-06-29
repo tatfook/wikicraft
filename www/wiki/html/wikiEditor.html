@@ -63,12 +63,12 @@
                             <div class="btn btn-default btn-sm" title="斜体（Ctrl+I）" ng-click="cmd_italic()">
                                 <img ng-src="{{imgsPath+'icon/wiki_italic.png'}}" alt="">
                             </div>
-                            <div class="btn btn-default btn-sm" title="下划线" ng-click="cmd_underline()">
+                            <!--<div class="btn btn-default btn-sm" title="下划线" ng-click="cmd_underline()">
                                 <img ng-src="{{imgsPath+'icon/wiki_underline.png'}}" alt="">
                             </div>
                             <div class="btn btn-default btn-sm" title="删除线" ng-click="cmd_strikethrough()">
                                 <img ng-src="{{imgsPath+'icon/wiki_deleteline.png'}}" alt="">
-                            </div>
+                            </div>-->
                         </div>
                         <div class="btn-group">
                             <div class="btn btn-default btn-sm"  ng-click="cmd_listul()" title="无序列表（Ctrl+.）">
@@ -172,40 +172,48 @@
                     </div>
                 </div>
                 <div id="wikiEditorContainer">
-                    <div id="treeview" class="treeview-container full-height nopadding nomargin" style="max-height: 100%; overflow-y: auto">
+                    <div id="treeview" class="treeview-container full-height nopadding nomargin" style="height: 100%; overflow-y: auto">
                         <div class="opened treeview" id="openedTree">
                             <ul class="list-group">
                                 <li class="list-group-item">
                                     <span class="icon expand-icon glyphicon glyphicon-minus"></span>
                                     已打开
                                     <span class="badge">
-                                        <img class="show-parent" onclick="angular.element(this).scope().cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
-                                        <img class="show-parent" onclick="angular.element(this).scope().cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
+                                        <img class="show-parent" ng-click="cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
+                                        <img class="show-parent" ng-click="cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
                                     </span>
                                 </li>
-                                <li class="list-group-item" id="{{nodeItem.itemId}}" ng-repeat="(nodeId, nodeItem) in opens" ng-class="{'node-selected':nodeItem.selected}" ng-click="openPageTree(nodeItem)">
+                                <li class="list-group-item" id="{{nodeItem.itemId}}" ng-repeat="(nodeId, nodeItem) in opens" ng-click="clickOpenPage(nodeItem)">
                                     <span class="indent"></span>
                                     <span class="icon glyphicon"></span>
                                     <span class="icon node-icon fa fa-file-o"></span>
-                                    {{nodeItem.pageNode.name}}({{nodeItem.pageNode.sitename}})
-                                    <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.pageNode.url)" title="关闭">×</span></span>
-                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove()" title="删除"></span></span>
-                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh()" title="刷新"></span></span>
+                                    {{nodeItem.pagename}}({{nodeItem.sitename}})<span ng-show="nodeItem.isModify">*</span><span ng-show="nodeItem.isConflict">!</span>
+                                    <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.url)" title="关闭">×</span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove(nodeItem.url)" title="删除"></span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh(nodeItem.url)" title="刷新"></span></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <div id="mytree"></div>
+                        </div>
+                        <div class="treeview joined-treeview" style="border-top: 1px solid #DCDCDC;">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <span class="icon expand-icon glyphicon glyphicon-minus"></span>
+                                    参与的项目
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <div id="mytree"></div>
-                        </div>
-                        <div style="margin-top: 20px">
                             <div id="othertree"></div>
                         </div>
                     </div>
-                    <div class="code-view col-xs-12 full-height" style="height: 100%;">
+                    <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: auto">
                         <div id="srcview" class="col-xs-6 full-height">
                             <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
                             <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
-                            <div class="border"></div>
+                            <div id="resize-bar" class="border"></div>
                         </div>
                         <section id="preview" class="col-xs-6 full-height" style="max-height: 100%; height: 100%;overflow-y: auto;overflow-x: auto;padding: 0;">
                             <div class="result-html full-height"></div>
@@ -219,13 +227,13 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="exampleModalLabel">删除提醒</h4>
+                                <h4 class="modal-title" id="exampleModalLabel">删除提醒 <span class="siteinfo">> {{deleteNode.sitename}} > {{deleteNode.name}}</span></h4>
                             </div>
                             <div class="modal-body">
-                                <h3><span class="icon">!</span>确定删除？</h3>
+                                <h3><span class="icon">!</span>确定删除{{deleteNode.name}}页面？</h3>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-danger" onclick="angular.element(this).scope().cmd_remove(true)">确 定</button>
+                                <button class="btn btn-danger" ng-click="cmd_remove(true)">确 定</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                             </div>
                         </div>

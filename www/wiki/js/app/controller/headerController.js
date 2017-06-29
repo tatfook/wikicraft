@@ -25,7 +25,7 @@ define([
         }
 
         function init() {
-            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikiEditor'}];
+            $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikieditor'}];
             var urlObj = util.parseUrl();
 
             if (!config.islocalWinEnv()) {
@@ -61,7 +61,12 @@ define([
             container.style.overflow="visible";
         }
 
-        $scope.$watch('$viewContentLoaded', init);
+		$scope.$watch('$viewContentLoaded', function() {
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				init();
+			}, init);
+		});
 
         $scope.selectSite = function (site) {
             $scope.urlObj.sitename = site.name;
@@ -174,7 +179,7 @@ define([
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
             console.log(storage.sessionStorageGetItem("urlObj"));
-            util.go("wikiEditor");
+            util.go("wikieditor");
         }
 
         // 用户主页
@@ -187,7 +192,8 @@ define([
             if (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
                 modal('controller/loginController', {
                     controller: 'loginController',
-                    size: 'lg'
+                    size: 'lg',
+                    backdrop: true
                 }, function (result) {
                     console.log(result);
                     // nowPage.replaceSelection(login.content);
