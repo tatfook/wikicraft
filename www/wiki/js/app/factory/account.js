@@ -63,6 +63,15 @@ define([
                     }, errcb);
 				},
 
+				setDataSourceToken:function(dataSourceCfg) {
+					var dataSourceList = this.user.dataSource;
+					for (var i = 0; i < dataSourceList.length; i++) {
+						if (dataSourceList[i].apiBaseUrl == dataSourceCfg.apiBaseUrl) {
+							dataSourceCfg.dataSourceToken = dataSourceList[i].dataSourceToken;
+						}
+					}
+				},
+
                 // 获取用户信息
                 getUser: function (cb, errcb) {
                     var userinfo = this.user || storage.sessionStorageGetItem("userinfo");

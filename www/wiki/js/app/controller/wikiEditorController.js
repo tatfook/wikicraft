@@ -506,6 +506,23 @@ define([
                     }
                 });
 
+				// 获取自己可编辑的站点列表
+				fnList.push(function(finish){
+					if ($scope.user && $scope.user.username) {
+						util.post(config.apiUrlPrefix + "site_group/getByMemberName", {
+							memberName:$scope.user.username,
+						}, function(data){
+							data = data || [];
+							for (var i = 0; i < data.length; i++) {
+								data[i].siteinfo.isEditable = true;
+								allWebsites.push(data[i].siteinfo);
+							}
+							finish && finish();
+						}, finish);
+					} else {
+						finish && finish();
+					}
+				});
                 // 获取他人站点列表
                 fnList.push(function (finish) {
                     if (otherUserinfo && otherUserinfo._id) {
@@ -531,11 +548,28 @@ define([
                 });
 
                 util.batchRun(fnList, function () {
-                    //初始化本地数据库indexDB
-                    storage.indexedDBRegisterOpenCallback( function () {
-                        loadUnSavePage();
-                        _openPage();
-                    });
+					// 初始化其它站点的数据源
+					var fnlist = [];
+					for (var i = 0; i < allWebsites.length; i++) {
+						var tempSiteinfo = allWebsites[i];
+						if (tempSiteinfo.username == $scope.user.username) {
+							continue;
+						}
+						fnlist.push((function(siteinfo){
+							return function(finish) {
+								siteinfo.dataSource.isInited = true;
+								Account.setDataSourceToken(siteinfo.dataSource);
+								dataSource.registerDataSource(siteinfo.dataSource, finish, finish);
+							}
+						})(allWebsites[i]));
+					}
+					util.batchRun(fnlist, function() {
+						//初始化本地数据库indexDB
+						storage.indexedDBRegisterOpenCallback( function () {
+							loadUnSavePage();
+							_openPage();
+						});
+					});
                 });
             }
 
@@ -564,8 +598,7 @@ define([
                 if (isOtherUserExist() && otherUserinfo.username == username) {
                     return "#othertree";
                 }
-                console.log("get tree id errors:", username);
-                return '#mytree';
+                return '#editableTree';
             }
 
             // 通过用户名获取userinfo
@@ -592,7 +625,7 @@ define([
             //初始化，读取用户站点列表及页面列表
             function init() {
                 //console.log('---------------init---------------');
-                var otherUsername = storage.sessionStorageGetItem('otherUsername');
+				var otherUsername = storage.sessionStorageGetItem('otherUsername');
                 var fnList = [];
                 if (!Account.ensureAuthenticated() && !otherUsername) {
                     return;
@@ -1060,7 +1093,8 @@ define([
                             }
                         },
                         onNodeCollapsed: function (event, data) {
-                            //console.log("node collapsed", data.pageNode.url);
+                            console.log("node collapsed", data.pageNode.url);
+							
                             treeNodeMap[data.pageNode.url] = data;
                             if (!isFirstCollapsedAll) {
                                 delete treeNodeExpandedMap[data.pageNode.url];
@@ -1084,7 +1118,18 @@ define([
                         mytree.data = getTreeData($scope.user.username, allPageMap, false);
                         $('#mytree').treeview(mytree);
                         $('#mytree').treeview('collapseAll', {silent: false});
+
+						var editableTree = angular.copy(treeview);
+						for (var i = 0; i < allWebsites.length; i++) {
+							if (allWebsites[i].username != $scope.user.username) {
+								editableTree.data = (editableTree.data || []).concat(getTreeData(allWebsites[i].username, allPageMap, false));
+							}
+						}
+						console.log("----------------");
+                        $('#editableTree').treeview(editableTree);
+                        $('#editableTree').treeview('collapseAll', {silent: false});
                     }
+					
                     if (isOtherUserExist()) {
                         var othertree = angular.copy(treeview);
                         othertree.data = getTreeData(otherUserinfo.username, allPageMap, false);
@@ -1093,11 +1138,15 @@ define([
                     }else{
                         $('#othertree').html("<p style='text-align: center;'>暂无参与的项目</p>");
                     }
+
 					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
 						var node = treeNodeMap[key]
-                        //console.log(key, treeNodeMap[key]);
+                        console.log(key, treeNodeMap[key]);
+						if (!node) {
+							continue;
+						}
                         var treeid = getTreeId(node.pageNode.username);
                         treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }

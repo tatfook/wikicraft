@@ -30,6 +30,7 @@ define([
 
         // http请求
         gitlab.httpRequest = function (method, url, data, cb, errcb) {
+            this.dataSource.dataSourceToken && (this.httpHeader["PRIVATE-TOKEN"] = this.dataSource.dataSourceToken);
             //console.log(url);
             var config = {
                 method: method,
@@ -74,6 +75,10 @@ define([
 
             $http(config).then(success).catch(failed);
         }
+
+		//gitlab.getAuthInfo = function(){
+			//return this.dataSource.visibility == "private" ? "private_token=" + this.dataSource.dataSourceToken : "private_token=";
+		//}
 
         gitlab.getLongPath = function (params) {
             return this.rootPath + (params.path || "");
@@ -459,7 +464,10 @@ define([
             }
 			
 			if (dataSource.isInited) {
-				cb && cb();
+				self.getLastCommitId(function(lastCommitId){
+					lastCommitId && (self.lastCommitId = lastCommitId);
+					cb && cb();
+				}, errcb);
 				return;
 			}
 

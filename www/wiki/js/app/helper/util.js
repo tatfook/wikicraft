@@ -313,6 +313,11 @@ define([
 
     // 执行批量  function(finishCB){}
     util.batchRun = function(fnList,finish) {
+		if (!fnList || fnList.length == 0) {
+			finish && finish();
+			return;
+		}
+
         var isCall = [];
         var _isFinish = function () {
             if (isCall.length != fnList.length)
@@ -344,6 +349,10 @@ define([
 
     // 顺序执行 function(cb,errcb){}
     util.sequenceRun = function (fnList, delay, cb, errcb) {
+		if (!fnList || fnList.length == 0) {
+			cb && cb();
+			return;
+		}
         delay = delay == undefined ? 1000 : delay;
         var index = 0;
         var retryCount = {};

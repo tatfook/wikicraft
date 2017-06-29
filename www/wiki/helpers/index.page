@@ -26,7 +26,7 @@ WIKI_ENV="www"
 -- json web token  encode/decode
 function encodeJWT(payload)
 	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
-	return jwt.encode(payload, secret["token_secret"], nil,  secret[token_expire] or 3600);
+	return jwt.encode(payload, secret["token_secret"], nil,  secret["token_expire"] or 3600);
 end
 
 function decodeJWT(token)
