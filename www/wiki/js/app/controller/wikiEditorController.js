@@ -2207,7 +2207,6 @@ define([
                     var boxWidth = $("#preview").width();//30为#preview的padding宽度
                     var resultWidth=getResultSize(winWidth,boxWidth);
                     var scaleSize = boxWidth / resultWidth;
-
                     if(!scroll || scroll!="scroll"){
                         resizeResult(resultWidth);//设置result-html宽度
 
@@ -2225,6 +2224,8 @@ define([
                             });
                         }else if ($scope.scales[len].showValue=="适合宽度" && $scope.scales[len].resultWidth!=resultWidth){
                             $scope.scales[len].resultWidth=resultWidth;
+                        }else if ($scope.scales[len].showValue=="适合宽度" && $scope.scales[len].scaleValue!=scaleSize){
+                            $scope.scales[len].scaleValue=scaleSize;
                         }
                     }
                     return scaleSize;

@@ -508,8 +508,8 @@
                             <span class="glyphicon glyphicon-search text-muted"></span>
                         </li>
                         <li><a href="#">VIP</a></li>
-                        <li><a ng-click="goLoginPage()" class="btn btn-primary">登录</a></li>
-                        <li><a ng-click="goRegisterPage()">注册</a></li>
+                        <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
+                        <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}">注册</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
