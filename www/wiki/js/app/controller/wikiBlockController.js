@@ -52,6 +52,7 @@ define([
             } else if (type == "name") {
                 // 获取通过模块名
                 url += 'wiki_module/getByName';
+				console.log("-----------------1");
                 params.moduleName = $scope.moduleName;
             } else {
                 // 获取所有
@@ -64,6 +65,7 @@ define([
         }
 
         function init() {
+			console.log("-----------------");
             util.post(config.apiUrlPrefix + 'wiki_module_classify/get',{}, function (data) {
                 $scope.moduleClassifyList = data;
             });
@@ -144,11 +146,11 @@ define([
             getWikiBlockList('name');
         }
         // 回车搜索
-        $(document).keyup(function (event) {
-            if(event.keyCode=="13"){
-                $scope.getByName();
-            }
-        });
+        //$(document).keyup(function (event) {
+            //if(event.keyCode=="13"){
+                //$scope.getByName();
+            //}
+        //});
     }]);
     
     return htmlContent;
