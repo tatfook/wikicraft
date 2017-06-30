@@ -427,7 +427,7 @@ function user:api_login(params)
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
 
-	return {error=errors.SUCCESS, data={token=encodeJWT({username=userinfo.username}), userinfo=userinfo}}
+	return {error=errors.SUCCESS, data={token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo}}
 end
 
 function user:api_bindThreeService(params)
@@ -447,7 +447,7 @@ function user:api_bindThreeService(params)
 	threeService.userId = userinfo._id
 	userThreeServiceDB:api_upsert(threeService)
 	
-	return errors:wrap(nil, {token=encodeJWT({username=userinfo.username}), userinfo=userinfo, isNewUser=0})
+	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=0})
 end	
 
 -- 注册
@@ -501,7 +501,7 @@ function user:api_register(params)
 		userThreeServiceDB:api_upsert(threeService)
 	end
 
-	return errors:wrap(nil, {token=encodeJWT({username=userinfo.username}), userinfo=userinfo, isNewUser=1})
+	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=1})
 end
 
 -- 获取用户默认数据源

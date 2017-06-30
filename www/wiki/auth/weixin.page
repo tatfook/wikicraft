@@ -43,7 +43,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 			if not userinfo then
 				return response:send({error=0, data={serviceId=data.openid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
 			end
-			local token = encodeJWT({username=userinfo.username})
+			local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
 			return response:send({token = token, data = userinfo, error=0, message="OK"})
 		end)
 	end)
