@@ -35,7 +35,11 @@ function decodeJWT(token)
 end
 
 function getTokenInfo()
-	local token = request:header('Authorization'):match("%s+(%S+)");
+	local authHeader = request:header('Authorization')
+	if not authHeader then
+		return nil
+	end
+	local token = authHeader:match("%s+(%S+)");
 	return decodeJWT(token)
 end
 
@@ -91,6 +95,7 @@ function init()
 	init_db()
 	init_wiki_module()
 	request_before_filter()
+	-- log(getTokenInfo())
 end
 
 init()
