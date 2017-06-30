@@ -25,6 +25,7 @@ define([
         }
 
         function init() {
+            $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
             $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikieditor'}];
             var urlObj = util.parseUrl();
 
