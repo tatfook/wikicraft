@@ -36,7 +36,7 @@ function ensureAuthenticated()
 		exit();
 	end
 	request.username = payload.username;
-
+	request.userid = payload.userId
 	return request.username;
 end
 
@@ -51,6 +51,7 @@ function checkAuthenticated()
 		local payload, err = decodeJWT(token);
 		if(payload) then
 			request.username = payload.username;
+			request.userid = payload.userId
 		end	
 	end
 	return request.username;
