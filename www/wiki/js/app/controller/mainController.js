@@ -199,7 +199,7 @@ define([
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
 						var callback = function() {
-							if ($scope.user && $scope.user.username != data.userinfo.username) {
+							if ((!$scope.user || $scope.user.username != data.userinfo.username) {
 								userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
 							}
 							userDataSource.registerInitFinishCallback(function () {
