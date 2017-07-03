@@ -9,10 +9,10 @@ API_URL_PREFIX="api/wiki/models/"
 
 -- 访问频率限制函数
 function requestCountLimit(typ, count, time) 
-	local validCount = count or 5
+	local validCount = count or 50
 	local validTime = time or 300
 	return function() 
-		local ip = request:getpeername()
+		local ip = request:header("X-Real-IP")
 		local key = "filter_" .. (typ or "") .. "_" .. ip
 		local curTime = os.time()
 		local limitObj = mem_cache:get(key) or {count=0, level=1, validCount=validCount,validTime=curTime + validTime}
@@ -47,7 +47,7 @@ function authenticated()
 	local token = request:header('Authorization'):match("%s+(%S+)");
 	local payload = decodeJWT(token)
 	LOG.std(nil, "error", "keepwork", payload)
-	if(not payload) then
+	if not payload then
 		return false
 	end
 	request.username = payload.username
@@ -65,11 +65,11 @@ KEEPWORK["request_before_filter"] = {
 	},
 	-- 登录限制
 	[API_URL_PREFIX .. "user/login"] = {
-		requestCountLimit(),
+		requestCountLimit("login"),
 	},
 	-- 注册限制
 	[API_URL_PREFIX .. "user/register"] = {
-		requestCountLimit(),
+		requestCountLimit("register"),
 	},
 	-- 获得用户配置信息
 	[API_URL_PREFIX .. "user/getProfile"] = {
