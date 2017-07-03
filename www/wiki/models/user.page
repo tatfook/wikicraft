@@ -159,7 +159,9 @@ end
 -- 用户注销账号 
 function user:api_deleteById(params) 
 	-- 只能删除自己
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
+
 	if not params.username or (username ~= params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -227,7 +229,8 @@ end
 
 -- 手机验证
 function user:api_verifyCellphoneTwo(params)
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if (not params.smsId) or (not params.smsCode) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -253,7 +256,8 @@ end
 
 -- 邮箱验证1
 function user:api_verifyEmailOne(params) 
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if not params.email then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -536,7 +540,8 @@ end
 
 -- 获取用户信息
 function user:api_getProfile()
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	self:db():findOne({["+username"]={username}}, resume)
 	local err, data = yield()
 	if not data then 
