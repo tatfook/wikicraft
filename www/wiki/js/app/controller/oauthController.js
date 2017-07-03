@@ -35,7 +35,7 @@ define([
 			$scope.agree = function(){
 				console.log("user agree auth");
 				util.post(config.apiUrlPrefix + "oauth_app/agreeOauth", {
-					clientId:queryArgs.client_id,
+					client_id:queryArgs.client_id,
 					redirectUri:queryArgs.redirect_uri,
 					username:$scope.user.username,
 				}, function(data){

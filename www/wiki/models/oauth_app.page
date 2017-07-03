@@ -70,14 +70,14 @@ end
 	
 -- 同意客户端授权
 function oauth_app:api_agreeOauth(params)
-	if (not params.username) or (not params.clientId) then
+	if (not params.username) or (not params.client_id) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local oauthCode = nil
 	while (true) do
 		oauthCode = tostring(math.random(1000000,9999999))
-		local key = params.clientId .. "_" .. oauthCode
+		local key = params.client_id .. "_" .. oauthCode
 		if not mem_cache:get(key) then
 			mem_cache:set(key, params.username)
 			break
