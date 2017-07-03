@@ -8,12 +8,12 @@ Date: 2017/3/13
 API_URL_PREFIX="api/wiki/models/"
 
 -- 访问频率限制函数
-function requestCountLimit(count, time) 
+function requestCountLimit(typ, count, time) 
 	local validCount = count or 5
 	local validTime = time or 300
 	return function() 
 		local ip = request:getpeername()
-		local key = "filter_" .. ip
+		local key = "filter_" .. typ .. "_" .. ip
 		local curTime = os.time()
 		local limitObj = mem_cache:get(key) or {count=0, level=1, validCount=validCount,validTime=curTime + validTime}
 		local result = true
@@ -31,6 +31,7 @@ function requestCountLimit(count, time)
 			limitObj.validTime = curTime + limitObj.level * validTime + curTime 
 		else
 		end
+		LOG.std(nil, "error", "keepwork", limitObj)
 		mem_cache:set(key, limitObj)
 
 		return result
