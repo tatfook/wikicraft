@@ -77,6 +77,11 @@
             "/wiki/test":"controller/testController",
             "/wiki/wikieditor":"controller/wikiEditorController",
         },
+		filterMap:{
+			"/wiki/iframeagent":[
+
+			],
+		}
     };
     function initConfig() {
         var hostname = window.location.hostname;
@@ -132,6 +137,12 @@
     config.registerPreloadModule = function (path) {
         this.preloadModuleList.push(path);
     }
+	// 注册过滤函数
+	config.registerFilter = function(path, func) {
+		var filterList = config.filterMap[path] || [];
+		filterList.push(func);
+		config.filterMap[path] = filterList;
+	}
 
     // wikiMod渲染函数注册
     config.setWikiModuleRender = function(moduleName, render) {
@@ -180,6 +191,15 @@
         }
 
 		rawPathname = rawPathname.toLowerCase();
+		// 执行过滤函数， 若过滤函数返回false则停止框架
+		if (config.filterMap[rawPathname]) {
+			var filterList = config.filterMap[rawPathname];
+			for (var i = 0; i < filterList.length; i++) {
+				if (!filterList[i]()) {
+					return ;
+				}
+			}
+		}
         if (config.routeMap[rawPathname]) {
             pageurl = config.routeMap[rawPathname];  // 优先配置路由
         }

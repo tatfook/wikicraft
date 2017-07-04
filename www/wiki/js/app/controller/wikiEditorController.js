@@ -2878,6 +2878,13 @@ define([
                     }
                 }, false);
 
+				//window.addEventListener("paste", function(e){
+                    //e = e || event;
+					//console.log(e);
+					//console.log(e.clipboardData.items);
+					//console.log(e.dataTransfer.files);
+				//}, false);
+
                 // 编辑器拖拽改变大小
                 var col1=$("#srcview");
                 var col2=$("#preview");

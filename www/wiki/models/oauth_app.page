@@ -22,10 +22,10 @@ end
 
 local oauthApp = {
 	{
-		appName="哈奇",
+		appName="test",
 		clientId="1000000",
 		clientSecret="keepwork",
-		RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
+		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
 }
 
