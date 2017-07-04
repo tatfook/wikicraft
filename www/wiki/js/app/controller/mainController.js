@@ -120,6 +120,27 @@ define([
                 }
             }
 
+            // 底部高度自适应
+            function stickFooter() {
+                var winH=$(window).height();
+                var headerH=52;
+                var footerH=100;
+                var minH=winH-headerH-footerH;
+                var w = $("#__mainContent__");
+                w.css("min-height", minH);
+            }
+
+            function throttle(method, context) {
+                clearTimeout(method.stickTimer);
+                method.stickTimer = setTimeout(function () {
+                    method.call(context);
+                },100);
+            }
+
+            window.onresize = function () {
+                throttle(stickFooter);
+            };
+
             function initView() {
 
                 // 信息提示框
@@ -145,13 +166,7 @@ define([
                 //
                 // });
 
-                // 底部高度自适应
-                var winH=$(window).height();
-                var headerH=52;
-                var footerH=100;
-                var minH=winH-headerH-footerH;
-                var w = $("#__mainContent__");
-                w.css("min-height", minH);
+                stickFooter();
 
                 var isFirstLocationChange = true;
                 // 注册路由改变事件, 改变路由时清空相关内容
