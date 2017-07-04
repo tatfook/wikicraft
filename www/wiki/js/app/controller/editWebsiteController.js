@@ -284,12 +284,12 @@ define([
 					return;
 				}
 			}
-			
 
 			util.post(config.apiUrlPrefix + 'data_source/get', {username:groupUser.name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
 				if (!dataSourceUser || dataSourceUser.length == 0) {
 					Message.info("用户不在此站点的数据源中, 不可添加!!!");
 					console.log("数据源用户不存在");
+                    groupUser.name = "";
 					return;
 				}
 
@@ -298,8 +298,8 @@ define([
 				var params = {
 					id:group.id,
 					user_id:dataSourceUser.dataSourceUserId,
-					access_level:40,
-				}
+					access_level:40
+				};
 				groupUser.id = params.user_id;
 				siteDataSource.createGroupMember(params, function(){
 					groupUser.isDelete = false;
@@ -310,12 +310,12 @@ define([
 						username:siteinfo.username,
 						groupname:group.name,
 						memberName:groupUser.name,
-						level:40,
+						level:40
 					});
-
-					groupUser.name = "";
+                    groupUser.name = "";
 				}, function(){
 					Message.info("用户添加失败");
+                    groupUser.name = "";
 				});
 			});
         }
@@ -377,7 +377,6 @@ define([
 
             return canvas;
         }
-
 		
         function init() {
 			initGroup();
@@ -499,6 +498,13 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded',init);
+
+        // 回车添加用户
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13" && $("#groupUserName").is(":focus")){
+                $scope.addUser();
+            }
+        });
         /*
         $scope.roleSelect = function (userinfo) {
             userinfo.roleInfo.roleId = parseInt(userinfo.roleInfo.roleUIIndex);
