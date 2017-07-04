@@ -562,6 +562,7 @@ select.resize-view {
     }
     .code-view{
         padding-left: 195px;
+        padding-right: 0;
     }
     .treeview-container{
         width: 195px;
