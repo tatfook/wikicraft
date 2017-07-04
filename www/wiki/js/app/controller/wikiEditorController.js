@@ -2820,7 +2820,9 @@ define([
                 };
 
                 editor.on("paste", function (editor, e) {
-                    if (!(e.clipboardData && e.clipboardData.items)) {
+					//console.log(e.clipboardData.items);
+					//console.log(e.clipboardData.files);
+                    if (!(e.clipboardData && e.clipboardData.items.length)) {
                         alert("该浏览器不支持操作");
                         return;
                     }
@@ -2844,7 +2846,7 @@ define([
 
                 editor.on("drop", function (editor, e) {
                     // console.log(e.dataTransfer.files[0]);
-                    if (!(e.dataTransfer && e.dataTransfer.files)) {
+                    if (!(e.dataTransfer && e.dataTransfer.files.length)) {
                         alert("该浏览器不支持操作");
                         return;
                     }
