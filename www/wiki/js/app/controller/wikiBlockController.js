@@ -146,11 +146,11 @@ define([
             getWikiBlockList('name');
         }
         // 回车搜索
-        //$(document).keyup(function (event) {
-            //if(event.keyCode=="13"){
-                //$scope.getByName();
-            //}
-        //});
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13" && $("#modelSearch").is(":focus")){
+                $scope.getByName();
+            }
+        });
     }]);
     
     return htmlContent;
