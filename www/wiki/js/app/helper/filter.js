@@ -6,13 +6,17 @@
 
 define([], function() {
 	config.registerFilter("/wiki/iframeagent", function() {
-		var b_iframe = window.parent.parent.document.getElementById("Iframe");
 		var hash_url = window.location.hash;
 		if(hash_url.indexOf("#")>=0){
-			var hash_width = hash_url.split("#")[1].split("|")[0]+"px";
-			var hash_height = hash_url.split("#")[1].split("|")[1]+"px";
-			b_iframe.style.width = hash_width;
-			b_iframe.style.height = hash_height;
+			var arglist = hash_url.substring(1).split("|");
+			var iframeId = arglist[0];
+			var iframeWidth = arglist[1] + "px";
+			var	iframeHeight = arglist[2] + "px";
+			var iframe = window.parent.parent.document.getElementById(iframeId);
+			if (b_iframe) {
+				iframe.style.width = iframeWidth;
+				iframe.style.height = iframeHeight;
+			}
 		}
 		return;
 	});
