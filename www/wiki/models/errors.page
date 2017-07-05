@@ -38,7 +38,6 @@ function errors:wrap(err, data)
 	end
 	
 	if err then 
-		log(commonlib.debugstack())
 		log(err)
 	end
 

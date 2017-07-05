@@ -6,6 +6,12 @@
 define([
     'jquery-cookie',
 
+    // helper
+    'helper/util',
+    'helper/loading',
+    'helper/filter',
+	
+	// controller
     'controller/mainController',
     //'controller/testController',
 
@@ -23,9 +29,9 @@ define([
     'factory/github',
     'factory/gitlab',
     'factory/modal',
+    'factory/confirmDialog',
+    'factory/loadingInterceptor',
 
-    // helper
-    'helper/util',
 ], function () {
     return {};
 });

@@ -7,16 +7,18 @@ define(['app',
     'helper/util',
     'helper/storage',
 ], function (app, htmlContent, util, storage) {
-    app.registerController("fansController", ['$scope', function ($scope) {
+    app.registerController("fansController", ['$scope', 'Account', function ($scope, Account) {
         function init() {
-            var params=storage.sessionStorageGetItem('pageinfo');
-            util.http("POST", config.apiUrlPrefix + "user_favorite/getFansListByUserId", params, function (data) {
+            util.http("POST", config.apiUrlPrefix + "user_fans/getByUserId", {userId:$scope.user._id}, function (data) {
                 $scope.totalItems = data.total;
-                $scope.fansList = data.fansList || [];
-                console.log($scope.fansList);
+                $scope.fansList = data.userList || [];
+                //console.log($scope.fansList);
             });
         }
-        $scope.$watch('$viewContentLoaded', init);
+        
+        $scope.$watch('$viewContentLoaded', function () {
+            Account.ensureAuthenticated(init);
+        });
     }]);
 
     return htmlContent;

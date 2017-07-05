@@ -1,7 +1,10 @@
 <style>
-    #__UserSitePageContent__ {
-        width: 80%;
-        margin-left: 10%;
+    @media (min-width:1025px) {
+        .paracraft {
+            width: 1000px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
     }
     .world3D{
         display: flex;
@@ -13,9 +16,11 @@
     .world3D h4{
         margin-top:0;
     }
-    .world3D .img>img{
-        width: 300px;
-        height: 200px;
+    @media (min-width:769px) {
+        .world3D .img>img{
+            width: 300px;
+            height: 200px;
+        }
     }
     .world3D .text{
         max-height: 200px;
@@ -35,6 +40,8 @@
         vertical-align: text-bottom;
         font-size: 17px;
         margin-right: 10px;
+        width: 24px;
+        height: 17px;
     }
     .world3D .inner .glyphicon-star{
         color: #FD3265;
@@ -120,7 +127,7 @@
         </div>
         <div class="mask" ng-show="showModal" ng-click="closeModal()"></div>
         <div class="model-main" ng-show="showModal">
-            <button type="button" class="close close-icon"><span aria-hidden="true" ng-click="clickDownload()">&times;</span></button>
+            <button type="button" class="close close-icon"><span aria-hidden="true" ng-click="closeModal()">&times;</span></button>
             <p>如果您的设备没有自动使用Paracraft启动3D世界，请安装Paracraft</p>
             <div class="btn btn-lg btn-default" ng-click="closeModal()">点击下载</div>
         </div>

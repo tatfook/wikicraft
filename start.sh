@@ -21,22 +21,37 @@ build_dir="www_build"
 #	mv ${temp_db_dir} ${db_dir}
 #}
 
+backup_file() {
+	local typ=$1
+	local curtime=`date +%Y-%m-%d_%H-%M-%S`
+	mkdir -p "log"
+	cp  "${typ}_log.log" "log/${typ}_log_${curtime}.log"
+	cat "${typ}_log.log" | grep -i "<runtime" >> "log/${typ}_error.log"
+}
+
 start_server() {
 	local server_type=$1
 	
 	if [ $server_type = "test" ]; then
-		rm -fr ${test_dir}
-		cp -fr ${build_dir} ${test_dir}
+		if [ -e ${build_dir} ]; then
+			rm -fr ${test_dir}
+			cp -fr ${build_dir} ${test_dir}
+		fi
+		ulimit -c unlimited
+		backup_file ${test_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
 	elif [ $server_type = "rls" ]; then 
-		rm -fr ${rls_dir}
-		cp -fr ${build_dir} ${rls_dir}
+		if [ -e ${build_dir} ]; then
+			rm -fr ${rls_dir}
+			cp -fr ${build_dir} ${rls_dir}
+		fi
+		ulimit -c unlimited
+		backup_file ${rls_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
+		ulimit -c unlimited
+		backup_file ${dev_dir}
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
-	else
-		start_server "test"
-		start_server "dev"
 	fi
 }
 
@@ -58,9 +73,6 @@ stop_server() {
 		if [ ! -z $pid ]; then
 			kill -9 $((pid))
 		fi
-	else
-		stop_server "test"
-		stop_server "dev"
 	fi
 }
 
@@ -84,7 +96,14 @@ main() {
 		if [ -e ${build_dir} ]; then
 			rm -fr ${build_dir}
 		fi
+		temp_build_dir="temp_${build_dir}"
+		if [ -e ${temp_build_dir} ]; then
+			rm -fr ${temp_build_dir}
+		fi
+
+		cp -fr ${dev_dir} ${temp_build_dir}
 		node r.js -o r_package.js
+		rm -fr ${temp_build_dir}
 	elif [ "$1" == "start" ]; then
 		# etc:  ./start.sh start dev|test|rls
 		echo "start server :"$server_type

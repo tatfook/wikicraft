@@ -8,14 +8,40 @@ Date: 2017/3/13
 NPL.load("(gl)script/apps/WebServer/mem_cache.lua")
 mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
 
+NPL.load("(gl)script/ide/System/Encoding/jwt.lua")
+jwt = commonlib.gettable("System.Encoding.jwt")
+
 -- 定义一个全局变量空间  其它全局变量放到此变量里病注释使用情况
 KEEPWORK={}
 -- KEEPWORK.config     用户程序配置
--- KEEPWORK.startTime  启动时间
+-- KEEPWROK.mem_cache  缓存
+
+KEEPWORK["mem_cache"] = mem_cache
 
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
+include_once(WIKI_ROOT .. "helpers/filter.page")
 WIKI_ENV="www"
+
+-- json web token  encode/decode
+function encodeJWT(payload)
+	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
+	return jwt.encode(payload, secret["token_secret"], nil,  secret["token_expire"] or 3600);
+end
+
+function decodeJWT(token)
+	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
+	return jwt.decode(token, secret["token_secret"], true);
+end
+
+function getTokenInfo()
+	local authHeader = request:header('Authorization')
+	if not authHeader then
+		return nil
+	end
+	local token = authHeader:match("%s+(%S+)");
+	return decodeJWT(token)
+end
 
 -- 初始化数据库
 function init_db()
@@ -33,13 +59,56 @@ function init_db()
 	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
 end
 
+-- call this function to ensure we are authenticated in json request
+-- @return username
+function ensureAuthenticated()
+	if(request.userid~=nil) then
+		return request.userid
+	end
+	if (not request:header('Authorization')) then
+		response:status(401):send({ message = 'Please make sure your request has an Authorization header' })
+		exit()
+	end
+	local token = request:header('Authorization'):match("%s+(%S+)")
+	local payload, err = decodeJWT(token)
+	if(not payload) then
+		if(err == "Invalid signature") then
+			response:status(401):send({ message = "invalid token"})
+		elseif(err == "Not acceptable by exp") then
+			response:status(401):send({ message = 'Token has expired' })	
+		else
+			response:status(401):send({ message = err })	
+		end
+		exit()
+	end
+	request.username = payload.username
+	request.userid = payload.userId
+	return request.userid
+end
+
+-- @return userid or false if not authenticated
+function checkAuthenticated()
+	if(request.userid~=nil) then
+		return request.userid
+	end
+	local authHeader = request:header('Authorization')
+	if (authHeader) then
+		local token = authHeader:match("%s+(%S+)")
+		local payload, err = decodeJWT(token)
+		if(payload) then
+			request.username = payload.username
+			request.userid = payload.userId
+		end	
+	end
+	return request.userid
+end
+
 -- 初始wiki module
 function init_wiki_module()
 	local isWebServerStart = mem_cache:get("isWebServerStart")
 	if not isWebServerStart then
 		mem_cache:set("isWebServerStart", true)
 		include_once(WIKI_ROOT .. "helpers/wiki_module.page")
-		KEEPWORK["serverUpdateTime"] = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
 	end
 end
 
@@ -47,16 +116,49 @@ end
 function getBustVersion()
 	local version = mem_cache:get("bustVersion")
 	if not version then 
-		version = os.time()
+		version = tostring(os.time())
 		mem_cache:set("bustVersion", version)
 	end
 
 	return version
 end
 
+-- 获取服务器启动日期
+function getServerUpdateTime()
+	local serverUpdateTime = mem_cache:get("serverUpdateTime")
+	if not serverUpdateTime then
+		serverUpdateTime = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
+		mem_cache:set("serverUpdateTime", serverUpdateTime)
+	end 
+	-- KEEPWORK["serverUpdateTime"] = serverUpdateTime
+	return serverUpdateTime
+end
+
+
 function init()
 	init_db()
 	init_wiki_module()
+	request_before_filter()
+	-- log(getTokenInfo())
 end
 
 init()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

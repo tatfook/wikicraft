@@ -14,16 +14,19 @@ define([
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
         $scope.domainList=[];
-        var innerGitlab = undefined;
+        $scope.groupUser="";
+        $scope.nowGroup={"name":"","userList":[]};//当前编辑的分组
+        $scope.groups= []; // [{"name":"全体","userList":["username","username1","username2"]}];
+		$scope.groupUser = {};
+        $scope.groupAuths =[];
+        $scope.authorities=[{level: 20, name: "浏览"},{level:40, name: "编辑"},{level:10, name: "拒绝"}];
 
+		var siteDataSource = undefined;
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
         var currentDomain = siteinfo.domain;
         //console.log(siteinfo);
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
-
-        $scope.dataSourceId = $scope.website.dataSourceId && $scope.website.dataSourceId.toString();
-        $scope.dataSourceList = $scope.user.dataSource;
 
         $scope.changeDataSource = function () {
             $scope.website.dataSourceId = parseInt($scope.dataSourceId);
@@ -101,6 +104,290 @@ define([
             sendModifyWebsiteRequest();
         }
 
+		function initGroup() {
+            $scope.changeType = siteinfo.visibility || "public";
+			siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+			getGroupList();
+		}
+
+		function getLevelName(level) {
+			if (level == 10) {
+				return "拒绝";
+			} else if (level == 20) {
+				return "浏览";
+			} else if (level == 40) {
+				return "编辑";
+			}
+		}
+
+		function getGroupList() {
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+			if (!siteDataSource) {
+				return;
+			}
+			
+			siteDataSource.getGroupList({owned:true}, function(data){
+				data = data || {};
+				$scope.groups = data;	
+				//console.log($scope.groups);
+				for (var i = 0; i < data.length; i++) {
+					(function(index){
+						var group = data[index];
+						siteDataSource.getGroupMemberList(group, function(data){
+							group.userList = (group.userList || []).concat(data || []);
+							//console.log($scope.groups);
+						});
+					})(i);
+				}
+			});
+
+			siteDataSource.getProjectGroupList({}, function(data){
+				var data = data || [];
+				for(var i = 0; i < data.length; i++) {
+					var group = data[i];
+					group.username = siteinfo.username;
+					group.sitename = siteinfo.name;
+					group.groupname = group.group_name;
+					group.dataSourceGroupId = group.group_id;
+					group.level = group.group_access_level;
+					group.levelName = getLevelName(group.level);
+				}
+				$scope.groupAuths = data;
+			});
+		}
+		
+		// 设置可见性
+		$scope.setVisibility = function(visibility) {
+			if (!siteDataSource || siteDataSource.dataSource.sitename != siteinfo.name) {
+				Message.info("非独立数据源不可设置可见性");
+                $scope.changeType = $scope.changeType=="private" ? "public":"private";
+				return;
+			}
+			if (visibility == siteinfo.visibility) {
+				return;
+			}
+			siteDataSource.setProjectVisibility({visibility:visibility}, function(){
+				$scope.website.visibility = visibility;
+				util.post(config.apiUrlPrefix + 'website/setVisibility', {username:siteinfo.username, sitename:siteinfo.name, visibility:visibility});
+			});
+		}
+
+		// 创建共享组 		
+		$scope.createShareGroup = function(group, level) {
+			//console.log(group);
+			//console.log(level);
+			if (!group || !level) {
+				Message.info("请选择组和权限!!!");
+				return;
+			}
+
+			for (var i = 0; i < ($scope.groupAuths || []).length; i++) {
+				if (!$scope.groupAuths[i].isDelete && group.name == $scope.groupAuths[i].groupname) {
+					//console.log($scope.groupAuths[i]);
+					Message.info("组已存在");
+					return;
+				}
+			}
+
+			var params = {
+				group_id: group.id,
+				group_access: level.level,
+			};
+			//console.log(params);
+
+			siteDataSource.addProjectGroup(params, function(){
+				var params = {
+					groupname: group.name,
+					sitename: siteinfo.name,
+				    username: siteinfo.username,
+					level: level.level,
+					levelName: level.name,
+					dataSourceGroupId:group.id,
+				};
+				$scope.groupAuths.push(params);
+				util.post(config.apiUrlPrefix + 'site_group/upsert', params);
+			});
+		}
+
+		$scope.deleteShareGroup = function(group) {
+			console.log(group);
+			if (!siteDataSource || !group) 
+				return;
+
+			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
+				group.isDelete = true;
+				util.post(config.apiUrlPrefix + "site_group/deleteByName", group);
+			});
+		}
+
+		$scope.deleteGroup = function(group) {
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+			if (!siteDataSource) {
+				return;
+			}
+			if (!group || !group.id) {
+				return
+			}
+
+			group.isDelete = true;
+			for (var i = 0; i < $scope.groups.length; i++) {
+				if (group.name == $scope.groups[i].name) {
+					$scope.groups.splice(i,1);
+					break;
+				}
+			}
+			siteDataSource.deleteGroup({id:group.id}, function(){
+				util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
+			});
+		}
+
+        $scope.createGroup = function () {
+			var group = $scope.nowGroup;
+			if (!siteDataSource || !group.name) {
+				return;
+			}
+			// 是否存在
+			for (var i = 0; i < ($scope.groups || []).length; i++) {
+				if (!$scope.groups[i].isDelete && $scope.groups[i].name == group.name) {
+					Message.info("组已存在");
+					return;
+				}
+			}
+			// 创建组
+			siteDataSource.upsertGroup({name:group.name, request_access_enabled:true}, function(data){
+				util.post(config.apiUrlPrefix + 'group/upsert', {
+					username:siteinfo.username,
+					groupname:group.name,
+					dataSourceUserId:data.id, // 需不需要存
+					visibility:"public",
+				});
+				$scope.groups.push(data);
+				$scope.nowGroup = {};
+				//console.log(data);
+			}, function(){
+
+			});
+        };
+        
+        var saveUser = function (name, group, users) {
+            for (var i = 0; i < (group.userList || []).length; i++) {
+                var user = group.userList[i];
+                if (name == user.name && !user.isDelete) {
+                    if (users.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                }
+            }
+            util.post(config.apiUrlPrefix + 'data_source/get', {username:name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
+                if (!dataSourceUser || dataSourceUser.length == 0) {
+                    Message.info("用户不在此站点的数据源中, 不可添加!!!");
+                    console.log("数据源用户不存在");
+                    if (users.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                }
+
+                dataSourceUser = dataSourceUser[0];
+
+                var params = {
+                    id:group.id,
+                    user_id:dataSourceUser.dataSourceUserId,
+                    access_level:40
+                };
+
+                var newUser = {
+                    name:name
+                };
+                newUser.id = params.user_id;
+                siteDataSource.createGroupMember(params, function(){
+                    newUser.isDelete = false;
+                    $scope.nowGroup.userList = $scope.nowGroup.userList || [];
+                    $scope.nowGroup.userList.push(newUser);
+
+                    util.post(config.apiUrlPrefix + "group_user/upsert", {
+                        username:siteinfo.username,
+                        groupname:group.name,
+                        memberName:name,
+                        level:40
+                    });
+
+                    if (users.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                }, function(){
+                    Message.info("用户添加失败");
+                    if (user.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                });
+            });
+        };
+
+        $scope.addUser = function () {
+			var group = $scope.nowGroup;
+			var groupUser = $scope.groupUser;
+			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+
+			if (!siteDataSource || !group.id || !groupUser.name) {
+				return;
+			}
+
+			var users = groupUser.name.split(",");
+			saveUser(users.shift(), group, users);
+        };
+
+        $scope.removeUser = function (group, groupUser) {
+			if (!siteDataSource || !group || !groupUser) {
+				return;
+			}
+			//console.log(groupUser);
+			siteDataSource.deleteGroupMember({id:group.id, user_id:groupUser.id}, function() {
+				util.post(config.apiUrlPrefix + "group_user/deleteMember", {
+					username:siteinfo.username,
+					groupname:group.name,
+					memberName:groupUser.name,
+				});
+			});
+			groupUser.isDelete = true;
+        }
+        
+        $scope.editGroup = function (group,finish) {
+            if(!finish){
+                $scope.nowGroup=group;
+                $scope.editing=true;
+            }else{
+                $scope.nowGroup={userList:[]};
+				$scope.groupUser={};
+                $scope.editing=false;
+            }
+        }
+
+        $scope.changeSiteType = function (finish) {
+            if(finish){
+                $('#ensureModal').modal("hide");
+				$scope.setVisibility($scope.changeType);
+            }else{
+                $('#ensureModal').modal("show");
+            }
+        };
+
+        $scope.cancelChange = function () {
+          $scope.changeType = $scope.changeType=="private" ? "public":"private";
+          $('#ensureModal').modal("hide");
+        };
+
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');
             var context = canvas.getContext('2d');
@@ -118,8 +405,9 @@ define([
 
             return canvas;
         }
-
+		
         function init() {
+			initGroup();
             util.post(config.apiUrlPrefix + "website_domain/getByWebsiteId", {websiteId:$scope.website._id}, function (data) {
                $scope.domainList = data;
                for (var i = 0; i < data.length; i++) {
@@ -202,13 +490,12 @@ define([
                 cropper.addClass("sr-only");
                 finishBtn.addClass("sr-only");
 
-                innerGitlab = dataSource.getDefaultDataSource();
-                if (!innerGitlab || !innerGitlab.isInited()) {
+                if (!siteDataSource || !siteDataSource.isInited()) {
                     Message.info("内部数据源失效");
                     return;
                 }
                 var imgUrl=$scope.imgUrl;
-                innerGitlab.uploadImage({content:imgUrl}, function (url) {
+                siteDataSource.uploadImage({content:imgUrl}, function (url) {
                     $scope.website.logoUrl = url;
                     // util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                     //     $scope.website = data;
@@ -239,6 +526,13 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded',init);
+
+        // 回车添加用户
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13" && $("#groupUserName").is(":focus")){
+                $scope.addUser();
+            }
+        });
         /*
         $scope.roleSelect = function (userinfo) {
             userinfo.roleInfo.roleId = parseInt(userinfo.roleInfo.roleUIIndex);

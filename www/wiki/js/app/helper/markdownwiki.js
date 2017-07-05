@@ -65,7 +65,18 @@ define([
             };
 
         md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+			var pageinfo = config.services.$rootScope.pageinfo;
+            var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+            var token = tokens[idx], alt = token.content,
+                srcIndex = token.attrIndex('href'),
+                src = token.attrs[srcIndex][1] || '';
+			
+			if (src.indexOf("private_token=visitortoken") >=0 ) {
+				token.attrs[srcIndex][1] = src.replace('private_token=visitortoken','private_token=' + currentDataSource.getToken());
+			}
+			
             tokens[idx].tag = 'wiki-link';
+
             return defaultRender(tokens, idx, options, env, self);
         };
 
@@ -82,29 +93,15 @@ define([
     function markdownit_wikicmd_iamge(md) {
         var defaultRender = md.renderer.rules.image;
         md.renderer.rules.image = function (tokens, idx, options, env, self) {
-            var gitlab = util.getSelfServices().gitlab;
-            var $rootScope = util.getAngularServices().$rootScope;
-            gitlab = gitlab();
-            var dataSourceList = $rootScope.userinfo.dataSource || [];
-            //console.log($rootScope.userinfo);
-            var urlPrefix = '';
-            for (var i = 0; i < dataSourceList.length; i++) {
-                var ds = dataSourceList[i];
-                if (ds.type == 0) {
-                    urlPrefix = gitlab.getRawContentUrlPrefix({username: ds.dataSourceUsername});  // TODO 独立数据源，即不使用默认库名或项目名时，此处也应做修改
-                }
-            }
-
+			var pageinfo = config.services.$rootScope.pageinfo;
+            var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
             var token = tokens[idx], alt = token.content,
                 srcIndex = token.attrIndex('src'),
                 src = token.attrs[srcIndex][1] || '';
 
-            //console.log(token);
-            if (src.indexOf('#images/') == 0) {
-                var url = urlPrefix + src.substring(1);
-                return '<wiki-image src="' + url + '" alt="' + alt + '"></wiki-image>';
-            }
-
+			if (src.indexOf("private_token=visitortoken") >=0 ) {
+				token.attrs[srcIndex][1] = src.replace('private_token=visitortoken','private_token=' + currentDataSource.getToken());
+			}
             // pass token to default renderer.
             return defaultRender(tokens, idx, options, env, self);
         }
@@ -114,7 +111,7 @@ define([
     function markdownit_rule_override(md, mdwikiName) {
         //console.log(md.renderer.rules);
         markdownit_wikicmd_link(md, mdwikiName);
-        //markdownit_wikicmd_iamge(md, mdwikiName);
+		markdownit_wikicmd_iamge(md, mdwikiName);
     }
 
     function preprocessInnerLink(text) {
@@ -231,14 +228,25 @@ define([
         if (!$(selector).length) {
             $(container).prepend('<div id="' + mdwiki.getMdWikiContentContainerId() + '"></div>');
         }
+
+        var start = 0;
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
             if (block.isTemplate) {
                 if (block.isPageTemplate) {
+					for (var j = start; j < block.textPosition.from; j++) {
+						$(selector).append('<br/>');
+					}
+					start = block.textPosition.to + 1;
                     $(selector).append("<div></div>");
                 }
                 continue;
             }
+
+            for (var j = start; j < block.textPosition.from; j++) {
+                $(selector).append('<br/>');
+            }
+            start = block.textPosition.to + 1;
 
             var blockCache = block.blockCache;
             //console.log(blockCache);
@@ -322,9 +330,10 @@ define([
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
-            var currentDataSource = dataSource.getCurrentDataSource();
+            var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
             currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName}, function (content) {
                 //console.log(content);
+				content = content || "";
                 text = content + '\n' + text;
                 mdwiki.templateLineCount = content.split('\n').length;
                 _render();

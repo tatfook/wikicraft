@@ -2,13 +2,18 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'text!html/login.html'], function (app, util, htmlContent) {
+define([
+    'app',
+    'helper/util',
+    'helper/storage',
+    'text!html/login.html'
+], function (app, util, storage,  htmlContent) {
     app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.isModal=false;
 
         function init() {
-            if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login"){
+            if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login" && window.location.pathname !="/wiki/join"){
                 $scope.isModal=true;
             }
         }
@@ -16,14 +21,14 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
         $scope.$watch('$viewContentLoaded', init);
 
         $scope.goRegisterPage = function () {
-            util.go('home');
+            util.go('/wiki/home');
         }
         
         $scope.findPwd=function (isModal) {
             if(isModal){
                 $scope.$close("login");
             }
-            util.go("findPwd");
+            util.go("/wiki/findPwd");
         }
 
         $scope.login = function () {
@@ -44,7 +49,7 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                 if ($scope.isModal) {
                     $scope.$close(data.userinfo);
                 } else {
-                    util.goUserSite('/' + data.userinfo.username);
+                    util.go('/' + data.userinfo.username);
                 }
 
             }, function (error) {
@@ -84,12 +89,12 @@ define(['app', 'helper/util', 'text!html/login.html'], function (app, util, html
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.goUserSite('/' + data.data.username);
+                        util.go('/' + data.data.username);
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
                     storage.sessionStorageSetItem("userThreeService", data.data);
-                    util.go("join");
+                    util.go("/wiki/join");
                 }
             }, function (data) {
 

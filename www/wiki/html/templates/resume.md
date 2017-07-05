@@ -1,32 +1,26 @@
-```@template/js/wiki
-{
-"headerContent": "```@wiki/js/resumeHeader\n{\n    \"username\":\"逍遥\",\n    \"baseInfo\":\"'男 本科 3年工作经验 深圳\",\n    \"company\":\"xxx\",\n    \"cellphone\":\"187027*****\",\n    \"email\":\"765485868@qq.com\",\n    \"introduce\":\"我是一个边学习边分享的人。关于读书、关于影视剧、关于足球， 所学，所思，所感，所闻，分享一切有趣的、有用的。\"\n}\n```"
-}
-```
-
 ```@wiki/js/resumeDetail
 {
     "workList":[
         {
-            "company":"xxx",
-            "time":"2014-07-01 ~ 至今",
-            "job":"Programer",
-            "desc":"xxxxxx"
+            "company":"公司名",
+            "time":"工作时间",
+            "job":"工作职位",
+            "desc":"职位描述"
         }
     ],
     "educationList":[
         {
-            "schoolName":"shen zhen da xue",
-            "graduationDate":"2014-07-01",
-            "desc":"xxxxxxx"
+            "schoolName":"学校名",
+            "graduationDate":"毕业时间",
+            "desc":"教育经历描述"
         }
     ],
     "expectWorkList":[
         {
-            "job":"coder",
-            "workType":"全职",
-            "salary":"面议",
-            "position":"深圳"
+            "job":"期望职位",
+            "workType":"工作时间",
+            "salary":"工资",
+            "position":"期望工作地点"
         }
     ]
 }

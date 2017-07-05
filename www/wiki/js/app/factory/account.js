@@ -6,9 +6,9 @@ define([
     'app',
     'helper/storage',
     'helper/util',
-    'helper/dataSource'
+    'helper/dataSource',
 ], function (app, storage, util, dataSource) {
-    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'github', 'Message',
+    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'gitlab', 'github', 'Message',
         function ($auth, $rootScope, $http, $uibModal, github, Message) {
             var account = undefined;
             var angularService = util.getAngularServices();
@@ -33,37 +33,65 @@ define([
             function initDataSource(user) {
                 dataSource.setDefaultUsername(user.username);
                 var DataSource = dataSource.getUserDataSource(user.username);
-                if (!user.dataSource || user.dataSource.length == 0) {
-                    util.post(config.apiUrlPrefix + 'data_source/getByUserId', {userId: user._id}, function (data) {
+				if (!user.dataSource || user.dataSource.length == 0) {
+					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
                         user.dataSource = data || [];
-                        storage.localStorageSetItem("userinfo", user);
-                        DataSource.init(user.dataSource, user.dataSourceId);
+                        //storage.localStorageSetItem("userinfo", user);
+                        DataSource.init(user.dataSource, user.defaultDataSourceSitename);
                     });
                 } else {
-                    DataSource.init(user.dataSource, user.dataSourceId);
+                    DataSource.init(user.dataSource, user.defaultDataSourceSitename);
                 }
             }
 
             account = {
-                user: {},
+                user: undefined,
+
+				initDataSource: function(cb, errcb) {
+					var user = this.user;
+					if (!user || !user.username) {
+						errcb && errcb();
+						return;
+					}
+					dataSource.setDefaultUsername(user.username);
+					var DataSource = dataSource.getUserDataSource(user.username);
+					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
+						user.dataSource = data || [];
+                        //storage.localStorageSetItem("userinfo", user);
+						console.log(user);
+                        DataSource.init(user.dataSource, user.defaultDataSourceSitename);
+						cb && cb();
+                    }, errcb);
+				},
+
+				setDataSourceToken:function(dataSourceCfg) {
+					var dataSourceList = this.user.dataSource;
+					for (var i = 0; i < dataSourceList.length; i++) {
+						if (dataSourceList[i].apiBaseUrl == dataSourceCfg.apiBaseUrl) {
+							dataSourceCfg.dataSourceToken = dataSourceList[i].dataSourceToken;
+						}
+					}
+				},
+
                 // 获取用户信息
                 getUser: function (cb, errcb) {
-                    var userinfo = this.user || storage.localStorageGetItem("userinfo");
-
-                    //console.log(userinfo);
+                    var userinfo = this.user || storage.sessionStorageGetItem("userinfo");
 
                     if (userinfo && userinfo._id && userinfo.username) {
                         cb && cb(userinfo);
                         return userinfo;
                     }
+
                     if ($auth.isAuthenticated()) {
-                        util.post(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
+                        util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
                             //console.log(data);
                             cb && cb(data);
                         }, function () {
                             errcb && errcb();
                         });
-                    }
+					} else {
+						errcb && errcb();
+					}
 
                     return userinfo;
                 },
@@ -73,9 +101,9 @@ define([
                     if (!user) {
                         return;
                     }
+
                     this.user = user;
-                    //console.log(user);
-                    initDataSource(user);
+                    this.initDataSource();
 
                     $rootScope.isLogin = $auth.isAuthenticated();
                     $rootScope.user = user;
@@ -85,8 +113,9 @@ define([
                         $.cookie('token', token, {path: '/', expires: 365, domain: '.' + config.hostname});
                     }
                     this.send("onUserProfile", this.user);
-                    storage.localStorageSetItem("userinfo", this.user);
+                    storage.sessionStorageSetItem("userinfo", this.user);
                 },
+
                 // 广播 TODO 需了解angualar 监听相关功能
                 send: function (msg, data) {
                     $rootScope.$broadcast(msg, data);
@@ -214,7 +243,7 @@ define([
             }
 
             account.getUser(function (user) {
-                console.log(user);
+                //console.log(user);
                 account.setUser(user);
             });
 

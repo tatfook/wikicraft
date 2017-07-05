@@ -8,6 +8,30 @@ body{
     min-width: 375px;
 }
 
+.local-install-close {
+    display: block;
+    position: absolute;
+    top: 10px;
+    color: white;
+    right: 10px;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    background: #e61111;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    line-height: 35px;
+    font-size: 40px;
+    border-radius: 20px;
+    transform: rotate(45deg);
+    cursor: pointer;
+}
+
+.local-install-close:active {
+    opacity: .8;
+}
+
 .verified{
     width: 70px;
     height: 28px;
@@ -122,9 +146,7 @@ body{
     }
 }
 
-.my-projects-sm{
-
-}
+.my-projects-sm{}
 
 .packages{
     .head-line{
@@ -399,12 +421,19 @@ body{
 }
 
 .packages-install{
+
     .infor-logo{
         float:left;
         margin-top: -85px;
 
         img{
             width: 66px;
+        }
+    }
+
+    .install-wiki{
+        img[alt="image"]{
+            width: 100%;
         }
     }
 
@@ -572,39 +601,38 @@ body{
     }
 }
 
-.packages-projects{
+.packages-projects {
     max-width: 1170px;
     /*padding-top: 35px;*/
-
-    &::after{
+    &::after {
         display: block;
         content: "";
         clear: both;
     }
 
-    .packages-tabs{
+    .packages-tabs {
         margin-bottom: 15px;
     }
 
-    .user-infor{
+    .user-infor {
         float: left;
         width: 20%;
 
-        h3{
+        h3 {
             font-size: 18px;
             font-weight: 600;
             color: #000;
             margin-top: 24px;
         }
 
-        label{
+        label {
             font-size: 14px;
             font-weight: normal;
             display: block;
             line-height: 28px;
         }
 
-        a.edit-profile{
+        a.edit-profile {
             width: 100%;
             height: 40px;
             font-size: 16px;
@@ -619,73 +647,73 @@ body{
             display: block;
             cursor: pointer;
 
-            &:active{
+            &:active {
                 opacity: .8;
             }
 
-            &:hover,&:focus{
+            &:hover, &:focus {
                 text-decoration: none;
             }
         }
     }
 
-    .projects{
+    .projects {
         float: right;
         min-height: 500px;
         width: 76%;
 
-        .tabs{
+        .tabs {
             height: 53px;
             border-bottom: 2px solid #E7E7E7;
 
-            .createNewPackages{
+            .createNewPackages {
                 border: none;
-				width: 100px;
-				height: 30px;
-				font-size: 13px;
-				vertical-align: middle;
-				line-height: 26px;
-				border-radius: 3px;
-				outline: none;
+                width: 100px;
+                height: 30px;
+                font-size: 13px;
+                vertical-align: middle;
+                line-height: 26px;
+                border-radius: 3px;
+                outline: none;
                 background: #ffa6a6;
                 color: #FFF;
                 font-weight: 600;
             }
 
-            a{
+            a {
                 font-size: 18px;
                 line-height: 51px;
-                padding:0 4px 0 4px;
+                padding: 0 4px 0 4px;
                 color: #cccccc;
                 display: inline-block;
                 font-weight: 600;
 
-                &:hover,&:active,&:focus{
+                &:hover, &:active, &:focus {
                     text-decoration: none;
                 }
             }
 
-            a.active{
+            a.active {
                 border-bottom: 2px solid #00FFFF;
                 color: #000;
             }
 
-            .project-create{
+            .project-create {
                 display: inline-block;
                 float: right;
                 font-size: 28px;
                 line-height: 53px;
                 cursor: pointer;
 
-                &:hover{
+                &:hover {
                     opacity: .8;
                 }
             }
         }
 
-        .projects-list{
-            .item{
-                &::after{
+        .projects-list {
+            .item {
+                &::after {
                     display: block;
                     content: "";
                     clear: both;
@@ -695,59 +723,64 @@ body{
                 width: 100%;
                 border-bottom: 1px solid #E7E7E7;
                 padding-top: 30px;
+                position: relative;
 
-                .project-icon{
+                .project-icon {
                     float: left;
                     width: 50px;
                     margin-right: 10px;
+
+                    img {
+                        width: 100%;
+                    }
                 }
 
-                .project-infor{
+                .project-infor {
                     float: left;
                     width: 54%;
 
-                    a{
+                    a {
                         font-size: 18px;
                         display: block;
                         color: #000;
 
-                        &:hover,&:focus{
+                        &:hover, &:focus {
                             text-decoration: none;
                         }
                     }
 
-                    p{
+                    p {
                         font-size: 14px;
                         margin: 0px;
-                        width:100%; 
-                        white-space:nowrap;
-                        overflow:hidden;
-                        text-overflow:ellipsis;
+                        width: 100%;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                 }
 
-                .project-downloads{
+                .project-downloads {
                     font-size: 14px;
                 }
 
-                .project-operation{
-                    float: right;
-                    padding-top:18px;
+                .project-operation {
+                    position: absolute;
+                    right: 0;
 
-                    span,a{
+                    span, a {
                         font-size: 14px;
-                        padding:0 5px 0 5px;
+                        padding: 0 5px 0 5px;
                     }
                 }
             }
         }
 
-        .pagination{
+        .pagination {
             width: 100%;
             height: auto;
             text-align: center;
 
-            ul{
+            ul {
                 display: inline-block;
                 padding-left: 0;
                 margin: 0px auto;
@@ -759,7 +792,7 @@ body{
         }
     }
 
-    .projects-sm{
+    .projects-sm {
         width: 100%;
     }
 }

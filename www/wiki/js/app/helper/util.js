@@ -2,19 +2,14 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['jquery'], function ($) {
+define([
+    'jquery',
+], function ($) {
     var util = {
-        colorList:["rgb(145,185,114)","rgb(185,150,114)","rgb(185,114,178)","rgb(185,127,114)","rgb(114,185,160)","rgb(114,134,185)"],
         stack:[],   // 堆栈操作模拟
         id:0,       // ID产生器 局部唯一性
         lastUrlObj:{}, // 记录最近一次URL信息
     };
-    // 获取一个随机颜色
-    util.getRandomColor = function (index) {
-        index = index || 0;
-        index %= this.colorList.length;
-        return this.colorList[index];
-    }
 
     util.getId = function () {
         this.id = this.id > 1000000 ? 0 : this.id+1;
@@ -59,6 +54,9 @@ define(['jquery'], function ($) {
 
         if(config.islocalWinEnv()) {
             pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            if (pathname.indexOf('?') >= 0) {
+                pathname = pathname.substring(0, pathname.indexOf('?'));
+            }
             /*
             var $location = util.getAngularServices().$location;
             if ($location) {
@@ -83,31 +81,52 @@ define(['jquery'], function ($) {
 
         var paths = pathname.split('/');
         if (username) {
+			// 用户页
             username = username[1];
             var splitIndex = username.indexOf('-');
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
                 username = username.substring(0, splitIndex);
-                pagename = paths[paths.length-1];
+                pagename = paths.length > 1 ? paths[paths.length-1] : undefined;
+				username = username.toLowerCase();
+				sitename = sitename.toLowerCase();
                 pagepath = '/' + username + '/' + sitename + pathname;
             } else {
                 sitename = paths.length > 1 ? paths[1] : undefined;
-                pagename = paths[paths.length-1];
-                pagepath = '/' + username + pathname;
+                pagename = paths.length > 2 ? paths[paths.length-1] : undefined;
+				username = username.toLowerCase();
+				if (sitename) {
+					sitename = sitename.toLowerCase();
+					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring(sitename.length+2);
+				}
             }
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
             sitename = paths.length > 2 ? paths[2] : undefined;
-            pagename = paths.length > 3 ? paths[3] : undefined;
-            pagepath = pathname;
+            pagename = paths.length > 3 ? paths[paths.length-1] : undefined;
+			if (username != "wiki") {
+				username = username.toLowerCase();
+				if (sitename) {
+					sitename = sitename.toLowerCase();
+					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring((username+sitename).length+3);
+				}
+			}
         }
+
         if (username != "wiki" && !pagename) {
             pagename = "index";
             pagepath += (pagepath[pagepath.length-1] == "/" ? "" : "/") + pagename;
         }
         domain = hostname;
 
-        return {domain:domain, username:username, sitename:sitename, pagename:pagename, pathname:pathname, pagepath: pagepath};
+        return {
+			domain:domain, 
+			username:username, 
+			sitename:sitename, 
+			pagename:pagename, 
+			pathname:pathname, 
+			pagepath:pagepath
+		};
     }
 
     util.setLastUrlObj = function (urlObj) {
@@ -177,36 +196,42 @@ define(['jquery'], function ($) {
     }
 
 // GET PUT POST DELETE
-    util.http = function(method, url, params, callback, errorCallback) {
+    util._http = function(method, url, params, isUseCache, callback, errorCallback) {
         var $http = this.angularServices.$http;
         var httpRespone = undefined;
-
+        //Loading.showLoading();
         // 在此带上认证参数
         if (method == 'POST') {
-            httpRespone = $http({method:method,url:url,data:params}); //$http.post(url, params);
+            httpRespone = $http({method:method,url:url, cache: isUseCache, data:params}); //$http.post(url, params);
         } else {
-            httpRespone = $http({method:method,url:url,params:params});
+            httpRespone = $http({method:method,url:url, cache: isUseCache, params:params});
         }
         httpRespone.then(function (response) {
             var data = response.data;
             //console.log(data);
             // debug use by wxa
-            if (!data.error) {
+            if (!data || !data.error) {
                 console.log(url);
             }
             if (data.error.id == 0) {
                 //console.log(data.data);
                 callback && callback(data.data);
             } else {
-                console.log(data);
+                console.log(url, data);
                 errorCallback && errorCallback(data.error);
             }
+            //Loading.hideLoading();
         }).catch(function (response) {
             console.log(response);
+            //Loading.hideLoading();
             // 网络错误
-            //errorCallback && errorCallback(response.data);
+            errorCallback && errorCallback(response.data);
         });
     }
+
+    util.http = function(method, url, params, callback, errorCallback) {
+		util._http(method, url, params, false, callback, errorCallback);
+	}
 
     util.post = function (url, params, callback, errorCallback) {
         this.http("POST", url, params, callback, errorCallback);
@@ -214,6 +239,9 @@ define(['jquery'], function ($) {
 
     util.get = function (url, params, callback, errorCallback) {
         this.http("GET", url, params, callback, errorCallback);
+    }
+	util.getByCache = function (url, params, callback, errorCallback) {
+        this._http("GET", url, params, true, callback, errorCallback);
     }
 
     util.pagination = function (page, params, pageCount) {
@@ -238,14 +266,17 @@ define(['jquery'], function ($) {
         }
     }
 
-    // 跳转wiki页
-    util.go = function (pageName, isOpen) {
-        var url;
+    // 跳转
+    util.go = function (url, isOpen) {
+        if (url[0] != '/' && url.indexOf('://') < 0) {
+            url = "/wiki/" + url;
+        }
 
+        url = util.humpToSnake(url);
         if (config.islocalWinEnv()) {
-            url = config.frontEndRouteUrl + '#/wiki/' + pageName;
-        } else {
-            url = "http://" + config.apiHost + "/wiki/" + pageName;
+            url = config.frontEndRouteUrl + '#' + url;
+        } else if (url.indexOf('://') < 0){
+            url = "http://" + config.apiHost + url;
         }
 
         if (isOpen) {
@@ -257,24 +288,36 @@ define(['jquery'], function ($) {
 
     // 跳转至mod页
     util.goMod = function (path, isOpen) {
+        path = util.humpToSnake(path);
         util.go("/wiki/js/mod/" + path, isOpen);
     }
 
     util.isOfficialPage = function () {
-        var pathname = window.location.pathname;
-        var hostname = window.location.hostname;
-        if (config.isOfficialDomain(hostname) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+        var urlObj = util.parseUrl();
+        var pathname = urlObj.pathname;
+        var domain = urlObj.domain;
+        if (config.isOfficialDomain(domain) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+            return true;
+        }
+        return false;
+    }
+    // 是否是编辑器页
+    util.isEditorPage = function () {
+        var pathname = util.parseUrl().pathname;
+        pathname = util.snakeToHump(pathname);
+        if (pathname == "/wiki/wikieditor") {
             return true;
         }
         return false;
     }
 
-    util.isWikiEditorPage = function () {
-        return util.parseUrl().pathname == '/wiki/wikiEditor';
-    }
-
-    // 执行批量
+    // 执行批量  function(finishCB){}
     util.batchRun = function(fnList,finish) {
+		if (!fnList || fnList.length == 0) {
+			finish && finish();
+			return;
+		}
+
         var isCall = [];
         var _isFinish = function () {
             if (isCall.length != fnList.length)
@@ -304,8 +347,12 @@ define(['jquery'], function ($) {
         }
     }
 
-    // 顺序执行
+    // 顺序执行 function(cb,errcb){}
     util.sequenceRun = function (fnList, delay, cb, errcb) {
+		if (!fnList || fnList.length == 0) {
+			cb && cb();
+			return;
+		}
         delay = delay == undefined ? 1000 : delay;
         var index = 0;
         var retryCount = {};
@@ -335,6 +382,81 @@ define(['jquery'], function ($) {
         _sequenceRun();
     };
 
+    // 书写格式转换
+    // 下划线转驼峰
+    util.snakeToHump = function (str) {
+        if (!str) {
+            return str;
+        }
+        var wordsList = str.split('_');
+        var resultStr = wordsList[0];
+        for (var i = 1; i < wordsList.length; i++) {
+            var word = wordsList[i];
+            if (word[0] >= 'a' && word[0] <= 'z') {
+                resultStr += word[0].toUpperCase() + word.substring(1);
+            } else {
+                resultStr += word;
+            }
+        }
+        return resultStr;
+    }
+    // 驼峰转下划线
+    util.humpToSnake = function (str) {
+        if (!str) {
+            return str;
+        }
+        var resultStr = "";
+        for (var i = 0; i < str.length; i++) {
+            if (str[i] >= "A" && str[i] <= "Z") {
+                resultStr += '_' + str[i].toLowerCase();
+            } else {
+                resultStr += str[i];
+            }
+        }
+        return resultStr;
+    }
+	// 获取当前路径
+	util.getPathname = function() {
+		return util.humpToSnake(util.parseUrl().pathname);
+	}
+
+	// 获取查询参数
+	util.getQueryObject = function(search, decode) {
+		//decode = decode == undefined ? true : decode;
+		search = search || window.location.search.substring(1);
+		var result = {};
+		var argList = search.split("&");
+		for (var i = 0; i < argList.length; i++) {
+			var key_value = argList[i].split("=");
+			if (key_value.length > 0) {
+				result[key_value[0]] = key_value[1] || "";
+				if (decode) {
+					console.log(result[key_value[0]]);
+					result[key_value[0]] = decodeURIComponent(result[key_value[0]]);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	// 根据obj获取查询串
+	util.getQueryString = function(searchObj, encode) {
+		var search = "";
+		var value = undefined;
+		//encode = encode == undefined ? true : encode;
+		searchObj = searchObj || {};
+		for (key in searchObj) {
+			value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
+			if (search.length == 0) {
+				search += key + "=" + value;
+			} else {
+				search += "&" + key + "=" + value;
+			}
+		}
+
+		return search;
+	}
 
     config.util = util;
     return util;

@@ -1,6 +1,6 @@
 <?npl
 --[[
-Title: user profile
+Title: data_source
 Author: wuxiangan
 Date: 2016/10/21
 ]]
@@ -8,37 +8,32 @@ Date: 2016/10/21
 
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./site_data_source.page")
 
 local data_source = inherit(models.abstract.base, gettable("models.data_source"))
 data_source.db_name = "data_source"
 
-local innerGitlabName = "内置gitlab"
+local innerGitlabName = const.DEFAULT_DATA_SOURCE_NAME
 
 function data_source:ctor()
-	self:addfield("userId", "number")   -- 用户ID 
-	self:addfield("name", "string")     -- 数据源名
-	self:addfield("type", "string")     -- 类型
-	self:addfield("dataSourceId", "number")        -- 数据源ID
+	self:addfield("username", "string")            -- 用户名 
+	self:addfield("name", "string")                -- 数据源名
+	self:addfield("type", "string")                -- 类型
+	self:addfield("dataSourceUserId", "number")    -- 数据源UserID 
 	self:addfield("dataSourceUsername", "string")  -- 数据源用户名
 	self:addfield("dataSourceToken", "string")     -- 数据源ID
-	self:addfield("projectName", "string") -- 项目名
-	self:addfield("rootPath", "string")    -- 项目根路径
-	self:addfield("apiBaseUrl", "string")  -- api url prefix
-	self:addfield("rawBaseUrl", "string")  -- raw url prefix
-	self:addfield("lastCommitId", "string")  -- 最后一次提交id cdn加速
-	self:addfield("updateFlag", "string")  -- 谁做了最后的更新
-	self:addfield("pageinfo", "string")    -- pageinfo 用户页信息备份 保留
-	self:addfield("enable", "number")      -- 数据源ID
+	self:addfield("apiBaseUrl", "string")          -- api url prefix
+	self:addfield("rawBaseUrl", "string")          -- raw url prefix
 end
 
 
 -- 创建数据源
 function data_source:api_upsert(params)
-	if (not params.userId) or (not params.name) then
+	if (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({["+userId+name"]={params.userId,params.name}}, params, resume)
+	self:db():insertOne({["+username+name"]={params.username,params.name}}, params, resume)
 
 	return errors:wrap(yield())
 end
@@ -54,6 +49,17 @@ function data_source:api_deleteById(params)
 	return errors:wrap(yield())
 end
 
+-- 删除用户数据源
+function data_source:api_deleteByName(params)
+	if (not params.username) or (not params.dataSourceName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():deleteOne({["+username+name"]={params.username, params.dataSourceName}}, resume)
+
+	return errors:wrap(yield())
+end
+
 -- 获取数据源
 function data_source:api_getById(params)
 	if not params.id then
@@ -65,63 +71,31 @@ function data_source:api_getById(params)
 	return errors:wrap(yield())
 end
 
+-- 通过数据源名获取
+function data_source:api_getByName(params)
+	if (not params.username) or (not params.name) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username+name"]={params.username, params.name}}, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- 获取用户的数据源
-function data_source:api_getByUserId(params)
-	if not params.userId then
+function data_source:api_getByUsername(params)
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():find({["+userId"]={params.userId}}, resume)
+	self:db():find({["+username"]={params.username}}, resume)
 	
 	return errors:wrap(yield())
-end
-
--- 获取内部gitlab数据源
-function data_source:api_getInnerGitlabByUserId(params)
-	if not params.userId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():findOne({["+userId+name"]={params.userId, innerGitlabName}}, resume)
-
-	return errors:wrap(yield())
-end
-
--- 获得最后一次提交记录
-function data_source:api_getGithubLastCommitId(params)
-	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST then
-		return errors:wrap(nil, params)
-	end
-
-	local headers = {["User-Agent"]="Satellizer",["Accept"]="application/vnd.github.full+json", ["Authorization"]= " token " .. params.dataSourceToken}
-	
-	System.os.GetUrl({
-		url= params.apiBaseUrl .. "/repos/" .. params.dataSourceUsername .. "/" .. (params.projectName or "keepworkDataSource") .. "/commits", 
-		headers=headers,
-		method = "GET",
-		json = true,
-	}, resume)
-	local code, data = yield()
-	if code ~= 200 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-	data =data.data
-
-	if not data or #data == 0 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-
-	params.lastCommitId = data[1].sha
-	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
-	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
-	yield()
-	
-	return errors:wrap(nil, params)
 end
 
 -- 添加github数据源
 function data_source:api_setGithubDataSource(params)
-	if (not params.name) or (not params.dataSourceToken) or (not params.userId) or (not params.type) or (not params.apiBaseUrl) or (not params.rawBaseUrl) then
+	if (not params.name) or (not params.dataSourceToken) or (not params.username) or (not params.type) or (not params.apiBaseUrl) or (not params.rawBaseUrl) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
@@ -139,9 +113,9 @@ function data_source:api_setGithubDataSource(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR, {message="request three service resource failed!!!"})
 	end
 	data =data.data
-	params.dataSourceId = data.id
+	params.dataSourceUserId = data.id
 	params.dataSourceUsername = data.login
-	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
 	local _, data = yield()
 	if not data then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
@@ -150,41 +124,10 @@ function data_source:api_setGithubDataSource(params)
 	return errors:wrap(nil, data)
 end
 
--- 获得最后一次提交记录
-function data_source:api_getGitlabLastCommitId(params)
-	if params.updateFlag == const.DATA_SOURCE_UPDATE_FLAG_TRUST then
-		return errors:wrap(nil, params)
-	end
-
-	local headers = {['PRIVATE-TOKEN']= params.dataSourceToken}
-	
-	System.os.GetUrl({
-		url= params.apiBaseUrl .. "/projects/" .. params.projectId .. "/repository/commits", 
-		headers=headers,
-		method = "GET",
-		json = true,
-	}, resume)
-	local code, data = yield()
-	if code ~= 200 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-	data =data.data
-
-	if not data or #data == 0 then
-		return errors:wrap(errors.SERVER_INNER_ERROR, params)
-	end
-
-	params.lastCommitId = data[1].id
-	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
-	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
-	yield()
-	
-	return errors:wrap(nil, params)
-end
 
 -- 设置gitlab数据源
 function data_source:api_setGitlabDataSource(params)
-	if (not params.name) or (not params.dataSourceToken) or (not params.userId) or (not params.type) or (not params.apiBaseUrl) or (not params.rawBaseUrl) then
+	if (not params.name) or (not params.dataSourceToken) or (not params.username) or (not params.type) or (not params.apiBaseUrl) or (not params.rawBaseUrl) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -202,9 +145,9 @@ function data_source:api_setGitlabDataSource(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR, {message="request three service resource failed!!!"})
 	end
 	data = data.data
-	params.dataSourceId = data.id
+	params.dataSourceUserId = data.id
 	params.dataSourceUsername = data.username
-	self:db():insertOne({["+userId+name"]={params.userId, params.name}}, params, resume)
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
 	local _, data = yield()
 	
 	if not data then
@@ -231,51 +174,39 @@ function data_source:api_setDataSource(params)
 	return errors:wrap()
 end
 
--- 设置数据源
-function data_source:api_getLastCommitId(params) 
-	if not params.type then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
+-- 获取内部gitlab数据源
+function data_source:api_getInnerGitlabByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	if params.type == const.DATA_SOURCE_TYPE_GITHUB then
-		return self:api_getGithubLastCommitId(params)
-	elseif params.type == const.DATA_SOURCE_TYPE_GITLAB then
-		return self:api_getGitlabLastCommitId(params)
-	else 
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR, params)
-	end
+	self:db():findOne({["+username+name"]={params.username, innerGitlabName}}, resume)
 
-	return errors:wrap(nil, params)
+	return errors:wrap(yield())
 end
 
 -- 开启内部gitlab数据源
 function data_source:api_createInnerGitlab(params)
-	if not params.userId then
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	params.userId = tonumber(params.userId)
 	
-	local userDB = models.user:new()
-	userDB:db():findOne({_id=params.userId}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		return errors:wrap(errors.SERVER_INNER_ERROR)
-	end
-	
+	local username = params.username
 	-- 是否已存在
-	local ds = self:api_getInnerGitlabByUserId(params).data
+	local ds = self:api_getInnerGitlabByUsername(params).data
 
 	-- 不存在创建
 	if not ds then
-		params.name = "gitlab_" .. (WIKI_ENV or "") .. "_" .. (params.name or userinfo.username)
+		params.name = "gitlab_" .. (WIKI_ENV or "") .. "_" .. (params.name or params.username)
 		params.username = params.name
 		params.email = params.name .. '@paraengine.com'
 		params.password = params.password or tostring(os.time())
 		params.confirm = false
 
 		local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
-		local urlPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host .. "/api/v4"
-		local rawPrefix = "http://" .. wiki_config().data_source.inner_gitlab.host
+		local gitlabHost = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["host"]
+		local urlPrefix = "http://" .. gitlabHost .. "/api/v4"
+		local rawPrefix = "http://" .. gitlabHost
 
 		-- 获取用户
 		System.os.GetUrl({
@@ -286,15 +217,15 @@ function data_source:api_createInnerGitlab(params)
 		}, resume)
 		local code, data = yield()
 		if code ~= 200 then
-			log(data)
+			LOG.std(nil, "error", "keepwork", data)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
 		data = data.data or {}
 		ds = {
-			userId = params.userId,
+			username = username,
 			type = "gitlab",
 			name = innerGitlabName,
-			dataSourceId = nil,
+			dataSourceUserId = nil,
 			dataSourceUsername = params.username,
 			enable = 1,
 			apiBaseUrl = urlPrefix,
@@ -312,24 +243,24 @@ function data_source:api_createInnerGitlab(params)
 			}, resume)
 			local code, data = yield()
 			if code ~= 201 then
-				log(data)
+				LOG.std(nil, "error", "keepwork", data)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end
-			ds.dataSourceId = data.data.id
+			ds.dataSourceUserId = data.data.id
 		else
-			ds.dataSourceId = data[1].id
+			ds.dataSourceUserId = data[1].id
 		end
 
 		-- 获取token
 		System.os.GetUrl({
-			url=urlPrefix .. "/users/" .. tostring(ds.dataSourceId) .. "/impersonation_tokens",
+			url=urlPrefix .. "/users/" .. tostring(ds.dataSourceUserId) .. "/impersonation_tokens",
 			headers={['PRIVATE-TOKEN']= adminToken},
 			method = "GET",
 			json = true,
 		}, resume)
 		local code, data = yield()
 		if code ~= 200 then
-			log(data)
+			LOG.std(nil, "error", "keepwork", data)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end	
 		data = data.data or {}
@@ -342,7 +273,7 @@ function data_source:api_createInnerGitlab(params)
 		-- 没有有效token 则创建
 		if not ds.dataSourceToken then 
 			System.os.GetUrl({
-				url=urlPrefix .. "/users/" .. tostring(ds.dataSourceId) .. "/impersonation_tokens",
+				url=urlPrefix .. "/users/" .. tostring(ds.dataSourceUserId) .. "/impersonation_tokens",
 				headers={['PRIVATE-TOKEN']= adminToken},
 				method = "POST",
 				form = {["name"]="keepwork", ["expires_at"]="2222-12-12", ["scopes"]={"api","read_user"}},
@@ -350,31 +281,20 @@ function data_source:api_createInnerGitlab(params)
 			}, resume)
 			local code, data = yield()
 			if code ~= 201 then
-				log(data)
+				LOG.std(nil, "error", "keepwork", data)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end	
 			data = data.data or {}
 			ds.dataSourceToken = data.token
 		end
 		-- 创建数据库记录
-		self:db():insertOne({["+userId+name"]={ds.userId, ds.name}}, ds, resume)
+		self:db():insertOne({["+username+name"]={ds.username, ds.name}}, ds, resume)
 		local _, dataSourceInfo = yield()
+		LOG.std(nil, "error", "keepwork", dataSourceInfo)
 		if not dataSourceInfo then
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end
-		-- 更改用户信息
-		-- local userDB = models.user:new()
-		db.user:updateOne({_id=ds.userId}, {dataSourceId=dataSourceInfo._id}, resume)
-		local err, data = yield()
-		if err or (not data) then
-			return errors:wrap(errors.SERVER_INNER_ERROR)
-		end
 		return errors:wrap(nil, dataSourceInfo)
-	else 
-		if ds.enable == 0 then
-			ds.enable = 1
-			self:api_upsert(ds)
-		end
 	end 
 
 	return errors:wrap(nil, ds)
@@ -383,24 +303,35 @@ end
 -- gitlab webhokk
 function data_source:api_gitlabWebhook(params)
 	params = params or {}	
-	local dataSourceId = params.user_id
-	local dataSourceUsername = params.user_name
-	
-	if (not dataSourceId) or (not dataSourceUsername) then
-		return
-	end
-	
-	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"gitlab", dataSourceId, dataSourceUsername}}, resume)
-	local _, ds = yield()
+	-- 提交者的用户名, 没有用
+	-- local dataSourceUserId = params.user_id
+	-- local dataSourceUsername = params.user_name
+	local projectId = params.project_id
+	local projectName = string.lower(params.project.name)
+	local dataSourceUsername = string.lower(params.project.namespace)
+	local lastCommitId = params.after
 
-	if not ds then
+	-- 内部数据源可以这样获取用户名
+	local username = string.sub(dataSourceUsername, string.len("gitlab_" .. WIKI_ENV .. "_") + 1, string.len(dataSourceUsername))
+
+	if (not projectName) or (not projectId) then
+		LOG.std(nil, "error", "keepwork", "params errors") 
 		return
 	end
+
+	-- 直接根据projectId projectName来获取站点数据源  在不搭建自己的gitlab服务器时没有问题, 当搭建自己gitlab时可能查找不正确 TODO
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:db():findOne({["+username+projectName"]={username, projectName}}, resume)
+	local _, siteDataSource = yield()
+	if not siteDataSource then
+		LOG.std(nil, "error", "keepwork", "site data source not exist")
+		return 
+	end
+
+	siteDataSource.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST
+	siteDataSource.lastCommitId = params.after
 	
-	ds.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST
-	ds.lastCommitId = params.after
-	
-	self:db():updateOne({_id=ds._id}, ds, resume)
+	siteDataSourceDB:db():updateOne({_id=siteDataSource._id}, siteDataSource, resume)
 	yield()
 
 	return
@@ -408,14 +339,14 @@ end
 
 -- gitlab webhokk
 function data_source:api_githubWebhook(params)
-	local dataSourceId = params.repository.owner.id
+	local dataSourceUserId = params.repository.owner.id
 	local dataSourceUsername = params.repository.owner.login
 
-	if (not dataSourceId) or (not dataSourceUsername) then
+	if (not dataSourceUserId) or (not dataSourceUsername) then
 		return
 	end
 
-	self:db():findOne({["+type+dataSourceId+dataSourceUsername"]={"github", dataSourceId, dataSourceUsername}}, resume)
+	self:db():findOne({["+type+dataSourceUserId+dataSourceUsername"]={"github", dataSourceUserId, dataSourceUsername}}, resume)
 	local _, ds = yield()
 
 	if not ds then
@@ -430,6 +361,78 @@ function data_source:api_githubWebhook(params)
 
 	return
 end
+
+-- 获得记录
+function data_source:api_get(params)
+	local key = ""
+	local value = {}
+
+	if params.username then
+		key = key .. "+username"
+		value[#value+1] = params.username
+	end
+	
+	if params.apiBaseUrl then
+		key = key .. "+apiBaseUrl"
+		value[#value+1] = params.apiBaseUrl
+	end
+
+	self:db():find({[key]=value}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- gitlab github
+function data_source:api_githubLinkGitlab(params) 
+	if not params.githubUserId or (not params.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+username+name"]={params.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
+	local _, ds = yield()
+	
+	-- log(ds)
+	if not ds then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
+	-- 不存在创建用户
+	System.os.GetUrl({
+		url= ds.apiBaseUrl .. "/users/" .. tostring(ds.dataSourceUserId), 
+		headers={['PRIVATE-TOKEN']= adminToken},
+		method = "PUT",
+		json = true,
+		form = {
+			extern_uid = params.githubUserId,
+			provider = "github",
+			username = ds.dataSourceUsername,
+		}
+	}, resume)
+	local code, data = yield()
+	-- log(data)
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, {message="request three service resource failed!!!"})
+	end
+	
+	return errors:wrap()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

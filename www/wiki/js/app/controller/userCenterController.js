@@ -19,7 +19,7 @@ define(['app',
             {flag:'myProfile', name:'我的资料'},
             {flag:'accountSafe', name:'账户安全'},
             {flag:'myTrends', name:'我的动态'},
-            {flag:'myCollection', name:'我的收藏'},
+            {flag:'myCollection', name:'我的关注'},
             {flag:'myHistory', name:'我的历史'},
             {flag:'myFans', name:'我的粉丝'},
             {flag:'realName', name:'实名认证'},
@@ -106,6 +106,10 @@ define(['app',
 
         $scope.getActiveStyleClass = function (item) {
             return $scope.showItem == item.flag ? 'active' : '';
+        }
+
+        $scope.goUserSite = function (x) {
+            util.goUserSite('/' + x.username + '/' + x.name, true);
         }
     }]);
 

@@ -3,7 +3,7 @@
  */
 
 ({
-    appDir:"www",
+    appDir:"temp_www_build",
     dir:'www_build',
     baseUrl:'wiki/js',
     //name:'main',
@@ -50,7 +50,8 @@
         'factory': 'app/factory',
         'helper': 'app/helper',
         // html dir
-        'html': '../html'
+        'html': '../html',
+		'css': '../assets/css'
     },
     shim: {
         'angular': {

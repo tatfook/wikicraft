@@ -8,7 +8,7 @@
     var wiki_config = window.wiki_config || {};
     var localEnv = window.location.hostname == "localhost";
     var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
-    var pathPrefix = (localEnv && !localVMEnv) ? '/html/wiki/' : (wiki_config.webroot || '/wiki/');
+    var pathPrefix = (localEnv && !localVMEnv) ? '/www/wiki/' : (wiki_config.webroot || '/wiki/');
     config = {
         // --------------------------------------前端配置 START----------------------------------------------
         localEnv:localEnv,                                                                                         // 是否本地调试环境
@@ -18,6 +18,8 @@
         officialSubDomainList:[                                                                                  // 官方占用的子域名列表
             "dev.keepwork.com",
             "test.keepwork.com",
+            "dev.qiankunew.com",
+            "test.qiankunew.com",
         ],
         // 预加载模块列表
         preloadModuleList:[
@@ -55,6 +57,7 @@
 
         // html 路径
         htmlPath: pathPrefix + 'html/',
+        cssPath: pathPrefix + 'assets/css/',
         pageUrlPrefix:'/wiki/html/',
 
         // api接口路径
@@ -68,6 +71,17 @@
         bustVersion: wiki_config.bustVersion,
 
         // --------------------------------------后端配置 END-------------------------------------
+
+        routeMap:{
+            // wiki page
+            "/wiki/test":"controller/testController",
+            "/wiki/wikieditor":"controller/wikiEditorController",
+        },
+		filterMap:{
+			"/wiki/iframeagent":[
+
+			],
+		}
     };
     function initConfig() {
         var hostname = window.location.hostname;
@@ -123,6 +137,12 @@
     config.registerPreloadModule = function (path) {
         this.preloadModuleList.push(path);
     }
+	// 注册过滤函数
+	config.registerFilter = function(path, func) {
+		var filterList = config.filterMap[path] || [];
+		filterList.push(func);
+		config.filterMap[path] = filterList;
+	}
 
     // wikiMod渲染函数注册
     config.setWikiModuleRender = function(moduleName, render) {
@@ -134,6 +154,10 @@
         return this.wikiModuleRenderMap[moduleName];
     }
 
+	config.getPage = function() {
+
+	}
+
     config.loadMainContent = function(cb, errcb) {
         var pathname = config.util.parseUrl().pagepath || window.location.pathname;
         if(config.islocalWinEnv()) {
@@ -141,6 +165,8 @@
         }
         // 为官网页面 则预先加载
         var pageurl = undefined;
+        var rawPathname = pathname;
+        var pathname = config.util.snakeToHump(pathname);
         if (pathname.indexOf('/wiki/mod/') == 0) {
             // mod 模块
             var pagename = pathname.substring('/wiki/mod/'.length);
@@ -163,6 +189,21 @@
             config.mainContentType = "user_page";
             config.mainContent = undefined;
         }
+
+		rawPathname = rawPathname.toLowerCase();
+		// 执行过滤函数， 若过滤函数返回false则停止框架
+		if (config.filterMap[rawPathname]) {
+			var filterList = config.filterMap[rawPathname];
+			for (var i = 0; i < filterList.length; i++) {
+				if (!filterList[i]()) {
+					return ;
+				}
+			}
+		}
+        if (config.routeMap[rawPathname]) {
+            pageurl = config.routeMap[rawPathname];  // 优先配置路由
+        }
+
         //console.log(pageurl, config.mainContentType);
         // 启动angular
         if (pageurl) {

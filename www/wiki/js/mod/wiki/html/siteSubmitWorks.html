@@ -1,0 +1,202 @@
+<style>
+    .submit-work .breadcrumb{
+        max-width: 750px;
+        width: 70%;
+        min-width: 700px;
+        margin: 60px auto 0;
+        background-color: transparent;
+        padding-left: 0;
+        font-size: 16px;
+    }
+    .submit-work .breadcrumb img{
+        vertical-align: text-bottom;
+        margin-right: 5px;
+    }
+    .submit-work .panel{
+        background-color: #FFF;
+        box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
+        margin: 0 auto 80px;
+        max-width: 750px;
+        width: 70%;
+    }
+    .submit-work .panel-heading{
+        font-weight: bold;
+        font-size: 16px;
+        color: #666;
+        height: 60px;
+        line-height: 60px;
+        padding: 0 15px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .submit-work .panel-body{
+        padding: 80px 70px;
+    }
+
+    .submit-work .form-group-md{
+        margin-bottom: 40px;
+    }
+    .submit-work .form-group-md .control-label{
+        font-size: 16px;
+        font-weight: normal;
+    }
+    .submit-work .form-group-md .col-sm-8{
+        padding-left: 0;
+    }
+
+    .submit-work .preview {
+        width: 280px;
+        height: 210px;
+        margin-bottom: 30px;
+    }
+    .submit-work .preview-zone img {
+        width: 280px;
+        height: 210px;
+    }
+    .submit-work .preview-zone input[type="file"] {
+        position: absolute;
+        left: 310px;
+        bottom: 27px;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 1;
+        height:46px;
+    }
+    .submit-work .preview-zone a {
+        position: absolute;
+        left: 310px;
+        bottom: 30px;
+        font-size: 16px;
+        padding:9px 23px;
+    }
+    .submit-work .preview-zone a.finish {
+        left: 325px;
+        bottom: 0;
+    }
+    .submit-work .cropper-zone {
+        width: 320px;
+        height: 240px;
+        position: absolute;
+        left: 0px;
+        top: 0;
+    }
+
+    .submit-work .save-setting .btn{
+        padding:9px 53px;
+        font-size: 16px;
+        margin-right: 20px;
+    }
+    .submit-work .btn-outline{
+        color: #666;
+        border: 1px solid;
+        background-color: transparent;
+    }
+    .submit-work .btn-outline:hover{
+        background-color: #666;
+        color: #FFF;
+    }
+    .submit-work textarea{
+        height: 120px;
+    }
+    @media (min-width: 768px) and (max-width: 992px) {
+        .submit-work .panel{
+            width: 700px;
+            margin: 30px auto;
+        }
+        .submit-work .panel-body{
+            padding:30px 60px;
+        }
+        .submit-work .form-group-md{
+            margin-bottom: 20px;
+        }
+    }
+    @media (max-width: 768px) {
+        .submit-work .panel{
+            width: 100%;
+            margin: 0;
+            box-shadow: none;
+        }
+        .submit-work .panel-body{
+            padding: 0 15px;
+            width: 100%;
+        }
+        .submit-work .form-group-md{
+            margin: 0 0 15px;
+        }
+
+        .submit-work .crop-control{
+            position: relative;
+            min-height: 42px;
+        }
+        .submit-work .preview-zone input[type="file"],.submit-work .preview-zone a,.submit-work .preview-zone a.finish{
+            left: 0;
+            top:0;
+            bottom: 0;
+        }
+        .submit-work .preview-zone input[type="file"]{
+            position: absolute;
+            left: 0;
+            bottom: 27px;
+        }
+    }
+</style>
+
+<div class="submit-work clearfix" ng-controller="submitWorksController">
+    <ol class="breadcrumb">
+        <li><a ng-click="goHomePage()"><img ng-src="{{getImageUrl('icon/left_icon.png',imgsPath)}}" alt="">首页</a></li>
+        <li>提交作品</li>
+    </ol>
+    <div class="panel">
+        <div class="panel-heading">提交作品</div>
+        <div class="panel-body">
+            <form class="form-horizontal submit-work-form" role="form">
+                <div class="form-group form-group-md sr-only">
+                    <legend>提交作品</legend>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-sm-3 control-label">选择作品页面：</label>
+                    <div class="col-sm-8">
+                        <ui-select ng-model="selected" ng-disabled on-select="worksUrlSelected($item, $model)">
+                            <ui-select-match placeholder="请选择作品">{{$select.selected.url}}</ui-select-match>
+                            <ui-select-choices repeat="page in (pageList | filter: $select.search) track by $index">
+                                <span ng-bind="page.url"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label for="title" class="col-sm-3 control-label">标题：</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="title" ng-model="works.worksTitle">
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label class="col-sm-3 control-label">封面：</label>
+                    <div class="col-sm-8 preview-zone">
+                        <div class="preview">
+                            <img ng-src="{{imgsPath+'wiki_cover.jpg'}}" alt="">
+                        </div>
+                        <p class="crop-control">
+                            <input class="change-btn" onchange="angular.element(this).scope().fileUpload(event)" type="file">
+                            <a class="change-btn btn btn-primary">上传</a>
+                            <a id="finish" class="btn btn-primary sr-only finish">确 定</a>
+                        </p>
+                        <div id="cropper" class="cropper-zone sr-only visible-hidden">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <label for="intro" class="col-sm-3 control-label">介绍：</label>
+                    <div class="col-sm-8">
+                        <textarea name="intro" id="intro" rows="10" ng-model="works.worksDesc"></textarea>
+                    </div>
+                </div>
+                <div class="form-group form-group-md">
+                    <div class="col-sm-offset-3 save-setting">
+                        <button class="btn btn-primary" ng-click="clickSubmitWorks()">提交</button>
+                        <button class="btn btn-outline" ng-click="clickCancelWorks()">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -159,7 +159,7 @@
         border-radius: 50%;
         margin-left:0;
     }
-    /*我的收藏*/
+    /*我的关注*/
     .tab-content .img-text-box {
         width: 90%;
         margin: 0 auto;
@@ -541,7 +541,7 @@
                     <a href="#userTrends"  ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
                 </li>
                 <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
-                    <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">收藏</a>
+                    <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
                 </li>
                 <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
                     <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
@@ -562,7 +562,7 @@
         </div>
     </div>
 
-    <!--我的收藏-->
+    <!--我的关注-->
     <div ng-show="showItem == 'myCollection'" class="col-xs-12 main-content">
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
@@ -572,8 +572,8 @@
                        data-toggle="tab">作者</a>
                 </li>
                 <li role="presentation">
-                    <a ng-click="clickCollectionWorks()" href="#wiki_user" aria-controls="works" role="tab"
-                       data-toggle="tab">作品</a>
+                    <a ng-click="clickCollectionWorks()" href="#wiki_works" aria-controls="works" role="tab"
+                       data-toggle="tab">网站</a>
                 </li>
             </ul>
 
@@ -581,20 +581,19 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active img-text-box collection-pane" id="wiki_user">
                     <div class="col-sm-12">
-                        <div class="img-text col-md-6 col-sm-12" ng-repeat="x in favoriteList">
-                            <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                        <div class="img-text col-md-6 col-sm-12" ng-repeat="x in userList">
+                            <img ng-src="{{x.userinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                             <div class="text">
-                                <h4><a href="#">{{x.siteinfo.name}}</a><span
-                                        class="pull-right info">收藏于2017-03-02</span></h4>
-                                <p>作者：{{x.siteinfo.username}}</p>
-                                <p>说明：{{x.siteinfo.desc}}</p>
+                                <h4><a href="#">{{x.userinfo.displayName || x.userinfo.username}}</a><span class="pull-right info">关注于2017-03-02</span></h4>
+                                <p>作者：{{x.userinfo.username}}</p>
+                                <p>说明：{{x.siteinfo.desc || "暂无说明"}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.siteinfo.visitCount}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.userinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">收藏
-                                        {{x.siteinfo.favoriteCount}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">关注
+                                        {{x.userinfo.fansCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -603,11 +602,37 @@
                     <div class="pagination-box">
                         <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="上一页"
                             next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-                            class="pagination-sm" boundary-link-numbers="true"></ul>
+                            class="pagination-sm" boundary-link-numbers="true">
+                        </ul>
                     </div>
                 </div>
-                <!--div role="tabpanel" class="tab-pane img-text-box" id="wiki_works">
-                </div-->
+                <div role="tabpanel" class="tab-pane img-text-box collection-pane" id="wiki_works">
+                    <div class="col-sm-12">
+                        <div class="img-text col-md-6 col-sm-12" ng-repeat="x in siteList">
+                            <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <div class="text">
+                                <h4><a href="#">{{x.siteinfo.name || "作者未知"}}</a><span class="pull-right info">关注于2017-03-02</span></h4>
+                                <p>作者：{{x.siteinfo.username || "作者未知"}}</p>
+                                <p>说明：{{x.siteinfo.desc || "暂无简介"}}</p>
+                                <div class="col-md-12 info">
+                                    <div class="col-md-6">
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.siteinfo.visitCount || 0}}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">关注
+                                        {{x.siteinfo.favoriteCount || 0}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination-box">
+                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="上一页"
+                            next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                            class="pagination-sm" boundary-link-numbers="true">
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -616,23 +641,23 @@
     <div ng-show="showItem == 'myHistory'" class="col-xs-12 main-content panel">
         <div class="panel-heading">我的历史</div>
         <div class="panel-body timeline">
-            <div class="img-text" ng-repeat="site in siteList">
-                <img ng-src="{{site.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+            <div class="img-text" ng-repeat="site in visitHistoryList" ng-show="site.siteinfo">
+                <img ng-src="{{site.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                 <div class="text">
-                    <h4><a href="#">{{site.name}}</a></h4>
-                    <p>作者：{{site.username}}</p>
-                    <p>页数：{{site.pageCount}}</p>
+                    <h4><a ng-click="goUserSite(site.siteinfo)">{{site.siteinfo.name}}</a></h4>
+                    <p>作者：{{site.siteinfo.username}}</p>
+                    <p>页数：{{site.siteinfo.pageCount}}</p>
                     <div class="col-md-12 info">
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{site.visitCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{site.siteinfo.visitCount}}
                         </div>
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> 收藏 {{site.favoriteCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> 关注 {{site.siteinfo.favoriteCount}}
                         </div>
                     </div>
                 </div>
-                <div class="time"><span>{{site.createDate}}</span><span></span></div>
-                <div class="rubbish"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
+                <div class="time"><span>{{site.updateDate}}</span><span></span></div>
+                <div class="rubbish" ng-click="deleteHistory(site)"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
             </div>
         </div>
     </div>
@@ -642,8 +667,7 @@
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" ng-repeat="site in siteList"
-                    ng-class="currentFansSite._id == site._id ? 'active' : ''">
+				<li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''">
                     <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans"
                        role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount || 0}})</span></a>
                 </li>
@@ -654,16 +678,17 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
                     <div class="clearfix">
-                        <div class="fans-profile" ng-repeat="fans in fansList">
-                            <img ng-src="{{fans.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
-                            <p>{{fans.userinfo.username}}</p>
+                        <div class="fans-profile" ng-repeat="x in userList">
+                            <img ng-src="{{x.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
+                            <p>{{x.userinfo.username}}</p>
                         </div>
                     </div>
-                    <div class="pagination-box">
+                    <div class="pagination-box" ng-show="site.favoriteCount && site.favoriteCount>0">
                         <ul uib-pagination ng-change="fansPageChanged()" items-per-page='pageSize' previous-text="上一页"
                             next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                             class="pagination-sm" boundary-link-numbers="true"></ul>
                     </div>
+                    <p ng-hide="site.favoriteCount && site.favoriteCount>0" style="text-align: center">暂无粉丝</p>
                 </div>
             </div>
         </div>

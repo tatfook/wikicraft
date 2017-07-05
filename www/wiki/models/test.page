@@ -5,16 +5,51 @@ Author: wuxiangan
 Date: 2017/2/27
 ]]
 
-
 include_once("./abstract/base.page")
 
 local test = inherit(models.abstract.base, gettable("models.test"))
+local testDir = WIKI_ROOT .. "test/"
+
+function test:api_helloworld(params)
+	return "hello world"
+end
+ 
+-- 用户cdn测试api接口 返回一个自增id
+function test:api_get()
+	local testObj = KEEPWORK["mem_cache"]:get("test") or {}
+	testObj.testApiId = (testObj.testApiId or 0) + 1
+	KEEPWORK["mem_cache"]:set("test", testObj)
+
+	return tostring(testObj.testApiId)	
+end
+
+-- 更新文件内容
+function test:api_updateFileContent(params)
+	if not params.filename then
+		return "请求缺少参数"
+	end
+	local filename = testDir .. params.filename
+	local file = ParaIO.open(filename, "w")
+	if not file:IsValid() then
+		return "打开文件失败"
+	end
+
+	local testObj = KEEPWORK["mem_cache"]:get("test") or {}
+	testObj.testFileId = testObj.testFileId or {}
+	testObj.testFileId[params.filename] = (testObj.testFileId[params.filename] or 0) + 1
+	KEEPWORK["mem_cache"]:set("test", testObj)
+
+	local fileContent = tostring(testObj.testFileId[params.filename])
+	file:WriteString(fileContent)
+	file:close()
+
+	return fileContent
+end
 
 
 function test:api_test()
 	local result = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
 	for _, value in ipairs(result) do
-		log("----------")
 		include_once(WIKI_ROOT ..'js/mod/'.. value.filename)
 	end
 	return result

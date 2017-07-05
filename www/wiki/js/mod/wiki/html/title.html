@@ -1,0 +1,49 @@
+<style>
+    .title1 h1{
+        font-size: 36px;
+        position: relative;
+        padding-bottom: 30px;
+        margin-bottom: 20px;
+        font-weight: normal;
+    }
+    .title1 h1:before{
+        content: '';
+        width: 50px;
+        height: 1px;
+        background-color: #000;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+    .title1 .content p{
+        font-size: 16px;
+        color: #666;
+    }
+</style>
+<style>
+    .title2 h2{
+        color: #333;
+        display: flex;
+        align-items:center;
+    }
+    .title2 h2 span{
+        font-size: 20px;
+        color: #999;
+        flex:1;
+        padding-left: 10px;
+    }
+</style>
+<div ng-controller="titleController">
+    <div class="title1 container" ng-show="modParams.moduleKind=='title' || !modParams.moduleKind">
+        <h1>{{modParams.title}}</h1>
+        <div class="content">
+            <p ng-bind-html="content"></p>
+        </div>
+    </div>
+    <div class="title2 container" ng-show="modParams.moduleKind=='title2'">
+        <h2>{{modParams.column}} <span class="info">{{modParams.columnInfo}}</span></h2>
+        <div class="content">
+            <p ng-bind-html="content"></p>
+        </div>
+    </div>
+</div>

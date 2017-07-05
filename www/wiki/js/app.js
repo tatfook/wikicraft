@@ -17,7 +17,7 @@ define([
 
     app.registerController = app.controller;
 
-    app.config(['$controllerProvider', '$authProvider', function ($controllerProvider, $authProvider) {
+    app.config(['$controllerProvider', '$httpProvider', '$authProvider', function ($controllerProvider, $httpProvider, $authProvider) {
         // 提供动态注册控制器接口
         app.registerController = function (name, constructor) {
             if (config.angularBootstrap) {
@@ -26,6 +26,9 @@ define([
                 app.controller(name, constructor);
             }
         };
+		
+		// 注册loading拦截器
+		$httpProvider.interceptors.push("loadingInterceptor");
 
         // github 认证配置
         $authProvider.github({
@@ -39,8 +42,9 @@ define([
         $authProvider.oauth2({
             name: 'qq',
             url: '/api/wiki/auth/qq',
-            clientId: '100302176',
-            redirectUri: window.location.origin + '/api/wiki/auth/qq',//window.location.origin,
+            clientId: '101403344',
+            //redirectUri: window.location.origin + '/api/wiki/auth/qq',//window.location.origin,
+            redirectUri: window.location.origin  +  '/wiki/login',
             authorizationEndpoint: 'https://graph.qq.com/oauth2.0/authorize',
             oauthType: '2.0',
             scope:'get_user_info',
@@ -49,23 +53,35 @@ define([
         $authProvider.oauth2({
             name: 'weixin',
             url: '/api/wiki/auth/weixin',
-            clientId: '100302176',
-            redirectUri: window.location.origin + '/api/wiki/auth/weixin',//window.location.origin,
+            clientId: 'wxc97e44ce7c18725e',
+            appid: 'wxc97e44ce7c18725e',
+            //redirectUri: window.location.origin + '/api/wiki/auth/weixin',//window.location.origin,
+            redirectUri: window.location.origin  +  '/wiki/login',
             authorizationEndpoint: 'https://open.weixin.qq.com/connect/qrconnect',
             oauthType: '2.0',
             scope:'snsapi_login',
+			requiredUrlParams: ['scope', "appid"],
         });
         // 新浪微博
         $authProvider.oauth2({
             name: 'xinlangweibo',
             url: '/api/wiki/auth/xinlangweibo',
-            clientId: '482627906',
-            redirectUri: window.location.origin + '/api/wiki/auth/xinlangweibo',//window.location.origin,
+            clientId: '2411934420',
+            //redirectUri: window.location.origin + '/api/wiki/auth/xinlangweibo',//window.location.origin,
+            redirectUri: window.location.origin  +  '/wiki/login',
             authorizationEndpoint: 'https://api.weibo.com/oauth2/authorize',
             oauthType: '2.0',
-            //scope:'email',
         });
-
+        // keepwork微博
+        $authProvider.oauth2({
+            name: 'keepwork',
+            url: '/api/wiki/models/oauth_app/callback',
+            clientId: '1000000',
+            //redirectUri: window.location.origin + '/api/wiki/auth/xinlangweibo',//window.location.origin,
+            redirectUri: window.location.origin  +  '/wiki/login',
+            authorizationEndpoint: 'http://localhost:8900/wiki/oauth',
+            oauthType: '2.0',
+        });
     }]);
 
     window.app = app;

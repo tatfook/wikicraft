@@ -79,3 +79,7 @@ define([
         }
     }
 });
+/*
+ ```@wiki/js/comment
+ ```
+ */

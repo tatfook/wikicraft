@@ -1,0 +1,172 @@
+<?npl
+--[[
+Title: oauth app
+Author: wuxiangan
+Date: 2017/06/08
+]]
+
+
+include_once("./abstract/base.page")
+-- include_once("./oauth_user.page")
+include_once("./user.page")
+
+local oauth_app = inherit(models.abstract.base, gettable("models.oauth_app"))
+oauth_app.db_name = "oauth_app"
+
+function oauth_app:ctor()
+	self:addfield("appName", "string")            -- 应用名称  key
+	self:addfield("clientId", "string")           -- oauth client id 
+	self:addfield("clientSecret", "string")       -- oauth client secret
+	self:addfield("redirectUrl", "string")        -- oauth redirect url
+end
+
+local oauthApp = {
+	{
+		appName="test",
+		clientId="1000000",
+		clientSecret="keepwork",
+		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
+	},
+}
+
+function oauth_app:api_get() 
+	return oauthApp
+end
+
+function oauth_app:getByClientId(params)
+	if not params.clientId then	
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local app = {}
+	for _, obj in ipairs(oauthApp) do
+		if obj.clientId == params.clientId then
+			app = obj
+			break
+		end
+	end
+
+	return app
+end
+
+-- 通过客户端id获取
+function oauth_app:api_getByClientId(params) 
+	if not params.clientId then	
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local app = {}
+	for _, obj in ipairs(oauthApp) do
+		if obj.clientId == params.clientId then
+			app = obj
+			break;
+		end
+	end
+	
+	app.clientSecret = nil
+
+	return errors:wrap(nil, app)
+end
+	
+-- 同意客户端授权
+function oauth_app:api_agreeOauth(params)
+	if (not params.username) or (not params.client_id) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local oauthCode = nil
+	while (true) do
+		oauthCode = tostring(math.random(1000000,9999999))
+		local key = params.client_id .. "_" .. oauthCode
+		if not mem_cache:get(key) then
+			mem_cache:set(key, params.username)
+			break
+		end
+	end
+
+	return errors:wrap(nil,{code=oauthCode, state=params.state})
+end
+
+-- 通过code获取token
+function oauth_app:api_getTokenByCode(params) 
+	if not params.code or (not params.client_id) or (not params.client_secret) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	-- TODO DB select
+	local app = self:getByClientId({clientId=params.client_id})
+	if app.clientSecret ~= params.client_secret then
+		return {error=10000, message="secret invalid"}
+	end
+
+	-- local oauthUsername = "xiaoyao"
+	local key = params.client_id .. "_" .. params.code
+	local oauthUsername = mem_cache:get(key)
+	if not oauthUsername then
+		return {error=10001, message="authorized code invalid"}
+	end
+
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={oauthUsername}}, resume)
+	local _, userinfo = yield()
+
+	if not userinfo then
+		return {error=10002, message="server inner errror"}
+	end
+
+	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
+	local token = jwt.encode({authway="oauth", username=userinfo.username},secret["token_secret"], nil, secret["token_expire"] or 3600)
+	
+	return {token=token}
+end
+
+-- client callback 
+function oauth_app:api_callback(params) 
+	if (not params.code) or (not params.clientId) then		
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.client_id = params.clientId
+	params.grant_type = "authorization_code"
+	params.client_secret = "keepwork"
+	
+	local apiUrl = "http://localhost:8900/api/wiki/models/oauth_app/getTokenByCode"
+	System.os.GetUrl({
+		url=apiUrl,
+		method="GET",
+		json=true,
+		qs=params,	
+	}, resume)
+	local code, data = yield()
+
+	if code ~= 200 then
+		log(code)
+		log(data)
+		return {message="authorized server error"}
+	end
+	local tokenData = data.data
+
+	return tokenData
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

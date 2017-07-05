@@ -4,24 +4,58 @@
 
 define([
     'app',
+    'markdown-it',
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
     'helper/dataSource',
+    'helper/loading',
     'controller/homeController',
     'controller/headerController',
     'controller/footerController',
     'controller/userController',
-], function (app, markdownwiki, storage, util, dataSource, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent) {
+    'controller/notfoundController',
+], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
     var md = markdownwiki({html: true});
 
-    app.controller('mainController', ['$scope', '$rootScope', '$location', '$http', '$auth', '$compile', 'Account', 'Message', 'github', 'modal','gitlab',
-        function ($scope, $rootScope, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab) {
+    app.controller('mainController', [
+        '$scope',
+        '$rootScope',
+        '$sce',
+        '$location',
+        '$http',
+        '$auth',
+        '$compile',
+        'Account',
+        'Message',
+        'github',
+        'modal',
+        'gitlab',
+        'confirmDialog',
+        function ($scope, $rootScope, $sce, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
             //console.log("mainController");
             
             // 初始化基本信息
             function initBaseInfo() {
                 //配置一些全局服务
+                config.services = {
+                    $rootScope: $rootScope,
+                    $sce:$sce,
+                    $http: $http,
+                    $compile: $compile,
+                    $auth: $auth,
+                    $location:$location,
+                    markdownit:markdownit({}),
+                    storage: storage,
+                    Account: Account,
+                    Message: Message,
+                    github: github,
+                    gitlab:gitlab,
+                    dataSource:dataSource,
+                    loading:loading,
+                    confirmDialog:confirmDialog,
+                };
+
                 util.setAngularServices({
                     $rootScope: $rootScope,
                     $http: $http,
@@ -38,9 +72,12 @@ define([
                     github: github,
                     gitlab:gitlab,
                     dataSource:dataSource,
+                    loading:loading,
+                    confirmDialog:confirmDialog,
                 });
 
                 $rootScope.imgsPath = config.imgsPath;
+                $rootScope.cssPath = config.cssPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
                 if (config.isLocal()) {
@@ -55,9 +92,57 @@ define([
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
+
+                $rootScope.getImageUrl = function(imgUrl,imgsPath) {
+                    if (imgUrl.indexOf("://") >= 0) {
+                        return imgUrl;
+                    }
+                    if (imgUrl.indexOf("/wiki/") >= 0) {
+                        return imgUrl + "?bust=" + config.bustVersion;
+                    }
+
+                    return (imgsPath || $rootScope.imgsPath) + imgUrl + "?bust=" + config.bustVersion;
+                }
+
+                $rootScope.getCssUrl = function(cssUrl, cssPath) {
+                    if (cssUrl.indexOf("://") >= 0) {
+                        return cssUrl;
+                    }
+                    if (cssUrl.indexOf("/wiki/") >= 0) {
+                        return cssUrl + "?bust=" + config.bustVersion;
+                    }
+
+                    return (cssPath || $rootScope.cssPath) + cssUrl + "?bust=" + config.bustVersion;
+                }
+                
+                $rootScope.getRenderText = function (text) {
+                    return $sce.trustAsHtml(config.services.markdownit.render(text || ""));
+                }
             }
 
+            // 底部高度自适应
+            function stickFooter() {
+                var winH=$(window).height();
+                var headerH=52;
+                var footerH=100;
+                var minH=winH-headerH-footerH;
+                var w = $("#__mainContent__");
+                w.css("min-height", minH);
+            }
+
+            function throttle(method, context) {
+                clearTimeout(method.stickTimer);
+                method.stickTimer = setTimeout(function () {
+                    method.call(context);
+                },100);
+            }
+
+            window.onresize = function () {
+                throttle(stickFooter);
+            };
+
             function initView() {
+
                 // 信息提示框
                 $("#messageTipCloseId").click(function () {
                     Message.hide();
@@ -81,38 +166,17 @@ define([
                 //
                 // });
 
-                // 底部高度自适应
-                var winH=$(window).height();
-                var headerH=52;
-                var footerH=100;
-                var minH=winH-headerH-footerH;
-                var w = $("#__mainContent__");
-                w.css("min-height", minH);
+                stickFooter();
 
                 var isFirstLocationChange = true;
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
                     //console.log("$locationChangeSuccess change");
-                    if (!isFirstLocationChange && window.location.pathname == '/wiki/wikiEditor') {
+                    if (!isFirstLocationChange && util.isEditorPage()) {
                         return ;
                     }
                     isFirstLocationChange = false;
                     config.loadMainContent(initContentInfo);
-                });
-            }
-
-            function renderHtmlText(pathname, md) {
-                pathname = pathname.replace('/wiki/', '');
-                var pageUrl = 'controller/' + pathname + 'Controller';
-                var htmlContent;
-                //console.log(pageUrl);
-                require([pageUrl], function (htmlContent) {
-                    if (pathname != "test" || pathname == "wikiEditor" || !md) {
-                        util.html('#__UserSitePageContent__', htmlContent, $scope);
-                    } else {
-                        md.bindRenderContainer('#__UserSitePageContent__');
-                        md.render(htmlContent);
-                    }
                 });
             }
 
@@ -148,29 +212,61 @@ define([
                         $rootScope.pageinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename, pagepath:urlObj.pagepath};
                         $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
-                        var dataSourceId = data.siteinfo.dataSourceId || data.userinfo.dataSourceId;
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
+						var callback = function() {
+							if (!$scope.user || $scope.user.username != data.userinfo.username) {
+								userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
+							}
+							userDataSource.registerInitFinishCallback(function () {
+								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
+								var renderContent = function (content) {
+									$rootScope.$broadcast('userpageLoaded',{});
+									content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
+									util.html('#__UserSitePageContent__', content, $scope);
+									config.loading.hideLoading();
+								};
+								if (config.isLocal()) {
+									currentDataSource.setLastCommitId("master");
+								}
 
-                        userDataSource.init(data.userinfo.dataSource, data.userinfo.dataSourceId);
-                        userDataSource.registerInitFinishCallback(function () {
-                            dataSource.setCurrentDataSource(data.userinfo.username, dataSourceId);
-                            var currentDataSource = dataSource.getCurrentDataSource();
-                            var renderContent = function (content) {
-                                $rootScope.$broadcast('userpageLoaded',{});
-                                content = md.render(content ||  '<div>用户页丢失!!!</div>');
-                                util.html('#__UserSitePageContent__', content, $scope);
-                            };
+								if (window.location.search && window.location.search.indexOf('branch=master') >= 0) {
+									currentDataSource.setLastCommitId('master');
+								}
 
-                            currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
-                                //console.log(data);
-                                renderContent(data);
-                            }, function () {
-                                renderContent();
-                            });
-                        });
+								currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
+									//console.log(data);
+									//console.log("otherUsername:", urlObj.username);
+									storage.sessionStorageSetItem("otherUsername", urlObj.username);
+									renderContent(data);
+								}, function () {
+									renderContent();
+								});
+							});
+						}
+						// 使用自己的token
+						if (Account.isAuthenticated()) {
+							Account.getUser(function(userinfo){
+								if (userinfo.username != data.userinfo.username) {
+									for (var i=0; i < data.userinfo.dataSource.length; i++) {
+										var ds1 = data.userinfo.dataSource[i];
+										for (var j = 0; j < userinfo.dataSource.length; j++) {
+											var ds2 = userinfo.dataSource[j];
+											if (ds1.apiBaseUrl == ds2.apiBaseUrl) {
+												ds1.dataSourceToken = ds2.dataSourceToken;
+												ds1.isInited = true;
+											}
+										}
+									} 
+								}
+								callback();
+							})
+						} else {
+							callback();
+						}
                     });
                 } else if (urlObj.username){
                     util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+					config.loading.hideLoading();
                 }
             }
 
@@ -183,23 +279,33 @@ define([
                 // 置空用户页面内容
                 console.log(urlObj);
                 setWindowTitle(urlObj);
+				
+				if (!util.isEditorPage()) {
+					storage.sessionStorageRemoveItem("otherUsername");
+				}
 
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
-                        renderHtmlText(urlObj.pathname, md);
+						console.log(urlObj);
+						if (urlObj.pathname == "/wiki/test") {
+							config.mainContent = md.render(config.mainContent);
+						}
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        //config.mainContent = undefined;
                     } else {
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         config.mainContent = undefined;
                     }
                 } else if (!urlObj.username){
                     if (Account.isAuthenticated()) {
-                        util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                        Account.getUser(function (userinfo) {
+                            util.go("/" + userinfo.username);
+                        });
                     } else {
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
-                } else if(urlObj.username == 'wiki') {
-                    renderHtmlText(urlObj.pathname, md);
                 } else {
+					config.loading.showLoading();
                     if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                         util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
                             if (data) {

@@ -51,7 +51,8 @@ define([
         // 编辑网站页面
         $scope.goEditWebsitePagePage = function (website) {
             //window.location.href="/wiki/wikiEditor";
-            util.go('wikiEditor');
+            storage.sessionStorageSetItem("urlObj",{username:website.username, sitename:website.name});
+            util.go('wikieditor');
         }
 
         //显示删除模态框

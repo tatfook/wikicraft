@@ -32,16 +32,16 @@ define([
         initFinishCallbackList: [],
         dataSourceInstMap: {}, // 数据实例映射
         dataSourceCfgList: undefined,
-        defaultDataSourceId: undefined,
+		defaultSitename:"__keepwork__",
 
-        init: function (dataSourceCfgList, defaultDataSourceId) {
-            if (this.isInitFinish) {
-                return;
-            }
+        init: function (dataSourceCfgList, defaultSitename) {
+			if (this.isInitFinish) {
+				return;
+			}
 
             var self = this;
             self.dataSourceCfgList = dataSourceCfgList;
-            self.defaultDataSourceId = defaultDataSourceId;
+            self.defaultSitename = defaultSitename || self.defaultSitename;
 
             var isInited = [];
 
@@ -70,12 +70,12 @@ define([
                     initFinish(i);
                     return;
                 }
-                self.registerDataSource(dataSourceCfg.name, dataSourceInstance);
+                self.registerDataSource(dataSourceCfg.sitename, dataSourceInstance);
                 dataSourceInstance.init(dataSourceCfg, function () {
-                    console.log(dataSourceCfg.name + " data source init success");
+                    console.log(dataSourceCfg.dataSourceName + " data source init success");
                     initFinish(i);
                 }, function () {
-                    console.log(dataSourceCfg.name + " data source init failed");
+                    console.log(dataSourceCfg.dataSourceName + " data source init failed");
                     initFinish(i);
                 });
             }
@@ -98,35 +98,30 @@ define([
             }
         },
 
-        registerDataSource: function (name, obj) {
-            this.dataSourceInstMap[name] = obj;
+        registerDataSource: function (sitename, obj) {
+            this.dataSourceInstMap[sitename] = obj;
         },
 
-        getDataSource: function (name) {
-            return this.dataSourceInstMap[name];
+        getDataSourceBySitename: function (sitename) {
+			sitename = sitename || this.defaultSitename;
+			//console.log(this.defaultSitename);
+            return this.dataSourceInstMap[sitename] || this.dataSourceInstMap[this.defaultSitename];
         },
 
-        getDataSourceById: function (dataSourceId) {
-            var self = this;
-            // 当数据源id不存在时, 返回inner server 存贮
-            if (dataSourceId == 0) {
-                return innerServerDS;
-            }
-
-            for (var i = 0; i < self.dataSourceCfgList.length; i++) {
-                var dataSourceCfg = self.dataSourceCfgList[i];
-                if (dataSourceCfg._id == dataSourceId) {
-                    return self.getDataSource(dataSourceCfg.name);
-                }
-            }
-            return undefined;
-        },
-        setDefaultDataSourceId: function (dataSourceId) {
-            this.defaultDataSourceId = dataSourceId;
+        setDefaultSitename: function (sitename) {
+            this.defaultSitename = sitename;
         },
         getDefaultDataSource: function () {
-            return this.getDataSourceById(this.defaultDataSourceId);
+            return this.getDataSourceBySitename(this.defaultSitename);
         },
+		getDataSourceList: function() {
+			var dataSourceList = [];
+			for (var key in this.dataSourceInstMap) {
+				dataSourceList.push(this.dataSourceInstMap[key]);
+			}
+
+			return dataSourceList;
+		}
     };
 
     dataSource = {
@@ -136,13 +131,29 @@ define([
         dataSourceFactory: {},
         // 用户数据源映射
         dataSourceUserMap: {},
+		// 数据源映射
+		dataSourceMap:{},
         // 当前数据源
         currentDataSource:undefined,
     };
 
+	function getDataSourceKey(username, sitename) {
+		return username + "_" + sitename;
+	}
     dataSource.registerDataSourceFactory = function (typ, factory) {
         dataSource.dataSourceFactory[typ] = factory;
-    }
+    };
+
+	dataSource.getDataSourceInstance = function(typ) {
+		return dataSource.dataSourceFactory[typ] && dataSource.dataSourceFactory[typ]();	
+	}
+
+	dataSource.registerDataSource = function(dataSourceCfg, cb, errcb) {
+		var inst = this.getDataSourceInstance(dataSourceCfg.type);
+		this.dataSourceMap[getDataSourceKey(dataSourceCfg.username,dataSourceCfg.sitename)] = inst;
+		inst.init(dataSourceCfg, cb, errcb);
+		
+	}
 
     dataSource.getUserDataSource = function (name) {
         if (!dataSource.dataSourceUserMap[name]) {
@@ -150,6 +161,14 @@ define([
         }
         return dataSource.dataSourceUserMap[name];
     }
+
+	dataSource.getDataSource = function(username, sitename) {
+		if (this.dataSourceMap[getDataSourceKey(username,sitename)]) {
+			return this.dataSourceMap[getDataSourceKey(username,sitename)];
+		}
+		//console.log(dataSource.dataSourceUserMap);
+		return this.getUserDataSource(username).getDataSourceBySitename(sitename)
+	}
 
     dataSource.setDefaultUsername = function (username) {
         this.defaultUsername = username;
@@ -163,19 +182,9 @@ define([
         return this.getUserDataSource(this.defaultUsername).getDefaultDataSource();
     };
 
-    dataSource.setCurrentDataSource = function (username, dataSourceId) {
-        this.currentDataSource = this.getCurrentDataSource(username, dataSourceId);
-    }
+	dataSource.getDataSourceList = function(username) {
+		return this.getUserDataSource(username).getDataSourceList();
+	}
 
-    dataSource.getCurrentDataSource = function (username, dataSourceId) {
-        if (username) {
-            if (dataSourceId) {
-                return this.getUserDataSource(username).getDataSourceById(dataSourceId);
-            } else {
-                return this.getUserDataSource(username).getDefaultDataSource();
-            }
-        }
-        return this.currentDataSource;
-    }
     return dataSource;
 });

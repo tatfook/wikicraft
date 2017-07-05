@@ -1,0 +1,102 @@
+<style>
+    .org-apply .breadcrumb{
+        max-width: 750px;
+        width: 70%;
+        margin: 60px auto 0;
+        background-color: transparent;
+        padding-left: 0;
+        font-size: 16px;
+    }
+    .org-apply .breadcrumb img{
+        vertical-align: text-bottom;
+        margin-right: 5px;
+    }
+    .org-apply .panel{
+        background-color: #FFF;
+        box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
+        margin: 0 auto 80px;
+        max-width: 750px;
+        width: 70%;
+    }
+    .org-apply .panel-heading{
+        font-weight: bold;
+        font-size: 16px;
+        color: #666;
+        height: 60px;
+        line-height: 60px;
+        padding: 0 15px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .org-apply .panel-body{
+        padding: 80px 0 130px;
+    }
+    .org-apply .btn{
+        padding: 9px 53px;
+        font-size: 16px;
+        margin-right: 20px;
+    }
+    .org-apply .btn-outline{
+        color: #666;
+        border: 1px solid;
+    }
+    .org-apply .btn-outline:hover{
+        background-color: #666;
+        color: #FFF;
+    }
+    .org-apply .intro{
+        margin: 40px 0;
+    }
+    .org-apply textarea{
+        height: 120px;
+    }
+    .org-apply .form-apply{
+        width: 350px;
+        margin: 0 auto;
+    }
+    @media(max-width: 768px){
+        .org-apply .breadcrumb{
+            width: 100%;
+            margin: 0;
+        }
+        .org-apply .panel{
+            width: 100%;
+            margin: 0;
+            box-shadow: none;
+        }
+        .org-apply .panel-body{
+            padding:20px 0;
+        }
+        .org-apply .form-apply{
+            width: 100%;
+            padding: 0 15px;
+        }
+        .org-apply .intro{
+            margin: 20px 0;
+        }
+        .org-apply .btn{
+            padding:9px 40px;
+        }
+    }
+</style>
+<div class="org-apply clearfix" ng-controller="siteMemberApplyController">
+    <ol class="breadcrumb">
+        <li><a ng-click="goHomePage()"><img ng-src="{{getImageUrl('icon/left_icon.png',imgsPath)}}" alt="">首页</a></li>
+        <li>申请加入</li>
+    </ol>
+    <div class="panel">
+        <div class="panel-heading">申请加入</div>
+        <div class="panel-body">
+            <div class="form-apply">
+                <p>申请加入{{siteinfo.displayName}}</p>
+                <div class="intro">
+                    <p>个人简介：</p>
+                    <textarea ng-model="userDesc" class="form-control"></textarea>
+                </div>
+                <div>
+                    <div class="btn btn-primary" ng-click="clickMemberApply()">申请</div>
+                    <div class="btn btn-outline" ng-click="clickMemberCancel()">取消</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

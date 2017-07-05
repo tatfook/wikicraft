@@ -5,34 +5,32 @@
 define([
     'app',
     'helper/util',
+	'helper/dataSource',
     'text!html/test.html',
-    'wangEditor',
-    'to-markdown',
-], function (app, util, htmlContent, wangEditor, toMarkdown) {
-    console.log("testController");
-
-    console.log("-------------------");
-    console.log(toMarkdown('<div>hello world</div>', {
-        converters:[
-            {
-                filter: 'div',
-                replacement: function(content) {
-                    console.log("================");
-                    return '\n' + content + '\n';
-                }
-            },
-        ]
-    }));
-    app.registerController("testController", ['$scope','modal', function ($scope, modal) {
+], function (app, util, dataSource,  htmlContent) {
+    app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth) {
         function init() {
-            console.log("init testController");
+			$scope.goOauth = function(){
+				console.log("client redirect auth page");
+				//var redirect_uri = encodeURIComponent("http://localhost:8900/wiki/login");
+				var redirect_uri = "http://localhost:8900/wiki/oauth";
+				util.go("oauth?response_type=code&client_id=1000000&redirect_uri="+redirect_uri+"&scope=login&state=test");
+				return ;
+			}
+
+			$scope.standardOauth = function() {
+				$auth.authenticate("keepwork").then(function(response){
+					console.log(response);
+					console.log(response.data);
+				}, function(response){
+					console.log(response);
+				});
+			}
 
         }
-        //init();
         $scope.$watch("$viewContentLoaded", init);
     }]);
-
-
+    
     return htmlContent;
 });
 

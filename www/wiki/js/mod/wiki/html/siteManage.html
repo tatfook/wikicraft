@@ -1,0 +1,71 @@
+<style>
+    .site-btn-group {
+        padding: 30px 3px;
+        text-align: center;
+        background-color: #FFFDFA;
+    }
+    .site-btn-group .large-btn{
+        border: 2px solid #F57270;
+        padding: 14.5px 61px;
+        font-size: 24px;
+        margin-right: 60px;
+        border-radius: 5px;
+        color: #F57270;
+        background-color: transparent;
+        display: inline-block;
+    }
+
+    .site-btn-group .large-btn:hover{
+        background-color: #F57270;
+        color: #FFF;
+    }
+
+    .site-btns-demo {
+        padding: 30px 0;
+        text-align: center;
+        background-color: #FFFDFA;
+        -webkit-box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        -moz-box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+        box-shadow: 0 2px 3px 0 rgba(44,62,80,.35);
+    }
+    .site-btns-demo .large-btn{
+        border: 2px solid #F57270;
+        padding: 14.5px 61px;
+        font-size: 24px;
+        margin-right: 100px;
+        border-radius: 5px;
+        color: #F57270;
+        display: inline-block;
+    }
+    .site-btns-demo .large-btn:last-child{
+        margin-right: 0;
+    }
+    .site-btns-demo .large-btn:hover{
+        background-color: #F57270;
+        color: #FFF;
+    }
+</style>
+
+<div ng-controller="siteManageController">
+    <div class="site-btn-group" ng-show='modParams.moduleKind == "siteManage" || !modParams.moduleKind'>
+        <a ng-show="modParams.memberManage" class="btn btn-primary large-btn" ng-click="goMemberManagePage()">{{modParams.memberManageText || "成员管理"}}</a>
+        <a ng-show="modParams.worksManage" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">{{modParams.worksManageText || "作品管理"}}</a>
+        <a ng-show="modParams.worksApply"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">{{modParams.worksApplyText || "提交作品"}}</a>
+        <a ng-show="modParams.memberApply" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">{{modParams.memberApplyText || "申请加入"}}</a>
+    </div>
+
+    <div class="site-btn-group" ng-show='modParams.moduleKind == "siteManagePreview"'>
+        <a ng-show="modParams.memberManage" class="btn btn-primary large-btn" ng-click="goMemberManagePage()">{{modParams.memberManageText || "成员管理"}}</a>
+        <a ng-show="modParams.worksManage" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">{{modParams.worksManageText || "作品管理"}}</a>
+        <a ng-show="modParams.worksApply"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">{{modParams.worksApplyText || "提交作品"}}</a>
+        <a ng-show="modParams.memberApply" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">{{modParams.memberApplyText || "申请加入"}}</a>
+    </div>
+
+    <div class="site-btns-demo" ng-show='modParams.moduleKind == "siteManageDemo"'>
+        <a ng-show="modParams.memberManage" class="large-btn" ng-click="goMemberManagePage()">{{modParams.memberManageText || "成员管理"}}</a>
+        <a ng-show="modParams.worksManage" class="large-btn" ng-click="goWorksManagePage()">{{modParams.worksManageText || "作品管理"}}</a>
+        <a ng-show="modParams.worksApply"  class="large-btn" ng-click="goSubmitWorksPage()">{{modParams.worksApplyText || "提交作品"}}</a>
+        <a ng-show="modParams.memberApply" class="large-btn" ng-click="goMemberApplyPage()">{{modParams.memberApplyText || "申请加入"}}</a>
+        <a ng-show="modParams.tutorialVideo" class="large-btn" ng-click="goTutorialVideoPage()">{{modParams.tutorialVideoText || "教学视频"}}</a>
+    </div>
+</div>

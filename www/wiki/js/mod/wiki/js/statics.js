@@ -14,21 +14,7 @@ define([
     }
 
     function registerController(wikiBlock) {
-        // 个人信息统计
-        app.registerController("personalStaticsController", ['$scope','Account','Message', function ($scope, Account, Message) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.modParams = angular.copy(wikiBlock.modParams || {});
-            function init() {
-                util.http("POST", config.apiUrlPrefix + "user/getStatics", {userId: $scope.userinfo._id}, function (data) {
-                    $scope.statics = data || {};
-                });
-            }
-
-            $scope.$watch("$viewContentLoaded", init);
-        }]);
-
-        // 组织信息统计
-        app.registerController("organizationStaticsController", ['$scope', '$rootScope', 'Account','Message', function ($scope, $rootScope, Account, Message) {
+        app.registerController("staticsController", ['$scope', '$rootScope', 'Account','Message', function ($scope, $rootScope, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiBlock);
             var siteinfo = $rootScope.siteinfo;
@@ -37,19 +23,19 @@ define([
             $scope.modParams = modParams;
 
             function init() {
-                util.post(config.apiUrlPrefix + 'website/getStatics', {websiteId:siteinfo._id}, function (data) {
-                    $scope.statics = data || {};
-                    $scope.statics.recommendWorksCount = modParams.recommendWorksCount;
-                });
-
-                // $scope.user 为当前使用用户也是当前访问者
-                if ($scope.user && $scope.user._id) {
-                    util.post(config.apiUrlPrefix + 'website_member/getBySiteUserId', {websiteId:siteinfo._id, userId: $scope.user._id}, function (data) {
-                        visitorInfo = data;
+                if (wikiBlock.moduleKind == "personal") {
+                    util.http("POST", config.apiUrlPrefix + "user/getStatics", {userId: $scope.userinfo._id}, function (data) {
+                        $scope.statics = data || {};
+                    });
+                } else {
+                    util.post(config.apiUrlPrefix + 'website/getStatics', {websiteId:siteinfo._id}, function (data) {
+                        data = data || {};
+                        $scope.modParams.userCount = data.userCount;
+                        $scope.modParams.worksCount = data.worksCount;
                     });
                 }
             }
-            
+
             $scope.$watch("$viewContentLoaded", function () {
                 if (userinfo && siteinfo) {
                     modParams.username = userinfo.username;
@@ -69,49 +55,10 @@ define([
                 }
             });
 
-            $scope.isVisitor = function () {
-                if (!visitorInfo) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            $scope.isMember = function () {
-                if (visitorInfo && visitorInfo.roleId <= 2) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            $scope.isManager = function () {
-                if (visitorInfo && visitorInfo.roleId <= 1) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            $scope.goOrganizationManagePage = function () {
-                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
-                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationMemberManage';
-            }
-            
-            $scope.goWorksManagePage = function () {
-                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
-                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationWorksManage';
-            }
-            
-            $scope.goSubmitWorksPage = function () {
-                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
-                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationSubmitWorks';
-            }
-            
-            $scope.goMemberApplyPage = function () {
-                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
-                window.location.href = window.location.origin + '/wiki/js/mod/wiki/js/organizationMemberApply';
-            }
+            // 主题配置
+            var theme="template-theme-"+$scope.modParams.theme;
+            $scope.themeClass=new Object();
+            $scope.themeClass[theme]=true;
         }]);
     }
 
@@ -137,5 +84,41 @@ define([
     "moduleKind":"organization",
     "recommendWorksCount":"0"
 }
+```
+```@wiki/js/statics
+ {
+    "moduleKind":"game",
+    "btns":[
+        {
+            "link":"#",
+            "text":"我要参赛"
+        },
+         {
+             "link":"#",
+             "text":"教学视频"
+         }
+    ]
+ }
+```
+```@wiki/js/statics
+ {
+ "moduleKind":"gameDemo",
+ "btns":[
+     {
+         "link":"#",
+         "text":"我要投稿"
+     }
+ ],
+ "messages":[
+    {
+         "info":"参赛作者",
+         "count":"20"
+    },
+     {
+         "info":"参赛成员",
+         "count":"20"
+     }
+ ]
+ }
 ```
 */

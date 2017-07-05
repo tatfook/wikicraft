@@ -115,7 +115,7 @@
                     <div class="form-group clearfix">
                         <label class="control-label sr-only">模块名称</label>
                         <div class="col-xs-4 col-xs-offset-4 wiki-searchbar">
-                            <input type="text" ng-model="moduleName" class="form-control" placeholder="模块名">
+                            <input id="modelSearch" type="text" ng-model="moduleName" class="form-control" placeholder="模块名">
                             <span ng-click="getByName()" class="glyphicon glyphicon-search text-muted"></span>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                             <a href="#wikiBlockListView" ng-click="getAll()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">排行榜</a>
                         </li>
                         <li role="presentation">
-                            <a href="#wikiBlockListView" ng-click="getFavorite()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">收藏</a>
+                            <a href="#wikiBlockListView" ng-click="getFavorite()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">关注</a>
                         </li>
                     </ul>
 

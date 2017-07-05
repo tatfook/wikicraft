@@ -1,51 +1,121 @@
-```@template/js/default
+```@wiki/js/header
 {
-    "backgroundImage":"url('/wiki/assets/imgs/3DGameBG.jpg')",
-    "class":"container"
+"moduleKind":"game",
+"bgImg":"",
+"title":"",
+"stages":[
+{
+"name":"投稿期",
+"time":"5月1日-5月30日"
+},
+{
+"name":"评选期",
+"time":"5月1日-5月30日"
+},
+{
+"name":"公布结果",
+"time":"5月1日-5月30日"
+}
+]
 }
 ```
 
-```@wiki/js/gameHeader
-```
-
-```@wiki/js/gamedate
+```@wiki/js/siteManage
 {
-    "contributeDate":"12.1-12.30",
-    "voteDate":"1.1-1.10",
-    "resultDate":"1.12"
 }
 ```
 
-```@wiki/js/gameStatics
+```@wiki/js/statics
+{
+"moduleKind":"game",
+"theme":"red"
+}
 ```
 
 ```@wiki/js/workslist
 {
-    "title":"入围作品",
-    "type":"upgrade"
+"moduleKind":"game",
+"title":"入围作品",
+"type":"custom",
+"moreLink":"#"
 }
 ```
 
 ```@wiki/js/workslist
 {
-    "title":"最新上传",
-    "type":"latestNew",
-    "pageSize":"6"
+"moduleKind":"game",
+"title":"最新上传",
+"type":"latestJoin",
+"moreLink":"#"
 }
 ```
 
 ```@wiki/js/workslist
 {
-    "title":"全部作品",
-    "type":"all"
+"moduleKind":"game",
+"title":"全部作品",
+"type":"all",
+"moreLink":"#"
 }
 ```
 
-```@wiki/js/userlist
+```@wiki/js/siteMemberList
 {
-    "title":"评委成员",
-    "type":"judge"
+"moduleKind":"game",
+"title":"评委成员"
 }
 ```
 
-<div><img src="{{imgsPath + '3DGameRule.jpg'}}" class="img-responsive"></div>
+```@wiki/js/rules
+{
+"moduleKind":"game",
+"title":"大赛规则",
+"rules":[
+{
+"title":"参赛方式",
+"describe":"下载Paracraft客户端，将作品上传分享到个人作品网站，并申请参赛。"
+},
+{
+"title":"作品要求",
+"describe":"作品需使用电影方块，主题正面，电影类、创意类等均可。参赛作者可同时报名多个作品，但作品必须未参加过往届创意空间比赛。官方鼓励作品的原创与多样性，同时也鼓励改编和重构其他作品。如果参考了创意空间的其它作品需要注明来源，如发现公开冒充他人作品则直接取消参赛资格。"
+},
+{
+"title":"评选方式",
+"describe":"参赛作品由北京开放大学专业的老师和Paracraft工作人员共同审核评选。"
+}
+]
+}
+```
+
+```@wiki/js/rewards
+{
+"moduleKind":"game",
+"title":"活动奖励",
+"rewards":[
+{
+"title":"一等奖",
+"num":"（1名）",
+"describe":"1888元现金奖励+获奖证书",
+"imgUrl":"http://git.keepwork.com/gitlab_www_keepwork/keepworkdatasource/raw/master/images/img_1495609302693.jpeg"
+},
+{
+"title":"二等奖",
+"num":"（1名）",
+"describe":"1888元现金奖励+获奖证书",
+"imgUrl":""
+},
+{
+"title":"三等奖",
+"num":"（1名）",
+"describe":"1888元现金奖励+获奖证书",
+"imgUrl":""
+},
+{
+"title":"优秀奖",
+"num":"（3名）",
+"describe":"1888元现金奖励+获奖证书",
+"imgUrl":""
+}
+]
+}
+```

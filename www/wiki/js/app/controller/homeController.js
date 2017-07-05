@@ -33,11 +33,11 @@ define([
                 $scope.wikicraft = data || {};
             });
             
-            util.http("POST", config.apiUrlPrefix + 'website/getFavoriteSortList', {page:1, pageSize:4}, function (data) {
+            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount'}, function (data) {
                 $scope.siteObj = data;
             });
 
-            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount', filterType:'personal'}, function (data) {
+            util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount'}, function (data) {
                 $scope.personalSiteObj = data;
             });
 
@@ -271,8 +271,7 @@ define([
             var worksFavoriteRequest = function(isFavorite) {
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: site.userId,
-                    favoriteWebsiteId: site._id,
+                    siteId: site._id,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');

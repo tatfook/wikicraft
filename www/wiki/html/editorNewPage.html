@@ -3,6 +3,15 @@
      .newpage-modal .col-md-6:last-child{
          border-left:1px solid #DCDCDC;
      }
+     .modal-header .now-page{
+         font-weight: normal;
+         color: #666;
+     }
+     .modal-header .modal-title{
+         text-overflow: ellipsis;
+         white-space: nowrap;
+         overflow: hidden;
+     }
      /*.newpage-modal .treeview .list-group-item:first-child{*/
          /*background-color: #3977AD;*/
          /*color: #FFF;*/
@@ -12,17 +21,17 @@
     <form name="pageForm" ng-submit="website_new()">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">新建页</h4>
+        <h4 class="modal-title">新建页 <span ng-show="hidePageTree" class="now-page">&gt; {{nowHoverPage.name}}</span></h4>
     </div>
     <div class="modal-body newpage-modal">
         <div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6" ng-hide="hidePageTree">
                     <div>
                         <div id="newPageTreeId"></div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div ng-class="hidePageTree?'col-md-10':'col-md-6'">
                     <!-- NAME -->
                     <div class="form-group">
                         <label>页面名</label>
@@ -33,11 +42,9 @@
         </div>
     </div>
     <div class="modal-footer">
-        <!--<button class="btn"  data-dismiss="modal">取消</button>-->
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
         <span style="color: red; padding-right: 10px">{{errInfo}}</span>
-        <!-- SUBMIT BUTTON -->
         <button type="submit" class="btn btn-primary btn-fill">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
     </div>
     </form>
 </div>

@@ -26,6 +26,11 @@ define([
                 });
             }
             $scope.$watch('$viewContentLoaded', init);
+
+            // 主题配置
+            var theme="template-theme-"+$scope.modParams.theme;
+            $scope.themeClass=new Object();
+            $scope.themeClass[theme]=true;
         }]);
     }
     return {
