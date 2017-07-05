@@ -14,6 +14,14 @@ define([
         //return encodeURIComponent(url).replace(/\./g,'%2E')
     }
 
+	function filenameEncode(str) {
+				
+	}
+
+	function filenameDecode(str) {
+
+	}
+
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,                                          // is already init
@@ -420,9 +428,10 @@ define([
 
 		gitlab.uploadFile = function(params, cb, errcb) {
 			var self = this;
-			var path = '/' + self.dataSource.username + '_files/' +params.path;
+			var path = '/' + self.dataSource.username + '_files/' + params.path;
 			var content = params.content || "";
             content = content.split(',');
+			//console.log(content);
 			content = content.length > 1 ? content[1] : content[0];
 			content = Base64.decode(content);
 			//console.log(content);
