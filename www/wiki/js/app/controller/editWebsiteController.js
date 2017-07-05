@@ -267,7 +267,73 @@ define([
 			}, function(){
 
 			});
-        }
+        };
+        
+        var saveUser = function (name, group, users) {
+            for (var i = 0; i < (group.userList || []).length; i++) {
+                var user = group.userList[i];
+                if (name == user.name && !user.isDelete) {
+                    if (users.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                }
+            }
+            util.post(config.apiUrlPrefix + 'data_source/get', {username:name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
+                if (!dataSourceUser || dataSourceUser.length == 0) {
+                    Message.info("用户不在此站点的数据源中, 不可添加!!!");
+                    console.log("数据源用户不存在");
+                    if (users.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                }
+
+                dataSourceUser = dataSourceUser[0];
+
+                var params = {
+                    id:group.id,
+                    user_id:dataSourceUser.dataSourceUserId,
+                    access_level:40
+                };
+
+                var newUser = {
+                    name:name
+                };
+                newUser.id = params.user_id;
+                siteDataSource.createGroupMember(params, function(){
+                    newUser.isDelete = false;
+                    $scope.nowGroup.userList = $scope.nowGroup.userList || [];
+                    $scope.nowGroup.userList.push(newUser);
+
+                    util.post(config.apiUrlPrefix + "group_user/upsert", {
+                        username:siteinfo.username,
+                        groupname:group.name,
+                        memberName:name,
+                        level:40
+                    });
+
+                    if (users.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                }, function(){
+                    Message.info("用户添加失败");
+                    if (user.length>0){
+                        saveUser(users.shift(), group, users);
+                    }else{
+                        $scope.groupUser.name = "";
+                    }
+                    return;
+                });
+            });
+        };
 
         $scope.addUser = function () {
 			var group = $scope.nowGroup;
@@ -278,47 +344,9 @@ define([
 				return;
 			}
 
-			for (var i = 0; i < (group.userList || []).length; i++) {
-				var user = group.userList[i];
-				if (groupUser.name == user.name && !user.isDelete) {
-					return;
-				}
-			}
-
-			util.post(config.apiUrlPrefix + 'data_source/get', {username:groupUser.name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
-				if (!dataSourceUser || dataSourceUser.length == 0) {
-					Message.info("用户不在此站点的数据源中, 不可添加!!!");
-					console.log("数据源用户不存在");
-                    groupUser.name = "";
-					return;
-				}
-
-				dataSourceUser = dataSourceUser[0];
-
-				var params = {
-					id:group.id,
-					user_id:dataSourceUser.dataSourceUserId,
-					access_level:40
-				};
-				groupUser.id = params.user_id;
-				siteDataSource.createGroupMember(params, function(){
-					groupUser.isDelete = false;
-					$scope.nowGroup.userList = $scope.nowGroup.userList || [];
-					$scope.nowGroup.userList.push(angular.copy(groupUser));
-
-					util.post(config.apiUrlPrefix + "group_user/upsert", {
-						username:siteinfo.username,
-						groupname:group.name,
-						memberName:groupUser.name,
-						level:40
-					});
-                    groupUser.name = "";
-				}, function(){
-					Message.info("用户添加失败");
-                    groupUser.name = "";
-				});
-			});
-        }
+			var users = groupUser.name.split(",");
+			saveUser(users.shift(), group, users);
+        };
 
         $scope.removeUser = function (group, groupUser) {
 			if (!siteDataSource || !group || !groupUser) {
