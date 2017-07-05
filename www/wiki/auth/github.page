@@ -4,7 +4,10 @@ Title: oauth handler for `satellizer oauth framework`
 Author: LiXizhi
 Date: 2016/5/10
 ]]
+
+local utilTemp = util
 include_once("../models/data_source.page")
+util = utilTemp
 	
 local accessTokenUrl = 'https://github.com/login/oauth/access_token'
 local userApiUrl = 'https://api.github.com/user'
@@ -21,48 +24,52 @@ if not params.client_id then
     return response:send_xml("keepwork.com认证")
 end
 -- Step 1. Exchange authorization code for access token.
-util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
-	local accessToken = util.parse_str(data);
-    log("auth step 1")
-	log(accessToken)
-	if(accessToken and accessToken.error) then
-		return response:send({error=1, message="access token invaild"})
-	end
-	
-	local headers = { ['User-Agent'] = 'Satellizer' };
-	-- Step 2. Retrieve profile information about the current user.
-	util.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, function(err, msg, data)
-		log("auth step 2")
-		log(data)
-		if(not data) then
-			return response:send({error=1, message= 'Failed to fetch user info' })
-		end
-		local githubId = tostring(githubId)
+System.os.GetUrl({url = accessTokenUrl, qs = params }, resume)
+local err, msg, data = yield()
+data = data.data
+local accessToken = util.parse_str(data);
+log("auth step 1")
+log(accessToken)
+if(accessToken and accessToken.error) then
+	return response:send({error=1, message="access token invaild"})
+end
 
-		-- 是否已经登录
-		local userId = checkAuthenticated()
-		if userId then
-			db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {userId=userId, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
-			return response:send({token = token, error=0, message="OK"})
-		end
-		-- 未登录
-		db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName}}, function(err, userThreeService)
-			-- 没有绑定
-			if not userThreeService then
-				db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
-				return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
-			end
-			db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
-				if not userinfo then
-					return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
-				end
-				
-				log("-------------------")
-				models.data_source:new():api_githubLinkGitlab({username=userinfo.username, githubUserId=githubId})
-				local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
-				return response:send({token = token, data = userinfo, error=0, message="OK"})
-			end)
-		end)
-	end);
-end);
+local headers = { ['User-Agent'] = 'Satellizer' };
+-- Step 2. Retrieve profile information about the current user.
+System.os.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_token, headers = headers, json = true }, resume)
+local err, msg, data = yield()
+data = data.data
+log("auth step 2")
+log(data)
+if(not data) then
+	return response:send({error=1, message= 'Failed to fetch user info' })
+end
+local githubId = tostring(data.id)
+
+-- 是否已经登录
+local userId = checkAuthenticated()
+if userId then
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {userId=userId, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, resume) yield()
+	local token = request:header('Authorization'):match("%s+(%S+)")
+	models.data_source:new():api_githubLinkGitlab({githubUserId=githubId})
+	return response:send({token = token, error=0, message="OK"})
+end
+
+-- 未登录
+db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName}}, resume)
+local err, userThreeService = yield()
+-- 没有绑定
+if not userThreeService then
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
+end
+db.user:findOne({_id=userThreeService.userId}, resume)
+local err, userinfo = yield()
+if not userinfo then
+	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
+end
+
+models.data_source:new():api_githubLinkGitlab({username=userinfo.username, githubUserId=githubId})
+local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+return response:send({token = token, data = userinfo, error=0, message="OK"})
 

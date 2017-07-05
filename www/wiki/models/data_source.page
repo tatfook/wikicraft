@@ -384,11 +384,12 @@ end
 
 -- gitlab github
 function data_source:api_githubLinkGitlab(params) 
-	if not params.githubUserId or (not params.username) then
+	local tokenInfo = getTokenInfo()
+	if not params.githubUserId or (not tokenInfo) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({["+username+name"]={params.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
+	self:db():findOne({["+username+name"]={tokenInfo.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
 	local _, ds = yield()
 	
 	log(ds)
@@ -396,15 +397,17 @@ function data_source:api_githubLinkGitlab(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
 	-- 不存在创建用户
 	System.os.GetUrl({
-		url= ds.apiBaseUrl .. "/user", 
-		headers={['PRIVATE-TOKEN']= ds.dataSourceToken},
+		url= ds.apiBaseUrl .. "/users" .. tostring(ds.dataSourceUserId), 
+		headers={['PRIVATE-TOKEN']= adminToken},
 		method = "PUT",
 		json = true,
 		form = {
 			extern_uid = params.githubUserId,
 			provider = "github",
+			username = ds.dataSourceUsername,
 		}
 	}, resume)
 	local code, data = yield()
