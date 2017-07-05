@@ -1,0 +1,17 @@
+<style>
+    body{
+        background-color: #F4F9FF;
+    }
+    .notfound{
+        text-align: center;
+        padding: 60px 0;
+    }
+    .notfound img{
+        width: 30%;
+        height: auto;
+        cursor: pointer;
+    }
+</style>
+<div ng-controller="notfoundController" class="notfound" ng-click="goHome()">
+    <img ng-src="{{imgsPath+'wiki_404.jpg'}}" alt="">
+</div>

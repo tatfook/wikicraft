@@ -1,0 +1,111 @@
+<style>
+	.oauth-container{
+		max-width: 688px;
+		width: 688px;
+		margin: 0 auto;
+	}
+	.oauth-container h3{
+		font-weight: normal;
+		font-size: 20px;
+	}
+	.oauth-container .page-login{
+		width: 433px;
+		text-align: center;
+		border-right: 1px dashed #EEE;
+		padding: 5px 30px 0 0;
+	}
+	.oauth-container .page-accredit{
+		width: 227px;
+		margin-left: 20px;
+		padding-top: 50px;
+	}
+	.oauth-container .login-user{
+		margin: 30px 0;
+	}
+	.oauth-container .user-logo{
+		width: 90px;
+		height: 90px;
+		object-fit: cover;
+		margin-bottom: 8px;
+		border: 1px solid #FFF;
+		border-radius: 5px;
+		box-shadow: 0px 0px 9px 1px #bee1ff;
+	}
+	.oauth-container .btns{
+		margin-bottom: 20px;
+	}
+	.oauth-container .btn:first-child{
+		margin-right: 20px;
+	}
+	.oauth-container .btn{
+		padding: 6px 25px;
+		font-size: 14px;
+	}
+	.oauth-container .btn-danger{
+		background-color: #828282;
+		color: #FFF;
+		border: 1px solid #828282;
+	}
+	.oauth-container .btn-danger:hover{
+		color: #FFF;
+		background-color: #727272;
+	}
+	.oauth-container .otherway, .oauth-container .otherway > a{
+		color: #666;
+		padding: 0 5px;
+		font-size: 12px;
+	}
+	.oauth-container .otherway > a:hover{
+		color: #3977AD;
+	}
+	.oauth-container input[type="checkbox"]{
+		vertical-align: text-bottom;
+	}
+	.oauth-container label{
+		margin-left: 5px;
+		color: #666;
+		font-size: 12px;
+		font-weight: normal;
+	}
+	.oauth-container .accredit-info{
+		margin-top: 20px;
+	}
+	.oauth-container .list-group-item{
+		border: 1px dashed #EEE;
+		border-width: 1px 0;
+		height: 32px;
+		line-height: 25px;
+	}
+	.oauth-container .oauth-origin{
+		font-weight: bold;
+	}
+</style>
+<div ng-controller="oauthController" class="oauth-container clearfix">
+	<div class="page-login pull-left" ng-show="logined && !isAuth">
+		<h3>Keepwork快速安全登录</h3>
+		<div class="login-user">
+			<img ng-src="{{user.portrait || imgsPath+'wiki_default_profile.jpg '}}" alt="用户头像" class="user-logo left-to-right">
+			<p>{{user.displayName || user.username}}</p>
+		</div>
+		<div class="btns">
+			<div class="btn btn-primary" ng-click="agree()">同 意</div>
+			<div class="btn btn-danger" ng-click="refuse()">拒 绝</div>
+		</div>
+		<p class="clearfix otherway">
+			<a href="#" class="pull-right">注册新账号</a>
+			<span class="pull-right"> | </span>
+			<a href="#" class="pull-right">账号密码登录</a>
+		</p>
+	</div>
+	<div class="page-accredit pull-left" ng-show="logined && !isAuth">
+		<p><a class="oauth-origin">{{oauthApp.appName || "未知应用"}} </a>将获得以下权限：</p>
+		<div class="accredit-info">
+			<ul class="list-group">
+				<li class="list-group-item"><input ng-model="checkAll" type="checkbox" value="all" id="selectAll"><label for="selectAll">全选</label></li>
+				<li class="list-group-item"><input type="checkbox" value="all" id="userinfo" checked="checked" disabled><label for="userinfo">获取个人用户信息</label></li>
+			</ul>
+		</div>
+	</div>
+	<p ng-show="isAuth">{{message}}</p>
+	<p ng-show="!logined">请先登录</p>
+</div>

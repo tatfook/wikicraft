@@ -1,0 +1,138 @@
+/*默认主题*/
+
+/*实心按钮*/
+.template-theme .theme-btn{
+    background-color: #3977AD;
+    border: 1px solid #3977AD;
+}
+/*实心按钮hover*/
+.template-theme .theme-btn:hover{
+    background-color: #286090;
+    border: 1px solid #286090;
+}
+/*边框型按钮*/
+.template-theme .theme-btn-outline{
+    border: 1px solid #3977AD;
+    background-color: #FFF;
+}
+/*边框型按钮hover*/
+.template-theme .theme-btn-outline:hover{
+    background-color: #DFDFDF;
+}
+/*阴影*/
+.template-theme .theme-shadow{
+    box-shadow: 0 0 10px 0 rgba(57, 119, 173, 0.35);
+}
+/*字颜色*/
+.template-theme .theme-font-color{
+    color: #3977AD;
+}
+/*背景颜色*/
+.template-theme .theme-bg-color{
+    background-color: #3977AD;
+}
+
+/*浅蓝色主题*/
+
+/*实心按钮*/
+.template-theme-lightblue .theme-btn{
+    background-color: #2abfd4;
+    border: 1px solid #2abfd4;
+}
+/*实心按钮hover*/
+.template-theme-lightblue .theme-btn:hover{
+    background-color: #00c4dc;
+    border: 1px solid #00c4dc;
+    box-shadow: 0 0 10px 0px rgba(42, 191, 212, 0.35);
+}
+/*边框型按钮*/
+.template-theme-lightblue .theme-btn-outline{
+    border: 1px solid #2abfd4;
+    background-color: #FFF;
+}
+/*边框型按钮hover*/
+.template-theme-lightblue .theme-btn-outline:hover{
+    background-color: #DFDFDF;
+}
+/*阴影*/
+.template-theme-lightblue .theme-shadow{
+    box-shadow: 0 0 10px 0 rgba(42, 191, 212, 0.35);
+}
+/*字颜色*/
+.template-theme-lightblue .theme-font-color{
+    color: #2abfd4;
+}
+/*背景颜色*/
+.template-theme-lightblue .theme-bg-color{
+    background-color: #2abfd4;
+}
+
+/*红色主题*/
+
+/*实心按钮*/
+.template-theme-red .theme-btn{
+    background-color: #fe7e7f;
+    border: 1px solid #fe7e7f;
+}
+/*实心按钮hover*/
+.template-theme-red .theme-btn:hover{
+    background-color: #ff6c6e;
+    border: 1px solid #ff6c6e;
+    box-shadow: 0 0 10px 0px rgba(255, 108, 110, 0.35);
+}
+/*边框型按钮*/
+.template-theme-red .theme-btn-outline{
+    border: 1px solid #fe7e7f;
+    background-color: #FFF;
+}
+/*边框型按钮hover*/
+.template-theme-red .theme-btn-outline:hover{
+    background-color: #DFDFDF;
+}
+/*阴影*/
+.template-theme-red .theme-shadow{
+    box-shadow: 0 0 10px 0 rgba(255, 108, 110, 0.35);
+}
+/*字颜色*/
+.template-theme-red .theme-font-color{
+    color: #fe7e7f;
+}
+/*背景颜色*/
+.template-theme-red .theme-bg-color{
+    background-color: #fe7e7f;
+}
+
+/*灰色主题*/
+
+/*实心按钮*/
+.template-theme-grey .theme-btn{
+    background-color: #78878e;
+    border: 1px solid #78878e;
+}
+/*实心按钮hover*/
+.template-theme-grey .theme-btn:hover{
+    background-color: #748891;
+    border: 1px solid #748891;
+    box-shadow: 0 0 10px 0px rgba(116, 136, 145, 0.35);
+}
+/*边框型按钮*/
+.template-theme-grey .theme-btn-outline{
+    border: 1px solid #78878e;
+    background-color: #FFF;
+}
+/*边框型按钮hover*/
+.template-theme-grey .theme-btn-outline:hover{
+    background-color: #DFDFDF;
+}
+/*阴影*/
+.template-theme-grey .theme-shadow{
+    box-shadow: 0 0 10px 0 rgba(116, 136, 145, 0.35);
+}
+/*字颜色*/
+.template-theme-grey .theme-font-color{
+    color: #78878e;
+}
+/*背景颜色*/
+.template-theme-grey .theme-bg-color{
+    background-color: #78878e;
+}
