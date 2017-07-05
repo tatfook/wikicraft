@@ -61,6 +61,7 @@ define([
             util.post(url, params, function (data) {
                 $scope.wikiBlockList = data.moduleList;
                 $scope.totalItems = data.total;
+                console.log(data);
             });
         }
 
@@ -137,7 +138,7 @@ define([
         $scope.getClassify = function (classifyName) {
             $scope.classifyName = classifyName;
             $scope.labelItem = 'classify';
-            getWikiBlockList('classify')
+            getWikiBlockList('classify');
         }
         // 通过模块名搜索
         $scope.getByName = function () {

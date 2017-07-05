@@ -325,7 +325,7 @@ define([
                     return;
                 }, function(){
                     Message.info("用户添加失败");
-                    if (user.length>0){
+                    if (users.length>0){
                         saveUser(users.shift(), group, users);
                     }else{
                         $scope.groupUser.name = "";
