@@ -53,6 +53,7 @@ define([
 						errcb && errcb();
 						return;
 					}
+					dataSource.setDefaultUsername(user.username);
 					var DataSource = dataSource.getUserDataSource(user.username);
 					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
 						user.dataSource = data || [];
