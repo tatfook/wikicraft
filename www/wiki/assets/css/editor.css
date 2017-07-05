@@ -345,6 +345,7 @@ select.resize-view {
 }
 .code-view{
     padding-left: 285px;
+    padding-right: 0;
 }
 .code-view.nofile{
     padding-left: 0;
