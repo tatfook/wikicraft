@@ -382,4 +382,64 @@ function data_source:api_get(params)
 	return errors:wrap(yield())
 end
 
+-- gitlab github
+function data_source:api_githubLinkGitlab(params) 
+	if not params.githubUserId or (not params.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+username+name"]={params.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
+	local _, ds = yield()
+	
+	-- log(ds)
+	if not ds then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
+	-- 不存在创建用户
+	System.os.GetUrl({
+		url= ds.apiBaseUrl .. "/users/" .. tostring(ds.dataSourceUserId), 
+		headers={['PRIVATE-TOKEN']= adminToken},
+		method = "PUT",
+		json = true,
+		form = {
+			extern_uid = params.githubUserId,
+			provider = "github",
+			username = ds.dataSourceUsername,
+		}
+	}, resume)
+	local code, data = yield()
+	-- log(data)
+	if code ~= 200 then
+		return errors:wrap(errors.SERVER_INNER_ERROR, {message="request three service resource failed!!!"})
+	end
+	
+	return errors:wrap()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

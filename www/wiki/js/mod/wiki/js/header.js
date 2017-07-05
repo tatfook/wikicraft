@@ -107,3 +107,25 @@ define([
  }
  ```
  */
+/*
+ ```@wiki/js/header
+ {
+ "moduleKind":"haqiGame",
+ "bgImg":"",
+ "btnGroup1":[
+ {
+ "text":"下载游戏",
+ "link":"#",
+ "btnClass":""
+ }
+ ],
+ "btnGroup2":[
+ {
+ "text":"注册账号",
+ "link":"#",
+ "btnClass":""
+ }
+ ]
+ }
+ ```
+ */

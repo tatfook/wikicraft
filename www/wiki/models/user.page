@@ -81,6 +81,24 @@ function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
 end
 
+-- 获取用户的基本信息
+function user:api_getBaseInfoByName(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo  = yield()
+
+	if not userinfo then 
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	userinfo.password = nil
+
+	return errors:wrap()
+end
+
 -- 旧接口兼容
 function user:api_getminiprofile(params)
 	if(not params._id) then
@@ -141,21 +159,27 @@ end
 -- 用户注销账号 
 function user:api_deleteById(params) 
 	-- 只能删除自己
-	if not params.userId then
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
+
+	if not params.username or (username ~= params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local userId = params.userId -- debug
-	-- local userId = self:ensureAuthenticated()
+	self:db():findOne({["+username"]={username}}, resume)
+	local _, userinfo = yield()
+	if not userinfo then	
+		return errors:wrap()
+	end
 
 	-- 删除用户所有站点
 	local websiteDB = models.website:new()
-	websiteDB:deleteUserWebsite(userId)
+	websiteDB:deleteUserWebsite(userinfo._id)
 	-- 删除用户所有收藏
 	local userFavoriteDB = models.user_favorite:new()
-	userFavoriteDB:api_deleteByUserId({userId=params.userId})
+	userFavoriteDB:api_deleteByUserId({userId=userinfo._id})
 
-	self:db():deleteOne({_id=userId}, resume)
+	self:db():deleteOne({["+username"]={username}}, resume)
 	local err, data = yield() 
 	
 	return errors:wrap() 
@@ -205,7 +229,8 @@ end
 
 -- 手机验证
 function user:api_verifyCellphoneTwo(params)
-	local userId = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if (not params.smsId) or (not params.smsCode) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -216,7 +241,7 @@ function user:api_verifyCellphoneTwo(params)
 		return errors:wap(errors:new("验证码错误"))
 	end
 
-	self:db():findOne({_id=userId}, resume)
+	self:db():findOne({["+username"]={username}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then
 		return errors:wrap(errors.USER_NOT_EXIST)
@@ -231,12 +256,13 @@ end
 
 -- 邮箱验证1
 function user:api_verifyEmailOne(params) 
-	local userId = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if not params.email then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({_id=userId}, resume)
+	self:db():findOne({["+username"]={username}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then
 		return errors:wrap(errors.USER_NOT_EXIST)
@@ -331,12 +357,12 @@ end
 
 -- 更改密码
 function user:api_changepw(params)
-	local userId = self:ensureAuthenticated()
+	local username = self:ensureAuthenticated()
 	if (not params.oldpassword) or (not params.newpassword) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({_id=userId}, resume)
+	self:db():findOne({["+username"]={username}}, resume)
 	local err, user = yield()
 	
 	if not user then 
@@ -405,7 +431,7 @@ function user:api_login(params)
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
 
-	return {error=errors.SUCCESS, data={token=createJWT(userinfo), userinfo=userinfo}}
+	return {error=errors.SUCCESS, data={token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo}}
 end
 
 function user:api_bindThreeService(params)
@@ -425,7 +451,7 @@ function user:api_bindThreeService(params)
 	threeService.userId = userinfo._id
 	userThreeServiceDB:api_upsert(threeService)
 	
-	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo, isNewUser=0})
+	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=0})
 end	
 
 -- 注册
@@ -479,7 +505,7 @@ function user:api_register(params)
 		userThreeServiceDB:api_upsert(threeService)
 	end
 
-	return errors:wrap(nil, {token=createJWT(userinfo), userinfo=userinfo, isNewUser=1})
+	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=1})
 end
 
 -- 获取用户默认数据源
@@ -514,11 +540,12 @@ end
 
 -- 获取用户信息
 function user:api_getProfile()
-	local userId = self:ensureAuthenticated()
-	self:db():findOne({_id=userId}, resume)
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
+	self:db():findOne({["+username"]={username}}, resume)
 	local err, data = yield()
 	if not data then 
-		return errors:wrap(nil)
+		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	local siteDataSourceDB = models.site_data_source:new()
@@ -794,8 +821,8 @@ function user:api_adminLogin(params)
 end
 
 function user:adminAuth() 
-	local userId = ensureAuthenticated()
-	self:db():findOne({_id=userId}, resume)
+	local username = self:ensureAuthenticated()
+	self:db():findOne({["+username"]={username}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then
 		response:status(401):send({ message = "未认证"})

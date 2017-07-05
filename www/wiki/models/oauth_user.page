@@ -1,0 +1,30 @@
+<?npl
+--[[
+Title: oauth user
+Author: wuxiangan
+Date: 2017/06/08
+]]
+
+
+include_once("./abstract/base.page")
+
+local oauth_user = inherit(models.abstract.base, gettable("models.oauth_user"))
+oauth_user.db_name = "oauth_user"
+
+function oauth_user:ctor()
+	self:addfield("username", "string")           -- username 
+	self:addfield("clientId", "string")           -- oauth client id 
+	self:addfield("scope", "string")              -- 授权范围
+	self:addfield("expire", "string")             -- 授权过期时间
+end
+
+
+function oauth_user:api_upsert(params) 
+	if (not params.username) or (not params.clientId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():insertOne({["+username+clientId"]={params.username, params.clientId}}, params, resume)
+	
+	return errors:wrap(yield())
+end

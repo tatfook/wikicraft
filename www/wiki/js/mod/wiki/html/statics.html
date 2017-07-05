@@ -148,6 +148,28 @@
         color: #FFF;
     }
 </style>
+<style>
+    .haqi-statics{
+        text-align: center;
+        padding: 40px 0;
+        background: -webkit-gradient(linear,0% 0%, 0% 80%, from(#c9ee81), to(#FFFFFF));
+    }
+    .haqi-statics .haqi-btn{
+        color: #FFFC00;
+        background-color: #a2df31;
+        box-shadow: 0 8px 0px 0px #8dcc47, 0 8px 18px 3px rgba(12, 3, 7,0.1), 0 -5px 0px 0px #bcef61;
+        font-weight: bolder;
+        font-size: 24px;
+        margin-right: 10px;
+        width: 140px;
+        -webkit-text-stroke: 1px #89b62b;
+        height: 40px;
+        padding: 0;
+        line-height: 36px;
+        border-radius: 20px;
+    }
+
+</style>
 <div ng-controller="staticsController">
     <!--个人信息统计-->
     <div ng-show="modParams.moduleKind=='personal' || !modParams.moduleKind">
@@ -200,5 +222,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!--哈奇按钮集-->
+    <div ng-show="modParams.moduleKind=='haqiGame'" class="haqi-statics">
+        <a ng-repeat="btn in modParams.btns" href="{{btn.link}}" class="btn {{btn.btnClass || 'haqi-btn'}}">{{btn.text || "按 钮"}}</a>
     </div>
 </div>
