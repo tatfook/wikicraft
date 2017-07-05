@@ -179,8 +179,8 @@ define([
 			if (pageNode.isLeaf) {
 				treeNode.tags = [
 					"<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove()' title='删除'></span>",
-					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' +")' title='刷新'></span>",
+					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(false," + '"' + pageNode.url + '"' + ")' title='删除'></span>",
+					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
 				];
 			} else {
                 treeNode.tags = [];
@@ -1114,6 +1114,7 @@ define([
 							continue;
 						}
                         var treeid = getTreeId(node.pageNode.username, node.pageNode.sitename);
+						//console.log(treeid, node.pageNode.username, node.pageNode.sitename);
                         treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }
                 });
@@ -1293,35 +1294,39 @@ define([
             }
 
             //删除
-            $scope.cmd_remove = function (confirmed) {
+            $scope.cmd_remove = function (confirmed, url) {
+				var page = getPageByUrl(url);
+				if (!page) {
+					return;
+				}
                 if (!confirmed){
-                    var nodeid=event.target.parentNode.parentNode.dataset.nodeid;
-                    var node=$("#mytree").treeview("getNode",nodeid);
                     $scope.deleteNode = {
-                        sitename: node.pageNode.sitename,
-                        name: node.pageNode.name
+                        sitename: page.sitename,
+                        name: page.pagename,
+						url:url,
                     };
                     $('#deleteModal').modal("show");
                 }else{
-                    if (!isEmptyObject(currentPage)) {
-                        currentSite = getCurrentSite(currentPage.username, currentPage.sitename);
-                        var currentDataSource = getCurrentDataSource();
+                    if (!isEmptyObject(page)) {
+                        var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
 
-                        currentDataSource && currentDataSource.deleteFile({path: currentPage.url + pageSuffixName}, function () {
+                        currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
                             console.log("删除文件成功:");
                         }, function (response) {
                             console.log("删除文件失败:");
                         });
 
-                        storage.indexedDBDeleteItem(config.pageStoreName, currentPage.url);
+                        storage.indexedDBDeleteItem(config.pageStoreName, page.url);
 
-                        delete allPageMap[currentPage.url];
-                        delete $scope.opens[currentPage.url];
+                        delete allPageMap[page.url];
+                        delete $scope.opens[page.url];
                         storage.sessionStorageRemoveItem('urlObj');
-                        currentPage = undefined;
-                        $('#deleteModal').modal("hide");
-                        initTree();
-                        openPage();
+						$('#deleteModal').modal("hide");
+						if (currentPage.url == page.url) {
+							currentPage = undefined;
+							initTree();
+							openPage();
+						}
                     }
                 }
             }
