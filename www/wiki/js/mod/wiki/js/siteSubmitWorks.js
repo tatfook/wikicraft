@@ -150,7 +150,7 @@ define([
                             fnList.push((function (index) {
                                 return function (cb, errcb) {
                                     var siteinfo = siteList[index];
-                                    var DataSource = userDataSource.getDataSourceById(siteinfo.dataSourceId || $scope.user.dataSourceId);
+                                    var DataSource = userDataSource.getDataSourceBySitename(siteinfo.name);
                                     DataSource.getTree({path:'/' + siteinfo.username + '/' + siteinfo.name}, function (data) {
                                         $scope.pageList = $scope.pageList.concat(data || []);
                                         //console.log($scope.pageList);
