@@ -144,6 +144,7 @@
     .setting-form .save-btn{
         width: 140px;
         font-size: 16px;
+        padding: 8px 0;
     }
     .setting-form .inner-info{
         padding: 0 30px;
@@ -318,13 +319,13 @@
                 <div class="authority">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#grouping" aria-controls="grouping" role="tab" data-toggle="tab">分组管理</a></li>
-                        <li role="presentation"><a href="#authorize" aria-controls="authorize" role="tab" data-toggle="tab">授权管理</a></li>
+                        <li role="presentation" class="active"><a href="#authorize" aria-controls="authorize" role="tab" data-toggle="tab">授权管理</a></li>
+                        <li role="presentation"><a href="#grouping" aria-controls="grouping" role="tab" data-toggle="tab">分组管理</a></li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active authority-tab" id="grouping">
+                        <div role="tabpanel" class="tab-pane authority-tab" id="grouping">
                             <form class="form-horizontal setting-form" role="form">
                                 <div class="form-group form-group-lg sr-only">
                                     <legend>分组管理</legend>
@@ -335,14 +336,14 @@
 										<div class="col-sm-8 add-cname">
 											<input type="text" class="form-control" id="groupName" ng-model="nowGroup.name">
 										</div>
-										<div class="btn btn-primary btn-add-cname col-sm-4" ng-click="createGroup()">创建</div>
+										<div ng-hide="editing" class="btn btn-primary btn-add-cname col-sm-4" ng-click="createGroup()">创建</div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
+                                <div class="form-group form-group-lg" ng-show="editing">
                                     <label class="col-sm-2 control-label">分组成员：</label>
                                     <div class="col-sm-5">
                                         <div class="col-sm-8 add-cname">
-                                            <input type="text" class="form-control" ng-model="groupUser.name">
+                                            <input id="groupUserName" type="text" class="form-control" ng-model="groupUser.name">
                                         </div>
                                         <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addUser()">添加</div>
                                         <div class="col-sm-12 labels-box">
@@ -352,6 +353,9 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-sm-12 save-setting" ng-show="editing">
+                                    <div class="btn btn-primary save-btn" ng-click="editGroup(nowGroup,true)">返回分组</div>
                                 </div>
                                 <!--div class="col-sm-12 save-setting">
                                     <div class="btn btn-primary save-btn" ng-click="createGroup()" ng-show="!editing">创建</div>
@@ -378,7 +382,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="authorize">
+                        <div role="tabpanel" class="tab-pane active" id="authorize">
                             <form class="form-horizontal setting-form" role="form">
                                 <div class="form-group form-group-lg sr-only">
                                     <legend>授权列表</legend>

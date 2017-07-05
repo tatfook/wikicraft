@@ -243,11 +243,14 @@ body,
     width: 10px;
     height: 100%;
     background-color: #FFF;
-    z-index: 1;
+    z-index: 6;
     position: absolute;
     right: 0;
     top: 0;
     border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
+
+    cursor: col-resize;
 }
 .treeview .badge{
     background-color: transparent;
@@ -342,10 +345,10 @@ select.resize-view {
 }
 .code-view{
     padding-left: 285px;
+    padding-right: 0;
 }
 .code-view.nofile{
     padding-left: 0;
-    margin-left: -15px;
 }
 .state-change .active img:first-child{
     display: none;
@@ -366,23 +369,23 @@ select.resize-view {
 }
 
 #srcview{
-    padding-right: 10px;
+    padding-right: 0;
     padding-left:0;
 }
 
-.opened{
+.opened,.joined-treeview{
     color: #3977AD;
 }
-.opened .list-group{
+.opened .list-group,.joined-treeview .list-group{
     margin-bottom: 0;
 }
-.opened .list-group-item{
+.opened .list-group-item, .joined-treeview .list-group-item{
     border: none;
 }
-.opened .list-group-item:not(.node-selected):hover{
+.opened .list-group-item:not(.node-selected):hover, .joined-treeview .list-group-item:not(.node-selected):hover{
     background-color: #E6E6E6;
 }
-.opened .node-selected{
+.opened .node-selected, .joined-treeview .node-selected{
     background-color: #3977AD;
     color: #FFF;
 }
@@ -560,6 +563,7 @@ select.resize-view {
     }
     .code-view{
         padding-left: 195px;
+        padding-right: 0;
     }
     .treeview-container{
         width: 195px;

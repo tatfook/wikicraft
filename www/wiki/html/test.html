@@ -1,10 +1,11 @@
-```@wiki/js/header
+```@example/js/oauth
 {
-"moduleKind":"game2",
-"bgImg":"",
-"title":"PAC全国3D创作大赛",
-"subTitle":"———— 2017 * 夏季赛 ————",
-"message":"用ParaCraft创意空间制作电影作品参赛",
-"time":"2017年6月1日——2017年10月15日"
 }
 ```
+
+<div ng-controller="testController">
+	<div class="container">
+		<button class="btn btn-default" ng-click="goOauth()">自带oauth认证模拟</button>
+		<button class="btn btn-default" ng-click="standardOauth()">标准oauth认证模拟</button>
+	</div>
+</div>

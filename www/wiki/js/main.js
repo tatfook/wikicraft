@@ -45,6 +45,7 @@
             'markdown-it':libPathPrefix + 'markdown-it/markdown-it.min',  // 已支持amd则不能喝<script>标签混合使用
             'highlight': libPathPrefix + 'highlight/highlight.pack', //不支持amd规范可用标签引入 或配置shim
             'js-base64': libPathPrefix + 'js-base64/base64.min',
+            'js-base32': libPathPrefix + 'js-base32/base32.min',
             'text': libPathPrefix + 'requirejs/text',
             'domReady': libPathPrefix + 'requirejs/domReady',
             'fabric': libPathPrefix + 'fabric.require',

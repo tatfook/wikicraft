@@ -14,6 +14,14 @@ define([
         //return encodeURIComponent(url).replace(/\./g,'%2E')
     }
 
+	function filenameEncode(str) {
+				
+	}
+
+	function filenameDecode(str) {
+
+	}
+
     app.factory('gitlab', ['$http', function ($http) {
         var gitlab = {
             inited: false,                                          // is already init
@@ -30,6 +38,7 @@ define([
 
         // http请求
         gitlab.httpRequest = function (method, url, data, cb, errcb) {
+            this.dataSource.dataSourceToken && (this.httpHeader["PRIVATE-TOKEN"] = this.dataSource.dataSourceToken);
             //console.log(url);
             var config = {
                 method: method,
@@ -75,24 +84,32 @@ define([
             $http(config).then(success).catch(failed);
         }
 
+		//gitlab.getAuthInfo = function(){
+			//return this.dataSource.visibility == "private" ? "private_token=" + this.dataSource.dataSourceToken : "private_token=";
+		//}
+
         gitlab.getLongPath = function (params) {
             return this.rootPath + (params.path || "");
         }
 
+		gitlab.getToken = function() {
+			return this.dataSource.dataSourceToken;
+		}
+
         gitlab.getCommitUrlPrefix = function (params) {
-			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + (params.token || this.dataSource.dataSourceToken) : "";
             return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + "/commit/" + params.sha + authStr;
         }
 
         gitlab.getRawContentUrlPrefix = function (params) {
             params = params || {};
-			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + (params.token || this.dataSource.dataSourceToken) : "";
             return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/raw/' + (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
         gitlab.getContentUrlPrefix = function (params) {
             params = params || {};
-			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + this.dataSource.dataSourceToken : "";
+			var authStr = this.dataSource.visibility == "private" ? "?private_token=" + (params.token || this.dataSource.dataSourceToken) : "";
             return this.rawBaseUrl + '/' + (params.username || this.username) + '/' + (params.projectName || this.projectName).toLowerCase() + '/blob/'+ (params.sha || this.lastCommitId) + this.getLongPath(params) + authStr;
         }
 
@@ -404,21 +421,22 @@ define([
                 encoding: 'base64'
             }, function (data) {
 				//var imgUrl = self.getRawContentUrlPrefix({sha:"master"}) + '/' + data.file_path + (self.dataSource.visibility  == "private" ? ("?private_token=" + self.dataSource.dataSourceToken) : ""); 
-				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path}); 
+				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"}); 
                 cb && cb(imgUrl);
             }, errcb);
         }
 
 		gitlab.uploadFile = function(params, cb, errcb) {
 			var self = this;
-			var path = '/' + self.dataSource.username + '_files/' +params.path;
+			var path = '/' + self.dataSource.username + '_files/' + params.path;
 			var content = params.content || "";
             content = content.split(',');
+			//console.log(content);
 			content = content.length > 1 ? content[1] : content[0];
 			content = Base64.decode(content);
 			//console.log(content);
 			self.writeFile({path:path, content:content},function(){
-				var linkUrl = self.getRawContentUrlPrefix({sha:"master", path:path});
+				var linkUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"});
 				cb && cb(linkUrl);
 				// commit id replace master implement
 				//var tempPath = self.getLongPath({path:path}).substring(1);
@@ -459,7 +477,10 @@ define([
             }
 			
 			if (dataSource.isInited) {
-				cb && cb();
+				self.getLastCommitId(function(lastCommitId){
+					lastCommitId && (self.lastCommitId = lastCommitId);
+					cb && cb();
+				}, errcb);
 				return;
 			}
 

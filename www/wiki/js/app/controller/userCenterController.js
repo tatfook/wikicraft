@@ -107,6 +107,10 @@ define(['app',
         $scope.getActiveStyleClass = function (item) {
             return $scope.showItem == item.flag ? 'active' : '';
         }
+
+        $scope.goUserSite = function (x) {
+            util.goUserSite('/' + x.username + '/' + x.name, true);
+        }
     }]);
 
     return htmlContent;

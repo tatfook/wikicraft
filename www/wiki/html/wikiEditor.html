@@ -194,18 +194,27 @@
                                 </li>
                             </ul>
                         </div>
-                        <div>
-                            <div id="mytree"></div>
+                        <div style="margin-bottom: 20px;">
+                            <div id="myTree"></div>
                         </div>
-                        <div style="margin-top: 20px">
-                            <div id="othertree"></div>
+                        <div class="treeview joined-treeview" style="border-top: 1px solid #DCDCDC;">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <span class="icon expand-icon glyphicon glyphicon-minus"></span>
+                                    参与的项目
+                                </li>
+                            </ul>
+							<div id="editableTree"></div>
+                        </div>
+                        <div>
+                            <div id="readableTree"></div>
                         </div>
                     </div>
                     <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: auto">
                         <div id="srcview" class="col-xs-6 full-height">
                             <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
                             <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
-                            <div class="border"></div>
+                            <div id="resize-bar" class="border"></div>
                         </div>
                         <section id="preview" class="col-xs-6 full-height" style="max-height: 100%; height: 100%;overflow-y: auto;overflow-x: auto;padding: 0;">
                             <div class="result-html full-height"></div>

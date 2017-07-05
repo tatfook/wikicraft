@@ -9,6 +9,7 @@ define([
     // helper
     'helper/util',
     'helper/loading',
+    'helper/filter',
 	
 	// controller
     'controller/mainController',

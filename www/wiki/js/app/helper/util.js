@@ -210,7 +210,7 @@ define([
             var data = response.data;
             //console.log(data);
             // debug use by wxa
-            if (!data.error) {
+            if (!data || !data.error) {
                 console.log(url);
             }
             if (data.error.id == 0) {
@@ -313,6 +313,11 @@ define([
 
     // 执行批量  function(finishCB){}
     util.batchRun = function(fnList,finish) {
+		if (!fnList || fnList.length == 0) {
+			finish && finish();
+			return;
+		}
+
         var isCall = [];
         var _isFinish = function () {
             if (isCall.length != fnList.length)
@@ -344,6 +349,10 @@ define([
 
     // 顺序执行 function(cb,errcb){}
     util.sequenceRun = function (fnList, delay, cb, errcb) {
+		if (!fnList || fnList.length == 0) {
+			cb && cb();
+			return;
+		}
         delay = delay == undefined ? 1000 : delay;
         var index = 0;
         var retryCount = {};
@@ -409,6 +418,44 @@ define([
 	// 获取当前路径
 	util.getPathname = function() {
 		return util.humpToSnake(util.parseUrl().pathname);
+	}
+
+	// 获取查询参数
+	util.getQueryObject = function(search, decode) {
+		//decode = decode == undefined ? true : decode;
+		search = search || window.location.search.substring(1);
+		var result = {};
+		var argList = search.split("&");
+		for (var i = 0; i < argList.length; i++) {
+			var key_value = argList[i].split("=");
+			if (key_value.length > 0) {
+				result[key_value[0]] = key_value[1] || "";
+				if (decode) {
+					console.log(result[key_value[0]]);
+					result[key_value[0]] = decodeURIComponent(result[key_value[0]]);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	// 根据obj获取查询串
+	util.getQueryString = function(searchObj, encode) {
+		var search = "";
+		var value = undefined;
+		//encode = encode == undefined ? true : encode;
+		searchObj = searchObj || {};
+		for (key in searchObj) {
+			value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
+			if (search.length == 0) {
+				search += key + "=" + value;
+			} else {
+				search += "&" + key + "=" + value;
+			}
+		}
+
+		return search;
 	}
 
     config.util = util;

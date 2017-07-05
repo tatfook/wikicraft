@@ -131,16 +131,28 @@ define([
         dataSourceFactory: {},
         // 用户数据源映射
         dataSourceUserMap: {},
+		// 数据源映射
+		dataSourceMap:{},
         // 当前数据源
         currentDataSource:undefined,
     };
 
+	function getDataSourceKey(username, sitename) {
+		return username + "_" + sitename;
+	}
     dataSource.registerDataSourceFactory = function (typ, factory) {
         dataSource.dataSourceFactory[typ] = factory;
     };
 
 	dataSource.getDataSourceInstance = function(typ) {
 		return dataSource.dataSourceFactory[typ] && dataSource.dataSourceFactory[typ]();	
+	}
+
+	dataSource.registerDataSource = function(dataSourceCfg, cb, errcb) {
+		var inst = this.getDataSourceInstance(dataSourceCfg.type);
+		this.dataSourceMap[getDataSourceKey(dataSourceCfg.username,dataSourceCfg.sitename)] = inst;
+		inst.init(dataSourceCfg, cb, errcb);
+		
 	}
 
     dataSource.getUserDataSource = function (name) {
@@ -151,6 +163,9 @@ define([
     }
 
 	dataSource.getDataSource = function(username, sitename) {
+		if (this.dataSourceMap[getDataSourceKey(username,sitename)]) {
+			return this.dataSourceMap[getDataSourceKey(username,sitename)];
+		}
 		//console.log(dataSource.dataSourceUserMap);
 		return this.getUserDataSource(username).getDataSourceBySitename(sitename)
 	}
