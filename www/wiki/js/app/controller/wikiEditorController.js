@@ -185,7 +185,7 @@ define([
 			} else {
                 treeNode.tags = [];
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().goSetting("+ '"' + pageNode.sitename+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='关闭全部'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
@@ -1360,6 +1360,12 @@ define([
 						$scope.cmd_close(key);
 					}
                 }
+            };
+
+            $scope.goSetting = function (sitename) {
+                // console.log();
+                storage.sessionStorageSetItem("urlObj",{username:$scope.user.username, sitename:sitename});
+                util.go('wikieditor');
             };
 
             $scope.cmd_saveAll = function () {
