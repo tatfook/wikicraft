@@ -465,6 +465,67 @@
 		}
 	}
 </style>
+<style>
+	.haqi-game{
+		position: relative;
+	}
+	.haqi-game .bg-img>img{
+		width: 100%;
+	}
+	.haqi-game .btns{
+		bottom: 110px;
+		position: absolute;
+		left: 40%;
+	}
+	.haqi-game .btns{
+		bottom: 30%;
+		position: absolute;
+		left: 40%;
+		max-width: 285px;
+		width: 285px;
+	}
+	.haqi-game .btns .btn{
+		text-align: center;
+		width: 100%;
+		padding: 0;
+	}
+	.haqi-game .haqi-btn1{
+		background-color: #A2DF31;
+		color: #FFF;
+		font-weight: bold;
+		box-shadow: 0 8px 0px 0px #8dcc47, 0 8px 18px 3px rgba(12, 3, 7,0.5), 0 -9px 0px 0px #befd79;
+		font-size: 36px;
+		height: 45px;
+		line-height: 38px;
+		border-radius: 30px;
+		-webkit-text-stroke: 1px #89b62b;
+	}
+	.haqi-game .haqi-btn2{
+		background-color: #2F6294;
+		color: #A0DE17;
+		font-weight: bold;
+		box-shadow: 0 6px 10px 0px rgba(12, 3, 7,.57) inset;
+		border-radius: 20px;
+		font-size: 25px;
+		height: 40px;
+		margin-top: 20px;
+	}
+	@media (max-width: 1280px) and (min-width: 992px){
+		.haqi-game .btns{
+			width: 200px;
+			bottom: 21%;
+		}
+		.haqi-game .haqi-btn1{
+			font-size: 32px;
+		}
+	}
+	@media (min-width: 1920px) {
+		.haqi-game .btns{
+			left: 43%;
+			bottom:35%;
+		}
+	}
+</style>
 
 <div ng-controller="headerController">
 	<!-- 个人主页头部 -->
@@ -531,6 +592,16 @@
 				<p class="message">{{modParams.message}}</p>
 				<h3 class="game-time">{{modParams.time}}</h3>
 			</div>
+		</div>
+	</div>
+	<!--哈奇头部-->
+	<div ng-show="modParams.moduleKind=='haqiGame'" class="haqi-game">
+		<div class="bg-img">
+			<img ng-src="{{modParams.bgImg || getImageUrl('haqi_banner.jpg',imgsPath)}}" alt="weizhi">
+		</div>
+		<div class="btns">
+			<a ng-repeat="btn in modParams.btnGroup1" href="{{btn.link}}" class="btn {{btn.btnClass || 'haqi-btn1'}}">{{btn.text}}{{btn.btnClass}}</a>
+			<a ng-repeat="btn in modParams.btnGroup2" href="{{btn.link}}" class="btn {{btn.btnClass || 'haqi-btn2'}}">{{btn.text}}</a>
 		</div>
 	</div>
 </div>

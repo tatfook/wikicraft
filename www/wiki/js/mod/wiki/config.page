@@ -45,6 +45,21 @@ function main()
 			desc="个人站点头部",
 			flag=1,
 		},
+		{
+            name="个人博客头部",
+            classifyName="header",
+            content=[[
+                ```@wiki/js/blogHeader
+                {
+                    "introduce":"这里是个人简介区域，可以自定义。"
+                }
+                ```
+            ]],
+            wikiCmdName="@wiki/js/blogHeader",
+            logoUrl="wiki/assets/imgs/personal_header.jpg",
+            desc="个人博客头部",
+            flag=1,
+        },
 
 		{
 			name="信息统计",
@@ -61,6 +76,18 @@ function main()
 			desc="个人统计信息",
 			flag=1,
 		},
+		{
+            name="个人博客信息统计",
+            classifyName="statics",
+            content=[[
+                ```@wiki/js/blogStatics
+                ```
+            ]],
+            wikiCmdName="@wiki/js/blogStatics",
+            logoUrl="wiki/assets/imgs/personal_statics.png",
+            desc="个人博客信息统计",
+            flag=1,
+        },
 
 		{
 			name="作品展示",
@@ -78,7 +105,86 @@ function main()
 			desc="作品显示",
 			flag=1,
 		},
-
+		{
+            name="个人博客列表",
+            classifyName="works",
+            content=[[
+                ```@wiki/js/blogMain
+                ```
+            ]],
+            wikiCmdName="@wiki/js/blogMain",
+            logoUrl="wiki/assets/imgs/wiki_workslist.png",
+            desc="个人博客作品列表展示",
+            flag=1,
+        },
+        {
+            name="产品展示",
+            classifyName="works",
+            content=[[
+                ```@wiki/js/companyWorksList
+                 {
+                 "columnName":"COLUMN",
+                 "columnInfo":"栏目名称",
+                 "moreNewsLink":"#",
+                 "works":[
+                 {
+                 "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                 "workTitle":"产品一",
+                 "workLink":"#"
+                 },
+                 {
+                 "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
+                 "workTitle":"产品二",
+                 "workLink":"#"
+                 },
+                 {
+                 "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                 "workTitle":"产品三",
+                 "workLink":"#"
+                 }
+                 ]
+                 }
+                 ```
+            ]],
+            wikiCmdName="@wiki/js/companyWorksList",
+            logoUrl="wiki/assets/imgs/wiki_products.jpg",
+            desc="产品展示",
+            flag=1,
+        },
+        {
+            name="产品展示",
+            classifyName="works",
+            content=[[
+                ```@wiki/js/companyWorksListSecond
+                 {
+                 "columnName":"栏目名称",
+                 "columnInfo":"COLUMN",
+                 "moreNewsLink":"#",
+                 "works":[
+                 {
+                 "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
+                 "workTitle":"产品一",
+                 "workLink":"#"
+                 },
+                 {
+                 "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                 "workTitle":"产品二",
+                 "workLink":"#"
+                 },
+                 {
+                 "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
+                 "workTitle":"产品三",
+                 "workLink":"#"
+                 }
+                 ]
+                 }
+                ```
+            ]],
+            wikiCmdName="@wiki/js/companyWorksListSecond",
+            logoUrl="wiki/assets/imgs/wiki_products.jpg",
+            desc="产品展示二",
+            flag=1,
+        },
 		{
 			name="富文本",
 			classifyName="editor",
@@ -91,7 +197,370 @@ function main()
 			desc="富文本编辑模块",
 			flag=1,
 		},
-
+		{
+            name="评论区域",
+            classifyName="editor",
+            content=[[
+                 ```@wiki/js/comment
+                 ```
+            ]],
+            wikiCmdName="@wiki/js/comment",
+            logoUrl="wiki/assets/imgs/wiki_layout2.jpg",
+            desc="评论模块（包括评论列表以及发表评论区域）",
+            flag=1,
+        },
+        {
+            name="左图右文字",
+            classifyName="布局",
+            content=[[
+                 ```@wiki/js/companyAbout
+                  {
+                  "columnName":"栏目名称",
+                  "columnInfo":"栏目名称",
+                  "moreNewsLink":"#",
+                  "paragraphs":[
+                  "段落1：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落2：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落3：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落4：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落5：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落6：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落7：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落8：这里可以手动配置文字，超出部分会自动截取"
+                  ],
+                  "companyImg":"http://git.keepwork.com/gitlab_www_kaitlyn/keepworkmodules/raw/master/kaitlyn_images/img_1499236926676.jpeg"
+                  }
+                  ```
+            ]],
+            wikiCmdName="@wiki/js/companyAbout",
+            logoUrl="wiki/assets/imgs/wiki_layout2.jpg",
+            desc="左边图片，右边文字。展示布局",
+            flag=1,
+        },
+        {
+            name="左文字右图",
+            classifyName="布局",
+            content=[[
+                 ```@wiki/js/companyAboutSecond
+                  {
+                  "columnName":"栏目名称",
+                  "columnInfo":"COLUMN",
+                  "moreNewsLink":"#",
+                  "paragraphs":[
+                  "段落1：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落2：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落3：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落4：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落5：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落6：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落7：栏目的具体介绍，\n 显示8行文字护比较好看,这里可以手动配置文字",
+                  "段落8：这里可以手动配置文字，超出部分会隐藏并且把了解详情链接挤没了"
+                  ],
+                  "companyImg":"http://git.keepwork.com/gitlab_www_kaitlyn/keepworkmodules/raw/master/kaitlyn_images/img_1499236926676.jpeg"
+                  }
+                  ```
+            ]],
+            wikiCmdName="@wiki/js/companyAboutSecond",
+            logoUrl="wiki/assets/imgs/wiki_layout.jpg",
+            desc="左边文字，右边图片。展示布局",
+            flag=1,
+        },
+        {
+            name="导航链接组",
+            classifyName="布局",
+            content=[[
+                 ```@wiki/js/companyBottomNav
+                  {
+                  "navItems":[
+                  {
+                  "name":"链接分类一",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接分类二",
+                  "subUrl":[
+                  {
+                  "name":"链接1",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接2",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类三",
+                  "subUrl":[
+                  {
+                  "name":"链接3",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接4",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接5",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接6",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类四",
+                  "subUrl":[
+                  {
+                  "name":"链接7",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接8",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接9",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接10",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类五",
+                  "subUrl":[
+                  {
+                  "name":"链接11",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类六",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接分类七",
+                  "url":"#"
+                  }
+                  ]
+                  }
+                  ```
+            ]],
+            wikiCmdName="@wiki/js/companyBottomNav",
+            logoUrl="wiki/assets/imgs/wiki_navbar.jpg",
+            desc="导航链接集合",
+            flag=1,
+        },
+        {
+            name="左右循环轮播",
+            classifyName="轮播",
+            content=[[
+                 ```@wiki/js/companyCarousel
+                  {
+                  "carouselImg":[
+                  "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977168649&di=a6bc50097f28c0508e046746d7da29a0&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2Fqk%2Fback_origin_pic%2F00%2F01%2F86%2Ff548129ce938a644a245f19d67d032c7.jpg",
+                  "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491977186450&di=32ac5744e99460e3d3525052e2bde53f&imgtype=0&src=http%3A%2F%2Fwww.goto307.com.tw%2Fupload%2Fbanner_ins_list%2Fb0c218ed21c3916d4531f182e9712115.jpg"
+                  ]
+                  }
+                  ```
+            ]],
+            wikiCmdName="@wiki/js/companyCarousel",
+            logoUrl="wiki/assets/imgs/wiki_carousel.jpg",
+            desc="轮播，从左到有，循环",
+            flag=1,
+        },
+        {
+            name="底部信息",
+            classifyName="footer",
+            content=[[
+                 ```@wiki/js/companyFooter
+                  {
+                  "companyName":"公司名",
+                  "companyInfo":"版权信息",
+                  "friendsLinks":[
+                  {
+                  "name":"链接1",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接2",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接3",
+                  "url":"#"
+                  }
+                  ]
+                  }
+                  ```
+            ]],
+            wikiCmdName="@wiki/js/companyFooter",
+            logoUrl="wiki/assets/imgs/wiki_navbar.jpg",
+            desc="底部导航条",
+            flag=1,
+        },
+        {
+            name="导航条",
+            classifyName="navbar",
+            content=[[
+                 ```@wiki/js/companyNavbar
+                  {
+                  "companyName":"公司名",
+                  "companyInfo":"公司介绍公司介绍",
+                  "navItems":[
+                  {
+                  "name":"链接分类一",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接分类二",
+                  "subUrl":[
+                  {
+                  "name":"链接1",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接2",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类三",
+                  "subUrl":[
+                  {
+                  "name":"链接3",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接4",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接5",
+                  "url":"#"
+                  },
+                  {
+                  "name":"链接6",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类四",
+                  "subUrl":[
+                  {
+                  "name":"链接7",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类五",
+                  "subUrl":[
+                  {
+                  "name":"链接8",
+                  "url":"#"
+                  }
+                  ]
+                  },
+                  {
+                  "name":"链接分类六",
+                  "url":"http://keepwork.com"
+                  },
+                  {
+                  "name":"链接分类七",
+                  "url":"http://keepwork.com"
+                  }
+                  ]
+                  }
+                  ```
+            ]],
+            wikiCmdName="@wiki/js/companyNavbar",
+            logoUrl="wiki/assets/imgs/wiki_navbar.jpg",
+            desc="导航条",
+            flag=1,
+        },
+        {
+            name="列表",
+            classifyName="未分类",
+            content=[[
+                 ```@wiki/js/companyNews
+                  {
+                  "columnName":"COL",
+                  "columnInfo":"栏目名称",
+                  "moreNewsLink":"#",
+                  "topNewsTitle":"文章标题一，头条",
+                  "topNewsContent":"文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号",
+                  "topNewsImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                  "topNewsLink":"#",
+                  "news":[
+                  {
+                  "title":"文章标题二",
+                  "content":"文章简介 \n 只显示一行，超过两行的文字隐藏并且在文字末尾显示省略号；文章简介 \n 只显示一行，超过两行的文字隐藏并且在文字末尾显示省略号",
+                  "yearMonth":"年份-月份",
+                  "day":"01",
+                  "newsLink":"#"
+                  },
+                  {
+                  "title":"文章标题二",
+                  "content":"文章简介 \n 只显示一行，超过两行的文字隐藏并且在文字末尾显示省略号；文章简介 \n 只显示一行，超过两行的文字隐藏并且在文字末尾显示省略号",
+                  "yearMonth":"年份-月份",
+                  "day":"01",
+                  "newsLink":"#"
+                  }
+                  ]
+                  }
+                 ```
+            ]],
+            wikiCmdName="@wiki/js/companyNews",
+            logoUrl="wiki/assets/imgs/wiki_layout2.jpg",
+            desc="列表信息展示1",
+            flag=1,
+        },
+        {
+            name="列表",
+            classifyName="未分类",
+            content=[[
+                 ```@wiki/js/companyNewsSecond
+                  {
+                  "columnName":"NEWS",
+                  "columnInfo":"新闻资讯",
+                  "moreNewsLink":"http://www.tatfook.com/?cat=24",
+                  "topNewsTitle":"文章标题一，头条，一行显示，超出部分隐藏并且在文字末尾显示省略号省略号",
+                  "topNewsContent":"文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号",
+                  "topNewsImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                  "topNewsLink":"#",
+                  "news":[
+                  {
+                  "title":"标题二，一行，超出显示省略号，超出显示省略号，超出显示省略号",
+                  "content":"文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号",
+                  "yearMonth":"年份-月份",
+                  "day":"01",
+                  "newsLink":"#"
+                  },
+                  {
+                  "title":"标题三，一行，超出显示省略号，超出显示省略号，超出显示省略号",
+                  "content":"文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号文章简介 \n 只显示两行，超过两行的文字隐藏并且在文字末尾显示省略号",
+                  "yearMonth":"年份-月份",
+                  "day":"02",
+                  "newsLink":"#"
+                  }
+                  ]
+                  }
+                 ```
+            ]],
+            wikiCmdName="@wiki/js/companyNewsSecond",
+            logoUrl="wiki/assets/imgs/wiki_layout2.jpg",
+            desc="列表信息展示2",
+            flag=1,
+        },
 	}
 	
 	regitsterWikiModuleList(wikiModuleList)

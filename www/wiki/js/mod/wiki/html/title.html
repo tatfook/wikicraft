@@ -20,9 +20,28 @@
         color: #666;
     }
 </style>
+<style>
+    .title2 h2{
+        color: #333;
+        display: flex;
+        align-items:center;
+    }
+    .title2 h2 span{
+        font-size: 20px;
+        color: #999;
+        flex:1;
+        padding-left: 10px;
+    }
+</style>
 <div ng-controller="titleController">
-    <div class="title1 container" ng-show="modParams.moduleKind=='title'">
+    <div class="title1 container" ng-show="modParams.moduleKind=='title' || !modParams.moduleKind">
         <h1>{{modParams.title}}</h1>
+        <div class="content">
+            <p ng-bind-html="content"></p>
+        </div>
+    </div>
+    <div class="title2 container" ng-show="modParams.moduleKind=='title2'">
+        <h2>{{modParams.column}} <span class="info">{{modParams.columnInfo}}</span></h2>
         <div class="content">
             <p ng-bind-html="content"></p>
         </div>

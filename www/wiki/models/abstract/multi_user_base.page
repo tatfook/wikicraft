@@ -18,7 +18,13 @@ function multi_user_base:ctor()
 end
 
 function multi_user_base:getUserId()
-	return request.userid;
+	local tokenInfo = getTokenInfo()
+
+	if not tokenInfo then
+		return nil
+	end
+
+	return tokenInfo.userId
 end
 
 function multi_user_base:get(params)
