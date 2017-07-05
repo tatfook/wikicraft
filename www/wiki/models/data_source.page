@@ -384,12 +384,11 @@ end
 
 -- gitlab github
 function data_source:api_githubLinkGitlab(params) 
-	local tokenInfo = getTokenInfo()
-	if not params.githubUserId or (not tokenInfo) then
+	if not params.githubUserId or (params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	self:db():findOne({["+username+name"]={tokenInfo.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
+	self:db():findOne({["+username+name"]={params.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
 	local _, ds = yield()
 	
 	log(ds)
