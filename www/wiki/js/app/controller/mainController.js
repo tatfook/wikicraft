@@ -300,7 +300,11 @@ define([
                     if (Account.isAuthenticated()) {
                         Account.getUser(function (userinfo) {
                             util.go("/" + userinfo.username);
-                        });
+						}, function() {
+							Account.logout();
+						    window.location.reload();
+							//util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
+						});
                     } else {
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }

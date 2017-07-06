@@ -306,6 +306,7 @@ define([
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
+            $rootScope.isLogin = Account.isAuthenticated();
             //console.log("isAuthenticated");
         });
 
