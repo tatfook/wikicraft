@@ -89,7 +89,7 @@ define([
                 return;
             
             var userDataSource = dataSource.getUserDataSource($scope.urlObj.username)
-            var currentDataSource = userDataSource && userDataSource.getDataSourceById($rootScope.siteinfo.dataSourceId);
+            var currentDataSource = userDataSource && userDataSource.getDataSourceBySitename($rootScope.siteinfo.name);
             if (!currentDataSource) {
                 console.log(userDataSource,$rootScope.siteinfo._id );
                 return;
