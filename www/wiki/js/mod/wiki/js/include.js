@@ -51,3 +51,21 @@ define([
         }
     }
 });
+
+/*
+   ```@wiki/js/include
+   {
+		"content":"#test",
+   }
+   ```
+   ```@wiki/js/include
+   {
+		"contentUrl":"test"
+   }
+   ```
+   ```@wiki/js/include
+   {
+		"contentUrl":"/xiaoyao/xiaoyao/test"
+   }
+   ```
+*/

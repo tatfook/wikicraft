@@ -246,6 +246,7 @@ function site_data_source:api_updateGithubLastCommitId(params)
 
 	params.lastCommitId = data[1].sha
 	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	params.lastCommitIdUpdateTime = os.time()
 	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	yield()
 	
@@ -272,6 +273,20 @@ function site_data_source:api_updateLastCommitId(params)
 	end
 
 	return errors:wrap(nil, siteDataSource)
+end
+
+-- 修改最后提交id
+function site_data_source:api_updateLastCommitIdByName(params) 
+	if not params.username or (not params.sitename) or (not params.lastCommitId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_TRUST
+	params.lastCommitIdUpdateTime = os.time()
+	
+	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
+	
+	return errors:wrap(yield())
 end
 
 -- 创建站点数据源
@@ -309,6 +324,9 @@ function site_data_source:api_getSiteDataSource(params)
 	self:copyDataSourceToSite(siteDataSource, nil)
 	return errors:wrap(nil, siteDataSource)
 end
+
+
+
 
 
 

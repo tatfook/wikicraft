@@ -681,6 +681,18 @@ define([
 			});
             //init();
 
+			// 更新提交id
+			function updateLastCommitId(siteDataSource, page) {
+				siteDataSource.getLastCommitId(function(lastCommitId){
+					siteDataSource.setLastCommitId(lastCommitId);
+					util.post(config.apiUrlPrefix + "site_data_source/updateLastCommitIdByName", {
+						username:page.username, 
+						sitename:page.sitename,
+						lastCommitId:lastCommitId,
+					});
+				});
+			}
+
             // 保存页
             function savePageContent(cb, errcb) {
                 //console.log(currentPage);
@@ -709,6 +721,7 @@ define([
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
                     console.log("---------save success-------");
+					updateLastCommitId(currentDataSource, page);
                     cb && cb();
                 };
 

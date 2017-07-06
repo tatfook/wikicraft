@@ -477,11 +477,12 @@ define([
                 return;
             }
 			
-			if (dataSource.isInited) {
-				self.getLastCommitId(function(lastCommitId){
-					lastCommitId && (self.lastCommitId = lastCommitId);
-					cb && cb();
-				}, errcb);
+			if (dataSource.isInited || dataSource.projectId) {
+				//self.getLastCommitId(function(lastCommitId){
+					//lastCommitId && (self.lastCommitId = lastCommitId);
+					//cb && cb();
+				//}, errcb);
+				cb && cb();
 				return;
 			}
 
