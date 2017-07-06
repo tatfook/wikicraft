@@ -482,9 +482,11 @@ define([
             function loadUnSavePage() {
 				var currentTime = (new Date()).getTime();
                 storage.indexedDBGet(config.pageStoreName, function (page) {
-					if (!isUserExist() || !page.username || !page.sitename || !page.pagename || !page.url || (page.username != $scope.user.username)) {
+					if (!page.username || !page.sitename || !page.pagename || !page.url) {
 						return;
 					}
+					
+					//console.log(page);
 
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
@@ -1953,7 +1955,8 @@ define([
                     return;
                 }
 
-                if (!currentPage.isModify || !isSelfPage()) {
+                //if (!currentPage.isModify || !isSelfPage()) {
+                if (!currentPage.isModify) {
                     cb && cb();
                     return;
                 }
