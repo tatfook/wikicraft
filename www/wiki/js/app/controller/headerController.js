@@ -244,7 +244,12 @@ define([
         };
         
         $scope.clickShare=function () {
-            $scope.tit=$scope.user.displayName+'分享给你'+$scope.urlObj.username+"制作的"+$scope.urlObj.sitename+"网站";
+            if ($scope.user){
+                $scope.tit = $scope.user.displayName;
+            }else{
+                $scope.tit = "未知用户";
+            }
+            $scope.tit += '分享给你'+$scope.urlObj.username+"制作的"+$scope.urlObj.sitename+"网站";
             var description="我将"+$scope.urlObj.username+"在KEEPWORK.COM制作的网站分享给你";
             var img=$scope.imgsPath+"icon/logo.png";
             var $config = {

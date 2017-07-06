@@ -15,9 +15,12 @@
         padding: 10px 15px;
     }
     .wikiblock-tab {
-        max-height: 450px;
+        max-height: 500px;
         overflow-y: auto;
         padding-top: 20px;
+    }
+    .wikiblock-tab .tab-pane{
+        min-height:438px;
     }
     .wikiblock-tab .col-md-4{
         margin-bottom: 20px;
@@ -75,6 +78,12 @@
         line-height: 30px;
         right: 25px;
         font-size: 20px;
+    }
+    .wikiblock-tab .pagination-box{
+        text-align: center;
+    }
+    .wikiblock-tab .pagination{
+        margin: 0;
     }
     .wiki-searchbar > span {
         position: absolute;
@@ -146,7 +155,7 @@
                     </ul>
 
                     <!-- Tab panes -->
-                    <div class="tab-content col-md-12 wikiblock-tab">
+                    <div class="tab-content col-md-12 wikiblock-tab" id="js-module-container">
                         <div role="tabpanel" class="tab-pane active clearfix" id="wikiBlockListView">
                             <div class="col-md-4" ng-repeat="wikiBlock in wikiBlockList">
                                 <div class="img-hover">
@@ -165,6 +174,12 @@
                                     <p title="{{wikiBlock.desc}}">{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="pagination-box">
+                            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
+                                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                                class="pagination-sm" boundary-link-numbers="true"></ul>
                         </div>
                     </div>
                 </div>
