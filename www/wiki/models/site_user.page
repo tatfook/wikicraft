@@ -1,0 +1,23 @@
+<?npl
+--[[
+Title: site data source
+Author: wuxiangan
+Date: 2017/06/08
+]]
+
+
+include_once("./abstract/base.page")
+include_once("./website.page")
+
+local site_user = inherit(models.abstract.base, gettable("models.site_user"))
+site_user.db_name = "site_user"
+
+
+function site_user:ctor()
+	self:addfield("username", "string")            -- 用户名  组的所属者
+	self:addfield("sitename", "string")            -- 站点名
+	self:addfield("groupname", "string")           -- 组名 
+	self:addfield("memberName", "string")          -- 成员名
+	self:addfield("level", "number")               -- 权限级别
+	self:addfield("levelName", "string")           -- 级别名
+end

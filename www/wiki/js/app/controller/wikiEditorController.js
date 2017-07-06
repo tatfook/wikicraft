@@ -543,6 +543,9 @@ define([
 						}, function(data){
 							data = data || [];
 							for (var i = 0; i < data.length; i++) {
+								if (isEmptyObject(data[i]) || !data[i].siteinfo) {
+									continue;
+								}
 								data[i].siteinfo.isEditable = true;
 								setSite(data[i].siteinfo);
 							}

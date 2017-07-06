@@ -281,7 +281,7 @@ define([
                     return;
                 }
             }
-            util.post(config.apiUrlPrefix + 'data_source/get', {username:name, apiBaseUrl:siteDataSource.apiUrlPrefix}, function(dataSourceUser) {
+            util.post(config.apiUrlPrefix + 'data_source/get', {username:name, apiBaseUrl:siteDataSource.apiBaseUrl}, function(dataSourceUser) {
                 if (!dataSourceUser || dataSourceUser.length == 0) {
                     Message.info("用户不在此站点的数据源中, 不可添加!!!");
                     console.log("数据源用户不存在");

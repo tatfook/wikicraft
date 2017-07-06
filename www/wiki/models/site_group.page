@@ -70,14 +70,12 @@ function site_group:api_getByMemberName(params)
 	local result = {}
 	local websiteDB = models.website:new()
 	
-	-- log(groupList)
-
 	for _, group in ipairs(groupList or {}) do
 		result[#result+1] = {} 
-		result[#result]["groupUser"] = group
-		self:db():findOne({["+username+groupname+level"]={group.username, group.groupname, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
-		local _, siteGroup = yield()	
-		if siteGroup then
+		-- result[#result]["groupUser"] = group
+		self:db():find({["+username+groupname+level"]={group.username, group.groupname, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
+		local _, siteGroupList = yield()	
+		for _, siteGroup in ipairs(siteGroupList or {}) do
 			result[#result]["siteGroup"] = siteGroup
 			result[#result]["siteinfo"] = websiteDB:api_getWithDataSourceByName(siteGroup).data
 		end
