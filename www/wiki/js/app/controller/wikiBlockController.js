@@ -11,7 +11,7 @@ define([
     app.registerController('wikiBlockController',['$scope', '$uibModalInstance','Message', function ($scope, $uibModalInstance, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
-        $scope.pageSize = 12;
+        $scope.pageSize = 6;
 
         $scope.wikiBlockList = [
             /*
@@ -33,6 +33,10 @@ define([
             util.post(config.apiUrlPrefix + 'wiki_module/updateUseCount', {moduleId:wikiBlock._id});
             $uibModalInstance.close(wikiBlock);
         }
+
+        $scope.sitePageChanged = function () {
+            getWikiBlockList($scope.labelItem);
+        };
 
         function getWikiBlockList(type) {
             var params = {page:$scope.currentPage, pageSize:$scope.pageSize};
@@ -61,7 +65,6 @@ define([
             util.post(url, params, function (data) {
                 $scope.wikiBlockList = data.moduleList;
                 $scope.totalItems = data.total;
-                console.log(data);
             });
         }
 
@@ -122,21 +125,25 @@ define([
         // 获得全部
         $scope.getAll = function () {
             $scope.labelItem = 'all';
+            $scope.currentPage = 1;
             getWikiBlockList('all');
         }
         // 获取用户收藏
         $scope.getFavorite = function () {
             $scope.labelItem = 'favorite';
+            $scope.currentPage = 1;
             getWikiBlockList('favorite');
         }
         // 获得热门
         $scope.getHot = function () {
             $scope.labelItem = 'hot';
+            $scope.currentPage = 1;
             getWikiBlockList('hot');
         }
         // 分类获取
         $scope.getClassify = function (classifyName) {
             $scope.classifyName = classifyName;
+            $scope.currentPage = 1;
             $scope.labelItem = 'classify';
             getWikiBlockList('classify');
         }

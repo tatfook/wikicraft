@@ -85,40 +85,43 @@ define([
     "recommendWorksCount":"0"
 }
 ```
-```@wiki/js/statics
+ ```@wiki/js/statics
  {
-    "moduleKind":"game",
-    "btns":[
-        {
-            "link":"#",
-            "text":"我要参赛"
-        },
-         {
-             "link":"#",
-             "text":"教学视频"
-         }
-    ]
+ "moduleKind":"game",
+ "userCountText":"统计信息一",
+ "userCount":"1",
+ "worksCountText":"统计信息二",
+ "worksCount":"2",
+ "riseCountText":"统计信息三",
+ "riseCount":"3"
  }
-```
-```@wiki/js/statics
+ ```
+ ```@wiki/js/statics
  {
- "moduleKind":"gameDemo",
+ "moduleKind":"haqiGame",
+ "bgImg":"",
  "btns":[
-     {
-         "link":"#",
-         "text":"我要投稿"
-     }
- ],
- "messages":[
-    {
-         "info":"参赛作者",
-         "count":"20"
-    },
-     {
-         "info":"参赛成员",
-         "count":"20"
-     }
+ {
+ "text":"新手入门",
+ "link":"#",
+ "btnClass":""
+ },
+ {
+ "text":"游戏充值",
+ "link":"#",
+ "btnClass":""
+ },
+ {
+ "text":"相关攻略",
+ "link":"#",
+ "btnClass":""
+ },
+ {
+ "text":"精彩视频",
+ "link":"#",
+ "btnClass":""
+ }
  ]
  }
-```
+ ```
 */
