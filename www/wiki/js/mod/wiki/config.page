@@ -266,29 +266,29 @@ function main()
             name="产品展示",
             classifyName="works",
             content=[[
-                ```@wiki/js/companyWorksList
-                 {
-                 "columnName":"COLUMN",
-                 "columnInfo":"栏目名称",
-                 "moreNewsLink":"#",
-                 "works":[
-                 {
-                 "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
-                 "workTitle":"产品一",
-                 "workLink":"#"
-                 },
-                 {
-                 "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
-                 "workTitle":"产品二",
-                 "workLink":"#"
-                 },
-                 {
-                 "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
-                 "workTitle":"产品三",
-                 "workLink":"#"
-                 }
-                 ]
-                 }
+                 ```@wiki/js/companyWorksList
+                  {
+                  "columnName":"COLUMN",
+                  "columnInfo":"栏目名称",
+                  "moreNewsLink":"#",
+                  "works":[
+                  {
+                  "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                  "workTitle":"产品一",
+                  "workLink":"#"
+                  },
+                  {
+                  "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
+                  "workTitle":"产品二",
+                  "workLink":"#"
+                  },
+                  {
+                  "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                  "workTitle":"产品三",
+                  "workLink":"#"
+                  }
+                  ]
+                  }
                  ```
             ]],
             wikiCmdName="@wiki/js/companyWorksList",
@@ -301,28 +301,28 @@ function main()
             classifyName="works",
             content=[[
                 ```@wiki/js/companyWorksListSecond
-                 {
-                 "columnName":"栏目名称",
-                 "columnInfo":"COLUMN",
-                 "moreNewsLink":"#",
-                 "works":[
-                 {
-                 "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
-                 "workTitle":"产品一",
-                 "workLink":"#"
-                 },
-                 {
-                 "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
-                 "workTitle":"产品二",
-                 "workLink":"#"
-                 },
-                 {
-                 "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
-                 "workTitle":"产品三",
-                 "workLink":"#"
-                 }
-                 ]
-                 }
+                {
+                "columnName":"栏目名称",
+                "columnInfo":"COLUMN",
+                "moreNewsLink":"#",
+                "works":[
+                {
+                "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
+                "workTitle":"产品一",
+                "workLink":"#"
+                },
+                {
+                "workImg":"http://keepwork.com/wiki/assets/imgs/wiki_works.jpg",
+                "workTitle":"产品二",
+                "workLink":"#"
+                },
+                {
+                "workImg":"http://keepwork.com/wiki/js/mod/wiki/assets/imgs/company_news_top.jpg",
+                "workTitle":"产品三",
+                "workLink":"#"
+                }
+                ]
+                }
                 ```
             ]],
             wikiCmdName="@wiki/js/companyWorksListSecond",
