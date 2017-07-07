@@ -8,6 +8,7 @@ Date: 2017/06/08
 
 include_once("./abstract/base.page")
 include_once("./group_user.page")
+include_once("./site_user.page")
 include_once("./website.page")
 
 local site_group = inherit(models.abstract.base, gettable("models.site_group"))
@@ -31,17 +32,26 @@ function site_group:api_upsert(params)
 	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
 
 	self:db():insertOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, params, resume)
+	local _, siteGroup = yield()
+
+	if (params.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL) then
+		models.site_user:api_addGroupUser(params)
+	end
 	
-	return errors:wrap(yield())
+	return errors:wrap(nil, siteGroup)
 end
 
 -- 删除一个站点组
-function site_group:api_deleteById(params)
-	if not params._id then
+function site_group:api_deleteByName(params)
+	if (not params.username) or (not params.sitename) or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():deleteOne({_id=params._id}, resume)
+	self:db():deleteOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, resume)
+
+	if (params.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL) then
+		models.site_user:api_deleteGroupUser(params)
+	end
 
 	return errors:wrap(yield())
 end

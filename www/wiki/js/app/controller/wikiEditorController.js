@@ -540,7 +540,8 @@ define([
 				// 获取自己可编辑的站点列表
 				fnList.push(function(finish){
 					if ($scope.user && $scope.user.username) {
-						util.post(config.apiUrlPrefix + "site_group/getByMemberName", {
+						//util.post(config.apiUrlPrefix + "site_group/getByMemberName", {
+						util.post(config.apiUrlPrefix + "site_user/getSiteListByMemberName", {
 							memberName:$scope.user.username,
 						}, function(data){
 							data = data || [];
@@ -557,6 +558,7 @@ define([
 						finish && finish();
 					}
 				});
+
                 // 获取他人站点列表
                 fnList.push(function (finish) {
 					var urlObj = storage.sessionStorageGetItem('urlObj'); 

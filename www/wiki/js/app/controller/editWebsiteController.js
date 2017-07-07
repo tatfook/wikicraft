@@ -210,13 +210,12 @@ define([
 		}
 
 		$scope.deleteShareGroup = function(group) {
-			console.log(group);
 			if (!siteDataSource || !group) 
 				return;
 
 			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
 				group.isDelete = true;
-				util.post(config.apiUrlPrefix + "site_group/deleteByName", group);
+				util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
 			});
 		}
 
