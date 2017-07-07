@@ -11,7 +11,7 @@ define([
 ], function (app, util, storage, htmlContent) {
     //console.log("load userController file");
 
-    app.registerController('userController', ['$scope','Account','Message', function ($scope, Account, Message) {
+    app.registerController('userController', ['$scope','Account','Message', 'modal', function ($scope, Account, Message, modal) {
         function init(userinfo) {
             var username = $scope.urlObj.username;
             if (!username && userinfo && userinfo.username) {
@@ -72,6 +72,16 @@ define([
 
             if (!Account.isAuthenticated()) {
                 Message.info("登录后才能关注");
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    size: 'lg',
+                    backdrop: true
+                }, function (result) {
+                    console.log(result);
+                    // nowPage.replaceSelection(login.content);
+                }, function (result) {
+                    console.log(result);
+                });
                 return; // 登录后才能关注
             }
 
