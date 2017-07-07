@@ -33,7 +33,7 @@ define([
         }
         
         function sendModifyWebsiteRequest() {
-            util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
+            util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
                 Message.info("站点配置修改成功!!!");
                 $rootScope.$broadcast('userCenterContentType', 'websiteManager');

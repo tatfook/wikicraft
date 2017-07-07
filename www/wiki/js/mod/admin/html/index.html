@@ -164,15 +164,15 @@
 						</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="x in userList">
+					<tr ng-repeat="x in userList" ng-hide="x.isDelete">
 						<td>{{x._id}}</td>
 						<td>{{x.username}}</td>
 						<td>{{x.displayName}}</td>
 						<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 						<td>
-							<button class="btn btn-default">编辑</button>
-							<button class="btn btn-default">禁用</button>
-							<button class="btn btn-default">删除</button>
+							<button class="btn btn-default" ng-click="clickEditUser(x)">编辑</button>
+							<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+							<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
 						</td>
 					</tr>
 					</tbody>
@@ -198,15 +198,15 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="x in siteList">
+					<tr ng-repeat="x in siteList" ng-hide="x.isDelete">
 						<td>{{x._id}}</td>
 						<td>{{x.name}}</td>
 						<td>{{x.displayName}}</td>
 						<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 						<td>
-							<button class="btn btn-default">编辑</button>
-							<button class="btn btn-default">禁用</button>
-							<button class="btn btn-default">删除</button>
+							<button class="btn btn-default" ng-click="clickEditSite(x)">编辑</button>
+							<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
+							<button class="btn btn-default" ng-click="clickDeleteSite(x)">删除</button>
 						</td>
 					</tr>
 					</tbody>

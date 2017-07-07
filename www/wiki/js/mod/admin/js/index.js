@@ -47,6 +47,22 @@ define([
                 $scope.totalItems = data.total || 0;
             });
 		}
+		// 点击编辑用户
+		$scope.clickEditUser = function (user) {
+
+        }
+        // 点击禁用用户
+		$scope.clickEnableUser = function (user) {
+			user.roleId = user.roleId == -1 ? 0 : -1;
+			util.post(config.apiUrlPrefix + "user/updateByName", {username:user.username, roleId:user.roleId}, function () {
+            });
+        }
+        // 点击删除用户
+		$scope.clickDeleteUser = function (user) {
+			util.post(config.apiUrlPrefix + "user/deleteByName", user, function () {
+				user.isDelete = true;
+            });
+        }
 
 		// 获取站点列表
 		$scope.getSiteList = function () {
@@ -60,7 +76,22 @@ define([
             });
         }
 
+        // 点击编辑站点
+		$scope.clickEditSite = function () {
 
+        }
+        // 点击禁用的站点
+		$scope.clickEnableSite = function () {
+			site.state = site.state == -1 ? 0 :  -1;
+            util.post(config.apiUrlPrefix + "website/updateByName", {username:site.username, sitename:site.name, state:site.state}, function () {
+            });
+        }
+        // 点击删除站点
+		$scope.clickDeleteSite = function (site) {
+			util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
+				site.isDelete = true;
+            });
+        }
     }]);
 
     return htmlContent;

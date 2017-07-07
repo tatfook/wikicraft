@@ -154,10 +154,15 @@ function user:update(params)
 end
 
 -- 用户注销账号 
-function user:api_deleteById(params) 
+function user:api_deleteByName(params) 
 	-- 只能删除自己
 	self:ensureAuthenticated()
-	local username = getTokenInfo().username
+	local tokeninfo = getTokenInfo()
+	local username = tokeninfo.username
+
+	if not tokeninfo.isAdmin then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
 	if not params.username or (username ~= params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -183,6 +188,22 @@ function user:api_deleteById(params)
 end
 
 -- 更新用户信息
+function user:api_updateByName(params)
+	_, params = self:validateQuery(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.email = nil
+	params.password = nil
+	params.isadmin = nil
+
+	self:db():updateOne({["+username"]={params.username}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 更新用户信息
 function user:api_updateUserInfo(params)
 	_, params = self:validateQuery(params)
 	if not params.username then
@@ -191,11 +212,7 @@ function user:api_updateUserInfo(params)
 
 	params.email = nil
 	params.password = nil
-	params.githubId = nil
-	params.githubToken = nil
-	params.githubName = nil
 	params.isadmin = nil
-	params.dataSource = nil
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 

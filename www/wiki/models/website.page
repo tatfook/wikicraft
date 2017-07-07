@@ -143,7 +143,10 @@ function website:deleteById(websiteId)
 	if not site then
 		return errors:wrap(nil)
 	end
-
+	local tokeninfo = getTokenInfo()	
+	if (site.username ~= tokeninfo.username) and (not tokeninfo.isAdmin) then
+		return errors:wrap(nil)
+	end
 	local userTrendsDB = models.user_trends:new()
 	local trend = {userId=site.userId, objectId=site._id, trendsType=const.USER_TRENDS_TYPE_DELETE_SITE}
 	trend.desc = site.username .. "删除站点" .. site.name
@@ -240,16 +243,20 @@ function website:api_updateWebsitePageinfo(params)
 end
 
 -- 更新站点
-function website:api_updateWebsite(params) 
+function website:api_updateByName(params) 
 	self:ensureAuthenticated()
-	if not params._id then 
+	if (not params.username) or (not params.sitename) then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+	local tokeninfo = getTokenInfo()
+	if (tokeninfo.username ~= params.username) and (not tokeninfo.isAdmin) then
+		return errors:wrap(errors.NOT_PRIVILEGES)
+	end
+
 	params.name = nil   -- 防止名字被改
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
-	self:db():updateOne({_id=params._id}, params, resume)
+	self:db():updateOne({["+username+name"]={params.username, params.sitename}}, params, resume)
 
 	return errors:wrap(yield())
 end

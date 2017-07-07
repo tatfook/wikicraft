@@ -119,7 +119,7 @@ function site_user:api_getSiteByName(params)
 
 	local siteinfo = websiteDB:api_getWithDataSourceByName(siteUser or {}).data
 	
-	return errors:wrap(nil, {siteUser=siteUser. siteinfo=siteinfo})
+	return errors:wrap(nil, {siteUser=siteUser, siteinfo=siteinfo})
 end
 
 

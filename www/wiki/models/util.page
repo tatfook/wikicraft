@@ -154,8 +154,8 @@ const.DEFAULT_DATA_SOURCE_SITENAME="__keepwork__" -- 默认数据源的站点名
 const.DEFAULT_DATA_SOURCE_PROJECT_NAME="keepworkdatasource" -- 默认数据源的项目名
 
 -- 状态
-const.STATE_EXCEPTION=-1 
-const.STATE_NORMAL=0
+const.SITE_STATE_EXCEPTION=-1 
+const.SITE_STATE_NORMAL=0
 
 
 
