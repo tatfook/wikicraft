@@ -106,7 +106,21 @@ function site_user:api_getSiteListByMemberName(params)
 	return errors:wrap(nil, result)
 end
 
+-- 获取单一可编辑的站点
+function site_user:api_getSiteByName(params)
+	if (not params.username) or (not params.sitename) or (not params.memberName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	self:db():findOne({["+username+sitename+memberName"]={params.username, params.sitename, params.memberName}}, resume)
+
+	local websiteDB = models.website:new()
+	local _, siteUser = yield()
+
+	local siteinfo = websiteDB:api_getWithDataSourceByName(siteUser or {}).data
+	
+	return errors:wrap(nil, {siteUser=siteUser. siteinfo=siteinfo})
+end
 
 
 

@@ -1,0 +1,141 @@
+<?npl
+--[[
+Title: administrator
+Author: wuxiangan
+Date: 2016/10/21
+]]
+
+include_once("./user.page")
+include_once("./website.page")
+
+local admin = inherit(models.abstract.base, gettable("models.admin"))
+admin.db_name = "admin"
+
+-- 登录
+function admin:api_login(params)
+	if (not params.username) or (not params.password) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.password = ParaMisc.md5(params.password or "") 
+	
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username+password"] = {params.username, params.password}}, resume)
+
+	local _, userinfo = yield()
+
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	--[[
+		if userinfo.username == "xiaoyao" then
+			userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
+			yield()
+			userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
+		end
+	]]
+
+	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
+		return errors:wrap(errors:new("用户不是管理员"))
+	end
+
+	return errors:wrap(nil,{token=encodeJWT({userId=userinfo._id, username=userinfo.username, roleId=userinfo.roleId, isAdmin=true}), userinfo=userinfo})
+end
+
+-- 管理员认证
+function admin:adminAuth() 
+	local token = getTokenInfo()
+	if (not token) or (token.roleId ~= const.USER_ROLE_MANAGER and token.roleId ~= const.USER_ROLE_ADMINISTRATOR) then
+		response:status(401):send({ message = "无权限访问"})
+		exit()
+	end
+	
+	return token
+end
+
+-- 获取用户列表
+function admin:api_getUserList(params)
+	self:adminAuth()
+	
+	local skip, limit = util:pagination(params)
+
+	local userDB = models.user:new()
+	userDB:db():count({}, resume)
+	local _, total = yield()
+	
+	userDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	local _, userList = yield()
+	
+	return errors:wrap(nil, {total=total, userList = userList})
+end
+
+-- 设置异常用户
+function admin:api_adminSetExceptionUser(params)
+	self:adminAuth()
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local userDB = models.user:new()
+	userDB:db():updateOne({_id = params.userId}, {roleId=const.USER_ROLE_EXCEPTION}, function() end)
+	
+	-- TODO 添加到异常列表中
+	return errors:wrap(nil)
+end
+
+-- 设置异常用户
+function admin:api_adminUnsetExceptionUser(params)
+	self:adminAuth()
+	if not params.userId then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local userDB = models.user:new()
+	userDB:db():updateOne({_id = params.userId}, {roleId=const.USER_ROLE_NORMAL}, function() end)
+	
+	-- TODO 异常列表中移除
+	return errors:wrap(nil)
+end
+
+-- 获取站点列表
+function admin:api_getSiteList(params)
+	self:adminAuth()
+	local skip, limit = util:pagination(params)
+
+	local websiteDB = models.website:new()
+	websiteDB:db():count({}, resume)
+	local _, total = yield()
+	
+	websiteDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	local _, siteList = yield()
+	
+	return errors:wrap(nil, {total=total, siteList = siteList})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

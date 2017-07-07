@@ -57,6 +57,7 @@ function website:ctor()
 	self:addfield("pageCount", "number")
 	self:addfield("memberCount", "number")
 	self:addfield("worksCount", "number")
+	self:addfield("state", "number")
 end
 
 -- 创建站点
