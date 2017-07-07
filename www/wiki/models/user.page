@@ -19,8 +19,6 @@ include_once("./data_source.page")
 include_once("./site_data_source.page")
 include_once("./user_three_service.page")
 
--- local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
-
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
 
@@ -33,7 +31,6 @@ function user:ctor()
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- 手机
 	self:addfield("sex", "string", false, 12)
-	self:addfield("dataSourceId", "number", false) -- 数据源ID   
 	self:addfield("defaultDataSourceSitename", "string")    -- 默认数据源的站点名 
 	self:addfield("defaultDataSourceName", "string")    -- 默认数据源的站点名 
 	self:addfield("portrait", "string", false, 200) -- picture url
@@ -817,29 +814,22 @@ function user:api_adminLogin(params)
 		return errors:wrap(errors:new("用户不是管理员"))
 	end
 
-	return errors:wrap(nil,{token=createJWT(userinfo), userinfo=userinfo})
+	return errors:wrap(nil,{token=createJWT({userId=userinfo._id, username=userinfo.username, roleId=userinfo.roleId}), userinfo=userinfo})
 end
 
 function user:adminAuth() 
-	local username = self:ensureAuthenticated()
-	self:db():findOne({["+username"]={username}}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		response:status(401):send({ message = "未认证"})
-		exit()
-	end
-
-	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
+	local token = getTokenInfo()
+	if (not token) or (token.roleId ~= const.USER_ROLE_MANAGER and token.roleId ~= const.USER_ROLE_ADMINISTRATOR) then
 		response:status(401):send({ message = "无权限访问"})
 		exit()
 	end
 	
-	return userinfo
+	return token
 end
 
 -- 获取用户列表
 function user:api_adminGet(params)
-	local userinfo = self:adminAuth()
+	self:adminAuth()
 	
 	local skip, limit = util:pagination(params)
 
@@ -854,7 +844,7 @@ end
 
 -- 设置异常用户
 function user:api_adminSetExceptionUser(params)
-	local userinfo = self:adminAuth()
+	self:adminAuth()
 	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -867,7 +857,7 @@ end
 
 -- 设置异常用户
 function user:api_adminUnsetExceptionUser(params)
-	local userinfo = self:adminAuth()
+	self:adminAuth()
 	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

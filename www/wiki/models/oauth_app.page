@@ -27,6 +27,12 @@ local oauthApp = {
 		clientSecret="keepwork",
 		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
+	{
+		appName="道峰科技",
+		clientId="1000001",
+		clientSecret="daofengkeji",
+		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
+	},
 }
 
 function oauth_app:api_get() 

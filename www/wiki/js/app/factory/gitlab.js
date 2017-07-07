@@ -482,6 +482,7 @@ define([
 					//lastCommitId && (self.lastCommitId = lastCommitId);
 					//cb && cb();
 				//}, errcb);
+				self.inited = true;
 				cb && cb();
 				return;
 			}

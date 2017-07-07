@@ -127,6 +127,7 @@ define(['app',
                 dataForm.removeClass("sr-only");
 
                 var defaultDataSource = dataSource.getDefaultDataSource();
+				console.log(defaultDataSource);
 				
                 if (!defaultDataSource || !defaultDataSource.isInited()) {
                     Message.info("默认数据源失效");
