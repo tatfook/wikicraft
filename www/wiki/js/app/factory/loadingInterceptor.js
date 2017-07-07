@@ -17,7 +17,7 @@ define(['app'], function (app) {
 		}
 
 		function hideLoading() {
-			if (window.config.loading) {
+			if (window.config.loading && loadingInterceptor.httpCount > 0) {
 				loadingInterceptor.httpCount--;
 				loadingInterceptor.httpCount == 0 && window.config.loading.hide();
 			}	
@@ -25,6 +25,7 @@ define(['app'], function (app) {
 		}
 
 		loadingInterceptor.request = function(config) {
+			//console.log(config);
 			if (config.isShowLoading == undefined || config.isShowLoading) {
 				showLoading();
 			}
