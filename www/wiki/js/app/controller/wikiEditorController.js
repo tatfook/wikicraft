@@ -482,9 +482,11 @@ define([
             function loadUnSavePage() {
 				var currentTime = (new Date()).getTime();
                 storage.indexedDBGet(config.pageStoreName, function (page) {
-					if (!isUserExist() || !page.username || !page.sitename || !page.pagename || !page.url || (page.username != $scope.user.username)) {
+					if (!page.username || !page.sitename || !page.pagename || !page.url) {
 						return;
 					}
+					
+					//console.log(page);
 
                     var serverPage = getPageByUrl(page.url);
                     if (!serverPage) {
@@ -679,6 +681,18 @@ define([
 			});
             //init();
 
+			// 更新提交id
+			function updateLastCommitId(siteDataSource, page) {
+				siteDataSource.getLastCommitId(function(lastCommitId){
+					siteDataSource.setLastCommitId(lastCommitId);
+					util.post(config.apiUrlPrefix + "site_data_source/updateLastCommitIdByName", {
+						username:page.username, 
+						sitename:page.sitename,
+						lastCommitId:lastCommitId,
+					});
+				});
+			}
+
             // 保存页
             function savePageContent(cb, errcb) {
                 //console.log(currentPage);
@@ -707,6 +721,7 @@ define([
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
                     console.log("---------save success-------");
+					updateLastCommitId(currentDataSource, page);
                     cb && cb();
                 };
 
@@ -1953,7 +1968,8 @@ define([
                     return;
                 }
 
-                if (!currentPage.isModify || !isSelfPage()) {
+                //if (!currentPage.isModify || !isSelfPage()) {
+                if (!currentPage.isModify) {
                     cb && cb();
                     return;
                 }

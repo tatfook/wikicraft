@@ -348,6 +348,7 @@ define([
                     //url: apiurl + "?private_token=" + self.dataSource.dataSourceToken,
 					//headers:self.httpHeader,
                     skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
+					isShowLoading:params.isShowLoading,
 				}).then(function (response) {
 					//storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
 					storage.sessionStorageSetItem(apiurl, response.data);
@@ -476,11 +477,12 @@ define([
                 return;
             }
 			
-			if (dataSource.isInited) {
-				self.getLastCommitId(function(lastCommitId){
-					lastCommitId && (self.lastCommitId = lastCommitId);
-					cb && cb();
-				}, errcb);
+			if (dataSource.isInited || dataSource.projectId) {
+				//self.getLastCommitId(function(lastCommitId){
+					//lastCommitId && (self.lastCommitId = lastCommitId);
+					//cb && cb();
+				//}, errcb);
+				cb && cb();
 				return;
 			}
 
