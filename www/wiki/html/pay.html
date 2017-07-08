@@ -59,10 +59,9 @@
             float: left;
         }
 
-        .pay-main-logo .no-img{
+        .pay-main-logo img{
             width: 120px;
             height: 120px;
-            background-color: #333333;
         }
 
         .pay-main-logo .username{
@@ -143,7 +142,8 @@
         .pay-main-method .pay-qrcode {
             width: 650px;
             height: 395px;
-            background-color: #777777;
+            background: url("/wiki/assets/imgs/pay-qrcode-wechat-bg.png") no-repeat center;
+            padding: 40px;
         }
     }
 
@@ -157,6 +157,11 @@
             width: 120px;
             height: 120px;
             background-color: #333333;
+        }
+
+        .pay-main-logo img {
+            width: 120px;
+            height: 120px;
         }
 
         .pay-main-logo .username {
@@ -206,14 +211,15 @@
             <div class="col-md-9 col-xs-12 col-sm-12">
                 <div class="pay-main-user clearfix">
                     <div class="pay-main-logo">
-                        <div class="no-img"></div>
-                        <div class="username">username</div>
+                        <img ng-if="!userinfo.portrait"  ng-src="{{imgsPath + 'wiki_default_profile.jpg'}}" class="no-img" />
+                        <img ng-if="userinfo.portrait" ng-src="{{userinfo.portrait}}" />
+                        <div class="username">{{userinfo.displayName}}</div>
                     </div>
                     <div class="pay-main-info">
-                        <h1>充值到 USERNAME 的账户</h1>
+                        <h1>充值到 {{userinfo.displayName}} 的账户</h1>
                         <div class="introduce">用途的文字说明..</div>
                         <div class="money">
-                            应付金额： <sup>￥50</sup>
+                            应付金额： <sup>￥{{price}}</sup>
                         </div>
                     </div>
                 </div>
@@ -223,11 +229,11 @@
                     </div>
                     <div class="pay-item clearfix">
                         <ul>
-                            <li>
+                            <li ng-click="alipay()">
                                 <div class="arrow-right"><img src="/wiki/assets/imgs/pay-checked.png" /></div>
                                 <img class="pay-icon" src="/wiki/assets/imgs/pay-alipay.png">
                             </li>
-                            <li>
+                            <li ng-click="wechat()">
                                 <div class="arrow-right"><img src="/wiki/assets/imgs/pay-checked.png" /></div>
                                 <img class="pay-icon" src="/wiki/assets/imgs/pay-wechat.png">
                             </li>

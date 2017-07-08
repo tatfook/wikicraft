@@ -54,6 +54,7 @@
             'contribution-calendar':libPathPrefix+'contribution-calendar/js/contribution-calendar.min',//类github活动记录
             'to-markdown': libPathPrefix + 'to-markdown/to-markdown',
             'wangEditor': libPathPrefix + 'wangEditor/js/wangEditor',
+            'pingpp': libPathPrefix + 'pingpp-js/dist/pingpp',
 
             // 自定义模块
             'app': jsPathPrefix + 'app',
