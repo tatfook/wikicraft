@@ -22,6 +22,7 @@ include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
 include_once(WIKI_ROOT .. "helpers/filter.page")
 WIKI_ENV="www"
+WIKI_DB_PATH="database/www/"
 
 -- json web token  encode/decode
 function encodeJWT(payload)
@@ -56,7 +57,8 @@ function init_db()
 	end
 
 	WIKI_ENV = name
-	db = TableDatabase:new():connect("database/" .. name .. '/', function() end);
+	WIKI_DB_PATH = "database/" .. WIKI_ENV .. "/"
+	db = TableDatabase:new():connect(WIKI_DB_PATH, function() end);
 end
 
 -- call this function to ensure we are authenticated in json request
@@ -75,9 +77,9 @@ function ensureAuthenticated()
 		if(err == "Invalid signature") then
 			response:status(401):send({ message = "invalid token"})
 		elseif(err == "Not acceptable by exp") then
-			response:status(401):send({ message = 'Token has expired' })	
+			response:status(401):send({ message = 'Token has expired' })
 		else
-			response:status(401):send({ message = err })	
+			response:status(401):send({ message = err })
 		end
 		exit()
 	end
@@ -98,7 +100,7 @@ function checkAuthenticated()
 		if(payload) then
 			request.username = payload.username
 			request.userid = payload.userId
-		end	
+		end
 	end
 	return request.userid
 end
@@ -115,7 +117,7 @@ end
 -- 获取bust version
 function getBustVersion()
 	local version = mem_cache:get("bustVersion")
-	if not version then 
+	if not version then
 		version = tostring(os.time())
 		mem_cache:set("bustVersion", version)
 	end
@@ -129,7 +131,7 @@ function getServerUpdateTime()
 	if not serverUpdateTime then
 		serverUpdateTime = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
 		mem_cache:set("serverUpdateTime", serverUpdateTime)
-	end 
+	end
 	-- KEEPWORK["serverUpdateTime"] = serverUpdateTime
 	return serverUpdateTime
 end

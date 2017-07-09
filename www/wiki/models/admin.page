@@ -16,9 +16,9 @@ function admin:api_login(params)
 	if (not params.username) or (not params.password) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
-	params.password = ParaMisc.md5(params.password or "") 
-	
+
+	params.password = ParaMisc.md5(params.password or "")
+
 	local userDB = models.user:new()
 	userDB:db():findOne({["+username+password"] = {params.username, params.password}}, resume)
 
@@ -28,13 +28,11 @@ function admin:api_login(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	--[[
-		if userinfo.username == "xiaoyao" then
-			userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
-			yield()
-			userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
-		end
-	]]
+	--if userinfo.username == "xiaoyao" then
+	--userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
+	--yield()
+	--userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
+	--end
 
 	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
 		return errors:wrap(errors:new("用户不是管理员"))
@@ -44,29 +42,29 @@ function admin:api_login(params)
 end
 
 -- 管理员认证
-function admin:adminAuth() 
+function admin:adminAuth()
 	local token = getTokenInfo()
 	if (not token) or (token.roleId ~= const.USER_ROLE_MANAGER and token.roleId ~= const.USER_ROLE_ADMINISTRATOR) then
 		response:status(401):send({ message = "无权限访问"})
 		exit()
 	end
-	
+
 	return token
 end
 
 -- 获取用户列表
 function admin:api_getUserList(params)
 	self:adminAuth()
-	
+
 	local skip, limit = util:pagination(params)
 
 	local userDB = models.user:new()
 	userDB:db():count({}, resume)
 	local _, total = yield()
-	
+
 	userDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
 	local _, userList = yield()
-	
+
 	return errors:wrap(nil, {total=total, userList = userList})
 end
 
@@ -78,15 +76,12 @@ function admin:api_getSiteList(params)
 	local websiteDB = models.website:new()
 	websiteDB:db():count({}, resume)
 	local _, total = yield()
-	
+
 	websiteDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
 	local _, siteList = yield()
-	
+
 	return errors:wrap(nil, {total=total, siteList = siteList})
 end
-
-
-
 
 
 
