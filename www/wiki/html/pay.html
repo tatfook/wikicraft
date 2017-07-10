@@ -46,6 +46,71 @@
         display: none;
     }
 
+    .pay-main-method .pay-qrcode {
+        display: none;
+    }
+
+    .pay-main-method .pay-qrcode img{
+        display: none;
+    }
+
+    @media(max-width: 768px) {
+        .pay-main-logo {
+            width: 120px;
+            margin: 0 auto;
+        }
+
+            .pay-main-logo .no-img {
+                width: 120px;
+                height: 120px;
+                background-color: #333333;
+            }
+
+            .pay-main-logo img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .pay-main-logo .username {
+                width: 100%;
+                text-align: center;
+                margin-top: 7px;
+                font-size: 18px;
+                color: #333333;
+            }
+
+        .pay-main-info h1 {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .pay-main-info .introduce {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .pay-main-info .money {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .pay-main-info .money sup {
+            font-size: 28px;
+        }
+
+        .pay-main-method .desc {
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .pay-main-method .pay-item ul li {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+    }
 
     @media(min-width: 768px) {
         .pay-main{
@@ -78,15 +143,20 @@
 
         .pay-main-info h1 {
             font-size: 22px;
+            margin-top: 0;
+            text-align: left;
         }
 
         .pay-main-info .introduce {
+            text-align: left;
             font-size: 16px;
             margin-bottom: 36px;
         }
 
         .pay-main-info .money {
             font-size: 16px;
+            margin-top: 0;
+            text-align: left;
         }
 
         .pay-main-info .money sup {
@@ -95,6 +165,7 @@
 
         .pay-main-method .desc {
             font-size: 16px;
+            text-align: left;
             margin-bottom: 19px;
         }
 
@@ -145,63 +216,11 @@
             background: url("/wiki/assets/imgs/pay-qrcode-wechat-bg.png") no-repeat center;
             padding: 40px;
         }
-    }
 
-    @media(max-width: 768px) {
-        .pay-main-logo {
-            width: 120px;
-            margin: 0 auto;
-        }
-
-        .pay-main-logo .no-img {
-            width: 120px;
-            height: 120px;
-            background-color: #333333;
-        }
-
-        .pay-main-logo img {
-            width: 120px;
-            height: 120px;
-        }
-
-        .pay-main-logo .username {
-            width: 100%;
-            text-align: center;
-            margin-top: 7px;
-            font-size: 18px;
-            color: #333333;
-        }
-
-        .pay-main-info h1 {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 22px;
-        }
-
-        .pay-main-info .introduce {
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .pay-main-info .money {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .pay-main-info .money sup {
-            font-size: 28px;
-        }
-
-        .pay-main-method .desc {
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .pay-main-method .pay-item ul li {
-            text-align: center;
-            margin-bottom: 25px;
+        .pay-main-method .pay-qrcode img{
+            display: inline;
+            width: 250px;
+            height: 250px;
         }
     }
 </style>
@@ -240,7 +259,7 @@
                         </ul>
                     </div>
                     <div class="pay-qrcode">
-                        <img ng-src="http://qr.topscan.com/api.php?text=www.baidu.com">
+                        <img ng-src="http://qr.topscan.com/api.php?text={{qr_url}}">
                     </div>
                 </div>
             </div>
