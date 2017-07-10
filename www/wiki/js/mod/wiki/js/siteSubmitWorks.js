@@ -171,6 +171,14 @@ define([
                     Message.info("无权限提交!!!");
                     return;
                 }
+                if (!$scope.works.worksUrl){
+                    Message.info("请选择你想提交的作品");
+                    return;
+                }
+                if (!$scope.works.worksTitle){
+                    Message.info("请填写你作品的标题");
+                    return;
+                }
                 $scope.works.websiteId = siteinfo._id;
                 $scope.works.worksUsername = $scope.user.username;
 
