@@ -242,9 +242,16 @@ define([
 
         $scope.createGroup = function () {
 			var group = $scope.nowGroup;
+            $scope.groupnameErr = false;
 			if (!siteDataSource || !group.name) {
 				return;
 			}
+
+			if (!/[\d\w]+/.test(group.name)){
+			    $scope.groupnameErr = true;
+			    return;
+            }
+
 			// 是否存在
 			for (var i = 0; i < ($scope.groups || []).length; i++) {
 				if (!$scope.groups[i].isDelete && $scope.groups[i].name == group.name) {
