@@ -66,6 +66,11 @@ define([
 
         md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
 			var pageinfo = config.services.$rootScope.pageinfo;
+
+			if (!pageinfo) {
+				return defaultRender(tokens, idx, options, env, self);
+			}
+
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
             var token = tokens[idx], alt = token.content,
                 srcIndex = token.attrIndex('href'),
@@ -332,15 +337,19 @@ define([
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
-            currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName, isShowLoading:false}, function (content) {
-                //console.log(content);
-				content = content || "";
-                text = content + '\n' + text;
-                mdwiki.templateLineCount = content.split('\n').length;
-                _render();
-            }, function () {
-                _render();
-            })
+			if (currentDataSource) {
+				currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName, isShowLoading:false}, function (content) {
+						//console.log(content);
+					content = content || "";
+					text = content + '\n' + text;
+					mdwiki.templateLineCount = content.split('\n').length;
+					_render();
+				}, function () {
+					_render();
+				})
+			} else {
+				_render();
+			}
         } else {
             _render();
         }
