@@ -33,19 +33,15 @@ define([
                         if (data) {
                             $scope.showNewPageBtn = true;
                         }
-                        console.log(data);
                     });
                 }else{ //访问他人网站且网站存在，有编辑权限，显示创建页面按钮
-                    console.log(sitename);
                     util.post(config.apiUrlPrefix + "site_user/getSiteByName", {
                         memberName: memberName,
                         username: username,
                         sitename: sitename
                     }, function(data){
                         console.log(data);
-                        if (data){
-                            $scope.showNewPageBtn = true;
-                        }
+                        $scope.showNewPageBtn = true;
                     }, function (err) {
                         console.log(err);
                     });
