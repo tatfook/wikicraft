@@ -23,19 +23,21 @@ end
 local oauthApp = {
 	{
 		appName="test",
+		company="keepwork",
 		clientId="1000000",
 		clientSecret="keepwork",
 		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
 	{
-		appName="道峰科技",
+		appName="教育平台",
+		company="道峰科技",
 		clientId="1000001",
 		clientSecret="daofengkeji",
 		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
 	{
 		appName="共享制造平台",
-		company="爱致科技"
+		company="爱致科技",
 		clientId="1000002",
 		clientSecret="gongxiangzhizaopingtai",
 		RedirectUrl="http://3dprint.idreamtech.com.cn/",

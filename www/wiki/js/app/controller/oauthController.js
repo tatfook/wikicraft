@@ -40,7 +40,6 @@ define([
 					username:$scope.user.username,
 				}, function(data){
 					data = data || {};
-
 					data.client_id = queryArgs.client_id;
 					data.redirect_uri = queryArgs.redirect_uri;
 					var searchStr = util.getQueryString(data);
