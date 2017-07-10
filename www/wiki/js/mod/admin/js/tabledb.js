@@ -31,27 +31,36 @@ define([
 
 			$scope.getTables();
 			$scope.getTableRecords();
+			$scope.getIndexes();
 			initEditor();
-
 		}
 
 		function initEditor() {
-			if ($("#inputEditor")[0]) {
-				inputEditor = ace.edit("inputEditor");
-				inputEditor.setTheme("ace/theme/github");
-				inputEditor.session.setMode("ace/mode/json");
-				//inputEditor.setAutoScrollEditorIntoView(true);
-				//inputEditor.setOption("maxLines", 200);
-				//inputEditor.setOption("minLines", 20);
-			}
-			if ($("#outputEditor")[0]) {
-				outputEditor = ace.edit("outputEditor");
-				outputEditor.setTheme("ace/theme/github");
-				outputEditor.session.setMode("ace/mode/json");
-				//outputEditor.setAutoScrollEditorIntoView(true);
-				//outputEditor.setOption("maxLines", 200);
-				//outputEditor.setOption("minLines", 20);
-			}
+			setTimeout(function () {
+				var editorContainer = $('#editorContainer')[0];
+				var documentHeight = Math.max(document.body.scrollHeight,document.body.clientHeight);
+				var height = (documentHeight - editorContainer.offsetTop - 150) + 'px';
+				console.log(height);
+				$('#inputEditor').css('height', height);
+				$('#outputEditor').css('height', height);
+
+				if ($("#inputEditor")[0]) {
+					inputEditor = ace.edit("inputEditor");
+					inputEditor.setTheme("ace/theme/github");
+					inputEditor.session.setMode("ace/mode/json");
+					//inputEditor.setAutoScrollEditorIntoView(true);
+					//inputEditor.setOption("maxLines", 200);
+					//inputEditor.setOption("minLines", 20);
+				}
+				if ($("#outputEditor")[0]) {
+					outputEditor = ace.edit("outputEditor");
+					outputEditor.setTheme("ace/theme/github");
+					outputEditor.session.setMode("ace/mode/json");
+					//outputEditor.setAutoScrollEditorIntoView(true);
+					//outputEditor.setOption("maxLines", 200);
+					//outputEditor.setOption("minLines", 20);
+				}
+			});
 		}
 
 		// 获取所有表
@@ -71,20 +80,21 @@ define([
 			query.pageSize = undefined;
 			query.tableName = undefined;
 			util.post(config.apiUrlPrefix+"tabledb/query", {
-				tableName:$scope.tableName,
+				tableName:tableName,
 				page:page,
 				pageSize:pageSize,
 				query:query,
 			}, function(data){
-				$scope.tableRecords = data.records;
+				$scope.tableRecords = data.data;
 				$scope.totalItems = data.total;
-				outputEditor.setValue(angular.toJson(data.records,4));
+				outputEditor.setValue(angular.toJson(data.data,4));
 			});
 			//$scope.getIndexes();
 		}
 		$scope.onTableChanged = function() {
 			$location.search("tableName", $scope.tableName);
 			$scope.getTableRecords();
+			$scope.getIndexes();
 		};
 
 		$scope.clickQuery = function() {
@@ -93,34 +103,31 @@ define([
 			//console.log(queryStr, angular.fromJson(queryStr || "{}"));
 			$scope.getTableRecords();
 		}
-		$scope.newRecord = function () {
-			$scope.operation = 'insert';
-			$scope.errMsg = "";
-			ace.edit("editor").setValue('{}');
+
+		$scope.clickUpsert = function() {
+			var queryStr = inputEditor.getValue();
+			$scope.query = angular.fromJson(queryStr || "{}");
+
+			var query = $scope.query || {};
+			var tableName = query.tableName || $scope.tableName;
+			query.tableName = undefined;
+			util.post(config.apiUrlPrefix + "tabledb/upsert", {
+				tableName:tableName,
+				query:query,
+			}, function(data) {
+				outputEditor.setValue(angular.toJson(data,4));
+			});
 		}
-		$scope.editRecord = function (obj) {
-			$scope.errMsg = "";
-			$scope.operation = 'update';
-			$scope.editRecordId = obj.id;
-			$http.post(urlPrefix+'beautify',{code:obj.value}).then(function (response) {
-				var code = response.data.code;
-				ace.edit("editor").setValue(code);
-			})
-		}
-		$scope.submitRecord = function () {
-			var code = ace.edit("editor").getValue();
-			$http.post(urlPrefix+'tojson',{code:code}).then(function (response) {
-				var obj = response.data;
-				if ($scope.operation == 'insert') {
-					$scope.addRecord(obj);
-				} else {
-					// $scope.updateRecord($scope.editRecordId, obj);
-					$scope.replaceRecord($scope.editRecordId, obj);
-				}
-				$scope.newRecord();
-				$scope.errMsg = "";
-			}).catch(function (response) {
-				$scope.errMsg = "data format error";
+		$scope.clickDelete = function() {
+			var queryStr = inputEditor.getValue();
+			var query = angular.fromJson(queryStr || "{}");
+
+			util.post(config.apiUrlPrefix + "tabledb/delete", {
+				tableName:query.tableName || $scope.tableName,
+				_id:query._id,
+			}, function(data){
+				outputEditor.setValue(angular.toJson(data,4));
+			}, function(data){
 			});
 		}
 
@@ -136,50 +143,22 @@ define([
 		$scope.removeIndex = function (index) {
 			if(confirm("are you sure to delete the index `"+index+"`?")){
 				$scope.editIndexes.splice($scope.editIndexes.indexOf(index),1);
-				$http.post(urlPrefix+'removeIndex',{dbPath:$scope.dbPath, tableName:$scope.selectedTable,index}).then(function (response) {
-					$scope.indexes = response.data;
-				})
-			}
-		}
+				$scope.indexes.splice($scope.indexes.indexOf(index),1);
 
-		$scope.setDBPath = function () {
-			$location.search("dbPath", $scope.dbPath);
-			util.post(config.apiBaseUrl+'tabledb/setDBPath', {dbPath:$scope.dbPath}).then(function(data){
-				$scope.tables = data || [];
-			});
+				util.post(config.apiUrlPrefix+'tabledb/deleteIndex',{tableName:$scope.tableName, indexName:index});
+			}
 		}
 
 
 		$scope.getIndexes = function () {
-			$http.post(urlPrefix+'getIndexes',{dbPath:$scope.dbPath, tableName:$scope.selectedTable}).then(function (response) {
-				$scope.indexes = response.data;
+			util.post(config.apiUrlPrefix + 'tabledb/getIndexes', {
+				tableName:$scope.tableName
+			},
+			function(data){
+				$scope.indexes = data || [];
 			});
-		}
-
-		$scope.updateRecord = function (id, obj) {
-			var params = {operation: "update", dbPath:$scope.dbPath, tableName: $scope.selectedTable, query: {_id:id}, update: obj}
-			$http.post(urlPrefix+'curd', params);
-			$scope.getTableRecord();
-		}
-
-		$scope.replaceRecord = function (id, obj) {
-			var params = {operation: "replace", dbPath:$scope.dbPath, tableName: $scope.selectedTable, query: {_id:id}, update: obj}
-			$http.post(urlPrefix+'curd', params);
-			$scope.getTableRecord();
-		}
-
-		$scope.deleteRecord = function (id) {
-			var params = {operation: "delete", dbPath:$scope.dbPath, tableName: $scope.selectedTable, query: {_id:id}, update: {}}
-			$http.post(urlPrefix+'curd', params);
-			$scope.getTableRecord();
-		}
-
-		$scope.addRecord = function (obj) {
-			var params = {operation: "insert", dbPath:$scope.dbPath, tableName: $scope.selectedTable, query: {}, update: obj}
-			$http.post(urlPrefix+'curd', params);
-			$scope.getTableRecord();
 		}
 
 	});
 	return htmlContent;
-})
+});

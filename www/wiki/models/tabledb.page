@@ -43,23 +43,38 @@ function tabledb:api_getIndexes(params)
 	return indexes
 end
 
-function tabledb:api_getTableRecord(params)
-	if not params.tableName then
+--function tabledb:api_getTableRecord(params)
+--if not params.tableName then
+--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+--end
+
+--local table = defaultTableDB[params.tableName]
+--local skip, limit = util:pagination(params)
+--table:find({_id={gt=0, skip=skip, limit=limit}}, resume)
+--local _, data = yield()
+--table:count({}, resume)
+--local _, total = yield()
+--return errors:wrap(nil, {total=total, data=data})
+--end
+
+function tabledb:api_queryById(params)
+	if not params.tableName or not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local table = defaultTableDB[params.tableName]
-	local skip, limit = util:pagination(params)
-	table:find({_id={gt=0, skip=skip, limit=limit}}, resume)
-	local _, records = yield()
-	table:count({}, resume)
-	local _, total = yield()
-	return errors:wrap(nil, {total=total, records=records})
+	table:findOne({_id=tonumber(params._id)}, resume)
+	local _, data = yield()
+	return errors:wrap(nil, {total=1, data={data}})
 end
 
 function tabledb:api_query(params)
 	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if params.query and params.query._id then
+		return self:api_queryById({tableName=params.tableName, _id=params.query._id})
 	end
 
 	local table = defaultTableDB[params.tableName]
@@ -72,126 +87,83 @@ function tabledb:api_query(params)
 		value[#value+1] = v
 	end
 	local queryParams = {}
-	if key ~= "" then
-		queryParams[key] = value
+	if key == "" then
+		key = "+_id"
+		value["gt"] = 0
 	end
+	queryParams[key] = value
 	table:count(queryParams, resume)
 	local _, total = yield()
 
 	value["skip"] = skip
 	value["limit"] = limit
 	table:find(queryParams, resume)
-	local _, records = yield()
+	local _, data = yield()
 
-	return errors:wrap(nil,{total=total,records=records})
+	return errors:wrap(nil,{total=total,data=data})
 end
 
 
-function tabledb:api_insert(params)
-	if not params.tableName or params._id ~= nil then
+function tabledb:api_upsert(params)
+	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local table = defaultTableDB[params.tableName]
-	local record = params.record or {}
+	local record = params.query or {}
 
-	table:insertOne(nil, record, resume)
+	log(record)
+	if record._id then
+		table:updateOne({_id=record._id}, record, resume)
+	else
+		table:insertOne(nil, record, resume)
+	end
 
 	return errors:wrap(yield())
 end
 
-function tabledb:api_modify(params)
-
-end
--- db manager
-if false then
-	local getTableRecord = function()
-		local db_handle = TableDatabase:new():connect(getDBPath(), function() end)
-		-- local db_handle = TableDatabase:new():connect('D:/NPL/NPLProject/wikicraft/database/npl/', function() end)
-		local tableName = params.tableName
-		local skip = (params.page - 1) * params.pageSize
-		local sqlStr = "select count(*) as count from Collection"
-		local table = db_handle:collection(tableName)
-		table:exec(sqlStr, function(err, data) resume(err, data) end)
-		err, data = yield()
-		local count = data[1].count
-		sqlStr = string.format("select * from Collection limit %d, %d", skip, params.pageSize)
-		table:exec(sqlStr, function(err, data) resume(err, data) end)
-		err, data = yield()
-
-		return {total=count, table = data}
+function tabledb:api_delete(params)
+	if not params.tableName or not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	add_action('wp_ajax_beautify',function()
-		if(params.code) then
-			local o = NPL.LoadTableFromString(params.code)
-			if(o) then
-				response:send({code=commonlib.serialize(o, true)})
-				return
-			end
+	local table = defaultTableDB[params.tableName]
+
+	table:deleteOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+function tabledb:api_getIndexes(params)
+	if not params.tableName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local table = defaultTableDB[params.tableName]
+
+	table:exec("SELECT name as indexName FROM indexes;", resume)
+
+	local _, rows = yield();
+	local indexes = {};
+	for i, obj in pairs(rows) do
+		for j, value in pairs(obj) do
+			indexes[#indexes + 1] = value;
 		end
-		response:send({})
-	end)
-	add_action('wp_ajax_tojson',function()
-		local o = params.code and NPL.LoadTableFromString(params.code)
-		if(o) then
-			response:send(o)
-		else
-			response:status(404):send({})
-		end
-	end)
-	-- db_handle:EnableSyncMode(true)
-	add_action('wp_ajax_curd',function()
-		local db_handle = TableDatabase:new():connect(getDBPath(), function() end)
-		local tableName = params.tableName
-		local operation = params.operation
-		local query = params.query
-		local update = params.update
-		local table = db_handle:collection(tableName)
+	end
 
-		if (operation == "select") then
-			table:find(query, function(err,rows) resume(err,rows) end)
-		elseif (operation == "insert") then
-			table:insertOne(query, update, function(err, rows) resume(err, rows) end)
-		elseif (operation == "update") then
-			table:updateOne(query, update, function(err, rows) resume(err, rows) end)
-		elseif (operation == "replace") then
-			table:replaceOne(query, update, function(err, rows) resume(err, rows) end)
-		elseif (operation == "delete") then
-			table:deleteOne(query, resume)
-		else
-			table:find(query, function(err,rows) resume(err,rows) end)
-			-- return "parament error"
-		end
+	return errors:wrap(nil, indexes);
 
-		err, rows = yield()
+end
 
-		wp_send_json(rows)
-	end)
+function tabledb:api_deleteIndex(params)
+	if not params.tableName  or not params.indexName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
-	add_action('wp_ajax_removeIndex', function()
-		local db_handle = TableDatabase:new():connect(getDBPath(), function() end)
-		--local db_handle = TableDatabase:new():connect('D:/NPL/NPLProject/wikicraft/database/npl/', function() end)
-		local tableName = params.tableName
-		local table = db_handle:collection(tableName)
-		table:removeIndex({params.index}, function() resume() end)
-		yield()
-		wp_send_json(getIndexes())
-	end)
+	local table = defaultTableDB[params.tableName]
+	table:removeIndex({params.indexName},  resume)
 
-	add_action('wp_ajax_getIndexes', function()
-		wp_send_json(getIndexes())
-	end)
-
-
-	add_action('wp_ajax_tables', function()
-		wp_send_json(getTables())
-	end)
-
-	add_action('wp_ajax_getTableRecord', function()
-		--local db_handle = TableDatabase:new():connect(getDBPath(), function() end)
-		wp_send_json(getTableRecord())
-	end)
-
+	return errors:wrap(yield())
 end
 

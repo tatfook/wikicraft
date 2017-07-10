@@ -9,10 +9,21 @@ define([
 ], function (app, util, htmlContent) {
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
+		var tableName = "user";
 		$scope.selectMenuItem = "user";
 		$scope.pageSize = 5;
 		$scope.currentPage = 1;
 		$scope.totalItems = 0;
+
+		function getTableName() {
+			if ($scope.selectMenuItem == "user") {
+				return "user";
+			} else if ($scope.selectMenuItem == "site") {
+				return "website";
+			}
+
+			return "user";
+		}
 
 		function init() {
 			$scope.clickMenuItem($scope.selectMenuItem);
@@ -20,8 +31,20 @@ define([
 
 		$scope.$watch('$viewContentLoaded', init);
 
-		$scope.clickQueryUserList = function() {
-			console.log($scope.queryUser);
+		$scope.clickQuery = function() {
+			console.log($scope.query);
+			var tableName = getTableName();
+			util.post(config.apiUrlPrefix + "tabledb/query", {
+				tableName:tableName,
+				page:$scope.currentPage,
+				pageSize:$scope.pageSize,
+				query:$scope.query,
+			}, function(data){
+				data = data || {};
+				$scope.data = data.data || [];
+				$scope.totalItems = data.total || 0;
+				console.log($scope.datas);
+			});
 		}
 
 		$scope.getStyleClass = function (item) {
@@ -32,13 +55,15 @@ define([
 		}
 
 		$scope.clickMenuItem = function(menuItem) {
+			$scope.query = {};
 			$scope.selectMenuItem = menuItem;
 
-			if ($scope.selectMenuItem == "user") {
-				$scope.getUserList();
-			} else if ($scope.selectMenuItem == "site") {
-				$scope.getSiteList();
-			}
+			$scope.clickQuery();
+			//if ($scope.selectMenuItem == "user") {
+			//$scope.getUserList();
+			//} else if ($scope.selectMenuItem == "site") {
+			//$scope.getSiteList();
+			//}
 		}
 
 		// 获取用户列表

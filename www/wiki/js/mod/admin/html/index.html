@@ -153,21 +153,23 @@ body{
 		<div class="col-sm-10">
 			<!--用户管理-->
 			<div ng-show='selectMenuItem=="user"'><!--{{{-->
-				<form role="form" class="form-inline">
-					<div class="form-group">
-						<label>
-							用户ID:
-						</label>
-						<input ng-model="queryUser.userId" type="text" class="form-control" placeholder="请输入用户ID">
-					</div>
-					<div class="form-group">
-						<label>
-							用户名:
-						</label>
-						<input ng-model="queryUser.username" type="text" class="form-control" placeholder="请输入用户名">
-					</div>
-					<button class="btn btn-default" ng-click="clickQueryUserList()">查询</button>
-				</form>
+				<div style="margin: 10px;">
+					<form role="form" class="form-inline">
+						<div class="form-group">
+							<label>
+								用户ID:
+							</label>
+							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
+						</div>
+						<div class="form-group">
+							<label>
+								用户名:
+							</label>
+							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+					</form>
+				</div>
 				<table class="table table-hover table-bordered">
 					<thead>
 						<tr>
@@ -179,13 +181,12 @@ body{
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="x in userList" ng-hide="x.isDelete">
+						<tr ng-repeat="x in data" ng-hide="x.isDelete">
 							<td>{{x._id}}</td>
 							<td>{{x.username}}</td>
 							<td>{{x.displayName}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEditUser(x)">编辑</button>
 								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
 							</td>
@@ -193,15 +194,40 @@ body{
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="getUserList()" items-per-page='pageSize' previous-text="上一页"
-																			next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-																						 class="pagination-sm" boundary-link-numbers="true">
+					<ul uib-pagination ng-change="clickQuery()"
+						items-per-page='pageSize' previous-text="上一页"
+								next-text="下一页" total-items="totalItems"
+							  ng-model="currentPage" max-size="5"
+								class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 			</div><!--}}}-->
 
 			<!--站点管理-->
 			<div ng-show='selectMenuItem=="site"'><!--{{{-->
+				<div style="margin: 10px;">
+					<form role="form" class="form-inline">
+						<div class="form-group">
+							<label>
+								站点ID:
+							</label>
+							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
+						</div>
+						<div class="form-group">
+							<label>
+								用户名:
+							</label>
+							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<div class="form-group">
+							<label>
+								站点名:
+							</label>
+							<input ng-model="query.name" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+					</form>
+				</div>
 				<table class="table table-hover table-bordered">
 					<thead>
 						<tr>
@@ -213,13 +239,12 @@ body{
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="x in siteList" ng-hide="x.isDelete">
+						<tr ng-repeat="x in data" ng-hide="x.isDelete">
 							<td>{{x._id}}</td>
 							<td>{{x.name}}</td>
 							<td>{{x.displayName}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEditSite(x)">编辑</button>
 								<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDeleteSite(x)">删除</button>
 							</td>
@@ -227,9 +252,9 @@ body{
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="getSiteList()" items-per-page='pageSize' previous-text="上一页"
-																			next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-																						 class="pagination-sm" boundary-link-numbers="true">
+					<ul uib-pagination ng-change="clickQuery()" items-per-page='pageSize' previous-text="上一页"
+																		   next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+																						   class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 			</div><!--}}}-->

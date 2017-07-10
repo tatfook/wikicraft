@@ -15,7 +15,7 @@ oauth_app.db_name = "oauth_app"
 
 function oauth_app:ctor()
 	self:addfield("appName", "string")            -- 应用名称  key
-	self:addfield("clientId", "string")           -- oauth client id 
+	self:addfield("clientId", "string")           -- oauth client id
 	self:addfield("clientSecret", "string")       -- oauth client secret
 	self:addfield("redirectUrl", "string")        -- oauth redirect url
 end
@@ -33,14 +33,21 @@ local oauthApp = {
 		clientSecret="daofengkeji",
 		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
+	{
+		appName="共享制造平台",
+		company="爱致科技"
+		clientId="1000002",
+		clientSecret="gongxiangzhizaopingtai",
+		RedirectUrl="http://3dprint.idreamtech.com.cn/",
+	},
 }
 
-function oauth_app:api_get() 
+function oauth_app:api_get()
 	return oauthApp
 end
 
 function oauth_app:getByClientId(params)
-	if not params.clientId then	
+	if not params.clientId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -56,8 +63,8 @@ function oauth_app:getByClientId(params)
 end
 
 -- 通过客户端id获取
-function oauth_app:api_getByClientId(params) 
-	if not params.clientId then	
+function oauth_app:api_getByClientId(params)
+	if not params.clientId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -68,12 +75,12 @@ function oauth_app:api_getByClientId(params)
 			break;
 		end
 	end
-	
+
 	app.clientSecret = nil
 
 	return errors:wrap(nil, app)
 end
-	
+
 -- 同意客户端授权
 function oauth_app:api_agreeOauth(params)
 	if (not params.username) or (not params.client_id) then
@@ -94,11 +101,11 @@ function oauth_app:api_agreeOauth(params)
 end
 
 -- 通过code获取token
-function oauth_app:api_getTokenByCode(params) 
+function oauth_app:api_getTokenByCode(params)
 	if not params.code or (not params.client_id) or (not params.client_secret) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	-- TODO DB select
 	local app = self:getByClientId({clientId=params.client_id})
 	if app.clientSecret ~= params.client_secret then
@@ -122,26 +129,26 @@ function oauth_app:api_getTokenByCode(params)
 
 	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
 	local token = jwt.encode({authway="oauth", username=userinfo.username},secret["token_secret"], nil, secret["token_expire"] or 3600)
-	
+
 	return {token=token}
 end
 
--- client callback 
-function oauth_app:api_callback(params) 
-	if (not params.code) or (not params.clientId) then		
+-- client callback
+function oauth_app:api_callback(params)
+	if (not params.code) or (not params.clientId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	params.client_id = params.clientId
 	params.grant_type = "authorization_code"
 	params.client_secret = "keepwork"
-	
+
 	local apiUrl = "http://localhost:8900/api/wiki/models/oauth_app/getTokenByCode"
 	System.os.GetUrl({
 		url=apiUrl,
 		method="GET",
 		json=true,
-		qs=params,	
+		qs=params,
 	}, resume)
 	local code, data = yield()
 
