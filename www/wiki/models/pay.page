@@ -5,4 +5,71 @@ Author: big
 Date: 2017.7.7
 ]]
 
+include_once("./abstract/base.page");
+include_once("./user.page");
+
+local pay = inherit(models.abstract.base,gettable("models.pay"));
+
+pay.db_name  = "pay";
+pay.apiUrl   = "https://api.pingxx.com/v1/";
+pay.apiToken = "sk_test_5Ou5K8HarHaT4qfHe5j5Oyj1";
+pay.appId    = "app_9e9enPHKSS48m9uj";
+
+function pay:ctor()
+	-- total money
+	self:addfield("amount", "number", false, 10);
+	-- pay channel
+	self:addfield("channel", "string", false, 50);
+	-- order subject
+	self:addfield("subject", "string", false, 100);
+	-- order content
+	self:addfield("body", "string", false, 300);
+end
+
+function pay:api_createCharge(params)
+	local err, query = self:validateQuery(params);
+
+	local url = self.apiUrl .. "charges";
+
+	local order_no = tostring(math.random(1000000,9999999));
+
+	local apiParams = {};
+	apiParams.order_no   = order_no;
+	apiParams.client_ip  = request:getpeername();
+	apiParams.amount     = query.amount;
+	apiParams.channel    = query.channel;
+	apiParams.subject    = query.subject;
+	apiParams.body       = query.body;
+	apiParams.currency   = "cny";
+	apiParams.app        = {id = self.appId};
+
+	if(apiParams.channel == "alipay_pc_direct") then
+		apiParams.extra = {success_url = "http://keepwork.com/?#success"};
+	elseif(apiParams.channel == "wx_pub_qr") then
+		apiParams.extra = {product_id = order_no};
+	end
+
+	log(apiParams,true);
+
+	System.os.GetUrl({
+		url    = url,
+		headers = {
+			Authorization = "Bearer " .. self.apiToken,
+			["content-type"]  = "application/json",
+		},
+		form   = apiParams,
+		method = "POST",
+		json   = true,
+	},resume);
+
+	local err, response = yield();
+
+	--log(response,true);
+
+	if (err ~= 200) then
+		return errors:wrap(errors.SERVER_INNER_ERROR, {message="pint++ server is not avaliable"});
+	end
+
+	return errors:wrap(nil, response);
+end
 
