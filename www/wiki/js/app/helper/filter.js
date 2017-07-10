@@ -13,7 +13,7 @@ define([], function() {
 			var iframeWidth = arglist[1] + "px";
 			var	iframeHeight = arglist[2] + "px";
 			var iframe = window.parent.parent.document.getElementById(iframeId);
-			if (b_iframe) {
+			if (iframe) {
 				iframe.style.width = iframeWidth;
 				iframe.style.height = iframeHeight;
 			}
