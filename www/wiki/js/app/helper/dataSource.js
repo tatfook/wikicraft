@@ -27,12 +27,13 @@ define([
         },
     };
 
+	var defaultSitename = "__keepwork__";
     var dataSourceObj = {
         isInitFinish: false,
         initFinishCallbackList: [],
         dataSourceInstMap: {}, // 数据实例映射
         dataSourceCfgList: undefined,
-		defaultSitename:"__keepwork__",
+		defaultSitename: defaultSitename,
 
         init: function (dataSourceCfgList, defaultSitename) {
 			if (this.isInitFinish) {
@@ -165,6 +166,8 @@ define([
 	dataSource.getDataSource = function(username, sitename) {
 		if (this.dataSourceMap[getDataSourceKey(username,sitename)]) {
 			return this.dataSourceMap[getDataSourceKey(username,sitename)];
+		} else if (this.dataSourceMap[getDataSourceKey(username, defaultSitename)]) {
+			return this.dataSourceMap[getDataSourceKey(username,defaultSitename)];
 		}
 		//console.log(dataSource.dataSourceUserMap);
 		return this.getUserDataSource(username).getDataSourceBySitename(sitename)
