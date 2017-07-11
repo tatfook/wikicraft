@@ -23,6 +23,7 @@ define(['app',
             {flag:'myHistory', name:'我的历史'},
             {flag:'myFans', name:'我的粉丝'},
             {flag:'realName', name:'实名认证'},
+            {flag:'myPay', name:'消费记录'},
             {flag:'invite', name:'邀请注册'},
         ];
 
