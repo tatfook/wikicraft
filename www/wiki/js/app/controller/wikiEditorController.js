@@ -11,6 +11,7 @@ define([
     'helper/storage',
     'helper/dataSource',
     'text!html/wikiEditor.html',
+    'controller/editWebsiteController',
     'codemirror/mode/markdown/markdown',
     // 代码折叠
     'codemirror/addon/fold/foldgutter',
@@ -28,7 +29,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
+], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -184,8 +185,9 @@ define([
 				];
 			} else {
                 treeNode.tags = [];
+                var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='关闭全部'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
@@ -1019,6 +1021,8 @@ define([
                         color: "#3977AD",
                         selectedBackColor: "#3977AD",
                         onhoverColor:"#E6E6E6",
+                        expandIcon:"fa fa-chevron-right",
+                        collapseIcon:"fa fa-chevron-down",
                         showBorder: false,
                         enableLinks: false,
                         levels: 4,
@@ -1375,6 +1379,15 @@ define([
 						$scope.cmd_close(key);
 					}
                 }
+            };
+
+            $scope.cmd_goSetting = function (urlKey) {
+                var website = allSiteMap[urlKey];
+                console.log(website);
+                storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
+                storage.sessionStorageSetItem("editWebsiteParams", website);
+                util.go("userCenter");
+                util.html('#userCenterSubPage', editWebsiteHtmlContent);
             };
 
             $scope.goSetting = function (sitename) {
@@ -2650,7 +2663,11 @@ define([
                     }, function (wikiBlock) {
                         console.log(wikiBlock);
                     }, function (result) {
-                        console.log(result);
+                        if (result.finished){
+                            var key = result.website.username + "_" + result.website.name;
+                            allSiteMap[key] = result.website;
+                            initTree();
+                        }
                     });
                 }
 

@@ -320,8 +320,14 @@ define([
         }
 
         $scope.cancel = function () {
-            $scope.$dismiss();
-        }
+            var result = {};
+            result.finished = false;
+            if ($scope.isModal && $scope.step == 7){
+                result.finished = true;
+                result.website = $scope.website;
+            }
+            $scope.$dismiss(result);
+        };
 
         //网站设置
         $scope.goEditWebsitePage = function () {

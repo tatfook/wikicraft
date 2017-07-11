@@ -13,13 +13,13 @@ define([
 
     function registerController(wikiBlock) {
         app.registerController("workslistController", ['$rootScope', '$scope','Account','Message',function ($rootScope, $scope, Account, Message) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-            $scope.requestParams = {pageSize: 3, page: 0};
-
             var modParams = getModParams(wikiBlock);
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
+
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
+            $scope.requestParams = {pageSize: modParams.pageSize || 3, page: 0};
 
             $scope.modParams = modParams;
 
@@ -159,6 +159,7 @@ define([
  ```@wiki/js/workslist
  {
  "moduleKind":"game",
+ "pageSize": 4,
  "title":"全部作品",
  "type":"all",
  "moreLink":"http://www.baidu.com",
