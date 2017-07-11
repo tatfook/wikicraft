@@ -93,7 +93,7 @@ function user:api_getBaseInfoByName(params)
 
 	userinfo.password = nil
 
-	return errors:wrap()
+	return errors:wrap(nil, userinfo)
 end
 
 -- 旧接口兼容
@@ -557,6 +557,7 @@ function user:api_getProfile()
 	self:ensureAuthenticated()
 	local tokeninfo = getTokenInfo()
 	local username = tokeninfo.username
+	--LOG.std(nil, "keepwork", "errror", tokeninfo)
 
 	if tokeninfo.authway == "oauth" then
 		return self:api_getBaseInfoByName({username=username})
