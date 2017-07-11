@@ -113,12 +113,15 @@ function site_user:api_getSiteByName(params)
 	end
 
 	self:db():findOne({["+username+sitename+memberName"]={params.username, params.sitename, params.memberName}}, resume)
-
-	local websiteDB = models.website:new()
 	local _, siteUser = yield()
 
+	local websiteDB = models.website:new()
 	local siteinfo = websiteDB:api_getWithDataSourceByName(siteUser or {}).data
-	
+
+	if (not siteUser) or (not siteinfo) then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
 	return errors:wrap(nil, {siteUser=siteUser, siteinfo=siteinfo})
 end
 

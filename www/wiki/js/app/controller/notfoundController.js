@@ -22,7 +22,7 @@ define([
         };
 
         function init() {
-            if ($scope.user){
+            if (Account.isAuthenticated()){
                 var memberName = $scope.user.username;
                 $scope.siteinfo = $rootScope.urlObj;
                 var sitename = $rootScope.urlObj.sitename;

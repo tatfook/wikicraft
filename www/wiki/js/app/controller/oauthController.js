@@ -18,15 +18,16 @@ define([
 
 			//console.log(queryArgs);
 
-			if (queryArgs.code) {
-				util.post(config.apiUrlPrefix + "oauth_app/getTokenByCode", {code:queryArgs.code}, function(data){
-					$scope.isAuth = true;
-					data = data || {};
-					console.log(data);
-					$scope.message = "token:" + data.token;
-				});
-				return;
-			}
+			// keepwork 登录 keepwork 测试
+			//if (queryArgs.code) {
+				//util.post(config.apiUrlPrefix + "oauth_app/getTokenByCode", {code:queryArgs.code}, function(data){
+					//$scope.isAuth = true;
+					//data = data || {};
+					//console.log(data);
+					//$scope.message = "token:" + data.token;
+				//});
+				//return;
+			//}
 
 			util.post(config.apiUrlPrefix + "oauth_app/getByClientId", {clientId:queryArgs.client_id}, function(data){
 				$scope.oauthApp = data || {};

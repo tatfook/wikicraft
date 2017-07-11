@@ -78,6 +78,22 @@ function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
 end
 
+-- 用户是否受限 1 -- 受限  0 -- 不受限
+function user:api_isBlock(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local err , userinfo = yield()
+
+	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
+		return errors:wrap(nil, 1)
+	end
+
+	return errors:wrap(nil, 0)
+end
+
 -- 获取用户的基本信息
 function user:api_getBaseInfoByName(params)
 	if not params.username then
@@ -769,7 +785,7 @@ function user:api_getDetailByName(params)
 	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, userinfo = yield()
 
-	if not userinfo then
+	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
 		return errors:wrap(nil, nil)
 	end
 

@@ -24,6 +24,9 @@ define([
         if (cmdName[cmdName.length - 1] == '/') {
             cmdName = cmdName.substring(0, cmdName.length - 1);
         }
+		if (cmdName == "@include") {
+			cmdName = "@wiki/js/include";
+		}
         if (cmdName.indexOf('@') >= 0) {
             wikiModulePath += cmdName.replace('@', '');
         } else {
