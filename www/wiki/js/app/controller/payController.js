@@ -11,9 +11,31 @@ define([
     app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', function ($scope, Account, modal, $rootScope) {
         
         var queryArgs = util.getQueryObject();
+        var validate  = true;
 
-        $scope.price  = 1;
-        $scope.qr_url = "";
+        $scope.subject = "NODATE";
+        $scope.body    = "NODATE";
+        $scope.price   = 0;
+
+        if (queryArgs.subject) {
+            $scope.subject = queryArgs.subject;
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.body) {
+            $scope.body = queryArgs.body;
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.price) {
+            $scope.price = queryArgs.price
+        } else {
+            validate = false;
+        }
+
+        $scope.qr_url  = "";
 
         if (Account.ensureAuthenticated()) {
             Account.getUser(function (userinfo) {
@@ -23,6 +45,11 @@ define([
         }
 
         $scope.alipay = function () {
+            if (!validate) {
+                alert("参数错误");
+                return;
+            }
+
             if ($scope.isMobile) {
                 $scope.alipayClient();
             } else {
@@ -31,6 +58,11 @@ define([
         }
 
         $scope.wechat = function () {
+            if (!validate) {
+                alert("参数错误");
+                return;
+            }
+
             if ($scope.isMobile) {
                 $scope.wechatClient();
             } else {
@@ -40,7 +72,7 @@ define([
 
         $scope.alipayClient = function () {
             var params = {
-                "amount" : $scope.price,
+                "price" : $scope.price,
                 "channel": "alipay_pc_direct",
                 "subject": "支付测试",
                 "body"   : "支付测试",
@@ -53,7 +85,7 @@ define([
 
         $scope.wechatClient = function () {
             var params = {
-                "amount": $scope.price,
+                "price": $scope.price,
                 "channel": "wx_pub",
                 "subject": "支付测试",
                 "body": "支付测试",
@@ -64,7 +96,7 @@ define([
 
         $scope.alipayQR = function () {
             var params = {
-                "amount": $scope.price,
+                "price": $scope.price,
                 "channel": "alipay_qr",
                 "subject": "支付测试",
                 "body": "支付测试",
@@ -80,7 +112,7 @@ define([
 
         $scope.wechatQR = function () {
             var params = {
-                "amount": $scope.price,
+                "price": $scope.price,
                 "channel": "wx_pub_qr",
                 "subject": "支付测试",
                 "body": "支付测试",

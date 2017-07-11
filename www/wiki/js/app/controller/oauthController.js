@@ -16,7 +16,7 @@ define([
 			}
 			var queryArgs = util.getQueryObject();
 
-			console.log(queryArgs);
+			//console.log(queryArgs);
 
 			if (queryArgs.code) {
 				util.post(config.apiUrlPrefix + "oauth_app/getTokenByCode", {code:queryArgs.code}, function(data){

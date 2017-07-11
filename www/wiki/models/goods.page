@@ -12,6 +12,25 @@ local goods = inherit(models.abstract.base, gettable("models.goods"));
 goods.db_name = "goods";
 
 function goods:ctor()
-	
+	-- goods id
+	self:addfield("goods_id","number",false);
+	-- the third party goods id
+	self:addfield("app_goods_id","number",false);
+	-- product name
+	self:addfield("display_name","string",false);
+	-- product price
+	self:addfield("price","number",false);
+	-- product introduce
+	self:addfield("content","string",false);
+	-- min
+	self:addfield("min_buy_count","number",false);
+	-- max can be sale
+	self:addfield("max_buy_count","number",false);
+	-- the thrid party name
+	self:addfield("app_name","string",false);
+	-- if product on sale is 1 otherwise 0;
+	self:addfield("is_on_sale","number",false);
+	-- product create date
+	self:addfield("create_date","string",false);
 end
 

@@ -1,0 +1,34 @@
+<?npl
+--[[
+Title: order
+Author: big
+Date: 2017/7/11
+]]
+
+include_once("./abstarct/base.page");
+include_once("./user.page");
+
+local order = inherit(models.abstract.base,gettable("models.order"));
+
+order.db_name = "order";
+
+function order:ctor()
+	-- order id
+	self:addfield("order_id","number",false);
+	-- keepwork goods id
+	self:addfield("goods_id","number",false);
+	-- keepwork username
+	self:addfield("username","string",false);
+	-- order subject
+	self:addfield("subject","string",false);
+	-- order content
+	self:addfield("body","string",false);
+	-- purchase quantity
+	self:addfield("amount","number",false);
+	-- order status
+	self:addfield("status","string",false);
+	-- order start date
+	self:addfield("start_date","string",false);
+	-- order end date
+	self:addfield("end_date","string",false);
+end

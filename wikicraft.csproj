@@ -794,6 +794,8 @@
     <Content Include="www\wiki\js\lib\github-api\GitHub.min.js" />
     <Content Include="www\wiki\js\lib\highlight\default.css" />
     <Content Include="www\wiki\js\lib\highlight\highlight.pack.js" />
+    <Content Include="www\wiki\js\lib\iconFont\iconfont.css" />
+    <Content Include="www\wiki\js\lib\iconFont\iconfont.svg" />
     <Content Include="www\wiki\js\lib\jquery-cookie\jquery.cookie.js" />
     <Content Include="www\wiki\js\lib\jquery.zeroclipboard\jquery.zeroclipboard.js" />
     <Content Include="www\wiki\js\lib\jquery.zeroclipboard\jquery.zeroclipboard.min.js" />
@@ -1022,6 +1024,9 @@
     <None Include="www\wiki\js\lib\github-api\GitHub.bundle.min.js.map" />
     <None Include="www\wiki\js\lib\github-api\GitHub.js.map" />
     <None Include="www\wiki\js\lib\github-api\GitHub.min.js.map" />
+    <None Include="www\wiki\js\lib\iconFont\iconfont.eot" />
+    <None Include="www\wiki\js\lib\iconFont\iconfont.ttf" />
+    <None Include="www\wiki\js\lib\iconFont\iconfont.woff" />
     <None Include="www\wiki\js\lib\jquery.zeroclipboard\.jshintrc" />
     <None Include="www\wiki\js\lib\pingpp-js\.eslintrc.json" />
     <None Include="www\wiki\js\lib\pingpp-js\CHANGELOG.md" />
@@ -1050,6 +1055,7 @@
     <None Include="www\wiki\js\mod\template\config.page" />
     <None Include="www\wiki\js\mod\wiki\config.page" />
     <None Include="www\wiki\js\mod\wiki\temp" />
+    <None Include="www\wiki\models\admin.page" />
     <None Include="www\wiki\models\data_source.page" />
     <None Include="www\wiki\models\data_upgrade.page" />
     <None Include="www\wiki\models\goods.page" />
@@ -1057,12 +1063,16 @@
     <None Include="www\wiki\models\group_user.page" />
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
+    <None Include="www\wiki\models\order.page" />
     <None Include="www\wiki\models\pay.page" />
     <None Include="www\wiki\models\site_data_source.page" />
+    <None Include="www\wiki\models\site_exception.page" />
     <None Include="www\wiki\models\site_group.page" />
     <None Include="www\wiki\models\site_user.page" />
+    <None Include="www\wiki\models\tabledb.page" />
     <None Include="www\wiki\models\test.page" />
     <None Include="www\wiki\models\user_active.page" />
+    <None Include="www\wiki\models\user_exception.page" />
     <None Include="www\wiki\models\user_fans.page" />
     <None Include="www\wiki\models\user_favorite.page" />
     <None Include="www\wiki\models\user_three_service.page" />
@@ -1070,6 +1080,7 @@
     <None Include="www\wiki\models\user_visit_history.page" />
     <None Include="www\wiki\models\user_works.page" />
     <None Include="www\wiki\models\util.page" />
+    <None Include="www\wiki\models\wallet.page" />
     <None Include="www\wiki\models\website_apply.page" />
     <None Include="www\wiki\models\website_comment.page" />
     <None Include="www\wiki\models\website_domain.page" />
@@ -1277,7 +1288,6 @@
     <Content Include="www\wiki\js\app\controller\gitVersionController.js" />
     <Content Include="www\wiki\js\app\controller\headerController.js" />
     <Content Include="www\wiki\js\app\controller\homeController.js" />
-    <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
     <Content Include="www\wiki\js\app\controller\joinController.js" />
     <Content Include="www\wiki\js\app\controller\knowledgeController.js" />
     <Content Include="www\wiki\js\app\controller\licenseController.js" />
