@@ -10,7 +10,17 @@ define([
     app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
 
+		var urlPrefix = "/wiki/js/mod/admin/js/";
         function init() {
+			if (!Account.isAuthenticated()) {
+				return;
+			}
+
+			var payload = $auth.getPayload();
+			
+			if (payload.isAdmin) {
+				util.go(urlPrefix + "index");
+			}
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -26,11 +36,11 @@ define([
                 $("#total-err").removeClass("visible-hidden");
                 return;
             }
-            util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
+            util.http("POST", config.apiUrlPrefix + 'admin/login', params, function (data) {
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
                 console.log("登录成功");
-                util.goUserSite('/' + data.userinfo.username);
+                util.go(urlPrefix + "index");
             }, function (error) {
                 $scope.errMsg = error.message;
                 $("#total-err").removeClass("visible-hidden");
@@ -46,3 +56,15 @@ define([
     }]);
     return htmlContent;
 });
+
+
+
+
+
+
+
+
+
+
+
+

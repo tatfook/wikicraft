@@ -5,6 +5,7 @@
 @import "../../js/lib/sharejs/css/share.min.css";
 @import "../../js/lib/cropper/cropper.min.css";
 @import "../../js/lib/wangEditor/css/wangEditor.min.css";
+@import "../../js/lib/iconFont/iconfont.css";
 @import "editor.css";
 @import "markdownit.css";
 @import "theme.css";

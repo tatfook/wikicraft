@@ -35,6 +35,7 @@
 ```@wiki/js/workslist
 {
 "moduleKind":"game",
+"pageSize":4,
 "title":"入围作品",
 "type":"custom",
 "moreLink":"#"
@@ -44,6 +45,7 @@
 ```@wiki/js/workslist
 {
 "moduleKind":"game",
+"pageSize":4,
 "title":"最新上传",
 "type":"latestJoin",
 "moreLink":"#"
@@ -53,6 +55,7 @@
 ```@wiki/js/workslist
 {
 "moduleKind":"game",
+"pageSize":4,
 "title":"全部作品",
 "type":"all",
 "moreLink":"#"

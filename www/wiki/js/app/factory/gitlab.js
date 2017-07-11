@@ -341,6 +341,7 @@ define([
             var index = params.path.lastIndexOf('.');
             //var url = index == -1 ? params.path : params.path.substring(0, index);
 			var apiurl = self.getRawContentUrlPrefix(params);
+			//console.log(apiurl);
             var _getRawContent = function () {
                 $http({
                     method: 'GET',
@@ -482,6 +483,7 @@ define([
 					//lastCommitId && (self.lastCommitId = lastCommitId);
 					//cb && cb();
 				//}, errcb);
+				self.inited = true;
 				cb && cb();
 				return;
 			}

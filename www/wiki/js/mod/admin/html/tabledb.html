@@ -1,0 +1,88 @@
+
+<div id="tabledbContainer" ng-controller="tabledbController" class="container-fluid">
+	<div>
+		<form class="form-horizontal" role="form">
+			<div>
+				<label class="control-label">Select Table:</label>
+				<select class="form-control" ng-model="tableName" ng-change="onTableChanged()">
+					<option ng-repeat="table in tables" value="{{table}}">{{table}}</option>
+				</select>
+			</div>
+		</form>
+	</div>
+
+	<!--<div style="display:flex; flex-direction:rows; align-items:center">-->
+	<!--<button class="btn btn-default" ng-click="clickQuery()">Query</button>-->
+	<!--<button class="btn btn-default" ng-click="clickModify()">Upsert</button>-->
+	<!--<button class="btn btn-default" ng-click="clickDelete()">Delete</button>-->
+	<!--</div>-->
+
+	<div class="clearfix" style="margin:10px 0px">
+		<div class="dropdown pull-left">
+			<button type="button" class="btn dropdown-toggle" id="dropdownMenu" data-toggle="dropdown">Indexes
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+				<li role="presentation" ng-repeat="index in indexes">
+					<a role="menuitem" tabindex="-1" ng-click="editIndex(index)">{{index}}</a>
+				</li>
+			</ul>
+		</div>
+		<div class="pull-left" style="margin-left:5px;" ng-repeat="editIndex in editIndexes">
+			<button type="button" class="btn bg-info">{{editIndex}}</button>
+			<button type="button" class="btn" ng-click="removeIndex(editIndex)"><span class="glyphicon glyphicon-remove"></span></button>
+			<button type="button" class="btn" ng-click="hideIndex(editIndex)"><span class="glyphicon glyphicon-minus"></span></button>
+		</div>
+		<div class="pull-right">
+			<button type="button" class="btn" ng-click="clickUpsert()"><span class="glyphicon glyphicon-plus"></span>Upsert</button>
+			<button type="button" class="btn" ng-click="clickDelete()"><span class="glyphicon glyphicon-plus"></span>Delete</button>
+			<button type="button" class="btn" ng-click="clickQuery()"><span class="glyphicon glyphicon-plus"></span>Query</button>
+		</div>
+	</div>
+
+
+	<div id="editorContainer">
+		<div class="row">
+			<div class="col-sm-3">
+				<h3>Input:</h3>
+				<div style="position:relative">
+					<div id="inputEditor" style="height:850px;"></div>
+				</div>
+			</div>
+			<div class="col-sm-9">
+				<h3>Output:</h3>
+				<div style="position:relative">
+					<div id="outputEditor" style="height:850px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--<div>-->
+	<!--<table class="table table-striped" style="word-wrap: break-word;table-layout: fixed;">-->
+	<!--<th class="col-md-2">id</th>-->
+	<!--<th class="col-md-8">NPL Data Table</th>-->
+	<!--<th class="col-md-2"></th>-->
+	<!--<tr ng-repeat="obj in tableRecords">-->
+	<!--<td>{{obj._id}}</td>-->
+	<!--<td><div>{{obj}}</div></td>-->
+	<!--<td>-->
+	<!--<button type="button" class="btn btn-default pull-right" ng-click="deleteRecord(obj.id)">-->
+	<!--<span class="glyphicon glyphicon-trash"></span>-->
+	<!--</button>-->
+	<!--<button type="button" class="btn btn-default pull-right" ng-click="editRecord(obj)">-->
+	<!--<span class="glyphicon glyphicon-edit"></span>-->
+	<!--</button>-->
+	<!--</td>-->
+	<!--</tr>-->
+	<!--</table>-->
+	<!--</div>-->
+
+	<!--<div style="display:flex; flex-direction: column; align-items:center; align-content:center;">-->
+	<!--<ul uib-pagination total-items="totalItems"-->
+	<!--ng-model="page" ng-change="getTableRecords()"-->
+	<!--max-size="5" class="pagination-sm"-->
+	<!--boundary-links="true" items-per-page="pageSize">-->
+	<!--</ul>-->
+	<!--</div>-->
+</div>

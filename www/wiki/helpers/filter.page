@@ -8,10 +8,10 @@ Date: 2017/3/13
 API_URL_PREFIX="api/wiki/models/"
 
 -- 访问频率限制函数
-function requestCountLimit(typ, count, time) 
-	local validCount = count or 50
+function requestCountLimit(typ, count, time)
+	local validCount = count or 500
 	local validTime = time or 300
-	return function() 
+	return function()
 		local ip = request:header("X-Real-IP")
 		-- log(ip or "---------------")
 		local key = "filter_" .. (typ or "") .. "_" .. (ip or "")
@@ -23,13 +23,13 @@ function requestCountLimit(typ, count, time)
 		limitObj.count = limitObj.count + 1
 		-- 访问次数超了 时间未超  禁止请求
 		if (limitObj.count > limitObj.validCount) and (curTime < limitObj.validTime)  then
-			result = false  
+			result = false
 		elseif (limitObj.count > limitObj.validCount) and (curTime > limitObj.validTime) then
 			limitObj.count = 1
 			limitObj.level = limitObj.level + 1
 			limitObj.validTime =  limitObj.level * validTime + curTime
 		elseif (limitObj.count <= limitObj.validCount) and (curTime > limitObj.validTime) then
-			limitObj.validTime = curTime + limitObj.level * validTime + curTime 
+			limitObj.validTime = curTime + limitObj.level * validTime + curTime
 		else
 		end
 		LOG.std(nil, "error", "keepwork", limitObj)
@@ -55,7 +55,7 @@ function authenticated()
 	return true
 end
 
-function testFilter() 
+function testFilter()
 	log("test filter")
 	return true
 end
@@ -89,8 +89,8 @@ KEEPWORK["request_after_filter"] ={
 function request_before_filter()
 	local filter = KEEPWORK["request_before_filter"]
 	local url = pagename() or ""
-	local filterfuncs = filter[url]	
-	
+	local filterfuncs = filter[url]
+
 	for _, func in ipairs(filterfuncs or {}) do
 		if not func() then
 			response:status(401):send({message="prohibit access"})
@@ -103,8 +103,8 @@ end
 function request_after_filter()
 	local filter = KEEPWORK["request_after_filter"]
 	local url = pagename() or ""
-	local filterfuncs = filter[url]	
-	
+	local filterfuncs = filter[url]
+
 	for _, func in ipairs(filterfuncs or {}) do
 		func()
 	end

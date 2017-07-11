@@ -703,6 +703,9 @@
                                     <div ng-show="selectedShape" class ="pull-left">
                                         <span class ="glyphicon glyphicon-trash" ng-click="removeShape()" style="font-size:20px;line-height:24px;"></span>
                                     </div>
+                                    <div class="pull-left" style="margin-left:10px;">
+                                        <button type="button" class="close" style="margin-top:0;" data-dismiss="modal" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+                                    </div>
                                 </div>
                             </div>
                             <div class ="modal-body" style="display:flex;display:-webkit-flex;padding:0;">

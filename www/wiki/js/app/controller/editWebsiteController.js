@@ -33,7 +33,7 @@ define([
         }
         
         function sendModifyWebsiteRequest() {
-            util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
+            util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
                 Message.info("站点配置修改成功!!!");
                 $rootScope.$broadcast('userCenterContentType', 'websiteManager');
@@ -210,13 +210,12 @@ define([
 		}
 
 		$scope.deleteShareGroup = function(group) {
-			console.log(group);
 			if (!siteDataSource || !group) 
 				return;
 
 			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
 				group.isDelete = true;
-				util.post(config.apiUrlPrefix + "site_group/deleteByName", group);
+				util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
 			});
 		}
 
@@ -243,9 +242,16 @@ define([
 
         $scope.createGroup = function () {
 			var group = $scope.nowGroup;
+            $scope.groupnameErr = false;
 			if (!siteDataSource || !group.name) {
 				return;
 			}
+
+			if (!/[\d\w]+/.test(group.name)){
+			    $scope.groupnameErr = true;
+			    return;
+            }
+
 			// 是否存在
 			for (var i = 0; i < ($scope.groups || []).length; i++) {
 				if (!$scope.groups[i].isDelete && $scope.groups[i].name == group.name) {

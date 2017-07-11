@@ -176,7 +176,7 @@
                         <div class="opened treeview" id="openedTree">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="icon expand-icon glyphicon glyphicon-minus"></span>
+                                    <span class="icon expand-icon fa fa-chevron-down"></span>
                                     已打开
                                     <span class="badge">
                                         <img class="show-parent" ng-click="cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
@@ -197,20 +197,26 @@
                         <div style="margin-bottom: 20px;">
                             <div id="myTree"></div>
                         </div>
-                        <div class="treeview joined-treeview" style="border-top: 1px solid #DCDCDC;">
+                        <div class="treeview joined-treeview" style="border-top: 1px solid #DCDCDC;margin-bottom: 20px;">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="icon expand-icon glyphicon glyphicon-minus"></span>
+                                    <span class="icon expand-icon fa fa-chevron-down"></span>
                                     参与的项目
                                 </li>
                             </ul>
 							<div id="editableTree"></div>
                         </div>
-                        <div>
+                        <div class="treeview temp-treeview" style="border-top: 1px solid #DCDCDC;">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <span class="icon expand-icon fa fa-chevron-down"></span>
+                                    临时的项目
+                                </li>
+                            </ul>
                             <div id="readableTree"></div>
                         </div>
                     </div>
-                    <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: auto">
+                    <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: auto;display: flex;">
                         <div id="srcview" class="col-xs-6 full-height">
                             <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
                             <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>

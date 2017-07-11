@@ -220,8 +220,8 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
-                    <div class="org-notify-item" ng-repeat="apply in applyList">
-                        <div ng-hide="apply.isDeleted">
+                    <div class="org-notify-item" ng-repeat="apply in applyList" ng-hide="apply.isDeleted">
+                        <div>
                             <p><a class="stress" ng-click="goApplyWorksPage(apply)">标题：{{apply.worksTitle}} </a><a> 作者：{{apply.worksUsername}}</a></p>
                             <div class="notify-work">
                                 <img ng-src="{{ apply.worksLogo || imgsPath+'wiki_cover.jpg'}}" alt="" class="photo">

@@ -225,14 +225,15 @@ define([
 									util.html('#__UserSitePageContent__', content, $scope);
 									config.loading.hideLoading();
 								};
-								if (config.isLocal()) {
-									currentDataSource.setLastCommitId("master");
-								}
+								//if (config.isLocal()) {
+									//currentDataSource.setLastCommitId("master");
+								//}
 
 								if (window.location.search && window.location.search.indexOf('branch=master') >= 0) {
 									currentDataSource.setLastCommitId('master');
 								}
 
+								//console.log(currentDataSource);
 								currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
 									//console.log(data);
 									//console.log("otherUsername:", urlObj.username);

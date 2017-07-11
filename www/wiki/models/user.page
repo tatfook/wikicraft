@@ -19,8 +19,6 @@ include_once("./data_source.page")
 include_once("./site_data_source.page")
 include_once("./user_three_service.page")
 
--- local mem_cache = commonlib.gettable("WebServer.mem_cache"):GetInstance()
-
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
 
@@ -33,9 +31,8 @@ function user:ctor()
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- 手机
 	self:addfield("sex", "string", false, 12)
-	self:addfield("dataSourceId", "number", false) -- 数据源ID   
-	self:addfield("defaultDataSourceSitename", "string")    -- 默认数据源的站点名 
-	self:addfield("defaultDataSourceName", "string")    -- 默认数据源的站点名 
+	self:addfield("defaultDataSourceSitename", "string")    -- 默认数据源的站点名
+	self:addfield("defaultDataSourceName", "string")    -- 默认数据源的站点名
 	self:addfield("portrait", "string", false, 200) -- picture url
 	self:addfield("roleId", "number")
 	self:addfield("location", "string", false, 50)
@@ -51,7 +48,7 @@ function user:ctor()
 end
 
 -- 发送邀请邮件
-function user:api_inviteFriend(params) 
+function user:api_inviteFriend(params)
 	if (not params.userId) or (not params.friendMail) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -61,18 +58,18 @@ function user:api_inviteFriend(params)
 	par.to = "765485868@qq.com"
 	par.subject = "wikicraft好友邀请"
 	par.body = [[
-		<div class="main-content">
-			<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
-			<p>wikicraft 是一款强大的网站构建平台。</p>
-			<p>#username#的作品：</p>
-			<p><a href="#">作品链接</a></p>
-			<p><a href="#">作品链接</a></p>
-			<div class="btn">点击注册</div>
-		</div>
+	<div class="main-content">
+	<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
+	<p>wikicraft 是一款强大的网站构建平台。</p>
+	<p>#username#的作品：</p>
+	<p><a href="#">作品链接</a></p>
+	<p><a href="#">作品链接</a></p>
+	<div class="btn">点击注册</div>
+	</div>
 	]]
-	
+
 	util:sendEmail(par)
-	
+
 	return errors:wrap(nil)
 end
 
@@ -90,19 +87,19 @@ function user:api_getBaseInfoByName(params)
 	self:db():findOne({["+username"]={params.username}}, resume)
 	local _, userinfo  = yield()
 
-	if not userinfo then 
+	if not userinfo then
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	userinfo.password = nil
 
-	return errors:wrap()
+	return errors:wrap(nil, userinfo)
 end
 
 -- 旧接口兼容
 function user:api_getminiprofile(params)
 	if(not params._id) then
-		-- `_id` is automatically injected if no other field is found. 
+		-- `_id` is automatically injected if no other field is found.
 		self:ensureAuthenticated();
 		params._id = request.userid;
 	end
@@ -116,7 +113,7 @@ end
 -- 旧接口兼容
 function user:get(params)
 	if(not params._id) then
-		-- `_id` is automatically injected if no other field is found. 
+		-- `_id` is automatically injected if no other field is found.
 		self:ensureAuthenticated();
 		params._id = request.userid;
 	end
@@ -134,15 +131,15 @@ function user:get(params)
 end
 
 -- 更新用户信息
-function user:update(params) 
+function user:update(params)
 	self:ensureAuthenticated()
 	local err, query = self:validateQuery(params)
-	if err or (not query._id) then 
+	if err or (not query._id) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	if query then
-		-- following field is forbidden to change by the user. 
+		-- following field is forbidden to change by the user.
 		query.email = nil
 		query.password = nil
 		query.githubId = nil
@@ -156,11 +153,16 @@ function user:update(params)
 	return errors:wrap(yield())
 end
 
--- 用户注销账号 
-function user:api_deleteById(params) 
+-- 用户注销账号
+function user:api_deleteByName(params)
 	-- 只能删除自己
 	self:ensureAuthenticated()
-	local username = getTokenInfo().username
+	local tokeninfo = getTokenInfo()
+	local username = tokeninfo.username
+
+	if not tokeninfo.isAdmin then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
 	if not params.username or (username ~= params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -168,7 +170,7 @@ function user:api_deleteById(params)
 
 	self:db():findOne({["+username"]={username}}, resume)
 	local _, userinfo = yield()
-	if not userinfo then	
+	if not userinfo then
 		return errors:wrap()
 	end
 
@@ -180,9 +182,25 @@ function user:api_deleteById(params)
 	userFavoriteDB:api_deleteByUserId({userId=userinfo._id})
 
 	self:db():deleteOne({["+username"]={username}}, resume)
-	local err, data = yield() 
-	
-	return errors:wrap() 
+	local err, data = yield()
+
+	return errors:wrap()
+end
+
+-- 更新用户信息
+function user:api_updateByName(params)
+	_, params = self:validateQuery(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.email = nil
+	params.password = nil
+	params.isadmin = nil
+
+	self:db():updateOne({["+username"]={params.username}}, params, resume)
+
+	return errors:wrap(yield())
 end
 
 -- 更新用户信息
@@ -194,11 +212,7 @@ function user:api_updateUserInfo(params)
 
 	params.email = nil
 	params.password = nil
-	params.githubId = nil
-	params.githubToken = nil
-	params.githubName = nil
 	params.isadmin = nil
-	params.dataSource = nil
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
@@ -210,17 +224,17 @@ function user:api_verifyCellphoneOne(params)
 	if not params.cellphone then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	local smsCode = tostring(math.random(1000,9999))
 	local smsParams = {to=params.cellphone, datas={smsCode,"3"}, templateId="1"}
 	sendTemplateSms(smsParams, resume)
 	local _, data = yield()
-	
+
 	if data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
-	
-	local value = {cellphone=params.cellphone, smsCode=smsCode}	
+
+	local value = {cellphone=params.cellphone, smsCode=smsCode}
 	value = commonlib.Json.Encode(value)
 	mem_cache:set(data.templateSMS.smsMessageSid, value)
 
@@ -246,22 +260,22 @@ function user:api_verifyCellphoneTwo(params)
 	if not userinfo then
 		return errors:wrap(errors.USER_NOT_EXIST)
 	end
-	
+
 	userinfo.cellphone = value.cellphone
 	self:db():updateOne({_id=userId}, userinfo, resume)
-	
+
 	return errors:wrap(yield())
 end
 
 
 -- 邮箱验证1
-function user:api_verifyEmailOne(params) 
+function user:api_verifyEmailOne(params)
 	self:ensureAuthenticated()
 	local username = getTokenInfo().username
 	if not params.email then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+username"]={username}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then
@@ -277,14 +291,14 @@ function user:api_verifyEmailOne(params)
 	par.to = params.email
 	par.subject = "邮箱验证"
 	par.body = [[
-		<div class="main-content">
-			<p>打开如下链接进行邮箱验证:</p>
-			<p><a href="%s">%s</a></p>
-		</div>
+	<div class="main-content">
+	<p>打开如下链接进行邮箱验证:</p>
+	<p><a href="%s">%s</a></p>
+	</div>
 	]]
 	par.body = string.format(par.body, url, url)
 	util:sendEmail(par)
-	
+
 	return errors:wrap(nil)
 end
 
@@ -295,22 +309,22 @@ function user:api_verifyEmailTwo(params)
 	response:set_header("Location", "http://www.paracraft.cn/")
 	response:status(301):send_headers();
 	local email = mem_cache:get("verifyEmail" .. tostring(userId))
-	
+
 	if not email then
 		return errors:wrap(nil)
 	end
 
 	self:db():updateOne({_id=tonumber(userId)}, {email=email}, resume)
-	
+
 	return errors:wrap(yield())
 end
 
 -- 找回密码1
-function user:api_findPwdOne(params) 
+function user:api_findPwdOne(params)
 	if not params.email then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+email"]={params.email}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then
@@ -327,14 +341,14 @@ function user:api_findPwdOne(params)
 	par.to = params.email
 	par.subject = "keepwork找回密码"
 	par.body = [[
-		<div class="main-content">
-			<p>打开如下链接进行密码重置:</p>
-			<p><a href="%s">%s</a></p>
-		</div>
+	<div class="main-content">
+	<p>打开如下链接进行密码重置:</p>
+	<p><a href="%s">%s</a></p>
+	</div>
 	]]
 	par.body = string.format(par.body, url, url)
 	util:sendEmail(par)
-	
+
 	return errors:wrap(nil)
 end
 
@@ -348,10 +362,10 @@ function user:api_findPwdTwo(params)
 	if key ~= params.key then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	local password = self:encodePassword(params.password)
 	self:db():updateOne({["+email"]={params.email}}, {password=password}, resume)
-	
+
 	return errors:wrap(yield())
 end
 
@@ -361,14 +375,14 @@ function user:api_changepw(params)
 	if (not params.oldpassword) or (not params.newpassword) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+username"]={username}}, resume)
 	local err, user = yield()
-	
-	if not user then 
+
+	if not user then
 		return errors:wrap(errors.NOT_FOUND)
 	end
-	
+
 	local oldpassword = self:encodePassword(params.oldpassword)
 	local newpassword = self:encodePassword(params.newpassword)
 	if user.password ~= oldpassword then
@@ -391,11 +405,11 @@ function user:api_setemail(params)
 	return "email"
 	--[[
 	if (not params._id) or (not params.email) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	local email = params.email
 	if not email:match("^[%w%._%-]+@[%w%.%-]+%.[%a]+$") or #email>50 then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	self:db():updateOne({_id=params._id}, {email=email}, resume)
@@ -404,19 +418,19 @@ function user:api_setemail(params)
 end
 
 -- 登录
-function user:api_login(params) 
+function user:api_login(params)
 	if (not params.username) or (not params.password) then
-		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}	
+		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
 	self:db():findOne({["+email"]={params.username}}, resume)
 	local _, userinfo = yield()
-	if not userinfo then 
+	if not userinfo then
 		self:db():findOne({["+cellphone"]={params.username}}, resume)
-		 _, userinfo = yield()
+		_, userinfo = yield()
 		if not userinfo then
 			self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
-			 _, userinfo = yield()
+			_, userinfo = yield()
 			if not userinfo then
 				return errors:wrap(err or "用户不存在", data)
 			end
@@ -426,7 +440,7 @@ function user:api_login(params)
 	if userinfo.password ~= self:encodePassword(params.password) then
 		return errors:wrap("密码错误")
 	end
-	
+
 	local siteDataSourceDB = models.site_data_source:new()
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
@@ -450,26 +464,26 @@ function user:api_bindThreeService(params)
 	local userThreeServiceDB = models.user_three_service:new()
 	threeService.userId = userinfo._id
 	userThreeServiceDB:api_upsert(threeService)
-	
+
 	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=0})
-end	
+end
 
 -- 注册
 function user:api_register(params)
 	-- 用户名 密码 为必填项
-	if (not params.username) or (not params.password) then 
+	if (not params.username) or (not params.password) then
 		return errors:wrap(err)
 	end
 	params.username = string.lower(params.username)
 	if #params.username < 4 or #params.username > 30 then
 		return errors:wrap(errors:new("用户名不合法"))
 	end
-	
+
 	-- 查找用户名是否可用
 	if self:api_checkUsername({username=params.username}).data == 0 then
 		return errors:wrap(errors:new("用户名已存在"))
 	end
-	
+
 	-- 创建用户
 	self:db():insertOne({["+username"]={params.username}}, {
 		username = params.username,
@@ -488,12 +502,12 @@ function user:api_register(params)
 	}, resume)
 	local err, userinfo = yield();
 
-	if not userinfo then 
+	if not userinfo then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
 	local siteDataSourceDB = models.site_data_source:new()
-	
+
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
 
@@ -513,13 +527,13 @@ function user:api_getDefaultSiteDataSource(params)
 	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+username"]={params.username}}, resume)
-	local _, userinfo = yield()	
-	
+	local _, userinfo = yield()
+
 	local siteDataSourceDB = models.site_data_source:new()
-	
-	return siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename})		
+
+	return siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename})
 end
 
 -- 获取用户数据源列表
@@ -530,7 +544,7 @@ function user:api_getUserDataSource(params)
 
 	local siteDataSourceDB = models.site_data_source:new()
 	local dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
-	
+
 	for _, value in ipairs(dataSource or {}) do
 		value.dataSourceToken = nil
 	end
@@ -541,10 +555,17 @@ end
 -- 获取用户信息
 function user:api_getProfile()
 	self:ensureAuthenticated()
-	local username = getTokenInfo().username
+	local tokeninfo = getTokenInfo()
+	local username = tokeninfo.username
+	--LOG.std(nil, "keepwork", "errror", tokeninfo)
+
+	if tokeninfo.authway == "oauth" then
+		return self:api_getBaseInfoByName({username=username})
+	end
+
 	self:db():findOne({["+username"]={username}}, resume)
 	local err, data = yield()
-	if not data then 
+	if not data then
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
@@ -557,7 +578,7 @@ end
 
 -- 通过用户ID获得用户信息
 function user:api_getById(params)
-	if not params.userId then 
+	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -569,22 +590,22 @@ function user:api_getById(params)
 	data.password = nil
 
 	data.dataSource = self:api_getUserDataSource({username=data.username}).data
-	
+
 	return errors:wrap(nil, data)
 end
 
 -- 通过用户名获得用户信息
 function user:api_getByName(params)
-	if not params.username then 
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, data = yield()
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
-	
+
 	data.password = nil
 
 	data.dataSource = self:api_getUserDataSource({username=data.username}).data
@@ -594,16 +615,16 @@ end
 
 -- 通过email获得用户信息
 function user:api_getByEmail(params)
-	if not params.email then 
+	if not params.email then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+email"]={params.email}}, resume)
 	local err, data = yield()
 	if not data then
 		return errors:wrap(err or errors.NOT_FOUND, data)
 	end
-	
+
 	data.password = nil
 
 	data.dataSource = self:api_getUserDataSource({username=data.username}).data
@@ -614,22 +635,22 @@ end
 -- 获得用户数量
 function user:api_getCount(params)
 	self:db():count({}, resume)
-	
+
 	return errors:wrap(yield())
 end
 
 -- 获得收藏数排序的用户列表
 function user:api_getFavoriteSortList(params)
-	local skip, limit = util:pagination(params)	
-	
+	local skip, limit = util:pagination(params)
+
 	local count = self:api_getCount().data
 	self:db():find({["-favoriteCount"]={gt=-1, skip=skip, limit=limit}}, resume)
 	local err, data = yield()
 
-	if err then 
+	if err then
 		return errors:wrap(err)
 	end
-	
+
 	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), userList=data})
 end
 
@@ -644,7 +665,7 @@ function user:api_getUserAndSiteBySitename(params)
 	if not siteinfo then
 		return errors:wrap(errors.NOT_FOUND)
 	end
-	
+
 	local userinfo = self:api_getById({userId=siteinfo.userId}).data
 	if not userinfo then
 		return  errors:wrap(errros.NOT_FOUND)
@@ -662,11 +683,11 @@ function user:updateWebsiteCount(userId, count)
 		return
 	end
 
-	user.websiteCount = user.websiteCount or 0	
+	user.websiteCount = user.websiteCount or 0
 	self:db():updateOne({_id=userId}, {websiteCount=user.websiteCount+count}, resume)
 	yield()
-	
-	return 
+
+	return
 end
 
 -- 修改用户的收藏数量
@@ -681,8 +702,8 @@ function user:updateFavoriteCount(userId, count)
 	user.favoriteCount = user.favoriteCount or 0
 	self:db():updateOne({_id=userId}, {favoriteCount=user.favoriteCount+count}, resume)
 	yield()
-	
-	return 
+
+	return
 end
 
 -- 修改用户的粉丝数量
@@ -693,12 +714,12 @@ function user:updateFansCount(userId, count)
 		log("user not exist, userId:", userId)
 		return
 	end
-	
-	user.fansCount = user.fansCount or 0		
+
+	user.fansCount = user.fansCount or 0
 	self:db():updateOne({_id=userId}, {fansCount=user.fansCount+count}, resume)
 	yield()
-	
-	return 
+
+	return
 end
 
 -- 获取用户统计信息
@@ -706,7 +727,7 @@ function user:api_getStatics(params)
 	if not params.userId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	local websiteDB = models.website:new()
 	local userFavoriteDB = models.user_favorite:new()
 
@@ -717,7 +738,7 @@ function user:api_getStatics(params)
 	self:db():updateOne({_id=params.userId},{favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount}, resume)
 	local err, data = yield()
 
-	return errors:wrap(nil, {favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount})	
+	return errors:wrap(nil, {favoriteCount=favoriteCount, fansCount=fansCount, websiteCount=websiteCount})
 end
 
 -- 检测用户名是否有效
@@ -725,7 +746,7 @@ function user:api_checkUsername(params)
 	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, data = yield()
 	if data then
@@ -733,8 +754,8 @@ function user:api_checkUsername(params)
 	end
 
 	local websiteDomainDB = models.website_domain:new()
-	
-	return websiteDomainDB:api_checkDomain({domain=params.username})	
+
+	return websiteDomainDB:api_checkDomain({domain=params.username})
 end
 
 -- 获取用户详细相关信息通过用户名
@@ -759,21 +780,21 @@ function user:api_getDetailByName(params)
 	websiteDB:db():find({["+userId+type"]={userinfo._id, const.WEBSITE_TYPE_ORGANIZATION, limit=limit}}, resume)
 	local err, selfOrganiztionList = yield()
 	local selfOrganizationObj = {total=selfOrganiztionTotal, siteList=selfOrganiztionList}
-	
+
 	-- 加入的组织
 	local websiteMemberDB = models.website_member:new()
-	local joinOrganizationObj = websiteMemberDB:api_getOrganizationListByUsername({username=userinfo.username}).data	
-	
+	local joinOrganizationObj = websiteMemberDB:api_getOrganizationListByUsername({username=userinfo.username}).data
+
 	-- 获取热门作品
-	local hotSiteObj = websiteDB:api_getSiteList({username=userinfo.username,sortBy="-favoriteCount"}).data	
-	
+	local hotSiteObj = websiteDB:api_getSiteList({username=userinfo.username,sortBy="-favoriteCount"}).data
+
 	-- 获得全部站点
 	local allSiteList = websiteDB:api_getAllByUsername({username=userinfo.username}).data
 
 	-- 获得用户粉丝
 	local userFansDB = models.user_fans:new()
 	local fansObj = userFansDB:api_getByUserId({userId=userinfo._id}).data
-	
+
 	-- 获得用户关注
 	local followUserObj = userFansDB:api_getByFansUserId({fansUserId=userinfo._id}).data
 	-- 获取用户收藏的站点
@@ -784,7 +805,7 @@ function user:api_getDetailByName(params)
 	-- 获取用户动态
 	local userTrendsDB = models.user_trends:new()
 	local trendsObj = userTrendsDB:api_get({userId=userinfo._id}).data
-	
+
 	-- 获取活动记录
 	local userActiveDB = models.user_active:new()
 	local activeObj = userActiveDB:api_getByUserId({userId=userinfo._id}).data
@@ -796,87 +817,6 @@ end
 
 
 
--- 管理员相关接口
--- 登录
-function user:api_adminLogin(params)
-	if (not params.username) or (not params.password) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-	
-	params.password = self:encodePassword(params.password) 
-	
-	self:db():findOne({["+username+password"] = {params.username, params.password}}, resume)
-
-	local _, userinfo = yield()
-
-	if not userinfo then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
-		return errors:wrap(errors:new("用户不是管理员"))
-	end
-
-	return errors:wrap(nil,{token=createJWT(userinfo), userinfo=userinfo})
-end
-
-function user:adminAuth() 
-	local username = self:ensureAuthenticated()
-	self:db():findOne({["+username"]={username}}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		response:status(401):send({ message = "未认证"})
-		exit()
-	end
-
-	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
-		response:status(401):send({ message = "无权限访问"})
-		exit()
-	end
-	
-	return userinfo
-end
-
--- 获取用户列表
-function user:api_adminGet(params)
-	local userinfo = self:adminAuth()
-	
-	local skip, limit = util:pagination(params)
-
-	self:db():count({_id={gt=-1, skip=skip, limit=limit}}, resume)
-	local _, total = yield()
-	
-	self:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
-	local _, userList = yield()
-	
-	return errors:wrap(nil, {total=total, userList = userList})
-end
-
--- 设置异常用户
-function user:api_adminSetExceptionUser(params)
-	local userinfo = self:adminAuth()
-	if not params.userId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():updateOne({_id = params.userId}, {roleId=const.USER_ROLE_EXCEPTION}, function() end)
-	
-	-- TODO 添加到异常列表中
-	return errors:wrap(nil)
-end
-
--- 设置异常用户
-function user:api_adminUnsetExceptionUser(params)
-	local userinfo = self:adminAuth()
-	if not params.userId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():updateOne({_id = params.userId}, {roleId=const.USER_ROLE_NORMAL}, function() end)
-	
-	-- TODO 异常列表中移除
-	return errors:wrap(nil)
-end
 
 
 

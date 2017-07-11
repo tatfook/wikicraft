@@ -11,6 +11,7 @@ define([
     'helper/storage',
     'helper/dataSource',
     'text!html/wikiEditor.html',
+    'controller/editWebsiteController',
     'codemirror/mode/markdown/markdown',
     // 代码折叠
     'codemirror/addon/fold/foldgutter',
@@ -28,7 +29,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent) {
+], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -184,12 +185,21 @@ define([
 				];
 			} else {
                 treeNode.tags = [];
+                var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_closeAll("+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_closeAll.png' title='关闭全部'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='关闭全部'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
                 treeNode.icon = 'fa fa-globe';
+
+                if (allSiteMap[key].visibility == "private"){
+                    treeNode.icon = 'iconfont icon-lock';
+                }
+
+                if (pageNode.url.split("/").length > 3){ // 若为网站内部文件夹
+                    treeNode.icon = 'iconfont icon-folder';
+                }
 			}
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 
@@ -540,7 +550,8 @@ define([
 				// 获取自己可编辑的站点列表
 				fnList.push(function(finish){
 					if ($scope.user && $scope.user.username) {
-						util.post(config.apiUrlPrefix + "site_group/getByMemberName", {
+						//util.post(config.apiUrlPrefix + "site_group/getByMemberName", {
+						util.post(config.apiUrlPrefix + "site_user/getSiteListByMemberName", {
 							memberName:$scope.user.username,
 						}, function(data){
 							data = data || [];
@@ -557,6 +568,7 @@ define([
 						finish && finish();
 					}
 				});
+
                 // 获取他人站点列表
                 fnList.push(function (finish) {
 					var urlObj = storage.sessionStorageGetItem('urlObj'); 
@@ -918,16 +930,15 @@ define([
                 });
                 !config.islocalWinEnv() && $location.path(currentPage.url);
 
-                function setEditorValue(content) {
-                    currentPage.isFirstEditor = true;
+                function setEditorValue(page, content) {
+                    page.isFirstEditor = true;
                     //console.log(currentPage);
-                    if (!editorDocMap[currentPage.url]) {
-                        editorDocMap[currentPage.url] = CodeMirror.Doc(content, 'markdown');
+                    if (!editorDocMap[page.url]) {
+                        editorDocMap[page.url] = CodeMirror.Doc(content, 'markdown');
                     }
-                    editor.swapDoc(editorDocMap[currentPage.url]);
+                    editor.swapDoc(editorDocMap[page.url]);
                     //console.log(currentPage);
 					editor.setValue(content);
-                    allWebstePageContent[currentPage.url] = editor.getValue();
                     CodeMirror.signal(editor, 'change', editor);
 
                     // 折叠wiki命令
@@ -939,14 +950,14 @@ define([
 					//}
 
 					// 打开currentPage
-					addOpenList(currentPage);
+					addOpenList(page);
 
 					// init tree user settimeout(function(){}, 0)
 					setTimeout(function() {
-						$('#btUrl').val(window.location.origin + currentPage.url);
-						var treeNode = treeNodeMap[currentPage.url];
-						var treeid = getTreeId(currentPage.username, currentPage.sitename);
-						//console.log(treeid, treeNodeMap, currentPage);
+						$('#btUrl').val(window.location.origin + page.url);
+						var treeNode = treeNodeMap[page.url];
+						var treeid = getTreeId(page.username, page.sitename);
+						//console.log(treeid, treeNodeMap, page);
 						if (treeNode) {
 							$(treeid).treeview('selectNode', [treeNode.nodeId, {silent: true}]);
 							while (treeNode.parentId != undefined){
@@ -959,52 +970,43 @@ define([
 					}, 10);
                 }
 
+				var page = currentPage;
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
-                    getCurrentPageContent(function (data) {
-                        //console.log(data);
-                        allWebstePageContent[currentPage.url] = data;
-                        setEditorValue(data || "");
-                    }, function () {
+					var callback = function(page, content) {
+						content = content || "";
+                        allWebstePageContent[page.url] = content;
                         if (isEmptyObject(currentPage)) {
                             openTempFile();
                             return;
                         }
-                        allWebstePageContent[currentPage.url] = "";
-                        setEditorValue("");
+						if (currentPage.url != page.url) {
+							return ;	
+						}
+
+                        setEditorValue(page, content);
+					}
+                    getCurrentPageContent(page, function (data) {
+						callback(page, data);
+                    }, function () {
+						callback(page, data);
                     });
                 });
-
-                // storage.indexedDBGetItem(config.pageStoreName, currentPage.url, function (page) {
-                //     if (page) {
-                //         page.timestamp = page.timestamp || 0;
-                //         currentPage.timestamp = currentPage.timestamp || 0; // (new Date()).getTime();
-                //         if (page.timestamp > currentPage.timestamp &&  currentPage.content != page.content) {
-                //             console.log("---------------histroy modify---------------");
-                //             currentPage.content = page.content;
-                //             currentPage.isModify = true;
-                //             initTree();
-                //         }
-                //     }
-                //     setEditorValue();
-                // }, function () {
-                //     setEditorValue();
-                // });
             }
 
             // 获得页面内容
-            function getCurrentPageContent(cb, errcb) {
-                if (isEmptyObject(currentPage)) {
+            function getCurrentPageContent(page, cb, errcb) {
+                if (isEmptyObject(page)) {
                     errcb && errcb();
                     return;
                 }
                 //console.log(allWebstePageContent);
-                var url = currentPage.url;
+                var url = page.url;
                 //console.log("-----------getPageContent-------------", url, currentPage, allWebstePageContent);
                 if (allWebstePageContent[url] != undefined) {
                     //console.log(allWebstePageContent[url]);
                     cb && cb(allWebstePageContent[url]);
                 } else {
-                    var currentDataSource = getCurrentDataSource();
+                    var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
                     //console.log(currentDataSource);
                     if (currentDataSource) {
                         currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
@@ -1012,7 +1014,7 @@ define([
                             cb && cb(data);
                         }, errcb);
                     } else {
-                        console.log("----------data source uninit-------------");
+                        //console.log("----------data source uninit-------------");
                         errcb && errcb();
                     }
                 }
@@ -1027,6 +1029,8 @@ define([
                         color: "#3977AD",
                         selectedBackColor: "#3977AD",
                         onhoverColor:"#E6E6E6",
+                        expandIcon:"fa fa-chevron-right",
+                        collapseIcon:"fa fa-chevron-down",
                         showBorder: false,
                         enableLinks: false,
                         levels: 4,
@@ -1383,6 +1387,15 @@ define([
 						$scope.cmd_close(key);
 					}
                 }
+            };
+
+            $scope.cmd_goSetting = function (urlKey) {
+                var website = allSiteMap[urlKey];
+                console.log(website);
+                storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
+                storage.sessionStorageSetItem("editWebsiteParams", website);
+                util.go("userCenter");
+                util.html('#userCenterSubPage', editWebsiteHtmlContent);
             };
 
             $scope.goSetting = function (sitename) {
@@ -2658,7 +2671,11 @@ define([
                     }, function (wikiBlock) {
                         console.log(wikiBlock);
                     }, function (result) {
-                        console.log(result);
+                        if (result.finished){
+                            var key = result.website.username + "_" + result.website.name;
+                            allSiteMap[key] = result.website;
+                            initTree();
+                        }
                     });
                 }
 

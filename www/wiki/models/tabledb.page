@@ -1,0 +1,169 @@
+<?npl
+--[[
+Title: table db
+Author: wuxiangan
+Date: 2017/07/09
+]]
+
+NPL.load("(gl)script/ide/Files.lua")
+
+include_once("./abstract/base.page")
+
+local tabledb = inherit(models.abstract.base, gettable("models.tabledb"))
+tabledb.db_name = "tabledb"
+
+local defaultTableDB = db
+
+function tabledb:api_getTables(params)
+	local tableNames = {}
+	local databaseDir = WIKI_DB_PATH
+	local files = commonlib.Files.Find(nil, databaseDir, 0, 500, "*.db", nil)
+	for i, file in ipairs(files or {}) do
+		tableNames[#tableNames+1] = string.match(file.filename,"(.*)%.")
+	end
+	return errors:wrap(nil, tableNames)
+end
+
+function tabledb:api_getIndexes(params)
+	if not params.tableName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local tableName = params.tableName
+	local table = defaultTableDB:collection(tableName)
+	table:exec("SELECT name as indexName FROM indexes", resume(err, rows))
+	local err, rows = yield()
+	local indexes = {}
+	for i, obj in pairs(rows) do
+		for j, value in pairs(obj) do
+			indexes[#indexes + 1] = value
+		end
+	end
+
+	return indexes
+end
+
+--function tabledb:api_getTableRecord(params)
+--if not params.tableName then
+--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+--end
+
+--local table = defaultTableDB[params.tableName]
+--local skip, limit = util:pagination(params)
+--table:find({_id={gt=0, skip=skip, limit=limit}}, resume)
+--local _, data = yield()
+--table:count({}, resume)
+--local _, total = yield()
+--return errors:wrap(nil, {total=total, data=data})
+--end
+
+function tabledb:api_queryById(params)
+	if not params.tableName or not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local table = defaultTableDB[params.tableName]
+	table:findOne({_id=tonumber(params._id)}, resume)
+	local _, data = yield()
+	return errors:wrap(nil, {total=1, data={data}})
+end
+
+function tabledb:api_query(params)
+	if not params.tableName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if params.query and params.query._id then
+		return self:api_queryById({tableName=params.tableName, _id=params.query._id})
+	end
+
+	local table = defaultTableDB[params.tableName]
+	local skip, limit = util:pagination(params)
+	local query = params.query or {}
+	local key = ""
+	local value = {}
+	for k, v in pairs(query) do
+		key = key .. "+" .. k
+		value[#value+1] = v
+	end
+	local queryParams = {}
+	if key == "" then
+		key = "+_id"
+		value["gt"] = 0
+	end
+	queryParams[key] = value
+	table:count(queryParams, resume)
+	local _, total = yield()
+
+	value["skip"] = skip
+	value["limit"] = limit
+	table:find(queryParams, resume)
+	local _, data = yield()
+
+	return errors:wrap(nil,{total=total,data=data})
+end
+
+
+function tabledb:api_upsert(params)
+	if not params.tableName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local table = defaultTableDB[params.tableName]
+	local record = params.query or {}
+
+	log(record)
+	if record._id then
+		table:updateOne({_id=record._id}, record, resume)
+	else
+		table:insertOne(nil, record, resume)
+	end
+
+	return errors:wrap(yield())
+end
+
+function tabledb:api_delete(params)
+	if not params.tableName or not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local table = defaultTableDB[params.tableName]
+
+	table:deleteOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+function tabledb:api_getIndexes(params)
+	if not params.tableName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local table = defaultTableDB[params.tableName]
+
+	table:exec("SELECT name as indexName FROM indexes;", resume)
+
+	local _, rows = yield();
+	local indexes = {};
+	for i, obj in pairs(rows) do
+		for j, value in pairs(obj) do
+			indexes[#indexes + 1] = value;
+		end
+	end
+
+	return errors:wrap(nil, indexes);
+
+end
+
+function tabledb:api_deleteIndex(params)
+	if not params.tableName  or not params.indexName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local table = defaultTableDB[params.tableName]
+	table:removeIndex({params.indexName},  resume)
+
+	return errors:wrap(yield())
+end
+

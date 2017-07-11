@@ -13,13 +13,13 @@ define([
 
     function registerController(wikiBlock) {
         app.registerController("workslistController", ['$rootScope', '$scope','Account','Message',function ($rootScope, $scope, Account, Message) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-            $scope.requestParams = {pageSize: 3, page: 0};
-
             var modParams = getModParams(wikiBlock);
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
+
+            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
+            $scope.requestParams = {pageSize: modParams.pageSize || 3, page: 0};
 
             $scope.modParams = modParams;
 
@@ -156,52 +156,10 @@ define([
 ```
 */
 /*
-```@wiki/js/workslist
-{
-"moduleKind":"gameDemo",
-"title":"全部作品",
-"moreLink":"http://www.baidu.com",
-"worksList":[
-    {
-        "imgLink":"#",
-        "imgUrl":"",
-        "workLink":"#",
-        "workName":"作品名",
-        "authorLink":"#",
-        "author":"作者"
-    },
-    {
-        "imgLink":"#",
-        "imgUrl":"",
-        "workLink":"",
-        "workName":"作品名",
-        "authorLink":"",
-        "author":"作者"
-    },
-    {
-        "imgLink":"#",
-        "imgUrl":"",
-        "workLink":"",
-        "workName":"作品名",
-        "authorLink":"",
-        "author":"作者"
-    },
-    {
-        "imgLink":"#",
-        "imgUrl":"",
-        "workLink":"",
-        "workName":"作品名",
-        "authorLink":"",
-        "author":"作者"
-    }
-]
-}
-```
-*/
-/*
-```@wiki/js/workslist
+ ```@wiki/js/workslist
  {
  "moduleKind":"game",
+ "pageSize": 4,
  "title":"全部作品",
  "type":"all",
  "moreLink":"http://www.baidu.com",
@@ -253,61 +211,104 @@ define([
  }
  ]
  }
-```
+ ```
+ */
+/*
+ ```@wiki/js/workslist
+ {
+ "moduleKind":"gameStatic",
+ "title":"全部作品",
+ "type":"all",
+ "moreLink":"http://www.baidu.com",
+ "worksList":[
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ },
+ {
+ "workLink":"#",
+ "imgUrl":"",
+ "workName":"作品名",
+ "authorLink":"#",
+ "author":"作者",
+ "info":"浏览量",
+ "count":"5"
+ }
+ ]
+ }
+ ```
  */
 /*
 ```@wiki/js/workslist
 {
-"moduleKind":"gameStatic",
+"moduleKind":"gameDemo",
 "title":"全部作品",
-"type":"all",
 "moreLink":"http://www.baidu.com",
 "worksList":[
-{
-"workLink":"#",
-"imgUrl":"",
-"workName":"作品名",
-"authorLink":"#",
-"author":"作者",
-"info":"浏览量",
-"count":"5"
-},
-{
-"workLink":"#",
-"imgUrl":"",
-"workName":"作品名",
-"authorLink":"#",
-"author":"作者",
-"info":"浏览量",
-"count":"5"
-},
-{
-"workLink":"#",
-"imgUrl":"",
-"workName":"作品名",
-"authorLink":"#",
-"author":"作者",
-"info":"浏览量",
-"count":"5"
-},
-{
-"workLink":"#",
-"imgUrl":"",
-"workName":"作品名",
-"authorLink":"#",
-"author":"作者",
-"info":"浏览量",
-"count":"5"
-},
-{
-"workLink":"#",
-"imgUrl":"",
-"workName":"作品名",
-"authorLink":"#",
-"author":"作者",
-"info":"浏览量",
-"count":"5"
-}
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"#",
+        "workName":"作品名",
+        "authorLink":"#",
+        "author":"作者"
+    },
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"",
+        "workName":"作品名",
+        "authorLink":"",
+        "author":"作者"
+    },
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"",
+        "workName":"作品名",
+        "authorLink":"",
+        "author":"作者"
+    },
+    {
+        "imgLink":"#",
+        "imgUrl":"",
+        "workLink":"",
+        "workName":"作品名",
+        "authorLink":"",
+        "author":"作者"
+    }
 ]
 }
 ```

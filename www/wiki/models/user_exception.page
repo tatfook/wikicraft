@@ -1,0 +1,41 @@
+<?npl
+--[[
+Title: user exception
+Author: wuxiangan
+Date: 2017/07/07
+]]
+
+
+function user_exception = inherit(models.abstract.base, gettable("models.user_exception"))
+user_exception.db_name = "user_exception"
+
+function user_exception:ctor() 
+	self:addfield("username", "string")                       -- 用户名
+	self:addfield("comment", "string")                        -- 异常原因
+end
+
+
+function user_exception:api_upsert(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+username"]={params.username}}, params, resume)
+	
+
+	return errors:wrap(yield())
+end
+
+
+function user_exception:api_deleteByName(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({["+username"]={params.username}}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+

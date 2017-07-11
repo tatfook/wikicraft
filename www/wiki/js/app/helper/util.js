@@ -422,7 +422,7 @@ define([
 
 	// 获取查询参数
 	util.getQueryObject = function(search, decode) {
-		//decode = decode == undefined ? true : decode;
+		decode = decode == undefined ? true : decode;
 		search = search || window.location.search.substring(1);
 		var result = {};
 		var argList = search.split("&");
@@ -444,7 +444,7 @@ define([
 	util.getQueryString = function(searchObj, encode) {
 		var search = "";
 		var value = undefined;
-		//encode = encode == undefined ? true : encode;
+		encode = encode == undefined ? true : encode;
 		searchObj = searchObj || {};
 		for (key in searchObj) {
 			value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];

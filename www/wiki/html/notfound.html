@@ -5,13 +5,62 @@
     .notfound{
         text-align: center;
         padding: 60px 0;
+        color: #3977AD;
     }
-    .notfound img{
+    .notfound h1{
+        font-size: 36px;
+        margin: 0 0 30px;
+    }
+    .notfound .background-image{
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+    }
+    .notfound .background-image img{
         width: 30%;
         height: auto;
         cursor: pointer;
     }
+    .notfound .btns{
+        display: flex;
+        justify-content: center;
+    }
+    .notfound .btn-primary-outline{
+        font-size: 20px;
+        width:168px;
+        height: 42px;
+        line-height: 38px;
+        padding: 0;
+        border: 1px solid #3977AD;
+        background-color: transparent;
+        margin: 0 10px;
+    }
+    .notfound .btn-primary-outline:hover{
+        background-color: #3977AD;
+        color: #FFF;
+    }
+    .notfound .fa{
+        font-size: 22px;
+        -webkit-text-stroke: 1px #F4F9FF;
+    }
+    .notfound .btn-primary-outline:hover .fa{
+        -webkit-text-stroke: 1px #3977AD;
+    }
 </style>
-<div ng-controller="notfoundController" class="notfound" ng-click="goHome()">
-    <img ng-src="{{imgsPath+'wiki_404.jpg'}}" alt="">
+<div ng-controller="notfoundController" class="notfound">
+    <div class="background-image">
+        <img ng-src="{{imgsPath+'wiki_404.jpg'}}" alt="">
+    </div>
+    <div class="text">
+        <h1>很抱歉！您访问的页面不存在...</h1>
+        <div class="btns">
+            <div class="btn btn-primary-outline" ng-click="goBack()">
+                <i class="fa fa-arrow-circle-o-left"></i>
+                返回上一页
+            </div>
+            <div class="btn btn-primary-outline" ng-click="newPage()" ng-show="showNewPageBtn">
+                创建该页面
+            </div>
+        </div>
+    </div>
 </div>
