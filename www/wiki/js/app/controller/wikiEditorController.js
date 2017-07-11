@@ -30,7 +30,7 @@ define([
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
 ], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
-    //console.log("wiki editor controller!!!");
+    //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true});
@@ -90,8 +90,8 @@ define([
 	function getPageByUrl(url) {
 		return allPageMap[url];
 	}
-
-    function getTreeData(username, sitename,  pageMap, isDir) {
+//}}}
+    function getTreeData(username, sitename,  pageMap, isDir) {//{{{
         var pageTree = {url: '/' + username, children: {}};
         var treeData = [];
         for (var key in pageMap) {
@@ -226,10 +226,10 @@ define([
             //]);
         //}
         return treeData;
-    }
+    }//}}}
 
 
-    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {
+    app.registerController('imgCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {//{{{
         $scope.img = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
@@ -253,9 +253,9 @@ define([
                 fileReader.readAsDataURL(e.target.files[0]);
             });
         }
-    }]);
+    }]);//}}}
 
-    app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {
+    app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {//{{{
         $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
 
         $scope.cancel = function () {
@@ -265,9 +265,9 @@ define([
         $scope.video_insert = function () {
             $uibModalInstance.close($scope.videoUrl);
         }
-    }]);
+    }]);//}}}
 
-    app.registerController('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
+    app.registerController('linkCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {//{{{
         $scope.link = {url: '', txt: ''};
 
         $scope.cancel = function () {
@@ -288,9 +288,9 @@ define([
             itemArray.push({url: allPageMap[key].url});
         }
         $scope.itemArray = itemArray;
-    }]);
+    }]);//}}}
 
-    app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {
+    app.registerController('tableCtrl', ['$scope', '$rootScope', '$uibModalInstance', function ($scope, $rootScope, $uibModalInstance) {//{{{
         $scope.table = {rows: 2, cols: 2, alignment: 0};
 
         $scope.cancel = function () {
@@ -305,9 +305,9 @@ define([
             }
             $uibModalInstance.close("table");
         }
-    }]);
+    }]);//}}}
 
-    app.registerController('pageCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
+    app.registerController('pageCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {//{{{
         $scope.website = {};             //当前选中站点
         $scope.websitePage = {};        //当前选中页面
         $scope.errInfo = "";             // 错误提示
@@ -376,7 +376,7 @@ define([
              }
 
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.pagename;
-            $scope.websitePage.username = $scope.user.username;
+            $scope.websitePage.username = treeNode.username;
             $scope.websitePage.sitename = treeNode.sitename;
             $scope.websitePage.isModify = true;
             for (var key in allPageMap) {
@@ -394,9 +394,9 @@ define([
             currentPage = $scope.websitePage;
             $uibModalInstance.close("page");
         }
-    }]);
+    }]);//}}}
 
-    app.registerController('fileCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {
+    app.registerController('fileCtrl', ['$scope', '$rootScope', '$http', '$uibModalInstance', function ($scope, $rootScope, $http, $uibModalInstance) {//{{{
         $scope.websiteFile= {};          //当前选中文件夹
         $scope.errInfo = "";             //错误提示
         var treeNode = undefined;        //目录节点
@@ -424,27 +424,27 @@ define([
             }
 
             $scope.websiteFile.url = treeNode.url + '/' + $scope.websiteFile.filename + "/.gitignore";
-            $scope.websiteFile.username = $scope.user.username;
+            $scope.websiteFile.username = treeNode.username;
             $scope.websiteFile.sitename = treeNode.sitename;
 			$scope.websiteFile.pagename = ".gitignore";
 			//console.log($scope.websiteFile);
             $uibModalInstance.close($scope.websiteFile);
 
         }
-    }]);
+    }]);//}}}
 
     app.registerController('wikiEditorController', ['$scope', '$rootScope', '$location', '$http', '$location', '$uibModal', 'Account', 'github', 'Message', 'modal', 'gitlab',
         function ($scope, $rootScope, $location, $http, $location, $uibModal, Account, github, Message, modal) {
-            $(window).on("beforeunload", function (e) {
+            $(window).on("beforeunload", function (e) {//{{{
                 if (currentPage.isModify) {
                     e = e || window.event;
                     var returnValue = '您的页面还未保存，需要手动保存';
                     e.returnValue = returnValue;
                     return returnValue;
                 }
-            });
+            });//}}}
 
-            //console.log("wikiEditorController");
+            //console.log("wikiEditorController");//{{{
             $rootScope.frameFooterExist = false;
             $rootScope.frameHeaderExist = false;
             $rootScope.userinfo = $rootScope.user;
@@ -463,17 +463,17 @@ define([
             $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
-
+//}}}
 
             // 格式化html文本
-            function formatHtmlView(cmd, value) {
+            function formatHtmlView(cmd, value) {//{{{
                 document.execCommand(cmd, false, value);
                 currentRichTextObj && currentRichTextObj.focus();
-            }
+            }//}}}
 
             // 删除本地indexDB记录 缓存5分钟(应该大于浏览器缓存时间), 解决浏览器缓存导致读取的不是最新内容问题
 			// 刷新页面 会执行loadUnSavePage() 加载该内容 故getRawContent无需读indexdb
-            function indexDBDeletePage(url, isDelay) {
+            function indexDBDeletePage(url, isDelay) {//{{{
                 var urlParams = urlParamsMap[url] || {};
                 urlParamsMap[url] = urlParams;
                 urlParams.deleteTimer && clearTimeout(urlParams.deleteTimer);
@@ -486,10 +486,10 @@ define([
 					storage.indexedDBDeleteItem(config.pageStoreName, url);
 					urlParams.deleteTimer = undefined;
 				}
-            }
+            }//}}}
 
             // 加载未提交到服务的页面
-            function loadUnSavePage() {
+            function loadUnSavePage() {//{{{
 				var currentTime = (new Date()).getTime();
                 storage.indexedDBGet(config.pageStoreName, function (page) {
 					if (!page.username || !page.sitename || !page.pagename || !page.url) {
@@ -522,9 +522,9 @@ define([
                 }, undefined, function () {
                     initTree();
                 });
-            }
+            }//}}}
 
-            function loadSitePageInfo() {
+            function loadSitePageInfo() { //{{{
                 var _openPage = function () {
                     initTree();
                     openPage();
@@ -622,10 +622,10 @@ define([
 						});
 					});
                 });
-            }
+            }//}}}
 
             // 用户是否存在
-            function isUserExist() {
+            function isUserExist() {//{{{
                 if ($scope.user && $scope.user.username) {
                     return true;
                 }
@@ -675,26 +675,26 @@ define([
 				}
 				return true;
 			}
-
+//}}}
             //初始化，读取用户站点列表及页面列表
-            function init() {
+            function init() {//{{{
                 //console.log('---------------init---------------');
                 initEditor();
 
 				// 加载站点列表
 				loadSitePageInfo();
-            }
+            }//}}}
 
-			$scope.$watch('$viewContentLoaded', function(){
+			$scope.$watch('$viewContentLoaded', function(){//{{{
 				Account.getUser(function(userinfo){
 					$scope.user = userinfo;
 					init();
 				}, init);
-			});
+			});//}}}
             //init();
 
 			// 更新提交id
-			function updateLastCommitId(siteDataSource, page) {
+			function updateLastCommitId(siteDataSource, page) {//{{{
 				siteDataSource.getLastCommitId(function(lastCommitId){
 					siteDataSource.setLastCommitId(lastCommitId);
 					util.post(config.apiUrlPrefix + "site_data_source/updateLastCommitIdByName", {
@@ -703,10 +703,10 @@ define([
 						lastCommitId:lastCommitId,
 					});
 				});
-			}
+			}//}}}
 
             // 保存页
-            function savePageContent(cb, errcb) {
+            function savePageContent(cb, errcb) {//{{{
                 //console.log(currentPage);
                 // 不能修改别人页面
                 if (!isUserExist() || isEmptyObject(currentPage) || !currentPage.isModify) {
@@ -746,19 +746,19 @@ define([
                     path: page.url + pageSuffixName,
                     content: content
                 }, saveSuccessCB, saveFailedCB);
-            }
+            }//}}}
 
 
-            $scope.$on("changeEditorPage", function (event, urlObj) {
+            $scope.$on("changeEditorPage", function (event, urlObj) {//{{{
                 renderAutoSave(function () {
                     openUrlPage(urlObj);
                 }, function () {
                     openUrlPage(urlObj);
                 });
-            });
+            });//}}}
 
             // 获取站点文件列表
-            function getSitePageList(params, cb, errcb) {
+            function getSitePageList(params, cb, errcb) {//{{{
 				//console.log(params);
                 var currentDataSource = dataSource.getDataSource(params.username, params.sitename);
                 if (!currentDataSource) {
@@ -779,10 +779,10 @@ define([
 								page.blobId = data[i].blobId;
 							}
                         }
-                        //console.log(allPageMap);
                         pagelistMap[params.path] = data;
                         initTree();
                         cb && cb();
+                        //console.log(data);
                     },function () {
                         console.log("get pagelist failed!!!");
                         errcb && errcb();
@@ -790,9 +790,9 @@ define([
                 } else {
                     cb && cb();
                 }
-            }
+            }//}}}
 
-            var openTempFile = function () {
+            var openTempFile = function () {//{{{
                 var tempContent = storage.localStorageGetItem("wikiEditorTempContent") || "edit temp file";
                 editor.setValue(tempContent);
                 storage.localStorageRemoveItem("wikiEditorTempContent");
@@ -871,10 +871,10 @@ define([
                 getSitePageList({path:"/" + username + '/' +  sitename, username:username, sitename:sitename}, function () {
                     _openUrlPage();
                 });
-            }
+            }//}}}
 
 			// 添加到打开列表
-			function addOpenList(page) {
+			function addOpenList(page) {//{{{
 				setTimeout(function(){
 					var pageNode = treeNodeMap[page.url] && treeNodeMap[page.url].pageNode;
 					//console.log(pageNode);
@@ -891,10 +891,10 @@ define([
 						$("#"+page.itemId).addClass("node-selected");
 					}, 10);
 				});
-			}
+			}//}}}
 
             //已打开列表树中打开网页编辑
-            $scope.clickOpenPage = function (page) {
+            $scope.clickOpenPage = function (page) {//{{{
 				if (!isEmptyObject(currentPage) && currentPage.url == page.url) {
 					return;
 				}
@@ -905,10 +905,10 @@ define([
 					openPage();
 					editor.focus();
                 });
-            };
+            };//}}}
 
             // 打开页
-            function openPage() {
+            function openPage() {//{{{
                 if (!currentPage) {
                     openUrlPage();
                     return;
@@ -991,10 +991,10 @@ define([
 						callback(page, data);
                     });
                 });
-            }
+            }//}}}
 
             // 获得页面内容
-            function getCurrentPageContent(page, cb, errcb) {
+            function getCurrentPageContent(page, cb, errcb) {//{{{
                 if (isEmptyObject(page)) {
                     errcb && errcb();
                     return;
@@ -1018,10 +1018,10 @@ define([
                         errcb && errcb();
                     }
                 }
-            }
+            }//}}}
 
             //初始化目录树  data:  $.parseJSON(getTree()),
-            function initTree() {
+            function initTree() {//{{{
                 //console.log('@initTree');
                 setTimeout(function () {
                     var isFirstCollapsedAll = true;
@@ -1140,10 +1140,10 @@ define([
                         treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
                     }
                 });
-            }
+            }//}}}
 
             //命令处理函数
-            function command() {
+            function command() {//{{{
                 var strCmd = $location.$$path;
                 var arrCmd = strCmd.split('_');
                 var cmd = '';
@@ -1164,10 +1164,10 @@ define([
                     }
                 }
                 return;
-            }
+            }//}}}
 
 
-            $scope.openWikiBlock = function () {
+            $scope.openWikiBlock = function () {//{{{
                 function formatWikiCmd(text) {
                     var lines = text.split('\n');
                     var startPos = undefined, endPos = undefined;
@@ -1219,9 +1219,9 @@ define([
                 }, function (result) {
                     console.log(result);
                 });
-            }
+            }//}}}
 
-            $scope.openGitFile = function () {
+            $scope.openGitFile = function () {//{{{
                 if (!currentPage || !currentPage.url) {
                     return;
                 }
@@ -1237,9 +1237,9 @@ define([
                         window.open(currentDataSource.getContentUrlPrefix({path: currentPage.url + pageSuffixName, sha:"master"}));
                     }
                 }
-            }
+            }//}}}
 
-            $scope.cmd_newpage = function (hidePageTree, url) {
+            $scope.cmd_newpage = function (hidePageTree, url) {//{{{
 				if (hidePageTree && !treeNodeMap[url]) {
 					return;
 				}
@@ -1274,10 +1274,10 @@ define([
                     Message.warning("自动保存失败");
                     openNewPage();
                 });
-            };
+            };//}}}
 
             //保存页面
-            $scope.cmd_savepage = function (cb, errcb) {
+            $scope.cmd_savepage = function (cb, errcb) {//{{{
                 if (!isEmptyObject(currentPage)) {//修改
                     var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
                     savePageContent(function () {
@@ -1300,7 +1300,7 @@ define([
                     //     controller: "pageCtrl",
                     // }).result.then(function (provider) {
                     //     //console.log(provider);
-                    //     if (provider == "page") {
+                    //     if (provider == "page") 
                     //         //console.log(currentPage);
                     //         allPageMap[currentPage.url] = currentPage;
                     //         allWebstePageContent[currentPage.url] = editor.getValue();
@@ -1313,10 +1313,10 @@ define([
                     //     return;
                     // });
                 }
-            }
+            }//}}}
 
             //删除
-            $scope.cmd_remove = function (confirmed, url) {
+            $scope.cmd_remove = function (confirmed, url) {//{{{
 				var page = getPageByUrl(url);
 				if (!page) {
 					return;
@@ -1351,10 +1351,10 @@ define([
 						}
                     }
                 }
-            }
+            }//}}}
 
             //关闭
-            $scope.cmd_close = function (url) {
+            $scope.cmd_close = function (url) {//{{{
 				var page = $scope.opens[url];
 				if (!page) {
 					return;
@@ -1376,10 +1376,10 @@ define([
 					}
                     openPage();
                 }
-            };
+            };//}}}
 
             //关闭全部已打开
-            $scope.cmd_closeAll = function (url) {
+            $scope.cmd_closeAll = function (url) {//{{{
 				console.log(url);
 				url = url || "";
                 for (key in $scope.opens){
@@ -1387,24 +1387,24 @@ define([
 						$scope.cmd_close(key);
 					}
                 }
-            };
+            };//}}}
 
-            $scope.cmd_goSetting = function (urlKey) {
+            $scope.cmd_goSetting = function (urlKey) {//{{{
                 var website = allSiteMap[urlKey];
                 console.log(website);
                 storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
                 storage.sessionStorageSetItem("editWebsiteParams", website);
                 util.go("userCenter");
                 util.html('#userCenterSubPage', editWebsiteHtmlContent);
-            };
+            };//}}}
 
-            $scope.goSetting = function (sitename) {
+            $scope.goSetting = function (sitename) {//{{{
                 // console.log();
                 storage.sessionStorageSetItem("urlObj",{username:$scope.user.username, sitename:sitename});
                 util.go('wikieditor');
-            };
+            };//}}}
 
-            $scope.cmd_saveAll = function () {
+            $scope.cmd_saveAll = function () {//{{{
                 var tempCurrentPage=currentPage;
 				var fnList = [];
 				var callback = undefined;
@@ -1437,10 +1437,10 @@ define([
 					callback();
 					Message.info("全部保存失败");
 				});
-            };
+            };//}}}
 
             //刷新
-            $scope.cmd_refresh = function (url) {
+            $scope.cmd_refresh = function (url) {//{{{
 				var page = getPageByUrl(url);
 				//console.log(page);
 				if (!page) {
@@ -1465,10 +1465,10 @@ define([
 						openPage();
 					}
 				});
-            };
+            };//}}}
 
             //新建文件夹
-            $scope.cmd_newFile = function (hidePageTree, url) {
+            $scope.cmd_newFile = function (hidePageTree, url) {//{{{
 				if (!treeNodeMap[url]) {
 					return;
 				}
@@ -1499,10 +1499,10 @@ define([
 				}, function (text, error) {
 					return;
 				});
-            };
+            };//}}}
 
             //撤销
-            $scope.cmd_undo = function () {
+            $scope.cmd_undo = function () { //{{{
                 if (isHTMLViewEditor) {
                     formatHtmlView('undo');
                     return;
@@ -1877,10 +1877,10 @@ define([
                     ia[i] = byteString.charCodeAt(i);
                 }
                 return new Blob([ab], {type: mimeString});
-            }
+            } //}}}
 
 			// 文件上传
-			$scope.cmd_file_upload = function(fileObj, cb) {
+			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");
@@ -1924,19 +1924,19 @@ define([
 				} else {
 					alert('浏览器不支持');
 				}
-			}
+			}//}}}
 
             //图片上传
-            $scope.cmd_image_upload = function (fileObj, cb) {
+            $scope.cmd_image_upload = function (fileObj, cb) {//{{{
                 if (!/image\/\w+/.test(fileObj.type)) {
                     alert("这不是图片！");
                     return false;
                 }
 				$scope.cmd_file_upload(fileObj, cb);
-            }
+            }//}}}
 
             //代码
-            $scope.cmd_code = function () {
+            $scope.cmd_code = function () {//{{{
                 if (isHTMLViewEditor) {
                     formatHtmlView('formatblock', 'pre');
                     return;
@@ -1950,10 +1950,10 @@ define([
                 editor.setCursor(CodeMirror.Pos(cursor.line - 1, cursor.ch));
 
                 editor.focus();
-            }
+            }//}}}
 
             //版本
-            $scope.cmd_version = function () {
+            $scope.cmd_version = function () {//{{{
                 // util.go("gitVersion");
                 modal('controller/gitVersionController', {
                     controller: 'gitVersionController',
@@ -1964,16 +1964,16 @@ define([
                 }, function (result) {
                     console.log(result);
                 });
-            }
+            }//}}}
 
-            $scope.cmd_transform = function () {
+            $scope.cmd_transform = function () {//{{{
                 $scope.enableTransform = !$scope.enableTransform;
                 //console.log($scope.enableTransform);
                 CodeMirror.signal(editor, 'change', editor);
-            }
+            }//}}}
 
             // 渲染自动保存
-            function renderAutoSave(cb, errcb) {
+            function renderAutoSave(cb, errcb) {//{{{{
                 var content = editor.getValue();
                 if (isEmptyObject(currentPage)) {
                     storage.localStorageSetItem("wikiEditorTempContent", content);
@@ -1992,10 +1992,11 @@ define([
                 //console.log(currentPage);
                 //console.log('save storage ' + currentPage.url);
                 storage.indexedDBSetItem(config.pageStoreName, currentPage, cb, errcb); // 每次改动本地保存
-            }
+            }//}}}
 
             function initEditor() {
                 //console.log("initEditor");
+				//{{{
                 if (editor || (!document.getElementById("source"))) {
                     console.log("init editor failed");
                     return;
@@ -2137,8 +2138,8 @@ define([
                         },
                     }
                 });
-
-                var viewEditorTimer = undefined;
+				//}}}
+                var viewEditorTimer = undefined;//{{{
                 $('body').on('focus', '[contenteditable]', function () {
                     //console.log("start html view edit...");
                     isHTMLViewEditor = true;
@@ -2171,9 +2172,9 @@ define([
                 mdwiki.setEditor(editor);
 
                 var scrollTimer = undefined, changeTimer = undefined;
-                var isScrollPreview = false;
-
-                function htmlToMd(block) {
+					var isScrollPreview = false;
+				//}}}
+                function htmlToMd(block) {//{{{
                     if (!block || !mdwiki.isEditor())
                         return;
                     var domNode = $('#' + block.blockCache.containerId)[0];
@@ -2195,9 +2196,9 @@ define([
                         ch: 0
                     }, {line: block.textPosition.to - 1});
                     //console.log(mdText, domNode, block.textPosition);
-                }
+                }//}}}
 
-                editor.on('fold', function (cm, from, to) {
+                editor.on('fold', function (cm, from, to) {//{{{
                     cm.getDoc().addLineClass(from.line, 'wrap', 'CodeMirrorFold');
                     //console.log("--------------------fold--------------------");
                 });
@@ -2228,10 +2229,10 @@ define([
                 mdwiki.bindRenderContainer(".result-html");
                 editor.focus();
                 setEditorHeight();
-
+//}}}
                 //previewWidth>=1200  =>  result-width=previewWidth
                 //previewWidth<1200    =>  result-width=min(1200,winWidth)
-                function getResultSize(winWidth,boxWidth) {
+                function getResultSize(winWidth,boxWidth) {//{{{
                     if(boxWidth<1200){
                         var resultSize=(winWidth>1200)? 1200 : winWidth;
                     }
@@ -2452,7 +2453,8 @@ define([
                         }
                     }
                 };
-
+				//}}}
+				//{{{
                 editor.on("beforeChange", function (cm, changeObj) {
                     //console.log(changeObj);
                     if (currentPage && currentPage.isFirstEditor) {
@@ -2971,6 +2973,7 @@ define([
                     $(".result-html").off("mouseup",mouseupEvent);
                 };
                 return editor;
+				//}}}
             }
         }]);
 
