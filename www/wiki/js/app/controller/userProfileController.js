@@ -18,6 +18,11 @@ define(['app',
         $scope.pageSize = 5;
         $scope.userEmail="";
         $scope.userPhone="";
+        // code为0表示成功，isConsume为true时表示为消费，否则为收入
+        $scope.myPays = [
+            {"isConsume":true, "time":"2017-07-11 14:45", "message":"兑换哈奇", "num":50, "code":"0"},
+            {"isConsume":false, "time":"2017-07-11 14:45", "message":"账户充值", "num":50, "code":"1"},
+        ];
 
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');
@@ -163,6 +168,8 @@ define(['app',
                 $scope.clickMyFans();
             else if(item == 'realName')
                 $scope.clickRealName();
+            else if(item == 'myPay')
+                $scope.showMyPay();
             else if(item == 'invite')
                 $scope.clickInvite();
         });
@@ -397,6 +404,11 @@ define(['app',
         // 实名认证
         $scope.clickRealName = function () {
             $scope.showItem = 'realName';
+        }
+
+        // 消费记录
+        $scope.showMyPay = function () {
+            $scope.showItem = 'myPay';
         }
 
         // 邀请注册

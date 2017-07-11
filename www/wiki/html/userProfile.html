@@ -284,6 +284,42 @@
         object-fit: cover;
         margin-bottom: 20px;
     }
+    /*消费记录*/
+    .mypay-panel{
+        margin: 0;
+        padding:0;
+    }
+    .mypay-panel .text-success{
+        color: #3FCE42;
+        vertical-align:sub;
+    }
+    .mypay-panel .text-danger{
+        font-size: 22px;
+        vertical-align: sub;
+    }
+    .mypay-table{
+        border: none;
+    }
+    .mypay-table>tbody>tr>td{
+        border: none;
+        width:25%;
+        vertical-align: middle;
+    }
+    .mypay-table tr{
+        border-bottom: 1px solid #DDD;
+        height: 100px;
+        text-align: center;
+    }
+    .mypay-table .icon{
+        color: #FF8633;
+        font-size: 30px;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+    .mypay-table .money{
+        color: #FF8633;
+        font-weight: bold;
+    }
     @media (min-width: 768px) and (max-width: 992px) {
         .panel-body, .col-sm-9{
             padding:0;
@@ -304,6 +340,9 @@
     @media (min-width: 992px) {
         .panel-body{
             margin-top: 20px;
+        }
+        .mypay-panel{
+            margin-top: 0;
         }
         .tab-content .collection-pane{
             width:100%;
@@ -697,6 +736,25 @@
     <!--实名认证-->
     <div ng-show="showItem == 'realName'" class="col-md-10 main-content">
         <div role="tabpanel col-md-12">
+        </div>
+    </div>
+
+    <!--消费记录-->
+    <div ng-show="showItem == 'myPay'" class="col-xs-12 main-content panel">
+        <div class="panel-heading">消费记录</div>
+        <div class="panel-body mypay-panel">
+            <table class="table mypay-table">
+                <tr ng-repeat="item in myPays">
+                    <td class="icon-time">
+                        <span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.isConsume]"></span>
+                        <span class="time">{{item.time}}</span>
+                    </td>
+                    <td>{{item.message}}</td>
+                    <td class="money">{{item.isConsume ? "-" : "+"}} &yen; {{item.num}}</td>
+                    <td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>
+                    <td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>
+                </tr>
+            </table>
         </div>
     </div>
 
