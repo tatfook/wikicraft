@@ -73,3 +73,7 @@ function pay:api_createCharge(params)
 	return errors:wrap(nil, response);
 end
 
+function pay:createOrder()
+	
+end
+

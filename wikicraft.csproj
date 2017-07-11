@@ -1052,6 +1052,7 @@
     <None Include="www\wiki\js\mod\wiki\temp" />
     <None Include="www\wiki\models\data_source.page" />
     <None Include="www\wiki\models\data_upgrade.page" />
+    <None Include="www\wiki\models\goods.page" />
     <None Include="www\wiki\models\group.page" />
     <None Include="www\wiki\models\group_user.page" />
     <None Include="www\wiki\models\oauth_app.page" />
