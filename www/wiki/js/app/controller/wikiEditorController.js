@@ -580,7 +580,7 @@ define([
 						}, function (data) {
 							if (data) {
 								data.isReadable = true;
-								console.log(data);
+								//console.log(data);
 								if (!getSite(data.username, data.name)) {
 									setSite(data);
 								}
@@ -611,7 +611,7 @@ define([
 							return function(finish) {
 								siteinfo.dataSource.isInited = true;
 								Account.setDataSourceToken(siteinfo.dataSource);
-								console.log(siteinfo.dataSource);
+								//console.log(siteinfo.dataSource);
 								dataSource.registerDataSource(siteinfo.dataSource, finish, finish);
 							}
 						})(tempSiteinfo));

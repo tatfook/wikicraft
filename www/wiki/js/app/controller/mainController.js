@@ -287,7 +287,6 @@ define([
 
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
-						console.log(urlObj);
 						if (urlObj.pathname == "/wiki/test") {
 							config.mainContent = md.render(config.mainContent);
 						}
