@@ -66,6 +66,7 @@ end
 
 -- 通过客户端id获取
 function oauth_app:api_getByClientId(params)
+	self:ensureAuthenticated()
 	if not params.clientId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -85,7 +86,9 @@ end
 
 -- 同意客户端授权
 function oauth_app:api_agreeOauth(params)
-	if (not params.username) or (not params.client_id) then
+	self:ensureAuthenticated()
+	local tokeninfo = getTokenInfo()
+	if (tokeninfo.username ~= params.username) or (not params.username) or (not params.client_id) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -137,6 +140,10 @@ end
 
 -- client callback
 function oauth_app:api_callback(params)
+	if true then
+		return
+	end
+
 	if (not params.code) or (not params.clientId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
