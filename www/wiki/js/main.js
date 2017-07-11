@@ -55,6 +55,7 @@
 			'to-markdown': libPathPrefix + 'to-markdown/to-markdown',
 			'wangEditor': libPathPrefix + 'wangEditor/js/wangEditor',
 			'ace': libPathPrefix + 'ace/ace',
+            'pingpp': libPathPrefix + 'pingpp-js/dist/pingpp',
 
 			// 自定义模块
 			'app': jsPathPrefix + 'app',

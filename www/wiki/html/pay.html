@@ -1,0 +1,269 @@
+﻿<style>
+    body {
+        background-color: #f2f2f2;
+    }
+
+    .pay-main {
+        margin-top: 43px;
+        background-color: #FFFFFF;
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
+
+    .pay-main-user {
+        margin-bottom: 52px;
+    }
+
+    .pay-main-info h1{
+        margin: 0;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    .pay-main-info .introduce{
+        color: #666666;
+    }
+
+    .pay-main-info .money sup{
+        color: #fe3266;
+        vertical-align: text-bottom;
+    }
+
+    .pay-main-method .desc {
+        color: #666666;
+    }
+
+    .pay-main-method .pay-item ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .pay-main-method .pay-item ul li {
+        position: relative;
+    }
+
+    .pay-main-method .pay-item ul li .arrow-right {
+        display: none;
+    }
+
+    .pay-main-method .pay-qrcode {
+        display: none;
+    }
+
+    .pay-main-method .pay-qrcode img{
+        display: none;
+    }
+
+    @media(max-width: 768px) {
+        .pay-main-logo {
+            width: 120px;
+            margin: 0 auto;
+        }
+
+            .pay-main-logo .no-img {
+                width: 120px;
+                height: 120px;
+                background-color: #333333;
+            }
+
+            .pay-main-logo img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .pay-main-logo .username {
+                width: 100%;
+                text-align: center;
+                margin-top: 7px;
+                font-size: 18px;
+                color: #333333;
+            }
+
+        .pay-main-info h1 {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .pay-main-info .introduce {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .pay-main-info .money {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .pay-main-info .money sup {
+            font-size: 28px;
+        }
+
+        .pay-main-method .desc {
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .pay-main-method .pay-item ul li {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+    }
+
+    @media(min-width: 768px) {
+        .pay-main{
+            padding-right: 60px;
+            padding-left: 60px;
+        }
+
+        .pay-main-logo {
+            width: 120px;
+            margin-right: 20px;
+            float: left;
+        }
+
+        .pay-main-logo img{
+            width: 120px;
+            height: 120px;
+        }
+
+        .pay-main-logo .username{
+            width: 100%;
+            text-align: center;
+            margin-top: 7px;
+            font-size: 18px;
+            color: #333333;
+        }
+
+        .pay-main-info {
+            float: left;
+        }
+
+        .pay-main-info h1 {
+            font-size: 22px;
+            margin-top: 0;
+            text-align: left;
+        }
+
+        .pay-main-info .introduce {
+            text-align: left;
+            font-size: 16px;
+            margin-bottom: 36px;
+        }
+
+        .pay-main-info .money {
+            font-size: 16px;
+            margin-top: 0;
+            text-align: left;
+        }
+
+        .pay-main-info .money sup {
+            font-size: 30px;
+        }
+
+        .pay-main-method .desc {
+            font-size: 16px;
+            text-align: left;
+            margin-bottom: 19px;
+        }
+
+        .pay-main-method .pay-item {
+            margin-bottom: 20px;
+        }
+
+        .pay-main-method .pay-item ul li {
+            float: left;
+            margin-right: 22px;
+            cursor: pointer;
+        }
+
+        .pay-main-method .pay-item ul li:hover {
+            border: 1px solid #ff5200;
+            width: 140px;
+            height: 40px;
+            overflow: hidden;
+        }
+
+        .pay-main-method .pay-item ul li:hover .arrow-right {
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 15px solid #ff5200;
+            transform: rotate(45deg);
+            position: absolute;
+            right: -3px;
+            bottom: -10px;
+        }
+
+        .pay-main-method .pay-item ul li:hover .arrow-right img {
+            margin-top: -20px;
+            margin-left: -15px;
+            transform: rotate(-45deg);
+        }
+
+        .pay-main-method .pay-item ul li:hover .pay-icon {
+            margin-top: -1px;
+            margin-left: -1px;
+        }
+
+        .pay-main-method .pay-qrcode {
+            width: 650px;
+            height: 395px;
+            background: url("/wiki/assets/imgs/pay-qrcode-wechat-bg.png") no-repeat center;
+            padding: 40px;
+        }
+
+        .pay-main-method .pay-qrcode img{
+            display: inline;
+            width: 250px;
+            height: 250px;
+        }
+    }
+</style>
+<div ng-controller="payController">
+    <div class="pay-main container">
+        <div class="row">
+            <div class="col-md-9 col-xs-12 col-sm-12">
+                <div class="pay-main-user clearfix">
+                    <div class="pay-main-logo">
+                        <img ng-if="!userinfo.portrait"  ng-src="{{imgsPath + 'wiki_default_profile.jpg'}}" class="no-img" />
+                        <img ng-if="userinfo.portrait" ng-src="{{userinfo.portrait}}" />
+                        <div class="username">{{userinfo.displayName}}</div>
+                    </div>
+                    <div class="pay-main-info">
+                        <h1>充值到 {{userinfo.displayName}} 的账户</h1>
+                        <div class="introduce">用途的文字说明..</div>
+                        <div class="money">
+                            应付金额： <sup>￥{{price}}</sup>
+                        </div>
+                    </div>
+                </div>
+                <div class="pay-main-method">
+                    <div class="desc">
+                        请选择支付方式:
+                    </div>
+                    <div class="pay-item clearfix">
+                        <ul>
+                            <li ng-click="alipay()">
+                                <div class="arrow-right"><img src="/wiki/assets/imgs/pay-checked.png" /></div>
+                                <img class="pay-icon" src="/wiki/assets/imgs/pay-alipay.png">
+                            </li>
+                            <li ng-click="wechat()">
+                                <div class="arrow-right"><img src="/wiki/assets/imgs/pay-checked.png" /></div>
+                                <img class="pay-icon" src="/wiki/assets/imgs/pay-wechat.png">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pay-qrcode">
+                        <img ng-src="http://qr.topscan.com/api.php?text={{qr_url}}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 hidden-xs hidden-sm">热门服务</div>
+        </div>
+    </div>
+</div>

@@ -192,6 +192,14 @@ define([
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
                 treeNode.icon = 'fa fa-globe';
+
+                if (allSiteMap[key].visibility == "private"){
+                    treeNode.icon = 'iconfont icon-lock';
+                }
+
+                if (pageNode.url.split("/").length > 3){ // 若为网站内部文件夹
+                    treeNode.icon = 'iconfont icon-folder';
+                }
 			}
             treeNode.state = {selected: currentPage && currentPage.url == pageNode.url};
 

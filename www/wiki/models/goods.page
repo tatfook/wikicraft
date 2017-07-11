@@ -1,0 +1,17 @@
+<?npl
+--[[
+Title: goods
+Author: big
+Date: 2017/7/11
+]]
+
+include_once("./abstract/base.page");
+include_once("./user.page");
+
+local goods = inherit(models.abstract.base, gettable("models.goods"));
+goods.db_name = "goods";
+
+function goods:ctor()
+	
+end
+

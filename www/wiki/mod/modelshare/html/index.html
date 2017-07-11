@@ -1,0 +1,646 @@
+﻿<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        .main{
+            padding:0 50px;
+        }
+        .header{
+            width:100%;
+            height:30px;
+            margin-top:30px;
+            margin-bottom:10px;
+        }
+        .number{
+            float: right;
+            position: relative;
+        }
+        .button2{
+            margin-left:10px;
+        }
+        .button3{
+            margin-left:10px;
+        }
+        hr{
+            height:10px;
+            background:back;
+        }
+        .search{
+            margin-bottom:30px;
+        }
+        .search button{
+            margin-left:10px;
+        }
+        .form1{
+            list-style-type:none;
+            padding:0;
+        }
+        ul:hover{
+            cursor: pointer
+        }
+        .uldiv{
+            width: 149px;
+            height: 149px;
+            border-right: solid 1px #cec7c7;
+            float: left;
+            display: inline-block;
+        }
+        .form2{
+            border: solid 1px #cec7c7;
+            width: 100%;
+            height: 150px;
+        }
+        .ulspan{
+            margin: 0 10px 0 10px;
+            font-size: 18px;
+            display: inline-block
+        }
+        .liicon{
+            width: 18px;
+            height: 18px;
+            background: #4cff00;
+            float: right;
+            display: inline-block;
+            margin: 3px;
+            right: 150px;
+            position: relative;
+        }
+        .ulnumber{
+            display: inline-block;
+            float: right;
+            position: relative;
+            right: 70px;
+            font-size: 18px;
+        }
+        .introduce{
+            margin: 10px 10px;
+            display: inline-block;
+        }
+        .form{
+            
+        }
+        .s-a{
+            display:block;
+        }
+        .xianzhi {
+            word-wrap: break-word;
+            padding: 0 10px;
+            height: 70px;
+            line-height: 24px;
+            width: 1098px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+            
+    </style>
+</head>
+<body>
+    <div class="main" ng-controller="indexController">
+        <!-- 顶部按钮/导航与文字 -->
+        <div class="header">
+            <div class="nav">
+                <button class="btn btn-default button1" type="submit" id="newButton" ng-click="set(1)">最新作品</button>
+                <button class="btn btn-default button2" type="submit" id="hotButton" ng-click="set(2)">热门作品</button>
+                <button class="btn btn-default button3" type="submit" id="actButon" ng-click="set(3)">活动专区</button>
+                <div class="number">
+                    <span id="span1">作品数：12345678910件</span>
+                </div>
+            </div>
+        </div>
+        <!-- 分割线 -->
+        <hr />
+        <!-- 搜索按钮 -->
+        <div class="search">
+            <span>大家在搜</span>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+            <button class="btn btn-default" type="submit">热门标签</button>
+        </div>
+        <!-- 表格 -->
+        <div class="form s-a" id="form" ng-if="divVar == 4">
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <div>
+                        <span class="ulspan">模型名称</span>
+                        <span>☆☆☆☆☆</span>
+                        <div class="liicon"></div>
+                        <span class="ulnumber">65535</span>
+                        <br />
+                        <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                        <div class="xianzhi">
+                            限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                            限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                            限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                            限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                            限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                            限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">模型名称</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">模型名称</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">模型名称</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">模型名称</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">模型名称</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 最新作品 -->
+        <div class="form" id="newWorks" ng-if="divVar == 1">
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">最新</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试1</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试1</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试1</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试1</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试1</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 热门作品 -->
+        <div class="form" id="hotWorks" ng-if="divVar == 2">
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">热门</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试2</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试2</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试2</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试2</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试2</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 活动专区 -->
+        <div class="form" id="act" ng-if="divVar == 3">
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">活动</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试3</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试3</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试3</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试3</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+            <ul class="form1">
+                <li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">测试3</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
