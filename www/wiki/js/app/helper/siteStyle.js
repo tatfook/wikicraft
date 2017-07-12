@@ -166,7 +166,7 @@ define([], function () {
                                     contentUrl:"templates/organization.md"
                                 },
                                 {
-                                    pagepath:"_more",
+                                    pagepath:"more",
                                     contentUrl:"templates/more.md"
                                 },
                             ],
@@ -196,7 +196,7 @@ define([], function () {
                                     contentUrl:"templates/game.md"
                                 },
                                 {
-                                    pagepath:"_more",
+                                    pagepath:"more",
                                     contentUrl:"templates/more.md"
                                 },
                             ],

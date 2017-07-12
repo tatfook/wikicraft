@@ -209,22 +209,37 @@ define([
 			});
 		}
 
+		$scope.showDeleteModal = function (group, type) {
+            $scope.deleting = group;
+            $scope.deleting.type = type;
+            $("#deleteModal").modal("show");
+            console.log($scope.deleting);
+        };
+
 		$scope.deleteShareGroup = function(group) {
-			if (!siteDataSource || !group) 
-				return;
+			if (!siteDataSource || !group) {
+                $("#deleteModal").modal("hide");
+                Message.info("数据源不存在");
+                return;
+            }
 
 			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
 				group.isDelete = true;
 				util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
 			});
+            $("#deleteModal").modal("hide");
 		}
 
 		$scope.deleteGroup = function(group) {
 			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			if (!siteDataSource) {
+			    Message.info("数据源不存在");
+                $("#deleteModal").modal("hide");
 				return;
 			}
 			if (!group || !group.id) {
+			    Message.info("删除失败，该分组已被删除");
+                $("#deleteModal").modal("hide");
 				return
 			}
 
@@ -236,7 +251,12 @@ define([
 				pageSize:1,
 			}, function(data){
 				if (data && data.total > 0) {
-					config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
+				    var content = "分组已被 ";
+				    for (var i = 0;i<data.total;i++){
+				        content += data.groupList[i].sitename+" ";
+                    }
+                    content+="这几个网站引用，不能删除";
+					config.services.confirmDialog({title:"分组删除", content:content, cancelBtn:false});
 					return;
 				}
 
@@ -250,8 +270,9 @@ define([
 				siteDataSource.deleteGroup({id:group.id}, function(){
 					util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
 				});
-			})
-		}
+			});
+            $("#deleteModal").modal("hide");
+		};
 
         $scope.createGroup = function () {
 			var group = $scope.nowGroup;
