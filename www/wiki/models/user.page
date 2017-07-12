@@ -229,6 +229,7 @@ function user:api_updateUserInfo(params)
 	params.email = nil
 	params.password = nil
 	params.isadmin = nil
+	params.roleId = nil
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
