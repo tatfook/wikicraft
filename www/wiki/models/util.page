@@ -47,10 +47,10 @@ function util:getQueryObj(params)
 		end
 	end
 
-	if key == "" then
+	if params._id then
+		return {["_id"]=params._id}, {["_id"]=params._id}, false
+	elseif key == "" then
 		return {}, {_id={gt=0, skip=skip, limit=limit}}, true
-	elseif params._id then
-		return {["_id"]={params._id}}, {["_id"]={params._id}}, false
 	end
 
 	pageValue["skip"] = skip

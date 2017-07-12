@@ -141,6 +141,8 @@ function tabledb:api_delete(params)
 		return errors:wrap(nil, {message="无法删除整张表"})
 	end
 
+	log(query)
+
 	table:delete(query, resume)
 
 	return errors:wrap(yield())
