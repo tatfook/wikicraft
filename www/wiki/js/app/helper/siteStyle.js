@@ -165,6 +165,10 @@ define([], function () {
                                     pagepath:"index",
                                     contentUrl:"templates/organization.md"
                                 },
+                                {
+                                    pagepath:"_more",
+                                    contentUrl:"templates/more.md"
+                                },
                             ],
                         },
                     ],
@@ -190,6 +194,10 @@ define([], function () {
                                 {
                                     pagepath:"index",
                                     contentUrl:"templates/game.md"
+                                },
+                                {
+                                    pagepath:"_more",
+                                    contentUrl:"templates/more.md"
                                 },
                             ],
                         },
