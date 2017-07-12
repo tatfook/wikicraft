@@ -1211,11 +1211,10 @@ define([
                     size: 'lg',
                     backdrop:true
                 }, function (wikiBlock) {
-                    //console.log(result);
+                    //console.log(wikiBlock);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
                     var cursor = editor.getCursor();
                     var content = editor.getLine(cursor.line);
-                    console.log(content);
                     if (content.length > 0) {
                         wikiBlockContent = '\n' + wikiBlockContent;
                     }

@@ -228,6 +228,20 @@ define([
 				return
 			}
 
+			// 检查是否存在组引用
+			//console.log(group);
+			util.post(config.apiUrlPrefix + "site_group/getByUserGroupName", {
+				username:siteinfo.username,
+				groupname:group.name,
+				pageSize:1,
+			}, function(data){
+				if (data && data.total > 0) {
+					config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
+					return;
+				}
+			})
+			return ;
+
 			group.isDelete = true;
 			for (var i = 0; i < $scope.groups.length; i++) {
 				if (group.name == $scope.groups[i].name) {

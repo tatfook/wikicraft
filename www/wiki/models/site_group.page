@@ -95,6 +95,21 @@ function site_group:api_getByMemberName(params)
 end 
 
 
+-- 获取站点组通过通过组名 用户名
+function site_group:api_getByUserGroupName(params)
+	if not params.username or not params.groupname then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local skip, limit = util:pagination(params)
+	self:db():count({["+username+groupname"]={params.username, params.groupname}}, resume)
+	local _, total = yield()
+
+	self:db():find({["+username+groupname"]={params.username, params.groupname, skip=skip, limit=limit}}, resume)
+	local _, groupList = yield()
+
+	return errors:wrap(nil, {total=total, groupList=groupList})
+end
 
 
 
