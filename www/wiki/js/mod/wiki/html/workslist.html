@@ -297,7 +297,7 @@
 
     <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game'">
         <h1>{{modParams.title || "全部作品"}}</h1>
-        <div class="navigation">
+        <div class="navigation" ng-show="modParams.moreLink">
             <a href="{{modParams.moreLink}}">查看更多</a>
         </div>
         <div class="clearfix works">

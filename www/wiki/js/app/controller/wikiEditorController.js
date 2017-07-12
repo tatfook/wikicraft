@@ -349,6 +349,8 @@ define([
         function init() {
 			if ($scope.hidePageTree) {
 				treeNode = $scope.nowHoverPage.pageNode;
+				var urls = treeNode.url.split("/").splice(2);
+				$scope.routes = urls.join(" > ");
 			} else {
 				initTree();
 			}
