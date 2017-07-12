@@ -111,9 +111,22 @@ function site_group:api_getByUserGroupName(params)
 	return errors:wrap(nil, {total=total, groupList=groupList})
 end
 
+-- 通过用户名获取
+function site_group:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	local skip, limit = util:pagination(params)
 
+	self:db():count({["+username"]={params.username}}, resume)
+	local _, total = yield()
 
+	self:db():find({["+username"]={params.username, skip=skip, limit=limit}}, resume)
+	local _, groupList = yield()
+
+	return errors:wrap(nil, {total=total, groupList=groupList})
+end
 
 
 

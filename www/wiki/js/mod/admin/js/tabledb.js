@@ -124,7 +124,7 @@ define([
 
 			util.post(config.apiUrlPrefix + "tabledb/delete", {
 				tableName:query.tableName || $scope.tableName,
-				_id:query._id,
+				query:query,
 			}, function(data){
 				outputEditor.setValue(angular.toJson(data,4));
 			}, function(data){

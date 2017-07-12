@@ -239,19 +239,18 @@ define([
 					config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
 					return;
 				}
-			})
-			return ;
 
-			group.isDelete = true;
-			for (var i = 0; i < $scope.groups.length; i++) {
-				if (group.name == $scope.groups[i].name) {
-					$scope.groups.splice(i,1);
-					break;
+				group.isDelete = true;
+				for (var i = 0; i < $scope.groups.length; i++) {
+					if (group.name == $scope.groups[i].name) {
+						$scope.groups.splice(i,1);
+						break;
+					}
 				}
-			}
-			siteDataSource.deleteGroup({id:group.id}, function(){
-				util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
-			});
+				siteDataSource.deleteGroup({id:group.id}, function(){
+					util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
+				});
+			})
 		}
 
         $scope.createGroup = function () {
