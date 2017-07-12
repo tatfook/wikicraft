@@ -187,7 +187,7 @@ define([
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='关闭全部'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
