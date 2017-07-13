@@ -385,7 +385,7 @@
                                     <td><span ng-repeat="user in group.userList" ng-hide="user.isDelete">{{user.name}}、</span></td><!--成员-->
                                     <td>
                                         <a ng-click="editGroup(group,false)">编辑</a>
-                                        <a ng-click="showDeleteModal(group,'deleteGroup')">删除</a>
+                                        <a ng-click="deleteGroup(group)">删除</a>
                                     </td><!--操作-->
                                 </tr>
                                 </tbody>
@@ -427,7 +427,7 @@
                                     <td><a ng-click="" class="text-primary">{{group.groupname}}</a></td><!--分组名-->
                                     <td>{{group.levelName}}</td><!--成员-->
                                     <td>
-                                        <a ng-click="showDeleteModal(group,'deleteShareGroup')">删除</a>
+                                        <a ng-click="deleteShareGroup(group)">删除</a>
                                     </td><!--操作-->
                                 </tr>
                                 </tbody>
@@ -451,25 +451,6 @@
                 <div class="modal-footer">
                     <button class="btn btn-danger" ng-click="changeSiteType(true)">确 定</button>
                     <button type="button" class="btn btn-default" ng-click="cancelChange()">取 消</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade delete-modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">删除提醒</h4>
-                </div>
-                <div class="modal-body">
-                    <h3 ng-show="deleting.type == 'deleteShareGroup'"><span class="icon">!</span>确定删除对 {{deleting.groupname}}分组 的授权？</h3>
-                    <h3 ng-show="deleting.type == 'deleteGroup'"><span class="icon">!</span>确定删除 {{deleting.name}}分组？</h3>
-                </div>
-                <div class="modal-footer">
-                    <button ng-show="deleting.type == 'deleteShareGroup'" class="btn btn-danger" ng-click="deleteShareGroup(deleting)">确 定</button>
-                    <button ng-show="deleting.type == 'deleteGroup'" class="btn btn-danger" ng-click="deleteGroup(deleting)">确 定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                 </div>
             </div>
         </div>

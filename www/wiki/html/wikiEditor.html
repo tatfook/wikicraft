@@ -189,7 +189,7 @@
                                     <span class="icon node-icon fa fa-file-o"></span>
                                     {{nodeItem.pagename}}({{nodeItem.sitename}})<span ng-show="nodeItem.isModify">*</span><span ng-show="nodeItem.isConflict">!</span>
                                     <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.url)" title="关闭">×</span></span>
-                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove(false, nodeItem.url)" title="删除"></span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove(nodeItem.url)" title="删除"></span></span>
                                     <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh(nodeItem.url)" title="刷新"></span></span>
                                 </li>
                             </ul>

@@ -217,56 +217,66 @@ define([
         };
 
 		$scope.deleteShareGroup = function(group) {
-			if (!siteDataSource || !group) {
-                $("#deleteModal").modal("hide");
-                Message.info("数据源不存在");
-                return;
-            }
+		    config.services.confirmDialog({
+                "title": "删除提醒",
+                "theme": "danger",
+                "confirmBtnClass": "btn-danger",
+                "content": "确定删除对 " + group.groupname + " 分组的授权？"
+            },function () {
+                if (!siteDataSource || !group) {
+                    $("#deleteModal").modal("hide");
+                    Message.info("数据源不存在");
+                    return;
+                }
 
-			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
-				group.isDelete = true;
-				util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
-			});
-            $("#deleteModal").modal("hide");
-		}
+                siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
+                    group.isDelete = true;
+                    util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
+                });
+            });
+		};
 
 		$scope.deleteGroup = function(group) {
-			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
-			if (!siteDataSource) {
-			    Message.info("数据源不存在");
-                $("#deleteModal").modal("hide");
-				return;
-			}
-			if (!group || !group.id) {
-			    Message.info("删除失败，该分组已被删除");
-                $("#deleteModal").modal("hide");
-				return
-			}
+		    config.services.confirmDialog({
+                "title": "删除提醒",
+                "theme": "danger",
+                "confirmBtnClass": "btn-danger",
+                "content": "确定删除 " + group.name + " 分组？"
+            },function () {
+                var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+                if (!siteDataSource) {
+                    Message.info("数据源不存在");
+                    return;
+                }
+                if (!group || !group.id) {
+                    Message.info("删除失败，该分组已被删除");
+                    return
+                }
 
-			// 检查是否存在组引用
-			//console.log(group);
-			util.post(config.apiUrlPrefix + "site_group/getByUserGroupName", {
-				username:siteinfo.username,
-				groupname:group.name,
-				pageSize:1,
-			}, function(data){
-				if (data && data.total > 0) {
-                    config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
-					return;
-				}
+                // 检查是否存在组引用
+                //console.log(group);
+                util.post(config.apiUrlPrefix + "site_group/getByUserGroupName", {
+                    username:siteinfo.username,
+                    groupname:group.name,
+                    pageSize:1,
+                }, function(data){
+                    if (data && data.total > 0) {
+                        config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
+                        return;
+                    }
 
-				group.isDelete = true;
-				for (var i = 0; i < $scope.groups.length; i++) {
-					if (group.name == $scope.groups[i].name) {
-						$scope.groups.splice(i,1);
-						break;
-					}
-				}
-				siteDataSource.deleteGroup({id:group.id}, function(){
-					util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
-				});
-			});
-            $("#deleteModal").modal("hide");
+                    group.isDelete = true;
+                    for (var i = 0; i < $scope.groups.length; i++) {
+                        if (group.name == $scope.groups[i].name) {
+                            $scope.groups.splice(i,1);
+                            break;
+                        }
+                    }
+                    siteDataSource.deleteGroup({id:group.id}, function(){
+                        util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
+                    });
+                });
+            });
 		};
 
         $scope.createGroup = function () {
