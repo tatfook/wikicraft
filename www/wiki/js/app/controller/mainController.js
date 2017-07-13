@@ -157,7 +157,7 @@ define([
                 
                 $rootScope.getBodyStyle = function () {
                     return {
-                        "padding-top": $rootScope.frameHeaderExist ? "56px" : "0px",
+                        "padding-top": $rootScope.frameHeaderExist ? "52px" : "0px",
                     };
                 }
 

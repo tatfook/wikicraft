@@ -141,20 +141,21 @@ define([
         
         $scope.goEditorPage = function () {
             util.go("wikieditor");
-        }
-
-        //显示退出组织模态框
-        $scope.showExitModal = function (organization) {
-            $('#exitModal').modal("show");
-            $scope.deletingOrg=organization;
-        }
+        };
 
         // 退出组织
-        $scope.exitOrg = function () {
-            util.post(config.apiUrlPrefix + 'website_member/deleteById', $scope.deletingOrg, function () {
-                $scope.deletingOrg.isDelete = true;
-                $scope.joinOrganizationCount--;
-                $('#exitModal').modal("hide");
+        $scope.exitOrg = function (organization) {
+            console.log(organization);
+            config.services.confirmDialog({
+                "title": "删除提醒",
+                "theme": "danger",
+                "confirmBtnClass": "btn-danger",
+                "content": "确定退出 " + organization.siteinfo.name + " 组织？"
+            },function () {
+                util.post(config.apiUrlPrefix + 'website_member/deleteById', organization, function () {
+                    organization.isDelete = true;
+                    $scope.joinOrganizationCount--;
+                });
             });
         };
 

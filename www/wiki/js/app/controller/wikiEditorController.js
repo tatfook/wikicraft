@@ -180,7 +180,7 @@ define([
 			if (pageNode.isLeaf) {
 				treeNode.tags = [
 					"<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(false," + '"' + pageNode.url + '"' + ")' title='删除'></span>",
+					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(" + '"' + pageNode.url + '"' + ")' title='删除'></span>",
 					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
 				];
 			} else {
@@ -1319,20 +1319,21 @@ define([
             }//}}}
 
             //删除
-            $scope.cmd_remove = function (confirmed, url) {//{{{
+            $scope.cmd_remove = function (url) {
 				var page = getPageByUrl(url);
 				if (!page) {
 					return;
 				}
-                if (!confirmed){
-                    $scope.deleteNode = {
-                        sitename: page.sitename,
-                        name: page.pagename,
-						url:url,
-                    };
-                    $('#deleteModal').modal("show");
-                }else{
-                    if (!isEmptyObject(page)) {
+				var titleInfo = "> " + page.url.split("/").splice(2).join(" > ");
+
+				config.services.confirmDialog({
+				    "title": "删除提醒",
+                    "titleInfo": titleInfo,
+                    "theme": "danger",
+                    "confirmBtnClass": "btn-danger",
+                    "content": "确定删除 " + page.pagename + " 页面？"
+                },function () {
+				    if (!isEmptyObject(page)) {
                         var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
 
                         currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
@@ -1346,15 +1347,14 @@ define([
                         delete allPageMap[page.url];
                         delete $scope.opens[page.url];
                         storage.sessionStorageRemoveItem('urlObj');
-						$('#deleteModal').modal("hide");
-						if (currentPage.url == page.url) {
-							currentPage = undefined;
-							initTree();
-							openPage();
-						}
+                        if (currentPage.url == page.url) {
+                            currentPage = undefined;
+                            initTree();
+                            openPage();
+                        }
                     }
-                }
-            }//}}}
+                });
+            };
 
             //关闭
             $scope.cmd_close = function (url) {//{{{

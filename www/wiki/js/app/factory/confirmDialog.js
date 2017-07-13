@@ -17,6 +17,10 @@ define([
             confirmObj.content = params.content;
             confirmObj.confirmBtn = params.confirmBtn == undefined ? true : params.confirmBtn;
             confirmObj.cancelBtn = params.cancelBtn == undefined ? true : params.cancelBtn;
+            confirmObj.confirmBtnClass = params.confirmBtnClass ? params.confirmBtnClass : false;
+            confirmObj.theme = params.theme ? params.theme : false;
+            confirmObj.titleInfo = params.titleInfo ? params.titleInfo : "";
+
             app.registerController("confirmDialogController",['$scope', function ($scope) {
                 $scope.confirmObj = confirmObj;
             }]);
