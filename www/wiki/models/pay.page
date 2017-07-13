@@ -61,7 +61,7 @@ function pay:api_createCharge(params)
 	apiParams.app        = {id = self.appId};
 
 	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = "http://dev.keepwork.com/api/wiki/models/pay/webhooks"};
+		apiParams.extra = {success_url = "http://dev.keepwork.com/"};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = order_no};
 	end
