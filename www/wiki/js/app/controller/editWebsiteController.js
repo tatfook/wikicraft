@@ -46,7 +46,7 @@ define([
             if (currentDomain == $scope.website.domain)
                 return;
 
-            if (!/[\d\w]+/.test($scope.website.domain)) {
+            if (!/^[\d\w]+$/.test($scope.website.domain)) {
                 $scope.errMsg = "独立域名格式错误, 域名只能为数字和字母组合";
                 return;
             }
@@ -62,7 +62,7 @@ define([
         }
 
         $scope.addDomain=function(){
-            if (!/[\d\w]+/.test($scope.domain)) {
+            if (!/^[\d\w]+$/.test($scope.domain)) {
                 $scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
                 return;
             }
@@ -251,12 +251,7 @@ define([
 				pageSize:1,
 			}, function(data){
 				if (data && data.total > 0) {
-				    var content = "分组已被 ";
-				    for (var i = 0;i<data.total;i++){
-				        content += data.groupList[i].sitename+" ";
-                    }
-                    content+="这几个网站引用，不能删除";
-					config.services.confirmDialog({title:"分组删除", content:content, cancelBtn:false});
+                    config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
 					return;
 				}
 
@@ -281,7 +276,7 @@ define([
 				return;
 			}
 
-			if (!/[\d\w]+/.test(group.name)){
+			if (!/^[\d\w]+$/.test(group.name)){
 			    $scope.groupnameErr = true;
 			    return;
             }
