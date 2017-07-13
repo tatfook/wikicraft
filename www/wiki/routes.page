@@ -162,7 +162,7 @@ function RenderServerWikiScript()
 	local config = {}
 	config.hostname = request:GetHost()
 	config.serverUpdateTime = getServerUpdateTime()
-	if config.hostname == "dev.keepwork.com" then
+	if config.hostname == "dev.keepwork.com" or config.hostname == "wxa.keepwork.com" or config.hostname == "big.keepwork.com" then
 		config.bustVersion = os.time()
 	else 
 		config.bustVersion = getBustVersion()

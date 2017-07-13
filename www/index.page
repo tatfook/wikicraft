@@ -11,5 +11,15 @@ WP_USE_MINI_LOADER = true;
 include_once("script/apps/WebServer/admin/wp-main.page");
 
 -- call the router  
-include_once("./wiki/routes.page");
 
+
+local domain = "localhost"
+local host = request:GetHost()
+local pos = string.find(host, domain)
+
+if not pos or pos <= 2 then
+	include_once("./wiki/routes.page");
+else
+	local srcDir = string.sub(host,1, pos-2)
+	include_once("./" .. srcDir .. "/routes.page")
+end
