@@ -95,14 +95,5 @@ function pay:api_getCharge()
 end
 
 function pay:api_webhooks()
-	local path = "webhooks";
-	--log(path);
-	local file = ParaIO.open(path, "w");
-	
-	local value = "webhooks";
-
-	file:write(value,#value);
-	file:close();
-
 	return errors:wrap("SUCCESS",nil);
 end
