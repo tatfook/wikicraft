@@ -107,6 +107,10 @@
         hostname = hostname || window.location.hostname;
         hostname = hostname.split(':')[0];
 
+		if (hostname.indexOf(".keepwork.com") >= 0) {
+			return true;
+		}
+
         for (var i = 0; i < config.officialDomainList.length; i++) {
             if (config.officialDomainList[i] == hostname)
                 return true;
@@ -116,6 +120,7 @@
             if (config.officialSubDomainList[i] == hostname)
                 return true;
         }
+
         return false;
     }
 
