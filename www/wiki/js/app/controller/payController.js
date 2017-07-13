@@ -74,8 +74,8 @@ define([
             var params = {
                 "price" : $scope.price,
                 "channel": "alipay_pc_direct",
-                "subject": "支付测试",
-                "body"   : "支付测试",
+                "subject": $scope.subject,
+                "body"   : $scope.body,
             };
 
             createCharge(params, function (charge) {
@@ -87,8 +87,8 @@ define([
             var params = {
                 "price": $scope.price,
                 "channel": "wx_pub",
-                "subject": "支付测试",
-                "body": "支付测试",
+                "subject": $scope.subject,
+                "body": $scope.body,
             };
 
             createCharge(params);
@@ -98,8 +98,8 @@ define([
             var params = {
                 "price": $scope.price,
                 "channel": "alipay_qr",
-                "subject": "支付测试",
-                "body": "支付测试",
+                "subject": $scope.subject,
+                "body": $scope.body,
             };
 
             createCharge(params, function (charge) {
@@ -114,8 +114,8 @@ define([
             var params = {
                 "price": $scope.price,
                 "channel": "wx_pub_qr",
-                "subject": "支付测试",
-                "body": "支付测试",
+                "subject": $scope.subject,
+                "body": $scope.body,
             };
 
             createCharge(params, function (charge) {

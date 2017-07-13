@@ -12,8 +12,8 @@ local pay = inherit(models.abstract.base,gettable("models.pay"));
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
-pay.apiToken = "sk_test_5Ou5K8HarHaT4qfHe5j5Oyj1";
-pay.appId    = "app_9e9enPHKSS48m9uj";
+pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
+pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
 
 function pay:ctor()
 	-- keepwork username
@@ -38,6 +38,9 @@ function pay:ctor()
 	self:addfield("method", "string", false);
 	-- pay or recharge date
 	self:addfield("create_date", "string", false);
+
+	-- from ping++
+
 end
 
 function pay:api_createCharge(params)
@@ -58,7 +61,7 @@ function pay:api_createCharge(params)
 	apiParams.app        = {id = self.appId};
 
 	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = "http://keepwork.com/?#success"};
+		apiParams.extra = {success_url = "http://dev.keepwork.com/api/wiki/models/pay/webhooks"};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = order_no};
 	end
@@ -68,7 +71,7 @@ function pay:api_createCharge(params)
 	System.os.GetUrl({
 		url    = url,
 		headers = {
-			Authorization = "Bearer " .. self.apiToken,
+			Authorization = "Bearer " .. self.appToken,
 			["content-type"]  = "application/json",
 		},
 		form   = apiParams,
@@ -87,7 +90,19 @@ function pay:api_createCharge(params)
 	return errors:wrap(nil, response);
 end
 
-function pay:createOrder()
+function pay:api_getCharge()
 	
 end
 
+function pay:api_webhooks()
+	local path = "webhooks";
+	--log(path);
+	local file = ParaIO.open(path, "w");
+	
+	local value = "webhooks";
+
+	file:write(value,#value);
+	file:close();
+
+	return errors:wrap("SUCCESS",nil);
+end
