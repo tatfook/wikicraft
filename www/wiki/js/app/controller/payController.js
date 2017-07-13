@@ -13,9 +13,10 @@ define([
         var queryArgs = util.getQueryObject();
         var validate  = true;
 
-        $scope.subject = "NODATE";
-        $scope.body    = "NODATE";
-        $scope.price   = 0;
+        $scope.subject   = "NODATE";
+        $scope.body      = "NODATE";
+        $scope.returnUrl = ""; 
+        $scope.price     = 0;
 
         if (queryArgs.subject) {
             $scope.subject = queryArgs.subject;
@@ -50,11 +51,13 @@ define([
                 return;
             }
 
-            if ($scope.isMobile) {
-                $scope.alipayClient();
-            } else {
-                $scope.alipayQR();
-            }
+            $scope.alipayClient();
+
+            //if ($scope.isMobile) {
+            //    $scope.alipayClient();
+            //} else {
+            //    $scope.alipayQR();
+            //}
         }
 
         $scope.wechat = function () {
