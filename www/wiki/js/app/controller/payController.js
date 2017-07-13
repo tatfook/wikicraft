@@ -13,10 +13,13 @@ define([
         var queryArgs = util.getQueryObject();
         var validate  = true;
 
-        $scope.subject   = "NODATE";
-        $scope.body      = "NODATE";
-        $scope.returnUrl = ""; 
-        $scope.price     = 0;
+        $scope.method       = "";
+        $scope.subject      = "NODATE";
+        $scope.body         = "NODATE";
+        $scope.returnUrl    = ""; 
+        $scope.price        = 0;
+        $scope.app_goods_id = "";
+        $scope.app_name     = "";
 
         if (queryArgs.subject) {
             $scope.subject = queryArgs.subject;
@@ -36,12 +39,23 @@ define([
             validate = false;
         }
 
+        if (queryArgs.app_name) {
+            $scope.app_name = queryArgs.app_name;
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.app_goods_id) {
+            $scope.app_goods_id = queryArgs.app_goods_id;
+        } else {
+            validate = false;
+        }
+
         $scope.qr_url  = "";
 
         if (Account.ensureAuthenticated()) {
             Account.getUser(function (userinfo) {
                 $scope.userinfo = userinfo;
-                //console.log($scope.user);
             });
         }
 
@@ -51,13 +65,8 @@ define([
                 return;
             }
 
+            $scope.method = "alipay";
             $scope.alipayClient();
-
-            //if ($scope.isMobile) {
-            //    $scope.alipayClient();
-            //} else {
-            //    $scope.alipayQR();
-            //}
         }
 
         $scope.wechat = function () {
@@ -65,6 +74,8 @@ define([
                 alert("参数错误");
                 return;
             }
+
+            $scope.method = "wechat";
 
             if ($scope.isMobile) {
                 $scope.wechatClient();
@@ -75,10 +86,7 @@ define([
 
         $scope.alipayClient = function () {
             var params = {
-                "price" : $scope.price,
                 "channel": "alipay_pc_direct",
-                "subject": $scope.subject,
-                "body"   : $scope.body,
             };
 
             createCharge(params, function (charge) {
@@ -88,10 +96,7 @@ define([
 
         $scope.wechatClient = function () {
             var params = {
-                "price": $scope.price,
                 "channel": "wx_pub",
-                "subject": $scope.subject,
-                "body": $scope.body,
             };
 
             createCharge(params);
@@ -99,14 +104,10 @@ define([
 
         $scope.alipayQR = function () {
             var params = {
-                "price": $scope.price,
                 "channel": "alipay_qr",
-                "subject": $scope.subject,
-                "body": $scope.body,
             };
 
             createCharge(params, function (charge) {
-                //console.log(charge);
                 $scope.qr_url = charge.credential.alipay_qr;
 
                 $(".pay-qrcode").css("display", "block");
@@ -115,14 +116,10 @@ define([
 
         $scope.wechatQR = function () {
             var params = {
-                "price": $scope.price,
                 "channel": "wx_pub_qr",
-                "subject": $scope.subject,
-                "body": $scope.body,
             };
 
             createCharge(params, function (charge) {
-                //console.log(charge);
                 $scope.qr_url = charge.credential.wx_pub_qr;
 
                 $(".pay-qrcode").css("display", "block");
@@ -151,6 +148,12 @@ define([
         }();
 
         function createCharge(params, callback) {
+            params.price        = $scope.price;
+            params.subject      = $scope.subject;
+            params.body         = $scope.body;
+            params.app_goods_id = $scope.app_goods_id;
+            params.app_name     = $scope.app_name;
+
             util.http("POST", config.apiUrlPrefix + "pay/createCharge", params, function (response) {
                 var charge = response.data;
                 if (typeof (callback) == "function") {

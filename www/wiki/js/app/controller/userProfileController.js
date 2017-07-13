@@ -409,6 +409,11 @@ define(['app',
         // 消费记录
         $scope.showMyPay = function () {
             $scope.showItem = 'myPay';
+            $scope.payStatus = { "InProgress": "进行中", "Finish": "已完成", "Fail": "失败" };
+
+            util.http("POST", config.apiUrlPrefix + "pay/getTrade", {}, function (data) {
+                $scope.myPays = data;
+            })
         }
 
         // 邀请注册

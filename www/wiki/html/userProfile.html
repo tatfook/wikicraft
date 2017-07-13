@@ -746,13 +746,14 @@
             <table class="table mypay-table">
                 <tr ng-repeat="item in myPays">
                     <td class="icon-time">
-                        <span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.isConsume]"></span>
-                        <span class="time">{{item.time}}</span>
+                        <span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.method == 'spend']"></span>
+                        <span class="time">{{item.create_date}}</span>
                     </td>
-                    <td>{{item.message}}</td>
-                    <td class="money">{{item.isConsume ? "-" : "+"}} &yen; {{item.num}}</td>
-                    <td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>
-                    <td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>
+                    <td>{{item.subject}}</td>
+                    <td class="money">{{item.method == 'spend' ? "-" : "+"}} &yen; {{item.price}}</td>
+                    <td>{{payStatus[item.status]}}</td>
+                    <!--<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>
+                    <td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>-->
                 </tr>
             </table>
         </div>

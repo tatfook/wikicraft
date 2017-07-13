@@ -5,10 +5,10 @@ Author: big
 Date: 2017/7/7
 ]]
 
-include_once("./abstract/base.page");
+include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
 
-local pay = inherit(models.abstract.base,gettable("models.pay"));
+local pay = inherit(models.abstract.multi_user_base,gettable("models.pay"));
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
@@ -22,20 +22,20 @@ function pay:ctor()
 	self:addfield("price", "number", false, 10);
 	-- pay channel
 	self:addfield("channel", "string", false, 50);
-	-- pay content
-	self:addfield("content", "string", false);
 	-- order subject
 	self:addfield("subject", "string", false, 100);
-	-- beneficiary
-	self:addfield("beneficiary", "string", false);
 	-- order content
 	self:addfield("body", "string", false, 300);
-	-- pay status
+	-- pay status (InProgress,Finish,Fail)
 	self:addfield("status", "string", false);
 	-- order id
 	self:addfield("order_id", "number", false);
-	-- pay method
+	-- pay method (Spend,Recharge)
 	self:addfield("method", "string", false);
+	-- beneficiary
+	self:addfield("app_name", "string", false);
+	-- beneficiary goods id
+	self:addfield("app_goods_id", "string", false);
 	-- pay or recharge date
 	self:addfield("create_date", "string", false);
 
@@ -48,10 +48,10 @@ function pay:api_createCharge(params)
 
 	local url = self.apiUrl .. "charges";
 
-	local order_no = tostring(math.random(1000000,9999999));
+	local trade_no = tostring(math.random(1000000,9999999));
 
 	local apiParams = {};
-	apiParams.order_no   = order_no;
+	apiParams.order_no   = trade_no;
 	apiParams.client_ip  = request:getpeername();
 	apiParams.amount     = query.price;
 	apiParams.channel    = query.channel;
@@ -66,7 +66,7 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = order_no};
 	end
 
-	log(apiParams,true);
+	--log(apiParams,true);
 
 	System.os.GetUrl({
 		url    = url,
@@ -87,11 +87,54 @@ function pay:api_createCharge(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR, {message="pint++ server is not avaliable"});
 	end
 
-	return errors:wrap(nil, response);
+	local tradeInfo = {};
+	tradeInfo.trade_no     = trade_no;
+	tradeInfo.username     = self:getUsername();
+	tradeInfo.price        = query.price;
+	tradeInfo.subject      = query.subject;
+	tradeInfo.body         = query.body;
+	tradeInfo.channel      = query.channel;
+	tradeInfo.status       = "InProgress";
+	tradeInfo.method       = "Recharge";
+	tradeInfo.app_name     = query.app_name;
+	tradeInfo.app_goods_id = query.app_goods_id; 
+	tradeInfo.create_date  = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+
+	self:db():insertOne({["+trade_no"] = {trade_no}}, tradeInfo, resume);
+
+	local err, _ = yield();
+
+	if(not err) then
+		return errors:wrap(nil, response);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR, {message = "database error"});
+	end	
 end
 
 function pay:api_getCharge()
 	
+end
+
+function pay:api_spend()
+
+end
+
+function pay:api_getTrade()
+	local username = self:getUsername();
+
+	if(not username) then
+		return errors:wrap(errors.SERVER_INNER_ERROR, {message = "user is not exist"});
+	end
+
+	self:db():find({username = username}, resume);
+
+	local err, response = yield();
+
+	if not err then
+		return errors:wrap(nil, response);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR, {messagebox = "datebase error"});
+	end
 end
 
 function pay:api_webhooks()
