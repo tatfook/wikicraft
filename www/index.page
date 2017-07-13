@@ -13,7 +13,7 @@ include_once("script/apps/WebServer/admin/wp-main.page");
 -- call the router  
 
 
-local domain = "localhost"
+local domain = "keepwork"
 local host = request:GetHost()
 local pos = string.find(host, domain)
 

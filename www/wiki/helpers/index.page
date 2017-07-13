@@ -56,7 +56,12 @@ function init_db()
 		name = string.sub(WIKI_ROOT, 1, pos-1)
 	end
 
-	WIKI_ENV = name
+	if name == "rls" or name == "test" then
+		WIKI_ENV = name
+	else
+		WIKI_ENV = "www"
+	end
+
 	WIKI_DB_PATH = "database/" .. WIKI_ENV .. "/"
 	db = TableDatabase:new():connect(WIKI_DB_PATH, function() end);
 end
