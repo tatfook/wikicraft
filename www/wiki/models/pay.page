@@ -185,4 +185,6 @@ function pay:api_webhooks(params)
 			return errors:wrap(errors.NOT_FOUND);
 		end
 	end
+
+	return errors:wrap(errors.SERVER_INNER_ERROR);
 end
