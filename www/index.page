@@ -13,7 +13,7 @@ include_once("script/apps/WebServer/admin/wp-main.page");
 -- call the router  
 
 WIKI_CODE_ENV = "wiki"
-local devDomain = "_dev.keepwork.com"
+local devDomain = ".dev.keepwork.com"
 local host = request:GetHost()
 local pos = string.find(host, devDomain)
 

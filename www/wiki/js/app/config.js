@@ -10,7 +10,7 @@
 	var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
 	var pathPrefix = (localEnv && !localVMEnv) ? '/www/wiki/' : (wiki_config.webroot || '/wiki/');
 	var hostname = window.location.hostname;
-	var envIndex = hostname.indexOf("_dev.keepwork.com");
+	var envIndex = hostname.indexOf(".dev.keepwork.com");
 	if (!wiki_config.webroot && envIndex > 0) {
 		pathPrefix = '/' + hostname.substring(0, envIndex) + '/';
 	}
