@@ -10,16 +10,15 @@ change_dev_env() {
 		return
 	fi
 
-	bash start.sh stop dev
 	cd $code_dir
 	git reset --hard head
 	git checkout $env_branch
 	git pull origin $env_branch
 	cd -
-	sh start.sh stop dev
+	bash start.sh stop dev
 	rm -fr "www/$env_name"
 	cp -fr "$code_dir/www/wiki" "www/$env_name"
-	sh start.sh start dev
+	bash start.sh start dev
 }
 
 change_dev_env $1 $2
