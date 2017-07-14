@@ -115,9 +115,10 @@ define([
                     } else {
                         $scope.step++;
                     }
-                }
+                };
                 if (data.isNewUser) {
-                    createTutorialSite(data.userinfo, _go, _go)
+                    createTutorialSite(data.userinfo, _go, _go);
+                    createDefaultPortrait(data.userinfo, _go, _go);
                 } else {
                     _go();
                 }
@@ -125,7 +126,7 @@ define([
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
             });
-        }
+        };
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {
@@ -194,6 +195,52 @@ define([
 			} else {
 				_createTutorialSite();
 			}
+        }
+
+        // 创建用户默认头像
+        function createDefaultPortrait(user, cb, errcb) {
+            var _createDefaultPortrait = function() {
+                var userDataSource = dataSource.getUserDataSource(user.username);
+                console.log(userDataSource);
+
+                if (!userDataSource || !userDataSource.isInited()) {
+                    Message.info("默认数据源失效");
+                    return;
+                }
+
+                var imgUrl=$scope.getImageUrl("dafault_portrait.png", $scope.imgsPath);
+                userDataSource.uploadImage({content:imgUrl}, function (url) {
+                    user.portrait = url;
+                    util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function () {
+                        console.log("图片上传成功");
+                    });
+                }, function () {
+                    console.log("图片上传失败");
+                });
+            };
+            var getDefaultDataSourceFailedCount = 0;
+            var _getDefaultDataSource = function() {
+                util.post(config.apiUrlPrefix + 'user/getDefaultSiteDataSource', {username:user.username}, function(data){
+                    if (data) {
+                        user.dataSource = [data];
+                        _createDefaultPortrait();
+                        return;
+                    } else {
+                        getDefaultDataSourceFailedCount++;
+                        if (getDefaultDataSourceFailedCount>3) {
+                            errcb && errcb();
+                            return;
+                        } else {
+                            _getDefaultDataSource();
+                        }
+                    }
+                }, errcb);
+            }
+            if (!user.dataSource || user.dataSource.length == 0) {
+                _getDefaultDataSource();
+            } else {
+                _createDefaultPortrait();
+            }
         }
 
         $scope.goUserCenter=function () {
