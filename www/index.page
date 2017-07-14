@@ -12,15 +12,14 @@ include_once("script/apps/WebServer/admin/wp-main.page");
 
 -- call the router  
 
-
-local devDomain = ".dev.keepwork.com"
+WIKI_CODE_ENV = "wiki"
+local devDomain = "_dev.keepwork.com"
 local host = request:GetHost()
 local pos = string.find(host, devDomain)
-local env = "wiki"
 
 if pos and pos > 1 then
-	env = string.sub(host,1, pos-1)
+	WIKI_CODE_ENV = string.sub(host,1, pos-1)
 end
 
-include_once("./" .. env .. "/routes.page")
+include_once("./" .. WIKI_CODE_ENV .. "/routes.page")
 --include_once("./wiki/routes.page");
