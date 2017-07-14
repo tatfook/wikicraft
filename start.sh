@@ -5,7 +5,6 @@ rls_dir="rls"
 test_dir="test"
 dev_dir="www"
 build_dir="www_build"
-
 #test_server() {
 #	echo $current_dir
 #	local db_dir=${build_dst_dir}"/wiki/database"
@@ -82,7 +81,6 @@ restart_server() {
 	stop_server $server_type
 	start_server $server_type
 }
-
 
 main() {
 	echo "------------main function----------------"

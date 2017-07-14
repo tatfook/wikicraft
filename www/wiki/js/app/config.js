@@ -55,7 +55,8 @@
 		jsAppDirectivePath: pathPrefix + 'js/app/directive',
 		jsAppFactoryPath: pathPrefix + 'js/app/factory',
 		jsAppHelperPath: pathPrefix + 'js/app/helper',
-		jsLibPath: pathPrefix + 'js/lib',
+		//jsLibPath: pathPrefix + 'js/lib',
+		jsLibPath: '/wiki/' + 'js/lib',  // 库路径写死 避免前后多次重复缓存库
 
 		modPath: pathPrefix + 'mod',
 		wikiModPath: pathPrefix + 'js/mod/',
