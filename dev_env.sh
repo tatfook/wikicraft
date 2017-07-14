@@ -11,7 +11,7 @@ change_dev_env() {
 	fi
 
 	cd $code_dir
-	git reset --hard head
+	git reset --hard HEAD
 	git checkout $env_branch
 	git pull origin $env_branch
 	cd -
