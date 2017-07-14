@@ -6,6 +6,7 @@ define([
 		"ace",
 ], function (app, util, htmlContent) {
 	app.registerController('tabledbController', function ($scope, $http, $location) {
+		var urlPrefix = "/wiki/js/mod/admin/js/";
 		$scope.tables       = [];
 		$scope.tableRecord  = [];
 		$scope.indexes      = [];
@@ -22,8 +23,24 @@ define([
 
 		var inputEditor  = undefined;
 		var outputEditor = undefined;
+		
+		// 确保为管理员
+		function ensureAdminAuth() {
+			if (!Account.isAuthenticated()) {
+				util.go(urlPrefix + "login");
+				return;
+			}
+
+			var payload = $auth.getPayload();
+			
+			if (!payload.isAdmin) {
+				util.go(urlPrefix + "login");
+			}
+		}
 
 		function init() {
+			ensureAdminAuth();
+
 			$scope.path      = $location.search().path || $scope.path;
 			$scope.tableName = $location.search().tableName || $scope.tableName;
 			//$location.search("path", $scope.path);

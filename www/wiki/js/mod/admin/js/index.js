@@ -28,7 +28,22 @@ define([
 			return "user";
 		}
 
+		// 确保为管理员
+		function ensureAdminAuth() {
+			if (!Account.isAuthenticated()) {
+				util.go(urlPrefix + "login");
+				return;
+			}
+
+			var payload = $auth.getPayload();
+			
+			if (!payload.isAdmin) {
+				util.go(urlPrefix + "login");
+			}
+		}
+
 		function init() {
+			ensureAdminAuth();
 			$scope.clickMenuItem($scope.selectMenuItem);
 		}
 
