@@ -1063,7 +1063,6 @@
     <None Include="www\wiki\models\group_user.page" />
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
-    <None Include="www\wiki\models\order.page" />
     <None Include="www\wiki\models\pay.page" />
     <None Include="www\wiki\models\site_data_source.page" />
     <None Include="www\wiki\models\site_exception.page" />

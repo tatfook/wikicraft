@@ -40,7 +40,22 @@ function pay:ctor()
 	self:addfield("create_date", "string", false);
 
 	-- from ping++
-
+	-- 事件对象  id ，由 Ping++ 生成，28 位长度字符串
+	self:addfield("id", "string", false);
+	-- 值为 "event"
+	self:addfield("event","string",false);
+	-- 事件是否发生在生产环境
+	self:addfield("livemode","string",false);
+	-- 事件发生的时间
+	self:addfield("created","string",false);
+	-- 推送未成功的 webhooks 数量
+	self:addfield("pending_webhooks","number",false);
+	-- 事件类型，详见 事件类型
+	self:addfield("type","string",false);
+	-- API Request ID。值 "null" 表示该事件不是由 API 请求触发的
+	self:addfield("request","string",false);
+	-- 绑定在事件上的数据对象,具体参考下表  data 参数说明
+	self:addfield("data","table",false);
 end
 
 function pay:api_createCharge(params)
@@ -50,13 +65,15 @@ function pay:api_createCharge(params)
 
 	local trade_no = tostring(math.random(1000000,9999999));
 
+	--self:
+
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
 	apiParams.client_ip  = request:getpeername();
 	apiParams.amount     = query.price;
 	apiParams.channel    = query.channel;
-	apiParams.subject    = query.subject;
-	apiParams.body       = query.body;
+	--apiParams.subject    = query.subject;
+	--apiParams.body       = query.body;
 	apiParams.currency   = "cny";
 	apiParams.app        = {id = self.appId};
 
@@ -84,7 +101,7 @@ function pay:api_createCharge(params)
 	--log(response,true);
 
 	if (err ~= 200) then
-		return errors:wrap(errors.SERVER_INNER_ERROR, {message="pint++ server is not avaliable"});
+		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 
 	local tradeInfo = {};
@@ -107,7 +124,7 @@ function pay:api_createCharge(params)
 	if(not err) then
 		return errors:wrap(nil, response);
 	else
-		return errors:wrap(errors.SERVER_INNER_ERROR, {message = "database error"});
+		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end	
 end
 
@@ -123,7 +140,7 @@ function pay:api_getTrade()
 	local username = self:getUsername();
 
 	if(not username) then
-		return errors:wrap(errors.SERVER_INNER_ERROR, {message = "user is not exist"});
+		return errors:wrap(errors.NOT_FOUND);
 	end
 
 	self:db():find({username = username}, resume);
@@ -133,10 +150,39 @@ function pay:api_getTrade()
 	if not err then
 		return errors:wrap(nil, response);
 	else
-		return errors:wrap(errors.SERVER_INNER_ERROR, {messagebox = "datebase error"});
+		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 end
 
-function pay:api_webhooks()
-	return errors:wrap("SUCCESS",nil);
+function pay:api_webhooks(params)
+	local err, query = self:validateQuery(params);
+
+	if(query.type == "charge.succeeded") then
+		local chargeInfo = params.data.object;
+
+		self:db():findOne({trade_no = chargeInfo.order_no}, resume);
+
+		local err, response = yield();
+		--log(response, true);
+
+		if not err and response ~= nil then
+			if response.status ~= "Finish" then
+				self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
+
+				local err, response = yield();
+
+				if(not err) then
+					
+
+					return errors:wrap(errors.SUCCESS);
+				else
+					return errors:wrap(errors.SERVER_INNER_ERROR);
+				end
+			end
+
+			return errors:wrap(errors.SUCCESS);
+		else
+			return errors:wrap(errors.NOT_FOUND);
+		end
+	end
 end

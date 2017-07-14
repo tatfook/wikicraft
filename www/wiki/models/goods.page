@@ -11,17 +11,33 @@ include_once("./user.page");
 local goods = inherit(models.abstract.base, gettable("models.goods"));
 goods.db_name = "goods";
 
+local goodsData = {
+	{
+		goods_id          = 1,
+		app_goods_id      = 100,
+		subject           = "≤‚ ‘…Ã∆∑",
+		body              = "≤‚ ‘ƒ⁄»›",
+		price             = 1,
+		default_buy_count = 10,
+		min_buy_count     = 100,
+		max_buy_count     = 1000,
+		app_name          = "haqi",
+		is_on_sale        = 1,
+		create_date       = "2017-7-14 11:03:20",
+	},
+}
+
 function goods:ctor()
 	-- goods id
 	self:addfield("goods_id","number",false);
 	-- the third party goods id
 	self:addfield("app_goods_id","number",false);
 	-- product name
-	self:addfield("display_name","string",false);
+	self:addfield("subject","string",false);
+	-- product introduce
+	self:addfield("body","string",false);
 	-- product price
 	self:addfield("price","number",false);
-	-- product introduce
-	self:addfield("content","string",false);
 	-- min
 	self:addfield("min_buy_count","number",false);
 	-- max can be sale
@@ -34,3 +50,12 @@ function goods:ctor()
 	self:addfield("create_date","string",false);
 end
 
+function goods:getAppGoodsInfo(params)
+	local err, query = self:validateQuery(params);
+
+	for _, item in ipairs(goodsData) do
+		if item.app_goods_id == query.app_goods_id and item.app_name == query.app_name then
+			return errors:wrap(nil,item);
+		end
+	end
+end

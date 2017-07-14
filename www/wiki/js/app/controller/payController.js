@@ -14,24 +14,13 @@ define([
         var validate  = true;
 
         $scope.method       = "";
-        $scope.subject      = "NODATE";
-        $scope.body         = "NODATE";
+        $scope.subject      = "LOADING";
+        $scope.body         = "LOADING";
         $scope.returnUrl    = ""; 
         $scope.price        = 0;
         $scope.app_goods_id = "";
         $scope.app_name     = "";
-
-        if (queryArgs.subject) {
-            $scope.subject = queryArgs.subject;
-        } else {
-            validate = false;
-        }
-
-        if (queryArgs.body) {
-            $scope.body = queryArgs.body;
-        } else {
-            validate = false;
-        }
+        $scope.qr_url       = "";
 
         if (queryArgs.price) {
             $scope.price = queryArgs.price
@@ -51,13 +40,13 @@ define([
             validate = false;
         }
 
-        $scope.qr_url  = "";
-
         if (Account.ensureAuthenticated()) {
             Account.getUser(function (userinfo) {
                 $scope.userinfo = userinfo;
             });
         }
+
+        getAppGoodsInfo();
 
         $scope.alipay = function () {
             if (!validate) {
@@ -174,6 +163,20 @@ define([
                 } else if (result == "cancel") {
                     // 微信公众账号支付取消支付
                 }
+            });
+        }
+
+        function getAppGoodsInfo() {
+            if (!validate) {
+                alert("参数错误");
+                return;
+            }
+
+            var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name };
+
+            util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
+                $scope.subject = response.data.subject;
+                $scope.body    = response.data.body;
             });
         }
     }]);
