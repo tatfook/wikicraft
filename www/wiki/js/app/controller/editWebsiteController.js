@@ -28,10 +28,6 @@ define([
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
-        $scope.changeDataSource = function () {
-            $scope.website.dataSourceId = parseInt($scope.dataSourceId);
-        }
-        
         function sendModifyWebsiteRequest() {
             util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
@@ -570,7 +566,12 @@ define([
 
         }
 
-        $scope.$watch('$viewContentLoaded',init);
+		$scope.$watch('$viewContentLoaded', function(){
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				dataSource.getUserDataSource(userinfo.username).registerInitFinishCallback(init);
+			});
+		});
 
         // 回车添加用户
         $(document).keyup(function (event) {
