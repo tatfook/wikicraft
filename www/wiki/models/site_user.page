@@ -58,7 +58,7 @@ function site_user:api_addGroupUser(params)
 	
 	local _, groupUserList = yield()
 
-	for _, groupUser in ipairs(groupUserList) do
+	for _, groupUser in ipairs(groupUserList or {}) do
 		self:api_upsert({username=params.username, sitename=params.sitename, groupname=params.groupname,memberName=groupUser.memberName})
 	end
 
@@ -77,7 +77,7 @@ function site_user:api_deleteGroupUser(params)
 	
 	local _, groupUserList = yield()
 
-	for _, groupUser in ipairs(groupUserList) do
+	for _, groupUser in ipairs(groupUserList or {}) do
 		self:api_deleteByName({username=params.username, sitename=params.sitename, groupname=params.groupname,memberName=groupUser.memberName})
 	end
 
@@ -97,7 +97,7 @@ function site_user:api_getSiteListByMemberName(params)
 
 	local websiteDB = models.website:new()
 	local result = {}
-	for _, siteUser in ipairs(siteUserList) do
+	for _, siteUser in ipairs(siteUserList or {}) do
 		result[#result+1] = {}
 		result[#result]["siteuser"] = siteUser
 		result[#result]["siteinfo"] = websiteDB:api_getWithDataSourceByName({username=siteUser.username, sitename=siteUser.sitename}).data

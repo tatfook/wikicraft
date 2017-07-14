@@ -20,6 +20,7 @@ include_once("./website_template_style.page")
 include_once("./website_template_config.page")
 include_once("./website_domain.page")
 include_once("./site_data_source.page")
+include_once("./site_group.page")
 
 local website = inherit(models.abstract.base, gettable("models.website"))
 
@@ -177,7 +178,9 @@ function website:deleteById(websiteId)
 	local websitePageinfoDB = models.website_pageinfo:new()
 	websitePageinfoDB:api_delete({websiteName=site.name, userId=site.userId})
 
-	-- 删除页面内容 TODO
+	-- 删除组信息1
+	local siteGroupDB = models.site_group:new()
+	siteGroupDB:api_deleteBySitename({username=site.username, sitename=site.name})
 
 	-- 删除数据源记录
 	local siteDataSourceDB = models.site_data_source:new()
