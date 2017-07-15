@@ -1,22 +1,22 @@
-<?npl
+ï»¿<?npl
 --[[
 Title: goods
 Author: big
 Date: 2017/7/11
 ]]
 
-include_once("./abstract/base.page");
+include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
 
-local goods = inherit(models.abstract.base, gettable("models.goods"));
+local goods = inherit(models.abstract.multi_user_base, gettable("models.goods"));
 goods.db_name = "goods";
 
 local goodsData = {
 	{
 		goods_id          = 1,
 		app_goods_id      = 100,
-		subject           = "²âÊÔÉÌÆ·",
-		body              = "²âÊÔÄÚÈÝ",
+		subject           = "æµ‹è¯•å•†å“",
+		body              = "æµ‹è¯•å†…å®¹",
 		price             = 1,
 		default_buy_count = 10,
 		min_buy_count     = 100,
@@ -24,6 +24,9 @@ local goodsData = {
 		app_name          = "haqi",
 		is_on_sale        = 1,
 		create_date       = "2017-7-14 11:03:20",
+		additional_field  = {
+			{name="user_nid", displayName = "è§’è‰²ID", desc="å¯ä»¥ç»™ä¸å±žäºŽè‡ªå·±çš„è§’è‰²IDå……å€¼", required = true},
+		},
 	},
 }
 
@@ -50,7 +53,7 @@ function goods:ctor()
 	self:addfield("create_date","string",false);
 end
 
-function goods:getAppGoodsInfo(params)
+function goods:api_getAppGoodsInfo(params)
 	local err, query = self:validateQuery(params);
 
 	for _, item in ipairs(goodsData) do
@@ -58,4 +61,6 @@ function goods:getAppGoodsInfo(params)
 			return errors:wrap(nil,item);
 		end
 	end
+
+	return errors:wrap(errors.NOT_FOUND);
 end

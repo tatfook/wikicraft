@@ -40,6 +40,24 @@ define([
             validate = false;
         }
 
+        if (queryArgs.additional) {
+            $scope.additional = queryArgs.additional;
+
+            try {
+                $scope.additional = JSON.parse($scope.additional);
+            }catch(e){
+                console.warn("additional format error");
+            }
+
+            if (typeof($scope.additional) != "object") {
+                validate = false;
+            }
+
+            //console.log($scope.additional);
+        } else {
+            validate = false;
+        }
+
         if (Account.ensureAuthenticated()) {
             Account.getUser(function (userinfo) {
                 $scope.userinfo = userinfo;
@@ -172,11 +190,17 @@ define([
                 return;
             }
 
-            var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name };
+            var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name};
 
             util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
-                $scope.subject = response.data.subject;
-                $scope.body    = response.data.body;
+                $scope.subject = response.subject;
+                $scope.body    = response.body;
+
+                for (item in response.additional_field) {
+                    //response.additional_field[item].name
+                }
+
+                //$scope.additional
             });
         }
     }]);

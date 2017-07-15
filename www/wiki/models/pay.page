@@ -38,6 +38,8 @@ function pay:ctor()
 	self:addfield("app_goods_id", "string", false);
 	-- pay or recharge date
 	self:addfield("create_date", "string", false);
+	-- additional fields
+	self:addfield("additional","table",false);
 
 	-- from ping++
 	-- 事件对象  id ，由 Ping++ 生成，28 位长度字符串
