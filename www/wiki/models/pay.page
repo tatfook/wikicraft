@@ -40,6 +40,8 @@ function pay:ctor()
 	self:addfield("app_name", "string", false);
 	-- beneficiary goods id
 	self:addfield("app_goods_id", "string", false);
+	-- redirect url
+	self:addfield("redirect", "string", false);
 	-- pay or recharge date
 	self:addfield("create_date", "string", false);
 	-- additional fields
@@ -91,7 +93,7 @@ function pay:api_createCharge(params)
 	apiParams.app        = {id = self.appId};
 
 	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = "http://dev.keepwork.com/"};
+		apiParams.extra = {success_url = query.redirect};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = order_no};
 	end
@@ -171,6 +173,7 @@ function pay:api_webhooks(params)
 					if(appInfo) then
 						local url       = appInfo.payCallbackUrl;
 						local apiParams = payInfo.additional;
+						apiParams.price = payInfo.price;
 
 						local err, _ = self:http("GET", url, apiParams)
 
@@ -195,6 +198,10 @@ function pay:api_webhooks(params)
 	end
 
 	return errors:wrap(errors.SERVER_INNER_ERROR);
+end
+
+function pay:api_simulate()
+	return errors:wrap(errors.SUCCESS);
 end
 
 function pay:getGoodsInfo(query)

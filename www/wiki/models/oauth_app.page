@@ -48,7 +48,7 @@ local oauthApp = {
 		clientId       = "1000003",
 		clientSecret   = "test",
 		RedirectUrl    = "",
-		payCallbackUrl = "http://www.test.com",
+		payCallbackUrl = "http://dev.keepwork.com/api/models/pay/simulate",
 	}
 }
 

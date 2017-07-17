@@ -40,6 +40,12 @@ define([
             validate = false;
         }
 
+        if (queryArgs.redirect) {
+            $scope.redirect = queryArgs.redirect;
+        } else {
+            validate = false;
+        }
+
         if (queryArgs.additional) {
             $scope.additional = queryArgs.additional;
 
@@ -161,6 +167,7 @@ define([
             params.app_goods_id = $scope.app_goods_id;
             params.app_name     = $scope.app_name;
             params.additional   = $scope.additional;
+            params.redirect     = $scope.redirect;
 
             util.http("POST", config.apiUrlPrefix + "pay/createCharge", params, function (response) {
                 var charge = response.data;
