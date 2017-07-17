@@ -18,11 +18,13 @@ define([
                 username = userinfo.username;
             }
             if (!username) {
+				util.go("home");
                 return;
             }
 			username = username.toLowerCase();
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
+					util.go("home");
                     return ;
                 }
                 // 用户信息
