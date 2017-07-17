@@ -5,7 +5,7 @@ define([
 		'text!wikimod/admin/html/tabledb.html',
 		"ace",
 ], function (app, util, htmlContent) {
-	app.registerController('tabledbController', function ($scope, $http, $location) {
+	app.registerController('tabledbController', ["$scope", "$auth","$http", "$location","Account", function ($scope, $auth, $http, $location, Account) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		$scope.tables       = [];
 		$scope.tableRecord  = [];
@@ -176,6 +176,6 @@ define([
 			});
 		}
 
-	});
+	}]);
 	return htmlContent;
 });

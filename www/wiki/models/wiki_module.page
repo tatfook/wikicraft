@@ -18,7 +18,7 @@ local WIKI_MODULE_FLAG_HOT = 1
 function wiki_module:ctor()
 	self:addfield("name", "string")          -- 模块名
 	self:addfield("classifyName", "string")  -- 分类名
-	self:addfield("content", "string")       -- 内容
+	self:addfield("content", "string", false, 4000)       -- 内容
 	self:addfield("wikiCmdName", "string")   -- 命令名  -- unique
 	self:addfield("logoUrl", "string")       -- logo url 
 	self:addfield("desc", "string")          -- 描述

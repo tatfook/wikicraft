@@ -172,6 +172,26 @@ define([
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
                     //console.log("$locationChangeSuccess change");
+					if (util.isEditorPage()) {
+						var url = window.location.hash.substring(1);
+						var paths = url.split("/");
+						// url作严格控制，避免错误url导致异常逻辑
+						if (paths.length > 3 && paths.length < 6 && url.length < 256) {
+							var urlObj = {
+								url:url,
+								username:paths[1],
+								sitename:paths[2],
+								pagename:paths[paths.length-1],
+								pagepath:url,
+							};
+							//console.log(urlObj);
+							if (isFirstLocationChange) {
+								storage.sessionStorageSetItem("urlObj", urlObj);
+							} else {
+								$rootScope.$broadcast('changeEditorPage', urlObj);
+							}
+						}
+					}
                     if (!isFirstLocationChange && util.isEditorPage()) {
                         return ;
                     }
