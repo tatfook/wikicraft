@@ -8,9 +8,11 @@ Date: 2017/7/7
 include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
 include_once("./goods.page");
+include_once("./oauth_app.page");
 
-local pay   = inherit(models.abstract.multi_user_base,gettable("models.pay"));
-local goods = models.goods:new();
+local pay       = inherit(models.abstract.multi_user_base,gettable("models.pay"));
+local goods     = models.goods:new();
+local oauth_app = models.oauth_app:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
@@ -65,7 +67,13 @@ end
 function pay:api_createCharge(params)
 	local err, query = self:validateQuery(params);
 
-	if not validate then
+	local appGoodsInfo = self:getGoodsInfo(query);
+
+	if(not appGoodsInfo) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+
+	if(not self:validate(appGoodsInfo, query)) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
@@ -88,25 +96,10 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = order_no};
 	end
 
-	--log(apiParams,true);
+	local err, chargeObject = self:http("POST", url, apiParams);
 
-	System.os.GetUrl({
-		url    = url,
-		headers = {
-			Authorization = "Bearer " .. self.appToken,
-			["content-type"]  = "application/json",
-		},
-		form   = apiParams,
-		method = "POST",
-		json   = true,
-	},resume);
-
-	local err, response = yield();
-
-	--log(response,true);
-
-	if (err ~= 200) then
-		return errors:wrap(errors.SERVER_INNER_ERROR);
+	if(not chargeObject) then
+		return errors.wrap(errors.SERVER_INNER_ERROR);
 	end
 
 	local tradeInfo = {};
@@ -128,7 +121,7 @@ function pay:api_createCharge(params)
 	local err, _ = yield();
 
 	if(not err) then
-		return errors:wrap(nil, response);
+		return errors:wrap(nil, chargeObject);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end	
@@ -168,27 +161,34 @@ function pay:api_webhooks(params)
 
 		self:db():findOne({trade_no = chargeInfo.order_no}, resume);
 
-		local err, response = yield();
-		--log(response, true);
+		local err, payInfo = yield();
 
-		if not err and response ~= nil then
-			if response.status ~= "Finish" then
-				self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
-
-				local err, _ = yield();
-
+		if not err and payInfo ~= nil then
+			if payInfo.status ~= "Finish" then
 				if(not err) then
-					-- callback
-					local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = response.app_goods_id, app_name = response.app_name})['data'];
-					
+					appInfo = oauth_app:getByAppName(payInfo.app_name)
 
-					return errors:wrap(errors.SUCCESS);
+					if(appInfo) then
+						local url       = appInfo.payCallbackUrl;
+						local apiParams = payInfo.additional;
+
+						local err, _ = self:http("GET", url, apiParams)
+
+						if(err == 200) then
+							self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
+							local err, _ = yield();
+
+							if(not err) then
+								return errors.wrap(errors.SUCCESS);
+							end
+						end
+					end
+					
+					return errors:wrap(errors.SERVER_INNER_ERROR);
 				else
 					return errors:wrap(errors.SERVER_INNER_ERROR);
 				end
 			end
-
-			return errors:wrap(errors.SUCCESS);
 		else
 			return errors:wrap(errors.NOT_FOUND);
 		end
@@ -197,9 +197,18 @@ function pay:api_webhooks(params)
 	return errors:wrap(errors.SERVER_INNER_ERROR);
 end
 
-function validate()
-	local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = query.app_goods_id, app_name = query.app_name})['data'];
-	local validate     = true;
+function pay:getGoodsInfo(query)
+	local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = query.app_goods_id, app_name = query.app_name});
+
+	if(appGoodsInfo.data) then
+		return appGoodsInfo.data
+	else
+		return nil;
+	end
+end
+
+function pay:validate(appGoodsInfo, query)
+	local validate = true;
 
 	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
         local checkField = true;
@@ -219,4 +228,29 @@ function validate()
             validate = false;
         end
     end
+
+	return validate;
+end
+
+function pay:http(method, url, params)
+	System.os.GetUrl({
+		url    = url,
+		headers = {
+			Authorization = "Bearer " .. self.appToken,
+			["content-type"]  = "application/json",
+		},
+		form   = params,
+		method = method,
+		json   = true,
+	},resume);
+
+	local err, response = yield();
+
+	--log(err);
+
+	if err and err == 200 then
+		return err, response;
+	else
+		return nil;
+	end
 end
