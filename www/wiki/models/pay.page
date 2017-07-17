@@ -7,8 +7,10 @@ Date: 2017/7/7
 
 include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
+include_once("./goods.page");
 
-local pay = inherit(models.abstract.multi_user_base,gettable("models.pay"));
+local pay   = inherit(models.abstract.multi_user_base,gettable("models.pay"));
+local goods = models.goods:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
@@ -63,19 +65,20 @@ end
 function pay:api_createCharge(params)
 	local err, query = self:validateQuery(params);
 
-	local url = self.apiUrl .. "charges";
+	if not validate then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
 
+	local url      = self.apiUrl .. "charges";
 	local trade_no = tostring(math.random(1000000,9999999));
-
-	--self:
 
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
 	apiParams.client_ip  = request:getpeername();
 	apiParams.amount     = query.price;
 	apiParams.channel    = query.channel;
-	--apiParams.subject    = query.subject;
-	--apiParams.body       = query.body;
+	apiParams.subject    = appGoodsInfo.subject;
+	apiParams.body       = appGoodsInfo.body;
 	apiParams.currency   = "cny";
 	apiParams.app        = {id = self.appId};
 
@@ -117,6 +120,7 @@ function pay:api_createCharge(params)
 	tradeInfo.method       = "Recharge";
 	tradeInfo.app_name     = query.app_name;
 	tradeInfo.app_goods_id = query.app_goods_id; 
+	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 
 	self:db():insertOne({["+trade_no"] = {trade_no}}, tradeInfo, resume);
@@ -171,9 +175,11 @@ function pay:api_webhooks(params)
 			if response.status ~= "Finish" then
 				self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
 
-				local err, response = yield();
+				local err, _ = yield();
 
 				if(not err) then
+					-- callback
+					local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = response.app_goods_id, app_name = response.app_name})['data'];
 					
 
 					return errors:wrap(errors.SUCCESS);
@@ -189,4 +195,28 @@ function pay:api_webhooks(params)
 	end
 
 	return errors:wrap(errors.SERVER_INNER_ERROR);
+end
+
+function validate()
+	local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = query.app_goods_id, app_name = query.app_name})['data'];
+	local validate     = true;
+
+	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
+        local checkField = true;
+        local field      = itemA;
+
+        if (field.required) then
+            checkField = false
+
+            for KeyB, itemB in pairs(query.additional) do
+                if (field.name == KeyB) then
+                    checkField = true;
+                end
+            end
+        end
+
+        if (not checkField) then
+            validate = false;
+        end
+    end
 end

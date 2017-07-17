@@ -64,7 +64,9 @@ define([
             });
         }
 
-        getAppGoodsInfo();
+        if (validate) {
+            getAppGoodsInfo();
+        }
 
         $scope.alipay = function () {
             if (!validate) {
@@ -137,7 +139,7 @@ define([
             var u = navigator.userAgent;
             var isMobile = false;
 
-            console.log(u);
+            //console.log(u);
 
             if (u.match(/ipad/i) && u.match(/ipad/i).toString().toLocaleLowerCase() == "ipad") {
                 isMobile = true;
@@ -156,10 +158,9 @@ define([
 
         function createCharge(params, callback) {
             params.price        = $scope.price;
-            params.subject      = $scope.subject;
-            params.body         = $scope.body;
             params.app_goods_id = $scope.app_goods_id;
             params.app_name     = $scope.app_name;
+            params.additional   = $scope.additional;
 
             util.http("POST", config.apiUrlPrefix + "pay/createCharge", params, function (response) {
                 var charge = response.data;
@@ -196,11 +197,24 @@ define([
                 $scope.subject = response.subject;
                 $scope.body    = response.body;
 
-                for (item in response.additional_field) {
-                    //response.additional_field[item].name
-                }
+                for (itemA in response.additional_field) {
+                    var checkField = true;
+                    var field      = response.additional_field[itemA];
 
-                //$scope.additional
+                    if (field.required) {
+                        checkField = false
+
+                        for (itemB in $scope.additional) {
+                            if (field.name == itemB) {
+                                checkField = true
+                            }
+                        }
+                    }
+                   
+                    if (!checkField) {
+                        validate = false;
+                    }
+                }
             });
         }
     }]);
