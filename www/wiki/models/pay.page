@@ -82,7 +82,13 @@ function pay:api_createCharge(params)
 	end
 
 	local url      = self.apiUrl .. "charges";
-	local trade_no = tostring(math.random(1000000,9999999));
+	
+	self:getTradeNo(resume);
+	local err, trade_no = yield();
+
+	if not trade_no then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
 
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
@@ -100,10 +106,11 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = order_no};
 	end
 
-	local err, chargeObject = self:http("POST", url, apiParams);
+	self:http("POST", url, apiParams, resume);
+	local err, chargeObject = yield();
 
 	if(not chargeObject) then
-		return errors.wrap(errors.SERVER_INNER_ERROR);
+		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 
 	local tradeInfo = {};
@@ -118,10 +125,9 @@ function pay:api_createCharge(params)
 	tradeInfo.app_name     = query.app_name;
 	tradeInfo.app_goods_id = query.app_goods_id; 
 	tradeInfo.additional   = query.additional;
-	tradeInfo.create_date  = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
-
+	tradeInfo.create_date  = self:getNow();
+	 
 	self:db():insertOne({["+trade_no"] = {trade_no}}, tradeInfo, resume);
-
 	local err, _ = yield();
 
 	if(not err) then
@@ -135,8 +141,55 @@ function pay:api_getCharge()
 	
 end
 
-function pay:api_spend()
+function pay:api_spend(params)
+	local err, query = self:validateQuery(params);
+	
+	if(self:spend(query)) then
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
 
+function pay:spend(query)
+	local trade_no     = self:getTradeNo();
+	local appGoodsInfo = self:getGoodsInfo(query);
+
+	if(not appGoodsInfo) then
+		return false;
+	end
+
+	if(not query.username) then
+		query.username = self:getUsername();
+	end
+
+	if(not wallet:balance(query.price, query.username)) then
+		return false;
+	end
+
+	local tradeInfo = {};
+	tradeInfo.trade_no     = trade_no;
+	tradeInfo.username     = query.username;
+	tradeInfo.price        = query.price;
+	tradeInfo.subject      = appGoodsInfo.subject;
+	tradeInfo.body         = appGoodsInfo.body;
+	tradeInfo.channel      = "wallet";
+	tradeInfo.status       = "Finish";
+	tradeInfo.method       = "Spend";
+	tradeInfo.app_name     = query.app_name;
+	tradeInfo.app_goods_id = query.app_goods_id; 
+	tradeInfo.additional   = query.additional;
+	tradeInfo.create_date  = self:getNow();
+
+	self:db():insertOne({trade_no = trade_no}, tradeInfo, resume);
+
+	local err, response = yield();
+
+	if not err and response ~= nil then
+		return true;
+	else
+		return false;
+	end
 end
 
 function pay:api_getTrade()
@@ -170,12 +223,16 @@ function pay:api_webhooks(params)
 		if not err and payInfo ~= nil then
 			if payInfo.status ~= "Finish" then
 				if(not err) then
+					-- ³äÖµ
 					if(payInfo.method == "Recharge")then
 						if(not wallet:balance(payInfo.price, payInfo.username)) then
-							return errors.wrap(errors.SERVER_INNER_ERROR);
+							return errors:wrap(errors.SERVER_INNER_ERROR);
 						end
+
+						self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
 					end
 
+					-- Ïû·Ñ
 					appInfo = oauth_app:getByAppName(payInfo.app_name)
 
 					if(appInfo) then
@@ -186,10 +243,10 @@ function pay:api_webhooks(params)
 						local err, _ = self:http("GET", url, apiParams)
 
 						if(err == 200) then
-							self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
-							local err, _ = yield();
+							local spendInfo = payInfo;
+							spendInfo.price = spendInfo * -1;
 
-							if(not err) then
+							if(self:spend(spendInfo)) then
 								return errors.wrap(errors.SUCCESS);
 							end
 						end
@@ -213,12 +270,16 @@ function pay:api_simulate()
 end
 
 function pay:getGoodsInfo(query)
+	if(not query.app_goods_id and not query.app_name) then
+		return false;
+	end
+
 	local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = query.app_goods_id, app_name = query.app_name});
 
 	if(appGoodsInfo.data) then
 		return appGoodsInfo.data
 	else
-		return nil;
+		return false;
 	end
 end
 
@@ -247,7 +308,7 @@ function pay:validate(appGoodsInfo, query)
 	return validate;
 end
 
-function pay:http(method, url, params)
+function pay:http(method, url, params, callback)
 	System.os.GetUrl({
 		url    = url,
 		headers = {
@@ -261,11 +322,31 @@ function pay:http(method, url, params)
 
 	local err, response = yield();
 
-	--log(err);
-
-	if err and err == 200 then
-		return err, response;
-	else
-		return nil;
+	if(type(callback) == "function") then
+		if err == 200 and response ~= nil then
+			callback(err, response);
+		else
+			callback(true, nil);
+		end
 	end
+end
+
+function pay:getTradeNo(callback)
+	local trade_no = tostring(math.random(1000000,9999999));
+
+	self:db():findOne({trade_no = trade_no}, resume);
+
+	local err, response = yield();
+
+	if not err and response == nil then
+		if(type(callback) == "function") then
+			callback(nil, trade_no);
+		end
+	else
+		self:getTradeNo();
+	end
+end
+
+function pay:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end

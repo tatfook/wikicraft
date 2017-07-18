@@ -51,7 +51,7 @@ end
 function wallet:updateBalance(walletInfo, price, username)
 	local balance = walletInfo.balance + price;
 
-	if(balance >= 0) then
+	if(balance < 0) then
 		return false;
 	end
 
