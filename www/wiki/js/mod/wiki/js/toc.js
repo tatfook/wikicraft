@@ -27,14 +27,11 @@ define([
 				var hn = parseInt(tag[1]);
 				var containerId = block.blockCache.containerId;
 				
+				console.log(tag, text, hn);
 				if (hn < startLevel || hn > endLevel) {
 					return;
 				}
 
-				if (hn == startLevel) {
-					return;
-				}
-				
 				var childs = tocList;
 				for (var i = startLevel; i < hn; i++) {
 					if (!childs || childs.length == 0) {
@@ -78,7 +75,7 @@ define([
 				generateToc();
 				console.log(tocList);
 				//console.log($("#" + $scope.containerId));
-				setInterval(generateToc, 60000);
+				//setInterval(generateToc, 60000);
 			}
 
 			$scope.$watch("$viewContentLoaded", init);
