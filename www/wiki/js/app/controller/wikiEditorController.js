@@ -733,6 +733,7 @@ define([
                     page.isModify = false;
 					page.isConflict = false;
 					page.blobId = undefined;
+					//page.content = undefined;
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
@@ -809,7 +810,7 @@ define([
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj') || {};
                 storage.sessionStorageRemoveItem('urlObj');
-                console.log(urlObj);
+                //console.log(urlObj);
 
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
@@ -932,7 +933,8 @@ define([
                     pagename: currentPage.pagename,
                     url:currentPage.url,
                 });
-                !config.islocalWinEnv() && $location.path(currentPage.url);
+                //!config.islocalWinEnv() && $location.path(currentPage.url);
+                !config.islocalWinEnv() && (window.location.href="/wiki/wikieditor#"+currentPage.url);
 
                 function setEditorValue(page, content) {
                     page.isFirstEditor = true;
@@ -942,6 +944,7 @@ define([
                     }
                     editor.swapDoc(editorDocMap[page.url]);
                     //console.log(currentPage);
+					page.content = content;
 					editor.setValue(content);
                     CodeMirror.signal(editor, 'change', editor);
 
@@ -1319,7 +1322,7 @@ define([
             }//}}}
 
             //删除
-            $scope.cmd_remove = function (url) {
+            $scope.cmd_remove = function (url) {//{{{
 				var page = getPageByUrl(url);
 				if (!page) {
 					return;
@@ -1354,7 +1357,7 @@ define([
                         }
                     }
                 });
-            };
+            };//}}}
 
             //关闭
             $scope.cmd_close = function (url) {//{{{

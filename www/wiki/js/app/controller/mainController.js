@@ -174,6 +174,9 @@ define([
                     //console.log("$locationChangeSuccess change");
 					if (util.isEditorPage()) {
 						var url = window.location.hash.substring(1);
+						if (url[0] != '/') {
+							url = "/" + url;
+						}
 						var paths = url.split("/");
 						// url作严格控制，避免错误url导致异常逻辑
 						if (paths.length > 3 && paths.length < 6 && url.length < 256) {
@@ -258,6 +261,7 @@ define([
 									//console.log(data);
 									//console.log("otherUsername:", urlObj.username);
 									storage.sessionStorageSetItem("otherUsername", urlObj.username);
+									$rootScope.pageinfo.content = data || "";
 									renderContent(data);
 								}, function () {
 									renderContent();
