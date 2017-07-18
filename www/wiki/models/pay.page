@@ -126,7 +126,7 @@ function pay:api_createCharge(params)
 	tradeInfo.app_goods_id = query.app_goods_id; 
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
-	 
+	
 	self:db():insertOne({["+trade_no"] = {trade_no}}, tradeInfo, resume);
 	local err, _ = yield();
 
@@ -144,27 +144,43 @@ end
 function pay:api_spend(params)
 	local err, query = self:validateQuery(params);
 	
-	if(self:spend(query)) then
+	self:spend(query, resume);
+	local err, _ = yield();
+
+	if(not err) then
 		return errors:wrap(errors.SUCCESS);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 end
 
-function pay:spend(query)
-	local trade_no     = self:getTradeNo();
+function pay:spend(query, callback)
+	self:getTradeNo(resume);
+	local err, trade_no = yield();
+
 	local appGoodsInfo = self:getGoodsInfo(query);
 
-	if(not appGoodsInfo) then
-		return false;
+	if(not appGoodsInfo or not trade_no) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+		
+		return;
 	end
 
 	if(not query.username) then
 		query.username = self:getUsername();
 	end
 
-	if(not wallet:balance(query.price, query.username)) then
-		return false;
+	wallet:balance(query.price, query.username, resume);
+	local err, _ = yield();
+
+	if(err) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+
+		return;
 	end
 
 	local tradeInfo = {};
@@ -182,13 +198,14 @@ function pay:spend(query)
 	tradeInfo.create_date  = self:getNow();
 
 	self:db():insertOne({trade_no = trade_no}, tradeInfo, resume);
-
 	local err, response = yield();
 
-	if not err and response ~= nil then
-		return true;
-	else
-		return false;
+	if(type(callback) == "function") then
+		if not err and response ~= nil then
+			callback(nil, nil);
+		else
+			callback(true, nil);
+		end
 	end
 end
 
@@ -200,7 +217,6 @@ function pay:api_getTrade()
 	end
 
 	self:db():find({username = username}, resume);
-
 	local err, response = yield();
 
 	if not err then
@@ -217,46 +233,45 @@ function pay:api_webhooks(params)
 		local chargeInfo = params.data.object;
 
 		self:db():findOne({trade_no = chargeInfo.order_no}, resume);
-
 		local err, payInfo = yield();
 
-		if not err and payInfo ~= nil then
-			if payInfo.status ~= "Finish" then
-				if(not err) then
-					-- 充值
-					if(payInfo.method == "Recharge")then
-						if(not wallet:balance(payInfo.price, payInfo.username)) then
-							return errors:wrap(errors.SERVER_INNER_ERROR);
-						end
+		if not err and payInfo ~= nil and payInfo.status ~= "Finish" and payInfo.method == "Recharge" then
+			-- 充值
+			wallet:balance(payInfo.price, payInfo.username, resume);
+			local err, _ = yield();
 
-						self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
+			if(err) then
+				return errors:wrap(errors.SERVER_INNER_ERROR);
+			end
+
+			self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
+			local err, _ = yield();
+
+			-- 消费
+			appInfo = oauth_app:getByAppName(payInfo.app_name)
+
+			if(appInfo) then
+				local url       = appInfo.payCallbackUrl;
+				local apiParams = commonlib.copy(payInfo.additional);
+				apiParams.price = payInfo.price;
+
+				self:http("GET", url, apiParams, resume);
+				local err, response = yield();
+
+				if(err == 200) then
+					local spendInfo = payInfo;
+					spendInfo.price = spendInfo.price * -1;
+
+					self:spend(spendInfo, resume);
+					local err, _ = yield();
+
+					if(not err) then
+						return errors.wrap(errors.SUCCESS);
 					end
-
-					-- 消费
-					appInfo = oauth_app:getByAppName(payInfo.app_name)
-
-					if(appInfo) then
-						local url       = appInfo.payCallbackUrl;
-						local apiParams = payInfo.additional;
-						apiParams.price = payInfo.price;
-
-						local err, _ = self:http("GET", url, apiParams)
-
-						if(err == 200) then
-							local spendInfo = payInfo;
-							spendInfo.price = spendInfo * -1;
-
-							if(self:spend(spendInfo)) then
-								return errors.wrap(errors.SUCCESS);
-							end
-						end
-					end
-					
-					return errors:wrap(errors.SERVER_INNER_ERROR);
-				else
-					return errors:wrap(errors.SERVER_INNER_ERROR);
 				end
 			end
+					
+			return errors:wrap(errors.SERVER_INNER_ERROR);
 		else
 			return errors:wrap(errors.NOT_FOUND);
 		end
@@ -323,11 +338,7 @@ function pay:http(method, url, params, callback)
 	local err, response = yield();
 
 	if(type(callback) == "function") then
-		if err == 200 and response ~= nil then
-			callback(err, response);
-		else
-			callback(true, nil);
-		end
+		callback(err, response);
 	end
 end
 

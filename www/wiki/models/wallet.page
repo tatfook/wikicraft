@@ -6,9 +6,9 @@ Date: 2017/7/11
 ]]
 
 include_once("./abstract/base.page");
-include_once("./user.page");
+include_once("./abstract/multi_user_base.page");
 
-local wallet = inherit(models.abstract.base, gettable("models.wallet"));
+local wallet = inherit(models.abstract.multi_user_base, gettable("models.wallet"));
 
 wallet.db_name = "wallet";
 
@@ -21,9 +21,26 @@ function wallet:ctor()
 	self:addfield("update_date","string",false);
 end
 
-function wallet:balance(price, username)
-	if(not pirce or not username) then
-		return false;
+function wallet:api_getBalance()
+	local username = self:getUsername();
+
+	self:db():findOne({username = username}, resume);
+	local err, walletInfo = yield();
+
+	if not err then
+		return errors:wrap(nil, walletInfo);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function wallet:balance(price, username, callback)
+	if(not price or not username) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+
+		return;
 	end
 
 	self:db():findOne({username = username}, resume);
@@ -32,59 +49,76 @@ function wallet:balance(price, username)
 	local isSuccess = false;
 
 	if not err and walletInfo ~= nil then
-		if(self:updateBalance(walletInfo, price, username)) then
+		self:updateBalance(walletInfo, price, username, resume);
+		local err, _ = yield();
+
+		if(not err) then
 			isSuccess = true;
 		end
 	else
-		self:createBalanceUser(username, function(walletInfo)
-			if(walletInfo) then
-				if(self:updateBalance(walletInfo, price, username)) then
-					isSuccess = true;
-				end
+		self:createBalanceUser(username, resume);
+		local err, walletInfo = yield();
+
+		if(walletInfo) then
+			self:updateBalance(walletInfo, price, username, resume);
+			local err, _ = yield();
+
+			if(not err) then
+				isSuccess = true;
 			end
-		end)
+		end
 	end
 
-	return isSuccess;
+	if(type(callback) == "function") then
+		if(isSuccess) then
+			callback(nil, nil);
+		else
+			callback(true, nil);
+		end
+	end
 end
 
-function wallet:updateBalance(walletInfo, price, username)
+function wallet:updateBalance(walletInfo, price, username, callback)
 	local balance = walletInfo.balance + price;
 
 	if(balance < 0) then
-		return false;
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+
+		return;
 	end
 
-	self:db():updateOne({username = username},
-						{username = username,
-						 balance  = balance,
-						 update   = self:getNow(),
-						}, resume)
+	local balanceInfo = {};
+	balanceInfo.username    = username;
+	balanceInfo.balance     = balance;
+	balanceInfo.update_date = self:getNow();
 
-	local err, response = yield();
+	self:db():updateOne({username = username}, balanceInfo, resume)
+	local err, walletInfo = yield();
 
-	if not err then
-		return true;
-	else
-		return false;
+	if type(callback) == "function" then
+		if not err then
+			callback(nil, walletInfo);
+		else
+			callback(true, nil);
+		end
 	end
 end
 
 function wallet:createBalanceUser(username, callback)
-	self:db():insertOne({username = username},
-						{
-							username = username,
-							balance = 0,
-							update_date = self:getNow(),
-						}, 
-						resume);
+	local balanceInfo = {}
+	balanceInfo.username    = username;
+	balanceInfo.balance     = 0;
+	balanceInfo.update_date = self:getNow();
 
+	self:db():insertOne({username = username}, balanceInfo, resume);
 	local err, walletInfo = yield();
 	
 	if not err and walletInfo ~= nil and type(callback) == "function" then
-		callback(walletInfo);
+		callback(nil, walletInfo);
 	else
-		callback(false);
+		callback(true, nil);
 	end
 end
 

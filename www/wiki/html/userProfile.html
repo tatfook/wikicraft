@@ -741,7 +741,10 @@
 
     <!--消费记录-->
     <div ng-show="showItem == 'myPay'" class="col-xs-12 main-content panel">
-        <div class="panel-heading">消费记录</div>
+        <div class="panel-heading clearfix">
+            <div style="float:left">消费记录</div>
+            <div style="float:right">余额{{balance}}元</div>
+        </div>
         <div class="panel-body mypay-panel">
             <table class="table mypay-table">
                 <tr ng-repeat="item in myPays">
@@ -750,7 +753,7 @@
                         <span class="time">{{item.create_date}}</span>
                     </td>
                     <td>{{item.subject}}</td>
-                    <td class="money">{{item.method == 'spend' ? "-" : "+"}} &yen; {{item.price}}</td>
+                    <td class="money">{{item.method == 'Spend' ? "-" : "+"}} &yen; {{item.price < 0 ? -item.price : item.price}}</td>
                     <td>{{payStatus[item.status]}}</td>
                     <!--<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>
                     <td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>-->
