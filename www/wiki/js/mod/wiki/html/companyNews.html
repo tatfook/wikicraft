@@ -102,7 +102,7 @@
         <div class="main-content">
             <div class="top-news img-text clearfix">
                 <a href="{{modParams.topNewsLink}}" target="_blank">
-                    <img ng-src="{{imgsPath+'company_news_top.jpg'}}" class="pull-left" alt="">
+                    <img ng-src="{{modParams.topNewsImg || imgsPath+'company_news_top.jpg'}}" class="pull-left" alt="">
                 </a>
                 <div class="text">
                     <h4 class="ellipsis-1"><a href="{{modParams.topNewsLink}}" target="_blank">{{modParams.topNewsTitle}}</a></h4>
