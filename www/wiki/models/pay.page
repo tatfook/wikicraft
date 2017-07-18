@@ -9,10 +9,12 @@ include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
 include_once("./goods.page");
 include_once("./oauth_app.page");
+include_once("./wallet.page");
 
 local pay       = inherit(models.abstract.multi_user_base,gettable("models.pay"));
 local goods     = models.goods:new();
 local oauth_app = models.oauth_app:new();
+local wallet    = models.wallet:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
@@ -108,8 +110,8 @@ function pay:api_createCharge(params)
 	tradeInfo.trade_no     = trade_no;
 	tradeInfo.username     = self:getUsername();
 	tradeInfo.price        = query.price;
-	tradeInfo.subject      = query.subject;
-	tradeInfo.body         = query.body;
+	tradeInfo.subject      = appGoodsInfo.subject;
+	tradeInfo.body         = appGoodsInfo.body;
 	tradeInfo.channel      = query.channel;
 	tradeInfo.status       = "InProgress";
 	tradeInfo.method       = "Recharge";
@@ -168,6 +170,12 @@ function pay:api_webhooks(params)
 		if not err and payInfo ~= nil then
 			if payInfo.status ~= "Finish" then
 				if(not err) then
+					if(payInfo.method == "Recharge")then
+						if(not wallet:balance(payInfo.price, payInfo.username)) then
+							return errors.wrap(errors.SERVER_INNER_ERROR);
+						end
+					end
+
 					appInfo = oauth_app:getByAppName(payInfo.app_name)
 
 					if(appInfo) then

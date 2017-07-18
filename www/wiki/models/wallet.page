@@ -20,3 +20,74 @@ function wallet:ctor()
 	-- update blance date
 	self:addfield("update_date","string",false);
 end
+
+function wallet:balance(price, username)
+	if(not pirce or not username) then
+		return false;
+	end
+
+	self:db():findOne({username = username}, resume);
+	local err, walletInfo = yield();
+
+	local isSuccess = false;
+
+	if not err and walletInfo ~= nil then
+		if(self:updateBalance(walletInfo, price, username)) then
+			isSuccess = true;
+		end
+	else
+		self:createBalanceUser(username, function(walletInfo)
+			if(walletInfo) then
+				if(self:updateBalance(walletInfo, price, username)) then
+					isSuccess = true;
+				end
+			end
+		end)
+	end
+
+	return isSuccess;
+end
+
+function wallet:updateBalance(walletInfo, price, username)
+	local balance = walletInfo.balance + price;
+
+	if(balance >= 0) then
+		return false;
+	end
+
+	self:db():updateOne({username = username},
+						{username = username,
+						 balance  = balance,
+						 update   = self:getNow(),
+						}, resume)
+
+	local err, response = yield();
+
+	if not err then
+		return true;
+	else
+		return false;
+	end
+end
+
+function wallet:createBalanceUser(username, callback)
+	self:db():insertOne({username = username},
+						{
+							username = username,
+							balance = 0,
+							update_date = self:getNow(),
+						}, 
+						resume);
+
+	local err, walletInfo = yield();
+	
+	if not err and walletInfo ~= nil and type(callback) == "function" then
+		callback(walletInfo);
+	else
+		callback(false);
+	end
+end
+
+function wallet:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+end

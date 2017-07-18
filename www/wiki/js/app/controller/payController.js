@@ -193,11 +193,6 @@ define([
         }
 
         function getAppGoodsInfo() {
-            if (!validate) {
-                alert("参数错误");
-                return;
-            }
-
             var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name};
 
             util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
