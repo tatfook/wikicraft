@@ -201,7 +201,7 @@ define([
                 return mdwiki.options.editorMode;
             },
             isPageTemplate: block.isPageTemplate,   // 是页内模板则可编辑   wiki tempate block 使用此字段判断当前是否可以编辑
-			content: block.isTemplate ? defaultTemplateContent : undefined,
+			content: block.isTemplate ? defaultTemplateContent : undefined, // 模板模块使用
             render: function (htmlContent) {
                 if (block.isTemplate) {
                     $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板

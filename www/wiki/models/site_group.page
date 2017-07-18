@@ -48,13 +48,14 @@ function site_group:api_deleteByName(params)
 	end
 
 	self:db():deleteOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, resume)
+	yield()
 
 	local siteUserDB = models.site_user:new()
 	if (params.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL) then
 		siteUserDB:api_deleteGroupUser(params)
 	end
 
-	return errors:wrap(yield())
+	return errors:wrap(nil)
 end
 
 -- 删除通过站点名
