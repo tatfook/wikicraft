@@ -68,12 +68,17 @@ define([
 					addTocItem(block);
 				}
 				//console.log(wikiblock.blockList);
-				//console.log(tocList);
+				console.log(tocList);
 			}
 
 			function init() {
-				generateToc();
-				console.log(tocList);
+				setTimeout(function () {
+                    generateToc();
+                    console.log(tocList);
+                    $scope.tocList = tocList;
+                    $scope.message = "hello";
+                    util.$apply();
+                });
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
