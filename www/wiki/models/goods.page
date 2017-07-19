@@ -1,17 +1,66 @@
-<?npl
+﻿<?npl
 --[[
 Title: goods
 Author: big
 Date: 2017/7/11
 ]]
 
-include_once("./abstract/base.page");
+include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
 
-local goods = inherit(models.abstract.base, gettable("models.goods"));
+local goods = inherit(models.abstract.multi_user_base, gettable("models.goods"));
 goods.db_name = "goods";
 
+local goodsData = {
+	{
+		goods_id          = 1,
+		app_goods_id      = 100,
+		subject           = "测试商品",
+		body              = "测试内容",
+		price             = 1,
+		default_buy_count = 10,
+		min_buy_count     = 100,
+		max_buy_count     = 1000,
+		app_name          = "haqi",
+		is_on_sale        = 1,
+		create_date       = "2017-7-14 11:03:20",
+		additional_field  = {
+			{name="user_nid", displayName = "角色ID", desc="可以给不属于自己的角色ID充值", required = true},
+		},
+	},
+}
+
 function goods:ctor()
-	
+	-- goods id
+	self:addfield("goods_id","number",false);
+	-- the third party goods id
+	self:addfield("app_goods_id","number",false);
+	-- product name
+	self:addfield("subject","string",false);
+	-- product introduce
+	self:addfield("body","string",false);
+	-- product price
+	self:addfield("price","number",false);
+	-- min
+	self:addfield("min_buy_count","number",false);
+	-- max can be sale
+	self:addfield("max_buy_count","number",false);
+	-- the thrid party name
+	self:addfield("app_name","string",false);
+	-- if product on sale is 1 otherwise 0;
+	self:addfield("is_on_sale","number",false);
+	-- product create date
+	self:addfield("create_date","string",false);
 end
 
+function goods:api_getAppGoodsInfo(params)
+	local err, query = self:validateQuery(params);
+
+	for _, item in ipairs(goodsData) do
+		if item.app_goods_id == query.app_goods_id and item.app_name == query.app_name then
+			return errors:wrap(nil,item);
+		end
+	end
+
+	return errors:wrap(errors.NOT_FOUND);
+end

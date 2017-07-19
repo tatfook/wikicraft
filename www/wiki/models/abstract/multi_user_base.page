@@ -17,6 +17,16 @@ function multi_user_base:ctor()
 	self:addfield("userid", "number", false);
 end
 
+function multi_user_base:getUsername()
+	local tokenInfo = getTokenInfo();
+	
+	if not tokenInfo then
+		return nil;
+	end
+
+	return tokenInfo.username;
+end
+
 function multi_user_base:getUserId()
 	local tokenInfo = getTokenInfo()
 

@@ -179,14 +179,14 @@
             cursor: pointer;
         }
 
-        .pay-main-method .pay-item ul li:hover {
+        .pay-main-method .pay-item ul li:hover, .pay-main-method .pay-item ul li.active {
             border: 1px solid #ff5200;
             width: 140px;
             height: 40px;
             overflow: hidden;
         }
 
-        .pay-main-method .pay-item ul li:hover .arrow-right {
+        .pay-main-method .pay-item ul li:hover .arrow-right, .pay-main-method .pay-item ul li.active .arrow-right {
             display: block;
             width: 0;
             height: 0;
@@ -199,13 +199,13 @@
             bottom: -10px;
         }
 
-        .pay-main-method .pay-item ul li:hover .arrow-right img {
+        .pay-main-method .pay-item ul li:hover .arrow-right img, .pay-main-method .pay-item ul li.active .arrow-right img{
             margin-top: -20px;
             margin-left: -15px;
             transform: rotate(-45deg);
         }
 
-        .pay-main-method .pay-item ul li:hover .pay-icon {
+        .pay-main-method .pay-item ul li:hover .pay-icon, .pay-main-method .pay-item ul li.active .pay-icon{
             margin-top: -1px;
             margin-left: -1px;
         }
@@ -235,8 +235,8 @@
                         <div class="username">{{userinfo.displayName}}</div>
                     </div>
                     <div class="pay-main-info">
-                        <h1>充值到 {{userinfo.displayName}} 的账户</h1>
-                        <div class="introduce">用途的文字说明..</div>
+                        <h1>{{subject}}</h1>
+                        <div class="introduce">{{body}}</div>
                         <div class="money">
                             应付金额： <sup>￥{{price}}</sup>
                         </div>
@@ -248,11 +248,11 @@
                     </div>
                     <div class="pay-item clearfix">
                         <ul>
-                            <li ng-click="alipay()">
+                            <li ng-class="{active: method == 'alipay'}" ng-click="alipay()">
                                 <div class="arrow-right"><img src="/wiki/assets/imgs/pay-checked.png" /></div>
                                 <img class="pay-icon" src="/wiki/assets/imgs/pay-alipay.png">
                             </li>
-                            <li ng-click="wechat()">
+                            <li ng-class="{active: method == 'wechat'}" ng-click="wechat()">
                                 <div class="arrow-right"><img src="/wiki/assets/imgs/pay-checked.png" /></div>
                                 <img class="pay-icon" src="/wiki/assets/imgs/pay-wechat.png">
                             </li>

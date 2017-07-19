@@ -42,10 +42,26 @@ local oauthApp = {
 		clientSecret="gongxiangzhizaopingtai",
 		RedirectUrl="http://3dprint.idreamtech.com.cn/",
 	},
+	{
+		appName        = "haqi",
+		company        = "魔法哈奇",
+		clientId       = "1000003",
+		clientSecret   = "test",
+		RedirectUrl    = "",
+		payCallbackUrl = "http://dev.keepwork.com/api/models/pay/simulate",
+	}
 }
 
 function oauth_app:api_get()
 	return oauthApp
+end
+
+function oauth_app:getByAppName(appName)
+	for _, item in ipairs(oauthApp) do
+		if(item.appName == appName) then
+			return item;
+		end
+	end
 end
 
 function oauth_app:getByClientId(params)

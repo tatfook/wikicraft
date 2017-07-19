@@ -11,26 +11,87 @@ define([
     app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', function ($scope, Account, modal, $rootScope) {
         
         var queryArgs = util.getQueryObject();
+        var validate  = true;
 
-        $scope.price  = 1;
-        $scope.qr_url = "";
+        $scope.method       = "";
+        $scope.subject      = "LOADING";
+        $scope.body         = "LOADING";
+        $scope.returnUrl    = ""; 
+        $scope.price        = 0;
+        $scope.app_goods_id = "";
+        $scope.app_name     = "";
+        $scope.qr_url       = "";
+
+        if (queryArgs.price) {
+            $scope.price = queryArgs.price
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.app_name) {
+            $scope.app_name = queryArgs.app_name;
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.app_goods_id) {
+            $scope.app_goods_id = queryArgs.app_goods_id;
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.redirect) {
+            $scope.redirect = queryArgs.redirect;
+        } else {
+            validate = false;
+        }
+
+        if (queryArgs.additional) {
+            $scope.additional = queryArgs.additional;
+
+            try {
+                $scope.additional = JSON.parse($scope.additional);
+            }catch(e){
+                console.warn("additional format error");
+            }
+
+            if (typeof($scope.additional) != "object") {
+                validate = false;
+            }
+
+            //console.log($scope.additional);
+        } else {
+            validate = false;
+        }
 
         if (Account.ensureAuthenticated()) {
             Account.getUser(function (userinfo) {
                 $scope.userinfo = userinfo;
-                //console.log($scope.user);
             });
         }
 
+        if (validate) {
+            getAppGoodsInfo();
+        }
+
         $scope.alipay = function () {
-            if ($scope.isMobile) {
-                $scope.alipayClient();
-            } else {
-                $scope.alipayQR();
+            if (!validate) {
+                alert("参数错误");
+                return;
             }
+
+            $scope.method = "alipay";
+            $scope.alipayClient();
         }
 
         $scope.wechat = function () {
+            if (!validate) {
+                alert("参数错误");
+                return;
+            }
+
+            $scope.method = "wechat";
+
             if ($scope.isMobile) {
                 $scope.wechatClient();
             } else {
@@ -40,10 +101,7 @@ define([
 
         $scope.alipayClient = function () {
             var params = {
-                "amount" : $scope.price,
                 "channel": "alipay_pc_direct",
-                "subject": "支付测试",
-                "body"   : "支付测试",
             };
 
             createCharge(params, function (charge) {
@@ -53,10 +111,7 @@ define([
 
         $scope.wechatClient = function () {
             var params = {
-                "amount": $scope.price,
                 "channel": "wx_pub",
-                "subject": "支付测试",
-                "body": "支付测试",
             };
 
             createCharge(params);
@@ -64,14 +119,10 @@ define([
 
         $scope.alipayQR = function () {
             var params = {
-                "amount": $scope.price,
                 "channel": "alipay_qr",
-                "subject": "支付测试",
-                "body": "支付测试",
             };
 
             createCharge(params, function (charge) {
-                //console.log(charge);
                 $scope.qr_url = charge.credential.alipay_qr;
 
                 $(".pay-qrcode").css("display", "block");
@@ -80,14 +131,10 @@ define([
 
         $scope.wechatQR = function () {
             var params = {
-                "amount": $scope.price,
                 "channel": "wx_pub_qr",
-                "subject": "支付测试",
-                "body": "支付测试",
             };
 
             createCharge(params, function (charge) {
-                //console.log(charge);
                 $scope.qr_url = charge.credential.wx_pub_qr;
 
                 $(".pay-qrcode").css("display", "block");
@@ -98,7 +145,7 @@ define([
             var u = navigator.userAgent;
             var isMobile = false;
 
-            console.log(u);
+            //console.log(u);
 
             if (u.match(/ipad/i) && u.match(/ipad/i).toString().toLocaleLowerCase() == "ipad") {
                 isMobile = true;
@@ -116,6 +163,12 @@ define([
         }();
 
         function createCharge(params, callback) {
+            params.price        = $scope.price;
+            params.app_goods_id = $scope.app_goods_id;
+            params.app_name     = $scope.app_name;
+            params.additional   = $scope.additional;
+            params.redirect     = $scope.redirect;
+
             util.http("POST", config.apiUrlPrefix + "pay/createCharge", params, function (response) {
                 var charge = response.data;
                 if (typeof (callback) == "function") {
@@ -135,6 +188,34 @@ define([
                     // charge 不正确或者微信公众账号支付失败时会在此处返回
                 } else if (result == "cancel") {
                     // 微信公众账号支付取消支付
+                }
+            });
+        }
+
+        function getAppGoodsInfo() {
+            var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name};
+
+            util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
+                $scope.subject = response.subject;
+                $scope.body    = response.body;
+
+                for (itemA in response.additional_field) {
+                    var checkField = true;
+                    var field      = response.additional_field[itemA];
+
+                    if (field.required) {
+                        checkField = false
+
+                        for (itemB in $scope.additional) {
+                            if (field.name == itemB) {
+                                checkField = true
+                            }
+                        }
+                    }
+                   
+                    if (!checkField) {
+                        validate = false;
+                    }
                 }
             });
         }

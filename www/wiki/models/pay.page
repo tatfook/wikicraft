@@ -2,78 +2,362 @@
 --[[
 Title: pay model
 Author: big
-Date: 2017.7.7
+Date: 2017/7/7
 ]]
 
-include_once("./abstract/base.page");
+include_once("./abstract/multi_user_base.page");
 include_once("./user.page");
+include_once("./goods.page");
+include_once("./oauth_app.page");
+include_once("./wallet.page");
 
-local pay = inherit(models.abstract.base,gettable("models.pay"));
+local pay       = inherit(models.abstract.multi_user_base,gettable("models.pay"));
+local goods     = models.goods:new();
+local oauth_app = models.oauth_app:new();
+local wallet    = models.wallet:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
-pay.apiToken = "sk_test_5Ou5K8HarHaT4qfHe5j5Oyj1";
-pay.appId    = "app_9e9enPHKSS48m9uj";
+pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
+pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
 
 function pay:ctor()
+	-- keepwork username
+	self:addfield("username", "string",false);
 	-- total money
-	self:addfield("amount", "number", false, 10);
+	self:addfield("price", "number", false, 10);
 	-- pay channel
 	self:addfield("channel", "string", false, 50);
 	-- order subject
 	self:addfield("subject", "string", false, 100);
 	-- order content
 	self:addfield("body", "string", false, 300);
+	-- pay status (InProgress,Finish,Fail)
+	self:addfield("status", "string", false);
+	-- order id
+	self:addfield("order_id", "number", false);
+	-- pay method (Spend,Recharge)
+	self:addfield("method", "string", false);
+	-- beneficiary
+	self:addfield("app_name", "string", false);
+	-- beneficiary goods id
+	self:addfield("app_goods_id", "string", false);
+	-- redirect url
+	self:addfield("redirect", "string", false);
+	-- pay or recharge date
+	self:addfield("create_date", "string", false);
+	-- additional fields
+	self:addfield("additional","table",false);
+
+	-- from ping++
+	-- 事件对象  id ，由 Ping++ 生成，28 位长度字符串
+	self:addfield("id", "string", false);
+	-- 值为 "event"
+	self:addfield("event","string",false);
+	-- 事件是否发生在生产环境
+	self:addfield("livemode","string",false);
+	-- 事件发生的时间
+	self:addfield("created","string",false);
+	-- 推送未成功的 webhooks 数量
+	self:addfield("pending_webhooks","number",false);
+	-- 事件类型，详见 事件类型
+	self:addfield("type","string",false);
+	-- API Request ID。值 "null" 表示该事件不是由 API 请求触发的
+	self:addfield("request","string",false);
+	-- 绑定在事件上的数据对象,具体参考下表  data 参数说明
+	self:addfield("data","table",false);
 end
 
 function pay:api_createCharge(params)
 	local err, query = self:validateQuery(params);
 
-	local url = self.apiUrl .. "charges";
+	local appGoodsInfo = self:getGoodsInfo(query);
 
-	local order_no = tostring(math.random(1000000,9999999));
+	if(not appGoodsInfo) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+
+	if(not self:validate(appGoodsInfo, query)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	local url = self.apiUrl .. "charges";
+	
+	self:getTradeNo(resume);
+	local err, trade_no = yield();
+
+	if not trade_no then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
 
 	local apiParams = {};
-	apiParams.order_no   = order_no;
+	apiParams.order_no   = trade_no;
 	apiParams.client_ip  = request:getpeername();
-	apiParams.amount     = query.amount;
+	apiParams.amount     = query.price;
 	apiParams.channel    = query.channel;
-	apiParams.subject    = query.subject;
-	apiParams.body       = query.body;
+	apiParams.subject    = appGoodsInfo.subject;
+	apiParams.body       = appGoodsInfo.body;
 	apiParams.currency   = "cny";
 	apiParams.app        = {id = self.appId};
 
 	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = "http://keepwork.com/?#success"};
+		apiParams.extra = {success_url = query.redirect};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = order_no};
 	end
 
-	log(apiParams,true);
+	self:http("POST", url, apiParams, resume);
+	local err, chargeObject = yield();
 
+	if(not chargeObject) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	local tradeInfo = {};
+	tradeInfo.trade_no     = trade_no;
+	tradeInfo.username     = self:getUsername();
+	tradeInfo.price        = query.price;
+	tradeInfo.subject      = appGoodsInfo.subject;
+	tradeInfo.body         = appGoodsInfo.body;
+	tradeInfo.channel      = query.channel;
+	tradeInfo.status       = "InProgress";
+	tradeInfo.method       = "Recharge";
+	tradeInfo.app_name     = query.app_name;
+	tradeInfo.app_goods_id = query.app_goods_id; 
+	tradeInfo.additional   = query.additional;
+	tradeInfo.create_date  = self:getNow();
+	
+	self:db():insertOne({["+trade_no"] = {trade_no}}, tradeInfo, resume);
+	local err, _ = yield();
+
+	if(not err) then
+		return errors:wrap(nil, chargeObject);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end	
+end
+
+function pay:api_getCharge()
+	
+end
+
+function pay:api_spend(params)
+	local err, query = self:validateQuery(params);
+	
+	self:spend(query, resume);
+	local err, _ = yield();
+
+	if(not err) then
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function pay:spend(query, callback)
+	self:getTradeNo(resume);
+	local err, trade_no = yield();
+
+	local appGoodsInfo = self:getGoodsInfo(query);
+
+	if(not appGoodsInfo or not trade_no) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+		
+		return;
+	end
+
+	if(not query.username) then
+		query.username = self:getUsername();
+	end
+
+	wallet:balance(query.price, query.username, resume);
+	local err, _ = yield();
+
+	if(err) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+
+		return;
+	end
+
+	local tradeInfo = {};
+	tradeInfo.trade_no     = trade_no;
+	tradeInfo.username     = query.username;
+	tradeInfo.price        = query.price;
+	tradeInfo.subject      = appGoodsInfo.subject;
+	tradeInfo.body         = appGoodsInfo.body;
+	tradeInfo.channel      = "wallet";
+	tradeInfo.status       = "Finish";
+	tradeInfo.method       = "Spend";
+	tradeInfo.app_name     = query.app_name;
+	tradeInfo.app_goods_id = query.app_goods_id; 
+	tradeInfo.additional   = query.additional;
+	tradeInfo.create_date  = self:getNow();
+
+	self:db():insertOne({trade_no = trade_no}, tradeInfo, resume);
+	local err, response = yield();
+
+	if(type(callback) == "function") then
+		if not err and response ~= nil then
+			callback(nil, nil);
+		else
+			callback(true, nil);
+		end
+	end
+end
+
+function pay:api_getTrade()
+	local username = self:getUsername();
+
+	if(not username) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+
+	self:db():find({username = username}, resume);
+	local err, response = yield();
+
+	if not err then
+		return errors:wrap(nil, response);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function pay:api_webhooks(params)
+	local err, query = self:validateQuery(params);
+
+	if(query.type == "charge.succeeded") then
+		local chargeInfo = params.data.object;
+
+		self:db():findOne({trade_no = chargeInfo.order_no}, resume);
+		local err, payInfo = yield();
+
+		if not err and payInfo ~= nil and payInfo.status ~= "Finish" and payInfo.method == "Recharge" then
+			-- 充值
+			wallet:balance(payInfo.price, payInfo.username, resume);
+			local err, _ = yield();
+
+			if(err) then
+				return errors:wrap(errors.SERVER_INNER_ERROR);
+			end
+
+			self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
+			local err, _ = yield();
+
+			-- 消费
+			appInfo = oauth_app:getByAppName(payInfo.app_name)
+
+			if(appInfo) then
+				local url       = appInfo.payCallbackUrl;
+				local apiParams = commonlib.copy(payInfo.additional);
+				apiParams.price = payInfo.price;
+
+				self:http("GET", url, apiParams, resume);
+				local err, response = yield();
+
+				if(err == 200) then
+					local spendInfo = payInfo;
+					spendInfo.price = spendInfo.price * -1;
+
+					self:spend(spendInfo, resume);
+					local err, _ = yield();
+
+					if(not err) then
+						return errors.wrap(errors.SUCCESS);
+					end
+				end
+			end
+					
+			return errors:wrap(errors.SERVER_INNER_ERROR);
+		else
+			return errors:wrap(errors.NOT_FOUND);
+		end
+	end
+
+	return errors:wrap(errors.SERVER_INNER_ERROR);
+end
+
+function pay:api_simulate()
+	return errors:wrap(errors.SUCCESS);
+end
+
+function pay:getGoodsInfo(query)
+	if(not query.app_goods_id and not query.app_name) then
+		return false;
+	end
+
+	local appGoodsInfo = goods:api_getAppGoodsInfo({app_goods_id = query.app_goods_id, app_name = query.app_name});
+
+	if(appGoodsInfo.data) then
+		return appGoodsInfo.data
+	else
+		return false;
+	end
+end
+
+function pay:validate(appGoodsInfo, query)
+	local validate = true;
+
+	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
+        local checkField = true;
+        local field      = itemA;
+
+        if (field.required) then
+            checkField = false
+
+            for KeyB, itemB in pairs(query.additional) do
+                if (field.name == KeyB) then
+                    checkField = true;
+                end
+            end
+        end
+
+        if (not checkField) then
+            validate = false;
+        end
+    end
+
+	return validate;
+end
+
+function pay:http(method, url, params, callback)
 	System.os.GetUrl({
 		url    = url,
 		headers = {
-			Authorization = "Bearer " .. self.apiToken,
+			Authorization = "Bearer " .. self.appToken,
 			["content-type"]  = "application/json",
 		},
-		form   = apiParams,
-		method = "POST",
+		form   = params,
+		method = method,
 		json   = true,
 	},resume);
 
 	local err, response = yield();
 
-	--log(response,true);
-
-	if (err ~= 200) then
-		return errors:wrap(errors.SERVER_INNER_ERROR, {message="pint++ server is not avaliable"});
+	if(type(callback) == "function") then
+		callback(err, response);
 	end
-
-	return errors:wrap(nil, response);
 end
 
-function pay:createOrder()
-	
+function pay:getTradeNo(callback)
+	local trade_no = tostring(math.random(1000000,9999999));
+
+	self:db():findOne({trade_no = trade_no}, resume);
+
+	local err, response = yield();
+
+	if not err and response == nil then
+		if(type(callback) == "function") then
+			callback(nil, trade_no);
+		end
+	else
+		self:getTradeNo();
+	end
 end
 
+function pay:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+end
