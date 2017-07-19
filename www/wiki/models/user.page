@@ -49,25 +49,25 @@ end
 
 -- 发送邀请邮件
 function user:api_inviteFriend(params)
-	if (not params.userId) or (not params.friendMail) then
+	if (not params.username) or (not params.friendMail) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local par = {}
-	-- par.to = params.friendMail
-	par.to = "765485868@qq.com"
-	par.subject = "wikicraft好友邀请"
-	par.body = [[
+	par.to = params.friendMail
+	--log(params.friendMail)
+	--par.to = "765485868@qq.com"
+	par.subject = "keepwork好友邀请"
+	local htmlContent = [[
 	<div class="main-content">
-	<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
-	<p>wikicraft 是一款强大的网站构建平台。</p>
-	<p>#username#的作品：</p>
-	<p><a href="#">作品链接</a></p>
-	<p><a href="#">作品链接</a></p>
-	<div class="btn">点击注册</div>
+	<p>你好，你的好友%s真诚的将keepwork推荐给你。</p>
+	<p>keepwork 是一款强大的网站构建平台。</p>
+	<p>http://keepwork.com</p>
 	</div>
 	]]
-
+	htmlContent = string.format(htmlContent, params.username)
+	--log(htmlContent)
+	par.body = htmlContent
 	util:sendEmail(par)
 
 	return errors:wrap(nil)
@@ -246,7 +246,8 @@ function user:api_verifyCellphoneOne(params)
 	local smsParams = {to=params.cellphone, datas={smsCode,"3"}, templateId="1"}
 	sendTemplateSms(smsParams, resume)
 	local _, data = yield()
-
+	data = data.data
+	log(data)
 	if data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
