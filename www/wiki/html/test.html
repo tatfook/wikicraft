@@ -1,4 +1,13 @@
 <div ng-controller="testController">
-	<a href="#test">test</a>
-	<a href="#test1">test1</a>
+    <a href="#test">test</a>
+    <a href="#test1">test1</a>
+</div>
+
+<div ng-controller="gridTemplateController" ng-class="modParams.class" ng-style="modParams.style">
+    <div ng-class="modParams.rows[0].class" ng-style="modParams.rows[0].style">
+        <div ng-class="modParams.rows[0].cols[0].class" ng-style="modParams.rows[0].cols[0].style">left</div>
+        <div ng-class="modParams.rows[0].cols[1].class" ng-style="modParams.rows[0].cols[1].style">
+            <div id="_mdwiki_content_container_mdwiki_1"></div>
+        </div>
+    </div>
 </div>

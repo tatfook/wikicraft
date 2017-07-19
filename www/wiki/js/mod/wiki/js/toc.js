@@ -79,11 +79,9 @@ define([
 			}
 
 			function init() {
-				setTimeout(function () {
-                    var tocList = generateToc();
-                    console.log(tocList);
-                    $scope.tocList = tocList;
-                });
+				var tocList = generateToc();
+				//console.log(tocList);
+				$scope.tocList = tocList;
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
