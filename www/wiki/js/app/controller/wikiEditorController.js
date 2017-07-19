@@ -33,7 +33,7 @@ define([
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
-    var mdwiki = markdownwiki({editorMode: true, breaks: true});
+    var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
     var editor;
     var allWebsites = [];
     var allWebstePageContent = {};
@@ -180,14 +180,14 @@ define([
 			if (pageNode.isLeaf) {
 				treeNode.tags = [
 					"<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(false," + '"' + pageNode.url + '"' + ")' title='删除'></span>",
+					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(" + '"' + pageNode.url + '"' + ")' title='删除'></span>",
 					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
 				];
 			} else {
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='关闭全部'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
@@ -733,6 +733,7 @@ define([
                     page.isModify = false;
 					page.isConflict = false;
 					page.blobId = undefined;
+					//page.content = undefined;
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
@@ -809,7 +810,7 @@ define([
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj') || {};
                 storage.sessionStorageRemoveItem('urlObj');
-                console.log(urlObj);
+                //console.log(urlObj);
 
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
@@ -932,7 +933,8 @@ define([
                     pagename: currentPage.pagename,
                     url:currentPage.url,
                 });
-                !config.islocalWinEnv() && $location.path(currentPage.url);
+                //!config.islocalWinEnv() && $location.path(currentPage.url);
+                !config.islocalWinEnv() && (window.location.href="/wiki/wikieditor#"+currentPage.url);
 
                 function setEditorValue(page, content) {
                     page.isFirstEditor = true;
@@ -942,6 +944,7 @@ define([
                     }
                     editor.swapDoc(editorDocMap[page.url]);
                     //console.log(currentPage);
+					page.content = content;
 					editor.setValue(content);
                     CodeMirror.signal(editor, 'change', editor);
 
@@ -1211,11 +1214,10 @@ define([
                     size: 'lg',
                     backdrop:true
                 }, function (wikiBlock) {
-                    //console.log(result);
+                    //console.log(wikiBlock);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
                     var cursor = editor.getCursor();
                     var content = editor.getLine(cursor.line);
-                    console.log(content);
                     if (content.length > 0) {
                         wikiBlockContent = '\n' + wikiBlockContent;
                     }
@@ -1320,20 +1322,21 @@ define([
             }//}}}
 
             //删除
-            $scope.cmd_remove = function (confirmed, url) {//{{{
+            $scope.cmd_remove = function (url) {//{{{
 				var page = getPageByUrl(url);
 				if (!page) {
 					return;
 				}
-                if (!confirmed){
-                    $scope.deleteNode = {
-                        sitename: page.sitename,
-                        name: page.pagename,
-						url:url,
-                    };
-                    $('#deleteModal').modal("show");
-                }else{
-                    if (!isEmptyObject(page)) {
+				var titleInfo = "> " + page.url.split("/").splice(2).join(" > ");
+
+				config.services.confirmDialog({
+				    "title": "删除提醒",
+                    "titleInfo": titleInfo,
+                    "theme": "danger",
+                    "confirmBtnClass": "btn-danger",
+                    "content": "确定删除 " + page.pagename + " 页面？"
+                },function () {
+				    if (!isEmptyObject(page)) {
                         var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
 
                         currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
@@ -1347,15 +1350,14 @@ define([
                         delete allPageMap[page.url];
                         delete $scope.opens[page.url];
                         storage.sessionStorageRemoveItem('urlObj');
-						$('#deleteModal').modal("hide");
-						if (currentPage.url == page.url) {
-							currentPage = undefined;
-							initTree();
-							openPage();
-						}
+                        if (currentPage.url == page.url) {
+                            currentPage = undefined;
+                            initTree();
+                            openPage();
+                        }
                     }
-                }
-            }//}}}
+                });
+            };//}}}
 
             //关闭
             $scope.cmd_close = function (url) {//{{{

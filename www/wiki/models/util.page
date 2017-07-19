@@ -33,6 +33,32 @@ function util:getPageCount(total, pageSize)
 end
 
 
+-- 获取查询对象
+function util:getQueryObj(params)
+	local skip, limit = self:pagination(params)
+	local key = ""
+	local value = {}
+	local pageValue = {}
+	for k, v in pairs(params) do
+		if k ~= "page" and k ~= "pageSize" and k ~= "_id" then
+			key = key .. "+" .. k
+			value[#value+1] = v
+			pageValue[#pageValue+1] = v
+		end
+	end
+
+	if params._id then
+		return {["_id"]=params._id}, {["_id"]=params._id}, false
+	elseif key == "" then
+		return {}, {_id={gt=0, skip=skip, limit=limit}}, true
+	end
+
+	pageValue["skip"] = skip
+	pageValue["limit"] = limit
+
+	return {[key]=value}, {[key]=pageValue}, false
+end
+
 -- 格式化查询条件 转换成TableDB所需格式
 function util:formatQuery(query) 
 	if not query then
@@ -138,7 +164,7 @@ const.DATA_SOURCE_UPDATE_FLAG_TRUST = 1     -- 用户或服务器更新 填此�
 -- 用户角色
 const.USER_ROLE_EXCEPTION = -1              -- 异常用户
 const.USER_ROLE_NORMAL = 0                  -- 普通用户
-const.USER_ROLE_MANAGER = 1                 -- 管理员
+const.USER_ROLE_MANAGER = 8                 -- 管理员
 const.USER_ROLE_ADMINISTRATOR = 10          -- 超管
 
 -- 站点权限级别

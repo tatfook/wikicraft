@@ -104,6 +104,9 @@ define([
                 $scope.pwdErrMsg="*密码最少6位";
                 return;
             }
+            var imgUrl=$scope.getImageUrl("default_portrait.png", $scope.imgsPath);
+            params.portrait = imgUrl;
+
             var url = type == "other" ? "user/bindThreeService" : "user/register";
             util.http("POST", config.apiUrlPrefix + url, params, function (data) {
                 console.log("注册成功");
@@ -115,9 +118,9 @@ define([
                     } else {
                         $scope.step++;
                     }
-                }
+                };
                 if (data.isNewUser) {
-                    createTutorialSite(data.userinfo, _go, _go)
+                    createTutorialSite(data.userinfo, _go, _go);
                 } else {
                     _go();
                 }
@@ -125,7 +128,7 @@ define([
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );
             });
-        }
+        };
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {

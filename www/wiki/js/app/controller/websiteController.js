@@ -55,20 +55,22 @@ define([
             util.go('wikieditor');
         }
 
-        //显示删除模态框
-        $scope.showDeleteModal = function (site) {
-            $('#deleteModal').modal("show");
-            $scope.deletingWebsite=site;
-        }
-
-        // 删除网站
+        //删除网站
         $scope.deleteWebsite = function (site) {
-            util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId: site._id}, function (data) {
-                site.isDelete = true;
-                $('#deleteModal').modal("hide");
-                $scope.deletingWebsite="";
+            console.log(site);
+            config.services.confirmDialog({
+                "title":"删除提醒",
+                "confirmBtnClass":"btn-danger",
+                "theme":"danger",
+                "content":"确定删除 " + site.displayName + " 网站？"
+            },function(){
+                util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId: site._id}, function (data) {
+                    site.isDelete = true;
+                    $('#deleteModal').modal("hide");
+                    $scope.deletingWebsite="";
+                });
             });
-        }
+        };
 
         Account.ensureAuthenticated(function () {
             Account.getUser(function (userinfo) {

@@ -8,6 +8,10 @@ define([
     'markdown-it',
     'highlight',
 ], function (util, dataSource, markdownit, hljs) {
+	var shortCmdMap = {
+		"@include":"@wiki/js/include",
+		"@toc":"@wiki/js/toc",
+	}
     var mdwikiMap = {
         count: 0,    // markdownwiki 数量
     };
@@ -24,8 +28,8 @@ define([
         if (cmdName[cmdName.length - 1] == '/') {
             cmdName = cmdName.substring(0, cmdName.length - 1);
         }
-		if (cmdName == "@include") {
-			cmdName = "@wiki/js/include";
+		if (shortCmdMap[cmdName]) {
+			cmdName = shortCmdMap[cmdName];
 		}
         if (cmdName.indexOf('@') >= 0) {
             wikiModulePath += cmdName.replace('@', '');
@@ -192,11 +196,12 @@ define([
             modParams: wikiBlock.modParams,
             editorMode: mdwiki.options.editorMode,
 			containerId: blockCache.containerId,
+			blockList:mdwiki.blockList,
             isEditorEnable: function () {
                 return mdwiki.options.editorMode;
             },
             isPageTemplate: block.isPageTemplate,   // 是页内模板则可编辑   wiki tempate block 使用此字段判断当前是否可以编辑
-            content: block.isTemplate ? defaultTemplateContent : undefined,
+			content: block.isTemplate ? defaultTemplateContent : undefined, // 模板模块使用
             render: function (htmlContent) {
                 if (block.isTemplate) {
                     $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
@@ -402,6 +407,7 @@ define([
         mdwiki.blockId = 0; // 块id自增
         mdwiki.options = options;
         mdwiki.blockCacheMap = {};
+		mdwiki.isMainMd = options.isMainMd;
 
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
@@ -573,6 +579,7 @@ define([
                 if (token.type.indexOf('_close') >= 0) {
                     stack--;
                 }
+				block.tag = token.tag || block.tag;
                 // 获取文本位置
                 block.textPosition.from = block.textPosition.from == maxValue && token.map ? token.map[0] : block.textPosition.from;
                 block.textPosition.to = token.map ? token.map[1] : block.textPosition.to;
@@ -605,7 +612,12 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-            //console.log(tokenList);
+			if (mdwiki.isMainMd) {
+				config.shareMap["mdwiki"] = {
+					blockList: blockList,
+				};
+			}
+			//console.log(tokenList);
             //console.log(blockList);
             return blockList;
         }

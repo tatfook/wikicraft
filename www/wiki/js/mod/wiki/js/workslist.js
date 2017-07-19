@@ -16,52 +16,59 @@ define([
             var modParams = getModParams(wikiBlock);
             var userinfo = $rootScope.userinfo;
             var siteinfo = $rootScope.siteinfo;
+            var moreUrl = siteinfo ? "/" + siteinfo.username + "/" + siteinfo.name + "/more" : "";
+            var module = storage.sessionStorageGetItem("module");
+
+            if (module && isMorePage()){
+                modParams.type = module.type || "all";
+                modParams.title = module.title || "全部作品";
+                modParams.pagination = true;
+            }
 
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.requestUrl = config.apiUrlPrefix + "website_works/getByWebsiteId";
-            $scope.requestParams = {pageSize: modParams.pageSize || 3, page: 0};
+            $scope.currentPage = 1;
+            $scope.pageSize = modParams.pageSize || 3;
+            $scope.requestParams = {pageSize: $scope.pageSize};
 
             $scope.modParams = modParams;
 
-            $scope.getAllSiteList = function () {
-                var siteshowObj = {};
-                siteshowObj.requestUrl = $scope.requestUrl;
-                siteshowObj.requestParams = $scope.requestParams;
-                siteshowObj.title = $scope.title;
-                storage.sessionStorageSetItem("siteshow", siteshowObj)
-                window.location.href = config.frontEndRouteUrl + "#/siteshow";
-            }
+            $scope.sitePageChanged = function () {
+                $scope.getList();
+            };
 
             $scope.goUserPage = function (work) {
                 util.goUserSite('/' + work.worksUsername, true);
-            }
+            };
 
             // 收藏作品
             $scope.worksFavorite=function (event, site) {
                 Message.info("开发中");
             };
 
-            $scope.getList = function (page) {
-                var pageCount = 1;
-                if ($scope.siteTotal) {
-                    pageCount = $scope.siteTotal / requestParams.pageSize + ($scope.siteTotal % requestParams.pageSize && 1);
-                }
-                if (!util.pagination(page, $scope.requestParams, pageCount)) {
-                    return;
-                }
+            $scope.getList = function () {
+                $scope.requestParams.page = $scope.currentPage;
 
                 util.http("POST", $scope.requestUrl, $scope.requestParams, function (data) {
                     data = data || {};
                     if (modParams.moduleKind == "personal") {
-                        $scope.siteList = data.siteList;
-                        $scope.siteTotal = data.total;
+                        $scope.siteList = data;
+                        $scope.siteTotal = data.length;
                     } else {
                         $scope.worksList = data.worksList;
                         $scope.worksTotal = data.total || 0;
                     }
                 });
-            }
+            };
 
+            $scope.goMore = function (mod) {
+                storage.sessionStorageSetItem("module", mod);
+                util.go(moreUrl);
+            };
+
+            function isMorePage() {
+                return window.location.pathname == moreUrl;
+            }
 
             function init() {
                 var pageSize = parseInt(modParams.pageSize || "3");
@@ -110,6 +117,9 @@ define([
                     */
                 }
                 $scope.getList();
+                if (module && !isMorePage()){
+                    storage.sessionStorageRemoveItem("module");
+                }
             }
             $scope.$watch("$viewContentLoaded", function () {
                 if (userinfo && siteinfo) {
@@ -127,6 +137,14 @@ define([
                     });
                 }
             });
+
+            $scope.goScroll = function (index) {
+                var id = "featureList"+index;
+                console.log(id);
+                document.getElementById(id).scrollIntoView();
+            }
+
+            $('.col-md-9').scrollspy({ target: '#scrollspy' });
         }]);
     }
 
@@ -313,3 +331,36 @@ define([
 }
 ```
 */
+/*
+ ```@wiki/js/workslist
+ {
+ "moduleKind":"featureList",
+ "content":[
+ {
+    "title":"第一部分",
+    "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula. Vestibulum quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus."
+ },
+ {
+ "title":"第一部分",
+ "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula. Vestibulum quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus."
+ },
+ {
+ "title":"第一部分",
+ "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula. Vestibulum quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus."
+ },
+ {
+ "title":"第一部分",
+ "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula. Vestibulum quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus."
+ },
+ {
+ "title":"第一部分",
+ "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula. Vestibulum quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus."
+ },
+ {
+ "title":"第一部分",
+ "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula. Vestibulum quis quam ut magna consequat faucibus. Pellentesque eget nisi a mi suscipit tincidunt. Ut tempus dictum risus. Pellentesque viverra sagittis quam at mattis. Suspendisse potenti. Aliquam sit amet gravida nibh, facilisis gravida odio. Phasellus auctor velit at lacus blandit, commodo iaculis justo viverra. Etiam vitae est arcu. Mauris vel congue dolor. Aliquam eget mi mi. Fusce quam tortor, commodo ac dui quis, bibendum viverra erat. Maecenas mattis lectus enim, quis tincidunt dui molestie euismod. Curabitur et diam tristique, accumsan nunc eu, hendrerit tellus."
+ }
+ ]
+ }
+ ```
+ */

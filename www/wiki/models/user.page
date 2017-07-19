@@ -229,6 +229,7 @@ function user:api_updateUserInfo(params)
 	params.email = nil
 	params.password = nil
 	params.isadmin = nil
+	params.roleId = nil
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
@@ -507,6 +508,7 @@ function user:api_register(params)
 		password = self:encodePassword(params.password),
 		email = params.email,
 		cellphone = params.cellphone,
+		portrait = params.portrait,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 		defaultDataSourceName=const.DEFAULT_DATA_SOURCE_NAME,
 		defaultDataSourceSitename=const.DEFAULT_DATA_SOURCE_SITENAME,

@@ -17,8 +17,10 @@ define([
 
 	app.registerController = app.controller;
 
-	app.config(['$controllerProvider', '$httpProvider', '$authProvider', function ($controllerProvider, $httpProvider, $authProvider) {
-		// 提供动态注册控制器接口
+	app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider) {
+		//$locationProvider.hashPrefix('!');
+		//$locationProvider.html5Mode({enabled:false, requireBase: false, rewriteLinks:false});
+		// 提供动态注册控制接口
 		app.registerController = function (name, constructor) {
 			if (config.angularBootstrap) {
 				$controllerProvider.register(name, constructor);

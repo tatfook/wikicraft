@@ -211,7 +211,9 @@ define([
             //console.log(data);
             // debug use by wxa
             if (!data || !data.error) {
-                console.log(url);
+                console.log(url, data);
+                errorCallback && errorCallback(data);
+				return;
             }
             if (data.error.id == 0) {
                 //console.log(data.data);

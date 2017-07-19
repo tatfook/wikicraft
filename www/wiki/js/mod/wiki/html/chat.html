@@ -1,0 +1,28 @@
+<style>
+    .qqChat{
+        background-color: #F2F2F2;
+        display: inline-block;
+        text-align: center;
+        position: fixed;
+        right: 22px;
+        bottom: 120px;
+        padding: 10px;
+    }
+    .qqChat a{
+        font-size: 16px;
+        color: #666;
+    }
+    .qqChat .icon-qq{
+        font-size: 40px;
+        display: block;
+        color: #3977AD;
+    }
+</style>
+<div ng-controller="chatController">
+    <div class="qqChat" ng-show="modParams.moduleKind == 'qqChat'">
+        <a href="{{'http://wpa.qq.com/msgrd?v=3&uin='+modParams.qq+'&site=qq&menu=yes'}}" target="_blank">
+            <span class="iconfont icon-qq"></span>
+            <span>{{modParams.message}}</span>
+        </a>
+    </div>
+</div>

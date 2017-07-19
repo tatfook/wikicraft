@@ -171,7 +171,13 @@ define(['app',
         });
 
         // 文档加载完成
-        $scope.$watch('$viewContentLoaded', init);
+		$scope.$watch('$viewContentLoaded', function(){
+			Account.ensureAuthenticated(function () {
+				Account.getUser(function (userinfo) {
+					init(userinfo);
+				});
+			});
+		});
 
         // 保存用户信息
         $scope.saveProfile = function () {
@@ -431,11 +437,6 @@ define(['app',
             }
         }
 
-        Account.ensureAuthenticated(function () {
-            Account.getUser(function (userinfo) {
-                init(userinfo);
-            });
-        });
    }]);
 
     return htmlContent;

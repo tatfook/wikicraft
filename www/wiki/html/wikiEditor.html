@@ -189,7 +189,7 @@
                                     <span class="icon node-icon fa fa-file-o"></span>
                                     {{nodeItem.pagename}}({{nodeItem.sitename}})<span ng-show="nodeItem.isModify">*</span><span ng-show="nodeItem.isConflict">!</span>
                                     <span class="badge"><span class="close-icon show-empty-node" ng-click="cmd_close(nodeItem.url)" title="关闭">×</span></span>
-                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove(false, nodeItem.url)" title="删除"></span></span>
+                                    <span class="badge"><span class="show-empty-node glyphicon glyphicon-trash" ng-click="cmd_remove(nodeItem.url)" title="删除"></span></span>
                                     <span class="badge"><span class="show-empty-node glyphicon glyphicon-repeat" ng-click="cmd_refresh(nodeItem.url)" title="刷新"></span></span>
                                 </li>
                             </ul>
@@ -227,23 +227,6 @@
                             <pre class="hljs result-src full-height"><code class="result-src-content full-height"></code></pre>
                             <pre class="hljs result-debug full-height"><code class="result-debug-content full-height"></code></pre>
                         </section>
-                    </div>
-                </div>
-                <div class="modal fade delete-modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="exampleModalLabel">删除提醒 <span class="siteinfo">> {{deleteNode.sitename}} > {{deleteNode.name}}</span></h4>
-                            </div>
-                            <div class="modal-body">
-                                <h3><span class="icon">!</span>确定删除{{deleteNode.name}}页面？</h3>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-danger" ng-click="cmd_remove(true, deleteNode.url)">确 定</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

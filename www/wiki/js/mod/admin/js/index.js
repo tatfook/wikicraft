@@ -7,25 +7,43 @@ define([
 		'helper/util',
 		'text!wikimod/admin/html/index.html',
 ], function (app, util, htmlContent) {
-	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
+	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
 		$scope.selectMenuItem = "user";
 		$scope.pageSize = 5;
 		$scope.currentPage = 1;
 		$scope.totalItems = 0;
+		$scope.data = [];
 
 		function getTableName() {
 			if ($scope.selectMenuItem == "user") {
 				return "user";
 			} else if ($scope.selectMenuItem == "site") {
 				return "website";
+			} else if ($scope.selectMenuItem == "wikicmd") {
+				return "wiki_module";
 			}
 
 			return "user";
 		}
 
+		// 确保为管理员
+		function ensureAdminAuth() {
+			if (!Account.isAuthenticated()) {
+				util.go(urlPrefix + "login");
+				return;
+			}
+
+			var payload = $auth.getPayload();
+			
+			if (!payload.isAdmin) {
+				util.go(urlPrefix + "login");
+			}
+		}
+
 		function init() {
+			ensureAdminAuth();
 			$scope.clickMenuItem($scope.selectMenuItem);
 		}
 
@@ -33,6 +51,11 @@ define([
 
 		$scope.clickQuery = function() {
 			console.log($scope.query);
+			for (var key in $scope.query) {
+				if ($scope.query[key] == "") {
+					$scope.query[key] = undefined;
+				}
+			}
 			var tableName = getTableName();
 			util.post(config.apiUrlPrefix + "tabledb/query", {
 				tableName:tableName,
@@ -44,6 +67,48 @@ define([
 				$scope.data = data.data || [];
 				$scope.totalItems = data.total || 0;
 				console.log($scope.datas);
+			});
+		}
+
+		$scope.clickUpsert = function() {
+			console.log($scope.query);
+			for (var key in $scope.query) {
+				if ($scope.query[key] == "") {
+					$scope.query[key] = undefined;
+				}
+			}
+			var tableName = getTableName();
+			util.post(config.apiUrlPrefix + "tabledb/upsert", {
+				tableName:tableName,
+				query:$scope.query,
+			}, function(data){
+				if (data) {
+					Message.info("添加成功");
+					$scope.data.push(data);
+					$scope.totalItems++;
+				} else {
+					Message.info("添加失败");
+				}
+			}, function(){
+				Message.info("添加失败");
+			});
+		}
+
+		$scope.clickEdit = function(x) {
+			$scope.query = x;
+		}
+
+		$scope.clickDelete = function(x) {
+			var tableName = getTableName();
+			util.post(config.apiUrlPrefix + "tabledb/delete", {
+				tableName:tableName,
+				query:{
+					_id:x._id,
+				}
+			}, function(){
+				$scope.totalItems--;
+				x.isDelete = true;
+			}, function(){
 			});
 		}
 
@@ -120,6 +185,20 @@ define([
 		$scope.clickDeleteSite = function (site) {
 			util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
 				site.isDelete = true;
+			});
+		}
+
+
+		// wiki cmd
+		$scope.clickUpsertWikicmd = function() {
+			util.post(config.apiUrlPrefix + 'wiki_module/upsert', $scope.query, function(data){
+				if (data) {
+					Message.info("添加成功");
+					$scope.data.push(data);
+					$scope.totalItems++;
+				} else {
+					Message.info("添加失败");
+				}
 			});
 		}
 	}]);

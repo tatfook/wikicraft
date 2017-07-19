@@ -48,24 +48,30 @@ function site_group:api_deleteByName(params)
 	end
 
 	self:db():deleteOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, resume)
+	yield()
 
+	local siteUserDB = models.site_user:new()
 	if (params.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL) then
-		models.site_user:api_deleteGroupUser(params)
+		siteUserDB:api_deleteGroupUser(params)
 	end
 
-	return errors:wrap(yield())
+	return errors:wrap(nil)
 end
 
-
--- 删除一个组
-function site_group:api_deleteByName(params)
-	if (not params.username) or (not params.sitename) or (not params.groupname) then
+-- 删除通过站点名
+function site_group:api_deleteBySitename(params)
+	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
-	self:db():deleteOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, resume)
-	
-	return errors:wrap(yield())
+
+	self:db():delete({["+username+sitename"]={params.username, params.sitename}}, resume)
+	yield()
+
+	local siteUserDB = models.site_user:new()
+	siteUserDB:db():delete({["+username+sitename"]={params.username, params.sitename}}, resume)
+	yield()
+
+	return errors:wrap(nil)
 end
 
 -- 获取用户用户编辑权限的站点
@@ -95,10 +101,38 @@ function site_group:api_getByMemberName(params)
 end 
 
 
+-- 获取站点组通过通过组名 用户名
+function site_group:api_getByUserGroupName(params)
+	if not params.username or not params.groupname then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	local skip, limit = util:pagination(params)
+	self:db():count({["+username+groupname"]={params.username, params.groupname}}, resume)
+	local _, total = yield()
 
+	self:db():find({["+username+groupname"]={params.username, params.groupname, skip=skip, limit=limit}}, resume)
+	local _, groupList = yield()
 
+	return errors:wrap(nil, {total=total, groupList=groupList})
+end
 
+-- 通过用户名获取
+function site_group:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local skip, limit = util:pagination(params)
+
+	self:db():count({["+username"]={params.username}}, resume)
+	local _, total = yield()
+
+	self:db():find({["+username"]={params.username, skip=skip, limit=limit}}, resume)
+	local _, groupList = yield()
+
+	return errors:wrap(nil, {total=total, groupList=groupList})
+end
 
 
 

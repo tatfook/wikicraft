@@ -28,10 +28,6 @@ define([
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
-        $scope.changeDataSource = function () {
-            $scope.website.dataSourceId = parseInt($scope.dataSourceId);
-        }
-        
         function sendModifyWebsiteRequest() {
             util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
@@ -46,7 +42,7 @@ define([
             if (currentDomain == $scope.website.domain)
                 return;
 
-            if (!/[\d\w]+/.test($scope.website.domain)) {
+            if (!/^[\d\w]+$/.test($scope.website.domain)) {
                 $scope.errMsg = "独立域名格式错误, 域名只能为数字和字母组合";
                 return;
             }
@@ -62,7 +58,7 @@ define([
         }
 
         $scope.addDomain=function(){
-            if (!/[\d\w]+/.test($scope.domain)) {
+            if (!/^[\d\w]+$/.test($scope.domain)) {
                 $scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
                 return;
             }
@@ -209,36 +205,75 @@ define([
 			});
 		}
 
-		$scope.deleteShareGroup = function(group) {
-			if (!siteDataSource || !group) 
-				return;
+		$scope.showDeleteModal = function (group, type) {
+            $scope.deleting = group;
+            $scope.deleting.type = type;
+            $("#deleteModal").modal("show");
+            console.log($scope.deleting);
+        };
 
-			siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
-				group.isDelete = true;
-				util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
-			});
-		}
+		$scope.deleteShareGroup = function(group) {
+		    config.services.confirmDialog({
+                "title": "删除提醒",
+                "theme": "danger",
+                "confirmBtnClass": "btn-danger",
+                "content": "确定删除对 " + group.groupname + " 分组的授权？"
+            },function () {
+                if (!siteDataSource || !group) {
+                    $("#deleteModal").modal("hide");
+                    Message.info("数据源不存在");
+                    return;
+                }
+
+                siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
+                    group.isDelete = true;
+                    util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
+                });
+            });
+		};
 
 		$scope.deleteGroup = function(group) {
-			var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
-			if (!siteDataSource) {
-				return;
-			}
-			if (!group || !group.id) {
-				return
-			}
+		    config.services.confirmDialog({
+                "title": "删除提醒",
+                "theme": "danger",
+                "confirmBtnClass": "btn-danger",
+                "content": "确定删除 " + group.name + " 分组？"
+            },function () {
+                var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+                if (!siteDataSource) {
+                    Message.info("数据源不存在");
+                    return;
+                }
+                if (!group || !group.id) {
+                    Message.info("删除失败，该分组已被删除");
+                    return
+                }
 
-			group.isDelete = true;
-			for (var i = 0; i < $scope.groups.length; i++) {
-				if (group.name == $scope.groups[i].name) {
-					$scope.groups.splice(i,1);
-					break;
-				}
-			}
-			siteDataSource.deleteGroup({id:group.id}, function(){
-				util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
-			});
-		}
+                // 检查是否存在组引用
+                //console.log(group);
+                util.post(config.apiUrlPrefix + "site_group/getByUserGroupName", {
+                    username:siteinfo.username,
+                    groupname:group.name,
+                    pageSize:1,
+                }, function(data){
+                    if (data && data.total > 0) {
+                        config.services.confirmDialog({title:"分组删除", content:"分组已被引用不能删除", cancelBtn:false});
+                        return;
+                    }
+
+                    group.isDelete = true;
+                    for (var i = 0; i < $scope.groups.length; i++) {
+                        if (group.name == $scope.groups[i].name) {
+                            $scope.groups.splice(i,1);
+                            break;
+                        }
+                    }
+                    siteDataSource.deleteGroup({id:group.id}, function(){
+                        util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
+                    });
+                });
+            });
+		};
 
         $scope.createGroup = function () {
 			var group = $scope.nowGroup;
@@ -247,7 +282,7 @@ define([
 				return;
 			}
 
-			if (!/[\d\w]+/.test(group.name)){
+			if (!/^[\d\w]+$/.test(group.name)){
 			    $scope.groupnameErr = true;
 			    return;
             }
@@ -531,7 +566,12 @@ define([
 
         }
 
-        $scope.$watch('$viewContentLoaded',init);
+		$scope.$watch('$viewContentLoaded', function(){
+			Account.getUser(function(userinfo){
+				$scope.user = userinfo;
+				dataSource.getUserDataSource(userinfo.username).registerInitFinishCallback(init);
+			});
+		});
 
         // 回车添加用户
         $(document).keyup(function (event) {

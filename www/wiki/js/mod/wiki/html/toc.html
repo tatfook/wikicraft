@@ -1,0 +1,46 @@
+<style>
+    .sidebar-nav{
+        border-right: 1px solid #CCC;
+        font-size: 13px;
+        height: 1012px;
+        padding: 12px 22px 4px;
+    }
+    .sidebar-nav ul{
+        margin: 0;
+        padding:0;
+    }
+    .sidebar-nav ul>li{
+        list-style: none;
+    }
+    .sidebar-nav ul:not(.first-level)>li{
+        padding:10px 0 0 30px;
+        font-weight: normal;
+    }
+    .sidebar-nav ul.first-level>li{
+        font-weight: bold;
+        padding-top: 15px;
+    }
+    .sidebar-nav ul.third-level>li:last-child{
+        /*padding: 10px 0 0 46px;*/
+    }
+</style>
+<div ng-controller="tocController">
+    {{message}}
+    <div class="nav sidebar-nav">
+        <ul class="first-level">
+            <li ng-repeat="item in tocList" id="item.containerId">
+                <span>{{item.text+"---"+item.containerId}}</span>
+                <ul class="second-level">
+                    <li ng-repeat="item1 in item.childs" id="item1.containerId">
+                        <span>{{item1.text}}</span>
+                        <ul class="third-level">
+                            <li ng-repeat="item2 in item1.childs" id="item2.containerId">
+                                <span>{{item2.text}}</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

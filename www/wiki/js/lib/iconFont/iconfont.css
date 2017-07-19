@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1499762956024'); /* IE9*/
-  src: url('iconfont.eot?t=1499762956024#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1499762956024') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1499762956024') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1499762956024#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1500360998202'); /* IE9*/
+  src: url('iconfont.eot?t=1500360998202#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1500360998202') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1500360998202') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1500360998202#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -14,6 +14,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.icon-qq:before { content: "\e635"; }
 
 .icon-shangdian1:before { content: "\e604"; }
 

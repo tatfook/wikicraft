@@ -222,6 +222,20 @@ define([
             util.go("VipLevel");
         };
 
+		$scope.goAdminPage = function() {
+			util.go("/wiki/js/mod/admin/js/login");
+		}
+
+		$scope.isAdmin = function() {
+			if (Account.isAuthenticated() && $scope.user && $scope.user.roleId) {
+				if ($scope.user.roleId == 8  || $scope.user.roleId == 10) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
         $scope.goUserCenterPage = function (contentType, subContentType) {
             console.log(contentType, subContentType);
             if (util.snakeToHump(window.location.pathname) == '/wiki/userCenter') {
