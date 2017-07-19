@@ -1,26 +1,346 @@
 ﻿<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            border:none;
+        }
+        .main {
+            padding:20px 20%;
+        }
+        .coat{
+            border:solid 1px #808080;
+            width:100%;
+            height:1300px;
+        }
+        .labe{
+            font-size:24px;
+            width:30%;
+            height:30px;
+            margin:20px auto;
+            color:#000000;
+            text-align:center;
+        }
+        .header{
+            width:90%;
+            height:150px;
+            margin:0 auto;
+        }
+        .preview{
+            width:90%;
+            height:350px;
+            margin:0 auto;
+            border:solid 1px #000000;
+        }
+        hr{
+            width:90%;
+            background:#000;
+            margin:30px auto;
+        }
+        .hr1{
+            width:90%;
+            background:#000000;
+            margin:10px auto 30px auto;
+        }
+        .liuyan{
+            width:90%;
+            margin:0 auto;
+        }
+        .fabu{
+            width:90%;
+            margin:0 auto;
+            text-align:center;
+        }
+        .message {
+            margin-top: 30px;
+            width: 100%;
+            height: 500px;
+            border: solid 1px #808080;
+            overflow-y: scroll;
+            padding:2%;
+        }
+        .portrait{
+            width:15%;
+            height:98%;
+            border:solid 1px #808080;
+            display:inline-block;
+            float:left;
+        }
+        .inform {
+            height: 150px;
+            display: inline-block;
+            float: left;
+            line-height: 30px;
+            font-size: 18px;
+        }
+        .inform1 {
+            width: 15%;
+            padding-left: 5%;
+        }
+        .inform3 {
+            display: inline-block;
+            float: right;
+            line-height: 30px;
+            width:15%;
+            margin:10px 5%;
+        }
+        .btn-inform3 {
+            height: 50%;
+            width: 100%;
+            font-size: 24px;
+            font-family: 'Microsoft YaHei' ;
+            margin-bottom: 30px;
+        }
+        .release {
+            width: 81%;
+            height: 34px;
+            border: solid 1px #808080;
+        }
+        .btn-fa {
+            width: 8%;
+        }
+        .liuyan2 {
+            width: 90%;
+            height: 200px;
+            border: solid 1px #808080;
+            margin: 0 auto;
+            display: block;
+            clear: both
+        }
+        .ly-portrait{
+            width:7%;
+            height:10%;
+            display:inline-block;
+            border:solid 1px #808080;
+            float:left;
+            position:relative;
+            top:0;
+            margin-right:2%
+        }
+        .ly-reply{
+            display:block;
+            position:relative;
+            float:right;
+            margin-bottom:2%;
+        }
+        .ly-reply:hover {
+                cursor: hand;
+        }
+        .btn-liuyan {
+            display: block;
+            position: relative;
+            float: right;
+            margin-bottom: 2%;
+        }
+        .start_zyz:hover {
+            cursor: hand;
+        }
+        @media screen and (max-width: 768px) { /*当屏幕尺寸小于600px时，应用下面的CSS样式*/
+            .labe {
+                font-size: 16px;
+                width: 30%;
+                height: 20px;
+                margin: 15px auto;
+                color: #000000;
+                text-align: center;
+            }
+            .portrait {
+                width: 15%;
+                height: 98px;
+                border: solid 1px #808080;
+                display: inline-block;
+                float: left;
+            }
+            .inform {
+                height: 98px;
+                display: inline-block;
+                float: left;
+                line-height: 19px;
+                font-size: 8px;
+            }
+            .inform3 {
+                display: inline-block;
+                float: right;
+                line-height: 30px;
+                width: 15%;
+                margin: 10px 5%;
+            }
+            .btn-inform3 {
+                height: 30px;
+                width: 100%;
+                font-size: 8px;
+                font-family: 'Microsoft YaHei';
+                margin-bottom: 30px;
+            }
+            .inform1 {
+                width: 20%;
+                padding-left: 5%;
+            }
+            .header {
+                width: 90%;
+                height: 100px;
+                margin: 0 auto;
+            }
+            .span-s{
+                font-size:8px;
+            }
+            .main {
+                padding: 20px 5%;
+            }
+            .fabu {
+                width: 100%;
+                margin: 0 auto;
+                text-align: center;
+            }
+        }
+        @media screen and (max-width: 318px){
+            .portrait {
+                width: 40%;
+                height: 98px;
+                border: solid 1px #808080;
+                display: inline-block;
+                float: left;
+            }
+            .inform1 {
+                width: 24%;
+                /* padding-left: 5%; */
+            }
+            .inform {
+                height: 98px;
+                display: inline-block;
+                float: left;
+                line-height: 20px;
+                font-size: 8px;
+            }
+            .inform3 {
+                float: right;
+                position: relative;
+                right: 45%;
+                line-height: 30px;
+                width: 15%;
+                margin: 10px 5%;
+            }
+            .btn-inform3 {
+                text-align:center;
+                height: 30px;
+                width: 125%;
+                font-size: 8px;
+                font-family: 'Microsoft YaHei';
+                margin-bottom: 5px;
+            }
+            .btn-fa {
+                margin-top:5%;
+                width: 20%;
+            }
+            .message {
+                margin-top: 30px;
+                width: 100%;
+                height: 450px;
+                background: #b6ff00;
+                border: solid 1px #808080;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="main">
+    <div class="main" ng-controller="shareController">
         <div class="coat">
-            <p class="label"></p>
+            <div class="labe">模板名称</div>
             <div class="header">
-                <div></div>
-                <div>
-                    <span></span>
+                <div class="portrait"></div>
+                <div class="inform inform1">
+                    <span>作者</span>
+                    <br />
+                    <span>模板编号</span>
+                    <br />
+                    <span>创建日期</span>
+                    <br />
+                    <span>方块数量</span>
+                    <br />
+                    <span>体积</span>
+                </div>
+                <div class="inform">
+                    <span>：</span>
+                    <br />
+                    <span>：</span>
+                    <br />
+                    <span>：</span>
+                    <br />
+                    <span>：</span>
+                    <br />
+                    <span>：</span>
+                </div>
+                <div class="inform">
+                    <span id="fname">{{myWelcome}}</span>
+                    <br />
+                    <span>9527</span>
+                    <br />
+                    <span>2017-07-07</span>
+                    <br />
+                    <span>65535</span>
+                    <br />
+                    <span>120*120*120</span>
+                </div>
+                <div class="inform3">
+                    <button class="btn btn-default btn-inform3" type="submit">下载</button>
+                    <span class="span-s">
+                        ☆☆☆☆☆
+                        (65535)
+                    </span>
                 </div>
             </div>
-            <hr />
+            <hr class="hr1" />
             <div class="preview">
 
             </div>
             <hr />
-            <div>
-                <span></span>
-                <input type="text" name="">
-                <button>发表</button>
-
+            <div class="liuyan">
+                <div class="fabu">
+                    <span>
+                        <span ng-click="clickStart(1)" id="start1" class="start_zyz">☆</span>
+                        <span ng-click="clickStart(2)" id="start2" class="start_zyz">☆</span>
+                        <span ng-click="clickStart(3)" id="start3" class="start_zyz">☆</span>
+                        <span ng-click="clickStart(4)" id="start4" class="start_zyz">☆</span>
+                        <span ng-click="clickStart(5)" id="start5" class="start_zyz">☆</span>
+                    </span>
+                    <input type="text" name="" class="release">
+                    <button class="btn btn-default btn-fa" type="submit">发表</button>
+                </div>
+                <div class="message">
+                    <div class="ly-portrait"></div>
+                    <span style="display:inline-block;width:90%;">
+                        啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                        啦啦啦啦啦啦啦啦
+                    </span>
+                    <br />
+                    <span ng-click="set(1)" class="ly-reply">回复</span>
+                    <textarea class="liuyan2" ng-if="divVar == 1"></textarea>
+                    <br />
+                    <button class="btn btn-default btn-liuyan" type="submit" ng-if="divVar == 1">回复</button>
+                </div>
             </div>
         </div>
     </div>
