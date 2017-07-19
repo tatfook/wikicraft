@@ -81,7 +81,7 @@ function pay:api_createCharge(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
-	local url      = self.apiUrl .. "charges";
+	local url = self.apiUrl .. "charges";
 	
 	self:getTradeNo(resume);
 	local err, trade_no = yield();
