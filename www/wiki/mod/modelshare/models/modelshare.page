@@ -1,0 +1,18 @@
+<?npl
+--[[
+Title: modelshare
+Author: 
+Date: 2017/7/19
+]]
+
+local modelshare = inherit(nil,gettable("models.modelshare"));
+
+function modelshare:ctor()
+	log("a")
+end
+
+function modelshare:api_getName()
+	return {hello = "world"};
+end
+
+?>
