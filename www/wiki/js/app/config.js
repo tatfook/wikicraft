@@ -87,8 +87,12 @@
 			"/wiki/iframeagent":[
 
 			],
+		},
+		// 数据共享
+		shareMap:{
 		}
 	};
+
 	function initConfig() {
 		var hostname = window.location.hostname;
 

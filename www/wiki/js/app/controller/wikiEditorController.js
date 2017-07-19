@@ -33,7 +33,7 @@ define([
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
-    var mdwiki = markdownwiki({editorMode: true, breaks: true});
+    var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
     var editor;
     var allWebsites = [];
     var allWebstePageContent = {};

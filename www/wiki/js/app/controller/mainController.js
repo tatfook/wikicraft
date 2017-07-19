@@ -16,7 +16,7 @@ define([
     'controller/userController',
     'controller/notfoundController',
 ], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
-    var md = markdownwiki({html: true});
+	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
         '$scope',

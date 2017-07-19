@@ -13,25 +13,24 @@ define([
 			var modParams = angular.copy(wikiblock.modParams || {});
 			var pageinfo = config.services.$rootScope.pageinfo;
 			
-			var blockList = wikiblock.blockList || [];
 			var startLevel = modParams.startLevel || 1;
 			var endLevel = modParams.endLevel || 6;
 			var startLine = modParams.startLine || 0;
-			var endLine = modParams.endLine || blockList[blockList.length-1].textPosition.to;
-			var tocList = [];
+			var endLine = modParams.endLine || 10000000;
 
 
-			function addTocItem(block) {
+			function addTocItem(tocList, block) {
 				var tag = block.tag;
 				var text = block.content.replace(/[\s#]/g,'');
 				var hn = parseInt(tag[1]);
 				var containerId = block.blockCache.containerId;
 				
-				console.log(tag, text, hn);
+				//console.log(tag, text, hn);
 				if (hn < startLevel || hn > endLevel) {
 					return;
 				}
 
+				tocList = tocList || [];
 				var childs = tocList;
 				for (var i = startLevel; i < hn; i++) {
 					if (!childs || childs.length == 0) {
@@ -50,14 +49,21 @@ define([
 					containerId:containerId,
 					childs:[],
 				});
+
+				return tocList;
 			}
 
 			function generateToc(){
-				tocList = [];
+				var blockList = [];
+				var tocList = [];
+
+				if (config.shareMap["mdwiki"] && config.shareMap["mdwiki"]["blockList"]) {
+					blockList = config.shareMap["mdwiki"]["blockList"];
+				}
 				for (var i = 0; i < blockList.length; i++) {
 					var block = blockList[i];
 
-					if (block.textPosition.from< startLine || block.textPosition.from > endLine) {
+					if (block.textPosition.from < startLine || block.textPosition.from > endLine) {
 						continue;
 					}
 
@@ -65,19 +71,18 @@ define([
 						continue;
 					}
 					
-					addTocItem(block);
+					addTocItem(tocList, block);
 				}
-				//console.log(wikiblock.blockList);
-				console.log(tocList);
+				//console.log(tocList);
+
+				return tocList;
 			}
 
 			function init() {
 				setTimeout(function () {
-                    generateToc();
+                    var tocList = generateToc();
                     console.log(tocList);
                     $scope.tocList = tocList;
-                    $scope.message = "hello";
-                    util.$apply();
                 });
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);

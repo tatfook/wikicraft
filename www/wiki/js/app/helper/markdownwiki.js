@@ -407,6 +407,7 @@ define([
         mdwiki.blockId = 0; // 块id自增
         mdwiki.options = options;
         mdwiki.blockCacheMap = {};
+		mdwiki.isMainMd = options.isMainMd;
 
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
@@ -611,6 +612,11 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
+			if (mdwiki.isMainMd) {
+				config.shareMap["mdwiki"] = {
+					blockList: blockList,
+				};
+			}
 			//console.log(tokenList);
             //console.log(blockList);
             return blockList;
