@@ -48,15 +48,15 @@ define([
         isMainContent: true,
 		//class:'container-fluid',
         //style:{"background-color": "silver"},
-        frameHeaderExist:true,
-        frameFooterExist: false,
+        //frameHeaderExist: false,
+        //frameFooterExist: false,
     };
 
     function registerController(wikiBlock) {
         app.registerController("gridTemplateController", ['$rootScope', '$scope', function ($rootScope, $scope) {
             $scope.modParams = wikiBlock.modParams;
-            $rootScope.frameHeaderExist = wikiBlock.modParams.frameHeaderExist;
-            $rootScope.frameFooterExist = wikiBlock.modParams.frameFooterExist;
+            //$rootScope.frameHeaderExist = wikiBlock.modParams.frameHeaderExist;
+            //$rootScope.frameFooterExist = wikiBlock.modParams.frameFooterExist;
         }]);
     }
 
