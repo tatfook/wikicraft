@@ -418,6 +418,10 @@ define([
         mdwiki.blockCacheMap = {};
 		mdwiki.isMainMd = options.isMainMd;
 
+		if (mdwiki.isMainMd) {
+			config.shareMap["mdwiki"] = mdwiki;
+		}
+
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
         }
@@ -621,11 +625,6 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-			if (mdwiki.isMainMd) {
-				config.shareMap["mdwiki"] = {
-					blockList: blockList,
-				};
-			}
 			//console.log(tokenList);
             //console.log(blockList);
             return blockList;
