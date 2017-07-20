@@ -44,7 +44,7 @@ local oauthApp = {
 	},
 	{
 		appName="魔法哈奇",
-		company="大幅网络",
+		company="大富网络",
 		clientId="1000003",
 		clientSecret="mofahaqi",
 		RedirectUrl    = "",
