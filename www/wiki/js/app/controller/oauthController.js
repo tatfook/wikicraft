@@ -16,7 +16,7 @@ define([
 			}
 			var queryArgs = util.getQueryObject();
 
-			console.log(queryArgs);
+			//console.log(queryArgs);
 
 			// keepwork 登录 keepwork 测试
 			//if (queryArgs.code) {

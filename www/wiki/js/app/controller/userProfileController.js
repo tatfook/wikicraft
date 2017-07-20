@@ -18,11 +18,7 @@ define(['app',
         $scope.pageSize = 5;
         $scope.userEmail="";
         $scope.userPhone="";
-        // code为0表示成功，isConsume为true时表示为消费，否则为收入
-        $scope.myPays = [
-            {"isConsume":true, "time":"2017-07-11 14:45", "message":"兑换哈奇", "num":50, "code":"0"},
-            {"isConsume":false, "time":"2017-07-11 14:45", "message":"账户充值", "num":50, "code":"1"},
-        ];
+        $scope.myPays = [];// code为0表示成功，isConsume为true时表示为消费，否则为收入
 
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');
@@ -42,18 +38,13 @@ define(['app',
             return canvas;
         }
 
+
         function init(userinfo) {
             $scope.user = userinfo || $scope.user;
             var changeBtn = $("#change-profile");
             var finishBtn = $("#finish");
             var cropper = $("#cropper");
             var dataForm = $("#data-form");
-
-            if($scope.user.email){
-                $scope.bindedEmail=true;
-            }else{
-                $scope.bindedEmail=false;
-            }
 
             $scope.fileUpload = function (e) {
                 var file = e.target.files[0];
@@ -209,37 +200,99 @@ define(['app',
         }
 
         var sendEmail=function (email) {
-            util.post(config.apiUrlPrefix + 'user/verifyEmailOne', {email:email}, function (data) {
-                Message.info("邮件发送成功，请按邮件指引完成绑定");
-            },function (err) {
-                console.log(err);
-                Message.info(err.message);
-            });
         }
 
-        //安全验证
-        $scope.bind=function (type) {
-            if(type=="email"){
-                $scope.emailErrMsg="";
-                var email=$scope.userEmail? $scope.userEmail.trim() : "";
-                if(!email){
-                    $scope.emailErrMsg="请输入需绑定的邮箱";
-                    return;
-                }
+		$scope.isBind = function(type) {
+			if (type == "email") {
+				return $scope.user.email ? true : false;
+			} else if (type == "phone") {
+				return $scope.user.cellphone ? true :false;
+			}
 
-                var reg=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-                if(!reg.test(email)){
-                    $scope.emailErrMsg="请输入正确的邮箱";
-                }else{
-                    sendEmail(email);
-                }
-                return;
-            }
-            if(type=="phone"){
-                console.log("手机绑定开发中");
-                $('#phoneModal').modal({})
-                return;
-            }
+			return;
+		}
+
+		$scope.confirmEmailBind = function() {
+			util.post(config.apiUrlPrefix + "user/verifyEmailTwo", {
+				username:$scope.user.username,
+				verifyCode:$scope.emailVerifyCode,
+				bind:!$scope.isBind("email"),
+				isApi:true,
+			}, function(){
+				if ($scope.isBind("email")) {
+					$scope.user.email = undefined;
+					$scope.userEmail = "";
+				} else {
+					$scope.user.email = $scope.userEmail;
+				}
+				Account.setUser($scope.user);
+				$('#emailModal').modal("hide");
+			});
+		}
+
+		$scope.bindEmail = function () {
+			$scope.emailErrMsg="";
+			if ($scope.isBind("email")) {
+				$scope.userEmail = $scope.user.email;
+			}
+			var email=$scope.userEmail? $scope.userEmail.trim() : "";
+			if(!email){
+				$scope.emailErrMsg="请输入需绑定的邮箱";
+				return;
+			}
+
+			var reg=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+			if(!reg.test(email)){
+				$scope.emailErrMsg="请输入正确的邮箱";
+				return;
+			}
+
+			util.post(config.apiUrlPrefix + 'user/verifyEmailOne', {
+				email:email,
+				bind:!$scope.isBind("email"),
+			}, function (data) {
+				//Message.info("邮件发送成功，请按邮件指引完成绑定");
+				$('#emailModal').modal({});
+			},function (err) {
+				console.log(err);
+				Message.info(err.message);
+			});
+		}
+
+		$scope.confirmPhoneBind = function() {
+			util.post(config.apiUrlPrefix + "user/verifyCellphoneTwo", {
+				smsId:$scope.smsId,
+				smsCode:$scope.smsCode,
+				bind:!$scope.isBind("phone"),
+			}, function(){
+				if ($scope.isBind("phone")) {
+					$scope.user.cellphone = undefined;
+					$scope.userPhone = "";
+				} else {
+					$scope.user.cellphone = $scope.userPhone;
+				}
+				Account.setUser($scope.user);
+				$('#phoneModal').modal("hide");
+			});
+		}
+        //安全验证
+        $scope.bindPhone=function (type) {
+			//console.log("手机绑定开发中");
+			if ($scope.isBind("phone")) {
+				$scope.userPhone = $scope.user.cellphone;
+			}
+			if (!/[0-9]{11}/.test($scope.userPhone)) {
+				Message.info("手机格式错误");
+				return;
+			}
+
+			util.post(config.apiUrlPrefix + 'user/verifyCellphoneOne', {
+				cellphone:$scope.userPhone,
+				bind:!$scope.isBind("phone"),
+			},function(data){
+				$scope.smsId = data.smsId;					
+				$('#phoneModal').modal({});
+			});
         }
 
         // 修改用户信息
@@ -415,6 +468,15 @@ define(['app',
         // 消费记录
         $scope.showMyPay = function () {
             $scope.showItem = 'myPay';
+            $scope.payStatus = { "InProgress": "进行中", "Finish": "已完成", "Fail": "失败" };
+
+            util.http("POST", config.apiUrlPrefix + "pay/getTrade", {}, function (data) {
+                $scope.myPays = data;
+            })
+
+            util.http("GET", config.apiUrlPrefix + "wallet/getBalance", {}, function (data) {
+                $scope.balance = data.balance;
+            })
         }
 
         // 邀请注册
@@ -426,7 +488,7 @@ define(['app',
                     Message.info("请正确填写好友邮箱地址!!!");
                     return ;
                 }
-                util.post(config.apiUrlPrefix + 'user/inviteFriend',{userId:$scope.user._id,username:$scope.user.username,friendMail:$scope.friendMail}, function () {
+                util.post(config.apiUrlPrefix + 'user/inviteFriend',{username:$scope.user.username,friendMail:$scope.friendMail}, function () {
                    Message.info("邀请好友邮件已发送^-^");
                 });
             }

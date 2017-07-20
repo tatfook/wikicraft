@@ -42,12 +42,19 @@ define([
     }
 
     // 默认渲染
-    function defaultRender(wikiBlockObj) {
+    function defaultRender(wikiBlockObj, renderAfter) {
         var wikiModulePath = getModPath(wikiBlockObj.cmdName);
         require([wikiModulePath], function (module) {
-            if (typeof module == "object" && typeof module.render == "function") {
-                wikiBlockObj.render(module.render(wikiBlockObj));
-            } else {
+			
+			if (typeof module == "object"){
+				if (!renderAfter && typeof(module.render) == "function") {
+					wikiBlockObj.render(module.render(wikiBlockObj));
+				}
+
+				if (renderAfter && typeof(module.renderAfter) == "function") {
+					module.renderAfter(wikiBlockObj);
+				}
+			} else {
                 console.log("wiki module define format error!!!");
             }
         }, function (err) {
@@ -229,6 +236,8 @@ define([
             }
         };
         render(wikiBlockParams);
+		// 渲染后回调
+		defaultRender(wikiBlockParams, true);
     };
 
     // 设置模板内容
@@ -408,6 +417,10 @@ define([
         mdwiki.options = options;
         mdwiki.blockCacheMap = {};
 		mdwiki.isMainMd = options.isMainMd;
+
+		if (mdwiki.isMainMd) {
+			config.shareMap["mdwiki"] = mdwiki;
+		}
 
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
@@ -612,11 +625,6 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-			if (mdwiki.isMainMd) {
-				config.shareMap["mdwiki"] = {
-					blockList: blockList,
-				};
-			}
 			//console.log(tokenList);
             //console.log(blockList);
             return blockList;

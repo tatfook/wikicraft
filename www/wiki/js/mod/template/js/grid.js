@@ -4,8 +4,10 @@
 
 define([
     'app',
-    'helper/util'
-], function (app, util) {
+    'helper/util',
+    'helper/markdownwiki',
+    'helper/dataSource',
+], function (app, util, markdownwiki, dataSource) {
     var defaultModParams = {
         /*
         rows:[
@@ -44,8 +46,8 @@ define([
         content:'',
         contentUrl:'',
         isMainContent: true,
-        class:'container-fluid',
-        style:{"background-color": "silver"},
+		//class:'container-fluid',
+        //style:{"background-color": "silver"},
         frameHeaderExist:true,
         frameFooterExist: false,
     };
@@ -55,14 +57,10 @@ define([
             $scope.modParams = wikiBlock.modParams;
             $rootScope.frameHeaderExist = wikiBlock.modParams.frameHeaderExist;
             $rootScope.frameFooterExist = wikiBlock.modParams.frameFooterExist;
-
-            //$scope.urlPrefix = '/' + $rootScope.siteinfo.username + '/' + $rootScope.siteinfo.name + '/';
-            $scope.urlPrefix = '/test/';
-            $scope.clickSelfPage = function (pageId) {
-                console.log("------------", pageId);
-            }
         }]);
     }
+
+	var dataShareMap = {};
 
     return {
         render: function (wikiBlock) {
@@ -71,7 +69,14 @@ define([
             //console.log(angular.fromJson(wikiBlock.modParams));
             wikiBlock.modParams = wikiBlock.modParams ? Object.assign(defaultModParams, wikiBlock.modParams) : defaultModParams;
             registerController(wikiBlock);
+			
             var content = wikiBlock.content, htmlContent = '', modParams = wikiBlock.modParams;
+			var containerId = wikiBlock.containerId + "_";
+			var idx = 0;
+			var renderAfterCallbackList = [];
+			dataShareMap[wikiBlock.containerId] = {
+				renderAfterCallbackList:renderAfterCallbackList,
+			};
             //console.log(wikiBlock);
             //modParams.class = modParams.class || "row";
             htmlContent += '<div ng-controller="gridTemplateController" ng-class="modParams.class" ng-style="modParams.style">';
@@ -79,6 +84,30 @@ define([
                 htmlContent+=content;
             }
 
+			var getRenderFunc = function(id, content, contentUrl) {
+				return function() {
+					if (!content && !contentUrl) {
+						return;
+					}
+					var md = markdownwiki({});
+					console.log($("#"+id));
+					if (content) {
+						util.html("#" + id, md.render(content));
+					} else {
+						var pageinfo = util.getAngularServices().$rootScope.pageinfo;
+						var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+						if (contentUrl && currentDataSource){
+							currentDataSource.getRawContent({
+								path:contentUrl+config.pageSuffixName, 
+								isShowLoading:false
+							}, function(content){
+								content = content || "";
+								util.html("#" + id, md.render(content));
+							});
+						}	
+					}
+				}
+			}
             for (var i = 0; modParams.rows && i < modParams.rows.length; i++) {
                 var row = modParams.rows[i];
                 //console.log(row);
@@ -97,29 +126,45 @@ define([
                         //col.class = col.class || 'col-xs-1';
                         if (col.isMainContent) {
                             htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' + content + "</div>";
-                        } else if (col.content) {
-                            htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' + col.content + "</div>";
-                        } else if (col.contentUrl){
-                            htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' +  '<userpage url="'+ col.contentUrl + '"></userpage>' + "</div>";
-                        }else {
-                            var selfPageId = "selfPage_" + i + '_' + j;
-                            htmlContent += '<div ng-class="'+ _class + '" ng-style="' + style +'">' + '<div ng-click="clickSelfPage(\''+selfPageId +'\')" id="'+
-                                selfPageId+'"><div>+Editor</div><userpage url="{{urlPrefix + \'_sidebar\'}}"></userpage></div>' +'</div>';
-                        }
+						} else {
+							var id = containerId + idx;
+                            htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' + '<div id="' + id + '"></div>' + "</div>";
+							renderAfterCallbackList.push(getRenderFunc(id, col.content, col.contentUrl));
+							idx++;
+							//if (col.content) {
+								//htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' + col.content + "</div>";
+							//} else if (col.contentUrl){
+								//htmlContent += '<div ng-class="'+ _class + '" ng-style="'+style+'">' +  '<userpage url="'+ col.contentUrl + '"></userpage>' + "</div>";
+							//}else {
+							//}
+						}
                     }
                     //htmlContent += '</div>';
                 } else {
-                    if (row.content) {
-                        htmlContent += row.content;
-                    } else if (row.contentUrl) {
-                        htmlContent += '<userpage url="'+ row.contentUrl + '"></userpage>';
-                    }
+					var id = containerId + idx;
+					htmlContent += '<div id="' + id + '"></div>';
+					renderAfterCallbackList.push(getRenderFunc(id, row.content, row.contentUrl));
+					idx++;
+					//if (row.content) {
+						//htmlContent += row.content;
+					//} else if (row.contentUrl) {
+						//htmlContent += '<userpage url="'+ row.contentUrl + '"></userpage>';
+					//}
                 }
                 htmlContent += '</div>'
             }
             htmlContent += '</div>';
-            console.log(htmlContent);
+            //console.log(htmlContent);
             return htmlContent;
-        }
+        },
+
+		renderAfter: function(wikiBlock) {
+			var renderAfterCallbackList = dataShareMap[wikiBlock.containerId].renderAfterCallbackList || [];
+			//console.log(renderAfterCallbackList);
+			for (var i = 0; i < renderAfterCallbackList.length; i++){
+				var callback = renderAfterCallbackList[i];
+				callback();
+			}
+		}
     }
 });

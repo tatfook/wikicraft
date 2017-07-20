@@ -5,3 +5,123 @@ Author: big
 Date: 2017/7/11
 ]]
 
+include_once("./abstract/base.page");
+include_once("./abstract/multi_user_base.page");
+
+local wallet = inherit(models.abstract.multi_user_base, gettable("models.wallet"));
+
+wallet.db_name = "wallet";
+
+function wallet:ctor()
+	-- keepwork username
+	self:addfield("username","string",false);
+	-- user blance
+	self:addfield("money","number",false);
+	-- update blance date
+	self:addfield("update_date","string",false);
+end
+
+function wallet:api_getBalance()
+	local username = self:getUsername();
+
+	self:db():findOne({username = username}, resume);
+	local err, walletInfo = yield();
+
+	if not err then
+		return errors:wrap(nil, walletInfo);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function wallet:balance(price, username, callback)
+	if(not price or not username) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+
+		return;
+	end
+
+	self:db():findOne({username = username}, resume);
+	local err, walletInfo = yield();
+
+	local isSuccess = false;
+
+	if not err and walletInfo ~= nil then
+		self:updateBalance(walletInfo, price, username, resume);
+		local err, _ = yield();
+
+		if(not err) then
+			isSuccess = true;
+		end
+	else
+		self:createBalanceUser(username, resume);
+		local err, walletInfo = yield();
+
+		if(walletInfo) then
+			self:updateBalance(walletInfo, price, username, resume);
+			local err, _ = yield();
+
+			if(not err) then
+				isSuccess = true;
+			end
+		end
+	end
+
+	if(type(callback) == "function") then
+		if(isSuccess) then
+			callback(nil, nil);
+		else
+			callback(true, nil);
+		end
+	end
+end
+
+function wallet:updateBalance(walletInfo, price, username, callback)
+	local balance = walletInfo.balance + price;
+
+	if(balance < 0) then
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+
+		return;
+	end
+
+	local balanceInfo = {};
+	balanceInfo.username    = username;
+	balanceInfo.balance     = balance;
+	balanceInfo.update_date = self:getNow();
+
+	self:db():updateOne({username = username}, balanceInfo, resume)
+	local err, walletInfo = yield();
+
+	if type(callback) == "function" then
+		if not err then
+			callback(nil, walletInfo);
+		else
+			callback(true, nil);
+		end
+	end
+end
+
+function wallet:createBalanceUser(username, callback)
+	local balanceInfo = {}
+	balanceInfo.username    = username;
+	balanceInfo.balance     = 0;
+	balanceInfo.update_date = self:getNow();
+
+	self:db():insertOne({username = username}, balanceInfo, resume);
+	local err, walletInfo = yield();
+	
+	if not err and walletInfo ~= nil and type(callback) == "function" then
+		callback(nil, walletInfo);
+	else
+		callback(true, nil);
+	end
+end
+
+function wallet:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+end
