@@ -414,7 +414,8 @@ end
 
 -- 更改密码
 function user:api_changepw(params)
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if (not params.oldpassword) or (not params.newpassword) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
