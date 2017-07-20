@@ -43,13 +43,13 @@ local oauthApp = {
 		RedirectUrl="http://3dprint.idreamtech.com.cn/",
 	},
 	{
-		appName        = "haqi",
-		company        = "魔法哈奇",
-		clientId       = "1000003",
-		clientSecret   = "test",
+		appName="魔法哈奇",
+		company="大幅网络",
+		clientId="1000003",
+		clientSecret="mofahaqi",
 		RedirectUrl    = "",
-		payCallbackUrl = "http://dev.keepwork.com/api/models/pay/simulate",
-	}
+		payCallbackUrl = "http://keepwork.com/api/models/pay/simulate",
+	},
 }
 
 function oauth_app:api_get()
@@ -138,6 +138,10 @@ function oauth_app:api_getTokenByCode(params)
 	local oauthUsername = mem_cache:get(key)
 	if not oauthUsername then
 		return {error=10001, message="authorized code invalid"}
+	end
+
+	if params.username and oauthUsername ~= params.username then
+		return {error=10003, message="username error"}
 	end
 
 	local userDB = models.user:new()
