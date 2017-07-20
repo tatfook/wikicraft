@@ -21,7 +21,7 @@ define([
         $scope.$watch('$viewContentLoaded', init);
 
         $scope.goRegisterPage = function () {
-            util.go('/wiki/home');
+            util.go('/wiki/join');
         }
         
         $scope.findPwd=function (isModal) {
