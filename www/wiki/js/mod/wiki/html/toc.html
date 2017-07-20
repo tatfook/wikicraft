@@ -1,7 +1,7 @@
 <style>
     .sidebar-nav{
         font-size: 13px;
-        padding: 12px 22px 4px;
+        padding: 12px 0 4px 22px;
     }
     .sidebar-nav ul{
         margin: 0;
@@ -19,10 +19,10 @@
         font-weight: normal;
     }
     .sidebar-nav .second-level > li > .list-title{
-        padding: 10px 0 0 30px;
+        padding: 5px 0 5px 30px;
     }
     .sidebar-nav .third-level > li > .list-title{
-        padding: 10px 0 0 60px;
+        padding: 5px 0 5px 60px;
     }
     .sidebar-nav .list-title:hover{
         color: #3977AD;
@@ -31,6 +31,16 @@
     .sidebar-nav li.active > .list-title{
         color: #3977AD;
         font-weight: bold;
+        background-color: #F2F2F2;
+        border-right: 5px solid;
+        margin: 0 -20px;
+        padding-left: 50px;
+    }
+    .sidebar-nav .first-level > li.active > .list-title{
+        padding: 5px 20px;
+    }
+    .sidebar-nav .third-level li.active > .list-title{
+        padding-left: 80px;
     }
     .sidebar-nav ul.first-level>li{
         font-weight: bold;
