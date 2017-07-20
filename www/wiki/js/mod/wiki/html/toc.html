@@ -1,8 +1,6 @@
 <style>
     .sidebar-nav{
-        border-right: 1px solid #CCC;
         font-size: 13px;
-        height: 1012px;
         padding: 12px 22px 4px;
     }
     .sidebar-nav ul{
@@ -11,31 +9,45 @@
     }
     .sidebar-nav ul>li{
         list-style: none;
+        cursor: pointer;
+    }
+    .sidebar-nav span.list-title{
+        display: inline-block;
+        width: 100%;
     }
     .sidebar-nav ul:not(.first-level)>li{
-        padding:10px 0 0 30px;
         font-weight: normal;
+    }
+    .sidebar-nav .second-level > li > .list-title{
+        padding: 10px 0 0 30px;
+    }
+    .sidebar-nav .third-level > li > .list-title{
+        padding: 10px 0 0 60px;
+    }
+    .sidebar-nav .list-title:hover{
+        color: #3977AD;
+        font-weight: bold;
+    }
+    .sidebar-nav li.active > .list-title{
+        color: #3977AD;
+        font-weight: bold;
     }
     .sidebar-nav ul.first-level>li{
         font-weight: bold;
         padding-top: 15px;
     }
-    .sidebar-nav ul.third-level>li:last-child{
-        /*padding: 10px 0 0 46px;*/
-    }
 </style>
 <div ng-controller="tocController">
-    {{message}}
-    <div class="nav sidebar-nav">
+    <div class="nav sidebar-nav js-nav">
         <ul class="first-level">
-            <li ng-repeat="item in tocList" id="item.containerId">
-                <span>{{item.text+"---"+item.containerId}}</span>
+            <li ng-class="{'active':($index==0)}" ng-repeat="item in tocTreeList" data-targetid="{{item.containerId}}">
+                <span class="list-title js-target" ng-click="goPart(item.containerId)">{{item.text}}</span>
                 <ul class="second-level">
-                    <li ng-repeat="item1 in item.childs" id="item1.containerId">
-                        <span>{{item1.text}}</span>
+                    <li ng-repeat="item1 in item.childs" data-targetid="{{item1.containerId}}">
+                        <span class="list-title js-target" ng-click="goPart(item1.containerId)">{{item1.text}}</span>
                         <ul class="third-level">
-                            <li ng-repeat="item2 in item1.childs" id="item2.containerId">
-                                <span>{{item2.text}}</span>
+                            <li ng-repeat="item2 in item1.childs" data-targetid="{{item2.containerId}}">
+                                <span class="list-title js-target" ng-click="goPart(item2.containerId)">{{item2.text}}</span>
                             </li>
                         </ul>
                     </li>
