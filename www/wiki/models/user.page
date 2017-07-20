@@ -242,12 +242,20 @@ function user:api_verifyCellphoneOne(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	if params.bind then
+		self:db():find({["+cellphone"]={params.cellphone}}, resume)
+		local _, data = yield()
+
+		if data and #data > 0 then
+			return errors:new("手机号已绑定!!!")
+		end
+	end
+
 	local smsCode = tostring(math.random(1000,9999))
 	local smsParams = {to=params.cellphone, datas={smsCode,"3"}, templateId="1"}
 	sendTemplateSms(smsParams, resume)
 	local _, data = yield()
 	data = data.data
-	log(data)
 	if data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
@@ -279,7 +287,11 @@ function user:api_verifyCellphoneTwo(params)
 		return errors:wrap(errors.USER_NOT_EXIST)
 	end
 
-	userinfo.cellphone = value.cellphone
+	if params.bind then 
+		userinfo.cellphone = value.cellphone
+	else
+		userinfo.cellphone = ""
+	end
 	self:db():updateOne({_id=userId}, userinfo, resume)
 
 	return errors:wrap(yield())
@@ -294,27 +306,31 @@ function user:api_verifyEmailOne(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["+username"]={username}}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		return errors:wrap(errors.USER_NOT_EXIST)
+	local verifyCode = tostring(math.random(1000,9999))
+	local url = "http://" .. request:GetHost() .. "/api/wiki/models/user/verifyEmailTwo?username=" .. username .. "&verifyCode=" .. verifyCode
+	if params.bind then
+		url = url .. "&bind=true"
+		self:db():find({["+email"]={params.email}}, resume)
+		local err, data = yield()
+		if data and #data > 0 then
+			return errors:wrap("邮箱已绑定")
+		end
 	end
 
-	local url = "http://" .. request:GetHost() .. "/api/wiki/models/user/verifyEmailTwo?userId=" .. tostring(userId)
-
 	-- TODO 加时间限制
-	mem_cache:set("verifyEmail" .. tostring(userId), params.email)
+	mem_cache:set("verifyEmail" .. username .. verifyCode, params.email)
 
 	local par = {}
 	par.to = params.email
 	par.subject = "邮箱验证"
 	par.body = [[
 	<div class="main-content">
+	<p>邮箱验证码为:%s</p>
 	<p>打开如下链接进行邮箱验证:</p>
 	<p><a href="%s">%s</a></p>
 	</div>
 	]]
-	par.body = string.format(par.body, url, url)
+	par.body = string.format(par.body, verifyCode, url, url)
 	util:sendEmail(par)
 
 	return errors:wrap(nil)
@@ -322,19 +338,35 @@ end
 
 -- 邮箱验证2
 function user:api_verifyEmailTwo(params)
-	local userId = params.userId
+	local username = params.username
+	local verifyCode = params.verifyCode
+	local bind = params.bind
 
-	response:set_header("Location", "http://www.paracraft.cn/")
-	response:status(301):send_headers();
-	local email = mem_cache:get("verifyEmail" .. tostring(userId))
-
-	if not email then
-		return errors:wrap(nil)
+	if not params.isApi then
+		response:set_header("Location", "http://keepwork.com")
+		response:status(301):send_headers();
+	else
+		self:ensureAuthenticated()
+		username = getTokenInfo().username
 	end
 
-	self:db():updateOne({_id=tonumber(userId)}, {email=email}, resume)
+	if not username  or not verifyCode then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
-	return errors:wrap(yield())
+	local email = mem_cache:get("verifyEmail" .. username .. verifyCode)
+	if not email then
+		return errors:wrap("验证码已失效")
+	end
+
+	if not bind then
+		email = ""
+	end
+
+	self:db():updateOne({["+username"]={username}}, {email=email}, resume)
+	local err, data = yield()
+
+	return errors:wrap(err)
 end
 
 -- 找回密码1

@@ -58,7 +58,7 @@
         box-shadow: none;
         padding-left: 0;
     }
-    .bind-form .btn-outline,.phone-model .btn-outline{
+    .bind-form .btn-outline,.phone-model .email-model .btn-outline{
         color: #666;
         border: 1px solid;
     }
@@ -512,21 +512,23 @@
                         <div class="form-group">
                             <label for="email" class="control-label col-sm-3">邮箱绑定：</label>
                             <div class="col-sm-6">
-                                <input type="text" id="email" class="form-control" ng-model="userEmail" ng-show="!bindedEmail">
-                                <p ng-show="bindedEmail" class="form-control">{{user.email}}</p>
+                                <input type="text" id="email" class="form-control" ng-model="userEmail" ng-show="!isBind('email')">
+                                <p ng-show="isBind('email')" class="form-control">{{user.email}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="bind('email')" ng-show="!bindedEmail">绑定</div>
-                                <div class="btn btn-block btn-outline" ng-show="bindedEmail">解绑</div>
+                                <div class="btn btn-block btn-primary" ng-click="bindEmail()" ng-hide="isBind('email')">绑定</div>
+                                <div class="btn btn-block btn-outline" ng-click="bindEmail()" ng-show="isBind('email')">解绑</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">手机绑定：</label>
                             <div class="col-sm-6">
-                                <input type="text" id="phone" class="form-control" ng-model="userPhone">
+                                <input type="text" id="phone" class="form-control" ng-model="userPhone" ng-show="!isBind('phone')">
+                                <p ng-show="isBind('phone')" class="form-control">{{user.cellphone}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="bind('phone')">绑定</div>
+                                <div class="btn btn-block btn-primary" ng-click="bindPhone()" ng-hide="isBind('phone')">绑定</div>
+                                <div class="btn btn-block btn-outline" ng-click="bindPhone()" ng-show="isBind('phone')">解绑</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -786,6 +788,43 @@
     </div>
 
     <!--手机绑定弹窗-->
+    <div class="modal fade email-model" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="emailModalLabel">手机绑定</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">手机号：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="userEmail" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">邮箱验证码：</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" ng-model="emailVerifyCode">
+                            </div>
+                            <!--<div class="col-sm-4 verify-btn">-->
+                                <!--<div class="btn btn-default btn-block">重发验证（50s）</div>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-9 col-sm-offset-3 btns">
+                                <div class="col-sm-6"><div class="btn btn-block btn-primary" ng-click="confirmEmailBind()">确定</div></div>
+                                <div class="col-sm-6"><div class="btn btn-block btn-outline" data-dismiss="modal">取消</div></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--手机绑定弹窗-->
     <div class="modal fade phone-model" id="phoneModal" tabindex="-1" role="dialog" aria-labelledby="phoneModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -798,13 +837,13 @@
                         <div class="form-group">
                             <label class="control-label col-sm-3">手机号：</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" ng-model="userPhone" disabled>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">短信验证码：</label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" ng-model="smsCode">
                             </div>
                             <div class="col-sm-4 verify-btn">
                                 <div class="btn btn-default btn-block">重发验证（50s）</div>
@@ -812,7 +851,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-9 col-sm-offset-3 btns">
-                                <div class="col-sm-6"><div class="btn btn-block btn-primary">确定</div></div>
+                                <div class="col-sm-6"><div class="btn btn-block btn-primary" ng-click="confirmPhoneBind()">确定</div></div>
                                 <div class="col-sm-6"><div class="btn btn-block btn-outline" data-dismiss="modal">取消</div></div>
                             </div>
                         </div>
