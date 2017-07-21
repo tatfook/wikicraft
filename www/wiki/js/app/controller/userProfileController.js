@@ -311,6 +311,15 @@ define(['app',
                 });
             }
 
+			$scope.getServiceUsername = function(serviceName) {
+                for (var i = 0; $scope.userThreeServiceList && i < $scope.userThreeServiceList.length; i++) {
+                    if ($scope.userThreeServiceList[i].serviceName == serviceName) {
+                        return $scope.userThreeServiceList[i].serviceUsername || "";
+                    }
+                }
+				return "";
+			}
+
             $scope.isBindThreeService = function (serviceName) {
                 //console.log($scope.userThreeServiceList, serviceName);
                 for (var i = 0; $scope.userThreeServiceList && i < $scope.userThreeServiceList.length; i++) {

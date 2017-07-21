@@ -534,7 +534,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">QQ绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("qq") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("qq")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block " ng-class="getBindServiceClass('qq')" ng-click="bindThreeService('qq')">{{isBindThreeService("qq") ? "解绑" : "绑定"}}</div>
@@ -543,7 +543,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">微信绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("weixin") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("weixin")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block" ng-class="getBindServiceClass('weixin')" ng-click="bindThreeService('weixin')">{{isBindThreeService("weixin") ? "解绑" : "绑定"}}</div>
@@ -552,7 +552,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">微博绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("xinlangweibo") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("xinlangweibo")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block" ng-class="getBindServiceClass('xinlangweibo')" ng-click="bindThreeService('xinlangweibo')">{{isBindThreeService("xinlangweibo") ? "解绑" : "绑定"}}</div>
@@ -561,7 +561,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">Github绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("github") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("github")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block" ng-class="getBindServiceClass('github')" ng-click="bindThreeService('github')">{{isBindThreeService("github") ? "解绑" : "绑定"}}</div>

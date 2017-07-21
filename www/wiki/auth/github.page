@@ -68,8 +68,15 @@ db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName
 local err, userThreeService = yield()
 -- 没有绑定
 if not userThreeService then
-	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, function(err, userThreeService)	end)
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, resume)
+	yield()
 	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
+else
+	if not userThreeService.serviceUsername then
+		db.user_three_service:updateOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceUsername=serviceUsername}, resume)
+		yield()
+	end
+	
 end
 db.user:findOne({["+username"]={userThreeService.username}}, resume)
 local err, userinfo = yield()
