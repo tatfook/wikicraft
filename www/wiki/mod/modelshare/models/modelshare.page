@@ -15,4 +15,44 @@ function modelshare:api_getName()
 	return {hello = "world"};
 end
 
+local a = 2;
+log(a);
+
+local b = 3;
+local c = 5;
+--[[
+	abc
+	efg
+	sdf
+	
+	if(a >= b){
+	
+	}else{
+	
+	}
+	
+	for (var i = 1, i <= 10, i++){
+		
+	}
+	
+	var i = {"hello":"world"};
+	console.log(i)
+]]
+
+if a >= b then
+	log("a>=b");
+elseif a >= c then
+	log("a>=c")
+else
+	log("only a")
+end
+
+for i=1,10 do
+	log(i)
+end
+
+local i = {["hello = "world"};
+log(i)
+
+
 ?>
