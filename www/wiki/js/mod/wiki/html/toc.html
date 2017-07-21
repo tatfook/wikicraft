@@ -11,18 +11,30 @@
         list-style: none;
         cursor: pointer;
     }
-    .sidebar-nav span.list-title{
+    .sidebar-nav span.list-title {
         display: inline-block;
         width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .sidebar-nav ul:not(.first-level)>li{
         font-weight: normal;
     }
     .sidebar-nav .second-level > li > .list-title{
-        padding: 5px 0 5px 30px;
+        padding: 5px 0 5px 20px;
     }
     .sidebar-nav .third-level > li > .list-title{
+        padding: 5px 0 5px 40px;
+    }
+    .sidebar-nav .forth-level > li > .list-title{
         padding: 5px 0 5px 60px;
+    }
+    .sidebar-nav .fifth-level > li > .list-title{
+        padding: 5px 0 5px 80px;
+    }
+    .sidebar-nav .sixth-level > li > .list-title{
+        padding: 5px 0 5px 100px;
     }
     .sidebar-nav .list-title:hover{
         color: #3977AD;
@@ -34,13 +46,22 @@
         background-color: #F2F2F2;
         border-right: 5px solid;
         margin: 0 -20px;
-        padding-left: 50px;
+        padding-left: 40px;
     }
     .sidebar-nav .first-level > li.active > .list-title{
         padding: 5px 20px;
     }
     .sidebar-nav .third-level li.active > .list-title{
+        padding-left: 60px;
+    }
+    .sidebar-nav .forth-level li.active > .list-title{
         padding-left: 80px;
+    }
+    .sidebar-nav .fifth-level li.active > .list-title{
+        padding-left: 100px;
+    }
+    .sidebar-nav .sixth-level li.active > .list-title{
+        padding-left: 120px;
     }
     .sidebar-nav ul.first-level>li{
         font-weight: bold;
@@ -58,6 +79,21 @@
                         <ul class="third-level">
                             <li ng-repeat="item2 in item1.childs" data-targetid="{{item2.containerId}}">
                                 <span class="list-title js-target" ng-click="goPart(item2.containerId)">{{item2.text}}</span>
+                                <ul class="forth-level">
+                                    <li ng-repeat="item3 in item2.childs" data-targetid="{{item3.containerId}}">
+                                        <span class="list-title js-target" ng-click="goPart(item3.containerId)">{{item3.text}}</span>
+                                        <ul class="fifth-level">
+                                            <li ng-repeat="item4 in item3.childs" data-targetid="{{item4.containerId}}">
+                                                <span class="list-title js-target" ng-click="goPart(item4.containerId)">{{item4.text}}</span>
+                                                <ul class="sixth-level">
+                                                    <li ng-repeat="item5 in item4.childs" data-targetid="{{item5.containerId}}">
+                                                        <span class="list-title js-target" ng-click="goPart(item5.containerId)">{{item5.text}}</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
