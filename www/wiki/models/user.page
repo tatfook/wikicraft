@@ -435,7 +435,7 @@ function user:api_changepw(params)
 
 	user.password = newpassword
 
-	self:db():updateOne({_id=userId}, user, resume)
+	self:db():updateOne({["+username"]={username}}, user, resume)
 	return errors:wrap(yield())
 end
 

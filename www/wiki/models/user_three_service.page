@@ -13,7 +13,8 @@ user_three_service.db_name = "user_three_service"
 
 
 function user_three_service:ctor()
-	self:addfield("userId", "number")        -- 用户ID 
+	--self:addfield("userId", "number")        -- 用户ID 
+	self:addfield("username", "string")      -- 用户名 
 	self:addfield("serviceId", "string")     -- 第三方服务的id
 	self:addfield("serviceName", "string")   -- 第三方服务名称
 	self:addfield("token", "string")         -- 第三方服务token
@@ -21,7 +22,7 @@ end
 
 -- 插入记录
 function user_three_service:api_upsert(params)
-	if (not params.userId) or (not params.serviceName) then
+	if (not params.serviceId) or (not params.serviceName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
@@ -42,13 +43,24 @@ function user_three_service:api_deleteById(params)
 end
 
 -- 获得用户的第三方服务列表
-function user_three_service:api_getByUserId(params)
-	if not params.userId then
+--function user_three_service:api_getByUserId(params)
+	--if not params.userId then
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	--end
+
+	--self:db():find({["+userId"]={params.userId}}, resume)
+	
+	--return errors:wrap(yield())
+--end
+
+-- 获得用户的第三方服务列表
+function user_three_service:api_getByUsername(params)
+	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():find({["+userId"]={params.userId}}, resume)
-	
+	self:db():find({["+username"]={params.username}}, resume)
+
 	return errors:wrap(yield())
 end
 
