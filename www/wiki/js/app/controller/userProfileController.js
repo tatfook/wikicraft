@@ -306,7 +306,7 @@ define(['app',
             $scope.showItem = 'accountSafe';
 
             var getUserThresServiceList = function () {
-                util.post(config.apiUrlPrefix + 'user_three_service/getByUsername', {userId:$scope.user.username}, function (serviceList) {
+                util.post(config.apiUrlPrefix + 'user_three_service/getByUsername', {username:$scope.user.username}, function (serviceList) {
                     $scope.userThreeServiceList = serviceList || [];
                 });
             }
