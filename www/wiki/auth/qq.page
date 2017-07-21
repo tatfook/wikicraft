@@ -44,9 +44,9 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 		data = commonlib.Json.Decode(data)
 		
 		-- 是否已经登录
-		local userId = checkAuthenticated()
-		if userId then
-			db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {userId=userId, serviceId=data.openid, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+		local username = getUsername()
+		if username then
+			db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {username=username, serviceId=data.openid, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
 			return response:send({token = token, error=0, message="OK"})
 		end
 		-- 未登录
@@ -56,7 +56,7 @@ util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
 				db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {serviceId=data.openid, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
 				return response:send({error=0, data={serviceId=data.openid, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
 			end
-			db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
+			db.user:findOne({["+username"]=userThreeService.username}, function(err, userinfo)
 				if not userinfo then
 					return response:send({error=0, data={serviceId=data.openid, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
 				end

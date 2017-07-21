@@ -44,6 +44,23 @@ function getTokenInfo()
 	return decodeJWT(token)
 end
 
+function getUsername() 
+	local token = getTokenInfo()
+	if token then
+		return token.username
+	end
+
+	return nil
+end
+
+function toJson(t) 
+	return commonlib.Json.Encode(t)
+end
+
+function fromJson(s)
+	return commonlib.Json.Decode(s)
+end
+
 -- 初始化数据库
 function init_db()
 	if(db) then
@@ -150,8 +167,6 @@ function init()
 end
 
 init()
-
-
 
 
 
