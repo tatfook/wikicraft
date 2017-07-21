@@ -262,7 +262,7 @@ function user:api_verifyCellphoneOne(params)
 
 	local value = {cellphone=params.cellphone, smsCode=smsCode}
 	value = commonlib.Json.Encode(value)
-	mem_cache:set(data.templateSMS.smsMessageSid, value)
+	mem_cache:set(data.templateSMS.smsMessageSid, value, nil, 300)
 
 	return errors:wrap(nil, {smsId=data.templateSMS.smsMessageSid})
 end
@@ -311,7 +311,7 @@ function user:api_verifyEmailOne(params)
 	end
 
 	-- TODO 加时间限制
-	mem_cache:set("verifyEmail" .. username .. verifyCode, params.email)
+	mem_cache:set("verifyEmail" .. username, {email=params.email, verifyCode=verifyCode}, nil, 300)
 
 	local par = {}
 	par.to = params.email
@@ -347,11 +347,12 @@ function user:api_verifyEmailTwo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local email = mem_cache:get("verifyEmail" .. username .. verifyCode)
-	if not email then
-		return errors:wrap("验证码已失效")
+	local cacheInfo = mem_cache:get("verifyEmail" .. username)
+	if not cacheInfo or (not cacheInfo.email) or (cacheInfo.verifyCode ~= verifyCode) then
+		return errors:wrap("验证码错误或失效")
 	end
 
+	local email = cacheInfo.email
 	if not bind then
 		email = ""
 	end
@@ -378,7 +379,7 @@ function user:api_findPwdOne(params)
 	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key .. "&email=" .. params.email
 
 	-- TODO 加时间限制
-	mem_cache:set(params.email, key)
+	mem_cache:set(params.email, key, nil, 300)
 
 	local par = {}
 	par.to = params.email
