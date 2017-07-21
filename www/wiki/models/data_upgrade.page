@@ -8,6 +8,7 @@ Date: 2017/06/06
 
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./user_three_service.page")
 include_once("./website.page")
 include_once("./site_data_source.page")
 
@@ -88,3 +89,31 @@ function data_upgrade:api_resetPassword(params)
 
     return errors:wrap(yield())
 end
+
+-- 更新用户第三方服务表
+function data_upgrade:api_updateUserThreeService(params)
+	local userDB = models.user:new()
+	local userThreeServiceDB = models.user_three_service:new()
+	
+	userThreeServiceDB:db():find({_id={gt=0, limit=100000}}, resume)
+	local _, list = yield()
+
+	for _, obj in ipairs(list or {}) do
+		if obj.userId then
+			userDB:db():findOne({_id=obj.userId}, resume)
+			local _, user = yield()
+
+			userThreeServiceDB:db():updateOne({_id=obj._id}, {username=user.username}, resume)
+			yield()
+		end
+	end
+end
+
+
+
+
+
+
+
+
+

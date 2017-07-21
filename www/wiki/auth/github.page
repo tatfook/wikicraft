@@ -45,11 +45,12 @@ if(not data) then
 	return response:send({error=1, message= 'Failed to fetch user info' })
 end
 local githubId = tostring(data.id)
+local serviceUsername = data.login
 
 -- 是否已经登录
 local username = getUsername()
 if username then
-	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {username=username, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, resume)
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {username=username, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, resume)
 	yield()
 	db.user:findOne({["+username"]={username}}, resume)
 	local err, userinfo = yield()
@@ -67,7 +68,7 @@ db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName
 local err, userThreeService = yield()
 -- 没有绑定
 if not userThreeService then
-	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, function(err, userThreeService)	end)
 	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
 end
 db.user:findOne({["+username"]={userThreeService.username}}, resume)
@@ -79,4 +80,29 @@ end
 models.data_source:new():api_githubLinkGitlab({username=userinfo.username, githubUserId=githubId})
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
 return response:send({token = token, data = userinfo, error=0, message="OK"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
