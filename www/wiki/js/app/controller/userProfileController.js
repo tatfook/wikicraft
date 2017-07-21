@@ -306,10 +306,19 @@ define(['app',
             $scope.showItem = 'accountSafe';
 
             var getUserThresServiceList = function () {
-                util.post(config.apiUrlPrefix + 'user_three_service/getByUsername', {userId:$scope.user.username}, function (serviceList) {
+                util.post(config.apiUrlPrefix + 'user_three_service/getByUsername', {username:$scope.user.username}, function (serviceList) {
                     $scope.userThreeServiceList = serviceList || [];
                 });
             }
+
+			$scope.getServiceUsername = function(serviceName) {
+                for (var i = 0; $scope.userThreeServiceList && i < $scope.userThreeServiceList.length; i++) {
+                    if ($scope.userThreeServiceList[i].serviceName == serviceName) {
+                        return $scope.userThreeServiceList[i].serviceUsername || "";
+                    }
+                }
+				return "";
+			}
 
             $scope.isBindThreeService = function (serviceName) {
                 //console.log($scope.userThreeServiceList, serviceName);
