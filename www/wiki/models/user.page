@@ -281,18 +281,11 @@ function user:api_verifyCellphoneTwo(params)
 		return errors:wap(errors:new("验证码错误"))
 	end
 
-	self:db():findOne({["+username"]={username}}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		return errors:wrap(errors.USER_NOT_EXIST)
-	end
-
+	local cellphone = ""
 	if params.bind then 
-		userinfo.cellphone = value.cellphone
-	else
-		userinfo.cellphone = ""
+		cellphone = value.cellphone
 	end
-	self:db():updateOne({_id=userId}, userinfo, resume)
+	self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
 
 	return errors:wrap(yield())
 end
@@ -421,7 +414,8 @@ end
 
 -- 更改密码
 function user:api_changepw(params)
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if (not params.oldpassword) or (not params.newpassword) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
