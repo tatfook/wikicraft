@@ -1092,6 +1092,7 @@
     <None Include="www\wiki\models\wiki_module.page" />
     <None Include="www\wiki\models\wiki_module_classify.page" />
     <None Include="www\wiki\models\wiki_module_favorite.page" />
+    <None Include="www\wiki\mod\modelshare\models\modelshare.page" />
     <None Include="www\wiki\mod\modelshare\model\model.page" />
     <None Include="www\wiki\mod\worldshare\models\worlds.page" />
     <None Include="www\wiki\mod\worldshare\models\worlds_star.page" />

@@ -533,6 +533,7 @@ end
 
 -- 获取站点详细信息, 
 function website:api_getDetailInfo(params)
+	log(params);
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
