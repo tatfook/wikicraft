@@ -62,8 +62,44 @@
         top: 30%;
     }
 
-    .pay-main .wechat-pay-qrcode , .pay-main .alipay-pay-qrcode{
+    .pay-main .wechat-pay-qrcode,
+    .pay-main .alipay-pay-qrcode,
+    .pay-main .pay-success,
+    .pay-main .pay-fail {
         display: none;
+    }
+
+    .pay-main .pay-success img {
+        display: block;
+        float: left;
+        margin-right: 10px;
+    }
+
+    .pay-main .pay-success .success-info {
+        font-size: 24px;
+        color: #828282;
+        margin-bottom: 25px;
+    }
+
+    .pay-main .pay-success .success-operate {
+        font-size: 16px;
+    }
+
+    .pay-main .pay-fail .fail-info {
+        font-size: 24px;
+        color: #828282;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .pay-main .pay-fail .fail-info > img {
+        vertical-align: sub;
+    }
+
+    .pay-main .pay-fail .fail-code {
+        color: #828282;
+        font-size: 16px;
+        text-align: center;
     }
 
     @media(max-width: 768px) {
@@ -200,6 +236,15 @@
             height: 395px;
             background: url("/wiki/assets/imgs/pay-qrcode-wechat-bg.png") no-repeat center;
             padding: 23px;
+        }
+
+        .pay-main .wechat-pay-qrcode .money {
+            font-size: 16px;
+        }
+
+        .pay-main .wechat-pay-qrcode .money span {
+            font-size: 22px;
+             color : #fe3266;
         }
 
         .pay-main .wechat-pay-qrcode .wechat-qrcode {
@@ -374,16 +419,33 @@
                                 <img src="/wiki/assets/imgs/alipay_operate_a.png" alt="Alternate Text" />
                             </div>
                         </div>
-                        <div style="display:block" class="wechat-pay-qrcode">
+                        <div class="wechat-pay-qrcode">
                             <div class="money">
-                                支付金额： ￥{{price}} 元
+                                支付金额： <span>￥{{price}}</span> 元
                             </div>
                             <div class="wechat-qrcode">
                                 <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}">
                             </div>
                         </div>
-                        <div class="pay-result">
-                            
+                        <div class="pay-success clearfix">
+                            <img src="/wiki/assets/imgs/pay_success.png"/>
+                            <div class="pull-left">
+                                <div class="success-info">
+                                    恭喜，您已支付成功！
+                                </div>
+                                <div class="success-operate">
+                                    <a href="#">查看支付记录</a>
+                                    或
+                                    <a href="#">返回</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pay-fail">
+                            <div class="fail-info">
+                                <img src="/wiki/assets/imgs/pay_fail.png" />
+                                支付未成功！
+                            </div>
+                            <div class="fail-code">ERROR: 301.52.123 FAIL MESSAGE</div>
                         </div>
                     </div>
                 </div>
