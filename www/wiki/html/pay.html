@@ -52,9 +52,11 @@
         font-size: 16px;
         text-align: center;
         padding: 0 20px;
-        border-bottom: 1px solid #ffffff;
         margin-top: -1px;
-        margin-left: -1px;
+        margin-left: 0px;
+        border-left: 1px solid #ffffff;
+        border-right: 1px solid #ffffff;
+        color: #3977ad;
     }
 
     .pay-main-method .pay-item ul li span {
@@ -62,11 +64,11 @@
         top: 30%;
     }
 
-    .pay-main .wechat-pay-qrcode,
-    .pay-main .alipay-pay-qrcode,
-    .pay-main .pay-success,
-    .pay-main .pay-fail {
-        display: none;
+    .pay-main-method .pay-item ul .active {
+        border-bottom: 1px solid #ffffff;
+        border-left: 1px solid #f2f2f2;
+        border-right: 1px solid #f2f2f2;
+        color: #333333;
     }
 
     .pay-main .pay-success img {
@@ -200,7 +202,9 @@
         }
 
         .pay-main-field .field-item .rules {
+            display: block;
             font-size: 16px;
+            white-space: nowrap;
         }
 
         .pay-main-field .field-item .rules .light {
@@ -334,7 +338,7 @@
         <div class="row">
             <div class="col-md-12 col-xs-12 col-sm-12">
                 <div class="goods-info">
-                    您正在进行《魔法哈奇2》的金币充值，金币可在《魔法哈奇2》中购买商城物品与服务。
+                    您正在进行《{{subject}}》的金币充值，金币可在《{{subject}}》中购买商城物品与服务。
                 </div>
             </div>
         </div>
@@ -344,17 +348,17 @@
                     <div class="pay-main-method">
                         <div class="pay-item">
                             <ul class="clearfix">
-                                <li ng-class="{active: method == 'alipay'}" ng-click="alipay()">
+                                <li ng-class="{active: method == 'alipay'}" ng-click="onChange('alipay')">
                                     <span>支付宝充值</span>
                                 </li>
-                                <li ng-class="{active: method == 'wechat'}" ng-click="wechat()">
+                                <li ng-class="{active: method == 'wechat'}" ng-click="onChange('wechat')">
                                     <span>微信支付</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div class="pay-main-page">
-                        <div style="display:none" class="pay-main-user clearfix">
+                        <div ng-if="page == 'user'" class="pay-main-user clearfix">
                             <div class="pay-main-logo">
                                 <img ng-if="!userinfo.portrait" ng-src="{{imgsPath + 'wiki_default_profile.jpg'}}" class="no-img" />
                                 <img ng-if="userinfo.portrait" ng-src="{{userinfo.portrait}}" />
@@ -363,22 +367,22 @@
                             <div class="pay-main-field">
                                 <div class="field-item">
                                     <lable class="desc">Keepwork 账号：</lable>
-                                    <input type="text" name="username" />
+                                    <input type="text" name="username" ng-model="username"/>
                                 </div>
                                 <div class="field-item">
                                     <lable class="desc">充值到数字账号：</lable>
-                                    <input type="text" name="app_user_id" />
+                                    <input type="text" name="app_user_id" ng-model="additional.user_nid"/>
                                 </div>
                                 <div class="field-item">
                                     <lable class="desc">充值金额：</lable>
                                     <div class="price-field">
-                                        <input type="text" name="price" />元
+                                        <input type="text" name="price" ng-model="goods.price"/>元
                                     </div>
                                 </div>
                                 <div class="field-item">
                                     <lable class="desc">兑换金币：</lable>
                                     <lable class="rules">
-                                        <span class="light light-bigger">60</span>
+                                        <span class="light light-bigger">{{ideal_money}}</span>
                                         金币
                                         （
                                         <span class="light">1</span>
@@ -390,16 +394,16 @@
                                     </lable>
                                 </div>
                                 <div class="field-item">
-                                    <input class="btn btn-primary" type="button" value="立即充值" />
+                                    <input class="btn btn-primary" type="button" value="立即充值" ng-click="recharge()"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="alipay-pay-qrcode">
+                        <div ng-if="page == 'alipay'" class="alipay-pay-qrcode">
                             <div class="qrcode-desc">
                                 扫一扫付款（元）
                             </div>
                             <div class="money">
-                                ￥{{price}}
+                                ￥{{goods.price}}
                             </div>
                             <div class="qrcode-info">
                                 <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}">
@@ -419,15 +423,15 @@
                                 <img src="/wiki/assets/imgs/alipay_operate_a.png" alt="Alternate Text" />
                             </div>
                         </div>
-                        <div class="wechat-pay-qrcode">
+                        <div ng-if="page == 'wechat'" class="wechat-pay-qrcode">
                             <div class="money">
-                                支付金额： <span>￥{{price}}</span> 元
+                                支付金额： <span>￥{{goods.price}}</span> 元
                             </div>
                             <div class="wechat-qrcode">
                                 <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}">
                             </div>
                         </div>
-                        <div class="pay-success clearfix">
+                        <div ng-if="page == 'success'" class="pay-success clearfix">
                             <img src="/wiki/assets/imgs/pay_success.png"/>
                             <div class="pull-left">
                                 <div class="success-info">
@@ -440,7 +444,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="pay-fail">
+                        <div ng-if="page == 'fail'" class="pay-fail">
                             <div class="fail-info">
                                 <img src="/wiki/assets/imgs/pay_fail.png" />
                                 支付未成功！

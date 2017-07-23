@@ -18,6 +18,7 @@ local goodsData = {
 		subject           = "测试商品",
 		body              = "测试内容",
 		price             = 1,
+		exchange_rate     = 10,
 		default_buy_count = 10,
 		min_buy_count     = 100,
 		max_buy_count     = 1000,

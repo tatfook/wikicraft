@@ -13,38 +13,24 @@ define([
         var queryArgs = util.getQueryObject();
         var validate  = true;
 
-        $scope.method       = "";
+        $scope.method       = "alipay";
         $scope.subject      = "LOADING";
         $scope.body         = "LOADING";
         $scope.returnUrl    = ""; 
-        $scope.price        = 0;
         $scope.app_goods_id = "";
         $scope.app_name     = "";
         $scope.qr_url       = "";
+        $scope.ideal_money  = 0;
+        $scope.goods        = {};
+        $scope.page         = "user";
+        $scope.goods.price         = 0;
+        $scope.goods.exchange_rate = 0;
 
-        if (queryArgs.price) {
-            $scope.price = queryArgs.price
-        } else {
-            validate = false;
-        }
-
-        if (queryArgs.app_name) {
-            $scope.app_name = queryArgs.app_name;
-        } else {
-            validate = false;
-        }
-
-        if (queryArgs.app_goods_id) {
-            $scope.app_goods_id = queryArgs.app_goods_id;
-        } else {
-            validate = false;
-        }
-
-        if (queryArgs.redirect) {
-            $scope.redirect = queryArgs.redirect;
-        } else {
-            validate = false;
-        }
+        validateF({ "username": queryArgs.username }, "$scope.username");
+        validateF({ "price": queryArgs.price }, "$scope.goods.price");
+        validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
+        validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
+        validateF({ "redirect": queryArgs.redirect }, "$scope.redirect");
 
         if (queryArgs.additional) {
             $scope.additional = queryArgs.additional;
@@ -74,28 +60,23 @@ define([
             getAppGoodsInfo();
         }
 
-        $scope.alipay = function () {
-            if (!validate) {
-                alert("参数错误");
-                return;
-            }
-
-            $scope.method = "alipay";
-            $scope.alipayClient();
+        $scope.onChange = function (params) {
+            $scope.method = params;
+            $scope.page = "user";
+            //$scope.alipayClient();
         }
 
-        $scope.wechat = function () {
-            if (!validate) {
-                alert("参数错误");
-                return;
-            }
+            //if ($scope.isMobile) {
+            //    $scope.wechatClient();
+            //} else {
+            //    $scope.wechatQR();
+            //}
 
-            $scope.method = "wechat";
-
-            if ($scope.isMobile) {
-                $scope.wechatClient();
-            } else {
-                $scope.wechatQR();
+        $scope.recharge = function () {
+            if ($scope.method == "alipay") {
+                $scope.page = "alipay";
+            } else if($scope.method == "wechat"){
+                $scope.page = "wechat";
             }
         }
 
@@ -162,6 +143,16 @@ define([
             return isMobile;
         }();
 
+        $scope.$watch("goods", function (newValue, oldValue) {
+            var reg = /^[0-9]*$/;
+
+            if (newValue && newValue.price && reg.test(newValue.price) && typeof (newValue.exchange_rate) == "number") {
+                $scope.ideal_money = newValue.price * newValue.exchange_rate;
+            } else {
+                $scope.ideal_money = 0;
+            }
+        }, true);
+
         function createCharge(params, callback) {
             params.price        = $scope.price;
             params.app_goods_id = $scope.app_goods_id;
@@ -196,8 +187,9 @@ define([
             var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name};
 
             util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
-                $scope.subject = response.subject;
-                $scope.body    = response.body;
+                $scope.subject     = response.subject;
+                $scope.body        = response.body;
+                $scope.goods.exchange_rate = response.exchange_rate; 
 
                 for (itemA in response.additional_field) {
                     var checkField = true;
@@ -218,6 +210,20 @@ define([
                     }
                 }
             });
+        }
+
+        function validateF(params, cmd) {
+            var keyName = "";
+
+            for (var key in params) {
+                keyName = key;
+            }
+
+            if (params[keyName]) {
+                eval(cmd + " = '" + params[keyName] + "'");
+            } else {
+                validate = false;
+            }
         }
     }]);
 
