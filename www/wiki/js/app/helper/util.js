@@ -301,7 +301,7 @@ define([
 
 	util.getByCache = function (url, params, callback, errorCallback, isShowLoading) {
 		util.$http({
-			method:method,
+			method:"GET",
 			url:url,
 			params:params,
 			cache:true,
