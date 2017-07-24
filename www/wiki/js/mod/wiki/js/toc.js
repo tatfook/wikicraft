@@ -135,6 +135,7 @@ define([
 
 			function init() {
 				generateToc();
+				setFullHeight($(".js-nav"));
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
