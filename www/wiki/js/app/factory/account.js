@@ -47,13 +47,13 @@ define([
             account = {
                 user: undefined,
 				
-				keepPassword: function(isKeep) {
-					if (isKeep) {
-						$auth.setStorageType("localStorage");
-					} else {
-						$auth.setStorageType("sessionStorage");
-					}
-				},
+				//keepPassword: function(isKeep) {
+					//if (isKeep) {
+						//$auth.setStorageType("localStorage");
+					//} else {
+						//$auth.setStorageType("sessionStorage");
+					//}
+				//},
 
 				initDataSource: function(cb, errcb) {
 					var user = this.user;

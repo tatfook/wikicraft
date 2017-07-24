@@ -11,7 +11,7 @@ define([
 ], function (app, util, storage, dataSource, htmlContent) {
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
-		$scope.keepPassword = true;
+		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
 
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
@@ -182,7 +182,8 @@ define([
         }
 
 		$scope.changeKeepPassword = function() {
-			Account.keepPassword($scope.keepPassword);
+			//Account.keepPassword($scope.keepPassword);
+			storage.localStorageSetItem("keepPassword", $scope.keepPassword);
 		}
 
         $scope.login = function () {

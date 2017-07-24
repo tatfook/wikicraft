@@ -248,7 +248,7 @@ define([
 		config.isShowLoading = obj.isShowLoading;
 
         // 在此带上认证参数
-        if (method == 'POST') {
+        if (obj.method == 'POST') {
 			config.data = obj.params;
         } else {
 			config.params = obj.params;

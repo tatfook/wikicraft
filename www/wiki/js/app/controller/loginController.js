@@ -11,7 +11,7 @@ define([
     app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.isModal=false;
-		$scope.keepPassword = true;
+		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
 
         function init() {
             if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login" && window.location.pathname !="/wiki/join"){
@@ -23,7 +23,8 @@ define([
 
 		$scope.changeKeepPassword = function() {
 			//console.log($scope.keepPassword);
-			Account.keepPassword($scope.keepPassword);
+			//Account.keepPassword($scope.keepPassword);
+			storage.localStorageSetItem("keepPassword", $scope.keepPassword);
 		}
 
         $scope.goRegisterPage = function () {
