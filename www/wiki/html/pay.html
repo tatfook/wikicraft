@@ -35,6 +35,10 @@
         -webkit-box-align: center;
     }
 
+    .pay-main-page .pay-main-logo {
+        opacity : 0;
+    }
+
     .pay-main-method .pay-item {
         height: 60px;
     }
@@ -104,30 +108,38 @@
         text-align: center;
     }
 
+    .fade-show {
+        opacity: 1 !important;
+    }
+
+    .fade-hide {
+        opacity: 0 !important;
+    }
+
     @media(max-width: 768px) {
         .pay-main-logo {
             width: 120px;
             margin: 0 auto;
         }
 
-            .pay-main-logo .no-img {
-                width: 120px;
-                height: 120px;
-                background-color: #333333;
-            }
+        .pay-main-logo .no-img {
+            width: 120px;
+            height: 120px;
+            background-color: #333333;
+        }
 
-            .pay-main-logo img {
-                width: 120px;
-                height: 120px;
-            }
+        .pay-main-logo img {
+            width: 120px;
+            height: 120px;
+        }
 
-            .pay-main-logo .username {
-                width: 100%;
-                text-align: center;
-                margin-top: 7px;
-                font-size: 18px;
-                color: #333333;
-            }
+        .pay-main-logo .username {
+            width: 100%;
+            text-align: center;
+            margin-top: 7px;
+            font-size: 18px;
+            color: #333333;
+        }
 
         .pay-main-method .pay-item ul li {
             text-align: center;
@@ -331,6 +343,12 @@
             left: 195px;
             cursor: pointer;
         }
+
+        .pay-main .alipay-pay-qrcode .alipay-notice > img {
+            position: absolute;
+            top : 0;
+            left: 0;
+        }
     }
 </style>
 <div ng-controller="payController">
@@ -359,15 +377,15 @@
                     </div>
                     <div class="pay-main-page">
                         <div ng-if="page == 'user'" class="pay-main-user clearfix">
-                            <div class="pay-main-logo">
-                                <img ng-if="!userinfo.portrait" ng-src="{{imgsPath + 'wiki_default_profile.jpg'}}" class="no-img" />
-                                <img ng-if="userinfo.portrait" ng-src="{{userinfo.portrait}}" />
-                                <div class="username">{{userinfo.displayName}}</div>
+                            <div ng-class="{'fade-show' : otherUserinfo._id}" class="pay-main-logo fade">
+                                <img ng-if="!otherUserinfo.portrait" ng-src="{{imgsPath + 'wiki_default_profile.jpg'}}" class="no-img" />
+                                <img ng-if="otherUserinfo.portrait" ng-src="{{otherUserinfo.portrait}}" />
+                                <div class="username">{{otherUserinfo.displayName}}</div>
                             </div>
                             <div class="pay-main-field">
                                 <div class="field-item">
                                     <lable class="desc">Keepwork 账号：</lable>
-                                    <input type="text" name="username" ng-model="username"/>
+                                    <input type="text" name="username" ng-model="otherUserinfo.username"/>
                                 </div>
                                 <div class="field-item">
                                     <lable class="desc">充值到数字账号：</lable>
@@ -388,7 +406,7 @@
                                         <span class="light">1</span>
                                         人民币
                                         等于
-                                        <span class="light">10</span>
+                                        <span class="light">{{goods.exchange_rate}}</span>
                                         金币
                                         ）
                                     </lable>
@@ -419,8 +437,9 @@
                                     <a target="_blank" href="https://mobile.alipay.com/index.htm">首次使用请下载手机支付宝</a>
                                 </div>
                             </div>
-                            <div class="alipay-notice">
-                                <img src="/wiki/assets/imgs/alipay_operate_a.png" alt="Alternate Text" />
+                            <div class="alipay-notice" ng-click="alipayChangeNotice()">
+                                <img ng-class="{'fade-show' : alipayNotice == 'a'}" class="fade" src="/wiki/assets/imgs/alipay_operate_a.png" />
+                                <img ng-class="{'fade-show' : alipayNotice == 'b'}" class="fade" src="/wiki/assets/imgs/alipay_operate_b.png"/>
                             </div>
                         </div>
                         <div ng-if="page == 'wechat'" class="wechat-pay-qrcode">

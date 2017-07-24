@@ -13,20 +13,23 @@ define([
         var queryArgs = util.getQueryObject();
         var validate  = true;
 
-        $scope.method       = "alipay";
-        $scope.subject      = "LOADING";
-        $scope.body         = "LOADING";
-        $scope.returnUrl    = ""; 
-        $scope.app_goods_id = "";
-        $scope.app_name     = "";
-        $scope.qr_url       = "";
-        $scope.ideal_money  = 0;
-        $scope.goods        = {};
-        $scope.page         = "user";
+        $scope.otherUserinfo       = {};
+        $scope.method              = "alipay";
+        $scope.subject             = "LOADING";
+        $scope.body                = "LOADING";
+        $scope.returnUrl           = ""; 
+        $scope.app_goods_id        = "";
+        $scope.app_name            = "";
+        $scope.qr_url              = "";
+        $scope.ideal_money         = 0;
+        $scope.goods               = {};
+        $scope.page                = "user";
+        $scope.otherUserinfo       = {}
+        $scope.alipayNotice        = null;
         $scope.goods.price         = 0;
         $scope.goods.exchange_rate = 0;
 
-        validateF({ "username": queryArgs.username }, "$scope.username");
+        validateF({ "username": queryArgs.username }, "$scope.otherUserinfo.username");
         validateF({ "price": queryArgs.price }, "$scope.goods.price");
         validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
         validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
@@ -58,25 +61,41 @@ define([
 
         if (validate) {
             getAppGoodsInfo();
+            getUserinfo();
         }
 
         $scope.onChange = function (params) {
             $scope.method = params;
             $scope.page = "user";
-            //$scope.alipayClient();
         }
 
-            //if ($scope.isMobile) {
-            //    $scope.wechatClient();
-            //} else {
-            //    $scope.wechatQR();
-            //}
-
         $scope.recharge = function () {
+            if (!validate){
+                alert("参数错误");
+                return;
+            }
+
             if ($scope.method == "alipay") {
-                $scope.page = "alipay";
+                $scope.alipayClient();
+                //if ($scope.isMobile) {
+                //    $scope.alipayClient();
+                //} else {
+                //    $scope.alipayQR();
+                //}
             } else if($scope.method == "wechat"){
-                $scope.page = "wechat";
+                if ($scope.isMobile) {
+                    $scope.wechatClient();
+                } else {
+                    $scope.wechatQR();
+                }
+            }
+        }
+
+        $scope.alipayChangeNotice = function () {
+            if ($scope.alipayNotice == 'a') {
+                $scope.alipayNotice = 'b';
+            } else if ($scope.alipayNotice == 'b') {
+                $scope.alipayNotice = 'a';
             }
         }
 
@@ -105,8 +124,8 @@ define([
 
             createCharge(params, function (charge) {
                 $scope.qr_url = charge.credential.alipay_qr;
-
-                $(".pay-qrcode").css("display", "block");
+                $scope.page = "alipay";
+                $scope.alipayNotice = "a";
             })
         }
 
@@ -117,8 +136,7 @@ define([
 
             createCharge(params, function (charge) {
                 $scope.qr_url = charge.credential.wx_pub_qr;
-
-                $(".pay-qrcode").css("display", "block");
+                $scope.page = "wechat";
             })
         }
 
@@ -143,6 +161,10 @@ define([
             return isMobile;
         }();
 
+        $scope.$watch("otherUserinfo.username", function (newValue, oldValue) {
+            getUserinfo();
+        });
+
         $scope.$watch("goods", function (newValue, oldValue) {
             var reg = /^[0-9]*$/;
 
@@ -154,7 +176,7 @@ define([
         }, true);
 
         function createCharge(params, callback) {
-            params.price        = $scope.price;
+            params.price        = $scope.goods.price;
             params.app_goods_id = $scope.app_goods_id;
             params.app_name     = $scope.app_name;
             params.additional   = $scope.additional;
@@ -210,6 +232,14 @@ define([
                     }
                 }
             });
+        }
+
+        function getUserinfo() {
+            util.http("POST", config.apiUrlPrefix + "user/getBaseInfoByName", { username: $scope.otherUserinfo.username }, function (response) {
+                $scope.otherUserinfo = response;
+            }, function () {
+                $scope.otherUserinfo['_id'] = null; 
+            })
         }
 
         function validateF(params, cmd) {
