@@ -15,6 +15,7 @@ local pay       = inherit(models.abstract.multi_user_base,gettable("models.pay")
 local goods     = models.goods:new();
 local oauth_app = models.oauth_app:new();
 local wallet    = models.wallet:new();
+local user      = models.user:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
@@ -34,8 +35,8 @@ function pay:ctor()
 	self:addfield("body", "string", false, 300);
 	-- pay status (InProgress,Finish,Fail)
 	self:addfield("status", "string", false);
-	-- order id
-	self:addfield("order_id", "number", false);
+	-- trade number
+	self:addfield("trade_no", "number", false);
 	-- pay method (Spend,Recharge)
 	self:addfield("method", "string", false);
 	-- beneficiary
@@ -72,7 +73,7 @@ function pay:api_createCharge(params)
 	local err, query = self:validateQuery(params);
 
 	local appGoodsInfo = self:getGoodsInfo(query);
-
+	
 	if(not appGoodsInfo) then
 		return errors:wrap(errors.NOT_FOUND);
 	end
@@ -81,8 +82,17 @@ function pay:api_createCharge(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
-	local url = self.apiUrl .. "charges";
-	
+	if(not query.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	else
+		user:db():findOne({["+username"]={query.username}}, resume);
+		local _, userinfo  = yield();
+
+		if(not userinfo) then
+			return errors:wrap(errors.NOT_FOUND);
+		end
+	end
+
 	self:getTradeNo(resume);
 	local err, trade_no = yield();
 
@@ -90,6 +100,7 @@ function pay:api_createCharge(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 
+	local url       = self.apiUrl .. "charges";
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
 	apiParams.client_ip  = request:getpeername();
@@ -103,7 +114,7 @@ function pay:api_createCharge(params)
 	if(apiParams.channel == "alipay_pc_direct") then
 		apiParams.extra = {success_url = query.redirect};
 	elseif(apiParams.channel == "wx_pub_qr") then
-		apiParams.extra = {product_id = order_no};
+		apiParams.extra = {product_id = trade_no};
 	end
 
 	self:http("POST", url, apiParams, resume);
@@ -115,7 +126,7 @@ function pay:api_createCharge(params)
 
 	local tradeInfo = {};
 	tradeInfo.trade_no     = trade_no;
-	tradeInfo.username     = self:getUsername();
+	tradeInfo.username     = query.username;
 	tradeInfo.price        = query.price;
 	tradeInfo.subject      = appGoodsInfo.subject;
 	tradeInfo.body         = appGoodsInfo.body;
@@ -135,10 +146,6 @@ function pay:api_createCharge(params)
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end	
-end
-
-function pay:api_getCharge()
-	
 end
 
 function pay:api_spend(params)
@@ -226,6 +233,21 @@ function pay:api_getTrade()
 	end
 end
 
+function pay:api_getTradeOne(params)
+	local err, query = self:validateQuery(params);
+
+	if(not query.username and not query.trade_no) then
+		return errors.wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	self:db():findOne({["+username+trade_no"] = {query.username, query.trade_no}}, resume);
+	local err, trade = yield();
+
+	if not err then
+		log(trade,true);
+	end
+end
+
 function pay:api_webhooks(params)
 	local err, query = self:validateQuery(params);
 
@@ -254,7 +276,7 @@ function pay:api_webhooks(params)
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
 				apiParams.price = payInfo.price;
-
+				
 				self:http("GET", url, apiParams, resume);
 				local err, response = yield();
 
@@ -337,6 +359,8 @@ function pay:http(method, url, params, callback)
 
 	local err, response = yield();
 
+
+
 	if(type(callback) == "function") then
 		callback(err, response);
 	end
@@ -346,7 +370,6 @@ function pay:getTradeNo(callback)
 	local trade_no = tostring(math.random(1000000,9999999));
 
 	self:db():findOne({trade_no = trade_no}, resume);
-
 	local err, response = yield();
 
 	if not err and response == nil then
@@ -354,7 +377,7 @@ function pay:getTradeNo(callback)
 			callback(nil, trade_no);
 		end
 	else
-		self:getTradeNo();
+		self:getTradeNo(callback);
 	end
 end
 

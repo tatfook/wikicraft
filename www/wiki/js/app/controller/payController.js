@@ -8,7 +8,7 @@ define([
     'pingpp',
     'text!html/pay.html',
 ], function (app, util, pingpp, htmlContent) {
-    app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', function ($scope, Account, modal, $rootScope) {
+    app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', '$http', function ($scope, Account, modal, $rootScope, $http) {
         
         var queryArgs = util.getQueryObject();
         var validate  = true;
@@ -51,12 +51,6 @@ define([
             //console.log($scope.additional);
         } else {
             validate = false;
-        }
-
-        if (Account.ensureAuthenticated()) {
-            Account.getUser(function (userinfo) {
-                $scope.userinfo = userinfo;
-            });
         }
 
         if (validate) {
@@ -126,6 +120,7 @@ define([
                 $scope.qr_url = charge.credential.alipay_qr;
                 $scope.page = "alipay";
                 $scope.alipayNotice = "a";
+                getTrade(charge);
             })
         }
 
@@ -137,6 +132,7 @@ define([
             createCharge(params, function (charge) {
                 $scope.qr_url = charge.credential.wx_pub_qr;
                 $scope.page = "wechat";
+                getTrade(charge);
             })
         }
 
@@ -176,6 +172,7 @@ define([
         }, true);
 
         function createCharge(params, callback) {
+            params.username     = $scope.otherUserinfo.username;
             params.price        = $scope.goods.price;
             params.app_goods_id = $scope.app_goods_id;
             params.app_name     = $scope.app_name;
@@ -237,8 +234,16 @@ define([
         function getUserinfo() {
             util.http("POST", config.apiUrlPrefix + "user/getBaseInfoByName", { username: $scope.otherUserinfo.username }, function (response) {
                 $scope.otherUserinfo = response;
+                validate = true;
             }, function () {
                 $scope.otherUserinfo['_id'] = null; 
+                validate = false;
+            })
+        }
+
+        function getTrade(charge) {
+            $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, {isShowLoading: false}).then(function (response) {
+
             })
         }
 
