@@ -46,6 +46,9 @@ define([
 					return;
 				}
 
+				// 标题h中过滤图片
+				text = text.replace(/!\[[^\]]*]\((https|http):\/\/[^\)]*\.(png|jpg)(.*)\)/,"");
+
                 tocTreeList = tocTreeList || [];
                 tocList = tocList || [];
 				var childs = tocTreeList;
