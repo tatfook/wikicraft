@@ -11,16 +11,21 @@ include_once("./goods.page");
 include_once("./oauth_app.page");
 include_once("./wallet.page");
 
-local pay       = inherit(models.abstract.multi_user_base,gettable("models.pay"));
-local goods     = models.goods:new();
-local oauth_app = models.oauth_app:new();
-local wallet    = models.wallet:new();
-local user      = models.user:new();
+local pay        = inherit(models.abstract.multi_user_base,gettable("models.pay"));
+local tradeno    = inherit(models.abstract.multi_user_base,gettable("models.tradeno"));
+
+local goods      = models.goods:new();
+local oauth_app  = models.oauth_app:new();
+local wallet     = models.wallet:new();
+local user       = models.user:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
 pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
 pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
+
+tradeno.db_name = "tradeno";
+tradeno = tradeno:new();
 
 function pay:ctor()
 	-- keepwork username
@@ -93,13 +98,13 @@ function pay:api_createCharge(params)
 		end
 	end
 
-	self:getTradeNo(resume);
+	tradeno:getTradeNo(resume);
 	local err, trade_no = yield();
 
 	if not trade_no then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-
+	log("a")
 	local url       = self.apiUrl .. "charges";
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
@@ -116,10 +121,10 @@ function pay:api_createCharge(params)
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = trade_no};
 	end
-
+	log("b")
 	self:http("POST", url, apiParams, resume);
 	local err, chargeObject = yield();
-
+	log("c")
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
@@ -137,10 +142,10 @@ function pay:api_createCharge(params)
 	tradeInfo.app_goods_id = query.app_goods_id; 
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
-	
-	self:db():insertOne({["+trade_no"] = {trade_no}}, tradeInfo, resume);
+	log(tradeInfo, true);
+	self:db():insertOne(tradeInfo, resume);
 	local err, _ = yield();
-
+	log("d")
 	if(not err) then
 		return errors:wrap(nil, chargeObject);
 	else
@@ -162,7 +167,7 @@ function pay:api_spend(params)
 end
 
 function pay:spend(query, callback)
-	self:getTradeNo(resume);
+	tradeno:getTradeNo(resume);
 	local err, trade_no = yield();
 
 	local appGoodsInfo = self:getGoodsInfo(query);
@@ -359,28 +364,29 @@ function pay:http(method, url, params, callback)
 
 	local err, response = yield();
 
-
-
 	if(type(callback) == "function") then
 		callback(err, response);
 	end
 end
 
-function pay:getTradeNo(callback)
-	local trade_no = tostring(math.random(1000000,9999999));
-
-	self:db():findOne({trade_no = trade_no}, resume);
-	local err, response = yield();
-
-	if not err and response == nil then
-		if(type(callback) == "function") then
-			callback(nil, trade_no);
-		end
-	else
-		self:getTradeNo(callback);
-	end
-end
-
 function pay:getNow()
 	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+end
+
+function tradeno:getTradeNo(callback)
+	self:db():insertOne({},resume);
+	local err, response = yield();
+
+	if not err then
+		local number = ParaGlobal.GetDateFormat("yyyyMMdd") .. response._id;
+
+		if(type(callback) == "function") then
+			callback(nil, number);
+		end
+	else
+		if(type(callback) == "function") then
+			callback(true, nil);
+		end
+	end
+
 end

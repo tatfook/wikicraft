@@ -1277,7 +1277,7 @@
     <Content Include="www\wiki\html\wikiEditor.html" />
     <Content Include="www\wiki\html\worksApply.html" />
     <Content Include="www\wiki\index.page" />
-    <Content Include="www\wiki\js\app.js" />
+    <Content Include="www\wiki\js\mod\app.js" />
     <Content Include="www\wiki\js\app\config.js" />
     <Content Include="www\wiki\js\app\controller\contactController.js" />
     <Content Include="www\wiki\js\app\controller\dataSourceController.js" />
