@@ -35,6 +35,15 @@ function decodeJWT(token)
 	return jwt.decode(token, secret["token_secret"], true);
 end
 
+--function getTokenStr() 
+	--local authHeader = request:header('Authorization')
+	--if not authHeader then
+		--return nil
+	--end
+	--local token = authHeader:match("%s+(%S+)");
+	--return token
+--end
+
 function getTokenInfo()
 	local authHeader = request:header('Authorization')
 	if not authHeader then

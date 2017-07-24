@@ -198,7 +198,7 @@ define([
                 return;
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
-				storage.sessionStorageSetItem("satellizer_token", data.token);
+				//storage.sessionStorageSetItem("satellizer_token", data.token);
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
                 console.log("登录成功");

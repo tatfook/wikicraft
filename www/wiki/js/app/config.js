@@ -90,7 +90,7 @@
 		},
 		// 数据共享
 		shareMap:{
-		}
+		},
 	};
 
 	function initConfig() {

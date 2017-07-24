@@ -158,11 +158,13 @@ function RenderServerWikiCss()
 	local bustVersion = getBustVersion()
 	echo(format('<link href="/wiki/assets/css/main.css?bust=%s" rel="stylesheet">\n', bustVersion))
 end
+
 function RenderServerWikiScript() 
 	local config = {}
 	config.hostname = request:GetHost()
 	config.serverUpdateTime = getServerUpdateTime()
 	config.webroot = '/' .. WIKI_CODE_ENV .. '/'
+	--config.token = getTokenStr()
 	local devIndex = string.find(config.hostname, ".dev.keepwork.com")
 	if config.hostname == "dev.keepwork.com" or devIndex then
 		config.bustVersion = os.time()

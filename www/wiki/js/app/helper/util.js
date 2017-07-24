@@ -231,19 +231,84 @@ define([
         });
     }
 
-    util.http = function(method, url, params, callback, errorCallback) {
-		util._http(method, url, params, false, callback, errorCallback);
+	util.$http = function(obj) {
+		if (!obj.method || !obj.url) {
+			obj.errorCallback && obj.errorCallback();
+			return;
+		}
+
+        var $http = this.angularServices.$http;
+		var config = obj.config || {};
+		var callback = obj.callback;
+		var errorCallback = obj.errorCallback;
+
+		config.method = obj.method;
+		config.url = obj.url;
+		config.cache = obj.cache;
+		config.isShowLoading = obj.isShowLoading;
+
+        // 在此带上认证参数
+        if (method == 'POST') {
+			config.data = obj.params;
+        } else {
+			config.params = obj.params;
+        }
+
+        $http(config).then(function (response) {
+            var data = response.data;
+            //console.log(data);
+            // debug use by wxa
+            if (!data || !data.error) {
+                console.log(url, data);
+                errorCallback && errorCallback(data);
+				return;
+            }
+            if (data.error.id == 0) {
+                //console.log(data.data);
+                callback && callback(data.data);
+            } else {
+                console.log(url, data);
+                errorCallback && errorCallback(data.error);
+            }
+            //Loading.hideLoading();
+        }).catch(function (response) {
+            console.log(response);
+            //Loading.hideLoading();
+            // 网络错误
+            errorCallback && errorCallback(response.data);
+        });
+
 	}
 
-    util.post = function (url, params, callback, errorCallback) {
-        this.http("POST", url, params, callback, errorCallback);
+    util.http = function(method, url, params, callback, errorCallback, isShowLoading) {
+		util.$http({
+			method:method,
+			url:url,
+			params:params,
+			isShowLoading:isShowLoading,
+			callback:callback,
+			errorCallback,errorCallback,
+		});
+	}
+
+    util.post = function (url, params, callback, errorCallback, isShowLoading) {
+        this.http("POST", url, params, callback, errorCallback, isShowLoading);
     }
 
     util.get = function (url, params, callback, errorCallback) {
-        this.http("GET", url, params, callback, errorCallback);
+        this.http("GET", url, params, callback, errorCallback, isShowLoading);
     }
-	util.getByCache = function (url, params, callback, errorCallback) {
-        this._http("GET", url, params, true, callback, errorCallback);
+
+	util.getByCache = function (url, params, callback, errorCallback, isShowLoading) {
+		util.$http({
+			method:method,
+			url:url,
+			params:params,
+			cache:true,
+			isShowLoading:isShowLoading,
+			callback:callback,
+			errorCallback,errorCallback,
+		});
     }
 
     util.pagination = function (page, params, pageCount) {
