@@ -250,6 +250,10 @@ define([
                 }
             }
 
+			var token = storage.sessionStorageGetItem("satellizer_token");
+			if (token) {
+				$auth.setToken(token);
+			}
 			//account.keepPassword(false);
             account.getUser(function (user) {
                 //console.log(user);
