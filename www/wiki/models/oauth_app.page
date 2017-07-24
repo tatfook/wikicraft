@@ -50,6 +50,13 @@ local oauthApp = {
 		RedirectUrl    = "",
 		payCallbackUrl = "http://keepwork.com/api/models/pay/simulate",
 	},
+	{
+		appName="卡车之星",
+		company="上海配天智慧云",
+		clientId="1000004",
+		clientSecret="shanghaipeitianzhihuiyun",
+		RedirectUrl    = "",
+	},
 }
 
 function oauth_app:api_get()

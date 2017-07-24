@@ -11,6 +11,8 @@ define([
 ], function (app, util, storage, dataSource, htmlContent) {
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
+		$scope.keepPassword = true;
+
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
@@ -179,11 +181,16 @@ define([
             }
         }
 
+		$scope.changeKeepPassword = function() {
+			Account.keepPassword($scope.keepPassword);
+		}
+
         $scope.login = function () {
+			//console.log($scope.keepPassword);
             $scope.errMsg = "";
             var params = {
                 username: $scope.username? $scope.username.trim() : "",
-                password: $scope.password?$scope.password.trim():"",
+                password: $scope.password? $scope.password.trim():"",
             };
             if (!params.username || !params.password) {
                 $scope.errMsg = "用户名或密码错误";
@@ -191,6 +198,7 @@ define([
                 return;
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
+				storage.sessionStorageSetItem("satellizer_token", data.token);
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
                 console.log("登录成功");

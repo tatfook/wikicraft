@@ -11,6 +11,7 @@ define([
     app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.isModal=false;
+		$scope.keepPassword = true;
 
         function init() {
             if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login" && window.location.pathname !="/wiki/join"){
@@ -19,6 +20,11 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded', init);
+
+		$scope.changeKeepPassword = function() {
+			//console.log($scope.keepPassword);
+			Account.keepPassword($scope.keepPassword);
+		}
 
         $scope.goRegisterPage = function () {
             util.go('/wiki/join');
@@ -43,6 +49,7 @@ define([
                 return;
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
+				storage.sessionStorageSetItem("satellizer_token", data.token);
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
                 console.log("登录成功");

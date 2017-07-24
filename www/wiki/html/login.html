@@ -107,7 +107,7 @@
             </div>
             <div class="checkbox clearfix">
                 <label class="pull-left">
-                    <input class="pull-right" type="checkbox">记住密码
+                    <input class="pull-right" type="checkbox" ng-model="keepPassword" ng-change="changeKeepPassword()">记住密码
                 </label>
                 <a ng-click="findPwd(isModal)" class="pull-right">忘记密码？</a>
             </div>
