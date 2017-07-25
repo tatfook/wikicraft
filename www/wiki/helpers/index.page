@@ -62,6 +62,20 @@ function getUsername()
 	return nil
 end
 
+function getUser()
+	local username = getUsername()
+
+	if not username then
+		return nil
+	end
+
+	db.user:findOne({["+username"]={username}}, resume)
+
+	local _, user = yield()
+
+	return user
+end
+
 function toJson(t) 
 	return commonlib.Json.Encode(t)
 end

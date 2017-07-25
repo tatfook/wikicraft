@@ -48,6 +48,17 @@ function user:ctor()
 	self:addfield("isadmin", "boolean", false)
 end
 
+
+function user:filterUserInfo(params)
+	params.username = nil
+	params.email = nil
+	params.password = nil
+	params.isadmin = nil
+	params.roleId = nil
+	params.vipLevel = nil
+	params.cellphone = nil
+end
+
 -- 发送邀请邮件
 function user:api_inviteFriend(params)
 	if (not params.username) or (not params.friendMail) then
@@ -157,13 +168,7 @@ function user:update(params)
 
 	if query then
 		-- following field is forbidden to change by the user.
-		query.email = nil
-		query.password = nil
-		query.githubId = nil
-		query.githubToken = nil
-		query.githubName = nil
-		query.isadmin = nil
-		query.roleId = nil
+		self:filterUserInfo(query)
 	end
 
 	self:db():updateOne({_id=query._id}, query, resume)
@@ -212,10 +217,7 @@ function user:api_updateByName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	params.email = nil
-	params.password = nil
-	params.isadmin = nil
-	params.roleId = nil
+	self:filterUserInfo(params)
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
@@ -229,10 +231,7 @@ function user:api_updateUserInfo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	params.email = nil
-	params.password = nil
-	params.isadmin = nil
-	params.roleId = nil
+	self:filterUserInfo(params)
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 

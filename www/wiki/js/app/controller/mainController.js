@@ -324,6 +324,7 @@ define([
 					}, function () {
 						getUserPage();
 					});
+					return;
 				}
 
                 if (config.mainContent) {

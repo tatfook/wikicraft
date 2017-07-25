@@ -20,6 +20,14 @@ end
 
 -- 创建记录
 function website_domain:api_upsert(params)
+	ensureAuthenticated()
+
+	local userinfo = getUser()
+
+	if not userinfo or ((userinfo.vipLevel or 0) < 1) then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
 	if (not params.username) or (not params.sitename) or (not params.domain) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -31,6 +39,8 @@ end
 
 -- 删除记录
 function website_domain:api_deleteByDomain(params)
+	ensureAuthenticated()
+
 	if not params.domain then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -80,6 +90,7 @@ end
 
 -- 删除记录通过websiteId
 function website_domain:api_deleteByName(params)
+	ensureAuthenticated()
 	if not params.username or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

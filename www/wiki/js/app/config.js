@@ -117,7 +117,7 @@
 		hostname = hostname || window.location.hostname;
 		hostname = hostname.split(':')[0];
 
-		if (hostname.indexOf(".dev.keepwork.com") >= 0) {
+		if (hostname.indexOf(".dev.keepwork.com") >= 0 || hostname.indexOf("localhost") >= 0) {
 			return true;
 		}
 
