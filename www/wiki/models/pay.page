@@ -121,12 +121,28 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = trade_no};
 	end
 
-	local err, chargeObject = self:http("POST", url, apiParams);
+	local nTime = commonlib.getfield("temp.nTime") or 1;
+	commonlib.setfield("temp.nTime", nTime + 1);
+	log("11111111111 "..nTime)
+	System.os.GetUrl({
+		url    = url,
+		headers = {
+			Authorization = "Bearer " .. self.appToken,
+			["content-type"]  = "application/json",
+		},
+		form   = apiParams,
+		method = "POST",
+		json   = true,
+	},function(err, data)
+		log("22222222222 "..nTime)
+		resume(err, data);
+		log("3333333333333 "..nTime)
+	end);
 
-	--chargeObject = {header="HTTP/1.1 200 OK\r\nDate: Tue, 25 Jul 2017 05:31:02 GMT\r\nContent-Type: application/json;charset=utf-8\r\nContent-Length: 1003\r\nConnection: keep-alive\r\nX-Powered-By: PHP/5.6.25\r\nAccess-Control-Allow-Methods: GET, POST, HEAD, OPTIONS, DELETE\r\nAccess-Control-Max-Age: 300\r\nAccess-Control-Allow-Credentials: true\r\nCache-Control: no-cache, no-store\r\nStrict-Transport-Security: max-age=31536000; includeSubDomains\r\nX-Pingplusplus-Signature: UAu6LrdN5AXNy50QdRbQMC4QWOecXt47cn0KvF2BvJqAnk6ZG4yyZ/Lo5Joog8X8xoLXkW3id3GwVG1OTKTaOWUg9MCJJ5hzENBU+zuEG95wuzMWkwTQU6L5rJ/0e8V6R0v19/4HpzV1wqwlckTAgqCGDG0ktGvjrR87p+R9QEfATExMYn0jqFxGV0u7VGUGyoAqRSqhct69TMInfpAQ/OD1Kwu/KokFUjZHPrkmNYrqRsTx2RK9nMhJw3fXj+Lyjh5XKslIeYNDstbLlZAXNX1s9bv2g6snXvoJwTZbdgUpuHwJpCVoW++Lww0I1oCJK22N4UpwOOz0MOKTDZ48DA==\r\n\r\n",rcode=200,data={amount_refunded=0,client_ip="127.0.0.1",created=1500960662,channel="alipay_qr",refunds={object="list",url="/v1/charges/ch_aXTa5SuXDab9LCyHq5nDeLeP/refunds",data={},has_more=false,},metadata={},body="≤‚ ‘ƒ⁄»›",time_expire=1501047062,object="charge",livemode=false,credential={alipay_qr="http://sissi.pingxx.com/mock.php?ch_id=ch_aXTa5SuXDab9LCyHq5nDeLeP&channel=alipay_qr",object="credential",},refunded=false,reversed=false,paid=false,amount=1,subject="≤‚ ‘…Ã∆∑",app="app_iLiDG4bnnD8GSavr",amount_settle=1,order_no="2017072584",currency="cny",extra={},id="ch_aXTa5SuXDab9LCyHq5nDeLeP",},code=0,}
+	local err, chargeObject = yield();
 
-	log(err);
-	log(chargeObject);
+	log("4444444444444444 "..nTime)
+	--local err, chargeObject = self:http("POST", url, apiParams);
 
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
@@ -146,8 +162,13 @@ function pay:api_createCharge(params)
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
 	log(tradeInfo);
-	self:db():insertOne(tradeInfo, resume);
+	self:db():insertOne(tradeInfo, function(...)
+		log("55555555 "..nTime)
+		resume(...);
+		log("66666666 "..nTime)
+	end);
 	local err, _ = yield();
+	log("7777777777777 "..nTime)
 	log("f");
 	if(not err) then
 		return errors:wrap(nil, chargeObject);
