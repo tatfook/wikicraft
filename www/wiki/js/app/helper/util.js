@@ -271,7 +271,7 @@ define([
 			cache:true,
 			isShowLoading:isShowLoading,
 			callback:callback,
-			errorCallback,errorCallback,
+			errorCallback:errorCallback,
 		});
     }
 
