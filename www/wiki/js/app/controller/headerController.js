@@ -36,12 +36,12 @@ define([
                 //console.log(urlObj);
                 if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
                     //console.log(urlObj.domain);
-                    util.post(config.apiUrlPrefix + 'website/getByDomain', {domain: urlObj.domain}, function (data) {
+                    util.post(config.apiUrlPrefix + 'website_domain/getByDomain', {domain: urlObj.domain}, function (data) {
                         //console.log(data);
                         if (data) {
-                            $scope.urlObj.pagename = $scope.urlObj.sitename;
+                            //$scope.urlObj.pagename = $scope.urlObj.sitename;
                             $scope.urlObj.username = data.username;
-                            $scope.urlObj.sitename = data.name;
+                            $scope.urlObj.sitename = data.sitename;
                         }
                     });
                 }

@@ -246,7 +246,7 @@ define([
 									$rootScope.$broadcast('userpageLoaded',{});
 									content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
 									util.html('#__UserSitePageContent__', content, $scope);
-									config.loading.hideLoading();
+									//config.loading.hideLoading();
 								};
 								//if (config.isLocal()) {
 									//currentDataSource.setLastCommitId("master");
@@ -291,7 +291,7 @@ define([
                     });
                 } else if (urlObj.username){
                     util.html('#__UserSitePageContent__', userHtmlContent, $scope);
-					config.loading.hideLoading();
+					//config.loading.hideLoading();
                 }
             }
 
@@ -333,12 +333,17 @@ define([
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
                 } else {
-					config.loading.showLoading();
+					//config.loading.showLoading();
                     if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-                        util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
+                        util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
                             if (data) {
                                 urlObj.username = data.username;
-                                urlObj.sitename = data.name;
+                                urlObj.sitename = data.sitename;
+								if (urlObj.pathname.length > 1) {
+									urlObj.pagepath = '/' + data.username + '/' + data.sitename + urlObj.pathname;
+								} else {
+									urlObj.pagepath = '/' + data.username + '/' + data.sitename + '/index';
+								}
                             }
                             getUserPage();
                         }, function () {

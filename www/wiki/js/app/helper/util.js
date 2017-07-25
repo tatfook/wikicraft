@@ -80,9 +80,9 @@ define([
         }
 
         var paths = pathname.split('/');
-        if (username) {
+		username = username && username[1];
+        if (username && username.indexOf("-") > 0) {
 			// 用户页
-            username = username[1];
             var splitIndex = username.indexOf('-');
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
@@ -193,42 +193,6 @@ define([
     util.getCurrentDateString = function () {
         var date = new Date();
         return date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-    }
-
-// GET PUT POST DELETE
-    util._http = function(method, url, params, isUseCache, callback, errorCallback) {
-        var $http = this.angularServices.$http;
-        var httpRespone = undefined;
-        //Loading.showLoading();
-        // 在此带上认证参数
-        if (method == 'POST') {
-            httpRespone = $http({method:method,url:url, cache: isUseCache, data:params}); //$http.post(url, params);
-        } else {
-            httpRespone = $http({method:method,url:url, cache: isUseCache, params:params});
-        }
-        httpRespone.then(function (response) {
-            var data = response.data;
-            //console.log(data);
-            // debug use by wxa
-            if (!data || !data.error) {
-                console.log(url, data);
-                errorCallback && errorCallback(data);
-				return;
-            }
-            if (data.error.id == 0) {
-                //console.log(data.data);
-                callback && callback(data.data);
-            } else {
-                console.log(url, data);
-                errorCallback && errorCallback(data.error);
-            }
-            //Loading.hideLoading();
-        }).catch(function (response) {
-            console.log(response);
-            //Loading.hideLoading();
-            // 网络错误
-            errorCallback && errorCallback(response.data);
-        });
     }
 
 	util.$http = function(obj) {
