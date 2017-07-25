@@ -162,6 +162,7 @@ function user:update(params)
 		query.githubToken = nil
 		query.githubName = nil
 		query.isadmin = nil
+		query.roleId = nil
 	end
 
 	self:db():updateOne({_id=query._id}, query, resume)
@@ -213,6 +214,7 @@ function user:api_updateByName(params)
 	params.email = nil
 	params.password = nil
 	params.isadmin = nil
+	params.roleId = nil
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 

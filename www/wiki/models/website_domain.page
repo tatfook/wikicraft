@@ -12,15 +12,15 @@ local website_domain = inherit(models.abstract.base, gettable("models.website_do
 website_domain.db_name = "website_domain";
 
 function website_domain:ctor() 
-	self:addfield("userId", "number")
-	self:addfield("websiteId","number")
+	self:addfield("username", "string")
+	self:addfield("sitename","string")
 	self:addfield("domain", "string")
 end
 
 
 -- 创建记录
 function website_domain:api_upsert(params)
-	if (not params.userId) or (not params.websiteId) or (not params.domain) then
+	if (not params.username) or (not params.sitename) or (not params.domain) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -41,12 +41,12 @@ function website_domain:api_deleteByDomain(params)
 end
 
 -- 获取站点所有域名
-function website_domain:api_getByWebsiteId(params)
-	if not params.websiteId then
+function website_domain:api_getByName(params)
+	if not params.username or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 		
-	self:db():find({["+websiteId"]={params.websiteId}}, resume)
+	self:db():find({["+username+sitename"]={params.username, params.sitename}}, resume)
 
 	return errors:wrap(yield())
 end
@@ -79,12 +79,12 @@ function website_domain:api_checkDomain(params)
 end
 
 -- 删除记录通过websiteId
-function website_domain:api_deleteByWebsiteId(params)
-	if not params.websiteId then
+function website_domain:api_deleteByName(params)
+	if not params.username or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():delete({['+websiteId']={params.websiteId}}, resume)
+	self:db():delete({['+username+sitename']={params.username, params.sitename}}, resume)
 
 	return errors:wrap(yield())
 end
