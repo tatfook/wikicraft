@@ -223,7 +223,7 @@ define([
             //console.log(data);
             // debug use by wxa
             if (!data || !data.error) {
-                console.log(url, data);
+                console.log(obj.url, data);
                 errorCallback && errorCallback(data);
 				return;
             }
@@ -231,7 +231,7 @@ define([
                 //console.log(data.data);
                 callback && callback(data.data);
             } else {
-                console.log(url, data);
+                console.log(obj.url, data);
                 errorCallback && errorCallback(data.error);
             }
             //Loading.hideLoading();
