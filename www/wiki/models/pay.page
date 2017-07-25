@@ -104,7 +104,7 @@ function pay:api_createCharge(params)
 	if not trade_no then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-	log("a")
+
 	local url       = self.apiUrl .. "charges";
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
@@ -121,10 +121,10 @@ function pay:api_createCharge(params)
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = trade_no};
 	end
-	log("b")
+
 	self:http("POST", url, apiParams, resume);
 	local err, chargeObject = yield();
-	log("c")
+
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
@@ -142,10 +142,10 @@ function pay:api_createCharge(params)
 	tradeInfo.app_goods_id = query.app_goods_id; 
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
-	log(tradeInfo, true);
+
 	self:db():insertOne(tradeInfo, resume);
 	local err, _ = yield();
-	log("d")
+
 	if(not err) then
 		return errors:wrap(nil, chargeObject);
 	else
@@ -208,7 +208,7 @@ function pay:spend(query, callback)
 	tradeInfo.app_goods_id = query.app_goods_id; 
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
-
+	
 	self:db():insertOne({trade_no = trade_no}, tradeInfo, resume);
 	local err, response = yield();
 
@@ -241,15 +241,17 @@ end
 function pay:api_getTradeOne(params)
 	local err, query = self:validateQuery(params);
 
-	if(not query.username and not query.trade_no) then
+	if(not query.username or not query.trade_no) then
 		return errors.wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
-	self:db():findOne({["+username+trade_no"] = {query.username, query.trade_no}}, resume);
+	self:db():findOne({["+username+trade_no"] = {query.username, tostring(query.trade_no)}}, resume);
 	local err, trade = yield();
 
 	if not err then
-		log(trade,true);
+		return errors:wrap(nil, trade);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 end
 

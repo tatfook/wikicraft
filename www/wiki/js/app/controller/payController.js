@@ -70,12 +70,11 @@ define([
             }
 
             if ($scope.method == "alipay") {
-                $scope.alipayClient();
-                //if ($scope.isMobile) {
-                //    $scope.alipayClient();
-                //} else {
-                //    $scope.alipayQR();
-                //}
+                if ($scope.isMobile) {
+                    $scope.alipayClient();
+                } else {
+                    $scope.alipayQR();
+                }
             } else if($scope.method == "wechat"){
                 if ($scope.isMobile) {
                     $scope.wechatClient();
@@ -242,8 +241,13 @@ define([
         }
 
         function getTrade(charge) {
-            $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, {isShowLoading: false}).then(function (response) {
+            $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, { isShowLoading: false }).then(function (response) {
 
+                if (response && response.data && response.data.data && response.data.data.status == "Finish") {
+                    $scope.page = "success";
+                } else {
+                    setTimeout(function () { getTrade(charge) }, 3000);
+                }
             })
         }
 
