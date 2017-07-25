@@ -78,7 +78,7 @@ function pay:api_createCharge(params)
 	local err, query = self:validateQuery(params);
 
 	local appGoodsInfo = self:getGoodsInfo(query);
-	
+	log("a");
 	if(not appGoodsInfo) then
 		return errors:wrap(errors.NOT_FOUND);
 	end
@@ -86,7 +86,7 @@ function pay:api_createCharge(params)
 	if(not self:validate(appGoodsInfo, query)) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
-
+	log("b");
 	if(not query.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	else
@@ -97,14 +97,13 @@ function pay:api_createCharge(params)
 			return errors:wrap(errors.NOT_FOUND);
 		end
 	end
-
-	tradeno:getTradeNo(resume);
-	local err, trade_no = yield();
+	log("c");
+	local trade_no = tradeno:getTradeNo();
 
 	if not trade_no then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-
+	log("d");
 	local url       = self.apiUrl .. "charges";
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
@@ -122,13 +121,12 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = trade_no};
 	end
 
-	self:http("POST", url, apiParams, resume);
-	local err, chargeObject = yield();
+	local err, chargeObject = self:http("POST", url, apiParams);
 
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-
+	log("e");
 	local tradeInfo = {};
 	tradeInfo.trade_no     = trade_no;
 	tradeInfo.username     = query.username;
@@ -145,7 +143,7 @@ function pay:api_createCharge(params)
 
 	self:db():insertOne(tradeInfo, resume);
 	local err, _ = yield();
-
+	log("f");
 	if(not err) then
 		return errors:wrap(nil, chargeObject);
 	else
@@ -352,7 +350,7 @@ function pay:validate(appGoodsInfo, query)
 	return validate;
 end
 
-function pay:http(method, url, params, callback)
+function pay:http(method, url, params)
 	System.os.GetUrl({
 		url    = url,
 		headers = {
@@ -366,29 +364,16 @@ function pay:http(method, url, params, callback)
 
 	local err, response = yield();
 
-	if(type(callback) == "function") then
-		callback(err, response);
-	end
+	return err, response;
 end
 
 function pay:getNow()
 	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end
 
-function tradeno:getTradeNo(callback)
+function tradeno:getTradeNo()
 	self:db():insertOne({},resume);
 	local err, response = yield();
 
-	if not err then
-		local number = ParaGlobal.GetDateFormat("yyyyMMdd") .. response._id;
-
-		if(type(callback) == "function") then
-			callback(nil, number);
-		end
-	else
-		if(type(callback) == "function") then
-			callback(true, nil);
-		end
-	end
-
+	return ParaGlobal.GetDateFormat("yyyyMMdd") .. response._id;
 end
