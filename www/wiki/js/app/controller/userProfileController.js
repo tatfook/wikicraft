@@ -9,7 +9,7 @@ define(['app',
     'text!html/userProfile.html',
     'cropper',
 ], function (app, util, storage,dataSource, htmlContent) {
-    app.registerController('userProfileController', ['$scope', 'Account', 'Message', function ($scope, Account, Message) {
+    app.registerController('userProfileController', ['$scope', '$interval', 'Account', 'Message', function ($scope, $interval, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         $scope.showItem = 'myProfile';
@@ -286,12 +286,29 @@ define(['app',
 				return;
 			}
 
+			if ($scope.wait > 0){
+                $scope.smsCode = "";
+                $('#phoneModal').modal("show");
+                return;
+            }
+
 			util.post(config.apiUrlPrefix + 'user/verifyCellphoneOne', {
 				cellphone:$scope.userPhone,
 				bind:!$scope.isBind("phone"),
 			},function(data){
-				$scope.smsId = data.smsId;					
-				$('#phoneModal').modal({});
+			    Message.info("验证码已发送");
+				$scope.smsId = data.smsId;
+				$scope.wait = 60;
+				var timePromise = $interval(function () {
+                    if($scope.wait <= 0){
+                        $interval.cancel(timePromise);
+                        timePromise = undefined;
+                    }else{
+                        $scope.wait--;
+                    }
+                }, 1000, 100);
+                $scope.smsCode = "";
+				$('#phoneModal').modal("show");//重新发送不弹窗
 			});
         }
 
