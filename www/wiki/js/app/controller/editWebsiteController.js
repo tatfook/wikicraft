@@ -29,6 +29,7 @@ define([
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
         function sendModifyWebsiteRequest() {
+			$scope.website.sitename = $scope.website.name;
             util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
                 Message.info("站点配置修改成功!!!");
