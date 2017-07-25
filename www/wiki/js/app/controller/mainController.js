@@ -309,6 +309,23 @@ define([
 					storage.sessionStorageRemoveItem("otherUsername");
 				}
 
+				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
+					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
+						if (data) {
+							urlObj.username = data.username;
+							urlObj.sitename = data.sitename;
+							if (urlObj.pathname.length > 1) {
+								urlObj.pagepath = '/' + data.username + '/' + data.sitename + urlObj.pathname;
+							} else {
+								urlObj.pagepath = '/' + data.username + '/' + data.sitename + '/index';
+							}
+						}
+						getUserPage();
+					}, function () {
+						getUserPage();
+					});
+				}
+
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
 						if (urlObj.pathname == "/wiki/test") {
@@ -333,25 +350,7 @@ define([
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
                 } else {
-					//config.loading.showLoading();
-                    if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-                        util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
-                            if (data) {
-                                urlObj.username = data.username;
-                                urlObj.sitename = data.sitename;
-								if (urlObj.pathname.length > 1) {
-									urlObj.pagepath = '/' + data.username + '/' + data.sitename + urlObj.pathname;
-								} else {
-									urlObj.pagepath = '/' + data.username + '/' + data.sitename + '/index';
-								}
-                            }
-                            getUserPage();
-                        }, function () {
-                            getUserPage();
-                        });
-                    } else {
-                        getUserPage();
-                    }
+					getUserPage();
                 }
 
             }
