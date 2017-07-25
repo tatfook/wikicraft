@@ -58,12 +58,12 @@ define([
         }
 
         $scope.addDomain=function(){
-            if (!/^[\d\w]+$/.test($scope.domain)) {
-                $scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
-                return;
-            }
+            //if (!/^[\d\w]+$/.test($scope.domain)) {
+                //$scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
+                //return;
+            //}
 
-            util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {userId:$scope.website.userId, websiteId:$scope.website._id, domain: $scope.domain}, function (data) {
+            util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {username:$scope.website.username, sitename:$scope.website.name, domain: $scope.domain}, function (data) {
                 $scope.domainList.push({domain:$scope.domain});
                 $scope.domain = "";
             });
@@ -449,7 +449,7 @@ define([
 		
         function init() {
 			initGroup();
-            util.post(config.apiUrlPrefix + "website_domain/getByWebsiteId", {websiteId:$scope.website._id}, function (data) {
+            util.post(config.apiUrlPrefix + "website_domain/getByName", {username:$scope.website.username, sitename: $scope.website.name}, function (data) {
                $scope.domainList = data;
                for (var i = 0; i < data.length; i++) {
                    if (data[i].domain == ($scope.website.username + "-" + $scope.website.domain)) {
