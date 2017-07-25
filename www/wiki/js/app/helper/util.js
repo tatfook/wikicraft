@@ -251,7 +251,7 @@ define([
 			params:params,
 			isShowLoading:isShowLoading,
 			callback:callback,
-			errorCallback,errorCallback,
+			errorCallback:errorCallback,
 		});
 	}
 
