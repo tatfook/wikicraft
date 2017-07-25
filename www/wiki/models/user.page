@@ -258,7 +258,7 @@ function user:api_verifyCellphoneOne(params)
 	sendTemplateSms(smsParams, resume)
 	local _, data = yield()
 	data = data.data
-	if data.statusCode ~= "000000" then
+	if not data or  data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
 
