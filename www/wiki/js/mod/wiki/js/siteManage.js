@@ -124,11 +124,33 @@ define([
         }
     }
 });
-
 /*
-```@wiki/js/siteManage
-{
-"moduleKind":"siteManageDemo"
-}
-```
+ ```@wiki/js/siteManage
+ {
+ "memberManageText":"成员管理",
+ "worksManageText":"作品管理",
+ "worksApplyText":"提交作品",
+ "memberApplyText":"申请加入"
+ }
+ ```
+ */
+/*
+ ```@wiki/js/siteManage
+ {
+ "moduleKind":"siteManagePreview",
+ "memberManageText":"成员管理",
+ "worksManageText":"作品管理",
+ "worksApplyText":"提交作品",
+ "memberApplyText":"申请加入"
+ }
+ ```
+ */
+/*
+ ```@wiki/js/siteManage
+ {
+ "moduleKind":"siteManageDemo",
+ "tutorialVideoText":"教学视频",
+ "worksApplyText":"提交作品"
+ }
+ ```
 */
