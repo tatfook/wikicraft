@@ -80,12 +80,14 @@ define([
                 $rootScope.cssPath = config.cssPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
+				$rootScope.frameHeaderExist = true;
+				$rootScope.frameFooterExist = true;
                 if (config.isLocal()) {
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
                 } else {
-                    $rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
-                    $rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
+                    //$rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
+                    //$rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
                 }
 
                 $rootScope.isLogin = Account.isAuthenticated();
