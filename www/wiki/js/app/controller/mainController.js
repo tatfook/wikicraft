@@ -23,6 +23,7 @@ define([
         '$rootScope',
         '$sce',
         '$location',
+		'$anchorScroll',
         '$http',
         '$auth',
         '$compile',
@@ -32,7 +33,7 @@ define([
         'modal',
         'gitlab',
         'confirmDialog',
-        function ($scope, $rootScope, $sce, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -45,6 +46,7 @@ define([
                     $compile: $compile,
                     $auth: $auth,
                     $location:$location,
+					$anchorScroll:$anchorScroll,
                     markdownit:markdownit({}),
                     storage: storage,
                     Account: Account,
@@ -316,11 +318,9 @@ define([
 						if (data) {
 							urlObj.username = data.username;
 							urlObj.sitename = data.sitename;
-							if (urlObj.pathname.length > 1) {
-								urlObj.pagepath = '/' + data.username + '/' + data.sitename + urlObj.pathname;
-							} else {
-								urlObj.pagepath = '/' + data.username + '/' + data.sitename + '/index';
-							}
+							var urlPrefix = '/' + data.username + '/' + data.sitename;
+							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
+							urlObj.pagepath = pathname.indexOf(urlPrefix) >= 0 ? pathname.substring(urlPrefix.length) : pathname;
 						}
 						getUserPage();
 					}, function () {

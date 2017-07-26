@@ -9,7 +9,7 @@ define([
 		'text!html/test.html',
 		'ace',
 ], function (app, util, dataSource,  htmlContent) {
-	app.registerController("testController", ['$scope','$http','$auth','$location', '$anchorScroll', function ($scope, $http, $auth, $location, $anchorScroll) {
+	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
 			//console.log($location, $location.hash());
 			//$anchorScroll();
