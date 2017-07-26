@@ -78,6 +78,7 @@
     }
     .phone-model .control-label{
         padding: 0;
+        text-align: right;
     }
     .phone-model .btns{
         padding: 0 10px;
@@ -338,6 +339,21 @@
     .modal .titleinfo{
         font-weight: normal;
         color: #666;
+    }
+    /*验证码*/
+    .form-group-lg .captcha{
+        display: flex;
+        height: 42px;
+        align-items: center;
+        padding:0 15px 0 0;
+    }
+    .captcha > img{
+        flex:1;
+        height:36px;
+        margin-right: 5px;
+    }
+    .captcha > span{
+        cursor: pointer;
     }
 
     @media (min-width: 768px) and (max-width: 992px) {
@@ -859,12 +875,10 @@
                             <div class="col-sm-6">
 								<input type="text" class="form-control" ng-model="imageCode">
                             </div>
-                            <div class="col-sm-3 verify-btn">
-								<img ng-src="{{imageCodeUrl}}"> 
+                            <div class="col-sm-3 captcha">
+								<img ng-src="{{imageCodeUrl}}" alt="验证码">
+                                <span class="glyphicon glyphicon-repeat" ng-click="refreshImageCode()" title="刷新"></span>
                             </div>
-							<div class="col-sm-3"> 
-								<span ng-click="refreshImageCode()">刷新</span>
-							</div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{imageCodeErrMsg}}</p>
                             </div>
@@ -881,13 +895,11 @@
                                 <p class="text-danger">{{errorMsg}}</p>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-sm-9 col-sm-offset-3 btns">
-                                <div class="col-sm-6"><div class="btn btn-block btn-primary" ng-click="confirmPhoneBind()">确定</div></div>
-                                <div class="col-sm-6"><div class="btn btn-block btn-outline" data-dismiss="modal">取消</div></div>
-                            </div>
-                        </div>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="confirmPhoneBind()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div>
         </div>
