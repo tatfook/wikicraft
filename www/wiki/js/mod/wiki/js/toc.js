@@ -26,8 +26,9 @@ define([
 
 			function active(containerId) {
 				$(".js-nav .active").removeClass("active");
-				var targetSelect='[data-targetid="'+containerId+'"]';
-				$(targetSelect).addClass("active");
+				var targetObj = $('[data-targetid="'+containerId+'"]');
+				targetObj.addClass("active");
+				targetObj.get(0).scrollIntoView();
             }
 
             function getOffsetTop(containerId) {
@@ -116,10 +117,9 @@ define([
 
                 var fixedH = winH - footerH - headerH;
                 scrollElement.css({
-                	"height": fixedH,
+                	"max-height": fixedH,
 					"overflow-y": "auto"
 				});
-                // setFullHeight.height(fixedH);
             };
 
 			var scrollProccess = function (scrollElement) {
