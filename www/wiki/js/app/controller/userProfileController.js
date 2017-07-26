@@ -285,6 +285,11 @@ define(['app',
 		}
 
 		$scope.showBindPhone = function() {
+			//console.log("手机绑定开发中");
+			if ($scope.isBind("phone")) {
+				$scope.userPhone = $scope.user.cellphone;
+			}
+
 			if (!/[0-9]{11}/.test($scope.userPhone)) {
 				Message.info("手机格式错误");
 				return;
@@ -297,11 +302,6 @@ define(['app',
 
         //安全验证
         $scope.bindPhone=function () {
-			//console.log("手机绑定开发中");
-			if ($scope.isBind("phone")) {
-				$scope.userPhone = $scope.user.cellphone;
-			}
-
 			if ($scope.imageCode != $scope.rightImageCode) {
 				$scope.imageCodeErrMsg = "图片验证码错误";
 				return;
