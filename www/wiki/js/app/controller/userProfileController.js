@@ -247,10 +247,25 @@ define(['app',
 				return;
 			}
 
+            if ($scope.wait > 0){
+                $scope.emailVerifyCode = "";
+                $('#emailModal').modal("show");
+                return;
+            }
+
 			util.post(config.apiUrlPrefix + 'user/verifyEmailOne', {
 				email:email,
 				bind:!$scope.isBind("email"),
 			}, function (data) {
+                $scope.wait = 60;
+                var timePromise = $interval(function () {
+                    if($scope.wait <= 0){
+                        $interval.cancel(timePromise);
+                        timePromise = undefined;
+                    }else{
+                        $scope.wait--;
+                    }
+                }, 1000, 100);
 				//Message.info("邮件发送成功，请按邮件指引完成绑定");
 				$('#emailModal').modal({});
 			},function (err) {
