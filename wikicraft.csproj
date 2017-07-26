@@ -1070,6 +1070,7 @@
     <None Include="www\wiki\models\site_user.page" />
     <None Include="www\wiki\models\tabledb.page" />
     <None Include="www\wiki\models\test.page" />
+    <None Include="www\wiki\models\abc.page" />
     <None Include="www\wiki\models\user_active.page" />
     <None Include="www\wiki\models\user_exception.page" />
     <None Include="www\wiki\models\user_fans.page" />

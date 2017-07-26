@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>NPL server page test. </title>
+</head>
+<body>
+This is how to turn any async function call into sync one:
+<%
+-- connect to TableDatabase (a NoSQL db engine written in NPL)
+db = TableDatabase:new():connect("database/npl/", function() end);
+
+local _log = log;
+local function log(s)
+	_log(s)
+	echo(s)
+end
+
+NPL.load("(gl)script/ide/System/os/GetUrl.lua");
+System.os.GetUrl("http://www.baidu.com/", function(...)
+	log("222222222222")
+	resume(...);
+	log("55555555555")
+end);
+log("11111111111")
+local err, data = yield();
+log("3333333333333")
+
+echo("<p>System.os.GetUrl('http://www.baidu.com/') returns </p>")
+echo(tostring(err).." html length: "..(type(data) == "table" and #(data.data) or ""));
+
+
+db.TestUser:findOne({name="user1"}, function(...)
+	log("66666666666")
+	resume(...);
+end);
+log("4444444444444")
+local err, user = yield(); -- async wait when job is done
+log("7777777777777")
+%>
+
+</body>
+</html>
+
