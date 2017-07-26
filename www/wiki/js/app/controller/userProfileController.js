@@ -277,7 +277,10 @@ define(['app',
 		}
 
 		$scope.refreshImageCode = function() {
-			$scope.rightImageCode = Math.round(Math.random() * 10000) + "";
+			$scope.rightImageCode = "";
+			for (var i = 0; i < 4; i++) {
+				$scope.rightImageCode += Math.floor(Math.random() * 10);
+			}
 			$scope.imageCodeUrl = "http://keepwork.com/captcha/get?" + $scope.rightImageCode;
 		}
 
