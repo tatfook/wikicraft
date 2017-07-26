@@ -275,15 +275,35 @@ define(['app',
 				$('#phoneModal').modal("hide");
 			});
 		}
+
+		$scope.refreshImageCode = function() {
+			$scope.rightImageCode = Math.round(Math.random() * 10000) + "";
+			$scope.imageCodeUrl = "http://keepwork.com/captcha/get?" + $scope.rightImageCode;
+		}
+
+		$scope.showBindPhone = function() {
+			if (!/[0-9]{11}/.test($scope.userPhone)) {
+				Message.info("手机格式错误");
+				return;
+			}
+
+			$scope.refreshImageCode();
+			$scope.wait = 0;
+			$('#phoneModal').modal("show");//重新发送不弹窗
+		}
+
         //安全验证
-        $scope.bindPhone=function (type) {
+        $scope.bindPhone=function () {
 			//console.log("手机绑定开发中");
 			if ($scope.isBind("phone")) {
 				$scope.userPhone = $scope.user.cellphone;
 			}
-			if (!/[0-9]{11}/.test($scope.userPhone)) {
-				Message.info("手机格式错误");
+
+			if ($scope.imageCode != $scope.rightImageCode) {
+				$scope.imageCodeErrMsg = "图片验证码错误";
 				return;
+			} else {
+				$scope.imageCodeErrMsg = "";
 			}
 
 			if ($scope.wait > 0){
@@ -296,7 +316,7 @@ define(['app',
 				cellphone:$scope.userPhone,
 				bind:!$scope.isBind("phone"),
 			},function(data){
-			    Message.info("验证码已发送");
+				//Message.info("验证码已发送");
 				$scope.smsId = data.smsId;
 				$scope.wait = 60;
 				var timePromise = $interval(function () {
@@ -308,7 +328,6 @@ define(['app',
                     }
                 }, 1000, 100);
                 $scope.smsCode = "";
-				$('#phoneModal').modal("show");//重新发送不弹窗
 			});
         }
 
