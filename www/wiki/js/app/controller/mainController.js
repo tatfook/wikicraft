@@ -320,7 +320,7 @@ define([
 							urlObj.sitename = data.sitename;
 							var urlPrefix = '/' + data.username + '/' + data.sitename;
 							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
-							urlObj.pagepath = pathname.indexOf(urlPrefix) >= 0 ? pathname.substring(urlPrefix.length) : pathname;
+							urlObj.pagepath = pathname.indexOf(urlPrefix) == 0 ? pathname : urlPrefix + pathname;
 						}
 						getUserPage();
 					}, function () {
