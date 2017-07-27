@@ -322,10 +322,10 @@ function user:api_verifyEmailOne(params)
 	par.body = [[
 	<div class="main-content">
 	<p>邮箱验证码为:%s</p>
-	<p>打开如下链接进行邮箱验证:</p>
-	<p><a href="%s">%s</a></p>
 	</div>
 	]]
+	--<p>打开如下链接进行邮箱验证:</p>
+	--<p><a href="%s">%s</a></p>
 	par.body = string.format(par.body, verifyCode, url, url)
 	util:sendEmail(par)
 
@@ -391,8 +391,8 @@ function user:api_findPwdOne(params)
 	par.subject = "keepwork找回密码"
 	par.body = [[
 	<div class="main-content">
-	<p>打开如下链接进行密码重置:</p>
-	<p><a href="%s">%s</a></p>
+		<p>打开如下链接进行密码重置:</p>
+		<p><a href="%s">%s</a></p>
 	</div>
 	]]
 	par.body = string.format(par.body, url, url)

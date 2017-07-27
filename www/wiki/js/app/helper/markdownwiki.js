@@ -513,7 +513,8 @@ define([
         }
         mdwiki.getBlockCache = function (text, token) {
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
+            //var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
+            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
             var blockCache = undefined;
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
@@ -537,12 +538,12 @@ define([
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
-			//console.log(text, token, blockCache.renderContent);
+			console.log(text, token, blockCache.renderContent);
 			if (/^[hH][1-6]$/.test(token.tag)) {
 				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
 				var tag = token.tag;
 				title = title.replace(/[\r\n]$/,"");
-				blockCache.renderContent = '<' + tag + '><a class="wiki_page_link" name="' + title + '"></a>' + title + '</' + tag + '>';
+				blockCache.renderContent = '<div class="wiki_page_inner_link" style="display:flex; flex-direction:row;"><a class="glyphicon glyphicon-link" name="' + title + '"></a>'+ blockCache.renderContent + '</div>';
 				console.log(blockCache.renderContent);
 			}
 
