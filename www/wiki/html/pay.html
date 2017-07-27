@@ -7,12 +7,11 @@
         padding: 0;
         padding-top: 43px;
         padding-bottom: 50px;
+        overflow: hidden;
     }
 
     .pay-main .goods-info {
         height: 80px;
-        line-height: 80px;
-        padding-left: 40px;
         font-size: 16px;
         color: #666666;
         background-color: #ffffff;
@@ -55,6 +54,7 @@
         height: 103%;
         font-size: 16px;
         text-align: center;
+        float: left;
         padding: 0 20px;
         margin-top: -1px;
         margin-left: 0px;
@@ -117,9 +117,14 @@
     }
 
     @media(max-width: 768px) {
+        .pay-main .goods-info {
+            padding: 10px;
+        }
+
         .pay-main-logo {
             width: 120px;
             margin: 0 auto;
+            margin-bottom: 40px;
         }
 
         .pay-main-logo .no-img {
@@ -142,13 +147,78 @@
         }
 
         .pay-main-method .pay-item ul li {
+            width: 50%;
             text-align: center;
             margin-bottom: 25px;
+        }
+
+        .pay-main-field {
+            float: left;
+        }
+
+        .pay-main-field .field-item {
+            height: 40px;
+            line-height: 40px;
+            margin-bottom: 28px;
+        }
+
+        .pay-main-field .field-item .desc {
+            float: left;
+            font-size: 13px;
+            width: 120px;
+            text-align: right;
+        }
+
+        .pay-main-field .field-item input , .pay-main-field .field-item .price-field{
+            margin-left: 90px;
+            display: block;
+        }
+
+        .pay-main-field .field-item input[type="text"] {
+            width: 185px;
+            border-radius: 4px;
+            padding: 0px;
+            border: 0;
+            border: 1px solid #dddddd;
+            padding-left: 10px;
+            color: #666666;
+        }
+
+        .pay-main-field .field-item input[name="price"] {
+            float: left;
+            margin-left: 0px;
+            margin-right: 10px;
+            width: 100px;
+        }
+
+        .pay-main-field .field-item .rules {
+            display: block;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .pay-main-field .field-item .rules .light {
+            color: #fe3266;
+            font-size: 13px;
+        }
+
+        .pay-main-field .field-item .rules .light-bigger {
+            font-size: 13px;
+        }
+
+        .pay-main-field .field-item input[type="button"] {
+            width: 120px;
+            height: 42px;
         }
     }
 
     @media(min-width: 768px) {
         .pay-main{
+        }
+
+        .pay-main .goods-info {
+            line-height: 80px;
+            padding-left: 40px;
         }
 
         .pay-main-user {
@@ -239,7 +309,6 @@
         }
 
         .pay-main-method .pay-item ul li {
-            float: left;
             cursor: pointer;
         }
 
@@ -457,9 +526,9 @@
                                     恭喜，您已支付成功！
                                 </div>
                                 <div class="success-operate">
-                                    <a href="#">查看支付记录</a>
+                                    <a href="/wiki/user_center">查看支付记录</a>
                                     或
-                                    <a href="#">返回</a>
+                                    <a ng-click="back()">返回</a>
                                 </div>
                             </div>
                         </div>
@@ -468,7 +537,7 @@
                                 <img src="/wiki/assets/imgs/pay_fail.png" />
                                 支付未成功！
                             </div>
-                            <div class="fail-code">ERROR: 301.52.123 FAIL MESSAGE</div>
+                            <div class="fail-code">ERROR: NO FAIL MESSAGE</div>
                         </div>
                     </div>
                 </div>

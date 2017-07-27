@@ -12,6 +12,7 @@ define([
         
         var queryArgs = util.getQueryObject();
         var validate  = true;
+        var reset     = true;
 
         $scope.otherUserinfo       = {};
         $scope.method              = "alipay";
@@ -60,6 +61,17 @@ define([
 
         $scope.onChange = function (params) {
             $scope.method = params;
+            $scope.page   = "user";
+            reset         = true;
+        }
+
+        $scope.goMypay = function () {
+            storage.sessionStorageSetItem('userCenterContentType', 'userProfile');
+            storage.sessionStorageSetItem("userCenterSubContentType", 'myPay');
+            util.go("userCenter");
+        }
+
+        $scope.back = function () {
             $scope.page = "user";
         }
 
@@ -68,6 +80,8 @@ define([
                 alert("参数错误");
                 return;
             }
+
+            reset = false;
 
             if ($scope.method == "alipay") {
                 if ($scope.isMobile) {
@@ -245,8 +259,12 @@ define([
 
                 if (response && response.data && response.data.data && response.data.data.status == "Finish") {
                     $scope.page = "success";
+                } else if (response && response.data && response.data.data && response.data.data.status == "Fail") {
+                    $scope.page = "fail";
                 } else {
-                    setTimeout(function () { getTrade(charge) }, 3000);
+                    if (!reset) {
+                        setTimeout(function () { getTrade(charge) }, 3000);
+                    }
                 }
             })
         }

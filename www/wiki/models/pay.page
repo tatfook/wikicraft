@@ -56,21 +56,21 @@ function pay:ctor()
 	self:addfield("additional","table",false);
 
 	-- from ping++
-	-- ÊÂ¼ş¶ÔÏó  id £¬ÓÉ Ping++ Éú³É£¬28 Î»³¤¶È×Ö·û´®
+	-- äº‹ä»¶å¯¹è±¡  id ï¼Œç”± Ping++ ç”Ÿæˆï¼Œ28 ä½é•¿åº¦å­—ç¬¦ä¸²
 	self:addfield("id", "string", false);
-	-- ÖµÎª "event"
+	-- å€¼ä¸º "event"
 	self:addfield("event","string",false);
-	-- ÊÂ¼şÊÇ·ñ·¢ÉúÔÚÉú²ú»·¾³
+	-- äº‹ä»¶æ˜¯å¦å‘ç”Ÿåœ¨ç”Ÿäº§ç¯å¢ƒ
 	self:addfield("livemode","string",false);
-	-- ÊÂ¼ş·¢ÉúµÄÊ±¼ä
+	-- äº‹ä»¶å‘ç”Ÿçš„æ—¶é—´
 	self:addfield("created","string",false);
-	-- ÍÆËÍÎ´³É¹¦µÄ webhooks ÊıÁ¿
+	-- æ¨é€æœªæˆåŠŸçš„ webhooks æ•°é‡
 	self:addfield("pending_webhooks","number",false);
-	-- ÊÂ¼şÀàĞÍ£¬Ïê¼û ÊÂ¼şÀàĞÍ
+	-- äº‹ä»¶ç±»å‹ï¼Œè¯¦è§ äº‹ä»¶ç±»å‹
 	self:addfield("type","string",false);
-	-- API Request ID¡£Öµ "null" ±íÊ¾¸ÃÊÂ¼ş²»ÊÇÓÉ API ÇëÇó´¥·¢µÄ
+	-- API Request IDã€‚å€¼ "null" è¡¨ç¤ºè¯¥äº‹ä»¶ä¸æ˜¯ç”± API è¯·æ±‚è§¦å‘çš„
 	self:addfield("request","string",false);
-	-- °ó¶¨ÔÚÊÂ¼şÉÏµÄÊı¾İ¶ÔÏó,¾ßÌå²Î¿¼ÏÂ±í  data ²ÎÊıËµÃ÷
+	-- ç»‘å®šåœ¨äº‹ä»¶ä¸Šçš„æ•°æ®å¯¹è±¡,å…·ä½“å‚è€ƒä¸‹è¡¨  data å‚æ•°è¯´æ˜
 	self:addfield("data","table",false);
 end
 
@@ -78,7 +78,7 @@ function pay:api_createCharge(params)
 	local err, query = self:validateQuery(params);
 
 	local appGoodsInfo = self:getGoodsInfo(query);
-	log("a");
+
 	if(not appGoodsInfo) then
 		return errors:wrap(errors.NOT_FOUND);
 	end
@@ -86,7 +86,7 @@ function pay:api_createCharge(params)
 	if(not self:validate(appGoodsInfo, query)) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
-	log("b");
+
 	if(not query.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	else
@@ -97,13 +97,13 @@ function pay:api_createCharge(params)
 			return errors:wrap(errors.NOT_FOUND);
 		end
 	end
-	log("c");
+
 	local trade_no = tradeno:getTradeNo();
 
 	if not trade_no then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-	log("d");
+
 	local url       = self.apiUrl .. "charges";
 	local apiParams = {};
 	apiParams.order_no   = trade_no;
@@ -121,33 +121,12 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = trade_no};
 	end
 
-	local nTime = commonlib.getfield("temp.nTime") or 1;
-	commonlib.setfield("temp.nTime", nTime + 1);
-	log("11111111111 "..nTime)
-	System.os.GetUrl({
-		url    = url,
-		headers = {
-			Authorization = "Bearer " .. self.appToken,
-			["content-type"]  = "application/json",
-		},
-		form   = apiParams,
-		method = "POST",
-		json   = true,
-	},function(err, data)
-		log("22222222222 "..nTime)
-		resume(err, data);
-		log("3333333333333 "..nTime)
-	end);
-
-	local err, chargeObject = yield();
-
-	log("4444444444444444 "..nTime)
-	--local err, chargeObject = self:http("POST", url, apiParams);
+	local err, chargeObject = self:http("POST", url, apiParams);
 
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-	log("e");
+
 	local tradeInfo = {};
 	tradeInfo.trade_no     = trade_no;
 	tradeInfo.username     = query.username;
@@ -162,14 +141,9 @@ function pay:api_createCharge(params)
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
 	log(tradeInfo);
-	self:db():insertOne(tradeInfo, function(...)
-		log("55555555 "..nTime)
-		resume(...);
-		log("66666666 "..nTime)
-	end);
+	self:db():insertOne(tradeInfo, resume);
 	local err, _ = yield();
-	log("7777777777777 "..nTime)
-	log("f");
+
 	if(not err) then
 		return errors:wrap(nil, chargeObject);
 	else
@@ -275,7 +249,7 @@ function pay:api_webhooks(params)
 		local err, payInfo = yield();
 
 		if not err and payInfo ~= nil and payInfo.status ~= "Finish" and payInfo.method == "Recharge" then
-			-- ³äÖµ
+			-- å……å€¼
 			local bSuccess = wallet:balance(payInfo.price, payInfo.username);
 
 			if(not bSuccess) then
@@ -285,7 +259,7 @@ function pay:api_webhooks(params)
 			self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
 			local err, _ = yield();
 
-			-- Ïû·Ñ
+			-- æ¶ˆè´¹
 			appInfo = oauth_app:getByAppName(payInfo.app_name)
 
 			if(appInfo) then
