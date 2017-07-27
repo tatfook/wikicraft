@@ -48,6 +48,7 @@
     <Content Include="www\wiki\assets\imgs\pay-wechat.png" />
     <Content Include="www\wiki\html\pay.html" />
     <Content Include="www\wiki\index.html" />
+    <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
     <Content Include="www\wiki\js\app\controller\payController.js" />
     <Content Include="www\wiki\js\lib\ace\ace.js" />
     <Content Include="www\wiki\js\lib\ace\ext-beautify.js" />
