@@ -51,6 +51,7 @@ local headers = {["Accept"]="application/json", ["Content-Type"] = "application/
 -- response:Begin()
 function sendTemplateSms(params, callback)
 	params.appId = appId
+	params.templateId = 194013
 	System.os.GetUrl({url = url, headers = headers, form = params, json = true}, callback)
 end
 

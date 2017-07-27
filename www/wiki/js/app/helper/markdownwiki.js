@@ -537,6 +537,15 @@ define([
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
+			//console.log(text, token, blockCache.renderContent);
+			if (/^[hH][1-6]$/.test(token.tag)) {
+				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
+				var tag = token.tag;
+				title = title.replace(/[\r\n]$/,"");
+				blockCache.renderContent = '<' + tag + '><a class="wiki_page_link" name="' + title + '"></a>' + title + '</' + tag + '>';
+				console.log(blockCache.renderContent);
+			}
+
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;

@@ -249,7 +249,7 @@ function user:api_verifyCellphoneOne(params)
 		local _, data = yield()
 
 		if data and #data > 0 then
-			return errors:new("手机号已绑定!!!")
+			return errors:new("手机号已绑定:" .. data[1].username)
 		end
 	end
 
@@ -278,6 +278,7 @@ function user:api_verifyCellphoneTwo(params)
 	end
 
 	local value = mem_cache:get(params.smsId)
+	mem_cache:set(params.smsId, nil)
 	value = commonlib.Json.Decode(value or "{}")
 	if value.smsCode ~= params.smsCode then
 		return errors:wap(errors:new("验证码错误"))
@@ -308,7 +309,7 @@ function user:api_verifyEmailOne(params)
 		self:db():find({["+email"]={params.email}}, resume)
 		local err, data = yield()
 		if data and #data > 0 then
-			return errors:wrap("邮箱已绑定")
+			return errors:wrap("邮箱已绑定:" .. data[1].username)
 		end
 	end
 
@@ -349,7 +350,9 @@ function user:api_verifyEmailTwo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local cacheInfo = mem_cache:get("verifyEmail" .. username)
+	local key = "verifyEmail" .. username
+	local cacheInfo = mem_cache:get(key)
+	mem_cache:set(key, nil)
 	if not cacheInfo or (not cacheInfo.email) or (cacheInfo.verifyCode ~= verifyCode) then
 		return errors:wrap("验证码错误或失效")
 	end
@@ -405,6 +408,7 @@ function user:api_findPwdTwo(params)
 	end
 
 	local key = mem_cache:get(params.email)
+	mem_cache:set(params.email, nil)
 	if key ~= params.key then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
