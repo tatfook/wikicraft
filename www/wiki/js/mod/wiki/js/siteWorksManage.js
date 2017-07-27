@@ -53,13 +53,8 @@ define([
             }
 
             // 跳作品页
-            $scope.goApplyWorksPage = function (apply) {
-                util.goUserSite(apply.worksInfo.worksUrl);
-            }
-
-            // 跳作品页
             $scope.goWorksPage = function (works) {
-                util.goUserSite(works.worksInfo.worksUrl);
+                util.goUserSite(works.worksUrl);
             }
 
             // 同意作品申请

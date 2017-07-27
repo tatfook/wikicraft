@@ -83,11 +83,13 @@
     .phone-model .verify-btn, .email-model .verify-btn{
         padding-left: 0;
     }
-    .phone-model .verify-btn .btn-default, .email-model .verify-btn .btn-default{
-        background-color: #999;
+    .phone-model .verify-btn .btn-block, .email-model .verify-btn .btn-block{
         color: #FFF;
         padding:10px 0;
         font-size: 14px;
+    }
+    .phone-model .verify-btn .btn-default, .email-model .verify-btn .btn-default{
+        background-color: #999;
     }
     /*我的动态*/
     .tab-content .status-row{
@@ -829,7 +831,7 @@
                                 <input type="text" class="form-control" ng-model="emailVerifyCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-default btn-block" ng-disabled="wait > 0" ng-click="bindEmail()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindEmail()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>
@@ -874,7 +876,7 @@
                                 <input type="text" class="form-control" ng-model="smsCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-default btn-block" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>
