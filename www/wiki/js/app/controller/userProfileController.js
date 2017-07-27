@@ -227,7 +227,10 @@ define(['app',
 				}
 				Account.setUser($scope.user);
 				$('#emailModal').modal("hide");
-			});
+				$scope.wait = 60;
+			}, function (err) {
+                $scope.errorMsg = err.message;
+            });
 		}
 
 		$scope.bindEmail = function () {
@@ -249,6 +252,7 @@ define(['app',
 
             if ($scope.wait > 0){
                 $scope.emailVerifyCode = "";
+                $scope.errorMsg = "";
                 $('#emailModal').modal("show");
                 return;
             }
@@ -267,6 +271,7 @@ define(['app',
                     }
                 }, 1000, 100);
 				//Message.info("邮件发送成功，请按邮件指引完成绑定");
+                $scope.emailVerifyCode = "";
 				$('#emailModal').modal({});
 			},function (err) {
 				console.log(err);
@@ -288,8 +293,9 @@ define(['app',
 				}
 				Account.setUser($scope.user);
 				$('#phoneModal').modal("hide");
+				$scope.wait = 60;
 			});
-		}
+		};
 
 		$scope.refreshImageCode = function() {
 			$scope.rightImageCode = "";
@@ -312,11 +318,14 @@ define(['app',
 
 			$scope.refreshImageCode();
 			$scope.wait = 0;
+            $scope.smsCode = "";
+            $scope.imageCode = "";
 			$('#phoneModal').modal("show");//重新发送不弹窗
 		}
 
         //安全验证
         $scope.bindPhone=function () {
+            $scope.errorMsg = "";
 			if ($scope.imageCode != $scope.rightImageCode) {
 				$scope.imageCodeErrMsg = "图片验证码错误";
 				return;
@@ -325,8 +334,6 @@ define(['app',
 			}
 
 			if ($scope.wait > 0){
-                $scope.smsCode = "";
-                $('#phoneModal').modal("show");
                 return;
             }
 
@@ -346,7 +353,9 @@ define(['app',
                     }
                 }, 1000, 100);
                 $scope.smsCode = "";
-			});
+			}, function (err) {
+			    $scope.errorMsg = err.message;
+            });
         }
 
         // 修改用户信息
