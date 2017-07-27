@@ -15,14 +15,14 @@ local goodsData = {
 	{
 		goods_id          = 1,
 		app_goods_id      = 100,
-		subject           = "测试商品",
-		body              = "测试内容",
+		subject           = "魔法哈奇",
+		body              = "魔法哈奇",
 		price             = 1,
 		exchange_rate     = 10,
 		default_buy_count = 10,
 		min_buy_count     = 100,
 		max_buy_count     = 1000,
-		app_name          = "haqi",
+		app_name          = "魔法哈奇",
 		is_on_sale        = 1,
 		create_date       = "2017-7-14 11:03:20",
 		additional_field  = {
