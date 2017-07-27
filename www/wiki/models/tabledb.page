@@ -117,7 +117,7 @@ function tabledb:api_upsert(params)
 	local table = defaultTableDB[params.tableName]
 	local record = params.query or {}
 
-	log(record)
+	--log(record)
 	if record._id then
 		table:updateOne({_id=record._id}, record, resume)
 	else
@@ -180,4 +180,6 @@ function tabledb:api_deleteIndex(params)
 
 	return errors:wrap(yield())
 end
+
+
 

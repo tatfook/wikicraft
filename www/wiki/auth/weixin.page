@@ -7,10 +7,11 @@ Date: 2016/5/10
 include_once("api.page")
 
 local accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token'
--- local userApiUrl = 'https://graph.qq.com/oauth2.0/me'
+local userApiUrl = 'https://api.weixin.qq.com/sns/userinfo'
+
 local serviceName = "weixin"
 local params = {
-    grant_type="authorization_code",
+	grant_type="authorization_code",
 	code = request:get("code"),
 	appid = request:get("clientId"),
 	secret = KEEPWORK["config"]["default"]["threeService"]["weixin"]["client_secret"],
@@ -19,33 +20,57 @@ local params = {
 
 response:Begin()
 -- Step 1. Exchange authorization code for access token.
-util.GetUrl({url = accessTokenUrl, qs = params }, function(err, msg, data)
-    data = commonlib.Json.Decode(data)
-	if((not data) or (data.errcode)) then
-		return response:send({error=1, message="access token invaild"})
-	end
+util.GetUrl({url = accessTokenUrl, qs = params }, resume)
+local err, data = yield()
+data = commonlib.Json.Decode(data.data)
+if((not data) or (data.errcode)) then
+	return response:send({error=1, message="access token invaild"})
+end
 
-	-- 是否已经登录
-	local userId = checkAuthenticated()
-	if userId then
-		db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {userId=userId, serviceId=data.openid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
-		return response:send({token = token, error=0, message="OK"})
-	end
-	-- 未登录
+LOG.std(nil, "error", "keepwork", data)
 
-	db.user_three_service:findOne({["+serviceId+serviceName"]={data.openid, serviceName}}, function(err, userThreeService)
-		-- 没有绑定
-		if not userThreeService then
-			db.user_three_service:insertOne({["+serviceId+serviceName"]={data.openid, serviceName}}, {serviceId=data.openid, serviceName=serviceName, token=data.access_token}, function(err, userThreeService)	end)
-			return response:send({error=0, data={serviceId=data.openid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
-		end
-		db.user:findOne({_id=userThreeService.userId}, function(err, userinfo)
-			if not userinfo then
-				return response:send({error=0, data={serviceId=data.openid, access_token=data.access_token, serviceName=serviceName}, message="user not found"})
-			end
-			local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
-			return response:send({token = token, data = userinfo, error=0, message="OK"})
-		end)
-	end)
-end)
+local serviceId = data.openid
+local accessToken = data.access_token
+
+util.GetUrl({url=userApiUrl, qs={access_token=accessToken, openid=serviceId}}, resume)
+local err, data = yield()
+
+LOG.std(nil, "error", "keepwork", data.data)
+data = commonlib.Json.Decode(data.data)
+--log(data)
+
+local serviceUsername = data.nickname
+
+-- 是否已经登录
+local username = getUsername()
+if username then
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {username=username, serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername},resume)
+	yield()
+	return response:send({token = token, error=0, message="OK"})
+end
+
+-- 未登录
+db.user_three_service:findOne({["+serviceId+serviceName"]={serviceId, serviceName}}, resume)
+local err, userThreeService = yield()
+-- 没有绑定
+if not userThreeService then
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername}, resume)
+	yield()
+	return response:send({error=0, data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
+else
+	if not userThreeService.serviceUsername then
+		db.user_three_service:updateOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceUsername=serviceUsername}, resume)
+		yield()
+	end
+end
+
+db.user:findOne({["+username"]={userThreeService.username}}, resume)
+local err, userinfo = yield()
+
+if not userinfo then
+	return response:send({error=0, data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
+end
+
+local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+return response:send({token = token, data = userinfo, error=0, message="OK"})
 

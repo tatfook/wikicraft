@@ -23,6 +23,7 @@ define([
         '$rootScope',
         '$sce',
         '$location',
+		'$anchorScroll',
         '$http',
         '$auth',
         '$compile',
@@ -32,7 +33,7 @@ define([
         'modal',
         'gitlab',
         'confirmDialog',
-        function ($scope, $rootScope, $sce, $location, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -45,6 +46,7 @@ define([
                     $compile: $compile,
                     $auth: $auth,
                     $location:$location,
+					$anchorScroll:$anchorScroll,
                     markdownit:markdownit({}),
                     storage: storage,
                     Account: Account,
@@ -80,12 +82,14 @@ define([
                 $rootScope.cssPath = config.cssPath;
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
+				$rootScope.frameHeaderExist = true;
+				$rootScope.frameFooterExist = true;
                 if (config.isLocal()) {
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
                 } else {
-                    $rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
-                    $rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
+                    //$rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
+                    //$rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
                 }
 
                 $rootScope.isLogin = Account.isAuthenticated();
@@ -246,7 +250,7 @@ define([
 									$rootScope.$broadcast('userpageLoaded',{});
 									content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
 									util.html('#__UserSitePageContent__', content, $scope);
-									config.loading.hideLoading();
+									//config.loading.hideLoading();
 								};
 								//if (config.isLocal()) {
 									//currentDataSource.setLastCommitId("master");
@@ -291,7 +295,7 @@ define([
                     });
                 } else if (urlObj.username){
                     util.html('#__UserSitePageContent__', userHtmlContent, $scope);
-					config.loading.hideLoading();
+					//config.loading.hideLoading();
                 }
             }
 
@@ -307,6 +311,22 @@ define([
 				
 				if (!util.isEditorPage()) {
 					storage.sessionStorageRemoveItem("otherUsername");
+				}
+
+				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
+					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
+						if (data) {
+							urlObj.username = data.username;
+							urlObj.sitename = data.sitename;
+							var urlPrefix = '/' + data.username + '/' + data.sitename;
+							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
+							urlObj.pagepath = pathname.indexOf(urlPrefix) == 0 ? pathname : urlPrefix + pathname;
+						}
+						getUserPage();
+					}, function () {
+						getUserPage();
+					});
+					return;
 				}
 
                 if (config.mainContent) {
@@ -333,20 +353,7 @@ define([
                         util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
                     }
                 } else {
-					config.loading.showLoading();
-                    if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-                        util.post(config.apiUrlPrefix + 'website/getByDomain',{domain:urlObj.domain}, function (data) {
-                            if (data) {
-                                urlObj.username = data.username;
-                                urlObj.sitename = data.name;
-                            }
-                            getUserPage();
-                        }, function () {
-                            getUserPage();
-                        });
-                    } else {
-                        getUserPage();
-                    }
+					getUserPage();
                 }
 
             }

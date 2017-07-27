@@ -2136,6 +2136,9 @@ define([
                         "Alt-P": function (cm) {
                             $scope.cmd_image();
                         },
+                        "Alt-V": function (cm) {
+                            $scope.cmd_video();
+                        },
                         "Alt-C": function (cm) {
                             $scope.cmd_code();
                         },

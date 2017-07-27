@@ -35,6 +35,15 @@ function decodeJWT(token)
 	return jwt.decode(token, secret["token_secret"], true);
 end
 
+--function getTokenStr() 
+	--local authHeader = request:header('Authorization')
+	--if not authHeader then
+		--return nil
+	--end
+	--local token = authHeader:match("%s+(%S+)");
+	--return token
+--end
+
 function getTokenInfo()
 	local authHeader = request:header('Authorization')
 	if not authHeader then
@@ -42,6 +51,37 @@ function getTokenInfo()
 	end
 	local token = authHeader:match("%s+(%S+)");
 	return decodeJWT(token)
+end
+
+function getUsername() 
+	local token = getTokenInfo()
+	if token then
+		return token.username
+	end
+
+	return nil
+end
+
+function getUser()
+	local username = getUsername()
+
+	if not username then
+		return nil
+	end
+
+	db.user:findOne({["+username"]={username}}, resume)
+
+	local _, user = yield()
+
+	return user
+end
+
+function toJson(t) 
+	return commonlib.Json.Encode(t)
+end
+
+function fromJson(s)
+	return commonlib.Json.Decode(s)
 end
 
 -- 初始化数据库
@@ -144,14 +184,12 @@ end
 
 function init()
 	init_db()
-	init_wiki_module()
+	--init_wiki_module()
 	request_before_filter()
 	-- log(getTokenInfo())
 end
 
 init()
-
-
 
 
 

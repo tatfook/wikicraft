@@ -75,6 +75,14 @@ KEEPWORK["request_before_filter"] = {
 	-- 获得用户配置信息
 	[API_URL_PREFIX .. "user/getProfile"] = {
 		authenticated,
+	},
+	-- 邮件验证
+	[API_URL_PREFIX .. "user/verifyEmailOne"] = {
+		requestCountLimit("verifyEmailOne", 30, 300),
+	},
+	-- 手机验证
+	[API_URL_PREFIX .. ""] = {
+		requestCountLimit("verifyCellphoneOne", 30, 300),
 	}
 }
 

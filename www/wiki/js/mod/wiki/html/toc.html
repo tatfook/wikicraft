@@ -1,9 +1,7 @@
 <style>
     .sidebar-nav{
-        border-right: 1px solid #CCC;
-        font-size: 13px;
-        height: 1012px;
-        padding: 12px 22px 4px;
+        font-size: 18px;
+        padding: 60px 0 4px 22px;
     }
     .sidebar-nav ul{
         margin: 0;
@@ -11,31 +9,72 @@
     }
     .sidebar-nav ul>li{
         list-style: none;
+        cursor: pointer;
+    }
+    .sidebar-nav span.list-title {
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #3977AD;
     }
     .sidebar-nav ul:not(.first-level)>li{
-        padding:10px 0 0 30px;
         font-weight: normal;
     }
-    .sidebar-nav ul.first-level>li{
-        font-weight: bold;
-        padding-top: 15px;
+    .sidebar-nav .second-level > li > .list-title{
+        padding: 5px 0 5px 20px;
     }
-    .sidebar-nav ul.third-level>li:last-child{
-        /*padding: 10px 0 0 46px;*/
+    .sidebar-nav .third-level > li > .list-title{
+        padding: 5px 0 5px 40px;
+    }
+    .sidebar-nav .forth-level > li > .list-title{
+        padding: 5px 0 5px 60px;
+    }
+    .sidebar-nav .fifth-level > li > .list-title{
+        padding: 5px 0 5px 80px;
+    }
+    .sidebar-nav .sixth-level > li > .list-title{
+        padding: 5px 0 5px 100px;
+    }
+    .sidebar-nav .list-title:hover{
+        color: #64ADEC;
+    }
+    .sidebar-nav li.active > .list-title{
+        color: #999;
+        font-weight: bold;
+        border-right: 5px solid #3977AD;
+    }
+    .sidebar-nav ul.first-level>li{
+        padding-top: 15px;
     }
 </style>
 <div ng-controller="tocController">
-    {{message}}
-    <div class="nav sidebar-nav">
+    <div class="nav sidebar-nav js-nav">
         <ul class="first-level">
-            <li ng-repeat="item in tocList" id="item.containerId">
-                <span>{{item.text+"---"+item.containerId}}</span>
+            <li ng-class="{'active':($index==0)}" ng-repeat="item in tocTreeList" data-targetid="{{item.containerId}}">
+                <span class="list-title js-target" ng-click="goPart(item.containerId)">{{item.text}}</span>
                 <ul class="second-level">
-                    <li ng-repeat="item1 in item.childs" id="item1.containerId">
-                        <span>{{item1.text}}</span>
+                    <li ng-repeat="item1 in item.childs" data-targetid="{{item1.containerId}}">
+                        <span class="list-title js-target" ng-click="goPart(item1.containerId)">{{item1.text}}</span>
                         <ul class="third-level">
-                            <li ng-repeat="item2 in item1.childs" id="item2.containerId">
-                                <span>{{item2.text}}</span>
+                            <li ng-repeat="item2 in item1.childs" data-targetid="{{item2.containerId}}">
+                                <span class="list-title js-target" ng-click="goPart(item2.containerId)">{{item2.text}}</span>
+                                <ul class="forth-level">
+                                    <li ng-repeat="item3 in item2.childs" data-targetid="{{item3.containerId}}">
+                                        <span class="list-title js-target" ng-click="goPart(item3.containerId)">{{item3.text}}</span>
+                                        <ul class="fifth-level">
+                                            <li ng-repeat="item4 in item3.childs" data-targetid="{{item4.containerId}}">
+                                                <span class="list-title js-target" ng-click="goPart(item4.containerId)">{{item4.text}}</span>
+                                                <ul class="sixth-level">
+                                                    <li ng-repeat="item5 in item4.childs" data-targetid="{{item5.containerId}}">
+                                                        <span class="list-title js-target" ng-click="goPart(item5.containerId)">{{item5.text}}</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>

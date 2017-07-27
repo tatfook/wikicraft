@@ -1,0 +1,67 @@
+<div ng-controller="entriesController" class="height: 100%; display: flex; flex-direction:column;">
+
+    <style scoped>
+        ul {
+            list-style: none;
+        }
+
+        ul, li {
+            padding: 0;
+            margin: 0;
+        }
+
+        .entr-list {
+            height: 400px;
+            background-color: yellow;
+        }
+
+        .box {
+            height: 400px;
+            background-color: pink;
+        }
+    </style>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="$dismiss()">&times;</button>
+        <h4 class="modal-title">选择词条</h4>
+    </div>
+    <div class="modal-body">
+        <div class="entr-list col-xs-2 col-xs-offset-1">
+            <ul class="select-list">
+                <li class="list-item">aaaaa</li>
+                <li class="list-item">bbbb</li>
+                <li class="list-item">ccccc</li>
+            </ul>
+        </div>
+
+        <div class="box col-xs-6">
+            <ul class="box-list">
+                <li class="box-item">
+                    <ul class="entri-list">
+                        <li class="entri-item">entri 1</li>
+                        <li class="entri-item">entri 2</li>
+                        <li class="entri-item">entri 3</li>
+                    </ul>
+                </li>
+                <li class="box-item">
+                    <ul class="entri-list">
+                        <li class="entri-item">entri 4</li>
+                        <li class="entri-item">entri 5</li>
+                        <li class="entri-item">entri 6</li>
+                    </ul>
+                </li>
+                <li class="box-item">
+                    <ul class="entri-list">
+                        <li class="entri-item">entri 7</li>
+                        <li class="entri-item">entri 8</li>
+                        <li class="entri-item">entri 9</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
+        <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()" ng-class="{'edit-disable': action.edit}">确定</button>
+    </div>
+</div>

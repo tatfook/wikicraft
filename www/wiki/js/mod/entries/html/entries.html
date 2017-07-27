@@ -1,0 +1,375 @@
+<div ng-controller="entriesController">
+
+    <style scoped>
+        .layout-swiper {
+            width: 100%;
+            margin: 20px auto 0;
+            padding: 30px 20px;
+            position: relative;
+            background-color: #aed1f0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .layout-swiper .swiper-slide {
+            padding: 0 5px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        #sliding-loading .swiper-slide .inner-box {
+            height: auto;
+            padding: 10px 15px 12px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -o-border-radius: 5px;
+            border-radius: 5px;
+            border: 1px solid #f9f9f9;
+            background-color: #fff;
+            box-shadow: 0 0 3px #999;
+        }
+
+        .inner-box:hover {
+            -webkit-transition: all 0.3s;
+            transition: all 0.3s;
+            background-color: #fff;
+            border: 1px solid #337ab7;
+            box-shadow: none;
+        }
+
+        .inner-box>a {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            position: relative;
+            z-index: 99;
+        }
+
+        .inner-box .item-title {
+            -webkit-line-clamp: 3;
+            height: 60px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .inner-box .item-nickname {
+            max-width: 100%;
+            -webkit-line-clamp: 1;
+            text-align: right;
+            color: #666;
+        }
+
+        .inner-box .item-title:hover,
+        .inner-box .item-nickname:hover {
+            color: #337ab7;
+        }
+
+        .teacher-btn {
+            box-sizing: border-box;
+        }
+
+        .teacher-btn .set-btn {
+            width: 100%;
+            display: block;
+            line-height: 45px;
+            box-sizing: border-box;
+            background-color: #efefef;
+            border: 1px solid #f1f1f1;
+            box-sizing: border-box;
+            outline: none;
+            color: #337ab7;
+        }
+
+        .prev-btn,
+        .next-btn {
+            width: 32px;
+            height: 45%;
+            position: absolute;
+            z-index: 99;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+            /*-webkit-border-radius:50%;
+           border-radius:50%;*/
+            /*background-color:rgba(63, 152, 254, 1);*/
+            cursor: pointer;
+            text-align: center;
+            opacity: 0;
+        }
+
+        .prev-btn a,
+        .next-btn a {
+            color: #fff;
+            font-size: 18px;
+            line-height: 4;
+        }
+
+        .prev-btn:hover,
+        .next-btn:hover {
+            background-color: rgba(0, 0, 0, .66);
+        }
+
+        .prev-btn {
+            left: 0;
+            -webkit-border-top-right-radius: 5px;
+            border-top-right-radius: 5px;
+            -webkit-border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .next-btn {
+            right: 0;
+            -webkit-border-top-left-radius: 5px;
+            border-top-left-radius: 5px;
+            -webkit-border-bottom-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        .layout-swiper:hover .prev-btn {
+            opacity: 1;
+            left: 0;
+            -webkit-transition: all 0.2s ease-out 0s;
+            transition: all 0.2s ease-out 0s;
+        }
+
+        .layout-swiper:hover .next-btn {
+            opacity: 1;
+            right: 0;
+            -webkit-transition: all 0.2s ease-out 0s;
+            transition: all 0.2s ease-out 0s;
+        }
+
+        .teachers-list {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            box-sizing: border-box;
+            overflow: auto;
+            background-color: #f3f3f3;
+        }
+
+        .teachers-list::-webkit-scrollbar {
+            width: 6px;
+            height: 18px;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .teachers-list::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            border-radius: 10px;
+            background-color: #f5f5f5;
+        }
+
+        .teachers-list::-webkit-scrollbar-thumb {
+            width: 10px;
+            height: 20px;
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: rgba(0, 0, 0, .4);
+        }
+
+        .teachers-list .teach-item {
+            padding: 15px 30px 15px 15px;
+            line-height: 46px;
+            margin: 5px 0;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        /*.teach-item:hover{
+            background-color:#fff;
+        }*/
+
+        .teach-box:hover {
+            transform: translateY(-5px);
+            transition: all ease-out .3s;
+        }
+
+        .teach-box:hover span {
+            color: #337ab7;
+        }
+
+        .teach-item .teach-box {
+            display: inline-block;
+            margin: 0 25px 10px 0;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .teach-box .pic {
+            width: 45px;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+
+        .teach-box .name {
+            color: #444;
+            margin-left: 8px;
+        }
+
+        .actived {
+            height: 200px;
+            transition: all linear .5s;
+            -webkit-transition: all linear .5s;
+            -moz-transition: all linear .5s;
+            -ms-transition: all linear .5s;
+            -o-transition: all linear .5s;
+        }
+
+        .inactived {
+            height: 0px;
+            transition: all linear .5s;
+            -webkit-transition: all linear .5s;
+            -moz-transition: all linear .5s;
+            -ms-transition: all linear .5s;
+            -o-transition: all linear .5s;
+        }
+
+        #pull-slide .swiper-slide {
+            height: 100% !important;
+        }
+
+        .set-btn.moreShow {
+            display: none;
+        }
+
+        #pull-slide {
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .return-layer {
+            margin: 50px 0 10px;
+        }
+
+        @media screen and (max-width:1000px) {
+            .entries-container {
+                padding: 0 !important;
+            }
+
+            .layout-swiper {
+                margin: 10px auto 0;
+                padding: 15px 10px;
+            }
+
+            .prev-btn,
+            .next-btn {
+                display: none;
+            }
+
+            .layout-swiper .swiper-slide {
+                padding: 0;
+                margin: 0 8px 0 0;
+            }
+
+            .layout-swiper:hover .prev-btn {
+                display: none;
+            }
+
+            .layout-swiper:hover .next-btn {
+                display: none;
+            }
+
+            .teachers-list .teach-item {
+                padding: 5px 15px 5px 15px;
+                line-height: 36px;
+                margin: 5px 0;
+                cursor: pointer;
+            }
+
+            .teach-box .pic {
+                width: 28px;
+                height: 28px;
+            }
+            .teach-item .teach-box {
+                margin: 0 15px 5px 0;
+            }
+            .teach-box:hover {
+                transform: initial;
+            }
+
+            .actived {
+                height: 100%;
+                max-height: 100%;
+            }
+        }
+    </style>
+
+    <div class="container" id="entriesWrap">
+
+        <div class="return-layer" ng-hide="isHide"><a href="{{winHref}}">返回目录</a></div>
+
+        <div class="entries-container">
+
+            <!-- 词条标题，昵称信息 左右轮播 start -->
+            <div class="layout-swiper">
+                <div class="swiper-container" id="sliding-loading">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide item-slide" ng-repeat="item in chapters.data">
+                            <div class="inner-box">
+                                <a href="{{item.url}}" title="{{item.title}}" class="item-title">{{item.title}}</a>
+                                <a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="prev-btn text-center"><a href="javascript:;" class="glyphicon glyphicon-chevron-left"></a></div>
+                <div class="next-btn text-center" ng-click="nextPage()" ng-disabled="isGetPage"><a href="javascript:;" class="glyphicon glyphicon-chevron-right"></a></div>
+            </div>
+            <!-- 词条标题，昵称信息 左右轮播 end -->
+
+            <!-- 词条用户头像，昵称信息 下拉加载 start -->
+            <div class="teachers-list" id="teachWrap" ng-class="{true: 'actived', false: 'inactived inactive-border'}[teacher.show]">
+                <div id="pull-slide">
+
+                    <div class="swiper-slide">
+                        <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
+                            <!--<a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="teach-box pull-left">-->
+                            <a href="{{followPath}}?req_name={{userinfo.username}}&res_name={{item.user_name}}" title="{{item.display_name}}"
+                                class="teach-box pull-left">
+                            <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
+                            <span class="name">{{item.display_name}}</span>
+                        </a>
+                            <!--<div class="take-teacher-btn pull-right">
+                            <button class="btn btn-default" ng-click="teacher.takeTeacher(item)" ng-disabled="item.hasTakeTeacher">
+                                <span ng-if="item.hasTakeTeacher">
+                                    已拜师
+                                </span>
+                                <span ng-if="!item.hasTakeTeacher">
+                                    拜师
+                                </span>
+                            </button>      
+                        </div>-->
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="col-xs-offset-3 col-sm-offset-4 col-md-offset-5 col-lg-offset-5 col-xs-6 col-sm-4 col-md-2 col-lg-2">
+                        <button class="btn btn-default hide-btn" ng-click="teacher.showTeachers(false)"  ng-class="{'inactive-border': !teacher.show}">收起</button>
+                    </div>
+                </div>        -->
+            </div>
+            <!-- 词条用户头像，昵称信息 上拉加载 end -->
+
+            <div class="teacher-btn text-center">
+                <button class="set-btn moreShow" ng-click="moreShowThearch()" ng-disabled="isGetPage"><span>上拉或点击加载更多</span><span class="glyphicon glyphicon-chevron-up"></span></button>
+                <button class="set-btn phone-hide" ng-click="teacher.showTeachers(!teacher.show); toggleIco =! toggleIco">
+                    <span ng-if="teacher.show">
+                        收起
+                    </span>
+                    <span ng-if="!teacher.show">
+                        相关导师
+                    </span>
+                    <span class="glyphicon" ng-class="{'glyphicon-chevron-up':toggleIco, 'glyphicon-chevron-down':!toggleIco}"></span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>

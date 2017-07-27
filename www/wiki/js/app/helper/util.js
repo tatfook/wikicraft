@@ -80,9 +80,9 @@ define([
         }
 
         var paths = pathname.split('/');
-        if (username) {
+		username = username && username[1];
+        if (username && username.indexOf("-") > 0) {
 			// 用户页
-            username = username[1];
             var splitIndex = username.indexOf('-');
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
@@ -195,23 +195,35 @@ define([
         return date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     }
 
-// GET PUT POST DELETE
-    util._http = function(method, url, params, isUseCache, callback, errorCallback) {
+	util.$http = function(obj) {
+		if (!obj.method || !obj.url) {
+			obj.errorCallback && obj.errorCallback();
+			return;
+		}
+
         var $http = this.angularServices.$http;
-        var httpRespone = undefined;
-        //Loading.showLoading();
+		var config = obj.config || {};
+		var callback = obj.callback;
+		var errorCallback = obj.errorCallback;
+
+		config.method = obj.method;
+		config.url = obj.url;
+		config.cache = obj.cache;
+		config.isShowLoading = obj.isShowLoading;
+
         // 在此带上认证参数
-        if (method == 'POST') {
-            httpRespone = $http({method:method,url:url, cache: isUseCache, data:params}); //$http.post(url, params);
+        if (obj.method == 'POST') {
+			config.data = obj.params;
         } else {
-            httpRespone = $http({method:method,url:url, cache: isUseCache, params:params});
+			config.params = obj.params;
         }
-        httpRespone.then(function (response) {
+
+        $http(config).then(function (response) {
             var data = response.data;
             //console.log(data);
             // debug use by wxa
             if (!data || !data.error) {
-                console.log(url, data);
+                console.log(obj.url, data);
                 errorCallback && errorCallback(data);
 				return;
             }
@@ -219,7 +231,7 @@ define([
                 //console.log(data.data);
                 callback && callback(data.data);
             } else {
-                console.log(url, data);
+                console.log(obj.url, data);
                 errorCallback && errorCallback(data.error);
             }
             //Loading.hideLoading();
@@ -229,21 +241,38 @@ define([
             // 网络错误
             errorCallback && errorCallback(response.data);
         });
-    }
 
-    util.http = function(method, url, params, callback, errorCallback) {
-		util._http(method, url, params, false, callback, errorCallback);
 	}
 
-    util.post = function (url, params, callback, errorCallback) {
-        this.http("POST", url, params, callback, errorCallback);
+    util.http = function(method, url, params, callback, errorCallback, isShowLoading) {
+		util.$http({
+			method:method,
+			url:url,
+			params:params,
+			isShowLoading:isShowLoading,
+			callback:callback,
+			errorCallback:errorCallback,
+		});
+	}
+
+    util.post = function (url, params, callback, errorCallback, isShowLoading) {
+        this.http("POST", url, params, callback, errorCallback, isShowLoading);
     }
 
     util.get = function (url, params, callback, errorCallback) {
-        this.http("GET", url, params, callback, errorCallback);
+        this.http("GET", url, params, callback, errorCallback, isShowLoading);
     }
-	util.getByCache = function (url, params, callback, errorCallback) {
-        this._http("GET", url, params, true, callback, errorCallback);
+
+	util.getByCache = function (url, params, callback, errorCallback, isShowLoading) {
+		util.$http({
+			method:"GET",
+			url:url,
+			params:params,
+			cache:true,
+			isShowLoading:isShowLoading,
+			callback:callback,
+			errorCallback:errorCallback,
+		});
     }
 
     util.pagination = function (page, params, pageCount) {
@@ -458,6 +487,14 @@ define([
 		}
 
 		return search;
+	}
+
+	// 判断对象是否为空
+	util.isEmptyObject = function(obj) {
+		for (var key in (obj || {})) {
+			return false;
+		}
+		return true;
 	}
 
     config.util = util;

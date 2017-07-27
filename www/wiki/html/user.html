@@ -309,7 +309,7 @@
                         <div class="col-md-12">
                             <h3 class="title">热门作品</h3>
                             <p ng-show="hotSiteTotal==0">暂无热门作品</p>
-                            <div class="img-text col-md-6" ng-repeat="x in hotSiteList">
+                            <div class="img-text col-md-6" ng-repeat="x in hotSiteList" ng-hide="x.visibility == 'private' && user._id != userinfo._id">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
@@ -360,7 +360,7 @@
                         <div class="col-xs-12">
                             <h3 class="title">创建的网站</h3>
                             <p ng-show="allSiteTotal==0">暂未创建网站</p>
-                            <div class="img-text col-md-6" ng-repeat="x in allSiteList">
+                            <div class="img-text col-md-6" ng-repeat="x in allSiteList" ng-hide="x.visibility == 'private' && user._id != userinfo._id">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>

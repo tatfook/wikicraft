@@ -58,7 +58,7 @@
         box-shadow: none;
         padding-left: 0;
     }
-    .bind-form .btn-outline,.phone-model .btn-outline{
+    .bind-form .btn-outline,.phone-model .btn-outline, .email-model .btn-outline{
         color: #666;
         border: 1px solid;
     }
@@ -73,17 +73,23 @@
     .phone-model .modal-header{
         border-bottom: none;
     }
-    .phone-model .modal-body{
-        padding: 0 80px;
+    .phone-model .modal-body, .email-model .modal-body{
+        padding: 30px 80px;
     }
     .phone-model .control-label{
         padding: 0;
+        text-align: right;
     }
-    .phone-model .btns{
-        padding: 0;
-    }
-    .phone-model .verify-btn{
+    .phone-model .verify-btn, .email-model .verify-btn{
         padding-left: 0;
+    }
+    .phone-model .verify-btn .btn-block, .email-model .verify-btn .btn-block{
+        color: #FFF;
+        padding:10px 0;
+        font-size: 14px;
+    }
+    .phone-model .verify-btn .btn-default, .email-model .verify-btn .btn-default{
+        background-color: #999;
     }
     /*我的动态*/
     .tab-content .status-row{
@@ -320,6 +326,28 @@
         color: #FF8633;
         font-weight: bold;
     }
+
+    /*弹窗*/
+    .modal .titleinfo{
+        font-weight: normal;
+        color: #666;
+    }
+    /*验证码*/
+    .form-group-lg .captcha{
+        display: flex;
+        height: 42px;
+        align-items: center;
+        padding:0 15px 0 0;
+    }
+    .captcha > img{
+        flex:1;
+        height:36px;
+        margin-right: 5px;
+    }
+    .captcha > span{
+        cursor: pointer;
+    }
+
     @media (min-width: 768px) and (max-width: 992px) {
         .panel-body, .col-sm-9{
             padding:0;
@@ -512,27 +540,29 @@
                         <div class="form-group">
                             <label for="email" class="control-label col-sm-3">邮箱绑定：</label>
                             <div class="col-sm-6">
-                                <input type="text" id="email" class="form-control" ng-model="userEmail" ng-show="!bindedEmail">
-                                <p ng-show="bindedEmail" class="form-control">{{user.email}}</p>
+                                <input type="text" id="email" class="form-control" ng-model="userEmail" ng-show="!isBind('email')">
+                                <p ng-show="isBind('email')" class="form-control">{{user.email}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="bind('email')" ng-show="!bindedEmail">绑定</div>
-                                <div class="btn btn-block btn-outline" ng-show="bindedEmail">解绑</div>
+                                <div class="btn btn-block btn-primary" ng-click="bindEmail()" ng-hide="isBind('email')">绑定</div>
+                                <div class="btn btn-block btn-outline" ng-click="bindEmail()" ng-show="isBind('email')">解绑</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">手机绑定：</label>
                             <div class="col-sm-6">
-                                <input type="text" id="phone" class="form-control" ng-model="userPhone">
+                                <input type="text" id="phone" class="form-control" ng-model="userPhone" ng-show="!isBind('phone')">
+                                <p ng-show="isBind('phone')" class="form-control">{{user.cellphone}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="bind('phone')">绑定</div>
+                                <div class="btn btn-block btn-primary" ng-click="showBindPhone()" ng-hide="isBind('phone')">绑定</div>
+                                <div class="btn btn-block btn-outline" ng-click="showBindPhone()" ng-show="isBind('phone')">解绑</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">QQ绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("qq") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("qq")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block " ng-class="getBindServiceClass('qq')" ng-click="bindThreeService('qq')">{{isBindThreeService("qq") ? "解绑" : "绑定"}}</div>
@@ -541,7 +571,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">微信绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("weixin") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("weixin")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block" ng-class="getBindServiceClass('weixin')" ng-click="bindThreeService('weixin')">{{isBindThreeService("weixin") ? "解绑" : "绑定"}}</div>
@@ -550,7 +580,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">微博绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("xinlangweibo") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("xinlangweibo")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block" ng-class="getBindServiceClass('xinlangweibo')" ng-click="bindThreeService('xinlangweibo')">{{isBindThreeService("xinlangweibo") ? "解绑" : "绑定"}}</div>
@@ -559,7 +589,7 @@
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3">Github绑定：</label>
                             <div class="col-sm-6">
-                                <p class="form-control">{{isBindThreeService("github") ? "已绑定" : "未绑定"}}</p>
+                                <p class="form-control">{{getServiceUsername("github")}}</p>
                             </div>
                             <div class="col-sm-3">
                                 <div class="btn btn-block" ng-class="getBindServiceClass('github')" ng-click="bindThreeService('github')">{{isBindThreeService("github") ? "解绑" : "绑定"}}</div>
@@ -735,15 +765,15 @@
 
     <!--实名认证-->
     <div ng-show="showItem == 'realName'" class="col-md-10 main-content">
-        <div role="tabpanel col-md-12">
-        </div>
+        <div class="panel-heading">实名认证</div>
+        <p style="padding: 15px;">实名认证功能开发中，敬请期待</p>
     </div>
 
     <!--消费记录-->
     <div ng-show="showItem == 'myPay'" class="col-xs-12 main-content panel">
         <div class="panel-heading clearfix">
             <div style="float:left">消费记录</div>
-            <div style="float:right">余额{{balance}}元</div>
+            <div style="float:right">余额{{balance || "0"}}元</div>
         </div>
         <div class="panel-body mypay-panel">
             <table class="table mypay-table">
@@ -785,38 +815,78 @@
         </div>
     </div>
 
+    <!--邮箱绑定弹窗-->
+    <div class="modal fade email-model" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="emailModalLabel">{{isBind("email") ? "邮箱解绑" : "邮箱绑定"}} <span class="titleinfo"> > {{userEmail}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-lg">
+                            <label class="control-label col-sm-3">邮箱验证码：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" ng-model="emailVerifyCode">
+                            </div>
+                            <div class="col-sm-3 verify-btn">
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindEmail()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
+                            </div>
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <p class="text-danger">{{errorMsg}}</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="confirmEmailBind()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--手机绑定弹窗-->
     <div class="modal fade phone-model" id="phoneModal" tabindex="-1" role="dialog" aria-labelledby="phoneModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="phoneModalLabel">手机绑定</h4>
+                    <h4 class="modal-title" id="phoneModalLabel">{{isBind("phone") ? "手机解绑" : "手机绑定"}} <span class="titleinfo"> > {{userPhone}}</span></h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                        <div class="form-group">
-                            <label class="control-label col-sm-3">手机号：</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control">
+                        <div class="form-group form-group-lg">
+                            <label class="control-label col-sm-3">图片验证码：</label>
+                            <div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="imageCode">
+                            </div>
+                            <div class="col-sm-3 captcha">
+								<img ng-src="{{imageCodeUrl}}" alt="验证码">
+                                <span class="glyphicon glyphicon-repeat" ng-click="refreshImageCode()" title="刷新"></span>
+                            </div>
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <p class="text-danger">{{imageCodeErrMsg}}</p>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-group-lg">
                             <label class="control-label col-sm-3">短信验证码：</label>
-                            <div class="col-sm-5">
-                                <input type="text" class="form-control">
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" ng-model="smsCode">
                             </div>
-                            <div class="col-sm-4 verify-btn">
-                                <div class="btn btn-default btn-block">重发验证（50s）</div>
+                            <div class="col-sm-3 verify-btn">
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-9 col-sm-offset-3 btns">
-                                <div class="col-sm-6"><div class="btn btn-block btn-primary">确定</div></div>
-                                <div class="col-sm-6"><div class="btn btn-block btn-outline" data-dismiss="modal">取消</div></div>
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <p class="text-danger">{{errorMsg}}</p>
                             </div>
                         </div>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="confirmPhoneBind()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div>
         </div>

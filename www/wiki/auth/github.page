@@ -40,18 +40,19 @@ System.os.GetUrl({ url = userApiUrl .. '?access_token=' .. accessToken.access_to
 local err, data = yield()
 data = data.data
 log("auth step 2")
-log(data)
+LOG.std(nil,"error","keepwork", toJson(data))
 if(not data) then
 	return response:send({error=1, message= 'Failed to fetch user info' })
 end
 local githubId = tostring(data.id)
+local serviceUsername = data.login
 
 -- 是否已经登录
-local userId = checkAuthenticated()
-if userId then
-	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {userId=userId, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, resume)
+local username = getUsername()
+if username then
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {username=username, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, resume)
 	yield()
-	db.user:findOne({_id=userId}, resume)
+	db.user:findOne({["+username"]={username}}, resume)
 	local err, userinfo = yield()
 	if not userinfo then
 		return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
@@ -67,10 +68,17 @@ db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName
 local err, userThreeService = yield()
 -- 没有绑定
 if not userThreeService then
-	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token}, function(err, userThreeService)	end)
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, resume)
+	yield()
 	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
+else
+	if not userThreeService.serviceUsername then
+		db.user_three_service:updateOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceUsername=serviceUsername}, resume)
+		yield()
+	end
+	
 end
-db.user:findOne({_id=userThreeService.userId}, resume)
+db.user:findOne({["+username"]={userThreeService.username}}, resume)
 local err, userinfo = yield()
 if not userinfo then
 	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not found"})
@@ -79,4 +87,29 @@ end
 models.data_source:new():api_githubLinkGitlab({username=userinfo.username, githubUserId=githubId})
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
 return response:send({token = token, data = userinfo, error=0, message="OK"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

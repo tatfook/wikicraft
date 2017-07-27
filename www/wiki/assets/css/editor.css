@@ -395,6 +395,32 @@ select.resize-view {
     background-color: #3977AD;
     color: #FFF;
 }
+
+.bg-title h1{
+    position: relative;
+    color: #FFF;
+    height: 540px;
+    padding: 440px 0 0 80px;
+    margin: 0;
+    background-color: rgba(57, 119, 173, .5);
+}
+.bg-title h1 > img{
+    position:absolute;
+    left:0;
+    bottom:0;
+    z-index:-1;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+@media (max-width: 768px) {
+    .bg-title h1{
+        height: 340px;
+        padding: 260px 0 0 30px;
+    }
+}
+
 @media(max-width: 992px){
     .show-sm{
         display: inline-block;

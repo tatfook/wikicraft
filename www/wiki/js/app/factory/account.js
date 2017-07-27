@@ -46,6 +46,14 @@ define([
 
             account = {
                 user: undefined,
+				
+				//keepPassword: function(isKeep) {
+					//if (isKeep) {
+						//$auth.setStorageType("localStorage");
+					//} else {
+						//$auth.setStorageType("sessionStorage");
+					//}
+				//},
 
 				initDataSource: function(cb, errcb) {
 					var user = this.user;
@@ -242,6 +250,11 @@ define([
                 }
             }
 
+			//console.log(config.wikiConfig.token);
+			//if (config.wikiConfig.token) {
+				//$auth.setToken(config.wikiConfig.token);
+			//}
+			//account.keepPassword(false);
             account.getUser(function (user) {
                 //console.log(user);
                 account.setUser(user);

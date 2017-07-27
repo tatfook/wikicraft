@@ -51,9 +51,11 @@ define(['app',
         });
 
         function init() {
-            $scope.contentType = storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
+			var urlArgs = util.getQueryObject();
+
+            $scope.contentType = urlArgs.userCenterContentType || storage.sessionStorageGetItem('userCenterContentType') || 'userProfile';
             storage.sessionStorageRemoveItem('userCenterContentType');
-            $scope.showItem = storage.sessionStorageGetItem('userCenterSubContentType');
+            $scope.showItem = urlArgs.userCenterSubContentType || storage.sessionStorageGetItem('userCenterSubContentType');
             storage.sessionStorageRemoveItem('userCenterSubContentType');
 
             //console.log($scope.contentType, $scope.showItem);

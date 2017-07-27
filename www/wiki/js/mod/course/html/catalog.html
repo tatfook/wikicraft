@@ -1,0 +1,188 @@
+<div ng-controller="courseController">
+    <style scoped>
+        .catalog-wrapper{
+            margin-top:50px;
+            position: relative;
+        }
+        .catalog-wrapper .head-box{
+            height:38px;
+            line-height: 38px;
+            position: relative;
+        }
+        .head-box>h3{
+            font-size: 23px;
+            font-weight: 500;
+            padding-left:15px;
+            color: #3977AD;
+            text-align: center;
+        }
+        .head-box .state{
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            z-index:9;
+        }
+
+        .catalog-wrapper .menu-content{
+            margin:25px auto;
+            width:100%;
+            height:auto;
+        }
+
+       
+        .chapter>h4{
+            margin:20px 0 0 0;
+            padding: 0 25px;
+            height: 60px;
+            line-height: 60px;
+            font-size: 21px;
+            color:#333;
+            position: relative;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #efefef;
+        }
+        .chapter>h4>span{
+            font-size: 20px;
+        }
+        .chapter>h4>span:first-child{
+            padding-right:25px;
+        }
+        .chapter>h4>span:last-child{
+            position: absolute;
+            right:0px;
+            height:60px;
+            line-height: 60px;
+            color: #666;
+        }
+
+        .chapter .chapter-list{
+            list-style: none;
+            padding:0;
+            margin: 0;
+        }
+        .chapter-list .item-chapter{
+            position: relative;
+        }
+        .item-chapter a{
+           display: block;
+           height: 65px;
+           line-height: 65px;            
+           padding:0 50px;
+           color: #666;
+           word-break: break-all;
+           font-size: 18px;
+           border-bottom:1px dashed #ddd;
+        }
+
+        .item-chapter:last-child a{
+            border-bottom: none;
+        }
+
+        .item-chapter a:hover{
+            background-color: #aed1f0;
+            color: #444;
+        }
+        .item-chapter a:hover .txt{
+            display: block;
+        }
+
+
+        .item-chapter .no-node{
+            padding-right: 15px;
+        }
+        .item-chapter .txt{
+            display: none;
+            position: absolute;
+            top:0;
+            right:15px;
+            color: #3977AD;
+        }
+
+        .disabled{
+            position: relative;
+            z-index:-1;
+        }
+
+        @media screen and (max-width:1000px){
+            .chapter>h4{
+                margin:10px 0 0 0;
+                padding: 0 15px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 17px;
+            }
+
+            .chapter>h4>span:last-child{
+                height: 50px;
+                line-height: 50px;
+            }
+
+            .chapter>h4>span:first-child {
+                padding-right: 15px;
+            }
+
+            .chapter>h4>span{
+                font-size: 14px;
+            }
+
+            .item-chapter a{
+                height:50px;
+                line-height: 50px;
+                padding: 0 30px;
+                font-size: 14px;
+            }
+
+            .head-box>h3{
+                font-size: 20px;
+            }
+
+        }
+
+    </style>
+
+    <div class="container">
+        <div class="catalog-wrapper">
+            <div class="head-box">
+                <h3>{{course.title.title}}</h3>
+                <div class="state" ng-click="catalog.toggleChange('all', $index)">
+                    <a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a>
+                </div>
+            </div>
+            <div class="menu-content" ng-if="action.switch">
+                <div class="chapter" ng-repeat="(key, chps) in course.chapterWithStage">
+                    <h4 ng-click="catalog.toggleChange('chil', $index)" ng-show='action.switch'>
+                        <!--<span class="glyphicon" ng-class="toggleChange ? 'glyphicon-folder-close' : 'glyphicon-folder-open'"></span>-->
+                        {{course.getStageName(key)}}
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </h4>
+                
+                    <ul class="chapter-list" ng-hide="catalog.item[$index]">
+                        <li class="item-chapter" ng-repeat="item in chps">
+                            <a href="{{item.course_url}}?url={{item.chapter_url}}" target="_blank" title="{{item.title}}">
+                            <span class="no-node">{{item.chapter_stage_order}}&#8722;{{$index+1}}</span>
+                            <span>{{item.title}}</span>
+                            <span class="txt">进入学习</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="menu-content" ng-if="!action.switch">
+                <div class="chapter">
+                    <ul class="chapter-list">
+                        <li class="item-chapter" ng-repeat="item in course.chapter">
+                            <a href="{{item.course_url}}=?{{item.chapter_url}}" target="_blank" title="{{item.title}}">
+                            <span class="no-node">{{$index+1}}</span>
+                            <span>{{item.title}}</span>
+                            <span class="txt">进入学习</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>    

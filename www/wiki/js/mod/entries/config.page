@@ -1,0 +1,28 @@
+<?npl
+--[[
+Title: wiki module entries
+Author: j
+Date: 2017/6/15
+]]
+
+function main()
+	local wikiModuleList = {
+		{
+			name="词条",
+			classifyName="词条",
+			content=[[
+                ```@entries/js/entries
+                ```
+            ]],
+			wikiCmdName="@entries/js/entries",
+			logoUrl="",
+			desc="将当前页面加入词条",
+			flag=1,
+		},
+	}
+		
+	regitsterWikiModuleList(wikiModuleList)
+end
+
+main()
+

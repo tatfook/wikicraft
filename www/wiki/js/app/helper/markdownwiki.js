@@ -42,12 +42,19 @@ define([
     }
 
     // 默认渲染
-    function defaultRender(wikiBlockObj) {
+    function defaultRender(wikiBlockObj, renderAfter) {
         var wikiModulePath = getModPath(wikiBlockObj.cmdName);
         require([wikiModulePath], function (module) {
-            if (typeof module == "object" && typeof module.render == "function") {
-                wikiBlockObj.render(module.render(wikiBlockObj));
-            } else {
+			
+			if (typeof module == "object"){
+				if (!renderAfter && typeof(module.render) == "function") {
+					wikiBlockObj.render(module.render(wikiBlockObj));
+				}
+
+				if (renderAfter && typeof(module.renderAfter) == "function") {
+					module.renderAfter(wikiBlockObj);
+				}
+			} else {
                 console.log("wiki module define format error!!!");
             }
         }, function (err) {
@@ -229,6 +236,8 @@ define([
             }
         };
         render(wikiBlockParams);
+		// 渲染后回调
+		defaultRender(wikiBlockParams, true);
     };
 
     // 设置模板内容
@@ -409,6 +418,10 @@ define([
         mdwiki.blockCacheMap = {};
 		mdwiki.isMainMd = options.isMainMd;
 
+		if (mdwiki.isMainMd) {
+			config.shareMap["mdwiki"] = mdwiki;
+		}
+
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
         }
@@ -500,7 +513,8 @@ define([
         }
         mdwiki.getBlockCache = function (text, token) {
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
+            //var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
+            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
             var blockCache = undefined;
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
@@ -524,6 +538,15 @@ define([
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
+			console.log(text, token, blockCache.renderContent);
+			if (/^[hH][1-6]$/.test(token.tag)) {
+				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
+				var tag = token.tag;
+				title = title.replace(/[\r\n]$/,"");
+				blockCache.renderContent = '<div class="wiki_page_inner_link" style="display:flex; flex-direction:row;"><a class="glyphicon glyphicon-link" name="' + title + '"></a>'+ blockCache.renderContent + '</div>';
+				console.log(blockCache.renderContent);
+			}
+
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;
@@ -612,11 +635,6 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-			if (mdwiki.isMainMd) {
-				config.shareMap["mdwiki"] = {
-					blockList: blockList,
-				};
-			}
 			//console.log(tokenList);
             //console.log(blockList);
             return blockList;

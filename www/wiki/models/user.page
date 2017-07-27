@@ -35,6 +35,7 @@ function user:ctor()
 	self:addfield("defaultDataSourceName", "string")    -- 默认数据源的站点名
 	self:addfield("portrait", "string", false, 200) -- picture url
 	self:addfield("roleId", "number")
+	self:addfield("vipLevel", "number")
 	self:addfield("location", "string", false, 50)
 	self:addfield("joindate", "string", false, 30)
 	-- 以下字段不明确用途会废弃
@@ -47,27 +48,38 @@ function user:ctor()
 	self:addfield("isadmin", "boolean", false)
 end
 
+
+function user:filterUserInfo(params)
+	params.username = nil
+	params.email = nil
+	params.password = nil
+	params.isadmin = nil
+	params.roleId = nil
+	params.vipLevel = nil
+	params.cellphone = nil
+end
+
 -- 发送邀请邮件
 function user:api_inviteFriend(params)
-	if (not params.userId) or (not params.friendMail) then
+	if (not params.username) or (not params.friendMail) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local par = {}
-	-- par.to = params.friendMail
-	par.to = "765485868@qq.com"
-	par.subject = "wikicraft好友邀请"
-	par.body = [[
+	par.to = params.friendMail
+	--log(params.friendMail)
+	--par.to = "765485868@qq.com"
+	par.subject = "keepwork好友邀请"
+	local htmlContent = [[
 	<div class="main-content">
-	<p>你好，你的好友#username#真诚的将 wikicraft 推荐给你。</p>
-	<p>wikicraft 是一款强大的网站构建平台。</p>
-	<p>#username#的作品：</p>
-	<p><a href="#">作品链接</a></p>
-	<p><a href="#">作品链接</a></p>
-	<div class="btn">点击注册</div>
+	<p>你好，你的好友%s真诚的将keepwork推荐给你。</p>
+	<p>keepwork 是一款强大的网站构建平台。</p>
+	<p>http://keepwork.com</p>
 	</div>
 	]]
-
+	htmlContent = string.format(htmlContent, params.username)
+	--log(htmlContent)
+	par.body = htmlContent
 	util:sendEmail(par)
 
 	return errors:wrap(nil)
@@ -156,12 +168,7 @@ function user:update(params)
 
 	if query then
 		-- following field is forbidden to change by the user.
-		query.email = nil
-		query.password = nil
-		query.githubId = nil
-		query.githubToken = nil
-		query.githubName = nil
-		query.isadmin = nil
+		self:filterUserInfo(query)
 	end
 
 	self:db():updateOne({_id=query._id}, query, resume)
@@ -210,9 +217,7 @@ function user:api_updateByName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	params.email = nil
-	params.password = nil
-	params.isadmin = nil
+	self:filterUserInfo(params)
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
@@ -226,10 +231,7 @@ function user:api_updateUserInfo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	params.email = nil
-	params.password = nil
-	params.isadmin = nil
-	params.roleId = nil
+	self:filterUserInfo(params)
 
 	self:db():updateOne({["+username"]={params.username}}, params, resume)
 
@@ -242,18 +244,27 @@ function user:api_verifyCellphoneOne(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	if params.bind then
+		self:db():find({["+cellphone"]={params.cellphone}}, resume)
+		local _, data = yield()
+
+		if data and #data > 0 then
+			return errors:new("手机号已绑定:" .. data[1].username)
+		end
+	end
+
 	local smsCode = tostring(math.random(1000,9999))
 	local smsParams = {to=params.cellphone, datas={smsCode,"3"}, templateId="1"}
 	sendTemplateSms(smsParams, resume)
 	local _, data = yield()
-
-	if data.statusCode ~= "000000" then
+	data = data.data
+	if not data or  data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
 
 	local value = {cellphone=params.cellphone, smsCode=smsCode}
 	value = commonlib.Json.Encode(value)
-	mem_cache:set(data.templateSMS.smsMessageSid, value)
+	mem_cache:set(data.templateSMS.smsMessageSid, value, nil, 300)
 
 	return errors:wrap(nil, {smsId=data.templateSMS.smsMessageSid})
 end
@@ -267,19 +278,17 @@ function user:api_verifyCellphoneTwo(params)
 	end
 
 	local value = mem_cache:get(params.smsId)
+	mem_cache:set(params.smsId, nil)
 	value = commonlib.Json.Decode(value or "{}")
 	if value.smsCode ~= params.smsCode then
 		return errors:wap(errors:new("验证码错误"))
 	end
 
-	self:db():findOne({["+username"]={username}}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		return errors:wrap(errors.USER_NOT_EXIST)
+	local cellphone = ""
+	if params.bind then 
+		cellphone = value.cellphone
 	end
-
-	userinfo.cellphone = value.cellphone
-	self:db():updateOne({_id=userId}, userinfo, resume)
+	self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
 
 	return errors:wrap(yield())
 end
@@ -293,27 +302,31 @@ function user:api_verifyEmailOne(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["+username"]={username}}, resume)
-	local _, userinfo = yield()
-	if not userinfo then
-		return errors:wrap(errors.USER_NOT_EXIST)
+	local verifyCode = tostring(math.random(1000,9999))
+	local url = "http://" .. request:GetHost() .. "/api/wiki/models/user/verifyEmailTwo?username=" .. username .. "&verifyCode=" .. verifyCode
+	if params.bind then
+		url = url .. "&bind=true"
+		self:db():find({["+email"]={params.email}}, resume)
+		local err, data = yield()
+		if data and #data > 0 then
+			return errors:wrap("邮箱已绑定:" .. data[1].username)
+		end
 	end
 
-	local url = "http://" .. request:GetHost() .. "/api/wiki/models/user/verifyEmailTwo?userId=" .. tostring(userId)
-
 	-- TODO 加时间限制
-	mem_cache:set("verifyEmail" .. tostring(userId), params.email)
+	mem_cache:set("verifyEmail" .. username, {email=params.email, verifyCode=verifyCode}, nil, 300)
 
 	local par = {}
 	par.to = params.email
 	par.subject = "邮箱验证"
 	par.body = [[
 	<div class="main-content">
-	<p>打开如下链接进行邮箱验证:</p>
-	<p><a href="%s">%s</a></p>
+	<p>邮箱验证码为:%s</p>
 	</div>
 	]]
-	par.body = string.format(par.body, url, url)
+	--<p>打开如下链接进行邮箱验证:</p>
+	--<p><a href="%s">%s</a></p>
+	par.body = string.format(par.body, verifyCode, url, url)
 	util:sendEmail(par)
 
 	return errors:wrap(nil)
@@ -321,19 +334,38 @@ end
 
 -- 邮箱验证2
 function user:api_verifyEmailTwo(params)
-	local userId = params.userId
+	local username = params.username
+	local verifyCode = params.verifyCode
+	local bind = params.bind
 
-	response:set_header("Location", "http://www.paracraft.cn/")
-	response:status(301):send_headers();
-	local email = mem_cache:get("verifyEmail" .. tostring(userId))
-
-	if not email then
-		return errors:wrap(nil)
+	if not params.isApi then
+		response:set_header("Location", "http://keepwork.com")
+		response:status(301):send_headers();
+	else
+		self:ensureAuthenticated()
+		username = getTokenInfo().username
 	end
 
-	self:db():updateOne({_id=tonumber(userId)}, {email=email}, resume)
+	if not username  or not verifyCode then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
-	return errors:wrap(yield())
+	local key = "verifyEmail" .. username
+	local cacheInfo = mem_cache:get(key)
+	mem_cache:set(key, nil)
+	if not cacheInfo or (not cacheInfo.email) or (cacheInfo.verifyCode ~= verifyCode) then
+		return errors:wrap("验证码错误或失效")
+	end
+
+	local email = cacheInfo.email
+	if not bind then
+		email = ""
+	end
+
+	self:db():updateOne({["+username"]={username}}, {email=email}, resume)
+	local err, data = yield()
+
+	return errors:wrap(err)
 end
 
 -- 找回密码1
@@ -352,15 +384,15 @@ function user:api_findPwdOne(params)
 	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key .. "&email=" .. params.email
 
 	-- TODO 加时间限制
-	mem_cache:set(params.email, key)
+	mem_cache:set(params.email, key, nil, 300)
 
 	local par = {}
 	par.to = params.email
 	par.subject = "keepwork找回密码"
 	par.body = [[
 	<div class="main-content">
-	<p>打开如下链接进行密码重置:</p>
-	<p><a href="%s">%s</a></p>
+		<p>打开如下链接进行密码重置:</p>
+		<p><a href="%s">%s</a></p>
 	</div>
 	]]
 	par.body = string.format(par.body, url, url)
@@ -376,6 +408,7 @@ function user:api_findPwdTwo(params)
 	end
 
 	local key = mem_cache:get(params.email)
+	mem_cache:set(params.email, nil)
 	if key ~= params.key then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -388,7 +421,8 @@ end
 
 -- 更改密码
 function user:api_changepw(params)
-	local username = self:ensureAuthenticated()
+	self:ensureAuthenticated()
+	local username = getTokenInfo().username
 	if (not params.oldpassword) or (not params.newpassword) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -406,9 +440,7 @@ function user:api_changepw(params)
 		return errors:wrap("密码错误")
 	end
 
-	user.password = newpassword
-
-	self:db():updateOne({_id=userId}, user, resume)
+	self:db():updateOne({["+username"]={username}}, {password=newpassword}, resume)
 	return errors:wrap(yield())
 end
 
