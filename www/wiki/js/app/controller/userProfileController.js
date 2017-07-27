@@ -561,7 +561,8 @@ define(['app',
                     return ;
                 }
                 util.post(config.apiUrlPrefix + 'user/inviteFriend',{username:$scope.user.username,friendMail:$scope.friendMail}, function () {
-                   Message.info("邀请好友邮件已发送^-^");
+                    Message.info("邀请邮件已发送给" + $scope.friendMail);
+                    $scope.friendMail = "";
                 });
             }
         }
