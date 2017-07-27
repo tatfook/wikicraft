@@ -1,0 +1,28 @@
+<?npl
+--[[
+Title: wiki module course
+Author: j
+Date: 2017/6/21
+]]
+
+function main()
+	local wikiModuleList = {
+		{
+			name="课程",
+			classifyName="课程",
+			content=[[
+                ```@course/js/course
+                ```
+            ]],
+			wikiCmdName="@course/js/course",
+			logoUrl="",
+			desc="添加课程",
+			flag=1,
+		},
+	}
+		
+	regitsterWikiModuleList(wikiModuleList)
+end
+
+main()
+
