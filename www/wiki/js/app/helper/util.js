@@ -489,6 +489,14 @@ define([
 		return search;
 	}
 
+	// 判断对象是否为空
+	util.isEmptyObject = function(obj) {
+		for (var key in (obj || {})) {
+			return false;
+		}
+		return true;
+	}
+
     config.util = util;
     return util;
 });
