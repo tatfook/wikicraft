@@ -184,7 +184,7 @@ end
 
 function init()
 	init_db()
-	init_wiki_module()
+	--init_wiki_module()
 	request_before_filter()
 	-- log(getTokenInfo())
 end
