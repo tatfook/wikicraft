@@ -104,11 +104,13 @@ function pay:api_createCharge(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 
-	local url       = self.apiUrl .. "charges";
-	local apiParams = {};
+	local toFen = query.price * 100
+	local url   = self.apiUrl .. "charges";
+
+	local apiParams      = {};
 	apiParams.order_no   = trade_no;
 	apiParams.client_ip  = request:getpeername();
-	apiParams.amount     = query.price;
+	apiParams.amount     = toFen;
 	apiParams.channel    = query.channel;
 	apiParams.subject    = appGoodsInfo.subject;
 	apiParams.body       = appGoodsInfo.body;
@@ -121,6 +123,34 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = trade_no};
 	end
 
+	if(query.app_name == "魔法哈奇") then
+		local additional = {}
+		additional.url     = 'Pay';
+		additional.gsid	   = 984;
+		additional.count   = toFen * 10;
+		additional.money   = toFen * 100;
+		additional.method  = 1;
+		additional.orderno = trade_no;
+		additional.from    = 0;
+
+		for key,item in pairs(additional) do
+			query.additional[key] = item;
+		end
+	elseif(query.app_name == "魔法哈奇2") then
+		local additional = {}
+		additional.url     = 'Pay';
+		additional.gsid	   = 984;
+		additional.count   = toFen * 10;
+		additional.money   = toFen * 100;
+		additional.method  = 1;
+		additional.orderno = trade_no;
+		additional.from    = 0;
+
+		for key,item in pairs(additional) do
+			query.additional[key] = item;
+		end
+	end
+
 	local err, chargeObject = self:http("POST", url, apiParams);
 
 	if(not chargeObject) then
@@ -130,7 +160,7 @@ function pay:api_createCharge(params)
 	local tradeInfo = {};
 	tradeInfo.trade_no     = trade_no;
 	tradeInfo.username     = query.username;
-	tradeInfo.price        = query.price;
+	tradeInfo.price        = toFen;
 	tradeInfo.subject      = appGoodsInfo.subject;
 	tradeInfo.body         = appGoodsInfo.body;
 	tradeInfo.channel      = query.channel;
@@ -265,7 +295,6 @@ function pay:api_webhooks(params)
 			if(appInfo) then
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
-				apiParams.price = payInfo.price;
 				
 				local err, response = self:http("GET", url, apiParams);
 

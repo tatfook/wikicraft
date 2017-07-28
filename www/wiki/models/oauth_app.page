@@ -48,7 +48,7 @@ local oauthApp = {
 		clientId="1000003",
 		clientSecret="mofahaqi",
 		RedirectUrl    = "",
-		payCallbackUrl = "http://keepwork.com/api/models/pay/simulate",
+		payCallbackUrl = "http://121.14.117.238:56888/HttpPayHandle.lua",
 	},
 	{
 		appName="卡车之星",
@@ -56,6 +56,14 @@ local oauthApp = {
 		clientId="1000004",
 		clientSecret="shanghaipeitianzhihuiyun",
 		RedirectUrl    = "",
+	},
+	{
+		appName="魔法哈奇2",
+		company="大富网络",
+		clientId="1000003",
+		clientSecret="mofahaqi2",
+		RedirectUrl    = "",
+		payCallbackUrl = "http://115.29.230.154:56888/HttpPayHandle.lua",
 	},
 }
 

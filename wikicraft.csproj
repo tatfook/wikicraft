@@ -894,11 +894,21 @@
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_navbar.jpg" />
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_products.jpg" />
     <Content Include="www\wiki\mod\modelshare\html\share.html" />
+    <Content Include="www\wiki\mod\packages\assets\packages.css">
+      <DependentUpon>packages.less</DependentUpon>
+    </Content>
+    <Content Include="www\wiki\mod\packages\assets\packages.min.css">
+      <DependentUpon>packages.css</DependentUpon>
+    </Content>
     <Content Include="www\wiki\test\cdntest.css" />
     <Content Include="www\wiki\test\cdntest.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Dockerfile" />
     <None Include="license.md" />
     <None Include="nginx_config" />
@@ -1502,13 +1512,7 @@
     <Content Include="www\wiki\mod\packages\assets\icomoon.woff2" />
     <Content Include="www\wiki\mod\packages\assets\images\u68.png" />
     <Content Include="www\wiki\mod\packages\assets\images\u76.png" />
-    <Content Include="www\wiki\mod\packages\assets\packages.css">
-      <DependentUpon>packages.less</DependentUpon>
-    </Content>
     <Content Include="www\wiki\mod\packages\assets\packages.less" />
-    <Content Include="www\wiki\mod\packages\assets\packages.min.css">
-      <DependentUpon>packages.css</DependentUpon>
-    </Content>
     <Content Include="www\wiki\mod\packages\controller\indexController.js" />
     <Content Include="www\wiki\mod\packages\controller\packagesInstallController.js" />
     <Content Include="www\wiki\mod\packages\controller\packagesProjectsController.js" />

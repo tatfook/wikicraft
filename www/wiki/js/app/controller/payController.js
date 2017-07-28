@@ -12,23 +12,24 @@ define([
     app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', '$http', function ($scope, Account, modal, $rootScope, $http) {
         function init() {
             var queryArgs = util.getQueryObject();
-            var validate = true;
-            var reset = true;
+            var validate  = true;
+            var bAppExist = false;
+            var reset     = true;
 
-            $scope.otherUserinfo = {};
-            $scope.method = "alipay";
-            $scope.subject = "LOADING";
-            $scope.body = "LOADING";
-            $scope.returnUrl = "";
-            $scope.app_goods_id = "";
-            $scope.app_name = "";
-            $scope.qr_url = "";
-            $scope.ideal_money = 0;
-            $scope.goods = {};
-            $scope.page = "user";
-            $scope.otherUserinfo = {}
-            $scope.alipayNotice = null;
-            $scope.goods.price = 0;
+            $scope.otherUserinfo       = {};
+            $scope.method              = "alipay";
+            $scope.subject             = "LOADING";
+            $scope.body                = "LOADING";
+            $scope.returnUrl           = "";
+            $scope.app_goods_id        = "";
+            $scope.app_name            = "";
+            $scope.qr_url              = "";
+            $scope.ideal_money         = 0;
+            $scope.goods               = {};
+            $scope.page                = "user";
+            $scope.otherUserinfo       = {}
+            $scope.alipayNotice        = null;
+            $scope.goods.price         = 0;
             $scope.goods.exchange_rate = 0;
 
             validateF({ "username": queryArgs.username }, "$scope.otherUserinfo.username");
@@ -62,7 +63,7 @@ define([
 
             $scope.onChange = function (params) {
                 $scope.method = params;
-                $scope.page = "user";
+                $scope.page   = "user";
                 reset = true;
             }
 
@@ -78,7 +79,7 @@ define([
             }
 
             $scope.recharge = function () {
-                if (!validate) {
+                if (!validate || !bAppExist || !$scope.goods.price) {
                     alert("参数错误");
                     return;
                 }
@@ -132,8 +133,8 @@ define([
                 };
 
                 createCharge(params, function (charge) {
-                    $scope.qr_url = charge.credential.alipay_qr;
-                    $scope.page = "alipay";
+                    $scope.qr_url       = charge.credential.alipay_qr;
+                    $scope.page         = "alipay";
                     $scope.alipayNotice = "a";
                     getTrade(charge);
                 })
@@ -146,13 +147,13 @@ define([
 
                 createCharge(params, function (charge) {
                     $scope.qr_url = charge.credential.wx_pub_qr;
-                    $scope.page = "wechat";
+                    $scope.page   = "wechat";
                     getTrade(charge);
                 })
             }
 
             $scope.isMobile = function () {
-                var u = navigator.userAgent;
+                var u        = navigator.userAgent;
                 var isMobile = false;
 
                 //console.log(u);
@@ -183,16 +184,17 @@ define([
                     $scope.ideal_money = newValue.price * newValue.exchange_rate;
                 } else {
                     $scope.ideal_money = 0;
+                    $scope.goods.price = null;
                 }
             }, true);
 
             function createCharge(params, callback) {
-                params.username = $scope.otherUserinfo.username;
-                params.price = $scope.goods.price;
+                params.username     = $scope.otherUserinfo.username;
+                params.price        = $scope.goods.price;
                 params.app_goods_id = $scope.app_goods_id;
-                params.app_name = $scope.app_name;
-                params.additional = $scope.additional;
-                params.redirect = $scope.redirect;
+                params.app_name     = $scope.app_name;
+                params.additional   = $scope.additional;
+                params.redirect     = $scope.redirect;
 
                 util.http("POST", config.apiUrlPrefix + "pay/createCharge", params, function (response) {
                     var charge = response.data;
@@ -221,13 +223,15 @@ define([
                 var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name };
 
                 util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
-                    $scope.subject = response.subject;
-                    $scope.body = response.body;
+                    bAppExist = true;
+
+                    $scope.subject             = response.subject;
+                    $scope.body                = response.body;
                     $scope.goods.exchange_rate = response.exchange_rate;
 
                     for (itemA in response.additional_field) {
                         var checkField = true;
-                        var field = response.additional_field[itemA];
+                        var field      = response.additional_field[itemA];
 
                         if (field.required) {
                             checkField = false
@@ -249,7 +253,7 @@ define([
             function getUserinfo() {
                 util.http("POST", config.apiUrlPrefix + "user/getBaseInfoByName", { username: $scope.otherUserinfo.username }, function (response) {
                     $scope.otherUserinfo = response;
-                    validate = true;
+                    validate             = true;
                 }, function () {
                     $scope.otherUserinfo['_id'] = null;
                     validate = false;
