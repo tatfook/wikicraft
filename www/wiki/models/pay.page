@@ -140,8 +140,8 @@ function pay:api_createCharge(params)
 		local additional = {}
 		additional.url     = 'Pay';
 		additional.gsid	   = tostring(query.app_goods_id);
-		additional.count   = tostring(toFen * 10);
-		additional.money   = tostring(toFen * 100);
+		additional.count   = tostring(toFen/100 * 10);
+		additional.money   = tostring(toFen);
 		additional.method  = tostring(1);
 		additional.orderno = tostring(trade_no);
 		additional.from    = tostring(0);
