@@ -296,7 +296,7 @@ function pay:api_webhooks(params)
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
 				
-				local err, response = self:http("GET", url, apiParams);
+				local err, response = self:http("POST", url, apiParams);
 
 				if(err == 200) then
 					local spendInfo = payInfo;
