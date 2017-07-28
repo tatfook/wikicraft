@@ -27,6 +27,10 @@ function wallet:api_getBalance()
 	self:db():findOne({username = username}, resume);
 	local err, walletInfo = yield();
 
+	if(not walletInfo) then
+		walletInfo = {balance = 0};
+	end
+
 	if not err then
 		return errors:wrap(nil, walletInfo);
 	else

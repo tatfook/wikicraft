@@ -547,7 +547,11 @@ define(['app',
             })
 
             util.http("GET", config.apiUrlPrefix + "wallet/getBalance", {}, function (data) {
-                $scope.balance = data.balance;
+                if (data) {
+                    $scope.balance = data.balance;
+                } else {
+                    $scope.balance = 0;
+                }
             })
         }
 

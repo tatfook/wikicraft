@@ -140,7 +140,7 @@ function pay:api_createCharge(params)
 	tradeInfo.app_goods_id = query.app_goods_id; 
 	tradeInfo.additional   = query.additional;
 	tradeInfo.create_date  = self:getNow();
-	log(tradeInfo);
+
 	self:db():insertOne(tradeInfo, resume);
 	local err, _ = yield();
 
