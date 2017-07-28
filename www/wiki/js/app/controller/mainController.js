@@ -122,6 +122,9 @@ define([
                 $rootScope.getRenderText = function (text) {
                     return $sce.trustAsHtml(config.services.markdownit.render(text || ""));
                 }
+
+				$anchorScroll.yOffset = 100;
+				md.registerRenderAfterCallback("$anchorScroll", $anchorScroll);
             }
 
             // 底部高度自适应
