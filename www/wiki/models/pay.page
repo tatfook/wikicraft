@@ -126,12 +126,12 @@ function pay:api_createCharge(params)
 	if(query.app_name == "魔法哈奇") then
 		local additional = {}
 		additional.url     = 'Pay';
-		additional.gsid	   = query.app_goods_id;
-		additional.count   = toFen/100 * 10;
-		additional.money   = toFen;
-		additional.method  = 1;
-		additional.orderno = trade_no;
-		additional.from    = 0;
+		additional.gsid	   = tostring(query.app_goods_id);
+		additional.count   = tostring(toFen/100 * 10);
+		additional.money   = tostring(toFen);
+		additional.method  = tostring(1);
+		additional.orderno = tostring(trade_no);
+		additional.from    = tostring(0);
 
 		for key,item in pairs(additional) do
 			query.additional[key] = item;
