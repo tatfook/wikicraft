@@ -538,7 +538,7 @@ define([
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
-			console.log(text, token, blockCache.renderContent);
+			//console.log(text, token, blockCache.renderContent);
 			if (/^[hH][1-6]$/.test(token.tag)) {
 				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
 				var tag = token.tag;
