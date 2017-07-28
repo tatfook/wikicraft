@@ -34,3 +34,21 @@ td, th {
     display: table-cell;
     border: 1px solid #dddddd;
 }
+
+.wiki_page_inner_link {
+	position: relative;
+}
+
+.wiki_page_inner_link a.glyphicon-link {
+	position: absolute;
+	left: 0;
+	background-color: #FFF;
+	top: 50%;
+	margin-top: -7px;
+	font-size: 16px;
+	visibility: hidden;
+}
+
+.wiki_page_inner_link:hover a.glyphicon-link {
+	visibility: visible;
+}

@@ -543,8 +543,8 @@ define([
 				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
 				var tag = token.tag;
 				title = title.replace(/[\r\n]$/,"");
-				var encodeTitle = encodeURI(title);
-				blockCache.renderContent = '<div class="wiki_page_inner_link"><a class="glyphicon glyphicon-link" name="' + encodeTitle + '" href="##' + encodeTitle + '"></a>'+ blockCache.renderContent + '</div>';
+				//var encodeTitle = encodeURI(title);
+				blockCache.renderContent = '<div class="wiki_page_inner_link"><a class="glyphicon glyphicon-link" name="' + title + '" href="##' + title + '"></a>'+ blockCache.renderContent + '</div>';
 				// console.log(blockCache.renderContent);
 			}
 

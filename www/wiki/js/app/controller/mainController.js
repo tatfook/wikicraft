@@ -10,13 +10,12 @@ define([
     'helper/util',
     'helper/dataSource',
     'helper/loading',
-    'helper/titleAnchor',
     'controller/homeController',
     'controller/headerController',
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, titleAnchor, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
+], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
 	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
@@ -205,7 +204,6 @@ define([
                     }
                     isFirstLocationChange = false;
                     config.loadMainContent(initContentInfo);
-                    titleAnchor.init();
                 });
             }
 
@@ -364,10 +362,6 @@ define([
                 initBaseInfo();
                 initView();
             }
-
-            $(document).ready(function () {
-                titleAnchor.init();
-            });
 
             init();
 
