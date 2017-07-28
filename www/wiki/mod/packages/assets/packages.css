@@ -347,8 +347,8 @@ body {
 .packages-install .infor-logo img {
   width: 66px;
 }
-.packages-install .install-wiki img[alt="image"] {
-  width: 100%;
+.packages-install .install-wiki img {
+  max-width: 100%;
 }
 .packages-install .install-infor {
   padding-top: 45px;

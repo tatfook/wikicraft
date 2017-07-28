@@ -893,6 +893,7 @@
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_layout2.jpg" />
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_navbar.jpg" />
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_products.jpg" />
+    <Content Include="www\wiki\mod\modelshare\html\share.html" />
     <Content Include="www\wiki\test\cdntest.css" />
     <Content Include="www\wiki\test\cdntest.js" />
   </ItemGroup>
