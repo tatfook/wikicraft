@@ -272,6 +272,7 @@ define(['app',
                 }, 1000, 100);
 				//Message.info("邮件发送成功，请按邮件指引完成绑定");
                 $scope.emailVerifyCode = "";
+                $scope.errorMsg = "";
 				$('#emailModal').modal({});
 			},function (err) {
 				console.log(err);
@@ -280,6 +281,15 @@ define(['app',
 		}
 
 		$scope.confirmPhoneBind = function() {
+            $scope.errorMsg = "";
+            if (!$scope.smsId){
+                $scope.errorMsg = "请先发送验证码！";
+                return;
+            }
+            if (!$scope.smsCode){
+                $scope.errorMsg = "请填写验证码！";
+                return;
+            }
 			util.post(config.apiUrlPrefix + "user/verifyCellphoneTwo", {
 				smsId:$scope.smsId,
 				smsCode:$scope.smsCode,
@@ -294,7 +304,9 @@ define(['app',
 				Account.setUser($scope.user);
 				$('#phoneModal').modal("hide");
 				$scope.wait = 60;
-			});
+			}, function (err) {
+                $scope.errorMsg = err.message;
+            });
 		};
 
 		$scope.refreshImageCode = function() {
