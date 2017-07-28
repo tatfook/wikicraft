@@ -8,8 +8,8 @@ define([
     'helper/util',
     'helper/dataSource',
 ], function (app, storage, util, dataSource) {
-    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'gitlab', 'github', 'Message',
-        function ($auth, $rootScope, $http, $uibModal, github, Message) {
+    app.factory('Account', ['$auth', '$rootScope', '$http', '$uibModal', 'Message',
+        function ($auth, $rootScope, $http, $uibModal, Message) {
             var account = undefined;
             var angularService = util.getAngularServices();
             if (!angularService || !angularService.$http) {
@@ -223,20 +223,6 @@ define([
                  },
                  */
 
-                linkGithub: function () {
-                    if (this.isAuthenticated()) {
-                        this.user.githubDS = 1;
-                        this.updateProfile(this.user, function () {
-                            account.githubAuthenticate();
-                        });
-                    }
-                },
-                unlinkGithub: function () {
-                    if (this.isAuthenticated()) {
-                        this.user.githubDS = 0;
-                        this.updateProfile(this.user);
-                    }
-                },
                 updateProfile: function (userinfo, cb, errcb) {
                     var self = this;
                     util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", userinfo, function (data) {
