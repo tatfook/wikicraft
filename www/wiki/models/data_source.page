@@ -398,10 +398,11 @@ function data_source:api_githubLinkGitlab(params)
 
 	local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
 	local provider = "github"
+	local extern_uid = params.githubUserId
 
 	-- 解除链接
 	if params.unlink then
-		provider=""
+		extern_uid = ds.dataSourceUsername
 	end
 
 	-- 不存在创建用户
@@ -411,7 +412,7 @@ function data_source:api_githubLinkGitlab(params)
 		method = "PUT",
 		json = true,
 		form = {
-			extern_uid = params.githubUserId,
+			extern_uid = extern_uid,
 			provider = provider,
 			username = ds.dataSourceUsername,
 		}

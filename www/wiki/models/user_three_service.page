@@ -41,6 +41,11 @@ function user_three_service:api_deleteById(params)
 
 	self:db():findOne({_id=params.id}, resume)
 	local _, service = yield()
+
+	if not service then
+		return errors:wrap()
+	end
+
 	if service.username and service.serviceName == "github" then
 		local dataSourceDB = models.data_source:new()
 		dataSourceDB:api_githubLinkGitlab({
@@ -48,10 +53,6 @@ function user_three_service:api_deleteById(params)
 			username=service.username,
 			unlink=true,
 		})
-	end
-
-	if not service then
-		return errors:wrap()
 	end
 
 	self:db():deleteOne({_id=params.id}, resume)
