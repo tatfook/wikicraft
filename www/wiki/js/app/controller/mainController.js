@@ -122,6 +122,9 @@ define([
                 $rootScope.getRenderText = function (text) {
                     return $sce.trustAsHtml(config.services.markdownit.render(text || ""));
                 }
+
+				$anchorScroll.yOffset = 100;
+				md.registerRenderAfterCallback("$anchorScroll", $anchorScroll);
             }
 
             // 底部高度自适应
@@ -230,7 +233,7 @@ define([
                         username: urlObj.username,
                         sitename: urlObj.sitename,
                         pagename: urlObj.pagename || 'index',
-                        userId:$rootScope.user && $rootScope.user._id,
+						url:urlObj.pagepath,
                     }, function (data) {
                         data = data || {};
                         // 这三种基本信息根化，便于用户页内模块公用

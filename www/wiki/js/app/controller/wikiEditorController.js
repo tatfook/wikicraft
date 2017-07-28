@@ -2548,7 +2548,7 @@ define([
                 editor.on('scroll', function (cm) {
                     if (isScrollPreview)
                         return;
-                    console.log(scrollTimer);
+                    //console.log(scrollTimer);
                     scrollTimer && clearTimeout(scrollTimer);
                     scrollTimer = setTimeout(function () {
                         var scaleSize = getScaleSize("scroll");

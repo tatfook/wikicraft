@@ -47,9 +47,17 @@ end
 local githubId = tostring(data.id)
 local serviceUsername = data.login
 
+-- 未登录
+db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName}}, resume)
+local err, userThreeService = yield()
+
 -- 是否已经登录
 local username = getUsername()
 if username then
+	if (userThreeService and userThreeService.username and userThreeService.username ~= username) then
+		return response:send({error=0, message="账号已被绑定:" .. userThreeService.username})
+	end
+
 	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {username=username, serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, resume)
 	yield()
 	db.user:findOne({["+username"]={username}}, resume)
@@ -63,9 +71,6 @@ if username then
 	return response:send({token = token, data = userinfo, error=0, message="OK"})
 end
 
--- 未登录
-db.user_three_service:findOne({["+serviceId+serviceName"]={githubId, serviceName}}, resume)
-local err, userThreeService = yield()
 -- 没有绑定
 if not userThreeService then
 	db.user_three_service:insertOne({["+serviceId+serviceName"]={githubId, serviceName}}, {serviceId=githubId, serviceName=serviceName, token=accessToken.access_token, serviceUsername=serviceUsername}, resume)
@@ -78,6 +83,7 @@ else
 	end
 	
 end
+
 db.user:findOne({["+username"]={userThreeService.username}}, resume)
 local err, userinfo = yield()
 if not userinfo then

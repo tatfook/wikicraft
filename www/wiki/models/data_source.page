@@ -397,6 +397,14 @@ function data_source:api_githubLinkGitlab(params)
 	end
 
 	local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
+	local provider = "github"
+	local extern_uid = params.githubUserId
+
+	-- 解除链接
+	if params.unlink then
+		extern_uid = ds.dataSourceUsername
+	end
+
 	-- 不存在创建用户
 	System.os.GetUrl({
 		url= ds.apiBaseUrl .. "/users/" .. tostring(ds.dataSourceUserId), 
@@ -404,8 +412,8 @@ function data_source:api_githubLinkGitlab(params)
 		method = "PUT",
 		json = true,
 		form = {
-			extern_uid = params.githubUserId,
-			provider = "github",
+			extern_uid = extern_uid,
+			provider = provider,
 			username = ds.dataSourceUsername,
 		}
 	}, resume)

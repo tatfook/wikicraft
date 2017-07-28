@@ -34,3 +34,36 @@ td, th {
     display: table-cell;
     border: 1px solid #dddddd;
 }
+
+.wiki_page_inner_link {
+	position: relative;
+}
+
+.wiki_page_inner_link a.glyphicon-link {
+	position: absolute;
+	left: 0;
+	background-color: #FFF;
+	top: 50%;
+	margin-top: -7px;
+	font-size: 16px;
+	visibility: hidden;
+}
+
+.wiki_page_inner_link:hover a.glyphicon-link {
+	visibility: visible;
+}
+.wiki_page_inner_link h1, .wiki_page_inner_link h2, .wiki_page_inner_link h3, .wiki_page_inner_link h4, .wiki_page_inner_link h5, .wiki_page_inner_link h6 {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+.wiki_page_inner_link:hover h1, .wiki_page_inner_link:hover h2, .wiki_page_inner_link:hover h3, .wiki_page_inner_link:hover h4, .wiki_page_inner_link:hover h5, .wiki_page_inner_link:hover h6 {
+    padding-left: 15px;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s
+}

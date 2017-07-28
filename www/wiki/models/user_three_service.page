@@ -7,6 +7,7 @@ Date: 2017/04/19
 
 
 include_once("./abstract/base.page")
+include_once("data_source.page")
 
 local user_three_service = inherit(models.abstract.base, gettable("models.user_three_service"))
 user_three_service.db_name = "user_three_service"
@@ -33,8 +34,25 @@ end
 
 -- 删除第三方服务
 function user_three_service:api_deleteById(params)
+	self:ensureAuthenticated()
 	if not params.id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params.id}, resume)
+	local _, service = yield()
+
+	if not service then
+		return errors:wrap()
+	end
+
+	if service.username and service.serviceName == "github" then
+		local dataSourceDB = models.data_source:new()
+		dataSourceDB:api_githubLinkGitlab({
+			githubUserId=service.serviceId,
+			username=service.username,
+			unlink=true,
+		})
 	end
 
 	self:db():deleteOne({_id=params.id}, resume)

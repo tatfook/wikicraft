@@ -292,6 +292,8 @@ define([
         $(tempSelector).empty();
         //console.log($(selector), $(tempSelector), blockList);
         util.$apply();
+
+		mdwiki.renderAfterCallback();
     }
 
     function isExistTemplate(mdwiki, text) {
@@ -417,6 +419,9 @@ define([
         mdwiki.options = options;
         mdwiki.blockCacheMap = {};
 		mdwiki.isMainMd = options.isMainMd;
+		mdwiki.renderAfterCBMap = {
+			//"$anchorScroll": config.services.$anchorScroll,
+		};
 
 		if (mdwiki.isMainMd) {
 			config.shareMap["mdwiki"] = mdwiki;
@@ -425,6 +430,17 @@ define([
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
         }
+
+		mdwiki.registerRenderAfterCallback = function(name, fn) {
+			this.renderAfterCBMap[name] = fn;
+		}
+		
+		mdwiki.renderAfterCallback = function() {
+			for (var key in this.renderAfterCBMap) {
+				var fn = this.renderAfterCBMap[key];
+				fn && fn();
+			}
+		}
 
         mdwiki.enableEditor = function () {
             mdwiki.editorMode = true;
@@ -538,13 +554,14 @@ define([
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
-			console.log(text, token, blockCache.renderContent);
+			// console.log(text, token, blockCache.renderContent);
 			if (/^[hH][1-6]$/.test(token.tag)) {
 				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
 				var tag = token.tag;
 				title = title.replace(/[\r\n]$/,"");
-				blockCache.renderContent = '<div class="wiki_page_inner_link" style="display:flex; flex-direction:row;"><a class="glyphicon glyphicon-link" name="' + title + '"></a>'+ blockCache.renderContent + '</div>';
-				console.log(blockCache.renderContent);
+				//var encodeTitle = encodeURI(title);
+				blockCache.renderContent = '<div class="wiki_page_inner_link"><a class="glyphicon glyphicon-link" name="' + title + '" href="#/#' + title + '"></a>'+ blockCache.renderContent + '</div>';
+				// console.log(blockCache.renderContent);
 			}
 
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
