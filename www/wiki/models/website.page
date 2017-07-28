@@ -513,7 +513,7 @@ function website:api_visitWebsite(params)
 
 	-- 添加访问记录
 	local userVisitHistoryDB = models.user_visit_history:new()
-	userVisitHistoryDB:api_upsert({username=params.username, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
+	userVisitHistoryDB:api_upsert({username=username, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
 	
 	return errors:wrap()
 end
