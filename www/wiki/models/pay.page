@@ -127,8 +127,8 @@ function pay:api_createCharge(params)
 		local additional = {}
 		additional.url     = 'Pay';
 		additional.gsid	   = query.app_goods_id;
-		additional.count   = toFen * 10;
-		additional.money   = toFen * 100;
+		additional.count   = toFen/100 * 10;
+		additional.money   = toFen;
 		additional.method  = 1;
 		additional.orderno = trade_no;
 		additional.from    = 0;
@@ -139,19 +139,26 @@ function pay:api_createCharge(params)
 	elseif(query.app_name == "魔法哈奇2") then
 		local additional = {}
 		additional.url     = 'Pay';
-		additional.gsid	   = query.app_goods_id;
-		additional.count   = toFen * 10;
-		additional.money   = toFen * 100;
-		additional.method  = 1;
-		additional.orderno = trade_no;
-		additional.from    = 0;
+		additional.gsid	   = tostring(query.app_goods_id);
+		additional.count   = tostring(toFen * 10);
+		additional.money   = tostring(toFen * 100);
+		additional.method  = tostring(1);
+		additional.orderno = tostring(trade_no);
+		additional.from    = tostring(0);
 
 		for key,item in pairs(additional) do
 			query.additional[key] = item;
 		end
+		
+		query.additional.user_nid = tostring(query.additional.user_nid);
 	end
-
-	local err, chargeObject = self:http("POST", url, apiParams);
+	
+	local chargeHeaders = {
+		Authorization = "Bearer " .. self.appToken,
+		["content-type"]  = "application/json",
+	};
+	
+	local err, chargeObject = self:http("POST", url, apiParams, chargeHeaders);
 
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
@@ -295,8 +302,16 @@ function pay:api_webhooks(params)
 			if(appInfo) then
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
-				
-				local err, response = self:http("POST", url, apiParams);
+
+				url = url .. "?";
+
+				for key,value in pairs(apiParams) do
+					url = url .. key .. "=" .. value .. "&";
+				end
+
+				url = string.sub(url, 1, -2);
+
+				local err, response = self:http("GET", url, apiParams);
 
 				if(err == 200) then
 					local spendInfo = payInfo;
@@ -362,16 +377,17 @@ function pay:validate(appGoodsInfo, query)
 	return validate;
 end
 
-function pay:http(method, url, params)
+function pay:http(method, url, params, headers)
+	if(not headers) then
+		headers = {};
+	end
+
 	System.os.GetUrl({
-		url    = url,
-		headers = {
-			Authorization = "Bearer " .. self.appToken,
-			["content-type"]  = "application/json",
-		},
-		form   = params,
-		method = method,
-		json   = true,
+		url     = url,
+		headers = headers,
+		form    = params,
+		method  = method,
+		json    = true,
 	},resume);
 
 	return yield();
