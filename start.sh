@@ -38,6 +38,7 @@ start_server() {
 		fi
 		ulimit -c unlimited
 		backup_file ${test_dir}
+		echo "" > "${test_dir}_log.log"
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${test_dir}/" port="8099" logfile="${test_dir}_log.log" 
 	elif [ $server_type = "rls" ]; then 
 		if [ -e ${build_dir} ]; then
@@ -46,10 +47,12 @@ start_server() {
 		fi
 		ulimit -c unlimited
 		backup_file ${rls_dir}
+		echo "" > "${rls_dir}_log.log"
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${rls_dir}/" port="8088" logfile="${rls_dir}_log.log"
 	elif [ $server_type = "dev" ]; then 
 		ulimit -c unlimited
 		backup_file ${dev_dir}
+		echo "" > "${dev_dir}_log.log"
 		npl -d bootstrapper="script/apps/WebServer/WebServer.lua"  root="${dev_dir}/" port="8900" logfile="${dev_dir}_log.log"
 	fi
 }

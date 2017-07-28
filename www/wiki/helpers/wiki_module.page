@@ -41,8 +41,8 @@ function clearWikiModuleInfo()
 	yield()
 end
 
-clearWikiModuleInfo()
-loadWikiModule()
+--clearWikiModuleInfo()
+--loadWikiModule()
 
 
 -- log("load helper wiki_module.page!!!")

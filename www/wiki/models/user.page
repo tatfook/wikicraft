@@ -254,7 +254,7 @@ function user:api_verifyCellphoneOne(params)
 	end
 
 	local smsCode = tostring(math.random(1000,9999))
-	local smsParams = {to=params.cellphone, datas={smsCode,"3"}, templateId="1"}
+	local smsParams = {to=params.cellphone, datas={smsCode,"3分钟"}, templateId="1"}
 	sendTemplateSms(smsParams, resume)
 	local _, data = yield()
 	data = data.data
@@ -264,7 +264,7 @@ function user:api_verifyCellphoneOne(params)
 
 	local value = {cellphone=params.cellphone, smsCode=smsCode}
 	value = commonlib.Json.Encode(value)
-	mem_cache:set(data.templateSMS.smsMessageSid, value, nil, 300)
+	mem_cache:set(data.templateSMS.smsMessageSid, value, nil, 180)
 
 	return errors:wrap(nil, {smsId=data.templateSMS.smsMessageSid})
 end
@@ -281,7 +281,7 @@ function user:api_verifyCellphoneTwo(params)
 	mem_cache:set(params.smsId, nil)
 	value = commonlib.Json.Decode(value or "{}")
 	if value.smsCode ~= params.smsCode then
-		return errors:wap(errors:new("验证码错误"))
+		return errors:wrap(errors:new("验证码错误"))
 	end
 
 	local cellphone = ""
@@ -322,10 +322,10 @@ function user:api_verifyEmailOne(params)
 	par.body = [[
 	<div class="main-content">
 	<p>邮箱验证码为:%s</p>
-	<p>打开如下链接进行邮箱验证:</p>
-	<p><a href="%s">%s</a></p>
 	</div>
 	]]
+	--<p>打开如下链接进行邮箱验证:</p>
+	--<p><a href="%s">%s</a></p>
 	par.body = string.format(par.body, verifyCode, url, url)
 	util:sendEmail(par)
 
@@ -391,8 +391,8 @@ function user:api_findPwdOne(params)
 	par.subject = "keepwork找回密码"
 	par.body = [[
 	<div class="main-content">
-	<p>打开如下链接进行密码重置:</p>
-	<p><a href="%s">%s</a></p>
+		<p>打开如下链接进行密码重置:</p>
+		<p><a href="%s">%s</a></p>
 	</div>
 	]]
 	par.body = string.format(par.body, url, url)
