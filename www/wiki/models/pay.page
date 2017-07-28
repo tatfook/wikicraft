@@ -126,7 +126,7 @@ function pay:api_createCharge(params)
 	if(query.app_name == "魔法哈奇") then
 		local additional = {}
 		additional.url     = 'Pay';
-		additional.gsid	   = 984;
+		additional.gsid	   = query.app_goods_id;
 		additional.count   = toFen * 10;
 		additional.money   = toFen * 100;
 		additional.method  = 1;
@@ -139,7 +139,7 @@ function pay:api_createCharge(params)
 	elseif(query.app_name == "魔法哈奇2") then
 		local additional = {}
 		additional.url     = 'Pay';
-		additional.gsid	   = 984;
+		additional.gsid	   = query.app_goods_id;
 		additional.count   = toFen * 10;
 		additional.money   = toFen * 100;
 		additional.method  = 1;
