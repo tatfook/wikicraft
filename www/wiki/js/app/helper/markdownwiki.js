@@ -538,14 +538,15 @@ define([
                 isWikiBlock: false,
                 wikiBlock: undefined,
             }
-			//console.log(text, token, blockCache.renderContent);
-			//if (/^[hH][1-6]$/.test(token.tag)) {
-				//var title = text.replace(/^[ ]*[#]*[ ]*/,"");
-				//var tag = token.tag;
-				//title = title.replace(/[\r\n]$/,"");
-				//blockCache.renderContent = '<div class="wiki_page_inner_link" style="display:flex; flex-direction:row;"><a class="glyphicon glyphicon-link" name="' + title + '"></a>'+ blockCache.renderContent + '</div>';
-				//console.log(blockCache.renderContent);
-			//}
+			// console.log(text, token, blockCache.renderContent);
+			if (/^[hH][1-6]$/.test(token.tag)) {
+				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
+				var tag = token.tag;
+				title = title.replace(/[\r\n]$/,"");
+				var encodeTitle = encodeURI(title);
+				blockCache.renderContent = '<div class="wiki_page_inner_link"><a class="glyphicon glyphicon-link" name="' + encodeTitle + '" href="##' + encodeTitle + '"></a>'+ blockCache.renderContent + '</div>';
+				// console.log(blockCache.renderContent);
+			}
 
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
                 var wikiBlock = mdwiki.parseWikiBlock(token);
