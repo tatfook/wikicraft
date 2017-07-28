@@ -91,11 +91,15 @@ function data_upgrade:api_resetPassword(params)
 end
 
 -- 更新用户第三方服务表
-function data_upgrade:api_updateUserThreeService(params)
+function data_upgrade:api_userIdToUsername(params)
+	if not params.tableName then
+		return {message="参数错误"}
+	end
+
 	local userDB = models.user:new()
-	local userThreeServiceDB = models.user_three_service:new()
+	local tableDB = models[params.tableName]:new()
 	
-	userThreeServiceDB:db():find({_id={gt=0, limit=100000}}, resume)
+	tableDB:db():find({_id={gt=0, limit=100000}}, resume)
 	local _, list = yield()
 
 	for _, obj in ipairs(list or {}) do
@@ -103,8 +107,10 @@ function data_upgrade:api_updateUserThreeService(params)
 			userDB:db():findOne({_id=obj.userId}, resume)
 			local _, user = yield()
 
-			userThreeServiceDB:db():updateOne({_id=obj._id}, {username=user.username}, resume)
-			yield()
+			if user then
+				tableDB:db():updateOne({_id=obj._id}, {username=user.username}, resume)
+				yield()
+			end
 		end
 	end
 end

@@ -15,7 +15,7 @@ user_visit_history.db_name = 'user_visit_history'
 
 function user_visit_history:ctor()
 	-- 用户ID
-	self:addfield("userId", "number")
+	self:addfield("username", "string")
 	-- 用户访问的站点信息
 	self:addfield("visitUsername","string")
 	self:addfield("visitSitename","string")
@@ -25,13 +25,13 @@ end
 
 -- 创建一条访问记录
 function user_visit_history:api_upsert(params)
-	if (not params.userId) or (not params.visitSitename) or (not params.visitUsername) then
+	if (not params.username) or (not params.visitSitename) or (not params.visitUsername) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
 	-- params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	self:db():insertOne({['+userId+visitUsername+visitSitename']={params.userId, params.visitUsername, params.visitSitename}}, params, resume)
+	self:db():insertOne({['+username+visitUsername+visitSitename']={params.username, params.visitUsername, params.visitSitename}}, params, resume)
 	
 	return errors:wrap(yield())
 end
@@ -41,9 +41,9 @@ function user_visit_history:api_get(params)
 	local skip, limit = util:pagination(params)
 	local key = ''
 	local value = {gt=""}
-	if params.userId then
-		key = key .. '+userId'
-		value[#value+1]	= params.userId
+	if params.username then
+		key = key .. '+username'
+		value[#value+1]	= params.username
 	end
 	key = key .. '-updateDate'
 	
@@ -73,9 +73,9 @@ function user_visit_history:api_getCurrentDay(params)
 	local key = ''
 	local value = {gt=startDate}
 	local query = {}
-	if params.userId then
+	if params.username then
 		key = key .. '+userId'
-		value[#value+1]	= params.userId
+		value[#value+1]	= params.username
 	end
 
 	if key ~= '' then

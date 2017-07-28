@@ -483,7 +483,7 @@ define(['app',
         // 我的历史
         $scope.clickMyHistory = function () {
             $scope.showItem = 'myHistory';
-            util.http("POST", config.apiUrlPrefix + 'user_visit_history/get', {userId: $scope.user._id}, function (data) {
+            util.http("POST", config.apiUrlPrefix + 'user_visit_history/get', {username: $scope.user.username}, function (data) {
                 data = data || {};
                 $scope.visitHistoryList = data.visitList; // 用户的建站列表
             });

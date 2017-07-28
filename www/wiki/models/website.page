@@ -501,15 +501,19 @@ function website:api_visitWebsite(params)
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+	
+	local username = getUsername()
+
+	if not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
 	-- 增加站点访问量
 	self:api_updateVisitNum({username=params.username, sitename=params.sitename})
 
 	-- 添加访问记录
-	if params.userId then
-		local userVisitHistoryDB = models.user_visit_history:new()
-		userVisitHistoryDB:api_upsert({userId=params.userId, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
-	end
+	local userVisitHistoryDB = models.user_visit_history:new()
+	userVisitHistoryDB:api_upsert({username=params.username, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
 	
 	return errors:wrap()
 end
@@ -527,6 +531,8 @@ function website:api_getDetailInfo(params)
 	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	--models.user:new():filterUserInfo(userinfo)
 	userinfo.password = nil
 
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)

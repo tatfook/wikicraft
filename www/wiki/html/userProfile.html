@@ -728,6 +728,11 @@
                 <div class="time"><span>{{site.updateDate}}</span><span></span></div>
                 <div class="rubbish" ng-click="deleteHistory(site)"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
             </div>
+			<!--<div class="pagination-box" ng-show="site.favoriteCount && site.favoriteCount>0">-->
+				<!--<ul uib-pagination ng-change="fansPageChanged()" items-per-page='pageSize' previous-text="上一页"-->
+					<!--next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"-->
+					<!--class="pagination-sm" boundary-link-numbers="true"></ul>-->
+			<!--</div>-->
         </div>
     </div>
 
