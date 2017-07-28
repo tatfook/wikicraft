@@ -52,3 +52,18 @@ td, th {
 .wiki_page_inner_link:hover a.glyphicon-link {
 	visibility: visible;
 }
+.wiki_page_inner_link h1, .wiki_page_inner_link h2, .wiki_page_inner_link h3, .wiki_page_inner_link h4, .wiki_page_inner_link h5, .wiki_page_inner_link h6 {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+.wiki_page_inner_link:hover h1, .wiki_page_inner_link:hover h2, .wiki_page_inner_link:hover h3, .wiki_page_inner_link:hover h4, .wiki_page_inner_link:hover h5, .wiki_page_inner_link:hover h6 {
+    padding-left: 15px;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s
+}
