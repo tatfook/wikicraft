@@ -1,4 +1,4 @@
-<div ng-controller="courseController" style="height: 100%; display: flex; flex-direction:column; min-height: 800px; min-width: 580px;" >
+<div style="height: 100%; display: flex; flex-direction:column; min-height: 800px; min-width: 580px;" >
 
     <style scoped>     
 
@@ -284,7 +284,6 @@
 
         .edit-box{
             height: 46px !important;
-            padding: 5px 0;
         }
         
         .edit-txt, .ui-select-container input, .ui-select-container span.btn.btn-default.form-control.ui-select-toggle, .ui-select-container div.btn-default-focus{
@@ -398,7 +397,7 @@
                 <div class="pull-right">
                     <span class="switch-txt">分阶段教学</span>
                     <div class="switch-btn pull-right" ng-click="action.switchType()">
-                        <div class="switch-animate" ng-class="{ true: 'switch-on', false: 'switch-off'}[action.switch]">
+                        <div class="switch-animate" ng-class="{ true: 'switch-on', false: 'switch-off'}[switch]">
                             <div class="switch-left pull-left">ON</div>
                             <div class="switch-middle pull-left">&nbsp;</div>
                             <div class="switch-right pull-left">OFF</div>
@@ -416,7 +415,7 @@
                 </div>
 
                 <!--阶段的章节 start-->
-                <div class="chapter-stage" ng-show="course.chapter.length !== 0 && action.switch" data-drop="true">
+                <div class="chapter-stage" ng-show="course.chapter.length !== 0 && switch" data-drop="true">
                     <div ng-repeat="(key, chps) in course.chapterWithStage" 
                         class="stage-box col-xs-12"
                         data-drag="true" data-siblings="stage">
@@ -531,7 +530,7 @@
                 <!--阶段的章节 end-->
 
                 <!--非阶段的章节 start-->
-                <div class="chapter-no-stage" ng-show="course.chapter.length !== 0 && !action.switch" data-drop="true">
+                <div class="chapter-no-stage" ng-show="course.chapter.length !== 0 && !switch" data-drop="true">
                     <!--升序显示-->
                     <div class="chapter col-xs-12" 
                             ng-repeat = "chp in course.chapter | orderBy: 'chapter_order' track by $index"
