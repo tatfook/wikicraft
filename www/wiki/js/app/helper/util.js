@@ -302,8 +302,15 @@ define([
         if (url[0] != '/' && url.indexOf('://') < 0) {
             url = "/wiki/" + url;
         }
+		
+		var argIndex = url.indexOf("?");
+		
+		if (argIndex > 0 ) {
+			url = util.humpToSnake(url.substring(0, argIndex)) + url.substring(argIndex);
+		} else {
+			url = util.humpToSnake(url);
+		}
 
-        url = util.humpToSnake(url);
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#' + url;
         } else if (url.indexOf('://') < 0){
@@ -433,6 +440,7 @@ define([
     }
     // 驼峰转下划线
     util.humpToSnake = function (str) {
+		console.log(str);
         if (!str) {
             return str;
         }

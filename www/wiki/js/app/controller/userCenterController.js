@@ -16,27 +16,27 @@ define(['app',
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
-            {flag:'myProfile', name:'我的资料'},
-            {flag:'accountSafe', name:'账户安全'},
-            {flag:'myTrends', name:'我的动态'},
-            {flag:'myCollection', name:'我的关注'},
-            {flag:'myHistory', name:'我的历史'},
-            {flag:'myFans', name:'我的粉丝'},
-            {flag:'realName', name:'实名认证'},
-            {flag:'myPay', name:'消费记录'},
-            {flag:'invite', name:'邀请注册'},
+            {contentType:"userProfile", subContentType:"myProfile", flag:'myProfile', name:'我的资料'},
+            {contentType:"userProfile", subContentType:"accountSafe", flag:'accountSafe', name:'账户安全'},
+            {contentType:"userProfile", subContentType:"myTrends", flag:'myTrends', name:'我的动态'},
+            {contentType:"userProfile", subContentType:"myCollection", flag:'myCollection', name:'我的关注'},
+            {contentType:"userProfile", subContentType:"myHistory", flag:'myHistory', name:'我的历史'},
+            {contentType:"userProfile", subContentType:"myFans", flag:'myFans', name:'我的粉丝'},
+            {contentType:"userProfile", subContentType:"realName", flag:'realName', name:'实名认证'},
+            {contentType:"userProfile", subContentType:"myPay", flag:'myPay', name:'消费记录'},
+            {contentType:"userProfile", subContentType:"invite", flag:'invite', name:'邀请注册'},
         ];
 
         $scope.websiteMangerItemList = [
-            {flag:'myWebsite', name:'我的站点'},
+            {contentType:"websiteManager", subContentType:"myWebsite", flag:'myWebsite', name:'我的站点'},
         ];
 
         $scope.vipItemList = [
-            {flag:'myVIP', name:'我的VIP'},
+            {contentType:"vip", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
         ];
 
         $scope.dataSourceItemList = [
-            {flag:'dataSource', name:'数据源配置'},
+            {contentType:"dataSource", subContentType:"dataSource", flag:'dataSource', name:'数据源配置'},
         ]
 
         $scope.$on('userCenterContentType', function (event, contentType) {
@@ -98,17 +98,18 @@ define(['app',
         }
 
         $scope.clickUserCenterItem = function (item) {
-            $scope.showItem = item.flag;
+            $scope.showItem = item.subContentType;
             //console.log(item);
-            if (item.flag == 'myWebsite') {
+			// 网站管理比较特殊 这里需特殊处理, 一个子项多个页面
+            if (item.subContentType == 'myWebsite') {
                 util.html('#userCenterSubPage', websiteHtmlContent, $scope);
             }
 
-            $rootScope.$broadcast('userCenterSubContentType', item.flag);
+            $rootScope.$broadcast('userCenterSubContentType', item.subContentType);
         }
 
         $scope.getActiveStyleClass = function (item) {
-            return $scope.showItem == item.flag ? 'active' : '';
+            return $scope.showItem == item.subContentType ? 'active' : '';
         }
 
         $scope.goUserSite = function (x) {

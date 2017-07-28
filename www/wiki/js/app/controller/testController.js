@@ -22,7 +22,7 @@ define([
 
 				util.go("userCenter?"+util.getQueryString({
 					userCenterContentType:"userProfile",
-					userCenterSubContentType:"myPay",
+					userCenterSubContentType:"accountSafe",
 				}));
 			}
 		}
