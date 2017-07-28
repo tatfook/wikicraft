@@ -267,7 +267,7 @@ define(['app', 'helper/util',
                                     }
                                 }
 
-                                if (found >= 1) {
+                                if (found > 1) {
                                     $uibModal.open({
                                         template: `
                                         <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
@@ -285,7 +285,7 @@ define(['app', 'helper/util',
                                     });
                                 }
 
-                                return found >= 1;
+                                return found > 1;
                             },
 
                             //开始的时候添加
