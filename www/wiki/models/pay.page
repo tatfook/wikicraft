@@ -78,7 +78,7 @@ function pay:api_createCharge(params)
 	response:status(503);
 	local err, query = self:validateQuery(params);
 
-	local appInfo = oauth_app:getByAppName(payInfo.app_name);
+	local appInfo = oauth_app:getByAppName(query.app_name);
 
 	if(not appInfo) then
 		response:status(404);

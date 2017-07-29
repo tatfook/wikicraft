@@ -74,6 +74,10 @@ function oauth_app:api_get()
 end
 
 function oauth_app:getByAppName(appName)
+	if(not appName) then
+		return false;
+	end
+
 	for _, item in ipairs(oauthApp) do
 		if(item.appName == appName) then
 			return item;
