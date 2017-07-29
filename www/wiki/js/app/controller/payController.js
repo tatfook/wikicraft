@@ -11,10 +11,11 @@ define([
 ], function (app, util, storage, pingpp, htmlContent) {
     app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', '$http', function ($scope, Account, modal, $rootScope, $http) {
         function init() {
-            var queryArgs = util.getQueryObject();
-            var validate  = true;
-            var bAppExist = false;
-            var reset     = true;
+            var queryArgs  = util.getQueryObject();
+            var validate   = true;
+            var bAppExist  = false;
+            var bUserExist = false;
+            var reset      = true;
 
             $scope.otherUserinfo       = {};
             $scope.method              = "alipay";
@@ -31,12 +32,19 @@ define([
             $scope.alipayNotice        = null;
             $scope.goods.price         = 0;
             $scope.goods.exchange_rate = 0;
+            $scope.additional          = {};
 
-            validateF({ "username": queryArgs.username }, "$scope.otherUserinfo.username");
-            validateF({ "price": queryArgs.price }, "$scope.goods.price");
             validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
             validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
             validateF({ "redirect": queryArgs.redirect }, "$scope.redirect");
+
+            if (queryArgs.username) {
+                $scope.otherUserinfo.username = queryArgs.username;
+            }
+
+            if (queryArgs.price) {
+                $scope.goods.price = queryArgs.price;
+            }
 
             if (queryArgs.additional) {
                 $scope.additional = queryArgs.additional;
@@ -46,14 +54,6 @@ define([
                 } catch (e) {
                     console.warn("additional format error");
                 }
-
-                if (typeof ($scope.additional) != "object") {
-                    validate = false;
-                }
-
-                //console.log($scope.additional);
-            } else {
-                validate = false;
             }
 
             if (validate) {
@@ -64,7 +64,7 @@ define([
             $scope.onChange = function (params) {
                 $scope.method = params;
                 $scope.page   = "user";
-                reset = true;
+                reset         = true;
             }
 
             $scope.goMypay = function () {
@@ -79,7 +79,9 @@ define([
             }
 
             $scope.recharge = function () {
-                if (!validate || !bAppExist || !$scope.goods.price) {
+                checkAdditionalField($scope.additional, $scope.additional_field);
+
+                if (!validate || !bAppExist || !$scope.goods.price || !bUserExist ) {
                     alert("参数错误");
                     return;
                 }
@@ -178,6 +180,7 @@ define([
             });
 
             $scope.$watch("goods", function (newValue, oldValue) {
+                console.log(newValue);
                 var reg = /^[0-9]*$/;
 
                 if (newValue && newValue.price && reg.test(newValue.price) && typeof (newValue.exchange_rate) == "number") {
@@ -187,6 +190,14 @@ define([
                     $scope.goods.price = null;
                 }
             }, true);
+
+            $scope.$watch("additional.user_nid", function (newValue, oldValue) {
+                var reg = /^[0-9]*$/;
+
+                if (!newValue || !reg.test(newValue)) {
+                    delete $scope.additional.user_nid;
+                }
+            });
 
             function createCharge(params, callback) {
                 params.username     = $scope.otherUserinfo.username;
@@ -228,35 +239,46 @@ define([
                     $scope.subject             = response.subject;
                     $scope.body                = response.body;
                     $scope.goods.exchange_rate = response.exchange_rate;
-
-                    for (itemA in response.additional_field) {
-                        var checkField = true;
-                        var field      = response.additional_field[itemA];
-
-                        if (field.required) {
-                            checkField = false
-
-                            for (itemB in $scope.additional) {
-                                if (field.name == itemB) {
-                                    checkField = true
-                                }
-                            }
-                        }
-
-                        if (!checkField) {
-                            validate = false;
-                        }
-                    }
+                    $scope.additional_field    = response.additional_field;
                 });
             }
 
+            function checkAdditionalField(additional, additional_field) {
+                validate = true;
+
+                for (itemA in additional_field) {
+                    var checkField = true;
+                    var field      = additional_field[itemA];
+
+                    if (field.required) {
+                        checkField = false
+
+                        for (itemB in additional) {
+                            if (field.name == itemB) {
+                                checkField = true
+                            }
+                        }
+                    }
+
+                    if (!checkField) {
+                        validate = false;
+                    }
+                }
+            }
+
             function getUserinfo() {
-                util.http("POST", config.apiUrlPrefix + "user/getBaseInfoByName", { username: $scope.otherUserinfo.username }, function (response) {
-                    $scope.otherUserinfo = response;
-                    validate             = true;
+                $http.post(config.apiUrlPrefix + "user/getBaseInfoByName", { username: $scope.otherUserinfo.username }, { isShowLoading: false }).then(function (response) {
+                    if (response && response.data && response.data.error && response.data.error.id == 0) {
+                        $scope.otherUserinfo = response.data.data;
+                        bUserExist           = true;
+                    } else {
+                        $scope.otherUserinfo['_id'] = null;
+                        bUserExist                  = false;
+                    }
+
                 }, function () {
                     $scope.otherUserinfo['_id'] = null;
-                    validate = false;
+                    bUserExist                  = false;
                 })
             }
 
@@ -269,7 +291,7 @@ define([
                         $scope.page = "fail";
                     } else {
                         if (!reset) {
-                            setTimeout(function () { getTrade(charge) }, 3000);
+                           setTimeout(function () { getTrade(charge) }, 3000);
                         }
                     }
                 })

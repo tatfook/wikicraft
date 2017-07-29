@@ -353,6 +353,10 @@ function pay:getGoodsInfo(query)
 end
 
 function pay:validate(appGoodsInfo, query)
+	if(type(query.additional) ~= "table") then
+		return false;
+	end
+
 	local validate = true;
 
 	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
