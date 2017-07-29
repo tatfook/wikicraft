@@ -58,7 +58,7 @@ function wallet:balance(price, username)
 		local createWalletInfo = self:createBalanceUser(username);
 
 		if(createWalletInfo) then
-			local updateWalletInfo = self:updateBalance(walletInfo, price, username);
+			local updateWalletInfo = self:updateBalance(createWalletInfo, price, username);
 
 			if(updateWalletInfo) then
 				isSuccess = true;
@@ -95,7 +95,7 @@ function wallet:updateBalance(walletInfo, price, username)
 	end
 end
 
-function wallet:createBalanceUser(username, callback)
+function wallet:createBalanceUser(username)
 	local balanceInfo = {}
 	balanceInfo.username    = username;
 	balanceInfo.balance     = 0;

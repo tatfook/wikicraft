@@ -277,6 +277,7 @@ function pay:api_getTradeOne(params)
 end
 
 function pay:api_webhooks(params)
+	response:status(503);
 	local err, query = self:validateQuery(params);
 
 	if(query.type == "charge.succeeded") then
@@ -320,13 +321,14 @@ function pay:api_webhooks(params)
 					local bSuccess = self:spend(spendInfo);
 
 					if(bSuccess) then
+						response:status(200);
 						return errors.wrap(errors.SUCCESS);
 					end
 				end
 			end
-
 			return errors:wrap(errors.SERVER_INNER_ERROR);
 		else
+			response:status(404);
 			return errors:wrap(errors.NOT_FOUND);
 		end
 	end
