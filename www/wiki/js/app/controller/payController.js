@@ -36,7 +36,10 @@ define([
 
             validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
             validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
-            validateF({ "redirect": queryArgs.redirect }, "$scope.redirect");
+
+            if (Account.isAuthenticated() && Account.user) {
+                $scope.otherUserinfo.username = Account.user.username;
+            }
 
             if (queryArgs.username) {
                 $scope.otherUserinfo.username = queryArgs.username;
@@ -81,7 +84,12 @@ define([
             $scope.recharge = function () {
                 checkAdditionalField($scope.additional, $scope.additional_field);
 
-                if (!validate || !bAppExist || !$scope.goods.price || !bUserExist ) {
+                if (!bUserExist) {
+                    alert("用户不存在");
+                    return;
+                }
+
+                if (!validate || !bAppExist || !$scope.goods.price ) {
                     alert("参数错误");
                     return;
                 }
@@ -180,7 +188,6 @@ define([
             });
 
             $scope.$watch("goods", function (newValue, oldValue) {
-                console.log(newValue);
                 var reg = /^[0-9]*$/;
 
                 if (newValue && newValue.price && reg.test(newValue.price) && typeof (newValue.exchange_rate) == "number") {
@@ -205,7 +212,6 @@ define([
                 params.app_goods_id = $scope.app_goods_id;
                 params.app_name     = $scope.app_name;
                 params.additional   = $scope.additional;
-                params.redirect     = $scope.redirect;
 
                 util.http("POST", config.apiUrlPrefix + "pay/createCharge", params, function (response) {
                     var charge = response.data;
@@ -232,7 +238,7 @@ define([
 
             function getAppGoodsInfo() {
                 var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name };
-
+                
                 util.http("POST", config.apiUrlPrefix + "goods/getAppGoodsInfo", params, function (response) {
                     bAppExist = true;
 
