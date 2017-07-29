@@ -14,7 +14,7 @@ goods.db_name = "goods";
 local goodsData = {
 	{
 		goods_id          = 1,
-		app_goods_id      = 100,
+		app_goods_id      = 984,
 		subject           = "魔法哈奇",
 		body              = "魔法哈奇",
 		price             = 1,
