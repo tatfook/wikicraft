@@ -53,22 +53,22 @@
     <div class="nav sidebar-nav js-nav">
         <ul class="first-level">
             <li ng-class="{'active':($index==0)}" ng-repeat="item in tocTreeList" data-targetid="{{item.containerId}}">
-                <span class="list-title js-target" ng-click="goPart(item.containerId)">{{item.text}}</span>
+                <span class="list-title js-target" ng-click="goPart(item)">{{item.text}}</span>
                 <ul class="second-level">
                     <li ng-repeat="item1 in item.childs" data-targetid="{{item1.containerId}}">
-                        <span class="list-title js-target" ng-click="goPart(item1.containerId)">{{item1.text}}</span>
+                        <span class="list-title js-target" ng-click="goPart(item1)">{{item1.text}}</span>
                         <ul class="third-level">
                             <li ng-repeat="item2 in item1.childs" data-targetid="{{item2.containerId}}">
-                                <span class="list-title js-target" ng-click="goPart(item2.containerId)">{{item2.text}}</span>
+                                <span class="list-title js-target" ng-click="goPart(item2)">{{item2.text}}</span>
                                 <ul class="forth-level">
                                     <li ng-repeat="item3 in item2.childs" data-targetid="{{item3.containerId}}">
-                                        <span class="list-title js-target" ng-click="goPart(item3.containerId)">{{item3.text}}</span>
+                                        <span class="list-title js-target" ng-click="goPart(item3)">{{item3.text}}</span>
                                         <ul class="fifth-level">
                                             <li ng-repeat="item4 in item3.childs" data-targetid="{{item4.containerId}}">
-                                                <span class="list-title js-target" ng-click="goPart(item4.containerId)">{{item4.text}}</span>
+                                                <span class="list-title js-target" ng-click="goPart(item4)">{{item4.text}}</span>
                                                 <ul class="sixth-level">
                                                     <li ng-repeat="item5 in item4.childs" data-targetid="{{item5.containerId}}">
-                                                        <span class="list-title js-target" ng-click="goPart(item5.containerId)">{{item5.text}}</span>
+                                                        <span class="list-title js-target" ng-click="goPart(item5)">{{item5.text}}</span>
                                                     </li>
                                                 </ul>
                                             </li>

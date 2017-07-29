@@ -64,7 +64,7 @@ define([
 
     return {
         render: function (wikiBlock) {
-            console.log(wikiBlock.modParams);
+            //console.log(wikiBlock.modParams);
             //console.log(wikiBlock.modParams.substring(60));
             //console.log(angular.fromJson(wikiBlock.modParams));
             wikiBlock.modParams = wikiBlock.modParams ? Object.assign(defaultModParams, wikiBlock.modParams) : defaultModParams;
@@ -90,7 +90,7 @@ define([
 						return;
 					}
 					var md = markdownwiki({});
-					console.log($("#"+id));
+					//console.log($("#"+id));
 					if (content) {
 						util.html("#" + id, md.render(content));
 					} else {

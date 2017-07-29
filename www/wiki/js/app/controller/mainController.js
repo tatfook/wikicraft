@@ -124,7 +124,9 @@ define([
                 }
 
 				$anchorScroll.yOffset = 100;
-				md.registerRenderAfterCallback("$anchorScroll", $anchorScroll);
+				md.registerRenderAfterCallback("$anchorScroll", function(){
+					$anchorScroll();
+				});
             }
 
             // 底部高度自适应
@@ -202,7 +204,7 @@ define([
 							}
 						}
 					}
-                    if (!isFirstLocationChange && util.isEditorPage()) {
+                    if (!isFirstLocationChange && (util.isEditorPage() || !config.islocalWinEnv())) {
                         return ;
                     }
                     isFirstLocationChange = false;

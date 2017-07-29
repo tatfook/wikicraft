@@ -6,7 +6,7 @@ define([
 	// 使用闭包使模块重复独立使用
 	function registerController(wikiblock) {
 		// 比赛类活动奖励控制器
-		app.registerController("tocController", ['$scope', '$rootScope', function ($scope, $rootScope) {
+		app.registerController("tocController", ['$scope', '$rootScope',"$anchorScroll", function ($scope, $rootScope, $anchorScroll) {
 			$scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
 			$scope.containerId = wikiblock.containerId + "_toc";
 
@@ -17,18 +17,21 @@ define([
 			var endLevel = modParams.endLevel || 6;
 			var startLine = modParams.startLine || 0;
 			var endLine = modParams.endLine || 10000000;
-            var tocTreeList, tocList;
+            var tocTreeList, tocList, containerId;
 
-			$scope.goPart = function (containerId) {
-				document.getElementById(containerId).scrollIntoView();
-				active(containerId);
+			$scope.goPart = function (item) {
+				//document.getElementById(item.containerId).scrollIntoView();
+				$anchorScroll(item.anchor);
+				$("#"+containerId)[0].scrollTop -= 50;
+				active(item);
             };
 
-			function active(containerId) {
+			function active(item) {
 				$(".js-nav .active").removeClass("active");
-				var targetObj = $('[data-targetid="'+containerId+'"]');
+				var targetObj = $('[data-targetid="'+ item.containerId+'"]');
 				targetObj.addClass("active");
-				targetObj.get(0).scrollIntoView();
+				window.location.hash="#/#" + item.anchor;
+				//targetObj.get(0).scrollIntoView();
             }
 
             function getOffsetTop(containerId) {
@@ -37,7 +40,8 @@ define([
 
 			function addTocItem(tocTreeList, tocList, block) {
 				var tag = block.tag;
-				var text = block.content.replace(/[\s#]/g,'');
+				var text = block.content.replace(/^[ ]*[#]*[ ]*/,'').replace(/[\r\n]*$/, '');
+				var anchor = text;
 				var hn = parseInt(tag[1]);
 				var containerId = block.blockCache.containerId;
 				var offsetTop = getOffsetTop(containerId);
@@ -67,6 +71,7 @@ define([
 				var tocObject = {
                     tag:tag,
                     text:text,
+					anchor:anchor,
                     containerId:containerId,
 					offsetTop: offsetTop,
                     childs:[],
@@ -84,7 +89,7 @@ define([
 
 				if (config.shareMap["mdwiki"] && config.shareMap["mdwiki"]["blockList"]) {
 					var mdwiki = config.shareMap["mdwiki"];
-                    var containerId = mdwiki.getMdWikiContentContainerId();
+                    containerId = mdwiki.getMdWikiContentContainerId();
 					blockList = mdwiki["blockList"];
 
 					var scrollElement = $("#"+containerId);
@@ -129,7 +134,7 @@ define([
                     var nodeLen = tocList.length;
                     for (var i = 0; i< nodeLen; i++){
                         if (scrollTop <= tocList[i].offsetTop){
-                            active(tocList[i].containerId);
+                            active(tocList[i]);
                             break;
                         }
                     }
@@ -139,6 +144,8 @@ define([
 			function init() {
 				generateToc();
 				setFullHeight($(".js-nav"));
+				$anchorScroll();
+				$("#"+containerId)[0].scrollTop -= 50;
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
