@@ -943,7 +943,7 @@ define([
                         editorDocMap[page.url] = CodeMirror.Doc(content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[page.url]);
-                    //console.log(currentPage);
+					//console.log(currentPage);
 					page.content = content;
 					editor.setValue(content);
                     CodeMirror.signal(editor, 'change', editor);
@@ -2706,6 +2706,7 @@ define([
                     $("#srcview").width("50%");
                     $("#preview").width("50%");
                     initView();
+					openPage();
                 };
 
                 $scope.showPreview = function () {
