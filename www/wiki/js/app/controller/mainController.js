@@ -186,6 +186,7 @@ define([
 						if (url[0] != '/') {
 							url = "/" + url;
 						}
+						url = decodeURIComponent(url);
 						var paths = url.split("/");
 						// url作严格控制，避免错误url导致异常逻辑
 						if (paths.length > 3 && paths.length < 6 && url.length < 256) {

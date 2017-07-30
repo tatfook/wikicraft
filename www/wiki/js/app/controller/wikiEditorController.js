@@ -372,10 +372,10 @@ define([
                 return false;
             }
 
-             if (!/^[a-zA-Z0-9_]+$/.test($scope.websitePage.pagename)){
-                 $scope.errInfo = '页面名包含只支持数字、字母、下划线(_)';
-                 return false;
-             }
+			 //if (!/^[a-zA-Z0-9_]+$/.test($scope.websitePage.pagename)){
+				 //$scope.errInfo = '页面名包含只支持数字、字母、下划线(_)';
+				 //return false;
+			 //}
 
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.pagename;
             $scope.websitePage.username = treeNode.username;
@@ -756,6 +756,10 @@ define([
 
             $scope.$on("changeEditorPage", function (event, urlObj) {//{{{
 				//console.log(urlObj);
+				if ((!urlObj) || (currentPage && currentPage.url == urlObj.url)) {
+					return;
+				}
+				//return;
                 renderAutoSave(function () {
                     openUrlPage(urlObj);
                 }, function () {
