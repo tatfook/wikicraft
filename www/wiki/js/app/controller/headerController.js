@@ -127,7 +127,7 @@ define([
                 return;
 
             // 用户收藏
-            util.post(config.apiUrlPrefix + 'user_visit_history/get', {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + 'user_visit_history/get', {username: $scope.user.username}, function (data) {
                 $scope.visitHistoryList = data.visitList;
             });
         }
@@ -285,8 +285,7 @@ define([
                 }
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: $rootScope.siteinfo.userId,
-                    favoriteWebsiteId: $rootScope.siteinfo._id,
+					siteId: $rootScope.siteinfo._id,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');

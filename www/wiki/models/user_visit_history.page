@@ -29,8 +29,8 @@ function user_visit_history:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	-- params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	 params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	--params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	self:db():insertOne({['+username+visitUsername+visitSitename']={params.username, params.visitUsername, params.visitSitename}}, params, resume)
 	
 	return errors:wrap(yield())

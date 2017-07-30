@@ -755,6 +755,7 @@ define([
 
 
             $scope.$on("changeEditorPage", function (event, urlObj) {//{{{
+				//console.log(urlObj);
                 renderAutoSave(function () {
                     openUrlPage(urlObj);
                 }, function () {
@@ -810,7 +811,7 @@ define([
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj') || {};
                 storage.sessionStorageRemoveItem('urlObj');
-                //console.log(urlObj);
+				//console.log(urlObj);
 
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
@@ -823,9 +824,8 @@ define([
                 }
                 currentPage = getPageByUrl(url);
                 currentSite = getCurrentSite(username, sitename);
-
+				//console.log(currentPage);
                 var _openUrlPage = function () {
-                    var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                     currentPage = getPageByUrl(url);
                     //console.log(url, pagepath, urlObj);
                     if (currentPage) {
@@ -933,8 +933,7 @@ define([
                     pagename: currentPage.pagename,
                     url:currentPage.url,
                 });
-                //!config.islocalWinEnv() && $location.path(currentPage.url);
-                !config.islocalWinEnv() && (window.location.href="/wiki/wikieditor#"+currentPage.url);
+				!config.islocalWinEnv() && (window.location.href="/wiki/wikieditor#"+currentPage.url);
 
                 function setEditorValue(page, content) {
                     page.isFirstEditor = true;
@@ -978,6 +977,7 @@ define([
                 }
 
 				var page = currentPage;
+				//console.log(page);
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
 					var callback = function(page, content) {
 						content = content || "";
@@ -1045,7 +1045,7 @@ define([
 						data:[],
                         //data: getTreeData($scope.user.username, allPageMap, false),
                         onNodeSelected: function (event, data) {
-                            //console.log(data.pageNode);
+							//console.log(data.pageNode);
                             //console.log("---------onNodeSelected----------");
                             var treeid = getTreeId(data.pageNode.username, data.pageNode.sitename);
                             if (data.pageNode.isLeaf) {
