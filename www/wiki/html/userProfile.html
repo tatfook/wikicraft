@@ -713,7 +713,7 @@
             <div class="img-text" ng-repeat="site in visitHistoryList" ng-show="site.siteinfo">
                 <img ng-src="{{site.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                 <div class="text">
-                    <h4><a ng-click="goUserSite(site.siteinfo)">{{site.siteinfo.name}}</a></h4>
+					<h4><a href="{{site.url}}">{{site.siteinfo.name}}</a></h4>
                     <p>作者：{{site.siteinfo.username}}</p>
                     <p>页数：{{site.siteinfo.pageCount}}</p>
                     <div class="col-md-12 info">
