@@ -4,6 +4,7 @@
 
 define([
     'app',
+	'html2canvas',
     'to-markdown',
     'codemirror',
     'helper/markdownwiki',
@@ -29,7 +30,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
+], function (app, html2canvas, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -705,9 +706,56 @@ define([
 						username:page.username, 
 						sitename:page.sitename,
 						lastCommitId:lastCommitId,
-					});
-				});
+					}, undefined, undefined, false);
+				}, undefined, false);
 			}//}}}
+
+
+			// 提交至搜索引擎
+			function submitToSearchEngine(page) {
+				var obj = {
+					url:"http://keepwork.com" + page.url,
+					short_url:page.url,
+					data_source_url:"",
+					tags:"",
+					//logoUrl:"",
+					content:page.content,
+					user_name:page.username,
+					site_name:page.sitename,
+					page_name:page.pagename,
+				};
+
+				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
+				util.http("POST", url, obj, function(response){
+					console.log(response);
+				}, function(response){
+					console.log(response);
+				}, false);
+			}
+
+			// 生成页面快照
+			function makeSnapshot(currentDataSource, page) {
+				var containerId = mdwiki.getMdWikiContainerId();
+
+				setTimeout(function() {
+					html2canvas(document.getElementById(containerId),{
+						height:300,
+						width:300,
+
+						onrendered:function(canvas) {
+							if (!currentDataSource || !currentPage || !page || page.url != currentPage.url) {
+								return;
+							}
+							var imgDataURI = canvas.toDataURL('image/png');
+							//console.log(imgDataURI);
+							currentDataSource.uploadImage({
+								path:page.url,
+								content:imgDataURI,
+							});
+						},
+					});
+				}, 5000);
+			}
 
             // 保存页
             function savePageContent(cb, errcb) {//{{{
@@ -742,6 +790,10 @@ define([
                     cb && cb();
                 };
 
+				submitToSearchEngine(page);
+
+				makeSnapshot(currentDataSource, page);
+
                 currentSite = getCurrentSite(page.username, page.sitename);
                 if (currentSite) {
                     util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', {userId:currentSite.userId, siteId:currentSite._id});
@@ -767,7 +819,7 @@ define([
                 });
             });//}}}
 
-            // 获取站点文件列表
+            // 获取站k点文件列表
             function getSitePageList(params, cb, errcb) {//{{{
 				//console.log(params);
                 var currentDataSource = dataSource.getDataSource(params.username, params.sitename);

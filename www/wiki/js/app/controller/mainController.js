@@ -41,7 +41,7 @@ define([
                 //配置一些全局服务
                 config.services = {
                     $rootScope: $rootScope,
-                    $sce:$sce,
+                    $sce: $sce,
                     $http: $http,
                     $compile: $compile,
                     $auth: $auth,
@@ -337,9 +337,9 @@ define([
 
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
-						if (urlObj.pathname == "/wiki/test") {
-							config.mainContent = md.render(config.mainContent);
-						}
+						//if (urlObj.pathname == "/wiki/test") {
+							//config.mainContent = md.render(config.mainContent);
+						//}
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         //config.mainContent = undefined;
                     } else {

@@ -249,7 +249,7 @@ define([
 			method:method,
 			url:url,
 			params:params,
-			isShowLoading:isShowLoading,
+			isShowLoading:isShowLoading == undefined ? true : isShowLoading,
 			callback:callback,
 			errorCallback:errorCallback,
 		});

@@ -495,10 +495,27 @@ define(['app',
         // 我的历史
         $scope.clickMyHistory = function () {
             $scope.showItem = 'myHistory';
-            util.http("POST", config.apiUrlPrefix + 'user_visit_history/get', {username: $scope.user.username}, function (data) {
-                data = data || {};
-                $scope.visitHistoryList = data.visitList; // 用户的建站列表
-            });
+			$scope.pageSize = 10;
+			$scope.currentPage = 1;
+			$scope.totalItems = 0;
+
+			$scope.getUserVisitHistory = function() {
+				util.http("POST", config.apiUrlPrefix + 'user_visit_history/get', {
+					username: $scope.user.username,
+					pageSize:$scope.pageSize,
+					page:$scope.currentPage,
+				}, function (data) {
+					data = data || {};
+					$scope.visitHistoryList = data.visitList; // 用户的建站列表
+					$scope.totalItems = data.total || 0;    // 
+					for (var i =0; i < (data.visitList || []).length; i++) {
+						var tmp = data.visitList[i];
+						tmp.updateDate = tmp.updateDate.split(" ")[0];
+					}
+				});
+			}
+
+			$scope.getUserVisitHistory();
         }
 
         $scope.deleteHistory = function () {

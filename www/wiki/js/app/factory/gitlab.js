@@ -45,6 +45,7 @@ define([
                 url: this.apiBaseUrl + url,
                 headers: this.httpHeader,
                 skipAuthorization: true,  // 跳过插件satellizer认证
+				isShowLoading:data.isShowLoading == undefined ? true : data.isShowLoading,
             };
 
             data = data || {};
@@ -287,9 +288,9 @@ define([
             this.lastCommitId = lastCommitId;
         }
         // 获取lastCommitId
-        gitlab.getLastCommitId = function (cb, errcb) {
+        gitlab.getLastCommitId = function (cb, errcb, isShowLoading) {
             var self = this;
-            self.listCommits({}, function (data) {
+            self.listCommits({isShowLoading:isShowLoading}, function (data) {
                 if (data && data.length > 0) {
                     self.lastCommitId = data[0].id;
                 } else {
@@ -306,7 +307,7 @@ define([
             var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
             params.commit_message = self.getCommitMessagePrefix() + params.path;
             params.branch = params.branch || "master";
-            self.httpRequest("GET", url, {path: params.path, ref: params.branch}, function (data) {
+            self.httpRequest("GET", url, {path: params.path, ref: params.branch, isShowLoading:params.isShowLoading}, function (data) {
                 // 已存在
 				if (data && data.blob_id) {
 					self.httpRequest("PUT", url, params, function (data) {
@@ -420,7 +421,8 @@ define([
                 path: path,
                 message: self.getCommitMessagePrefix() + path,
                 content: content,
-                encoding: 'base64'
+                encoding: 'base64',
+				isShowLoading:false,
             }, function (data) {
 				//var imgUrl = self.getRawContentUrlPrefix({sha:"master"}) + '/' + data.file_path + (self.dataSource.visibility  == "private" ? ("?private_token=" + self.dataSource.dataSourceToken) : ""); 
 				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"}); 
