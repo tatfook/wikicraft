@@ -49,6 +49,7 @@ local oauthApp = {
 		clientSecret="mofahaqi",
 		RedirectUrl    = "",
 		payCallbackUrl = "http://121.14.117.238:56888/HttpPayHandle.lua",
+		payRedirectUrl = "",
 	},
 	{
 		appName="卡车之星",
@@ -64,6 +65,7 @@ local oauthApp = {
 		clientSecret="mofahaqi2",
 		RedirectUrl    = "",
 		payCallbackUrl = "http://115.29.230.154:56888/HttpPayHandle.lua",
+		payRedirectUrl = "",
 	},
 	{
 		appName="成都配天智能技术有限公司",
@@ -79,6 +81,10 @@ function oauth_app:api_get()
 end
 
 function oauth_app:getByAppName(appName)
+	if(not appName) then
+		return false;
+	end
+
 	for _, item in ipairs(oauthApp) do
 		if(item.appName == appName) then
 			return item;

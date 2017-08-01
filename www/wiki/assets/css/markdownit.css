@@ -42,7 +42,6 @@ td, th {
 .wiki_page_inner_link a.glyphicon-link {
 	position: absolute;
 	left: 0;
-	background-color: #FFF;
 	top: 50%;
 	margin-top: -7px;
 	font-size: 16px;

@@ -75,11 +75,20 @@ function pay:ctor()
 end
 
 function pay:api_createCharge(params)
+	response:status(503);
 	local err, query = self:validateQuery(params);
+
+	local appInfo = oauth_app:getByAppName(query.app_name);
+
+	if(not appInfo) then
+		response:status(404);
+		return errors:wrap(errors.NOT_FOUND);
+	end
 
 	local appGoodsInfo = self:getGoodsInfo(query);
 
 	if(not appGoodsInfo) then
+		response:status(404);
 		return errors:wrap(errors.NOT_FOUND);
 	end
 
@@ -118,7 +127,7 @@ function pay:api_createCharge(params)
 	apiParams.app        = {id = self.appId};
 
 	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = query.redirect};
+		apiParams.extra = {success_url = appInfo.payRedirectUrl};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = trade_no};
 	end
@@ -126,12 +135,12 @@ function pay:api_createCharge(params)
 	if(query.app_name == "魔法哈奇") then
 		local additional = {}
 		additional.url     = 'Pay';
-		additional.gsid	   = 984;
-		additional.count   = toFen * 10;
-		additional.money   = toFen * 100;
-		additional.method  = 1;
-		additional.orderno = trade_no;
-		additional.from    = 0;
+		additional.gsid	   = tostring(query.app_goods_id);
+		additional.count   = tostring(toFen/100 * 10);
+		additional.money   = tostring(toFen);
+		additional.method  = tostring(1);
+		additional.orderno = tostring(trade_no);
+		additional.from    = tostring(0);
 
 		for key,item in pairs(additional) do
 			query.additional[key] = item;
@@ -139,19 +148,26 @@ function pay:api_createCharge(params)
 	elseif(query.app_name == "魔法哈奇2") then
 		local additional = {}
 		additional.url     = 'Pay';
-		additional.gsid	   = 984;
-		additional.count   = toFen * 10;
-		additional.money   = toFen * 100;
-		additional.method  = 1;
-		additional.orderno = trade_no;
-		additional.from    = 0;
+		additional.gsid	   = tostring(query.app_goods_id);
+		additional.count   = tostring(toFen/100 * 10);
+		additional.money   = tostring(toFen);
+		additional.method  = tostring(1);
+		additional.orderno = tostring(trade_no);
+		additional.from    = tostring(0);
 
 		for key,item in pairs(additional) do
 			query.additional[key] = item;
 		end
+		
+		query.additional.user_nid = tostring(query.additional.user_nid);
 	end
-
-	local err, chargeObject = self:http("POST", url, apiParams);
+	
+	local chargeHeaders = {
+		Authorization = "Bearer " .. self.appToken,
+		["content-type"]  = "application/json",
+	};
+	
+	local err, chargeObject = self:http("POST", url, apiParams, chargeHeaders);
 
 	if(not chargeObject) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
@@ -175,6 +191,7 @@ function pay:api_createCharge(params)
 	local err, _ = yield();
 
 	if(not err) then
+		response:status(200);
 		return errors:wrap(nil, chargeObject);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
@@ -270,6 +287,7 @@ function pay:api_getTradeOne(params)
 end
 
 function pay:api_webhooks(params)
+	response:status(503);
 	local err, query = self:validateQuery(params);
 
 	if(query.type == "charge.succeeded") then
@@ -290,12 +308,20 @@ function pay:api_webhooks(params)
 			local err, _ = yield();
 
 			-- 消费
-			appInfo = oauth_app:getByAppName(payInfo.app_name)
+			appInfo = oauth_app:getByAppName(payInfo.app_name);
 
 			if(appInfo) then
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
-				
+
+				url = url .. "?";
+
+				for key,value in pairs(apiParams) do
+					url = url .. key .. "=" .. value .. "&";
+				end
+
+				url = string.sub(url, 1, -2);
+
 				local err, response = self:http("GET", url, apiParams);
 
 				if(err == 200) then
@@ -305,13 +331,14 @@ function pay:api_webhooks(params)
 					local bSuccess = self:spend(spendInfo);
 
 					if(bSuccess) then
+						response:status(200);
 						return errors.wrap(errors.SUCCESS);
 					end
 				end
 			end
-
 			return errors:wrap(errors.SERVER_INNER_ERROR);
 		else
+			response:status(404);
 			return errors:wrap(errors.NOT_FOUND);
 		end
 	end
@@ -338,6 +365,10 @@ function pay:getGoodsInfo(query)
 end
 
 function pay:validate(appGoodsInfo, query)
+	if(type(query.additional) ~= "table") then
+		return false;
+	end
+
 	local validate = true;
 
 	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
@@ -362,16 +393,17 @@ function pay:validate(appGoodsInfo, query)
 	return validate;
 end
 
-function pay:http(method, url, params)
+function pay:http(method, url, params, headers)
+	if(not headers) then
+		headers = {};
+	end
+
 	System.os.GetUrl({
-		url    = url,
-		headers = {
-			Authorization = "Bearer " .. self.appToken,
-			["content-type"]  = "application/json",
-		},
-		form   = params,
-		method = method,
-		json   = true,
+		url     = url,
+		headers = headers,
+		form    = params,
+		method  = method,
+		json    = true,
 	},resume);
 
 	return yield();
