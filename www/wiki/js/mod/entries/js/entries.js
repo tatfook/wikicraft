@@ -20,19 +20,14 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
             $scope.isHide = true;
 
             var thisPath = window.location.search;
+            // 获取搜索的url地址栏的参数 匹配如果有chapterurl 则显示返回目录，并添加iframe至页面
             if (thisPath.indexOf("?chapterurl") != -1) {
                 $scope.isHide = false;
                 $scope.winHref = window.location.href.substr(0, window.location.href.indexOf("?chapterurl"));
                 $scope.getChaptUrl = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
                 var $html = $('<iframe frameborder="0" width="100%" height="100%" ng-src=' + $sce.trustAsResourceUrl($scope.getChaptUrl) + '></iframe>').appendTo("#__mainContent__");
                 $compile($html);
-
             }
-
-            // 如果用户头像为空，则设置默认头像
-            // if ($scope.user.portrait == undefined) {
-            //     $scope.user.portrait = $scope.imgsPath + 'default.png';
-            // }
 
             $scope.chapters = {
                 data: []
@@ -48,11 +43,16 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
 
                     $http.post($scope.httpPath + '/userlist', {
                         pageIndex: 1,
-                        pageSize: 24
+                        pageSize: 24,
+                        username: $rootScope.siteinfo.username
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
                         var data = rs.data;
+                        if(data.itemCount = 0){
+                            console.log("没有数据!");
+                            return;
+                        }
 
                         if (data && data.err === 0) {
 
@@ -110,7 +110,6 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
             // 模块参数初始化相关表单值
             // var modParams = wikiBlock.modParams || {};
             function init() {
-
                 $scope.isGetPage = false;
 
                 var pageStart = 1,
@@ -155,10 +154,17 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                 $http.post($scope.httpPath + '/chapters', {
                     url: $scope.remotedata.url || $scope.winHref,
                     pageIndex: pageStart,
-                    pageSize: pageSize
+                    pageSize: pageSize,
+                    username: $rootScope.siteinfo.username
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
+
+                    if(rs.data.itemCount = 0){
+                        console.log("没有数据!");
+                        return;
+                    }
+
                     if (rs.data && rs.data.err === 0) {
 
                         var data = angular.copy(rs.data.data, []);
@@ -173,14 +179,14 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     console.log(rs);
                 });
 
-
                 // 左右滑动轮播点击下一页 获取分页数据
                 $scope.nextPage = function () {
                     pageStart++;
                     $http.post($scope.httpPath + '/chapters', {
                         url: $scope.remotedata.url || $scope.winHref,
                         pageIndex: pageStart,
-                        pageSize: pageSize
+                        pageSize: pageSize,
+                        username: $rootScope.siteinfo.username
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
@@ -188,6 +194,17 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                         var countRecord = rs.data.itemCount;
                         // 总页数
                         var allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize));
+                        
+                        if (pageIndex == allPage || pageIndex >= allPage) {
+                            $scope.isGetPage = true;
+                            return;
+                        }
+
+                        if(rs.data.itemCount = 0){
+                           console.log("没有数据！");
+                           return;
+                        }
+
                         if (rs.data && rs.data.err === 0) {
                             var data = angular.copy(rs.data.data, []);
                             for (var i = 0; i < data.length; i++) {
@@ -199,10 +216,7 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                                 $("#sliding-loading .swiper-wrapper").append(htm);
                             }
                         }
-                        if (pageIndex == allPage) {
-                            $scope.isGetPage = true;
-                            return;
-                        }
+                        
                     }, function (rs) {
                         console.log(rs);
                     });
@@ -234,9 +248,9 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     var pageSize = 24
                     pageIndex++;
                     $http.post($scope.httpPath + '/userlist', {
-                        url: $scope.remotedata.url || $scope.winHref,
                         pageIndex: pageIndex,
-                        pageSize: pageSize
+                        pageSize: pageSize,
+                        username: $rootScope.siteinfo.username
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
@@ -244,6 +258,12 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                         var countRecord = rs.data.itemCount;
                         // 总页数
                         var allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize));
+                       
+                       if(rs.data.itemCount = 0){
+                           console.log("没有数据！");
+                           return;
+                       }
+                        
                         if (rs.data && rs.data.err === 0) {
                             var data = angular.copy(rs.data.data, []);
 
@@ -271,13 +291,10 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     });
                 }
 
-
             }
 
             $scope.$watch('$viewContentLoaded', init);
         }]);
-
-
 
     }
 
