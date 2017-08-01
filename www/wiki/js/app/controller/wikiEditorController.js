@@ -790,7 +790,7 @@ define([
                     cb && cb();
                 };
 
-				//submitToSearchEngine(page);
+				submitToSearchEngine(page);
 
 				//makeSnapshot(currentDataSource, page);
 
