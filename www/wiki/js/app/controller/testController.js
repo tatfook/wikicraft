@@ -8,8 +8,8 @@ define([
 		'helper/storage',
 		'helper/dataSource',
 		'text!html/test.html',
-		'html2canvas',
-], function (app, util, storage, dataSource,  htmlContent, html2canvas) {
+		//'html2canvas',
+], function (app, util, storage, dataSource,  htmlContent/*, html2canvas*/) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
 			//console.log(html2canvas, typeof html2canvas);	
