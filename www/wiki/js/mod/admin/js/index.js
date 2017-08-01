@@ -3,10 +3,11 @@
  */
 
 define([
-		'app',
-		'helper/util',
-		'text!wikimod/admin/html/index.html',
-], function (app, util, htmlContent) {
+	'app',
+	'helper/util',
+    'helper/mods',
+	'text!wikimod/admin/html/index.html',
+], function (app, util, mods, htmlContent) {
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
@@ -201,6 +202,23 @@ define([
 				}
 			});
 		}
+
+		$scope.insertAll = function () {
+			var length = mods.length;
+			console.log(length);
+			for (var i=0; i<length; i++){
+                util.post(config.apiUrlPrefix + 'wiki_module/upsert', mods[i], function(data){
+                    if (data) {
+                        Message.info("添加成功");
+                        $scope.data.push(data);
+                        $scope.totalItems++;
+                    } else {
+                        Message.info("添加失败");
+                        console.log(mods[i]);
+                    }
+                });
+			}
+        }
 	}]);
 
 	return htmlContent;
