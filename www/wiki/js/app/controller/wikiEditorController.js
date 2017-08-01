@@ -712,7 +712,8 @@ define([
 
 
 			// 提交至搜索引擎
-			function submitToSearchEngine(page) {
+			function submitToSearchEngine(page) {//{{{
+				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
 				var obj = {
 					url:"http://keepwork.com" + page.url,
 					short_url:page.url,
@@ -724,17 +725,21 @@ define([
 					site_name:page.sitename,
 					page_name:page.pagename,
 				};
-
-				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
-				util.http("POST", url, obj, function(response){
-					console.log(response);
-				}, function(response){
-					console.log(response);
-				}, false);
-			}
+				
+				util.ajax({
+					type: "POST",
+					url: url,
+					data: obj,
+					success: function(result) {
+						console.log(result);
+					},
+					error: function(response) {
+					},
+				});
+			}//}}}
 
 			// 生成页面快照
-			function makeSnapshot(currentDataSource, page) {
+			function makeSnapshot(currentDataSource, page) {//{{{
 				var containerId = mdwiki.getMdWikiContainerId();
 
 				setTimeout(function() {
@@ -755,7 +760,7 @@ define([
 						},
 					});
 				}, 5000);
-			}
+			}//}}}
 
             // 保存页
             function savePageContent(cb, errcb) {//{{{
