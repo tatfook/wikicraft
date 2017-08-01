@@ -4,7 +4,7 @@
 
 define([
     'app',
-	'html2canvas',
+	//'html2canvas',
     'to-markdown',
     'codemirror',
     'helper/markdownwiki',
@@ -30,7 +30,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, html2canvas, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
+], function (app, /*html2canvas*/, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -790,9 +790,9 @@ define([
                     cb && cb();
                 };
 
-				submitToSearchEngine(page);
+				//submitToSearchEngine(page);
 
-				makeSnapshot(currentDataSource, page);
+				//makeSnapshot(currentDataSource, page);
 
                 currentSite = getCurrentSite(page.username, page.sitename);
                 if (currentSite) {
