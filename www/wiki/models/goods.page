@@ -14,7 +14,7 @@ goods.db_name = "goods";
 local goodsData = {
 	{
 		goods_id          = 1,
-		app_goods_id      = 100,
+		app_goods_id      = 984,
 		subject           = "魔法哈奇",
 		body              = "魔法哈奇",
 		price             = 1,
@@ -23,6 +23,23 @@ local goodsData = {
 		min_buy_count     = 100,
 		max_buy_count     = 1000,
 		app_name          = "魔法哈奇",
+		is_on_sale        = 1,
+		create_date       = "2017-7-14 11:03:20",
+		additional_field  = {
+			{name="user_nid", displayName = "角色ID", desc="可以给不属于自己的角色ID充值", required = true},
+		},
+	},
+	{
+		goods_id          = 2,
+		app_goods_id      = 984,
+		subject           = "魔法哈奇2",
+		body              = "魔法哈奇2",
+		price             = 1,
+		exchange_rate     = 10,
+		default_buy_count = 10,
+		min_buy_count     = 100,
+		max_buy_count     = 1000,
+		app_name          = "魔法哈奇2",
 		is_on_sale        = 1,
 		create_date       = "2017-7-14 11:03:20",
 		additional_field  = {
@@ -59,9 +76,11 @@ function goods:api_getAppGoodsInfo(params)
 
 	for _, item in ipairs(goodsData) do
 		if item.app_goods_id == query.app_goods_id and item.app_name == query.app_name then
+			response:status(200);
 			return errors:wrap(nil,item);
 		end
 	end
 
+	response:status(404);
 	return errors:wrap(errors.NOT_FOUND);
 end
