@@ -312,7 +312,7 @@ define([], function () {
             "classifyName": "词条",
             "wikiCmdName": "@entries/js/entries",
             "desc": "将当前页面加入词条",
-            "content": '```@course/js/entries\n```',
+            "content": '```@entries/js/entries\n```',
             "logoUrl":"wiki/assets/imgs/wiki_layout2.jpg"
         },
         {
