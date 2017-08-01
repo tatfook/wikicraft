@@ -80,7 +80,7 @@ define(['app', 'helper/util',
 
                         $root.data.course.title = data.course;
 
-                        if (data.course.is_stage && data.course.is_stage !== null || data.course.is_stage !== '') {
+                        if (data.course.is_stage && data.course.is_stage !== null && data.course.is_stage !== '') {
                             $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
                         }
 
