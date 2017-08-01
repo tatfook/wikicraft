@@ -20,13 +20,15 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
             $scope.isHide = true;
 
             var thisPath = window.location.search;
-            // 获取搜索的url地址栏的参数 匹配如果有chapterurl 则显示返回目录，并添加iframe至页面
-            if (thisPath.indexOf("?chapterurl") != -1) {
+            // 获取搜索的url地址栏的参数 courseurl 则显示 "返回目录"
+            if (thisPath.indexOf("?courseurl") != -1) {
                 $scope.isHide = false;
-                $scope.winHref = window.location.href.substr(0, window.location.href.indexOf("?chapterurl"));
-                $scope.getChaptUrl = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
-                var $html = $('<iframe frameborder="0" width="100%" height="100%" ng-src=' + $sce.trustAsResourceUrl($scope.getChaptUrl) + '></iframe>').appendTo("#__mainContent__");
-                $compile($html);
+                // 从搜索的地址栏，返回索引最后的参数值
+                $scope.winHref = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
+                
+                // $scope.getChaptUrl = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
+                // var $html = $('<iframe frameborder="0" width="100%" height="100%" ng-src=' + $sce.trustAsResourceUrl($scope.getChaptUrl) + '></iframe>').appendTo("#__mainContent__");
+                // $compile($html);
             }
 
             $scope.chapters = {
@@ -49,7 +51,7 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                         isShowLoading: false
                     }).then(function (rs) {
                         var data = rs.data;
-                        if(data.itemCount = 0){
+                        if (data.itemCount = 0) {
                             console.log("没有数据!");
                             return;
                         }
@@ -59,9 +61,9 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                             for (var i = 0; i < data.data.length; i++) {
                                 var item = data.data[i];
 
-                                item['protrait'] = !item.protrait || item.protrait === ''? $scope.imgsPath + 'default.png' : item.protrait;
+                                item['protrait'] = !item.protrait || item.protrait === '' ? $scope.imgsPath + 'default.png' : item.protrait;
                             }
-                            
+
                             $scope.teacher.data = data.data;
                         }
                     }, function (rs) {
@@ -160,7 +162,7 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     isShowLoading: false
                 }).then(function (rs) {
 
-                    if(rs.data.itemCount = 0){
+                    if (rs.data.itemCount = 0) {
                         console.log("没有数据!");
                         return;
                     }
@@ -194,15 +196,15 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                         var countRecord = rs.data.itemCount;
                         // 总页数
                         var allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize));
-                        
+
                         if (pageIndex == allPage || pageIndex >= allPage) {
                             $scope.isGetPage = true;
                             return;
                         }
 
-                        if(rs.data.itemCount = 0){
-                           console.log("没有数据！");
-                           return;
+                        if (rs.data.itemCount = 0) {
+                            console.log("没有数据！");
+                            return;
                         }
 
                         if (rs.data && rs.data.err === 0) {
@@ -216,7 +218,7 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                                 $("#sliding-loading .swiper-wrapper").append(htm);
                             }
                         }
-                        
+
                     }, function (rs) {
                         console.log(rs);
                     });
@@ -258,24 +260,24 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                         var countRecord = rs.data.itemCount;
                         // 总页数
                         var allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize));
-                       
-                       if(rs.data.itemCount = 0){
-                           console.log("没有数据！");
-                           return;
-                       }
-                        
+
+                        if (rs.data.itemCount = 0) {
+                            console.log("没有数据！");
+                            return;
+                        }
+
                         if (rs.data && rs.data.err === 0) {
                             var data = angular.copy(rs.data.data, []);
 
                             for (var i = 0; i < data.length; i++) {
                                 var item = data[i],
-                                    img = !item.protrait || item.protrait === ''? $scope.imgsPath + 'default.png' : item.protrait,
-                                    html = '<div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2">'
-                                         + '    <a href=" ' + $scope.followPath +'?req_name=' + $scope.userinfo.username +'&res_name=' + item.user_name +'" class="teach-box pull-left">'
-                                         + '        <img src=' + img + ' class="pic" alt=' + item.display_name + ' />'
-                                         + '        <span class="name">' + item.display_name + '</span>'
-                                         + '    </a>'
-                                         + '</div>';
+                                    img = !item.protrait || item.protrait === '' ? $scope.imgsPath + 'default.png' : item.protrait,
+                                    html = '<div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2">' +
+                                    '    <a href=" ' + $scope.followPath + '?req_name=' + $scope.userinfo.username + '&res_name=' + item.user_name + '" class="teach-box pull-left">' +
+                                    '        <img src=' + img + ' class="pic" alt=' + item.display_name + ' />' +
+                                    '        <span class="name">' + item.display_name + '</span>' +
+                                    '    </a>' +
+                                    '</div>';
 
                                 $("#pull-slide .swiper-slide").append(html);
                             }
