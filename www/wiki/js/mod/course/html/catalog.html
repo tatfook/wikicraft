@@ -167,7 +167,7 @@
 
                     <ul class="chapter-list" ng-hide="catalog.item[$index]">
                         <li class="item-chapter" ng-repeat="item in chps">
-                            <a href="{{item.course_url}}?url={{item.chapter_url}}" target="_blank" title="{{item.title}}">
+                            <a href="{{item.chapter_url}}?courseurl={{getCourseUrl()}}" target="_blank" title="{{item.title}}">
                             <span class="no-node">{{item.chapter_stage_order}}&#8722;{{$index+1}}</span>
                             <span>{{item.title}}</span>
                             <span class="txt">进入学习</span>
@@ -181,7 +181,7 @@
                 <div class="chapter">
                     <ul class="chapter-list">
                         <li class="item-chapter" ng-repeat="item in data.course.chapter">
-                            <a href="{{item.course_url}}=?{{item.chapter_url}}" target="_blank" title="{{item.title}}">
+                            <a href="{{item.chapter_url}}?courseurl={{getCourseUrl()}}" target="_blank" title="{{item.title}}">
                             <span class="no-node">{{$index+1}}</span>
                             <span>{{item.title}}</span>
                             <span class="txt">进入学习</span>

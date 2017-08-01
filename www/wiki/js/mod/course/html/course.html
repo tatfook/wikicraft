@@ -1,4 +1,4 @@
-<div style="height: 100%; display: flex; flex-direction:column; min-height: 800px; min-width: 580px;" >
+<div style="height: 100%; display: flex; flex-direction:column; min-height: 600px;" >
 
     <style scoped>     
 
@@ -9,7 +9,7 @@
             height: 20px;
         }
 
-        .course-tips, .chapter-title, .chapter-url{
+        .course-tips, .chapter-title, .chapter-url, .sort-tip{
             word-break:keep-all;/* 不换行 */
             white-space:nowrap;/* 不换行 */
             overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
@@ -47,9 +47,11 @@
             box-shadow: 4px 4px 4px #d0d0d0;
         }
 
+        .chapter-stag{
+            overflow: hidden;
+        }
+
         .course-content .chapter-stag{
-            height: 35px;
-            line-height: 35px;
             background-color: rgba(242, 242, 242, 1);
             border-bottom: 1px solid #d0d0d0;
             border-top-left-radius: 4px;
@@ -62,7 +64,7 @@
         }
 
         .course-content .chapter-list{
-            position: absolute;
+            position: absolute; 
             top: 35px;
             left: 0;
             right: 0;
@@ -213,14 +215,14 @@
         }
 
         .chapter-no-stage > div, .stage-box > div, .stage-list > div{
-            height: 46px;
+            /* height: 46px; */
             line-height: 36px;
             padding: 5px 0;
         }
 
-        .stage-list > div{
+        /* .stage-list > div{
             padding-top: 0;
-        }
+        } */
 
         .stage-box{
             padding: 0;
@@ -268,7 +270,7 @@
             border-right: 1px dashed #d0d0d0;
             border-bottom: 1px dashed #d0d0d0;
             text-align: center;
-            height: 46px;
+            /* height: 46px; */
             line-height: 46px;
             font-size: 18px;
         }
@@ -282,9 +284,9 @@
             cursor: pointer;
         }
 
-        .edit-box{
-            height: 46px !important;
-        }
+         .edit-box{
+            padding-bottom: 0 !important;
+        } 
         
         .edit-txt, .ui-select-container input, .ui-select-container span.btn.btn-default.form-control.ui-select-toggle, .ui-select-container div.btn-default-focus{
             text-align: left;
@@ -372,6 +374,35 @@
             background-color: #f3f3f3;
         }
 
+
+        @media screen and (min-width:100px) and (max-width:460px){
+            .swith-group{
+                float: left !important;
+            }
+
+            .course-content .chapter-list{
+                top: 70px;
+            }
+        }
+
+        @media screen and (min-width:100px) and (max-width:991px) { 
+            .chapter-btn-group{
+                float: left;
+                padding-left: 15px;
+            }
+
+            .stage-edit-btn-group, .edit-btn-group{
+                float: left;
+                width: 100%;
+                text-align: center;
+                padding-top: 5px;
+            }
+
+            .stage-edit-btn-group{
+                padding-left: 0px;
+            }
+        }
+
          /*拖动使用 end*/
 
     </style>
@@ -391,10 +422,10 @@
 
         <div class="course-content unselect-element">
             <div class="chapter-stag">
-                <div class="pull-left">
-                    拖动小节可调整小节排列顺序
+                <div class="pull-left sort-tip">
+                    <span>拖动小节可调整小节排列顺序</span>
                 </div>
-                <div class="pull-right">
+                <div class="pull-right swith-group">
                     <span class="switch-txt">分阶段教学</span>
                     <div class="switch-btn pull-right" ng-click="action.switchType()">
                         <div class="switch-animate" ng-class="{ true: 'switch-on', false: 'switch-off'}[switch]">
@@ -421,7 +452,7 @@
                         data-drag="true" data-siblings="stage">
 
                         <div class="chapter chapter-stage-title col-xs-12 " ng-hide="action.stageEdit[key]">
-                            <div class="col-xs-4" ng-bind="course.getStageName(key)"></div>
+                            <div class="col-md-5 col-xs-12" ng-bind="course.getStageName(key)"></div>
                             <div class="chapter-btn-group">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true" ng-click="action.editStage(key, 'stage' + key)" ng-class="{'edit-disable': action.edit}"></i>
                                 <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveStage(key, 1)" ng-class="{'edit-disable': action.edit}"></i>
@@ -432,10 +463,10 @@
 
                         <div class="chapter chapter-stage-title col-xs-12" 
                             ng-show="action.stageEdit[key]">
-                            <div class="col-xs-5">
+                            <div class="col-md-5 col-xs-12">
                                 <input type="text" class="edit-txt" ng-model="item.stageName[key]" id="{{'stage' + key}}" maxlength="100" ng-keyup="action.enter($event, 'stage', key)">
                             </div>
-                            <div class="chapter-btn-group">
+                            <div class="chapter-btn-group stage-edit-btn-group">
                                 <div>
                                     <button type="button" class="btn btn-default edit-btn" ng-click="action.updateStageName(key)">更新</button>    
                                 </div>
@@ -450,10 +481,10 @@
                             class="stage-list chapter col-xs-12" 
                             data-drag="true" data-siblings="stageChapter"> 
                             <div ng-hide="chp.$edit" class="col-xs-12" >
-                                <div class="chapter-title col-xs-4">
+                                <div class="chapter-title col-md-4 col-xs-12">
                                     {{chp.title}}
                                 </div>
-                                <div class="chapter-url col-xs-5">
+                                <div class="chapter-url col-md-5 col-xs-12">
                                     {{chp.chapter_url}}
                                 </div>
                                 <div class="chapter-btn-group">
@@ -465,10 +496,10 @@
                             </div>
 
                             <div ng-show="chp.$edit" class="col-xs-12 edit-box">
-                                <div class="chapter-title col-xs-4">
+                                <div class="chapter-title col-md-4 col-xs-12">
                                     <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100" ng-keyup="action.enter($event, 'chapter', chp)">
                                 </div>
-                                <div class="col-xs-5">
+                                <div class="col-md-5 col-xs-12">
                                     <ui-select ng-model="chp.chapter_url">
                                         <ui-select-match placeholder="链接地址">
                                             <span ng-bind="chp.chapter_url"></span>
@@ -478,7 +509,7 @@
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
-                                <div class="chapter-btn-group">
+                                <div class="chapter-btn-group edit-btn-group">
                                     <div>
                                         <button type="button" class="btn btn-default edit-btn" ng-click="action.updateItem(chp)">更新</button>    
                                     </div>
@@ -491,11 +522,11 @@
 
                         <div class="chapter edit-box col-xs-12" ng-show="action.addItemStage[key]">
                             <!-- 任何情况下只有一个修改 -->
-                            <div class="chapter-title col-xs-4">
+                            <div class="chapter-title col-md-4 col-xs-12">
                                 <input type="text" class="edit-txt" placeholder="小节标题" ng-model="item.newItem.title" id="{{'stage' + key + 'ch' + $index}}" maxlength="100" 
                                 ng-keyup="action.enter($event, 'addStagChp', key)">
                             </div>
-                            <div class="col-xs-5">
+                            <div class="col-md-5 col-xs-12">
                                 <ui-select ng-model="item.newItem.chapter_url">
                                     <ui-select-match placeholder="链接地址">
                                         <span ng-bind="item.newItem.chapter_url"></span>
@@ -507,7 +538,7 @@
                             </div>
 
                             
-                            <div class="chapter-btn-group">
+                            <div class="chapter-btn-group edit-btn-group">
                                 <div>
                                     <button type="button" class="btn btn-default edit-btn" ng-click="action.addItem(true, key)">确定</button>    
                                 </div>
@@ -536,10 +567,10 @@
                             ng-repeat = "chp in course.chapter | orderBy: 'chapter_order' track by $index"
                             data-drag="true" data-siblings="chapter"> 
                         <div ng-hide="chp.$edit">
-                            <div class="chapter-title col-xs-4">
+                            <div class="chapter-title col-md-4 col-xs-12">
                                 {{chp.title}}
                             </div>
-                            <div class="col-xs-5">
+                            <div class="col-md-5 col-xs-12 chapter-url">
                                 {{chp.chapter_url}}
                             </div>
                             <div class="chapter-btn-group">
@@ -551,11 +582,11 @@
                         </div>
 
                         <div ng-show="chp.$edit" class="edit-box">
-                            <div class="chapter-title col-xs-4">
+                            <div class="chapter-title col-md-4 col-xs-12">
                                 <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="chp{{$index}}" maxlength="100" 
                                 ng-keyup="action.enter($event, 'chapter', chp)">
                             </div>
-                            <div class="col-xs-5">
+                            <div class="col-md-5 col-xs-12">
                                 <ui-select ng-model="chp.chapter_url" data-drag="false">
                                     <ui-select-match placeholder="链接地址">
                                         <span ng-bind="chp.chapter_url"></span>
@@ -566,7 +597,7 @@
                                 </ui-select>
                             </div>
 
-                            <div class="chapter-btn-group">
+                            <div class="chapter-btn-group edit-btn-group">
                                 <div>
                                     <button type="button" class="btn btn-default edit-btn" ng-click="action.updateItem(chp)">更新</button>    
                                 </div>
@@ -580,11 +611,11 @@
                     <div class="chapter edit-box col-xs-12" ng-show="action.addItemNoStage">
                         
                         <!-- 任何情况下只有一个在修改 -->
-                        <div class="chapter-title col-xs-4">
+                        <div class="chapter-title col-md-4 col-xs-12">
                             <input type="text" class="edit-txt" placeholder="小节标题" ng-model="item.newItem.title" id="addNew" maxlength="100" 
                             ng-keyup="action.enter($event, 'addchp', key)">
                         </div>
-                        <div class="col-xs-5">
+                        <div class="col-md-5 col-xs-12">
                             <ui-select ng-model="item.newItem.chapter_url">
                                 <ui-select-match placeholder="链接地址">
                                     <span ng-bind="item.newItem.chapter_url"></span>
@@ -595,7 +626,7 @@
                             </ui-select>
                         </div>
 
-                        <div class="chapter-btn-group">
+                        <div class="chapter-btn-group edit-btn-group">
                             <div>
                                 <button type="button" class="btn btn-default edit-btn" ng-click="action.addItem(false, null)">确定</button>    
                             </div>
@@ -614,7 +645,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
         <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()" ng-class="{'edit-disable': action.edit}">确定</button>
     </div>
 

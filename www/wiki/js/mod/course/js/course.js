@@ -48,11 +48,18 @@ define(['app', 'helper/util',
                         })(items, 'chapter_stage_order');
                     },
 
+                    //获取courseurl
+                    getCourseUrl: function () {
+                        return $root.pageinfo.url || window.location.pathname;
+                    },
+
                     //判断是否有数据，用于一开始显示列表
                     hasData: function (e) {
-                        return $root.data.course.title === null || angular.equals({}, $root.data.course.title) ? true : false;
+                        return $root.data.course.title === '' || $root.data.course.title === null || angular.equals({}, $root.data.course.title) ? true : false;
                     }
                 },
+
+                orginData: {},
 
                 switch: true,
             }
@@ -73,7 +80,7 @@ define(['app', 'helper/util',
 
                         $root.data.course.title = data.course;
 
-                        if (data.course.is_stage) {
+                        if (data.course.is_stage && data.course.is_stage !== null || data.course.is_stage !== '') {
                             $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
                         }
 
@@ -88,6 +95,8 @@ define(['app', 'helper/util',
                         }
 
                         $root.data.course.chapter = items;
+
+                        $root.data.orginData = angular.copy($root.data.course);
                     }
                 }, function (rs) {
                     console.log(rs);
@@ -102,7 +111,7 @@ define(['app', 'helper/util',
                 }
                 $uibModal.open({
                     template: htmlContent,
-                    size: 'lg',
+                    size: 'md',
                     backdrop: 'static',
                     keyboard: false,
                     // controller: 'courseController',
@@ -147,27 +156,27 @@ define(['app', 'helper/util',
 
                         $scope.switch = $root.data.switch, // 是否分阶段
 
-                        $http.post($scope.host + '/user/urls', {
-                            username: $scope.userinfo.username,
-                        }, {
-                            isShowLoading: true
-                        }).then(function (rs) {
-                            var data = rs.data ? rs.data.data : null;
+                            $http.post($scope.host + '/user/urls', {
+                                username: $scope.userinfo.username,
+                            }, {
+                                isShowLoading: true
+                            }).then(function (rs) {
+                                var data = rs.data ? rs.data.data : null;
 
-                            if (data) {
-                                var item = [];
-                                for (var i = 0; i < data.length; i++) {
-                                    if (data[i].url !== window.location.pathname && data[i].url !== $scope.pageinfo.url) {
-                                        item.push(data[i].url);
+                                if (data) {
+                                    var item = [];
+                                    for (var i = 0; i < data.length; i++) {
+                                        if (data[i].url !== window.location.pathname && data[i].url !== $scope.pageinfo.url) {
+                                            item.push(data[i].url);
+                                        }
                                     }
+
+                                    $scope.select.selectArray = item;
                                 }
 
-                                $scope.select.selectArray = item;
-                            }
-
-                        }, function (rs) {
-                            console.log(rs);
-                        });
+                            }, function (rs) {
+                                console.log(rs);
+                            });
 
                         // 新增或修改的时候下拉选择的数据
                         $scope.select = {
@@ -199,7 +208,7 @@ define(['app', 'helper/util',
 
                             //是否edit状态，禁止拖动
                             edit: false,
-                            
+
                             addItemNoStage: false, //不分组
                             addItemStage: {}, //分组显示添加
 
@@ -305,6 +314,7 @@ define(['app', 'helper/util',
                                 if ($scope.switch) { //新增阶段
                                     //触发修改
                                     that.editItem('1ch0', item, '1ch0');
+
                                 } else { //不是新增阶段
                                     //触发修改
                                     that.editItem('1', item, 'chp0');
@@ -1093,8 +1103,13 @@ define(['app', 'helper/util',
                                         st = $chl.scrollTop(), //滚动了多少
                                         elHeight = that.$clnTag.get(0).clientHeight; //拖动元素的高度
 
-                                    //当元素高度超过可视化高度的60，取60
+                                    //当元素高度超过可视化高度的80，取80
                                     elHeight = elHeight > 80 ? 80 : elHeight;
+
+                                    //小于991宽度的时候用55
+                                    if (document.body.clientWidth <= 991) {
+                                        elHeight = 55;
+                                    }
 
                                     clearTimeout(that.autoScroll.pid);
                                     //向上滚动，滚动到0后就不滚动
@@ -1398,6 +1413,8 @@ define(['app', 'helper/util',
                                 isShowLoading: true
                             }).then(function (rs) {
 
+                                $root.data.orginData = angular.copy($root.data.course);
+
                                 $scope.$close();
 
                                 util.$apply();
@@ -1419,6 +1436,11 @@ define(['app', 'helper/util',
                                     // controller: 'courseController',
                                 });
                             });
+                        }
+
+                        $scope.cancel = function () {
+                            $root.data.course = angular.copy($root.data.orginData);
+                            $scope.$close();
                         }
 
                         //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
@@ -1491,8 +1513,8 @@ define(['app', 'helper/util',
         render: function (wikiBlock) {
             registerController(wikiBlock);
             return `<div ng-controller="courseController" ng-click="viewCourseEditor();" style="min-height: 100px; cursor:pointer;">
-                        <div ng-show = 'data.hasData()'>点击编辑课程内容^-^</div>
-                        <div ng-hide = 'data.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
+                        <div ng-show = 'data.course.hasData()'>点击编辑课程目录^-^</div>
+                        <div ng-hide = 'data.course.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
                     </div>`
         }
     }

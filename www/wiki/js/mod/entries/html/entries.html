@@ -1,4 +1,4 @@
-<div ng-controller="entriesController">
+<div ng-controller="entriesController" class="container">
 
     <style scoped>
         .layout-swiper {
@@ -44,7 +44,7 @@
             display: -webkit-box;
             -webkit-box-orient: vertical;
             position: relative;
-            z-index: 99;
+            z-index: 999;
         }
 
         .inner-box .item-title {
@@ -301,7 +301,7 @@
         }
     </style>
 
-    <div class="container" id="entriesWrap">
+    <div id="entriesWrap">
 
         <div class="return-layer" ng-hide="isHide"><a href="{{winHref}}">返回目录</a></div>
 
