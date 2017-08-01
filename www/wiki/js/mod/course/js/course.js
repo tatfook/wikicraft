@@ -265,8 +265,9 @@ define(['app', 'helper/util',
                                 }
                             },
 
-                            checkUrlExists: function (url) {
-                                var found = 0;
+                            checkUrlExists: function (url, type) {
+                                var found = 0,
+                                    checkCount = type === 'add'? 0 : 1;
 
                                 for (var i = 0; i < $scope.course.chapter.length; i++) {
                                     var it = $scope.course.chapter[i];
@@ -276,7 +277,7 @@ define(['app', 'helper/util',
                                     }
                                 }
 
-                                if (found > 1) {
+                                if (found > checkCount) {
                                     $uibModal.open({
                                         template: `
                                         <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
@@ -294,7 +295,7 @@ define(['app', 'helper/util',
                                     });
                                 }
 
-                                return found > 1;
+                                return found > checkCount;
                             },
 
                             //开始的时候添加
@@ -603,7 +604,7 @@ define(['app', 'helper/util',
                                     return;
                                 }
 
-                                var found = that.checkUrlExists(item.chapter_url);
+                                var found = that.checkUrlExists(item.chapter_url, 'add');
 
                                 if (found) {
                                     return;
@@ -755,7 +756,7 @@ define(['app', 'helper/util',
                                     return;
                                 }
 
-                                var found = that.checkUrlExists(item.chapter_url);
+                                var found = that.checkUrlExists(item.chapter_url, 'edit');
 
                                 if (found) {
                                     return;
