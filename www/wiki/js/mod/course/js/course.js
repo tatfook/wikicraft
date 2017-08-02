@@ -1486,7 +1486,7 @@ define(['app', 'helper/util',
                     if (type === 'all') {
                         that.state = !that.state;
                         var i = 0,
-                            obj = angular.equals({}, that.item) ? $root.course.chapterWithStage : item;
+                            obj = angular.equals({}, that.item) ? $root.data.course.chapterWithStage : item;
 
                         for (var prop in obj) {
                             if (obj.hasOwnProperty(prop)) {
