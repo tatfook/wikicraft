@@ -74,10 +74,6 @@ define(['app',
                         isShowLoading: false
                     }).then(function (rs) {
                         var data = rs.data;
-                        if (data.itemCount = 0) {
-                            console.log("没有数据!");
-                            return;
-                        }
 
                         if (data && data.err === 0) {
 
@@ -184,11 +180,6 @@ define(['app',
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
-
-                    if (rs.data.itemCount = 0) {
-                        console.log("没有数据!");
-                        return;
-                    }
 
                     if (rs.data && rs.data.err === 0) {
 
