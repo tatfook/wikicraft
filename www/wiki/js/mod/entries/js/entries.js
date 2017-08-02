@@ -2,10 +2,15 @@
  * Created by wuxiangan on 2017/1/9.
  */
 
-define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries/js/swiper/swiper.min', 'text!wikimod/entries/html/entries.html'], function (app, swiperCss, swiper, htmlContent) {
+define(['app',
+    'text!wikimod/entries/js/swiper/swiper.min.css',
+    'wikimod/entries/js/swiper/swiper.min',
+    'text!wikimod/entries/html/entries.html',
+    'text!wikimod/entries/html/entries_select.html',
+], function (app, swiperCss, swiper, htmlContent, selectContent) {
 
     function registerController(wikiBlock) {
-        app.registerController("entriesController", ['$scope', '$http', '$rootScope', '$timeout', '$compile', '$sce', function ($scope, $http, $rootScope, $timeout, $compile, $sce) {
+        app.registerController("entriesController", ['$scope', '$http', '$rootScope', '$timeout', '$compile', '$sce', '$uibModal', function ($scope, $http, $rootScope, $timeout, $compile, $sce, $uibModal) {
 
             $scope.imgsPath = config.wikiModPath + 'entries/assets/img/';
             $rootScope.path = config.wikiModPath;
@@ -19,17 +24,34 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
 
             $scope.isHide = true;
 
-            var thisPath = window.location.search;
-            // 获取搜索的url地址栏的参数 courseurl 则显示 "返回目录"
-            if (thisPath.indexOf("?courseurl") != -1) {
-                $scope.isHide = false;
-                // 从搜索的地址栏，返回索引最后的参数值
-                $scope.winHref = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
-                
-                // $scope.getChaptUrl = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
-                // var $html = $('<iframe frameborder="0" width="100%" height="100%" ng-src=' + $sce.trustAsResourceUrl($scope.getChaptUrl) + '></iframe>').appendTo("#__mainContent__");
-                // $compile($html);
-            }
+            $scope.course_url = '#';
+
+            // 词条初始化请求前10条数据
+            $http.post($scope.httpPath + '/course_url', {
+                chapter_url:  $scope.pageinfo.url || window.location.pathname
+            }, {
+                isShowLoading: false
+            }).then(function (rs) {
+
+                if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
+                    $scope.course_url = rs.data.course_url;
+                    $scope.isHide = false;
+                }
+            }, function (rs) {
+                console.log(rs);
+            });
+
+            // var thisPath = window.location.search;
+            // // 获取搜索的url地址栏的参数 courseurl 则显示 "返回目录"
+            // if (thisPath.indexOf("?courseurl") != -1) {
+            //     $scope.isHide = false;
+            //     // 从搜索的地址栏，返回索引最后的参数值
+            //     $scope.winHref = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
+
+            //     // $scope.getChaptUrl = thisPath.substring(thisPath.lastIndexOf("=") + 1, thisPath.length);
+            //     // var $html = $('<iframe frameborder="0" width="100%" height="100%" ng-src=' + $sce.trustAsResourceUrl($scope.getChaptUrl) + '></iframe>').appendTo("#__mainContent__");
+            //     // $compile($html);
+            // }
 
             $scope.chapters = {
                 data: []
@@ -46,7 +68,8 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     $http.post($scope.httpPath + '/userlist', {
                         pageIndex: 1,
                         pageSize: 24,
-                        username: $rootScope.siteinfo.username
+                        username: $rootScope.siteinfo.username,
+                        url: $scope.remotedata.url || $scope.winHref,
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
@@ -252,7 +275,8 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     $http.post($scope.httpPath + '/userlist', {
                         pageIndex: pageIndex,
                         pageSize: pageSize,
-                        username: $rootScope.siteinfo.username
+                        username: $rootScope.siteinfo.username,
+                        url: $scope.remotedata.url || $scope.winHref,
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
@@ -293,9 +317,244 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
                     });
                 }
 
+                //词条树选择
+                var parentWidth = $('#boxSwiper').width(),
+                    elWidth = Math.floor(parentWidth / 2);
+
+                $scope.swiperBox = new Swiper('#boxSwiper', {
+                    width: elWidth,
+                    observer: true,
+                    observeParents: true,
+                    slidesPerGroup: 1,
+                    onlyExternal: true,
+                });
+
+
             }
 
             $scope.$watch('$viewContentLoaded', init);
+
+            $scope.viewEntriesEditor = function () {
+                if (!wikiBlock.isEditorEnable()) {
+                    return;
+                }
+
+                $uibModal.open({
+                    template: selectContent,
+                    size: 'lg',
+                    backdrop: 'static',
+                    keyboard: false,
+                    controller: ['$scope', function ($chil) {
+
+                        $chil.swiperBox = $scope.swiperBox;
+
+                        function init() {
+                            console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+                        }
+
+
+
+                        $chil.$watch('$viewContentLoaded', init);
+
+                        $chil.range = function (n) {
+                            return new Array(n);
+                        };
+
+                        $chil.entries = [{
+                                id: 1,
+                                txt: '分类1'
+                            },
+                            {
+                                id: 2,
+                                txt: '分类2'
+                            },
+                            {
+                                id: 3,
+                                txt: '分类3'
+                            },
+                            {
+                                id: 4,
+                                txt: '分类4'
+                            }
+                        ];
+
+                        $chil.entries_list = new Array(8).fill([]);
+
+                        $chil.entries_list[0] = [{
+                                id: 1,
+                                parent_id: 0,
+                                type: '分类1',
+                                is_mg: true,
+                                use_count: 0
+                            },
+                            {
+                                id: 2,
+                                parent_id: 0,
+                                type: '分类11',
+                                is_mg: true,
+                                use_count: 0
+                            },
+                        ]
+
+                        $chil.entries_list[1] = [{
+                                id: 3,
+                                parent_id: 1,
+                                type: '分类12',
+                                is_mg: true,
+                                use_count: 0
+                            },
+                            {
+                                id: 4,
+                                parent_id: 2,
+                                type: '分类13',
+                                is_mg: false,
+                                use_count: 0
+                            },
+                            {
+                                id: 5,
+                                parent_id: 2,
+                                type: '分类14',
+                                is_mg: false,
+                                use_count: 0
+                            },
+                        ]
+
+                        $chil.entries_list[2] = [{
+                                id: 6,
+                                parent_id: 3,
+                                type: '分类21',
+                                is_mg: true,
+                                use_count: 0
+                            },
+                            {
+                                id: 7,
+                                parent_id: 3,
+                                type: '分类31',
+                                is_mg: true,
+                                use_count: 0
+                            },
+                        ]
+
+                        // $chil.entries_list = [
+                        //     { id: 1, parent_id: 0, type: '分类1', is_mg: true, use_count: 0 },
+                        //     { id: 2, parent_id: 0, type: '分类11', is_mg: true, use_count: 0 },
+
+                        //     { id: 3, parent_id: 1, type: '分类12', is_mg: true, use_count: 0 },
+                        //     { id: 4, parent_id: 2, type: '分类13', is_mg: false, use_count: 0 },
+                        //     { id: 5, parent_id: 2, type: '分类14', is_mg: false, use_count: 0 },
+
+                        //     { id: 6, parent_id: 3, type: '分类21', is_mg: true, use_count: 0 },
+                        //     { id: 7, parent_id: 3, type: '分类31', is_mg: true, use_count: 0 },
+                        //     { id: 8, parent_id: 4, type: '分类41', is_mg: false, use_count: 0 },
+                        //     { id: 9, parent_id: 5, type: '分类51', is_mg: false, use_count: 0 },
+
+                        //     { id: 10, parent_id: 6, type: '分类61', is_mg: true, use_count: 0 },
+                        //     { id: 11, parent_id: 7, type: '分类71', is_mg: true, use_count: 0 },
+                        //     { id: 12, parent_id: 8, type: '分类81', is_mg: false, use_count: 0 },
+                        //     { id: 13, parent_id: 8, type: '分类82', is_mg: false, use_count: 0 },
+                        // ];
+
+                        // $chil.pidList = [];
+
+                        //父ID
+                        // $chil.pid = 0;
+
+                        // $chil.$el = $('#entri-tree');
+
+                        // $chil.swp = new Swiper('#aaa',{
+                        //     observer: true,
+                        //     observeParents: true,
+                        // });
+
+                        $chil.action = {
+
+                            removeEntri: function (idx) {
+                                $chil.entries.splice(idx + 1, $chil.entries.length - idx);
+                            },
+
+                            selectItem: function (evt, item, idx) {
+                                var $el = $(evt.target).closest('.entri-item');
+
+                                $el.addClass('active').siblings('.entri-item').removeClass('active');
+
+                                idx = parseInt(idx, 10);
+
+                                var listIdx = $el.index(),
+                                    parent_id = $chil.entries_list[idx][listIdx]['id'];
+
+                                $chil.action.loadData(idx + 1, parent_id);
+
+                                if (idx !== 0 && idx !== 7) {
+                                    debugger;
+
+                                    $chil.swiperBox.slideNext();
+                                }
+                            },
+
+                            addItem: function () {
+
+                            },
+
+                            delItem: function () {
+
+                            },
+
+                            showAddBox: function () {
+
+                            },
+
+                            loadData: function (idx, parent_id) {
+
+                                var items = [{
+                                        id: 3,
+                                        parent_id: 1,
+                                        type: '测试11',
+                                        is_mg: true,
+                                        use_count: 0
+                                    },
+                                    {
+                                        id: 4,
+                                        parent_id: 1,
+                                        type: '测试22',
+                                        is_mg: false,
+                                        use_count: 0
+                                    },
+                                    {
+                                        id: 5,
+                                        parent_id: 2,
+                                        type: '测试33',
+                                        is_mg: false,
+                                        use_count: 0
+                                    },
+                                    {
+                                        id: 5,
+                                        parent_id: 3,
+                                        type: '测试33',
+                                        is_mg: false,
+                                        use_count: 0
+                                    }
+                                ];
+
+                                var dd = [];
+
+                                for (var i = 0; i < items.length; i++) {
+                                    var ii = items[i];
+
+                                    if (ii['parent_id'] === parent_id) {
+                                        dd.push(ii);
+                                    }
+                                }
+
+                                $chil.entries_list[idx] = dd;
+                            }
+                        };
+                    }],
+                }).result.then(function (result) {
+                    wikiBlock.applyModParams(result);
+                }, function (result) {});
+
+            }
+
         }]);
 
     }
@@ -303,7 +562,10 @@ define(['app', 'text!wikimod/entries/js/swiper/swiper.min.css', 'wikimod/entries
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<style>\n' + swiperCss + '\n</style>' + htmlContent; // 返回模块标签内容 
+            // return '<div ng-controller="entriesController" ng-click="viewEntriesEditor();" style="min-height: 100px; cursor:pointer;">' +
+            //     '<style>\n' + swiperCss + '\n</style>' + htmlContent + '</div>'
+
+            return '<style>\n' + swiperCss + '\n</style>' + htmlContent
         }
     }
 });

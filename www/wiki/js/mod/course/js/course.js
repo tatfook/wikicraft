@@ -303,7 +303,7 @@ define(['app', 'helper/util',
                                 var that = $scope.action,
                                     item = {
                                         chapter_url: '',
-                                        title: '小节标题',
+                                        title: '',
                                         chapter_stage: "第一阶段",
                                         chapter_order: 1,
                                         chapter_stage_order: 1,
@@ -361,7 +361,7 @@ define(['app', 'helper/util',
                                 var nChn = that._numToChn(max),
                                     item = {
                                         chapter_url: '',
-                                        title: '小节标题',
+                                        title: '',
                                         chapter_stage: "第" + nChn + "阶段",
                                         chapter_order: 0,
                                         chapter_stage_order: max,
@@ -1513,8 +1513,10 @@ define(['app', 'helper/util',
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return `<div ng-controller="courseController" ng-click="viewCourseEditor();" style="min-height: 100px; cursor:pointer;">
-                        <div ng-show = 'data.course.hasData()'>点击编辑课程目录^-^</div>
+            return `<div ng-controller="courseController" ng-click="viewCourseEditor();" >
+                        <div ng-show = 'data.course.hasData()' style="min-height: 100px; border: 1px solid #d0d0d0; width: 80%; margin:0 auto; cursor:pointer; font-size: 18px; margin-top: 10px;">
+                            点击编辑课程目录
+                        </div>
                         <div ng-hide = 'data.course.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
                     </div>`
         }

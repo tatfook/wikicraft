@@ -451,7 +451,7 @@
                         data-drag="true" data-siblings="stage">
 
                         <div class="chapter chapter-stage-title col-xs-12 " ng-hide="action.stageEdit[key]">
-                            <div class="col-md-5 col-xs-12" ng-bind="course.getStageName(key)"></div>
+                            <div class="col-md-5 col-xs-12" ng-bind="course.getStageName(key)" title="course.getStageName(key)"></div>
                             <div class="chapter-btn-group">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true" ng-click="action.editStage(key, 'stage' + key)" ng-class="{'edit-disable': action.edit}"></i>
                                 <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveStage(key, 1)" ng-class="{'edit-disable': action.edit}"></i>
@@ -480,10 +480,10 @@
                             class="stage-list chapter col-xs-12" 
                             data-drag="true" data-siblings="stageChapter"> 
                             <div ng-hide="chp.$edit" class="col-xs-12" >
-                                <div class="chapter-title col-md-4 col-xs-12">
+                                <div class="chapter-title col-md-4 col-xs-12" title="{{chp.title}}">
                                     {{chp.title}}
                                 </div>
-                                <div class="chapter-url col-md-5 col-xs-12">
+                                <div class="chapter-url col-md-5 col-xs-12" title="{{chp.chapter_url}}">
                                     {{chp.chapter_url}}
                                 </div>
                                 <div class="chapter-btn-group">
@@ -566,10 +566,10 @@
                             ng-repeat = "chp in course.chapter | orderBy: 'chapter_order' track by $index"
                             data-drag="true" data-siblings="chapter"> 
                         <div ng-hide="chp.$edit">
-                            <div class="chapter-title col-md-4 col-xs-12">
+                            <div class="chapter-title col-md-4 col-xs-12" title="{{chp.title}}">
                                 {{chp.title}}
                             </div>
-                            <div class="col-md-5 col-xs-12 chapter-url">
+                            <div class="col-md-5 col-xs-12 chapter-url" title="{{chp.chapter_url}}">
                                 {{chp.chapter_url}}
                             </div>
                             <div class="chapter-btn-group">
