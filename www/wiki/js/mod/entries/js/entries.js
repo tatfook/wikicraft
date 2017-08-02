@@ -74,7 +74,7 @@ define(['app',
                         isShowLoading: false
                     }).then(function (rs) {
                         var data = rs.data;
-                        if (data.itemCount = 0) {
+                        if (data.itemCount == 0) {
                             console.log("没有数据!");
                             return;
                         }

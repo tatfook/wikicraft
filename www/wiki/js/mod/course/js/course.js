@@ -11,6 +11,8 @@ define(['app', 'helper/util',
     function registerController(wikiBlock) {
         app.registerController("courseController", ['$scope', '$uibModal', '$timeout', '$http', function ($root, $uibModal, $timeout, $http) {
 
+            $root.isEdit = wikiBlock.isEditorEnable();
+
             $root.data = {
                 host: 'http://121.14.117.239/api/lecture/course',
                 course: { //课程数据
@@ -109,6 +111,7 @@ define(['app', 'helper/util',
                 if (!wikiBlock.isEditorEnable()) {
                     return;
                 }
+                
                 $uibModal.open({
                     template: htmlContent,
                     size: 'md',
@@ -1514,7 +1517,7 @@ define(['app', 'helper/util',
         render: function (wikiBlock) {
             registerController(wikiBlock);
             return `<div ng-controller="courseController" ng-click="viewCourseEditor();" >
-                        <div ng-show = 'data.course.hasData()' style="min-height: 100px; border: 1px solid #d0d0d0; width: 80%; margin:0 auto; cursor:pointer; font-size: 18px; margin-top: 10px;">
+                        <div ng-show = 'data.course.hasData() && isEdit' style="min-height: 100px; border: 1px solid #d0d0d0; cursor:pointer; font-size: 18px;">
                             点击编辑课程目录
                         </div>
                         <div ng-hide = 'data.course.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
