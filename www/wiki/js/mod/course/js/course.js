@@ -66,6 +66,11 @@ define(['app', 'helper/util',
                 switch: true,
             }
 
+            //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
+            var watch = $root.$watch('data.course.chapter', function (newValue, oldValue, scope) {
+                $root.data.course.setChapterWithStage();
+            }, true);
+
             function init() {
 
                 $http.post($root.data.host + '/courselist', {
@@ -74,6 +79,9 @@ define(['app', 'helper/util',
                     isShowLoading: true
                 }).then(function (rs) {
                     var data = rs.data;
+
+                    console.log("============");
+                    console.log(data);
 
                     if (data && data.err === 0) {
 
@@ -111,7 +119,7 @@ define(['app', 'helper/util',
                 if (!wikiBlock.isEditorEnable()) {
                     return;
                 }
-                
+
                 $uibModal.open({
                     template: htmlContent,
                     size: 'md',
@@ -270,7 +278,7 @@ define(['app', 'helper/util',
 
                             checkUrlExists: function (url, type) {
                                 var found = 0,
-                                    checkCount = type === 'add'? 0 : 1;
+                                    checkCount = type === 'add' ? 0 : 1;
 
                                 for (var i = 0; i < $scope.course.chapter.length; i++) {
                                     var it = $scope.course.chapter[i];
@@ -1458,12 +1466,6 @@ define(['app', 'helper/util',
             }
 
             init();
-
-            //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
-            var watch = $root.$watch('data.course.chapter', function (newValue, oldValue, scope) {
-                $root.data.course.setChapterWithStage();
-            }, true);
-
 
             // 判断点击课程标题链接时以防跳转
             // 如果为编辑模式时，则设置课程目录模块为禁止跳转状态

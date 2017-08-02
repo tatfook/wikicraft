@@ -32,9 +32,11 @@ define(['app',
             }, {
                 isShowLoading: false
             }).then(function (rs) {
-
+                    console.log(rs);
+                
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
-                    $scope.course_url = rs.data.course_url;
+                    $scope.course_url = rs.data.course_url.course_url;
+                    $scope.entries_title = rs.data.course_url.title;
                     $scope.isHide = false;
                 }
             }, function (rs) {

@@ -1,4 +1,4 @@
-<div ng-controller="entriesController">
+<div ng-controller="entriesController" class="container" style="box-sizing:border-box;">
 
     <style scoped>
         .layout-swiper {
@@ -303,7 +303,7 @@
 
     <div id="entriesWrap">
 
-        <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">返回目录</a></div>
+        <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">课程：<span>{{entries_title}}</span></a></div>
 
         <div class="entries-container">
 
