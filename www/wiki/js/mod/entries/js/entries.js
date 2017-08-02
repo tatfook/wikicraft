@@ -223,11 +223,6 @@ define(['app',
                             return;
                         }
 
-                        if (rs.data.itemCount = 0) {
-                            console.log("没有数据！");
-                            return;
-                        }
-
                         if (rs.data && rs.data.err === 0) {
                             var data = angular.copy(rs.data.data, []);
                             for (var i = 0; i < data.length; i++) {
