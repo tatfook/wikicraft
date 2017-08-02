@@ -81,7 +81,7 @@ define(['app', 'helper/util',
                     var data = rs.data;
 
                     console.log("============");
-                    console.log(data);
+                    console.log(data.course.id);
 
                     if (data && data.err === 0) {
 

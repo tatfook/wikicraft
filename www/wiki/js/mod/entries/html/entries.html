@@ -1,6 +1,7 @@
 <div ng-controller="entriesController" class="container" style="box-sizing:border-box;">
 
     <style scoped>
+
         .layout-swiper {
             width: 100%;
             margin: 20px auto 0;
@@ -243,9 +244,38 @@
             box-sizing: border-box;
             overflow-x: hidden;
         }
+        
+        #entriesWrap .top-block{
+            position: relative;
+            height: 60px;
+            line-height: 60px;
+            margin-top:10px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }    
 
         .return-layer {
-            margin: 50px 0 10px;
+            position: absolute;
+            left: 0;
+            z-index:1;
+        }
+
+        .authorInfo{
+            position: absolute;
+            right:0;
+            z-index:1;
+        }
+
+        .authorInfo img{
+            display: inline-block;
+            width: 50px;
+            height:50px;
+            -webkit-border-radius:50%;
+            border-radius:50%;
+            margin-right: 10px;
+        }
+        .authorInfo a:hover{
+            text-decoration: underline;
         }
 
         @media screen and (max-width:1000px) {
@@ -299,12 +329,26 @@
                 max-height: 100%;
             }
         }
+       
     </style>
 
     <div id="entriesWrap">
 
-        <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">课程：<span>{{entries_title}}</span></a></div>
+        <div class="top-block">
+             <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">课程：<span>{{entries_title}}</span></a></div>
 
+            <div class="authorInfo">
+                <span>作者：</span>
+                <a href="#">
+                    <!--<img src="{{thisUserPic}}" alt="{{userinfo.username}}"/>-->
+                    {{userinfo.username}}
+                </a>
+                &nbsp;
+                <a href="{{followPath}}?res_name={{userinfo.username}}&course_info={{course_info}}" type="button" class="btn btn-danger btn-sm">拜师</a>
+            </div>
+
+        </div>
+       
         <div class="entries-container">
 
             <!-- 词条标题，昵称信息 左右轮播 start -->
