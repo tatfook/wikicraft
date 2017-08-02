@@ -155,7 +155,6 @@
             <div class="state" ng-click="catalog.toggleChange('all', $index)">
                 <a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a>
             </div>
-<<<<<<< HEAD
             <div class="menu-content" ng-if="data.switch">
                 <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage">
                     <h4 ng-click="catalog.toggleChange('chil', $index)" ng-show='data.switch'>
@@ -167,20 +166,6 @@
                     <ul class="chapter-list" ng-hide="catalog.item[$index]">
                         <li class="item-chapter" ng-repeat="item in chps">
                             <a href="{{item.chapter_url}}" target="_blank" title="{{item.title}}">
-=======
-        </div>
-        <div class="menu-content" ng-if="data.switch">
-            <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage">
-                <h4 ng-click="catalog.toggleChange('chil', $index)" ng-show='data.switch'>
-                    <!--<span class="glyphicon" ng-class="toggleChange ? 'glyphicon-folder-close' : 'glyphicon-folder-open'"></span>-->
-                    {{data.course.getStageName(key)}}
-                    <span class="glyphicon glyphicon-chevron-down"></span>
-                </h4>
-
-                <ul class="chapter-list" ng-hide="catalog.item[$index]">
-                    <li class="item-chapter" ng-repeat="item in chps">
-                        <a href="{{item.chapter_url}}?courseurl={{data.course.getCourseUrl()}}" target="_blank" title="{{item.title}}">
->>>>>>> a57463e0b17f779ee8a0ffcaebeeb5d34d914c0d
                             <span class="no-node">{{item.chapter_stage_order}}&#8722;{{$index+1}}</span>
                             <span>{{item.title}}</span>
                             <span class="txt">进入学习</span>
@@ -190,19 +175,11 @@
             </div>
         </div>
 
-<<<<<<< HEAD
             <div class="menu-content" ng-if="!data.switch">
                 <div class="chapter">
                     <ul class="chapter-list">
                         <li class="item-chapter" ng-repeat="item in data.course.chapter">
                             <a href="{{item.chapter_url}}" target="_blank" title="{{item.title}}">
-=======
-        <div class="menu-content" ng-if="!data.switch">
-            <div class="chapter">
-                <ul class="chapter-list">
-                    <li class="item-chapter" ng-repeat="item in data.course.chapter">
-                        <a href="{{item.chapter_url}}?courseurl={{data.course.getCourseUrl()}}" target="_blank" title="{{item.title}}">
->>>>>>> a57463e0b17f779ee8a0ffcaebeeb5d34d914c0d
                             <span class="no-node">{{$index+1}}</span>
                             <span>{{item.title}}</span>
                             <span class="txt">进入学习</span>
