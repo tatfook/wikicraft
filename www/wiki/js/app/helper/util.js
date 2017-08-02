@@ -197,7 +197,7 @@ define([
 
 	util.ajax = function(obj) {
 		$.ajax({
-			url:obj.url
+			url:obj.url,
 			type:obj.type || "GET",
 			dataType:obj.dataType || "json",
 			data:obj.data,
