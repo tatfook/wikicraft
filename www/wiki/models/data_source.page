@@ -300,6 +300,28 @@ function data_source:api_createInnerGitlab(params)
 	return errors:wrap(nil, ds)
 end
 
+function data_source:api_createProject(params)
+	if (not params.apiBaseUrl) or (not params.token) or (not params.projectName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	System.os.GetUrl({
+		url=params.apiBaseUrl .. "/projects"
+		headers={['PRIVATE-TOKEN'] = params.token},
+		method = "GET",
+		qs = {
+			search:params.projectName,
+			owned:true,
+		}
+	}, resume)
+
+	local code, data = yield()
+
+	log(data)
+
+	return errors:wrap(nil,data)
+end
+
 -- gitlab webhokk
 function data_source:api_gitlabWebhook(params)
 	params = params or {}	

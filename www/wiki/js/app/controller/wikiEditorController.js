@@ -980,6 +980,7 @@ define([
                     return;
                 }
 
+
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
                 $rootScope.userinfo = getUserinfo(currentPage.username);
@@ -1021,6 +1022,8 @@ define([
 
 					// init tree user settimeout(function(){}, 0)
 					setTimeout(function() {
+						//getSitePageList({path:page.url, username:page.username, sitename:page.sitename});
+
 						$('#btUrl').val(window.location.origin + page.url);
 						var treeNode = treeNodeMap[page.url];
 						var treeid = getTreeId(page.username, page.sitename);
