@@ -30,6 +30,7 @@ website.db_name = "website"
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
+	self:addfield("isolateDataSource", "number") -- 1 独立数据源 0 - 默认数据源
 	self:addfield("type", "string", false, 30)
 	self:addfield("displayName", "string", false, 30)
 	self:addfield("userId", "number", false)
@@ -93,6 +94,7 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.isolateDataSource = params.isolateDataSource or 1
 	params.favoriteCount = 0
 	params.visitCount = 0
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
