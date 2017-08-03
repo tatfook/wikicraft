@@ -16,6 +16,10 @@ define([
         $scope.goContact = function () {
             util.go("contact",true);
         }
+
+        $scope.goHomePage = function () {
+            util.go("home");
+        };
     }]);
 
     return htmlContent;

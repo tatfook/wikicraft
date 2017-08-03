@@ -3,7 +3,6 @@
         text-align: center;
         color: #FFF;
         position: relative;
-        /*margin-bottom: 40px;*/
     }
     .ads h1{
         margin: 65px 0 20px;
@@ -36,16 +35,19 @@
     }
     .ads .recomment{
         display: inline-block;
+        width: 100%;
     }
     .ads .apps{
-        display: inline-block;
-        margin: 60px 0 55px;
-        
+        margin: 60px auto 55px;
+        display: flex;
+        max-width: 1200px;
+        overflow-x: auto;
     }
     .ads .app-item{
-        width: 280px;
-        float: left;
         margin: 0 10px;
+        min-width: 280px;
+        width: 25%;
+
     }
     .ads .app-item h4 > a:hover{
         color: #9AC5EC;
@@ -87,14 +89,8 @@
     }
     .ads .app-info{
         color: #FFF;
-        /*margin-bottom: 0;*/
         font-size: 18px;
         margin:5px 0 0;
-        /*height: 36px;*/
-        /*line-height: 36px;*/
-        /*white-space: nowrap;*/
-        /*overflow: hidden;*/
-        /*text-overflow: ellipsis;*/
     }
     .apps-affix{
         padding-top: 40px;
@@ -113,8 +109,10 @@
         margin-top: 52px;
     }
     .sidebar-nav .btn-primary{
-        padding: 10px 41px;
+        padding: 12px 0;
         font-size: 16px;
+        width: 180px;
+        max-width: 100%;
     }
     .sidebar-nav ul.class-treeview{
         padding: 0;
@@ -174,6 +172,15 @@
         color: #666;
         margin: 10px 0 0;
     }
+    @media (max-width: 768px) {
+        .class-apps{
+            padding: 0;
+            border-left: none;
+        }
+        .class-apps .class-app-item{
+            padding-right: 0;
+        }
+    }
 </style>
 
 <div ng-controller="appsController">
@@ -200,7 +207,7 @@
         </div>
     </div>
     <div class="container apps-affix" id="affix">
-        <div class="col-sm-3 sidebar-nav">
+        <div class="col-sm-3 sidebar-nav hidden-xs">
             <div class="affix-ctrl">
                 <div class="search">
                     <h4>搜索应用中心</h4>
