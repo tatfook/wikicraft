@@ -712,7 +712,8 @@ define([
 
 
 			// 提交至搜索引擎
-			function submitToSearchEngine(page) {
+			function submitToSearchEngine(page) {//{{{
+				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
 				var obj = {
 					url:"http://keepwork.com" + page.url,
 					short_url:page.url,
@@ -724,17 +725,21 @@ define([
 					site_name:page.sitename,
 					page_name:page.pagename,
 				};
-
-				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
-				util.http("POST", url, obj, function(response){
-					console.log(response);
-				}, function(response){
-					console.log(response);
-				}, false);
-			}
+				
+				util.ajax({
+					type: "POST",
+					url: url,
+					data: obj,
+					success: function(result) {
+						console.log(result);
+					},
+					error: function(response) {
+					},
+				});
+			}//}}}
 
 			// 生成页面快照
-			function makeSnapshot(currentDataSource, page) {
+			function makeSnapshot(currentDataSource, page) {//{{{
 				var containerId = mdwiki.getMdWikiContainerId();
 
 				setTimeout(function() {
@@ -755,7 +760,7 @@ define([
 						},
 					});
 				}, 5000);
-			}
+			}//}}}
 
             // 保存页
             function savePageContent(cb, errcb) {//{{{
@@ -790,7 +795,7 @@ define([
                     cb && cb();
                 };
 
-				//submitToSearchEngine(page);
+				submitToSearchEngine(page);
 
 				//makeSnapshot(currentDataSource, page);
 
@@ -975,6 +980,7 @@ define([
                     return;
                 }
 
+
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
                 $rootScope.userinfo = getUserinfo(currentPage.username);
@@ -1016,6 +1022,8 @@ define([
 
 					// init tree user settimeout(function(){}, 0)
 					setTimeout(function() {
+						//getSitePageList({path:page.url, username:page.username, sitename:page.sitename});
+
 						$('#btUrl').val(window.location.origin + page.url);
 						var treeNode = treeNodeMap[page.url];
 						var treeid = getTreeId(page.username, page.sitename);

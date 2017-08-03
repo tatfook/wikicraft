@@ -300,6 +300,7 @@ function data_source:api_createInnerGitlab(params)
 	return errors:wrap(nil, ds)
 end
 
+
 -- gitlab webhokk
 function data_source:api_gitlabWebhook(params)
 	params = params or {}	
@@ -321,20 +322,18 @@ function data_source:api_gitlabWebhook(params)
 
 	-- 直接根据projectId projectName来获取站点数据源  在不搭建自己的gitlab服务器时没有问题, 当搭建自己gitlab时可能查找不正确 TODO
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:db():findOne({["+username+projectName"]={username, projectName}}, resume)
-	local _, siteDataSource = yield()
-	if not siteDataSource then
-		LOG.std(nil, "error", "keepwork", "site data source not exist")
-		return 
+	siteDataSourceDB:db():find({["+username+projectName"]={username, projectName, limit=1000}}, resume)
+	local _, siteDataSourceList = yield()
+
+	for _, siteDataSource in ipairs(siteDataSourceList or {}) do
+		siteDataSource.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST
+		siteDataSource.lastCommitId = params.after
+	
+		siteDataSourceDB:db():updateOne({_id=siteDataSource._id}, siteDataSource, resume)
+		yield()
 	end
 
-	siteDataSource.updateFlag = const.DATA_SOURCE_UPDATE_FLAG_NO_TRUST
-	siteDataSource.lastCommitId = params.after
-	
-	siteDataSourceDB:db():updateOne({_id=siteDataSource._id}, siteDataSource, resume)
-	yield()
-
-	return
+	return 
 end
 
 -- gitlab webhokk

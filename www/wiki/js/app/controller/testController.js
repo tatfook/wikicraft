@@ -12,17 +12,21 @@ define([
 ], function (app, util, storage, dataSource,  htmlContent/*, html2canvas*/) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
-			//console.log(html2canvas, typeof html2canvas);	
-			$scope.message = "this is a test";
-			html2canvas($("#__mainContent__")[0], {
-				onrendered:function(canvas){
-					console.log(canvas);
-					document.body.appendChild(canvas);
-					//var src = canvas.toDataURL('image/png');
-					//$("#testImg").attr("src", src);
+			util.ajax({
+				url:"http://221.0.111.131:19001/Application/essearch",
+				type:"POST",
+				data:{
+					keyword:"test",
+					page:1,
+					flag:4,
+					highlight:1
 				},
-				height:300,
-				width:300,
+				success: function(result, status, xhr) {
+					console.log(result);
+				},
+				error: function(xhr, status, error){
+
+				}
 			});
 		}
 		$scope.$watch("$viewContentLoaded", init);

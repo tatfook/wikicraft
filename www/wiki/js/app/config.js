@@ -117,6 +117,10 @@
 		hostname = hostname || window.location.hostname;
 		hostname = hostname.split(':')[0];
 
+        if (hostname.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+			return true;
+		}
+
 		if (hostname.indexOf(".dev.keepwork.com") >= 0 || hostname.indexOf("localhost") >= 0) {
 			return true;
 		}

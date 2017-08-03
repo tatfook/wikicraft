@@ -1,0 +1,29 @@
+<style>
+    .btn-md {
+        padding: 9px 41px;
+        font-size: 16px;
+    }
+</style>
+<div ng-controller="inviteController">
+    <div ng-show="showItem == 'addFriend'" class="col-md-10 panel main-content">
+        <div class="panel-heading">
+            邀请注册
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form">
+                <div class="form-group sr-only form-group-lg">
+                    <legend>邀请注册表单</legend>
+                </div>
+                <div class="form-group form-group-lg">
+                    <label class="control-label col-sm-2">好友email：</label>
+                    <div class="col-sm-4">
+                        <input type="email" ng-model="friendMail" class="form-control">
+                    </div>
+                    <div class="col-sm-3">
+                        <div ng-click="inviteFriend()" class="btn btn-primary btn-md">邀 请</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

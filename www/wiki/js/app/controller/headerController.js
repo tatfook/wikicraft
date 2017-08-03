@@ -58,8 +58,8 @@ define([
                 }
             }
 
-            var container=document.getElementById("js-prev-container");
-            container.style.overflow="visible";
+            // var container=document.getElementById("js-prev-container");
+            // container.style.overflow="visible";
         }
 
 		$scope.$watch('$viewContentLoaded', function() {
@@ -224,7 +224,15 @@ define([
 
 		$scope.goAdminPage = function() {
 			util.go("/wiki/js/mod/admin/js/login");
-		}
+		};
+
+		$scope.goApps = function () {
+            util.go("apps");
+        };
+
+		$scope.goHelp = function () {
+            util.go("knowledge");
+        };
 
 		$scope.isAdmin = function() {
 			if (Account.isAuthenticated() && $scope.user && $scope.user.roleId) {
@@ -234,7 +242,7 @@ define([
 			}
 
 			return false;
-		}
+		};
 
         $scope.goUserCenterPage = function (contentType, subContentType) {
             console.log(contentType, subContentType);
