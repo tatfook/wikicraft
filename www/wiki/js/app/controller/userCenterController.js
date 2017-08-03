@@ -12,7 +12,9 @@ define(['app',
     'controller/myVIPController',
     'controller/editWebsiteController',
     'controller/newWebsiteController',
-], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent, newWebsiteHtmlContent) {
+    'controller/inviteController',
+    'controller/servicesController',
+], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent, newWebsiteHtmlContent, inviteHtmlContent, servicesHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
         $scope.userProfileItemList = [
@@ -22,22 +24,33 @@ define(['app',
             {contentType:"userProfile", subContentType:"myCollection", flag:'myCollection', name:'我的关注'},
             {contentType:"userProfile", subContentType:"myHistory", flag:'myHistory', name:'我的历史'},
             {contentType:"userProfile", subContentType:"myFans", flag:'myFans', name:'我的粉丝'},
-            {contentType:"userProfile", subContentType:"realName", flag:'realName', name:'实名认证'},
-            {contentType:"userProfile", subContentType:"myPay", flag:'myPay', name:'消费记录'},
-            {contentType:"userProfile", subContentType:"invite", flag:'invite', name:'邀请注册'},
+            // {contentType:"userProfile", subContentType:"realName", flag:'realName', name:'实名认证'},
+            // {contentType:"userProfile", subContentType:"myPay", flag:'myPay', name:'消费记录'},
+            {contentType:"userProfile", subContentType:"dataSource", flag:'dataSource', name:'数据源'},
+            // {contentType:"userProfile", subContentType:"invite", flag:'invite', name:'邀请注册'},
         ];
 
         $scope.websiteMangerItemList = [
             {contentType:"websiteManager", subContentType:"myWebsite", flag:'myWebsite', name:'我的站点'},
         ];
 
-        $scope.vipItemList = [
-            {contentType:"vip", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
+        // $scope.vipItemList = [
+        //     {contentType:"vip", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
+        // ];
+
+        $scope.invitesItemList = [
+            {contentType:"invite", subContentType:"addFriend", flag:'addFriend', name:'邀请注册'},
         ];
 
-        $scope.dataSourceItemList = [
-            {contentType:"dataSource", subContentType:"dataSource", flag:'dataSource', name:'数据源配置'},
-        ]
+        $scope.servicesItemList = [
+            {contentType:"services", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
+            {contentType:"services", subContentType:"orders", flag:'orders', name:'订单中心'},
+            {contentType:"services", subContentType:"myPay", flag:'myPay', name:'消费记录'},
+        ];
+
+        // $scope.dataSourceItemList = [
+        //     {contentType:"dataSource", subContentType:"dataSource", flag:'dataSource', name:'数据源配置'},
+        // ]
 
         $scope.$on('userCenterContentType', function (event, contentType) {
             if (contentType != $scope.contentType || contentType == 'websiteManager') {
@@ -82,13 +95,20 @@ define(['app',
                     util.html('#userCenterSubPage', editWebsiteHtmlContent, $scope);
                 else if (contentType == "newWebsite")
                     util.html("#userCenterSubPage", newWebsiteHtmlContent, $scope);
-            } else if (contentType == 'VIP') {
+            } else if (contentType == 'services') {
                 $scope.showItem = subContentType || 'myVIP';
-                util.html('#userCenterSubPage', myVIPHtmlContent, $scope);
-            } else if (contentType == 'dataSource') {
-                $scope.showItem = subContentType || 'dataSource';
-                util.html('#userCenterSubPage', dataSourceHtmlContent, $scope);
+                util.html('#userCenterSubPage', servicesHtmlContent, $scope);
+            } else if (contentType == 'invite') {
+                $scope.showItem = subContentType || 'addFriend';
+                util.html('#userCenterSubPage', inviteHtmlContent, $scope);
             }
+            // else if (contentType == 'VIP') {
+            //     $scope.showItem = subContentType || 'myVIP';
+            //     util.html('#userCenterSubPage', myVIPHtmlContent, $scope);
+            // } else if (contentType == 'dataSource') {
+            //     $scope.showItem = subContentType || 'dataSource';
+            //     util.html('#userCenterSubPage', dataSourceHtmlContent, $scope);
+            // }
 
             subContentType && $rootScope.$broadcast('userCenterSubContentType', subContentType);
         }

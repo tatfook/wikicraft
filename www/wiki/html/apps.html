@@ -3,7 +3,7 @@
         text-align: center;
         color: #FFF;
         position: relative;
-        margin-bottom: 40px;
+        /*margin-bottom: 40px;*/
     }
     .ads h1{
         margin: 65px 0 20px;
@@ -58,30 +58,59 @@
         color: #FFF;
         box-shadow: 0 5px 10px rgba(9,34,59,.47);
     }
+    .ads .show:before{
+        content: '';
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top:0;
+        background-color: rgba(0,0,0,.35);
+    }
     .ads .show > img{
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-    .ads .app-info{
+    .ads .app-detail{
         position: absolute;
         left: 0;
-        bottom: 0;
+        top: 35px;
         right: 0;
-        background-color: rgba(0,0,0,.6);
-        margin-bottom: 0;
+    }
+    .ads .app-detail > img{
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+    .ads .app-info{
+        color: #FFF;
+        /*margin-bottom: 0;*/
         font-size: 18px;
-        height: 36px;
-        line-height: 36px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        margin:5px 0 0;
+        /*height: 36px;*/
+        /*line-height: 36px;*/
+        /*white-space: nowrap;*/
+        /*overflow: hidden;*/
+        /*text-overflow: ellipsis;*/
+    }
+    .apps-affix{
+        padding-top: 40px;
+    }
+    .apps-affix .affix-ctrl{
+        position: relative;
+    }
+    .apps-affix.active .affix-ctrl{
+        position: fixed;
+        top: 52px;
     }
     .sidebar-nav{
         padding-right: 40px;
     }
     .sidebar-nav .classes{
-        margin-top: 40px;
+        margin-top: 52px;
     }
     .sidebar-nav .btn-primary{
         padding: 10px 41px;
@@ -102,15 +131,18 @@
     .class-treeview > li.treeview-item > i.glyphicon{
         color: #989898;
     }
-    .class-treeview > li.treeview-item:hover{
+    .class-treeview > li.treeview-item:hover, .class-treeview > li.treeview-item.active{
         color: #3977AD;
     }
-    .class-treeview > li.treeview-item:hover > i.glyphicon{
+    .class-treeview > li.treeview-item:hover > i.glyphicon, .class-treeview > li.treeview-item.active > i.glyphicon{
         color: #3977AD;
     }
     .class-apps{
         border-left: 1px solid #DCDCDC;
         padding-left: 40px;
+    }
+    .class-apps h3{
+        margin-top: 0;
     }
     .class-apps .info{
         font-size: 16px;
@@ -155,35 +187,40 @@
             <h2>让你的网站更加生动的创作工具与网络服务</h2>
             <div class="apps clearfix">
                 <div class="app-item" ng-repeat="item in recommentApps">
-                    <a href="{{item.siteUrl}}" class="show">
-                        <img ng-src="{{item.logoUrl}}" alt="{{item.name}}">
-                        <p class="app-info">{{item.name}}</p>
-                    </a>
+                    <div class="show">
+                        <img ng-src="{{item.bgUrl}}" alt="{{item.name}}">
+                        <a href="{{item.siteUrl}}" class="app-detail">
+                            <img ng-src="{{item.logoUrl}}" alt="">
+                            <p class="app-info">{{item.name}}</p>
+                        </a>
+                    </div>
                     <h4><a href="{{item.siteUrl}}">{{item.title}}</a></h4>
                 </div>
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container apps-affix" id="affix">
         <div class="col-sm-3 sidebar-nav">
-            <div class="search">
-                <h4>搜索应用中心</h4>
-                <input class="form-control" type="text" placeholder="输入名字或描述">
-            </div>
-            <div class="classes">
-                <h4>分类</h4>
-                <ul class="class-treeview">
-                   <li class="treeview-item" ng-repeat="item in classApps">
-                       <i class="glyphicon glyphicon-play"></i>
-                       {{item.classes}}
-                   </li>
-                </ul>
-                <a href="https://github.com/tatfook/wikicraft/issues" class="btn btn-primary">申请提交应用</a>
+            <div class="affix-ctrl">
+                <div class="search">
+                    <h4>搜索应用中心</h4>
+                    <input class="form-control" type="text" placeholder="输入名字或描述">
+                </div>
+                <div class="classes">
+                    <h4>分类</h4>
+                    <ul class="class-treeview">
+                        <li class="treeview-item" ng-class="{true:'active'}[activeItemId == item.targetId]" ng-repeat="item in classApps" ng-click="goPart($event, item)">
+                            <i class="glyphicon glyphicon-play"></i>
+                            {{item.classes}}
+                        </li>
+                    </ul>
+                    <a href="https://github.com/tatfook/wikicraft/issues/415" class="btn btn-primary">申请提交应用</a>
+                </div>
             </div>
         </div>
         <div class="col-sm-9 class-apps">
             <div class="class-item clearfix" ng-repeat="item in classApps">
-                <h3>{{item.classes}}</h3>
+                <h3 id="{{item.targetId}}">{{item.classes}}</h3>
                 <p class="info">{{item.info}}</p>
                 <div class="class-app-item col-md-6" ng-repeat="app in item.apps">
                     <div class="app-logo">
