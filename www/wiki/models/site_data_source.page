@@ -151,7 +151,7 @@ function site_data_source:api_createProject(params)
 		url=params.apiBaseUrl .. "/projects",
 		headers={['PRIVATE-TOKEN'] = params.token},
 		method="POST",
-		form={name=params.projectName, request_access_enabled=true}
+		form={name=params.projectName, request_access_enabled=true, visibility="public"}
 	}, resume)
 
 	local _, resp = yield()
