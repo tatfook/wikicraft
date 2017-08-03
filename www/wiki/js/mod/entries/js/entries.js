@@ -309,20 +309,6 @@ define(['app',
                         console.log(rs);
                     });
                 }
-
-                //词条树选择
-                var parentWidth = $('#boxSwiper').width(),
-                    elWidth = Math.floor(parentWidth / 2);
-
-                $scope.swiperBox = new Swiper('#boxSwiper', {
-                    width: elWidth,
-                    observer: true,
-                    observeParents: true,
-                    slidesPerGroup: 1,
-                    onlyExternal: true,
-                });
-
-
             }
 
             $scope.$watch('$viewContentLoaded', init);
@@ -337,41 +323,40 @@ define(['app',
                     size: 'lg',
                     backdrop: 'static',
                     keyboard: false,
-                    controller: ['$scope', function ($chil) {
+                    controller: ['$scope', '$uibModalInstance', function ($chil, $uibModalInstance) {
 
-                        $chil.swiperBox = $scope.swiperBox;
+                        $uibModalInstance.rendered.then(function (result) {
 
-                        function init() {
-                            console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+                            //词条树滚动
+                            var parentWidth = $('#boxSwiper').width(),
+                                elWidth = Math.floor(parentWidth / 2);
+
+                            $chil.swiperBox = new Swiper('#boxSwiper', {
+                                width: elWidth,
+                                observer: true,
+                                observeParents: true,
+                                slidesPerGroup: 1,
+                                onlyExternal: true,
+                            });
+                        });
+
+                        //词条的多个层级
+                        $chil.treeCount = 8;
+
+                        $chil.range = [];
+                        for (var i = 0; i < $chil.treeCount; i++) {
+                            $chil.range.push(i);
                         }
-
-
-
-                        $chil.$watch('$viewContentLoaded', init);
-
-                        $chil.range = function (n) {
-                            return new Array(n);
-                        };
 
                         $chil.entries = [{
                                 id: 1,
-                                txt: '分类1'
-                            },
-                            {
-                                id: 2,
-                                txt: '分类2'
-                            },
-                            {
-                                id: 3,
-                                txt: '分类3'
-                            },
-                            {
-                                id: 4,
-                                txt: '分类4'
+                                type: '分类1'
                             }
                         ];
 
-                        $chil.entries_list = new Array(8).fill([]);
+                        $chil.entries_list = Array($chil.treeCount).fill([]);
+
+                        $chil.boxVisible = Array($chil.treeCount).fill(false);
 
                         $chil.entries_list[0] = [{
                                 id: 1,
@@ -428,41 +413,28 @@ define(['app',
                             },
                         ]
 
-                        // $chil.entries_list = [
-                        //     { id: 1, parent_id: 0, type: '分类1', is_mg: true, use_count: 0 },
-                        //     { id: 2, parent_id: 0, type: '分类11', is_mg: true, use_count: 0 },
-
-                        //     { id: 3, parent_id: 1, type: '分类12', is_mg: true, use_count: 0 },
-                        //     { id: 4, parent_id: 2, type: '分类13', is_mg: false, use_count: 0 },
-                        //     { id: 5, parent_id: 2, type: '分类14', is_mg: false, use_count: 0 },
-
-                        //     { id: 6, parent_id: 3, type: '分类21', is_mg: true, use_count: 0 },
-                        //     { id: 7, parent_id: 3, type: '分类31', is_mg: true, use_count: 0 },
-                        //     { id: 8, parent_id: 4, type: '分类41', is_mg: false, use_count: 0 },
-                        //     { id: 9, parent_id: 5, type: '分类51', is_mg: false, use_count: 0 },
-
-                        //     { id: 10, parent_id: 6, type: '分类61', is_mg: true, use_count: 0 },
-                        //     { id: 11, parent_id: 7, type: '分类71', is_mg: true, use_count: 0 },
-                        //     { id: 12, parent_id: 8, type: '分类81', is_mg: false, use_count: 0 },
-                        //     { id: 13, parent_id: 8, type: '分类82', is_mg: false, use_count: 0 },
-                        // ];
-
-                        // $chil.pidList = [];
-
-                        //父ID
-                        // $chil.pid = 0;
-
-                        // $chil.$el = $('#entri-tree');
-
-                        // $chil.swp = new Swiper('#aaa',{
-                        //     observer: true,
-                        //     observeParents: true,
-                        // });
+                        $chil.addItemCache = Array($chil.treeCount).fill('');
 
                         $chil.action = {
 
+                            addEntri: function(idx, item){
+
+                                $chil.entries.splice(idx);
+                                $chil.entries.push(item);
+                            },
+
                             removeEntri: function (idx) {
                                 $chil.entries.splice(idx + 1, $chil.entries.length - idx);
+
+                                $chil.swiperBox.slideTo(idx);
+
+                                //移除其他的active
+                                var list = $('.box-item');
+                                for(var i = 0; i < list.length; i++){
+                                    if(i > idx){
+                                        $(list[i]).find('li').removeClass('active');
+                                    }
+                                }
                             },
 
                             selectItem: function (evt, item, idx) {
@@ -475,28 +447,60 @@ define(['app',
                                 var listIdx = $el.index(),
                                     parent_id = $chil.entries_list[idx][listIdx]['id'];
 
+                                //加载数据
                                 $chil.action.loadData(idx + 1, parent_id);
 
-                                if (idx !== 0 && idx !== 7) {
-                                    debugger;
+                                $chil.action.addEntri(idx, item);
 
-                                    $chil.swiperBox.slideNext();
+                                if (idx !== 0 && idx !== $chil.treeCount - 1) {
+                                    $chil.swiperBox.slideTo(idx);
                                 }
                             },
 
-                            addItem: function () {
+                            addItem: function (idx, evt) {
+                                //todo
 
+                                var that = $chil.action;
+
+                                $chil.entries_list[idx].push({
+                                    id: 5,
+                                    parent_id: 2,
+                                    type: 'testaaaaaaaaaa',
+                                    is_mg: false,
+                                    use_count: 0
+                                })
+
+                                that.showAddBox(idx, false, true, evt);
                             },
 
-                            delItem: function () {
+                            delItem: function (idx, item) {
+                                //todo
 
+                                var list = $chil.entries_list[idx];
+                                for (var i = 0; i < list.length; i++) {
+                                    if (list[i]['id'] === item['id']) {
+                                        list.splice(i, 1);
+                                        break;
+                                    }
+                                }
                             },
 
-                            showAddBox: function () {
+                            showAddBox: function (idx, show, clear, evt) {
+                                $chil.boxVisible[idx] = show;
 
+                                // if (show) {
+                                //     $(evt.target).parents('.box-item').find('.entri-list').css('height', '330px');
+                                // } else {
+                                //     $(evt.target).parents('.box-item').find('.entri-list').css('height', '365px');
+                                // }
+
+                                if (clear) {
+                                    $chil.addItemCache[idx] = '';
+                                }
                             },
 
                             loadData: function (idx, parent_id) {
+                                //todo
 
                                 var items = [{
                                         id: 3,
