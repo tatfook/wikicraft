@@ -11,6 +11,8 @@ define(['app', 'helper/util',
     function registerController(wikiBlock) {
         app.registerController("courseController", ['$scope', '$uibModal', '$timeout', '$http', function ($root, $uibModal, $timeout, $http) {
 
+            $root.isEdit = wikiBlock.isEditorEnable();
+
             $root.data = {
                 host: 'http://121.14.117.239/api/lecture/course',
                 course: { //课程数据
@@ -64,6 +66,11 @@ define(['app', 'helper/util',
                 switch: true,
             }
 
+            //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
+            var watch = $root.$watch('data.course.chapter', function (newValue, oldValue, scope) {
+                $root.data.course.setChapterWithStage();
+            }, true);
+
             function init() {
 
                 $http.post($root.data.host + '/courselist', {
@@ -72,6 +79,9 @@ define(['app', 'helper/util',
                     isShowLoading: true
                 }).then(function (rs) {
                     var data = rs.data;
+
+                    console.log("============");
+                    console.log(data.course.id);
 
                     if (data && data.err === 0) {
 
@@ -109,6 +119,7 @@ define(['app', 'helper/util',
                 if (!wikiBlock.isEditorEnable()) {
                     return;
                 }
+
                 $uibModal.open({
                     template: htmlContent,
                     size: 'md',
@@ -267,7 +278,7 @@ define(['app', 'helper/util',
 
                             checkUrlExists: function (url, type) {
                                 var found = 0,
-                                    checkCount = type === 'add'? 0 : 1;
+                                    checkCount = type === 'add' ? 0 : 1;
 
                                 for (var i = 0; i < $scope.course.chapter.length; i++) {
                                     var it = $scope.course.chapter[i];
@@ -303,7 +314,7 @@ define(['app', 'helper/util',
                                 var that = $scope.action,
                                     item = {
                                         chapter_url: '',
-                                        title: '小节标题',
+                                        title: '',
                                         chapter_stage: "第一阶段",
                                         chapter_order: 1,
                                         chapter_stage_order: 1,
@@ -361,7 +372,7 @@ define(['app', 'helper/util',
                                 var nChn = that._numToChn(max),
                                     item = {
                                         chapter_url: '',
-                                        title: '小节标题',
+                                        title: '',
                                         chapter_stage: "第" + nChn + "阶段",
                                         chapter_order: 0,
                                         chapter_stage_order: max,
@@ -1456,12 +1467,6 @@ define(['app', 'helper/util',
 
             init();
 
-            //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
-            var watch = $root.$watch('data.course.chapter', function (newValue, oldValue, scope) {
-                $root.data.course.setChapterWithStage();
-            }, true);
-
-
             // 判断点击课程标题链接时以防跳转
             // 如果为编辑模式时，则设置课程目录模块为禁止跳转状态
             if (wikiBlock.isEditorEnable()) {
@@ -1483,7 +1488,7 @@ define(['app', 'helper/util',
                     if (type === 'all') {
                         that.state = !that.state;
                         var i = 0,
-                            obj = angular.equals({}, that.item) ? $root.course.chapterWithStage : item;
+                            obj = angular.equals({}, that.item) ? $root.data.course.chapterWithStage : item;
 
                         for (var prop in obj) {
                             if (obj.hasOwnProperty(prop)) {
@@ -1513,8 +1518,10 @@ define(['app', 'helper/util',
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return `<div ng-controller="courseController" ng-click="viewCourseEditor();" style="min-height: 100px; cursor:pointer;">
-                        <div ng-show = 'data.course.hasData()'>点击编辑课程目录^-^</div>
+            return `<div ng-controller="courseController" ng-click="viewCourseEditor();" >
+                        <div ng-show = 'data.course.hasData() && isEdit' style="min-height: 100px; border: 1px solid #d0d0d0; cursor:pointer; font-size: 18px;">
+                            点击编辑课程目录
+                        </div>
                         <div ng-hide = 'data.course.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
                     </div>`
         }
