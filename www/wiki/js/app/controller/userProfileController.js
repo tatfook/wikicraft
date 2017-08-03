@@ -553,7 +553,7 @@ define(['app',
                 };
                 util.http("POST", config.apiUrlPrefix + "user_favorite/getBySiteId", params, function (data) {
                     $scope.totalItems = data.total || 0;
-                    $scope.userList = data.userList || [];
+                    $scope.fansUserList = data.userList || [];
                 });
             }
 
