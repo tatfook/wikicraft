@@ -2,7 +2,6 @@ assets.log
 log.txt
 .idea/
 database/
-npl_packages/
 log/
 obj/
 Properties/
