@@ -1,0 +1,85 @@
+<style>
+    /*消费记录*/
+    .mypay-panel{
+        margin: 0;
+        padding:0;
+    }
+    .mypay-panel .text-success{
+        color: #3FCE42;
+        vertical-align:sub;
+    }
+    .mypay-panel .text-danger{
+        font-size: 22px;
+        vertical-align: sub;
+    }
+    .mypay-table{
+        border: none;
+    }
+    .mypay-table>tbody>tr>td{
+        border: none;
+        width:25%;
+        vertical-align: middle;
+    }
+    .mypay-table tr{
+        border-bottom: 1px solid #DDD;
+        height: 100px;
+        text-align: center;
+    }
+    .mypay-table .icon{
+        color: #FF8633;
+        font-size: 30px;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+    .mypay-table .money{
+        color: #FF8633;
+        font-weight: bold;
+    }
+
+    .myvip .panel-body{
+        padding-top: 40px;
+    }
+    .myvip .col-sm-4{
+        text-align: center;
+        line-height: 34px;
+    }
+</style>
+<div ng-controller="servicesController">
+    <!--消费记录-->
+    <div ng-show="showItem == 'myPay'" class="col-md-10 main-content panel">
+        <div class="panel-heading clearfix">
+            <div style="float:left">消费记录</div>
+            <div style="float:right">余额{{balance/100 || "0"}}元</div>
+        </div>
+        <div class="panel-body mypay-panel">
+            <table class="table mypay-table">
+                <tr ng-repeat="item in myPays">
+                    <td class="icon-time">
+                        <span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.method == 'spend']"></span>
+                        <span class="time">{{item.create_date}}</span>
+                    </td>
+                    <td>{{item.subject}}</td>
+                    <td class="money">{{item.method == 'Spend' ? "-" : "+"}} &yen; {{item.price < 0 ? -item.price/100 : item.price/100}}</td>
+                    <td>{{payStatus[item.status]}}</td>
+                    <!--<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>
+                    <td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>-->
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div ng-show="showItem == 'orders'">
+        订单中心开发中
+    </div>
+    <div ng-show="showItem == 'myVIP'" class="col-md-10 panel main-content myvip">
+        <div class="panel-heading">
+            我的VIP
+        </div>
+        <div class="panel-body">
+            <!--<div class="col-sm-4">您的VIP特权将在<span class="text-danger">2017-08-12</span>到期</div>-->
+            <!--<div class="col-sm-3"><div class="btn btn-primary" ng-click="goBuyVip()">追加续费</div></div>-->
+            <div class="col-sm-4">VIP特权功能开发中，敬请期待！</div>
+            <div class="col-sm-3"><div class="btn btn-primary" disabled="disabled">追加续费</div></div>
+        </div>
+    </div>
+</div>
