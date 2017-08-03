@@ -61,6 +61,7 @@
 
         .entri-list {
             overflow: auto;
+            /* height: 365px; */
         }
 
         .entri-item {
@@ -86,13 +87,17 @@
             float: left;
         }
 
-        .action-btn {
+        .action-btn-group {
             float: right;
+            display: none;
+        }
+
+        .action-btn {
             line-height: 28px;
             font-size: 20px;
         }
-        /* 选中时的颜色 */
 
+        /* 选中时的颜色 */
         .active {
             background-color: #bbffff;
         }
@@ -139,41 +144,42 @@
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="$dismiss()">&times;</button>
-        <h4 class="modal-title">选择词条</h4>
+        <h4 class="modal-title">类别</h4>
     </div>
     <div class="modal-body">
         <div class="select col-xs-2">
             <ul class="select-list">
-                <li class="list-item" ng-repeat="item in entries track by $index" ng-click="action.removeEntri($index)">{{item.txt}}</li>
+                <li class="list-item" ng-repeat="item in entries track by $index" ng-click="action.removeEntri($index)">{{item.type}}</li>
             </ul>
         </div>
 
         <div class="box col-xs-10">
             <div class="swiper-container" id="boxSwiper">
                 <ul class="box-list swiper-wrapper">
-                    <li class="box-item col-xs-6 swiper-slide" ng-repeat="i in range(8) track by $index">
-                        <div style="display:none;">
-                            <div ng-if="idx = $index;"></div>
-                        </div>
-
+                    <li class="box-item col-xs-6 swiper-slide" ng-repeat="idx in range track by $index">
                         <ul class="entri-list">
                             <li class="entri-item" ng-click="action.selectItem($event, item, idx)" ng-repeat="item in entries_list[idx] track by $index ">
                                 <span class="entri-txt">{{item.type}}</span>
-                                <span class="action-btn glyphicon glyphicon-remove-circle" ng-click="action.delItem(item)"></span>
+                                <div class="action-btn-group">
+
+                                    <!-- 这里要修改，改成haschilder -->
+                                    <span ng-if="!entries_list[idx + 1].length" class="action-btn glyphicon glyphicon-remove-circle" ng-click="action.delItem(idx, item)"></span>
+                                    <span ng-if="entries_list[idx + 1].length" class="action-btn glyphicon glyphicon glyphicon-chevron-right"></span>
+                                </div>
                             </li>
                         </ul>
 
-                        <!-- <div class="add-new-box">
-                        <input class="form-control" type="text" name="" value="" placeholder="词条" maxlength="100">
-                        <div>
-                            <button class="btn btn-default col-xs-6">取消</button>
-                            <button class="btn btn-default col-xs-6">确定</button>
-                        </div>
-                    </div> 
+                        <!-- <div class="add-new-box" ng-show="boxVisible[idx]">
+                            <input class="form-control" type="text" name="" value="" placeholder="请输入词条" maxlength="100" ng-model="addItemCache[idx]">
+                            <div>
+                                <button class="btn btn-default col-xs-6" ng-click="action.showAddBox(idx, false, true, $event)">取消</button>
+                                <button class="btn btn-default col-xs-6" ng-click="action.addItem(idx, $event)">确定</button>
+                            </div>
+                        </div> -->
 
-                    <div class="add-new-entri">
-                        <button class="btn btn-default col-xs-6"> + 新增词条</button>
-                    </div> -->
+                        <!-- <div class="add-new-entri" ng-click="action.showAddBox(idx, true, false, $event)">
+                            <button class="btn btn-default col-xs-6"> + 新增词条</button>
+                        </div> -->
                     </li>
                 </ul>
             </div>

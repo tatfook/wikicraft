@@ -80,9 +80,6 @@ define(['app', 'helper/util',
                 }).then(function (rs) {
                     var data = rs.data;
 
-                    console.log("============");
-                    console.log(data.course.id);
-
                     if (data && data.err === 0) {
 
                         data.course = data.course || {};
