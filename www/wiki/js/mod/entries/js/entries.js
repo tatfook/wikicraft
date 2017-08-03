@@ -15,9 +15,12 @@ define(['app',
             $scope.imgsPath = config.wikiModPath + 'entries/assets/img/';
             $rootScope.path = config.wikiModPath;
             $scope.userinfo.username; // 用户主页
-            $scope.user.portrait; //用户头像
+            //  $scope.user.portrait; //用户头像
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
             $scope.followPath = "http://121.14.117.239/follow/take";
+
+            // 课程url信息
+            $scope.course_info = window.location.pathname || $scope.pageinfo.url;
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
@@ -25,6 +28,9 @@ define(['app',
             $scope.isHide = true;
 
             $scope.course_url = '#';
+
+            // 如果头像为空时，则添加默认头像
+            $scope.thisUserPic = $scope.user.portrait == undefined ? $scope.imgsPath + 'default.png' : $scope.user.portrait;
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
@@ -34,7 +40,8 @@ define(['app',
             }).then(function (rs) {
 
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
-                    $scope.course_url = rs.data.course_url;
+                    $scope.course_url = rs.data.course_url.course_url;
+                    $scope.entries_title = rs.data.course_url.title;
                     $scope.isHide = false;
                 }
             }, function (rs) {
