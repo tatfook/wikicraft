@@ -560,7 +560,7 @@ define([
 
 				self.createWebhook();
 				// 更新项目ID
-                util.post(config.apiUrlPrefix + 'site_data_source/updateById', {_id:self.dataSource._id, projectId:params.projectId});
+                util.post(config.apiUrlPrefix + 'site_data_source/updateById', {_id:self.dataSource._id, projectId:params.projectId, projectName:projectName});
 
 				self.getLastCommitId(function(lastCommitId){
 					self.projectMap[projectName].lastCommitId = lastCommitId;
