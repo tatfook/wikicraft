@@ -37,6 +37,9 @@ elseif(ajax_type == "wiki") then
 
 	addheader( 'Content-Type', 'text/html');
 	addheader( 'X-Robots-Tag', 'noindex');
+
+	addheader('X-KeepWork-Defined-Message', request:header('X-KeepWork-Defined-Message')); -- 淘米专用
+
 	send_nosniff_header();
 	nocache_headers();
 

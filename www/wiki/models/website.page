@@ -107,8 +107,12 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	local projectName = nil
+	if params.isolateDataSource == 0 then
+		projectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
+	end
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName})
+	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName, projectName=projectName})
 	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
 	-- LOG.std(nil, "error", "keepwork", site.dataSource)
 

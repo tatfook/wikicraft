@@ -26,6 +26,7 @@ define([
             siteinfo.userId = $scope.user._id;
             siteinfo.username = $scope.user.username;
 			siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
+			//siteinfo.isolateDataSource = true;
             config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
 				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
