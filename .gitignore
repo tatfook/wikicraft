@@ -19,3 +19,5 @@ www_build/
 /packages
 *.secret
 Run.bat
+
+npl_packages/
