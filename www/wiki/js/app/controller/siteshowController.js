@@ -16,7 +16,6 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
             if (siteshowParams.siteshowType == 'personal') {
                 params.categoryId = 0;
             } else if (siteshowParams.siteshowType == 'search') {
-				console.log("-----------------");
                 params.websiteName = siteshowParams.websiteName;
 				elasticSearch(params.websiteName);
 				return;
@@ -30,13 +29,14 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
 
 		function elasticSearch(keyword) {
 			util.ajax({
-				url:"http://221.0.111.131:19001/Application/essearch",
+				url:"http://221.0.111.131:19001/Application/kwsearch",
 				type:"POST",
 				data:{
 					keyword:keyword,
 					page:$scope.currentPage,
 					flag:4,
 					highlight:0,
+					size:$scope.pageSize,
 				},
 				success: function(result, status, xhr) {
 					if (result.code != 200) {
@@ -51,7 +51,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
 							sitename:obj.site_name,
 						});
 					}
-					util.post(config.apiUrlPrefix + "website/getSiteListByName", sitelist, function(data){
+					util.post(config.apiUrlPrefix + "website/getSiteListByName", {list:sitelist}, function(data){
 						$scope.siteObj = {siteList:data || []};
 					});
 					

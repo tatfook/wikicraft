@@ -506,7 +506,7 @@ end
 function website:api_getSiteListByName(params)
 	local sitelist = {}
 
-	for _, obj in ipairs(params or {}) do
+	for _, obj in ipairs(params.list or {}) do
 		if obj.username and obj.sitename then
 			self:db():findOne({["+username+name"]={obj.username, obj.sitename}}, resume)
 			local _, site = yield()
