@@ -463,7 +463,7 @@
 
                         <div class="chapter chapter-stage-title col-xs-12">
                             <div class="col-md-5 col-xs-12" data-drag="false">
-                                <input type="text" class="edit-txt stage-name" ng-model="course.stage[key]" id="{{'stage' + key}}" ng-change="action.changeStage(key)"
+                                <input type="text" class="edit-txt stage-name" ng-model="course.stage[key]" id="{{'stage' + key}}" ng-change="action.setStageName(key)"
                                     maxlength="100" ng-keyup="action.enter($event, 'stage', key)">
                             </div>
                             <div class="chapter-btn-group">

@@ -80,7 +80,7 @@ define(['app', 'helper/util',
 
                         $root.data.course.title = data.course;
 
-                        if (data.course.is_stage && data.course.is_stage !== null && data.course.is_stage !== '') {
+                        if (data.course && data.course.is_stage !== null && data.course.is_stage !== '') {
                             $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
                         }
 
@@ -164,7 +164,6 @@ define(['app', 'helper/util',
                                             && (data[i].url.substring(0, data[i].url.lastIndexOf('/')) === window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) 
                                                 ||data[i].url.substring(0, data[i].url.lastIndexOf('/')) === $scope.pageinfo.url.substring(0, $scope.pageinfo.url.lastIndexOf('/')) )) {
                                             
-
                                             item.push(data[i].url);
                                         }
                                     }
@@ -232,8 +231,10 @@ define(['app', 'helper/util',
                                     var name = $scope.course.stage[key],
                                         item = $scope.course.chapter;
 
+                                    key = parseInt(key ,10);
+
                                     for (var i = 0; i < item.length; i++) {
-                                        if (stage_order === item[i]["chapter_stage_order"]) {
+                                        if (key === item[i]["chapter_stage_order"]) {
                                             item[i]["chapter_stage"] = name;
                                         }
                                     }

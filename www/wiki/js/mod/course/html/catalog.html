@@ -156,9 +156,9 @@
                 <!-- <a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a> -->
             </div>
         </div>
-        <div class="menu-content" ng-if="data.switch">
-            <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage">
-                <h4 ng-click="catalog.toggleChange('chil', $index)" ng-show='data.switch'>
+        <div class="menu-content">
+            <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage" ng-if="data.switch">
+                <h4 ng-click="catalog.toggleChange('chil', $index)">
                     <span class="glyphicon" ng-class="catalog.state ? 'glyphicon-chevron-down' : 'glyphicon-chevron-up'"></span>
                     {{data.course.stage[key]}}
                 </h4>
