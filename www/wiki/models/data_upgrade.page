@@ -115,20 +115,7 @@ function data_upgrade:api_userIdToUsername(params)
 	end
 end
 
--- 删除无效站点数据源
-function data_upgrade:api_fixInvalidSiteDataSource() 
-	local siteDataSourceDB = models.site_data_source:new()
 
-	siteDataSourceDB:db():find({_id={gt=0, limit=100000}}, resume)	
-	local _, list = yield()
-
-	for _, obj in ipairs(list or {}) do
-		if not obj.projectName or obj.projectName == "" then
-			siteDataSourceDB:db():updateOne({_id=obj._id}, {projectName="keepworkdatasource"})
-			yield()
-		end
-	end
-end
 
 
 
