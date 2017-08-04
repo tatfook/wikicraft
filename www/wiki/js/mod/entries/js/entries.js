@@ -52,11 +52,10 @@ define(['app',
 
             // 请求导师是否有添加课程记录
             $http.post($scope.httpPath + '/check_user_create', {
-                create_nickname: $scope.userinfo.username
+                course_url: $scope.course_info
             },{
                 isShowLoading: false
             }).then(function (rs){
-                console.log(rs);
                 if(rs.data && rs.data.err === 0 && rs.data.exists === true){
                     $scope.isCreate = true;
                 }

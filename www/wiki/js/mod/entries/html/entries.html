@@ -3,6 +3,7 @@
     <style scoped>
         .layout-swiper {
             width: 100%;
+            height: 180px;
             margin: 0 auto;
             padding: 30px 20px;
             position: relative;
@@ -374,7 +375,7 @@
                     <div class="swiper-slide">
                         <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
                             <!--<a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="teach-box pull-left">-->
-                            <a href="{{followPath}}?req_name={{userinfo.username}}&res_name={{item.user_name}}" target= "_blank" title="{{item.display_name}}" class="teach-box pull-left">
+                            <a href="{{followPath}}?req_name={{userinfo.username}}&res_name={{item.user_name}}&course_info={{course_info}}" target= "_blank" title="{{item.display_name}}" class="teach-box pull-left">
                             <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
                             <span class="name">{{item.display_name}}</span>
                         </a>

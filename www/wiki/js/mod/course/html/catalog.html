@@ -88,8 +88,7 @@
         }
 
         .item-chapter a:hover {
-            background-color: #aed1f0;
-            color: #444;
+            color: #3977AD;
         }
 
         .item-chapter a:hover .txt {
@@ -153,13 +152,13 @@
         <div class="head-box">
             <h3>{{data.course.title.title}}</h3>
             <div class="state" ng-click="catalog.toggleChange('all', $index)">
-                <!-- <a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a> -->
+                 <!--<a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a> -->
             </div>
         </div>
         <div class="menu-content">
             <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage" ng-if="data.switch">
-                <h4 ng-click="catalog.toggleChange('chil', $index)">
-                    <span class="glyphicon" ng-class="catalog.state ? 'glyphicon-chevron-down' : 'glyphicon-chevron-up'"></span>
+                <h4 ng-click="catalog.toggleChange('chil', $index); iconToggle = !iconToggle">
+                    <span class="glyphicon" ng-class="iconToggle ? 'glyphicon-chevron-down' : 'glyphicon-chevron-up'"></span>
                     {{data.course.stage[key]}}
                 </h4>
 
