@@ -478,11 +478,12 @@
 
                             <div class="col-xs-12 edit-box">
                                 <div class="chapter-title col-md-4 col-xs-12" data-drag="false">
-                                    <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100"
-                                        ng-keyup="action.enter($event, 'chapter', chp)">
+                                    <!-- <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100"
+                                        ng-keyup="action.enter($event, 'chapter', chp)"> -->
+                                    <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100">
                                 </div>
                                 <div class="col-md-5 col-xs-12" data-drag="false">
-                                    <ui-select ng-model="chp.chapter_url " uis-open-close="action.selectCloseOrOpen(isOpen)" >                                        
+                                    <ui-select ng-model="chp.chapter_url " uis-open-close="action.selectCloseOrOpen(isOpen)" on-select="action.selectItem()">                                        
                                         <ui-select-match placeholder="链接地址">
                                             <span ng-bind="chp.chapter_url"></span>
                                         </ui-select-match>
@@ -515,10 +516,11 @@
                     <div class="chapter col-xs-12" ng-repeat="chp in course.chapter | orderBy: 'chapter_order' track by $index" data-drag="true"
                         data-siblings="chapter">
                         <div class="chapter-title col-md-4 col-xs-12" data-drag="false">
-                            <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="chp{{$index}}" maxlength="100" ng-keyup="action.enter($event, 'chapter', chp)">
+                            <!-- <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="chp{{$index}}" maxlength="100" ng-keyup="action.enter($event, 'chapter', chp)"> -->
+                            <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100">
                         </div>
                         <div class="col-md-5 col-xs-12" data-drag="false">
-                            <ui-select ng-model="chp.chapter_url" uis-open-close="action.selectCloseOrOpen(isOpen)" >
+                            <ui-select ng-model="chp.chapter_url" uis-open-close="action.selectCloseOrOpen(isOpen)" on-select="action.selectItem()">
                                 <ui-select-match placeholder="链接地址">
                                     <span ng-bind="chp.chapter_url"></span>
                                 </ui-select-match>

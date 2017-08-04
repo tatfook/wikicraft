@@ -150,6 +150,7 @@ define(['app', 'helper/util',
 
                             $http.post($scope.host + '/user/urls', {
                                 username: $scope.userinfo.username,
+                                course_url: $root.pageinfo.url || window.location.pathname,
                             }, {
                                 isShowLoading: true
                             }).then(function (rs) {
@@ -287,6 +288,42 @@ define(['app', 'helper/util',
                                     };
 
                                 $scope.course.chapter.push(item);
+                            },
+
+                            selectItem: function(){
+                                var item = $scope.course.chapter,
+                                    curl = {},
+                                    found = false;
+
+                                for (var i = 0; i < item.length; i++) {
+                                    var ii = item[i];
+                                    if (curl[ii.chapter_url]) {
+                                        found = true;
+                                        break;
+                                    } else {
+                                        curl[ii.chapter_url] = true;
+                                    }
+                                }
+
+                                if (found) {
+                                    $uibModal.open({
+                                        template: `                            
+                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
+                                        </div>
+                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                                            选择的小节链接不能重复。
+                                        </div>
+                                        <div class ="modal-footer">
+                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
+                                        </div>`,
+                                        backdrop: 'static',
+                                        keyboard: false,
+                                        // controller: 'courseController',
+                                    });
+
+
+                                }
                             },
 
                             // //设置是否修改状态
