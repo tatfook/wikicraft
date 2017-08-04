@@ -349,7 +349,7 @@ define([
         var urlObj = util.parseUrl();
         var pathname = urlObj.pathname;
         var domain = urlObj.domain;
-        if (config.isOfficialDomain(domain) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+        if (config.isOfficialDomain(domain) && (pathname.indexOf('/wiki/') == 0 || pathname == '/' || pathname.split("/").length < 3 )) {
             return true;
         }
         return false;

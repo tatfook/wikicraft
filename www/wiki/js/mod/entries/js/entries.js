@@ -36,7 +36,7 @@ define(['app',
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
-                chapter_url: $scope.pageinfo.url || window.location.pathname
+                chapter_url: decodeURI($scope.pageinfo.url || window.location.pathname)
             }, {
                 isShowLoading: false
             }).then(function (rs) {

@@ -36,6 +36,14 @@
         padding: 12px 15px;
         cursor: pointer;
     }
+    .navbar-default li.iconfont-icon {
+        padding: 5px 15px;
+        cursor: pointer;
+    }
+    .navbar-default li.iconfont-icon > .iconfont{
+        font-size: 28px;
+        vertical-align: middle;
+    }
     .navbar-default li.collect-icon>img{
         width:30px;
         height:30px;
@@ -458,30 +466,30 @@
                             <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
                             <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
-                        <li id="js-prev-container" class="nav-bread-crumb">
-                            <ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>
-                            <ol id="js-prev-content" class="breadcrumb">
-                                <li><a ng-click="goUserPage()">{{urlObj.username || ''}}</a></li>
-                                <li class="dropdown" ng-show="urlObj.sitename">
-                                    <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="true">{{urlObj.sitename || ''}}</a>
-                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                                        <li ng-repeat="site in userSiteList">
-                                            <a ng-click="selectSite(site)">{{site.name}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown" ng-show="urlObj.pagename">
-                                    <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="true">{{urlObj.pagename || ''}}</a>
-                                    <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                                        <li ng-repeat="page in userSitePageList">
-                                            <a ng-click="selectPage(page)">{{page.pagename}}</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </li>
+                        <!--<li id="js-prev-container" class="nav-bread-crumb">-->
+                            <!--<ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>-->
+                            <!--<ol id="js-prev-content" class="breadcrumb">-->
+                                <!--<li><a ng-click="goUserPage()">{{urlObj.username || ''}}</a></li>-->
+                                <!--<li class="dropdown" ng-show="urlObj.sitename">-->
+                                    <!--<a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"-->
+                                       <!--aria-expanded="true">{{urlObj.sitename || ''}}</a>-->
+                                    <!--<ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">-->
+                                        <!--<li ng-repeat="site in userSiteList">-->
+                                            <!--<a ng-click="selectSite(site)">{{site.name}}</a>-->
+                                        <!--</li>-->
+                                    <!--</ul>-->
+                                <!--</li>-->
+                                <!--<li class="dropdown" ng-show="urlObj.pagename">-->
+                                    <!--<a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"-->
+                                       <!--aria-expanded="true">{{urlObj.pagename || ''}}</a>-->
+                                    <!--<ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">-->
+                                        <!--<li ng-repeat="page in userSitePageList">-->
+                                            <!--<a ng-click="selectPage(page)">{{page.pagename}}</a>-->
+                                        <!--</li>-->
+                                    <!--</ul>-->
+                                <!--</li>-->
+                            <!--</ol>-->
+                        <!--</li>-->
                         <li class="icon" ng-show="isIconShow"><img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()"></li>
                         <li class="icon dropdown share-dropdown" ng-show="isIconShow">
                             <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -494,6 +502,8 @@
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
                         <li class="icon dropdown share-dropdown" ng-show="isIconShow">
