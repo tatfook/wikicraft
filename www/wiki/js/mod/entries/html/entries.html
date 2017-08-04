@@ -349,6 +349,7 @@
 
         </div>
 
+
         <div class="entries-container">
 
             <!-- 词条标题，昵称信息 左右轮播 start -->
@@ -358,7 +359,7 @@
                         <div class="swiper-slide item-slide" ng-repeat="item in chapters.data">
                             <div class="inner-box">
                                 <a href="{{item.url}}" title="{{item.title}}" class="item-title">{{item.title}}</a>
-                                <a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
+                                <a href="{{item.url}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
                             </div>
                         </div>
                     </div>
