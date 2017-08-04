@@ -502,6 +502,21 @@ function website:api_getSiteList(params)
 	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
 end
 
+-- 通过制定名获取站点列表
+function website:api_getSiteListByName(params)
+	local sitelist = {}
+
+	for _, obj in ipairs(params or {}) do
+		if obj.username and obj.sitename then
+			self:db():findOne({["+username+name"]={obj.username, obj.sitename}}, resume)
+			local _, site = yield()
+			sitelist[#sitelist+1] = site
+		end
+	end
+
+	return errors:wrap(nil, sitelist)
+end
+
 -- 访问站点
 function website:api_visitWebsite(params)
 	if (not params.username) or (not params.sitename) then

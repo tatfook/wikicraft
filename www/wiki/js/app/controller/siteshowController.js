@@ -16,7 +16,10 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
             if (siteshowParams.siteshowType == 'personal') {
                 params.categoryId = 0;
             } else if (siteshowParams.siteshowType == 'search') {
+				console.log("-----------------");
                 params.websiteName = siteshowParams.websiteName;
+				elasticSearch(params.websiteName);
+				return;
             }
 
             util.http("POST", url, params, function (data) {
@@ -24,6 +27,41 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
                 $scope.totalItems = data.total;
             });
         }
+
+		function elasticSearch(keyword) {
+			util.ajax({
+				url:"http://221.0.111.131:19001/Application/essearch",
+				type:"POST",
+				data:{
+					keyword:keyword,
+					page:$scope.currentPage,
+					flag:4,
+					highlight:0,
+				},
+				success: function(result, status, xhr) {
+					if (result.code != 200) {
+						return;
+					}
+					var sitelist = [];
+					$scope.totalItems = result.total;
+					for (var i = 0; i < result.data.list.length; i++) {
+						var obj = result.data.list[i];
+						sitelist.push({
+							username:obj.user_name,
+							sitename:obj.site_name,
+						});
+					}
+					util.post(config.apiUrlPrefix + "website/getSiteListByName", sitelist, function(data){
+						$scope.siteObj = {siteList:data || []};
+					});
+					
+				},
+				error: function(xhr, status, error){
+
+				}
+			});
+			
+		}
 
         function init() {
             console.log('init siteshow controller');
