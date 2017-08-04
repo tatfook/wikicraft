@@ -518,7 +518,7 @@
                             <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="chp{{$index}}" maxlength="100" ng-keyup="action.enter($event, 'chapter', chp)">
                         </div>
                         <div class="col-md-5 col-xs-12" data-drag="false">
-                            <ui-select ng-model="chp.chapter_url">
+                            <ui-select ng-model="chp.chapter_url" uis-open-close="action.selectCloseOrOpen(isOpen)" >
                                 <ui-select-match placeholder="链接地址">
                                     <span ng-bind="chp.chapter_url"></span>
                                 </ui-select-match>
