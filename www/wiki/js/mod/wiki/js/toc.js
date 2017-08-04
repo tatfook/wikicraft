@@ -17,15 +17,17 @@ define([
 			var endLevel = modParams.endLevel || 6;
 			var startLine = modParams.startLine || 0;
 			var endLine = modParams.endLine || 10000000;
-            var tocTreeList, tocList, containerId;
-			var offsetTop = 50;
+            var tocTreeList, tocList, containerId, scrollTimer;
+			var titleOffsetTop = 50;
 
 			$scope.goPart = function (item) {
-				//document.getElementById(item.containerId).scrollIntoView();
-				$anchorScroll(item.anchor);
-				$("#"+containerId)[0].scrollTop -= offsetTop;
 				active(item);
 				window.location.hash="#/#" + item.anchor;
+				$anchorScroll(item.anchor);
+				//document.getElementById(item.containerId).scrollIntoView();
+				setTimeout(function(){
+					$("#"+containerId)[0].scrollTop -= titleOffsetTop;
+				},10);
             };
 
 			function active(item) {
@@ -46,6 +48,7 @@ define([
 				var hn = parseInt(tag[1]);
 				var containerId = block.blockCache.containerId;
 				var offsetTop = getOffsetTop(containerId);
+
 
 				//console.log(tag, text, hn);
 				if (hn < startLevel || hn > endLevel) {
@@ -130,7 +133,8 @@ define([
 
 			var scrollProccess = function (scrollElement) {
                 scrollTimer && clearTimeout(scrollTimer);
-                var scrollTimer = setTimeout(function () {
+                scrollTimer = setTimeout(function () {
+					scrollTimer = undefined;
                     var scrollTop = scrollElement[0].scrollTop;
                     var nodeLen = tocList.length;
                     for (var i = 0; i< nodeLen; i++){
@@ -146,7 +150,8 @@ define([
 				generateToc();
 				setFullHeight($(".js-nav"));
 				$anchorScroll();
-				$("#"+containerId)[0].scrollTop -= offsetTop;
+				$("#"+containerId)[0].scrollTop -= titleOffsetTop;
+				//console.log(containerId);
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
