@@ -153,14 +153,14 @@
         <div class="head-box">
             <h3>{{data.course.title.title}}</h3>
             <div class="state" ng-click="catalog.toggleChange('all', $index)">
-                <a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a>
+                <!-- <a href="javascript:;">{{catalog.state ? '全部展示' : '全部收起'}}</a> -->
             </div>
         </div>
         <div class="menu-content" ng-if="data.switch">
             <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage">
                 <h4 ng-click="catalog.toggleChange('chil', $index)" ng-show='data.switch'>
                     <!--<span class="glyphicon" ng-class="toggleChange ? 'glyphicon-folder-close' : 'glyphicon-folder-open'"></span>-->
-                    {{data.course.getStageName(key)}}
+                    {{data.course.stage[key]}}
                     <span class="glyphicon glyphicon-chevron-down"></span>
                 </h4>
 
