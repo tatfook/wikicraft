@@ -59,6 +59,9 @@ function test:api_test()
 	return result
 end
 
+function test:api_echo(params)
+	return params
+end
 
 function test:api_sendEmail(params)
 	local par = {}

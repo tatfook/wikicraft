@@ -17,6 +17,8 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
                 params.categoryId = 0;
             } else if (siteshowParams.siteshowType == 'search') {
                 params.websiteName = siteshowParams.websiteName;
+				elasticSearch(params.websiteName);
+				return;
             }
 
             util.http("POST", url, params, function (data) {
@@ -24,6 +26,42 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
                 $scope.totalItems = data.total;
             });
         }
+
+		function elasticSearch(keyword) {
+			util.ajax({
+				url:"http://221.0.111.131:19001/Application/kwsearch",
+				type:"POST",
+				data:{
+					keyword:keyword,
+					page:$scope.currentPage,
+					flag:4,
+					highlight:0,
+					size:$scope.pageSize,
+				},
+				success: function(result, status, xhr) {
+					if (result.code != 200) {
+						return;
+					}
+					var sitelist = [];
+					$scope.totalItems = result.total;
+					for (var i = 0; i < result.data.list.length; i++) {
+						var obj = result.data.list[i];
+						sitelist.push({
+							username:obj.user_name,
+							sitename:obj.site_name,
+						});
+					}
+					util.post(config.apiUrlPrefix + "website/getSiteListByName", {list:sitelist}, function(data){
+						$scope.siteObj = {siteList:data || []};
+					});
+					
+				},
+				error: function(xhr, status, error){
+
+				}
+			});
+			
+		}
 
         function init() {
             console.log('init siteshow controller');
