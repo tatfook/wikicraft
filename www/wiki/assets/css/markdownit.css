@@ -45,11 +45,11 @@ td, th {
 	top: 50%;
 	margin-top: -7px;
 	font-size: 16px;
-	visibility: hidden;
+    color: transparent;
 }
 
-.wiki_page_inner_link:hover a.glyphicon-link {
-	visibility: visible;
+.wiki_page_inner_link a.glyphicon-link:hover {
+    color: #3977AD;
 }
 .wiki_page_inner_link h1, .wiki_page_inner_link h2, .wiki_page_inner_link h3, .wiki_page_inner_link h4, .wiki_page_inner_link h5, .wiki_page_inner_link h6 {
     -webkit-transition: all .5s;
@@ -58,7 +58,7 @@ td, th {
     -o-transition: all .5s;
     transition: all .5s;
 }
-.wiki_page_inner_link:hover h1, .wiki_page_inner_link:hover h2, .wiki_page_inner_link:hover h3, .wiki_page_inner_link:hover h4, .wiki_page_inner_link:hover h5, .wiki_page_inner_link:hover h6 {
+.wiki_page_inner_link a.glyphicon-link:hover + h1, .wiki_page_inner_link a.glyphicon-link:hover + h2, .wiki_page_inner_link a.glyphicon-link:hover + h3, .wiki_page_inner_link a.glyphicon-link:hover + h4, .wiki_page_inner_link a.glyphicon-link:hover + h5, .wiki_page_inner_link a.glyphicon-link:hover + h6 {
     padding-left: 15px;
     -webkit-transition: all .5s;
     -moz-transition: all .5s;
