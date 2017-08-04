@@ -8,28 +8,28 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
             {
                 "name":"Paracraft创意空间",
                 "title":"创造3D交互动画，学习编程",
-                "siteUrl":"http://keepwork.com/paracra/logitow",
+                "siteUrl":"http://www.paracraft.cn/",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png",
                 "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501568724020.jpeg"
             },
             {
                 "name":"3D 校园",
                 "title":"3D虚拟校园",
-                "siteUrl":"http://keepwork.com/paracra/logitow",
+                "siteUrl":"http://keepwork.com/paracra/3dcampus",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png",
                 "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501568671970.png"
             },
             {
                 "name":"3D打印",
                 "title":"3D打印网络平台",
-                "siteUrl":"http://keepwork.com/paracra/logitow",
+                "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png",
                 "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664952194.png"
             },
             {
                 "name":"NPL CAD",
                 "title":"基于编程的计算机辅助设计",
-                "siteUrl":"http://keepwork.com/paracra/logitow",
+                "siteUrl":"#",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png",
                 "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501568699132.jpeg"
             }
@@ -43,13 +43,13 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                     {
                         "name":"Paracraft创意空间",
                         "details":"创造3D交互动画，学习计算机编程...",
-                        "siteUrl":"#",
+                        "siteUrl":"http://www.paracraft.cn",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png"
                     },
                     {
                         "name":"PAC 3D创意大赛",
                         "details":"参加比赛，交流分享，制作出有意义的个人电脑作品...",
-                        "siteUrl":"#",
+                        "siteUrl":"http://keepwork.com/official/pac2017",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572329890.png"
                     }
                 ]
@@ -62,8 +62,8 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                     {
                         "name":"道峰教育",
                         "details":"创造3D交互动画，学习计算机编程...",
-                        "siteUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png",
-                        "logoUrl":""
+                        "siteUrl":"#",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png"
                     }
                 ]
             },
@@ -72,12 +72,6 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 "targetId":"baikehezhishiku",
                 "info":"终身学习，有教无类，人人可为师",
                 "apps":[
-                    {
-                        "name":"道峰教育",
-                        "details":"创造3D交互动画，学习计算机编程...",
-                        "siteUrl":"#",
-                        "logoUrl":""
-                    }
                 ]
             },
             {
@@ -89,7 +83,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"NPL CAD",
                         "details":"基于编程的计算机辅助设计",
                         "siteUrl":"#",
-                        "logoUrl":""
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png"
                     }
                 ]
             },
@@ -98,12 +92,6 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 "targetId":"gerenyisheng",
                 "info":"终身学习，有教无类，人人可为师",
                 "apps":[
-                    {
-                        "name":"道峰教育",
-                        "details":"创造3D交互动画，学习计算机编程...",
-                        "siteUrl":"#",
-                        "logoUrl":""
-                    }
                 ]
             }
         ];

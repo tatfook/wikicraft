@@ -325,10 +325,10 @@ define([
 
         $scope.$on("userpageLoaded", function (event, data) {
             init();
-            var container=document.getElementById("js-prev-container");
-            var content=document.getElementById("js-prev-content");
-            var ellipsis=document.getElementById("js-prev-ellipsis");
-            prevEllipsis(container,content,ellipsis);
+            // var container=document.getElementById("js-prev-container");
+            // var content=document.getElementById("js-prev-content");
+            // var ellipsis=document.getElementById("js-prev-ellipsis");
+            // prevEllipsis(container,content,ellipsis);
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {
