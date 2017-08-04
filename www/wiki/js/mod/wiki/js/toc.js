@@ -133,7 +133,7 @@ define([
                     var scrollTop = scrollElement[0].scrollTop;
                     var nodeLen = tocList.length;
                     for (var i = 0; i< nodeLen; i++){
-                        if (scrollTop <= tocList[i].offsetTop){
+                        if (scrollTop - 50 <= tocList[i].offsetTop){
                             active(tocList[i]);
                             break;
                         }
