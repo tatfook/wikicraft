@@ -120,7 +120,7 @@ function parseURL()
 	if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
 		sitename = nil
 	end
-	if sitename and sitena ~= "www" then 
+	if sitename and sitename ~= "www" then 
 		local _pagename, subpage = request:url():match("^/?([^/]*)(.*)")
 	else
 		local url = commonlib.Encoding.url_decode(request:url())
