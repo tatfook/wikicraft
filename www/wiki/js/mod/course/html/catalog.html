@@ -1,4 +1,4 @@
-<div class="container" style="padding:0;">
+<div>
     <style scoped>
         .catalog-wrapper {
             margin-top: 50px;
@@ -159,9 +159,8 @@
         <div class="menu-content" ng-if="data.switch">
             <div class="chapter" ng-repeat="(key, chps) in data.course.chapterWithStage">
                 <h4 ng-click="catalog.toggleChange('chil', $index)" ng-show='data.switch'>
-                    <!--<span class="glyphicon" ng-class="toggleChange ? 'glyphicon-folder-close' : 'glyphicon-folder-open'"></span>-->
+                    <span class="glyphicon" ng-class="catalog.state ? 'glyphicon-chevron-down' : 'glyphicon-chevron-up'"></span>
                     {{data.course.stage[key]}}
-                    <span class="glyphicon glyphicon-chevron-down"></span>
                 </h4>
 
                 <ul class="chapter-list" ng-hide="catalog.item[$index]">
@@ -169,8 +168,8 @@
                         <a href="{{item.chapter_url}}" target="_blank" title="{{item.title}}">
                             <span class="no-node">{{item.chapter_stage_order}}&#8722;{{$index+1}}</span>
                             <span>{{item.title}}</span>
-                            <span class="txt">进入学习</span>
-                            </a>
+                            <!--<span class="txt">进入学习</span>-->
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -183,7 +182,7 @@
                             <a href="{{item.chapter_url}}" target="_blank" title="{{item.title}}">
                             <span class="no-node">{{$index+1}}</span>
                             <span>{{item.title}}</span>
-                            <span class="txt">进入学习</span>
+                            <!--<span class="txt">进入学习</span>-->
                             </a>
                         </li>
                     </ul>
