@@ -74,60 +74,60 @@
 			'wikimod': config.wikiModPath,
 
 			// mod dir
-			'mod': config.modPath,
+			'mod': config.modPath
 		},
 		shim: {
 			'angular': {
 				deps:['jquery'],
-				exports: 'angular',
+				exports: 'angular'
 			},
 			'angular-ui-bootstrap':{
-				deps:['angular'],
+				deps:['angular']
 			},
 			'angular-toggle-switch':{
-				deps:['angular'],
+				deps:['angular']
 			},
 			'angular-ui-select':{
-				deps:['angular'],
+				deps:['angular']
 			},
 			'angular-sanitize':{
-				deps:['angular'],
+				deps:['angular']
 			},
 			'satellizer':{
-				deps:['angular'],
+				deps:['angular']
 			},
 			'bootstrap':{
-				deps:['jquery'],
+				deps:['jquery']
 			},
 			'cropper':{
-				deps:['jquery'],
+				deps:['jquery']
 			},
 			'bootstrap-treeview': {
-				deps:['bootstrap', 'jquery'],
+				deps:['bootstrap', 'jquery']
 			},
 			'highlight':{
-				exports: 'hljs',
+				exports: 'hljs'
 			},
 			'jquery-cookie': {
-				deps:['jquery'],
+				deps:['jquery']
 			},
 			'jquery-sharejs':{
-				deps:['jquery'],
+				deps:['jquery']
 			},
 			'wangEditor': {
-				deps:['jquery'],
-			},
+				deps:['jquery']
+			}
 		},
 		packages: [
-		{
-			name: "codemirror",
-			location: libPathPrefix +"codemirror",
-			main: "lib/codemirror"
-		},
+			{
+				name: "codemirror",
+				location: libPathPrefix +"codemirror",
+				main: "lib/codemirror"
+			}
 		],
 		deps:['bootstrap'],
 		// urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
-		urlArgs: "bust=" + (config.isLocal() ? ((new Date()).getTime()) : (config.bustVersion || '')),   //防止读取缓存，调试用
+		urlArgs: "bust=" + (config.isLocal() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
 	});
 
 	

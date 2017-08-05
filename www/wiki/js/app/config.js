@@ -81,16 +81,16 @@
 		routeMap:{
 			// wiki page
 			"/wiki/test":"controller/testController",
-			"/wiki/wikieditor":"controller/wikiEditorController",
+			"/wiki/wikieditor":"controller/wikiEditorController"
 		},
 		filterMap:{
 			"/wiki/iframeagent":[
 
-			],
+			]
 		},
 		// 数据共享
 		shareMap:{
-		},
+		}
 	};
 
 	function initConfig() {
