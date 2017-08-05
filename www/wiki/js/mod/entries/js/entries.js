@@ -177,10 +177,10 @@ define(['app',
                     slidesPerGroup: slidesGroup,
                     observer: true,
                     observeParents: true,
-                    freeModeMomentum: true,
                     freeMode: slideMode,
                     prevButton: '.prev-btn',
                     nextButton: '.next-btn',
+                    preventClicks: false,
                     // 左滑动获取分页数据
                     onSlideChangeEnd: function (swiper) {
                         for (var i = 0; i < itemSlide.length; i++) {
