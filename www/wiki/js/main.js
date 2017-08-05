@@ -130,17 +130,29 @@
 		urlArgs: "bust=" + (config.isLocal() ? ((new Date()).getTime()) : (config.bustVersion || '')),   //防止读取缓存，调试用
 	});
 
-
-	require(['domReady', 'angular', 'app', 'preload'], function (domReady, angular, app) {
-		// ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
-		// 加载页面主体内容
-
+	
+	require(['domReady', 'helper/filter'], function (domReady) {
 		domReady(function () {
-			config.init(function () {
-				config.loadMainContent(function () {
-					angular.bootstrap(document, ['webapp']);
-				}, function () {
-					angular.bootstrap(document, ['webapp']);
+			// 执行过滤函数， 若过滤函数返回false则停止框架
+			var pathname = window.location.pathname;
+			if (config.filterMap[pathname]) {
+				var filterList = config.filterMap[pathname];
+				for (var i = 0; i < filterList.length; i++) {
+					if (!filterList[i]()) {
+						return ;
+					}
+				}
+			}
+
+			// ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
+			require(['angular','app','preload'], function(angular, app){
+				config.init(function () {
+					// 加载页面主体内容
+					config.loadMainContent(function () {
+						angular.bootstrap(document, ['webapp']);
+					}, function () {
+						angular.bootstrap(document, ['webapp']);
+					});
 				});
 			});
 		});

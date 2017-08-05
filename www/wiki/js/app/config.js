@@ -210,15 +210,6 @@
 		}
 
 		rawPathname = rawPathname.toLowerCase();
-		// 执行过滤函数， 若过滤函数返回false则停止框架
-		if (config.filterMap[rawPathname]) {
-			var filterList = config.filterMap[rawPathname];
-			for (var i = 0; i < filterList.length; i++) {
-				if (!filterList[i]()) {
-					return ;
-				}
-			}
-		}
 		if (config.routeMap[rawPathname]) {
 			pageurl = config.routeMap[rawPathname];  // 优先配置路由
 		}

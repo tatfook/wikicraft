@@ -4,7 +4,7 @@
 
 /* 程序过滤模块 */
 
-define([], function() {
+define(['jquery'], function($) {
 	config.registerFilter("/wiki/iframeagent", function() {
 		var lastHash = undefined;
 		var hashChangeFire = function(){
@@ -47,4 +47,9 @@ define([], function() {
 		}
 		return;
 	});
+
+	config.registerFilter("/wiki/filter", function(){
+		console.log("hello world");
+		$(window.document.body).html("<div>hello world</div>");
+	})
 });
