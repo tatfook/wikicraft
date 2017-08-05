@@ -5,6 +5,7 @@
 /* 程序配置模块 */
 
 (function () {
+    filterIE();
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname == "localhost";
 	var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
@@ -92,6 +93,24 @@
 		shareMap:{
 		}
 	};
+
+	function filterIE() {
+        var b_name = navigator.appName;
+        var b_version = navigator.appVersion;
+        var version = b_version.split(";");
+        var trim_version = version[1].replace(/[ ]/g, "");
+        if (b_name == "Microsoft Internet Explorer") {
+            /*如果是IE6或者IE7*/
+            if (trim_version == "MSIE9.0" || trim_version == "MSIE8.0" || trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {
+                // alert("IE浏览器版本过低，请到指定网站去下载相关版本");
+				//然后跳到需要连接的下载网站
+				console.log(window.location);
+				if (window.location.pathname !== "/wiki/browers"){
+					window.location.href="/wiki/browers";
+				}
+            }
+        }
+    }
 
 	function initConfig() {
 		var hostname = window.location.hostname;
