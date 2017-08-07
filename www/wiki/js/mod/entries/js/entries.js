@@ -111,7 +111,7 @@ define(['app',
 
                         var data = rs.data;
 
-                        if (data.itemCount === 2){
+                        if (data.itemCount === 0){
                             $scope.teacherData = false;
                             $scope.notTeacher = true;
                         }
