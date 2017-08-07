@@ -217,7 +217,7 @@ define(['app',
                     url: $scope.remotedata.url || $scope.winHref,
                     pageIndex: pageStart,
                     pageSize: pageSize,
-                    username: $rootScope.siteinfo.username
+                    // username: $rootScope.siteinfo.username
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
