@@ -64,7 +64,7 @@ define(['app', 'helper/util',
                 $root.data.course.setChapterWithStage();
             }, true);
 
-            function init() {
+            $root.init = function () {
 
                 $http.post($root.data.host + '/courselist', {
                     course_url: $root.pageinfo.url || window.location.pathname,
@@ -80,7 +80,7 @@ define(['app', 'helper/util',
 
                         $root.data.course.title = data.course;
 
-                        if (data.course && data.course.is_stage !== null && data.course.is_stage !== '') {
+                        if (data.course && data.course.is_stage !== undefined && data.course.is_stage !== null && data.course.is_stage !== '') {
                             $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
                         }
 
@@ -103,6 +103,8 @@ define(['app', 'helper/util',
 
                 util.$apply();
             }
+
+            $root.init();
 
             $root.viewCourseEditor = function () {
                 if (!wikiBlock.isEditorEnable()) {
@@ -157,15 +159,33 @@ define(['app', 'helper/util',
                                 var data = rs.data ? rs.data.data : null;
 
                                 if (data) {
-                                    var item = [];
+                                    var item = [],
+                                        chp = $scope.course.chapter,
+                                        exists = {};
+
+                                    for (var i = 0; i < chp.length; i++) {
+                                        exists[chp[i]['chapter_url']] = true;
+                                    }
+
                                     for (var i = 0; i < data.length; i++) {
-                                        if (data[i].url !== window.location.pathname 
-                                            && data[i].url !== $scope.pageinfo.url
+                                        if (data[i].url !== window.location.pathname &&
+                                            data[i].url !== $scope.pageinfo.url
                                             //不同目录的不能选取
-                                            && (data[i].url.substring(0, data[i].url.lastIndexOf('/')) === window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) 
-                                                ||data[i].url.substring(0, data[i].url.lastIndexOf('/')) === $scope.pageinfo.url.substring(0, $scope.pageinfo.url.lastIndexOf('/')) )) {
-                                            
-                                            item.push(data[i].url);
+                                            &&
+                                            (data[i].url.substring(0, data[i].url.lastIndexOf('/')) === window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) ||
+                                                data[i].url.substring(0, data[i].url.lastIndexOf('/')) === $scope.pageinfo.url.substring(0, $scope.pageinfo.url.lastIndexOf('/')))) {
+
+                                            if (exists[data[i].url]) {
+                                                item.push({
+                                                    url: data[i].url,
+                                                    choice: true
+                                                });
+                                            } else {
+                                                item.push({
+                                                    url: data[i].url,
+                                                    choice: false
+                                                });
+                                            }
                                         }
                                     }
 
@@ -181,6 +201,24 @@ define(['app', 'helper/util',
                             selectArray: [],
                         }
 
+                        // 打开简单窗口
+                        $scope.showSimpleModel = function (title, content) {
+                            $uibModal.open({
+                                template: `                            
+                                <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                    <h3 class ="modal-title" style="min-width:100px;flex:1;">` + title + `</h3>
+                                </div>
+                                <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                                    ` + content + `
+                                </div>
+                                <div class ="modal-footer">
+                                    <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
+                                </div>`,
+                                backdrop: 'static',
+                                keyboard: false,
+                            });
+                        }
+
                         //具体的动作
                         $scope.action = {
 
@@ -194,8 +232,19 @@ define(['app', 'helper/util',
                             selectOpen: false,
 
                             //下拉选中打开或关闭的事件
-                            selectCloseOrOpen: function(flag){
-                                $scope.action.selectOpen = flag;
+                            selectCloseOrOpen: function (flag, chp) {
+                                $scope.action.selectOpen = flag
+
+                                var chp_url = chp['chapter_url'];
+
+                                for (var i = 0; i < $scope.select.selectArray.length; i++) {
+                                    var item = $scope.select.selectArray[i];
+
+                                    if (item['url'] === chp_url) {
+                                        item['choice'] = !flag;
+                                        break;
+                                    }
+                                }
                             },
 
                             //数字转中文数字
@@ -216,14 +265,6 @@ define(['app', 'helper/util',
                                     .replace(/一(十)/g, "$1").replace(/(元)$/g, "").replace(/(零)$/g, "");
                             },
 
-                            // enter: function (evt, type, key) {
-                            //     var that = $scope.action;
-
-                            //     if (evt.keyCode === 13) {
-                            //         evt.keyCode = 9;
-                            //     }
-                            // },
-
                             stageNameTime: null,
 
                             setStageName: function (key) {
@@ -232,7 +273,7 @@ define(['app', 'helper/util',
                                     var name = $scope.course.stage[key],
                                         item = $scope.course.chapter;
 
-                                    key = parseInt(key ,10);
+                                    key = parseInt(key, 10);
 
                                     for (var i = 0; i < item.length; i++) {
                                         if (key === item[i]["chapter_stage_order"]) {
@@ -242,39 +283,6 @@ define(['app', 'helper/util',
 
                                 }, 500)
                             },
-
-                            // checkUrlExists: function (url, type) {
-                            //     var found = 0,
-                            //         checkCount = type === 'add' ? 0 : 1;
-
-                            //     for (var i = 0; i < $scope.course.chapter.length; i++) {
-                            //         var it = $scope.course.chapter[i];
-
-                            //         if (it.chapter_url !== '' && it.chapter_url === url) {
-                            //             found++;
-                            //         }
-                            //     }
-
-                            //     if (found > checkCount) {
-                            //         $uibModal.open({
-                            //             template: `
-                            //             <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                            //                 <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                            //             </div>
-                            //             <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                            //                 链接地址已经选择。
-                            //             </div>
-                            //             <div class ="modal-footer">
-                            //                 <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                            //             </div>`,
-                            //             backdrop: 'static',
-                            //             keyboard: false,
-                            //             // controller: 'courseController',
-                            //         });
-                            //     }
-
-                            //     return found > checkCount;
-                            // },
 
                             //开始的时候添加
                             initAdd: function () {
@@ -290,56 +298,25 @@ define(['app', 'helper/util',
                                 $scope.course.chapter.push(item);
                             },
 
-                            selectItem: function(){
-                                var item = $scope.course.chapter,
-                                    curl = {},
-                                    found = false;
+                            selectItem: function (sItem, chp) {
 
-                                for (var i = 0; i < item.length; i++) {
-                                    var ii = item[i];
-                                    if (curl[ii.chapter_url]) {
-                                        found = true;
-                                        break;
-                                    } else {
-                                        curl[ii.chapter_url] = true;
+                                if (sItem && sItem['url']) { //选中时触发
+                                    chp['chapter_url'] = sItem['url'];
+                                    sItem['choice'] = true;
+                                } else { //点击行的X清除时触发
+                                    var chp = $scope.course.chapter,
+                                        arr = $scope.select.selectArray,
+                                        exists = {};
+
+                                    for (var i = 0; i < chp.length; i++) {
+                                        exists[chp[i]['chapter_url']] = true;
+                                    }
+
+                                    for (var i = 0; i < arr.length; i++) {
+                                        arr[i]['choice'] = exists[arr[i].url];
                                     }
                                 }
-
-                                if (found) {
-                                    $uibModal.open({
-                                        template: `                            
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            选择的小节链接不能重复。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-
-
-                                }
                             },
-
-                            // //设置是否修改状态
-                            // setEdit: function (edit) {
-                            //     var that = that = $scope.action;
-                            //     that.edit = edit;
-                            // },
-
-                            // //设置选中和全选
-                            // setFocus: function (eleID) {
-                            //     $timeout(function () {
-                            //         var ele = document.getElementById(eleID);
-                            //         ele.focus();
-                            //         ele.select();
-                            //     }, 100);
-                            // },
 
                             //添加阶段
                             addStage: function () {
@@ -410,7 +387,7 @@ define(['app', 'helper/util',
                                     </div>`,
                                     backdrop: 'static',
                                     keyboard: false,
-                                    // controller: 'courseController',
+
                                 }).result.then(function (result) {
                                     //取消
                                 }, function (result) {
@@ -727,10 +704,9 @@ define(['app', 'helper/util',
                                 }
 
                                 //下拉选择框已经打开的情况下不触发
-                                if($scope.action.selectOpen){
+                                if ($scope.action.selectOpen) {
                                     return;
                                 }
-                                
 
                                 //滚动时使用
                                 that.chHeight = $('.chapter-list').get(0).scrollHeight;
@@ -1068,10 +1044,6 @@ define(['app', 'helper/util',
                         };
 
                         $scope.save = function () {
-                            //修改状态下不点击
-                            if ($scope.action.edit) {
-                                return;
-                            }
 
                             var title = angular.copy($scope.course.title),
                                 item = angular.copy($scope.course.chapter),
@@ -1085,54 +1057,7 @@ define(['app', 'helper/util',
 
                             title['title'] = title['title'] || '';
                             if (title['title'].trim() === '') {
-                                $uibModal.open({
-                                    template: `                            
-                                    <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                        <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
-                                    </div>
-                                    <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                        标题不能为空。
-                                    </div>
-                                    <div class ="modal-footer">
-                                        <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
-                                    </div>`,
-                                    backdrop: 'static',
-                                    keyboard: false,
-                                    // controller: 'courseController',
-                                });
-
-                                return;
-                            }
-
-                            var curl = {},
-                                found = false;
-                            for (var i = 0; i < item.length; i++) {
-                                var ii = item[i];
-                                if (curl[ii.chapter_url]) {
-                                    found = true;
-                                    break;
-                                } else {
-                                    curl[ii.chapter_url] = true;
-                                }
-                            }
-
-                            if (found) {
-                                $uibModal.open({
-                                    template: `                            
-                                    <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                        <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
-                                    </div>
-                                    <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                        选择的小节链接不能重复。
-                                    </div>
-                                    <div class ="modal-footer">
-                                        <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
-                                    </div>`,
-                                    backdrop: 'static',
-                                    keyboard: false,
-                                    // controller: 'courseController',
-                                });
-
+                                $scope.showSimpleModel('保存失败', '标题不能为空。')
                                 return;
                             }
 
@@ -1157,42 +1082,14 @@ define(['app', 'helper/util',
                                     gidx += 1;
                                     for (var i = 0; i < pitem.length; i++) {
                                         if (pitem[i]['title'] === null || pitem[i]['title'] === '') {
-                                            $uibModal.open({
-                                                template: `                            
-                                                <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                                    <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
-                                                </div>
-                                                <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                                    小节标题不能为空。
-                                                </div>
-                                                <div class ="modal-footer">
-                                                    <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
-                                                </div>`,
-                                                backdrop: 'static',
-                                                keyboard: false,
-                                                // controller: 'courseController',
-                                            });
+                                            $scope.showSimpleModel('保存失败', '小节标题不能为空。s');
 
                                             pass = false;
                                             break;
                                         }
 
                                         if (pitem[i]['chapter_url'] === null || pitem[i]['chapter_url'] === '') {
-                                            $uibModal.open({
-                                                template: `                            
-                                                <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                                    <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
-                                                </div>
-                                                <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                                    小节链接不能为空。
-                                                </div>
-                                                <div class ="modal-footer">
-                                                    <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
-                                                </div>`,
-                                                backdrop: 'static',
-                                                keyboard: false,
-                                                // controller: 'courseController',
-                                            });
+                                            $scope.showSimpleModel('保存失败', '小节链接不能为空。');
 
                                             pass = false;
                                             break;
@@ -1217,6 +1114,23 @@ define(['app', 'helper/util',
                                 return;
                             }
 
+                            var curl = {},
+                                found = false;
+                            for (var i = 0; i < item.length; i++) {
+                                var ii = item[i];
+                                if (curl[ii.chapter_url]) {
+                                    found = true;
+                                    break;
+                                } else {
+                                    curl[ii.chapter_url] = true;
+                                }
+                            }
+
+                            if (found) {
+                                $scope.showSimpleModel('保存失败', '选择的小节链接不能重复。');
+                                return;
+                            }
+
                             item.unshift(title);
 
                             $http.post($scope.host + '/add', {
@@ -1229,24 +1143,12 @@ define(['app', 'helper/util',
 
                                 $scope.$close();
 
-                                util.$apply();
+                                $root.init();
+
+                                // util.$apply();
 
                             }, function (rs) {
-                                $uibModal.open({
-                                    template: `                            
-                                    <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                        <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
-                                    </div>
-                                    <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                        保存失败，请重试。
-                                    </div>
-                                    <div class ="modal-footer">
-                                        <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
-                                    </div>`,
-                                    backdrop: 'static',
-                                    keyboard: false,
-                                    // controller: 'courseController',
-                                });
+                                $scope.showSimpleModel('保存失败', '保存失败，请重试。');
                             });
                         }
 
@@ -1264,8 +1166,6 @@ define(['app', 'helper/util',
                     wikiBlock.applyModParams(result);
                 }, function (result) {});
             }
-
-            init();
 
             // 判断点击课程标题链接时以防跳转
             // 如果为编辑模式时，则设置课程目录模块为禁止跳转状态
@@ -1318,12 +1218,13 @@ define(['app', 'helper/util',
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
+
             return `<div ng-controller="courseController" ng-click="viewCourseEditor();" >
-                        <div ng-show = 'data.course.hasData() && isEdit' style="min-height: 100px; border: 1px solid #d0d0d0; cursor:pointer; font-size: 18px;">
+                        <div ng-show = 'data.course.hasData()' style="min-height: 100px; border: 1px solid #d0d0d0; cursor:pointer; font-size: 18px;">
                             点击编辑课程目录
                         </div>
                         <div ng-hide = 'data.course.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
-                    </div>`
+                    </div>`;
         }
     }
 });
