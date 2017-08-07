@@ -1,10 +1,10 @@
-<div ng-controller="entriesController" class="container" style="padding:0;">
+<div ng-controller="entriesController">
 
     <style scoped>
-
         .layout-swiper {
             width: 100%;
-            margin: 20px auto 0;
+            height: 180px;
+            margin: 0 auto;
             padding: 30px 20px;
             position: relative;
             background-color: #aed1f0;
@@ -244,37 +244,38 @@
             box-sizing: border-box;
             overflow-x: hidden;
         }
-        
-        #entriesWrap .top-block{
+
+        #entriesWrap .top-block {
             position: relative;
             height: 60px;
             line-height: 60px;
-            margin-top:10px;
+            margin-top: 10px;
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
-        }    
+        }
 
         .return-layer {
             position: absolute;
             left: 0;
-            z-index:1;
+            z-index: 1;
         }
 
-        .authorInfo{
+        .authorInfo {
             position: absolute;
-            right:0;
-            z-index:1;
+            right: 0;
+            z-index: 1;
         }
 
-        .authorInfo img{
+        .authorInfo img {
             display: inline-block;
             width: 50px;
-            height:50px;
-            -webkit-border-radius:50%;
-            border-radius:50%;
+            height: 50px;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
             margin-right: 10px;
         }
-        .authorInfo a:hover{
+
+        .authorInfo a:hover {
             text-decoration: underline;
         }
 
@@ -329,26 +330,26 @@
                 max-height: 100%;
             }
         }
-       
     </style>
 
     <div id="entriesWrap">
 
         <div class="top-block">
-             <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">课程：<span>{{entries_title}}</span></a></div>
+            <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">课程：<span>{{entries_title}}</span></a></div>
 
-            <div class="authorInfo">
-                <span>作者：</span>
+            <div class="authorInfo" ng-show="isCreate">
+                <span>导师：</span>
                 <a href="#">
                     <!--<img src="{{thisUserPic}}" alt="{{userinfo.username}}"/>-->
                     {{userinfo.username}}
                 </a>
                 &nbsp;
-                <a href="{{followPath}}?res_name={{userinfo.username}}&course_info={{course_info}}" type="button" class="btn btn-danger btn-sm">拜师</a>
+                <a href="{{followPath}}?course_info={{course_info}}" type="button" class="btn btn-danger btn-sm" style="width:80px;">拜师</a>
             </div>
 
         </div>
-       
+
+
         <div class="entries-container">
 
             <!-- 词条标题，昵称信息 左右轮播 start -->
@@ -358,7 +359,7 @@
                         <div class="swiper-slide item-slide" ng-repeat="item in chapters.data">
                             <div class="inner-box">
                                 <a href="{{item.url}}" title="{{item.title}}" class="item-title">{{item.title}}</a>
-                                <a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
+                                <a href="{{item.url}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
                             </div>
                         </div>
                     </div>
@@ -375,8 +376,7 @@
                     <div class="swiper-slide">
                         <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
                             <!--<a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="teach-box pull-left">-->
-                            <a href="{{followPath}}?req_name={{userinfo.username}}&res_name={{item.user_name}}" title="{{item.display_name}}"
-                                class="teach-box pull-left">
+                            <a href="{{followPath}}?req_name={{userinfo.username}}&res_name={{item.user_name}}&course_info={{course_info}}" target= "_blank" title="{{item.display_name}}" class="teach-box pull-left">
                             <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
                             <span class="name">{{item.display_name}}</span>
                         </a>

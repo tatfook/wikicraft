@@ -27,6 +27,8 @@ define(['app',
 
             $scope.isHide = true;
 
+            $scope.isCreate = false;
+
             $scope.course_url = '#';
 
             // 如果头像为空时，则添加默认头像
@@ -47,6 +49,20 @@ define(['app',
             }, function (rs) {
                 console.log(rs);
             });
+
+            // 请求导师是否有添加课程记录
+            $http.post($scope.httpPath + '/check_user_create', {
+                course_url: $scope.course_info
+            },{
+                isShowLoading: false
+            }).then(function (rs){
+                if(rs.data && rs.data.err === 0 && rs.data.exists === true){
+                    $scope.isCreate = true;
+                }
+            }, function (rs){
+                console.log(rs);
+            })
+            
 
             // var thisPath = window.location.search;
             // // 获取搜索的url地址栏的参数 courseurl 则显示 "返回目录"
@@ -161,10 +177,10 @@ define(['app',
                     slidesPerGroup: slidesGroup,
                     observer: true,
                     observeParents: true,
-                    freeModeMomentum: true,
                     freeMode: slideMode,
                     prevButton: '.prev-btn',
                     nextButton: '.next-btn',
+                    preventClicks: false,
                     // 左滑动获取分页数据
                     onSlideChangeEnd: function (swiper) {
                         for (var i = 0; i < itemSlide.length; i++) {

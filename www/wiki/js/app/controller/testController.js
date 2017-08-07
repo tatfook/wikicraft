@@ -12,6 +12,7 @@ define([
 ], function (app, util, storage, dataSource,  htmlContent/*, html2canvas*/) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
+			util.post(config.apiUrlPrefix + "test/echo",{list:[{test:"tes"}]});
 			util.ajax({
 				url:"http://221.0.111.131:19001/Application/essearch",
 				type:"POST",
