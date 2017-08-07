@@ -20,7 +20,7 @@ define(['app',
             $scope.followPath = "http://121.14.117.239/follow/take";
 
             // 课程url信息
-            $scope.course_info = window.location.pathname || $scope.pageinfo.url;
+            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
@@ -42,7 +42,7 @@ define(['app',
             }).then(function (rs) {
 
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
-                    $scope.course_url = rs.data.course_url.course_url;
+                    $scope.course_url = encodeURI(rs.data.course_url.course_url);
                     $scope.entries_title = rs.data.course_url.title;
                     $scope.isHide = false;
                 }
@@ -52,7 +52,7 @@ define(['app',
 
             // 请求导师是否有添加课程记录
             $http.post($scope.httpPath + '/check_user_create', {
-                course_url: $scope.course_info
+                course_url:  encodeURI($scope.current_url)
             },{
                 isShowLoading: false
             }).then(function (rs){
