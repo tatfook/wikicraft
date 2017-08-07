@@ -68,7 +68,7 @@ local oauthApp = {
 		payRedirectUrl = "",
 	},
 	{
-		appName="成都配天智能技术有限公司",
+		appName="Adas",
 		company="成都配天智能技术有限公司",
 		clientId="1000006",
 		clientSecret="chengdupeitianzhinengjishuyouxiangongsi",

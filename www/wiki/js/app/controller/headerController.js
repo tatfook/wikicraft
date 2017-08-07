@@ -19,7 +19,7 @@ define([
         $scope.isCollect=false;//是否已收藏当前作品
         // 通过站点名搜索
         $scope.searchWebsite = function () {
-            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', websiteName: $scope.search});
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', sitename: $scope.search});
             //window.location.reload(false);
             util.go("siteshow");
         }

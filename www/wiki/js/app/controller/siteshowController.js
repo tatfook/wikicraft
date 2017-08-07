@@ -16,8 +16,8 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
             if (siteshowParams.siteshowType == 'personal') {
                 params.categoryId = 0;
             } else if (siteshowParams.siteshowType == 'search') {
-                params.websiteName = siteshowParams.websiteName;
-				elasticSearch(params.websiteName);
+                params.sitename = siteshowParams.sitename;
+				elasticSearch(params.sitename);
 				return;
             }
 

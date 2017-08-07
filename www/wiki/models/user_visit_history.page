@@ -58,7 +58,7 @@ function user_visit_history:api_get(params)
 	
 	local websiteDB = models.website:new() 
 	for _, value in ipairs(data or {}) do
-		value["siteinfo"] = websiteDB:api_getByName({username=value.visitUsername, websiteName=value.visitSitename}).data
+		value["siteinfo"] = websiteDB:api_getByName({username=value.visitUsername, sitename=value.visitSitename}).data
 	end
 
 	return errors:wrap(nil, {total=total, visitList=data})

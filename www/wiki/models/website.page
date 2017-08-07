@@ -177,8 +177,8 @@ function website:deleteById(websiteId)
 	websiteApplyModel:api_deleteByWebsiteId({websiteId=websiteId})
 
 	-- 删除页信息
-	local websitePageinfoDB = models.website_pageinfo:new()
-	websitePageinfoDB:api_delete({websiteName=site.name, userId=site.userId})
+	--local websitePageinfoDB = models.website_pageinfo:new()
+	--websitePageinfoDB:api_delete({sitename=site.name, userId=site.userId})
 
 	-- 删除该站点的所有域名
 	local websiteDomainDB = models.website_domain:new()
@@ -229,11 +229,11 @@ end
 
 -- 更新站点页面信息
 function website:api_updateWebsitePageinfo(params)
-	if (not params.userId) or (not params.siteId) then
+	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local site = self:api_getById({websiteId=params.siteId}).data
+	local site = self:api_getByName({sitename=params.sitename, username=params.username}).data
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -243,10 +243,10 @@ function website:api_updateWebsitePageinfo(params)
 	userActiveDB:api_addActiveCount(params)
 	
 	-- 更新用户动态
-	local userTrendsDB = models.user_trends:new()
-	local trend = {userId=params.userId, objectId=params.siteId, trendsType=const.USER_TRENDS_TYPE_UPDATE_SITE}
-	trend.desc = site.username .. "更新站点" .. site.name
-	userTrendsDB:api_upsert(trend)
+	--local userTrendsDB = models.user_trends:new()
+	--local trend = {userId=params.userId, objectId=params.siteId, trendsType=const.USER_TRENDS_TYPE_UPDATE_SITE}
+	--trend.desc = site.username .. "更新站点" .. site.name
+	--userTrendsDB:api_upsert(trend)
 	
 	return errors:wrap()
 end
@@ -327,11 +327,11 @@ end
 
 -- 通过站点名获得站点
 function website:api_getByName(params)
-	if (not params.websiteName) or (not params.username) then
+	if (not params.sitename) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
-	self:db():findOne({['+username+name']={params.username, params.websiteName}}, resume)
+	self:db():findOne({['+username+name']={params.username, params.sitename}}, resume)
 	
 	return errors:wrap(yield())		
 end
@@ -464,9 +464,9 @@ function website:api_getSiteList(params)
 	local key = '';
 	local value = {};
 	
-	if params.websiteName then
+	if params.sitename then
 		key = key .. '+name'
-		value[#value+1] = params.websiteName
+		value[#value+1] = params.sitename
 	end
 
 	if params.username then
