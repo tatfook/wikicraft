@@ -31,6 +31,8 @@ define(['app',
 
             $scope.course_url = '#';
 
+            $scope.follow_course_url = $scope.current_url;
+
             // 如果头像为空时，则添加默认头像
             $scope.thisUserPic = $scope.user.portrait == undefined ? $scope.imgsPath + 'default.png' : $scope.user.portrait;
 
@@ -43,7 +45,7 @@ define(['app',
 
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
                     $scope.course_url = encodeURI(rs.data.course_url.course_url);
-                    $scope.floww.course_url = encodeURI(rs.data.course_url.course_url);
+                    $scope.follow_course_url = encodeURI(rs.data.course_url.course_url);
                     $scope.entries_title = rs.data.course_url.title;
                     $scope.isHide = false;
                 }
