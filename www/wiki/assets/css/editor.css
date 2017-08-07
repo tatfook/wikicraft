@@ -402,7 +402,8 @@ select.resize-view {
     height: 540px;
     padding: 440px 0 0 80px;
     margin: 0;
-    background-color: rgba(57, 119, 173, .5);
+    /*background-color: rgba(57, 119, 173, .5);*/
+    background-color: rgba(0,0,0,.6);
 }
 .bg-title h1 > img{
     position:absolute;

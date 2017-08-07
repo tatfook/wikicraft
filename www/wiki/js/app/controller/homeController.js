@@ -5,10 +5,12 @@
 define([
     'app',
     'helper/util',
+    'helper/markdownwiki',
     'helper/storage',
     'helper/dataSource',
     'text!html/home.html',
-], function (app, util, storage, dataSource, htmlContent) {
+    'text!html/articles/featurelist.md',
+], function (app, util, markdownwiki, storage, dataSource, htmlContent, featureListContent) {
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
@@ -42,6 +44,13 @@ define([
             util.http("POST", config.apiUrlPrefix + 'website/getSiteList', {page:1, pageSize:4, sortBy:'-favoriteCount'}, function (data) {
                 $scope.personalSiteObj = data;
             });
+
+            var md = markdownwiki({breaks: true, isMainMd:true});
+            // var featureListContent = featureListContent;
+            var mdContent = md.render(featureListContent);
+            util.onViewContentLoadedByContainerId("#__UserSitePageContent__", function (params) {
+                util.html('#_featureList_', mdContent, $scope);
+            }, $scope);
 
             // Account.getUser(function (userinfo) {
             //    createTutorialSite(userinfo, function () {
