@@ -19,8 +19,8 @@ define(['app',
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
             $scope.followPath = "http://121.14.117.239/follow/take";
 
-            // 课程url信息
-            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
+            // 当前url信息
+            $scope.current_url = encodeURI(window.location.pathname) || encodeURI($scope.pageinfo.url);
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;

@@ -380,7 +380,7 @@
                     <div class="next-btn text-center" ng-click="nextPage()" ng-disabled="isGetPage"><a href="javascript:;" class="glyphicon glyphicon-chevron-right"></a></div>
                 </div>
                 <div class="not-data" ng-show="notData">
-                    <p>暂时没有相关推荐的文章！</p>
+                    <p>暂时没有相关推荐的文章~</p>
                 </div>
             </div>
 
@@ -394,7 +394,7 @@
                         <div class="swiper-slide">
                             <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
                                 <!--<a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="teach-box pull-left">-->
-                                <a href="{{followPath}}?req_name={{userinfo.username}}&res_name={{item.user_name}}&course_info={{course_info}}" target="_blank"
+                                <a href="{{followPath}}?res_name={{item.user_name}}&url={{current_url}}" target="_blank"
                                     title="{{item.display_name}}" class="teach-box pull-left">
                             <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
                             <span class="name">{{item.display_name}}</span>
@@ -414,7 +414,7 @@
                     </div>
 
                     <div class="not-data" ng-show="notTeacher">
-                        <p style="color:#454545;">暂时没有相关推荐的文章！</p>
+                        <p style="color:#454545;">暂时没有相关推荐的导师~</p>
                     </div>
                 </div>
                 <!-- 词条用户头像，昵称信息 上拉加载 end -->
