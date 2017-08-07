@@ -27,7 +27,20 @@ define([
 	util.onViewContentLoaded = function(cb, $scope) {
         $scope = $scope || util.angularServices.$rootScope;
 		
-		$scope.$on(cb);
+		$scope.$on("selfViewContentLoaded",function(event, data){
+			cb && cb(data);
+		});
+	}
+
+	util.onViewContentLoadedByContainerId = function(containerId, cb, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$on("selfViewContentLoaded",function(event, data){
+			if (data && data.containerId == containerId) {
+				cb && cb(data);
+			}
+		});
+
 	}
 
     // $html
@@ -42,6 +55,8 @@ define([
         }
 
         $(selector).html(htmlStr);
+
+		util.broadcastViewContentLoaded({containerId:selector}, $scope);
 
         setTimeout(function () {
             $scope.$apply();
