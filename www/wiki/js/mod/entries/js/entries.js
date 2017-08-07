@@ -26,6 +26,10 @@ define(['app',
             $scope.winHref = window.location.href;
 
             $scope.isHide = true;
+            
+            // 是否有数据，是否显示隐藏
+            $scope.dataShow = true;
+            $scope.notData = false;
 
             $scope.isCreate = false;
 
@@ -85,6 +89,11 @@ define(['app',
 
 
             // 相关导师请求前24条数据
+
+            // 初始化是否有数据显示
+            $scope.teacherData = true;
+            $scope.notTeacher = false;
+
             $scope.teacher = {
                 data: [],
                 shshow: false,
@@ -99,7 +108,13 @@ define(['app',
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
+
                         var data = rs.data;
+
+                        if (data.itemCount === 2){
+                            $scope.teacherData = false;
+                            $scope.notTeacher = true;
+                        }
 
                         if (data && data.err === 0) {
 
@@ -206,6 +221,10 @@ define(['app',
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
+                    if (rs.data.itemCount === 0){
+                        $scope.dataShow = false;
+                        $scope.notData = true;
+                    }
 
                     if (rs.data && rs.data.err === 0) {
 
@@ -296,11 +315,6 @@ define(['app',
                         var countRecord = rs.data.itemCount;
                         // 总页数
                         var allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize));
-
-                        if (rs.data.itemCount = 0) {
-                            console.log("没有数据！");
-                            return;
-                        }
 
                         if (rs.data && rs.data.err === 0) {
                             var data = angular.copy(rs.data.data, []);
