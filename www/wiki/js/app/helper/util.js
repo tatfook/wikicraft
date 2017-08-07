@@ -16,6 +16,20 @@ define([
         return this.id;
     }
 
+	// 发送视图内容加载完成通知
+	util.broadcastViewContentLoaded = function(params, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$broadcast("selfViewContentLoaded", params);
+	}
+
+	// 监听视图内容加载完成回调
+	util.onViewContentLoaded = function(cb, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$on(cb);
+	}
+
     // $html
     util.html = function(selector, htmlStr, $scope, isCompile) {
         isCompile = isCompile == undefined ? true : isCompile;
@@ -28,6 +42,7 @@ define([
         }
 
         $(selector).html(htmlStr);
+
         setTimeout(function () {
             $scope.$apply();
         });

@@ -50,7 +50,7 @@ end
 
 
 function user:filterUserInfo(params)
-	params.username = nil
+	--params.username = nil
 	params.email = nil
 	params.password = nil
 	params.isadmin = nil
@@ -711,7 +711,7 @@ function user:api_getUserAndSiteBySitename(params)
 	end
 
 	local websiteDB = models.website:new()
-	local siteinfo = websiteDB:api_getByName({username:params.username, sitename=params.sitename}).data
+	local siteinfo = websiteDB:api_getByName({username=params.username, sitename=params.sitename}).data
 	if not siteinfo then
 		return errors:wrap(errors.NOT_FOUND)
 	end
@@ -860,7 +860,7 @@ function user:api_getDetailByName(params)
 
 	-- 获取活动记录
 	local userActiveDB = models.user_active:new()
-	local activeObj = userActiveDB:api_getByUserId({username=userinfo.username}).data
+	local activeObj = userActiveDB:api_getByUsername({username=userinfo.username}).data
 
 	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, followObj=followObj, fansObj=fansObj, trendsObj=trendsObj})
 end
