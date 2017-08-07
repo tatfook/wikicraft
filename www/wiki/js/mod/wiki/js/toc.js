@@ -109,7 +109,7 @@ define([
 						continue;
 					}
 
-					if (block.tag[0] != "h" && block.tag[0] != "H") {
+					if (!block.tag || (block.tag[0] != "h" && block.tag[0] != "H")) {
 						continue;
 					}
 
