@@ -43,6 +43,7 @@ define(['app',
 
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
                     $scope.course_url = encodeURI(rs.data.course_url.course_url);
+                    $scope.floww.course_url = encodeURI(rs.data.course_url.course_url);
                     $scope.entries_title = rs.data.course_url.title;
                     $scope.isHide = false;
                 }
