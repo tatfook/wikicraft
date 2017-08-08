@@ -263,6 +263,8 @@ define([
                     $scope.body                = response.body;
                     $scope.goods.exchange_rate = response.exchange_rate;
                     $scope.additional_field    = response.additional_field;
+
+                    needLogin();
                 });
             }
 
@@ -331,6 +333,20 @@ define([
                     eval(cmd + " = '" + params[keyName] + "'");
                 } else {
                     validate = false;
+                }
+            }
+
+            function needLogin() {
+                if (!Account.isAuthenticated() && !$scope.hasUserNid()) {
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: 'static'
+                    }, function (result) {
+                        location.reload();
+                    }, function (result) {
+                        return;
+                    });
                 }
             }
         }

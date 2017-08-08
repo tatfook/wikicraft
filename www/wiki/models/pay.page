@@ -25,7 +25,7 @@ pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken
 pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
 
 tradeno.db_name = "tradeno";
-tradeno = tradeno:new();
+tradeno         = tradeno:new();
 
 function pay:ctor()
 	-- keepwork username
@@ -76,10 +76,11 @@ end
 
 function pay:api_createCharge(params)
 	response:status(503);
+
 	local err, query = self:validateQuery(params);
 
 	local appInfo = oauth_app:getByAppName(query.app_name);
-
+	log(appInfo, true)
 	if(not appInfo) then
 		response:status(404);
 		return errors:wrap(errors.NOT_FOUND);
@@ -371,24 +372,26 @@ function pay:validate(appGoodsInfo, query)
 
 	local validate = true;
 
-	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
-        local checkField = true;
-        local field      = itemA;
+	if(appGoodsInfo.additional_field and type(appGoodsInfo.additional_field) == "table") then
+		for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
+			local checkField = true;
+			local field      = itemA;
 
-        if (field.required) then
-            checkField = false
+			if (field.required) then
+				checkField = false
 
-            for KeyB, itemB in pairs(query.additional) do
-                if (field.name == KeyB) then
-                    checkField = true;
-                end
-            end
-        end
+				for KeyB, itemB in pairs(query.additional) do
+					if (field.name == KeyB) then
+						checkField = true;
+					end
+				end
+			end
 
-        if (not checkField) then
-            validate = false;
-        end
-    end
+			if (not checkField) then
+				validate = false;
+			end
+		end
+	end
 
 	return validate;
 end

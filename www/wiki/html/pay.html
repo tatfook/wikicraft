@@ -3,6 +3,10 @@
         background-color: #f2f2f2;
     }
 
+    .login-form > button {
+        display: none;
+    }
+
     .pay-main {
         padding: 0;
         padding-top: 43px;
@@ -454,7 +458,7 @@
                             <div class="pay-main-field">
                                 <div class="field-item">
                                     <lable class="desc">Keepwork 账号：</lable>
-                                    <input type="text" name="username" ng-model="otherUserinfo.username"/>
+                                    <input type="text" name="username" ng-model="otherUserinfo.username" ng-disabled="!hasUserNid()"/>
                                 </div>
                                 <div class="field-item" ng-if="hasUserNid()">
                                     <lable class="desc">充值到数字账号：</lable>
@@ -463,7 +467,7 @@
                                 <div class="field-item">
                                     <lable class="desc">充值金额：</lable>
                                     <div class="price-field">
-                                        <input type="text" name="price" ng-model="goods.price"/>元
+                                        <input type="text" name="price" ng-model="goods.price" ng-disabled="!hasUserNid()"/>元
                                     </div>
                                 </div>
                                 <div class="field-item" ng-if="hasUserNid()">
