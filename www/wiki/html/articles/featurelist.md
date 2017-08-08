@@ -255,6 +255,8 @@ Neural Parallel Language(NPL)语言是一个开源的高性能的通用脚本语
 
 
 合作单位：大富科技 北京开放大学 淘米TaoMee 联合大学 深圳动漫基地 安徽工程大学 哈尔滨工业大学
+![](http://git.keepwork.com/gitlab_rls_tibet/keepworkdatasource/raw/master/tibet_images/img_1502181705999.png)
 
 
 [如果你与我们有相同的愿景，加入我们...](https://github.com/LiXizhi/ParaCraft/wiki/JoinUs)
+</br>

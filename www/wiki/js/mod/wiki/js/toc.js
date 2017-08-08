@@ -136,7 +136,6 @@ define([
             };
 
 			var scrollProccess = function (scrollElement, tocContent, dataOffsetTop) {
-				// console.log("111111111");
                 scrollTimer && clearTimeout(scrollTimer);
                 scrollTimer = setTimeout(function () {
 					scrollTimer = undefined;
@@ -149,9 +148,9 @@ define([
 					}
                     for (var i = 0; i< nodeLen; i++){
                         // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
-                        if (scrollTop - tocList[i].offsetTop - $("#"+tocList[i].containerId).height() <= 0){
+                        if (scrollTop - tocList[i].offsetTop - $("#"+tocList[i].containerId).height() < 0){
                             // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
-                            active(tocList[i-1]);
+                            tocList[i-1] ? active(tocList[i-1]) : active(tocList[0]);
                             break;
                         }
                     }
