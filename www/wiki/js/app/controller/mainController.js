@@ -319,7 +319,7 @@ define([
 					storage.sessionStorageRemoveItem("otherUsername");
 				}
 
-				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
+				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain) && Account.isValidVip()) {
 					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
 						if (data) {
 							urlObj.username = data.username;
