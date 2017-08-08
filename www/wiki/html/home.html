@@ -79,6 +79,22 @@
         color: #FFF;
         display: flex;
     }
+    .banner .message{
+        display: flex;
+        margin-top: 40px;
+        max-width: 37em;
+        min-width: 340px;
+        box-shadow: 0px 4px 10px rgba(19, 61, 112, .8);
+    }
+    .banner .left-col{
+        background-color: rgba(119, 206, 248, .8);
+        padding: 0 15px;
+    }
+    .banner .right-col{
+        background-color: rgba(98, 176, 216, .8);
+        flex: 1;
+        padding: 0 15px;
+    }
     .banner>img{
         position: absolute;
         z-index: -1;
@@ -89,7 +105,7 @@
         top:52px;
     }
     .banner .col-md-4 {
-        padding-bottom: 170px;
+        /*padding-bottom: 170px;*/
     }
     /*.banner .col-md-3 {*/
         /*background-color: rgba(255, 255, 255, .5);*/
@@ -244,6 +260,9 @@
         justify-content: space-around;
     }
     /*特性列表*/
+    .bg-title h1{
+        margin: 0 -50px;
+    }
     .bg-title a{
         color: #3977AD;
     }
@@ -322,6 +341,16 @@
             <h2>KeepWork</h2>
             <p style="max-width: 37em;">KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。
             </p>
+            <div class="message">
+                <div class="left-col">
+                    <h4>公开网站</h4>
+                    <p>免费：任意数量、大小，CDN加速</p>
+                </div>
+                <div class="right-col">
+                    <h4>私有网站</h4>
+                    <p>VIP包月</p>
+                </div>
+            </div>
         </div>
         <div class="col-md-3 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
             <form>

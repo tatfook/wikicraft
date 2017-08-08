@@ -39,6 +39,7 @@
     .navbar-default li.iconfont-icon {
         padding: 5px 15px;
         cursor: pointer;
+        color: #777;
     }
     .navbar-default li.iconfont-icon > .iconfont{
         font-size: 28px;
@@ -512,6 +513,8 @@
                                 <div class="social-share" data-title="{{tit}}"></div>
                             </div>
                         </li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">
