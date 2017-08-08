@@ -65,7 +65,7 @@ function vip:api_getByUsername(params)
 		return errors:wrap(nil, vipInfo)
 	end
 
-	if vipInfo.startDate <= date  and data <= vipInfo.endDate then
+	if vipInfo.startDate <= date  and date <= vipInfo.endDate then
 		vipInfo.isValid = true
 	else
 		vipInfo.isValid = false
