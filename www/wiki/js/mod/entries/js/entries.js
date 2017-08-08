@@ -19,13 +19,17 @@ define(['app',
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
             $scope.followPath = "http://121.14.117.239/follow/take";
 
-            // 课程url信息
-            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
+            // 当前url信息
+            $scope.current_url = encodeURI(window.location.pathname) || encodeURI($scope.pageinfo.url);
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
 
             $scope.isHide = true;
+            
+            // 是否有数据，是否显示隐藏
+            $scope.dataShow = true;
+            $scope.notData = false;
 
             $scope.isCreate = false;
 
@@ -85,6 +89,11 @@ define(['app',
 
 
             // 相关导师请求前24条数据
+
+            // 初始化是否有数据显示
+            $scope.teacherData = true;
+            $scope.notTeacher = false;
+
             $scope.teacher = {
                 data: [],
                 shshow: false,
@@ -99,7 +108,13 @@ define(['app',
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
+
                         var data = rs.data;
+
+                        if (data.itemCount === 0){
+                            $scope.teacherData = false;
+                            $scope.notTeacher = true;
+                        }
 
                         if (data && data.err === 0) {
 
@@ -202,10 +217,14 @@ define(['app',
                     url: $scope.remotedata.url || $scope.winHref,
                     pageIndex: pageStart,
                     pageSize: pageSize,
-                    username: $rootScope.siteinfo.username
+                    // username: $rootScope.siteinfo.username
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
+                    if (rs.data.itemCount === 0){
+                        $scope.dataShow = false;
+                        $scope.notData = true;
+                    }
 
                     if (rs.data && rs.data.err === 0) {
 
@@ -296,11 +315,6 @@ define(['app',
                         var countRecord = rs.data.itemCount;
                         // 总页数
                         var allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize));
-
-                        if (rs.data.itemCount = 0) {
-                            console.log("没有数据！");
-                            return;
-                        }
 
                         if (rs.data && rs.data.err === 0) {
                             var data = angular.copy(rs.data.data, []);

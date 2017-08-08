@@ -73,10 +73,13 @@
         }
 
         .item-chapter a {
+            -webkit-transition: all .8s;
+            -moz-transition: all .8s;
+            transition: all .8s;
             display: block;
             height: 65px;
             line-height: 65px;
-            padding: 0 50px;
+            padding-left:50px;
             color: #666;
             word-break: break-all;
             font-size: 18px;
@@ -88,7 +91,8 @@
         }
 
         .item-chapter a:hover {
-            color: #3977AD;
+            color: #0b61ad;
+            padding-left: 60px;
         }
 
         .item-chapter a:hover .txt {
@@ -140,6 +144,10 @@
                 line-height: 50px;
                 padding: 0 30px;
                 font-size: 14px;
+            }
+
+            .item-chapter a:hover {
+                padding-left: 40px;
             }
 
             .head-box>h3 {

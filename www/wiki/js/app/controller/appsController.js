@@ -3,7 +3,7 @@
  */
 
 define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlContent) {
-    app.controller('appsController', ['$scope', '$location', '$anchorScroll', '$timeout', function ($scope, $location, $anchorScroll, $timeout) {
+    app.controller('appsController', ['$scope', '$location', '$anchorScroll', '$timeout', 'Message', function ($scope, $location, $anchorScroll, $timeout, Message) {
         $scope.recommentApps = [
             {
                 "name":"Paracraft创意空间",
@@ -156,6 +156,13 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
 
         $(window).on("scroll", function () {
             scrollProcess($(window));
+        });
+
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13" && $("#searchBox").is(":focus")){
+                Message.info("搜索功能开发中！");
+                $scope.searchText = "";
+            }
         });
 
         $scope.$watch('$viewContentLoaded', init);
