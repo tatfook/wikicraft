@@ -32,6 +32,17 @@ function vip:upsert(params)
 	return errors:wrap(yield())
 end
 
+-- 判断用户是否为有效vip
+function vip:api_isValidVip(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local vipInfo = self:api_getByUsername(params)
+
+	return errors:wrap(nil, vipInfo.isValid)
+end
+
 -- 通过用户名获取vip信息
 function vip:api_getByUsername(params)
 	if not params.username then
@@ -56,9 +67,14 @@ function vip:api_getByUsername(params)
 
 	if vipInfo.startDate <= date  and data <= vipInfo.endDate then
 		vipInfo.isValid = true
+	else
+		vipInfo.isValid = false
 	end
 
 	return errors:wrap(nil, vipInfo)
 end
 
 
+function vip:api_payHook(params)
+
+end

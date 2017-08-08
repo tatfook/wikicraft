@@ -6,6 +6,7 @@ Date: 2016/10/10
 ]]
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./vip.page")
 include_once("./user_active.page")
 include_once("./user_favorite.page")
 include_once("./user_visit_history.page")
@@ -546,7 +547,6 @@ end
 
 -- 获取站点详细信息, 
 function website:api_getDetailInfo(params)
-	log(params);
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -579,6 +579,13 @@ function website:api_getDetailInfo(params)
 		dataSourceList[key].dataSourceToken = nil
 	end
 	userinfo.dataSource = dataSourceList
+
+	if siteDataSource and siteDataSource.visibility == "private" then
+		local vipDB = models.vip:new()
+		if not vipDB:api_isValidVip({username=params.username}).data then
+			return errors:wrap(errors.FORBIDDEN_ACCESS)
+		end
+	end
 
 	self:api_visitWebsite(params)
 

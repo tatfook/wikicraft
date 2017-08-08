@@ -17,6 +17,7 @@ errors.REQUEST_PARAMS_ERROR = {id=2,message="request params error",}
 errors.NOT_FOUND = {id=3, message="not found",}
 errors.USER_NOT_EXIST = {id=4, message="user not exist",}
 errors.NOT_PRIVILEGES = {id=5, message="not privileges"}
+errors.FORBIDDEN_ACCESS = {id=6, message="probidden access"}
 
 function errors:new(message) 
 	return {
