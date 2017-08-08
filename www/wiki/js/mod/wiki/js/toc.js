@@ -18,7 +18,7 @@ define([
 			var endLevel = modParams.endLevel || 6;
 			var startLine = modParams.startLine || 0;
 			var endLine = modParams.endLine || 10000000;
-            var tocTreeList, tocList, containerId, scrollTimer;
+            var tocTreeList, tocList, containerId, scrollTimer, resizeTimer;
 			var titleOffsetTop = 50;
 
 			$scope.goPart = function (item) {
@@ -97,10 +97,13 @@ define([
                     containerId = mdwiki.getMdWikiContentContainerId();
 					blockList = mdwiki["blockList"];
 
-					var scrollElement = $("#"+containerId);
-                    setFullHeight(scrollElement);
+					var scrollElement = $(window);
+					var tocContent = $("#"+containerId);
+					var dataOffsetTop = tocContent.get(0).getBoundingClientRect().top || 0;
+                    // setFullHeight(scrollElement);
+
                     scrollElement.on("scroll", function () {
-                        scrollProccess(scrollElement);
+                        scrollProccess(scrollElement, tocContent, dataOffsetTop);
                     });
 				}
 				for (var i = 0; i < blockList.length; i++) {
@@ -132,32 +135,59 @@ define([
 				});
             };
 
-			var scrollProccess = function (scrollElement) {
+			var scrollProccess = function (scrollElement, tocContent, dataOffsetTop) {
+				// console.log("111111111");
                 scrollTimer && clearTimeout(scrollTimer);
                 scrollTimer = setTimeout(function () {
 					scrollTimer = undefined;
-                    var scrollTop = scrollElement[0].scrollTop;
+                    var scrollTop = scrollElement.scrollTop();
                     var nodeLen = tocList.length;
+                    if (scrollTop > dataOffsetTop){
+                    	$(".js-nav").addClass("affix");
+					}else{
+                        $(".js-nav").removeClass("affix");
+					}
                     for (var i = 0; i< nodeLen; i++){
-                        if (scrollTop <= tocList[i].offsetTop){
-                            active(tocList[i]);
+                        // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
+                        if (scrollTop - tocList[i].offsetTop - $("#"+tocList[i].containerId).height() <= 0){
+                            // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
+                            active(tocList[i-1]);
                             break;
                         }
                     }
                 }, 100);
             };
 
+			function initWidth(target) {
+				target = target || $(".js-nav");
+				var parent = target.parent();
+				var parentWidth = parent.width();
+				var paddingWidth = target.innerWidth() - target.width();
+				var newWidth = parentWidth - paddingWidth;
+				if (target.width !== newWidth){
+                    target.width(newWidth);
+				}
+            }
+
 			function init() {
 				generateToc();
-				setFullHeight($(".js-nav"));
+				// setFullHeight($(".js-nav"));
 				$anchorScroll();
 				$("#"+containerId)[0].scrollTop -= titleOffsetTop;
+				initWidth();
 				//console.log(containerId);
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
 
 			$scope.$watch("$viewContentLoaded", init);
+
+			$(window).resize(function () {
+                resizeTimer && clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    initWidth();
+                }, 100);
+            });
 		}]);
 	}
 
