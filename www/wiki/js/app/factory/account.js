@@ -72,6 +72,7 @@ define([
                     }, errcb);
 				},
 
+				// 设置数据源
 				setDataSourceToken:function(dataSourceCfg) {
 					var dataSourceList = this.user.dataSource;
 					for (var i = 0; i < dataSourceList.length; i++) {
@@ -123,6 +124,10 @@ define([
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);
                 },
+				
+				isValidVip: function() {
+					return this.user && this.user.vipInfo && this.user.vipInfo.isValid;
+				},
 
                 // 广播 TODO 需了解angualar 监听相关功能
                 send: function (msg, data) {

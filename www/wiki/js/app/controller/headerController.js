@@ -19,7 +19,7 @@ define([
         $scope.isCollect=false;//是否已收藏当前作品
         // 通过站点名搜索
         $scope.searchWebsite = function () {
-            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', websiteName: $scope.search});
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', sitename: $scope.search});
             //window.location.reload(false);
             util.go("siteshow");
         }
@@ -58,8 +58,8 @@ define([
                 }
             }
 
-            var container=document.getElementById("js-prev-container");
-            container.style.overflow="visible";
+            // var container=document.getElementById("js-prev-container");
+            // container.style.overflow="visible";
         }
 
 		$scope.$watch('$viewContentLoaded', function() {
@@ -127,7 +127,7 @@ define([
                 return;
 
             // 用户收藏
-            util.post(config.apiUrlPrefix + 'user_visit_history/get', {userId: $scope.user._id}, function (data) {
+            util.post(config.apiUrlPrefix + 'user_visit_history/get', {username: $scope.user.username}, function (data) {
                 $scope.visitHistoryList = data.visitList;
             });
         }
@@ -224,7 +224,15 @@ define([
 
 		$scope.goAdminPage = function() {
 			util.go("/wiki/js/mod/admin/js/login");
-		}
+		};
+
+		$scope.goApps = function () {
+            util.go("apps");
+        };
+
+		$scope.goHelp = function () {
+            util.go("knowledge");
+        };
 
 		$scope.isAdmin = function() {
 			if (Account.isAuthenticated() && $scope.user && $scope.user.roleId) {
@@ -234,7 +242,7 @@ define([
 			}
 
 			return false;
-		}
+		};
 
         $scope.goUserCenterPage = function (contentType, subContentType) {
             console.log(contentType, subContentType);
@@ -285,8 +293,7 @@ define([
                 }
                 var params = {
                     userId: $scope.user._id,
-                    favoriteUserId: $rootScope.siteinfo.userId,
-                    favoriteWebsiteId: $rootScope.siteinfo._id,
+					siteId: $rootScope.siteinfo._id,
                 }
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
@@ -318,10 +325,10 @@ define([
 
         $scope.$on("userpageLoaded", function (event, data) {
             init();
-            var container=document.getElementById("js-prev-container");
-            var content=document.getElementById("js-prev-content");
-            var ellipsis=document.getElementById("js-prev-ellipsis");
-            prevEllipsis(container,content,ellipsis);
+            // var container=document.getElementById("js-prev-container");
+            // var content=document.getElementById("js-prev-content");
+            // var ellipsis=document.getElementById("js-prev-ellipsis");
+            // prevEllipsis(container,content,ellipsis);
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {

@@ -26,7 +26,7 @@ define(['app'], function (app) {
 
 		loadingInterceptor.request = function(config) {
 			//console.log(config);
-			if (config.isShowLoading == undefined || config.isShowLoading) {
+			if (config.isShowLoading) {
 				showLoading();
 			}
 			return config;

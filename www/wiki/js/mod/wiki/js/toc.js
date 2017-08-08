@@ -6,29 +6,36 @@ define([
 	// 使用闭包使模块重复独立使用
 	function registerController(wikiblock) {
 		// 比赛类活动奖励控制器
-		app.registerController("tocController", ['$scope', '$rootScope', function ($scope, $rootScope) {
+		app.registerController("tocController", ['$scope', '$rootScope',"$anchorScroll", function ($scope, $rootScope, $anchorScroll) {
 			$scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
 			$scope.containerId = wikiblock.containerId + "_toc";
 
 			var modParams = angular.copy(wikiblock.modParams || {});
+			$scope.modParams = modParams;
 			var pageinfo = config.services.$rootScope.pageinfo;
 
 			var startLevel = modParams.startLevel || 1;
 			var endLevel = modParams.endLevel || 6;
 			var startLine = modParams.startLine || 0;
 			var endLine = modParams.endLine || 10000000;
-            var tocTreeList, tocList;
+            var tocTreeList, tocList, containerId, scrollTimer, resizeTimer;
+			var titleOffsetTop = 50;
 
-			$scope.goPart = function (containerId) {
-				document.getElementById(containerId).scrollIntoView();
-				active(containerId);
+			$scope.goPart = function (item) {
+				active(item);
+				window.location.hash="#/#" + item.anchor;
+				$anchorScroll(item.anchor);
+				//document.getElementById(item.containerId).scrollIntoView();
+				setTimeout(function(){
+					$("#"+containerId)[0].scrollTop -= titleOffsetTop;
+				},10);
             };
 
-			function active(containerId) {
+			function active(item) {
 				$(".js-nav .active").removeClass("active");
-				var targetObj = $('[data-targetid="'+containerId+'"]');
+				var targetObj = $('[data-targetid="'+ item.containerId+'"]');
 				targetObj.addClass("active");
-				targetObj.get(0).scrollIntoView();
+				//targetObj.get(0).scrollIntoView();
             }
 
             function getOffsetTop(containerId) {
@@ -37,10 +44,12 @@ define([
 
 			function addTocItem(tocTreeList, tocList, block) {
 				var tag = block.tag;
-				var text = block.content.replace(/[\s#]/g,'');
+				var text = block.content.replace(/^[ ]*[#]*[ ]*/,'').replace(/[\r\n]*$/, '');
+				var anchor = text;
 				var hn = parseInt(tag[1]);
 				var containerId = block.blockCache.containerId;
 				var offsetTop = getOffsetTop(containerId);
+
 
 				//console.log(tag, text, hn);
 				if (hn < startLevel || hn > endLevel) {
@@ -67,6 +76,7 @@ define([
 				var tocObject = {
                     tag:tag,
                     text:text,
+					anchor:anchor,
                     containerId:containerId,
 					offsetTop: offsetTop,
                     childs:[],
@@ -84,13 +94,16 @@ define([
 
 				if (config.shareMap["mdwiki"] && config.shareMap["mdwiki"]["blockList"]) {
 					var mdwiki = config.shareMap["mdwiki"];
-                    var containerId = mdwiki.getMdWikiContentContainerId();
+                    containerId = mdwiki.getMdWikiContentContainerId();
 					blockList = mdwiki["blockList"];
 
-					var scrollElement = $("#"+containerId);
-                    setFullHeight(scrollElement);
+					var scrollElement = $(window);
+					var tocContent = $("#"+containerId);
+					var dataOffsetTop = tocContent.get(0).getBoundingClientRect().top || 0;
+                    // setFullHeight(scrollElement);
+
                     scrollElement.on("scroll", function () {
-                        scrollProccess(scrollElement);
+                        scrollProccess(scrollElement, tocContent, dataOffsetTop);
                     });
 				}
 				for (var i = 0; i < blockList.length; i++) {
@@ -100,7 +113,7 @@ define([
 						continue;
 					}
 
-					if (block.tag[0] != "h" && block.tag[0] != "H") {
+					if (!block.tag || (block.tag[0] != "h" && block.tag[0] != "H")) {
 						continue;
 					}
 
@@ -122,28 +135,58 @@ define([
 				});
             };
 
-			var scrollProccess = function (scrollElement) {
+			var scrollProccess = function (scrollElement, tocContent, dataOffsetTop) {
                 scrollTimer && clearTimeout(scrollTimer);
-                var scrollTimer = setTimeout(function () {
-                    var scrollTop = scrollElement[0].scrollTop;
+                scrollTimer = setTimeout(function () {
+					scrollTimer = undefined;
+                    var scrollTop = scrollElement.scrollTop();
                     var nodeLen = tocList.length;
+                    if (scrollTop > dataOffsetTop){
+                    	$(".js-nav").addClass("affix");
+					}else{
+                        $(".js-nav").removeClass("affix");
+					}
                     for (var i = 0; i< nodeLen; i++){
-                        if (scrollTop <= tocList[i].offsetTop){
-                            active(tocList[i].containerId);
+                        // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
+                        if (scrollTop - tocList[i].offsetTop - $("#"+tocList[i].containerId).height() < 0){
+                            // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
+                            tocList[i-1] ? active(tocList[i-1]) : active(tocList[0]);
                             break;
                         }
                     }
                 }, 100);
             };
 
+			function initWidth(target) {
+				target = target || $(".js-nav");
+				var parent = target.parent();
+				var parentWidth = parent.width();
+				var paddingWidth = target.innerWidth() - target.width();
+				var newWidth = parentWidth - paddingWidth;
+				if (target.width !== newWidth){
+                    target.width(newWidth);
+				}
+            }
+
 			function init() {
 				generateToc();
-				setFullHeight($(".js-nav"));
+				// setFullHeight($(".js-nav"));
+				$anchorScroll();
+				$("#"+containerId)[0].scrollTop -= titleOffsetTop;
+				initWidth();
+				//console.log(containerId);
 				//console.log($("#" + $scope.containerId));
 				//setInterval(generateToc, 60000);
 			}
 
 			$scope.$watch("$viewContentLoaded", init);
+
+			$(window).resize(function () {
+                resizeTimer && clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    initWidth();
+                }, 100);
+            });
 		}]);
 	}
 

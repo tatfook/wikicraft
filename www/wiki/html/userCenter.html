@@ -165,12 +165,12 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" ng-click='selectContentType("dataSource")'>
-                            数据源
+                        <div class="panel-heading" ng-click='selectContentType("services")'>
+                            服务中心
                         </div>
-                        <div class="panel-body" ng-class='getExpandClass("dataSource")'>
+                        <div class="panel-body " ng-class='getExpandClass("services")'>
                             <ul class="list-group">
-                                <a ng-repeat="item in dataSourceItemList"
+                                <a ng-repeat="item in servicesItemList"
                                    ng-click="clickUserCenterItem(item)"
                                    ng-class="getActiveStyleClass(item)"
                                    class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
@@ -180,12 +180,12 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel panel-primary">
-                        <div class="panel-heading" ng-click='selectContentType("VIP")'>
-                            VIP
+                        <div class="panel-heading" ng-click='selectContentType("invite")'>
+                            邀请注册
                         </div>
-                        <div class="panel-body " ng-class='getExpandClass("VIP")'>
+                        <div class="panel-body " ng-class='getExpandClass("invite")'>
                             <ul class="list-group">
-                                <a ng-repeat="item in vipItemList"
+                                <a ng-repeat="item in invitesItemList"
                                    ng-click="clickUserCenterItem(item)"
                                    ng-class="getActiveStyleClass(item)"
                                    class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>
@@ -193,6 +193,36 @@
                         </div>
                     </div>
                 </li>
+                <!--<li class="list-group-item">-->
+                    <!--<div class="panel panel-primary">-->
+                        <!--<div class="panel-heading" ng-click='selectContentType("dataSource")'>-->
+                            <!--数据源-->
+                        <!--</div>-->
+                        <!--<div class="panel-body" ng-class='getExpandClass("dataSource")'>-->
+                            <!--<ul class="list-group">-->
+                                <!--<a ng-repeat="item in dataSourceItemList"-->
+                                   <!--ng-click="clickUserCenterItem(item)"-->
+                                   <!--ng-class="getActiveStyleClass(item)"-->
+                                   <!--class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li class="list-group-item">-->
+                    <!--<div class="panel panel-primary">-->
+                        <!--<div class="panel-heading" ng-click='selectContentType("VIP")'>-->
+                            <!--VIP-->
+                        <!--</div>-->
+                        <!--<div class="panel-body " ng-class='getExpandClass("VIP")'>-->
+                            <!--<ul class="list-group">-->
+                                <!--<a ng-repeat="item in vipItemList"-->
+                                   <!--ng-click="clickUserCenterItem(item)"-->
+                                   <!--ng-class="getActiveStyleClass(item)"-->
+                                   <!--class="list-group-item">{{item.name}}<span class="glyphicon glyphicon-chevron-right pull-right"></span></a>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
             </ul>
         </div>
         <div id="userCenterSubPage"></div>

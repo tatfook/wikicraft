@@ -4,7 +4,7 @@
 
 /* 程序过滤模块 */
 
-define([], function() {
+define(['jquery', 'text!html/browers.html'], function($, browersErrContent) {
 	config.registerFilter("/wiki/iframeagent", function() {
 		var lastHash = undefined;
 		var hashChangeFire = function(){
@@ -47,4 +47,14 @@ define([], function() {
 		}
 		return;
 	});
+
+	config.registerFilter("/wiki/filter", function(){
+		console.log("hello world");
+		$(window.document.body).html("<div>hello world</div>");
+    });
+
+    config.registerFilter("/wiki/browers", function(){
+        console.log("浏览器版本太低");
+        $(window.document.body).html(browersErrContent);
+    });
 });

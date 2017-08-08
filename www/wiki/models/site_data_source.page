@@ -99,6 +99,10 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 		rootPath="",
 		lastCommitId="master", 
 	}
+	local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=siteDataSource.projectName}).data
+	if project then
+		siteDataSource.projectId = project.id
+	end
 	
 	self:db():insertOne({["+username+sitename"]={siteDataSource.username, siteDataSource.sitename}}, siteDataSource, resume)
 	local _, siteDataSource = yield()
@@ -113,6 +117,67 @@ function site_data_source:api_createDefaultSiteDataSource(params)
 	return errors:wrap(nil, siteDataSource)
 end
 
+-- 创建一个gitlab项目
+function site_data_source:api_createProject(params)
+	if (not params.apiBaseUrl) or (not params.token) or (not params.projectName) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.projectName = string.lower(params.projectName)
+
+	System.os.GetUrl({
+		url=params.apiBaseUrl .. "/projects",
+		headers={['PRIVATE-TOKEN'] = params.token},
+		method = "GET",
+		qs = {
+			search=params.projectName,
+			owned=true,
+		}
+	}, resume)
+
+	local _, resp = yield()
+	if resp.rcode ~= 200 then
+		LOG.std(nil, "error", "keepwork", resp)
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	data = resp.data 
+	if #data > 0 then 
+		return errors:wrap(nil, data[1])
+	end
+
+	-- 不存创建项目
+	System.os.GetUrl({
+		url=params.apiBaseUrl .. "/projects",
+		headers={['PRIVATE-TOKEN'] = params.token},
+		method="POST",
+		form={name=params.projectName, request_access_enabled=true, visibility="public"}
+	}, resume)
+
+	local _, resp = yield()
+	local project = resp.data
+
+	if resp.rcode ~= 201 then
+		LOG.std(nil, "error", "keepwork", resp)
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	local hostname = request:GetHost()
+	local isLocal = string.find(hostname, "localhost")
+	if isLocal then
+		hostname = "dev.keepwork.com"
+	end
+	local hookUrl = "http://" .. hostname .. "/api/wiki/models/data_source/gitlabWebhook"
+
+	System.os.GetUrl({
+		url=params.apiBaseUrl .. "/projects" .. tostring(project.id) .. "/hooks",
+		push_events=true,
+		enable_ssl_verification=false,
+	},resume)
+	yield()
+
+	return errors:wrap(nil,project)
+end
 
 -- 更新项目ID
 function site_data_source:api_updateById(params)
@@ -300,10 +365,22 @@ function site_data_source:api_createSiteDataSource(params)
 	params.projectName = params.projectName or (projectNamePrefix .. string.lower(params.sitename))
 	params.visibility = params.visibility or "public"
 	
+	local dataSourceDB = models.data_source:new()
+	dataSourceDB:db():findOne({["+username+name"]={params.username, params.dataSourceName}}, resume)
+	local _, dataSource = yield()
+	
+	if not dataSource then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName}).data
+	if project then
+		params.projectId = project.id
+	end
 	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	local _, siteDataSource = yield()
 	
-	self:copyDataSourceToSite(siteDataSource, nil)
+	self:copyDataSourceToSite(siteDataSource, dataSource)
 	return errors:wrap(nil, siteDataSource)
 end
 

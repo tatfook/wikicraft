@@ -16,6 +16,33 @@ define([
         return this.id;
     }
 
+	// 发送视图内容加载完成通知
+	util.broadcastViewContentLoaded = function(params, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$broadcast("selfViewContentLoaded", params);
+	}
+
+	// 监听视图内容加载完成回调
+	util.onViewContentLoaded = function(cb, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$on("selfViewContentLoaded",function(event, data){
+			cb && cb(data);
+		});
+	}
+
+	util.onViewContentLoadedByContainerId = function(containerId, cb, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$on("selfViewContentLoaded",function(event, data){
+			if (data && data.containerId == containerId) {
+				cb && cb(data);
+			}
+		});
+
+	}
+
     // $html
     util.html = function(selector, htmlStr, $scope, isCompile) {
         isCompile = isCompile == undefined ? true : isCompile;
@@ -28,6 +55,9 @@ define([
         }
 
         $(selector).html(htmlStr);
+
+		util.broadcastViewContentLoaded({containerId:selector}, $scope);
+
         setTimeout(function () {
             $scope.$apply();
         });
@@ -195,6 +225,21 @@ define([
         return date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     }
 
+	util.ajax = function(obj) {
+		$.ajax({
+			url:obj.url,
+			type:obj.type || "GET",
+			dataType:obj.dataType || "json",
+			data:obj.data,
+			success:function(result, statu, xhr) {
+				obj.success && obj.success(result, statu, xhr);
+			},
+			error:function(xhr, statu, error) {
+				obj.error && obj.error(xhr, statu, error);
+			}
+		});
+	}
+
 	util.$http = function(obj) {
 		if (!obj.method || !obj.url) {
 			obj.errorCallback && obj.errorCallback();
@@ -249,7 +294,7 @@ define([
 			method:method,
 			url:url,
 			params:params,
-			isShowLoading:isShowLoading,
+			isShowLoading:isShowLoading == undefined ? true : isShowLoading,
 			callback:callback,
 			errorCallback:errorCallback,
 		});
@@ -334,7 +379,7 @@ define([
         var urlObj = util.parseUrl();
         var pathname = urlObj.pathname;
         var domain = urlObj.domain;
-        if (config.isOfficialDomain(domain) && (pathname.indexOf('/wiki/') == 0 || pathname == '/')) {
+        if (config.isOfficialDomain(domain) && (pathname.indexOf('/wiki/') == 0 || pathname == '/' || pathname.split("/").length < 3 )) {
             return true;
         }
         return false;

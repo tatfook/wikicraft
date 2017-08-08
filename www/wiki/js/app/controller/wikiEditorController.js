@@ -4,6 +4,7 @@
 
 define([
     'app',
+	//'html2canvas',
     'to-markdown',
     'codemirror',
     'helper/markdownwiki',
@@ -29,7 +30,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
+], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -372,10 +373,10 @@ define([
                 return false;
             }
 
-             if (!/^[a-zA-Z0-9_]+$/.test($scope.websitePage.pagename)){
-                 $scope.errInfo = '页面名包含只支持数字、字母、下划线(_)';
-                 return false;
-             }
+			 //if (!/^[a-zA-Z0-9_]+$/.test($scope.websitePage.pagename)){
+				 //$scope.errInfo = '页面名包含只支持数字、字母、下划线(_)';
+				 //return false;
+			 //}
 
             $scope.websitePage.url = treeNode.url + '/' + $scope.websitePage.pagename;
             $scope.websitePage.username = treeNode.username;
@@ -705,8 +706,60 @@ define([
 						username:page.username, 
 						sitename:page.sitename,
 						lastCommitId:lastCommitId,
-					});
+					}, undefined, undefined, false);
+				}, undefined, false);
+			}//}}}
+
+
+			// 提交至搜索引擎
+			function submitToSearchEngine(page) {//{{{
+				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
+				var obj = {
+					url:"http://keepwork.com" + page.url,
+					short_url:page.url,
+					data_source_url:"",
+					tags:"",
+					//logoUrl:"",
+					content:page.content,
+					user_name:page.username,
+					site_name:page.sitename,
+					page_name:page.pagename,
+				};
+				
+				util.ajax({
+					type: "POST",
+					url: url,
+					data: obj,
+					success: function(result) {
+						console.log(result);
+					},
+					error: function(response) {
+					},
 				});
+			}//}}}
+
+			// 生成页面快照
+			function makeSnapshot(currentDataSource, page) {//{{{
+				var containerId = mdwiki.getMdWikiContainerId();
+
+				setTimeout(function() {
+					html2canvas(document.getElementById(containerId),{
+						height:300,
+						width:300,
+
+						onrendered:function(canvas) {
+							if (!currentDataSource || !currentPage || !page || page.url != currentPage.url) {
+								return;
+							}
+							var imgDataURI = canvas.toDataURL('image/png');
+							//console.log(imgDataURI);
+							currentDataSource.uploadImage({
+								path:page.url,
+								content:imgDataURI,
+							});
+						},
+					});
+				}, 5000);
 			}//}}}
 
             // 保存页
@@ -742,9 +795,13 @@ define([
                     cb && cb();
                 };
 
+				submitToSearchEngine(page);
+
+				//makeSnapshot(currentDataSource, page);
+
                 currentSite = getCurrentSite(page.username, page.sitename);
                 if (currentSite) {
-                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', {userId:currentSite.userId, siteId:currentSite._id});
+                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
                 }
 
                 currentDataSource.writeFile({
@@ -755,6 +812,11 @@ define([
 
 
             $scope.$on("changeEditorPage", function (event, urlObj) {//{{{
+				//console.log(urlObj);
+				if ((!urlObj) || (currentPage && currentPage.url == urlObj.url)) {
+					return;
+				}
+				//return;
                 renderAutoSave(function () {
                     openUrlPage(urlObj);
                 }, function () {
@@ -762,7 +824,7 @@ define([
                 });
             });//}}}
 
-            // 获取站点文件列表
+            // 获取站k点文件列表
             function getSitePageList(params, cb, errcb) {//{{{
 				//console.log(params);
                 var currentDataSource = dataSource.getDataSource(params.username, params.sitename);
@@ -810,7 +872,7 @@ define([
             function openUrlPage(urlObj) {
                 urlObj = urlObj || storage.sessionStorageGetItem('urlObj') || {};
                 storage.sessionStorageRemoveItem('urlObj');
-                //console.log(urlObj);
+				//console.log(urlObj);
 
                 var username = urlObj.username;
                 var sitename = urlObj.sitename;
@@ -823,9 +885,8 @@ define([
                 }
                 currentPage = getPageByUrl(url);
                 currentSite = getCurrentSite(username, sitename);
-
+				//console.log(currentPage);
                 var _openUrlPage = function () {
-                    var url = '/' + urlObj.username + '/' + urlObj.sitename + '/' + (urlObj.pagename || 'index');
                     currentPage = getPageByUrl(url);
                     //console.log(url, pagepath, urlObj);
                     if (currentPage) {
@@ -919,6 +980,7 @@ define([
                     return;
                 }
 
+
                 //console.log(currentPage);
                 // 设置全局用户页信息和站点信息
                 $rootScope.userinfo = getUserinfo(currentPage.username);
@@ -933,8 +995,7 @@ define([
                     pagename: currentPage.pagename,
                     url:currentPage.url,
                 });
-                //!config.islocalWinEnv() && $location.path(currentPage.url);
-                !config.islocalWinEnv() && (window.location.href="/wiki/wikieditor#"+currentPage.url);
+				!config.islocalWinEnv() && (window.location.href="/wiki/wikieditor#"+currentPage.url);
 
                 function setEditorValue(page, content) {
                     page.isFirstEditor = true;
@@ -943,7 +1004,7 @@ define([
                         editorDocMap[page.url] = CodeMirror.Doc(content, 'markdown');
                     }
                     editor.swapDoc(editorDocMap[page.url]);
-                    //console.log(currentPage);
+					//console.log(currentPage);
 					page.content = content;
 					editor.setValue(content);
                     CodeMirror.signal(editor, 'change', editor);
@@ -961,6 +1022,8 @@ define([
 
 					// init tree user settimeout(function(){}, 0)
 					setTimeout(function() {
+						//getSitePageList({path:page.url, username:page.username, sitename:page.sitename});
+
 						$('#btUrl').val(window.location.origin + page.url);
 						var treeNode = treeNodeMap[page.url];
 						var treeid = getTreeId(page.username, page.sitename);
@@ -978,6 +1041,7 @@ define([
                 }
 
 				var page = currentPage;
+				//console.log(page);
                 dataSource.getUserDataSource($scope.user.username).registerInitFinishCallback(function () {
 					var callback = function(page, content) {
 						content = content || "";
@@ -1045,7 +1109,7 @@ define([
 						data:[],
                         //data: getTreeData($scope.user.username, allPageMap, false),
                         onNodeSelected: function (event, data) {
-                            //console.log(data.pageNode);
+							//console.log(data.pageNode);
                             //console.log("---------onNodeSelected----------");
                             var treeid = getTreeId(data.pageNode.username, data.pageNode.sitename);
                             if (data.pageNode.isLeaf) {
@@ -2706,6 +2770,7 @@ define([
                     $("#srcview").width("50%");
                     $("#preview").width("50%");
                     initView();
+					openPage();
                 };
 
                 $scope.showPreview = function () {

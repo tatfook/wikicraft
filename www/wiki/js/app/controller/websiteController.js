@@ -44,8 +44,8 @@ define([
         }
 
         // 访问网站
-        $scope.goWebsiteIndexPage = function (websiteName) {
-            util.goUserSite('/' + $scope.user.username + '/' + websiteName, true);
+        $scope.goWebsiteIndexPage = function (sitename) {
+            util.goUserSite('/' + $scope.user.username + '/' + sitename, true);
         }
 
         // 编辑网站页面

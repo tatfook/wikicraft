@@ -1,39 +1,44 @@
-<div style="height: 100%; display: flex; flex-direction:column; min-height: 800px; min-width: 580px;" >
+<div style="height: 100%; display: flex; flex-direction:column; min-height: 600px; padding:0;">
 
-    <style scoped>     
-
-        .course-tips{
+    <style scoped>
+        .course-tips {
             margin-bottom: 5px;
             font-size: 14px;
             line-height: 14px;
             height: 20px;
         }
 
-        .course-tips, .chapter-title, .chapter-url{
-            word-break:keep-all;/* 不换行 */
-            white-space:nowrap;/* 不换行 */
-            overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
-            text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+        .course-tips,
+        .sort-tip {
+            word-break: keep-all;
+            /* 不换行 */
+            white-space: nowrap;
+            /* 不换行 */
+            overflow: hidden;
+            /* 内容超出宽度时隐藏超出部分的内容 */
+            text-overflow: ellipsis;
+            /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
         }
 
-        .course-title, .course-title input{
+        .course-title,
+        .course-title input {
             height: 73px;
             line-height: 73px;
             width: 100%;
         }
 
-        .course-title{
-            margin-bottom: 10px;   
+        .course-title {
+            margin-bottom: 10px;
         }
 
-        .course-title input{
+        .course-title input {
             text-align: center;
             border: 1px solid #d0d0d0;
             font-size: 28px;
             border-radius: 4px;
         }
 
-        .course-content{
+        .course-content {
             position: absolute;
             top: 123px;
             left: 15px;
@@ -43,25 +48,27 @@
             border-radius: 4px;
         }
 
-        .course-content:hover{
+        .course-content:hover {
             box-shadow: 4px 4px 4px #d0d0d0;
         }
 
-        .course-content .chapter-stag{
-            height: 35px;
-            line-height: 35px;
+        .chapter-stag {
+            overflow: hidden;
+        }
+
+        .course-content .chapter-stag {
             background-color: rgba(242, 242, 242, 1);
             border-bottom: 1px solid #d0d0d0;
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
         }
 
-        .course-content .chapter-stag > div{
+        .course-content .chapter-stag>div {
             padding: 0 10px;
             line-height: 35px;
         }
 
-        .course-content .chapter-list{
+        .course-content .chapter-list {
             position: absolute;
             top: 35px;
             left: 0;
@@ -72,13 +79,12 @@
             overflow-y: auto;
         }
 
-        .switch-txt{
+        .switch-txt {
             padding-right: 10px;
         }
-
         /* switch btn start*/
 
-        .switch-btn{
+        .switch-btn {
             min-width: 80px;
             border: 1px solid #d0d0d0;
             border-radius: 4px;
@@ -90,20 +96,22 @@
             font-size: 13px;
         }
 
-        .switch-btn .switch-animate{
+        .switch-btn .switch-animate {
             width: 150%;
             height: 20px;
             line-height: 20px;
             position: relative;
         }
 
-        .switch-left, .switch-middle, .switch-right{
+        .switch-left,
+        .switch-middle,
+        .switch-right {
             width: 33%;
             display: inline-block;
             text-align: center;
         }
 
-        .switch-left{
+        .switch-left {
             color: #ffffff;
             text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
             background-color: #41a7c5;
@@ -118,10 +126,10 @@
             border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
             *background-color: #5bc0de;
             /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-            filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+            filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
         }
 
-         .switch-right{
+        .switch-right {
             color: #333333;
             text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
             background-color: #f0f0f0;
@@ -136,10 +144,10 @@
             border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
             *background-color: #ffffff;
             /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-            filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-         }
+            filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+        }
 
-        .switch-middle{
+        .switch-middle {
             z-index: 100;
             width: 34%;
             border-left: 1px solid #cccccc;
@@ -158,14 +166,14 @@
             border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
             *background-color: #e6e6e6;
             /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-            filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+            filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
         }
 
-        .switch-on{
+        .switch-on {
             left: 0%;
         }
 
-        .switch-off{
+        .switch-off {
             left: -50%;
         }
 
@@ -174,14 +182,12 @@
             -moz-transition: left 0.2s ease-out;
             -o-transition: left 0.2s ease-out;
             transition: left 0.2s ease-out;
-        }                   
-
+        }
         /* switch btn end*/
-
         /*课程列表没添加的时候的遮罩 start*/
-
         /*文字垂直居中*/
-        .add-new{
+
+        .add-new {
             height: 100%;
             text-align: center;
             font-size: 18px;
@@ -190,43 +196,44 @@
             cursor: pointer;
         }
 
-        .add-new::after{
-            display:inline-block;
-            width:0;
-            height:100%;
-            vertical-align:middle;
-            content:"";
+        .add-new::after {
+            display: inline-block;
+            width: 0;
+            height: 100%;
+            vertical-align: middle;
+            content: "";
         }
         /*end*/
-
         /*课程 start*/
-        .chapter-no-stage{
+
+        .chapter-no-stage {
             border-top: 1px solid #d0d0d0;
             height: 100%;
         }
 
-        .chapter{
+        .chapter {
             border-top: 0;
             border-left: 1px solid #d0d0d0;
             border-right: 1px solid #d0d0d0;
             border-bottom: 1px solid #d0d0d0;
         }
 
-        .chapter-no-stage > div, .stage-box > div, .stage-list > div{
-            height: 46px;
+        .chapter-no-stage>div,
+        .stage-box>div,
+        .stage-list>div {
             line-height: 36px;
             padding: 5px 0;
         }
 
-        .stage-list > div{
-            padding-top: 0;
+        .stage-list>div {
+            padding-bottom: 0;
         }
 
-        .stage-box{
+        .stage-box {
             padding: 0;
         }
 
-        .chapter-stage-title{
+        .chapter-stage-title {
             border-top: 1px solid #d0d0d0;
             text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
             background-color: #41a7c5;
@@ -241,52 +248,49 @@
             color: white;
         }
 
-        .chapter-btn-group{
+        .chapter-btn-group {
             font-size: 20px;
             line-height: 26px;
-            float: right; 
+            float: right;
             margin-right: 5px;
         }
 
-        .chapter-btn-group i:hover{
+        .chapter-btn-group i:hover {
             color: #5bc0de;
         }
 
-        .chapter-btn-group > div{
+        .chapter-btn-group>div {
             width: 45%;
             display: inline-block;
         }
 
-        .chapter-btn-group > i{
+        .chapter-btn-group>i {
             cursor: pointer;
             margin: 0 5px;
             line-height: 36px;
         }
 
-        .add-new-btn{
+        .add-new-btn {
             border-left: 1px dashed #d0d0d0;
             border-right: 1px dashed #d0d0d0;
             border-bottom: 1px dashed #d0d0d0;
             text-align: center;
-            height: 46px;
             line-height: 46px;
             font-size: 18px;
         }
 
-        .edit-disable{
-            color: #d0d0d0 !important;
-            cursor: not-allowed !important;
-        }
-
-        .add-new-btn:hover{
+        .add-new-btn:hover {
             cursor: pointer;
         }
 
-        .edit-box{
-            height: 46px !important;
+        .edit-box {
+            padding-bottom: 5px;
         }
-        
-        .edit-txt, .ui-select-container input, .ui-select-container span.btn.btn-default.form-control.ui-select-toggle, .ui-select-container div.btn-default-focus{
+
+        .edit-txt,
+        .ui-select-container input,
+        .ui-select-container span.btn.btn-default.form-control.ui-select-toggle,
+        .ui-select-container div.btn-default-focus {
             text-align: left;
             border: 0;
             border-bottom: 1px solid #66afe9;
@@ -309,39 +313,47 @@
             -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         }
 
-        .edit-txt::-webkit-input-placeholder { /* WebKit browsers */  
-            color: #8e8e8e;  
-        }  
-        .edit-txt::-moz-placeholder { /* Mozilla Firefox 4 to 18 */  
-            color: #8e8e8e;  
-        }  
-        .edit-txt::-moz-placeholder { /* Mozilla Firefox 19+ */  
-            color: #8e8e8e;  
-        }  
-        .edit-txt::-ms-input-placeholder { /* Internet Explorer 10+ */  
-            color: #8e8e8e;  
-        }  
+        .edit-txt::-webkit-input-placeholder {
+            /* WebKit browsers */
+            color: #8e8e8e;
+        }
 
-        .edit-txt:focus, .ui-select-container input:focus{
+        .edit-txt::-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #8e8e8e;
+        }
+
+        .edit-txt::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #8e8e8e;
+        }
+
+        .edit-txt::-ms-input-placeholder {
+            /* Internet Explorer 10+ */
+            color: #8e8e8e;
+        }
+
+        .edit-txt:focus,
+        .ui-select-container input:focus {
             border-top: 0;
             border-left: 0;
             border-right: 0;
             border-radius: 0;
-            border-color: #66afe9;
+            border-color: #003d79;
             outline: 0;
-            -webkit-box-shadow: inset 0 0 0 rgba(0,0,0,.075),0 1px 0 rgba(102,175,233,.6);
-            box-shadow: inset 0 0 0 rgba(0,0,0,.075),0 1px 0 rgba(102,175,233,.6)
+            -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, .075), 0 1px 0 rgba(102, 175, 233, .6);
+            box-shadow: inset 0 0 0 rgba(0, 0, 0, .075), 0 1px 0 rgba(102, 175, 233, .6)
         }
 
-        .edit-btn{
+        .edit-btn {
             width: 100%;
         }
 
-        .stage-chp-add{
+        .stage-chp-add {
             margin-bottom: 20px;
         }
 
-        .add-new-stage{
+        .add-new-stage {
             margin-top: 30px;
             min-height: 200px;
             border: 1px dashed #d0d0d0;
@@ -350,30 +362,62 @@
             color: #8e8e8e;
         }
 
-        .add-new-stage::after{
-            display:inline-block;
-            width:0;
-            height:100%;
-            vertical-align:middle;
-            content:"";
+        .add-new-stage::after {
+            display: inline-block;
+            width: 0;
+            height: 100%;
+            vertical-align: middle;
+            content: "";
         }
-
         /*end*/
-
         /*拖动使用 start*/
-        .unselect-element{
-            -webkit-user-select:none;
-            -moz-user-select:none;
-            -ms-user-select:none;
-            user-select:none;
+
+        .unselect-element {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
-        .chapter-sort-mask{
+        .chapter-sort-mask {
             background-color: #f3f3f3;
         }
+        /*拖动使用 end*/
 
-         /*拖动使用 end*/
+        @media screen and (min-width:100px) and (max-width:460px) {
+            .swith-group {
+                float: left !important;
+            }
 
+            .course-content .chapter-list {
+                top: 70px;
+            }
+        }
+
+        @media screen and (min-width:100px) and (max-width:991px) {
+            .chapter-btn-group {
+                float: left;
+                padding-left: 15px;
+            }
+
+            .stage-edit-btn-group,
+            .edit-btn-group {
+                float: left;
+                width: 100%;
+                text-align: center;
+                padding-top: 5px;
+            }
+
+            .stage-edit-btn-group {
+                padding-left: 0px;
+            }
+        }
+
+        .stage-name {
+            background-color: inherit !important;
+            border-bottom-color: white;
+            color: white;
+        }
     </style>
 
     <div class="modal-header">
@@ -391,24 +435,23 @@
 
         <div class="course-content unselect-element">
             <div class="chapter-stag">
-                <div class="pull-left">
-                    拖动小节可调整小节排列顺序
+                <div class="pull-left sort-tip">
+                    <span>拖动小节可调整小节排列顺序</span>
                 </div>
-                <div class="pull-right">
+                <div class="pull-right swith-group">
                     <span class="switch-txt">分阶段教学</span>
                     <div class="switch-btn pull-right" ng-click="action.switchType()">
                         <div class="switch-animate" ng-class="{ true: 'switch-on', false: 'switch-off'}[switch]">
                             <div class="switch-left pull-left">ON</div>
                             <div class="switch-middle pull-left">&nbsp;</div>
                             <div class="switch-right pull-left">OFF</div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="chapter-list" 
-                ng-mousedown = "drag.start($event)" ng-mousemove="drag.move($event)" 
-                ng-mouseup = "drag.end($event)" ng-mouseleave="drag.end($event)">
+            <div class="chapter-list" ng-mousedown="drag.start($event)" ng-mousemove="drag.move($event)" ng-mouseup="drag.end($event)"
+                ng-mouseleave="drag.end($event)">
 
                 <div class="add-new" ng-show="course.chapter.length === 0" ng-click="action.initAdd()">
                     +添加小节
@@ -416,114 +459,52 @@
 
                 <!--阶段的章节 start-->
                 <div class="chapter-stage" ng-show="course.chapter.length !== 0 && switch" data-drop="true">
-                    <div ng-repeat="(key, chps) in course.chapterWithStage" 
-                        class="stage-box col-xs-12"
-                        data-drag="true" data-siblings="stage">
+                    <div ng-repeat="(key, chps) in course.chapterWithStage" class="stage-box col-xs-12" data-drag="true" data-siblings="stage">
 
-                        <div class="chapter chapter-stage-title col-xs-12 " ng-hide="action.stageEdit[key]">
-                            <div class="col-xs-4" ng-bind="course.getStageName(key)"></div>
+                        <div class="chapter chapter-stage-title col-xs-12">
+                            <div class="col-md-5 col-xs-12" data-drag="false">
+                                <input type="text" class="edit-txt stage-name" ng-model="course.stage[key]" id="{{'stage' + key}}" ng-change="action.setStageName(key)"
+                                    maxlength="100" ng-keyup="action.enter($event, 'stage', key)">
+                            </div>
                             <div class="chapter-btn-group">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true" ng-click="action.editStage(key, 'stage' + key)" ng-class="{'edit-disable': action.edit}"></i>
-                                <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveStage(key, 1)" ng-class="{'edit-disable': action.edit}"></i>
-                                <i class="fa fa-angle-double-up" aria-hidden="true" ng-click="action.moveStage(key, -1)" ng-class="{'edit-disable': action.edit}"></i>
-                                <i class="fa fa-trash-o" aria-hidden="true" ng-click="action.delStage(key)" ng-class="{'edit-disable': action.edit}"></i>
+                                <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveStage(key, 1)"></i>
+                                <i class="fa fa-angle-double-up" aria-hidden="true" ng-click="action.moveStage(key, -1)"></i>
+                                <i class="fa fa-trash-o" aria-hidden="true" ng-click="action.delStage(key)"></i>
                             </div>
                         </div>
 
-                        <div class="chapter chapter-stage-title col-xs-12" 
-                            ng-show="action.stageEdit[key]">
-                            <div class="col-xs-5">
-                                <input type="text" class="edit-txt" ng-model="item.stageName[key]" id="{{'stage' + key}}" maxlength="100" ng-keyup="action.enter($event, 'stage', key)">
-                            </div>
-                            <div class="chapter-btn-group">
-                                <div>
-                                    <button type="button" class="btn btn-default edit-btn" ng-click="action.updateStageName(key)">更新</button>    
-                                </div>
-                                <div>
-                                    <button type="button" class="btn btn-default edit-btn" ng-click="action.cancelUpdateStageName(key)">取消</button>    
-                                </div>
-                            </div>
-                        </div>
-                        
                         <!--升序显示-->
-                        <div ng-repeat="chp in chps | orderBy : 'chapter_order'" 
-                            class="stage-list chapter col-xs-12" 
-                            data-drag="true" data-siblings="stageChapter"> 
-                            <div ng-hide="chp.$edit" class="col-xs-12" >
-                                <div class="chapter-title col-xs-4">
-                                    {{chp.title}}
-                                </div>
-                                <div class="chapter-url col-xs-5">
-                                    {{chp.chapter_url}}
-                                </div>
-                                <div class="chapter-btn-group">
-                                    <i class="fa fa-pencil-square-o" aria-hidden="true" ng-click="action.editItem(key + 'ch' + $index, chp, key + 'ch' + $index)" ng-class="{'edit-disable': action.edit}"></i>
-                                    <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveItem(true, chp, 1)" ng-class="{'edit-disable': action.edit}"></i>
-                                    <i class="fa fa-angle-double-up" aria-hidden="true" ng-click="action.moveItem(true, chp, -1)" ng-class="{'edit-disable': action.edit}"></i>
-                                    <i class="fa fa-trash-o" aria-hidden="true" ng-click="action.delItem(chp)" ng-class="{'edit-disable': action.edit}"></i>
-                                </div>
-                            </div>
+                        <div ng-repeat="chp in chps | orderBy : 'chapter_order'" class="stage-list chapter col-xs-12" data-drag="true" data-siblings="stageChapter">
 
-                            <div ng-show="chp.$edit" class="col-xs-12 edit-box">
-                                <div class="chapter-title col-xs-4">
-                                    <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100" ng-keyup="action.enter($event, 'chapter', chp)">
+                            <div class="col-xs-12 edit-box">
+                                <div class="chapter-title col-md-4 col-xs-12" data-drag="false">
+                                    <!-- <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100"
+                                        ng-keyup="action.enter($event, 'chapter', chp)"> -->
+                                    <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100">
                                 </div>
-                                <div class="col-xs-5">
-                                    <ui-select ng-model="chp.chapter_url">
+                                <div class="col-md-5 col-xs-12" data-drag="false">
+                                    <ui-select ng-model="chp.chapter_url " uis-open-close="action.selectCloseOrOpen(isOpen)" on-select="action.selectItem()">                                        
                                         <ui-select-match placeholder="链接地址">
                                             <span ng-bind="chp.chapter_url"></span>
                                         </ui-select-match>
-                                        <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index">
-                                            <span ng-bind="item"></span>
+                                        <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index"  style="min-width: 300px">
+                                            <span ng-bind="item" title="{{item}}"></span>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
                                 <div class="chapter-btn-group">
-                                    <div>
-                                        <button type="button" class="btn btn-default edit-btn" ng-click="action.updateItem(chp)">更新</button>    
-                                    </div>
-                                    <div>
-                                        <button type="button" class="btn btn-default edit-btn" ng-click="action.cancelUpdateItem(key + 'ch' + $index, chp)">取消</button>    
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-
-                        <div class="chapter edit-box col-xs-12" ng-show="action.addItemStage[key]">
-                            <!-- 任何情况下只有一个修改 -->
-                            <div class="chapter-title col-xs-4">
-                                <input type="text" class="edit-txt" placeholder="小节标题" ng-model="item.newItem.title" id="{{'stage' + key + 'ch' + $index}}" maxlength="100" 
-                                ng-keyup="action.enter($event, 'addStagChp', key)">
-                            </div>
-                            <div class="col-xs-5">
-                                <ui-select ng-model="item.newItem.chapter_url">
-                                    <ui-select-match placeholder="链接地址">
-                                        <span ng-bind="item.newItem.chapter_url"></span>
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index">
-                                        <span ng-bind="item"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-
-                            
-                            <div class="chapter-btn-group">
-                                <div>
-                                    <button type="button" class="btn btn-default edit-btn" ng-click="action.addItem(true, key)">确定</button>    
-                                </div>
-                                <div>
-                                    <button type="button" class="btn btn-default edit-btn" ng-click="action.addBox(true, false, false, key)">取消</button>    
+                                    <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveItem(true, chp, 1)"></i>
+                                    <i class="fa fa-angle-double-up" aria-hidden="true" ng-click="action.moveItem(true, chp, -1)"></i>
+                                    <i class="fa fa-trash-o" aria-hidden="true" ng-click="action.delItem(chp)"></i>
                                 </div>
                             </div>
                         </div>
-                        <div class="add-new-btn stage-chp-add col-xs-12" 
-                            ng-click="action.addBox(true, true, false, key, 'stage' + key + 'ch' + $index)"
-                            ng-class="{'edit-disable': action.edit}">
+                        <div class="add-new-btn stage-chp-add col-xs-12" ng-click="action.addItem(true, key)">
                             +小节
                         </div>
                     </div>
-                    
-                    <div class="add-new-stage add-new-btn col-xs-12" ng-click="action.addStage()" ng-class="{'edit-disable': action.edit}">
+
+                    <div class="add-new-stage add-new-btn col-xs-12" ng-click="action.addStage()">
                         +阶段
                     </div>
                 </div>
@@ -532,80 +513,30 @@
                 <!--非阶段的章节 start-->
                 <div class="chapter-no-stage" ng-show="course.chapter.length !== 0 && !switch" data-drop="true">
                     <!--升序显示-->
-                    <div class="chapter col-xs-12" 
-                            ng-repeat = "chp in course.chapter | orderBy: 'chapter_order' track by $index"
-                            data-drag="true" data-siblings="chapter"> 
-                        <div ng-hide="chp.$edit">
-                            <div class="chapter-title col-xs-4">
-                                {{chp.title}}
-                            </div>
-                            <div class="col-xs-5">
-                                {{chp.chapter_url}}
-                            </div>
-                            <div class="chapter-btn-group">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true" ng-click="action.editItem($index, chp, 'chp' + $index)"></i>
-                                <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveItem(false, chp, 1)"></i>
-                                <i class="fa fa-angle-double-up" aria-hidden="true" ng-click="action.moveItem(false, chp, -1)"></i>
-                                <i class="fa fa-trash-o" aria-hidden="true" ng-click="action.delItem(chp)"></i>
-                            </div>
+                    <div class="chapter col-xs-12" ng-repeat="chp in course.chapter | orderBy: 'chapter_order' track by $index" data-drag="true"
+                        data-siblings="chapter">
+                        <div class="chapter-title col-md-4 col-xs-12" data-drag="false">
+                            <!-- <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="chp{{$index}}" maxlength="100" ng-keyup="action.enter($event, 'chapter', chp)"> -->
+                            <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100">
                         </div>
-
-                        <div ng-show="chp.$edit" class="edit-box">
-                            <div class="chapter-title col-xs-4">
-                                <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="chp{{$index}}" maxlength="100" 
-                                ng-keyup="action.enter($event, 'chapter', chp)">
-                            </div>
-                            <div class="col-xs-5">
-                                <ui-select ng-model="chp.chapter_url" data-drag="false">
-                                    <ui-select-match placeholder="链接地址">
-                                        <span ng-bind="chp.chapter_url"></span>
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index">
-                                        <span ng-bind="item"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-
-                            <div class="chapter-btn-group">
-                                <div>
-                                    <button type="button" class="btn btn-default edit-btn" ng-click="action.updateItem(chp)">更新</button>    
-                                </div>
-                                <div>
-                                    <button type="button" class="btn btn-default edit-btn" ng-click="action.cancelUpdateItem($index, chp)">取消</button>    
-                                </div>
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="chapter edit-box col-xs-12" ng-show="action.addItemNoStage">
-                        
-                        <!-- 任何情况下只有一个在修改 -->
-                        <div class="chapter-title col-xs-4">
-                            <input type="text" class="edit-txt" placeholder="小节标题" ng-model="item.newItem.title" id="addNew" maxlength="100" 
-                            ng-keyup="action.enter($event, 'addchp', key)">
-                        </div>
-                        <div class="col-xs-5">
-                            <ui-select ng-model="item.newItem.chapter_url">
+                        <div class="col-md-5 col-xs-12" data-drag="false">
+                            <ui-select ng-model="chp.chapter_url" uis-open-close="action.selectCloseOrOpen(isOpen)" on-select="action.selectItem()">
                                 <ui-select-match placeholder="链接地址">
-                                    <span ng-bind="item.newItem.chapter_url"></span>
+                                    <span ng-bind="chp.chapter_url"></span>
                                 </ui-select-match>
-                                <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index">
-                                    <span ng-bind="item"></span>
+                                <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index" style="min-width: 300px">
+                                    <span ng-bind="item" title="{{item}}"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>
-
                         <div class="chapter-btn-group">
-                            <div>
-                                <button type="button" class="btn btn-default edit-btn" ng-click="action.addItem(false, null)">确定</button>    
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-default edit-btn" ng-click="action.addBox(false, false, true, null)">取消</button>    
-                            </div>
+                            <i class="fa fa-angle-double-down" aria-hidden="true" ng-click="action.moveItem(false, chp, 1)"></i>
+                            <i class="fa fa-angle-double-up" aria-hidden="true" ng-click="action.moveItem(false, chp, -1)"></i>
+                            <i class="fa fa-trash-o" aria-hidden="true" ng-click="action.delItem(chp)"></i>
                         </div>
                     </div>
 
-                    <div class="add-new-btn col-xs-12" ng-class="{'edit-disable': action.edit}" ng-click="action.addBox(false, true, false, null, 'addNew')">
+                    <div class="add-new-btn col-xs-12" ng-click="action.addItem(false)">
                         +小节
                     </div>
                 </div>
@@ -614,8 +545,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
-        <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()" ng-class="{'edit-disable': action.edit}">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()">确定</button>
     </div>
 
 </div>

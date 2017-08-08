@@ -8,23 +8,29 @@ define([
 		'helper/storage',
 		'helper/dataSource',
 		'text!html/test.html',
-		'ace',
-], function (app, util, storage, dataSource,  htmlContent) {
+		//'html2canvas',
+], function (app, util, storage, dataSource,  htmlContent/*, html2canvas*/) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
-			//console.log($location, $location.hash());
-			//$anchorScroll();
-			//
-			$scope. goMyPay = function(){
-				storage.sessionStorageSetItem('userCenterContentType', 'userProfile');
-				storage.sessionStorageSetItem("userCenterSubContentType", 'myPay');
-				//util.go("userCenter");
+			var test = config.services.markdownit.render("# test");
+			util.html("#test", test);
+			//util.post(config.apiUrlPrefix + "test/echo",{list:[{test:"tes"}]});
+			//util.ajax({
+				//url:"http://221.0.111.131:19001/Application/essearch",
+				//type:"POST",
+				//data:{
+					//keyword:"test",
+					//page:1,
+					//flag:4,
+					//highlight:1
+				//},
+				//success: function(result, status, xhr) {
+					//console.log(result);
+				//},
+				//error: function(xhr, status, error){
 
-				util.go("userCenter?"+util.getQueryString({
-					userCenterContentType:"userProfile",
-					userCenterSubContentType:"accountSafe",
-				}));
-			}
+				//}
+			//});
 		}
 		$scope.$watch("$viewContentLoaded", init);
 

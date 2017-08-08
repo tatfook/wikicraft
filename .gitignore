@@ -2,7 +2,6 @@ assets.log
 log.txt
 .idea/
 database/
-npl_packages/
 log/
 obj/
 Properties/
@@ -20,3 +19,5 @@ www_build/
 /packages
 *.secret
 Run.bat
+
+npl_packages/

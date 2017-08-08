@@ -11,6 +11,8 @@ define(['app', 'helper/util',
     function registerController(wikiBlock) {
         app.registerController("courseController", ['$scope', '$uibModal', '$timeout', '$http', function ($root, $uibModal, $timeout, $http) {
 
+            $root.isEdit = wikiBlock.isEditorEnable();
+
             $root.data = {
                 host: 'http://121.14.117.239/api/lecture/course',
                 course: { //课程数据
@@ -23,21 +25,8 @@ define(['app', 'helper/util',
                     //章节分阶段后的列表， 用于显示
                     chapterWithStage: {},
 
-                    //获取分组的名字
-                    getStageName: function (stage_order) {
-                        var item = $root.data.course.chapter,
-                            name = "";
-
-                        stage_order = parseInt(stage_order, 10);
-
-                        for (var i = 0; i < item.length; i++) {
-                            if (stage_order === item[i]["chapter_stage_order"]) {
-                                name = item[i]["chapter_stage"];
-                                break;
-                            }
-                        }
-                        return name;
-                    },
+                    //阶段名字
+                    stage: {},
 
                     //分组
                     setChapterWithStage: function () {
@@ -46,16 +35,34 @@ define(['app', 'helper/util',
                         $root.data.course.chapterWithStage = _.memoize(function (items, field) {
                             return _.groupBy(items, field);
                         })(items, 'chapter_stage_order');
+
+
+                        for (var i = 0; i < items.length; i++) {
+                            var item = items[i];
+                            $root.data.course.stage[item['chapter_stage_order'].toString()] = item['chapter_stage'];
+                        }
+                    },
+
+                    //获取courseurl
+                    getCourseUrl: function () {
+                        return $root.pageinfo.url || window.location.pathname;
                     },
 
                     //判断是否有数据，用于一开始显示列表
                     hasData: function (e) {
-                        return $root.data.course.title === null || angular.equals({}, $root.data.course.title) ? true : false;
+                        return $root.data.course.title === '' || $root.data.course.title === null || angular.equals({}, $root.data.course.title) ? true : false;
                     }
                 },
 
+                orginData: {},
+
                 switch: true,
             }
+
+            //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
+            var watch = $root.$watch('data.course.chapter', function (newValue, oldValue, scope) {
+                $root.data.course.setChapterWithStage();
+            }, true);
 
             function init() {
 
@@ -73,7 +80,7 @@ define(['app', 'helper/util',
 
                         $root.data.course.title = data.course;
 
-                        if (data.course.is_stage) {
+                        if (data.course && data.course.is_stage !== null && data.course.is_stage !== '') {
                             $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
                         }
 
@@ -84,10 +91,11 @@ define(['app', 'helper/util',
 
                             item['chapter_stage_order'] = parseInt(item['chapter_stage_order'], 10);
                             item['chapter_order'] = parseInt(item['chapter_order'], 10);
-                            item['$edit'] = false;
                         }
 
                         $root.data.course.chapter = items;
+
+                        $root.data.orginData = angular.copy($root.data.course);
                     }
                 }, function (rs) {
                     console.log(rs);
@@ -100,9 +108,10 @@ define(['app', 'helper/util',
                 if (!wikiBlock.isEditorEnable()) {
                     return;
                 }
+
                 $uibModal.open({
                     template: htmlContent,
-                    size: 'lg',
+                    size: 'md',
                     backdrop: 'static',
                     keyboard: false,
                     // controller: 'courseController',
@@ -119,6 +128,9 @@ define(['app', 'helper/util',
                             //章节分阶段后的列表， 用于显示
                             chapterWithStage: {},
 
+                            //阶段名字
+                            stage: {},
+
                             //分组
                             setChapterWithStage: function () {
                                 var items = _.orderBy($scope.course.chapter, ['chapter_stage_order', 'chapter_order'], ['asc', 'asc']);
@@ -126,100 +138,65 @@ define(['app', 'helper/util',
                                 $scope.course.chapterWithStage = _.memoize(function (items, field) {
                                     return _.groupBy(items, field);
                                 })(items, 'chapter_stage_order');
-                            },
 
-                            //获取分组的名字
-                            getStageName: function (stage_order) {
-                                var item = $scope.course.chapter,
-                                    name = "";
-
-                                stage_order = parseInt(stage_order, 10);
-
-                                for (var i = 0; i < item.length; i++) {
-                                    if (stage_order === item[i]["chapter_stage_order"]) {
-                                        name = item[i]["chapter_stage"];
-                                        break;
-                                    }
+                                for (var i = 0; i < items.length; i++) {
+                                    var item = items[i];
+                                    $scope.course.stage[item['chapter_stage_order'].toString()] = item['chapter_stage'];
                                 }
-                                return name;
                             },
                         };
 
                         $scope.switch = $root.data.switch, // 是否分阶段
 
-                        $http.post($scope.host + '/user/urls', {
-                            username: $scope.userinfo.username,
-                        }, {
-                            isShowLoading: true
-                        }).then(function (rs) {
-                            var data = rs.data ? rs.data.data : null;
+                            $http.post($scope.host + '/user/urls', {
+                                username: $scope.userinfo.username,
+                                course_url: $root.pageinfo.url || window.location.pathname,
+                            }, {
+                                isShowLoading: true
+                            }).then(function (rs) {
+                                var data = rs.data ? rs.data.data : null;
 
-                            if (data) {
-                                var item = [];
-                                for (var i = 0; i < data.length; i++) {
-                                    if (data[i].url !== window.location.pathname && data[i].url !== $scope.pageinfo.url) {
-                                        item.push(data[i].url);
+                                if (data) {
+                                    var item = [];
+                                    for (var i = 0; i < data.length; i++) {
+                                        if (data[i].url !== window.location.pathname 
+                                            && data[i].url !== $scope.pageinfo.url
+                                            //不同目录的不能选取
+                                            && (data[i].url.substring(0, data[i].url.lastIndexOf('/')) === window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) 
+                                                ||data[i].url.substring(0, data[i].url.lastIndexOf('/')) === $scope.pageinfo.url.substring(0, $scope.pageinfo.url.lastIndexOf('/')) )) {
+                                            
+                                            item.push(data[i].url);
+                                        }
                                     }
+
+                                    $scope.select.selectArray = item;
                                 }
 
-                                $scope.select.selectArray = item;
-                            }
-
-                        }, function (rs) {
-                            console.log(rs);
-                        });
+                            }, function (rs) {
+                                console.log(rs);
+                            });
 
                         // 新增或修改的时候下拉选择的数据
                         $scope.select = {
                             selectArray: [],
                         }
 
-                        // 新增或修改的item绑定
-                        $scope.item = {
-
-                            newItem: {
-                                title: "",
-                                chapter_url: ""
-                            },
-
-                            //阶段的名称修改
-                            stageName: {},
-
-                            //设置值
-                            setItem: function (isStage, title, chapter_url, stage) {
-                                var that = $scope.item;
-
-                                that.newItem.title = title;
-                                that.newItem.chapter_url = chapter_url;
-                            }
-                        };
-
                         //具体的动作
                         $scope.action = {
-
-                            //是否edit状态，禁止拖动
-                            edit: false,
-                            
-                            addItemNoStage: false, //不分组
-                            addItemStage: {}, //分组显示添加
-
-                            //旧的item缓存，普通item取消修改使用
-                            oldItemCache: [],
-
-                            //分组名称修改，用于打开标志
-                            stageEdit: {},
 
                             switchType: function () {
                                 var that = $scope.action;
 
-                                if (!that.edit) { //修改状态下不给切换
-                                    $scope.switch = !$scope.switch;
-
-                                    $root.data.switch = $scope.switch;
-                                }
+                                $scope.switch = !$scope.switch;
+                                $root.data.switch = $scope.switch;
                             },
 
-                            isAddStage: false,
+                            selectOpen: false,
+
+                            //下拉选中打开或关闭的事件
+                            selectCloseOrOpen: function(flag){
+                                $scope.action.selectOpen = flag;
+                            },
 
                             //数字转中文数字
                             _numToChn: function (n) {
@@ -239,104 +216,136 @@ define(['app', 'helper/util',
                                     .replace(/一(十)/g, "$1").replace(/(元)$/g, "").replace(/(零)$/g, "");
                             },
 
-                            enter: function (evt, type, key) {
-                                var that = $scope.action;
+                            // enter: function (evt, type, key) {
+                            //     var that = $scope.action;
 
-                                if (evt.keyCode === 13) {
+                            //     if (evt.keyCode === 13) {
+                            //         evt.keyCode = 9;
+                            //     }
+                            // },
 
-                                    if (type === 'stage') {
-                                        that.updateStageName(key);
-                                    } else if (type === 'chapter') {
-                                        that.updateItem(key);
-                                    } else if (type === 'addStagChp') {
-                                        that.addItem(true, key);
-                                    } else if (type === 'addchp') {
-                                        that.addItem(false, null);
+                            stageNameTime: null,
+
+                            setStageName: function (key) {
+                                clearTimeout($scope.action.stageNameTime);
+                                $scope.action.stageNameTime = $timeout(function () {
+                                    var name = $scope.course.stage[key],
+                                        item = $scope.course.chapter;
+
+                                    key = parseInt(key ,10);
+
+                                    for (var i = 0; i < item.length; i++) {
+                                        if (key === item[i]["chapter_stage_order"]) {
+                                            item[i]["chapter_stage"] = name;
+                                        }
                                     }
-                                }
+
+                                }, 500)
                             },
 
-                            checkUrlExists: function (url) {
-                                var found = 0;
+                            // checkUrlExists: function (url, type) {
+                            //     var found = 0,
+                            //         checkCount = type === 'add' ? 0 : 1;
 
-                                for (var i = 0; i < $scope.course.chapter.length; i++) {
-                                    var it = $scope.course.chapter[i];
+                            //     for (var i = 0; i < $scope.course.chapter.length; i++) {
+                            //         var it = $scope.course.chapter[i];
 
-                                    if (it.chapter_url !== '' && it.chapter_url === url) {
-                                        found++;
-                                    }
-                                }
+                            //         if (it.chapter_url !== '' && it.chapter_url === url) {
+                            //             found++;
+                            //         }
+                            //     }
 
-                                if (found > 1) {
-                                    $uibModal.open({
-                                        template: `
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            链接地址已经选择。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-                                }
+                            //     if (found > checkCount) {
+                            //         $uibModal.open({
+                            //             template: `
+                            //             <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                            //                 <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
+                            //             </div>
+                            //             <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                            //                 链接地址已经选择。
+                            //             </div>
+                            //             <div class ="modal-footer">
+                            //                 <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
+                            //             </div>`,
+                            //             backdrop: 'static',
+                            //             keyboard: false,
+                            //             // controller: 'courseController',
+                            //         });
+                            //     }
 
-                                return found > 1;
-                            },
+                            //     return found > checkCount;
+                            // },
 
                             //开始的时候添加
                             initAdd: function () {
                                 var that = $scope.action,
                                     item = {
                                         chapter_url: '',
-                                        title: '小节标题',
+                                        title: '',
                                         chapter_stage: "第一阶段",
                                         chapter_order: 1,
                                         chapter_stage_order: 1,
-                                        $edit: false
                                     };
 
                                 $scope.course.chapter.push(item);
+                            },
 
-                                if ($scope.switch) { //新增阶段
-                                    //触发修改
-                                    that.editItem('1ch0', item, '1ch0');
-                                } else { //不是新增阶段
-                                    //触发修改
-                                    that.editItem('1', item, 'chp0');
+                            selectItem: function(){
+                                var item = $scope.course.chapter,
+                                    curl = {},
+                                    found = false;
+
+                                for (var i = 0; i < item.length; i++) {
+                                    var ii = item[i];
+                                    if (curl[ii.chapter_url]) {
+                                        found = true;
+                                        break;
+                                    } else {
+                                        curl[ii.chapter_url] = true;
+                                    }
                                 }
 
-                                that.isAddStage = true;
+                                if (found) {
+                                    $uibModal.open({
+                                        template: `                            
+                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
+                                        </div>
+                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                                            选择的小节链接不能重复。
+                                        </div>
+                                        <div class ="modal-footer">
+                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
+                                        </div>`,
+                                        backdrop: 'static',
+                                        keyboard: false,
+                                        // controller: 'courseController',
+                                    });
+
+
+                                }
                             },
 
-                            //设置是否修改状态
-                            setEdit: function (edit) {
-                                var that = that = $scope.action;
-                                that.edit = edit;
-                            },
+                            // //设置是否修改状态
+                            // setEdit: function (edit) {
+                            //     var that = that = $scope.action;
+                            //     that.edit = edit;
+                            // },
 
-                            //设置选中和全选
-                            setFocus: function (eleID) {
-                                $timeout(function () {
-                                    var ele = document.getElementById(eleID);
-                                    ele.focus();
-                                    ele.select();
-                                }, 100);
-                            },
+                            // //设置选中和全选
+                            // setFocus: function (eleID) {
+                            //     $timeout(function () {
+                            //         var ele = document.getElementById(eleID);
+                            //         ele.focus();
+                            //         ele.select();
+                            //     }, 100);
+                            // },
 
                             //添加阶段
                             addStage: function () {
                                 var max = 1,
                                     that = $scope.action,
                                     list = $scope.course.chapter;
-
-                                if (that.edit) {
-                                    return;
-                                }
 
                                 //找到组最大值
                                 for (var i = 0; i < list.length; i++) {
@@ -350,106 +359,20 @@ define(['app', 'helper/util',
                                 var nChn = that._numToChn(max),
                                     item = {
                                         chapter_url: '',
-                                        title: '小节标题',
+                                        title: '',
                                         chapter_stage: "第" + nChn + "阶段",
                                         chapter_order: 0,
                                         chapter_stage_order: max,
-                                        $edit: true
                                     };
 
                                 //新增item
                                 $scope.course.chapter.push(item);
-
-                                //触发修改
-                                that.editItem(max + 'ch0', item, max + 'ch' + 0);
-
-                                that.isAddStage = true;
-                            },
-
-                            //stage_order 传入是字符串，实际stage_order字段是int，下面使用的stage_order都有同样的问题。
-                            editStage: function (stage_order, eleID) {
-                                var that = $scope.action;
-
-                                //修改状态下不点击
-                                if (that.edit) {
-                                    return;
-                                }
-
-                                $scope.item.stageName[stage_order] = $scope.course.getStageName(stage_order);
-
-                                that.showStageEdit(stage_order, true, false);
-
-                                that.setFocus(eleID);
-
-                                that.setEdit(true);
-                            },
-
-                            //更新stagename
-                            updateStageName: function (stage_order) {
-                                var that = $scope.action,
-                                    val = $scope.item.stageName[stage_order],
-                                    stage_order = parseInt(stage_order, 10),
-                                    item = $scope.course.chapter;
-
-                                if (val.trim() === '') {
-                                    $uibModal.open({
-                                        template: `
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            阶段标题不能为空。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-                                    return;
-                                }
-
-                                for (var i = 0; i < item.length; i++) {
-                                    if (stage_order === item[i]["chapter_stage_order"]) {
-                                        item[i]["chapter_stage"] = val;
-                                    }
-                                }
-
-                                that.showStageEdit(stage_order.toString(), false, true);
-
-                                that.setEdit(false);
-                            },
-
-                            // 取消更新stageName
-                            cancelUpdateStageName: function (stage_order) {
-                                var that = $scope.action;
-
-                                that.showStageEdit(stage_order, false, true);
-
-                                that.edit = false;
-                            },
-
-                            //隐藏或显示阶段名称修改框
-                            showStageEdit: function (stage_order, show, clear) {
-
-                                $scope.action.stageEdit[stage_order] = show;
-
-                                if (clear) {
-                                    stage_order = parseInt(stage_order, 10);
-                                    $scope.item.stageName[stage_order] = "";
-                                }
                             },
 
                             //移动阶段，交换最近的阶段
                             moveStage: function (stage_order, move) {
-                                var that = $scope.action;
-                                //修改状态下不点击
-                                if (that.edit) {
-                                    return;
-                                }
-
-                                var stage_order = parseInt(stage_order, 10),
+                                var that = $scope.action,
+                                    stage_order = parseInt(stage_order, 10),
                                     item = $scope.course.chapter,
                                     nStage = stage_order + move,
                                     max = 1;
@@ -472,10 +395,6 @@ define(['app', 'helper/util',
                             //删除阶段
                             delStage: function (stage_order) {
                                 var that = $scope.action;
-                                //修改状态下不点击
-                                if (that.edit) {
-                                    return;
-                                }
 
                                 $uibModal.open({
                                     template: `                            
@@ -531,100 +450,24 @@ define(['app', 'helper/util',
                                 });
                             },
 
-                            //行内编辑的时候复制item
-                            editItem: function (idx, chpItem, eleID) {
-                                var that = $scope.action;
-                                //修改状态下不点击
-                                if (that.edit) {
-                                    return;
-                                }
-
-                                chpItem.$edit = true;
-
-                                that.oldItemCache[idx] = angular.copy(chpItem);
-
-                                //设置当前的修改状态
-                                that.setEdit(true);
-
-                                //设置选中
-                                that.setFocus(eleID);
-                            },
-
                             // 新增item
                             addItem: function (isStage, stage_order) {
                                 var that = $scope.action,
-                                    item = angular.copy($scope.item.newItem);
+                                    newItem = {
+                                        chapter_url: '',
+                                        title: '',
+                                        chapter_order: $scope.course.chapter.length + 1,
+                                    }
 
-                                if (item.title.trim() === '') {
-                                    $uibModal.open({
-                                        template: `
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            章节标题不能为空。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-                                    return;
-                                }
-
-                                if (item.chapter_url.trim() === '') {
-                                    $uibModal.open({
-                                        template: `
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            链接不能为空。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-                                    return;
-                                }
-
-                                var found = that.checkUrlExists(item.chapter_url);
-
-                                if (found) {
-                                    return;
-                                }
-
-                                var newItem = {
-                                    chapter_url: item.chapter_url,
-                                    title: item.title,
-                                    chapter_order: $scope.course.chapter.length + 1,
-                                    $edit: false
-                                }
-
-                                newItem['chapter_stage'] = isStage ? $scope.course.getStageName(stage_order) : '第一阶段';
+                                newItem['chapter_stage'] = isStage ? $scope.course.stage[stage_order] : '第一阶段';
                                 newItem['chapter_stage_order'] = isStage ? parseInt(stage_order, 10) : 1;
 
                                 $scope.course.chapter.push(newItem);
-
-                                //点击增加后设置修改状态为flase
-                                that.setEdit(false);
-
-                                //隐藏框
-                                that.addBox(isStage, false, true, stage_order);
                             },
 
                             // 删除当前的item
                             delItem: function (chpItem) {
                                 var that = $scope.action;
-                                //修改状态下不点击
-                                if (that.edit) {
-                                    return;
-                                }
 
                                 $uibModal.open({
                                     template: `                            
@@ -665,14 +508,8 @@ define(['app', 'helper/util',
 
                             // 移动item
                             moveItem: function (isStage, chpItem, move) {
-                                var that = $scope.action;
-
-                                //修改状态下不点击
-                                if (that.edit) {
-                                    return;
-                                }
-
-                                var arr = $scope.course.chapter,
+                                var that = $scope.action,
+                                    arr = $scope.course.chapter,
                                     index = -1;
 
                                 //check 是否存在
@@ -701,104 +538,6 @@ define(['app', 'helper/util',
                                     //交换数据
                                     arr[newIndex] = arr.splice(index, 1, arr[newIndex])[0];
                                 }
-                            },
-
-                            // 行内编辑的时候更新item，因为使用了ng-model绑定的，自动会更新数据
-                            updateItem: function (item) {
-                                var that = $scope.action;
-
-                                if (item.title.trim() === '') {
-                                    $uibModal.open({
-                                        template: `
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            章节标题不能为空。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-                                    return;
-                                }
-
-                                if (item.chapter_url.trim() === '') {
-                                    $uibModal.open({
-                                        template: `
-                                        <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
-                                            <h3 class ="modal-title" style="min-width:100px;flex:1;">更新提示</h3>
-                                        </div>
-                                        <div class ="modal-body" style="display:flex;display:-webkit-flex;">
-                                            链接不能为空。
-                                        </div>
-                                        <div class ="modal-footer">
-                                            <button class ="btn btn-primary" type="button" ng-click="$dismiss(true)">确定</button>
-                                        </div>`,
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        // controller: 'courseController',
-                                    });
-                                    return;
-                                }
-
-                                var found = that.checkUrlExists(item.chapter_url);
-
-                                if (found) {
-                                    return;
-                                }
-
-                                var that = $scope.action;
-
-                                item.$edit = false;
-
-                                that.setEdit(false)
-                            },
-
-                            // 行内编辑取消的时候还原
-                            cancelUpdateItem: function (idx, newItem) {
-                                var that = $scope.action,
-                                    oldItem = that.oldItemCache[idx];
-
-                                newItem["title"] = oldItem ? oldItem["title"] : "";
-                                newItem["chapter_url"] = oldItem ? oldItem["chapter_url"] : "";
-
-                                newItem.$edit = false;
-
-                                that.edit = false;
-
-                                //这里要处理新增阶段时，修改记录的时候，按了取消
-                                if (that.isAddStage) {
-                                    $scope.course.chapter.splice($scope.course.chapter.length - 1, 1);
-
-                                    that.isAddStage = false;
-                                }
-                            },
-
-                            //打开新增模块
-                            addBox: function (isStage, show, clear, stage_order, eleID) {
-                                var that = $scope.action;
-
-                                if (that.edit === true && show === true) {
-                                    return;
-                                }
-
-                                if (isStage) {
-                                    that.addItemStage[stage_order] = show;
-                                } else {
-                                    that.addItemNoStage = show;
-                                }
-
-                                that.edit = show;
-
-                                // 判断是否清除ceche数据
-                                clear && $scope.item.setItem(isStage, "", "", stage_order);
-
-                                // 打开时设置选中
-                                show && that.setFocus(eleID);
                             },
 
                             //这里是处理拖动的排序
@@ -978,16 +717,20 @@ define(['app', 'helper/util',
 
                                 //有绑定事件的不触发或修改状态下不触发
                                 if ($(tag).attr('ng-click') ||
-                                    $scope.action.edit ||
-                                    $tag.parents('[data-drag="false"]').length ||
+                                    $(tag).parents('[data-drag="false"]').length ||
                                     tag.tagName === 'input' ||
                                     evt.button !== 0 ||
-                                    tag.tagName === 'button'
+                                    tag.tagName === 'button' ||
                                     //找不到就退出
-                                    ||
                                     !$tag.length) {
                                     return;
                                 }
+
+                                //下拉选择框已经打开的情况下不触发
+                                if($scope.action.selectOpen){
+                                    return;
+                                }
+                                
 
                                 //滚动时使用
                                 that.chHeight = $('.chapter-list').get(0).scrollHeight;
@@ -1017,7 +760,7 @@ define(['app', 'helper/util',
                                 } else if (type === 'stageChapter') { //阶段下面的章节
                                     var closetStage = $tag.closest('div[data-drag="true"][data-siblings="stage"]');
                                     that.stageFrom = closetStage.index();
-                                    that.chapterFrom = $tag.index() - 2; //因为有个title
+                                    that.chapterFrom = $tag.index() - 1; //因为有个title
                                 }
 
                                 elLeft = 10;
@@ -1093,8 +836,13 @@ define(['app', 'helper/util',
                                         st = $chl.scrollTop(), //滚动了多少
                                         elHeight = that.$clnTag.get(0).clientHeight; //拖动元素的高度
 
-                                    //当元素高度超过可视化高度的60，取60
+                                    //当元素高度超过可视化高度的80，取80
                                     elHeight = elHeight > 80 ? 80 : elHeight;
+
+                                    //小于991宽度的时候用55
+                                    if (document.body.clientWidth <= 991) {
+                                        elHeight = 55;
+                                    }
 
                                     clearTimeout(that.autoScroll.pid);
                                     //向上滚动，滚动到0后就不滚动
@@ -1211,12 +959,9 @@ define(['app', 'helper/util',
                                     $tag = $(tag).closest('div[data-drag="true"]');
 
                                 //有绑定事件的不触发或修改状态下不触发
-                                if ($tag.attr('ng-click') ||
-                                    $scope.action.edit ||
-                                    $tag.parents('[data-drag="false"]').length ||
+                                if ($(tag).parents('[data-drag="false"]').length ||
                                     tag.tagName === 'input' ||
                                     tag.tagName === 'button') {
-
                                     return;
                                 }
 
@@ -1321,6 +1066,7 @@ define(['app', 'helper/util',
                                 that.chapterFrom = -1;
                             }
                         };
+
                         $scope.save = function () {
                             //修改状态下不点击
                             if ($scope.action.edit) {
@@ -1358,6 +1104,38 @@ define(['app', 'helper/util',
                                 return;
                             }
 
+                            var curl = {},
+                                found = false;
+                            for (var i = 0; i < item.length; i++) {
+                                var ii = item[i];
+                                if (curl[ii.chapter_url]) {
+                                    found = true;
+                                    break;
+                                } else {
+                                    curl[ii.chapter_url] = true;
+                                }
+                            }
+
+                            if (found) {
+                                $uibModal.open({
+                                    template: `                            
+                                    <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                        <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
+                                    </div>
+                                    <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                                        选择的小节链接不能重复。
+                                    </div>
+                                    <div class ="modal-footer">
+                                        <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
+                                    </div>`,
+                                    backdrop: 'static',
+                                    keyboard: false,
+                                    // controller: 'courseController',
+                                });
+
+                                return;
+                            }
+
                             title['title'] = title['title'];
                             title['course_url'] = $scope.pageinfo.url || window.location.pathname;
                             title['chapter_url'] = '';
@@ -1368,11 +1146,58 @@ define(['app', 'helper/util',
                             title['create_user'] = create_user;
                             title['create_nickname'] = create_nickname;
 
+                            var pass = true;
                             for (var pro in gitem) {
+                                if (!pass) {
+                                    break;
+                                }
+
                                 if (gitem.hasOwnProperty(pro)) {
                                     var pitem = gitem[pro];
                                     gidx += 1;
                                     for (var i = 0; i < pitem.length; i++) {
+                                        if (pitem[i]['title'] === null || pitem[i]['title'] === '') {
+                                            $uibModal.open({
+                                                template: `                            
+                                                <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                                    <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
+                                                </div>
+                                                <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                                                    小节标题不能为空。
+                                                </div>
+                                                <div class ="modal-footer">
+                                                    <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
+                                                </div>`,
+                                                backdrop: 'static',
+                                                keyboard: false,
+                                                // controller: 'courseController',
+                                            });
+
+                                            pass = false;
+                                            break;
+                                        }
+
+                                        if (pitem[i]['chapter_url'] === null || pitem[i]['chapter_url'] === '') {
+                                            $uibModal.open({
+                                                template: `                            
+                                                <div class ="modal-header" style="display:flex;display:-webkit-flex;align-items:center;-webkit-align-items:center">
+                                                    <h3 class ="modal-title" style="min-width:100px;flex:1;">保存失败</h3>
+                                                </div>
+                                                <div class ="modal-body" style="display:flex;display:-webkit-flex;">
+                                                    小节链接不能为空。
+                                                </div>
+                                                <div class ="modal-footer">
+                                                    <button class ="btn btn-primary" type="button" ng-click="$dismiss()">确定</button>
+                                                </div>`,
+                                                backdrop: 'static',
+                                                keyboard: false,
+                                                // controller: 'courseController',
+                                            });
+
+                                            pass = false;
+                                            break;
+                                        }
+
                                         //组排序
                                         pitem[i]["chapter_stage_order"] = gidx;
 
@@ -1384,10 +1209,12 @@ define(['app', 'helper/util',
                                         pitem[i]['course_url'] = title['course_url'];
                                         pitem[i]['create_user'] = create_user;
                                         pitem[i]['create_nickname'] = create_nickname;
-
-                                        delete pitem.$edit;
                                     }
                                 }
+                            }
+
+                            if (!pass) {
+                                return;
                             }
 
                             item.unshift(title);
@@ -1397,6 +1224,8 @@ define(['app', 'helper/util',
                             }, {
                                 isShowLoading: true
                             }).then(function (rs) {
+
+                                $root.data.orginData = angular.copy($root.data.course);
 
                                 $scope.$close();
 
@@ -1421,6 +1250,11 @@ define(['app', 'helper/util',
                             });
                         }
 
+                        $scope.cancel = function () {
+                            $root.data.course = angular.copy($root.data.orginData);
+                            $scope.$close();
+                        }
+
                         //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
                         var watch = $scope.$watch('course.chapter', function (newValue, oldValue, scope) {
                             $scope.course.setChapterWithStage();
@@ -1432,12 +1266,6 @@ define(['app', 'helper/util',
             }
 
             init();
-
-            //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
-            var watch = $root.$watch('data.course.chapter', function (newValue, oldValue, scope) {
-                $root.data.course.setChapterWithStage();
-            }, true);
-
 
             // 判断点击课程标题链接时以防跳转
             // 如果为编辑模式时，则设置课程目录模块为禁止跳转状态
@@ -1451,16 +1279,16 @@ define(['app', 'helper/util',
             $root.catalog = {
                 item: {},
 
-                state: false,
+                // state: false,
 
                 toggleChange: function (type, idx) {
                     var that = $root.catalog,
                         item = that.item;
 
                     if (type === 'all') {
-                        that.state = !that.state;
+                        // that.state = !that.state;
                         var i = 0,
-                            obj = angular.equals({}, that.item) ? $root.course.chapterWithStage : item;
+                            obj = angular.equals({}, that.item) ? $root.data.course.chapterWithStage : item;
 
                         for (var prop in obj) {
                             if (obj.hasOwnProperty(prop)) {
@@ -1471,7 +1299,7 @@ define(['app', 'helper/util',
                     } else {
                         item[idx] = !item[idx];
 
-                        that.state = true;
+                        // that.state = true;
                         for (var prop in item) {
                             if (item.hasOwnProperty(prop)) {
                                 if (item[prop] === false) {
@@ -1490,9 +1318,11 @@ define(['app', 'helper/util',
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return `<div ng-controller="courseController" ng-click="viewCourseEditor();" style="min-height: 100px; cursor:pointer;">
-                        <div ng-show = 'data.hasData()'>点击编辑课程内容^-^</div>
-                        <div ng-hide = 'data.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
+            return `<div ng-controller="courseController" ng-click="viewCourseEditor();" >
+                        <div ng-show = 'data.course.hasData() && isEdit' style="min-height: 100px; border: 1px solid #d0d0d0; cursor:pointer; font-size: 18px;">
+                            点击编辑课程目录
+                        </div>
+                        <div ng-hide = 'data.course.hasData()' ng-class="{true: 'disabled', false: '' }[isDisabled]"> ` + catalog + ` </div>
                     </div>`
         }
     }

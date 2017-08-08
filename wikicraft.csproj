@@ -46,7 +46,10 @@
     <Content Include="www\wiki\assets\imgs\pay-checked.png" />
     <Content Include="www\wiki\assets\imgs\pay-qrcode-wechat-bg.png" />
     <Content Include="www\wiki\assets\imgs\pay-wechat.png" />
+    <Content Include="www\wiki\html\apps.html" />
+    <Content Include="www\wiki\html\invite.html" />
     <Content Include="www\wiki\html\pay.html" />
+    <Content Include="www\wiki\html\services.html" />
     <Content Include="www\wiki\index.html" />
     <Content Include="www\wiki\js\app.js" />
     <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
@@ -1099,6 +1102,7 @@
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
     <None Include="www\wiki\models\pay.page" />
+    <None Include="www\wiki\models\sitepage_renewal.page" />
     <None Include="www\wiki\models\site_data_source.page" />
     <None Include="www\wiki\models\site_exception.page" />
     <None Include="www\wiki\models\site_group.page" />
@@ -1115,6 +1119,7 @@
     <None Include="www\wiki\models\user_visit_history.page" />
     <None Include="www\wiki\models\user_works.page" />
     <None Include="www\wiki\models\util.page" />
+    <None Include="www\wiki\models\vip.page" />
     <None Include="www\wiki\models\wallet.page" />
     <None Include="www\wiki\models\website_apply.page" />
     <None Include="www\wiki\models\website_comment.page" />

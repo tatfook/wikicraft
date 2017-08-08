@@ -37,6 +37,9 @@ elseif(ajax_type == "wiki") then
 
 	addheader( 'Content-Type', 'text/html');
 	addheader( 'X-Robots-Tag', 'noindex');
+
+	addheader('X-KeepWork-Defined-Message', request:header('X-KeepWork-Defined-Message')); -- 淘米专用
+
 	send_nosniff_header();
 	nocache_headers();
 
@@ -117,7 +120,7 @@ function parseURL()
 	if (host:match("^%d+%.%d+%.%d+%.%d+$")) or (host:match("^%d+%.%d+%.%d+%.%d+:%d+$")) or (sitename == "www") then
 		sitename = nil
 	end
-	if sitename and sitena ~= "www" then 
+	if sitename and sitename ~= "www" then 
 		local _pagename, subpage = request:url():match("^/?([^/]*)(.*)")
 	else
 		local url = commonlib.Encoding.url_decode(request:url())

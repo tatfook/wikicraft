@@ -41,17 +41,23 @@ data = commonlib.Json.Decode(data.data)
 
 local serviceUsername = data.nickname
 
--- 是否已经登录
-local username = getUsername()
-if username then
-	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {username=username, serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername},resume)
-	yield()
-	return response:send({token = token, error=0, message="OK"})
-end
-
 -- 未登录
 db.user_three_service:findOne({["+serviceId+serviceName"]={serviceId, serviceName}}, resume)
 local err, userThreeService = yield()
+
+-- 是否已经登录
+local username = getUsername()
+if username then
+	if (userThreeService and userThreeService.username and userThreeService.username ~= username) then
+		return response:send({error=0, message="账号已被绑定:" .. userThreeService.username})
+	end
+
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {username=username, serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername},resume)
+	yield()
+
+	return response:send({token = token, error=0, message="OK"})
+end
+
 -- 没有绑定
 if not userThreeService then
 	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername}, resume)

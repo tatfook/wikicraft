@@ -26,6 +26,7 @@ define([
             siteinfo.userId = $scope.user._id;
             siteinfo.username = $scope.user.username;
 			siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
+			//siteinfo.isolateDataSource = true;
             config.loading.showLoading();
             util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
 				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
@@ -116,7 +117,7 @@ define([
                         return ;
                     }
                     $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-                    util.http('POST', config.apiUrlPrefix + 'website/getByName', {username:$scope.user.username, websiteName: $scope.website.name}, function (data) {
+                    util.http('POST', config.apiUrlPrefix + 'website/getByName', {username:$scope.user.username, sitename: $scope.website.name}, function (data) {
                         if (data) {
                             $scope.errMsg = $scope.website.name + "已存在，请换个名字";
                         } else {
@@ -312,7 +313,7 @@ define([
         }
 
         // 访问网站
-        $scope.goWebsiteIndexPage = function (websiteName) {
+        $scope.goWebsiteIndexPage = function (sitename) {
             if ($scope.isModal){
                 $scope.cancel();
             }

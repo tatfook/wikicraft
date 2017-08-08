@@ -5,6 +5,7 @@
 /* 程序配置模块 */
 
 (function () {
+    filterIE();
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname == "localhost";
 	var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
@@ -81,17 +82,35 @@
 		routeMap:{
 			// wiki page
 			"/wiki/test":"controller/testController",
-			"/wiki/wikieditor":"controller/wikiEditorController",
+			"/wiki/wikieditor":"controller/wikiEditorController"
 		},
 		filterMap:{
 			"/wiki/iframeagent":[
 
-			],
+			]
 		},
 		// 数据共享
 		shareMap:{
-		},
+		}
 	};
+
+	function filterIE() {
+        var b_name = navigator.appName;
+        var b_version = navigator.appVersion;
+        var version = b_version.split(";");
+        var trim_version = version[1].replace(/[ ]/g, "");
+        if (b_name == "Microsoft Internet Explorer") {
+            /*如果是IE6或者IE7*/
+            if (trim_version == "MSIE9.0" || trim_version == "MSIE8.0" || trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {
+                // alert("IE浏览器版本过低，请到指定网站去下载相关版本");
+				//然后跳到需要连接的下载网站
+				console.log(window.location);
+				if (window.location.pathname !== "/wiki/browers"){
+					window.location.href="/wiki/browers";
+				}
+            }
+        }
+    }
 
 	function initConfig() {
 		var hostname = window.location.hostname;
@@ -116,6 +135,10 @@
 	config.isOfficialDomain = function (hostname) {
 		hostname = hostname || window.location.hostname;
 		hostname = hostname.split(':')[0];
+
+        if (hostname.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+			return true;
+		}
 
 		if (hostname.indexOf(".dev.keepwork.com") >= 0 || hostname.indexOf("localhost") >= 0) {
 			return true;
@@ -206,15 +229,6 @@
 		}
 
 		rawPathname = rawPathname.toLowerCase();
-		// 执行过滤函数， 若过滤函数返回false则停止框架
-		if (config.filterMap[rawPathname]) {
-			var filterList = config.filterMap[rawPathname];
-			for (var i = 0; i < filterList.length; i++) {
-				if (!filterList[i]()) {
-					return ;
-				}
-			}
-		}
 		if (config.routeMap[rawPathname]) {
 			pageurl = config.routeMap[rawPathname];  // 优先配置路由
 		}

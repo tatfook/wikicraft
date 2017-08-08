@@ -86,6 +86,11 @@ define([
 			}
 
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+
+			if (!currentDataSource) {
+				return defaultRender(tokens, idx, options, env, self);
+			}
+
             var token = tokens[idx], alt = token.content,
                 srcIndex = token.attrIndex('href'),
                 src = token.attrs[srcIndex][1] || '';
@@ -113,7 +118,17 @@ define([
         var defaultRender = md.renderer.rules.image;
         md.renderer.rules.image = function (tokens, idx, options, env, self) {
 			var pageinfo = config.services.$rootScope.pageinfo;
+			
+			if (!pageinfo) {
+				return defaultRender(tokens, idx, options, env, self);
+			}
+
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+
+			if (!currentDataSource) {
+				return defaultRender(tokens, idx, options, env, self);
+			}
+
             var token = tokens[idx], alt = token.content,
                 srcIndex = token.attrIndex('src'),
                 src = token.attrs[srcIndex][1] || '';
@@ -558,7 +573,7 @@ define([
 			if (/^[hH][1-6]$/.test(token.tag)) {
 				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
 				var tag = token.tag;
-				title = title.replace(/[\r\n]$/,"");
+				title = title.replace(/[\r\n]*$/,"");
 				//var encodeTitle = encodeURI(title);
 				blockCache.renderContent = '<div class="wiki_page_inner_link"><a class="glyphicon glyphicon-link" name="' + title + '" href="#/#' + title + '"></a>'+ blockCache.renderContent + '</div>';
 				// console.log(blockCache.renderContent);

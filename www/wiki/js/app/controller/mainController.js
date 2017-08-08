@@ -41,7 +41,7 @@ define([
                 //配置一些全局服务
                 config.services = {
                     $rootScope: $rootScope,
-                    $sce:$sce,
+                    $sce: $sce,
                     $http: $http,
                     $compile: $compile,
                     $auth: $auth,
@@ -124,7 +124,9 @@ define([
                 }
 
 				$anchorScroll.yOffset = 100;
-				md.registerRenderAfterCallback("$anchorScroll", $anchorScroll);
+				md.registerRenderAfterCallback("$anchorScroll", function(){
+					$anchorScroll();
+				});
             }
 
             // 底部高度自适应
@@ -184,6 +186,7 @@ define([
 						if (url[0] != '/') {
 							url = "/" + url;
 						}
+						url = decodeURIComponent(url);
 						var paths = url.split("/");
 						// url作严格控制，避免错误url导致异常逻辑
 						if (paths.length > 3 && paths.length < 6 && url.length < 256) {
@@ -202,7 +205,7 @@ define([
 							}
 						}
 					}
-                    if (!isFirstLocationChange && util.isEditorPage()) {
+                    if (!isFirstLocationChange && (util.isEditorPage() || !config.islocalWinEnv())) {
                         return ;
                     }
                     isFirstLocationChange = false;
@@ -334,9 +337,9 @@ define([
 
                 if (config.mainContent) {
                     if (config.mainContentType == "wiki_page") {
-						if (urlObj.pathname == "/wiki/test") {
-							config.mainContent = md.render(config.mainContent);
-						}
+						//if (urlObj.pathname == "/wiki/test") {
+							//config.mainContent = md.render(config.mainContent);
+						//}
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         //config.mainContent = undefined;
                     } else {
