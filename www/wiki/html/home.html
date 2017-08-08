@@ -100,6 +100,11 @@
         margin-top: 60px;
     }
     .banner h1 {
+        /*margin-bottom: 50px;*/
+        font-size: 38px;
+    }
+    .banner h2{
+        font-size: 36px;
         margin-bottom: 50px;
     }
     .crausel-banner img{
@@ -312,8 +317,9 @@
 <div ng-controller="homeController">
 	<div id="test"></div>
     <div class="banner" ng-show="!isLogin">
-        <div class="col-md-4 col-md-offset-2 hidden-xs">
-            <h1>个人作品网 KeepWork</h1>
+        <div class="col-md-4 col-md-offset-2 hidden-xs hidden-sm">
+            <h1>一网乾坤 个人作品网</h1>
+            <h2>KeepWork</h2>
             <p style="max-width: 37em;">KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。
             </p>
         </div>
@@ -381,7 +387,7 @@
                 <!--<a ng-show="logining" ng-click="login()" class="btn btn-primary btn-lg btn-block">登录</a>-->
             </form>
         </div>
-        <img ng-src="{{imgsPath+'wiki_banner.jpg'}}" alt="">
+        <img ng-src="{{imgsPath+'wiki_banner1.jpg'}}" alt="">
     </div>
     <div class="carousel-banner" ng-show="isLogin">
         <div id="header-carousel" class="carousel slide" data-ride="carousel">
@@ -410,37 +416,37 @@
             </a>
         </div>
     </div>
-    <div class="web-message">
-        <div class="container">
-            <div class="col-xs-4">
-                <div class="icon-box">
-                    <a><img ng-src='{{imgsPath+"icon/computer.png"}}' alt="网站数量"></a>
-                </div>
-                <a>
-                    <span>网站数量</span>
-                    <span>{{wikicraft.siteCount}}</span>
-                </a>
-            </div>
-            <div class="col-xs-4">
-                <div class="icon-box">
-                    <a><img ng-src='{{imgsPath+"icon/user.png"}}' alt="名人数量"></a>
-                </div>
-                <a>
-                    <span>名人数量</span>
-                    <span>{{wikicraft.userCount}}</span>
-                </a>
-            </div>
-            <div class="col-xs-4">
-                <div class="icon-box">
-                    <a href="#"><img ng-src='{{imgsPath+"icon/update.png"}}' alt="本周更新"></a>
-                </div>
-                <a>
-                    <span>本周更新</span>
-                    <span>{{wikicraft.renewalCount}}</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <!--<div class="web-message">-->
+        <!--<div class="container">-->
+            <!--<div class="col-xs-4">-->
+                <!--<div class="icon-box">-->
+                    <!--<a><img ng-src='{{imgsPath+"icon/computer.png"}}' alt="网站数量"></a>-->
+                <!--</div>-->
+                <!--<a>-->
+                    <!--<span>网站数量</span>-->
+                    <!--<span>{{wikicraft.siteCount}}</span>-->
+                <!--</a>-->
+            <!--</div>-->
+            <!--<div class="col-xs-4">-->
+                <!--<div class="icon-box">-->
+                    <!--<a><img ng-src='{{imgsPath+"icon/user.png"}}' alt="名人数量"></a>-->
+                <!--</div>-->
+                <!--<a>-->
+                    <!--<span>名人数量</span>-->
+                    <!--<span>{{wikicraft.userCount}}</span>-->
+                <!--</a>-->
+            <!--</div>-->
+            <!--<div class="col-xs-4">-->
+                <!--<div class="icon-box">-->
+                    <!--<a href="#"><img ng-src='{{imgsPath+"icon/update.png"}}' alt="本周更新"></a>-->
+                <!--</div>-->
+                <!--<a>-->
+                    <!--<span>本周更新</span>-->
+                    <!--<span>{{wikicraft.renewalCount}}</span>-->
+                <!--</a>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
     <div id="_featureList_"></div>
     <!--<div class="container">-->
         <!--<div class="row paracraft" ng-show="!isLogin">-->

@@ -11,6 +11,7 @@ define([
 			$scope.containerId = wikiblock.containerId + "_toc";
 
 			var modParams = angular.copy(wikiblock.modParams || {});
+			$scope.modParams = modParams;
 			var pageinfo = config.services.$rootScope.pageinfo;
 
 			var startLevel = modParams.startLevel || 1;
