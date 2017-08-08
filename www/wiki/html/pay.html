@@ -425,7 +425,7 @@
         <div class="row">
             <div class="col-md-12 col-xs-12 col-sm-12">
                 <div class="goods-info">
-                    您正在进行《{{subject}}》的金币充值，金币可在《{{subject}}》中购买商城物品与服务。
+                    {{body}}
                 </div>
             </div>
         </div>
@@ -456,7 +456,7 @@
                                     <lable class="desc">Keepwork 账号：</lable>
                                     <input type="text" name="username" ng-model="otherUserinfo.username"/>
                                 </div>
-                                <div class="field-item">
+                                <div class="field-item" ng-if="hasUserNid()">
                                     <lable class="desc">充值到数字账号：</lable>
                                     <input type="text" name="app_user_id" ng-model="additional.user_nid"/>
                                 </div>
@@ -466,7 +466,7 @@
                                         <input type="text" name="price" ng-model="goods.price"/>元
                                     </div>
                                 </div>
-                                <div class="field-item">
+                                <div class="field-item" ng-if="hasUserNid()">
                                     <lable class="desc">兑换金币：</lable>
                                     <lable class="rules">
                                         <span class="light light-bigger">{{ideal_money}}</span>
@@ -479,6 +479,12 @@
                                         金币
                                         ）
                                     </lable>
+                                </div>
+                                <div class="field-item" ng-if="!hasUserNid()">
+                                    <label class="desc">支付信息：</label>
+                                    <div class="pay-info">
+                                        {{subject}}
+                                    </div>
                                 </div>
                                 <div class="field-item">
                                     <input class="btn btn-primary" type="button" value="立即充值" ng-click="recharge()"/>

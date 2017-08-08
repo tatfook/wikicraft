@@ -61,11 +61,26 @@ local oauthApp = {
 	{
 		appName="魔法哈奇2",
 		company="大富网络",
-		clientId="1000003",
+		clientId="1000005",
 		clientSecret="mofahaqi2",
 		RedirectUrl    = "",
 		payCallbackUrl = "http://115.29.230.154:56888/HttpPayHandle.lua",
 		payRedirectUrl = "",
+	},
+	{
+		appName="成都配天智能技术有限公司",
+		company="成都配天智能技术有限公司",
+		clientId="1000006",
+		clientSecret="chengdupeitianzhinengjishuyouxiangongsi",
+		RedirectUrl    = "",
+	},
+	{
+		appName="KEEPWORK",
+		company="大富网络",
+		clientId="1000007",
+		clientSecret="12345678",
+		RedirectUrl    = "",
+		payCallbackUrl = "http://keepwork.com/api/wiki/vip/",
 	},
 }
 

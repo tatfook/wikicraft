@@ -82,8 +82,10 @@ define([
             }
 
             $scope.recharge = function () {
-                checkAdditionalField($scope.additional, $scope.additional_field);
-
+                if ($scope.hasUserNid()) {
+                    checkAdditionalField($scope.additional, $scope.additional_field);
+                }
+                
                 if (!bUserExist) {
                     alert("用户不存在");
                     return;
@@ -160,6 +162,21 @@ define([
                     $scope.page   = "wechat";
                     getTrade(charge);
                 })
+            }
+
+            $scope.hasUserNid = function () {
+                var hasUserNid = false;
+
+                if ($scope.additional_field) {
+                    for (var item in $scope.additional_field) {
+                        if ($scope.additional_field[item].name == "user_nid") {
+                            hasUserNid = true;
+                            break;
+                        }
+                    }
+                }
+
+                return hasUserNid;
             }
 
             $scope.isMobile = function () {
