@@ -13,7 +13,6 @@ user_active.db_name = "user_active";
 
 
 function user_active:ctor() 
-	self:addfield("userId", "number")      -- 用户ID
 	self:addfield("username", "string")      -- 用户名
 	self:addfield("year", "string")        -- 站点ID
 	self:addfield("active", "table")      -- 动态类型
@@ -52,7 +51,7 @@ function user_active:api_addActiveCount(params)
 	local year = params.year or ParaGlobal.GetDateFormat("yyyy")
 	local count = params.count or 1
 
-	local active = self:api_getByUserId({username=params.username, year=year}).data	
+	local active = self:api_getByUsername({username=params.username, year=year}).data	
 	
 	if not active then
 		active = {username=params.username, year=year,active={}}

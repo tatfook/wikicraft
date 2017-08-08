@@ -7,6 +7,7 @@ Date: 2016/10/21
 
 
 include_once("./abstract/base.page")
+include_once("./vip.page")
 include_once("./website.page")
 include_once("./website_domain.page")
 include_once("./website_member.page")
@@ -50,7 +51,7 @@ end
 
 
 function user:filterUserInfo(params)
-	--params.username = nil
+	params.username = nil
 	params.email = nil
 	params.password = nil
 	params.isadmin = nil
@@ -217,9 +218,11 @@ function user:api_updateByName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local username = params.username
 	self:filterUserInfo(params)
+	params.dataSource = nil
 
-	self:db():updateOne({["+username"]={params.username}}, params, resume)
+	self:db():updateOne({["+username"]={username}}, params, resume)
 
 	return errors:wrap(yield())
 end
@@ -231,9 +234,11 @@ function user:api_updateUserInfo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local username = params.username
 	self:filterUserInfo(params)
+	params.dataSource = nil
 
-	self:db():updateOne({["+username"]={params.username}}, params, resume)
+	self:db():updateOne({["+username"]={username}}, params, resume)
 
 	return errors:wrap(yield())
 end
@@ -623,6 +628,10 @@ function user:api_getProfile()
 	data.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=data.username, sitename=data.defaultDataSourceSitename}).data
 	data.dataSource = siteDataSourceDB:api_getByUsername({username=data.username}).data
 
+	-- 获取用户vip信息
+	local vipDB = models.vip:new()
+	data.vipInfo = vipDB:api_getByUsername({username=data.username}).data
+
 	return errors:wrap(nil, data)
 end
 
@@ -822,8 +831,9 @@ function user:api_getDetailByName(params)
 	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
 		return errors:wrap(nil, nil)
 	end
-
-	self:filterUserInfo(userinfo)
+	
+	userinfo.password = nil
+	-- self:filterUserInfo(userinfo)
 
 	-- 获取创建的组织列表
 	local websiteDB = models.website:new()

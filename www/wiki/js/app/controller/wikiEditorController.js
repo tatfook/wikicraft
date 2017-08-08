@@ -801,7 +801,7 @@ define([
 
                 currentSite = getCurrentSite(page.username, page.sitename);
                 if (currentSite) {
-                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', {username:currentSite.username, sitename:currentSite.name});
+                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
                 }
 
                 currentDataSource.writeFile({
