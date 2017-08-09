@@ -67,7 +67,7 @@ define([
             //console.log(wikiBlock.modParams);
             //console.log(wikiBlock.modParams.substring(60));
             //console.log(angular.fromJson(wikiBlock.modParams));
-            wikiBlock.modParams = wikiBlock.modParams ? Object.assign(defaultModParams, wikiBlock.modParams) : defaultModParams;
+            wikiBlock.modParams = wikiBlock.modParams ? angular.merge(defaultModParams, wikiBlock.modParams) : defaultModParams;
             registerController(wikiBlock);
 			
             var content = wikiBlock.content, htmlContent = '', modParams = wikiBlock.modParams;
