@@ -5,7 +5,6 @@
 /* 程序配置模块 */
 
 (function () {
-    filterIE();
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname == "localhost";
 	var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
@@ -98,6 +97,9 @@
         var b_name = navigator.appName;
         var b_version = navigator.appVersion;
         var version = b_version.split(";");
+        if (!version[1]){
+        	return;
+		}
         var trim_version = version[1].replace(/[ ]/g, "");
         if (b_name == "Microsoft Internet Explorer") {
             /*如果是IE6或者IE7*/
@@ -258,6 +260,7 @@
 		});
 	}
 
+    filterIE();
 	initConfig();
 
 	window.config = config;
