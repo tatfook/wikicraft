@@ -16,7 +16,7 @@ backup_file() {
 
 start_server() {
 	local server_type=$1
-	
+
 	if [ $server_type = "test" ]; then
 		if [ -e ${build_dir} ]; then
 			rm -fr ${test_dir}
