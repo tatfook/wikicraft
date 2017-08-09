@@ -13,9 +13,8 @@
           "content": "```@toc\n{\"title\":\"功能介绍\"\n}\n```"
         },
         {
-        	"class":"col-md-9 bg-title",
+        	"class":"col-md-9 bg-title content-padding",
           "style": {
-            "padding":"0 50px",
             "border-left":"1px solid #CDCDCD"
         	},
           "isMainContent": true
