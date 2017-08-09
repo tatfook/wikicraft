@@ -46,11 +46,15 @@
     <Content Include="www\wiki\assets\imgs\pay-checked.png" />
     <Content Include="www\wiki\assets\imgs\pay-qrcode-wechat-bg.png" />
     <Content Include="www\wiki\assets\imgs\pay-wechat.png" />
+    <Content Include="www\wiki\html\apps.html" />
+    <Content Include="www\wiki\html\invite.html" />
     <Content Include="www\wiki\html\pay.html" />
+    <Content Include="www\wiki\html\services.html" />
     <Content Include="www\wiki\index.html" />
     <Content Include="www\wiki\js\app.js" />
     <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
     <Content Include="www\wiki\js\app\controller\payController.js" />
+    <Content Include="www\wiki\js\app\helper\mods.js" />
     <Content Include="www\wiki\js\lib\ace\ace.js" />
     <Content Include="www\wiki\js\lib\ace\ext-beautify.js" />
     <Content Include="www\wiki\js\lib\ace\ext-elastic_tabstops_lite.js" />
@@ -796,6 +800,10 @@
     <Content Include="www\wiki\js\lib\github-api\GitHub.min.js" />
     <Content Include="www\wiki\js\lib\highlight\default.css" />
     <Content Include="www\wiki\js\lib\highlight\highlight.pack.js" />
+    <Content Include="www\wiki\js\lib\html2canvas\html2canvas.js" />
+    <Content Include="www\wiki\js\lib\html2canvas\html2canvas.min.js" />
+    <Content Include="www\wiki\js\lib\html2canvas\html2canvas.svg.js" />
+    <Content Include="www\wiki\js\lib\html2canvas\html2canvas.svg.min.js" />
     <Content Include="www\wiki\js\lib\iconFont\iconfont.css" />
     <Content Include="www\wiki\js\lib\iconFont\iconfont.svg" />
     <Content Include="www\wiki\js\lib\jquery-cookie\jquery.cookie.js" />
@@ -869,6 +877,18 @@
     <Content Include="www\wiki\js\mod\admin\html\index.html" />
     <Content Include="www\wiki\js\mod\admin\html\login.html" />
     <Content Include="www\wiki\js\mod\admin\js\login.js" />
+    <Content Include="www\wiki\js\mod\course\html\catalog.html" />
+    <Content Include="www\wiki\js\mod\course\html\course.html" />
+    <Content Include="www\wiki\js\mod\course\js\course.js" />
+    <Content Include="www\wiki\js\mod\course\js\lodash.min.js" />
+    <Content Include="www\wiki\js\mod\entries\assets\img\default.png" />
+    <Content Include="www\wiki\js\mod\entries\assets\img\teacher1.jpg" />
+    <Content Include="www\wiki\js\mod\entries\assets\img\teacher2.jpg" />
+    <Content Include="www\wiki\js\mod\entries\html\entries.html" />
+    <Content Include="www\wiki\js\mod\entries\html\entries_select.html" />
+    <Content Include="www\wiki\js\mod\entries\js\entries.js" />
+    <Content Include="www\wiki\js\mod\entries\js\swiper\swiper.min.css" />
+    <Content Include="www\wiki\js\mod\entries\js\swiper\swiper.min.js" />
     <Content Include="www\wiki\js\mod\example\html\example.html" />
     <Content Include="www\wiki\js\mod\example\html\oauth.html" />
     <Content Include="www\wiki\js\mod\example\html\swiper.html" />
@@ -893,6 +913,9 @@
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_layout2.jpg" />
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_navbar.jpg" />
     <Content Include="www\wiki\js\mod\wiki\assets\imgs\wiki_products.jpg" />
+    <Content Include="www\wiki\js\mod\wiki\js\chat.js" />
+    <Content Include="www\wiki\js\mod\wiki\js\include.js" />
+    <Content Include="www\wiki\js\mod\wiki\js\toc.js" />
     <Content Include="www\wiki\mod\modelshare\html\share.html" />
     <Content Include="www\wiki\mod\packages\assets\packages.css">
       <DependentUpon>packages.less</DependentUpon>
@@ -1057,6 +1080,8 @@
     <None Include="www\wiki\js\lib\wangEditor\fonts\icomoon.ttf" />
     <None Include="www\wiki\js\lib\wangEditor\fonts\icomoon.woff" />
     <None Include="www\wiki\js\mod\board\config.page" />
+    <None Include="www\wiki\js\mod\course\config.page" />
+    <None Include="www\wiki\js\mod\entries\config.page" />
     <None Include="www\wiki\js\mod\example\config.page" />
     <None Include="www\wiki\js\mod\example\lib\Swiper-2.7.6\.jshintrc" />
     <None Include="www\wiki\js\mod\example\lib\Swiper-2.7.6\src\README.md" />
@@ -1077,6 +1102,7 @@
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
     <None Include="www\wiki\models\pay.page" />
+    <None Include="www\wiki\models\sitepage_renewal.page" />
     <None Include="www\wiki\models\site_data_source.page" />
     <None Include="www\wiki\models\site_exception.page" />
     <None Include="www\wiki\models\site_group.page" />
@@ -1093,6 +1119,7 @@
     <None Include="www\wiki\models\user_visit_history.page" />
     <None Include="www\wiki\models\user_works.page" />
     <None Include="www\wiki\models\util.page" />
+    <None Include="www\wiki\models\vip.page" />
     <None Include="www\wiki\models\wallet.page" />
     <None Include="www\wiki\models\website_apply.page" />
     <None Include="www\wiki\models\website_comment.page" />

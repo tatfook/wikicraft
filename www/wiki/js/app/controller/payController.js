@@ -82,8 +82,10 @@ define([
             }
 
             $scope.recharge = function () {
-                checkAdditionalField($scope.additional, $scope.additional_field);
-
+                if ($scope.hasUserNid()) {
+                    checkAdditionalField($scope.additional, $scope.additional_field);
+                }
+                
                 if (!bUserExist) {
                     alert("用户不存在");
                     return;
@@ -160,6 +162,21 @@ define([
                     $scope.page   = "wechat";
                     getTrade(charge);
                 })
+            }
+
+            $scope.hasUserNid = function () {
+                var hasUserNid = false;
+
+                if ($scope.additional_field) {
+                    for (var item in $scope.additional_field) {
+                        if ($scope.additional_field[item].name == "user_nid") {
+                            hasUserNid = true;
+                            break;
+                        }
+                    }
+                }
+
+                return hasUserNid;
             }
 
             $scope.isMobile = function () {
@@ -246,6 +263,8 @@ define([
                     $scope.body                = response.body;
                     $scope.goods.exchange_rate = response.exchange_rate;
                     $scope.additional_field    = response.additional_field;
+
+                    needLogin();
                 });
             }
 
@@ -314,6 +333,20 @@ define([
                     eval(cmd + " = '" + params[keyName] + "'");
                 } else {
                     validate = false;
+                }
+            }
+
+            function needLogin() {
+                if (!Account.isAuthenticated() && !$scope.hasUserNid()) {
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: 'static'
+                    }, function (result) {
+                        location.reload();
+                    }, function (result) {
+                        return;
+                    });
                 }
             }
         }
