@@ -147,13 +147,16 @@ define([
                         $(".js-nav").removeClass("affix");
 					}
                     for (var i = 0; i< nodeLen; i++){
-                        // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
-                        if (scrollTop - tocList[i].offsetTop - $("#"+tocList[i].containerId).height() < 0){
+                        // console.log(tocList[i].text+":"+ scrollTop+":"+dataOffsetTop+":"+tocList[i].offsetTop);
+                        if (scrollTop - dataOffsetTop + 52 - tocList[i].offsetTop < 0){
                             // console.log(tocList[i].text+":"+scrollTop+":"+tocList[i].offsetTop+":"+$("#"+tocList[i].containerId).height());
                             tocList[i-1] ? active(tocList[i-1]) : active(tocList[0]);
                             break;
                         }
                     }
+                    if (i >= nodeLen){
+                    	active(tocList[nodeLen-1]);
+					}
                 }, 100);
             };
 

@@ -101,6 +101,15 @@
     .org-manage .user-msg img{
         vertical-align: text-top;
     }
+    .org-manage .pagination-box{
+        text-align: center;
+    }
+    .org-manage .pagination > .active > a{
+        color: #FFF;
+    }
+    .org-manage .pagination > .disabled > a{
+        color: #777;
+    }
     @media (max-width: 768px){
         .org-manage .breadcrumb{
             width: 100%;
@@ -166,6 +175,10 @@
                             <div class="btn btn-primary" ng-click="setManager(member)">{{ isManager(member) ? '取消管理员' : '设定管理员'}}</div>
                             <div class="btn btn-outline" ng-click="removeMember(member)">删除</div>
                         </div>
+                    </div>
+                    <div class="pagination-box">
+                        <ul uib-pagination ng-change="clickMember()" items-per-page='pageSize' previous-text="上一页"
+                            next-text="下一页" total-items="memberTotal" ng-model="currentPage" class="pagination-sm" boundary-link-numbers="true"></ul>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="notify">
