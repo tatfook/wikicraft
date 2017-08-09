@@ -6,10 +6,35 @@ Date: 2017/08/08
 ]]
 
 
+NPL.load("(gl)script/ide/DateTime.lua")
+local timehelp = commonlib.timehelp
 include_once("./abstract/base.page")
+include_once("./vip_trade.page")
 
 local vip = inherit(models.abstract.base, gettable("models.vip"))
 vip.db_name = "vip"
+
+-- vip 类型
+local vip_services = {
+	{
+		id=1,
+		day=31,
+		month=0,
+		price=15,
+	},
+	{
+		id=2,
+		day=93,
+		month=0,
+		price=45,
+	},
+	{
+		id=3,
+		day=365,
+		month=0,
+		price=150,
+	},
+}
 
 
 function vip:ctor()
@@ -74,7 +99,92 @@ function vip:api_getByUsername(params)
 	return errors:wrap(nil, vipInfo)
 end
 
-
-function vip:api_payHook(params)
-
+-- 获得vip服务
+function vip:api_getVipServices(params)
+	return errors:wrap(nil, vip_services)
 end
+
+-- 充值vip
+function vip:api_payVip(params)
+	local username = getUsername()
+	if not params.id or not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local vipSvr = nil
+	for _, obj in ipairs(vip_services) do
+		if obj.id == params.id then
+			vipSvr = obj
+		end
+	end
+
+	if not vipSvr then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local vipTradeDB = models.vip_trade:new()
+	
+	return vipTradeDB:api_insert({
+		username = username,
+		day=vipSvr.day,
+		month=vipSvr.month,
+		price=vipSvr.price,
+		state="start",
+	})
+end
+
+-- 支付结果回调
+function vip:api_payHook(params)
+	if not params.username or not params.price or not params.vip_order_id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local vipTradeDB = models.vip_trade:new()
+	local vipTrade = vipTradeDB:api_getById({_id=params.vip_order_id}).data
+
+	if not vipTrade  or vipTrade.price ~= params.price then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local vipInfo = self:api_getByUsername({username=params.username}).data
+	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	local day = vipTrade.month * 31 + vipTradeDB.day
+
+	-- 已经是有效vip
+	if currentDate <= vipInfo.endDate and vipInfo.startDate <= currentDate then
+		currentDate = vipInfo.endDate
+	else
+		vipInfo.startDate = currentDate
+	end
+
+	vipInfo.endDate = timehelp.get_next_date_str(currentDate, day, "%04d-%02d-%02d")
+	vipInfo.isValid = true
+	--local year, mm, dd = currentDate:match("^(%d%d%d%d)%D*(%d%d)%D*(%d%d)")
+
+	vipTradeDB:api_updateById({id=params.vip_order_id, state="finish"})
+
+	self:db():updateOne({["+username"]={params.username}}, vipInfo, resume)
+
+	return errors:wrap(yield())
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
