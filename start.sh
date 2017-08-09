@@ -5,20 +5,6 @@ rls_dir="rls"
 test_dir="test"
 dev_dir="www"
 build_dir="www_build"
-#test_server() {
-#	echo $current_dir
-#	local db_dir=${build_dst_dir}"/wiki/database"
-#	local temp_db_dir=".database"
-#
-#	if [ -e ${build_dst_dir} -a -e ${db_dir} ]; then 
-#		echo "back up database ..."
-#		cp -fr  ${db_dir} ${temp_db_dir}
-#	fi
-#	#node r.js -o test.js
-#	ls ${db_dir}
-#	rm -fr ${db_dir}
-#	mv ${temp_db_dir} ${db_dir}
-#}
 
 backup_file() {
 	local typ=$1
