@@ -12,25 +12,14 @@ define([
 ], function (app, util, storage, dataSource,  htmlContent/*, html2canvas*/) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
-			var test = config.services.markdownit.render("# test");
-			util.html("#test", test);
-			//util.post(config.apiUrlPrefix + "test/echo",{list:[{test:"tes"}]});
-			//util.ajax({
-				//url:"http://221.0.111.131:19001/Application/essearch",
-				//type:"POST",
-				//data:{
-					//keyword:"test",
-					//page:1,
-					//flag:4,
-					//highlight:1
-				//},
-				//success: function(result, status, xhr) {
-					//console.log(result);
-				//},
-				//error: function(xhr, status, error){
-
-				//}
-			//});
+			util.go("pay?" + util.getQueryString({
+				app_name:"KEEPWORK",
+				app_goods_id:1,
+				price:1,
+				additional:angular.toJson({
+					vip_order_no:1
+				}),
+			}));
 		}
 		$scope.$watch("$viewContentLoaded", init);
 

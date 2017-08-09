@@ -713,7 +713,7 @@ define([
 
 			// 提交至搜索引擎
 			function submitToSearchEngine(page) {//{{{
-				var url = "http://221.0.111.131:19001/Application/kwinsert"; 
+				var url = "http://221.0.111.131:19001/Application/kwupsert"; 
 				var obj = {
 					url:"http://keepwork.com" + page.url,
 					short_url:page.url,

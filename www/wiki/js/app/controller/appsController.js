@@ -47,6 +47,25 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png"
                     },
                     {
+                        "name":"3D 打印",
+                        "details":"用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
+                        "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
+                    }
+                ]
+            },
+            {
+                "classes":"教育平台",
+                "targetId":"jiaoyu",
+                "info":"终身学习，有教无类，人人可为师",
+                "apps":[
+                    {
+                        "name":"道峰教育",
+                        "details":"创造3D交互动画，学习计算机编程...",
+                        "siteUrl":"#",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png"
+                    },
+                    {
                         "name":"PAC 3D创意大赛",
                         "details":"参加比赛，交流分享，制作出有意义的个人电脑作品...",
                         "siteUrl":"http://keepwork.com/official/pac2017",
@@ -55,43 +74,74 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 ]
             },
             {
-                "classes":"教育平台",
-                "targetId":"jiaoyupingtai",
-                "info":"终身学习，有教无类，人人可为师",
-                "apps":[
-                    {
-                        "name":"道峰教育",
-                        "details":"创造3D交互动画，学习计算机编程...",
-                        "siteUrl":"#",
-                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png"
-                    }
-                ]
-            },
-            {
                 "classes":"百科和知识库",
                 "targetId":"baikehezhishiku",
-                "info":"终身学习，有教无类，人人可为师",
+                "info":"大数据与个人百科平台",
                 "apps":[
                 ]
             },
             {
                 "classes":"编程",
                 "targetId":"biancheng",
-                "info":"终身学习，有教无类，人人可为师",
+                "info":"自学计算机编程语言，辅助设计",
                 "apps":[
                     {
                         "name":"NPL CAD",
                         "details":"基于编程的计算机辅助设计",
-                        "siteUrl":"#",
+                        "siteUrl":"http://keepwork.com/intro/keepwork/NPLCAD",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png"
                     }
                 ]
             },
             {
-                "classes":"个人医生",
-                "targetId":"gerenyisheng",
-                "info":"终身学习，有教无类，人人可为师",
+                "classes":"社区",
+                "targetId":"shequ",
+                "info":"多人在线虚拟社区，作品交流与分享平台",
                 "apps":[
+                    {
+                        "name":"3D校园",
+                        "details":"3D虚拟校园",
+                        "siteUrl":"http://keepwork.com/paracra/3dcampus",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png"
+                    },
+                    {
+                        "name":"魔法哈奇3D社区",
+                        "details":"魔法哈奇3D社区",
+                        "siteUrl":"http://keepwork.com/official/haqi/",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502247463705.png"
+                    }
+                ]
+            },
+            {
+                "classes":"健康",
+                "targetId":"jiankang",
+                "info":"学习医学知识， 每个人都是自己的医生",
+                "apps":[
+                    {
+                        "name":"中药溯源",
+                        "details":"提供中药溯源系统的公共查询服务",
+                        "siteUrl":"http://keepwork.com/idreamtech/mysitezysy",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502249323964.png"
+                    },
+                    {
+                        "name":"电子铜人",
+                        "details":"利用3D计算机技术展示人体内部结构",
+                        "siteUrl":"http://keepwork.com/idreamtech/mysitedztr",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502248544807.png"
+                    }
+                ]
+            },
+            {
+                "classes":"其它",
+                "targetId":"qita",
+                "info":"",
+                "apps":[
+                    {
+                        "name":"逻辑塔线下积木",
+                        "details":"逻辑塔线下积木",
+                        "siteUrl":"http://keepwork.com/paracra/logitow",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502250031130.png"
+                    }
                 ]
             }
         ];

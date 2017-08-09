@@ -1,6 +1,7 @@
 <style>
     .vip-container .row{
         padding:30px 0;
+        text-align: center;
     }
     .vip-container h3{
         text-align: center;
@@ -65,6 +66,14 @@
         font-size: 28px;
         color: #FD3265;
     }
+    .vip-container .gopay-btn{
+        width: 120px;
+        height: 42px;
+        line-height: 42px;
+        padding: 0;
+        font-size: 16px;
+        margin-top: 40px;
+    }
 </style>
 <div class="container vip-container" ng-controller="VIPController">
     <div class="row publicity">
@@ -79,9 +88,7 @@
                 <div class="time">{{item.month}}</br>个</br>月</div>
             </div>
         </div>
-        <div class="col-sm-4 col-sm-offset-4">
-            <div class="btn btn-block btn-primary" ng-click="">立即充值</div>
-        </div>
+        <div class="btn btn-primary gopay-btn" ng-click="">立即充值</div>
     </div>
     <!--<div class="row s-container">-->
         <!--<div role="tabpanel">-->
