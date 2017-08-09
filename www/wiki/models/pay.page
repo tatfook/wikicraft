@@ -319,8 +319,8 @@ function pay:api_webhooks(params)
 			-- 消费
 			appInfo = oauth_app:getByAppName(payInfo.app_name);
 
-			if (payInfo.app_name == '魔法哈奇' and payInfo.app_goods_id == 984) or
-			   (payInfo.app_name == '魔法哈奇2' and payInfo.app_goods_id == 984) then
+			if (payInfo.app_name == '魔法哈奇' and tonumber(payInfo.app_goods_id) == 984) or
+			   (payInfo.app_name == '魔法哈奇2' and tonumber(payInfo.app_goods_id) == 984) then
 
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
@@ -348,9 +348,9 @@ function pay:api_webhooks(params)
 				end
 			end
 
-			if(payInfo.app_name == 'KEEPWORK' and payInfo.app_goods_id == 1) then
+			if(payInfo.app_name == 'KEEPWORK' and tonumber(payInfo.app_goods_id) == 1) then
 				local url       = appInfo.payCallbackUrl;
-				local apiParams = {};
+				local apiParams = commonlib.copy(payInfo.additional);
 
 				apiParams.price    = payInfo.price;
 				apiParams.username = payInfo.username;
@@ -362,6 +362,7 @@ function pay:api_webhooks(params)
 					return errors.wrap(errors.SUCCESS);
 				end
 			end
+
 			return errors:wrap(errors.SERVER_INNER_ERROR);
 		else
 			response:status(404);

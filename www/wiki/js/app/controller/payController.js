@@ -82,9 +82,7 @@ define([
             }
 
             $scope.recharge = function () {
-                if ($scope.hasUserNid()) {
-                    checkAdditionalField($scope.additional, $scope.additional_field);
-                }
+                checkAdditionalField($scope.additional, $scope.additional_field);
                 
                 if (!bUserExist) {
                     alert("用户不存在");
