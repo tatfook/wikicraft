@@ -531,11 +531,12 @@ define([
 		encode = encode == undefined ? true : encode;
 		searchObj = searchObj || {};
 		for (key in searchObj) {
-			if (typeof(searchObj[key]) == "object") {
-				value = this.getQueryString(searchObj[key], encode);
-			} else {
-				value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
-			}
+			//if (typeof(searchObj[key]) == "object") {
+				//value = this.getQueryString(searchObj[key], encode);
+			//} else {
+				//value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
+			//}
+			value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
 			if (search.length == 0) {
 				search += key + "=" + value;
 			} else {

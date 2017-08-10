@@ -17,7 +17,8 @@ function vip_trade:ctor()
 	self:addfield("day", "number")       -- 开始日期
 	self:addfield("month", "number")     -- 开始日期
 	self:addfield("price", "number")     -- 开始日期
-	self:addfield("state", "number")     -- start 未支付 finish 支付完成
+	self:addfield("state", "string")     -- start 未支付 finish 支付完成
+	self:addfield("comment", "string")
 	self:addfield("createDate", "string")   -- 结束日期
 	self:addfield("updateDate", "string")   -- 结束日期
 end
@@ -39,22 +40,22 @@ end
 
 -- 通过id获取交易记录
 function vip_trade:api_getById(params)
-	if not params.id then
+	if not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({_id=params.id}, resume)
+	self:db():findOne({_id=params._id}, resume)
 
 	return errors:wrap(yield())
 end
 
 
 function vip_trade:api_updateById(params)
-	if not params.id then
+	if not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():updateOne({_id=params.id}, params, resume)
+	self:db():updateOne({_id=params._id}, params, resume)
 
 	return errors:wrap(yield())
 end

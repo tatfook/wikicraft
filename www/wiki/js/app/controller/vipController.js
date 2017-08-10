@@ -8,7 +8,7 @@ define(['app',
     'helper/storage',
     'text!html/vip.html',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('vipController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message, github) {
+    app.registerController('vipController', ['$scope', 'Account', 'Message', 'modal', function ($scope, Account, Message, modal) {
         $scope.vips = [];
 
         $scope.selectPrice = function (vip) {
@@ -16,7 +16,6 @@ define(['app',
         };
 
 		$scope.goPayPage = function(vip) {
-			console.log()
 			util.post(config.apiUrlPrefix + 'vip/payVip', vip, function(data){
 				if (!data) {
 					Message.info("支付请求失败, 请稍后重试....");
@@ -29,6 +28,7 @@ define(['app',
 					additional:angular.toJson({
 						vip_order_no:data._id,
 					}),
+					redirect: window.location.origin + "/wiki/user_center?userCenterContentType=services&userCenterSubContentType=myVIP",
 				}));
 			}, function() {
 				Message.info("支付请求失败, 请稍后重试....");
@@ -43,7 +43,19 @@ define(['app',
         }
 
 		$scope.$watch('viewContentLoaded', function(){
-			Account.getUser(init);
+			if (!Account.isAuthenticated()){
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    size: 'lg',
+                    backdrop: true
+                }, function (result) {
+                    init(result);
+                }, function (result) {
+                    return;
+                });
+			} else {
+				Account.getUser(init);
+			}
 		});
     }]);
 

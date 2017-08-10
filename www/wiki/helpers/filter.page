@@ -31,6 +31,7 @@ function requestCountLimit(typ, count, time)
 			limitObj.level = limitObj.level + 1
 			limitObj.validTime =  limitObj.level * validTime + curTime
 		elseif (limitObj.count <= limitObj.validCount) and (curTime > limitObj.validTime) then
+			limitObj.count = 1
 			limitObj.validTime = curTime + limitObj.level * validTime + curTime
 		else
 		end

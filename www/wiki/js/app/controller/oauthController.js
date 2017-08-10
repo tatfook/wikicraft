@@ -65,16 +65,18 @@ define([
                     size: 'lg',
                     backdrop: true
                 }, function (result) {
+					$scope.userinfo = result;
                     init();
                 }, function (result) {
                     return;
                 });
+			} else {
+				// Account.ensureAuthenticated();
+				Account.getUser(function(userinfo){
+					$scope.user = userinfo;
+					init();
+				});
 			}
-			// Account.ensureAuthenticated();
-			Account.getUser(function(userinfo){
-				$scope.user = userinfo;
-				init();
-			});
 		});
     }]);
     

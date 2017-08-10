@@ -132,26 +132,45 @@ function vip:api_payVip(params)
 		day=vipSvr.day,
 		month=vipSvr.month,
 		price=vipSvr.price,
+		comment="vip支付请求",
 		state="start",
 	})
 end
 
 -- 支付结果回调
 function vip:api_payHook(params)
-	if not params.username or not params.price or not params.vip_order_id then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	local ip = request:header("X-Real-IP")
+	if ip ~= "121.14.117.252" then
+		LOG.std(nil, "error", "keepwork", "请求不可信任")
+		return response:status(500)
+	end
+
+	if not params.username or not params.price or not params.vip_order_no then
+		LOG.std(nil, "error", "keepwork", "参数错误")
+		return response:status(500)
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.price = params.price / 100
+	local vip_order_no = params.vip_order_no
 	local vipTradeDB = models.vip_trade:new()
-	local vipTrade = vipTradeDB:api_getById({_id=params.vip_order_id}).data
+	local vipTrade = vipTradeDB:api_getById({_id=params.vip_order_no}).data
 
 	if not vipTrade  or vipTrade.price ~= params.price then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+		if vipTrade.price ~= params.price then
+			LOG.std(nil, "error", "keepwork", "支付价格错误")
+			vipTradeDB:api_updateById({_id=vip_order_no, state="failed", comment="价格错误"})
+			return response:status(500)
+		elseif vipTrade.state == "finish" then
+			LOG.std(nil, "error", "keepwork", "交易已完成, 重复交易")
+			return response:status(500)
+		end
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local vipInfo = self:api_getByUsername({username=params.username}).data
 	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	local day = vipTrade.month * 31 + vipTradeDB.day
+	local day = vipTrade.month * 31 + vipTrade.day
 
 	-- 已经是有效vip
 	if currentDate <= vipInfo.endDate and vipInfo.startDate <= currentDate then
@@ -164,7 +183,7 @@ function vip:api_payHook(params)
 	vipInfo.isValid = true
 	--local year, mm, dd = currentDate:match("^(%d%d%d%d)%D*(%d%d)%D*(%d%d)")
 
-	vipTradeDB:api_updateById({id=params.vip_order_id, state="finish"})
+	vipTradeDB:api_updateById({_id=vip_order_no, state="finish", comment="交易完成"})
 
 	self:db():updateOne({["+username"]={params.username}}, vipInfo, resume)
 
