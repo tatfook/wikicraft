@@ -333,7 +333,7 @@ function pay:api_webhooks(params)
 
 				url = string.sub(url, 1, -2);
 
-				local err, response = self:http("GET", url, apiParams);
+				local err, data = self:http("GET", url, apiParams);
 
 				if(err == 200) then
 					local spendInfo = payInfo;
@@ -355,7 +355,7 @@ function pay:api_webhooks(params)
 				apiParams.price    = payInfo.price;
 				apiParams.username = payInfo.username;
 
-				local err, response = self:http("POST", url, apiParams);
+				local err, data = self:http("POST", url, apiParams);
 
 				if(err == 200) then
 					response:status(200);
