@@ -18,21 +18,24 @@ vip.db_name = "vip"
 local vip_services = {
 	{
 		id=1,
-		day=31,
-		month=0,
+		day=0,
+		month=1,
 		price=15,
+		app_goods_id=1,
 	},
 	{
 		id=2,
-		day=93,
-		month=0,
+		day=0,
+		month=3,
 		price=45,
+		app_goods_id=1,
 	},
 	{
 		id=3,
-		day=365,
-		month=0,
+		day=0,
+		month=12,
 		price=150,
+		app_goods_id=1,
 	},
 }
 
@@ -104,7 +107,7 @@ function vip:api_getVipServices(params)
 	return errors:wrap(nil, vip_services)
 end
 
--- 充值vip
+-- 充值vip 请求
 function vip:api_payVip(params)
 	local username = getUsername()
 	if not params.id or not username then
