@@ -397,7 +397,7 @@
                                     <li><a ng-click="goUserCenterPage('userProfile', 'dataSource')">数据源</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
-                                    <li><a ng-click="goUserCenterPage('services')">VIP</a></li>
+                                    <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
                                     <li><a ng-click="goAdminPage()" ng-show="isAdmin()">后台管理</a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
@@ -521,7 +521,7 @@
                             <input type="text" class="form-control" placeholder="">
                             <span class="glyphicon glyphicon-search text-muted"></span>
                         </li>
-                        <li><a ng-click="goUserCenterPage('services')">VIP</a></li>
+                        <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
                         <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
                         <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}">注册</a></li>
                     </ul>
