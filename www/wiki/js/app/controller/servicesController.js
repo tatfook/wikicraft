@@ -49,6 +49,10 @@ define(['app',
             $scope.showItem = 'myVIP';
         };
 
+		$scope.goPayPage = function() {
+			util.go("vip");
+		}
+
         $scope.$on('userCenterSubContentType', function (event, item) {
             console.log(item);
             if (item == 'orders')
