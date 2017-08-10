@@ -9,29 +9,29 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 "name":"Paracraft创意空间",
                 "title":"创造3D交互动画，学习编程",
                 "siteUrl":"http://www.paracraft.cn/",
+                "bgColor":"#62A1E1",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png",
-                "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501568724020.jpeg"
             },
             {
                 "name":"3D 校园",
                 "title":"3D虚拟校园",
                 "siteUrl":"http://keepwork.com/paracra/3dcampus",
+                "bgColor":"#F5926E",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png",
-                "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501568671970.png"
             },
             {
                 "name":"3D打印",
                 "title":"3D打印网络平台",
                 "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
+                "bgColor":"#91C3FF",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png",
-                "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664952194.png"
             },
             {
                 "name":"NPL CAD",
                 "title":"基于编程的计算机辅助设计",
-                "siteUrl":"#",
+                "siteUrl":"http://keepwork.com/intro/keepwork/NPLCAD",
+                "bgColor":"#7CCDF7",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png",
-                "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501568699132.jpeg"
             }
         ];
         $scope.classApps = [
