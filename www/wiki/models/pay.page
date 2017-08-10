@@ -268,7 +268,7 @@ function pay:api_getTrade()
 		return errors:wrap(errors.NOT_FOUND);
 	end
 
-	self:db():find({username = username}, resume);
+	self:db():find({["+username-create_date"] = {username}}, resume);
 	local err, response = yield();
 
 	if not err then
