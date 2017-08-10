@@ -139,7 +139,7 @@ end
 
 -- 支付结果回调
 function vip:api_payHook(params)
-	local ip = request:header("X-Real-IP")
+	local ip = getpeername()
 	if ip ~= "121.14.117.252" then
 		LOG.std(nil, "error", "keepwork", "请求不可信任")
 		return response:status(500)

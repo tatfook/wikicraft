@@ -11,10 +11,10 @@ API_URL_PREFIX="api/wiki/models/"
 
 -- 访问频率限制函数
 function requestCountLimit(typ, count, time)
-	local validCount = count or 500
+	local validCount = count or 100
 	local validTime = time or 300
 	return function()
-		local ip = request:header("X-Real-IP")
+		local ip = getpeername()
 		-- log(ip or "---------------")
 		local key = "filter_" .. (typ or "") .. "_" .. (ip or "")
 		local curTime = os.time()
