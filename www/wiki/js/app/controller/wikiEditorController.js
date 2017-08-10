@@ -190,7 +190,7 @@ define([
                 treeNode.tags.push([
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
                 treeNode.icon = 'fa fa-globe';
 
@@ -372,6 +372,11 @@ define([
                 $scope.errInfo = '请填写页面名';
                 return false;
             }
+
+             if (/\./.test($scope.websitePage.pagename)){
+                 $scope.errInfo = '页面名不能包含 . ';
+                 return false;
+             }
 
 			 //if (!/^[a-zA-Z0-9_]+$/.test($scope.websitePage.pagename)){
 				 //$scope.errInfo = '页面名包含只支持数字、字母、下划线(_)';
@@ -1309,7 +1314,7 @@ define([
                 }
             }//}}}
 
-            $scope.cmd_newpage = function (hidePageTree, url) {//{{{
+            $scope.cmd_newpage = function (hidePageTree, url, event) {//{{{
 				if (hidePageTree && !treeNodeMap[url]) {
 					return;
 				}
@@ -1344,6 +1349,7 @@ define([
                     Message.warning("自动保存失败");
                     openNewPage();
                 });
+                event && event.stopPropagation();
             };//}}}
 
             //保存页面

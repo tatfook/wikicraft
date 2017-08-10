@@ -276,6 +276,14 @@ define([], function () {
             "logoUrl": "wiki/assets/imgs/wiki_layout2.jpg"
         },
         {
+            "name": "简历主题部分二",
+            "classifyName": "未分类",
+            "wikiCmdName": "@wiki/js/resumeDetail/flexible",
+            "desc": "简历主体部分，内容定义相对第一种更加灵活",
+            "content": '```@wiki/js/resumeDetail\n{"moduleKind":"flexible","rows":[{"title":"工作经历","details":[{"title":"公司名","info":"工作时间","subscribe":"工作职位","detail":"职位描述"},{"title":"公司名","info":"工作时间","subscribe":"工作职位","detail":"职位描述"}]},{"title":"教育经历","details":[{"title":"学校名","info":"毕业时间","subscribe":"教育经历描述","detail":""}]}],"simpleRows":[{"title":"期望工作一","details":[{"job":"期望职位","workType":"工作时间","salary":"工资","position":"期望工作地点"}]},{"title":"期望工作二","details":[{"job":"期望职位","workType":"工作时间","salary":"工资","position":"期望工作地点"}]}]\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_layout2.jpg"
+        },
+        {
             "name": "QQ客服",
             "classifyName": "未分类",
             "wikiCmdName": "@wiki/js/chat/qqChat",
