@@ -47,13 +47,17 @@
     <Content Include="www\wiki\assets\imgs\pay-qrcode-wechat-bg.png" />
     <Content Include="www\wiki\assets\imgs\pay-wechat.png" />
     <Content Include="www\wiki\html\apps.html" />
+    <Content Include="www\wiki\html\browers.html" />
     <Content Include="www\wiki\html\invite.html" />
     <Content Include="www\wiki\html\pay.html" />
     <Content Include="www\wiki\html\services.html" />
     <Content Include="www\wiki\index.html" />
     <Content Include="www\wiki\js\app.js" />
+    <Content Include="www\wiki\js\app\controller\appsController.js" />
     <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
+    <Content Include="www\wiki\js\app\controller\inviteController.js" />
     <Content Include="www\wiki\js\app\controller\payController.js" />
+    <Content Include="www\wiki\js\app\controller\servicesController.js" />
     <Content Include="www\wiki\js\app\helper\mods.js" />
     <Content Include="www\wiki\js\lib\ace\ace.js" />
     <Content Include="www\wiki\js\lib\ace\ext-beautify.js" />
@@ -944,6 +948,7 @@
     <None Include="test.sh" />
     <None Include="update_packages.bat" />
     <None Include="wikicraft.lua" />
+    <None Include="www\crash.page" />
     <None Include="www\wiki\auth\qq.page" />
     <None Include="www\wiki\auth\weixin.page" />
     <None Include="www\wiki\auth\xinlangweibo.page" />
@@ -966,6 +971,7 @@
     <None Include="www\wiki\html\templates\company1.md" />
     <None Include="www\wiki\html\templates\company2.md" />
     <None Include="www\wiki\html\templates\game.md" />
+    <None Include="www\wiki\html\templates\more.md" />
     <None Include="www\wiki\html\templates\organization.md" />
     <None Include="www\wiki\html\templates\personal.md" />
     <None Include="www\wiki\html\templates\resume.md" />
@@ -1109,7 +1115,6 @@
     <None Include="www\wiki\models\site_user.page" />
     <None Include="www\wiki\models\tabledb.page" />
     <None Include="www\wiki\models\test.page" />
-    <None Include="www\wiki\models\abc.page" />
     <None Include="www\wiki\models\user_active.page" />
     <None Include="www\wiki\models\user_exception.page" />
     <None Include="www\wiki\models\user_fans.page" />
@@ -1120,6 +1125,7 @@
     <None Include="www\wiki\models\user_works.page" />
     <None Include="www\wiki\models\util.page" />
     <None Include="www\wiki\models\vip.page" />
+    <None Include="www\wiki\models\vip_trade.page" />
     <None Include="www\wiki\models\wallet.page" />
     <None Include="www\wiki\models\website_apply.page" />
     <None Include="www\wiki\models\website_comment.page" />
@@ -1318,7 +1324,6 @@
     <Content Include="www\wiki\html\wikiEditor.html" />
     <Content Include="www\wiki\html\worksApply.html" />
     <Content Include="www\wiki\index.page" />
-    <Content Include="www\wiki\js\mod\app.js" />
     <Content Include="www\wiki\js\app\config.js" />
     <Content Include="www\wiki\js\app\controller\contactController.js" />
     <Content Include="www\wiki\js\app\controller\dataSourceController.js" />
