@@ -1,0 +1,9 @@
+FROM node
+# this image compress js and output tar.gz of project
+#
+
+RUN mkdir -p /tmp/build
+ADD ./ /tmp/build/
+WORKDIR /tmp/build
+RUN ./build-dist.sh
+CMD tar -czf - .
