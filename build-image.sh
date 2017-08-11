@@ -47,9 +47,9 @@ cp -a $CONFIG_FILE_BACKUP_PATH $CONFIG_FILE_USE_PATH
 
 
 if is_test; then
-  docker build -t wikicraft-test -f Dockerfile.test .
-  docker run --rm wikicraft-test > build.tar.gz
-  docker rmi wikicraft-test
+  docker build -t wikicraft-dist -f Dockerfile.dist .
+  docker run --rm wikicraft-dist > build.tar.gz
+  docker rmi wikicraft-dist
 else
   touch build.tar.gz
   tar -czf build.tar.gz --exclude build.tar.gz .

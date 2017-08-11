@@ -25,11 +25,12 @@ ENV_TYPE=$1
 name=keepwork-${ENV_TYPE}-server
 
 if docker ps -f name=$name | grep $name; then
-docker stop $name
+  docker rm -f $name
 fi
 
-docker run -d --rm --name=$name -v "/project/wikicraft/database" \
-  -v "/project/wikicraft/log" \
+docker run -d --restart=always --name=$name \
+  -v "${ENV_TYPE}-database:/project/wikicraft/database" \
+  -v "${ENV_TYPE}-log:/project/wikicraft/log" \
   keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
 

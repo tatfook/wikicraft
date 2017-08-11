@@ -5,5 +5,5 @@ FROM node
 RUN mkdir -p /tmp/build
 ADD ./ /tmp/build/
 WORKDIR /tmp/build
-RUN ./build-test.sh
+RUN ./build-dist.sh
 CMD tar -czf - .

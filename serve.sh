@@ -9,7 +9,7 @@ set -x
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|test"
+  echo "usage: $0 dev|test|prod"
   exit 1
 }
 
@@ -38,7 +38,7 @@ case $ENV_TYPE in
     ;;
 esac
 
-LOG_DIR=./log
+LOG_DIR=log
 mkdir -p $LOG_DIR
 
 # TODO backup log
