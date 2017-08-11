@@ -57,7 +57,7 @@ define([
 				}
 
 				// 标题h中过滤图片
-				text = text.replace(/!\[[^\]]*]\((https|http):\/\/[^\)]*\.(png|jpg)(.*)\)/,"");
+				text = text.replace(/!\[[^\]]*]\((https|http):\/\/[^\)]*\.(png|jpg|jpeg)(.*)\)/,"");
 
                 tocTreeList = tocTreeList || [];
                 tocList = tocList || [];
