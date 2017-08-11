@@ -230,6 +230,7 @@ define([
 			url:obj.url,
 			type:obj.type || "GET",
 			dataType:obj.dataType || "json",
+			//contentType:"application/json;charset=UTF-8",
 			data:obj.data,
 			success:function(result, statu, xhr) {
 				obj.success && obj.success(result, statu, xhr);

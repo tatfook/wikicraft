@@ -12,14 +12,18 @@ define([
 ], function (app, util, storage, dataSource,  htmlContent/*, html2canvas*/) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
-			util.go("pay?" + util.getQueryString({
-				app_name:"KEEPWORK",
-				app_goods_id:1,
-				price:1,
-				additional:angular.toJson({
-					vip_order_no:1
-				}),
-			}));
+			util.ajax({
+				url:"http://221.0.111.131:19001/Application/kwaccurate_search",
+				type:"GET",
+				data:{
+					querytype:"site_name",
+					keyword:"t*st",
+					fuzzymatch:1,
+					page:1,
+					highlight:1,
+					size:10,	
+				},
+			});
 		}
 		$scope.$watch("$viewContentLoaded", init);
 
