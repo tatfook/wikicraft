@@ -63,6 +63,9 @@ define([
                 //$scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
                 //return;
             //}
+            if (!$scope.user.vipInfo.isValid){
+                return;
+            }
 
             util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {username:$scope.website.username, sitename:$scope.website.name, domain: $scope.domain}, function (data) {
                 $scope.domainList.push({domain:$scope.domain});

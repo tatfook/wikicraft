@@ -654,9 +654,12 @@
                 <div role="tabpanel" class="tab-pane active img-text-box collection-pane" id="wiki_user">
                     <div class="col-sm-12">
                         <div class="img-text col-md-6 col-sm-12" ng-repeat="x in userList">
-                            <img ng-src="{{x.userinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
+                            <img ng-src="{{x.userinfo.portrait || imgsPath + 'default_portrait.png'}}" alt="">
                             <div class="text">
-                                <h4><a href="#">{{x.userinfo.displayName || x.userinfo.username}}</a><span class="pull-right info">关注于2017-03-02</span></h4>
+                                <h4>
+                                    <a ng-click="goUserPage(x.userinfo.username)">{{x.userinfo.displayName || x.userinfo.username}}</a>
+                                    <!--<span class="pull-right info">关注于2017-03-02</span>-->
+                                </h4>
                                 <p>作者：{{x.userinfo.username}}</p>
                                 <p>说明：{{x.siteinfo.desc || "暂无说明"}}</p>
                                 <div class="col-md-12 info">

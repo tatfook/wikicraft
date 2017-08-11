@@ -59,6 +59,9 @@ local goodsData = {
 		app_name          = "KEEPWORK",
 		is_on_sale        = 1,
 		create_date       = "2017-8-8 10:53:20",
+		additional_field  = {
+			{name="vip_order_no", displayName = "vip开通订单号", desc="vip开通订单号", required = true},
+		},
 	},
 }
 

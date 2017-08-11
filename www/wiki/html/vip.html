@@ -75,7 +75,7 @@
         margin-top: 40px;
     }
 </style>
-<div class="container vip-container" ng-controller="VIPController">
+<div class="container vip-container" ng-controller="vipController">
     <div class="row publicity">
         <h3><span>VIP账号特权</span></h3>
         <img ng-src="{{imgsPath+'wiki_vip.png'}}" alt="">
@@ -83,12 +83,12 @@
     <div class="row s-container">
         <h3><span>VIP购买付费</span></h3>
         <div class="col-sm-4" ng-repeat="item in vips" ng-click="selectPrice(item)">
-            <div class="vip-price" ng-class="{true:'active'}[item.price == payPrice]">
+            <div class="vip-price" ng-class="{true:'active'}[item.price == selectedVip.price]">
                 <div class="price"><span>￥</span>{{item.price}}</div>
                 <div class="time">{{item.month}}</br>个</br>月</div>
             </div>
         </div>
-        <div class="btn btn-primary gopay-btn" ng-click="">立即充值</div>
+        <div class="btn btn-primary gopay-btn" ng-click="goPayPage(selectedVip)">立即充值</div>
     </div>
     <!--<div class="row s-container">-->
         <!--<div role="tabpanel">-->

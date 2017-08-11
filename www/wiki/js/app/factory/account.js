@@ -84,6 +84,11 @@ define([
 
                 // 获取用户信息
                 getUser: function (cb, errcb) {
+					if (!$auth.isAuthenticated()) {
+						errcb && errcb();
+						return;
+					}
+
                     var userinfo = this.user || storage.sessionStorageGetItem("userinfo");
 
                     if (userinfo && userinfo._id && userinfo.username) {
@@ -91,16 +96,12 @@ define([
                         return userinfo;
                     }
 
-                    if ($auth.isAuthenticated()) {
-                        util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
-                            //console.log(data);
-                            cb && cb(data);
-                        }, function () {
-                            errcb && errcb();
-                        });
-					} else {
+					util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
+						//console.log(data);
+						cb && cb(data);
+					}, function () {
 						errcb && errcb();
-					}
+					});
 
                     return userinfo;
                 },

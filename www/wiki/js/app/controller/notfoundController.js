@@ -29,7 +29,7 @@ define([
                 var username = $rootScope.urlObj.username;
 
                 if (memberName == username){//访问自己网站不存在的页面，且该网站存在，显示创建页面按钮
-                    util.http('POST', config.apiUrlPrefix + 'website/getByName', {username: username, websiteName: sitename}, function (data) {
+                    util.http('POST', config.apiUrlPrefix + 'website/getByName', {username: username, sitename: sitename}, function (data) {
                         if (data) {
                             $scope.showNewPageBtn = true;
                         }

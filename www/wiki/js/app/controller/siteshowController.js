@@ -29,14 +29,15 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
 
 		function elasticSearch(keyword) {
 			util.ajax({
-				url:"http://221.0.111.131:19001/Application/kwsearch",
-				type:"POST",
+				url:"http://221.0.111.131:19001/Application/kwaccurate_search",
+				type:"GET",
 				data:{
+					querytype:"site_name",
 					keyword:keyword,
+					fuzzymatch:1,
 					page:$scope.currentPage,
-					flag:4,
-					highlight:0,
-					size:$scope.pageSize,
+					highlight:1,
+					size:$scope.pageSize,	
 				},
 				success: function(result, status, xhr) {
 					if (result.code != 200) {

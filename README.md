@@ -28,3 +28,7 @@ Web server root directory is `www/`
 - Debugger page is at: [[http://127.0.0.1:8099/]]
 - Design Docs: [[https://github.com/tatfook/wikicraft/wiki]]
 - Learning NPL: [[https://github.com/LiXizhi/NPLRuntime/wiki]]
+
+### CI procedure
+
+visit [ci readme](./readme.ci.md)

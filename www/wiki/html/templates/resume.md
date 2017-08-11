@@ -1,26 +1,63 @@
+```@template/js/wiki
+{
+"headerContent": "```@wiki/js/resumeHeader\n{\n    \"backgroundImage\":\"\",\n    \"portrait\":\"\",\n     \"username\":\"姓名\",\n    \"baseInfo\":\"性别等其它信息\",\n    \"company\":\"就职公司\",\n    \"cellphone\":\"电话号码\",\n    \"email\":\"邮箱\",\n    \"introduce\":\"简介部分，可介绍自己的兴趣爱好特长等。\"\n}\n```"
+}
+```
 ```@wiki/js/resumeDetail
 {
-    "workList":[
+    "moduleKind":"flexible",
+    "rows":[
         {
-            "company":"公司名",
-            "time":"工作时间",
-            "job":"工作职位",
-            "desc":"职位描述"
+            "title":"工作经历",
+            "details":[
+                {
+                    "title":"公司名",
+                    "info":"工作时间",
+                    "subscribe":"工作职位",
+                    "detail":"职位描述"
+                },
+                {
+                    "title":"公司名",
+                    "info":"工作时间",
+                    "subscribe":"工作职位",
+                    "detail":"职位描述"
+                }
+            ]
+        },
+        {
+            "title":"教育经历",
+            "details":[
+                {
+                    "title":"学校名",
+                    "info":"毕业时间",
+                    "subscribe":"教育经历描述",
+                    "detail":""
+                }
+            ]
         }
     ],
-    "educationList":[
+    "simpleRows":[
         {
-            "schoolName":"学校名",
-            "graduationDate":"毕业时间",
-            "desc":"教育经历描述"
-        }
-    ],
-    "expectWorkList":[
+            "title":"期望工作一",
+            "details":[
+                {
+                    "job":"期望职位",
+                    "workType":"工作时间",
+                    "salary":"工资",
+                    "position":"期望工作地点"
+                }
+            ]
+        },
         {
-            "job":"期望职位",
-            "workType":"工作时间",
-            "salary":"工资",
-            "position":"期望工作地点"
+            "title":"期望工作二",
+            "details":[
+                {
+                    "job":"期望职位",
+                    "workType":"工作时间",
+                    "salary":"工资",
+                    "position":"期望工作地点"
+                }
+            ]
         }
     ]
 }
