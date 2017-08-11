@@ -18,6 +18,11 @@ KEEPWORK={}
 
 KEEPWORK["mem_cache"] = mem_cache
 
+-- 获取对端ip
+function getpeername()
+	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP")
+end
+
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
 include_once(WIKI_ROOT .. "helpers/filter.page")

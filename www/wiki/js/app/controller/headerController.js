@@ -19,7 +19,7 @@ define([
         $scope.isCollect=false;//是否已收藏当前作品
         // 通过站点名搜索
         $scope.searchWebsite = function () {
-            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', websiteName: $scope.search});
+            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', sitename: $scope.search});
             //window.location.reload(false);
             util.go("siteshow");
         }
@@ -325,10 +325,10 @@ define([
 
         $scope.$on("userpageLoaded", function (event, data) {
             init();
-            var container=document.getElementById("js-prev-container");
-            var content=document.getElementById("js-prev-content");
-            var ellipsis=document.getElementById("js-prev-ellipsis");
-            prevEllipsis(container,content,ellipsis);
+            // var container=document.getElementById("js-prev-container");
+            // var content=document.getElementById("js-prev-content");
+            // var ellipsis=document.getElementById("js-prev-ellipsis");
+            // prevEllipsis(container,content,ellipsis);
         });
 
         $scope.$watch(Account.isAuthenticated, function (bAuthenticated) {

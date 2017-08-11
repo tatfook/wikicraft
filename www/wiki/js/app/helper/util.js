@@ -16,6 +16,33 @@ define([
         return this.id;
     }
 
+	// 发送视图内容加载完成通知
+	util.broadcastViewContentLoaded = function(params, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$broadcast("selfViewContentLoaded", params);
+	}
+
+	// 监听视图内容加载完成回调
+	util.onViewContentLoaded = function(cb, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$on("selfViewContentLoaded",function(event, data){
+			cb && cb(data);
+		});
+	}
+
+	util.onViewContentLoadedByContainerId = function(containerId, cb, $scope) {
+        $scope = $scope || util.angularServices.$rootScope;
+		
+		$scope.$on("selfViewContentLoaded",function(event, data){
+			if (data && data.containerId == containerId) {
+				cb && cb(data);
+			}
+		});
+
+	}
+
     // $html
     util.html = function(selector, htmlStr, $scope, isCompile) {
         isCompile = isCompile == undefined ? true : isCompile;
@@ -28,6 +55,9 @@ define([
         }
 
         $(selector).html(htmlStr);
+
+		util.broadcastViewContentLoaded({containerId:selector}, $scope);
+
         setTimeout(function () {
             $scope.$apply();
         });
@@ -200,6 +230,7 @@ define([
 			url:obj.url,
 			type:obj.type || "GET",
 			dataType:obj.dataType || "json",
+			//contentType:"application/json;charset=UTF-8",
 			data:obj.data,
 			success:function(result, statu, xhr) {
 				obj.success && obj.success(result, statu, xhr);
@@ -501,6 +532,11 @@ define([
 		encode = encode == undefined ? true : encode;
 		searchObj = searchObj || {};
 		for (key in searchObj) {
+			//if (typeof(searchObj[key]) == "object") {
+				//value = this.getQueryString(searchObj[key], encode);
+			//} else {
+				//value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
+			//}
 			value = encode ? encodeURIComponent(searchObj[key]) : searchObj[key];
 			if (search.length == 0) {
 				search += key + "=" + value;

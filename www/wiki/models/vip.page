@@ -1,0 +1,224 @@
+<?npl
+--[[
+Title: user vip
+Author: wuxiangan
+Date: 2017/08/08
+]]
+
+
+NPL.load("(gl)script/ide/DateTime.lua")
+local timehelp = commonlib.timehelp
+include_once("./abstract/base.page")
+include_once("./vip_trade.page")
+include_once("./user_service.page")
+
+local vip = inherit(models.abstract.base, gettable("models.vip"))
+vip.db_name = "vip"
+
+-- vip 类型
+local vip_services = {
+	{
+		id=1,
+		day=0,
+		month=1,
+		price=15,
+		app_goods_id=1,
+	},
+	{
+		id=2,
+		day=0,
+		month=3,
+		price=45,
+		app_goods_id=1,
+	},
+	{
+		id=3,
+		day=0,
+		month=12,
+		price=150,
+		app_goods_id=1,
+	},
+}
+
+
+function vip:ctor()
+	self:addfield("username", "string")  -- username
+	self:addfield("vipLevel", "number")  -- vip等级
+	self:addfield("startDate", "string") -- 开始日期
+	self:addfield("endDate", "string")   -- 结束日期
+	--self:addfield("isValid", "number")   -- 是否有效
+end
+
+
+-- 增加记录  禁止外部调用
+function vip:upsert(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+username"]={params.username}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 判断用户是否为有效vip
+function vip:api_isValidVip(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local vipInfo = self:api_getByUsername(params).data
+
+	return errors:wrap(nil, vipInfo.isValid)
+end
+
+-- 通过用户名获取vip信息
+function vip:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local _, vipInfo = yield()
+
+	local date = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	if not vipInfo then
+		vipInfo = {
+			username=params.username,
+			vipLevel=0,
+			startDate=date,
+			endDate="",
+			isValid=false,
+		}
+		self:upsert(vipInfo)
+		return errors:wrap(nil, vipInfo)
+	end
+
+	if vipInfo.startDate <= date  and date <= vipInfo.endDate then
+		vipInfo.isValid = true
+	else
+		vipInfo.isValid = false
+	end
+
+	return errors:wrap(nil, vipInfo)
+end
+
+-- 获得vip服务
+function vip:api_getVipServices(params)
+	return errors:wrap(nil, vip_services)
+end
+
+-- 充值vip 请求
+function vip:api_payVip(params)
+	local username = getUsername()
+	if not params.id or not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local vipSvr = nil
+	for _, obj in ipairs(vip_services) do
+		if obj.id == params.id then
+			vipSvr = obj
+		end
+	end
+
+	if not vipSvr then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local vipTradeDB = models.vip_trade:new()
+	
+	return vipTradeDB:api_insert({
+		username = username,
+		day=vipSvr.day,
+		month=vipSvr.month,
+		price=vipSvr.price,
+		comment="vip支付请求",
+		state="start",
+	})
+end
+
+-- 支付结果回调
+function vip:api_payHook(params)
+	local ip = getpeername()
+	if ip ~= "121.14.117.252" then
+		LOG.std(nil, "error", "keepwork", "请求不可信任")
+		return response:status(500)
+	end
+
+	if not params.username or not params.price or not params.vip_order_no then
+		LOG.std(nil, "error", "keepwork", "参数错误")
+		return response:status(500)
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.price = params.price / 100
+	local vip_order_no = params.vip_order_no
+	local vipTradeDB = models.vip_trade:new()
+	local vipTrade = vipTradeDB:api_getById({_id=params.vip_order_no}).data
+
+	if not vipTrade  or vipTrade.price ~= params.price then
+		if vipTrade.price ~= params.price then
+			LOG.std(nil, "error", "keepwork", "支付价格错误")
+			vipTradeDB:api_updateById({_id=vip_order_no, state="failed", comment="价格错误"})
+			return response:status(500)
+		elseif vipTrade.state == "finish" then
+			LOG.std(nil, "error", "keepwork", "交易已完成, 重复交易")
+			return response:status(500)
+		end
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local vipInfo = self:api_getByUsername({username=params.username}).data
+	local currentDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	local day = vipTrade.month * 31 + vipTrade.day
+
+	-- 已经是有效vip
+	if currentDate <= vipInfo.endDate and vipInfo.startDate <= currentDate then
+		currentDate = vipInfo.endDate
+	else
+		vipInfo.startDate = currentDate
+	end
+
+	vipInfo.endDate = timehelp.get_next_date_str(currentDate, day, "%04d-%02d-%02d")
+	vipInfo.isValid = true
+	--local year, mm, dd = currentDate:match("^(%d%d%d%d)%D*(%d%d)%D*(%d%d)")
+
+	vipTradeDB:api_updateById({_id=vip_order_no, state="finish", comment="交易完成"})
+
+	-- 更新用户服务表
+	local userServiceDB = models.user_service:new()
+	userServiceDB:api_upsert({
+		username=params.username,
+		name="VIP",
+		state="有效",
+		content="vip 服务",
+		startDate=vipInfo.startDate,
+		endDate=vipInfo.endDate,
+	})
+
+	self:db():updateOne({["+username"]={params.username}}, vipInfo, resume)
+
+	return errors:wrap(yield())
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

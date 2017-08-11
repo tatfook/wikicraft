@@ -13,20 +13,16 @@ define([
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
 			util.ajax({
-				url:"http://221.0.111.131:19001/Application/essearch",
-				type:"POST",
+				url:"http://221.0.111.131:19001/Application/kwaccurate_search",
+				type:"GET",
 				data:{
-					keyword:"test",
+					querytype:"site_name",
+					keyword:"t*st",
+					fuzzymatch:1,
 					page:1,
-					flag:4,
-					highlight:1
+					highlight:1,
+					size:10,	
 				},
-				success: function(result, status, xhr) {
-					console.log(result);
-				},
-				error: function(xhr, status, error){
-
-				}
 			});
 		}
 		$scope.$watch("$viewContentLoaded", init);

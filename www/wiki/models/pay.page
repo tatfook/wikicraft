@@ -25,7 +25,7 @@ pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken
 pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
 
 tradeno.db_name = "tradeno";
-tradeno = tradeno:new();
+tradeno         = tradeno:new();
 
 function pay:ctor()
 	-- keepwork username
@@ -76,10 +76,11 @@ end
 
 function pay:api_createCharge(params)
 	response:status(503);
+
 	local err, query = self:validateQuery(params);
 
 	local appInfo = oauth_app:getByAppName(query.app_name);
-
+	
 	if(not appInfo) then
 		response:status(404);
 		return errors:wrap(errors.NOT_FOUND);
@@ -90,6 +91,14 @@ function pay:api_createCharge(params)
 	if(not appGoodsInfo) then
 		response:status(404);
 		return errors:wrap(errors.NOT_FOUND);
+	end
+	
+	if(query.app_name == 'KEEPWORK' and query.app_goods_id == 1) then
+		if(self:getUsername()) then
+			query.username = self:getUsername();
+		else
+			return errors:wrap(errors.SERVER_INNER_ERROR);
+		end
 	end
 
 	if(not self:validate(appGoodsInfo, query)) then
@@ -259,7 +268,7 @@ function pay:api_getTrade()
 		return errors:wrap(errors.NOT_FOUND);
 	end
 
-	self:db():find({username = username}, resume);
+	self:db():find({["+username-create_date"] = {username}}, resume);
 	local err, response = yield();
 
 	if not err then
@@ -310,7 +319,9 @@ function pay:api_webhooks(params)
 			-- 消费
 			appInfo = oauth_app:getByAppName(payInfo.app_name);
 
-			if(appInfo) then
+			if (payInfo.app_name == '魔法哈奇' and tonumber(payInfo.app_goods_id) == 984) or
+			   (payInfo.app_name == '魔法哈奇2' and tonumber(payInfo.app_goods_id) == 984) then
+
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
 
@@ -322,7 +333,7 @@ function pay:api_webhooks(params)
 
 				url = string.sub(url, 1, -2);
 
-				local err, response = self:http("GET", url, apiParams);
+				local err, data = self:http("GET", url, apiParams);
 
 				if(err == 200) then
 					local spendInfo = payInfo;
@@ -336,6 +347,22 @@ function pay:api_webhooks(params)
 					end
 				end
 			end
+
+			if(payInfo.app_name == 'KEEPWORK' and tonumber(payInfo.app_goods_id) == 1) then
+				local url       = appInfo.payCallbackUrl;
+				local apiParams = commonlib.copy(payInfo.additional);
+
+				apiParams.price    = payInfo.price;
+				apiParams.username = payInfo.username;
+
+				local err, data = self:http("POST", url, apiParams);
+
+				if(err == 200) then
+					response:status(200);
+					return errors.wrap(errors.SUCCESS);
+				end
+			end
+
 			return errors:wrap(errors.SERVER_INNER_ERROR);
 		else
 			response:status(404);
@@ -371,24 +398,26 @@ function pay:validate(appGoodsInfo, query)
 
 	local validate = true;
 
-	for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
-        local checkField = true;
-        local field      = itemA;
+	if(appGoodsInfo.additional_field and type(appGoodsInfo.additional_field) == "table") then
+		for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
+			local checkField = true;
+			local field      = itemA;
 
-        if (field.required) then
-            checkField = false
+			if (field.required) then
+				checkField = false
 
-            for KeyB, itemB in pairs(query.additional) do
-                if (field.name == KeyB) then
-                    checkField = true;
-                end
-            end
-        end
+				for KeyB, itemB in pairs(query.additional) do
+					if (field.name == KeyB) then
+						checkField = true;
+					end
+				end
+			end
 
-        if (not checkField) then
-            validate = false;
-        end
-    end
+			if (not checkField) then
+				validate = false;
+			end
+		end
+	end
 
 	return validate;
 end

@@ -7,7 +7,7 @@ Date: 2016/11/29
 
 include_once("./abstract/base.page");
 include_once("./website_pages.page");
-include_once("./website_renewal.page");
+include_once("./sitepage_renewal.page");
 include_once("./user.page");
 
 local wikicraft = inherit(models.abstract.base, gettable("models.wikicraft"))
@@ -15,12 +15,12 @@ local wikicraft = inherit(models.abstract.base, gettable("models.wikicraft"))
 -- DB
 local websiteDB = models.website:new()
 local userDB = models.user:new()
-local websiteRenewalDB = models.website_renewal:new()
+local sitepageRenewalDB = models.sitepage_renewal:new()
 
 -- 获取网站统计信息   网站数  用户数量  本周更新数量
 function wikicraft:api_getStatics(params)
 	local siteCount = websiteDB:api_getCount().data
 	local userCount = userDB:api_getCount().data
-	local renewalCount =  websiteRenewalDB:api_getWeekCount().data
+	local renewalCount =  sitepageRenewalDB:api_getWeekCount().data
 	return errors:wrap(nil,{siteCount=siteCount, userCount=userCount, renewalCount=renewalCount})
 end

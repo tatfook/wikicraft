@@ -143,6 +143,15 @@
         text-overflow: ellipsis;
         line-height:1.5;
     }
+    .works-manage .pagination-box{
+        text-align: center;
+    }
+    .works-manage .pagination > .active > a{
+        color: #FFF;
+    }
+    .works-manage .pagination > .disabled > a{
+        color: #777;
+    }
     @media (max-width: 768px) {
         .works-manage .breadcrumb{
             width: 100%;
@@ -196,8 +205,8 @@
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active clearfix" id="org-works">
-                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList">
-                        <div ng-hide="works.isDeleted">
+                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList" ng-hide="works.isDeleted">
+                        <div>
                             <a ng-click="goWorksPage(works)" class="work-profile">
                                 <img ng-src="{{works.worksLogo || (imgsPath + 'wiki_cover.jpg')}}">
                             </a>
@@ -218,11 +227,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="pagination-box">
+                        <ul uib-pagination ng-change="clickWorksList()" items-per-page='pageSize' previous-text="上一页"
+                            next-text="下一页" total-items="worksTotal" ng-model="currentPage" class="pagination-sm" boundary-link-numbers="true"></ul>
+                    </div>
                 </div>
                 <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
                     <div class="org-notify-item" ng-repeat="apply in applyList" ng-hide="apply.isDeleted">
                         <div>
-                            <p><a class="stress" ng-click="goWorksPage(apply)">标题：{{apply.worksTitle}} </a><a> 作者：{{apply.worksUsername}}</a></p>
+                            <p><a class="stress" ng-click="goWorksPage(apply)">标题：{{apply.worksTitle}} </a><a ng-click="goUserIndexPage(apply)"> 作者：{{apply.worksUsername}}</a></p>
                             <div class="notify-work">
                                 <img ng-src="{{ apply.worksLogo || imgsPath+'wiki_cover.jpg'}}" alt="" class="photo">
                                 <div class="intro">

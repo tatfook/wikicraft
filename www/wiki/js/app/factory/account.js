@@ -72,6 +72,7 @@ define([
                     }, errcb);
 				},
 
+				// 设置数据源
 				setDataSourceToken:function(dataSourceCfg) {
 					var dataSourceList = this.user.dataSource;
 					for (var i = 0; i < dataSourceList.length; i++) {
@@ -83,6 +84,11 @@ define([
 
                 // 获取用户信息
                 getUser: function (cb, errcb) {
+					if (!$auth.isAuthenticated()) {
+						errcb && errcb();
+						return;
+					}
+
                     var userinfo = this.user || storage.sessionStorageGetItem("userinfo");
 
                     if (userinfo && userinfo._id && userinfo.username) {
@@ -90,16 +96,12 @@ define([
                         return userinfo;
                     }
 
-                    if ($auth.isAuthenticated()) {
-                        util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
-                            //console.log(data);
-                            cb && cb(data);
-                        }, function () {
-                            errcb && errcb();
-                        });
-					} else {
+					util.getByCache(config.apiUrlPrefix + 'user/getProfile', {}, function (data) {
+						//console.log(data);
+						cb && cb(data);
+					}, function () {
 						errcb && errcb();
-					}
+					});
 
                     return userinfo;
                 },
@@ -123,6 +125,10 @@ define([
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);
                 },
+				
+				isValidVip: function() {
+					return this.user && this.user.vipInfo && this.user.vipInfo.isValid;
+				},
 
                 // 广播 TODO 需了解angualar 监听相关功能
                 send: function (msg, data) {

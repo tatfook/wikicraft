@@ -184,7 +184,7 @@ define(['app',
         $scope.saveProfile = function () {
             var user = angular.copy($scope.user);
             user.dataSource = undefined;
-            util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", $scope.user, function (data) {
+            util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
                 Account.setUser(data);
                 Message.success("修改成功");
             });
@@ -484,6 +484,7 @@ define(['app',
                 util.post(config.apiUrlPrefix + 'user_favorite/getByUserId', {userId:$scope.user._id, page:$scope.currentPage}, function (data) {
                     data = data ||{};
                     $scope.siteList = data.siteList;
+                    console.log($scope.siteList);
                 });
             };
             // 实现分页
@@ -496,7 +497,11 @@ define(['app',
             };
 
             $scope.clickCollectionUser();
-        }
+        };
+		
+		$scope.goUserPage = function (username) {
+            util.go("/"+username, true);
+        };
 
         // 我的历史
         $scope.clickMyHistory = function () {

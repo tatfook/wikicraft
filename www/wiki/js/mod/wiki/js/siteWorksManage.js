@@ -17,6 +17,8 @@ define([
     function registerController(wikiblock) {
         app.registerController('siteWorksManageController',['$scope','Account', function ($scope, Account) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.currentPage = 1;
+            $scope.pageSize= 10;
             var modParams = getModParams(wikiblock);
             var userinfo = undefined;
             var siteinfo = undefined;
@@ -37,16 +39,26 @@ define([
 
             // 作品列表
             $scope.clickWorksList = function () {
+                var params = {
+                    websiteId:siteinfo._id,
+                    page:$scope.currentPage,
+                    pageSize: $scope.pageSize
+                };
                 // 获取作品列表
-                util.post(config.apiUrlPrefix + 'website_works/getByWebsiteId', {websiteId: siteinfo._id}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_works/getByWebsiteId', params, function (data) {
                     data = data || {};
                     $scope.worksList = data.worksList;
+                    $scope.worksTotal = data.total;
                 });
-            }
+                $("#org-works").animate({
+                    scrollTop: 0
+                }, 0);
+            };
+
             // 作品申请；列表
             $scope.clickWorksApply = function () {
                 // 获取审核列表
-                util.post(config.apiUrlPrefix + "website_works/getApplyByWebsiteId", {websiteId: siteinfo._id}, function (data) {
+                util.post(config.apiUrlPrefix + "website_works/getApplyByWebsiteId", {websiteId: siteinfo._id, pageSize:100000}, function (data) {
                     data = data || {};
                     $scope.applyList = data.worksList;
                 });
@@ -55,7 +67,12 @@ define([
             // 跳作品页
             $scope.goWorksPage = function (works) {
                 util.goUserSite(works.worksUrl);
-            }
+            };
+
+            // 跳用户主页
+            $scope.goUserIndexPage=function(work){
+                util.goUserSite('/'+work.worksUsername);
+            };
 
             // 同意作品申请
             $scope.agreeApply = function (apply) {

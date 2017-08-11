@@ -14,10 +14,11 @@ define([
         return angular.copy(modParams);
     }
 
-
     function registerController(wikiblock) {
         app.registerController('siteMemberManageController',['$scope', function ($scope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.currentPage = 1;
+            $scope.pageSize= 10;
             var modParams = getModParams(wikiblock);
             var userinfo = undefined;
             var siteinfo = undefined;
@@ -27,16 +28,25 @@ define([
             }
 
             // 获取组织成员
-            $scope.clickMember = function () {
-                util.post(config.apiUrlPrefix + 'website_member/getByWebsiteId', {websiteId:siteinfo._id}, function (data) {
+            $scope.clickMember = function getOrgMembers() {
+                var params = {
+                    websiteId:siteinfo._id,
+                    page:$scope.currentPage,
+                    pageSize: $scope.pageSize
+                };
+                util.post(config.apiUrlPrefix + 'website_member/getByWebsiteId', params, function (data) {
                     data = data || {};
                     $scope.memberList = data.memberList;
+                    $scope.memberTotal = data.total;
                 });
-            }
+                $("#member").animate({
+                    scrollTop: 0
+                }, 0);
+            };
 
             // 获取组织申请成员
             $scope.clickApply = function () {
-                util.post(config.apiUrlPrefix + 'website_member/getApplyByWebsiteId', {websiteId:siteinfo._id}, function (data) {
+                util.post(config.apiUrlPrefix + 'website_member/getApplyByWebsiteId', {websiteId:siteinfo._id, pageSize:100000}, function (data) {
                     data = data || {};
                     $scope.applyList = data.memberList;
                 });

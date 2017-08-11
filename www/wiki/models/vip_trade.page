@@ -1,0 +1,61 @@
+<?npl
+--[[
+Title: user vip_trade
+Author: wuxiangan
+Date: 2017/08/08
+]]
+
+
+include_once("./abstract/base.page")
+
+local vip_trade = inherit(models.abstract.base, gettable("models.vip_trade"))
+vip_trade.db_name = "vip_trade"
+
+function vip_trade:ctor()
+	self:addfield("username", "string")  -- username
+	self:addfield("vip_type", "number")  -- vip 类型
+	self:addfield("day", "number")       -- 开始日期
+	self:addfield("month", "number")     -- 开始日期
+	self:addfield("price", "number")     -- 开始日期
+	self:addfield("state", "string")     -- start 未支付 finish 支付完成
+	self:addfield("comment", "string")
+	self:addfield("createDate", "string")   -- 结束日期
+	self:addfield("updateDate", "string")   -- 结束日期
+end
+
+
+-- 增加记录  禁止外部调用
+function vip_trade:api_insert(params)
+	if not params.username or not params.day or not params.month then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.createDate = params.createDate or params.updateDate
+
+	self:db():insertOne(nil, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 通过id获取交易记录
+function vip_trade:api_getById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+function vip_trade:api_updateById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():updateOne({_id=params._id}, params, resume)
+
+	return errors:wrap(yield())
+end

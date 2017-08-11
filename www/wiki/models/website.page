@@ -6,6 +6,7 @@ Date: 2016/10/10
 ]]
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./vip.page")
 include_once("./user_active.page")
 include_once("./user_favorite.page")
 include_once("./user_visit_history.page")
@@ -15,6 +16,7 @@ include_once("./website_pageinfo.page")
 include_once("./website_member.page")
 include_once("./website_apply.page")
 include_once("./website_renewal.page")
+include_once("./sitepage_renewal.page")
 include_once("./website_works.page")
 include_once("./website_template_style.page")
 include_once("./website_template_config.page")
@@ -177,8 +179,8 @@ function website:deleteById(websiteId)
 	websiteApplyModel:api_deleteByWebsiteId({websiteId=websiteId})
 
 	-- 删除页信息
-	local websitePageinfoDB = models.website_pageinfo:new()
-	websitePageinfoDB:api_delete({websiteName=site.name, userId=site.userId})
+	--local websitePageinfoDB = models.website_pageinfo:new()
+	--websitePageinfoDB:api_delete({sitename=site.name, userId=site.userId})
 
 	-- 删除该站点的所有域名
 	local websiteDomainDB = models.website_domain:new()
@@ -229,11 +231,11 @@ end
 
 -- 更新站点页面信息
 function website:api_updateWebsitePageinfo(params)
-	if (not params.userId) or (not params.siteId) then
+	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local site = self:api_getById({websiteId=params.siteId}).data
+	local site = self:api_getByName({sitename=params.sitename, username=params.username}).data
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -242,11 +244,15 @@ function website:api_updateWebsitePageinfo(params)
 	local userActiveDB = models.user_active:new()
 	userActiveDB:api_addActiveCount(params)
 	
+	-- 更新表
+	local sitepageRenewalDB = models.sitepage_renewal:new()
+	sitepageRenewalDB:api_upsert({username=params.username, sitename=params.sitename, pagename=params.pagename,url=params.url})
+
 	-- 更新用户动态
-	local userTrendsDB = models.user_trends:new()
-	local trend = {userId=params.userId, objectId=params.siteId, trendsType=const.USER_TRENDS_TYPE_UPDATE_SITE}
-	trend.desc = site.username .. "更新站点" .. site.name
-	userTrendsDB:api_upsert(trend)
+	--local userTrendsDB = models.user_trends:new()
+	--local trend = {userId=params.userId, objectId=params.siteId, trendsType=const.USER_TRENDS_TYPE_UPDATE_SITE}
+	--trend.desc = site.username .. "更新站点" .. site.name
+	--userTrendsDB:api_upsert(trend)
 	
 	return errors:wrap()
 end
@@ -327,11 +333,11 @@ end
 
 -- 通过站点名获得站点
 function website:api_getByName(params)
-	if (not params.websiteName) or (not params.username) then
+	if (not params.sitename) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
-	self:db():findOne({['+username+name']={params.username, params.websiteName}}, resume)
+	self:db():findOne({['+username+name']={params.username, params.sitename}}, resume)
 	
 	return errors:wrap(yield())		
 end
@@ -464,9 +470,9 @@ function website:api_getSiteList(params)
 	local key = '';
 	local value = {};
 	
-	if params.websiteName then
+	if params.sitename then
 		key = key .. '+name'
-		value[#value+1] = params.websiteName
+		value[#value+1] = params.sitename
 	end
 
 	if params.username then
@@ -502,6 +508,21 @@ function website:api_getSiteList(params)
 	return errors:wrap(nil, {total=count, pageCount=util:getPageCount(count,limit), siteList=data})
 end
 
+-- 通过制定名获取站点列表
+function website:api_getSiteListByName(params)
+	local sitelist = {}
+
+	for _, obj in ipairs(params.list or {}) do
+		if obj.username and obj.sitename then
+			self:db():findOne({["+username+name"]={obj.username, obj.sitename}}, resume)
+			local _, site = yield()
+			sitelist[#sitelist+1] = site
+		end
+	end
+
+	return errors:wrap(nil, sitelist)
+end
+
 -- 访问站点
 function website:api_visitWebsite(params)
 	if (not params.username) or (not params.sitename) then
@@ -526,7 +547,6 @@ end
 
 -- 获取站点详细信息, 
 function website:api_getDetailInfo(params)
-	log(params);
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -559,6 +579,13 @@ function website:api_getDetailInfo(params)
 		dataSourceList[key].dataSourceToken = nil
 	end
 	userinfo.dataSource = dataSourceList
+
+	if siteDataSource and siteDataSource.visibility == "private" then
+		local vipDB = models.vip:new()
+		if not vipDB:api_isValidVip({username=params.username}).data then
+			return errors:wrap(errors.FORBIDDEN_ACCESS)
+		end
+	end
 
 	self:api_visitWebsite(params)
 

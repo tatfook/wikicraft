@@ -73,7 +73,7 @@ define([
             util.post(config.apiUrlPrefix + 'wiki_module_classify/get',{}, function (data) {
                 $scope.moduleClassifyList = data;
             });
-            getWikiBlockList('hot');
+			$scope.getHot();
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -93,7 +93,9 @@ define([
         // 点击标签项
         $scope.clickLableItem = function (labelItem) {
             $scope.labelItem = labelItem;
-            getWikiBlockList(labelItem);
+            $scope.currentPage = 1;
+			getWikiBlockList(labelItem);
+
         }
 
         $scope.favoriteWikiBlock = function (moduleId) {

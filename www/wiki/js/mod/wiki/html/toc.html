@@ -3,6 +3,13 @@
         font-size: 18px;
         padding: 60px 0 4px 22px;
     }
+    .sidebar-nav.affix{
+        top:0;
+    }
+    .sidebar-nav .toc-title{
+        margin-left: -20px;
+        color: #333;
+    }
     .sidebar-nav ul{
         margin: 0;
         padding:0;
@@ -51,6 +58,7 @@
 </style>
 <div ng-controller="tocController">
     <div class="nav sidebar-nav js-nav">
+        <h2 class="toc-title" ng-show="modParams.title">{{modParams.title}}</h2>
         <ul class="first-level">
             <li ng-class="{'active':($index==0)}" ng-repeat="item in tocTreeList" data-targetid="{{item.containerId}}">
                 <span class="list-title js-target" ng-click="goPart(item)">{{item.text}}</span>

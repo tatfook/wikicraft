@@ -7,6 +7,7 @@ Date: 2016/10/21
 
 
 include_once("./abstract/base.page")
+include_once("./vip.page")
 include_once("./website.page")
 include_once("./website_domain.page")
 include_once("./website_member.page")
@@ -217,9 +218,11 @@ function user:api_updateByName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local username = params.username
 	self:filterUserInfo(params)
+	params.dataSource = nil
 
-	self:db():updateOne({["+username"]={params.username}}, params, resume)
+	self:db():updateOne({["+username"]={username}}, params, resume)
 
 	return errors:wrap(yield())
 end
@@ -231,9 +234,11 @@ function user:api_updateUserInfo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local username = params.username
 	self:filterUserInfo(params)
+	params.dataSource = nil
 
-	self:db():updateOne({["+username"]={params.username}}, params, resume)
+	self:db():updateOne({["+username"]={username}}, params, resume)
 
 	return errors:wrap(yield())
 end
@@ -494,6 +499,9 @@ function user:api_login(params)
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
 
+	local vipDB = models.vip:new()
+	userinfo.vipInfo = vipDB:api_getByUsername({username=params.username}).data
+
 	return {error=errors.SUCCESS, data={token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo}}
 end
 
@@ -569,6 +577,9 @@ function user:api_register(params)
 		userThreeServiceDB:api_upsert(threeService)
 	end
 
+	local vipDB = models.vip:new()
+	userinfo.vipInfo = vipDB:api_getByUsername({username=params.username}).data
+
 	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=1})
 end
 
@@ -622,6 +633,10 @@ function user:api_getProfile()
 	local siteDataSourceDB = models.site_data_source:new()
 	data.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=data.username, sitename=data.defaultDataSourceSitename}).data
 	data.dataSource = siteDataSourceDB:api_getByUsername({username=data.username}).data
+
+	-- 获取用户vip信息
+	local vipDB = models.vip:new()
+	data.vipInfo = vipDB:api_getByUsername({username=data.username}).data
 
 	return errors:wrap(nil, data)
 end
@@ -706,12 +721,12 @@ end
 
 -- 获得用户信息和站点通过站点名
 function user:api_getUserAndSiteBySitename(params)
-	if not params.sitename then
+	if not params.sitename or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local websiteDB = models.website:new()
-	local siteinfo = websiteDB:api_getByName({websiteName=params.sitename}).data
+	local siteinfo = websiteDB:api_getByName({username=params.username, sitename=params.sitename}).data
 	if not siteinfo then
 		return errors:wrap(errors.NOT_FOUND)
 	end
@@ -822,6 +837,9 @@ function user:api_getDetailByName(params)
 	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
 		return errors:wrap(nil, nil)
 	end
+	
+	userinfo.password = nil
+	-- self:filterUserInfo(userinfo)
 
 	-- 获取创建的组织列表
 	local websiteDB = models.website:new()
@@ -858,7 +876,7 @@ function user:api_getDetailByName(params)
 
 	-- 获取活动记录
 	local userActiveDB = models.user_active:new()
-	local activeObj = userActiveDB:api_getByUserId({userId=userinfo._id}).data
+	local activeObj = userActiveDB:api_getByUsername({username=userinfo.username}).data
 
 	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, followObj=followObj, fansObj=fansObj, trendsObj=trendsObj})
 end

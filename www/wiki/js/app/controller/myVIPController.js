@@ -15,8 +15,8 @@ define(['app',
 
         $scope.$watch('viewContentLoaded', init);
 
-        $scope.goBuyVip=function () {
-            util.go("VIP");
+        $scope.goVipPage=function () {
+            util.go("vip");
         }
     }]);
 

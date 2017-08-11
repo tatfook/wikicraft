@@ -37,8 +37,9 @@
         cursor: pointer;
     }
     .navbar-default li.iconfont-icon {
-        padding: 5px 15px;
+        padding: 7px 15px 3px;
         cursor: pointer;
+        color: #777;
     }
     .navbar-default li.iconfont-icon > .iconfont{
         font-size: 28px;
@@ -393,10 +394,10 @@
                                     <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
-                                    <li><a ng-click="goUserCenterPage('dataSource')">数据源</a></li>
+                                    <li><a ng-click="goUserCenterPage('userProfile', 'dataSource')">数据源</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
-                                    <li><a ng-click="goUserCenterPage('VIP')">VIP</a></li>
+                                    <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
                                     <li><a ng-click="goAdminPage()" ng-show="isAdmin()">后台管理</a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
@@ -512,13 +513,15 @@
                                 <div class="social-share" data-title="{{tit}}"></div>
                             </div>
                         </li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">
                             <input type="text" class="form-control" placeholder="">
                             <span class="glyphicon glyphicon-search text-muted"></span>
                         </li>
-                        <li><a href="#">VIP</a></li>
+                        <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
                         <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
                         <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}">注册</a></li>
                     </ul>

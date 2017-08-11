@@ -5,14 +5,16 @@ Author: wuxiangan
 Date: 2017/3/13
 ]]
 
+include_once(WIKI_ROOT .. 'models/vip.page')
+
 API_URL_PREFIX="api/wiki/models/"
 
 -- 访问频率限制函数
 function requestCountLimit(typ, count, time)
-	local validCount = count or 500
+	local validCount = count or 100
 	local validTime = time or 300
 	return function()
-		local ip = request:header("X-Real-IP")
+		local ip = getpeername()
 		-- log(ip or "---------------")
 		local key = "filter_" .. (typ or "") .. "_" .. (ip or "")
 		local curTime = os.time()
@@ -29,6 +31,7 @@ function requestCountLimit(typ, count, time)
 			limitObj.level = limitObj.level + 1
 			limitObj.validTime =  limitObj.level * validTime + curTime
 		elseif (limitObj.count <= limitObj.validCount) and (curTime > limitObj.validTime) then
+			limitObj.count = 1
 			limitObj.validTime = curTime + limitObj.level * validTime + curTime
 		else
 		end
@@ -52,6 +55,29 @@ function authenticated()
 		return false
 	end
 	request.username = payload.username
+	return true
+end
+
+-- 认证的vip用户
+function authenticatedVip() 
+	if (not request:header('Authorization')) then
+		return false
+	end
+
+	local token = request:header('Authorization'):match("%s+(%S+)");
+	local payload = decodeJWT(token)
+	LOG.std(nil, "error", "keepwork", payload)
+	if not payload then
+		return false
+	end
+	local username = payload.username
+	local vipDB = models.vip:new()
+
+	-- 是否vip用户
+	if not vipDB:api_isValidVip({username=username}).data then
+		return false
+	end
+
 	return true
 end
 
@@ -81,9 +107,13 @@ KEEPWORK["request_before_filter"] = {
 		requestCountLimit("verifyEmailOne", 30, 300),
 	},
 	-- 手机验证
-	[API_URL_PREFIX .. ""] = {
+	[API_URL_PREFIX .. "verifyCellphoneOne"] = {
 		requestCountLimit("verifyCellphoneOne", 30, 300),
-	}
+	},
+	-- 添加cname
+	[API_URL_PREFIX .. "website_domain/upsert"] = {
+		authenticatedVip,
+	},
 }
 
 
