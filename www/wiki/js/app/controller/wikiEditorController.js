@@ -731,6 +731,18 @@ define([
 				};
 				
 				util.post(config.apiUrlPrefix + "sitepage/submitToES", page);
+
+				//var url = "http://221.0.111.131:19001/Application/kwupsert";
+				//util.ajax({    
+                    //type: "POST",                   
+                    //url: url,  
+                    //data: obj, 
+                    //success: function(result) {     
+                        //console.log(result);            
+                    //},         
+                    //error: function(response) {     
+                    //},         
+                //});  
 			}//}}}
 
 			// 生成页面快照
