@@ -63,7 +63,8 @@ define(['app',
             },{
                 isShowLoading: false
             }).then(function (rs){
-                if(rs.data && rs.data.err === 0 && rs.data.exists === true){
+                console.log(rs);
+                if(rs.data && rs.data.err === 0){
                     $scope.isCreate = true;
                 }
             }, function (rs){
