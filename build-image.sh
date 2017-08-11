@@ -51,7 +51,7 @@ if is_test; then
   docker run --rm wikicraft-test > build.tar.gz
   docker rmi wikicraft-test
 else
-  tar -czf build.tar.gz .
+  tar -czf --exclude build.tar.gz  build.tar.gz .
 fi
 
 # build image with build.tar.gz file
