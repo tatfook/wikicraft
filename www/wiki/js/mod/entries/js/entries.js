@@ -769,7 +769,16 @@ define(['app',
 
             }
 
+            // 判断点击课程标题链接时以防跳转
+            // 如果为编辑模式时，则设置课程目录模块为禁止跳转状态
+            if (wikiBlock.isEditorEnable()) {
+                $scope.isDisabled = true;
+            } else {
+                $scope.isDisabled = false;
+            }
+
         }]);
+
 
     }
 
@@ -777,7 +786,7 @@ define(['app',
         render: function (wikiBlock) {
             registerController(wikiBlock);
             return '<div ng-controller="entriesController" ng-click="viewEntriesEditor();" style="min-height: 100px; cursor:pointer;">' +
-                '<style>\n' + swiperCss + '\n</style>' + htmlContent + '</div>'
+                '<style>\n' + swiperCss + '\n</style><div ng-class=\'{true: "disabled", false: "" }[isDisabled]\'>' + htmlContent + '</div> </div>'
 
             // return '<style>\n' + swiperCss + '\n</style>' + htmlContent
         }
