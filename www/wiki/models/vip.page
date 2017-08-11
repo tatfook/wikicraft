@@ -10,6 +10,7 @@ NPL.load("(gl)script/ide/DateTime.lua")
 local timehelp = commonlib.timehelp
 include_once("./abstract/base.page")
 include_once("./vip_trade.page")
+include_once("./user_service.page")
 
 local vip = inherit(models.abstract.base, gettable("models.vip"))
 vip.db_name = "vip"
@@ -66,7 +67,7 @@ function vip:api_isValidVip(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	local vipInfo = self:api_getByUsername(params)
+	local vipInfo = self:api_getByUsername(params).data
 
 	return errors:wrap(nil, vipInfo.isValid)
 end
@@ -184,6 +185,17 @@ function vip:api_payHook(params)
 	--local year, mm, dd = currentDate:match("^(%d%d%d%d)%D*(%d%d)%D*(%d%d)")
 
 	vipTradeDB:api_updateById({_id=vip_order_no, state="finish", comment="交易完成"})
+
+	-- 更新用户服务表
+	local userServiceDB = models.user_service:new()
+	userServiceDB:api_upsert({
+		username=params.username,
+		name="VIP",
+		state="有效",
+		content="vip 服务",
+		startDate=vipInfo.startDate,
+		endDate=vipInfo.endDate,
+	})
 
 	self:db():updateOne({["+username"]={params.username}}, vipInfo, resume)
 

@@ -1,0 +1,61 @@
+<?npl
+--[[
+Title: user three service
+Author: wuxiangan
+Date: 2017/08/11
+]]
+
+
+include_once("./abstract/base.page")
+
+local user_service = inherit(models.abstract.base, gettable("models.user_service"))
+user_service.db_name = "user_service"
+
+
+function user_service:ctor()
+	self:addfield("username", "string")        -- 用户名
+	self:addfield("name", "string")            -- 服务名
+	self:addfield("state", "string")           -- 服务状态
+	self:addfield("content", "string")         -- 服务内容描述
+	self:addfield("startDate", "string")       -- 服务开始时间
+	self:addfield("endDate", "string")         -- 服务结束时间
+end
+
+-- 添加用户服务记录
+function user_service:api_upsert(params)
+	if not params.username or not params.name then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 通过用户名获取用户服务列表
+function user_service:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():count({["+username"]={params.username}}, resume)
+	local _, total = yield()
+
+	local skip, limit = util:pagination(params)
+	self:db():find({["+username"]={params.username, skip=skip, limit=limit}}, resume)
+	local _, serviceList = yield()
+
+	local date = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	for _, svr in ipairs(serviceList) do
+		if svr.startDate <= date and date <= svr.endDate then
+			svr.state = "有效"
+		else
+			svr.state = "过期"
+		end
+	end
+
+	return errors:wrap(nil, {total=total or 0, serviceList=serviceList})
+end
+
+
+	
