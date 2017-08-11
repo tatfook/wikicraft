@@ -60,4 +60,3 @@ docker build -t keepwork/$ENV_TYPE:b$BUILD_NUMBER .
 
 rm build.tar.gz
 
-
