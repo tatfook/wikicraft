@@ -188,8 +188,8 @@ define([
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+")' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
                 ]);
                 treeNode.icon = 'fa fa-globe';
@@ -1455,9 +1455,10 @@ define([
                 }
             };//}}}
 
-            $scope.cmd_goSetting = function (urlKey) {//{{{
+            $scope.cmd_goSetting = function (urlKey, event) {//{{{
                 var website = allSiteMap[urlKey];
                 console.log(website);
+                event && event.stopPropagation();
                 storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
                 storage.sessionStorageSetItem("editWebsiteParams", website);
                 util.go("userCenter");
@@ -1534,7 +1535,7 @@ define([
             };//}}}
 
             //新建文件夹
-            $scope.cmd_newFile = function (hidePageTree, url) {//{{{
+            $scope.cmd_newFile = function (hidePageTree, url, event) {//{{{
 				if (!treeNodeMap[url]) {
 					return;
 				}
@@ -1565,6 +1566,7 @@ define([
 				}, function (text, error) {
 					return;
 				});
+                event && event.stopPropagation();
             };//}}}
 
             //撤销
