@@ -28,6 +28,6 @@ if docker ps -f name=$name | grep $name; then
 docker stop $name
 fi
 
-docker run --rm --name=$name keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
+docker run -d --rm --name=$name keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
 
