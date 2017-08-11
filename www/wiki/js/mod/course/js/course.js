@@ -1139,13 +1139,16 @@ define(['app', 'helper/util',
                                 isShowLoading: true
                             }).then(function (rs) {
 
-                                $root.data.orginData = angular.copy($root.data.course);
+                                if (rs.data && rs.data.err === 0) {
 
-                                $scope.$close();
+                                    $root.data.orginData = angular.copy($root.data.course);
 
-                                $root.init();
+                                    $scope.$close();
 
-                                // util.$apply();
+                                    $root.init();
+                                } else {
+                                    $scope.showSimpleModel('保存失败', rs.data.msg);
+                                }
 
                             }, function (rs) {
                                 $scope.showSimpleModel('保存失败', '保存失败，请重试。');
