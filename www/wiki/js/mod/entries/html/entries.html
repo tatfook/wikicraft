@@ -397,21 +397,10 @@
 
                         <div class="swiper-slide">
                             <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
-                                <!--<a href="/{{userinfo.username}}" title="{{item.create_nickname}}" class="teach-box pull-left">-->
                                 <a href="{{followPath}}?res_name={{item.user_name}}&url={{current_url}}" target="_blank" title="{{item.display_name}}" class="teach-box pull-left">
                                     <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
                                     <span class="name">{{item.display_name}}</span>
                                 </a>
-                                <!--<div class="take-teacher-btn pull-right">
-                            <button class="btn btn-default" ng-click="teacher.takeTeacher(item)" ng-disabled="item.hasTakeTeacher">
-                                <span ng-if="item.hasTakeTeacher">
-                                    已拜师
-                                </span>
-                                <span ng-if="!item.hasTakeTeacher">
-                                    拜师
-                                </span>
-                            </button>      
-                        </div>-->
                             </div>
                         </div>
                     </div>
