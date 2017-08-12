@@ -77,7 +77,7 @@ define([
             }
 
             $scope.goMypay = function () {
-                storage.sessionStorageSetItem('userCenterContentType', 'userProfile');
+                storage.sessionStorageSetItem('userCenterContentType', 'services');
                 storage.sessionStorageSetItem("userCenterSubContentType", 'myPay');
 
                 util.go("userCenter");
