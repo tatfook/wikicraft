@@ -20,7 +20,7 @@ define(['app',
             $scope.followPath = "http://121.14.117.239/follow/take";
 
             // 课程url信息
-            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
+            $scope.current_url = decodeURI(window.location.pathname) || decodeURI($scope.pageinfo.url);
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
@@ -36,7 +36,7 @@ define(['app',
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
-                chapter_url: decodeURI($scope.pageinfo.url || window.location.pathname)
+                chapter_url: decodeURI($scope.pageinfo.url) || decodeURI(window.location.pathname)
             }, {
                 isShowLoading: false
             }).then(function (rs) {
@@ -57,7 +57,6 @@ define(['app',
                 isShowLoading: false
             }).then(function (rs) {
                 var data = rs.data;
-                console.log(data);
                 if (data && data.err === 0) {
                     $scope.isCreate = true;
                     $scope.current_url = data.course_url;
