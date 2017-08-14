@@ -78,11 +78,13 @@ define(['app',
             // }
 
             $scope.remotedata = {
-                url: $scope.pageinfo.url || window.location.pathname,
+                url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                 title: "",
                 create_user: $scope.userinfo.username,
                 create_nickname: $scope.userinfo.displayName,
             }
+
+            console.log($scope.remotedata.url)
 
             $scope.chapters = {
                 data: [],
@@ -436,7 +438,7 @@ define(['app',
 
                                     var data = dd.data,
                                         select = dd.select,
-                                        splArr = select.entries_id.split(','),
+                                        splArr = select ? select.entries_id.split(',') : [],
                                         spl = angular.copy(splArr, []),
                                         activeIdx = [],
                                         idx = 0;
@@ -483,12 +485,15 @@ define(['app',
                                     //这里要添加0，表示第一个列
                                     spl.unshift(0);
 
-                                    if (!data.length || select === '') {
+                                    if (!data.length || (select && select.entries_id === '')) {
                                         $timeout(function () {
                                             $('.add-new:not(:first)').hide();
                                         }, 0);
 
                                         $chil.showOther = false;
+                                        
+                                    }else{
+                                        $chil.swiperBox.slideTo(splArr.length - 1);
                                     }
 
                                     if (data.length) {
@@ -518,10 +523,8 @@ define(['app',
                                         $timeout(function () {
                                             for (var i = 0; i < activeIdx.length; i++) {
                                                 $('.entri-list:eq(' + i + ') > .entri-item:eq(' + activeIdx[i] + ')').addClass('active');
-                                            }
+                                            }                                            
                                         }, 0);
-
-
                                     }
                                 }
 

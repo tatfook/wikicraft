@@ -82,6 +82,17 @@ define([
 					}
 				},
 
+				// 重新获取用户信息
+				reloadUser: function(cb, errcb){
+					storage.sessionStorageRemoveItem("userinfo");
+					var self = this;
+
+					util.post(config.apiUrlPrefix + 'user/getProfile', {}, function(data){
+						self.setUser(data);
+						cb && cb(data);
+					}, errcb);
+				},
+
                 // 获取用户信息
                 getUser: function (cb, errcb) {
 					if (!$auth.isAuthenticated()) {

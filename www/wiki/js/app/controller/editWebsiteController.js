@@ -37,6 +37,8 @@ define([
             }, function () {
                 Message.warning("站点配置修改失败!!!");
             });
+
+			util.post(config.apiUrlPrefix + 'elastic_search/submitSiteinfo', $scope.website)
         }
 
         $scope.checkDomain = function () {

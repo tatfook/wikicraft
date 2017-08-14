@@ -315,6 +315,7 @@ define([
                 $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, { isShowLoading: false }).then(function (response) {
 
                     if (response && response.data && response.data.data && response.data.data.status == "Finish") {
+						Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
                         $scope.page = "success";
                         if ($scope.returnUrl) {
                             var sec = 5;
