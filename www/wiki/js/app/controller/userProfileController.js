@@ -203,10 +203,7 @@ define(['app',
             }, function (error) {
                 Message.info(error.message);
             });
-        }
-
-        var sendEmail=function (email) {
-        }
+        };
 
 		$scope.isBind = function(type) {
 			if (type == "email") {
@@ -216,7 +213,7 @@ define(['app',
 			}
 
 			return;
-		}
+		};
 
 		$scope.confirmEmailBind = function() {
 			util.post(config.apiUrlPrefix + "user/verifyEmailTwo", {
@@ -233,11 +230,32 @@ define(['app',
 				}
 				Account.setUser($scope.user);
 				$('#emailModal').modal("hide");
-				$scope.wait = 60;
+				$scope.emailWait = 0;
 			}, function (err) {
                 $scope.errorMsg = err.message;
             });
-		}
+		};
+
+        $scope.sendEmail = function(email) {
+            util.post(config.apiUrlPrefix + 'user/verifyEmailOne', {
+                email:email,
+                bind:!$scope.isBind("email"),
+            }, function (data) {
+                $scope.emailWait = 60;
+                var timePromise = $interval(function () {
+                    if($scope.emailWait <= 0){
+                        $interval.cancel(timePromise);
+                        timePromise = undefined;
+                    }else{
+                        $scope.emailWait --;
+                    }
+                }, 1000, 100);
+                //Message.info("邮件发送成功，请按邮件指引完成绑定");
+            },function (err) {
+                console.log(err);
+                Message.info(err.message);
+            });
+        }
 
 		$scope.bindEmail = function () {
 			$scope.emailErrMsg="";
@@ -256,35 +274,18 @@ define(['app',
 				return;
 			}
 
-            if ($scope.wait > 0){
+            if ($scope.emailWait > 0){
                 $scope.emailVerifyCode = "";
                 $scope.errorMsg = "";
                 $('#emailModal').modal("show");
                 return;
             }
 
-			util.post(config.apiUrlPrefix + 'user/verifyEmailOne', {
-				email:email,
-				bind:!$scope.isBind("email"),
-			}, function (data) {
-                $scope.wait = 60;
-                var timePromise = $interval(function () {
-                    if($scope.wait <= 0){
-                        $interval.cancel(timePromise);
-                        timePromise = undefined;
-                    }else{
-                        $scope.wait--;
-                    }
-                }, 1000, 100);
-				//Message.info("邮件发送成功，请按邮件指引完成绑定");
-                $scope.emailVerifyCode = "";
-                $scope.errorMsg = "";
-				$('#emailModal').modal({});
-			},function (err) {
-				console.log(err);
-				Message.info(err.message);
-			});
-		}
+            $scope.emailVerifyCode = "";
+            $scope.errorMsg = "";
+            $scope.emailWait = 0;
+            $('#emailModal').modal({});
+		};
 
 		$scope.confirmPhoneBind = function() {
             $scope.errorMsg = "";
