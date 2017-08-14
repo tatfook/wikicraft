@@ -58,8 +58,9 @@ define(['app',
             }).then(function (rs) {
                 var data = rs.data;
                 console.log(data);
-                if (data && data.err === 0 && data.exists === true) {
+                if (data && data.err === 0) {
                     $scope.isCreate = true;
+                    $scope.current_url = data.course_url;
                 }
             }, function (rs) {
                 console.log(rs);
