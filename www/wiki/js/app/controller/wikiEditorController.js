@@ -729,9 +729,16 @@ define([
 					user_name:page.username,
 					site_name:page.sitename,
 					page_name:page.pagename,
+					pageinfo:page,
 				};
 				
-				util.post(config.apiUrlPrefix + "sitepage/submitToES", params);
+				// 私有项目不提交
+                var site = getCurrentSite(page.username, page.sitename);
+                if (site && site.visibility == "private") {
+					return; 
+                }
+
+				util.post(config.apiUrlPrefix + "elastic_search/submitPageinfo", params);
 
 				//var url = "http://221.0.111.131:19001/Application/kwupsert";
 				//util.ajax({    

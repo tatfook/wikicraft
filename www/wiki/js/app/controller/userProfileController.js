@@ -188,6 +188,9 @@ define(['app',
                 Account.setUser(data);
                 Message.success("修改成功");
             });
+
+			// 提交用户信息给搜索引擎
+			util.post(config.apiUrlPrefix + "elastic_search/submitUserinfo", user);
         }
 
         // 修改密码
