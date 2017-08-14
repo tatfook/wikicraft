@@ -91,6 +91,10 @@
         margin-bottom: 25px;
     }
 
+    .pay-main .pay-success .success-info .success-return {
+        font-size: 13px;
+    }
+
     .pay-main .pay-success .success-operate {
         font-size: 16px;
     }
@@ -534,6 +538,9 @@
                             <div class="pull-left">
                                 <div class="success-info">
                                     恭喜，您已支付成功！
+                                    <div class="success-return" ng-if="returnUrl">
+                                        5秒钟后将返回...
+                                    </div>
                                 </div>
                                 <div class="success-operate">
                                     <a ng-click="goMypay()">查看支付记录</a>

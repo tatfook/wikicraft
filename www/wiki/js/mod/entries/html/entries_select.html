@@ -1,4 +1,4 @@
-<div ng-controller="entriesController" class="height: 100%; display: flex; flex-direction:column;">
+<div class="height: 100%; display: flex; flex-direction:column;">
 
     <style scoped>
         ul {
@@ -19,54 +19,244 @@
             overflow: hidden;
         }
 
+        .box {
+            padding: 0;
+            overflow: hidden;
+        }
+
         .entr-list,
         .box-list,
-        .box-item {
+        .box-item,
+        .box-item-content {
             height: 400px !important;
             padding: 0;
         }
 
-        .list-item,
-        .entri-item {
-            cursor: pointer;
+        .box-item-content {
+            padding-right: 10px;
         }
+        /* .list-item {
+            display: inline-block;
+            padding-right: 5px;
+            margin-bottom: 5px;
+            min-width: 100px;
+            cursor: pointer;
+            text-align: center;
+            padding-bottom: 15px;
+            background: #3c8dbc;
+
+            transition: top ease 1s;
+            -webkit-transition: top ease 1s;
+            -moz-transition: top ease 1s;
+            -ms-transition: top ease 1s;
+            -o-transition: top ease 1s;
+
+
+            border-left: 20px dashed transparent;
+            height:0;
+            line-height:0;
+            color:#fff;
+            padding:0 20px;
+            text-decoration:none;
+            text-transform:uppercase;
+            font-family:Arial;
+            font-size:12px;
+        } */
+        /* .list-item:nth-child(even) a{
+            background-color: #222;
+            border-bottom: 20px solid #222; 
+            border-top: 20px solid #222; 
+        } */
+        /* .list-item>a {
+            text-decoration: none;
+            background-color: #3498db;
+            color: #FFF;
+            display: block;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 20px 0 10px;
+            position: relative;
+            margin-right: 25px */
+        /* border-left: 20px dashed transparent;
+            height: 0;
+            line-height: 0;
+            color: #fff;
+            float: left;
+            padding: 0 20px;
+            text-decoration: none;
+            text-transform: uppercase; */
+        /* background: #2980b9;
+            border-bottom: 20px solid #2980b9;
+            border-top: 20px solid #2980b9;
+            border-left: 20px dashed transparent; */
+        /* } */
 
         .list-item {
-            height: 50px;
-            line-height: 50px;
-            text-align: center;
+            display: inline-block;
         }
 
-        .list-item:hover {
-            box-shadow: 4px 4px 4px #d0d0d0;
+        .list-item a {
+            text-decoration: none;
+            background-color: #3498db;
+            color: #FFF;
+            display: block;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 20px 0 10px;
+            position: relative;
+            margin-right: 25px;
         }
 
-        .list-item:not(:first-child) {
-            /* transform: translate(0, -25px);
-            -ms-transform: translate(0, -25px);
-            -moz-transform: translate(0, -25px);
-            -webkit-transform: translate(0, -25px);
-            -o-transform: translate(0, -25px); */
+        .list-item:nth-child(even) a {
+            background-color: #2980b9;
+        }
+
+        .list-item:nth-child(even) a:before {
+            border-color: #2980b9;
+            border-left-color: transparent;
+        }
+
+        .list-item:nth-child(even) a:after {
+            border-color: #2980b9;
+        }
+
+        .list-item:first-child a {
+            padding-left: 20px;
+            -webkit-border-radius: 5px 0 0 5px;
+            -moz-border-radius: 5px 0 0 5px;
+            -ms-border-radius: 5px 0 0 5px;
+            -o-border-radius: 5px 0 0 5px;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .list-item:last-child a {
+            padding-right: 20px;
+            -webkit-border-radius: 0 5px 5px 0;
+            -moz-border-radius: 0 5px 5px 0;
+            -ms-border-radius: 0 5px 5px 0;
+            -o-border-radius: 0 5px 5px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .list-item a:before,
+        .list-item a:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            border: 0 solid #3498db;
+            border-width: 20px 10px;
+            width: 0;
+            height: 0;
+        }
+
+        .list-item:first-child a:before {
+            border: none;
+        }
+
+        .list-item:last-child a:after {
+            border: none;
+        }
+
+        .list-item a:before {
+            left: -20px;
+            border-left-color: transparent;
+        }
+
+        .list-item a:after {
+            left: 100%;
+            border-left-color: #3498db;
+        }
+
+        .list-item a:hover {
+            background-color: #1abc9c;
+            color: white;
+        }
+
+        .list-item a:hover:before {
+            border-color: #1abc9c;
+            border-left-color: transparent;
+        }
+
+        .list-item a:hover::after {
+            border-color: #1abc9c;
+        }
+
+        .list-item a:hover:after {
+            border-left-color: #1abc9c;
+        }
+
+        .list-item a:active {
+            background-color: #16a085;
+            color: white;
+        }
+
+        .list-item a:visited {
+            color: white;
+        }
+
+        .list-item a:active:before {
+            border-color: #16a085;
+            border-left-color: transparent;
+        }
+
+        .list-item a:active:after {
+            border-color: #16a085;
         }
 
         .box-item,
-        .list-item {
+        {
             border: 1px solid #bebebe;
+            overflow: hidden;
         }
 
         .select {
+            margin-bottom: 5px;
+            padding: 0 10px 0 0;
+        }
+
+        .select-list {
             padding-left: 0;
-            padding-right: 5px;
+            padding-right: 10px;
+            box-sizing: border-box;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 5px;
+        }
+
+        .select-list::-webkit-scrollbar {
+            width: 6px;
+            height: 10px;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .select-list::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            border-radius: 10px;
+            background-color: #f5f5f5;
+        }
+
+        .select-list::-webkit-scrollbar-thumb {
+            width: 10px;
+            height: 14px;
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: rgba(0, 0, 0, .4);
         }
 
         .entri-list {
             overflow: auto;
-            /* height: 365px; */
+            border: 1px solid #bebebe;
+            height: 100%;
+            border-radius: 4px;
+            background-color: white;
+            padding: 4px;
         }
 
         .entri-item {
             min-height: 28px;
-            padding: 4px;
+            padding: 4px 10px;
             line-height: 28px;
         }
         /* 居中 */
@@ -80,7 +270,7 @@
         }
 
         .entri-item:hover {
-            background-color: #f0f0f0;
+            background-color: #eee;
         }
 
         .entri-txt {
@@ -89,56 +279,66 @@
 
         .action-btn-group {
             float: right;
-            display: none;
+            color: #bebebe;
         }
 
         .action-btn {
             line-height: 28px;
-            font-size: 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
-
         /* 选中时的颜色 */
+
         .active {
-            background-color: #bbffff;
+            background-color: LightSkyBlue;
         }
 
-        .box {
-            padding-right: 0;
+        .add-new {
+            cursor: pointer;
         }
 
-        .add-new-box,
-        .add-new-entri {
+        .add-content {
+            min-height: 28px;
+            padding: 4px 10px;
+            line-height: 28px;
+        }
+
+        input {
+            text-align: left;
+            border: 0;
+            border-bottom: 1px solid #66afe9;
+            outline: none;
+            box-shadow: none;
+            display: block;
+            width: 100%;
+            height: 34px;
+            line-height: 1.42857143;
+            padding-left: 1px;
+            color: #555;
+            border-radius: 0;
+            background-color: #fff;
+            background-image: none;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -moz-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -ms-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
+        .tip {
+            float: left;
+            line-height: 34px;
+        }
+
+        .mask::after {
+            content: '';
             position: absolute;
+            top: 0;
             bottom: 0;
-            width: 100%;
-        }
-
-        .add-new-box {
-            z-index: 100;
-        }
-
-        .add-new-box>input {
-            width: 100%;
-            border-radius: 0;
-        }
-
-        .add-new-box button,
-        .add-new-entri button {
-            border: none;
-            border-radius: 0;
-        }
-
-        .add-new-box button {
-            width: 50%;
-        }
-
-        .add-new-entri button {
-            width: 100%;
-            border-top: 1px solid #adadad;
-        }
-
-        .add-new-box button:first-of-type {
-            border-right: 1px solid #adadad;
+            background-color: #f0f0f0;
+            left: 0;
+            right: 10px;
+            opacity: .6;
         }
     </style>
 
@@ -147,46 +347,70 @@
         <h4 class="modal-title">类别</h4>
     </div>
     <div class="modal-body">
-        <div class="select col-xs-2">
-            <ul class="select-list">
-                <li class="list-item" ng-repeat="item in entries track by $index" ng-click="action.removeEntri($index)">{{item.type}}</li>
+        <div class="select col-xs-12">
+            <ul class="select-list" style="">
+                <!-- <li class="list-item" ng-repeat="item in entries track by $index" ng-click="action.removeEntri($index)" style="transform: translate(0, {{ $index * -15 }}%); z-index: {{$index}};">{{item.type}}</li> -->
+                <li class="list-item" ng-repeat="item in entries track by $index" ng-click="action.removeEntri($index)">
+                    <a href="#">{{item.type}}</a>
+                </li>
             </ul>
         </div>
 
-        <div class="box col-xs-10">
-            <div class="swiper-container" id="boxSwiper">
+        <div class="box col-xs-12">
+            <div id="boxSwiper">
                 <ul class="box-list swiper-wrapper">
                     <li class="box-item col-xs-6 swiper-slide" ng-repeat="idx in range track by $index">
-                        <ul class="entri-list">
-                            <li class="entri-item" ng-click="action.selectItem($event, item, idx)" ng-repeat="item in entries_list[idx] track by $index ">
-                                <span class="entri-txt">{{item.type}}</span>
-                                <div class="action-btn-group">
+                        <div class="box-item-content">
+                            <ul class="entri-list" ng-class="{'mask': mask[idx]}">
+                                <li class="entri-item" ng-click="action.selectItem($event, item, idx)" ng-repeat="item in entries_list[idx] track by $index "
+                                    ng-mouseover="hover = true" ng-mouseleave="hover = false">
+                                    <span class="entri-txt">{{item.type}}</span>
+                                    <div class="action-btn-group" ng-if="hover">
+                                        <span ng-if="!item.has_child" class="action-btn glyphicon glyphicon-remove-circle" ng-click="action.delItem(idx, item, $event)"></span>
+                                        <span ng-if="item.has_child" class="action-btn glyphicon glyphicon glyphicon-chevron-right"></span>
+                                    </div>
+                                </li>
 
-                                    <!-- 这里要修改，改成haschilder -->
-                                    <span ng-if="!entries_list[idx + 1].length" class="action-btn glyphicon glyphicon-remove-circle" ng-click="action.delItem(idx, item)"></span>
-                                    <span ng-if="entries_list[idx + 1].length" class="action-btn glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </div>
-                            </li>
-                        </ul>
+                                <li class="entri-item add-new" ng-show="!boxVisible[idx]" ng-click="action.showAddBox(idx, true, false, $event)">
+                                    其他
+                                </li>
 
-                        <!-- <div class="add-new-box" ng-show="boxVisible[idx]">
+                                <li class="add-content" ng-show="boxVisible[idx]">
+                                    <!-- <span class="add-tip">其他</span> -->
+                                    <input type="text" name="" value="" placeholder="请输入词条" maxlength="100" ng-model="newItem[0]" id="{{'input' + idx}}">
+
+                                    <!-- 
+                                    <input type="text" name="" value="" placeholder="请输入词条" maxlength="100" ng-model="addItemCache" id="{{'input' + idx}}" 
+                                    ng-blur="action.addItem(false)" ng-keyup="action.enter($event)"> -->
+                                </li>
+                            </ul>
+
+                            <!-- <div class="add-new-box" ng-show="boxVisible[idx]">
                             <input class="form-control" type="text" name="" value="" placeholder="请输入词条" maxlength="100" ng-model="addItemCache[idx]">
                             <div>
                                 <button class="btn btn-default col-xs-6" ng-click="action.showAddBox(idx, false, true, $event)">取消</button>
                                 <button class="btn btn-default col-xs-6" ng-click="action.addItem(idx, $event)">确定</button>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <!-- <div class="add-new-entri" ng-click="action.showAddBox(idx, true, false, $event)">
+                        <div class="add-new-entri" ng-click="action.showAddBox(idx, true, false, $event)">
                             <button class="btn btn-default col-xs-6"> + 新增词条</button>
                         </div> -->
+
+                        </div>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
-        <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()" ng-class="{'edit-disable': action.edit}">确定</button>
+        <div ng-if="hasCourse" class="tip">
+            课程添加了章节和添加进了课程的页面，不能修改前置词条类型。
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
+            <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="action.addItem()" ng-class="{'edit-disable': action.edit}">确定</button>
+        </div>
     </div>
 </div>

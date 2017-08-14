@@ -9,7 +9,7 @@
         }
 
         .course-tips,
-        .sort-tip {
+        .sort-tip, .footer-txt {
             word-break: keep-all;
             /* 不换行 */
             white-space: nowrap;
@@ -392,6 +392,10 @@
             .course-content .chapter-list {
                 top: 70px;
             }
+
+            .footer-txt{
+                width: 200px;
+            }
         }
 
         @media screen and (min-width:100px) and (max-width:991px) {
@@ -418,6 +422,17 @@
             border-bottom-color: white;
             color: white;
         }
+
+        .ui-select-choices-group {
+            cursor: not-allowed;
+        }
+
+        .footer-txt{
+            float: left;
+            line-height: 34px;
+        }
+
+
     </style>
 
     <div class="modal-header">
@@ -426,7 +441,8 @@
     </div>
     <div class="modal-body" style="flex: 1;">
         <div class="course-tips" data-drag="true">
-            <span>为了优化您的教学体验，请在添加课程目录模块的同时，添加词条模块。</span>
+            <!-- <span>为了优化您的教学体验，请在添加课程目录模块的同时，添加词条模块。</span> -->
+            <span>请先需要添加词条模块后使用该模块.</span>
         </div>
 
         <div class="course-title">
@@ -436,7 +452,7 @@
         <div class="course-content unselect-element">
             <div class="chapter-stag">
                 <div class="pull-left sort-tip">
-                    <span>拖动小节可调整小节排列顺序</span>
+                    <span>拖动小节进行排序调整</span>
                 </div>
                 <div class="pull-right swith-group">
                     <span class="switch-txt">分阶段教学</span>
@@ -483,12 +499,13 @@
                                     <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100">
                                 </div>
                                 <div class="col-md-5 col-xs-12" data-drag="false">
-                                    <ui-select ng-model="chp.chapter_url " uis-open-close="action.selectCloseOrOpen(isOpen)" on-select="action.selectItem()">                                        
-                                        <ui-select-match placeholder="链接地址">
+                                    <ui-select ng-model="chp.chapter_url " uis-open-close="action.selectCloseOrOpen(isOpen, chp)" on-select="action.selectItem($item, chp)">
+                                        <ui-select-match placeholder="链接地址" allow-clear="true">
                                             <span ng-bind="chp.chapter_url"></span>
                                         </ui-select-match>
-                                        <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index"  style="min-width: 300px">
-                                            <span ng-bind="item" title="{{item}}"></span>
+                                        <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index" style="min-width: 300px"
+                                            ui-disable-choice="item.choice">
+                                            <span ng-bind="item.url" title="{{item.url}}"></span>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
@@ -520,12 +537,13 @@
                             <input type="text" class="edit-txt" placeholder="小节标题" ng-model="chp.title" id="{{ key + 'ch' + $index }}" maxlength="100">
                         </div>
                         <div class="col-md-5 col-xs-12" data-drag="false">
-                            <ui-select ng-model="chp.chapter_url" uis-open-close="action.selectCloseOrOpen(isOpen)" on-select="action.selectItem()">
-                                <ui-select-match placeholder="链接地址">
+                            <ui-select ng-model="chp.chapter_url " uis-open-close="action.selectCloseOrOpen(isOpen, chp)" on-select="action.selectItem($item, chp)">
+                                <ui-select-match placeholder="链接地址" allow-clear="true">
                                     <span ng-bind="chp.chapter_url"></span>
                                 </ui-select-match>
-                                <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index" style="min-width: 300px">
-                                    <span ng-bind="item" title="{{item}}"></span>
+                                <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index" style="min-width: 300px"
+                                    ui-disable-choice="item.choice">
+                                    <span ng-bind="item.url" title="{{item.url}}"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>
@@ -545,8 +563,14 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
-        <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()">确定</button>
+        <div class="footer-txt">
+            添加了词条模块的页面，才能被设置为链接地址.
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+            <button type="button" class="btn btn-primary btn-fill" data-dismiss="modal" ng-click="save()">确定</button>
+        </div>
     </div>
 
 </div>

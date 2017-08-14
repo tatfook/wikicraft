@@ -720,17 +720,18 @@ define([
 			function submitToSearchEngine(page) {//{{{
 				var params = {
 					url:page.url,
-					access_url:"http://keepwork.com" + page.url,
+					access_url:window.location.origin + page.url,
 					data_source_url:"",
 					tags:"",
 					//logoUrl:"",
+					commit_id:"master",
 					content:page.content,
 					user_name:page.username,
 					site_name:page.sitename,
 					page_name:page.pagename,
 				};
 				
-				util.post(config.apiUrlPrefix + "sitepage/submitToES", page);
+				util.post(config.apiUrlPrefix + "sitepage/submitToES", params);
 
 				//var url = "http://221.0.111.131:19001/Application/kwupsert";
 				//util.ajax({    
