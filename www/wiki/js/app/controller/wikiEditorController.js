@@ -2126,6 +2126,8 @@ define([
                     //keyMap:"vim",
                     //代码折叠
                     lineWrapping: true,
+					indentUnit:1,
+					smartIndent:true,
 
                     foldGutter: true,
                     foldOptions: {
