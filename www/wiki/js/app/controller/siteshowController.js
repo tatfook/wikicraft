@@ -27,13 +27,14 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
             });
         }
 
-		function elasticSearch(keyword) {
+		function elasticSearch(keyword, searchType) {
+			searchType = searchType || "siteinfo";
 			util.ajax({
 				url:"http://221.0.111.131:19001/Application/kwaccurate_search",
 				type:"GET",
 				data:{
-					querytype:"site_name",
-					keyword:keyword,
+					querytype:"extra_search",
+					keyword:searchType + ":*" + keyword + "*",
 					fuzzymatch:1,
 					page:$scope.currentPage,
 					highlight:1,
@@ -47,14 +48,18 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
 					$scope.totalItems = result.total;
 					for (var i = 0; i < result.data.list.length; i++) {
 						var obj = result.data.list[i];
-						sitelist.push({
-							username:obj.user_name,
-							sitename:obj.site_name,
-						});
+						var site = angular.fromJson(obj.extra_data);
+						sitelist.push(site);
+						//sitelist.push({
+							//username:obj.user_name,
+							//sitename:obj.site_name,
+						//});
 					}
-					util.post(config.apiUrlPrefix + "website/getSiteListByName", {list:sitelist}, function(data){
-						$scope.siteObj = {siteList:data || []};
-					});
+					$scope.siteObj = {siteList:sitelist};
+					util.$apply($scope);
+					//util.post(config.apiUrlPrefix + "website/getSiteListByName", {list:sitelist}, function(data){
+						//$scope.siteObj = {siteList:data || []};
+					//});
 					
 				},
 				error: function(xhr, status, error){
