@@ -50,7 +50,7 @@ function elastic_search:api_submitUserinfo(params)
 
 	self:api_submitToES({
 		url=url,
-		extra_search=content,
+		extra_search="userinfo: " .. content,
 		extra_data=extra_data,
 	})
 
@@ -70,10 +70,9 @@ function elastic_search:api_submitSiteinfo(params)
 	local content = ""
 
 	-- 填充搜索信息
-	content = content .. "\n" .. (params.username or "")
+	--content = content .. "\n" .. (params.username or "")
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
-
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
@@ -87,7 +86,7 @@ function elastic_search:api_submitSiteinfo(params)
 
 	self:api_submitToES({
 		url=url,
-		extra_search=content,
+		extra_search= "siteinfo: " .. content,
 		extra_data=extra_data,
 	})
 	return errors:wrap(nil)
@@ -103,7 +102,7 @@ function elastic_search:api_submitPageinfo(params)
 	local pageinfo = params.pageinfo or {}
 	params.pageinfo = nil
 	params.extra_data = toJson(pageinfo)
-	params.extra_search = params.content
+	params.extra_search = "pageinfo: " .. params.content
 
 	self:api_submitToES(params)
 
