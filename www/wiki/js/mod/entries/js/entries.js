@@ -20,7 +20,7 @@ define(['app',
             $scope.followPath = "http://121.14.117.239/follow/take";
 
             // 课程url信息
-            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
+            $scope.current_url = decodeURI(window.location.pathname) || decodeURI($scope.pageinfo.url);
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
@@ -36,7 +36,7 @@ define(['app',
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
-                chapter_url: decodeURI($scope.pageinfo.url || window.location.pathname)
+                chapter_url: decodeURI($scope.pageinfo.url) || decodeURI(window.location.pathname)
             }, {
                 isShowLoading: false
             }).then(function (rs) {
@@ -57,10 +57,9 @@ define(['app',
                 isShowLoading: false
             }).then(function (rs) {
                 var data = rs.data;
-                console.log(data);
                 if (data && data.err === 0) {
                     $scope.isCreate = true;
-                    $scope.current_url = data.course_url;
+                    $scope.current_url = data.data.course_url;
                 }
             }, function (rs) {
                 console.log(rs);
@@ -79,11 +78,13 @@ define(['app',
             // }
 
             $scope.remotedata = {
-                url: $scope.pageinfo.url || window.location.pathname,
+                url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                 title: "",
                 create_user: $scope.userinfo.username,
                 create_nickname: $scope.userinfo.displayName,
             }
+
+            console.log($scope.remotedata.url)
 
             $scope.chapters = {
                 data: [],
@@ -437,7 +438,7 @@ define(['app',
 
                                     var data = dd.data,
                                         select = dd.select,
-                                        splArr = select.entries_id.split(','),
+                                        splArr = select ? select.entries_id.split(',') : [],
                                         spl = angular.copy(splArr, []),
                                         activeIdx = [],
                                         idx = 0;
@@ -484,12 +485,15 @@ define(['app',
                                     //这里要添加0，表示第一个列
                                     spl.unshift(0);
 
-                                    if (!data.length || select === '') {
+                                    if (!data.length || (select && select.entries_id === '')) {
                                         $timeout(function () {
                                             $('.add-new:not(:first)').hide();
                                         }, 0);
 
                                         $chil.showOther = false;
+                                        
+                                    }else{
+                                        $chil.swiperBox.slideTo(splArr.length - 1);
                                     }
 
                                     if (data.length) {
@@ -519,10 +523,8 @@ define(['app',
                                         $timeout(function () {
                                             for (var i = 0; i < activeIdx.length; i++) {
                                                 $('.entri-list:eq(' + i + ') > .entri-item:eq(' + activeIdx[i] + ')').addClass('active');
-                                            }
+                                            }                                            
                                         }, 0);
-
-
                                     }
                                 }
 
