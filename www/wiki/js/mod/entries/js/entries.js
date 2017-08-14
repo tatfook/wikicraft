@@ -20,7 +20,7 @@ define(['app',
             $scope.followPath = "http://121.14.117.239/follow/take";
 
             // 课程url信息
-            $scope.course_info = window.location.pathname || $scope.pageinfo.url;
+            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
@@ -52,12 +52,15 @@ define(['app',
 
             // 请求导师是否有添加课程记录
             $http.post($scope.httpPath + '/check_user_create', {
-                course_url: $scope.course_info
+                course_url: $scope.current_url
             }, {
                 isShowLoading: false
             }).then(function (rs) {
-                if (rs.data && rs.data.err === 0 && rs.data.exists === true) {
+                var data = rs.data;
+                console.log(data);
+                if (data && data.err === 0) {
                     $scope.isCreate = true;
+                    $scope.current_url = data.course_url;
                 }
             }, function (rs) {
                 console.log(rs);
@@ -770,7 +773,16 @@ define(['app',
 
             }
 
+            // 判断点击课程标题链接时以防跳转
+            // 如果为编辑模式时，则设置课程目录模块为禁止跳转状态
+            if (wikiBlock.isEditorEnable()) {
+                $scope.isDisabled = true;
+            } else {
+                $scope.isDisabled = false;
+            }
+
         }]);
+
 
     }
 
@@ -778,7 +790,7 @@ define(['app',
         render: function (wikiBlock) {
             registerController(wikiBlock);
             return '<div ng-controller="entriesController" ng-click="viewEntriesEditor();" style="min-height: 100px; cursor:pointer;">' +
-                '<style>\n' + swiperCss + '\n</style>' + htmlContent + '</div>'
+                '<style>\n' + swiperCss + '\n</style><div ng-class=\'{true: "disabled", false: "" }[isDisabled]\'>' + htmlContent + '</div> </div>'
 
             // return '<style>\n' + swiperCss + '\n</style>' + htmlContent
         }

@@ -15,11 +15,15 @@ define([
 
         $scope.goContact = function () {
             util.go("contact",true);
-        }
+        };
 
         $scope.goHomePage = function () {
             util.go("home");
         };
+
+        $scope.goStatics = function () {
+            util.go("statics");
+        }
     }]);
 
     return htmlContent;

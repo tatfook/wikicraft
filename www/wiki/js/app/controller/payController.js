@@ -34,6 +34,8 @@ define([
             $scope.goods.exchange_rate = 0;
             $scope.additional          = {};
 
+            console.log(queryArgs.redirect);
+
             validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
             validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
 
@@ -47,6 +49,10 @@ define([
 
             if (queryArgs.price) {
                 $scope.goods.price = queryArgs.price;
+            }
+
+            if (queryArgs.redirect) {
+                $scope.returnUrl = queryArgs.redirect;
             }
 
             if (queryArgs.additional) {
@@ -71,7 +77,7 @@ define([
             }
 
             $scope.goMypay = function () {
-                storage.sessionStorageSetItem('userCenterContentType', 'userProfile');
+                storage.sessionStorageSetItem('userCenterContentType', 'services');
                 storage.sessionStorageSetItem("userCenterSubContentType", 'myPay');
 
                 util.go("userCenter");
@@ -121,7 +127,7 @@ define([
 
             $scope.alipayClient = function () {
                 var params = {
-                    "channel": "alipay_pc_direct",
+                    "channel"   : "alipay_pc_direct",
                 };
 
                 createCharge(params, function (charge) {
@@ -309,7 +315,24 @@ define([
                 $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, { isShowLoading: false }).then(function (response) {
 
                     if (response && response.data && response.data.data && response.data.data.status == "Finish") {
+						Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
                         $scope.page = "success";
+                        if ($scope.returnUrl) {
+                            var sec = 5;
+                            function returnUrl(i) {
+                                if (i == 5) {
+                                    window.location.href = $scope.returnUrl;
+                                } else {
+                                    i++;
+
+                                    setTimeout(function () {
+                                        returnUrl(i);
+                                    }, 1000);
+                                }
+                            }
+
+                            returnUrl(0);
+                        }
                     } else if (response && response.data && response.data.data && response.data.data.status == "Fail") {
                         $scope.page = "fail";
                     } else {

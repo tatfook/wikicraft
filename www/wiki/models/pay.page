@@ -136,7 +136,7 @@ function pay:api_createCharge(params)
 	apiParams.app        = {id = self.appId};
 
 	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = appInfo.payRedirectUrl};
+		apiParams.extra = {success_url = "http://keepwork.com/wiki/pay"};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = trade_no};
 	end
@@ -358,8 +358,15 @@ function pay:api_webhooks(params)
 				local err, data = self:http("POST", url, apiParams);
 
 				if(err == 200) then
-					response:status(200);
-					return errors.wrap(errors.SUCCESS);
+					local spendInfo = payInfo;
+					spendInfo.price = spendInfo.price * -1;
+
+					local bSuccess = self:spend(spendInfo);
+
+					if(bSuccess) then
+						response:status(200);
+						return errors.wrap(errors.SUCCESS);
+					end
 				end
 			end
 

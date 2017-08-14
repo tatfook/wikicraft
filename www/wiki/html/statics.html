@@ -1,0 +1,33 @@
+<div ng-controller="staticsController">
+    <div class="web-message">
+        <div class="container">
+            <div class="col-xs-4">
+                <div class="icon-box">
+                    <a><img ng-src='{{imgsPath+"icon/computer.png"}}' alt="网站数量"></a>
+                </div>
+                <a>
+                    <span>网站数量</span>
+                    <span>{{wikicraft.siteCount}}</span>
+                </a>
+            </div>
+            <div class="col-xs-4">
+                <div class="icon-box">
+                    <a><img ng-src='{{imgsPath+"icon/user.png"}}' alt="名人数量"></a>
+                </div>
+                <a>
+                    <span>名人数量</span>
+                    <span>{{wikicraft.userCount}}</span>
+                </a>
+            </div>
+            <div class="col-xs-4">
+                <div class="icon-box">
+                    <a href="#"><img ng-src='{{imgsPath+"icon/update.png"}}' alt="本周更新"></a>
+                </div>
+                <a>
+                    <span>本周更新</span>
+                    <span>{{wikicraft.renewalCount}}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

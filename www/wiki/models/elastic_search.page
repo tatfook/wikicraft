@@ -1,0 +1,111 @@
+<?npl
+--[[
+Title: website of a user
+Author: wuxiangan
+Date: 2016/11/29
+]]
+
+include_once("./abstract/base.page");
+
+local elastic_search = inherit(models.abstract.base, gettable("models.elastic_search"))
+
+-- 提交到搜索引擎
+function elastic_search:api_submitToES(params)
+	log(params, true)
+	local url = "http://221.0.111.131:19001/Application/kwupsert"
+	System.os.GetUrl({
+		url=url,
+		method="POST",
+		form = params,
+	}, function(code, data)
+		--log(data, true)
+	end)
+end
+
+-- 提价用户信息 用户表记录
+function elastic_search:api_submitUserinfo(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local url = "/" .. params.username
+	local content = ""
+	
+	-- 填充搜索信息
+	content = content .. "\n" .. (params.username or "")
+	content = content .. "\n" .. (params.displayName or "")
+	content = content .. "\n" .. (params.introduce or "")
+	content = content .. "\n" .. (params.cellphone or "")
+	content = content .. "\n" .. (params.location or "")
+	
+	params.username = nil
+	params.email = nil
+	params.password = nil
+	params.isadmin = nil
+	params.roleId = nil
+	params.vipLevel = nil
+	params.cellphone = nil
+
+	local extra_data = toJson(params)
+
+	self:api_submitToES({
+		url=url,
+		extra_search="userinfo: " .. content,
+		extra_data=extra_data,
+	})
+
+	return errors:wrap(nil)
+end
+
+-- 提交站点信息 站点表记录
+function elastic_search:api_submitSiteinfo(params)
+	params.sitename = params.name
+
+	if not params.username or not params.sitename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	-- url
+	local url = "/" .. params.username .. "/" .. params.sitename
+	local content = ""
+
+	-- 填充搜索信息
+	--content = content .. "\n" .. (params.username or "")
+	content = content .. "\n" .. (params.sitename or "")
+	content = content .. "\n" .. (params.displayName or "")
+
+	local extra_data = toJson(params)
+	if params.visibility == "private" then
+		extra_data = toJson({
+			username=params.username,
+			sitename=params.sitename,
+			visibility=params.visibility,
+		})
+	end
+	
+
+	self:api_submitToES({
+		url=url,
+		extra_search= "siteinfo: " .. content,
+		extra_data=extra_data,
+	})
+	return errors:wrap(nil)
+end
+
+
+-- 提交网页信息
+function elastic_search:api_submitPageinfo(params)
+	--if not params.username or not params.sitename or not params.pagename then
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	--end
+
+	local pageinfo = params.pageinfo or {}
+	params.pageinfo = nil
+	params.extra_data = toJson(pageinfo)
+	params.extra_search = "pageinfo: " .. params.content
+
+	self:api_submitToES(params)
+
+	return errors:wrap(nil)
+end
+

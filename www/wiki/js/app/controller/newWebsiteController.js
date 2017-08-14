@@ -101,6 +101,9 @@ define([
                 $scope.websiteNameErrMsg = "";
                 $scope.nextStepDisabled = false;
                 $scope.step++;
+                setTimeout(function () {
+                    $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
+                });
                 return;
             } else if ($scope.step == 2) {
                 if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
@@ -164,12 +167,21 @@ define([
                 $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             }
             $scope.step++;
-        }
+        };
 
         $scope.prevStep = function () {
             $scope.step--;
             $scope.nextStepDisabled = false;
-        }
+            if ($scope.step==1){
+                setTimeout(function () {
+                    $scope.isModal ? $("#webName_modal").focus() : $("#webName").focus();
+                });
+            }else if ($scope.step == 2){
+                setTimeout(function () {
+                    $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
+                });
+            }
+        };
 
         function init() {
             $scope.categories = siteStyle;
