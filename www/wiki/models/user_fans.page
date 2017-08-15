@@ -60,7 +60,7 @@ function user_fans:api_attent(params)
 	-- 创建用户动态
 	local userTrendsDB = models.user_trends:new()
 	local trend = {userId=params.userId, objectId=params.fansUserId, trendsType=const.USER_TRENDS_TYPE_ATTENT_USER}
-	trend.desc = userinfo.username .. "关注" .. fansUserInfo.username
+	trend.desc = fansUserInfo.username .. "关注" .. userinfo.username
 	userTrendsDB:api_upsert(trend)
 
 	return errors:wrap()
@@ -84,7 +84,7 @@ function user_fans:api_unattent(params)
 	-- 创建用户动态
 	local userTrendsDB = models.user_trends:new()
 	local trend = {userId=params.userId, objectId=params.fansUserId, trendsType=const.USER_TRENDS_TYPE_ATTENT_USER}
-	trend.desc = userinfo.username .. "取消关注" .. fansUserInfo.username
+	trend.desc = fansUserInfo.username .. "取消关注" .. userinfo.username
 	userTrendsDB:api_upsert(trend)
 
 	return errors:wrap()
