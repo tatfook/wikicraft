@@ -59,7 +59,7 @@ define(['app',
                 var data = rs.data;
                 if (data && data.err === 0) {
                     $scope.isCreate = true;
-                    $scope.current_url = data.data.course_url;
+                    $scope.current_url = data.data ? data.data.course_url : '#';
                 }
             }, function (rs) {
                 console.log(rs);
@@ -77,14 +77,12 @@ define(['app',
             //     // $compile($html);
             // }
 
-            $scope.remotedata = {
-                url: $scope.pageinfo.url || decodeURI(window.location.pathname),
-                title: "",
-                create_user: $scope.userinfo.username,
-                create_nickname: $scope.userinfo.displayName,
-            }
-
-            console.log($scope.remotedata.url)
+            // $scope.remotedata = {
+            //     url: $scope.pageinfo.url || decodeURI(window.location.pathname),
+            //     title: "",
+            //     create_user: $scope.userinfo.username,
+            //     create_nickname: $scope.userinfo.displayName,
+            // }
 
             $scope.chapters = {
                 data: [],
@@ -100,7 +98,7 @@ define(['app',
 
             $scope.loadChp = function () {
                 $http.post($scope.httpPath + '/chapters', {
-                    url: $scope.remotedata.url,
+                    url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                     pageIndex: $scope.chapters.pageIndex,
                     pageSize: $scope.chapters.pageSize,
                     username: $rootScope.siteinfo.username
@@ -139,7 +137,7 @@ define(['app',
                 $scope.chapters.pageIndex++;
 
                 $http.post($scope.httpPath + '/chapters', {
-                    url: $scope.remotedata.url,
+                    url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                     pageIndex: $scope.chapters.pageIndex,
                     pageSize: $scope.chapters.pageSize,
                     username: $rootScope.siteinfo.username
@@ -175,9 +173,15 @@ define(['app',
                 });
             };
 
+
+
             //第一次新增词条
-            $http.post($scope.httpPath + '/add',
-                $scope.remotedata).then(function (rs) {}, function (rs) {
+            $http.post($scope.httpPath + '/add', {
+                url: $scope.pageinfo.url || decodeURI(window.location.pathname),
+                title: "",
+                create_user: $scope.userinfo.username,
+                create_nickname: $scope.userinfo.displayName,
+            }).then(function (rs) {}, function (rs) {
                 console.log(rs);
             });
 
@@ -201,7 +205,7 @@ define(['app',
                         pageIndex: 1,
                         pageSize: 24,
                         username: $rootScope.siteinfo.username,
-                        url: $scope.remotedata.url,
+                        url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
@@ -270,7 +274,7 @@ define(['app',
                     pageIndex: $scope.teacher.pageIndex,
                     pageSize: $scope.teacher.pageSize,
                     username: $rootScope.siteinfo.username,
-                    url: $scope.remotedata.url,
+                    url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
@@ -491,8 +495,8 @@ define(['app',
                                         }, 0);
 
                                         $chil.showOther = false;
-                                        
-                                    }else{
+
+                                    } else {
                                         $chil.swiperBox.slideTo(splArr.length - 1);
                                     }
 
@@ -523,7 +527,7 @@ define(['app',
                                         $timeout(function () {
                                             for (var i = 0; i < activeIdx.length; i++) {
                                                 $('.entri-list:eq(' + i + ') > .entri-item:eq(' + activeIdx[i] + ')').addClass('active');
-                                            }                                            
+                                            }
                                         }, 0);
                                     }
                                 }
@@ -654,6 +658,7 @@ define(['app',
                                     $scope.chapters.pageIndex = 1;
                                     $scope.teacher.pageIndex = 1;
                                     $scope.loadChp();
+                                    $scope.teacher.data = [];
                                     $scope.moreShowThearch();
 
                                 }, function (rs) {
