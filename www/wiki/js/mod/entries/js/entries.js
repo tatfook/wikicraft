@@ -96,6 +96,8 @@ define(['app',
             $scope.dataShow = true;
             $scope.notData = false;
 
+            $scope.isNextBtn = "";
+
             $scope.loadChp = function () {
                 $http.post($scope.httpPath + '/chapters', {
                     url: $scope.pageinfo.url || decodeURI(window.location.pathname),
@@ -105,7 +107,6 @@ define(['app',
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
-
                     if (rs.data.itemCount === 0) {
                         $scope.dataShow = false;
                         $scope.notData = true;
@@ -149,9 +150,8 @@ define(['app',
                         countRecord = rs.data.itemCount, // 记录数
                         allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize)); // 总页数
 
-                    if (pageIndex == allPage || pageIndex >= allPage) {
-                        $scope.isGetPage = true;
-                        return;
+                    if (pageIndex === allPage || pageIndex >= allPage) {
+                       return;
                     }
 
                     if (rs.data && rs.data.err === 0) {
@@ -172,8 +172,6 @@ define(['app',
                     console.log(rs);
                 });
             };
-
-
 
             //第一次新增词条
             $http.post($scope.httpPath + '/add', {
@@ -336,24 +334,27 @@ define(['app',
                 // 左右滑动轮播
                 var slideSwiper = new Swiper('#sliding-loading', {
                     width: itemWidth,
-                    slidesPerGroup: slidesGroup,
+                    slidesPerGroup: 5,
                     observer: true,
                     observeParents: true,
-                    freeModeMomentum: true,
                     freeMode: slideMode,
                     prevButton: '.prev-btn',
                     nextButton: '.next-btn',
+                    slidesOffsetAfter : -itemWidth*4,
                     // 左滑动获取分页数据
-                    onSlideChangeEnd: function (swiper) {
+                    onSlideChangeEnd: function (swiper) { 
+
                         for (var i = 0; i < itemSlide.length; i++) {
                             slideWidth = parseInt((itemSlide.length * (itemSlide[i].clientWidth) / 2));
                         }
                         move = swiper.translate - wrapOffset;
+                        swiper.isEnd ? $scope.isNextBtn = "btn-display" : $scope.isNextBtn = "";
                         if (move <= -slideWidth) {
                             $scope.nextPage();
                         }
                     }
                 })
+
             }
 
             $scope.$watch('$viewContentLoaded', init);
