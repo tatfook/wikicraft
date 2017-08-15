@@ -74,12 +74,20 @@ function website:api_create(params)
 	params.visitCount = 0
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
+	--self:db():findOne({["+username+name"]={params.username, params.name}}, resume)
+	--local _, site = yield()
+
+	--if site then
+		--return errors:wrap("站点已存在")
+	--end
+
 	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)	
 	return errors:wrap(yield())
 end
 
 -- 创建站点
 function website:api_upsert(params) 
+	ensureAuthenticated()
 	if (not params.userId) or (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
