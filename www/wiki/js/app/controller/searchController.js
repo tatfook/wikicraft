@@ -16,7 +16,7 @@ define([
 		// 站点信息: siteinfo
 		// 用户信息: userinfo
 		// 页面信息: pageinfo
-        var searchParams = {keyword:"", searchType="siteinfo"};
+        var searchParams = {keyword:"", searchType:"siteinfo"};
 
         function getSiteList() {
 			elasticSearch(searchParams.keyword, searchParams.searchType);
@@ -66,7 +66,7 @@ define([
 
         function init() {
             console.log('init siteshow controller');
-            siteshowParams = util.getQueryObject() || searchParams;
+            searchParams = util.getQueryObject() || searchParams;
             getSiteList();
         }
 
