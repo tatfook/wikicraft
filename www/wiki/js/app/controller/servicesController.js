@@ -15,16 +15,17 @@ define(['app',
         $scope.clickOrders = function () {
             $scope.showItem = 'orders';
 
-            // $scope.inviteFriend = function () {
-            //     if (!$scope.friendMail) {
-            //         Message.info("请正确填写好友邮箱地址!!!");
-            //         return ;
-            //     }
-            //     util.post(config.apiUrlPrefix + 'user/inviteFriend',{username:$scope.user.username,friendMail:$scope.friendMail}, function () {
-            //         Message.info("邀请邮件已发送给" + $scope.friendMail);
-            //         $scope.friendMail = "";
-            //     });
-            // }
+            util.http("POST", config.apiUrlPrefix + "user_service/getByUsername", {username:$scope.user.username}, function (data) {
+                $scope.serviceList = data.serviceList;
+            }, function (err) {
+                console.log(err);
+            });
+
+            $scope.renew = function (service) {
+                if (service.name == "VIP"){
+                    util.go("vip");
+                }
+            }
         };
 
         // 消费记录
@@ -34,7 +35,7 @@ define(['app',
 
             util.http("POST", config.apiUrlPrefix + "pay/getTrade", {}, function (data) {
                 $scope.myPays = data;
-            })
+            });
 
             util.http("GET", config.apiUrlPrefix + "wallet/getBalance", {}, function (data) {
                 if (data) {
@@ -42,16 +43,16 @@ define(['app',
                 } else {
                     $scope.balance = 0;
                 }
-            })
-        }
+            });
+        };
 
         $scope.showMyVIP = function () {
             $scope.showItem = 'myVIP';
-        };
 
-		$scope.goPayPage = function() {
-			util.go("vip");
-		}
+            $scope.goPayPage = function() {
+                util.go("vip");
+            };
+        };
 
         $scope.$on('userCenterSubContentType', function (event, item) {
             console.log(item);
@@ -63,13 +64,18 @@ define(['app',
                 $scope.showMyVIP();
         });
 
-        function init() {
+        function init(userinfo) {
+            $scope.user = userinfo || $scope.user;
         }
 
-		$scope.$watch('viewContentLoaded', function(){
-            init();
-		});
-
+        // 文档加载完成
+        $scope.$watch('$viewContentLoaded', function(){
+            Account.ensureAuthenticated(function () {
+                Account.getUser(function (userinfo) {
+                    init(userinfo);
+                });
+            });
+        });
     }]);
 
     return htmlContent;

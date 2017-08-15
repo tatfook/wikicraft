@@ -1,47 +1,66 @@
 <style>
     /*消费记录*/
-    .mypay-panel{
+    .mypay-panel {
         margin: 0;
-        padding:0;
+        padding: 0;
     }
-    .mypay-panel .text-success{
+    .mypay-panel .text-success {
         color: #3FCE42;
-        vertical-align:sub;
+        vertical-align: sub;
     }
-    .mypay-panel .text-danger{
+    .mypay-panel .text-danger {
         font-size: 22px;
         vertical-align: sub;
     }
-    .mypay-table{
+    .mypay-table {
         border: none;
     }
-    .mypay-table>tbody>tr>td{
+    .mypay-table > tbody > tr > td {
         border: none;
-        width:25%;
+        width: 25%;
         vertical-align: middle;
     }
-    .mypay-table tr{
+    .mypay-table tr {
         border-bottom: 1px solid #DDD;
         height: 100px;
         text-align: center;
     }
-    .mypay-table .icon{
+    .mypay-table .icon {
         color: #FF8633;
         font-size: 30px;
         margin-right: 10px;
         vertical-align: middle;
     }
-    .mypay-table .money{
+    .mypay-table .money {
         color: #FF8633;
         font-weight: bold;
     }
 
-    .myvip .panel-body{
+    .myvip .panel-body {
         padding-top: 40px;
     }
-    .myvip .col-sm-4{
+    .myvip .col-sm-4 {
         text-align: center;
         line-height: 34px;
+    }
+    /*订单中心*/
+    .orders-table{
+        width: 620px;
+        margin: 50px auto 0;
+    }
+    .orders-table > thead > tr > th{
+        text-align: center;
+        font-weight: normal;
+        font-size: 18px;
+    }
+    .orders-table > tbody > tr > td {
+        vertical-align: middle;
+        text-align: center;
+        font-size: 16px;
+    }
+    .orders-table .btn-primary{
+        font-size: 16px;
+        padding: 4px 23px;
     }
 </style>
 <div ng-controller="servicesController">
@@ -68,18 +87,40 @@
         </div>
     </div>
 
-    <div ng-show="showItem == 'orders'">
-        订单中心开发中
+    <div ng-show="showItem == 'orders'" class="col-md-10 main-content panel">
+        <div class="panel-heading">订单中心</div>
+        <div class="panel-body">
+            <table class="table orders-table">
+                <thead>
+                <tr>
+                    <th>服务</th>
+                    <th>状态</th>
+                    <th>到期时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in serviceList">
+                    <td>{{item.content}}</td>
+                    <td>{{item.state}}</td>
+                    <td>{{item.endDate}}</td>
+                    <td><span class="btn btn-primary" ng-click="renew(item)">续费</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div ng-show="showItem == 'myVIP'" class="col-md-10 panel main-content myvip">
         <div class="panel-heading">
             我的VIP
         </div>
         <div class="panel-body">
-            <!--<div class="col-sm-4">您的VIP特权将在<span class="text-danger">2017-08-12</span>到期</div>-->
+            <div class="col-sm-4">您的VIP特权将在<span class="text-danger">{{user.vipInfo.endDate}}</span>到期</div>
             <!--<div class="col-sm-3"><div class="btn btn-primary" ng-click="goBuyVip()">追加续费</div></div>-->
-            <div class="col-sm-4">VIP特权功能开发中，敬请期待！</div>
-            <div class="col-sm-3"><div class="btn btn-primary" ng-click="goPayPage()">追加续费</div></div>
+            <!--<div class="col-sm-4">VIP特权功能开发中，敬请期待！</div>-->
+            <div class="col-sm-3">
+                <div class="btn btn-primary" ng-click="goPayPage()">追加续费</div>
+            </div>
         </div>
     </div>
 </div>

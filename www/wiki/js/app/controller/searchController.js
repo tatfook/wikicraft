@@ -50,7 +50,8 @@ define([
 							//sitename:obj.site_name,
 						//});
 					}
-					$scope.siteObj = {siteList:sitelist};
+					$scope.searchResult = {results:sitelist};
+					console.log($scope.searchResult);
 					util.$apply($scope);
 					//util.post(config.apiUrlPrefix + "website/getSiteListByName", {list:sitelist}, function(data){
 						//$scope.siteObj = {siteList:data || []};
@@ -72,7 +73,14 @@ define([
 
         $scope.sitePageChanged = function () {
             getSiteList();
-        }
+        };
+
+        $scope.changeSearchType = function (searchType, event) {
+            searchParams.searchType = searchType;
+            elasticSearch(searchParams.keyword, searchParams.searchType);
+            console.log(event.target);
+            $(event.target).tab("show");
+        };
 
         //打开用户页
         $scope.goUserSite = function (site) {

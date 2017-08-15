@@ -1,6 +1,6 @@
 <style>
     body{
-        background-color: #F1F1F1;
+        /*background-color: #F1F1F1;*/
     }
     .works{
         padding-top: 10px;
@@ -67,9 +67,20 @@
 
 <div ng-controller="searchController" >
     <div class="container">
-        <h3 class="title">作品集</h3>
-        <div class="row works">
-            <div class="col-md-3 hover-slide" ng-repeat="site in siteObj.siteList" ng-show="site.name!='tutorial'">
+        <h3 class="title">搜索结果</h3>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="sites" class="active" ng-click="changeSearchType('siteinfo',$event)">
+                <a>站点</a>
+            </li>
+            <li role="users" ng-click="changeSearchType('userinfo',$event)">
+                <a>用户 <span class="badge">{{wikicraft.userCount}}</span></a>
+            </li>
+            <li role="renewals" ng-click="changeSearchType('pageinfo',$event)">
+                <a>用户页</a>
+            </li>
+        </ul>
+        <div class="row works tab-content">
+            <div class="col-md-3 hover-slide" ng-repeat="site in searchResult.results" ng-show="site.name!='tutorial'">
                 <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}">
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>
