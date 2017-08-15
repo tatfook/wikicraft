@@ -18,10 +18,13 @@ define([
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
         // 通过站点名搜索
-        $scope.searchWebsite = function () {
-            storage.sessionStorageSetItem("siteshowParams", {siteshowType: 'search', sitename: $scope.search});
+        $scope.goSearchPage = function () {
             //window.location.reload(false);
-            util.go("siteshow");
+			var params = {
+				searchType:"siteinfo",
+				keyword:$scope.search || "",
+			}
+            util.go("search?" + util.getQueryString(params));
         }
 
         function init() {
