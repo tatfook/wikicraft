@@ -464,7 +464,7 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
                         <li class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
-                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
+                            <input id="searchbar" type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
                             <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
                         <!--<li id="js-prev-container" class="nav-bread-crumb">-->
@@ -518,8 +518,8 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">
-                            <input type="text" class="form-control" placeholder="">
-                            <span class="glyphicon glyphicon-search text-muted"></span>
+                            <input id="searchbar-nologin" type="text" class="form-control" placeholder="" ng-model="search">
+                            <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted"></span>
                         </li>
                         <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
                         <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
