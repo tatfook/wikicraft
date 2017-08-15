@@ -34,7 +34,7 @@ case $ENV_TYPE in
     PORT=8099
     ;;
   prod)
-    ROOT_DIR=prod
+    ROOT_DIR=rls
     PORT=8088
     ;;
 esac
