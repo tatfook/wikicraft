@@ -173,8 +173,6 @@ define(['app',
                 });
             };
 
-
-
             //第一次新增词条
             $http.post($scope.httpPath + '/add', {
                 url: $scope.pageinfo.url || decodeURI(window.location.pathname),
@@ -342,8 +340,10 @@ define(['app',
                     freeMode: slideMode,
                     prevButton: '.prev-btn',
                     nextButton: '.next-btn',
+                    slidesOffsetAfter : -itemWidth*4,
                     // 左滑动获取分页数据
                     onSlideChangeEnd: function (swiper) { 
+
                         for (var i = 0; i < itemSlide.length; i++) {
                             slideWidth = parseInt((itemSlide.length * (itemSlide[i].clientWidth) / 2));
                         }
@@ -354,6 +354,7 @@ define(['app',
                         }
                     }
                 })
+
             }
 
             $scope.$watch('$viewContentLoaded', init);
