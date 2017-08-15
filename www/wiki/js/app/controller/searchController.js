@@ -2,29 +2,24 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], function (app, util, storage, htmlContent) {
-    app.controller('siteshowController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
+define([
+	'app',
+   	'helper/util',
+   	'helper/storage',
+   	'text!html/search.html'
+], function (app, util, storage, htmlContent) {
+    app.controller('searchController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
-        var siteshowParams = {siteshowType:'all'};
+
+		// 站点信息: siteinfo
+		// 用户信息: userinfo
+		// 页面信息: pageinfo
+        var searchParams = {keyword:"", searchType:"siteinfo"};
 
         function getSiteList() {
-            var params = {pageSize:$scope.pageSize, page:$scope.currentPage,sortBy:'-favoriteCount'};
-            var url = config.apiUrlPrefix + 'website/getSiteList';
-            // 个人站点
-            if (siteshowParams.siteshowType == 'personal') {
-                params.categoryId = 0;
-            } else if (siteshowParams.siteshowType == 'search') {
-                params.sitename = siteshowParams.sitename;
-				elasticSearch(params.sitename);
-				return;
-            }
-
-            util.http("POST", url, params, function (data) {
-                $scope.siteObj = data;
-                $scope.totalItems = data.total;
-            });
+			elasticSearch(searchParams.keyword, searchParams.searchType);
         }
 
 		function elasticSearch(keyword, searchType) {
@@ -71,7 +66,7 @@ define(['app', 'helper/util', 'helper/storage', 'text!html/siteshow.html'], func
 
         function init() {
             console.log('init siteshow controller');
-            siteshowParams = storage.sessionStorageGetItem('siteshowParams') || siteshowParams;
+            searchParams = util.getQueryObject() || searchParams;
             getSiteList();
         }
 
