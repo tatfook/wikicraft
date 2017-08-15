@@ -350,6 +350,12 @@ define([
             }
             container.style.overflow="visible";
         }
+
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13" && ($("#searchbar").is(":focus") || $("#searchbar-nologin").is(":focus"))){
+                $scope.goSearchPage();
+            }
+        });
     }]);
 
     return htmlContent;
