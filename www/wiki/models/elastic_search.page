@@ -73,6 +73,7 @@ function elastic_search:api_submitSiteinfo(params)
 	--content = content .. "\n" .. (params.username or "")
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
+	content = content .. "\n" .. (params.desc or "")
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
