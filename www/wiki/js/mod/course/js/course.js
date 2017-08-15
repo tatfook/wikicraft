@@ -56,7 +56,8 @@ define(['app', 'helper/util',
 
                 orginData: {},
 
-                switch: true,
+                // switch: true,
+                switch: false,
             }
 
             //因为现在不能自定义过滤器，不能将lodash封装一个过滤器，只能用监听
@@ -80,9 +81,9 @@ define(['app', 'helper/util',
 
                         $root.data.course.title = data.course;
 
-                        if (data.course && data.course.is_stage !== undefined && data.course.is_stage !== null && data.course.is_stage !== '') {
-                            $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
-                        }
+                        // if (data.course && data.course.is_stage !== undefined && data.course.is_stage !== null && data.course.is_stage !== '') {
+                        //     $root.data.switch = parseInt(data.course.is_stage, 10) === 1 ? true : false;
+                        // }
 
                         var items = data.chapter;
 
@@ -199,6 +200,7 @@ define(['app', 'helper/util',
                         // 新增或修改的时候下拉选择的数据
                         $scope.select = {
                             selectArray: [],
+                            removeArr: [],
                         }
 
                         // 打开简单窗口
@@ -222,12 +224,12 @@ define(['app', 'helper/util',
                         //具体的动作
                         $scope.action = {
 
-                            switchType: function () {
-                                var that = $scope.action;
+                            // switchType: function () {
+                            //     var that = $scope.action;
 
-                                $scope.switch = !$scope.switch;
-                                $root.data.switch = $scope.switch;
-                            },
+                            //     $scope.switch = !$scope.switch;
+                            //     $root.data.switch = $scope.switch;
+                            // },
 
                             selectOpen: false,
 
@@ -245,6 +247,34 @@ define(['app', 'helper/util',
                                         break;
                                     }
                                 }
+
+                                // for(var i = 0; i < removeArr.length; i++){
+                                //     if(removeArr[i]['url'] === chp_url){
+                                //         selectArr.push(removeArr.splice(i, 1)[0]);
+                                //     }
+                                // }
+
+
+                                // for (var i = 0; i < $scope.select.removeArr.length; i++) {
+                                //     var item = $scope.select.removeArr[i];
+
+                                //     if (item['url'] === chp_url) {
+                                //         item['choice'] = !flag;
+
+                                //         $scope.select.selectArray.push(item);
+                                //         $scope.select.removeArr.splice(i, 1);
+                                //         break;
+                                //     }
+                                // }
+
+                                // for (var i = 0; i < $scope.select.selectArray.length; i++) {
+                                //     var item = $scope.select.selectArray[i];
+
+                                //     if (item['url'] === chp_url) {
+                                //         item['choice'] = !flag;
+                                //         break;
+                                //     }
+                                // }
                             },
 
                             //数字转中文数字
@@ -299,7 +329,6 @@ define(['app', 'helper/util',
                             },
 
                             selectItem: function (sItem, chp) {
-
                                 if (sItem && sItem['url']) { //选中时触发
                                     chp['chapter_url'] = sItem['url'];
                                     sItem['choice'] = true;
@@ -313,7 +342,7 @@ define(['app', 'helper/util',
                                     }
 
                                     for (var i = 0; i < arr.length; i++) {
-                                        arr[i]['choice'] = exists[arr[i].url];
+                                        arr[i]['choice'] = !!exists[arr[i].url];
                                     }
                                 }
                             },

@@ -442,7 +442,7 @@
     <div class="modal-body" style="flex: 1;">
         <div class="course-tips" data-drag="true">
             <!-- <span>为了优化您的教学体验，请在添加课程目录模块的同时，添加词条模块。</span> -->
-            <span>请先需要添加词条模块后使用该模块.</span>
+            <span>请先添加词条模块后使用该模块.</span>
         </div>
 
         <div class="course-title">
@@ -503,7 +503,7 @@
                                         <ui-select-match placeholder="链接地址" allow-clear="true">
                                             <span ng-bind="chp.chapter_url"></span>
                                         </ui-select-match>
-                                        <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index" style="min-width: 300px"
+                                        <ui-select-choices repeat="item in (select.selectArray | filter: {'choice': false} | filter: $select.search) track by $index" style="min-width: 300px"
                                             ui-disable-choice="item.choice">
                                             <span ng-bind="item.url" title="{{item.url}}"></span>
                                         </ui-select-choices>
@@ -541,7 +541,7 @@
                                 <ui-select-match placeholder="链接地址" allow-clear="true">
                                     <span ng-bind="chp.chapter_url"></span>
                                 </ui-select-match>
-                                <ui-select-choices repeat="item in (select.selectArray | filter: $select.search) track by $index" style="min-width: 300px"
+                                <ui-select-choices repeat="item in (select.selectArray | filter: {'choice': false} | filter: $select.search) track by $index" style="min-width: 300px"
                                     ui-disable-choice="item.choice">
                                     <span ng-bind="item.url" title="{{item.url}}"></span>
                                 </ui-select-choices>
