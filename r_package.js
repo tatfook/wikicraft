@@ -116,7 +116,6 @@
         'controller/homeController',
         'controller/loginController',
         'controller/previewController',
-        'controller/siteshowController',
         'controller/userCenterController',
 
         // directives
