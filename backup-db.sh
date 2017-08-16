@@ -7,7 +7,7 @@
 
 # local backup data folder
 # it's a named docker data volume
-LOCAL_BACKUP_FOLDER=/var/lib/docker/volumes/prod-database/_data
+LOCAL_BACKUP_FOLDER=/var/lib/docker/volumes/prod-database/_data/rls
 # folder that sync with remote server, we pack and zip data and save them here
 LOCAL_SYNC_FOLDER=/data/backup/keepwork
 
