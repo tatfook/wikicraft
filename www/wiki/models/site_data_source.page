@@ -141,9 +141,11 @@ function site_data_source:api_createProject(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
-	data = resp.data 
-	if #data > 0 then 
-		return errors:wrap(nil, data[1])
+	data = resp.data or {}
+	for _, project in ipairs(data) do
+		if string.lower(project.name) == string.lower(params.projectName) then
+			return errors:wrap(nil, project)
+		end
 	end
 
 	-- 不存创建项目
