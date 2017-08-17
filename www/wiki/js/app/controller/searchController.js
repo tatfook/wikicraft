@@ -45,18 +45,10 @@ define([
 						var obj = result.data.list[i];
 						var site = angular.fromJson(obj.extra_data);
 						sitelist.push(site);
-						//sitelist.push({
-							//username:obj.user_name,
-							//sitename:obj.site_name,
-						//});
 					}
 					$scope.searchResult = {results:sitelist};
 					console.log($scope.searchResult);
 					util.$apply($scope);
-					//util.post(config.apiUrlPrefix + "website/getSiteListByName", {list:sitelist}, function(data){
-						//$scope.siteObj = {siteList:data || []};
-					//});
-					
 				},
 				error: function(xhr, status, error){
 
@@ -66,30 +58,36 @@ define([
 		}
 
         function init() {
-            console.log('init siteshow controller');
+            console.log('init search controller');
             searchParams = util.getQueryObject() || searchParams;
+            $scope.searchType = searchParams.searchType;
+            $scope.searchText = searchParams.keyword;
             getSiteList();
         }
 
         $scope.sitePageChanged = function () {
             getSiteList();
+            $("#"+searchParams.searchType).get(0).scrollIntoView();
         };
 
-        $scope.changeSearchType = function (searchType, event) {
+        $scope.changeSearch = function (searchType, searchText) {
+            $scope.searchResult = {};
             searchParams.searchType = searchType;
+            searchParams.keyword = searchText || $scope.searchText || "";
             elasticSearch(searchParams.keyword, searchParams.searchType);
-            console.log(event.target);
-            $(event.target).tab("show");
+            $scope.searchType = searchType;
+            $scope.searchText = searchParams.keyword;
+
         };
 
         //打开用户页
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
-        }
+        };
 
         $scope.goUserIndexPage=function(username){
             util.goUserSite('/'+username,true);
-        }
+        };
 
         // 收藏作品
         $scope.worksFavorite=function (event, site) {
@@ -135,7 +133,55 @@ define([
             }
         };
 
+        // 关注用户
+        $scope.favoriteUser = function (fansUser) {
+            if (!fansUser) {
+                $scope.concerned = !$scope.concerned;
+                return;
+            }
+
+            if (!Account.isAuthenticated()) {
+                Message.info("登录后才能关注");
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    size: 'lg',
+                    backdrop: true
+                }, function (result) {
+                    console.log(result);
+                    // nowPage.replaceSelection(login.content);
+                }, function (result) {
+                    console.log(result);
+                });
+                return; // 登录后才能关注
+            }
+
+            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == fansUser._id) {
+                Message.info("自己不关注自己");
+                return; // 自己不关注自己
+            }
+
+            if(fansUser.concerned){//取消关注
+                util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
+                    console.log("取消关注成功");
+                    Message.info("取消关注成功");
+                    fansUser.concerned=false;
+                });
+            }else{
+                util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
+                    console.log("关注成功");
+                    Message.info("关注成功");
+                    fansUser.concerned=true;
+                });
+            }
+        }
+
         $scope.$watch('$viewContentLoaded', init);
+
+        $(document).keyup(function (event) {
+            if(event.keyCode=="13" && ($("#searchpage-search").is(":focus"))){
+                $scope.changeSearch($scope.searchType, $scope.searchText);
+            }
+        });
     }]);
 
     return htmlContent;
