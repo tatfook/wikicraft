@@ -76,6 +76,9 @@
         height:460px;
         overflow-y: auto;
     }
+    .works-manage .tab-pane.nobottom{
+        padding-bottom: 0;
+    }
     .works-manage .work{
         padding: 0 20px 20px;
     }
@@ -146,6 +149,9 @@
     .works-manage .pagination-box{
         text-align: center;
     }
+    .works-manage .pagination-box > .pagination{
+        margin:0;
+    }
     .works-manage .pagination > .active > a{
         color: #FFF;
     }
@@ -204,7 +210,7 @@
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active clearfix" id="org-works">
+                <div role="tabpanel" class="tab-pane active clearfix nobottom" id="org-works">
                     <div class="clearfix">
                         <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList" ng-hide="works.isDeleted">
                             <div>
