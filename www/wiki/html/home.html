@@ -136,19 +136,6 @@
         line-height: 50px;
         text-align: center;
     }
-    .web-message a {
-        cursor: default;
-    }
-    .web-message {
-        padding: 40px 0;
-        box-shadow: 0 2px 5px rgba(44, 62, 80, .35);
-    }
-    .web-message span {
-        margin: 0 15px;
-    }
-    .web-message a:focus, .web-message a:hover {
-        color: #666;
-    }
     .paracraft {
         display: flex;
         align-items: center;
@@ -271,19 +258,85 @@
         padding: 0 50px;
     }
 
+    /*第一次使用*/
+    .newuser-container{
+        background-color: rgba(255, 255, 255, .6);
+        padding: 30px;
+        box-shadow: 0px 4px 30px 0px rgba(19, 61, 112, .30);
+        min-width: 400px;
+    }
+    .newuser-container .wiki-flex{
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+        font-size: 16px;
+    }
+    .newuser-container .text{
+        margin-left: 16px;
+    }
+    .newuser-container .text > a{
+        font-size: 16px;
+        border-bottom: 1px solid;
+    }
+    .newuser-container h3{
+        font-size: 24px;
+        white-space:nowrap;
+        color: #333;
+        margin: 0 0 10px;
+    }
+    .newuser-container a{
+        color: #3977AD;
+    }
+    .newuser-container .col-sm-6{
+        cursor: pointer;
+    }
+    .newuser-container .col-sm-6 a{
+        font-size: 12px;
+    }
+    .newuser-container .no-padding-left{
+        padding-left:0;
+    }
+    .newuser-container .no-padding-right{
+        padding-right:0;
+    }
+    .newuser-container .col-sm-6 > img{
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        margin-bottom: 8px;
+    }
+
+    .web-message{
+        box-shadow: 0 2px 5px rgba(44, 62, 80, .35);
+    }
+    .web-message > .col-sm-6{
+        display: flex;
+        align-items: center;
+        padding:4px 90px;
+    }
+    .web-message .col-sm-6.left-col{
+        justify-content: flex-end;
+    }
+    .web-message .col-sm-6.right-col{
+        justify-content: flex-start;
+    }
+    .web-message .text{
+        margin-left: 20px;
+    }
+
+    .video-modal iframs{
+        width: 100%;
+        min-height:400px;
+        display: block;
+        border: none;
+    }
+
     @media (max-width: 992px) {
         .paracraft, .banner {
             display: block;
         }
         .banner {
             padding: 50px 0;
-        }
-        .web-message {
-            text-align: center;
-        }
-        .web-message span {
-            margin: 0 8px;
-            display: inline-block;
         }
     }
     @media (min-width: 1200px){
@@ -311,10 +364,6 @@
         }
     }
     @media (max-width: 768px) {
-        .web-message{
-            padding: 10px 0;
-            box-shadow: none;
-        }
         .row{
             padding:10px 0 20px;
         }
@@ -345,24 +394,14 @@
 
 <div ng-controller="homeController">
 	<div id="test"></div>
-    <div class="banner" ng-show="!isLogin">
+    <div class="banner">
         <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 hidden-xs hidden-sm">
             <h1>一网乾坤 个人作品网</h1>
             <h2>KeepWork</h2>
             <p style="max-width: 37em;">KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。
             </p>
-            <div class="message">
-                <div class="left-col">
-                    <h4>公开网站</h4>
-                    <p>免费：任意数量、大小，CDN加速</p>
-                </div>
-                <div class="right-col">
-                    <h4>私有网站</h4>
-                    <p>VIP包月</p>
-                </div>
-            </div>
         </div>
-        <div class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
+        <div  ng-show="!isLogin" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
             <form>
                 <div class="form-group">
                     <span id="total-err" class="visible-hidden text-danger">*{{errMsg}}</span>
@@ -404,212 +443,57 @@
                         </a>
                     </div>
                 </div>
-                <!--<div class="form-group">-->
-                    <!--<span id="mail-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
-                    <!--<label class="sr-only" for="email">Email address</label>-->
-                    <!--<input ng-model="email" ng-blur="checkUser()" type="email" class="form-control" id="email" placeholder="登录账号（推荐Email或手机号）">-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<span id="pwd-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
-                    <!--<label class="sr-only" for="password">Password</label>-->
-                    <!--<input ng-model="password" type="password" class="form-control" id="password"-->
-                           <!--placeholder="密码">-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                    <!--<span id="webname-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
-                    <!--<label class="sr-only" for="webName">webName</label>-->
-                    <!--<input ng-model="username" type="text" class="form-control" id="webName" placeholder="个人网站名">-->
-                    <!--<p class="web-info" ng-show="username">个人网址：http://keepwork.com/{{username?username:""}}</p>-->
-                <!--</div>-->
-                <!--<span id="total-err" class="text-danger visible-hidden">*{{errMsg}}</span>-->
-                <!--<a ng-show="!logining" ng-click="register()" class="btn btn-primary btn-lg btn-block">注册</a>-->
-                <!--<a ng-show="logining" ng-click="login()" class="btn btn-primary btn-lg btn-block">登录</a>-->
             </form>
+        </div>
+        <div ng-show="isLogin" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 newuser-container">
+            <div class="wiki-flex">
+                <div class="icon">
+                    <img ng-src="{{getImageUrl('icon/wiki_media.png', imgsPath)}}" alt="">
+                </div>
+                <div class="text">
+                    <h3>第一次使用KeepWork？</h3>
+                    <a href="#">观看教学视频</a>
+                </div>
+            </div>
+            <div class="col-sm-6 no-padding-left" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
+                <img ng-src="{{getImageUrl('wiki_works.jpg', imgsPath)}}" alt="">
+                <a>KeepWork是什么？</a>
+            </div>
+            <div class="col-sm-6 no-padding-right" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
+                <img ng-src="{{getImageUrl('wiki_works.jpg', imgsPath)}}" alt="">
+                <a>如何用KeepWork写网站？</a>
+            </div>
         </div>
         <img ng-src="{{imgsPath+'wiki_banner1.jpg'}}" alt="">
     </div>
-    <div class="carousel-banner" ng-show="isLogin">
-        <div id="header-carousel" class="carousel slide" data-ride="carousel">
-            <!-- Indicators -->
-            <ol class="carousel-indicators">
-                <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
-                <li data-target="#header-carousel" data-slide-to="1"></li>
-            </ol>
-            <!-- Wrapper for slides -->
-            <div class="carousel-inner crausel-banner" role="listbox">
-                <div class="item active">
-                    <a href="http://keepwork.com/official/pac2017/index" target="_blank"><img ng-src='{{imgsPath+"wiki_carousel_banner03.jpg"}}' alt="全国3D创作大赛"></a>
-                </div>
-                <div class="item">
-                    <a href="http://www.nplproject.com/zh/download/paracraft/latest/paracraft_full.exe"><img ng-src='{{imgsPath+"wiki_carousel_banner02.jpg"}}' alt="PARACRAFT"></a>
-                </div>
+    <div class="web-message clearfix">
+        <div class="col-sm-6 left-col">
+            <div class="icon">
+                <img ng-src="{{getImageUrl('icon/gongkai_icon.png',imgsPath)}}" alt="">
             </div>
-            <!-- Controls -->
-            <a class="left carousel-control" href="#header-carousel" role="button" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#header-carousel" role="button" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
+            <div class="text">
+                <h4>公开网站</h4>
+                <p>免费：任意数量、大小，CDN加速</p>
+            </div>
+        </div>
+        <div class="col-sm-6 right-col">
+            <div class="icon">
+                <img ng-src="{{getImageUrl('icon/vip_icon.png',imgsPath)}}" alt="">
+            </div>
+            <div class="text">
+                <h4>私有网站</h4>
+                <p>VIP包月</p>
+            </div>
         </div>
     </div>
-    <!--<div class="web-message">-->
-        <!--<div class="container">-->
-            <!--<div class="col-xs-4">-->
-                <!--<div class="icon-box">-->
-                    <!--<a><img ng-src='{{imgsPath+"icon/computer.png"}}' alt="网站数量"></a>-->
-                <!--</div>-->
-                <!--<a>-->
-                    <!--<span>网站数量</span>-->
-                    <!--<span>{{wikicraft.siteCount}}</span>-->
-                <!--</a>-->
-            <!--</div>-->
-            <!--<div class="col-xs-4">-->
-                <!--<div class="icon-box">-->
-                    <!--<a><img ng-src='{{imgsPath+"icon/user.png"}}' alt="名人数量"></a>-->
-                <!--</div>-->
-                <!--<a>-->
-                    <!--<span>名人数量</span>-->
-                    <!--<span>{{wikicraft.userCount}}</span>-->
-                <!--</a>-->
-            <!--</div>-->
-            <!--<div class="col-xs-4">-->
-                <!--<div class="icon-box">-->
-                    <!--<a href="#"><img ng-src='{{imgsPath+"icon/update.png"}}' alt="本周更新"></a>-->
-                <!--</div>-->
-                <!--<a>-->
-                    <!--<span>本周更新</span>-->
-                    <!--<span>{{wikicraft.renewalCount}}</span>-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
     <div id="_featureList_"></div>
-    <!--<div class="container">-->
-        <!--<div class="row paracraft" ng-show="!isLogin">-->
-            <!--<div class="col-md-3">-->
-                <!--<img ng-src='{{imgsPath+"paracraft-logo.jpg"}}' alt="PARACRAFT">-->
-                <!--<h4>免费的3D个人电影制作软件</h4>-->
-                <!--<p>—— 用自然语言写网页</p>-->
-                <!--<p>—— 可嵌入3D交互世界</p>-->
-                <!--<p>—— 分布式存储</p>-->
-                <!--<p>—— 免费、开源</p>-->
-                <!--<a class="btn btn-primary btn-lg" href="http://www.nplproject.com/zh/download/paracraft/latest/paracraft_full.exe">点击下载</a>-->
-            <!--</div>-->
-            <!--<div class="col-md-9">-->
-                <!--<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">-->
-                    <!--&lt;!&ndash; Indicators &ndash;&gt;-->
-                    <!--<ol class="carousel-indicators">-->
-                        <!--<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>-->
-                        <!--<li data-target="#carousel-example-generic" data-slide-to="1"></li>-->
-                    <!--</ol>-->
-                    <!--&lt;!&ndash; Wrapper for slides &ndash;&gt;-->
-                    <!--<div class="carousel-inner" role="listbox">-->
-                        <!--<div class="item active">-->
-                            <!--<img ng-src='{{imgsPath+"wiki_paracraft.jpg"}}' alt="PARACRAFT">-->
-                        <!--</div>-->
-                        <!--<div class="item">-->
-                            <!--<img ng-src='{{imgsPath+"wiki_paracraft02.jpg"}}' alt="PARACRAFT">-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--&lt;!&ndash; Controls &ndash;&gt;-->
-                    <!--<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">-->
-                        <!--<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>-->
-                        <!--<span class="sr-only">Previous</span>-->
-                    <!--</a>-->
-                    <!--<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">-->
-                        <!--<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>-->
-                        <!--<span class="sr-only">Next</span>-->
-                    <!--</a>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="row works">-->
-            <!--<div class="col-md-12">-->
-                <!--<h4>作品长廊 <a class="pull-right" ng-click="goAllWorksList()">查看更多>></a></h4>-->
-            <!--</div>-->
-            <!--<div class="col-md-3 hover-slide col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in siteObj.siteList">-->
-                <!--<div>-->
-                    <!--<a ng-click="goUserSite(site)">-->
-                        <!--<img ng-src="{{site.logoUrl || (imgsPath + 'wiki_cover.jpg')}}">-->
-                    <!--</a>-->
-                    <!--<div class="text clearfix">-->
-                        <!--<h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>-->
-                        <!--<p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username}}</a></p>-->
-                        <!--<p class="pull-left info">-->
-                            <!--<span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>-->
-                        <!--</p>-->
-                        <!--<p class="pull-right info" ng-click="worksFavorite($event, site)">-->
-                            <!--<span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 关注 <span>{{site.favoriteCount}}</span>-->
-                        <!--</p>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="row works">-->
-            <!--<div class="col-md-12">-->
-                <!--<h4>名人堂 <a class="pull-right" ng-click="goAllPersonalList()">查看更多>></a></h4>-->
-            <!--</div>-->
-            <!--<div class="col-md-3 hover-slide col-sm-4 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="site in personalSiteObj.siteList">-->
-                <!--<div>-->
-                    <!--<a ng-click="goUserSite(site)">-->
-                        <!--<img ng-src="{{site.logoUrl || (imgsPath + 'wiki_cover.jpg')}}">-->
-                    <!--</a>-->
-                    <!--<div class="text clearfix">-->
-                        <!--<h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>-->
-                        <!--<p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username}}</a></p>-->
-                        <!--<p class="pull-left info">-->
-                            <!--<span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount || 0}}</span>-->
-                        <!--</p>-->
-                        <!--<p class="pull-right info" ng-click="worksFavorite($event, site)">-->
-                            <!--<span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 关注 <span>{{site.favoriteCount}}</span>-->
-                        <!--</p>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-    <!--<div class="whouse">-->
-        <!--<div class="container">-->
-            <!--<div class="row">-->
-                <!--<div class="col-md-12">-->
-                    <!--<h2>谁在用KEEPWORK？</h2>-->
-                <!--</div>-->
-                <!--<div class="col-md-3 col-sm-4">-->
-                    <!--<h4>个人</h4>-->
-                    <!--<p>上万名中小学生，使用KEEPWORK建立了自己的3D作品</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-3 col-md-offset-1 col-sm-4">-->
-                    <!--<h4>老师</h4>-->
-                    <!--<p>优秀的老师与企业CTO使用KEEPWORK创建了交互的教学课件。</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-3 col-md-offset-1 col-sm-4">-->
-                    <!--<h4>企业</h4>-->
-                    <!--<p>学校、培训机构使用KEEPWORK创建了连接学生与家长和老师的公司网站。</p>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-    <!--<div class="container">-->
-        <!--<div class="row">-->
-            <!--<div class="col-md-12">-->
-                <!--<h4>用自然语言写代码</h4>-->
-                <!--<p>你可以用WIKI的形式写网页和超链接，也可以混合HTML语言。</p>-->
-            <!--</div>-->
-            <!--<div class="col-md-12">-->
-                <!--<h4>可嵌入3D交互世界</h4>-->
-                <!--<p>通过NPL语言或Paracraft在网页中嵌入可交互的代码、3D世界或电影，不断加入新的扩展功能。</p>-->
-            <!--</div>-->
-            <!--<div class="col-md-12">-->
-                <!--<h4>分布式存储</h4>-->
-                <!--<p>GitHub分布式中央数据源记录你的所有编辑历史，免费架设NPL私服或自定义一级域名。</p>-->
-            <!--</div>-->
-            <!--<div class="col-md-12">-->
-                <!--<h4>免费、开源</h4>-->
-                <!--<p>任何人可观看任何人的网站，任何人和观看任何人的网页源码。作品是最好的老师。</p>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
+
+    <!--视频播放弹窗-->
+    <div class="modal fade video-modal" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <iframe ng-src="{{videoUrl}}"></iframe>
+            </div>
+        </div>
+    </div>
 </div>
