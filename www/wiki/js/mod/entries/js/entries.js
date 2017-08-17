@@ -36,11 +36,11 @@ define(['app',
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
-                chapter_url: decodeURI($scope.pageinfo.url) || decodeURI(window.location.pathname)
+                chapter_url: $scope.pageinfo.url || decodeURI(window.location.pathname)
             }, {
                 isShowLoading: false
             }).then(function (rs) {
-
+                console.log(decodeURI($scope.pageinfo.url), decodeURI(window.location.pathname));
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
                     $scope.course_url = rs.data.course_url.course_url;
                     $scope.entries_title = rs.data.course_url.title;
@@ -348,7 +348,6 @@ define(['app',
                             slideWidth = parseInt((itemSlide.length * (itemSlide[i].clientWidth) / 2));
                         }
                         move = swiper.translate - wrapOffset;
-                        swiper.isEnd ? $scope.isNextBtn = "btn-display" : $scope.isNextBtn = "";
                         if (move <= -slideWidth) {
                             $scope.nextPage();
                         }
