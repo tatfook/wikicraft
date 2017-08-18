@@ -40,7 +40,6 @@ define(['app',
             }, {
                 isShowLoading: false
             }).then(function (rs) {
-                console.log(decodeURI($scope.pageinfo.url), decodeURI(window.location.pathname));
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
                     $scope.course_url = rs.data.course_url.course_url;
                     $scope.entries_title = rs.data.course_url.title;
