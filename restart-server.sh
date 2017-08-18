@@ -25,7 +25,8 @@ ENV_TYPE=$1
 name=keepwork-${ENV_TYPE}-server
 
 if docker ps -f name=$name | grep $name; then
-  docker rm -f $name
+  docker stop $name
+  docker rm $name
 fi
 
 docker run -d --restart=always --name=$name \
