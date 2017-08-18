@@ -60,7 +60,6 @@ define([
         
         // 注册
         $scope.register = function (type) {
-            console.log("fgfgfgfgf");
             // debugger;
             if(!$scope.agree){
                 return;

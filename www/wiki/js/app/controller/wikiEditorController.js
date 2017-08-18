@@ -542,9 +542,9 @@ define([
 
                 // 获取自己的站点列表
                 fnList.push(function (finish) {
-                    if ($scope.user && $scope.user._id) {
+                    if ($scope.user && $scope.user.username) {
                         // 获取用户所有站点
-                        util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}, function (data) {
+                        util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username: $scope.user.username}, function (data) {
 							for (var i = 0; i < (data || []).length; i++) {
 								setSite(data[i]);
 							}

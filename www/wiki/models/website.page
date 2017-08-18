@@ -312,6 +312,7 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
+	params.sitename = nil   -- 防止名字被改
 	params.name = nil   -- 防止名字被改
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
