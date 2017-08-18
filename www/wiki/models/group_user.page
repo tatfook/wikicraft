@@ -7,8 +7,8 @@ Date: 2017/06/08
 
 
 include_once("./abstract/base.page")
-include_once("./abstract/site_group.page")
-include_once("./abstract/site_user.page")
+include_once("./site_group.page")
+include_once("./site_user.page")
 
 local group_user = inherit(models.abstract.base, gettable("models.group_user"))
 group_user.db_name = "group_user"
@@ -35,7 +35,7 @@ function group_user:api_upsert(params)
 			username=params.username,
 			groupname=params.groupname,
 			memberName=params.memberName,
-			sitename=params.sitename,
+			sitename=obj.sitename,
 		})
 	end
 
@@ -61,7 +61,7 @@ function group_user:api_deleteMember(params)
 			username=params.username,
 			groupname=params.groupname,
 			memberName=params.memberName,
-			sitename=params.sitename,
+			sitename=obj.sitename,
 		})
 	end
 
