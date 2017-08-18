@@ -17,7 +17,7 @@ define(['app',
             $scope.userinfo.username; // 用户主页
             //  $scope.user.portrait; //用户头像
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
-            $scope.followPath = "http://121.14.117.239/follow/take";
+            $scope.urlPath = "http://121.14.117.239/";
 
             // 课程url信息
             $scope.current_url = decodeURI(window.location.pathname) || decodeURI($scope.pageinfo.url);

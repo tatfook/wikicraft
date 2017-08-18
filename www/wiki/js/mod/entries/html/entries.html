@@ -367,12 +367,12 @@
 
             <div class="authorInfo" ng-show="isCreate">
                 <span>导师：</span>
-                <a href="#">
+                <a href="{{urlPath}}teacher_index?user_name={{userinfo.username}}">
                     <!--<img src="{{thisUserPic}}" alt="{{userinfo.username}}"/>-->
                     {{userinfo.username}}
                 </a>
                 &nbsp;
-                <a href="{{followPath}}?url={{current_url}}" type="button" class="btn btn-danger btn-sm" style="width:80px;">拜师</a>
+                <a href="{{urlPath}}follow/take?url={{current_url}}" type="button" class="btn btn-danger btn-sm" style="width:80px;">拜师</a>
             </div>
 
         </div>
@@ -388,7 +388,7 @@
                             <div class="swiper-slide item-slide" ng-repeat="item in chapters.data">
                                 <div class="inner-box">
                                     <a href="{{item.url}}" title="{{item.title}}" class="item-title">{{item.title}}</a>
-                                    <a href="{{item.url}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
+                                    <a href="{{urlPath}}teacher_index?user_name={{item.create_user}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
                                 </div>
                             </div>
                         </div>
@@ -410,7 +410,7 @@
 
                         <div class="swiper-slide">
                             <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
-                                <a href="{{followPath}}?res_name={{item.user_name}}&url={{current_url}}" target="_blank" title="{{item.display_name}}" class="teach-box pull-left">
+                                <a href="{{urlPath}}teacher_index?user_name={{item.user_name}}" target="_blank" title="{{item.user_name}}" class="teach-box pull-left">
                                     <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
                                     <span class="name">{{item.display_name}}</span>
                                 </a>
