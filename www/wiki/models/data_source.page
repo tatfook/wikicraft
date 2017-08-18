@@ -202,7 +202,8 @@ function data_source:api_createInnerGitlab(params)
 		params.username = params.name
 		params.email = params.name .. '@paraengine.com'
 		params.password = params.password or tostring(os.time())
-		params.confirm = false
+		--params.confirm = false
+		params.skip_confirmation = true;
 
 		local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
 		local gitlabHost = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["host"]

@@ -375,10 +375,15 @@ function site_data_source:api_createSiteDataSource(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
-	local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName}).data
-	if project then
-		params.projectId = project.id
+	if params.isolateDataSource == 1 then
+		local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName}).data
+		if project then
+			params.projectId = project.id
+		end
+	else
+		params.projectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
 	end
+
 	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	local _, siteDataSource = yield()
 	

@@ -50,7 +50,7 @@ define([
                 return;
             }
 
-            var domain =$scope.website.username + '-' + $scope.website.domain;
+            var domain = $scope.website.username + '-' + $scope.website.domain;
             util.http('POST', config.apiUrlPrefix + 'website_domain/checkDomain', {domain: domain}, function (data) {
                 if (data == 0) {
                     $scope.errMsg = $scope.website.domain + "已存在，请换个名字";
