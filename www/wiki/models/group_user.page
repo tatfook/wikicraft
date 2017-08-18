@@ -7,6 +7,8 @@ Date: 2017/06/08
 
 
 include_once("./abstract/base.page")
+include_once("./abstract/site_group.page")
+include_once("./abstract/site_user.page")
 
 local group_user = inherit(models.abstract.base, gettable("models.group_user"))
 group_user.db_name = "group_user"
@@ -23,7 +25,20 @@ function group_user:api_upsert(params)
 	if (not params.groupname) or (not params.username) or (not params.memberName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-		
+
+	local siteGroupDB = models.site_group:new()
+	local data = siteGroupDB:api_getByUserGroupName({username=params.username, groupname=params.groupname, pageSize=const.MAX_SITE_NUM}).data.groupList
+
+	local siteUserDB = models.site_user:new()
+	for _, obj ipairs(data) do
+		siteUserDB:api_upsert({
+			username=params.username,
+			groupname=params.groupname,
+			memberName=params.memberName,
+			sitename=params.sitename,
+		})
+	end
+
 	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
 	self:db():insertOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, params, resume)
 
@@ -37,6 +52,19 @@ function group_user:api_deleteMember(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 		
+	local siteGroupDB = models.site_group:new()
+	local data = siteGroupDB:api_getByUserGroupName({username=params.username, groupname=params.groupname, pageSize=const.MAX_SITE_NUM}).data.groupList
+
+	local siteUserDB = models.site_user:new()
+	for _, obj ipairs(data) do
+		siteUserDB:api_deleteByName({
+			username=params.username,
+			groupname=params.groupname,
+			memberName=params.memberName,
+			sitename=params.sitename,
+		})
+	end
+
 	self:db():deleteOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, resume)
 
 	return errors:wrap(yield())
