@@ -289,6 +289,29 @@
     }
     .newuser-container .col-sm-6{
         cursor: pointer;
+        position: relative;
+        max-width: 210px;
+    }
+    .newuser-container .col-sm-6.no-padding-left .mask{
+        left: 0;
+        right: 15px;
+    }
+    .newuser-container .col-sm-6.no-padding-right .mask{
+        left: 15px;
+        right: 0;
+    }
+    .newuser-container .mask{
+        height: 100px;
+        position: absolute;
+        top: 0;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        line-height: 100px;
+        font-size: 40px;
+        display: none;
+    }
+    .newuser-container .col-sm-6:hover > .mask{
+        display: inline-block;
     }
     .newuser-container .col-sm-6 a{
         font-size: 12px;
@@ -307,6 +330,7 @@
     }
 
     .web-message{
+        background-color: #FFF;
         box-shadow: 0 2px 5px rgba(44, 62, 80, .35);
     }
     .web-message > .col-sm-6{
@@ -323,8 +347,11 @@
     .web-message .text{
         margin-left: 20px;
     }
+    .web-message .text p{
+        white-space:nowrap;
+    }
 
-    .video-modal iframs{
+    .video-modal iframe{
         width: 100%;
         min-height:400px;
         display: block;
@@ -337,6 +364,18 @@
         }
         .banner {
             padding: 50px 0;
+            height: auto;
+            position: relative;
+        }
+        .banner > img{
+            height:100%;
+            top:0;
+        }
+
+        h1.feature-title {
+            font-size: 36px;
+            margin: 20px 0;
+            text-align: center;
         }
     }
     @media (min-width: 1200px){
@@ -389,12 +428,28 @@
         .content-padding{
             padding: 0 15px;
         }
+
+        .newuser-container{
+            width: 100%;
+            margin: 0 auto;
+            max-width: 400px;
+            min-width: 0;
+            padding: 15px 30px;
+        }
+        .newuser-container h3{
+            font-size: 20px;
+        }
+
+        .web-message .col-sm-6.left-col, .web-message .col-sm-6.right-col{
+            padding:4px 30px;
+            justify-content: left;
+        }
     }
 </style>
 
 <div ng-controller="homeController">
 	<div id="test"></div>
-    <div class="banner">
+    <div class="banner clearfix">
         <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 hidden-xs hidden-sm">
             <h1>一网乾坤 个人作品网</h1>
             <h2>KeepWork</h2>
@@ -455,19 +510,25 @@
                     <a href="#">观看教学视频</a>
                 </div>
             </div>
-            <div class="col-sm-6 no-padding-left" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
+            <div class="col-xs-6 col-sm-6 no-padding-left" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
                 <img ng-src="{{getImageUrl('wiki_works.jpg', imgsPath)}}" alt="">
                 <a>KeepWork是什么？</a>
+                <div class="mask">
+                    <span class="glyphicon glyphicon-play"></span>
+                </div>
             </div>
-            <div class="col-sm-6 no-padding-right" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
+            <div class="col-xs-6 col-sm-6 no-padding-right" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
                 <img ng-src="{{getImageUrl('wiki_works.jpg', imgsPath)}}" alt="">
                 <a>如何用KeepWork写网站？</a>
+                <div class="mask">
+                    <span class="glyphicon glyphicon-play"></span>
+                </div>
             </div>
         </div>
         <img ng-src="{{imgsPath+'wiki_banner1.jpg'}}" alt="">
     </div>
     <div class="web-message clearfix">
-        <div class="col-sm-6 left-col">
+        <div class="col-xs-12 col-sm-6 left-col">
             <div class="icon">
                 <img ng-src="{{getImageUrl('icon/gongkai_icon.png',imgsPath)}}" alt="">
             </div>
@@ -476,7 +537,7 @@
                 <p>免费：任意数量、大小，CDN加速</p>
             </div>
         </div>
-        <div class="col-sm-6 right-col">
+        <div class="col-xs-12 col-sm-6 right-col">
             <div class="icon">
                 <img ng-src="{{getImageUrl('icon/vip_icon.png',imgsPath)}}" alt="">
             </div>
@@ -486,6 +547,7 @@
             </div>
         </div>
     </div>
+    <h1 class="visible-xs visible-sm feature-title">功能介绍</h1>
     <div id="_featureList_"></div>
 
     <!--视频播放弹窗-->
