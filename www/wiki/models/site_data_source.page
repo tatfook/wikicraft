@@ -172,11 +172,13 @@ function site_data_source:api_createProject(params)
 	local hookUrl = "http://" .. hostname .. "/api/wiki/models/data_source/gitlabWebhook"
 
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects" .. tostring(project.id) .. "/hooks",
-		push_events=true,
-		enable_ssl_verification=false,
+		url=params.apiBaseUrl .. "/projects/" .. tostring(project.id) .. "/hooks",
+		headers={['PRIVATE-TOKEN'] = params.token},
+		method="POST",
+		form={push_events=true, enable_ssl_verification=false,  url=hookUrl},
 	},resume)
-	yield()
+	local code, data = yield()
+	--log(data, true)
 
 	return errors:wrap(nil,project)
 end

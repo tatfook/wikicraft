@@ -188,9 +188,9 @@ define([
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'/>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'/>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'/>",
                 ]);
                 treeNode.icon = 'fa fa-globe';
 
@@ -1048,7 +1048,7 @@ define([
 							while (treeNode.parentId != undefined){
 								treeNode = $(treeid).treeview('getNode', treeNode.parentId);
 								if (!treeNode.state.expanded) {
-									$(treeid).treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
+									$(treeid).treeview('expandNode', [treeNode, {levels: 10, silent: false}]);
 								}
 							};
 						}
@@ -1119,7 +1119,7 @@ define([
                         collapseIcon:"fa fa-chevron-down",
                         showBorder: false,
                         enableLinks: false,
-                        levels: 4,
+                        levels: 10,
                         showTags: true,
 						data:[],
                         //data: getTreeData($scope.user.username, allPageMap, false),
@@ -1216,14 +1216,14 @@ define([
 					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
-						var node = treeNodeMap[key]
+						var node = treeNodeMap[key];
                         //console.log(key, treeNodeMap[key]);
 						if (!node) {
 							continue;
 						}
                         var treeid = getTreeId(node.pageNode.username, node.pageNode.sitename);
 						//console.log(treeid, node.pageNode.username, node.pageNode.sitename);
-                        treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
+                        treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 10, silent: true}]);
                     }
                 });
             }//}}}
