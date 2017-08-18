@@ -48,20 +48,20 @@ define(['app',
 
         $scope.showMyVIP = function () {
             $scope.showItem = 'myVIP';
+        };
 
-            $scope.goPayPage = function() {
-                util.go("vip");
-            };
+        $scope.goPayPage = function() {
+            util.go("vip");
         };
 
         $scope.$on('userCenterSubContentType', function (event, item) {
-            console.log(item);
             if (item == 'orders')
                 $scope.clickOrders();
             else if(item == 'myPay')
                 $scope.showMyPay();
-            else if(item == 'myVIP')
+            else if(item == 'myVIP'){
                 $scope.showMyVIP();
+            }
         });
 
         function init(userinfo) {
