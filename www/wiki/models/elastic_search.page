@@ -110,3 +110,23 @@ function elastic_search:api_submitPageinfo(params)
 	return errors:wrap(nil)
 end
 
+-- 网络爬虫提交数据
+function elastic_search:api_spiderSubmitPageinfo(params)
+	if not params.content or not params.filepath then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local pageinfo = {
+		url = "/keepwork/baike" .. params.filepath, 
+		content = params.content,
+		extra_data = toJson(params),
+		extra_search = "pageinfo: " .. params.content,
+	}
+
+	self:api_submitToES(pageinfo)
+
+	return errors:wrap(nil)
+end
+
+
+
