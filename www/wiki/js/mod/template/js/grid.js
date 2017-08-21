@@ -89,7 +89,7 @@ define([
 					if (!content && !contentUrl) {
 						return;
 					}
-					var md = markdownwiki({});
+					var md = markdownwiki({use_template:false});
 					//console.log($("#"+id));
 					if (content) {
 						util.html("#" + id, md.render(content));
