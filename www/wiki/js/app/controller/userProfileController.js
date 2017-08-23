@@ -507,6 +507,10 @@ define(['app',
             util.go("/"+username, true);
         };
 
+		$scope.goSitePage = function (username, sitename) {
+            util.go("/" + username + "/"+ sitename, true);
+        };
+
         // 我的历史
         $scope.clickMyHistory = function () {
             $scope.showItem = 'myHistory';

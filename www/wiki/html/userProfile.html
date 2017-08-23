@@ -686,7 +686,10 @@
                         <div class="img-text col-md-6 col-sm-12" ng-repeat="x in siteList">
                             <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                             <div class="text">
-                                <h4><a href="#">{{x.siteinfo.name || "作者未知"}}</a><span class="pull-right info">关注于2017-03-02</span></h4>
+                                <h4>
+                                    <a ng-click="goSitePage(x.siteinfo.username, x.siteinfo.name)">{{x.siteinfo.displayName || x.siteinfo.name || "站点名未知"}}</a>
+                                    <!--<span class="pull-right info">关注于2017-03-02</span>-->
+                                </h4>
                                 <p>作者：{{x.siteinfo.username || "作者未知"}}</p>
                                 <p>说明：{{x.siteinfo.desc || "暂无简介"}}</p>
                                 <div class="col-md-12 info">
