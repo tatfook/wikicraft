@@ -246,7 +246,7 @@
 <body>
     <div class="main" ng-controller="shareController">
         <div class="coat">
-            <div class="labe">模板名称</div>
+            <div class="labe">{{username}}</div>
             <div class="header">
                 <div class="portrait"></div>
                 <div class="inform inform1">
@@ -272,15 +272,15 @@
                     <span>：</span>
                 </div>
                 <div class="inform">
-                    <span id="fname">{{myWelcome}}</span>
+                    <span id="fname">{{author}}</span>
                     <br />
-                    <span>9527</span>
+                    <span>{{modelsnumber}}</span>
                     <br />
                     <span>2017-07-07</span>
                     <br />
-                    <span>65535</span>
+                    <span>{{blocks}}</span>
                     <br />
-                    <span>120*120*120</span>
+                    <span>{{volume}}</span>
                 </div>
                 <div class="inform3">
                     <button class="btn btn-default btn-inform3" type="submit">下载</button>
@@ -304,36 +304,13 @@
                         <span ng-click="clickStart(4)" id="start4" class="start_zyz">☆</span>
                         <span ng-click="clickStart(5)" id="start5" class="start_zyz">☆</span>
                     </span>
-                    <input type="text" name="" class="release">
-                    <button class="btn btn-default btn-fa" type="submit">发表</button>
+                    <input type="text" name="" class="release" ng-model="h2h2.words">
+                    <button class="btn btn-default btn-fa" type="submit" ng-click="add()">发表</button>
                 </div>
                 <div class="message">
                     <div class="ly-portrait"></div>
                     <span style="display:inline-block;width:90%;">
-                        啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
-                        啦啦啦啦啦啦啦啦
+                        {{h2h2.words}}
                     </span>
                     <br />
                     <span ng-click="set(1)" class="ly-reply">回复</span>

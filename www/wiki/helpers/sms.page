@@ -11,21 +11,20 @@ local md5 = commonlib.LibStub("MD5")
 local Encoding = commonlib.gettable("System.Encoding")
 
 -- 主帐号,对应开官网发者主账号下的 ACCOUNT SID
-local accountSid = '8a216da85cce7c54015ce86f168408f1'
+local accountSid = 'aaf98f8954939ed50154a285acda1238'
 
 -- 主帐号令牌,对应官网开发者主账号下的 AUTH TOKEN
-local accountToken = KEEPWORK["config"]["default"]["threeService"]["sms"]["accountToken"]
+local accountToken = ""--KEEPWORK["config"]["default"]["threeService"]["sms"]["accountToken"]
 -- local accountToken = 'a9591b87bd934ce6810d80708ec413e6'
 
 -- 应用Id，在官网应用列表中点击应用，对应应用详情中的APP ID
 -- 在开发调试的时候，可以使用官网自动为您分配的测试Demo的APP ID
-local appId='8a216da85d158d1b015d5a30365c1bfe'
+local appId='8aaf07085b8e61c6015b8e938a950037'
 
 -- 请求地址
 -- 沙盒环境（用于应用开发调试）：sandboxapp.cloopen.com
 -- 生产环境（用户应用上线使用）：app.cloopen.com
---local serverIP='sandboxapp.cloopen.com'
-local serverIP='app.cloopen.com'
+local serverIP='sandboxapp.cloopen.com'
 
 --请求端口，生产环境和沙盒环境一致
 local serverPort='8883'
@@ -36,8 +35,8 @@ local softVersion='2013-12-26'
 -- 时间戳
 local batch =  ParaGlobal.GetDateFormat("yyyyMMdd") .. ParaGlobal.GetTimeFormat("HHmmss")
 
---local params = request:getparams()
---params = {to="18702759796", datas={"6532","5"}, templateId="1", appId=appId}
+local params = request:getparams()
+params = {to="18702759796", datas={"6532","5"}, templateId="1", appId=appId}
 
 local sig = string.upper(md5:MD5(accountSid .. accountToken .. batch))
 local url = "https://" .. serverIP .. ":" .. serverPort .. "/" .. softVersion .. "/Accounts/" .. accountSid .."/SMS/TemplateSMS?sig=" .. sig
@@ -51,7 +50,15 @@ local headers = {["Accept"]="application/json", ["Content-Type"] = "application/
 -- response:Begin()
 function sendTemplateSms(params, callback)
 	params.appId = appId
-	params.templateId = 194013
-	System.os.GetUrl({url = url, headers = headers, form = params, json = true}, callback)
+	System.os.GetUrl({url = url, headers = headers, form = params, json = true}, function(errCode, msg, data)
+		callback(errCode, data or {})
+		--[[
+			data = commonlib.Json.Decode(data or "{}") 
+			if data.statusCode ~= "000000" then
+				response:send({error=1, message=data.statusMsg})
+			end
+			mem_cache:set(data.templateSMS.smsMessageSid, code)
+		]]
+	end)
 end
 

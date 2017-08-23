@@ -119,18 +119,18 @@
         </div>
         <!-- 表格 -->
         <div class="form s-a" id="form" ng-if="divVar == 4">
-            <ul class="form1">
+            <ul class="form1" ng-repeat="y in h2h2">
                 <li class="form2">
                     <div class="uldiv">
                         <img src="" />
                     </div>
                     <div>
-                        <span class="ulspan">模型名称</span>
+                        <span class="ulspan">{{y.worldName}}</span>
                         <span>☆☆☆☆☆</span>
                         <div class="liicon"></div>
                         <span class="ulnumber">65535</span>
                         <br />
-                        <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                        <span class="introduce"><span>{{y.name}}</span>|<span>{{y.number}}</span>|<span>{{y.big}}</span>|<span>{{y.time}}</span></span>
                         <div class="xianzhi">
                             限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
                             限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
@@ -141,6 +141,29 @@
                         </div>
                     </div>
                 </li>
+			</ul>
+			<!--<ul class="form1">
+				<li class="form2">
+                    <div class="uldiv">
+                        <img src="" />
+                    </div>
+                    <span class="ulspan">{{name}}</span>
+                    <span>☆☆☆☆☆</span>
+                    <div class="liicon"></div>
+                    <span class="ulnumber">65535</span>
+                    <br />
+                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
+                    <div class="xianzhi">
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
+                    </div>
+                </li>
+			</ul>
+			<ul class="form1">
 				<li class="form2">
                     <div class="uldiv">
                         <img src="" />
@@ -160,6 +183,8 @@
                         限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
                     </div>
                 </li>
+			</ul>
+			<ul class="form1">
 				<li class="form2">
                     <div class="uldiv">
                         <img src="" />
@@ -179,6 +204,8 @@
                         限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
                     </div>
                 </li>
+			</ul>
+			<ul class="form1">
 				<li class="form2">
                     <div class="uldiv">
                         <img src="" />
@@ -198,6 +225,8 @@
                         限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
                     </div>
                 </li>
+			</ul>
+			<ul class="form1">
 				<li class="form2">
                     <div class="uldiv">
                         <img src="" />
@@ -217,26 +246,7 @@
                         限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
                     </div>
                 </li>
-				<li class="form2">
-                    <div class="uldiv">
-                        <img src="" />
-                    </div>
-                    <span class="ulspan">模型名称</span>
-                    <span>☆☆☆☆☆</span>
-                    <div class="liicon"></div>
-                    <span class="ulnumber">65535</span>
-                    <br />
-                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
-                    <div class="xianzhi">
-                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
-                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
-                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
-                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
-                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
-                        限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示限制显示
-                    </div>
-                </li>
-            </ul>
+            </ul> -->
         </div>
         <!-- 最新作品 -->
         <div class="form" id="newWorks" ng-if="divVar == 1">

@@ -3,56 +3,134 @@
 Title: modelshare
 Author: 
 Date: 2017/7/19
+http://localhost:8099//api/mod/modelshare/models/modelshare  地址
 ]]
 
-local modelshare = inherit(nil,gettable("models.modelshare"));
+include_once("../../../models/abstract/base.page");
+
+local modelshare = inherit(models.abstract.base, gettable("models.modelshare"));
+
+modelshare.db_name = "modelshare";
 
 function modelshare:ctor()
-	log("a")
+	self:addfield("username", "string",false);
+	self:addfield("author", "string", false);
+	self:addfield("modelsnumber","number",false);
+	self:addfield("blocks","number",false);
+	self:addfield("volume","string",false);
+	self:addfield("words","string",false);
+	self:addfield("_id","number",false);
+	
+end
+--增加
+function modelshare:api_add(params)
+	local err, query = self:validateQuery(params);
+	log(query)
+	self:db():insertOne(
+		{
+			username     = query.usename,
+			author       = query.author,
+			modelsnumber = query.modelsnumber,
+			blocks       = query.block,
+			volume       = query.volume,
+			words        = query.words,
+			
+		}, resume);
+	local err, data = yield();
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+end
+--查找
+function modelshare:api_getData(params)
+	local err, query = self:validateQuery(params);
+	log(params)
+	log(query)
+	self:db():findOne({_id = query._id},resume);
+	local err, data = yield();
+	
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+--修改
+function modelshare:api_modify(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not query._id) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	if(not query.foo) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():updateOne({_id = query._id},
+	{
+			username     = query.usename,
+			author       = query.author,
+			modelsnumber = query.modelsnumber,
+			blocks       = query.block,
+			volume       = query.volume,
+			words        = query.words,
+			
+	},resume);
+	local err,data = yield();
+	
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+end
+--删除
+function modelshare:api_delete(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not query.id) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():deleteOne({_id = query.id}, resume);
+	local err,data = yield();
+	
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
 end
 
-function modelshare:api_getName()
-	return {hello = "world"};
-end
-
-local a = 2;
-log(a);
-
-local b = 3;
-local c = 5;
---[[
-	abc
-	efg
-	sdf
-	
-	if(a >= b){
-	
-	}else{
-	
+--[[function modelshare:api_text()
+	local tpp = {
+		worldName  = "",
+		number     = "",
+		name       = "",
+		big        = "",
+		time1      = "",
 	}
-	
-	for (var i = 1, i <= 10, i++){
+	local boom = {}
+
+		for a = 1,1000 do
+			local b = commonlib.copy(tpp);
 		
-	}
-	
-	var i = {"hello":"world"};
-	console.log(i)
-]]
+			b.worldName = "我的世界" .. a;
+			b.name  = "哈哈" .. a;
+			b.number   = a;
+			b.big = "110" .. a;
+			b.time1 = "aaa" .. a;
+		
+			boom[#boom + 1] = b;
+		end
 
-if a >= b then
-	log("a>=b");
-elseif a >= c then
-	log("a>=c")
-else
-	log("only a")
-end
-
-for i=1,10 do
-	log(i)
-end
-
-local i = {["hello = "world"};
-log(i)
-
+	return boom;
+end]]
 
 ?>
