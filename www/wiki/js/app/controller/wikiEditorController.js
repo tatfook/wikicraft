@@ -2232,35 +2232,35 @@ define([
                     }
                 });
 				//}}}
-                var viewEditorTimer = undefined;//{{{
-                $('body').on('focus', '[contenteditable]', function () {
-                    //console.log("start html view edit...");
-                    isHTMLViewEditor = true;
-                    currentRichTextObj = $(this);
-                    if (viewEditorTimer) {
-                        clearTimeout(viewEditorTimer);
-                        viewEditorTimer = undefined;
-                    }
-                    //return $this;
-                }).on('blur keyup paste input', '[contenteditable]', function () {
-                    //return $this;
-                }).on('blur', '[contenteditable]', function () {
-                    //console.log("end html view edit...");
-                    var $this = $(this);
-                    viewEditorTimer = setTimeout(function () {
-                        isHTMLViewEditor = false;
-                        currentRichTextObj = undefined;
-                        //console.log(mdwiki.blockList);
-                        var blockList = mdwiki.blockList;
-                        var block = undefined;
-                        for (var i = 0; i < blockList.length; i++) {
-                            if (blockList[i].blockCache.containerId == $this[0].id) {
-                                block = blockList[i]
-                            }
-                        }
-                        htmlToMd(block);
-                    }, 1000);
-                });
+                //var viewEditorTimer = undefined;//{{{
+                //$('body').on('focus', '[contenteditable]', function () {
+                    ////console.log("start html view edit...");
+                    //isHTMLViewEditor = true;
+                    //currentRichTextObj = $(this);
+                    //if (viewEditorTimer) {
+                        //clearTimeout(viewEditorTimer);
+                        //viewEditorTimer = undefined;
+                    //}
+                    ////return $this;
+                //}).on('blur keyup paste input', '[contenteditable]', function () {
+                    ////return $this;
+                //}).on('blur', '[contenteditable]', function () {
+                    ////console.log("end html view edit...");
+                    //var $this = $(this);
+                    //viewEditorTimer = setTimeout(function () {
+                        //isHTMLViewEditor = false;
+                        //currentRichTextObj = undefined;
+                        ////console.log(mdwiki.blockList);
+                        //var blockList = mdwiki.blockList;
+                        //var block = undefined;
+                        //for (var i = 0; i < blockList.length; i++) {
+                            //if (blockList[i].blockCache.containerId == $this[0].id) {
+                                //block = blockList[i]
+                            //}
+                        //}
+                        //htmlToMd(block);
+                    //}, 1000);
+                //});
 
                 mdwiki.setEditor(editor);
 
