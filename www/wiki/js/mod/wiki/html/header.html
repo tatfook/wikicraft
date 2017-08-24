@@ -128,6 +128,191 @@
 	}
 </style>
 <style>
+	.personal2-header{
+		position: relative;
+		overflow: hidden;
+	}
+	.personal2-header h1{
+		font-size: 52px;
+		margin: 0;
+		font-weight: 400;
+	}
+	.personal2-header h1 .name-info{
+		font-size: 18px;
+	}
+	.personal2-header h3{
+		margin: 0;
+		font-weight: normal;
+	}
+	.personal2-header .personal-img{
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		width:100%;
+	}
+	.personal2-header .personal-img > img{
+		min-width: 100%;
+	}
+	.personal2-header .msg-box{
+		width: 570px;
+		background-color: rgba(255, 255, 255, .8);
+		color: #666;
+	}
+	.personal2-header .detail-item > h4{
+		font-weight: normal;
+	}
+	.personal2-header .detail-item > p{
+		font-size: 12px;
+	}
+	.personal2-header .contact-box > div{
+		border-bottom: 1px solid #DCDCDC;
+		height: 42px;
+		line-height: 40px;
+		padding-left: 48px;
+		position: relative;
+	}
+	.personal2-header .contact-box > div > img{
+		position: absolute;
+		left: 0;
+		bottom: 10px;
+	}
+	.personal2-header .icons-box > div{
+		float: left;
+		margin-right: 25px;
+	}
+	@media (max-width: 720px) {
+		.personal2-header .personal-img{
+			position: relative;
+		}
+		.personal2-header .msg-box{
+			margin: 0 auto;
+			padding: 15px;
+			max-width: 360px;
+		}
+		.personal2-header h1{
+			font-size: 28px;
+		}
+		.personal2-header .detail{
+			margin: 15px 0;
+		}
+		.personal2-header .detail-item {
+			height: auto;
+		}
+		.personal2-header .detail-item > h4{
+			margin: 12px 0 6px;
+		}
+		.personal2-header .contact-box {
+			margin-bottom: 15px;
+		}
+	}
+	@media (min-width: 720px) {
+		.personal2-header .personal-img{
+			position: relative;
+		}
+		.personal2-header .container{
+			padding:0;
+		}
+		.personal2-header .msg-box{
+			margin: 0 auto;
+			max-width: none;
+			padding: 60px;
+		}
+		.personal2-header h1{
+			font-size: 28px;
+		}
+		.personal2-header .detail{
+			margin: 30px 0;
+		}
+		.personal2-header .detail-item {
+			height: 60px;
+		}
+		.personal2-header .detail-item > h4{
+			margin: 12px 0 6px;
+		}
+		.personal2-header .contact-box {
+			margin-bottom: 40px;
+		}
+	}
+	@media (min-width: 992px) {
+		.personal2-header .personal-img{
+			position: absolute;
+		}
+		.personal2-header .msg-box{
+			margin: 0;
+			padding: 30px 40px;
+			width: 470px;
+		}
+		.personal2-header h1{
+			font-size: 28px;
+		}
+		.personal2-header .detail{
+			margin: 15px 0;
+		}
+		.personal2-header .detail-item {
+			height: auto;
+		}
+		.personal2-header .detail-item > h4{
+			margin: 12px 0 6px;
+		}
+		.personal2-header .contact-box {
+			margin-bottom: 15px;
+		}
+	}
+	@media (min-width: 1024px) {
+		.personal2-header .msg-box{
+			margin: 15px 0;
+			padding: 12px 30px;
+			width: 470px;
+		}
+		.personal2-header h1{
+			font-size: 36px;
+		}
+		.personal2-header .detail{
+			margin: 20px 0;
+		}
+		.personal2-header .detail-item {
+			height: auto;
+		}
+		.personal2-header .detail-item > h4{
+			margin: 12px 0 6px;
+		}
+		.personal2-header .contact-box {
+			margin-bottom: 15px;
+		}
+	}
+	@media (min-width: 1366px) {
+		.personal2-header .msg-box{
+			padding: 30px 35px;
+			margin: 40px 0px;
+		}
+		.personal2-header .detail{
+			margin: 30px 0;
+		}
+		.personal2-header .detail-item {
+			height: 50px;
+		}
+		.personal2-header .contact-box {
+			margin-bottom: 20px;
+		}
+	}
+	@media (min-width: 1890px) {
+		.personal2-header .msg-box{
+			padding: 60px 70px 50px 100px;
+			margin: 80px 0;
+			width: 510px;
+		}
+		.personal2-header .detail{
+			margin: 50px 0;
+		}
+		.personal2-header .detail-item {
+			height: 68px;
+		}
+		.personal2-header .contact-box {
+			margin-bottom: 40px;
+		}
+	}
+</style>
+<style>
 	.org-header{
 		position: relative;
 		background-color: #F5F5F5;
@@ -549,6 +734,48 @@
 						<div class="btn btn-primary btn-lg">关注</div>
 					</div>
 					<p class="intro">{{user.introduce}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 个人主页头部二 -->
+	<div ng-show="modParams.moduleKind=='personal2'" class="personal2-header">
+		<div class="personal-img">
+			<img src="http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503390454093.jpeg" alt="">
+		</div>
+		<div class="container">
+			<div class="msg-box">
+				<h1>{{modParams.displayName}} <span class="name-info">{{modParams.nameinfo}}</span></h1>
+				<h3>{{modParams.name}}</h3>
+
+				<div class="detail">
+					<div class="detail-item" ng-repeat="item in modParams.messages">
+						<h4>{{item.message}}</h4>
+						<p>{{item.info}}</p>
+					</div>
+				</div>
+
+				<div class="contact-box">
+					<div ng-show="modParams.phone">
+						<img src="http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503391847481.png" alt="">
+						<span>{{modParams.phone}}</span>
+					</div>
+					<div ng-show="modParams.email">
+						<img src="http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503391854764.png" alt="">
+						<span>{{modParams.email}}</span>
+					</div>
+				</div>
+
+				<div class="icons-box clearfix">
+					<div ng-show="modParams.qq" title="{{modParams.qq}}">
+						<img src="http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503392215028.png" alt="">
+					</div>
+					<div ng-show="modParams.wechat" title="{{modParams.wechat}}">
+						<img src="http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503392222458.png" alt="">
+					</div>
+					<div ng-show="modParams.weibo" title="{{modParams.weibo}}">
+						<img src="http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503392229771.png" alt="">
+					</div>
 				</div>
 			</div>
 		</div>

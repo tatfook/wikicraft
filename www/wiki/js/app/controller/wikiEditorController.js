@@ -2102,6 +2102,7 @@ define([
                     $scope.showView=true;
                 }
                 initView();
+                resizeMod();
                 function wikiCmdFold(cm, start) {
                     var line = cm.getLine(start.line);
                     if ((!line) || (!line.match(/^```[@\/]/)))
@@ -2313,8 +2314,6 @@ define([
                         var text = editor.getValue();
                         mdwiki.render(text);
                         renderAutoSave();
-                        resizeMod();
-                        $scope.scaleSelect=$scope.scales[$scope.scales.length-1];
 
                         timer = undefined;
                     }, 100);
@@ -2373,9 +2372,11 @@ define([
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
-                    $('#' + mdwiki.getMdWikiContainerId()).css({
-                        "transform": "scale(" + scaleSize + ")",
-                        "transform-origin": "left top"
+                    setTimeout(function () {
+                        $('#' + mdwiki.getMdWikiContainerId()).css({
+                            "transform": "scale(" + scaleSize + ")",
+                            "transform-origin": "left top"
+                        });
                     });
                     if (scaleSize<=$scope.scales[0].scaleValue){//显示的最小比例时，禁用缩小按钮
                         $scope.forbidScale=true;

@@ -44,11 +44,11 @@
         text-align: center;
         line-height: 34px;
     }
-    .myvip .vipinfo{
+    .myvip .vipinfo {
         padding: 53px 0;
         border-bottom: 1px solid #DCDCDC;
     }
-    .myvip .compares{
+    .myvip .compares {
         width: 600px;
         margin: 30px auto 0;
     }
@@ -61,15 +61,15 @@
         border: 1px solid #DCDCDC;
         color: #808080;
     }
-    .myvip .vip-feature{
+    .myvip .vip-feature {
         color: #FF7200;
     }
-    .myvip .feature-box ul{
+    .myvip .feature-box ul {
         margin: 0;
         padding: 0;
         text-align: left;
     }
-    .myvip .feature-box ul > li{
+    .myvip .feature-box ul > li {
         list-style: none;
         font-size: 16px;
         position: relative;
@@ -78,7 +78,7 @@
         line-height: 40px;
         white-space: nowrap;
     }
-    .myvip .feature-box .glyphicon-ok{
+    .myvip .feature-box .glyphicon-ok {
         width: 20px;
         height: 20px;
         display: inline-block;
@@ -92,15 +92,15 @@
         font-size: 12px;
         color: #FFF;
     }
-    .myvip .feature-box .text-muted{
+    .myvip .feature-box .text-muted {
         color: #DDD;
     }
     /*订单中心*/
-    .orders-table{
+    .orders-table {
         width: 620px;
         margin: 50px auto 0;
     }
-    .orders-table > thead > tr > th{
+    .orders-table > thead > tr > th {
         text-align: center;
         font-weight: normal;
         font-size: 18px;
@@ -110,7 +110,7 @@
         text-align: center;
         font-size: 16px;
     }
-    .orders-table .btn-primary{
+    .orders-table .btn-primary {
         font-size: 16px;
         padding: 4px 23px;
     }
@@ -123,7 +123,10 @@
             <div style="float:right">余额{{balance/100 || "0"}}元</div>
         </div>
         <div class="panel-body mypay-panel">
-            <table class="table mypay-table">
+            <p ng-show="myPays.length <= 0" style="margin: 15px;">
+                暂无消费记录
+            </p>
+            <table class="table mypay-table" ng-show="myPays.length > 0">
                 <tr ng-repeat="item in myPays">
                     <td class="icon-time">
                         <span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.method == 'spend']"></span>
@@ -142,22 +145,25 @@
     <div ng-show="showItem == 'orders'" class="col-md-10 main-content panel">
         <div class="panel-heading">订单中心</div>
         <div class="panel-body">
-            <table class="table orders-table">
+            <p ng-show="serviceList.length <= 0">
+                暂无订单记录
+            </p>
+            <table class="table orders-table" ng-show="serviceList.length > 0">
                 <thead>
-                <tr>
-                    <th>服务</th>
-                    <th>状态</th>
-                    <th>到期时间</th>
-                    <th>操作</th>
-                </tr>
+                    <tr>
+                        <th>服务</th>
+                        <th>状态</th>
+                        <th>到期时间</th>
+                        <th>操作</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="item in serviceList">
-                    <td>{{item.content}}</td>
-                    <td>{{item.state}}</td>
-                    <td>{{item.endDate}}</td>
-                    <td><span class="btn btn-primary" ng-click="renew(item)">续费</span></td>
-                </tr>
+                    <tr ng-repeat="item in serviceList">
+                        <td>{{item.content}}</td>
+                        <td>{{item.state}}</td>
+                        <td>{{item.endDate}}</td>
+                        <td><span class="btn btn-primary" ng-click="renew(item)">续费</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
