@@ -1,42 +1,36 @@
 <?npl
 --[[
-Title: modelshare
+Title: modelson
 Author: 
 Date: 2017/7/19
-http://localhost:8099//api/mod/modelshare/models/modelshare  地址
+http://localhost:8099//api/mod/modelshare/models/modelson  地址
 ]]
 
-include_once("../../../models/abstract/multi_user_base.page");
+include_once("../../../models/abstract/base.page");
 
-local modelshare = inherit(models.abstract.multi_user_base, gettable("models.modelshare"));
-local modelsn = inherit(models.abstract.multi_user_base, gettable("models.modelsn"));
+local modelson = inherit(models.abstract.base, gettable("models.modelson"));
 
-modelshare.db_name = "modelshare";
+modelson.db_name = "modelson";
 
-modelsn.db_name    = "modelsn";
-modelsn            = modelsn:new();
-
-function modelshare:ctor()
-	self:addfield("templateName", "string",false);
-	self:addfield("author", "string", false);
-	self:addfield("modelsnumber","number",false);
-	self:addfield("blocks","number",false);
-	self:addfield("volume","string",false);
+function modelson:ctor()
+	self:addfield("worldName", "string",false);
+	self:addfield("name", "string", false);
+	self:addfield("modNumber","number",false);
+	self:addfield("big","number",false);
 	self:addfield("words","string",false);
 	self:addfield("_id","number",false);
 	
 end
 --增加
-function modelshare:api_add(params)
+function modelson:api_add(params)
 	local err, query = self:validateQuery(params);
-	--log(query)
+	log(query)
 	self:db():insertOne(
 		{
-			templateName = query.templateName,
-			author       = query.author,
-			modelsnumber = modelsn:getSn(),
-			blocks       = query.block,
-			volume       = query.volume,
+			worldName    = query.worldName,
+			name         = query.name,
+			modNumber    = query.modNumber,
+			big          = query.big,
 			words        = query.words,
 			
 		}, resume);
@@ -49,10 +43,10 @@ function modelshare:api_add(params)
 
 end
 --查找
-function modelshare:api_getData(params)
+function modelson:api_getData(params)
 	local err, query = self:validateQuery(params);
-	--log(params)
-	--log(query)
+	log(params)
+	log(query)
 	self:db():findOne({_id = query._id},resume);
 	local err, data = yield();
 	
@@ -63,7 +57,7 @@ function modelshare:api_getData(params)
 	end
 end
 --修改
-function modelshare:api_modify(params)
+function modelson:api_modify(params)
 	local err, query = self:validateQuery(params);
 	
 	if(not query._id) then
@@ -76,7 +70,7 @@ function modelshare:api_modify(params)
 	
 	self:db():updateOne({_id = query._id},
 	{
-			templateName = query.templateName,
+			username     = query.usename,
 			author       = query.author,
 			modelsnumber = query.modelsnumber,
 			blocks       = query.block,
@@ -94,7 +88,7 @@ function modelshare:api_modify(params)
 
 end
 --删除
-function modelshare:api_delete(params)
+function modelson:api_delete(params)
 	local err, query = self:validateQuery(params);
 	
 	if(not query.id) then
@@ -110,21 +104,6 @@ function modelshare:api_delete(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 	
-end
---序列号生成
-function modelsn:getSn()
-	self:db():insertOne({},resume);
-	local err, phoneNumber = yield();
-	local sn = "100";
-	phoneNumber  = tostring(phoneNumber._id);
-	a =8 - #phoneNumber;
-
-	for i=1,a do 
-		phoneNumber = "0" .. phoneNumber;
-		i=i+1;
-	end
-
-	return sn .. phoneNumber
 end
 
 ?>

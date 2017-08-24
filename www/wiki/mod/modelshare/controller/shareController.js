@@ -1,9 +1,11 @@
 ﻿define([
     'app',
     'text!mod/modelshare/html/share.html',
-], function (app, htmlContent) {
+	'helper/util'
+], function (app, htmlContent, util) {
     app.controller('shareController', ['$scope' , '$http' , function ($scope,$http) {
-        $scope.modName = "example";
+        $scope.parameter = util.getQueryObject();
+		console.log($scope.parameter)
 		//$scope.h2h2 = [];
 		//$scope.username = "hahaha";
 		$scope.delete = function(item, index){
@@ -15,28 +17,28 @@
 			});
 		}
 
-		$scope.add = function(){
+		/*$scope.add = function(){
 			var Ason = {
-					"username"     : $scope.username,
-					"author"       : $scope.author,
-					"modelsnumber" : $scope.modelsnumber,
-					"blocks"       : $scope.blocks,
-					"volume"       : $scope.volume,
-					"words"        : $scope.words,
+					"username"     : $.username,
+					"author"       : parameter.author,
+					"modelsnumber" : parameter.modelsnumber,
+					"blocks"       : parameter.blocks,
+					"volume"       : parameter.volume,
+					"words"        : parameter.words,
 			}
 			console.log(Ason)
 			http("POST","api/mod/modelshare/models/modelshare/add",Ason,function(data){
 					//console.log($scope.h2h2)
 					$scope.h2h2[$scope.h2h2.length] = data;
 			});
-		}
+		}*/
 		
 		$scope.modify = function(item){
 			var params = {
 				"_id"          : item._id,
-				"username"     : item.username,
+				"templateName" : item.templateName,
 				"author"       : item.author,
-				"modelsnumber" : item.username,
+				"modelsnumber" : item.modelsnumber,
 				"blocks"       : item.blocks,
 				"volume"       : item.volume,
 				"words"        : item.words,
@@ -54,11 +56,11 @@
 		
 		function getData(item){
 			var params = {
-				"_id"          : 48,
+				"_id"          : $scope.parameter.id,
 			}
-			http("GET","api/mod/modelshare/models/modelshare/getData", params, function(data){
+			http("POST","api/mod/modelshare/models/modelshare/getData", params, function(data){
 				console.log(data)
-				$scope.username     = data.data.username;
+				$scope.templateName = data.data.templateName;
 				$scope.author       = data.data.author;
 				$scope.modelsnumber = data.data.modelsnumber;
 				$scope.blocks       = data.data.blocks;
