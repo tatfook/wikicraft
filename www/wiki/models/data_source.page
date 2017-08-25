@@ -21,6 +21,7 @@ function data_source:ctor()
 	self:addfield("type", "string")                -- 类型
 	self:addfield("dataSourceUserId", "number")    -- 数据源UserID 
 	self:addfield("dataSourceUsername", "string")  -- 数据源用户名
+	self:addfield("dataSourcePassword", "string")  -- 数据源用户名
 	self:addfield("dataSourceToken", "string")     -- 数据源ID
 	self:addfield("apiBaseUrl", "string")          -- api url prefix
 	self:addfield("rawBaseUrl", "string")          -- raw url prefix
@@ -201,7 +202,8 @@ function data_source:api_createInnerGitlab(params)
 		params.username = params.name
 		params.email = params.name .. '@paraengine.com'
 		params.password = params.password or tostring(os.time())
-		params.confirm = false
+		--params.confirm = false
+		params.skip_confirmation = true;
 
 		local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
 		local gitlabHost = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["host"]
@@ -247,6 +249,7 @@ function data_source:api_createInnerGitlab(params)
 				return errors:wrap(errors.SERVER_INNER_ERROR)
 			end
 			ds.dataSourceUserId = data.data.id
+			ds.dataSourcePassword = params.password
 		else
 			ds.dataSourceUserId = data[1].id
 		end

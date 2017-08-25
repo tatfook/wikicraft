@@ -82,36 +82,47 @@ nothing
     dev&test server (dev.keepwork.com & test.keepwork.com)
 
                     +-----------------+
-                    |  jenkins master |
-              +---->|   8080, 50000   |<----------------------+
-              |     +-----------------+                       |
-              |                                               |
-    +------+  |                                               |
-    | user +--+                           +-------------+     |
-    +------+  |                           |  dev-server |     |
-              |                           |    8900     |     |
-              |                           +-------------+     |
-              |     +---------+                ^              |
-              |     |  nginx  | container link |              |
-              +---->|   80    +----------------+              |
-                    +---------+    proxy       v              |
-                                          +---------------+   |
-                                          |  test-server  |   |
-                                          |    8099       |   |
-                                          +---------------+   |
-                                                              |
-                                                              |
-    prod server (keepwork.com)                                |
-                                                              |
-                  +------------------------+                  |
-                  | jenkins slave          | connect master   |
+                    |  jenkins master |<----------------------+
+              +---->|   8080, 50000   |---------------------+ |
+              |     +--------+--------+ build&push image    | |
+              |              |                              | |
+              |              +------------------+--------+  | |
+              |                 deploy image    |        |  | |
+    +------+  |                                 v        |  | |
+    | user +--+                          +-------------+ |  | |
+    +------+  |                          |  dev-server | |  | |
+              |                          |    8900     | |  | |
+              |                          +-------------+ |  | |
+              |     +---------+               ^          |  | |
+              |     |  nginx  |  docker link  |      +---+  | |
+              +---->|   80    +---------------+      |      | |
+                    +---------+   proxy       v      v      | |
+                                         +---------------+  | |
+                                         |  test-server  |  | |
+                                         |    8099       |  | |
+                                         +---------------+  | |
+                                                            | |
+                                                            | |
+                   +----------+                             | |
+                   | registry |<----------------------------+ |
+                   |  5000    |-----------------------------+ |
+                   +----------+                             | |
+                                                            | |
+                                                            | |
+    ========================================================| |==========
+                                                            | |
+    prod server (keepwork.com)                              | |
+                                                            | |
+                  +------------------------+   pull image   | |
+                  |                        |<---------------+ |
+                  | jenkins slave          |                  |
                   | no port exposed        +------------------+
-                  |                        | connect port 50000
-                  +------------------------+
-                   
-    +------+
-    | user +--+
-    +------+  |    
+                  |                        | connect jenkins
+                  +------------------+-----+
+                                     |
+    +------+                         +---------------+
+    | user +--+                        deploy image  |
+    +------+  |                                      v
               |   +-------+                   +-------------+
               |   | nginx |  container link   | prod-server |
               +-->|  80   +------------------>|   8088      |
@@ -122,7 +133,7 @@ nothing
 
 dev-server, test-server and prod-server started by jenkins
 
-two nginx and two jenkins container are started by script in repo
+registry, two nginx and two jenkins container are started by script in repo
 [KeepMonitor](https://github.com/tatfook/KeepMonitor)
 
 ## TODO

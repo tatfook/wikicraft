@@ -5,6 +5,7 @@ Author: wuxiangan
 Date: 2017/03/15
 ]]
 include_once("./abstract/base.page")
+include_once("./vip.page")
 
 -- 暂时不用
 local website_domain = inherit(models.abstract.base, gettable("models.website_domain"))
@@ -20,13 +21,16 @@ end
 
 -- 创建记录
 function website_domain:api_upsert(params)
-	ensureAuthenticated()
+	local username = getUsername()
 
-	local userinfo = getUser()
-
-	if not userinfo or ((userinfo.vipLevel or 0) < 1) then
+	if not username then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
+
+	local vipDB = models.vip:new()
+	if vipDB:api_isValidVip({username=username}).data == false then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+end
 
 	if (not params.username) or (not params.sitename) or (not params.domain) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)

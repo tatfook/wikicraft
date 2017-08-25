@@ -188,9 +188,9 @@ define([
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'>",
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'/>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'/>",
+                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'/>",
                 ]);
                 treeNode.icon = 'fa fa-globe';
 
@@ -542,9 +542,9 @@ define([
 
                 // 获取自己的站点列表
                 fnList.push(function (finish) {
-                    if ($scope.user && $scope.user._id) {
+                    if ($scope.user && $scope.user.username) {
                         // 获取用户所有站点
-                        util.post(config.apiUrlPrefix + 'website/getAllByUserId', {userId: $scope.user._id}, function (data) {
+                        util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username: $scope.user.username}, function (data) {
 							for (var i = 0; i < (data || []).length; i++) {
 								setSite(data[i]);
 							}
@@ -729,9 +729,16 @@ define([
 					user_name:page.username,
 					site_name:page.sitename,
 					page_name:page.pagename,
+					pageinfo:page,
 				};
 				
-				util.post(config.apiUrlPrefix + "sitepage/submitToES", params);
+				// 私有项目不提交
+                var site = getCurrentSite(page.username, page.sitename);
+                if (site && site.visibility == "private") {
+					return; 
+                }
+
+				util.post(config.apiUrlPrefix + "elastic_search/submitPageinfo", params);
 
 				//var url = "http://221.0.111.131:19001/Application/kwupsert";
 				//util.ajax({    
@@ -1041,7 +1048,7 @@ define([
 							while (treeNode.parentId != undefined){
 								treeNode = $(treeid).treeview('getNode', treeNode.parentId);
 								if (!treeNode.state.expanded) {
-									$(treeid).treeview('expandNode', [treeNode, {levels: 1, silent: false}]);
+									$(treeid).treeview('expandNode', [treeNode, {levels: 10, silent: false}]);
 								}
 							};
 						}
@@ -1112,7 +1119,7 @@ define([
                         collapseIcon:"fa fa-chevron-down",
                         showBorder: false,
                         enableLinks: false,
-                        levels: 4,
+                        levels: 10,
                         showTags: true,
 						data:[],
                         //data: getTreeData($scope.user.username, allPageMap, false),
@@ -1209,14 +1216,14 @@ define([
 					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
-						var node = treeNodeMap[key]
+						var node = treeNodeMap[key];
                         //console.log(key, treeNodeMap[key]);
 						if (!node) {
 							continue;
 						}
                         var treeid = getTreeId(node.pageNode.username, node.pageNode.sitename);
 						//console.log(treeid, node.pageNode.username, node.pageNode.sitename);
-                        treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 1, silent: true}]);
+                        treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 10, silent: true}]);
                     }
                 });
             }//}}}
@@ -2126,6 +2133,8 @@ define([
                     //keyMap:"vim",
                     //代码折叠
                     lineWrapping: true,
+					indentUnit:1,
+					smartIndent:true,
 
                     foldGutter: true,
                     foldOptions: {
@@ -2223,35 +2232,35 @@ define([
                     }
                 });
 				//}}}
-                var viewEditorTimer = undefined;//{{{
-                $('body').on('focus', '[contenteditable]', function () {
-                    //console.log("start html view edit...");
-                    isHTMLViewEditor = true;
-                    currentRichTextObj = $(this);
-                    if (viewEditorTimer) {
-                        clearTimeout(viewEditorTimer);
-                        viewEditorTimer = undefined;
-                    }
-                    //return $this;
-                }).on('blur keyup paste input', '[contenteditable]', function () {
-                    //return $this;
-                }).on('blur', '[contenteditable]', function () {
-                    //console.log("end html view edit...");
-                    var $this = $(this);
-                    viewEditorTimer = setTimeout(function () {
-                        isHTMLViewEditor = false;
-                        currentRichTextObj = undefined;
-                        //console.log(mdwiki.blockList);
-                        var blockList = mdwiki.blockList;
-                        var block = undefined;
-                        for (var i = 0; i < blockList.length; i++) {
-                            if (blockList[i].blockCache.containerId == $this[0].id) {
-                                block = blockList[i]
-                            }
-                        }
-                        htmlToMd(block);
-                    }, 1000);
-                });
+                //var viewEditorTimer = undefined;//{{{
+                //$('body').on('focus', '[contenteditable]', function () {
+                    ////console.log("start html view edit...");
+                    //isHTMLViewEditor = true;
+                    //currentRichTextObj = $(this);
+                    //if (viewEditorTimer) {
+                        //clearTimeout(viewEditorTimer);
+                        //viewEditorTimer = undefined;
+                    //}
+                    ////return $this;
+                //}).on('blur keyup paste input', '[contenteditable]', function () {
+                    ////return $this;
+                //}).on('blur', '[contenteditable]', function () {
+                    ////console.log("end html view edit...");
+                    //var $this = $(this);
+                    //viewEditorTimer = setTimeout(function () {
+                        //isHTMLViewEditor = false;
+                        //currentRichTextObj = undefined;
+                        ////console.log(mdwiki.blockList);
+                        //var blockList = mdwiki.blockList;
+                        //var block = undefined;
+                        //for (var i = 0; i < blockList.length; i++) {
+                            //if (blockList[i].blockCache.containerId == $this[0].id) {
+                                //block = blockList[i]
+                            //}
+                        //}
+                        //htmlToMd(block);
+                    //}, 1000);
+                //});
 
                 mdwiki.setEditor(editor);
 

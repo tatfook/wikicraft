@@ -37,19 +37,19 @@ define([
                 pwd=$scope.otherPassword?$scope.otherPassword : "";
             }
             if(username.length>30){
-                $scope.nameErrMsg="*账号不符合规则";
-                return;
-            }
-            if (!/^[a-z_0-9]+$/.test(username)){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名需小于30位";
                 return;
             }
             if(/^\d+$/.test(username)){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名不可为纯数字";
                 return;
             }
             if(/@/.test(username)){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名不可包含@符号";
+                return;
+            }
+            if (!/^[a-z_0-9]+$/.test(username)){
+                $scope.nameErrMsg="*账户名只能包含小写字母、数字";
                 return;
             }
             if(pwd.length<6){
@@ -60,6 +60,7 @@ define([
         
         // 注册
         $scope.register = function (type) {
+            // debugger;
             if(!$scope.agree){
                 return;
             }
@@ -81,27 +82,33 @@ define([
             }
 
             if(!params.username){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名为必填项";
+                $scope.$apply();
                 return;
             }
             if(params.username.length>30){
-                $scope.nameErrMsg="*账号不符合规则";
-                return;
-            }
-            if (!/^[a-z_0-9]+$/.test(params.username)){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名需小于30位";
+                $scope.$apply();
                 return;
             }
             if(/^\d+$/.test(params.username)){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名不可为纯数字";
+                $scope.$apply();
                 return;
             }
             if(/@/.test(params.username)){
-                $scope.nameErrMsg="*账号不符合规则";
+                $scope.nameErrMsg="*账户名不可包含@符号";
+                $scope.$apply();
+                return;
+            }
+            if (!/^[a-z_0-9]+$/.test(params.username)){
+                $scope.nameErrMsg="*账户名只能包含小写字母、数字";
+                $scope.$apply();
                 return;
             }
             if(params.password.length<6){
                 $scope.pwdErrMsg="*密码最少6位";
+                $scope.$apply();
                 return;
             }
             var imgUrl=$scope.getImageUrl("default_portrait.png", $scope.imgsPath);

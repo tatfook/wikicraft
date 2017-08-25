@@ -932,7 +932,7 @@
                                 <input type="text" class="form-control" ng-model="emailVerifyCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindEmail()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[emailWait>0]" ng-disabled="wait > 0" ng-click="sendEmail(userEmail.trim())">{{(emailWait == 0) ? "发送验证码" : "重新发送(" + emailWait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>
