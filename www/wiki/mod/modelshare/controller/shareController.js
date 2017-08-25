@@ -58,7 +58,7 @@
 			var params = {
 				"_id"          : $scope.parameter.id,
 			}
-			http("POST","api/mod/modelshare/models/modelshare/getData", params, function(data){
+			http("POST","api/mod/modelshare/models/modelshare/getOne", params, function(data){
 				console.log(data.data)
 				$scope.templateName = data.data.templateName;
 				$scope.username     = data.data.username;

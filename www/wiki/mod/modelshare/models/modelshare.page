@@ -25,17 +25,11 @@ function modelshare:ctor()
 	self:addfield("volume","string",false);
 	self:addfield("words","string",false);
 	self:addfield("_id","number",false);
-	self:addfield("isShare","0",false);
+	self:addfield("isShare","number",false);
 	
 end
 --增加
 function modelshare:api_add(params)
-	--[[if(true) then
-		local test = self:getUsername();
-		log(test);
-		return {test = "test"};
-	end]]
-
 	local err, query = self:validateQuery(params);
 	--log(query)
 	self:db():insertOne(
@@ -57,7 +51,7 @@ function modelshare:api_add(params)
 
 end
 --查找
-function modelshare:api_getData(params)
+function modelshare:api_getOne(params)
 	local err, query = self:validateQuery(params);
 	--log(params)
 	--log(query)
