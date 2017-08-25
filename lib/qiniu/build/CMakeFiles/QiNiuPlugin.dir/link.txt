@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC   -shared -Wl,-soname,libQiNiuPlugin.so -o libQiNiuPlugin.so CMakeFiles/QiNiuPlugin.dir/stdafx.cpp.o CMakeFiles/QiNiuPlugin.dir/QiNiu.cpp.o CMakeFiles/QiNiuPlugin.dir/QiNiuPlugin.cpp.o  -L/root/workspace/npl/nplproject/keepwork/lib/qiniu/qiniu/lib -lqiniu -Wl,-rpath,/root/workspace/npl/nplproject/keepwork/lib/qiniu/qiniu/lib 
