@@ -355,17 +355,9 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">KEEPWORK</a> -->
-                    <div class="dropdown navbar-brand">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <img ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu nodot-dropdown">
-                            <li><a ng-click="goHomePage()">keepwork.com</a></li>
-                            <li><a ng-click="goModPackagePage()">Mod扩展</a></li>
-                        </ul>
-                    </div>
+                    <a ng-click="isLogin ? goUserIndexPage(user.username) : goHomePage()" class="navbar-brand">
+                        <img ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
+                    </a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -464,8 +456,8 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
                         <li class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
-                            <input type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
-                            <span ng-click="searchWebsite()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
+                            <input id="searchbar" type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
+                            <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
                         </li>
                         <!--<li id="js-prev-container" class="nav-bread-crumb">-->
                             <!--<ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>-->
@@ -503,6 +495,7 @@
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage()"><i class="iconfont icon-feature"></i> 功能</li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
@@ -518,8 +511,8 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li class="hidden-xs">
-                            <input type="text" class="form-control" placeholder="">
-                            <span class="glyphicon glyphicon-search text-muted"></span>
+                            <input id="searchbar-nologin" type="text" class="form-control" placeholder="" ng-model="search">
+                            <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted"></span>
                         </li>
                         <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
                         <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>

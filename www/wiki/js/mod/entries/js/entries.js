@@ -17,7 +17,7 @@ define(['app',
             $scope.userinfo.username; // 用户主页
             //  $scope.user.portrait; //用户头像
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
-            $scope.followPath = "http://121.14.117.239/follow/take";
+            $scope.urlPath = "http://121.14.117.239/";
 
 
             // $scope.httpPath = "http://localhost:3000/api/lecture/entires";
@@ -39,11 +39,10 @@ define(['app',
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
-                chapter_url: decodeURI($scope.pageinfo.url) || decodeURI(window.location.pathname)
+                chapter_url: $scope.pageinfo.url || decodeURI(window.location.pathname)
             }, {
                 isShowLoading: false
             }).then(function (rs) {
-
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
                     $scope.course_url = rs.data.course_url.course_url;
                     $scope.entries_title = rs.data.course_url.title;
@@ -99,6 +98,8 @@ define(['app',
             $scope.dataShow = true;
             $scope.notData = false;
 
+            $scope.isNextBtn = "";
+
             $scope.loadChp = function () {
                 $http.post($scope.httpPath + '/chapters', {
                     url: $scope.pageinfo.url || decodeURI(window.location.pathname),
@@ -108,7 +109,6 @@ define(['app',
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
-
                     if (rs.data.itemCount === 0) {
                         $scope.dataShow = false;
                         $scope.notData = true;
@@ -152,9 +152,8 @@ define(['app',
                         countRecord = rs.data.itemCount, // 记录数
                         allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize)); // 总页数
 
-                    if (pageIndex == allPage || pageIndex >= allPage) {
-                        $scope.isGetPage = true;
-                        return;
+                    if (pageIndex === allPage || pageIndex >= allPage) {
+                       return;
                     }
 
                     if (rs.data && rs.data.err === 0) {
@@ -175,8 +174,6 @@ define(['app',
                     console.log(rs);
                 });
             };
-
-
 
             //第一次新增词条
             $http.post($scope.httpPath + '/add', {
@@ -339,15 +336,16 @@ define(['app',
                 // 左右滑动轮播
                 var slideSwiper = new Swiper('#sliding-loading', {
                     width: itemWidth,
-                    slidesPerGroup: slidesGroup,
+                    slidesPerGroup: 5,
                     observer: true,
                     observeParents: true,
-                    freeModeMomentum: true,
                     freeMode: slideMode,
                     prevButton: '.prev-btn',
                     nextButton: '.next-btn',
+                    slidesOffsetAfter : -itemWidth*4,
                     // 左滑动获取分页数据
-                    onSlideChangeEnd: function (swiper) {
+                    onSlideChangeEnd: function (swiper) { 
+
                         for (var i = 0; i < itemSlide.length; i++) {
                             slideWidth = parseInt((itemSlide.length * (itemSlide[i].clientWidth) / 2));
                         }
@@ -357,6 +355,7 @@ define(['app',
                         }
                     }
                 })
+
             }
 
             $scope.$watch('$viewContentLoaded', init);

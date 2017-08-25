@@ -27,7 +27,7 @@
         'bootstrap': "lib/bootstrap/js/bootstrap.min",
         'satellizer': 'lib/satellizer/satellizer.min',
         'bootstrap-treeview': 'lib/bootstrap-treeview/bootstrap-treeview.min',
-        'github-api': 'lib/github-api/GitHub.bundle.min',
+        //'github-api': 'lib/github-api/GitHub.bundle.min',
         'cropper': 'lib/cropper/cropper.min',
         'markdown-it':'lib/markdown-it/markdown-it.min',
         'highlight': 'lib/highlight/highlight.pack', 
@@ -104,6 +104,10 @@
     ],
     
     deps:[
+		'angular',
+		'app',
+		'preload',
+
         'controller/websiteController',
         'controller/newWebsiteController',
         'controller/editWebsiteController',
@@ -112,7 +116,6 @@
         'controller/homeController',
         'controller/loginController',
         'controller/previewController',
-        'controller/siteshowController',
         'controller/userCenterController',
 
         // directives

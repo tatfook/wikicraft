@@ -12,7 +12,7 @@ define([
     'text!html/articles/featurelist.md',
 ], function (app, util, markdownwiki, storage, dataSource, htmlContent, featureListContent) {
     // 动态加载
-    app.controller('homeController', ['$scope', '$rootScope', '$auth', 'Account', 'Message', function ($scope, $rootScope, $auth, Account, Message) {
+    app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
 
         $scope.goUserSite = function (site) {
@@ -57,16 +57,16 @@ define([
             //        console.log("-------finish-----------");
             //    });
             // });
-        }
+        };
 
         $scope.goRegisterPage = function () {
             storage.sessionStorageRemoveItem('userThreeService');
             util.go('join');
-        }
+        };
 
         $scope.goUserIndexPage=function(username){
             util.goUserSite('/'+username,true);
-        }
+        };
 
         // 注册
         $scope.register = function () {
@@ -128,7 +128,7 @@ define([
                 console.log($scope.errMsg );
                 $("#total-err").removeClass("visible-hidden");
             });
-        }
+        };
 
         // 创建新手引导站点及相关页面
         function createTutorialSite(userinfo, cb, errcb) {
@@ -193,7 +193,7 @@ define([
 		$scope.changeKeepPassword = function() {
 			//Account.keepPassword($scope.keepPassword);
 			storage.localStorageSetItem("keepPassword", $scope.keepPassword);
-		}
+		};
 
         $scope.login = function () {
 			//console.log($scope.keepPassword);
@@ -227,7 +227,7 @@ define([
                 $scope.errMsg = error.message;
                 $("#total-err").removeClass("visible-hidden");
             });
-        }
+        };
 
         function Authenticate(serviceName) {
             Account.authenticate(serviceName, function (data) {
@@ -314,6 +314,11 @@ define([
                 worksFavoriteRequest(false);
                 site.favoriteCount--;
             }
+        };
+
+        $scope.playVideo = function (videoUrl) {
+            $scope.videoUrl = $sce.trustAsResourceUrl(videoUrl);
+            $("#videoModal").modal("show");
         };
 
         // 回车提交注册

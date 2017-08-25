@@ -38,7 +38,7 @@ function elastic_search:api_submitUserinfo(params)
 	content = content .. "\n" .. (params.cellphone or "")
 	content = content .. "\n" .. (params.location or "")
 	
-	params.username = nil
+	--params.username = nil
 	params.email = nil
 	params.password = nil
 	params.isadmin = nil
@@ -73,6 +73,7 @@ function elastic_search:api_submitSiteinfo(params)
 	--content = content .. "\n" .. (params.username or "")
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
+	content = content .. "\n" .. (params.desc or "")
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
@@ -108,4 +109,24 @@ function elastic_search:api_submitPageinfo(params)
 
 	return errors:wrap(nil)
 end
+
+-- 网络爬虫提交数据
+function elastic_search:api_spiderSubmitPageinfo(params)
+	if not params.content or not params.filepath then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local pageinfo = {
+		url = "/keepwork/baike" .. params.filepath, 
+		content = params.content,
+		extra_data = toJson(params),
+		extra_search = "pageinfo: " .. params.content,
+	}
+
+	self:api_submitToES(pageinfo)
+
+	return errors:wrap(nil)
+end
+
+
 

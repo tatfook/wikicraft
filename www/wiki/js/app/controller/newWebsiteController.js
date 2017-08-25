@@ -201,6 +201,10 @@ define([
             if((util.getPathname() !="/wiki/user_center")){
                 $scope.isModal=true;
             }
+
+            setTimeout(function () {
+                $scope.isModal ? $("#webName_modal").focus() : $("#webName").focus();
+            });
         }
 
         // 文档加载完成

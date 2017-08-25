@@ -160,11 +160,39 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
 
         function checkPosition(affix) {
             var affixTop = affix[0].offsetTop;
+            var affixHeight = affix[0].offsetHeight;
+            var documentHeight = Math.max($(document).height(), $(document.body).height());
+            var winHeight = $(window).height();
+            var affixBottom = documentHeight - affixTop - affixHeight;
             var scrollTop = $(window).scrollTop();
-            if (scrollTop >= affixTop){
-                affix.addClass("active");
+            var scrollBottom = documentHeight - scrollTop - winHeight;
+            var affixCtrl = affix.find(".affix-ctrl");
+            var affixCtrlHeight = affix.find(".affix-ctrl").height();
+            if (affixCtrlHeight < (winHeight - affixBottom)){
+                if (scrollTop >= affixTop){
+                    affix.addClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }else{
+                    affix.removeClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }
             }else{
-                affix.removeClass("active");
+                if ((scrollTop >= affixTop && scrollBottom > affixBottom)){
+                    affix.addClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }else if (scrollBottom < affixBottom){
+                    affix.addClass("bottom");
+                    affix.removeClass("active");
+                    var offsetTop = documentHeight - affixBottom - affixCtrlHeight - affixTop - 52;
+                    affixCtrl.css({"top":offsetTop+"px"});
+                }else{
+                    affix.removeClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }
             }
         }
 

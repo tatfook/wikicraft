@@ -76,6 +76,9 @@
         height:460px;
         overflow-y: auto;
     }
+    .works-manage .tab-pane.nobottom{
+        padding-bottom: 0;
+    }
     .works-manage .work{
         padding: 0 20px 20px;
     }
@@ -146,6 +149,9 @@
     .works-manage .pagination-box{
         text-align: center;
     }
+    .works-manage .pagination-box > .pagination{
+        margin:0;
+    }
     .works-manage .pagination > .active > a{
         color: #FFF;
     }
@@ -204,26 +210,28 @@
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active clearfix" id="org-works">
-                    <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList" ng-hide="works.isDeleted">
-                        <div>
-                            <a ng-click="goWorksPage(works)" class="work-profile">
-                                <img ng-src="{{works.worksLogo || (imgsPath + 'wiki_cover.jpg')}}">
-                            </a>
-                            <div class="text clearfix">
-                                <div class="work-item">
-                                    <div class="work-msg">
-                                        <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
-                                        <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
+                <div role="tabpanel" class="tab-pane active clearfix nobottom" id="org-works">
+                    <div class="clearfix">
+                        <div class="work hover-slide col-sm-6 col-xs-12 col-sm-offset-0" ng-repeat="works in worksList" ng-hide="works.isDeleted">
+                            <div>
+                                <a ng-click="goWorksPage(works)" class="work-profile">
+                                    <img ng-src="{{works.worksLogo || (imgsPath + 'wiki_cover.jpg')}}">
+                                </a>
+                                <div class="text clearfix">
+                                    <div class="work-item">
+                                        <div class="work-msg">
+                                            <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
+                                            <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
+                                        </div>
+                                        <div class="btn btn-primary" ng-click="removeWorks(works)">移除</div>
                                     </div>
-                                    <div class="btn btn-primary" ng-click="removeWorks(works)">移除</div>
+                                    <p class="pull-left info">
+                                        <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
+                                    </p>
+                                    <!--p class="pull-right info" ng-click="worksFavorite($event, works)">
+                                        <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
+                                    </p-->
                                 </div>
-                                <p class="pull-left info">
-                                    <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
-                                </p>
-                                <!--p class="pull-right info" ng-click="worksFavorite($event, works)">
-                                    <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 收藏 <span>{{site.favoriteCount || 0}}</span>
-                                </p-->
                             </div>
                         </div>
                     </div>

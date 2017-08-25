@@ -24,7 +24,18 @@ function test:api_get()
 end
 
 function test:api_post(params)
-	return params
+	log("------------------test post-----------------")
+	log(params)
+	return params or {key="test"}
+end
+
+function test:api_token(params)
+	return decodeJWT(params.token or "")
+end
+
+function test:api_qiniu()
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", expires=1000000})
+	log(msg)
 end
 
 -- 更新文件内容

@@ -25,8 +25,12 @@ define([
 
         $scope.$watch('$viewContentLoaded', init);
 
+        $scope.goBack = function () {
+            history.back(-1);
+        };
+
         // 检查账号名（不可为纯数字，不可包含@符号,最长30个字符，可为小写字母、数字、下划线）
-        $scope.checkInput=function (type) {
+        $scope.checkInput=function (checks, type) {
             $scope.errMsg = "";
             $scope.nameErrMsg = "";
             $scope.pwdErrMsg = "";
@@ -36,31 +40,34 @@ define([
                 username=$scope.otherUsername?$scope.otherUsername : "";
                 pwd=$scope.otherPassword?$scope.otherPassword : "";
             }
-            if(username.length>30){
-                $scope.nameErrMsg="*账户名需小于30位";
-                return;
+            if (checks.username){
+                if(username.length>30){
+                    $scope.nameErrMsg="*账户名需小于30位";
+                    return;
+                }
+                if(/^\d+$/.test(username)){
+                    $scope.nameErrMsg="*账户名不可为纯数字";
+                    return;
+                }
+                if(/@/.test(username)){
+                    $scope.nameErrMsg="*账户名不可包含@符号";
+                    return;
+                }
+                if (!/^[a-z_0-9]+$/.test(username)){
+                    $scope.nameErrMsg="*账户名只能包含小写字母、数字";
+                    return;
+                }
             }
-            if(/^\d+$/.test(username)){
-                $scope.nameErrMsg="*账户名不可为纯数字";
-                return;
+            if (checks.password){
+                if(pwd.length<6){
+                    $scope.pwdErrMsg="*密码最少6位";
+                    return;
+                }
             }
-            if(/@/.test(username)){
-                $scope.nameErrMsg="*账户名不可包含@符号";
-                return;
-            }
-            if (!/^[a-z_0-9]+$/.test(username)){
-                $scope.nameErrMsg="*账户名只能包含小写字母、数字";
-                return;
-            }
-            if(pwd.length<6){
-                $scope.pwdErrMsg="*密码最少6位";
-                return;
-            }
-        }
+        };
         
         // 注册
         $scope.register = function (type) {
-            console.log("fgfgfgfgf");
             // debugger;
             if(!$scope.agree){
                 return;

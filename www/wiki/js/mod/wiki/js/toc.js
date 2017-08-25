@@ -58,6 +58,12 @@ define([
 
 				// 标题h中过滤图片
 				text = text.replace(/!\[[^\]]*]\((https|http):\/\/[^\)]*\.(png|jpg|jpeg)(.*)\)/,"");
+                // 标题h中过滤链接
+				if (/\[(.+?)\]\((?:.+?)\)/.test(text)){
+                    var titleLink = text.match(/\[(.+?)\]\((?:.+?)\)/)[1];
+				}
+
+                text = titleLink || text;
 
                 tocTreeList = tocTreeList || [];
                 tocList = tocList || [];

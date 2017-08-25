@@ -1,0 +1,189 @@
+<style>
+    body{
+        /*background-color: #F1F1F1;*/
+    }
+    .works{
+        padding-top: 10px;
+    }
+    .works .text {
+        background-color: #FAFAFA;
+        padding: 20px;
+        box-shadow: 0px 1px 3px 0px rgba(44,62,80,.35);
+    }
+    .hover-slide:hover .text{
+        box-shadow: 0 2px 5px 0 rgba(44,62,80,.35);
+    }
+    .pagination-box {
+        text-align: center;
+    }
+    h3.title{
+        border-bottom: 1px solid #f1f1f1;
+        padding-bottom: 16px;
+    }
+    h4 a.title {
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
+    h4 a.title:focus, h4 a.title:hover {
+        color: #3977AD;
+        text-decoration: none;
+    }
+    .works a{
+        color: #333;
+    }
+    .works a:hover{
+        color: #3977AD;
+    }
+    .works img{
+        width: 100%;
+        height:196.88px;
+        object-fit: cover;
+        object-position: top;
+    }
+    .hover-slide:hover {
+        transform: translate3d(0, -3px, 0);
+        transition: all .2s linear;
+    }
+    .works .pull-right.info{
+        cursor: pointer;
+    }
+
+    .search-result{
+        padding-top: 40px;
+    }
+    .search-result .search{
+        position: relative;
+    }
+    .search-result .search > .glyphicon-search{
+        position: absolute;
+        right: 7px;
+        top: 10px;
+    }
+    .search-result .works .col-md-3{
+        margin-top: 30px;
+    }
+    .search-result h4.title{
+        color: #666;
+        margin-bottom: 0;
+    }
+    .search-result .nav-tabs{
+        padding-left: 40px;
+        font-size: 16px;
+    }
+    .search-result .nav-tabs > li > a{
+        color: #999;
+        padding: 0 15px 20px;
+    }
+    .search-result .nav-tabs>li.active>a, .search-result .nav-tabs>li.active>a:hover, .search-result .nav-tabs>li.active>a:focus{
+        border: none;
+        border-bottom: 2px solid #656565;
+        color: #666;
+    }
+
+    .search-result .fans-row{
+        padding: 40px 50px 20px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .search-result .fans-row a.text-muted{
+        color: #333;
+    }
+    .search-result .fans-row a.text-muted:hover{
+        color: #3977AD;
+    }
+    .search-result .fans-row > img{
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        margin-right: 13px;
+    }
+    .search-result .fans-row .intro{
+        flex: 1;
+    }
+    .search-result .fans-row .btn{
+        font-size: 16px;
+        padding: 6px 21px;
+    }
+    .search-result .fans-row img.icon{
+        width: 13px;
+    }
+
+    @media (min-width: 992px) and (max-width: 1200px) {
+        .works img{
+            height:159.38px;
+            object-fit: contain;
+        }
+    }
+    @media (min-width: 768px) and (max-width: 992px) {
+        .works img{
+            height:165px;
+            object-fit: contain;
+        }
+    }
+</style>
+
+<div ng-controller="searchController" class="search-result">
+    <div class="container">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" ng-class="{true:'active'}[searchType == 'siteinfo']" ng-click="changeSearch('siteinfo')">
+                <a href="#siteinfo" aria-controls="siteinfo" role="tab" data-toggle="tab">站点</a>
+            </li>
+            <li role="presentation" ng-class="{true:'active'}[searchType == 'userinfo']" ng-click="changeSearch('userinfo')">
+                <a href="#userinfo" aria-controls="userinfo" role="tab" data-toggle="tab">用户</a>
+            </li>
+            <li role="presentation" ng-class="{true:'active'}[searchType == 'pageinfo']" ng-click="changeSearch('pageinfo')">
+                <a href="#pageinfo" aria-controls="pageinfo" role="tab" data-toggle="tab">用户页</a>
+            </li>
+            <li class="pull-right search">
+                <input id="searchpage-search" type="text" class="form-control" placeholder="{{searchText || ''}}" ng-model="searchText">
+                <span ng-click="changeSearch(searchType, searchText)" class="glyphicon glyphicon-search text-muted"></span>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
+                <h4 class="title">共{{totalItems || 0}}个站点：</h4>
+                <div class="col-md-3 hover-slide" ng-repeat="site in searchResult.results" ng-show="site.name!='tutorial'">
+                    <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}">
+                    <div class="text clearfix">
+                        <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>
+                        <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username}}</a></p>
+                        <p class="pull-left info">
+                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount}}</span>
+                        </p>
+                        <p class="pull-right info" ng-click="worksFavorite($event, site)">
+                            <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 关注 <span>{{site.favoriteCount || 0}}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
+                <h4 class="title">共{{totalItems || 0}}名用户：</h4>
+                <div class="col-md-12 fans-row" ng-repeat="item in searchResult.results">
+                    <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
+                    <div class="intro">
+                        <h4><a class="text-muted" ng-click="goUserIndexPage(item.username)">{{item.username || item.displayName}}</a></h4>
+                        <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{item.location}}</p>
+                    </div>
+                    <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?"取消关注":"关 注"}}</div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
+                <h4 class="title">共{{totalItems || 0}}条用户页：</h4>
+                <div class="col-md-12 fans-row" ng-repeat="item in searchResult.results">
+                    <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
+                    <div class="intro">
+                        <h4>{{item.sitename}}  ——  <a href="{{item.url}}">{{item.pagename}}</a></h4>
+                        <p ng-click="goUserIndexPage(item.username)">{{item.username || item.displayName}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination-box">
+            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
+                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                class="pagination-sm" boundary-link-numbers="true"></ul>
+        </div>
+    </div>
+</div>
