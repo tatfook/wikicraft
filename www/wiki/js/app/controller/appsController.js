@@ -161,7 +161,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
         function checkPosition(affix) {
             var affixTop = affix[0].offsetTop;
             var affixHeight = affix[0].offsetHeight;
-            var documentHeight = $(document).height();
+            var documentHeight = Math.max($(document).height(), $(document.body).height());
             var winHeight = $(window).height();
             var affixBottom = documentHeight - affixTop - affixHeight;
             var scrollTop = $(window).scrollTop();
@@ -186,8 +186,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 }else if (scrollBottom < affixBottom){
                     affix.addClass("bottom");
                     affix.removeClass("active");
-                    console.log(winHeight + "+"+affixCtrlHeight+"+"+affixBottom);
-                    var offsetTop =""+ scrollTop - affixTop - winHeight + affixCtrlHeight - affixBottom;
+                    var offsetTop = documentHeight - affixBottom - affixCtrlHeight - affixTop - 52;
                     affixCtrl.css({"top":offsetTop+"px"});
                 }else{
                     affix.removeClass("active");
