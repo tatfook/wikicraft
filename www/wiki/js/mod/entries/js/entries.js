@@ -19,6 +19,9 @@ define(['app',
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
             $scope.followPath = "http://121.14.117.239/follow/take";
 
+
+            // $scope.httpPath = "http://localhost:3000/api/lecture/entires";
+
             // 课程url信息
             $scope.current_url = decodeURI(window.location.pathname) || decodeURI($scope.pageinfo.url);
 
@@ -442,10 +445,13 @@ define(['app',
 
                                     var data = dd.data,
                                         select = dd.select,
-                                        splArr = select ? select.entries_id.split(',') : [],
-                                        spl = angular.copy(splArr, []),
+                                        spl = select ? select.entries_id.split(',') : [],
+                                        splArr = angular.copy(spl, []),
                                         activeIdx = [],
                                         idx = 0;
+
+                                    //这里要添加0，表示第一个列
+                                    splArr.shift(0);
 
                                     //是否加入了课程
                                     $chil.hasCourse = parseInt(select.has_course, 10) === 1;
@@ -486,8 +492,7 @@ define(['app',
                                         $(strArr.join(',')).hide();
                                     }
 
-                                    //这里要添加0，表示第一个列
-                                    spl.unshift(0);
+ 
 
                                     if (!data.length || (select && select.entries_id === '')) {
                                         $timeout(function () {
@@ -636,14 +641,17 @@ define(['app',
                                     $chil.entries.splice(idx);
                                 }
 
-                                for (var i = 0; i < $chil.entries.length; i++) {
-                                    ids.push($chil.entries[i]['id']);
-                                }
+                                // for (var i = 0; i < $chil.entries.length; i++) {
+                                //     ids.push($chil.entries[i]['id']);
+                                // }
+
+                                //现在改为去最后一个id
+                                id = $chil.entries[$chil.entries.length -1]? $chil.entries[$chil.entries.length -1]['id'] : null;
 
                                 //保存新增的列的同时并保存选中的列
                                 $http.post($scope.httpPath + '/add_type', {
                                     item: idx !== -1 ? item : null,
-                                    select: ids,
+                                    select: id,
                                     url: $scope.pageinfo.url || window.location.pathname
                                 }, {
                                     isShowLoading: false
