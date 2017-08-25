@@ -25,7 +25,6 @@ end
 System.os.GetUrl({url = accessTokenUrl, qs = params }, resume)
 local err, data = yield()
 data = data.data
-local accessToken = utilTemp.parse_str(data);
 local accessToken = util.parse_str(data);
 log("auth step 1")
 log(accessToken)
