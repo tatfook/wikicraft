@@ -4,6 +4,7 @@ Title: modelshare
 Author: 
 Date: 2017/7/19
 http://localhost:8099//api/mod/modelshare/models/modelshare  地址
+跳转location.href = "/"
 ]]
 
 include_once("../../../models/abstract/multi_user_base.page");
@@ -18,26 +19,33 @@ modelsn            = modelsn:new();
 
 function modelshare:ctor()
 	self:addfield("templateName", "string",false);
-	self:addfield("author", "string", false);
+	self:addfield("username", "string", false);
 	self:addfield("modelsnumber","number",false);
 	self:addfield("blocks","number",false);
 	self:addfield("volume","string",false);
 	self:addfield("words","string",false);
 	self:addfield("_id","number",false);
+	self:addfield("isShare","0",false);
 	
 end
 --增加
 function modelshare:api_add(params)
+	--[[if(true) then
+		local test = self:getUsername();
+		log(test);
+		return {test = "test"};
+	end]]
+
 	local err, query = self:validateQuery(params);
 	--log(query)
 	self:db():insertOne(
 		{
 			templateName = query.templateName,
-			author       = query.author,
+			username     = self:getUsername(),
 			modelsnumber = modelsn:getSn(),
-			blocks       = query.block,
+			blocks       = query.blocks,
 			volume       = query.volume,
-			words        = query.words,
+			isShare      = query.isShare
 			
 		}, resume);
 	local err, data = yield();

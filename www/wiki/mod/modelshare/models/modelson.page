@@ -21,7 +21,7 @@ function modelson:ctor()
 	self:addfield("_id","number",false);
 	
 end
---增加
+增加
 function modelson:api_add(params)
 	local err, query = self:validateQuery(params);
 	log(query)

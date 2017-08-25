@@ -33,11 +33,11 @@
 			});
 		}*/
 		
-		$scope.modify = function(item){
+		/*$scope.modify = function(item){
 			var params = {
 				"_id"          : item._id,
 				"templateName" : item.templateName,
-				"author"       : item.author,
+				"username"     : item.username,
 				"modelsnumber" : item.modelsnumber,
 				"blocks"       : item.blocks,
 				"volume"       : item.volume,
@@ -51,7 +51,7 @@
 					alert("修改失败");
 				}
 			})
-		}
+		}*/
 		
 		
 		function getData(item){
@@ -59,9 +59,9 @@
 				"_id"          : $scope.parameter.id,
 			}
 			http("POST","api/mod/modelshare/models/modelshare/getData", params, function(data){
-				console.log(data)
+				console.log(data.data)
 				$scope.templateName = data.data.templateName;
-				$scope.author       = data.data.author;
+				$scope.username     = data.data.username;
 				$scope.modelsnumber = data.data.modelsnumber;
 				$scope.blocks       = data.data.blocks;
 				$scope.volume       = data.data.volume;
