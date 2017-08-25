@@ -7,7 +7,7 @@ Date: 2016/11/14
 
 -- NPL.load("(gl)script/ide/System/os/GetUrl.lua")
 
-util={}
+util= util or {}
 
 -- 分页实现
 function util:pagination(params)

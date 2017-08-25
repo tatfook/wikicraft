@@ -5,10 +5,8 @@ Author: LiXizhi
 Date: 2016/5/10
 ]]
 
-local utilTemp = util
 include_once("../models/data_source.page")
-util = utilTemp
-	
+
 local accessTokenUrl = 'https://github.com/login/oauth/access_token'
 local userApiUrl = 'https://api.github.com/user'
 local serviceName = "github"
@@ -27,6 +25,7 @@ end
 System.os.GetUrl({url = accessTokenUrl, qs = params }, resume)
 local err, data = yield()
 data = data.data
+local accessToken = utilTemp.parse_str(data);
 local accessToken = util.parse_str(data);
 log("auth step 1")
 log(accessToken)
