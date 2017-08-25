@@ -449,6 +449,10 @@ define(['app',
                                         activeIdx = [],
                                         idx = 0;
 
+                                    if(spl[0] === ''){
+                                        spl.splice(0, 1, 0);
+                                    }
+
                                     //这里要添加0，表示第一个列
                                     splArr.shift(0);
 
