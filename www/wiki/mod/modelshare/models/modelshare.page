@@ -9,26 +9,35 @@ http://localhost:8099//api/mod/modelshare/models/modelshare  地址
 
 include_once("../../../models/abstract/multi_user_base.page");
 
-local modelshare = inherit(models.abstract.multi_user_base, gettable("models.modelshare"));
-local modelsn = inherit(models.abstract.multi_user_base, gettable("models.modelsn"));
+local modelshare   = inherit(models.abstract.multi_user_base, gettable("models.modelshare"));
+local modelsn      = inherit(models.abstract.multi_user_base, gettable("models.modelsn"));
+local hour         = inherit(models.abstract.multi_user_base, gettable("models.hour"));
 
 modelshare.db_name = "modelshare";
 
 modelsn.db_name    = "modelsn";
 modelsn            = modelsn:new();
 
+hour.db_name       = "hour";
+hour               = hour:new();
+
 function modelshare:ctor()
 	self:addfield("templateName", "string",false);
 	self:addfield("username", "string", false);
-	self:addfield("modelsnumber","number",false);
 	self:addfield("blocks","number",false);
-	self:addfield("volume","string",false);
+	self:addfield("volume","number",false);
 	self:addfield("words","string",false);
-	self:addfield("_id","number",false);
 	self:addfield("isShare","number",false);
+	self:addfield("series","number",false);
 	
+	self:addfield("_id","number",false);
+	
+	self:addfield("modelsnumber","number",false);
+	self:addfield("hour","strig",false);
 end
+
 --增加
+
 function modelshare:api_add(params)
 	local err, query = self:validateQuery(params);
 	--log(query)
@@ -39,7 +48,9 @@ function modelshare:api_add(params)
 			modelsnumber = modelsn:getSn(),
 			blocks       = query.blocks,
 			volume       = query.volume,
-			isShare      = query.isShare
+			isShare      = query.isShare,
+			hour         = hour:getNow(),
+			series       = query.series
 			
 		}, resume);
 	local err, data = yield();
@@ -50,7 +61,9 @@ function modelshare:api_add(params)
 	end
 
 end
---查找
+
+--分享页数据查找
+
 function modelshare:api_getOne(params)
 	local err, query = self:validateQuery(params);
 	--log(params)
@@ -64,7 +77,23 @@ function modelshare:api_getOne(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 end
+
+--列表页数据查找
+
+function modelshare:api_getList(params)
+	local err, query = self:validateQuery(params);
+	self:db():find({},resume);
+	
+	local err, data = yield();
+	if not err then	
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end	
+end
+
 --修改
+
 function modelshare:api_modify(params)
 	local err, query = self:validateQuery(params);
 	
@@ -95,7 +124,9 @@ function modelshare:api_modify(params)
 	end
 
 end
+
 --删除
+
 function modelshare:api_delete(params)
 	local err, query = self:validateQuery(params);
 	
@@ -113,7 +144,9 @@ function modelshare:api_delete(params)
 	end
 	
 end
+
 --序列号生成
+
 function modelsn:getSn()
 	self:db():insertOne({},resume);
 	local err, phoneNumber = yield();
@@ -127,6 +160,12 @@ function modelsn:getSn()
 	end
 
 	return sn .. phoneNumber
+end
+
+--生成时间
+
+function hour:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end
 
 ?>
