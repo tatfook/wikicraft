@@ -5,6 +5,11 @@
 ], function (app, htmlContent, util) {
     app.controller('shareController', ['$scope' , '$http' , function ($scope,$http) {
         $scope.parameter = util.getQueryObject();
+		if($scope.parameter.id){
+			return $scope.parameter.id
+		}else{
+			location.href = "/wiki/notfound"
+		}
 		console.log($scope.parameter)
 		//$scope.h2h2 = [];
 		//$scope.username = "hahaha";
@@ -53,7 +58,7 @@
 			})
 		}*/
 		
-		
+
 		function getData(item){
 			var params = {
 				"_id"          : $scope.parameter.id,

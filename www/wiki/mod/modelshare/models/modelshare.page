@@ -25,7 +25,7 @@ function modelshare:ctor()
 	self:addfield("volume","number",false);
 	self:addfield("words","string",false);
 	self:addfield("isShare","number",false);
-	self:addfield("series","number",false);
+	self:addfield("desc","string",false);
 	
 	self:addfield("_id","number",false);
 	
@@ -47,6 +47,7 @@ function modelshare:api_add(params)
 			volume       = query.volume,
 			isShare      = query.isShare,
 			createDate   = modelshare:getNow(),
+			desc         = query.desc,
 			
 		}, resume);
 	local err, data = yield();
@@ -81,6 +82,15 @@ function modelshare:api_getList(params)
 	self:db():find({},resume);
 	
 	local err, data = yield();
+	
+	--[[b = #data/6
+	log(b)
+	if math.floor(x)<x then
+		log("小数")
+	else
+		log("整数")
+	end]]
+	
 	if not err then	
 		return errors:wrap(nil, data);
 	else
