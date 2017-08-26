@@ -141,9 +141,11 @@ function site_data_source:api_createProject(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
-	data = resp.data 
-	if #data > 0 then 
-		return errors:wrap(nil, data[1])
+	data = resp.data or {}
+	for _, project in ipairs(data) do
+		if string.lower(project.name) == string.lower(params.projectName) then
+			return errors:wrap(nil, project)
+		end
 	end
 
 	-- 不存创建项目
@@ -170,11 +172,13 @@ function site_data_source:api_createProject(params)
 	local hookUrl = "http://" .. hostname .. "/api/wiki/models/data_source/gitlabWebhook"
 
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects" .. tostring(project.id) .. "/hooks",
-		push_events=true,
-		enable_ssl_verification=false,
+		url=params.apiBaseUrl .. "/projects/" .. tostring(project.id) .. "/hooks",
+		headers={['PRIVATE-TOKEN'] = params.token},
+		method="POST",
+		form={push_events=true, enable_ssl_verification=false,  url=hookUrl},
 	},resume)
-	yield()
+	local code, data = yield()
+	--log(data, true)
 
 	return errors:wrap(nil,project)
 end
@@ -373,10 +377,15 @@ function site_data_source:api_createSiteDataSource(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
-	local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName}).data
-	if project then
-		params.projectId = project.id
+	if params.isolateDataSource == 1 then
+		local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName}).data
+		if project then
+			params.projectId = project.id
+		end
+	else
+		params.projectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
 	end
+
 	self:db():insertOne({["+username+sitename"]={params.username, params.sitename}}, params, resume)
 	local _, siteDataSource = yield()
 	

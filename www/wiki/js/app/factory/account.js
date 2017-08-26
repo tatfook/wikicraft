@@ -82,6 +82,17 @@ define([
 					}
 				},
 
+				// 重新获取用户信息
+				reloadUser: function(cb, errcb){
+					storage.sessionStorageRemoveItem("userinfo");
+					var self = this;
+
+					util.post(config.apiUrlPrefix + 'user/getProfile', {}, function(data){
+						self.setUser(data);
+						cb && cb(data);
+					}, errcb);
+				},
+
                 // 获取用户信息
                 getUser: function (cb, errcb) {
 					if (!$auth.isAuthenticated()) {
@@ -89,9 +100,11 @@ define([
 						return;
 					}
 
+					var authUseinfo = $auth.getPayload();
+					//console.log(authUseinfo);
                     var userinfo = this.user || storage.sessionStorageGetItem("userinfo");
 
-                    if (userinfo && userinfo._id && userinfo.username) {
+                    if (userinfo && userinfo.username && authUseinfo && authUseinfo.username == userinfo.username) {
                         cb && cb(userinfo);
                         return userinfo;
                     }

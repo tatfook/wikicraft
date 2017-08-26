@@ -32,6 +32,7 @@ define([
 		// 注册loading拦截器
 		$httpProvider.interceptors.push("loadingInterceptor");
 
+		//$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 		//{{{
 		// github 认证配置
 		$authProvider.github({

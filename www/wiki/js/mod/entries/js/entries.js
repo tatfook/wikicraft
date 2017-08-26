@@ -17,10 +17,10 @@ define(['app',
             $scope.userinfo.username; // 用户主页
             //  $scope.user.portrait; //用户头像
             $scope.httpPath = "http://121.14.117.239/api/lecture/entires";
-            $scope.followPath = "http://121.14.117.239/follow/take";
+            $scope.urlPath = "http://121.14.117.239/";
 
             // 课程url信息
-            $scope.current_url = window.location.pathname || $scope.pageinfo.url;
+            $scope.current_url = decodeURI(window.location.pathname) || decodeURI($scope.pageinfo.url);
 
             // 从0开始截取地址栏参数前面的url
             $scope.winHref = window.location.href;
@@ -36,11 +36,10 @@ define(['app',
 
             // 词条初始化请求前10条数据
             $http.post($scope.httpPath + '/course_url', {
-                chapter_url: decodeURI($scope.pageinfo.url || window.location.pathname)
+                chapter_url: $scope.pageinfo.url || decodeURI(window.location.pathname)
             }, {
                 isShowLoading: false
             }).then(function (rs) {
-
                 if (rs.data && rs.data.err === 0 && rs.data.course_url && rs.data.course_url !== '') {
                     $scope.course_url = rs.data.course_url.course_url;
                     $scope.entries_title = rs.data.course_url.title;
@@ -57,9 +56,9 @@ define(['app',
                 isShowLoading: false
             }).then(function (rs) {
                 var data = rs.data;
-                console.log(data);
-                if (data && data.err === 0 && data.exists === true) {
+                if (data && data.err === 0) {
                     $scope.isCreate = true;
+                    $scope.current_url = data.data ? data.data.course_url : '#';
                 }
             }, function (rs) {
                 console.log(rs);
@@ -77,12 +76,12 @@ define(['app',
             //     // $compile($html);
             // }
 
-            $scope.remotedata = {
-                url: $scope.pageinfo.url || window.location.pathname,
-                title: "",
-                create_user: $scope.userinfo.username,
-                create_nickname: $scope.userinfo.displayName,
-            }
+            // $scope.remotedata = {
+            //     url: $scope.pageinfo.url || decodeURI(window.location.pathname),
+            //     title: "",
+            //     create_user: $scope.userinfo.username,
+            //     create_nickname: $scope.userinfo.displayName,
+            // }
 
             $scope.chapters = {
                 data: [],
@@ -96,16 +95,17 @@ define(['app',
             $scope.dataShow = true;
             $scope.notData = false;
 
+            $scope.isNextBtn = "";
+
             $scope.loadChp = function () {
                 $http.post($scope.httpPath + '/chapters', {
-                    url: $scope.remotedata.url,
+                    url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                     pageIndex: $scope.chapters.pageIndex,
                     pageSize: $scope.chapters.pageSize,
                     username: $rootScope.siteinfo.username
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
-
                     if (rs.data.itemCount === 0) {
                         $scope.dataShow = false;
                         $scope.notData = true;
@@ -137,7 +137,7 @@ define(['app',
                 $scope.chapters.pageIndex++;
 
                 $http.post($scope.httpPath + '/chapters', {
-                    url: $scope.remotedata.url,
+                    url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                     pageIndex: $scope.chapters.pageIndex,
                     pageSize: $scope.chapters.pageSize,
                     username: $rootScope.siteinfo.username
@@ -149,9 +149,8 @@ define(['app',
                         countRecord = rs.data.itemCount, // 记录数
                         allPage = (countRecord % pageSize == 0 ? countRecord / pageSize : Math.ceil(countRecord / pageSize)); // 总页数
 
-                    if (pageIndex == allPage || pageIndex >= allPage) {
-                        $scope.isGetPage = true;
-                        return;
+                    if (pageIndex === allPage || pageIndex >= allPage) {
+                       return;
                     }
 
                     if (rs.data && rs.data.err === 0) {
@@ -174,8 +173,12 @@ define(['app',
             };
 
             //第一次新增词条
-            $http.post($scope.httpPath + '/add',
-                $scope.remotedata).then(function (rs) {}, function (rs) {
+            $http.post($scope.httpPath + '/add', {
+                url: $scope.pageinfo.url || decodeURI(window.location.pathname),
+                title: "",
+                create_user: $scope.userinfo.username,
+                create_nickname: $scope.userinfo.displayName,
+            }).then(function (rs) {}, function (rs) {
                 console.log(rs);
             });
 
@@ -199,7 +202,7 @@ define(['app',
                         pageIndex: 1,
                         pageSize: 24,
                         username: $rootScope.siteinfo.username,
-                        url: $scope.remotedata.url,
+                        url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                     }, {
                         isShowLoading: false
                     }).then(function (rs) {
@@ -268,7 +271,7 @@ define(['app',
                     pageIndex: $scope.teacher.pageIndex,
                     pageSize: $scope.teacher.pageSize,
                     username: $rootScope.siteinfo.username,
-                    url: $scope.remotedata.url,
+                    url: $scope.pageinfo.url || decodeURI(window.location.pathname),
                 }, {
                     isShowLoading: false
                 }).then(function (rs) {
@@ -330,15 +333,16 @@ define(['app',
                 // 左右滑动轮播
                 var slideSwiper = new Swiper('#sliding-loading', {
                     width: itemWidth,
-                    slidesPerGroup: slidesGroup,
+                    slidesPerGroup: 5,
                     observer: true,
                     observeParents: true,
-                    freeModeMomentum: true,
                     freeMode: slideMode,
                     prevButton: '.prev-btn',
                     nextButton: '.next-btn',
+                    slidesOffsetAfter : -itemWidth*4,
                     // 左滑动获取分页数据
-                    onSlideChangeEnd: function (swiper) {
+                    onSlideChangeEnd: function (swiper) { 
+
                         for (var i = 0; i < itemSlide.length; i++) {
                             slideWidth = parseInt((itemSlide.length * (itemSlide[i].clientWidth) / 2));
                         }
@@ -348,6 +352,7 @@ define(['app',
                         }
                     }
                 })
+
             }
 
             $scope.$watch('$viewContentLoaded', init);
@@ -436,7 +441,7 @@ define(['app',
 
                                     var data = dd.data,
                                         select = dd.select,
-                                        splArr = select.entries_id.split(','),
+                                        splArr = select ? select.entries_id.split(',') : [],
                                         spl = angular.copy(splArr, []),
                                         activeIdx = [],
                                         idx = 0;
@@ -483,12 +488,15 @@ define(['app',
                                     //这里要添加0，表示第一个列
                                     spl.unshift(0);
 
-                                    if (!data.length || select === '') {
+                                    if (!data.length || (select && select.entries_id === '')) {
                                         $timeout(function () {
                                             $('.add-new:not(:first)').hide();
                                         }, 0);
 
                                         $chil.showOther = false;
+
+                                    } else {
+                                        $chil.swiperBox.slideTo(splArr.length - 1);
                                     }
 
                                     if (data.length) {
@@ -520,8 +528,6 @@ define(['app',
                                                 $('.entri-list:eq(' + i + ') > .entri-item:eq(' + activeIdx[i] + ')').addClass('active');
                                             }
                                         }, 0);
-
-
                                     }
                                 }
 
@@ -651,6 +657,7 @@ define(['app',
                                     $scope.chapters.pageIndex = 1;
                                     $scope.teacher.pageIndex = 1;
                                     $scope.loadChp();
+                                    $scope.teacher.data = [];
                                     $scope.moreShowThearch();
 
                                 }, function (rs) {

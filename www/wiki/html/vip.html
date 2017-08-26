@@ -16,7 +16,55 @@
         border-bottom: 1px solid #DCDCDC;
     }
     .vip-container .publicity img{
-        width: 80%;
+        width: auto;
+        max-width: 80%;
+    }
+    .vip-container .compares{
+        width: 600px;
+        margin: 30px auto 0;
+    }
+    .vip-container .feature-box {
+        float: left;
+        width: 280px;
+        margin: 0 10px;
+        padding: 16px 22px 36px 36px;
+        text-align: center;
+        border: 1px solid #DCDCDC;
+        color: #808080;
+    }
+    .vip-container .vip-feature{
+        color: #FF7200;
+    }
+    .vip-container .feature-box ul{
+        margin: 0;
+        padding: 0;
+        text-align: left;
+    }
+    .vip-container .feature-box ul > li{
+        list-style: none;
+        font-size: 16px;
+        position: relative;
+        color: #666;
+        padding-left: 30px;
+        line-height: 40px;
+        white-space: nowrap;
+    }
+    .vip-container .feature-box .glyphicon-ok{
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        line-height: 20px;
+        text-align: center;
+        position: absolute;
+        top: 10px;
+        left: 0;
+        background-color: #6BBC7D;
+        border-radius: 50%;
+        font-size: 12px;
+        color: #FFF;
+    }
+    .vip-container .feature-box .text-muted{
+        color: #DDD;
     }
     .s-container{
         width: 680px;
@@ -74,15 +122,101 @@
         font-size: 16px;
         margin-top: 40px;
     }
+    
+    @media (max-width: 680px) {
+        .vip-container .row{
+            padding:0;
+            border-bottom: none;
+        }
+        .vip-container h3{
+            margin-bottom: 15px;
+        }
+        .vip-container .compares {
+            width: 100%;
+        }
+        .vip-container .feature-box{
+            width: 50%;
+            padding: 0 10px;
+            margin: 0;
+            border: 0;
+        }
+        .vip-container .feature-box h2{
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .vip-container .feature-box ul > li{
+            font-size: 12px;
+            padding-left: 17px;
+            line-height: 30px;
+        }
+        .vip-container .feature-box .glyphicon-ok{
+            width:15px;
+            height:15px;
+            line-height:15px;
+            top:6px;
+        }
+        .vip-container .gopay-btn{
+            margin: 10px 0;
+            font-size: 14px;
+            height: 32px;
+            line-height: 32px;
+            width: 80px;
+        }
+
+        .s-container{
+            width: 100%;
+        }
+        .s-container .col-xs-4{
+            padding: 0 5px;
+            margin-top: 5px;
+        }
+        .vip-price{
+            min-height: 80px;
+            width: auto;
+        }
+        .vip-price .time{
+            padding: 10px 5px;
+        }
+    }
 </style>
 <div class="container vip-container" ng-controller="vipController">
     <div class="row publicity">
         <h3><span>VIP账号特权</span></h3>
         <img ng-src="{{imgsPath+'wiki_vip.png'}}" alt="">
+        <div class="clearfix compares">
+            <div class="feature-box">
+                <h2>免费账户</h2>
+                <p class="info">免费</p>
+                <ul>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</span></li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>页面功能模块支持</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
+                    <li class="text-muted">cname 转发</li>
+                    <li class="text-muted">私有网站（额外权限管理）</li>
+                    <li class="text-muted">组织网站模板</li>
+                </ul>
+            </div>
+            <div class="feature-box vip-feature">
+                <h2>VIP账号</h2>
+                <p class="info">30RMB/月</p>
+                <ul>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>页面功能模块支持</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>cname 转发</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>私有网站（额外权限管理）</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>组织网站模板</li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="row s-container">
         <h3><span>VIP购买付费</span></h3>
-        <div class="col-sm-4" ng-repeat="item in vips" ng-click="selectPrice(item)">
+        <div class="col-sm-4 col-xs-4" ng-repeat="item in vips" ng-click="selectPrice(item)">
             <div class="vip-price" ng-class="{true:'active'}[item.price == selectedVip.price]">
                 <div class="price"><span>￥</span>{{item.price}}</div>
                 <div class="time">{{item.month}}</br>个</br>月</div>

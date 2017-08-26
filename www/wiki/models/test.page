@@ -24,7 +24,13 @@ function test:api_get()
 end
 
 function test:api_post(params)
-	return params
+	log("------------------test post-----------------")
+	log(params)
+	return params or {key="test"}
+end
+
+function test:api_token(params)
+	return decodeJWT(params.token or "")
 end
 
 -- 更新文件内容

@@ -313,12 +313,13 @@
                 <div class="change-type">
                     <h4 class="light-title">项目类型：</h4>
                     <div class="form-group clearfix">
+                        <p class="text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能更改项目类型 <a href="/wiki/vip" target="_blank">成为VIP</a></p>
                         <div class="col-sm-12">
-                            <h4 class="light-title"><input id="publicItem" type="radio" ng-model="changeType" value="public" ng-change="changeSiteType()" name="siteType"> <label for="publicItem">公有项目</label></h4>
+                            <h4 class="light-title"><input id="publicItem" type="radio" ng-model="changeType" value="public" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="publicItem">公有项目</label></h4>
                             <p>默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。</p>
                         </div>
                         <div class="col-sm-12">
-                            <h4 class="light-title"><input id="privateItem" type="radio" ng-model="changeType" value="private" ng-change="changeSiteType()" name="siteType"> <label for="privateItem">私有项目</label></h4>
+                            <h4 class="light-title"><input id="privateItem" type="radio" ng-model="changeType" value="private" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="privateItem">私有项目</label></h4>
                             <p>默认不允许未登录用户浏览。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员；可以为部分人设定浏览权限，则他们可以浏览您创建的内容，其他未授权用户均无法浏览</p>
                         </div>
                     </div>

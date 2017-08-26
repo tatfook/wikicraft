@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1501752087927'); /* IE9*/
-  src: url('iconfont.eot?t=1501752087927#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1501752087927') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1501752087927') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1501752087927#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1503299986150'); /* IE9*/
+  src: url('iconfont.eot?t=1503299986150#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1503299986150') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1503299986150') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1503299986150#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -32,4 +32,6 @@
 .icon-lock:before { content: "\e612"; }
 
 .icon-yingyongguanli:before { content: "\e601"; }
+
+.icon-feature:before { content: "\e615"; }
 

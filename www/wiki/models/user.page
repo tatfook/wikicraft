@@ -477,6 +477,7 @@ function user:api_login(params)
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
+	params.username = string.lower(params.username)
 	self:db():findOne({["+email"]={params.username}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then
@@ -881,10 +882,33 @@ function user:api_getDetailByName(params)
 	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, followObj=followObj, fansObj=fansObj, trendsObj=trendsObj})
 end
 
+-- 获取gitlab账号
+function user:api_getGitlabAccount(params)
+	if not params.username or not params.password then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo = yield()
 
+	if not userinfo then
+		return errors:wrap(errors.NOT_FOUND)
+	end
 
+	if userinfo.password ~= self:encodePassword(params.password) then
+		return errors:wrap("密码错误")
+	end
 
+	local dataSourceDB = models.data_source:new()
+	dataSourceDB:db():findOne({["+username+name"]={params.username, const.DEFAULT_DATA_SOURCE_NAME}}, resume)
+	local _, dataSource = yield()
 
+	if not dataSource or not dataSource.dataSourcePassword or not dataSource.dataSourceUsername then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	return errors:wrap(nil, {username=dataSource.dataSourceUsername, password=dataSource.dataSourcePassword})
+end
 
 
 

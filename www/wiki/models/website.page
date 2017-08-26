@@ -32,6 +32,7 @@ website.db_name = "website"
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
+	self:addfield("sitename", "string", false, 30)
 	self:addfield("isolateDataSource", "number") -- 1 独立数据源 0 - 默认数据源
 	self:addfield("type", "string", false, 30)
 	self:addfield("displayName", "string", false, 30)
@@ -64,7 +65,7 @@ function website:ctor()
 	self:addfield("state", "number")
 end
 
--- 创建站点
+-- 创建站点 paracraft 客户端有使用 以后可能废弃  
 function website:api_create(params) 
 	if (not params.userId) or (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -74,13 +75,56 @@ function website:api_create(params)
 	params.visitCount = 0
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
+
 	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)	
 	return errors:wrap(yield())
 end
 
+function website:api_createSite(params)
+	local username = getUsername()
+
+	if not params.sitename or not params.username or params.username ~= username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local _, userinfo = yield()
+	if not userinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+
+	end
+
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
+	local _, site = yield()
+	if site then
+		return errors:wrap("站点已存在")
+	end
+
+	params.name = params.sitename
+	params.isolateDataSource = params.isolateDataSource or 1
+	params.favoriteCount = 0
+	params.visitCount = 0
+	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+
+	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
+	local _, site = yield()
+	if not site then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local siteDataSourceDB = models.site_data_source:new()
+	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.sitename, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName, isolateDataSource=params.isolateDataSource})
+	local dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
+
+	return errors:wrap(nil, {siteinfo=site, dataSource=dataSource})
+end
+
 -- 创建站点
 function website:api_upsert(params) 
-	if (not params.userId) or (not params.username) or (not params.name) then
+	ensureAuthenticated()
+	if (not params.username) or (not params.name) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
@@ -114,7 +158,7 @@ function website:api_upsert(params)
 		projectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
 	end
 	local siteDataSourceDB = models.site_data_source:new()
-	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName, projectName=projectName})
+	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.name, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName, projectName=projectName, isolateDataSource=params.isolateDataSource})
 	site.dataSource = siteDataSourceDB:api_getSiteDataSource({username=site.username, sitename=site.name}).data
 	-- LOG.std(nil, "error", "keepwork", site.dataSource)
 
@@ -268,6 +312,7 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
+	params.sitename = nil   -- 防止名字被改
 	params.name = nil   -- 防止名字被改
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 

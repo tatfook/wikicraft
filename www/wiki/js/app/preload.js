@@ -4,14 +4,23 @@
 
 /*预加载模块*/
 define([
+	//lib
     'jquery-cookie',
 
     // helper
-    'helper/util',
+    'helper/dataSource',
+    'helper/filter',
     'helper/loading',
+    'helper/markdownwiki',
+    'helper/mods',
+    'helper/siteStyle',
+    'helper/storage',
+    'helper/util',
 	
 	// controller
     'controller/mainController',
+    'controller/headerController',
+    'controller/footerController',
     //'controller/testController',
 
     // directives

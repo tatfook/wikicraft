@@ -298,6 +298,10 @@ define([
 						} else {
 							callback();
 						}
+                    },function (err) {
+                        console.log(err);
+                        var errContent = md.render(notfoundHtmlContent);
+                        util.html('#__UserSitePageContent__', errContent, $scope);
                     });
                 } else if (urlObj.username){
                     util.html('#__UserSitePageContent__', userHtmlContent, $scope);

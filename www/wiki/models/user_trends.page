@@ -30,7 +30,8 @@ function user_trends:api_upsert(params)
 	end
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. "  " ..  ParaGlobal.GetTimeFormat("HH:mm:ss")
 	
-	self:db():insertOne({["+userId+objectId+trendsType"]={params.userId, params.objectId,params.trendsType}}, params, resume)
+	-- self:db():insertOne({["+userId+objectId+trendsType"]={params.userId, params.objectId,params.trendsType}}, params, resume)
+	self:db():insertOne(nil, params, resume)
 	
 	return errors:wrap(yield())
 end

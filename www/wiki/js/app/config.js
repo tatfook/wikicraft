@@ -7,7 +7,7 @@
 (function () {
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname == "localhost";
-	var localVMEnv = localEnv && (window.location.host == "localhost:8099" || window.location.host == "localhost:8900");
+	var localVMEnv = localEnv && window.location.host != "localhost:63342";
 	var pathPrefix = (localEnv && !localVMEnv) ? '/www/wiki/' : (wiki_config.webroot || '/wiki/');
 	var hostname = window.location.hostname;
 	var envIndex = hostname.indexOf(".dev.keepwork.com");
@@ -22,8 +22,10 @@
 		officialDomainList:["keepwork.com", "qiankunew.com"],                                                      // 官方域名 因存在用户官方子域名和其它域名 故需记录
 		officialSubDomainList:[                                                                                    // 官方占用的子域名列表
 			"dev.keepwork.com",
+			"stage.keepwork.com",
 			"test.keepwork.com",
 			"dev.qiankunew.com",
+			"stage.qiankunew.com",
 			"test.qiankunew.com",
 		],
 		// 预加载模块列表
