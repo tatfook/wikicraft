@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="https://cdn.bootcss.com/angular.js/1.4.6/angular.min.js"></script>
+	</head>
+	
+	<body ng-app="myApp">
+		<div ng-controller="angular">
+			<div>
+				<input type="text" ng-model="foo" placeholder="写下您的心情，140字以内......"/>
+				<button ng-click="add()">写日记</button>
+			</div>
+			<div border="1">
+				<ul ng-repeat="y in h2h2">
+				  <li>
+					<input type="text" ng-model="y.foo" />
+					<a href="#" ng-click="delete(y, $index)">X</a>
+					<a href="#" ng-click="modify(y)">修改</a>
+				  </li>
+				</ul>
+			</div>
+		</div>
+		
+	</body>
+</html>
+
+<script>
+var app = angular.module("myApp", []);
+app.controller("angular", function($scope,$http) {
+	$scope.h2h2 = [];
+	
+	/*$scope.add = function(){
+		return ;
+	}*/
+	
+	$scope.delete = function(item, index){
+		var id = item._id;
+		console.log(index)
+		http("POST", "api/wiki/models/nws/delete", {"id" : id},function(data){
+			//console.log(index);
+			//console.log(data);
+			//console.log($scope.h2h2)
+
+			$scope.h2h2.splice(index,1);
+			console.log($scope.h2h2)
+		});
+	}
+
+	$scope.add = function(){
+		var foo = $scope.foo;
+		
+		http("POST","api/wiki/models/nws/add",{"foo" : foo},function(data){
+			console.log(data)
+			//getData();
+			
+			$scope.h2h2[$scope.h2h2.length] = data;
+		});
+	}
+	
+	$scope.modify = function(item){
+		var params = {
+			"_id" : item._id,
+			"foo" : item.foo,
+		}
+	
+		http("POST","api/wiki/models/nws/modify", params, function(data){
+			console.log(data);
+			if(data.errcode == 1){
+				alert("修改成功");
+			}else{
+				alert("修改失败");
+			}
+		})
+	}
+	
+	
+	function getData(){
+		http("GET","api/wiki/models/nws/getData",function(data){
+			$scope.h2h2 = data;
+		});
+	}
+	
+	getData();
+	
+	function http(type, url, params, cb_success, cb_fail){
+		var host = "http://localhost:8099/";
+		
+		if(!cb_success){
+			cb_success = params;
+		}
+		
+		if(typeof(cb_success) != "function"){
+			cb_success = function(){};
+		}
+		
+		if(typeof(cb_fail) != "function"){
+			cb_fail = function(){};
+		}
+		
+		$http({
+			"method" : type,
+			"url"    : host + url,
+			"params" : params ? params : {},
+		}).then(function(response){
+			cb_success(response.data);
+		},cb_fail);
+	}
+});
+</script>
