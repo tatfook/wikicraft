@@ -18,9 +18,6 @@ modelshare.db_name = "modelshare";
 modelsn.db_name    = "modelsn";
 modelsn            = modelsn:new();
 
-hour.db_name       = "hour";
-hour               = hour:new();
-
 function modelshare:ctor()
 	self:addfield("templateName", "string",false);
 	self:addfield("username", "string", false);
@@ -33,7 +30,7 @@ function modelshare:ctor()
 	self:addfield("_id","number",false);
 	
 	self:addfield("modelsnumber","number",false);
-	self:addfield("hour","strig",false);
+	self:addfield("createDate","strig",false);
 end
 
 --增加
@@ -49,8 +46,7 @@ function modelshare:api_add(params)
 			blocks       = query.blocks,
 			volume       = query.volume,
 			isShare      = query.isShare,
-			hour         = hour:getNow(),
-			series       = query.series
+			createDate   = modelshare:getNow(),
 			
 		}, resume);
 	local err, data = yield();
@@ -164,7 +160,7 @@ end
 
 --生成时间
 
-function hour:getNow()
+function modelshare:getNow()
 	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end
 

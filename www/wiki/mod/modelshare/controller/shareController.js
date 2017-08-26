@@ -65,7 +65,7 @@
 				$scope.modelsnumber = data.data.modelsnumber;
 				$scope.blocks       = data.data.blocks;
 				$scope.volume       = data.data.volume;
-				$scope.hour         = data.data.hour;
+				$scope.createDate   = data.data.createDate;
 			});
 		}
 		
