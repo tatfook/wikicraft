@@ -3,27 +3,34 @@
     'text!mod/modelshare/html/index.html',
 ], function (app, htmlContent) {
     app.controller('indexController', ['$scope', '$http' , function ($scope,$http) {
-        $scope.modName = "example";
-		$scope.h2h2 = [];
-	
-		//删除数据
-		$scope.delete = function(item, index){
-			var id = item._id;
-			console.log(index)
-			http("POST", "api/mod/modelshare/models/modelshare/delete", {"id" : id},function(data){
-				$scope.h2h2.splice(index,1);
-				console.log($scope.h2h2)
-			});
-		}
+		var apiUrl = "/api/mod/modelshare/models/modelshare";
+		
+		$scope.maxSize     = 6;
+		$scope.totalItems  = 0;
+		$scope.currentPage = 1;
+		
+        $scope.itemPrePage = 6;
+		$scope.list        = [];
+		
+		http("GET", apiUrl + "/getListCount", function(data){
+			$scope.totalItems = data.data;
+		});
 
 		//查找数据
-		function getData(){
-			http("POST","api/mod/modelshare/models/modelshare/getList",function(data){
-				$scope.h2h2   = data.data;
+		$scope.getList = function(){
+			var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+			
+			var params = {
+				"limit" : $scope.itemPrePage,
+				"skip"  : skip
+			};
+			
+			http("POST", apiUrl + "/getList", params, function(data){
+				$scope.list = data.data;
 			});
 		}
 		
-		getData();
+		$scope.getList();
 		
 		//整合
 		function http(type, url, params, cb_success, cb_fail){
@@ -52,14 +59,15 @@
 		
 		//按键切换
 		$scope.set = function (params) {
-				$scope.divVar = params;
+			$scope.divVar = params;
 		};
 			
 		$scope.divVar = 4;
+		
 		$scope.set = function (params) {
-				$scope.divVar = params;
-			};
-		}]);
-			
-			return htmlContent;
+			$scope.divVar = params;
+		};
+	}]);
+
+	return htmlContent;
 })

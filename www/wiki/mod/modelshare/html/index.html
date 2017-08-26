@@ -117,22 +117,21 @@
             <button class="btn btn-default" type="submit">热门标签</button>
             <button class="btn btn-default" type="submit">热门标签</button>
         </div>
-        <!-- 表格 -->
         <div class="form s-a" id="form" ng-if="divVar == 4">
-            <ul class="form1" ng-repeat="y in h2h2">
+            <ul class="form1" ng-repeat="item in list">
                 <li class="form2">
                     <div class="uldiv">
                         <img src="" />
                     </div>
                     <div>
-                        <span class="ulspan">{{y.templateName}}</span>
+                        <span class="ulspan">{{item.templateName}}</span>
                         <span>☆☆☆☆☆</span>
                         <div class="liicon"></div>
-                        <span class="ulnumber">{{y.modelsnumber}}</span>
+                        <span class="ulnumber">{{item.modelsnumber}}</span>
                         <br />
-                        <span class="introduce"><span>作者：{{y.username}}</span>|<span>方块数量：{{y.blocks}}</span>|<span>体积：{{y.volume}}</span>|<span>{{y.createDate}}</span></span>
+                        <span class="introduce"><span>作者：{{item.username}}</span>|<span>方块数量：{{item.blocks}}</span>|<span>体积：{{item.volume}}</span>|<span>{{item.createDate}}</span></span>
                         <div class="xianzhi">
-                            {{y.desc}}
+                            {{item.desc}}
                         </div>
                     </div>
                 </li>
@@ -195,11 +194,24 @@
                 </li>
 			</ul>
         </div>
-		<ul class="pagination" style="margin: 0px;" >  
-			<li ng-class="{true:'disabled'}[p_current==1]"><a href="#">首页</a></li>  
-			<li ng-class="{true:'active'}[p_current==page]"><a href="#">{{page}}</a></li>  
-			<li ng-class="{true:'disabled'}[p_current==p_all_page]"><a href="#">尾页</a></li>  
-		</ul>  
-		<span style="vertical-align: 12px;">  共：{{series}} 页</span>  
+		<!-- <ul class="pagination" style="margin: 0px;" >   -->
+			<!-- <li ng-class="{true:'disabled'}[p_current==1]"><a href="#">首页</a></li>   -->
+			<!-- <li ng-class="{true:'active'}[p_current==page]"><a href="#">{{page}}</a></li>   -->
+			<!-- <li ng-class="{true:'disabled'}[p_current==p_all_page]"><a href="#">尾页</a></li>   -->
+		<!-- </ul> -->
+		<ul uib-pagination
+			class="pagination-sm"
+			first-text="首页" 
+			last-text="尾页" 
+			next-text="下一页" 
+			previous-text="上一页"
+		    items-per-page="itemPrePage"
+			total-items="totalItems"
+			ng-model="currentPage"
+			max-size="maxSize"
+			boundary-links="true"
+			ng-change = "getList()"
+			num-pages="numPages"></ul>		
+		<pre>Page: {{currentPage}} / {{numPages}}</pre>
     </div>
 </body>
