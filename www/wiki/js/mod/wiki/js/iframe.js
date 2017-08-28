@@ -30,7 +30,7 @@ define([
                 $scope.iframeId = iframeId;
             }
 
-			$scope.$watch($auth.isAuthenticated(), function() {
+			$scope.$watch($auth.isAuthenticated, function() {
 				init();
 			})
 
