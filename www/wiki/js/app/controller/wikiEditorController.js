@@ -1141,7 +1141,7 @@ define([
                     getCurrentPageContent(page, function (data) {
 						callback(page, data);
                     }, function () {
-						callback(page, data);
+						callback(page, "");
                     });
                 });
             }//}}}
