@@ -55,10 +55,16 @@ define(['app',
             }, {
                 isShowLoading: false
             }).then(function (rs) {
+                console.log(rs);
                 var data = rs.data;
                 if (data && data.err === 0) {
-                    $scope.isCreate = true;
                     $scope.current_url = data.data ? data.data.course_url : '#';
+                    // 如果课程没有数据，则不显示拜师链接跳转
+                    if($scope.course_url = '#'){
+                        $scope.isCreate = false
+                    }else{
+                        $scope.isCreate = true;
+                    }
                 }
             }, function (rs) {
                 console.log(rs);
