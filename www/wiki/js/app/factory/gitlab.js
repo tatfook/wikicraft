@@ -344,20 +344,30 @@ define([
 			var apiurl = self.getRawContentUrlPrefix(params);
 			//console.log(apiurl);
             var _getRawContent = function () {
-                $http({
-                    method: 'GET',
-                    url: apiurl,
-                    //url: apiurl + "?private_token=" + self.dataSource.dataSourceToken,
-					//headers:self.httpHeader,
-                    skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
-					isShowLoading:params.isShowLoading,
-				}).then(function (response) {
-					//storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
-					storage.sessionStorageSetItem(apiurl, response.data);
-                    cb && cb(response.data);
-                }).catch(function (response) {
-                    errcb && errcb(response);
-                });
+				if (self.apiBaseUrl.indexOf("git.keepwork.com") > 0) {
+					$http({
+						method: 'GET',
+						url: apiurl,
+						//url: apiurl + "?private_token=" + self.dataSource.dataSourceToken,
+						//headers:self.httpHeader,
+						skipAuthorization: true, // this is added by our satellizer module, so disable it for cross site requests.
+						isShowLoading:params.isShowLoading,
+					}).then(function (response) {
+						//storage.indexedDBSetItem(config.pageStoreName, {url:url, content:response.data});
+						storage.sessionStorageSetItem(apiurl, response.data);
+						cb && cb(response.data);
+					}).catch(function (response) {
+						errcb && errcb(response);
+					});
+				} else {
+					var path = self.getLongPath(params);
+					var url = "/projects/"+ self.projectId +"/repository/files/"+ encodeURIComponent(path) +"/raw";
+					self.httpRequest("GET", url, {ref:self.lastCommitId}, function(data){
+						console.log(data);
+					}, function(data){
+						console.log(data);
+					});
+				}
             }
             // _getRawContent();
             // return;
