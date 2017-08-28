@@ -24,3 +24,9 @@ function wikicraft:api_getStatics(params)
 	local renewalCount =  sitepageRenewalDB:api_getWeekCount().data
 	return errors:wrap(nil,{siteCount=siteCount, userCount=userCount, renewalCount=renewalCount})
 end
+
+
+function wikicraft:api_updateCode(params)
+	log("hello world")
+	--os.execute("/")
+end
