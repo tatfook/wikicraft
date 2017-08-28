@@ -100,9 +100,11 @@ define([
 						return;
 					}
 
+					var authUseinfo = $auth.getPayload();
+					//console.log(authUseinfo);
                     var userinfo = this.user || storage.sessionStorageGetItem("userinfo");
 
-                    if (userinfo && userinfo._id && userinfo.username) {
+                    if (userinfo && userinfo.username && authUseinfo && authUseinfo.username == userinfo.username) {
                         cb && cb(userinfo);
                         return userinfo;
                     }

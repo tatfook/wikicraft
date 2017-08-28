@@ -16,7 +16,7 @@ TEMP_DIR=temp_www_build
 BUILD_DIR=www_build
 DEV_DIR=www
 TEST_DIR=test
-PROD_DIR=prod
+PROD_DIR=rls
 
 clean_dir() {
   if [[ -d $1 ]] || [[ -L $1 ]]; then

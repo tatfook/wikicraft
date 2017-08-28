@@ -27,7 +27,7 @@
 <div class="container-fluid findpwd-content" ng-controller="findPwdController">
     <div class="send-email" ng-show="step==1">
         <h3>找回Keepwork账号</h3>
-        <p>请输入注册时填写的邮箱，我们会将重置密码链接通过邮件发送给您。</p>
+        <p>请输入账号绑定的邮箱，我们会将重置密码链接通过邮件发送给您。</p>
         <div class="form-group">
             <input ng-model="email" type="text" class="form-control" required>
         </div>
@@ -43,11 +43,11 @@
         <form id="resetPwd">
             <div class="form-group">
                 <lebel class="control-label">新密码：</lebel>
-                <input ng-model="pwd" type="password" class="form-control" required>
+                <input ng-model="pwd" type="text" class="form-control" required>
             </div>
             <div class="form-group">
                 <lebel class="control-label">重复输入：</lebel>
-                <input ng-model="pwd1" type="password" class="form-control" required>
+                <input ng-model="pwd1" type="text" class="form-control" required>
             </div>
             <div class="form-group text-danger">{{errorMsg}}</div>
             <div class="form-group">

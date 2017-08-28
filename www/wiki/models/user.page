@@ -477,6 +477,7 @@ function user:api_login(params)
 		return {error=errors.REQUEST_PARAMS_ERROR, data=nil}
 	end
 
+	params.username = string.lower(params.username)
 	self:db():findOne({["+email"]={params.username}}, resume)
 	local _, userinfo = yield()
 	if not userinfo then

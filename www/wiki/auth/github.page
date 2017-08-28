@@ -5,10 +5,8 @@ Author: LiXizhi
 Date: 2016/5/10
 ]]
 
-local utilTemp = util
 include_once("../models/data_source.page")
-util = utilTemp
-	
+
 local accessTokenUrl = 'https://github.com/login/oauth/access_token'
 local userApiUrl = 'https://api.github.com/user'
 local serviceName = "github"
