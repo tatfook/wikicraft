@@ -58,10 +58,12 @@ define(['app',
             }, {
                 isShowLoading: false
             }).then(function (rs) {
+                console.log(rs);
                 var data = rs.data;
                 if (data && data.err === 0) {
                     $scope.isCreate = true;
                     $scope.current_url = data.data ? data.data.course_url : '#';
+                   
                 }
             }, function (rs) {
                 console.log(rs);
@@ -448,6 +450,10 @@ define(['app',
                                         splArr = angular.copy(spl, []),
                                         activeIdx = [],
                                         idx = 0;
+
+                                    if(spl[0] === ''){
+                                        spl.splice(0, 1, 0);
+                                    }
 
                                     //这里要添加0，表示第一个列
                                     splArr.shift(0);
