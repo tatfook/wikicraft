@@ -10,8 +10,8 @@ define([
     'js-base64',
 ], function (app, util, dataSource, storage) {
     function _encodeURIComponent(url) {
-        return encodeURIComponent(url);
-        //return encodeURIComponent(url).replace(/\./g,'%2E')
+        //return encodeURIComponent(url);
+		return encodeURIComponent(url).replace(/\./g,'%2E')
     }
 
 	function filenameEncode(str) {
@@ -39,7 +39,7 @@ define([
         // http请求
         gitlab.httpRequest = function (method, url, data, cb, errcb) {
             this.dataSource.dataSourceToken && (this.httpHeader["PRIVATE-TOKEN"] = this.dataSource.dataSourceToken);
-            //console.log(url);
+			//console.log(url);
             var config = {
                 method: method,
                 url: this.apiBaseUrl + url,
@@ -360,13 +360,33 @@ define([
 						errcb && errcb(response);
 					});
 				} else {
-					var path = self.getLongPath(params);
-					var url = "/projects/"+ self.projectId +"/repository/files/"+ encodeURIComponent(path) +"/raw";
-					self.httpRequest("GET", url, {ref:self.lastCommitId}, function(data){
-						console.log(data);
-					}, function(data){
-						console.log(data);
-					});
+					self.getContent(params, cb, errcb);
+					//var path = self.getLongPath(params);
+					//var path = _encodeURIComponent(path.substring(1));
+					//console.log(path);
+					////var url = self.apiBaseUrl + "/projects/"+ self.projectId +"/repository/files/"+ path +"/raw你好";
+					//var url = self.apiBaseUrl + "/projects/"+ self.projectId +"/repository/files/"+ "xiaoyao%2Ftest%2Findex\%2Emd" +"/raw";
+					//util.ajax({
+						//url:url,
+						//type:"GET",
+						//data:{
+							//ref:self.lastCommitId,
+						//}, 
+						//beforeSend:function(request, statu, xhr) {
+							//request.setRequestHeader("PRIVATE-TOKEN", self.dataSourceToken);
+						//},
+						//success:function(result, statu, xhr) {
+							//console.log(result);
+						//},
+						//error:function(xhr, statu, error) {
+
+						//}
+					//})
+					//self.httpRequest("GET", url, {ref:self.lastCommitId}, function(data){
+						//console.log(data);
+					//}, function(data){
+						//console.log(data);
+					//});
 				}
             }
             // _getRawContent();
@@ -474,6 +494,7 @@ define([
             self.type = dataSource.type;
             self.username = dataSource.dataSourceUsername;
             self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
+			self.dataSourceToken = dataSource.dataSourceToken;
             self.apiBaseUrl = dataSource.apiBaseUrl;
             self.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
             // 移到站点中
