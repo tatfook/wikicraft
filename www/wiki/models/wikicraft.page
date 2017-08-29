@@ -27,6 +27,6 @@ end
 
 
 function wikicraft:api_updateCode(params)
-	log("hello world")
-	--os.execute("/")
+	log("reset restart dev")
+	os.execute("bash start.sh reset_restart_dev")
 end
