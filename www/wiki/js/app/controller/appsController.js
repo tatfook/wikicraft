@@ -51,6 +51,12 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "details":"用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
                         "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
+                    },
+                    {
+                        "name":"Mod 扩展",
+                        "details":"Paracraft Mod扩展包管理器",
+                        "siteUrl":"http://keepwork.com/wiki/mod/packages/index/paracraft",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503915567396.png"
                     }
                 ]
             },
