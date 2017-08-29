@@ -98,6 +98,7 @@ main() {
 	elif [ "$1" == "reset_restart_dev" ]; then
 		echo "reset restart dev"
 		git reset --hard HEAD
+		git checkout dev
 		git pull origin dev
 		restart_server "dev"
 	elif [ "$1" == "stop" ]; then
