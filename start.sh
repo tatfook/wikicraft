@@ -97,7 +97,7 @@ main() {
 		start_server $server_type
 	elif [ "$1" == "reset_restart_dev" ]; then
 		echo "reset restart dev"
-		cd /root/wikicraft/
+		#cd /root/wikicraft/
 		git reset --hard HEAD
 		git checkout dev
 		git pull origin dev
