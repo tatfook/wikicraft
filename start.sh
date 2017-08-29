@@ -95,6 +95,11 @@ main() {
 		# etc:  ./start.sh start dev|test|rls
 		echo "start server :"$server_type
 		start_server $server_type
+	elif [ "$1" == "reset_restart_dev" ]; then
+		echo "reset restart dev"
+		git reset --hard HEAD
+		git pull origin dev
+		restart_server "dev"
 	elif [ "$1" == "stop" ]; then
 		# etc:  ./start.sh stop dev|test|rls
 		echo "stop server :"$server_type  
