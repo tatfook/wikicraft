@@ -457,7 +457,7 @@ define(['app',
                                     splArr.shift(0);
 
                                     //是否加入了课程
-                                    $chil.hasCourse = parseInt(select.has_course, 10) === 1;
+                                    $chil.hasCourse = select? parseInt(select.has_course, 10) === 1 : false;
 
                                     if (select.is_course === 1) {
                                         if ($chil.mask.length < select.course_entries.length) {
