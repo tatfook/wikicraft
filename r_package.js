@@ -93,6 +93,13 @@
 		},
 		'wangEditor': {
 			deps:['jquery'],
+		},
+		'plupload':{
+			exports:'plupload'
+		},
+		'qiniu': {
+			deps:['plupload'],
+			exports:'qiniu'
 		}
     },
     packages: [
