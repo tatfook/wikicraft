@@ -4,7 +4,6 @@ Title: oauth handler for `satellizer oauth framework`
 Author: LiXizhi
 Date: 2016/5/10
 ]]
-include_once("api.page")
 
 local accessTokenUrl = 'https://graph.qq.com/oauth2.0/token'
 local openidApiUrl = 'https://graph.qq.com/oauth2.0/me'

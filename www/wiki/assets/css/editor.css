@@ -327,6 +327,7 @@ select.resize-view {
     padding:6px 12px;
     background-color: #FFF;
     border: 1px solid #DCDCDC;
+    display: block;
 }
 .toolbar-brand img.show-md{
     width:114px;

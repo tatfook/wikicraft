@@ -232,6 +232,7 @@ define([
 			dataType:obj.dataType || "json",
 			//contentType:"application/json;charset=UTF-8",
 			data:obj.data,
+			beforeSend:obj.beforeSend,
 			success:function(result, statu, xhr) {
 				obj.success && obj.success(result, statu, xhr);
 			},
