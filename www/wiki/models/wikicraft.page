@@ -28,5 +28,5 @@ end
 
 function wikicraft:api_updateCode(params)
 	log("hello world")
-	--os.execute("/")
+	os.execute("bash test.sh")
 end
