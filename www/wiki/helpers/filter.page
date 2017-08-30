@@ -118,7 +118,7 @@ KEEPWORK["request_before_filter"] = {
 				key = key .. "_" .. params.username
 				return true, key
 			end,
-			count=10,
+			count=20,
 		}),
 	},
 	-- 注册限制
