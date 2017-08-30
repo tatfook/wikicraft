@@ -35,7 +35,7 @@ define(['app',
         }
 
         var savePwd=function (pwd) {
-            var key=getUrlParam("step");
+            var key=getUrlParam("key");
             var email=getUrlParam("email");
             if(!key || !email || !pwd){
                 return ;

@@ -462,7 +462,7 @@ define(['app',
                                     $chil.hasCourse = select? parseInt(select.has_course, 10) === 1 : false;
 
                                     if (select.is_course === 1) {
-                                        if ($chil.mask.length < select.course_entries.length) {
+                                        if (select.course_entries && $chil.mask.length < select.course_entries.length) {
                                             $chil.mask = Array(course_entries.length + 20).fill(false);
                                         }
 
