@@ -33,6 +33,32 @@
         padding-left: 10px;
     }
 </style>
+<style>
+    .title3.container{
+        padding: 40px 105px;
+    }
+    .title3 h1{
+        font-size: 30px;
+        font-weight: normal;
+        color: #666;
+        margin: 0 0 20px;
+    }
+    .title3 p{
+        font-size: 16px;
+        color: #666;
+    }
+    .title3 p > a{
+        color: #1E94EC;
+    }
+    @media (max-width: 768px) {
+        .title3.container{
+            padding: 15px;
+        }
+        .title3 p{
+            font-size: 14px;
+        }
+    }
+</style>
 <div ng-controller="titleController">
     <div class="title1 container" ng-show="modParams.moduleKind=='title' || !modParams.moduleKind">
         <h1>{{modParams.title}}</h1>
@@ -42,6 +68,12 @@
     </div>
     <div class="title2 container" ng-show="modParams.moduleKind=='title2'">
         <h2>{{modParams.column}} <span class="info">{{modParams.columnInfo}}</span></h2>
+        <div class="content">
+            <p ng-bind-html="content"></p>
+        </div>
+    </div>
+    <div class="title3 container" ng-show="modParams.moduleKind == 'title3'">
+        <h1>{{modParams.title}}</h1>
         <div class="content">
             <p ng-bind-html="content"></p>
         </div>
