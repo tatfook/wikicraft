@@ -1604,7 +1604,7 @@ define([
 				if (!siteDataSource){
 					return ;
 				}
-				siteDataSource.getRawContent({path:url + pageSuffixName}, function (data) {
+				siteDataSource.getRawContent({path:url + pageSuffixName, sha:"master", ref:"master"}, function (data) {
 					var content = data || "";
 					allWebstePageContent[url] = content;
 					page.isConflict = false;
