@@ -69,10 +69,14 @@ define([
                 return;
             }
 
-            util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {username:$scope.website.username, sitename:$scope.website.name, domain: $scope.domain}, function (data) {
+            util.http('POST', config.apiUrlPrefix + 'website_domain/insert', {username:$scope.website.username, sitename:$scope.website.name, domain: $scope.domain}, function (data) {
                 $scope.domainList.push({domain:$scope.domain});
                 $scope.domain = "";
-            });
+			},function(data){
+				if (data.id==7) {
+					console.log("域名已存在");
+				}	
+			});
         }
 
         $scope.removeDomain=function(domainObj){
