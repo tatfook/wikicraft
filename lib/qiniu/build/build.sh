@@ -1,16 +1,19 @@
 #!/bin/bash
 
-export NPLRUNTIME_ROOT=/root/workspace/npl/NPLRuntime
+keepwork_dir=/root/wikicraft
+npl_runtime_dir=/root/NPLRuntime
+
+export NPLRUNTIME_ROOT="${npl_runtime_dir}"
 
 rm Makefile
 rm cmake*
 rm -fr CMake*
 
-cmake ~/workspace/npl/nplproject/keepwork/lib/qiniu
+cmake "${keepwork_dir}/lib/qiniu"
 make
 
 rm Makefile
 rm cmake*
 rm -fr CMake*
 
-mv libQiNiuPlugin.so ~/workspace/npl/nplproject/keepwork/lib
+mv libQiNiuPlugin.so "${keepwork_dir}/lib"
