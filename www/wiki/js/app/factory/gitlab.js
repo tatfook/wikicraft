@@ -339,8 +339,6 @@ define([
         // 获取原始内容
         gitlab.getRawContent = function (params, cb, errcb) {
             var self = this;
-            var index = params.path.lastIndexOf('.');
-            //var url = index == -1 ? params.path : params.path.substring(0, index);
 			var apiurl = self.getRawContentUrlPrefix(params);
 			//console.log(apiurl);
             var _getRawContent = function () {
@@ -360,7 +358,10 @@ define([
 						errcb && errcb(response);
 					});
 				} else {
-					self.getContent(params, cb, errcb);
+					self.getContent(params, function(content){
+						storage.sessionStorageSetItem(apiurl, content);
+						cb && cb(content);
+					}, errcb);
 					//var path = self.getLongPath(params);
 					//var path = _encodeURIComponent(path.substring(1));
 					//console.log(path);
