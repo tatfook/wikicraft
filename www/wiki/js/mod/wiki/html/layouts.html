@@ -1,0 +1,149 @@
+<style>
+    .leftImg {
+        background-color: #1E94EC;
+        color: #FFF;
+    }
+    .leftImg h1{
+        font-size: 54px;
+        font-weight: normal;
+        margin: 0;
+    }
+    .leftImg img{
+        width: auto;
+        max-width: 100%;
+        height: auto;
+    }
+    .leftImg a{
+        color: #FFF;
+    }
+    .leftImg > .container{
+        display: flex;
+        align-items: stretch;
+        padding: 100px 90px 60px;
+    }
+    .leftImg p.detail{
+        font-size: 16px;
+        margin-top: 30px;
+    }
+    .leftImg .text{
+        position: relative;
+    }
+    .leftImg p.info{
+        font-size: 16px;
+        margin-top: 60px;
+    }
+    .leftImg .info > a{
+        margin-left: 40px;
+    }
+
+    @media (max-width: 1200px) {
+        .leftImg h1{
+            font-size: 40px;
+        }
+        .leftImg p.info{
+            margin-top: 30px;
+        }
+    }
+    @media (max-width: 992px) {
+        .leftImg > .container{
+            padding:60px 15px 30px;
+        }
+        .leftImg h1{
+            font-size: 36px;
+        }
+    }
+    @media (max-width: 768px) {
+        .leftImg > .container{
+            display: block;
+            padding: 15px;
+        }
+        .leftImg h1{
+            font-size: 32px;
+        }
+        .leftImg .text{
+            padding-bottom: 25px;
+        }
+        .leftImg p.detail{
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .leftImg p.info{
+            font-size: 14px;
+        }
+    }
+</style>
+<style>
+    .left-right .container{
+        padding: 50px 90px;
+    }
+    .left-right .left-col{
+        text-align: center;
+    }
+    .left-right h1{
+        font-size: 30px;
+        color: #666;
+    }
+    .left-right h2{
+        font-size: 24px;
+        color: #1E94EC;
+    }
+    .left-right h2.info{
+        font-size: 12px;
+    }
+    .left-right .info{
+        font-size: 14px;
+        color: #828282;
+    }
+    .left-right .left-col .btn{
+        background-color: #2294EA;
+        border-radius: 18px;
+        color: #FFF;
+        padding: 6px 36px;
+        font-size: 16px;
+    }
+    .left-right .right-col p{
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 3px;
+    }
+    .left-right .otherway{
+        margin: 20px 0;
+    }
+</style>
+<div ng-controller="layoutsController">
+    <div class="leftImg" ng-show="!modParams.moduleKind || modParams.moduleKind == 'leftImg'">
+        <div class="container">
+            <div class="col-sm-6 col-xs-12">
+                <img ng-src="{{modParams.img}}" alt="" class="pull-right">
+            </div>
+            <div class="col-sm-6 col-xs-12 text">
+                <h1>{{modParams.title}}</h1>
+                <p class="detail">{{modParams.detail}}</p>
+                <a ng-show="modParams.link" href="{{modParams.link}}" class="pull-right">{{modParams.moreText || "查看更多>>"}}</a>
+                <p class="info">{{modParams.info}}
+                    <a href="{{link.url}}" ng-repeat="link in modParams.infoLinks">{{link.text}}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="left-right" ng-show="modParams.moduleKind == 'PCDownload'">
+        <div class="container">
+            <div class="col-sm-4 left-col">
+                <img ng-src="{{modParams.imgUrl}}" alt="">
+                <h2>{{modParams.title}} <span class="info">{{modParams.titleInfo}}</span></h2>
+                <p class="info">{{modParams.info}}</p>
+                <div class="btn">
+                    <img ng-src="{{modParams.iconImg}}" alt="">
+                    {{modParams.btnText}}
+                </div>
+            </div>
+            <div class="col-sm-8 right-col">
+                <h1>{{modParams.rightTitle}}</h1>
+                <div class="otherway" ng-repeat="item in modParams.details">
+                    <p>{{item.text}}</p>
+                    <p>{{item.info}} <a href="{{item.link}}">{{item.linkText}}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

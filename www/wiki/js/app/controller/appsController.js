@@ -51,6 +51,12 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "details":"用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
                         "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
+                    },
+                    {
+                        "name":"Mod 扩展",
+                        "details":"Paracraft Mod扩展包管理器",
+                        "siteUrl":"http://keepwork.com/wiki/mod/packages/index/paracraft",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503915567396.png"
                     }
                 ]
             },
@@ -160,11 +166,39 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
 
         function checkPosition(affix) {
             var affixTop = affix[0].offsetTop;
+            var affixHeight = affix[0].offsetHeight;
+            var documentHeight = Math.max($(document).height(), $(document.body).height());
+            var winHeight = $(window).height();
+            var affixBottom = documentHeight - affixTop - affixHeight;
             var scrollTop = $(window).scrollTop();
-            if (scrollTop >= affixTop){
-                affix.addClass("active");
+            var scrollBottom = documentHeight - scrollTop - winHeight;
+            var affixCtrl = affix.find(".affix-ctrl");
+            var affixCtrlHeight = affix.find(".affix-ctrl").height();
+            if (affixCtrlHeight < (winHeight - affixBottom)){
+                if (scrollTop >= affixTop){
+                    affix.addClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }else{
+                    affix.removeClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }
             }else{
-                affix.removeClass("active");
+                if ((scrollTop >= affixTop && scrollBottom > affixBottom)){
+                    affix.addClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }else if (scrollBottom < affixBottom){
+                    affix.addClass("bottom");
+                    affix.removeClass("active");
+                    var offsetTop = documentHeight - affixBottom - affixCtrlHeight - affixTop - 52;
+                    affixCtrl.css({"top":offsetTop+"px"});
+                }else{
+                    affix.removeClass("active");
+                    affix.removeClass("bottom");
+                    affixCtrl.css({"top":""});
+                }
             }
         }
 

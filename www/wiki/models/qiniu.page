@@ -1,0 +1,40 @@
+<?npl
+--[[
+Title: wiki module
+Author: wuxiangan
+Date: 2017/2/27
+]]
+
+include_once("./abstract/base.page")
+
+local qiniu = inherit(models.abstract.base, gettable("models.qiniu"))
+
+
+function qiniu:api_uploadToken(params)
+	local data = self:api_getUploadToken(params).data
+
+	 --返回qiniu sdk协议数据格式
+	return {uptoken=data.token}
+end
+
+-- 获取上传token
+function qiniu:api_getUploadToken(params)
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", expires=params.expires})
+	--log(msg)
+	-- msg = {token:"xxx"}
+	return errors:wrap(nil, msg)
+end
+
+-- 获取下载url
+function qiniu:api_getDownloadUrl(params)
+	if not params.key then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local domain = params.domain or "ov62qege8.bkt.clouddn.com"
+
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", domain=domain, key=params.key, expires=params.expires})
+	--log(msg)
+	-- msg = {download_url:"xx"}
+	return errors:wrap(nil, msg)
+end

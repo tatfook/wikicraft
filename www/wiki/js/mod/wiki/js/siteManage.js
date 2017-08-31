@@ -20,13 +20,14 @@ define([
 
     function registerController(wikiBlock) {
         // 组织信息统计
-        app.registerController("siteManageController", ['$scope', '$rootScope', 'Account','Message', function ($scope, $rootScope, Account, Message) {
+        app.registerController("siteManageController", ['$scope', '$rootScope', 'Account','Message', 'modal', function ($scope, $rootScope, Account, Message, modal) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             var modParams = getModParams(wikiBlock);
             var siteinfo = $rootScope.siteinfo;
             var userinfo = $rootScope.userinfo;
             var visitorInfo = undefined;
             $scope.modParams = modParams;
+            $scope.isLogin = false;
 
             function init() {
                 // $scope.user 为当前使用用户也是当前访问者
@@ -45,6 +46,7 @@ define([
                     $scope.modParams.worksManage = true;
                 } else {
                     if ($scope.user && $scope.user._id) {
+                        $scope.isLogin = true;
                         util.post(config.apiUrlPrefix + 'website_member/getBySiteUsername', {websiteId:siteinfo._id, username: $scope.user.username}, function (data) {
                             visitorInfo = data;
 
@@ -88,12 +90,12 @@ define([
             $scope.goMemberManagePage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 util.go('/wiki/js/mod/wiki/js/siteMemberManage');
-            }
+            };
 
             $scope.goWorksManagePage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 util.go('/wiki/js/mod/wiki/js/siteWorksManage');
-            }
+            };
 
             $scope.goSubmitWorksPage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
@@ -102,18 +104,29 @@ define([
                 } else {
                     util.go('/wiki/js/mod/wiki/js/siteSubmitWorks');
                 }
-            }
+            };
 
             $scope.goMemberApplyPage = function () {
                 storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 util.go( '/wiki/js/mod/wiki/js/siteMemberApply');
-            }
+            };
 
             $scope.goTutorialVideoPage = function () {
                 if ($scope.modParams.tutorialVideoUrl) {
                     util.go($scope.modParams.tutorialVideoUrl, true);
                 }
-            }
+            };
+
+            $scope.goLogin=function () {
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    backdrop:"static"
+                }, function (result) {
+                    init();
+                }, function (result) {
+                    console.log(result);
+                });
+            };
         }]);
     }
 

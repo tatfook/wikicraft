@@ -4,7 +4,6 @@ Title: oauth handler for `satellizer oauth framework`
 Author: LiXizhi
 Date: 2016/5/10
 ]]
-include_once("api.page")
 
 local accessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token'
 local userApiUrl = 'https://api.weixin.qq.com/sns/userinfo'

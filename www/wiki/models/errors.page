@@ -18,6 +18,7 @@ errors.NOT_FOUND = {id=3, message="not found",}
 errors.USER_NOT_EXIST = {id=4, message="user not exist",}
 errors.NOT_PRIVILEGES = {id=5, message="not privileges"}
 errors.FORBIDDEN_ACCESS = {id=6, message="probidden access"}
+errors.RECORD_ALREADY_EXIST = {id=7, message="record already exist"}
 
 function errors:new(message) 
 	return {
