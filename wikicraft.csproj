@@ -50,14 +50,18 @@
     <Content Include="www\wiki\html\browers.html" />
     <Content Include="www\wiki\html\invite.html" />
     <Content Include="www\wiki\html\pay.html" />
+    <Content Include="www\wiki\html\search.html" />
     <Content Include="www\wiki\html\services.html" />
+    <Content Include="www\wiki\html\statics.html" />
     <Content Include="www\wiki\index.html" />
     <Content Include="www\wiki\js\app.js" />
     <Content Include="www\wiki\js\app\controller\appsController.js" />
     <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
     <Content Include="www\wiki\js\app\controller\inviteController.js" />
     <Content Include="www\wiki\js\app\controller\payController.js" />
+    <Content Include="www\wiki\js\app\controller\searchController.js" />
     <Content Include="www\wiki\js\app\controller\servicesController.js" />
+    <Content Include="www\wiki\js\app\controller\staticsController.js" />
     <Content Include="www\wiki\js\app\helper\mods.js" />
     <Content Include="www\wiki\js\lib\ace\ace.js" />
     <Content Include="www\wiki\js\lib\ace\ext-beautify.js" />
@@ -932,10 +936,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
-    <None Include="compilerconfig.json" />
-    <None Include="compilerconfig.json.defaults">
-      <DependentUpon>compilerconfig.json</DependentUpon>
-    </None>
     <None Include="Dockerfile" />
     <None Include="license.md" />
     <None Include="nginx_config" />
@@ -1102,12 +1102,14 @@
     <None Include="www\wiki\models\admin.page" />
     <None Include="www\wiki\models\data_source.page" />
     <None Include="www\wiki\models\data_upgrade.page" />
+    <None Include="www\wiki\models\elastic_search.page" />
     <None Include="www\wiki\models\goods.page" />
     <None Include="www\wiki\models\group.page" />
     <None Include="www\wiki\models\group_user.page" />
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
     <None Include="www\wiki\models\pay.page" />
+    <None Include="www\wiki\models\sitepage.page" />
     <None Include="www\wiki\models\sitepage_renewal.page" />
     <None Include="www\wiki\models\site_data_source.page" />
     <None Include="www\wiki\models\site_exception.page" />
@@ -1119,6 +1121,7 @@
     <None Include="www\wiki\models\user_exception.page" />
     <None Include="www\wiki\models\user_fans.page" />
     <None Include="www\wiki\models\user_favorite.page" />
+    <None Include="www\wiki\models\user_service.page" />
     <None Include="www\wiki\models\user_three_service.page" />
     <None Include="www\wiki\models\user_trends.page" />
     <None Include="www\wiki\models\user_visit_history.page" />
@@ -1140,7 +1143,6 @@
     <None Include="www\wiki\models\wiki_module_classify.page" />
     <None Include="www\wiki\models\wiki_module_favorite.page" />
     <None Include="www\wiki\mod\modelshare\models\modelshare.page" />
-    <None Include="www\wiki\mod\modelshare\model\model.page" />
     <None Include="www\wiki\mod\worldshare\models\worlds.page" />
     <None Include="www\wiki\mod\worldshare\models\worlds_star.page" />
     <None Include="www\wiki\mod\worldshare\models\worlds_stats.page" />
@@ -1309,7 +1311,6 @@
     <Content Include="www\wiki\html\oauth.html" />
     <Content Include="www\wiki\html\partial\confirmDialog.html" />
     <Content Include="www\wiki\html\preview.html" />
-    <Content Include="www\wiki\html\siteshow.html" />
     <Content Include="www\wiki\html\test.html" />
     <Content Include="www\wiki\html\testcdn.html" />
     <Content Include="www\wiki\html\user.html" />
@@ -1344,7 +1345,6 @@
     <Content Include="www\wiki\js\app\controller\notfoundController.js" />
     <Content Include="www\wiki\js\app\controller\oauthController.js" />
     <Content Include="www\wiki\js\app\controller\previewController.js" />
-    <Content Include="www\wiki\js\app\controller\siteshowController.js" />
     <Content Include="www\wiki\js\app\controller\testcdnController.js" />
     <Content Include="www\wiki\js\app\controller\testController.js" />
     <Content Include="www\wiki\js\app\controller\userCenterController.js" />
