@@ -11,7 +11,7 @@ local elastic_search = inherit(models.abstract.base, gettable("models.elastic_se
 
 -- 提交到搜索引擎
 function elastic_search:api_submitToES(params)
-	log(params, true)
+	--log(params, true)
 	local url = "http://221.0.111.131:19001/Application/kwupsert"
 	System.os.GetUrl({
 		url=url,
