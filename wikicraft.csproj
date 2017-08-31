@@ -1109,6 +1109,7 @@
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
     <None Include="www\wiki\models\pay.page" />
+    <None Include="www\wiki\models\qiniu.page" />
     <None Include="www\wiki\models\sitepage.page" />
     <None Include="www\wiki\models\sitepage_renewal.page" />
     <None Include="www\wiki\models\site_data_source.page" />
