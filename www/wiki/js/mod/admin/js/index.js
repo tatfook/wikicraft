@@ -11,12 +11,13 @@ define([
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
-		$scope.selectMenuItem = "user";
+		$scope.selectMenuItem = "manager";
 		$scope.pageSize = 15;
 		$scope.currentPage = 1;
 		$scope.totalItems = 0;
 		$scope.data = [];
 		$scope.test = [];
+		$scope.roleId = 10;
 
 		function getTableName() {
 			/*
@@ -81,10 +82,13 @@ define([
 		function ensureAdminAuth() {
 			if (!Account.isAuthenticated()) {
 				util.go(urlPrefix + "login");
+				var payload = $auth.getPayload();
+				$scope.roleId = payload.roleId;
 				return;
 			}
 
 			var payload = $auth.getPayload();
+			$scope.roleId = payload.roleId;
 			
 			if (!payload.isAdmin) {
 				util.go(urlPrefix + "login");
@@ -183,7 +187,7 @@ define([
 		// 获取管理员列表
 		$scope.getManagerList = function (){
 			//alert("asdasdasdasd");
-			
+			$scope.selectMenuItem = "manager";
 			util.post(config.apiUrlPrefix + "admin/getManagerList", {
 				page:$scope.currentPage,
 				pageSize:$scope.pageSize,
@@ -191,13 +195,12 @@ define([
 				data = data || {};
 				$scope.managerList = data.managerList || [];
 				$scope.totalItems = data.total || 0;
-				//$scope.test = data.data;
 			});
-			
 		}
 		
 		// 获取用户列表
 		$scope.getUserList = function (){
+			$scope.selectMenuItem = "user";
 			util.post(config.apiUrlPrefix + "admin/getUserList", {
 				page:$scope.currentPage,
 				pageSize:$scope.pageSize,

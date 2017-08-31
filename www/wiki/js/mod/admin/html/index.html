@@ -142,14 +142,14 @@ li{
 						<div class="panel-heading" ng-click='clickMenuItem("user")'>用户管理</div>
 					</div>
 					-->
-					<div class="panel-heading" ng-show="#">
+					<div class="panel-heading" ng-show="{{roleId == 10}}">
 						<div>
 							<div class="panel-heading"><strong>后台管理</strong></div>
 						</div>
 						<ul>
 							<li>
 								<div ng-class='getStyleClass("manager")'>
-									<div class="panel-heading" ng-click='clickMenuItem("manager")'>管理员</div>
+									<div class="panel-heading" ng-click='getManagerList()'>管理员</div>
 								</div>
 							</li>
 							<li>
@@ -168,7 +168,7 @@ li{
 						<ul>
 							<li ng-show="#">
 								<div ng-class='getStyleClass("user")' >
-									<div class="panel-heading" ng-click='clickMenuItem("user")'>用户</div>
+									<div class="panel-heading" ng-click='getUserList()'>用户</div>
 								</div>
 							</li>
 							<li ng-show="#">
@@ -261,6 +261,7 @@ li{
 							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
 						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+						<button class="btn btn-default pull-right" ng-click="clickQuery()" >新建管理员</button>
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -269,6 +270,9 @@ li{
 							<th>ID</th>
 							<th>用户名</th>
 							<th>显示名</th>
+							<th>邮箱</th>
+							<th>手机</th>
+							<th>权限等级</th>
 							<th>状态</th>
 							<th>操作</th>
 						</tr>
@@ -278,10 +282,15 @@ li{
 							<td>{{x._id}}</td>
 							<td>{{x.username}}</td>
 							<td>{{x.displayName}}</td>
+							<td>{{x.email}}</td>
+							<td>{{x.cellphone}}</td>
+							<td>{{x.roleId}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">编辑权限</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">修改密码</button>
 							</td>
 						</tr>
 					</tbody>

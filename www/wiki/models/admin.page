@@ -28,8 +28,8 @@ function admin:api_login(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	--if userinfo.username == "xiaoyao" then
-		--userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
+	--if userinfo.username == "lizq123" then
+		--userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_MANAGER}, resume)
 		--yield()
 		--userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
 	--end
