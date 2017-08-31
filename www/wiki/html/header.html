@@ -17,6 +17,7 @@
     .navbar-brand{
         background-color: #FFF;
         z-index:2;
+        padding-top: 18px;
     }
     .navbar-brand img{
         width:115px;
@@ -495,7 +496,7 @@
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage()"><i class="iconfont icon-feature"></i> 功能</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> 功能</li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
@@ -506,6 +507,7 @@
                                 <div class="social-share" data-title="{{tit}}"></div>
                             </div>
                         </li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> 功能</li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>

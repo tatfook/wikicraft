@@ -82,6 +82,7 @@
     .left-right h1{
         font-size: 30px;
         color: #666;
+        margin: 0;
     }
     .left-right h2{
         font-size: 24px;
@@ -100,6 +101,15 @@
         color: #FFF;
         padding: 6px 36px;
         font-size: 16px;
+        margin-top: 25px;
+    }
+    .left-right .left-col .btn > img{
+        width: 15px;
+        height: auto;
+        margin-right: 2px;
+    }
+    .left-right .right-col{
+        padding-left: 0;
     }
     .left-right .right-col p{
         font-size: 14px;
@@ -108,6 +118,60 @@
     }
     .left-right .otherway{
         margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+        .left-right h1{
+            font-size: 20px;
+            margin: 15px 0;
+        }
+        .left-right .container{
+            padding: 15px;
+        }
+        .left-right .left-col .btn{
+            margin-top: 0;
+        }
+        .left-right .otherway{
+            margin: 10px 0;
+        }
+    }
+</style>
+<style>
+    .left-right1{
+        background-color: #E8F5FF;
+        text-align: center;
+    }
+    .left-right1 .container{
+        padding: 40px 90px;
+    }
+    .left-right1 .left-col{
+        padding-right: 0;
+    }
+    .left-right1 h1{
+        font-size: 24px;
+        color: #1E94EC;
+        margin:15px 0;
+        font-weight: normal;
+    }
+    .left-right1 h2{
+        color: #1E94EC;
+        font-weight: normal;
+        margin: 15px 0;
+        font-size: 16px;
+        padding-bottom: 3px;
+    }
+    .left-right1 h2 > a{
+        color: #1E94EC;
+        border-bottom: 1px solid;
+    }
+    .left-right1 p{
+        color: #666;
+        line-height: 25px;
+        font-size: 14px;
+    }
+    @media (max-width: 768px) {
+        .left-right1 .container{
+            padding: 15px;
+        }
     }
 </style>
 <div ng-controller="layoutsController">
@@ -143,6 +207,24 @@
                     <p>{{item.text}}</p>
                     <p>{{item.info}} <a href="{{item.link}}">{{item.linkText}}</a></p>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="left-right1" ng-show="modParams.moduleKind == 'AndroidIOS'">
+        <div class="container">
+            <div class="col-sm-4 col-xs-12 left-col">
+                <img ng-src="{{modParams.device1.img}}" alt="">
+                <h1>{{modParams.device1.title}}</h1>
+                <h2 ng-show="modParams.device1.link"><a href="{{modParams.device1.link}}">{{modParams.device1.info}}</a></h2>
+                <h2 ng-show="!modParams.device1.link">{{modParams.device1.info}}</h2>
+                <p>{{modParams.device1.detail}}</p>
+            </div>
+            <div class="col-sm-4 col-sm-offset-4 col-xs-12 right-col">
+                <img ng-src="{{modParams.device1.img}}" alt="">
+                <h1>{{modParams.device2.title}}</h1>
+                <h2 ng-show="modParams.device2.link"><a href="{{modParams.device2.link}}">{{modParams.device2.info}}</a></h2>
+                <h2 ng-show="!modParams.device2.link">{{modParams.device2.info}}</h2>
+                <p>{{modParams.device2.detail}}</p>
             </div>
         </div>
     </div>
