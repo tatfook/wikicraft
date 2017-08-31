@@ -12,21 +12,69 @@ define([
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
 		$scope.selectMenuItem = "user";
-		$scope.pageSize = 5;
+		$scope.pageSize = 15;
 		$scope.currentPage = 1;
 		$scope.totalItems = 0;
 		$scope.data = [];
+		$scope.test = [];
 
 		function getTableName() {
+			/*
 			if ($scope.selectMenuItem == "user") {
 				return "user";
 			} else if ($scope.selectMenuItem == "site") {
 				return "website";
 			} else if ($scope.selectMenuItem == "wikicmd") {
 				return "wiki_module";
+			}*/
+			
+			
+			switch($scope.selectMenuItem)
+			{
+				case "manager":
+					return "manager";
+					break;
+				case "operationLog":
+					return "operationLog";
+					break;
+				case "user":
+					return "user";
+					break;
+				case "site":
+					return "website";
+					break;
+				case "domain":
+					return "domain";
+					break;
+				case "fileCheck":
+					return "fileCheck";
+					break;
+				case "vip":
+					return "vip";
+					break;
+				case "onlineCount":
+					return "onlineCount";
+					break;
+				case "retention":
+					return "retention";
+					break;
+				case "newAccount":
+					return "newAccount";
+					break;
+				case "pay":
+					return "pay";
+					break;
+				case "ServerMonitor":
+					return "ServerMonitor";
+					break;
+				case "wikicmd":
+					return "wiki_module";
+					break;
+				default:
+					return "user";
+					break;
 			}
 
-			return "user";
 		}
 
 		// 确保为管理员
@@ -123,15 +171,31 @@ define([
 		$scope.clickMenuItem = function(menuItem) {
 			$scope.query = {};
 			$scope.selectMenuItem = menuItem;
-
 			$scope.clickQuery();
-			//if ($scope.selectMenuItem == "user") {
-			//$scope.getUserList();
-			//} else if ($scope.selectMenuItem == "site") {
-			//$scope.getSiteList();
-			//}
+			if ($scope.selectMenuItem == "manager") {
+				$scope.query = {};
+				$scope.getManagerList();
+			} else if ($scope.selectMenuItem == "site") {
+				$scope.getSiteList();
+			}
 		}
 
+		// 获取管理员列表
+		$scope.getManagerList = function (){
+			//alert("asdasdasdasd");
+			
+			util.post(config.apiUrlPrefix + "admin/getManagerList", {
+				page:$scope.currentPage,
+				pageSize:$scope.pageSize,
+			}, function (data) {
+				data = data || {};
+				$scope.managerList = data.managerList || [];
+				$scope.totalItems = data.total || 0;
+				//$scope.test = data.data;
+			});
+			
+		}
+		
 		// 获取用户列表
 		$scope.getUserList = function (){
 			util.post(config.apiUrlPrefix + "admin/getUserList", {

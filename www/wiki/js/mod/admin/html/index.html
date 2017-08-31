@@ -2,6 +2,9 @@
 body{
 	background-color: #F1F1F1;
 }
+li{
+	list-style-type: none;
+}
 	/*左侧菜单栏*/
 	.subnav {
 		text-align: center;
@@ -134,37 +137,104 @@ body{
 		<div class="col-sm-2 subnav"><!--{{{-->
 			<ul class="list-group">
 				<li class="list-group-item">
+					<!--
 					<div class="panel" ng-class='getStyleClass("user")'>
-						<div class="panel-heading" ng-click='clickMenuItem("user")'>
-							用户管理
+						<div class="panel-heading" ng-click='clickMenuItem("user")'>用户管理</div>
+					</div>
+					-->
+					<div class="panel-heading" ng-show="#">
+						<div>
+							<div class="panel-heading"><strong>后台管理</strong></div>
 						</div>
+						<ul>
+							<li>
+								<div ng-class='getStyleClass("manager")'>
+									<div class="panel-heading" ng-click='clickMenuItem("manager")'>管理员</div>
+								</div>
+							</li>
+							<li>
+								<div ng-class='getStyleClass("operationLog")'>
+									<div class="panel-heading" ng-click='clickMenuItem("operationLog")'>操作日志</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</li>
 				<li class="list-group-item">
-					<div class="panel" ng-class='getStyleClass("site")'>
-						<div class="panel-heading" ng-click='clickMenuItem("site")'>
-							网站管理
+					<div class="panel-heading">
+						<div >
+							<div class="panel-heading"><strong>KeepWork管理</strong></div>
 						</div>
+						<ul>
+							<li ng-show="#">
+								<div ng-class='getStyleClass("user")' >
+									<div class="panel-heading" ng-click='clickMenuItem("user")'>用户</div>
+								</div>
+							</li>
+							<li ng-show="#">
+								<div  ng-class='getStyleClass("site")'>
+									<div class="panel-heading" ng-click='clickMenuItem("site")'>网站</div>
+								</div>
+							</li>
+							<li ng-show="#">
+								<div ng-class='getStyleClass("domain")'>
+									<div class="panel-heading" ng-click='clickMenuItem("domain")'>域名</div>
+								</div>
+							</li>
+							<li ng-show="#">
+								<div ng-class='getStyleClass("fileCheck")'>
+									<div class="panel-heading" ng-click='clickMenuItem("fileCheck")'>文件审核</div>
+								</div>
+							</li>
+							<li ng-show="#">
+								<div ng-class='getStyleClass("vip")'>
+									<div class="panel-heading" ng-click='clickMenuItem("vip")'>VIP</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</li>
 				<li class="list-group-item">
-					<div class="panel" ng-class='getStyleClass("application")'>
-						<div class="panel-heading" ng-click='clickMenuItem("application")'>
-							应用管理
+					<div class="panel-heading"  ng-show="#">
+						<div >
+							<div class="panel-heading" ><strong>数据统计</strong></div>
+						</div>
+						<ul>
+							<li>
+								<div ng-class='getStyleClass("onlineCount")'>
+									<div class="panel-heading" ng-click='clickMenuItem("onlineCount")'>在线统计</div>
+								</div>
+							</li>
+							<li>
+								<div ng-class='getStyleClass("retention")'>
+									<div class="panel-heading" ng-click='clickMenuItem("retention")'>留存分析</div>
+								</div>
+							</li>
+							<li>
+								<div ng-class='getStyleClass("newAccount")'>
+									<div class="panel-heading" ng-click='clickMenuItem("newAccount")'>新用户分析</div>
+								</div>
+							</li>
+							<li>
+								<div ng-class='getStyleClass("pay")'>
+									<div class="panel-heading" ng-click='clickMenuItem("pay")'>支付情况</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="list-group-item" >
+					<div class="panel" ng-class='getStyleClass("ServerMonitor")' ng-show="#">
+						<div class="panel-heading" ng-click='clickMenuItem("ServerMonitor")'>
+							<strong>服务器监控</strong>
 						</div>
 					</div>
 				</li>
-				<li class="list-group-item">
-					<div class="panel" ng-class='getStyleClass("log")'>
-						<div class="panel-heading" ng-click='clickMenuItem("log")'>
-							日志
-						</div>
-					</div>
-				</li>
+				
 				<li class="list-group-item">
 					<div class="panel" ng-class='getStyleClass("wikicmd")'>
 						<div class="panel-heading" ng-click='clickMenuItem("wikicmd")'>
-							wikicmd
+							<strong>wikicmd</strong>
 						</div>
 					</div>
 				</li>
@@ -172,8 +242,68 @@ body{
 		</div><!--}}}-->
 		<!--内容页-->
 		<div class="col-sm-10">
+			
+			<!--管理员-->
+			<div ng-show='selectMenuItem=="manager"'><!--{{{-->
+				
+				<div style="margin: 10px;">
+					<form role="form" class="form-inline">
+						<div class="form-group">
+							<label>
+								管理员ID:
+							</label>
+							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
+						</div>
+						<div class="form-group">
+							<label>
+								管理员用户名:
+							</label>
+							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+					</form>
+				</div>
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>用户名</th>
+							<th>显示名</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="x in managerList" ng-hide="x.isDelete">
+							<td>{{x._id}}</td>
+							<td>{{x.username}}</td>
+							<td>{{x.displayName}}</td>
+							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
+							<td>
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="pagination-box">
+					<ul uib-pagination ng-change="clickQuery()"
+						items-per-page='pageSize' previous-text="上一页"
+								next-text="下一页" total-items="totalItems"
+							  ng-model="currentPage" max-size="5"
+								class="pagination-sm" boundary-link-numbers="true">
+					</ul>
+				</div>
+			</div><!--}}}-->
+			
+			<!--管理员操作日志-->
+			<div ng-show='selectMenuItem=="operationLog"'>
+				管理员操作日志
+			</div>
+			
 			<!--用户管理-->
 			<div ng-show='selectMenuItem=="user"'><!--{{{-->
+				
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
 						<div class="form-group">
@@ -244,7 +374,7 @@ body{
 							<label>
 								站点名:
 							</label>
-							<input ng-model="query.name" type="text" class="form-control" placeholder="请输入用户名">
+							<input ng-model="query.name" type="text" class="form-control" placeholder="请输入网站名">
 						</div>
 						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
 					</form>
@@ -280,117 +410,16 @@ body{
 				</div>
 			</div><!--}}}-->
 			
-			<!--应用管理-->
-			<div ng-show='selectMenuItem=="application"'><!--{{{-->
-				<div style="margin: 10px;">
-					<form role="form" class="form-inline">
-						<div class="form-group">
-							<label>
-								ID:
-							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
-						</div>
-						<div class="form-group">
-							<label>
-								用户名:
-							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
-						</div>
-						<div class="form-group">
-							<label>
-								站点名:
-							</label>
-							<input ng-model="query.name" type="text" class="form-control" placeholder="请输入用户名">
-						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
-					</form>
-				</div>
-				<table class="table table-hover table-bordered">
-					<thead>
-						<tr>
-							<th>站点ID</th>
-							<th>站点名</th>
-							<th>显示名</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="x in data" ng-hide="x.isDelete">
-							<td>{{x._id}}</td>
-							<td>{{x.name}}</td>
-							<td>{{x.displayName}}</td>
-							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
-							<td>
-								<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteSite(x)">删除</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="pagination-box">
-					<ul uib-pagination ng-change="clickQuery()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-																						   class="pagination-sm" boundary-link-numbers="true">
-					</ul>
-				</div>
-			</div><!--}}}-->
 			
-			<!--日志-->
-			<div ng-show='selectMenuItem=="log"'><!--{{{-->
-				<div style="margin: 10px;">
-					<form role="form" class="form-inline">
-						<div class="form-group">
-							<label>
-								ID:
-							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
-						</div>
-						<div class="form-group">
-							<label>
-								用户名:
-							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
-						</div>
-						<div class="form-group">
-							<label>
-								站点名:
-							</label>
-							<input ng-model="query.name" type="text" class="form-control" placeholder="请输入用户名">
-						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
-					</form>
-				</div>
-				<table class="table table-hover table-bordered">
-					<thead>
-						<tr>
-							<th>站点ID</th>
-							<th>站点名</th>
-							<th>显示名</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="x in data" ng-hide="x.isDelete">
-							<td>{{x._id}}</td>
-							<td>{{x.name}}</td>
-							<td>{{x.displayName}}</td>
-							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
-							<td>
-								<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteSite(x)">删除</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="pagination-box">
-					<ul uib-pagination ng-change="clickQuery()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-																						   class="pagination-sm" boundary-link-numbers="true">
-					</ul>
-				</div>
-			</div><!--}}}-->
+			<div ng-show='selectMenuItem=="user"'>
+				
+			</div>
+			<div ng-show='selectMenuItem=="user"'>
+				
+			</div>
+			<div ng-show='selectMenuItem=="user"'>
+				
+			</div>
 
 			<div ng-show='selectMenuItem=="wikicmd"'><!--{{{-->
 				<div class="btn btn-danger" ng-click="insertAll()">从js上传mods</div>

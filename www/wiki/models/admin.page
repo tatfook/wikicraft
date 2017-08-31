@@ -68,6 +68,21 @@ function admin:api_getUserList(params)
 	return errors:wrap(nil, {total=total, userList = userList})
 end
 
+function admin:api_getManagerList(params)
+	self:adminAuth()
+
+	local skip, limit = util:pagination(params)
+
+	local userDB = models.user:new()
+	userDB:db():count({["+roleId"] = {const.USER_ROLE_ADMINISTRATOR}}, resume)
+	local _, total = yield()
+
+	userDB:db():find({["+roleId"] = {const.USER_ROLE_ADMINISTRATOR}}, resume)
+	local _, managerList = yield()
+
+	return errors:wrap(nil, {total = total, managerList = managerList})
+end
+
 -- 获取站点列表
 function admin:api_getSiteList(params)
 	self:adminAuth()
@@ -82,6 +97,10 @@ function admin:api_getSiteList(params)
 
 	return errors:wrap(nil, {total=total, siteList = siteList})
 end
+
+function admin:api_test()
+	return errors:wrap(nil, {total="total", siteList = "siteList"})
+end 
 
 
 
