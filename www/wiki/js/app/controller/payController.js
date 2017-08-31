@@ -55,6 +55,12 @@ define([
                 $scope.returnUrl = queryArgs.redirect;
             }
 
+            if (queryArgs.channel) {
+                if (queryArgs.channel == "alipay" || queryArgs.channel == "wechat") {
+                    $scope.method = queryArgs.channel;
+                }
+            }
+
             if (queryArgs.additional) {
                 $scope.additional = queryArgs.additional;
 
