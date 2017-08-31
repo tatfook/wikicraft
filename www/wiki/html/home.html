@@ -456,7 +456,7 @@
             <p style="max-width: 37em;">KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。
             </p>
         </div>
-        <div  ng-show="!isLogin" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
+        <div  ng-show="!isLogin && !isFeature" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
             <form>
                 <div class="form-group">
                     <span id="total-err" class="visible-hidden text-danger">*{{errMsg}}</span>
@@ -500,7 +500,7 @@
                 </div>
             </form>
         </div>
-        <div ng-show="isLogin" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 newuser-container">
+        <div ng-show="isLogin || isFeature" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 newuser-container">
             <div class="wiki-flex">
                 <div class="icon">
                     <img ng-src="{{getImageUrl('icon/wiki_media.png', imgsPath)}}" alt="">

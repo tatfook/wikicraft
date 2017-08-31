@@ -213,7 +213,8 @@ define([
             util.go("join");
         };
 
-        $scope.goHomePage = function () {
+        $scope.goHomePage = function (isFeature) {
+            storage.sessionStorageSetItem("isFeature", isFeature);
             util.go("home");
         };
 
