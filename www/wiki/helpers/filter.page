@@ -7,18 +7,32 @@ Date: 2017/3/13
 
 include_once(WIKI_ROOT .. 'models/vip.page')
 
-API_URL_PREFIX="api/wiki/models/"
+local filter = {
+	API_URL_PREFIX="api/wiki/models/",
+	LOGIN = "login",
+}
 
 -- 访问频率限制函数
-function requestCountLimit(typ, count, time)
-	local validCount = count or 100
-	local validTime = time or 300
+function requestCountLimit(obj)
+	local validCount = obj.count or 100
+	local validTime = obj.time or 300
+	local typ = obj.typ or ""
 	return function()
 		local ip = getpeername()
 		-- log(ip or "---------------")
 		local key = "filter_" .. (typ or "") .. "_" .. (ip or "")
+		-- 自定义key 
+		if type(obj["getKey"]) == "function" then
+			local ok, k = obj.getKey(key)
+			if not ok then
+				return false
+			end
+
+			key = k
+		end
+
 		local curTime = os.time()
-		local limitObj = mem_cache:get(key) or {count=0, level=1, validCount=validCount,validTime=curTime + validTime}
+		local limitObj = mem_cache:get(key) or {key=key, count=0, level=1, validCount=validCount,validTime=curTime + validTime}
 		local result = true
 
 		-- 访问次数加1
@@ -29,12 +43,13 @@ function requestCountLimit(typ, count, time)
 		elseif (limitObj.count > limitObj.validCount) and (curTime > limitObj.validTime) then
 			limitObj.count = 1
 			limitObj.level = limitObj.level + 1
-			limitObj.validTime =  limitObj.level * validTime + curTime
+			limitObj.validTime = limitObj.level * validTime + curTime
 		elseif (limitObj.count <= limitObj.validCount) and (curTime > limitObj.validTime) then
 			limitObj.count = 1
-			limitObj.validTime = curTime + limitObj.level * validTime + curTime
+			limitObj.validTime = limitObj.level * validTime + curTime
 		else
 		end
+		--log(limitObj, true)
 		LOG.std(nil, "error", "keepwork", limitObj)
 		mem_cache:set(key, limitObj)
 
@@ -91,27 +106,39 @@ KEEPWORK["request_before_filter"] = {
 		testFilter,
 	},
 	-- 登录限制
-	[API_URL_PREFIX .. "user/login"] = {
-		requestCountLimit("login"),
+	[filter.API_URL_PREFIX .. "user/login"] = {
+		requestCountLimit({
+			typ=filter.LOGIN,
+			getKey=function(key)
+				local params = request:getparams()
+				if not params.username then
+					return false, ""
+				end
+
+				key = key .. "_" .. params.username
+				return true, key
+			end,
+			count=20,
+		}),
 	},
 	-- 注册限制
-	[API_URL_PREFIX .. "user/register"] = {
-		requestCountLimit("register"),
+	[filter.API_URL_PREFIX .. "user/register"] = {
+		requestCountLimit({typ="register"}),
 	},
 	-- 获得用户配置信息
-	[API_URL_PREFIX .. "user/getProfile"] = {
+	[filter.API_URL_PREFIX .. "user/getProfile"] = {
 		authenticated,
 	},
 	-- 邮件验证
-	[API_URL_PREFIX .. "user/verifyEmailOne"] = {
-		requestCountLimit("verifyEmailOne", 30, 300),
+	[filter.API_URL_PREFIX .. "user/verifyEmailOne"] = {
+		requestCountLimit({typ="verifyEmailOne", count=30, time=300}),
 	},
 	-- 手机验证
-	[API_URL_PREFIX .. "verifyCellphoneOne"] = {
-		requestCountLimit("verifyCellphoneOne", 30, 300),
+	[filter.API_URL_PREFIX .. "verifyCellphoneOne"] = {
+		requestCountLimit({typ="verifyCellphoneOne", count=30, time=300}),
 	},
 	-- 添加cname
-	[API_URL_PREFIX .. "website_domain/upsert"] = {
+	[filter.API_URL_PREFIX .. "website_domain/upsert"] = {
 		authenticatedVip,
 	},
 }

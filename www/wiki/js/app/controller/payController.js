@@ -7,8 +7,9 @@ define([
     'helper/util',
     'helper/storage',
     'pingpp',
+    'markdown-it',
     'text!html/pay.html',
-], function (app, util, storage, pingpp, htmlContent) {
+], function (app, util, storage, pingpp, markdownit, htmlContent) {
     app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', '$http', function ($scope, Account, modal, $rootScope, $http) {
         function init() {
             var queryArgs  = util.getQueryObject();
@@ -376,6 +377,41 @@ define([
                     });
                 }
             }
+
+            function getMarkDownRenderer() {
+                return markdownit({
+                    html: true, // Enable HTML tags in source
+                    linkify: true, // Autoconvert URL-like text to links
+                    typographer: true, // Enable some language-neutral replacement + quotes beautification
+                    breaks: false,        // Convert '\n' in paragraphs into <br>
+                    highlight: function (str, lang) {
+                        if (lang && window.hljs.getLanguage(lang)) {
+                            try {
+                                return hljs.highlight(lang, str, true).value;
+                            } catch (__) {
+                            }
+                        }
+                        return ''; // use external default escaping
+                    }
+                });
+            };
+
+            $http({
+                "method"  : 'GET',
+                "url"     : "http://git.keepwork.com/gitlab_rls_official/keepworkhaqi/raw/master/official/haqi/payads.md",
+                "headers" : {
+                    'Authorization': undefined,
+                }, // remove auth header for this request
+                "skipAuthorization" : true, // this is added by our satellizer module, so disable it for cross site requests.
+                "transformResponse" : [function (data) {
+                    return data; // never transform to json, return as it is
+                }],
+            })
+            .then(function (response) {
+                var html = getMarkDownRenderer().render(response.data);
+                $('#hot-service').html(html);
+            },
+            function (response) {});
         }
 
         $scope.$watch("$viewContentLoaded", init);

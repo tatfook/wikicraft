@@ -1111,7 +1111,7 @@ define(['app', 'helper/util',
                                     gidx += 1;
                                     for (var i = 0; i < pitem.length; i++) {
                                         if (pitem[i]['title'] === null || pitem[i]['title'] === '') {
-                                            $scope.showSimpleModel('保存失败', '小节标题不能为空。s');
+                                            $scope.showSimpleModel('保存失败', '小节标题不能为空。');
 
                                             pass = false;
                                             break;
@@ -1135,6 +1135,8 @@ define(['app', 'helper/util',
                                         pitem[i]['course_url'] = title['course_url'];
                                         pitem[i]['create_user'] = create_user;
                                         pitem[i]['create_nickname'] = create_nickname;
+
+                                        // pitem[i]['create_nickname'] = create_nickname;
                                     }
                                 }
                             }

@@ -38,6 +38,9 @@
 		'contribution-calendar': 'lib/contribution-calendar/js/contribution-calendar.min',//类github活动记录
 		'to-markdown': 'lib/to-markdown/to-markdown',
 		'wangEditor': 'lib/wangEditor/js/wangEditor',
+		'pingpp': 'lib/pingpp-js/dist/pingpp',
+		'plupload': "lib/qiniu/plupload.full.min",
+		'qiniu': "lib/qiniu/qiniu.min",
 
         // 自定义模块
         'app': 'app',
@@ -93,6 +96,13 @@
 		},
 		'wangEditor': {
 			deps:['jquery'],
+		},
+		'plupload':{
+			exports:'plupload'
+		},
+		'qiniu': {
+			deps:['plupload'],
+			exports:'qiniu'
 		}
     },
     packages: [

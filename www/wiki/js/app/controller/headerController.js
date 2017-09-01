@@ -226,7 +226,7 @@ define([
         };
 
 		$scope.goAdminPage = function() {
-			util.go("/wiki/js/mod/admin/js/login");
+			util.go("/wiki/js/mod/admin/js/login", true);
 		};
 
 		$scope.goApps = function () {

@@ -69,10 +69,14 @@ define([
                 return;
             }
 
-            util.http('POST', config.apiUrlPrefix + 'website_domain/upsert', {username:$scope.website.username, sitename:$scope.website.name, domain: $scope.domain}, function (data) {
+            util.http('POST', config.apiUrlPrefix + 'website_domain/insert', {username:$scope.website.username, sitename:$scope.website.name, domain: $scope.domain}, function (data) {
                 $scope.domainList.push({domain:$scope.domain});
                 $scope.domain = "";
-            });
+			},function(data){
+				if (data.id==7) {
+					console.log("域名已存在");
+				}	
+			});
         }
 
         $scope.removeDomain=function(domainObj){
@@ -108,7 +112,6 @@ define([
 
 		function initGroup() {
             $scope.changeType = siteinfo.visibility || "public";
-			siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			getGroupList();
 		}
 
@@ -453,8 +456,18 @@ define([
             return canvas;
         }
 		
+		$scope.changeDataSource = function() {
+			console.log($scope.dataSourceName);
+		}
+
         function init() {
+			siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
 			initGroup();
+			$scope.dataSourceName = siteDataSource.dataSource.dataSourceName;
+			//console.log($scope.dataSourceName);
+			util.post(config.apiUrlPrefix + "data_source/getByUsername", {username:siteinfo.username}, function(data){
+				$scope.dataSourceList = data || [];
+			});
             util.post(config.apiUrlPrefix + "website_domain/getByName", {username:$scope.website.username, sitename: $scope.website.name}, function (data) {
                $scope.domainList = data;
                for (var i = 0; i < data.length; i++) {
@@ -585,99 +598,6 @@ define([
                 $scope.addUser();
             }
         });
-        /*
-        $scope.roleSelect = function (userinfo) {
-            userinfo.roleInfo.roleId = parseInt(userinfo.roleInfo.roleUIIndex);
-            userinfo.roleInfo.roleId = $scope.roleList[userinfo.roleInfo.roleId].id;
-            var role = angular.copy(userinfo.roleInfo);
-            role.roleUIIndex = undefined;
-            util.post(config.apiUrlPrefix + 'website_member/updateById', {_id:role._id, roleId:role.roleId}, function (data) {
-                console.log(data);
-            });
-        }
-
-        $scope.getRoleName = function (roleId) {
-            for (i = 0; i < $scope.roleList.length; i++) {
-                if ($scope.roleList[i].id == roleId) {
-                    return $scope.roleList[i].name;
-                }
-            }
-            return "";
-        }
-        $scope.classifySelect = function (site) {
-            site.classifyInfo.worksFlag = parseInt(site.classifyInfo.worksFlag);
-            util.post(config.apiUrlPrefix + 'website_works/updateById', {_id:site.classifyInfo._id, worksFlag:site.classifyInfo.worksFlag}, function (data) {
-                console.log(data);
-            });
-        }
-
-        $scope.getClassifyName = function (worksFlag) {
-            return $scope.classifyList[worksFlag];
-        }
-
-
-        $scope.advanceSetup = function () {
-
-        }
-
-        $scope.setGithubRepoName = function () {
-            console.log($scope.website);
-            if ($scope.user.githubToken) {
-                sendModifyWebsiteRequest();
-            } else {
-                Account.githubAuthenticate(sendModifyWebsiteRequest);
-            }
-        }
-
-        $scope.agreeMember = function (applyId) {
-            util.post(config.apiUrlPrefix + 'website_apply/agreeMember',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
-                $scope.userObj = data;
-                $scope.memberManager();
-            });
-        }
-
-        $scope.refuseMember = function (applyId) {
-            util.post(config.apiUrlPrefix + 'website_apply/refuseMember',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
-                $scope.userObj = data;
-                $scope.memberManager();
-            })
-        }
-
-        $scope.memberManager = function () {
-            util.post(config.apiUrlPrefix + 'website_apply/getMember', {websiteId:siteinfo._id}, function (data) {
-                $scope.userObj = data;
-            });
-
-            util.post(config.apiUrlPrefix + 'website_member/getByWebsiteId', {websiteId:siteinfo._id}, function (data) {
-                $scope.userRoleObj = data;
-            });
-        }
-
-        $scope.worksManager = function () {
-            util.post(config.apiUrlPrefix + 'website_apply/getWorks', {websiteId:siteinfo._id}, function (data) {
-                $scope.siteObj = data;
-            });
-
-            util.post(config.apiUrlPrefix + 'website_works/getByWebsiteId', {websiteId:siteinfo._id}, function (data) {
-                $scope.worksObj = data;
-            });
-        }
-
-        $scope.agreeWorks = function (applyId) {
-            util.post(config.apiUrlPrefix + 'website_apply/agreeWorks',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
-                $scope.siteObj = data;
-                $scope.worksManager();
-            });
-        }
-
-        $scope.refuseWorks = function (applyId) {
-            util.post(config.apiUrlPrefix + 'website_apply/refuseWorks',{applyId:applyId, websiteId:siteinfo._id}, function (data) {
-                $scope.siteObj = data;
-                $scope.worksManager();
-
-            });
-        }
-        */
     }]);
 
     return htmlContent;
