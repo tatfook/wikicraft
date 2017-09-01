@@ -12,7 +12,7 @@
         $scope.itemPrePage = 6;
 		$scope.list        = [];
 		
-		http("GET", apiUrl + "/getListCount", function(data){
+		http("POST", apiUrl + "/getListCount", function(data){
 			$scope.totalItems = data.data;
 		});
 
@@ -31,9 +31,7 @@
 		}
 		
 		$scope.getList();
-		
-		
-		
+
 		//整合
 		function http(type, url, params, cb_success, cb_fail){
 			var host = "http://localhost:8099/";

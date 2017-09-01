@@ -4,15 +4,18 @@
 	'helper/util'
 ], function (app, htmlContent, util) {
     app.controller('shareController', ['$scope' , '$http' , function ($scope,$http) {
+		console.log(util.getQueryObject());
         $scope.parameter = util.getQueryObject();
+		
 		if($scope.parameter.id){
-			return $scope.parameter.id
+			$scope.parameter.id
 		}else{
 			location.href = "/wiki/notfound"
+			return;
 		}
+		
 		console.log($scope.parameter)
-		//$scope.h2h2 = [];
-		//$scope.username = "hahaha";
+
 		$scope.delete = function(item, index){
 			var id = item._id;
 			console.log(index)
@@ -22,47 +25,12 @@
 			});
 		}
 
-		/*$scope.add = function(){
-			var Ason = {
-					"username"     : $.username,
-					"author"       : parameter.author,
-					"modelsnumber" : parameter.modelsnumber,
-					"blocks"       : parameter.blocks,
-					"volume"       : parameter.volume,
-					"words"        : parameter.words,
-			}
-			console.log(Ason)
-			http("POST","api/mod/modelshare/models/modelshare/add",Ason,function(data){
-					//console.log($scope.h2h2)
-					$scope.h2h2[$scope.h2h2.length] = data;
-			});
-		}*/
-		
-		/*$scope.modify = function(item){
-			var params = {
-				"_id"          : item._id,
-				"templateName" : item.templateName,
-				"username"     : item.username,
-				"modelsnumber" : item.modelsnumber,
-				"blocks"       : item.blocks,
-				"volume"       : item.volume,
-				"words"        : item.words,
-			}
-			http("POST","api/mod/modelshare/models/modelshare/modify", params, function(data){
-				console.log(data);
-				if(data.errcode == 1){
-					alert("修改成功");
-				}else{
-					alert("修改失败");
-				}
-			})
-		}*/
-		
-
 		function getData(item){
+			
 			var params = {
 				"_id"          : $scope.parameter.id,
 			}
+			
 			http("POST","api/mod/modelshare/models/modelshare/getOne", params, function(data){
 				console.log(data.data)
 				$scope.templateName = data.data.templateName;
@@ -127,3 +95,39 @@
 		return htmlContent;
 });
 
+
+/*$scope.add = function(){
+			var Ason = {
+					"username"     : $.username,
+					"author"       : parameter.author,
+					"modelsnumber" : parameter.modelsnumber,
+					"blocks"       : parameter.blocks,
+					"volume"       : parameter.volume,
+					"words"        : parameter.words,
+			}
+			console.log(Ason)
+			http("POST","api/mod/modelshare/models/modelshare/add",Ason,function(data){
+					//console.log($scope.h2h2)
+					$scope.h2h2[$scope.h2h2.length] = data;
+			});
+		}*/
+		
+		/*$scope.modify = function(item){
+			var params = {
+				"_id"          : item._id,
+				"templateName" : item.templateName,
+				"username"     : item.username,
+				"modelsnumber" : item.modelsnumber,
+				"blocks"       : item.blocks,
+				"volume"       : item.volume,
+				"words"        : item.words,
+			}
+			http("POST","api/mod/modelshare/models/modelshare/modify", params, function(data){
+				console.log(data);
+				if(data.errcode == 1){
+					alert("修改成功");
+				}else{
+					alert("修改失败");
+				}
+			})
+		}*/
