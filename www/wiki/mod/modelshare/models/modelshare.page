@@ -33,7 +33,7 @@ function modelshare:ctor()
 	
 	self:addfield("_id","number",false);
 	
-	self:addfield("modelsnumber","number",false);
+	self:addfield("modelsnumber","string",false);
 	self:addfield("createDate","strig",false);
 end
 
@@ -41,7 +41,12 @@ end
 
 function modelshare:api_add(params)
 	local err, query = self:validateQuery(params);
-	--log(query)
+	
+	if(not query.username) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	log(self)
+	
 	self:db():insertOne(
 		{
 			templateName = query.templateName,
@@ -67,8 +72,7 @@ end
 
 function modelshare:api_getOne(params)
 	local err, query = self:validateQuery(params);
-	--log(params)
-	--log(query)
+
 	self:db():findOne({_id = query._id},resume);
 	local err, data = yield();
 	
@@ -82,12 +86,11 @@ end
 --列表页数据查找
 function modelshare:api_getList(params)
 	local err, query = self:validateQuery(params);
-	
 	if(not query.limit or not query.skip) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 	
-	self:db():find({_id = {gt = -1, limit = query.limit, skip = query.skip}},resume);
+	self:db():find({["-_id"] = {gt = -1, limit = query.limit, skip = query.skip}},resume);
 	local err, data = yield();
 	
 	if not err then	
@@ -123,7 +126,7 @@ function modelshare:api_modify(params)
 	self:db():updateOne({_id = query._id},
 	{
 			templateName = query.templateName,
-			author       = query.author,
+			username      = query.username,
 			modelsnumber = query.modelsnumber,
 			blocks       = query.block,
 			volume       = query.volume,
@@ -145,15 +148,16 @@ end
 function modelshare:api_delete(params)
 	local err, query = self:validateQuery(params);
 	
-	if(not query.id) then
+	if(not query.modelsnumber) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
-	
-	self:db():deleteOne({_id = query.id}, resume);
+	log(query)
+	log(self:db(), true)
+	self:db():deleteOne({modelsnumber = query.modelsnumber},resume);
 	local err,data = yield();
 	
 	if not err then
-		return errors:wrap(nil, data);
+		return errors:wrap(errors.SUCCESS);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
