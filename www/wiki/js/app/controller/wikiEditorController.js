@@ -260,13 +260,15 @@ define([
 
     app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {//{{{
         $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
+		var result = {url:"", filename:""};
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss('');
         }
 
 		$scope.video_insert = function () {
-			$uibModalInstance.close({url:$scope.videoUrl || '', filename:$scope.filename});
+			console.log(result);
+			$uibModalInstance.close(result);
         }
 
 		function init() {
@@ -314,14 +316,16 @@ define([
 						var domain = up.getOption('domain');
 						var info = JSON.parse(response.response);
 						var sourceLink = domain +"/"+ info.key; //获取上传成功后的文件的Url
+						result.filename = info.key.replace(/\s/g, "");
 						//console.log(sourceLink);
 						util.post(config.apiUrlPrefix + 'qiniu/getDownloadUrl', {
 							domain:domain,
 							key:info.key,
 						}, function(data){
 							data = data || {};
-							$scope.filename = info.key.replace(/\s/g, "");
-							$scope.videoUrl = data.download_url;	
+							$scope.filename = result.filename;
+							result.url = data.download_url;
+							console.log(result);
 						});
 					},
 					'Error': function(up, err, errTip) {
@@ -2012,6 +2016,7 @@ define([
                     templateUrl: config.htmlPath + "editorInsertVideo.html",
                     controller: "videoCtrl",
                 }).result.then(function (result) {
+					console.log(result);
                     if (result) {
 						var obj = {
 							mod:{
