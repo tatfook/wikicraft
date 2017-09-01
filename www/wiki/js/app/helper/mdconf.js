@@ -100,6 +100,27 @@ define([
 		return list;
 	}
 
+	mdconf.toMod = function(text) {
+		var self = this;
+		var obj = self.toJson(text) || {};
+		var mods = obj.mod || {};
+		var text = "";
+
+		for (var key in mods) {
+			var mod = mods[key];
+			if (!mod.cmdName) {
+				continue;
+			}
+			var params = mod.params || {};
+
+			var paramsStr = angular.toJson(params);
+
+			text += '```' + mod.cmdName + "\n"+ paramsStr + '\n```\n';
+		}
+
+		return text;
+	}
+
 	mdconf.toJson = function(text) {
 		var blocks = parseMd(text);
 		
@@ -197,7 +218,7 @@ define([
 			}
 		}
 
-		console.log(conf);	
+		//console.log(conf);	
 		return conf;
 	}
 
