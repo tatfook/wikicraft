@@ -153,7 +153,6 @@ define([
 		// 搜索管理员账号
 		$scope.managerSearch = function (){
 			//util.post(config.apiUrlPrefix + "tabledb/query", {
-			//alert("111111111111");
 			util.post(config.apiUrlPrefix + "admin/managerSearch", {
 				_id:$scope.managerSearchById,
 				username:$scope.managerSearchByUsername,
@@ -167,6 +166,7 @@ define([
 		/*
 		$scope.managerSearch = function (){
 			$scope.query = {
+				roleId:10,
 				_id:$scope.managerSearchById,
 				username:$scope.managerSearchByUsername,
 			};
@@ -195,7 +195,30 @@ define([
 				$scope.totalItems = data.total || 0;
 			});
 		}
-		
+		//搜索域名
+		$scope.domainSearchById;
+		$scope.domainSearchByUsername = "";
+		$scope.domainSearchByDomain = "";
+		$scope.domainSearch = function (){
+			var username = $scope.domainSearchByUsername == "" ? undefined : $scope.domainSearchByUsername;
+			var domain = $scope.domainSearchByDomain == "" ? undefined : $scope.domainSearchByDomain;
+			$scope.query = {
+				_id:$scope.domainSearchById,
+				username:username,
+				domain:domain,
+			};
+			util.post(config.apiUrlPrefix + "tabledb/query", {
+				tableName:"website_domain",
+				page:$scope.userCurrentPage,
+				pageSize:$scope.pageSize,
+				query:$scope.query,
+			}, function (data) {
+				data = data || {};
+				$scope.domainList = data.data || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		//获取VIP列表
 		$scope.getVIPList = function (){
 			//alert("asdasdasdasd");
 			$scope.selectMenuItem = "vip";
@@ -205,6 +228,26 @@ define([
 			}, function (data) {
 				data = data || {};
 				$scope.VIPList = data.VIPList || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		//搜索VIP
+		$scope.vipSearchById;
+		$scope.vipSearchByUsername = "";
+		$scope.vipSearch = function (){
+			var username = $scope.vipSearchByUsername == "" ? undefined : $scope.vipSearchByUsername;
+			$scope.query = {
+				_id:$scope.vipSearchById,
+				username:username,
+			};
+			util.post(config.apiUrlPrefix + "tabledb/query", {
+				tableName:"vip",
+				page:$scope.VIPCurrentPage,
+				pageSize:$scope.pageSize,
+				query:$scope.query,
+			}, function (data) {
+				data = data || {};
+				$scope.VIPList = data.data || [];
 				$scope.totalItems = data.total || 0;
 			});
 		}
@@ -221,6 +264,24 @@ define([
 				$scope.totalItems = data.total || 0;
 			});
 		}
+		//搜索用户
+		$scope.userSearch = function (){
+			$scope.query = {
+				_id:$scope.userSearchById,
+				username:$scope.userSearchByUsername,
+			};
+			util.post(config.apiUrlPrefix + "tabledb/query", {
+				tableName:"user",
+				page:$scope.userCurrentPage,
+				pageSize:$scope.pageSize,
+				query:$scope.query,
+			}, function (data) {
+				data = data || {};
+				$scope.userList = data.data || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		
 		// 点击编辑用户
 		$scope.clickEditUser = function (user) {
 
@@ -247,6 +308,30 @@ define([
 			}, function (data) {
 				data = data || {};
 				$scope.siteList = data.siteList || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		//搜索网站
+		$scope.siteSearchById;
+		$scope.siteSearchByUsername = "";
+		$scope.siteSearchBySitename = "";
+		
+		$scope.siteSearch = function (){
+			var username = $scope.siteSearchByUsername == "" ? undefined : $scope.siteSearchByUsername;
+			var sitename = $scope.siteSearchBySitename == "" ? undefined : $scope.siteSearchBySitename;
+			$scope.query = {
+				_id:$scope.siteSearchById,
+				username:username,
+				name:sitename,
+			};
+			util.post(config.apiUrlPrefix + "tabledb/query", {
+				tableName:"website",
+				page:$scope.userCurrentPage,
+				pageSize:$scope.pageSize,
+				query:$scope.query,
+			}, function (data) {
+				data = data || {};
+				$scope.siteList = data.data || [];
 				$scope.totalItems = data.total || 0;
 			});
 		}

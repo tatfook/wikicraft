@@ -315,15 +315,15 @@ li{
 							<label>
 								用户ID:
 							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
+							<input ng-model="userSearchById" type="number" class="form-control" placeholder="请输入用户ID">
 						</div>
 						<div class="form-group">
 							<label>
 								用户名:
 							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+							<input ng-model="userSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+						<button class="btn btn-default" ng-click="userSearch()">查询</button>
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -375,21 +375,21 @@ li{
 							<label>
 								ID:
 							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
+							<input ng-model="siteSearchById" type="number" class="form-control" placeholder="请输入网站ID">
 						</div>
 						<div class="form-group">
 							<label>
 								用户名:
 							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+							<input ng-model="siteSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
 						<div class="form-group">
 							<label>
 								站点名:
 							</label>
-							<input ng-model="query.name" type="text" class="form-control" placeholder="请输入网站名">
+							<input ng-model="siteSearchBySitename" type="text" class="form-control" placeholder="请输入网站名">
 						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+						<button class="btn btn-default" ng-click="siteSearch()">查询</button>
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -398,6 +398,9 @@ li{
 							<th>站点ID</th>
 							<th>站点名</th>
 							<th>显示名</th>
+							<th>用户名</th>
+							<th>网站类别</th>
+							<th>访问次数</th>
 							<th>状态</th>
 							<th>操作</th>
 						</tr>
@@ -407,6 +410,9 @@ li{
 							<td>{{x._id}}</td>
 							<td>{{x.name}}</td>
 							<td>{{x.displayName}}</td>
+							<td>{{x.username}}</td>
+							<td>{{x.categoryName}}</td>
+							<td>{{x.visitCount}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
@@ -431,15 +437,15 @@ li{
 							<label>
 								域名ID:
 							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入域名ID">
+							<input ng-model="domainSearchById" type="text" class="form-control" placeholder="请输入域名ID">
 						</div>
 						<div class="form-group">
 							<label>
 								用户名:
 							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+							<input ng-model="domainSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+						<button class="btn btn-default" ng-click="domainSearch()">查询</button>
 					</form>
 				</div>
 			
@@ -490,15 +496,15 @@ li{
 							<label>
 								会员ID:
 							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入域名ID">
+							<input ng-model="vipSearchById" type="number" class="form-control" placeholder="请输入域名ID">
 						</div>
 						<div class="form-group">
 							<label>
 								用户名:
 							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+							<input ng-model="vipSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+						<button class="btn btn-default" ng-click="vipSearch()">查询</button>
 					</form>
 				</div>
 			

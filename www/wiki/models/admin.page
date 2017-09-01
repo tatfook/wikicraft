@@ -87,14 +87,24 @@ end
 function admin:api_managerSearch(params)
 	self:adminAuth()
 
-	local _id = params._id or nil
-	local username = params.username or nil
+	local _id = params._id or nil 
+	local username = params.username 
 	
 	local userDB = models.user:new()
 	--userDB:db():count({["+roleId+_id"] = {const.USER_ROLE_ADMINISTRATOR,1}}, resume)
 	--local _, total = yield()
 	local total = 0;
-	userDB:db():find({["+roleId+_id+username"] = {const.USER_ROLE_ADMINISTRATOR,_id,username}}, resume)
+	
+	if username ~= "" and _id == nil then 
+		userDB:db():find({["+roleId+username"] = {const.USER_ROLE_ADMINISTRATOR,username}}, resume)
+	end
+	if _id ~= "" and username == "" then 
+		userDB:db():find({["+roleId+_id"] = {const.USER_ROLE_ADMINISTRATOR,_id}}, resume)
+	end 
+	if username ~= "" and _id ~= nil then 
+		userDB:db():find({["+roleId+_id+username"] = {const.USER_ROLE_ADMINISTRATOR,_id,username}}, resume)
+	end 
+	
 	--userDB:db():find({roleId = const.USER_ROLE_ADMINISTRATOR}, resume)
 	--userDB:db():find({{roleId = const.USER_ROLE_ADMINISTRATOR},{_id={gt=-1, skip=skip, limit=limit}}}, resume)
 	local _, searchManagerList = yield()
