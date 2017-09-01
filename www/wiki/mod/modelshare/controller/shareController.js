@@ -14,14 +14,11 @@
 			return;
 		}
 		
-		console.log($scope.parameter)
 
 		$scope.delete = function(item, index){
 			var id = item._id;
-			console.log(index)
 			http("POST", "api/mod/modelshare/models/modelshare/delete", {"id" : id},function(data){
 				$scope.h2h2.splice(index,1);
-				console.log($scope.h2h2)
 			});
 		}
 
@@ -32,7 +29,6 @@
 			}
 			
 			http("POST","api/mod/modelshare/models/modelshare/getOne", params, function(data){
-				console.log(data.data)
 				$scope.templateName = data.data.templateName;
 				$scope.username     = data.data.username;
 				$scope.modelsnumber = data.data.modelsnumber;
