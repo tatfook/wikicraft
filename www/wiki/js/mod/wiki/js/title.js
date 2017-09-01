@@ -47,3 +47,12 @@ define([
  }
  ```
  */
+/*
+ ```@wiki/js/title
+ {
+ "moduleKind":"title3",
+ "title":"标题标题",
+ "content":"简介简介  \n[可以加链接](链接url)  \n [可以加链接](链接Url)：（我不是链接）"
+ }
+ ```
+ */

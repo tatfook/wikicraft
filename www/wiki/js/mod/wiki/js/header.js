@@ -59,7 +59,62 @@ define([
 }
 ```
 */
-
+/*
+ ```@wiki/js/header
+ {
+ "moduleKind":"personal2",
+ "displayName":"姓名",
+ "nameinfo":"职位",
+ "name":"PingYin Or EnglishName",
+ "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504170502765.jpeg",
+ "messages":[
+ {
+ "message":"信息1介绍介绍简介简介",
+ "info":"额外信息PingYin Or EnglishName"
+ },
+ {
+ "message":"信息2介绍介绍简介简介",
+ "info":"额外信息PingYin Or EnglishName额外信息"
+ },
+ {
+ "message":"信息3介绍介绍简介简介",
+ "info":"额外信息PingYin Or EnglishName额外信息EnglishName"
+ }
+ ],
+ "phone":"手机号",
+ "email":"邮箱",
+ "qq":"QQ号",
+ "wechat":"微信号",
+ "weibo":"新浪微博号"
+ }
+ ```
+ */
+/*
+ ```@wiki/js/header
+ {
+ "moduleKind":"personal3",
+ "headerBg":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503653688101.jpeg",
+ "profile":"http://keepwork.com/wiki/assets/imgs/wiki_default_profile.jpg",
+ "displayName":"姓名",
+ "nameinfo":"职位",
+ "name":"PingYin Or EnglishName",
+ "messages":[
+ {
+ "message":"信息1介绍介绍简介简介"
+ },
+ {
+ "message":"信息2介绍介绍简介简介"
+ },
+ {
+ "message":"信息3介绍介绍简介简介"
+ }
+ ],
+ "qq":"qq号",
+ "wechat":"微信号",
+ "weibo":"微博账号"
+ }
+ ```
+ */
 /*
 ```@wiki/js/header
 {
