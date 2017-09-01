@@ -142,7 +142,7 @@ li{
 						<div class="panel-heading" ng-click='clickMenuItem("user")'>用户管理</div>
 					</div>
 					-->
-					<div class="panel-heading" ng-show="{{roleId == 10}}">
+					<div class="panel-heading" ng-show="#">
 						<div>
 							<div class="panel-heading"><strong>后台管理</strong></div>
 						</div>
@@ -154,7 +154,7 @@ li{
 							</li>
 							<li>
 								<div ng-class='getStyleClass("operationLog")'>
-									<div class="panel-heading" ng-click='clickMenuItem("operationLog")'>操作日志</div>
+									<div class="panel-heading" ng-click='getoperationLogList()'>操作日志</div>
 								</div>
 							</li>
 						</ul>
@@ -173,22 +173,22 @@ li{
 							</li>
 							<li ng-show="#">
 								<div  ng-class='getStyleClass("site")'>
-									<div class="panel-heading" ng-click='clickMenuItem("site")'>网站</div>
+									<div class="panel-heading" ng-click='getSiteList()'>网站</div>
 								</div>
 							</li>
 							<li ng-show="#">
 								<div ng-class='getStyleClass("domain")'>
-									<div class="panel-heading" ng-click='clickMenuItem("domain")'>域名</div>
+									<div class="panel-heading" ng-click='getDomainList()'>域名</div>
 								</div>
 							</li>
 							<li ng-show="#">
 								<div ng-class='getStyleClass("fileCheck")'>
-									<div class="panel-heading" ng-click='clickMenuItem("fileCheck")'>文件审核</div>
+									<div class="panel-heading" ng-click='getFileCheckList()'>文件审核</div>
 								</div>
 							</li>
 							<li ng-show="#">
 								<div ng-class='getStyleClass("vip")'>
-									<div class="panel-heading" ng-click='clickMenuItem("vip")'>VIP</div>
+									<div class="panel-heading" ng-click='getVIPList()'>VIP</div>
 								</div>
 							</li>
 						</ul>
@@ -249,19 +249,15 @@ li{
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
 						<div class="form-group">
-							<label>
-								管理员ID:
-							</label>
-							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入用户ID">
+							<label>管理员ID:</label>
+							<input ng-model="managerSearchById" type="number" class="form-control" placeholder="请输入用户ID">
 						</div>
 						<div class="form-group">
-							<label>
-								管理员用户名:
-							</label>
-							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+							<label>管理员用户名:</label>
+							<input ng-model="managerSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
-						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
-						<button class="btn btn-default pull-right" ng-click="clickQuery()" >新建管理员</button>
+						<button class="btn btn-default" ng-click="managerSearch()">查询</button>
+						<button class="btn btn-default pull-right" ng-click="newManager()" >新建管理员账号</button>
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -296,10 +292,10 @@ li{
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="clickQuery()"
+					<ul uib-pagination ng-change="getManagerList()"
 						items-per-page='pageSize' previous-text="上一页"
 								next-text="下一页" total-items="totalItems"
-							  ng-model="currentPage" max-size="5"
+							  ng-model="managerCurrentPage" max-size="5"
 								class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
@@ -336,15 +332,23 @@ li{
 							<th>ID</th>
 							<th>用户名</th>
 							<th>显示名</th>
+							<th>注册时间</th>
+							<th>网站数</th>
+							<th>粉丝数</th>
+							<th>用户等级</th>
 							<th>状态</th>
 							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="x in data" ng-hide="x.isDelete">
+						<tr ng-repeat="x in userList" ng-hide="x.isDelete">
 							<td>{{x._id}}</td>
 							<td>{{x.username}}</td>
 							<td>{{x.displayName}}</td>
+							<td>{{x.joindate}}</td>
+							<td>{{x.websiteCount}}</td>
+							<td>{{x.fansCount}}</td>
+							<td>{{x.roleId}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
@@ -354,10 +358,10 @@ li{
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="clickQuery()"
+					<ul uib-pagination ng-change="getUserList()"
 						items-per-page='pageSize' previous-text="上一页"
 								next-text="下一页" total-items="totalItems"
-							  ng-model="currentPage" max-size="5"
+							  ng-model="userCurrentPage" max-size="5"
 								class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
@@ -399,7 +403,7 @@ li{
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="x in data" ng-hide="x.isDelete">
+						<tr ng-repeat="x in siteList" ng-hide="x.isDelete">
 							<td>{{x._id}}</td>
 							<td>{{x.name}}</td>
 							<td>{{x.displayName}}</td>
@@ -412,21 +416,125 @@ li{
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="clickQuery()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+					<ul uib-pagination ng-change="getSiteList()" items-per-page='pageSize' previous-text="上一页"
+																		   next-text="下一页" total-items="totalItems" ng-model="siteCurrentPage" max-size="5"
 																						   class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 			</div><!--}}}-->
 			
 			
-			<div ng-show='selectMenuItem=="user"'>
+			<div ng-show='selectMenuItem=="domain"'>
+				<div style="margin: 10px;">
+					<form role="form" class="form-inline">
+						<div class="form-group">
+							<label>
+								域名ID:
+							</label>
+							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入域名ID">
+						</div>
+						<div class="form-group">
+							<label>
+								用户名:
+							</label>
+							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+					</form>
+				</div>
+			
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>用户名</th>
+							<th>域名名</th>
+							<th>站点名</th>
+							<th>开始时间</th>
+							<th>到期时间</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="x in domainList" ng-hide="x.isDelete">
+							<td>{{x._id}}</td>
+							<td>{{x.username}}</td>
+							<td>{{x.domain}}</td>
+							<td>{{x.sitename}}</td>
+							<td>{{x.startAt}}</td>
+							<td>{{x.endAt}}</td>
+							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
+							<td>
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="pagination-box">
+					<ul uib-pagination ng-change="getDomainList()" items-per-page='pageSize' previous-text="上一页"
+																		   next-text="下一页" total-items="totalItems" ng-model="domainCurrentPage" max-size="5"
+																						   class="pagination-sm" boundary-link-numbers="true">
+					</ul>
+				</div>
 				
 			</div>
-			<div ng-show='selectMenuItem=="user"'>
-				
+			<div ng-show='selectMenuItem=="fileCheck"'>
+				文件审核
 			</div>
-			<div ng-show='selectMenuItem=="user"'>
+			<div ng-show='selectMenuItem=="vip"'>
+				<div style="margin: 10px;">
+					<form role="form" class="form-inline">
+						<div class="form-group">
+							<label>
+								会员ID:
+							</label>
+							<input ng-model="query._id" type="text" class="form-control" placeholder="请输入域名ID">
+						</div>
+						<div class="form-group">
+							<label>
+								用户名:
+							</label>
+							<input ng-model="query.username" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<button class="btn btn-default" ng-click="clickQuery()">查询</button>
+					</form>
+				</div>
+			
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>用户名</th>
+							<th>VIP等级</th>
+							<th>开始时间</th>
+							<th>到期时间</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="x in VIPList" ng-hide="x.isDelete">
+							<td>{{x._id}}</td>
+							<td>{{x.username}}</td>
+							<td>{{x.vipLevel}}</td>
+							<td>{{x.startDate}}</td>
+							<td>{{x.endDate}}</td>
+							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
+							<td>
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="pagination-box">
+					<ul uib-pagination ng-change="getVIPList()" items-per-page='pageSize' previous-text="上一页"
+																		   next-text="下一页" total-items="totalItems" ng-model="VIPCurrentPage" max-size="5"
+																						   class="pagination-sm" boundary-link-numbers="true">
+					</ul>
+				</div>
 				
 			</div>
 

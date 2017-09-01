@@ -13,77 +13,25 @@ define([
 		var tableName = "user";
 		$scope.selectMenuItem = "manager";
 		$scope.pageSize = 15;
-		$scope.currentPage = 1;
+		$scope.managerCurrentPage = 1;
+		$scope.operationLogCurrentPage = 1;
+		$scope.userCurrentPage = 1;
+		$scope.siteCurrentPage = 1;
+		$scope.domainCurrentPage = 1;
+		$scope.fileCheckCurrentPage = 1;
+		$scope.VIPCurrentPage = 1;
 		$scope.totalItems = 0;
 		$scope.data = [];
 		$scope.test = [];
-		$scope.roleId = 10;
-
-		function getTableName() {
-			/*
-			if ($scope.selectMenuItem == "user") {
-				return "user";
-			} else if ($scope.selectMenuItem == "site") {
-				return "website";
-			} else if ($scope.selectMenuItem == "wikicmd") {
-				return "wiki_module";
-			}*/
-			
-			
-			switch($scope.selectMenuItem)
-			{
-				case "manager":
-					return "manager";
-					break;
-				case "operationLog":
-					return "operationLog";
-					break;
-				case "user":
-					return "user";
-					break;
-				case "site":
-					return "website";
-					break;
-				case "domain":
-					return "domain";
-					break;
-				case "fileCheck":
-					return "fileCheck";
-					break;
-				case "vip":
-					return "vip";
-					break;
-				case "onlineCount":
-					return "onlineCount";
-					break;
-				case "retention":
-					return "retention";
-					break;
-				case "newAccount":
-					return "newAccount";
-					break;
-				case "pay":
-					return "pay";
-					break;
-				case "ServerMonitor":
-					return "ServerMonitor";
-					break;
-				case "wikicmd":
-					return "wiki_module";
-					break;
-				default:
-					return "user";
-					break;
-			}
-
-		}
+		//$scope.roleId = 10;
+		
+		$scope.managerSearchById;
+		$scope.managerSearchByUsername;
 
 		// 确保为管理员
 		function ensureAdminAuth() {
 			if (!Account.isAuthenticated()) {
 				util.go(urlPrefix + "login");
-				var payload = $auth.getPayload();
-				$scope.roleId = payload.roleId;
 				return;
 			}
 
@@ -97,11 +45,13 @@ define([
 
 		function init() {
 			ensureAdminAuth();
-			$scope.clickMenuItem($scope.selectMenuItem);
+			$scope.getManagerList();
+			//$scope.clickMenuItem($scope.selectMenuItem);
 		}
 
 		$scope.$watch('$viewContentLoaded', init);
 
+		/*
 		$scope.clickQuery = function() {
 			console.log($scope.query);
 			for (var key in $scope.query) {
@@ -163,7 +113,7 @@ define([
 				x.isDelete = true;
 			}, function(){
 			});
-		}
+		}*/
 
 		$scope.getStyleClass = function (item) {
 			if ($scope.selectMenuItem == item) {
@@ -172,6 +122,7 @@ define([
 			return;
 		}
 
+		/*
 		$scope.clickMenuItem = function(menuItem) {
 			$scope.query = {};
 			$scope.selectMenuItem = menuItem;
@@ -182,18 +133,78 @@ define([
 			} else if ($scope.selectMenuItem == "site") {
 				$scope.getSiteList();
 			}
-		}
+		}*/
 
 		// 获取管理员列表
 		$scope.getManagerList = function (){
 			//alert("asdasdasdasd");
 			$scope.selectMenuItem = "manager";
+			$scope.managerSearchById;
+			$scope.managerSearchByUsername = "";
 			util.post(config.apiUrlPrefix + "admin/getManagerList", {
-				page:$scope.currentPage,
+				page:$scope.managerCurrentPage,
 				pageSize:$scope.pageSize,
 			}, function (data) {
 				data = data || {};
 				$scope.managerList = data.managerList || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		// 搜索管理员账号
+		$scope.managerSearch = function (){
+			//util.post(config.apiUrlPrefix + "tabledb/query", {
+			//alert("111111111111");
+			util.post(config.apiUrlPrefix + "admin/managerSearch", {
+				_id:$scope.managerSearchById,
+				username:$scope.managerSearchByUsername,
+			}, function (data) {
+				data = data || {};
+				$scope.managerList = data.searchManagerList ;
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		// 新建管理员账号
+		/*
+		$scope.managerSearch = function (){
+			$scope.query = {
+				_id:$scope.managerSearchById,
+				username:$scope.managerSearchByUsername,
+			};
+			util.post(config.apiUrlPrefix + "tabledb/query", {
+				tableName:"user",
+				roleId:10,
+				page:$scope.currentPage,
+				pageSize:$scope.pageSize,
+				query:$scope.query,
+			}, function (data) {
+				data = data || {};
+				$scope.managerList = data.data || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}*/
+		
+		$scope.getDomainList = function (){
+			//alert("asdasdasdasd");
+			$scope.selectMenuItem = "domain";
+			util.post(config.apiUrlPrefix + "admin/getDomainList", {
+				page:$scope.domainCurrentPage,
+				pageSize:$scope.pageSize,
+			}, function (data) {
+				data = data || {};
+				$scope.domainList = data.domainList || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		
+		$scope.getVIPList = function (){
+			//alert("asdasdasdasd");
+			$scope.selectMenuItem = "vip";
+			util.post(config.apiUrlPrefix + "admin/getVIPList", {
+				page:$scope.VIPCurrentPage,
+				pageSize:$scope.pageSize,
+			}, function (data) {
+				data = data || {};
+				$scope.VIPList = data.VIPList || [];
 				$scope.totalItems = data.total || 0;
 			});
 		}
@@ -202,7 +213,7 @@ define([
 		$scope.getUserList = function (){
 			$scope.selectMenuItem = "user";
 			util.post(config.apiUrlPrefix + "admin/getUserList", {
-				page:$scope.currentPage,
+				page:$scope.userCurrentPage,
 				pageSize:$scope.pageSize,
 			}, function (data) {
 				data = data || {};
@@ -229,8 +240,9 @@ define([
 
 		// 获取站点列表
 		$scope.getSiteList = function () {
+			$scope.selectMenuItem = "site";
 			util.post(config.apiUrlPrefix + "admin/getSiteList", {
-				page:$scope.currentPage,
+				page:$scope.siteCurrentPage,
 				pageSize: $scope.pageSize,
 			}, function (data) {
 				data = data || {};
@@ -256,6 +268,15 @@ define([
 			});
 		}
 
+		
+		//
+		$scope.getoperationLogList = function () {
+			$scope.selectMenuItem = "operationLog";
+		}
+		
+		$scope.getFileCheckList = function () {
+			$scope.selectMenuItem = "fileCheck";
+		}
 
 		// wiki cmd
 		$scope.clickUpsertWikicmd = function() {

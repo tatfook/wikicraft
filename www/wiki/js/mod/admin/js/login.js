@@ -24,6 +24,8 @@ define([
         }
 
         $scope.$watch('$viewContentLoaded', init);
+		
+
 
         $scope.login = function () {
             $scope.errMsg = "";
