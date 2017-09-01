@@ -320,8 +320,8 @@ define([
 							key:info.key,
 						}, function(data){
 							data = data || {};
+							$scope.filename = info.key.replace(/\s/g, "");
 							$scope.videoUrl = data.download_url;	
-							$scope.filename = info.key;
 						});
 					},
 					'Error': function(up, err, errTip) {
@@ -2088,8 +2088,12 @@ define([
 							});
 						} else {
 							currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
-								line_keyword(cursor.line, '['+ fileObj.name +'](' + linkUrl + ')', 2);
-								cb && cb(linkCtrl);
+								var callback = function() {
+									line_keyword(cursor.line, '['+ fileObj.name +'](' + linkUrl + ')', 2);
+									cb && cb(linkCtrl);
+								}
+
+								currentDataSource.getLastCommitId(callback, callback, false);
 							}, function(response){
 								Message.info(response.data.message);
 								console.log(data);

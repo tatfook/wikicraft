@@ -47,7 +47,7 @@ define([
 				}
 			}
 		}
-		console.log(blockList);
+		//console.log(blockList);
 		return blockList;
 	}
 
@@ -106,9 +106,12 @@ define([
 		var mods = obj.mod || {};
 		var text = "";
 
+		//console.log(obj, mods);
 		for (var key in mods) {
 			var mod = mods[key];
+			//console.log(mod, mod.cmdName);
 			if (!mod.cmdName) {
+				//console.log("--------------");
 				continue;
 			}
 			var params = mod.params || {};
@@ -183,11 +186,11 @@ define([
 					}
 					
 					delim = delim < 0 ? line.length : delim;
-					var key = line.substring(0, delim);
-					var value = line.substring(delim+1);
+					var key = line.substring(0, delim).trim();
+					var value = line.substring(delim+1).trim();
 
 					if (isObject) {
-						curConf[curKey][key] = value.trim();
+						curConf[curKey][key] = value;
 					} else {
 						curConf[curKey].push(key);
 					}

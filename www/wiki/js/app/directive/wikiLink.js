@@ -34,11 +34,12 @@ define([
                 }
 
                 var pageinfo = $rootScope.pageinfo;
+				//console.log(pageinfo);
 				if (/^\/[^\/]+\/[^\/]+\/_mods\/.+/.test(href) && pageinfo && pageinfo.username && pageinfo.sitename) {
 					var currentDataSource = dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
 					currentDataSource.getRawContent({path:href + config.pageSuffixName}, function(content){
 						//console.log(content);
-						content = mdconf.toMod(content);
+						content = mdconf.toMod(content || "");
 						//console.log(content);
 						var html = md.render(content);
 						$element.children().html(html);
