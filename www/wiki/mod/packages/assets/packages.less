@@ -148,25 +148,25 @@ body{
 
 .my-projects-sm{}
 
-.packages{
-    .head-line{
+.packages {
+    .head-line {
         height: 115px;
-        width:100%;
+        width: 100%;
         text-align: center;
         line-height: 115px;
         font-size: 36px;
 
-        .red{
+        .red {
             color: #BD2600;
         }
     }
 
-    .head-line-sm{
+    .head-line-sm {
         font-size: 25px;
         height: 95px;
     }
 
-    .packages-total{
+    .packages-total {
         position: relative;
         display: -webkit-flex;
         display: flex;
@@ -174,16 +174,16 @@ body{
         display: -ms-flexbox;
         -webkit-flex-wrap: wrap;
         -ms-flex-wrap: wrap;
-        flex-wrap: wrap; 
-        -webkit-justify-content: space-between; 
-        -webkit-box-pack: justify; 
+        flex-wrap: wrap;
+        -webkit-justify-content: space-between;
+        -webkit-box-pack: justify;
         -ms-flex-pack: justify;
         max-width: 1170px;
-        margin: 10px auto 10px auto;
+        margin: 35px auto 90px auto;
         justify-content: space-between;
 
-        .stat{
-            &::before{
+        .stat {
+            &::before {
                 position: absolute;
                 top: 2px;
                 left: 0;
@@ -199,36 +199,36 @@ body{
             font-family: "icomoon",'Microsoft YaHei UI';
             font-size: 14px;
             color: rgba(0,0,0,0.4);
-            
-            strong{
+
+            strong {
                 display: block;
                 font-family: Consolas;
                 color: #000;
                 font-size: 16px;
             }
         }
-        
-        .stat-icon-package::before{
+
+        .stat-icon-package::before {
             content: "\e618";
             top: -5px;
             font-size: 36px;
         }
 
-        .stat-icon-24hours::before{
+        .stat-icon-24hours::before {
             content: "\e609";
             top: -3px;
             left: 0;
             font-size: 30px;
         }
 
-        .stat-icon-7days::before{
+        .stat-icon-7days::before {
             content: "\e608";
             top: -3px;
             left: 0;
             font-size: 30px;
         }
 
-        .stat-icon-1months::before{
+        .stat-icon-1months::before {
             content: "\e60a";
             top: -3px;
             left: 0;
@@ -236,8 +236,8 @@ body{
         }
     }
 
-    .packages-show{
-        .packages-show-title{
+    .packages-show {
+        .packages-show-title {
             font-size: 22px;
             color: #BD2600;
             text-align: center;
@@ -248,11 +248,11 @@ body{
             font-weight: 600;
         }
 
-        .packages-show-title-sm{
+        .packages-show-title-sm {
             font-size: 20px;
         }
 
-        .packages-columar{
+        .packages-columar {
             -webkit-columns: 3;
             -moz-columns: 3;
             columns: 3;
@@ -263,7 +263,7 @@ body{
             padding: 0px;
             min-height: 240px;
 
-            li{
+            li {
                 column-break-inside: avoid;
                 -webkit-column-break-inside: avoid;
                 -moz-column-break-inside: avoid;
@@ -271,21 +271,21 @@ body{
                 padding: 5px;
                 padding-bottom: 40px;
 
-                .packages-weight{
+                .packages-weight {
                     padding-left: 65px;
-                    height: 90px;
+                    height: 130px;
 
-                    .package-logo{
-                        display:block;
+                    .package-logo {
+                        display: block;
                         /*margin-bottom: -82px;*/
                         margin-left: -65px;
                         position: relative;
 
-                        &:hover{
+                        &:hover {
                             text-decoration: none;
                         }
 
-                        img{
+                        img {
                             width: 50px;
                             height: 50px;
                             border-radius: 5px;
@@ -307,40 +307,47 @@ body{
                         }
                     }
 
-                    .packages-details{
+                    .packages-details {
                         margin-top: -60px;
 
-                        h3{
-                            & > a{
-                                &:hover{
+                        h3 {
+                            & > a {
+                                &:hover {
                                     color: #cb3837;
                                     text-decoration: none;
                                 }
 
-                                font-size:20px;
+                                font-size: 20px;
                                 color: rgba(0,0,0,0.8);
                             }
                         }
 
-                        div.description,div.author{
+                        div.description {
+                            height: 25px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+
+                        div.description, div.author {
                             font-size: 15px;
                             margin: 0;
                             max-width: 100%;
                             color: rgba(0,0,0,0.6);
                         }
 
-                        .author{
-                            .version{
+                        .author {
+                            .version {
                                 color: rgba(0,0,0,0.6);
-                                
-                                &:hover{
+
+                                &:hover {
                                     color: #cb3837;
                                     text-decoration: none;
                                 }
                             }
                         }
 
-                        .downloads{
+                        .downloads {
                             font-size: 15px;
                         }
                     }
@@ -348,33 +355,33 @@ body{
             }
         }
 
-        .packages-columar-sm{
+        .packages-columar-sm {
             -webkit-columns: 1;
             -moz-columns: 1;
             columns: 1;
 
-            li{
-                .packages-weight{
+            li {
+                .packages-weight {
                     display: block;
 
-                    .packages-details{
-                       h3{
-                           &>a{
-                               font-size:15px;
-                           }
-                       }
+                    .packages-details {
+                        h3 {
+                            & > a {
+                                font-size: 15px;
+                            }
+                        }
 
-                       div.description,div.author,div.downloads{
+                        div.description, div.author, div.downloads {
                             font-size: 12px;
-                       }
+                        }
                     }
                 }
             }
         }
     }
 
-    .getting-start{
-        .getting-start-title{
+    .getting-start {
+        .getting-start-title {
             font-size: 22px;
             color: #BD2600;
             text-align: center;
@@ -385,7 +392,7 @@ body{
             font-weight: 600;
         }
 
-        h1{
+        h1 {
             display: block;
             margin: 0;
             padding: 20px 0 10px 0;
@@ -396,8 +403,8 @@ body{
             text-decoration: none;
         }
 
-        a{
-            &:hover{
+        a {
+            &:hover {
                 text-decoration: underline;
             }
 
@@ -405,16 +412,16 @@ body{
         }
     }
 
-    .getting-start-sm{
-        .getting-start-title{
+    .getting-start-sm {
+        .getting-start-title {
             font-size: 20px;
         }
 
-        h1{
-             font-size: 18px;
+        h1 {
+            font-size: 18px;
         }
 
-        p{
+        p {
             font-size: 15px;
         }
     }
