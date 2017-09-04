@@ -937,6 +937,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Dockerfile" />
     <None Include="license.md" />
     <None Include="nginx_config" />
