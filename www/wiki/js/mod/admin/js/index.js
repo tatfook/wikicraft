@@ -162,7 +162,6 @@ define([
 				$scope.totalItems = data.total || 0;
 			});
 		}
-		// 新建管理员账号
 		/*
 		$scope.managerSearch = function (){
 			$scope.query = {
@@ -182,6 +181,10 @@ define([
 				$scope.totalItems = data.total || 0;
 			});
 		}*/
+		// 新建管理员账号
+		$scope.newManager = function (){
+			
+		}
 		
 		$scope.getDomainList = function (){
 			//alert("asdasdasdasd");

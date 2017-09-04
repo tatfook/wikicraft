@@ -112,6 +112,12 @@ function admin:api_managerSearch(params)
 	return errors:wrap(nil, {total = total, searchManagerList = searchManagerList})
 end
 
+function admin:api_newManager(params)
+	self:adminAuth()
+	
+	
+end
+
 -- 获取站点列表
 function admin:api_getSiteList(params)
 	self:adminAuth()
