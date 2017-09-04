@@ -11,6 +11,7 @@ define([
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+    'helper/mdconf',
     'text!html/wikiEditor.html',
     'controller/editWebsiteController',
     'codemirror/mode/markdown/markdown',
@@ -31,7 +32,7 @@ define([
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
 	'qiniu',
-], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, htmlContent, editWebsiteHtmlContent) {
+], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -259,13 +260,15 @@ define([
 
     app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {//{{{
         $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
+		var result = {url:"", filename:""};
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss('');
         }
 
-        $scope.video_insert = function () {
-            $uibModalInstance.close($scope.videoUrl || '');
+		$scope.video_insert = function () {
+			console.log(result);
+			$uibModalInstance.close(result);
         }
 
 		function init() {
@@ -279,7 +282,7 @@ define([
 				get_new_uptoken: false,             // 设置上传文件的时候是否每次都重新获取新的uptoken
 				// downtoken_url: '/downtoken',
 				// Ajax请求downToken的Url，私有空间时使用，JS-SDK将向该地址POST文件的key和domain，服务端返回的JSON必须包含url字段，url值为该文件的下载地址
-				unique_names: true,              // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
+				//unique_names: true,              // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
 				// save_key: true,                  // 默认false。若在服务端生成uptoken的上传策略中指定了sava_key，则开启，SDK在前端将不对key进行任何处理
 				domain: 'ov62qege8.bkt.clouddn.com',     // bucket域名，下载资源时用到，必需
 				max_file_size: '100mb',             // 最大文件体积限制
@@ -313,13 +316,16 @@ define([
 						var domain = up.getOption('domain');
 						var info = JSON.parse(response.response);
 						var sourceLink = domain +"/"+ info.key; //获取上传成功后的文件的Url
-						console.log(sourceLink);
+						result.filename = info.key.replace(/\s/g, "");
+						//console.log(sourceLink);
 						util.post(config.apiUrlPrefix + 'qiniu/getDownloadUrl', {
 							domain:domain,
 							key:info.key,
 						}, function(data){
 							data = data || {};
-							$scope.videoUrl = data.download_url;	
+							$scope.filename = result.filename;
+							result.url = data.download_url;
+							console.log(result);
 						});
 					},
 					'Error': function(up, err, errTip) {
@@ -2010,10 +2016,30 @@ define([
                     templateUrl: config.htmlPath + "editorInsertVideo.html",
                     controller: "videoCtrl",
                 }).result.then(function (result) {
+					console.log(result);
                     if (result) {
-                        var videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"'+ result + '"\n}\n```';
-                        editor.replaceSelection(videoContent);
-                        editor.focus();
+						var obj = {
+							mod:{
+								video:{
+									cmdName:"@wiki/js/video",
+									modName:"video",
+									params:{
+										videoUrl:result.url,
+									}
+								}
+							}
+						};
+						var content = mdconf.toMd(obj);
+						var filename = result.filename || (new Date()).getTime();
+						var path = '/' + currentPage.username + '/' + currentPage.sitename + '/_mods/' + filename;
+
+						var currentDataSource = getCurrentDataSource();
+						currentDataSource && currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
+							var videoContent = '['+ filename +'](' + path + ')';
+							//var videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"'+ result + '"\n}\n```';
+							editor.replaceSelection(videoContent);
+							editor.focus();
+						});
                     }
                 });
             }
@@ -2067,8 +2093,12 @@ define([
 							});
 						} else {
 							currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
-								line_keyword(cursor.line, '['+ fileObj.name +'](' + linkUrl + ')', 2);
-								cb && cb(linkCtrl);
+								var callback = function() {
+									line_keyword(cursor.line, '['+ fileObj.name +'](' + linkUrl + ')', 2);
+									cb && cb(linkCtrl);
+								}
+
+								currentDataSource.getLastCommitId(callback, callback, false);
 							}, function(response){
 								Message.info(response.data.message);
 								console.log(data);

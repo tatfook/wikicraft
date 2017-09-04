@@ -26,6 +26,7 @@ local oauthApp = {
 		company="keepwork",
 		clientId="1000000",
 		clientSecret="keepwork",
+		skipUserGrant=true, -- 是否可以跳过用户授权
 		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
 	{
@@ -33,6 +34,7 @@ local oauthApp = {
 		company="道峰科技",
 		clientId="1000001",
 		clientSecret="daofengkeji",
+		skipUserGrant=true, -- 是否可以跳过用户授权
 		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
 	},
 	{
@@ -41,6 +43,7 @@ local oauthApp = {
 		clientId="1000002",
 		clientSecret="gongxiangzhizaopingtai",
 		RedirectUrl="http://3dprint.idreamtech.com.cn/",
+		skipUserGrant=true, -- 是否可以跳过用户授权
 	},
 	{
 		appName="魔法哈奇",

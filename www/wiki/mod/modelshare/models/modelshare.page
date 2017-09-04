@@ -3,56 +3,205 @@
 Title: modelshare
 Author: 
 Date: 2017/7/19
+http://localhost:8099//api/mod/modelshare/models/modelshare  地址
+跳转location.href = "/"
 ]]
 
-local modelshare = inherit(nil,gettable("models.modelshare"));
+include_once("../../../models/abstract/multi_user_base.page");
+
+local modelshare   = inherit(models.abstract.multi_user_base, gettable("models.modelshare"));
+local modelsn      = inherit(models.abstract.multi_user_base, gettable("models.modelsn"));
+local hour         = inherit(models.abstract.multi_user_base, gettable("models.hour"));
+
+modelshare.db_name = "modelshare";
+
+modelsn.db_name    = "modelsn";
+modelsn            = modelsn:new();
 
 function modelshare:ctor()
-	log("a")
+	self:addfield("templateName", "string",false);
+	self:addfield("username", "string", false);
+	self:addfield("blocks","number",false);
+	self:addfield("volume","number",false);
+	self:addfield("words","string",false);
+	self:addfield("isShare","number",false);
+	self:addfield("desc","string",false);
+	self:addfield("Authorization","string",false);
+	-- pre page of limit
+	self:addfield("limit", "number", false);
+	-- skip items
+	self:addfield("skip", "number", false);
+	
+	self:addfield("_id","number",false);
+	
+	self:addfield("modelsnumber","string",false);
+	self:addfield("createDate","strig",false);
 end
 
-function modelshare:api_getName()
-	return {hello = "world"};
+--增加
+
+function modelshare:api_add(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not self:getUsername()) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
+	self:db():insertOne(
+		{
+			templateName = query.templateName,
+			username     = self:getUsername(),
+			modelsnumber = modelsn:getSn(),
+			blocks       = query.blocks,
+			volume       = query.volume,
+			isShare      = query.isShare,
+			createDate   = modelshare:getNow(),
+			desc         = query.desc,
+			
+		}, resume);
+	
+	local err, data = yield();
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
 end
 
-local a = 2;
-log(a);
+--分享页数据查找
 
-local b = 3;
-local c = 5;
---[[
-	abc
-	efg
-	sdf
-	
-	if(a >= b){
-	
-	}else{
-	
-	}
-	
-	for (var i = 1, i <= 10, i++){
-		
-	}
-	
-	var i = {"hello":"world"};
-	console.log(i)
-]]
+function modelshare:api_getOne(params)
+	local err, query = self:validateQuery(params);
 
-if a >= b then
-	log("a>=b");
-elseif a >= c then
-	log("a>=c")
-else
-	log("only a")
+	self:db():findOne({_id = query._id},resume);
+	local err, data = yield();
+	
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
 end
 
-for i=1,10 do
-	log(i)
+--列表页数据查找
+function modelshare:api_getList(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not self:getUsername()) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
+	if(not query.limit or not query.skip) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():find({["+username+-createDate"] = {self:getUsername(),gt=-1, limit = query.limit, skip = query.skip}},resume);
+	
+	local err, data = yield();
+	
+	if not err then	
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end	
 end
 
-local i = {["hello = "world"};
-log(i)
+function modelshare:api_getListCount()
+	local err, query = self:validateQuery(params);
+	self:db():find({["+username"]={self:getUsername()}},resume);
+	
+	local err, data = yield();
+	local page = #data;
+	
+	return errors:wrap(nil,page);
+end
 
+--修改
+
+function modelshare:api_modify(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not query._id) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	if(not query.foo) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():updateOne({_id = query._id},
+	{
+			templateName = query.templateName,
+			username      = query.username,
+			modelsnumber = query.modelsnumber,
+			blocks       = query.block,
+			volume       = query.volume,
+			words        = query.words,
+			
+	},resume);
+	local err,data = yield();
+	
+	if not err then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+end
+
+--删除
+
+function modelshare:api_delete(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not self:getUsername()) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
+	self:db():findOne({["+username+modelsnumber"] = {self:getUsername(), query.modelsnumber}}, resume);
+	local err, data = yield();
+	
+	if(err or not data) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+	
+	if(not query.modelsnumber) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():deleteOne({modelsnumber = query.modelsnumber},resume);
+	local err,data = yield();
+	
+	if not err then
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+end
+
+--序列号生成
+
+function modelsn:getSn()
+	self:db():insertOne({},resume);
+	local err, phoneNumber = yield();
+	local sn = "100";
+	phoneNumber  = tostring(phoneNumber._id);
+	a =8 - #phoneNumber;
+
+	for i=1,a do 
+		phoneNumber = "0" .. phoneNumber;
+		i=i+1;
+	end
+
+	return sn .. phoneNumber
+end
+
+--生成时间
+
+function modelshare:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+end
 
 ?>

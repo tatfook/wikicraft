@@ -385,7 +385,7 @@ function user:api_findPwdOne(params)
 		return errors:wrap(errors.USER_NOT_EXIST)
 	end
 	local t = os.time()
-	local key = tostring(t) .. math.random(10000)
+	local key = tostring(t) .. tostring(math.random(10000))
 	local url = "http://keepwork.com/wiki/findPwd?step=2&key=" .. key .. "&email=" .. params.email
 
 	-- TODO 加时间限制

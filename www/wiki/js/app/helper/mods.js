@@ -20,6 +20,22 @@ define([], function () {
             "logoUrl": "wiki/assets/imgs/personal_header.jpg"
         },
         {
+            "name": "名片式头部",
+            "classifyName": "header",
+            "wikiCmdName": "@wiki/js/header/personal2",
+            "desc": "名片式头部",
+            "content": '```@wiki/js/header\n{"moduleKind":"personal2","displayName":"姓名","nameinfo":"职位","name":"PingYin Or EnglishName","bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504170502765.jpeg","messages":[{"message":"信息1介绍介绍简介简介","info":"额外信息PingYin Or EnglishName"},{"message":"信息2介绍介绍简介简介","info":"额外信息PingYin Or EnglishName额外信息"},{"message":"信息3介绍介绍简介简介","info":"额外信息PingYin Or EnglishName额外信息EnglishName"}],"phone":"手机号","email":"邮箱","qq":"QQ号","wechat":"微信号","weibo":"新浪微博号"\n}\n```',
+            "logoUrl": "wiki/assets/imgs/personal_header.jpg"
+        },
+        {
+            "name": "头部",
+            "classifyName": "header",
+            "wikiCmdName": "@wiki/js/header/personal3",
+            "desc": "头部，包含头像、QQ等信息",
+            "content": '```@wiki/js/header\n{"moduleKind":"personal3","headerBg":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503653688101.jpeg","profile":"http://keepwork.com/wiki/assets/imgs/wiki_default_profile.jpg","displayName":"姓名","nameinfo":"职位","name":"PingYin Or EnglishName","messages":[{"message":"信息1介绍介绍简介简介"},{"message":"信息2介绍介绍简介简介"},{"message":"信息3介绍介绍简介简介"}],"qq":"qq号","wechat":"微信号","weibo":"微博账号"\n}\n```',
+            "logoUrl": "wiki/assets/imgs/personal_header.jpg"
+        },
+        {
             "name": "个人博客头部",
             "classifyName": "header",
             "wikiCmdName": "@wiki/js/blogHeader",
@@ -100,6 +116,14 @@ define([], function () {
             "logoUrl": "wiki/assets/imgs/wiki_workslist.png"
         },
         {
+            "name": "博客列表",
+            "classifyName": "works",
+            "wikiCmdName": "@wiki/js/blogMain1",
+            "desc": "博客配置，外链到博客详情",
+            "content": '```@wiki/js/blogMain\n{"moduleKind":"blogMain1","moreText":"查看更多","blogs":[{"contents":[{"content":"我是只化身孤岛的蓝鲸,有着最巨大的身影鱼虾在身侧穿行也有飞鸟在背上停,我路过太多太美的奇景如同伊甸般的仙境,而大海太平太静多少故事无人我爱地中海的天晴,爱西伯利亚的雪景,爱万丈高空的鹰, 爱肚皮下的藻荇我在尽心尽力地多情,直到那一天,你的衣衫破旧而歌声却温柔陪我漫无目的四处漂流，我的背脊如荒丘而你却微笑摆首把它当成整个宇宙, 你与太阳挥手也同海鸥问候陪我爱天爱地四处风流只是遗憾你终究无法躺在我胸口欣赏夜辽阔的不朽，把星子放入眸..."},{"content":"我是只化身孤岛的蓝鲸,有着最巨大的身影鱼虾在身侧穿行也有飞鸟在背上停,我路过太多太美的奇景如同伊甸般的仙境,而大海太平太静多少故事无人我爱地中海的天晴,爱西伯利亚的雪景,爱万丈高空的鹰, 爱肚皮下的藻荇我在尽心尽力地多情,直到那一天,你的衣衫破旧而歌声却温柔陪我漫无目的四处漂流..."}],"link":"#"},{"contents":[{"content":"我是只化身孤岛的蓝鲸,有着最巨大的身影鱼虾在身侧穿行也有飞鸟在背上停,我路过太多太美的奇景如同伊甸般的仙境,而大海太平太静多少故事无人我爱地中海的天晴,爱西伯利亚的雪景,爱万丈高空的鹰, 爱肚皮下的藻荇我在尽心尽力地多情,直到那一天,你的衣衫破旧而歌声却温柔陪我漫无目的四处漂流，我的背脊如荒丘而你却微笑摆首把它当成整个宇宙, 你与太阳挥手也同海鸥问候陪我爱天爱地四处风流只是遗憾你终究无法躺在我胸口欣赏夜辽阔的不朽，把星子放入眸..."}],"link":"#"}],"location":"地点","phone":"手机号","email":"邮箱","usermessage":"地点等信息啊简介","education":"教育信息学校信息简介","reward":"获奖记录"\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_workslist.png"
+        },
+        {
             "name": "产品展示",
             "classifyName": "works",
             "wikiCmdName": "@wiki/js/companyWorksList",
@@ -140,11 +164,35 @@ define([], function () {
             "logoUrl": "wiki/assets/imgs/wiki_layout2.jpg"
         },
         {
+            "name": "左图右文字",
+            "classifyName": "布局",
+            "wikiCmdName": "@wiki/js/layouts/leftImg",
+            "desc": "左边图片，右边文字，适合下载页面",
+            "content": '```@wiki/js/layouts\n{"moduleKind":"leftImg",	"img":"http://git.keepwork.com/gitlab_rls_tibet/keepworkdatasource/raw/master/tibet_images/img_1504167340127.png","title":"欢迎下载XXX软件","detail":"XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 ","link":"#","moreText":"了解更多>>","info":"额外信息介绍啊","infoLinks":[{"url":"#","text":"这里是链接"}]\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_layout2.jpg"
+        },
+        {
+            "name": "左图右文字",
+            "classifyName": "布局",
+            "wikiCmdName": "```@wiki/js/layouts/PCDownload",
+            "desc": "左边图片，右边文字，适合下载页面",
+            "content": '```@wiki/js/layouts\n{"moduleKind":"PCDownload","imgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503996369093.png","title":"Windows版","titleInfo":"软件大小","info":"额外信息，比如支持的版本等","iconImg":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503996562536.png","btnText":"下载","rightTitle":"下面是一些其它下载链接：","details":[{"text":"该下载具体信息介绍，该下载具体信息介绍，该下载具体信息介绍，该下载具体信息介绍","info":"下载地址","link":"#","linkText":"这是下载链接1"},{"text":"该下载具体信息介绍，该下载具体信息介绍，该下载具体信息介绍，该下载具体信息介绍","info":"下载地址","link":"#","linkText":"[这是下载链接2]"},{"text":"该下载具体信息介绍，该下载具体信息介绍，该下载具体信息介绍，该下载具体信息介绍","info":"下载地址","link":"#","linkText":"*这是下载链接3*"}]\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_layout.jpg"
+        },
+        {
             "name": "左文字右图",
             "classifyName": "布局",
             "wikiCmdName": "@wiki/js/companyAboutSecond",
             "desc": "左边文字，右边图片。展示布局",
             "content": '```@wiki/js/companyAboutSecond\n{"columnName":"栏目名称","columnInfo":"COLUMN","moreNewsLink":"#","paragraphs":["段落1：栏目的具体介绍，显示8行文字护比较好看,这里可以手动配置文字","段落2：栏目的具体介绍，显示8行文字护比较好看,这里可以手动配置文字","段落3：栏目的具体介绍，显示8行文字护比较好看,这里可以手动配置文字","段落4：栏目的具体介绍，显示8行文字护比较好看,这里可以手动配置文字","段落5：栏目的具体介绍，显示8行文字护比较好看,这里可以手动配置文字","段落6：栏目的具体介绍，显示8行文字护比较好看,这里可以手动配置文字","段落7：栏目的具体介绍， 显示8行文字护比较好看,这里可以手动配置文字","段落8：这里可以手动配置文字，超出部分会隐藏并且把了解详情链接挤没了"],"companyImg":"http://git.keepwork.com/gitlab_www_kaitlyn/keepworkmodules/raw/master/kaitlyn_images/img_1499236926676.jpeg"\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_layout.jpg"
+        },
+        {
+            "name": "图文布局（两列）",
+            "classifyName": "布局",
+            "wikiCmdName": "@wiki/js/layouts/AndroidIOS",
+            "desc": "图片+文字布局（两列显示），适合下载",
+            "content": '```@wiki/js/layouts\n{"moduleKind":"AndroidIOS","device1":{"img":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504062266400.png","title":"Android版","link":"#","info":"这里是android安装包的下载链接","detail":"XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍。"},"device2":{"img":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504062280837.png","title":"IOS版","link":"#","info":"这里是ios安装包的下载链接","detail":"XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍 XXX软件介绍客户端介绍游戏介绍APP介绍等等介绍。"}\n}\n```',
             "logoUrl": "wiki/assets/imgs/wiki_layout.jpg"
         },
         {
@@ -233,6 +281,14 @@ define([], function () {
             "wikiCmdName": "@wiki/js/title/title2",
             "desc": "标题，可附带文本内容",
             "content": '```@wiki/js/title\n{"moduleKind":"title2","column":"栏目名称","columnInfo":"COLUMN","content":"栏目内容部分，内容无限多，若为空字符串，则该内容部分隐藏，只显示标题"\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_title.jpg"
+        },
+        {
+            "name": "标题",
+            "classifyName": "标题",
+            "wikiCmdName": "@wiki/js/title/title3",
+            "desc": "标题，可附带文本内容、链接等",
+            "content": '```@wiki/js/title\n{"moduleKind":"title3","title":"标题标题","content":"简介简介，[可以加链接](链接url)：（我不是链接）。换行是 两个空格+反斜杠+n"\n}\n```',
             "logoUrl": "wiki/assets/imgs/wiki_title.jpg"
         },
         {

@@ -148,7 +148,7 @@ body {
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   max-width: 1170px;
-  margin: 10px auto 10px auto;
+  margin: 35px auto 90px auto;
   justify-content: space-between;
 }
 .packages .packages-total .stat {
@@ -231,7 +231,7 @@ body {
 }
 .packages .packages-show .packages-columar li .packages-weight {
   padding-left: 65px;
-  height: 90px;
+  height: 130px;
 }
 .packages .packages-show .packages-columar li .packages-weight .package-logo {
   display: block;
@@ -271,6 +271,12 @@ body {
 .packages .packages-show .packages-columar li .packages-weight .packages-details h3 > a:hover {
   color: #cb3837;
   text-decoration: none;
+}
+.packages .packages-show .packages-columar li .packages-weight .packages-details div.description {
+  height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .packages .packages-show .packages-columar li .packages-weight .packages-details div.description,
 .packages .packages-show .packages-columar li .packages-weight .packages-details div.author {
