@@ -92,3 +92,13 @@ function test:api_sendEmail(params)
 	
 	util:sendEmail(par)
 end
+
+function test:api_cookie(params)
+	response:set_cookie("key", "value")
+
+	return "hello world"
+end
+
+function test:api_getCookie(params)
+	return "get cookie"
+end
