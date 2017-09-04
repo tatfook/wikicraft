@@ -28,8 +28,8 @@ function admin:api_login(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	--if userinfo.username == "xiaoyao" then
-		--userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_ADMINISTRATOR}, resume)
+	--if userinfo.username == "lizq123" then
+		--userDB:db():updateOne({["+username"]={params.username}}, {roleId=const.USER_ROLE_MANAGER}, resume)
 		--yield()
 		--userinfo.roleId = const.USER_ROLE_ADMINISTRATOR
 	--end
@@ -68,6 +68,56 @@ function admin:api_getUserList(params)
 	return errors:wrap(nil, {total=total, userList = userList})
 end
 
+-- 获取管理员列表
+function admin:api_getManagerList(params)
+	self:adminAuth()
+
+	local skip, limit = util:pagination(params)
+
+	local userDB = models.user:new()
+	userDB:db():count({["+roleId"] = {const.USER_ROLE_ADMINISTRATOR}}, resume)
+	local _, total = yield()
+
+	userDB:db():find({["+roleId"] = {const.USER_ROLE_ADMINISTRATOR}}, resume)
+	local _, managerList = yield()
+
+	return errors:wrap(nil, {total = total, managerList = managerList})
+end
+
+function admin:api_managerSearch(params)
+	self:adminAuth()
+
+	local _id = params._id or nil 
+	local username = params.username 
+	
+	local userDB = models.user:new()
+	--userDB:db():count({["+roleId+_id"] = {const.USER_ROLE_ADMINISTRATOR,1}}, resume)
+	--local _, total = yield()
+	local total = 0;
+	
+	if username ~= "" and _id == nil then 
+		userDB:db():find({["+roleId+username"] = {const.USER_ROLE_ADMINISTRATOR,username}}, resume)
+	end
+	if _id ~= "" and username == "" then 
+		userDB:db():find({["+roleId+_id"] = {const.USER_ROLE_ADMINISTRATOR,_id}}, resume)
+	end 
+	if username ~= "" and _id ~= nil then 
+		userDB:db():find({["+roleId+_id+username"] = {const.USER_ROLE_ADMINISTRATOR,_id,username}}, resume)
+	end 
+	
+	--userDB:db():find({roleId = const.USER_ROLE_ADMINISTRATOR}, resume)
+	--userDB:db():find({{roleId = const.USER_ROLE_ADMINISTRATOR},{_id={gt=-1, skip=skip, limit=limit}}}, resume)
+	local _, searchManagerList = yield()
+
+	return errors:wrap(nil, {total = total, searchManagerList = searchManagerList})
+end
+
+function admin:api_newManager(params)
+	self:adminAuth()
+	
+	
+end
+
 -- 获取站点列表
 function admin:api_getSiteList(params)
 	self:adminAuth()
@@ -83,7 +133,56 @@ function admin:api_getSiteList(params)
 	return errors:wrap(nil, {total=total, siteList = siteList})
 end
 
+function admin:api_test()
+	return errors:wrap(nil, {total="total", siteList = "siteList"})
+end 
 
+-- 获取域名列表
+function admin:api_getDomainList(params)
+	self:adminAuth()
+	local skip, limit = util:pagination(params)
+	local domainDB = models.website_domain:new()
+	domainDB:db():count({}, resume)
+	local _,total = yield()
+	
+	domainDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	local _, domainList = yield()
+	
+	return errors:wrap(nil, {total=total, domainList = domainList})
+end
+
+-- 获取vip列表
+function admin:api_getVIPList(params)
+	self:adminAuth()
+	local skip, limit = util:pagination(params)
+	local VIPDB = models.vip:new()
+	VIPDB:db():count({}, resume)
+	local _,total = yield()
+	
+	VIPDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	--VIPDB:db():find({}, resume)
+	local _, VIPList = yield()
+	
+	return errors:wrap(nil, {total=total, VIPList = VIPList})
+end
+
+-- 获取操作日志列表
+--[[
+function admin:api_getVIPList(params)
+	self:adminAuth()
+	local skip, limit = util:pagination(params)
+	local VIPDB = models.vip:new()
+	VIPDB:db():count({}, resume)
+	local _,total = yield()
+	
+	VIPDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
+	--VIPDB:db():find({}, resume)
+	local _, VIPList = yield()
+	
+	return errors:wrap(nil, {total=total, VIPList = VIPList})
+end
+
+]]
 
 
 
