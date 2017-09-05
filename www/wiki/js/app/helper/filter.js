@@ -4,7 +4,10 @@
 
 /* 程序过滤模块 */
 
-define(['jquery', 'text!html/browers.html'], function($, browersErrContent) {
+define([
+	'jquery',
+   	'text!html/browers.html'
+], function($, browersErrContent) {
 	config.registerFilter("/wiki/iframeagent", function() {
 		var lastHash = undefined;
 		var hashChangeFire = function(){
@@ -57,4 +60,32 @@ define(['jquery', 'text!html/browers.html'], function($, browersErrContent) {
         console.log("浏览器版本太低");
         $(window.document.body).html(browersErrContent);
     });
+
+    //config.registerFilter("/wiki/cros", function(){
+        ////$(window.document.body).html("<div>" +  (window.parent.test || "test") + "</div>");
+		//window.addEventListener("message", function(e){
+			////$.ajax({
+				////url:obj.url,
+				////type:obj.type || "GET",
+				////dataType:obj.dataType || "json",
+				//////contentType:"application/json;charset=UTF-8",
+				////data:obj.data,
+				////beforeSend:obj.beforeSend,
+				////success:function(result, statu, xhr) {
+					////obj.success && obj.success(result, statu, xhr);
+				////},
+				////error:function(xhr, statu, error) {
+					////obj.error && obj.error(xhr, statu, error);
+				////}
+			////});
+			//console.log(e);	
+			////e.source.postMessage({key:"echo test"}, e.origin);
+
+			////$.ajax();
+		//});
+
+		//setTimeout(function(){
+			//window.parent.postMessage({cmd:"load"}, "*");
+		//}, 1000);
+    //});
 });

@@ -6,7 +6,7 @@
 
 (function () {
 	var wiki_config = window.wiki_config || {};
-	var localEnv = window.location.hostname == "localhost";
+	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
 	var localVMEnv = localEnv && window.location.host != "localhost:63342";
 	var pathPrefix = (localEnv && !localVMEnv) ? '/www/wiki/' : (wiki_config.webroot || '/wiki/');
 	var hostname = window.location.hostname;

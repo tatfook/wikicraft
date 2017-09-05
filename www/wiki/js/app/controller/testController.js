@@ -14,8 +14,21 @@ define([
 			//util.post(config.apiUrlPrefix + "test/cookie",{}, function(data){
 				//console.log(data);
 			//});
-			util.post(config.apiUrlPrefix + "test/getCookie",{}, function(data){
-				console.log(data);
+			//util.post(config.apiUrlPrefix + "test/getCookie",{}, function(data){
+				//console.log(data);
+			//});
+
+			var iframe = document.getElementById("keepworkLogin");
+			iframe.onload = function() {
+				var win = iframe.contentWindow;
+				win.postMessage({
+					key:"this is a test",
+				}, "*");
+				console.log("--------");
+			}
+
+			window.addEventListener("message", function(e){
+				console.log(e);
 			});
 		}
 
