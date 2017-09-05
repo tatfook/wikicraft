@@ -145,7 +145,7 @@ define([
             for (key in pageTree.children) {
                 if (key == site.name) {
                     var node = pageTree.children[key];
-                    node.name = site.displayName + '(' + site.name + ')';
+                    node.name = site.displayName ? site.displayName + '(' + site.name + ')' : site.name;
                     isExist = true;
                     break;
                 }
@@ -155,7 +155,7 @@ define([
                 continue;
 
             pageTree.children[site.name] = {
-                name: site.displayName + '(' + site.name + ')',
+                name: site.displayName ? site.displayName + '(' + site.name + ')' : site.name,
                 url: '/' + site.username + '/' + site.name,
                 sitename: site.name,
                 username: site.username,
