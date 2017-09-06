@@ -74,6 +74,7 @@ function elastic_search:api_submitSiteinfo(params)
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
 	content = content .. "\n" .. (params.desc or "")
+	content = content .. "\n" .. (params.tags or "")
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
@@ -102,8 +103,9 @@ function elastic_search:api_submitPageinfo(params)
 
 	local pageinfo = params.pageinfo or {}
 	params.pageinfo = nil
-	params.extra_data = toJson(pageinfo)
 	params.extra_search = "pageinfo: " .. params.content
+	params.content = nil
+	params.extra_data = toJson(pageinfo)
 
 	self:api_submitToES(params)
 

@@ -10,26 +10,39 @@ define([
 ], function (app, util, mdconf, htmlContent) {
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
-			config.apiUrlPrefix = "http://xiaoyao.localhost.com:8900/api/wiki/models/";
 			//util.post(config.apiUrlPrefix + "test/cookie",{}, function(data){
 				//console.log(data);
-			//});
-			//util.post(config.apiUrlPrefix + "test/getCookie",{}, function(data){
-				//console.log(data);
+			//}, function() {
+				//util.post(config.apiUrlPrefix + "test/getCookie",{}, function(data){
+					//console.log(data);
+				//});
 			//});
 
-			var iframe = document.getElementById("keepworkLogin");
-			iframe.onload = function() {
-				var win = iframe.contentWindow;
-				win.postMessage({
-					key:"this is a test",
-				}, "*");
-				console.log("--------");
-			}
+			console.log($.cookie());
 
-			window.addEventListener("message", function(e){
-				console.log(e);
+			util.$http({
+				method:"GET",
+				url:"http://xiaoyao.localhost.com:8900/api/wiki/models/user/isLogin",
+				withCredentials:true,
 			});
+			util.$http({
+				method:"GET",
+				url:"http://xiaoyao.localhost.com:8900/api/wiki/models/test/getCookie",
+				withCredentials:true,
+			});
+
+			//var iframe = document.getElementById("keepworkLogin");
+			//iframe.onload = function() {
+				//var win = iframe.contentWindow;
+				//win.postMessage({
+					//key:"this is a test",
+				//}, "*");
+				//console.log("--------");
+			//}
+
+			//window.addEventListener("message", function(e){
+				//console.log(e);
+			//});
 		}
 
 		$scope.$watch("$viewContentLoaded", init);

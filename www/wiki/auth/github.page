@@ -90,6 +90,8 @@ end
 
 models.data_source:new():api_githubLinkGitlab({username=userinfo.username, githubUserId=githubId})
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+
+setAuthCookie(token)
 return response:send({token = token, data = userinfo, error=0, message="OK"})
 
 

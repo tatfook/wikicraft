@@ -29,8 +29,14 @@ function test:api_post(params)
 	return params or {key="test"}
 end
 
+function test:api_getToken(params)
+	return encodeJWT({userId=1}, 1000)
+end
 function test:api_token(params)
-	return decodeJWT(params.token or "")
+	local token = decodeJWT(params.token or "")
+	log(token)
+
+	return token
 end
 
 function test:api_qiniu()
@@ -94,11 +100,16 @@ function test:api_sendEmail(params)
 end
 
 function test:api_cookie(params)
-	response:set_cookie("key", "value")
+	--response:set_cookie("key", "value")
 
 	return "hello world"
 end
 
 function test:api_getCookie(params)
-	return "get cookie"
+	log("-------------------------")
+	log(request.headers.Cookie)
+	local token =  request:get_cookie("token")
+	log(token)
+
+	return token	
 end

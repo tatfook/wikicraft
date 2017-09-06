@@ -503,7 +503,9 @@ function user:api_login(params)
 	local vipDB = models.vip:new()
 	userinfo.vipInfo = vipDB:api_getByUsername({username=params.username}).data
 
-	return {error=errors.SUCCESS, data={token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo}}
+	local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+	setAuthCookie(token)
+	return {error=errors.SUCCESS, data={token=token, userinfo=userinfo}}
 end
 
 function user:api_bindThreeService(params)
@@ -535,6 +537,10 @@ function user:api_register(params)
 	params.username = string.lower(params.username)
 	if #params.username < 4 or #params.username > 30 then
 		return errors:wrap(errors:new("用户名不合法"))
+	end
+
+	if not string.match(params.username, "^%l+$") then
+		return errors:wrap(errors:new("用户名只能由小写字母组成"))
 	end
 
 	-- 查找用户名是否可用
@@ -581,7 +587,9 @@ function user:api_register(params)
 	local vipDB = models.vip:new()
 	userinfo.vipInfo = vipDB:api_getByUsername({username=params.username}).data
 
-	return errors:wrap(nil, {token=encodeJWT({userId=userinfo._id, username=userinfo.username}), userinfo=userinfo, isNewUser=1})
+	local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+	setAuthCookie(token)
+	return errors:wrap(nil, {token=token, userinfo=userinfo, isNewUser=1})
 end
 
 -- 获取用户默认数据源
@@ -910,5 +918,31 @@ function user:api_getGitlabAccount(params)
 	return errors:wrap(nil, {username=dataSource.dataSourceUsername, password=dataSource.dataSourcePassword})
 end
 
+-- 用户是否登录
+function user:api_isLogin(params)
+	--log(request.headers, true)
+	local origin = request:header("Origin")
+	if not origin then
+		local refer = request:header("Referer")
+		origin = string.match(refer, "http[s]?://[^/]*")
+	end
+	--log(origin)
+	
+	if not isAllowCros(origin) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS)
+	end
 
+
+	response:set_header('Access-Control-Allow-Origin', origin);  -- debug use
+	response:set_header('Access-Control-Allow-Credentials', 'true');  -- 设置允许携带cookie
+
+	local token = getTokenInfo()
+	local isLogin = false
+	
+	if token then
+		isLogin = true
+	end
+
+	return errors:wrap(nil, {isLogin=isLogin})
+end
 

@@ -91,5 +91,6 @@ if not userinfo then
 	return response:send({error=0, data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
 end
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+setAuthCookie(token)
 return response:send({token = token, data = userinfo, error=0, message="OK"})
 
