@@ -387,7 +387,7 @@
                                     <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
                                     <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
                                     <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
-                                    <li><a ng-click="goUserCenterPage('userProfile', 'dataSource')">数据源</a></li>
+                                    <!--<li><a ng-click="goUserCenterPage('userProfile', 'dataSource')">数据源</a></li>-->
                                     <li role="separator" class="divider"></li>
                                     <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
                                     <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
@@ -516,7 +516,7 @@
                             <input id="searchbar-nologin" type="text" class="form-control" placeholder="" ng-model="search">
                             <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted"></span>
                         </li>
-                        <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
+                        <li><a ng-click="goVipPay()">VIP</a></li>
                         <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
                         <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}">注册</a></li>
                     </ul>

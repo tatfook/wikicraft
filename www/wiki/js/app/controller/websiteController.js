@@ -62,7 +62,7 @@ define([
                 "title":"删除提醒",
                 "confirmBtnClass":"btn-danger",
                 "theme":"danger",
-                "content":"确定删除 " + site.displayName + " 网站？"
+                "content":"确定删除 " + (site.displayName || site.name) + " 网站？"
             },function(){
                 util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId: site._id}, function (data) {
                     site.isDelete = true;
