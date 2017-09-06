@@ -350,7 +350,7 @@
                             <p ng-show="trendsCount==0">暂无活动</p>
                             <div ng-show="trendsCount>0" class="active-row-box col-md-12">
                                 <div class="col-md-12 active-row" ng-repeat="x in trendsList">
-                                    <img ng-src="{{x.userinfo.portrait || imgsPath+'default_portrait.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
+                                    <img ng-src="{{userinfo.portrait || imgsPath+'default_portrait.png'}}" alt="">{{x.desc}}<span class="pull-right">{{x.updateDate}}</span>
                                 </div>
                             </div>
                             <div ng-show="trendsCount>0" class="btn btn-block btn-outline col-md-12" ng-click="loadActivity()">查看更多活动</div>
