@@ -226,6 +226,10 @@ define([
             util.go("VipLevel");
         };
 
+        $scope.goVipPay = function () {
+            util.go("vip");
+        };
+
 		$scope.goAdminPage = function() {
 			util.go("/wiki/js/mod/admin/js/login", true);
 		};
