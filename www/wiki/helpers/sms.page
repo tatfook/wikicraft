@@ -48,17 +48,10 @@ local headers = {["Accept"]="application/json", ["Content-Type"] = "application/
 -- log(url)
 
 -- response:Begin()
-function sendTemplateSms(params, callback)
+function sendTemplateSms(params)
 	params.appId = appId
-	System.os.GetUrl({url = url, headers = headers, form = params, json = true}, function(errCode, msg, data)
-		callback(errCode, data or {})
-		--[[
-			data = commonlib.Json.Decode(data or "{}") 
-			if data.statusCode ~= "000000" then
-				response:send({error=1, message=data.statusMsg})
-			end
-			mem_cache:set(data.templateSMS.smsMessageSid, code)
-		]]
-	end)
+	System.os.GetUrl({url = url, headers = headers, form = params, json = true}, resume)
+	local code, data = yield()
+	return data.data
 end
 

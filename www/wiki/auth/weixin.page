@@ -77,5 +77,6 @@ if not userinfo then
 end
 
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+setAuthCookie(token)
 return response:send({token = token, data = userinfo, error=0, message="OK"})
 

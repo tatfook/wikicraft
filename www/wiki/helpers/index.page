@@ -26,18 +26,19 @@ end
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
 include_once(WIKI_ROOT .. "helpers/filter.page")
+include_once(WIKI_ROOT .. "helpers/cros.page")
 WIKI_ENV="www"
 WIKI_DB_PATH="database/www/"
 
 -- json web token  encode/decode
-function encodeJWT(payload)
+function encodeJWT(payload, expire)
 	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
-	return jwt.encode(payload, secret["token_secret"], nil,  secret["token_expire"] or 3600);
+	return jwt.encode(payload, secret["token_secret"], nil, expire or secret["token_expire"] or 3600)
 end
 
 function decodeJWT(token)
 	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
-	return jwt.decode(token, secret["token_secret"], true);
+	return jwt.decode(token, secret["token_secret"], true)
 end
 
 --function getTokenStr() 
@@ -49,12 +50,21 @@ end
 	--return token
 --end
 
+function setAuthCookie(token)
+	--response:set_cookie("token", token)	
+end
+
 function getTokenInfo()
-	local authHeader = request:header('Authorization')
-	if not authHeader then
+	local authHeader = request:header('Authorization') 
+	local token = request:get_cookie("token")
+	if authHeader then
+		token = authHeader:match("%s+(%S+)")
+	end
+
+	if not token then
 		return nil
 	end
-	local token = authHeader:match("%s+(%S+)");
+
 	return decodeJWT(token)
 end
 

@@ -264,13 +264,21 @@ define([
             }
         };
 
-        $scope.logout = function () {
-            Account.logout();
-            $rootScope.isLogin = false;
-            console.log(window.location.pathname);
-            if (/^\/wiki/.test(window.location.pathname)){
-                util.go('home');
-            }
+		$scope.logout = function () {
+			Account.logout();
+			$rootScope.isLogin = false;
+			console.log(window.location.pathname);
+			if (/^\/wiki/.test(window.location.pathname)){
+				util.go('home');
+			}
+			//util.post(config.apiUrlPrefix + 'user/logout', {}, function(){
+				//Account.logout();
+				//$rootScope.isLogin = false;
+				//console.log(window.location.pathname);
+				//if (/^\/wiki/.test(window.location.pathname)){
+					//util.go('home');
+				//}
+			//});
         };
         
         $scope.clickShare=function () {
