@@ -31,6 +31,9 @@ define([
 
 			util.post(config.apiUrlPrefix + "oauth_app/getByClientId", {clientId:queryArgs.client_id}, function(data){
 				$scope.oauthApp = data || {};
+				if (data.skipUserGrant && queryArgs.skipUserGrant == "yes") {
+					$scope.agree();
+				}
 			});
 
 			$scope.agree = function(){

@@ -348,7 +348,8 @@ function pay:api_webhooks(params)
 				end
 			end
 
-			if(payInfo.app_name == 'KEEPWORK' and tonumber(payInfo.app_goods_id) == 1) then
+			if(payInfo.app_name == 'KEEPWORK' and tonumber(payInfo.app_goods_id) == 1 or
+			   payInfo.app_name == '教育平台' and tonumber(payInfo.app_goods_id) == 1) then
 				local url       = appInfo.payCallbackUrl;
 				local apiParams = commonlib.copy(payInfo.additional);
 

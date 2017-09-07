@@ -26,6 +26,7 @@ function modelshare:ctor()
 	self:addfield("words","string",false);
 	self:addfield("isShare","number",false);
 	self:addfield("desc","string",false);
+	self:addfield("Authorization","string",false);
 	-- pre page of limit
 	self:addfield("limit", "number", false);
 	-- skip items
@@ -33,7 +34,7 @@ function modelshare:ctor()
 	
 	self:addfield("_id","number",false);
 	
-	self:addfield("modelsnumber","number",false);
+	self:addfield("modelsnumber","string",false);
 	self:addfield("createDate","strig",false);
 end
 
@@ -41,7 +42,11 @@ end
 
 function modelshare:api_add(params)
 	local err, query = self:validateQuery(params);
-	--log(query)
+	
+	if(not self:getUsername()) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
 	self:db():insertOne(
 		{
 			templateName = query.templateName,
@@ -54,6 +59,7 @@ function modelshare:api_add(params)
 			desc         = query.desc,
 			
 		}, resume);
+	
 	local err, data = yield();
 	if not err then
 		return errors:wrap(nil, data);
@@ -67,8 +73,7 @@ end
 
 function modelshare:api_getOne(params)
 	local err, query = self:validateQuery(params);
-	--log(params)
-	--log(query)
+
 	self:db():findOne({_id = query._id},resume);
 	local err, data = yield();
 	
@@ -83,11 +88,16 @@ end
 function modelshare:api_getList(params)
 	local err, query = self:validateQuery(params);
 	
+	if(not self:getUsername()) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
 	if(not query.limit or not query.skip) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 	
-	self:db():find({_id = {gt = -1, limit = query.limit, skip = query.skip}},resume);
+	self:db():find({["+username+-createDate"] = {self:getUsername(),gt=-1, limit = query.limit, skip = query.skip}},resume);
+	
 	local err, data = yield();
 	
 	if not err then	
@@ -99,7 +109,7 @@ end
 
 function modelshare:api_getListCount()
 	local err, query = self:validateQuery(params);
-	self:db():find({},resume);
+	self:db():find({["+username"]={self:getUsername()}},resume);
 	
 	local err, data = yield();
 	local page = #data;
@@ -123,7 +133,7 @@ function modelshare:api_modify(params)
 	self:db():updateOne({_id = query._id},
 	{
 			templateName = query.templateName,
-			author       = query.author,
+			username      = query.username,
 			modelsnumber = query.modelsnumber,
 			blocks       = query.block,
 			volume       = query.volume,
@@ -145,15 +155,26 @@ end
 function modelshare:api_delete(params)
 	local err, query = self:validateQuery(params);
 	
-	if(not query.id) then
+	if(not self:getUsername()) then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
+	self:db():findOne({["+username+modelsnumber"] = {self:getUsername(), query.modelsnumber}}, resume);
+	local err, data = yield();
+	
+	if(err or not data) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+	
+	if(not query.modelsnumber) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 	
-	self:db():deleteOne({_id = query.id}, resume);
+	self:db():deleteOne({modelsnumber = query.modelsnumber},resume);
 	local err,data = yield();
 	
 	if not err then
-		return errors:wrap(nil, data);
+		return errors:wrap(errors.SUCCESS);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end

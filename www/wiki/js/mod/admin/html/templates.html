@@ -1,0 +1,143 @@
+<style>
+    .template-config .col-sm-9 > span, .template-config .col-sm-9 > a{
+        padding-top: 7px;
+        display: inline-block;
+        margin-right: 15px;
+    }
+    .template-config .btns .btn{
+        margin-right: 20px;
+    }
+    .template-config .collapse.in{
+        border: 1px solid #fff;
+        padding: 15px 0;
+        margin-bottom: 15px;
+    }
+    .template-config .well{
+        width: 600px;
+        margin: 0 auto;
+    }
+</style>
+<div ng-controller="templatesController" class="template-config">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" ng-repeat="category in modParams.categories" ng-class="{true:'active'}[$index==0]">
+            <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name}}</a>
+        </li>
+        <li role="presentation" class="pull-right">
+            <a href="#addClassify" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="addClassify">添加模板分类</a>
+        </li>
+    </ul>
+
+    <div id="addClassify" class="collapse">
+        <form class="well">
+            <div class="form-group">
+                <label class="sr-only">name</label>
+                <input type="text" class="form-control" placeholder="name" ng-model="newClassify.name"/>
+            </div>
+            <div class="form-group">
+                <label class="sr-only">classify</label>
+                <input type="text" class="form-control" placeholder="classify" ng-model="newClassify.classify"/>
+            </div>
+            <div class="btns clearfix">
+                <button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#addClassify">取 消</button>
+                <button type="button" class="btn btn-primary pull-right" ng-click="saveClassify()" data-toggle="collapse" data-target="#addClassify">确 定</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
+            <button ng-show="modParams.categories" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addTemplate" aria-expanded="false" aria-controls="addTemplate" ng-click="">添加模板</button>
+            <div class="collapse" id="addTemplate">
+                <form class="well form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">logoUrl</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.logoUrl">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">previewUrl</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.previewUrl">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">styles</label>
+                        <div class="col-sm-9">
+                            <span ng-repeat="style in newTemplate.styles">{{style.name}}</span>
+                            <a href="#addStyles" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="addStyles">添加</a>
+                        </div>
+                    </div>
+                    <div id="addStyles" class="collapse">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="newStyle.name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">logoUrl</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="newStyle.logoUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">previewUrl</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="newStyle.previewUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">contents</label>
+                            <div class="col-sm-9">
+                                <span ng-repeat="content in newStyle.contents">{{content.pagepath}}</span>
+                                <a href="#addContent" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="addContent">添加</a>
+                            </div>
+                        </div>
+                        <div id="addContent" class="collapse">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">pagepath</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-model="newContent.pagepath">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">contentUrl</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-model="newContent.contentUrl">
+                                </div>
+                            </div>
+                            <div class="btns clearfix">
+                                <div class="btn btn-primary pull-right" ng-click="addContent()" data-toggle="collapse" data-target="#addContent">确定添加</div>
+                                <div class="btn btn-default pull-right" data-toggle="collapse" data-target="#addContent">取 消</div>
+                            </div>
+                        </div>
+                        <div class="btns clearfix">
+                            <div class="btn btn-primary pull-right" ng-click="addStyle()" data-toggle="collapse" data-target="#addStyles">确定添加</div>
+                            <div class="btn btn-default pull-right" data-toggle="collapse" data-target="#addStyles">取 消</div>
+                        </div>
+                    </div>
+                    <div class="footer clearfix btns">
+                        <div class="btn btn-primary pull-right" ng-click="addTemplate()" data-toggle="collapse" data-target="#addTemplate">确定添加</div>
+                        <div class="btn btn-default pull-right" data-toggle="collapse" data-target="#addTemplate">取 消</div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-5" ng-repeat="template in activeCategories.templates" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
+                <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
+                <div class="col-md-12 btn-group">
+                    <div class="btn col-sm-6 btn-lg" ng-click="goPreviewPage(template.previewUrl)">预览</div>
+                    <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                </div>
+                <span class="label">{{template.name}}</span>
+            </div>
+        </div>
+    </div>
+</div>

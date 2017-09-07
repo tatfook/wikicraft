@@ -37,6 +37,7 @@ elseif(ajax_type == "wiki") then
 	send_origin_headers();
 	-- cross-domain request allow
 	addheader('Access-Control-Allow-Origin','*');  -- debug use
+	--addheader('Access-Control-Allow-Credentials', 'true');  -- debug use
 	addheader('Access-Control-Allow-Methods',"GET, POST, PUT, DELETE");  -- debug use
 	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"); -- debug use
 

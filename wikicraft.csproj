@@ -924,6 +924,7 @@
     <Content Include="www\wiki\js\mod\wiki\js\chat.js" />
     <Content Include="www\wiki\js\mod\wiki\js\include.js" />
     <Content Include="www\wiki\js\mod\wiki\js\toc.js" />
+    <Content Include="www\wiki\mod\modelshare\controller\shareController.js" />
     <Content Include="www\wiki\mod\modelshare\html\share.html" />
     <Content Include="www\wiki\mod\packages\assets\packages.css">
       <DependentUpon>packages.less</DependentUpon>
@@ -936,6 +937,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Dockerfile" />
     <None Include="license.md" />
     <None Include="nginx_config" />

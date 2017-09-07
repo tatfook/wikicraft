@@ -1,0 +1,33 @@
+<?npl
+--[[
+Title: cros handle
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+
+local allow_cros_list = {
+	"http://test.localhost.com:8900",
+	"http://xiaoyao.localhost.com:8900",
+}
+
+function cros_handle()
+	local origin = request:GetHost()
+
+	addheader('Access-Control-Allow-Origin','*');  -- debug use
+	--addheader('Access-Control-Allow-Credentials', 'true');  -- debug use
+	addheader('Access-Control-Allow-Methods',"GET, POST, PUT, DELETE");  -- debug use
+	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"); -- debug use
+
+end
+
+
+function isAllowCros(origin) 
+	for _, item in ipairs(allow_cros_list) do
+		if item == origin then
+			return true
+		end
+	end
+
+	return false
+end

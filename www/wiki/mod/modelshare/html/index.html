@@ -105,7 +105,7 @@
                 <button class="btn btn-default button2" type="submit" id="hotButton" ng-click="set(2)">热门作品</button>
                 <button class="btn btn-default button3" type="submit" id="actButon" ng-click="set(3)">活动专区</button>
                 <div class="number">
-                    <span id="span1">作品数：12345678910件</span>
+                    <span id="span1">作品数：{{totalItems}}件</span>
                 </div>
             </div>
         </div>
@@ -194,11 +194,6 @@
                 </li>
 			</ul>
         </div>
-		<!-- <ul class="pagination" style="margin: 0px;" >   -->
-			<!-- <li ng-class="{true:'disabled'}[p_current==1]"><a href="#">首页</a></li>   -->
-			<!-- <li ng-class="{true:'active'}[p_current==page]"><a href="#">{{page}}</a></li>   -->
-			<!-- <li ng-class="{true:'disabled'}[p_current==p_all_page]"><a href="#">尾页</a></li>   -->
-		<!-- </ul> -->
 		<ul uib-pagination
 			class="pagination-sm"
 			first-text="首页" 

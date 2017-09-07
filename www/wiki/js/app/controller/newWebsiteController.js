@@ -10,7 +10,7 @@ define([
     'text!html/newWebsite.html',
     'controller/editWebsiteController',
 ], function (app, util, storage, siteStyle, htmlContent, editWebsiteHtmlContent) {
-    var controller = ['$rootScope','$scope', '$sce', 'Account', function ($rootScope, $scope, $sce, Account) {
+    var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
         $scope.websiteDomainErrMsg = "";
@@ -85,27 +85,6 @@ define([
         $scope.nextStep = function () {
             $scope.errMsg = "";
             if ($scope.step == 1) {
-                if (/^\s+/.test($scope.website.displayName)){
-                    $scope.nextStepDisabled = true;
-                    $scope.errMsg="首位不能为空格";
-                    return;
-                }
-                if (!$scope.website.displayName) {
-                    $scope.errMsg = "站点名为必填字段";
-                    return;
-                }
-                if ($scope.website.displayName.length > 100) {
-                    $scope.errMsg = "名称过长";
-                    return;
-                }
-                $scope.websiteNameErrMsg = "";
-                $scope.nextStepDisabled = false;
-                $scope.step++;
-                setTimeout(function () {
-                    $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
-                });
-                return;
-            } else if ($scope.step == 2) {
                 if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
                     $scope.errMsg = "域名为必填字段";
                     return;
@@ -129,25 +108,29 @@ define([
                     });
                 }
                 $scope.website.visibility = $scope.visibility ? "private" : "public";
-                //console.log($scope.website.visibility);
-                return;
-            } else if ($scope.step == 3) {
+
                 $scope.nextStepDisabled = !$scope.website.templateName;
-            } else if ($scope.step == 4) {
+                return;
+            } else if ($scope.step == 2) {
                 if (!$scope.website.templateName) {
+                    Message.info("请选择站点类型和模板");
                     $scope.errMsg = "请选择站点类型和模板";
                     return;
                 }
-                $scope.nextStepDisabled = !$scope.website.styleName;
-            } else if ($scope.step == 5) {
-                if (!$scope.website.styleName) {
-                    $scope.errMsg = "请选择模板样式";
-                    return ;
-                }
-                $scope.website.logoUrl = $scope.imgsPath + $scope.style.logoUrl;
-            } else if ($scope.step == 6) {
+                $scope.step++;
+                return;
+            } else if ($scope.step == 3) {
+                // $scope.nextStepDisabled = !$scope.website.templateName;
+
                 $scope.website.userId = $scope.user._id;
                 $scope.website.username = $scope.user.username;
+
+                if (!$scope.website.styleId || !$scope.website.styleName || !$scope.website.logoUrl){
+                    var style = $scope.style || $scope.styles[0];
+                    $scope.website.styleId = style._id;
+                    $scope.website.styleName = style.name;
+                    $scope.website.logoUrl = $scope.imgsPath + style.logoUrl;
+                }
 
                 //$scope.errMsg = "建站中...";
                 $scope.prevStepDisabled = true;
@@ -157,11 +140,11 @@ define([
                     $scope.prevStepDisabled = false;
                     $scope.nextStepDisabled = false;
                 }, function () {
-					console.log("创建失败，请稍后重试...");
+                    console.log("创建失败，请稍后重试...");
                     $scope.prevStepDisabled = false;
                     $scope.nextStepDisabled = false;
                 });
-                return
+                return;
             } else{
                 //createWebsiteRequest();
                 $rootScope.$broadcast('userCenterContentType', 'websiteManager');
@@ -173,10 +156,6 @@ define([
             $scope.step--;
             $scope.nextStepDisabled = false;
             if ($scope.step==1){
-                setTimeout(function () {
-                    $scope.isModal ? $("#webName_modal").focus() : $("#webName").focus();
-                });
-            }else if ($scope.step == 2){
                 setTimeout(function () {
                     $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
                 });
@@ -203,7 +182,7 @@ define([
             }
 
             setTimeout(function () {
-                $scope.isModal ? $("#webName_modal").focus() : $("#webName").focus();
+                $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
             });
         }
 
@@ -350,8 +329,19 @@ define([
         $scope.goEditWebsitePage = function () {
             storage.sessionStorageSetItem("editWebsiteParams", $scope.website);
             storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
-            util.go('/wiki/userCenter', true);
+            util.go('/wiki/userCenter');
             //window.open(window.location.href);
+        }
+
+        // 网站编辑
+        $scope.goEditerPage = function () {
+            storage.sessionStorageSetItem("urlObj",{username:$scope.website.username, sitename:$scope.website.name});
+            util.go('wikieditor');
+        }
+
+        // VIP付费页面
+        $scope.goVIP = function () {
+            util.go("vip");
         }
     }];
 

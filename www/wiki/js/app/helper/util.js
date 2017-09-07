@@ -257,6 +257,7 @@ define([
 		config.url = obj.url;
 		config.cache = obj.cache;
 		config.isShowLoading = obj.isShowLoading;
+		config.withCredentials = obj.withCredentials;
 
         // 在此带上认证参数
         if (obj.method == 'POST') {

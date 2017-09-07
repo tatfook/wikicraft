@@ -5,11 +5,13 @@
 define([
     'helper/util',
     'helper/dataSource',
+    'helper/mdconf',
     'markdown-it',
     'highlight',
-], function (util, dataSource, markdownit, hljs) {
+], function (util, dataSource, mdconf, markdownit, hljs) {
 	var shortCmdMap = {
 		"@include":"@wiki/js/include",
+		"@mod":"@wiki/js/mod",
 		"@toc":"@wiki/js/toc",
 	}
     var mdwikiMap = {
@@ -491,6 +493,7 @@ define([
             var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
             return htmlContent + scriptContent;
         }
+
         mdwiki.bindRenderContainer = function (selector) {
             mdwiki.mdwikiContainerSelector = selector;
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
@@ -527,7 +530,9 @@ define([
                 modParams = angular.fromJson(token.content)
             }
             catch (e) {
-                modParams = token.content;
+				var params = mdconf.toJson(token.content).params;
+
+                modParams = params || token.content;
             }
 
             var wikiBlock = {
@@ -668,7 +673,7 @@ define([
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
 			//console.log(tokenList);
-            //console.log(blockList);
+			//console.log(blockList);
             return blockList;
         }
         return mdwiki;

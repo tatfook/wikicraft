@@ -11,7 +11,7 @@ local elastic_search = inherit(models.abstract.base, gettable("models.elastic_se
 
 -- 提交到搜索引擎
 function elastic_search:api_submitToES(params)
-	log(params, true)
+	--log(params, true)
 	local url = "http://221.0.111.131:19001/Application/kwupsert"
 	System.os.GetUrl({
 		url=url,
@@ -74,6 +74,7 @@ function elastic_search:api_submitSiteinfo(params)
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
 	content = content .. "\n" .. (params.desc or "")
+	content = content .. "\n" .. (params.tags or "")
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
@@ -102,8 +103,9 @@ function elastic_search:api_submitPageinfo(params)
 
 	local pageinfo = params.pageinfo or {}
 	params.pageinfo = nil
-	params.extra_data = toJson(pageinfo)
 	params.extra_search = "pageinfo: " .. params.content
+	params.content = nil
+	params.extra_data = toJson(pageinfo)
 
 	self:api_submitToES(params)
 
