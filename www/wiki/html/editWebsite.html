@@ -367,7 +367,7 @@
                                     <label for="groupName" class="col-sm-2 control-label">分组名称：</label>
                                     <div class="col-sm-5">
                                         <div class="col-sm-8 add-cname">
-                                            <input type="text" class="form-control" id="groupName" ng-model="nowGroup.name" disabled>
+                                            <input type="text" class="form-control" id="groupName" ng-model="nowGroup.name" ng-disabled="editing">
                                         </div>
                                         <div ng-hide="editing" class="btn btn-primary btn-add-cname col-sm-4" ng-click="createGroup()">创建</div>
                                     </div>
