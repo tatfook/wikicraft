@@ -260,9 +260,7 @@ function user:api_verifyCellphoneOne(params)
 
 	local smsCode = tostring(math.random(1000,9999))
 	local smsParams = {to=params.cellphone, datas={smsCode,"3分钟"}, templateId="1"}
-	sendTemplateSms(smsParams, resume)
-	local _, data = yield()
-	data = data.data
+	local data = sendTemplateSms(smsParams)
 	if not data or  data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
