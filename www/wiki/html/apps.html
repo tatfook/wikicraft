@@ -173,6 +173,9 @@
         color: #666;
         margin: 10px 0 0;
     }
+    .class-apps .class-app-item > .app-detail.text-muted > p, .class-apps .class-app-item > .app-detail.text-muted > span{
+        color: #999;
+    }
     @media (max-width: 768px) {
         .class-apps{
             padding: 0;
@@ -231,10 +234,11 @@
                 <p class="info">{{item.info}}</p>
                 <div class="class-app-item col-md-6" ng-repeat="app in item.apps">
                     <div class="app-logo">
-                        <img ng-show="app.logoUrl" ng-src="{{app.logoUrl}}" alt="{{app.name}}">
+                        <img ng-show="app.logoUrl" ng-src="{{(app.logoUrl && app.siteUrl && app.siteUrl != '#') ? app.logoUrl : developingLogo}}" alt="{{app.name}}">
                     </div>
-                    <div class="app-detail">
-                        <a href="{{app.siteUrl}}">{{app.name}}</a>
+                    <div class="app-detail" ng-class="{false: 'text-muted'}[app.logoUrl && app.siteUrl && app.siteUrl != '#']">
+                        <a href="{{app.siteUrl}}" ng-show="app.logoUrl && app.siteUrl && app.siteUrl != '#'">{{app.name}}</a>
+                        <span ng-show="!app.logoUrl || !app.siteUrl || app.siteUrl == '#'">{{app.name}}</span>
                         <p>{{app.details}}</p>
                     </div>
                 </div>
