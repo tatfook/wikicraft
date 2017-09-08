@@ -50,7 +50,8 @@ function elastic_search:api_submitUserinfo(params)
 
 	self:api_submitToES({
 		url=url,
-		extra_search="userinfo: " .. content,
+		extra_data = "userinfo"
+		extra_search= content,
 		extra_data=extra_data,
 	})
 
@@ -87,8 +88,9 @@ function elastic_search:api_submitSiteinfo(params)
 	
 
 	self:api_submitToES({
-		url=url,
-		extra_search= "siteinfo: " .. content,
+		url=url, 
+		extra_type = "siteinfo"
+		extra_search= content,
 		extra_data=extra_data,
 	})
 	return errors:wrap(nil)
@@ -103,7 +105,8 @@ function elastic_search:api_submitPageinfo(params)
 
 	local pageinfo = params.pageinfo or {}
 	params.pageinfo = nil
-	params.extra_search = "pageinfo: " .. params.content
+	params.extra_type = "pageinfo"
+	params.extra_search = params.content
 	params.content = nil
 	params.extra_data = toJson(pageinfo)
 
@@ -137,7 +140,8 @@ function elastic_search:api_spiderSubmitPageinfo(params)
 		url = url, 
 		content = content,
 		extra_data = toJson(data),
-		extra_search = "pageinfo: " .. content,
+		extra_type = "pageinfo",
+		extra_search = content,
 	}
 
 	self:api_submitToES(pageinfo)
