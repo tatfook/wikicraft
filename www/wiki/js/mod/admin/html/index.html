@@ -120,6 +120,14 @@ li{
 	.admin-main-panel{
 		background-color: #FFF;
 	}
+	.templates-panel{
+		margin: 0 -15px;
+	}
+	.templates-panel .panel-heading{
+		border-bottom: 1px solid #DCDCDC;
+		font-size: 16px;
+		color: #3977AD;
+	}
 	@media(max-width: 768px){
 		.subnav .list-group-item:first-child .list-group-item{
 			padding: 10px 5px;
@@ -554,23 +562,11 @@ li{
 				
 			</div>
 			<!--模板管理-->
-			<div ng-show="selectMenuItem == 'templates'">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active">
-						<a href="#websiteTemplate" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="websiteTemplate">网站模板</a>
-					</li>
-					<li role="presentation">
-						<a href="#webPageTemplate" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="webPageTemplate">网页模板</a>
-					</li>
-					<li role="presentation">
-						<a href="#cmdTemplate" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="cmdTemplate">模块</a>
-					</li>
-				</ul>
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="websiteTemplate">网站模板</div>
-					<div role="tabpanel" class="tab-pane" id="webPageTemplate">网页模板</div>
-					<div role="tabpanel" class="tab-pane" id="cmdTemplate">模块</div>
+			<div ng-show="selectMenuItem == 'templates'" class="panel templates-panel">
+				<div class="panel-heading">
+					网站模板
 				</div>
+				<div class="panel-body" id="websiteTemplate"></div>
 			</div>
 
 			<div ng-show='selectMenuItem=="wikicmd"'><!--{{{-->

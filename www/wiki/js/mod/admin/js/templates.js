@@ -116,6 +116,12 @@ define([
                 console.log($scope.categories);
             }
             saveWebsiteTemplates("addTemplate");
+            $scope.newTemplate = {
+                "name":"",
+                "logoUrl":"",
+                "previewUrl":"",
+                "styles":[]
+            };
         };
         // 给模板添加style
         $scope.addStyle = function (index) {

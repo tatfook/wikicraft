@@ -1,4 +1,20 @@
 <style>
+    .template-config{
+        padding: 0;
+        margin-left: -1px;
+        margin-top: 0;
+        min-height: 500px;
+    }
+    .template-config .nav>li>a{
+        padding: 10px 25px;
+        border-radius: 0;
+    }
+    .template-config .nav-tabs>li>.delete{
+        display: none;
+    }
+    .template-config .nav-tabs>li.active>.delete{
+        display: inline-block;
+    }
     .template-config h3{
         margin: 0;
         padding: 12px 15px;
@@ -51,15 +67,15 @@
     }
     .template-config .delete{
         position: absolute;
-        right: 5px;
-        top: 15px;
+        right: 10px;
+        top: 14px;
         font-size: 12px;
         color: #FFF;
         background-color: #DCDCDC;
-        width: 13px;
-        height: 13px;
+        width: 15px;
+        height: 15px;
         text-align: center;
-        line-height: 13px;
+        line-height: 15px;
         border-radius: 50%;
     }
 </style>
