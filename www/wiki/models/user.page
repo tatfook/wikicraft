@@ -537,8 +537,8 @@ function user:api_register(params)
 		return errors:wrap(errors:new("用户名不合法"))
 	end
 
-	if not string.match(params.username, "^%l+$") then
-		return errors:wrap(errors:new("用户名只能由小写字母组成"))
+	if not string.match(params.username, "^[%l%d]+$") then
+		return errors:wrap(errors:new("用户名只能由小写字母和数字组成"))
 	end
 
 	-- 查找用户名是否可用
