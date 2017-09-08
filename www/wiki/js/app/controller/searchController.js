@@ -25,19 +25,19 @@ define([
 		function elasticSearch(keyword, searchType) {
 			searchType = searchType || "siteinfo";
 
-			var fuzzymatch = 1;
-			//if (searchType == "pageinfo") {
-				//fuzzymatch = 2;
-			//}
+			var fuzzymatch = 0;
+			if (searchType == "pageinfo") {
+				//fuzzymatch = 1;
+			}
 			util.ajax({
-				url:"http://221.0.111.131:19001/Application/kwaccurate_search",
+				url:"http://221.0.111.131:19001/Application/kwbool_search",
 				type:"GET",
 				data:{
-					querytype:"extra_search",
-					keyword:searchType + ":*" + keyword + "*",
+					extra_type:searchType,
+					extra_search:"*" + keyword + "*",
 					fuzzymatch:fuzzymatch,
 					page:$scope.currentPage,
-					highlight:1,
+					//highlight:1,
 					size:$scope.pageSize,	
 				},
 				success: function(result, status, xhr) {
