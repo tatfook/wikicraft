@@ -61,6 +61,7 @@ end
 -- 提交站点信息 站点表记录
 function elastic_search:api_submitSiteinfo(params)
 	params.sitename = params.name
+	params.tags = params.tags or ""
 
 	if not params.username or not params.sitename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -69,7 +70,11 @@ function elastic_search:api_submitSiteinfo(params)
 	-- url
 	local url = "/" .. params.username .. "/" .. params.sitename
 	local content = ""
-	local tags = "|" .. params.tags .. "|"
+	local tags = ""
+
+	for tag in string.gmatch(params.tags, "[^|]+") do 
+		tags = tags .. "[" .. tag .. "]"
+	end
 
 	-- 填充搜索信息
 	--content = content .. "\n" .. (params.username or "")
