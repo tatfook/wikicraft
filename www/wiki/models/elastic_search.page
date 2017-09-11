@@ -50,7 +50,7 @@ function elastic_search:api_submitUserinfo(params)
 
 	self:api_submitToES({
 		url=url,
-		user_name = params.username
+		user_name = params.username,
 		extra_type = "userinfo",
 		extra_search= content,
 		extra_data=extra_data,

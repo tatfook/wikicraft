@@ -45,6 +45,7 @@ define([
 			data.site_name = query.sitename;
 			data.fuzzymatch = fuzzymatch;
 			
+			query.keyword = query.keyword || "";	
 			if (query.isTagSearch) {
 				data.tags = "*|" + query.keyword + "|*";
 			} else {
