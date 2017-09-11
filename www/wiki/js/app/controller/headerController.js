@@ -21,7 +21,7 @@ define([
         $scope.goSearchPage = function () {
             //window.location.reload(false);
 			var params = {
-				searchType:"siteinfo",
+				searchType:"pageinfo",
 				keyword:$scope.search || "",
 			}
             util.go("search?" + util.getQueryString(params));

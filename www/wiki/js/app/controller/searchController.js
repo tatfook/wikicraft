@@ -8,7 +8,7 @@ define([
    	'helper/storage',
    	'text!html/search.html'
 ], function (app, util, storage, htmlContent) {
-    app.controller('searchController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
+    app.controller('searchController', ['$scope', '$sce', 'Account','Message', function ($scope, $sce, Account, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
@@ -18,7 +18,7 @@ define([
 		// 页面信息: pageinfo
         var searchParams = {
 			keyword:"",             // 搜索关键词
-			searchType:"siteinfo",  // 搜索类型
+			searchType:"pageinfo",  // 搜索类型
 			isTagSearch:false,      // 是否为tag搜索
 			username:undefined,     // 限定用户名搜索
 			sitename:undefined,     // 限定站点名搜索
@@ -29,7 +29,7 @@ define([
         }
 
 		function elasticSearch(query) {
-			var searchType = query.searchType || "siteinfo";
+			var searchType = query.searchType || "pageinfo";
 			var fuzzymatch = 0;
 			var data = {
 				extra_type:searchType,
@@ -65,6 +65,7 @@ define([
 						var obj = result.data.list[i];
 						var site = angular.fromJson(obj.extra_data);
 						site.highlight_ext = obj.highlight_ext;
+						site.tagsArr = obj.tags ? obj.tags.split("|") : [];
 						searchList.push(site);
 					}
 					$scope.searchList = searchList;
@@ -91,12 +92,24 @@ define([
         };
 
         $scope.changeSearch = function (searchType, searchText) {
+            $scope.searchList = [];
             searchParams.searchType = searchType;
             searchParams.keyword = searchText || $scope.searchText || "";
             elasticSearch(searchParams);
             $scope.searchType = searchType;
             $scope.searchText = searchParams.keyword;
+        };
 
+        $scope.seachTag = function (tag) {
+            Message.info("标签搜索功能开发中！");
+            // searchParams = {
+            //     keyword:"tag",
+            //     searchType:"siteinfo",
+            //     isTagSearch: true,
+            //     username: undefined,
+            //     sitename: undefined,
+            // };
+            // elasticSearch(searchParams);
         };
 
         //打开用户页
@@ -110,7 +123,6 @@ define([
 
         // 收藏作品
         $scope.worksFavorite=function (event, site) {
-            //console.log(event, site);
             if (!Account.isAuthenticated()) {
                 Message.info("登录后才能收藏!!!");
                 return ;
