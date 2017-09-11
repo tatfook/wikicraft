@@ -12,6 +12,7 @@ qiniu_files.db_name = "qiniu_files"
 
 function qiniu_files:ctor() 
 	self:addfield("username", "string")  -- 用户名
+	self:addfield("filename", "string") -- 文件名
 	self:addfield("domain", "string")    -- 域名
 	self:addfield("key", "string")       -- 文件名
 	self:addfield("download_url", "string") -- 下载url
