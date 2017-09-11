@@ -30,14 +30,9 @@ is_test() {
   [[ $ENV_TYPE == "test" ]]
 }
 
-# FIXME
-# clone main pkg for now
-if [[ ! -d "npl_packages" ]]; then
-  mkdir -p npl_packages
-  cd npl_packages
-  git clone https://github.com/NPLPackages/main
-  # TODO checkout one specific version
-  cd ..
+# use npl_packages in runtime image, not in local dir
+if [[ -d "npl_packages" ]]; then
+  rm -rf npl_packages
 fi
 
 # copy config file (cp will override config file)
@@ -54,6 +49,9 @@ else
   touch build.tar.gz
   tar -czf build.tar.gz --exclude build.tar.gz .
 fi
+
+# get latest npl runtime image
+docker pull xuntian/npl-runtime
 
 # build image with build.tar.gz file
 docker build -t keepwork/$ENV_TYPE:b$BUILD_NUMBER .
