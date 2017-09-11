@@ -21,6 +21,10 @@ function qiniu:api_upsert(params)
 	
 end
 
+function qiniu:api_upload(params)
+	--if not params.username 
+end
+
 -- 获取用户存贮空间状态
 function qiniu:api_getByUsername(params)
 	if not params.username then

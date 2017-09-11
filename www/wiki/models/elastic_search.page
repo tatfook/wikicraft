@@ -69,13 +69,14 @@ function elastic_search:api_submitSiteinfo(params)
 	-- url
 	local url = "/" .. params.username .. "/" .. params.sitename
 	local content = ""
+	local tags = "|" .. params.tags .. "|"
 
 	-- 填充搜索信息
 	--content = content .. "\n" .. (params.username or "")
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
 	content = content .. "\n" .. (params.desc or "")
-	content = content .. "\n" .. (params.tags or "")
+	content = content .. "\n" .. ("|" .. params.tags .. "|")
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
@@ -89,10 +90,14 @@ function elastic_search:api_submitSiteinfo(params)
 
 	self:api_submitToES({
 		url=url, 
+		tags = tags,
+		user_name = params.username,
+		site_name = params.sitename,
 		extra_type = "siteinfo",
 		extra_search= content,
 		extra_data=extra_data,
 	})
+
 	return errors:wrap(nil)
 end
 
@@ -117,10 +122,15 @@ end
 
 -- 网络爬虫提交数据
 function elastic_search:api_spiderSubmitPageinfo(params)
+	if true then
+		return 
+	end
+
 	if not params.content or not params.filepath then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.filepath = string.gsub(params.filepath, ".md", "")
 	local content = params.content
 	local url = "/keepwork/baike" .. params.filepath
 	local username = "keepwork"
@@ -139,6 +149,8 @@ function elastic_search:api_spiderSubmitPageinfo(params)
 	local pageinfo = {
 		url = url, 
 		content = content,
+		user_name = "keepwork",
+		sitename = "baike",
 		extra_data = toJson(data),
 		extra_type = "pageinfo",
 		extra_search = content,

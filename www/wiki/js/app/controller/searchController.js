@@ -27,7 +27,7 @@ define([
 
 			var fuzzymatch = 0;
 			if (searchType == "pageinfo") {
-				//fuzzymatch = 1;
+				fuzzymatch = 1;
 			}
 			util.ajax({
 				url:"http://221.0.111.131:19001/Application/kwbool_search",
