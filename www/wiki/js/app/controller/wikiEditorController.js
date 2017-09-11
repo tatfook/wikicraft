@@ -12,6 +12,7 @@ define([
     'helper/storage',
     'helper/dataSource',
     'helper/mdconf',
+	'helper/qiniu',
     'text!html/wikiEditor.html',
     'controller/editWebsiteController',
     'codemirror/mode/markdown/markdown',
@@ -31,7 +32,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, htmlContent, editWebsiteHtmlContent) {
+], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent) {
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -277,8 +278,10 @@ define([
 				browse_button: "uploadVideoId",
 				drop_element: 'drapUploadVideoContainer', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
 				uptoken_url:'/api/wiki/models/qiniu/uploadToken',
-			}
+			};
+			qiniu.upload(opt);
 		}
+
 
 		$scope.$watch("$viewContentLoaded", init);
     }]);//}}}

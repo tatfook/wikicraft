@@ -50,6 +50,7 @@ function elastic_search:api_submitUserinfo(params)
 
 	self:api_submitToES({
 		url=url,
+		user_name = params.username
 		extra_type = "userinfo",
 		extra_search= content,
 		extra_data=extra_data,
@@ -81,7 +82,7 @@ function elastic_search:api_submitSiteinfo(params)
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
 	content = content .. "\n" .. (params.desc or "")
-	content = content .. "\n" .. ("|" .. params.tags .. "|")
+	content = content .. "\n" .. (tags)
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
