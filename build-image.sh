@@ -50,6 +50,9 @@ else
   tar -czf build.tar.gz --exclude build.tar.gz .
 fi
 
+# get latest npl runtime image
+docker pull xuntian/npl-runtime
+
 # build image with build.tar.gz file
 docker build -t keepwork/$ENV_TYPE:b$BUILD_NUMBER .
 
