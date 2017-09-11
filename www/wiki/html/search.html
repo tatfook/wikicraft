@@ -82,7 +82,7 @@
     }
 
     .search-result .fans-row{
-        padding: 40px 50px 20px;
+        padding: 40px 85px 20px;
         display: flex;
         align-items: center;
         border-bottom: 1px solid #DCDCDC;
@@ -110,6 +110,37 @@
         width: 13px;
     }
 
+    .search-result .content{
+        padding: 0 85px;
+    }
+    .search-result .content p.info, .search-result .content p.info > a{
+        font-size: 12px;
+        color: #999;
+        margin: 8px 0 10px;
+    }
+    .search-result .content-item{
+        border-bottom: 1px solid #DDD;
+        padding: 40px 0 20px;
+    }
+    .search-result .content-item h3, .search-result .content-item p{
+        margin: 0;
+        padding: 0;
+    }
+    .search-result .search-result-content > span{
+        color: #FE3266;
+    }
+    .search-result .content-item .tags{
+        margin-top: 20px;
+    }
+    .search-result .tags > span{
+        font-size: 14px;
+        background-color: #DAF4FF;
+        color: #3977AD;
+        padding: 4px 16px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
     @media (min-width: 992px) and (max-width: 1200px) {
         .works img{
             height:159.38px;
@@ -127,14 +158,14 @@
 <div ng-controller="searchController" class="search-result">
     <div class="container">
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-class="{true:'active'}[searchType == 'siteinfo']" ng-click="changeSearch('siteinfo')">
-                <a href="#siteinfo" aria-controls="siteinfo" role="tab" data-toggle="tab">站点</a>
+            <li role="presentation" ng-class="{true:'active'}[searchType == 'pageinfo']" ng-click="changeSearch('pageinfo')">
+                <a href="#pageinfo" aria-controls="pageinfo" role="tab" data-toggle="tab">用户页</a>
             </li>
             <li role="presentation" ng-class="{true:'active'}[searchType == 'userinfo']" ng-click="changeSearch('userinfo')">
                 <a href="#userinfo" aria-controls="userinfo" role="tab" data-toggle="tab">用户</a>
             </li>
-            <li role="presentation" ng-class="{true:'active'}[searchType == 'pageinfo']" ng-click="changeSearch('pageinfo')">
-                <a href="#pageinfo" aria-controls="pageinfo" role="tab" data-toggle="tab">用户页</a>
+            <li role="presentation" ng-class="{true:'active'}[searchType == 'siteinfo']" ng-click="changeSearch('siteinfo')">
+                <a href="#siteinfo" aria-controls="siteinfo" role="tab" data-toggle="tab">站点</a>
             </li>
             <li class="pull-right search">
                 <input id="searchpage-search" type="text" class="form-control" placeholder="{{searchText || ''}}" ng-model="searchText">
@@ -142,40 +173,35 @@
             </li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
-                <h4 class="title">共{{totalItems || 0}}个站点：</h4>
-                <div class="col-md-3 hover-slide" ng-repeat="site in searchResult.results" ng-show="site.name!='tutorial'">
-                    <img ng-click="goUserSite(site)" ng-src="{{ site.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}">
-                    <div class="text clearfix">
-                        <h4><a class="title" ng-click="goUserSite(site)">{{site.displayName || site.name}}</a></h4>
-                        <p>作者： <a ng-click="goUserIndexPage(site.username)">{{site.username}}</a></p>
-                        <p class="pull-left info">
-                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{site.visitCount}}</span>
-                        </p>
-                        <p class="pull-right info" ng-click="worksFavorite($event, site)">
-                            <span class="glyphicon glyphicon-star-empty text-danger js-heart"></span> 关注 <span>{{site.favoriteCount || 0}}</span>
-                        </p>
+            <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
+                <h4 class="title">共{{totalItems || 0}}条用户页：</h4>
+                <div class="content">
+                    <div class="content-item" ng-repeat="item in searchList">
+                        <h3><a href="{{item.access_url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
+                        <p class="info"><a href="{{item.url}}">{{item.url}}</a></p>
+                        <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
                     </div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
                 <h4 class="title">共{{totalItems || 0}}名用户：</h4>
-                <div class="col-md-12 fans-row" ng-repeat="item in searchResult.results">
+                <div class="col-md-12 fans-row" ng-repeat="item in searchList">
                     <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
                     <div class="intro">
                         <h4><a class="text-muted" ng-click="goUserIndexPage(item.username)">{{item.username || item.displayName}}</a></h4>
-                        <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{item.location}}</p>
+                        <p>{{item.introduce || "暂无简介"}}</p>
                     </div>
                     <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?"取消关注":"关 注"}}</div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">共{{totalItems || 0}}条用户页：</h4>
-                <div class="col-md-12 fans-row" ng-repeat="item in searchResult.results">
-                    <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
-                    <div class="intro">
-                        <h4>{{item.sitename}}  ——  <a href="{{item.url}}">{{item.pagename}}</a></h4>
-                        <p ng-click="goUserIndexPage(item.username)">{{item.username || item.displayName}}</p>
+            <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
+                <h4 class="title">共{{totalItems || 0}}个站点：</h4>
+                <div class="content">
+                    <div class="content-item" ng-repeat="item in searchList">
+                        <h3><a ng-click="goUserSite(item)">{{item.displayName || item.sitename || site.name}}</a></h3>
+                        <p class="info"><a ng-click="goUserSite(item)">{{"/"+item.username+"/"+item.name+"/index"}}</a></p>
+                        <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
+                        <p class="tags"><span ng-repeat="tag in item.tagsArr track by $index" ng-show="tag" ng-click="seachTag(tag)">{{tag}}</span></p>
                     </div>
                 </div>
             </div>
