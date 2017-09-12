@@ -1,0 +1,34 @@
+<?npl
+--[[
+Title: qiniu file list
+Author: wuxiangan
+Date: 2017/09/11
+]]
+
+include_once("./abstract/base.page")
+
+local qiniu_files = inherit(models.abstract.base, gettable("models.qiniu_files"))
+qiniu_files.db_name = "qiniu_files"
+
+function qiniu_files:ctor() 
+	self:addfield("username", "string")     -- 用户名
+	self:addfield("filename", "string")     -- 文件名
+	self:addfield("domain", "string")       -- 域名
+	self:addfield("key", "string")          -- 文件名
+	self:addfield("download_url", "string") -- 下载url
+	self:addfield("hash", "string")         -- hash
+	self:addfield("size", "number")         -- file size
+end
+
+-- 添加记录
+function qiniu_files:api_upsert(params)
+	local username = getUsername()
+	if not params.username or not params.key or params.size < 0 or params.username ~= username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():insertOne({["+username+key"]={params.username,params.key}}, params, resume)
+
+	return errors:wrap(yield())
+end
+

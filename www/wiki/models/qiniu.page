@@ -6,8 +6,76 @@ Date: 2017/2/27
 ]]
 
 include_once("./abstract/base.page")
+include_once("./qiniu_files.page")
 
 local qiniu = inherit(models.abstract.base, gettable("models.qiniu"))
+qiniu.db_name = "qiniu"
+
+function qiniu:ctor() 
+	self:addfield("username", "string") -- 用户名
+	self:addfield("used", "number")   -- 用户已使用的大小
+	self:addfield("total", "number")  -- 用户存贮空间大小
+end
+
+
+function qiniu:api_upsert(params)
+	
+end
+
+function qiniu:api_upload(params)
+	local username = getUsername()
+	
+	local download_url = self:api_getDownloadUrl(params).data
+	download_url = download_url and download_url.download_url
+
+	if not download_url or not params.size or not params.hash or not params.size or params.size < 1 then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={username}}, resume)
+	local _, data = yield()
+
+	if not data then
+		data = {
+			username=username,
+			used = 0,
+			total = 2 * 1024 * 1024 * 1024,
+		}
+		--return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	data.used = data.used + params.size
+	if data.used > data.total then
+		return errors:wrap(errors:new("用户空间使用已超限制"))
+	end
+		
+	params.username = username
+	params.download_url = download_url
+
+	local qiniu_files_db = models.qiniu_files:new()
+
+	local file = qiniu_files_db:api_upsert(params).data
+
+	if not file then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	self:db():insertOne({["+username"]={username}}, data, resume)
+	yield()
+
+	return errors:wrap(nil, file)
+end
+
+-- 获取用户存贮空间状态
+function qiniu:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+	
+	return errors:wrap(yield())
+end
 
 
 function qiniu:api_uploadToken(params)

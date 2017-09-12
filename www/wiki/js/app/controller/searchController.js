@@ -8,7 +8,7 @@ define([
    	'helper/storage',
    	'text!html/search.html'
 ], function (app, util, storage, htmlContent) {
-    app.controller('searchController', ['$scope', 'Account','Message', function ($scope, Account, Message) {
+    app.controller('searchController', ['$scope', '$sce', 'Account','Message', function ($scope, $sce, Account, Message) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
@@ -16,50 +16,67 @@ define([
 		// 站点信息: siteinfo
 		// 用户信息: userinfo
 		// 页面信息: pageinfo
-        var searchParams = {keyword:"", searchType:"siteinfo"};
+        var searchParams = {
+			keyword:"",             // 搜索关键词
+			searchType:"pageinfo",  // 搜索类型
+			isTagSearch:false,      // 是否为tag搜索
+			username:undefined,     // 限定用户名搜索
+			sitename:undefined,     // 限定站点名搜索
+		};
 
         function getSiteList() {
-			elasticSearch(searchParams.keyword, searchParams.searchType);
+			elasticSearch(searchParams);
         }
 
-		function elasticSearch(keyword, searchType) {
-			searchType = searchType || "siteinfo";
+		function elasticSearch(query) {
+			var searchType = query.searchType || "pageinfo";
+			var fuzzymatch = 0;
+			var data = {
+				extra_type:searchType,
+				page: query.currentPage || $scope.currentPage,
+				size: query.pageSize || $scope.pageSize,
+			}
 
-			var fuzzymatch = 1;
-			//if (searchType == "pageinfo") {
-				//fuzzymatch = 2;
-			//}
+			if (searchType == "pageinfo") {
+				fuzzymatch = 1;
+			}
+		
+			data.user_name = query.username;
+			data.site_name = query.sitename;
+			data.fuzzymatch = fuzzymatch;
+			
+			query.keyword = query.keyword || "";	
+			if (query.isTagSearch) {
+				data.tags = "*|" + query.keyword + "|*";
+			} else {
+				data.extra_search = "*" + query.keyword + "*";
+			}
+
 			util.ajax({
-				url:"http://221.0.111.131:19001/Application/kwaccurate_search",
+				url:"http://221.0.111.131:19001/Application/kwbool_search",
 				type:"GET",
-				data:{
-					querytype:"extra_search",
-					keyword:searchType + ":*" + keyword + "*",
-					fuzzymatch:fuzzymatch,
-					page:$scope.currentPage,
-					highlight:1,
-					size:$scope.pageSize,	
-				},
+				data:data,
 				success: function(result, status, xhr) {
 					if (result.code != 200) {
 						return;
 					}
-					var sitelist = [];
+					var searchList = [];
 					$scope.totalItems = result.total;
 					for (var i = 0; i < result.data.list.length; i++) {
 						var obj = result.data.list[i];
 						var site = angular.fromJson(obj.extra_data);
-						sitelist.push(site);
+						site.highlight_ext = obj.highlight_ext;
+						site.tagsArr = obj.tags ? obj.tags.split("|") : [];
+						searchList.push(site);
 					}
-					$scope.searchResult = {results:sitelist};
-					console.log($scope.searchResult);
+					$scope.searchList = searchList;
+					console.log($scope.searchList);
 					util.$apply($scope);
 				},
 				error: function(xhr, status, error){
 
 				}
 			});
-			
 		}
 
         function init() {
@@ -76,13 +93,24 @@ define([
         };
 
         $scope.changeSearch = function (searchType, searchText) {
-            $scope.searchResult = {};
+            $scope.searchList = [];
             searchParams.searchType = searchType;
             searchParams.keyword = searchText || $scope.searchText || "";
-            elasticSearch(searchParams.keyword, searchParams.searchType);
+            elasticSearch(searchParams);
             $scope.searchType = searchType;
             $scope.searchText = searchParams.keyword;
+        };
 
+        $scope.seachTag = function (tag) {
+            Message.info("标签搜索功能开发中！");
+            // searchParams = {
+            //     keyword:"tag",
+            //     searchType:"siteinfo",
+            //     isTagSearch: true,
+            //     username: undefined,
+            //     sitename: undefined,
+            // };
+            // elasticSearch(searchParams);
         };
 
         //打开用户页
@@ -96,7 +124,6 @@ define([
 
         // 收藏作品
         $scope.worksFavorite=function (event, site) {
-            //console.log(event, site);
             if (!Account.isAuthenticated()) {
                 Message.info("登录后才能收藏!!!");
                 return ;

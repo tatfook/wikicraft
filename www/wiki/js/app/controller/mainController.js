@@ -15,7 +15,8 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
+    'controller/crosController',
+], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
@@ -56,6 +57,7 @@ define([
                     dataSource:dataSource,
                     loading:loading,
                     confirmDialog:confirmDialog,
+					isBoostrap:true,
                 };
 
                 util.setAngularServices({

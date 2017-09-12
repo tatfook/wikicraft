@@ -1,4 +1,4 @@
-<style><!--{{{-->
+<style>
 body{
 	background-color: #F1F1F1;
 }
@@ -117,6 +117,17 @@ li{
 	.subnav .panel-body{
 		margin-top: 0;
 	}
+	.admin-main-panel{
+		background-color: #FFF;
+	}
+	.templates-panel{
+		margin: 0 -15px;
+	}
+	.templates-panel .panel-heading{
+		border-bottom: 1px solid #DCDCDC;
+		font-size: 16px;
+		color: #3977AD;
+	}
 	@media(max-width: 768px){
 		.subnav .list-group-item:first-child .list-group-item{
 			padding: 10px 5px;
@@ -127,7 +138,7 @@ li{
 			display: none;
 		}
 		.main-content{
-			min-height: auto;
+			/*min-height: auto;*/
 		}
 	}
 </style>
@@ -142,7 +153,7 @@ li{
 						<div class="panel-heading" ng-click='clickMenuItem("user")'>用户管理</div>
 					</div>
 					-->
-					<div class="panel-heading" ng-show="#">
+					<div class="panel-heading">
 						<div>
 							<div class="panel-heading"><strong>后台管理</strong></div>
 						</div>
@@ -166,36 +177,41 @@ li{
 							<div class="panel-heading"><strong>KeepWork管理</strong></div>
 						</div>
 						<ul>
-							<li ng-show="#">
+							<li>
 								<div ng-class='getStyleClass("user")' >
 									<div class="panel-heading" ng-click='getUserList()'>用户</div>
 								</div>
 							</li>
-							<li ng-show="#">
+							<li>
 								<div  ng-class='getStyleClass("site")'>
 									<div class="panel-heading" ng-click='getSiteList()'>网站</div>
 								</div>
 							</li>
-							<li ng-show="#">
+							<li>
 								<div ng-class='getStyleClass("domain")'>
 									<div class="panel-heading" ng-click='getDomainList()'>域名</div>
 								</div>
 							</li>
-							<li ng-show="#">
+							<li>
 								<div ng-class='getStyleClass("fileCheck")'>
 									<div class="panel-heading" ng-click='getFileCheckList()'>文件审核</div>
 								</div>
 							</li>
-							<li ng-show="#">
+							<li>
 								<div ng-class='getStyleClass("vip")'>
 									<div class="panel-heading" ng-click='getVIPList()'>VIP</div>
+								</div>
+							</li>
+							<li>
+								<div ng-class='getStyleClass("templates")'>
+									<div class="panel-heading" ng-click='getTemplates()'>模板管理</div>
 								</div>
 							</li>
 						</ul>
 					</div>
 				</li>
 				<li class="list-group-item">
-					<div class="panel-heading"  ng-show="#">
+					<div class="panel-heading">
 						<div >
 							<div class="panel-heading" ><strong>数据统计</strong></div>
 						</div>
@@ -224,7 +240,7 @@ li{
 					</div>
 				</li>
 				<li class="list-group-item" >
-					<div class="panel" ng-class='getStyleClass("ServerMonitor")' ng-show="#">
+					<div class="panel" ng-class='getStyleClass("ServerMonitor")'>
 						<div class="panel-heading" ng-click='clickMenuItem("ServerMonitor")'>
 							<strong>服务器监控</strong>
 						</div>
@@ -241,7 +257,7 @@ li{
 			</ul>
 		</div><!--}}}-->
 		<!--内容页-->
-		<div class="col-sm-10">
+		<div class="col-sm-10 admin-main-panel">
 			
 			<!--管理员-->
 			<div ng-show='selectMenuItem=="manager"'><!--{{{-->
@@ -428,8 +444,8 @@ li{
 					</ul>
 				</div>
 			</div><!--}}}-->
-			
-			
+
+			<!--域名管理-->
 			<div ng-show='selectMenuItem=="domain"'>
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
@@ -486,9 +502,11 @@ li{
 				</div>
 				
 			</div>
+			<!--文件审核-->
 			<div ng-show='selectMenuItem=="fileCheck"'>
 				文件审核
 			</div>
+			<!--VIP管理-->
 			<div ng-show='selectMenuItem=="vip"'>
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
@@ -542,6 +560,13 @@ li{
 					</ul>
 				</div>
 				
+			</div>
+			<!--模板管理-->
+			<div ng-show="selectMenuItem == 'templates'" class="panel templates-panel">
+				<div class="panel-heading">
+					网站模板
+				</div>
+				<div class="panel-body" id="websiteTemplate"></div>
 			</div>
 
 			<div ng-show='selectMenuItem=="wikicmd"'><!--{{{-->
@@ -607,7 +632,7 @@ li{
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="x in data" ng-hide="x.isDelete" ng-hide"x.isDelete">
+						<tr ng-repeat="x in data" ng-hide="x.isDelete" ng-hide="x.isDelete">
 							<td>{{x._id}}</td>
 							<td>{{x.name}}</td>
 							<td>{{x.classifyName}}</td>

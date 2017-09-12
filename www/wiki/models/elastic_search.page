@@ -50,7 +50,9 @@ function elastic_search:api_submitUserinfo(params)
 
 	self:api_submitToES({
 		url=url,
-		extra_search="userinfo: " .. content,
+		user_name = params.username,
+		extra_type = "userinfo",
+		extra_search= content,
 		extra_data=extra_data,
 	})
 
@@ -60,6 +62,7 @@ end
 -- 提交站点信息 站点表记录
 function elastic_search:api_submitSiteinfo(params)
 	params.sitename = params.name
+	params.tags = params.tags or ""
 
 	if not params.username or not params.sitename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -68,13 +71,18 @@ function elastic_search:api_submitSiteinfo(params)
 	-- url
 	local url = "/" .. params.username .. "/" .. params.sitename
 	local content = ""
+	local tags = ""
+
+	for tag in string.gmatch(params.tags, "[^|]+") do 
+		tags = tags .. "[" .. tag .. "]"
+	end
 
 	-- 填充搜索信息
 	--content = content .. "\n" .. (params.username or "")
 	content = content .. "\n" .. (params.sitename or "")
 	content = content .. "\n" .. (params.displayName or "")
 	content = content .. "\n" .. (params.desc or "")
-	content = content .. "\n" .. (params.tags or "")
+	content = content .. "\n" .. (tags)
 
 	local extra_data = toJson(params)
 	if params.visibility == "private" then
@@ -87,10 +95,15 @@ function elastic_search:api_submitSiteinfo(params)
 	
 
 	self:api_submitToES({
-		url=url,
-		extra_search= "siteinfo: " .. content,
+		url=url, 
+		tags = tags,
+		user_name = params.username,
+		site_name = params.sitename,
+		extra_type = "siteinfo",
+		extra_search= content,
 		extra_data=extra_data,
 	})
+
 	return errors:wrap(nil)
 end
 
@@ -103,7 +116,8 @@ function elastic_search:api_submitPageinfo(params)
 
 	local pageinfo = params.pageinfo or {}
 	params.pageinfo = nil
-	params.extra_search = "pageinfo: " .. params.content
+	params.extra_type = "pageinfo"
+	params.extra_search = params.content
 	params.content = nil
 	params.extra_data = toJson(pageinfo)
 
@@ -114,10 +128,15 @@ end
 
 -- 网络爬虫提交数据
 function elastic_search:api_spiderSubmitPageinfo(params)
+	if true then
+		return 
+	end
+
 	if not params.content or not params.filepath then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.filepath = string.gsub(params.filepath, ".md", "")
 	local content = params.content
 	local url = "/keepwork/baike" .. params.filepath
 	local username = "keepwork"
@@ -136,8 +155,11 @@ function elastic_search:api_spiderSubmitPageinfo(params)
 	local pageinfo = {
 		url = url, 
 		content = content,
+		user_name = "keepwork",
+		sitename = "baike",
 		extra_data = toJson(data),
-		extra_search = "pageinfo: " .. content,
+		extra_type = "pageinfo",
+		extra_search = content,
 	}
 
 	self:api_submitToES(pageinfo)
