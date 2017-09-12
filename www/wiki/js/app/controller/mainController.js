@@ -39,6 +39,7 @@ define([
             
             // 初始化基本信息
             function initBaseInfo() {
+				config.isBoostrap = true;
                 //配置一些全局服务
                 config.services = {
                     $rootScope: $rootScope,
@@ -57,7 +58,6 @@ define([
                     dataSource:dataSource,
                     loading:loading,
                     confirmDialog:confirmDialog,
-					isBoostrap:true,
                 };
 
                 util.setAngularServices({
