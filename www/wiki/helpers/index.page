@@ -112,6 +112,10 @@ function fromJson(s)
 	return commonlib.Json.Decode(s)
 end
 
+function datetime()
+	 return  ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+end
+
 -- 初始化数据库
 function init_db()
 	if(db) then
