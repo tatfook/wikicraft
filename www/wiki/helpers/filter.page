@@ -152,6 +152,10 @@ KEEPWORK["request_after_filter"] ={
 
 -- 请求前滤器
 function request_before_filter()
+	if request:GetMethod() == "OPTIONS" then
+		return
+	end
+
 	local filter = KEEPWORK["request_before_filter"]
 	local url = pagename() or ""
 	local filterfuncs = filter[url]
