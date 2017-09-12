@@ -185,7 +185,11 @@ define(['app',
             var user = angular.copy($scope.user);
             user.dataSource = undefined;
 			user.defaultSiteDataSource = undefined;
+			user.vipInfo = undefined;
             util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
+				data.vipInfo = $scope.user.vipInfo;
+				data.dataSource = $scope.user.dataSource;
+				data.defaultSiteDataSource = $scope.user.defaultSiteDataSource;
                 Account.setUser(data);
                 Message.success("修改成功");
             });

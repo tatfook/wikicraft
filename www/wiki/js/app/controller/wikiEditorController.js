@@ -181,11 +181,12 @@ define([
             treeNode.pageNode = pageNode;
 
 			if (pageNode.isLeaf) {
-				treeNode.tags = [
-					"<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(" + '"' + pageNode.url + '"' + ")' title='删除'></span>",
-					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
-				];
+                treeNode.tags = [];
+				treeNode.tags.push([
+                    "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(" + '"' + pageNode.url + '"' + ")' title='删除'></span>",
+                    "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
+                    "<span class='close-icon' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
+                ]);
 			} else {
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
