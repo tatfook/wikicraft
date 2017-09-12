@@ -24,7 +24,7 @@ ENV_TYPE=$1
 
 # dev port is 8900, test port 8099
 port=8900
-if [[ $ENV_TYPE == "test"]]; then
+if [[ ${ENV_TYPE} == "test" ]]; then
   port=8099
 fi
 
