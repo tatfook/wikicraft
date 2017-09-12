@@ -22,6 +22,12 @@ fi
 
 ENV_TYPE=$1
 
+# dev port is 8900, test port 8099
+port=8900
+if [[ $ENV_TYPE == "test"]]; then
+  port=8099
+fi
+
 name=keepwork-${ENV_TYPE}-server
 
 if docker ps -f name=$name | grep $name; then
@@ -32,6 +38,7 @@ fi
 docker run -d --restart=always --name=$name \
   -v "${ENV_TYPE}-database:/project/wikicraft/database" \
   -v "${ENV_TYPE}-log:/project/wikicraft/log" \
+  -p "${port}:${port}" \
   keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
 
