@@ -283,10 +283,14 @@
                     <span>{{volume}}</span>
                 </div>
                 <div class="inform3">
-                    <button class="btn btn-default btn-inform3" type="submit">下载</button>
+                    <button class="btn btn-default btn-inform3" type="submit" ng-click="DownClick(count)">下载</button>
                     <span class="span-s">
-                        ☆☆☆☆☆
-                        (65535)
+                        <a href="#"><span ng-click="clickStart(1)" id="start1" class="start_zyz">☆</span></a>
+                        <a href="#"><span ng-click="clickStart(2)" id="start2" class="start_zyz">☆</span></a>
+                        <a href="#"><span ng-click="clickStart(3)" id="start3" class="start_zyz">☆</span></a>
+                        <a href="#"><span ng-click="clickStart(4)" id="start4" class="start_zyz">☆</span></a>
+                        <a href="#"><span ng-click="clickStart(5)" id="start5" class="start_zyz">☆</span></a><br>
+                        ({{count}})
                     </span>
                 </div>
             </div>
