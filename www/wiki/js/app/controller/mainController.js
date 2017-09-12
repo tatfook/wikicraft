@@ -15,7 +15,8 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
+    'controller/crosController',
+], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
@@ -38,6 +39,7 @@ define([
             
             // 初始化基本信息
             function initBaseInfo() {
+				config.isBoostrap = true;
                 //配置一些全局服务
                 config.services = {
                     $rootScope: $rootScope,

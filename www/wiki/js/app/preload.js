@@ -21,6 +21,9 @@ define([
     'controller/mainController',
     'controller/headerController',
     'controller/footerController',
+    'controller/userController',
+    'controller/notfoundController',
+    'controller/crosController',
     //'controller/testController',
 
     // directives

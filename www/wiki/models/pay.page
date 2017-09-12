@@ -21,8 +21,13 @@ local user       = models.user:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
-pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
-pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
+if WIKI_ENV == "test" then
+	pay.appToken = KEEPWORK["config"]["test"]["threeService"]["pingxx"]["appToken"];
+	pay.appId    = KEEPWORK["config"]["test"]["threeService"]["pingxx"]["appId"];
+else
+	pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
+	pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
+end
 
 tradeno.db_name = "tradeno";
 tradeno         = tradeno:new();

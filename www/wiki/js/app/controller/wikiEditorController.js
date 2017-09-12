@@ -181,11 +181,12 @@ define([
             treeNode.pageNode = pageNode;
 
 			if (pageNode.isLeaf) {
-				treeNode.tags = [
-					"<span class='close-icon show-empty-node' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
-					"<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(" + '"' + pageNode.url + '"' + ")' title='删除'></span>",
-					"<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
-				];
+                treeNode.tags = [];
+				treeNode.tags.push([
+                    "<span class='show-empty-node glyphicon glyphicon-trash' onclick='angular.element(this).scope().cmd_remove(" + '"' + pageNode.url + '"' + ")' title='删除'></span>",
+                    "<span class='show-empty-node glyphicon glyphicon-repeat' onclick='angular.element(this).scope().cmd_refresh("+ '"' + pageNode.url+ '"' + ")' title='刷新'></span>",
+                    "<span class='close-icon' onclick='angular.element(this).scope().cmd_close("+ '"' + pageNode.url+ '"'+")' title='关闭'>&times;</span>",
+                ]);
 			} else {
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
@@ -278,6 +279,16 @@ define([
 				browse_button: "uploadVideoId",
 				drop_element: 'drapUploadVideoContainer', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
 				uptoken_url:'/api/wiki/models/qiniu/uploadToken',
+				success: function(data) {
+					result.filename = data.filename;
+					result.url = data.download_url;
+
+					$scope.filename = data.filename;
+					util.$apply($scope);
+				},
+				failed: function() {
+					console.log("上传文件失败");
+				},
 			};
 			qiniu.upload(opt);
 		}
