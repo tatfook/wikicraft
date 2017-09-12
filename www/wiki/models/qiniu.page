@@ -22,6 +22,18 @@ function qiniu:api_upsert(params)
 	
 end
 
+-- 获取用户存贮使用状态
+function qiniu:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 用户上传文件
 function qiniu:api_upload(params)
 	local username = getUsername()
 	
