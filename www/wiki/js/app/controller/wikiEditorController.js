@@ -278,6 +278,16 @@ define([
 				browse_button: "uploadVideoId",
 				drop_element: 'drapUploadVideoContainer', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
 				uptoken_url:'/api/wiki/models/qiniu/uploadToken',
+				success: function(data) {
+					result.filename = data.filename;
+					result.url = data.download_url;
+
+					$scope.filename = data.filename;
+					util.$apply($scope);
+				},
+				failed: function() {
+					console.log("上传文件失败");
+				},
 			};
 			qiniu.upload(opt);
 		}

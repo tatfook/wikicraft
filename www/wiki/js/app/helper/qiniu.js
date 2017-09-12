@@ -68,10 +68,12 @@ define([
 					util.post(config.apiUrlPrefix + 'qiniu/upload', params,	function(data){
 						data = data || {};
 						console.log(data);
+						opt.success && opt.success(data);
 					});
 				},
 				'Error': function(up, err, errTip) {
 					//上传出错时，处理相关的事情
+					opt.failed && opt.failed();
 				},
 				'UploadComplete': function() {
 					//队列文件处理完毕后，处理相关的事情
