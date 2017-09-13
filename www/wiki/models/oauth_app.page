@@ -82,8 +82,7 @@ local oauthApp = {
 		clientId       = "1000007",
 		clientSecret   = "12345678",
 		RedirectUrl    = "",
-		--payCallbackUrl = "http://" .. request:GetHost() .. "/api/wiki/models/vip/payHook",
-		payCallbackUrl = "http://test.keepwork.com/api/wiki/models/vip/payHook",
+		payCallbackUrl = "http://" .. request:GetHost() .. "/api/wiki/models/vip/payHook",
 	},
 }
 
