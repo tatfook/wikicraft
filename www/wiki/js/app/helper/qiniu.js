@@ -60,13 +60,15 @@ define([
 						size:file.size,
 						type:file.type,
 						hash:info.hash,
+						channel:"qiniu",
 					}
 	
 					console.log(params);
 					//result.filename = info.key.replace(/\s/g, "");
 					//console.log(sourceLink);
-					util.post(config.apiUrlPrefix + 'qiniu/upload', params,	function(data){
+					util.post(config.apiUrlPrefix + 'bigfile/upload', params,	function(data){
 						data = data || {};
+						data.filename = params.filename;
 						console.log(data);
 						opt.success && opt.success(data);
 					});
