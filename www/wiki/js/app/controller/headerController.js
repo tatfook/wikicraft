@@ -17,18 +17,50 @@ define([
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
+        $scope.searchRange = ["全部"];
+        $scope.nowSearchRange = $scope.searchRange[0];
+
         // 通过站点名搜索
         $scope.goSearchPage = function () {
             //window.location.reload(false);
 			var params = {
 				searchType:"pageinfo",
 				keyword:$scope.search || "",
-			}
+			};
+			switch ($scope.nowSearchRange){
+                case "本站":
+                    params.sitename = $scope.urlObj.sitename;
+                    break;
+                case "当前用户":
+                    var username = $scope.urlObj.username ? ($scope.urlObj.username == "wiki" ? $scope.user.username : $scope.urlObj.username) : $scope.user.username;
+                    params.username = username;
+                    break;
+                default:
+                    break;
+            }
             util.go("search?" + util.getQueryString(params));
+        };
+
+        $scope.changeSearchRange = function (range) {
+            $scope.nowSearchRange = range;
+        };
+
+        function initSearchRange() {
+            var urlObj = $scope.urlObj || util.parseUrl(),
+                hasUserInfo = $scope.isLogin || (urlObj.username && urlObj.username != "wiki"),
+                hasSiteInfo = urlObj.sitename;
+
+            if (hasSiteInfo){
+                $scope.searchRange.push("本站");
+            }
+            if (hasUserInfo){
+                $scope.searchRange.push("当前用户");
+            }
         }
 
         function init() {
             $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
+            $scope.isSearch = (window.location.pathname == "/wiki/search") ? true : false;
             $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikieditor'}];
             var urlObj = util.parseUrl();
 
@@ -61,6 +93,7 @@ define([
                 }
             }
 
+            initSearchRange();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
         }

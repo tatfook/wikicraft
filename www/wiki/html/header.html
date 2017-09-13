@@ -50,27 +50,27 @@
         width:30px;
         height:30px;
     }
-    .navbar-default .search-bar{
-        width: 120px;
-        z-index: 1;
+    .navbar-default .search-bar > .input-group{
+        width: 200px;
+        top: 9px;
     }
-    .navbar-default .search-bar.active input{
-        /*width:200px;*/
+    .navbar-default .search-bar > .input-group .form-control{
+        border-left: 0;
+        border-right: 0;
+        box-shadow: none;
     }
-    .navbar-default .search-bar.active span{
-        /*right:-70px;*/
+    .navbar-default .search-bar > .input-group .glyphicon-search{
+        top:0;
+        background-color: transparent;
     }
-    .navbar-default .form-control {
-        margin-top: 10px;
-        width: 120px;
-        height: 32px;
-        background-color: #FAFAFA;
-        padding-right: 30px;
+    .navbar-default .search-bar li:after{
+        content: none;
     }
-    .navbar-default .form-control + span {
-        position: absolute;
-        right: 10px;
-        top: 18px;
+    .navbar-default .search-bar .dropdown-menu{
+        min-width: unset;
+    }
+    .navbar-default .search-bar .dropdown-menu > li > a{
+        padding: 5px 12px;
     }
     .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover, a:focus, a:hover {
         color: #3977AD;
@@ -456,9 +456,17 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
-                        <li class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
-                            <input id="searchbar" type="text" class="form-control" ng-model="search" placeholder="" ng-focus="stretch=true" ng-blur="stretch=false">
-                            <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted" style="cursor: pointer"></span>
+                        <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                                    </ul>
+                                </div><!-- /btn-group -->
+                                <input id="searchbar" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
+                                <span class="input-group-addon glyphicon glyphicon-search" ng-click="goSearchPage()"></span>
+                            </div>
                         </li>
                         <!--<li id="js-prev-container" class="nav-bread-crumb">-->
                             <!--<ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>-->
@@ -512,7 +520,7 @@
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
-                        <li class="hidden-xs">
+                        <li ng-hide="isSearch" class="hidden-xs">
                             <input id="searchbar-nologin" type="text" class="form-control" placeholder="" ng-model="search">
                             <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted"></span>
                         </li>
