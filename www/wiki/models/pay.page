@@ -21,7 +21,7 @@ local user       = models.user:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
-if WIKI_ENV == "test" then
+if WIKI_ENV == "test" or WIKI_ENV == "www" then
 	pay.appToken = KEEPWORK["config"]["test"]["threeService"]["pingxx"]["appToken"];
 	pay.appId    = KEEPWORK["config"]["test"]["threeService"]["pingxx"]["appId"];
 else
