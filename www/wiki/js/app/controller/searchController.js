@@ -8,10 +8,13 @@ define([
    	'helper/storage',
    	'text!html/search.html'
 ], function (app, util, storage, htmlContent) {
-    app.controller('searchController', ['$scope', '$sce', 'Account','Message', function ($scope, $sce, Account, Message) {
+    app.controller('searchController', ['$scope', '$location', '$sce', 'Account','Message', function ($scope, $location, $sce, Account, Message) {
+        const tagSplitRegexp = /\[([^\]]+)\]/;
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
+        $scope.searchRange = ["全部"];
+        $scope.nowSearchRange = $scope.searchRange[0];
 
 		// 站点信息: siteinfo
 		// 用户信息: userinfo
@@ -47,7 +50,7 @@ define([
 			
 			query.keyword = query.keyword || "";	
 			if (query.isTagSearch) {
-				data.tags = "*|" + query.keyword + "|*";
+				data.tags = "*[" + query.keyword + "]*";
 			} else {
 				data.extra_search = "*" + query.keyword + "*";
 			}
@@ -66,7 +69,7 @@ define([
 						var obj = result.data.list[i];
 						var site = angular.fromJson(obj.extra_data);
 						site.highlight_ext = obj.highlight_ext;
-						site.tagsArr = obj.tags ? obj.tags.split("|") : [];
+						site.tagsArr = obj.tags ? obj.tags.split(tagSplitRegexp) : [];
 						searchList.push(site);
 					}
 					$scope.searchList = searchList;
@@ -82,7 +85,7 @@ define([
         function init() {
             console.log('init search controller');
             searchParams = util.getQueryObject() || searchParams;
-            $scope.searchType = searchParams.searchType;
+            $scope.searchType = searchParams.searchType || "pageinfo";
             $scope.searchText = searchParams.keyword;
             getSiteList();
         }
@@ -102,15 +105,16 @@ define([
         };
 
         $scope.seachTag = function (tag) {
-            Message.info("标签搜索功能开发中！");
-            // searchParams = {
-            //     keyword:"tag",
-            //     searchType:"siteinfo",
-            //     isTagSearch: true,
-            //     username: undefined,
-            //     sitename: undefined,
-            // };
-            // elasticSearch(searchParams);
+            searchParams = {
+                keyword: tag,
+                searchType: "siteinfo",
+                isTagSearch: true,
+                username: undefined,
+                sitename: undefined,
+            };
+            // util.go("/wiki/search?keyword="+tag+"&isTagSearch=true&searchType=siteinfo");
+            // $location.search(searchParams);
+            elasticSearch(searchParams);
         };
 
         //打开用户页
