@@ -140,7 +140,6 @@ end
 
 -- 支付结果回调
 function vip:api_payHook(params)
-	LOG.std(nil, "error", "keepwork", "---------------------------------")
 	local ip = getpeername()
 	if ip ~= "121.14.117.252" and ip ~= "121.14.117.251" then
 		LOG.std(nil, "error", "keepwork", "请求不可信任")
