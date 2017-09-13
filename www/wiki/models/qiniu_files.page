@@ -61,4 +61,19 @@ function qiniu_files:api_getByUsername(params)
 	return errors:wrap(nil, {total=total or 0, list=list});
 end
 
+-- 通过id获取download_url
+function qiniu_files:api_getDownloadUrlById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+	local _, qiniuFiles = yield()
+	
+	if not qiniuFiles then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	return errors:wrap(nil, qiniuFiles.download_url)
+end
 
