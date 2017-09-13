@@ -7,6 +7,7 @@ Date: 2017/2/27
 
 include_once("./abstract/base.page")
 include_once("./qiniu_files.page")
+--include_once("./bigfile.page")
 
 local qiniu = inherit(models.abstract.base, gettable("models.qiniu"))
 qiniu.db_name = "qiniu"
@@ -33,6 +34,7 @@ function qiniu:api_getByUsername(params)
 	return errors:wrap(yield())
 end
 
+-- 
 -- 用户上传文件
 function qiniu:api_upload(params)
 	local username = getUsername()
@@ -75,6 +77,8 @@ function qiniu:api_upload(params)
 	self:db():insertOne({["+username"]={username}}, data, resume)
 	yield()
 
+	--local bigfileDB = models.bigfile:new()
+	--local bf = bigfileDB:api_upsert({channel=const.BIGFILE_QINIU, file_id=file._id}).data
 	return errors:wrap(nil, file)
 end
 

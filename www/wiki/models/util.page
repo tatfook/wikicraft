@@ -190,6 +190,9 @@ const.MAX_SITE_NUM = 100
 -- 服务名
 
 
+-- 大文件存贮渠道
+const.BIGFILE_NONE = "none"
+const.BIGFILE_QINIU = "qiniu"
 
 
 
