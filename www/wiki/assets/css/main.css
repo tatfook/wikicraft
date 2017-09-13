@@ -9,6 +9,7 @@
 @import "editor.css";
 @import "markdownit.css";
 @import "theme.css";
+@import "github-markdown.css";
 
 a:hover {
     cursor: pointer;
