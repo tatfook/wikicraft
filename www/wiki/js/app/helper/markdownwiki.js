@@ -554,8 +554,9 @@ define([
             var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
             var blockCache = undefined;
 
-			if (!isWikiBlock) {
-				htmlContent = '<div class="markdown-body" id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
+			//console.log(token);
+			if (!isWikiBlock && token.type != "html_block") {
+				//htmlContent = '<div class="markdown-body" id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
 			}
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];

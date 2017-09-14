@@ -72,6 +72,23 @@ char* ParaEngine::CQiNiu::getDownloadUrl(const char* domain, const char* key, in
     return strbuf;
 }
 
+int ParaEngine::CQiNiu::deleteFile(const char* domain, const char* key) {
+	Qiniu_Mac mac;
+	mac.accessKey = this->m_accessKey;
+	mac.secretKey = this->m_secretKey;
+	
+	Qiniu_Client client;
+	Qiniu_Client_InitMacAuth(&client, 1024, &mac);
+	Qiniu_Error error = Qiniu_RS_Delete(&client, domain, key);
+	if (error.code != 200) {
+		//WriteLog(itoa(error.code));
+		WriteLog(error.message);
+		return -1;
+	}
+
+	return 0;
+}
+
 bool ParaEngine::CQiNiu::s_isInited = false;
 ParaEngine::CQiNiu* ParaEngine::CQiNiu::s_instance = new ParaEngine::CQiNiu();
 

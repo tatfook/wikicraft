@@ -122,3 +122,23 @@ function qiniu:api_getDownloadUrl(params)
 	-- msg = {download_url:"xx"}
 	return errors:wrap(nil, msg)
 end
+
+
+function qiniu:api_deleteFile(params)
+	if not params.key then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local domain = params.domain or "ov62qege8.bkt.clouddn.com"
+
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", domain=domain, key=params.key})
+	log(msg)
+	-- msg = {download_url:"xx"}
+	return errors:wrap(nil, msg)
+end
+
+
+
+
+
+

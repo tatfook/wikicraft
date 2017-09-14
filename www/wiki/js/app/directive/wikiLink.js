@@ -35,7 +35,7 @@ define([
 
                 var pageinfo = $rootScope.pageinfo;
 				//console.log(pageinfo);
-				console.log(href);
+				//console.log(href);
 				if (/^http[s]?:\/\/keepwork.com\/[^\/]+\/[^\/]+\/_mods\/.+/.test(href) && pageinfo && pageinfo.username && pageinfo.sitename) {
 					var path = href.replace(/http[s]?:\/\/keepwork.com/,"");
 					var currentDataSource = dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
