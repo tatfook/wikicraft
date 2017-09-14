@@ -15,16 +15,16 @@ define([
 				if (url) {
 					$scope.videoUrl = $sce.trustAsResourceUrl(url);
 				} else if (modParams.channel == "qiniu") {
-					if (!modParams.domain || !modParams.key) {
+					if (!modParams.bigfileId) {
+						console.log("video module params error!!!");
 						return;
 					}
 
-					util.post(config.apiUrlPrefix + "qiniu/getDownloadUrl", {
-						domain:modParams.domain,
-						key:modParams.key,
+					util.post(config.apiUrlPrefix + "bigfile/getDownloadUrlById", {
+						_id:modParams.bigfileId,
 					}, function(data){
-						if (data && data.download_url) {
-							$scope.videoUrl = $sce.trustAsResourceUrl(data.download_url);
+						if (data) {
+							$scope.videoUrl = $sce.trustAsResourceUrl(data);
 						}
 					});
 				}

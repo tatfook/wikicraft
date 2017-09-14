@@ -304,7 +304,7 @@ define([
 					}
 					currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
 						result.filename = data.filename;
-						result.url = window.location.origin + path;
+						result.url = "http://keepwork.com" + path;
 						$scope.filename = data.filename;
 						util.$apply($scope);
 						currentDataSource.getLastCommitId();
