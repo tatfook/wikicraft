@@ -195,7 +195,7 @@
                 <h4 class="title">共{{totalItems || 0}}条用户页：</h4>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
-                        <h3><a href="{{item.access_url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
+                        <h3><a href="{{item.url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
                         <p class="info"><a href="{{item.url}}">{{item.url}}</a></p>
                         <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
                     </div>

@@ -8,7 +8,7 @@ define([
    	'helper/storage',
    	'text!html/search.html'
 ], function (app, util, storage, htmlContent) {
-    app.controller('searchController', ['$scope', '$location', '$sce', 'Account','Message', function ($scope, $location, $sce, Account, Message) {
+    app.controller('searchController', ['$scope', '$location', '$sce', 'Account','Message', 'modal', function ($scope, $location, $sce, Account, Message, modal) {
         const tagSplitRegexp = /\[([^\]]+)\]/;
         $scope.totalItems = 0;
         $scope.currentPage = 1;
@@ -97,6 +97,7 @@ define([
 
         $scope.changeSearch = function (searchType, searchText) {
             $scope.searchList = [];
+            $scope.totalItems = 0;
             searchParams.searchType = searchType;
             searchParams.keyword = searchText || $scope.searchText || "";
             elasticSearch(searchParams);

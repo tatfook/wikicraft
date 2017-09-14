@@ -54,6 +54,11 @@
         width: 200px;
         top: 9px;
     }
+    .navbar-default .search-bar > .input-group .dropdown-toggle{
+        margin-right: 0;
+        width: 95px;
+        text-align: center;
+    }
     .navbar-default .search-bar > .input-group .form-control{
         border-left: 0;
         border-right: 0;
@@ -63,11 +68,11 @@
         top:0;
         background-color: transparent;
     }
-    .navbar-default .search-bar li:after{
-        content: none;
+    .navbar-default .search-bar .dropdown-menu li:after{
+        content: none !important;
     }
     .navbar-default .search-bar .dropdown-menu{
-        min-width: unset;
+        min-width: 95px;
     }
     .navbar-default .search-bar .dropdown-menu > li > a{
         padding: 5px 12px;
@@ -520,9 +525,17 @@
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHelp()"><i class="iconfont icon-bangzhu"></i>帮助</li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
-                        <li ng-hide="isSearch" class="hidden-xs">
-                            <input id="searchbar-nologin" type="text" class="form-control" placeholder="" ng-model="search">
-                            <span ng-click="goSearchPage()" class="glyphicon glyphicon-search text-muted"></span>
+                        <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                                    </ul>
+                                </div><!-- /btn-group -->
+                                <input id="searchbar-nologin" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
+                                <span class="input-group-addon glyphicon glyphicon-search" ng-click="goSearchPage()"></span>
+                            </div>
                         </li>
                         <li><a ng-click="goVipPay()">VIP</a></li>
                         <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
