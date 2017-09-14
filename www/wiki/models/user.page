@@ -922,7 +922,11 @@ function user:api_isLogin(params)
 	local origin = request:header("Origin")
 	if not origin then
 		local refer = request:header("Referer")
-		origin = string.match(refer, "http[s]?://[^/]*")
+		if not refer then
+			origin = "http://" .. request:header("Host")
+		else
+			origin = string.match(refer, "http[s]?://[^/]*")
+		end
 	end
 	--log(origin)
 	
