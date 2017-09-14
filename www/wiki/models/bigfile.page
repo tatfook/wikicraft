@@ -46,13 +46,16 @@ function bigfile:api_deleteById(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
-	if bf.channel == const.BIGFILE_QINIU then
+	if bf.channel == const.BIGFILE_QINIU and bf.file_id then
 		local qiniuDB = models.qiniu:new()
-		local qiniuFileDB = models.qiniu_files:new()
-		local qiniuFiles = qiniuFileDB:api_getById({_id=bf.file_id}).data
-		return qiniuDB:deleteFile(qiniuFiles or {})
+		local ret = qiniuDB:api_deleteByFileId({file_id=bf.file_id}).error
+		if errors:isError(ret) then
+			return errors:wrap(ret)
+		end
 	end
 
+	self:db():deleteOne({_id=params._id})
+	return errors:wrap(nil)
 end
 
 

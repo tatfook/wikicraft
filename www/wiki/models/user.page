@@ -940,11 +940,12 @@ function user:api_isLogin(params)
 
 	local token = getTokenInfo()
 	local isLogin = false
-	
 	if token then
 		isLogin = true
 	end
 
-	return errors:wrap(nil, {isLogin=isLogin})
+	--local cookie_token = request:get_cookie("token")
+
+	return errors:wrap(nil, {isLogin=isLogin, token=cookie_token})
 end
 

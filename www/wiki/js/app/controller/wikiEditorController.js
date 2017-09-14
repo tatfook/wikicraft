@@ -261,9 +261,12 @@ define([
 
     app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {//{{{
         $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
-		var result = {url:"", filename:""};
+		var result = {url:"", filename:"", bigfileId:undefined};
 
         $scope.cancel = function () {
+			if (result.bigfileId) {
+				deleteFile(result.bigfileId);
+			}
             $uibModalInstance.dismiss('');
         }
 
@@ -271,6 +274,12 @@ define([
 			console.log(result);
 			$uibModalInstance.close(result);
         }
+
+		function deleteFile(bigfileId) {
+			util.post(config.apiUrlPrefix + "bigfile/deleteById", {
+				_id:bigfileId,
+			});
+		}
 
 		function init() {
 			$scope.filelist = {};
@@ -297,20 +306,25 @@ define([
 					var filename = data.filename || (new Date()).getTime();
 					var path = '/' + currentPage.username + '/' + currentPage.sitename + '/_mods/' + filename;
 
+					result.bigfileId = data._id;
+
 					var currentDataSource = getCurrentDataSource();
 					if (!currentDataSource) {
 						console.log("当前数据不可用!!!");
 						return;
 					}
+
 					currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
 						result.filename = data.filename;
 						result.url = "http://keepwork.com" + path;
 						$scope.filename = data.filename;
 						util.$apply($scope);
 						currentDataSource.getLastCommitId();
+					}, function(){
+						deleteFile(data._id);
 					});
-
 				},
+
 				failed: function() {
 					console.log("上传文件失败");
 				},
