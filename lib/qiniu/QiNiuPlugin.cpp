@@ -189,9 +189,9 @@ CORE_EXPORT_DECL void LibActivate(int nType, void* pVoid)
 			const int expires = (int)((double)input_msg["expires"]);
 			output_msg["download_url"] = qiniu->getDownloadUrl(domain.c_str(), key.c_str(), expires);	
 		} else if (sCmd == "deleteFile") {
-			const std::string& domain = input_msg["domain"];
+			const std::string& bucket = input_msg["bucket"];
 			const std::string& key = input_msg["key"];
-			output_msg["result"] = (double)qiniu->deleteFile(domain.c_str(), key.c_str());
+			output_msg["result"] = (double)qiniu->deleteFile(bucket.c_str(), key.c_str());
 		}
 
 		NPLInterface::NPLHelper::NPLTableToString("msg", output_msg, output);

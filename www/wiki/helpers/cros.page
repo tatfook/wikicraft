@@ -9,6 +9,7 @@ Date: 2017/3/13
 local allow_cros_list = {
 	"http://test.localhost.com:8900",
 	"http://xiaoyao.localhost.com:8900",
+	"http://121.14.117.239",
 }
 
 function cros_handle()

@@ -41,6 +41,29 @@ function qiniu_files:api_upsert(params)
 end
 
 
+-- 通过id获取记录
+function qiniu_files:api_getById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 通过id删除文件
+function qiniu_files:api_deleteById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+
 -- 获取用户文件列表
 function qiniu_files:api_getByUsername(params)
 	local username = getUsername()
