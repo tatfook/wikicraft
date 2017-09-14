@@ -141,7 +141,7 @@ end
 -- 支付结果回调
 function vip:api_payHook(params)
 	local ip = getpeername()
-	if ip ~= "121.14.117.252" then
+	if ip ~= "121.14.117.252" and ip ~= "121.14.117.251" then
 		LOG.std(nil, "error", "keepwork", "请求不可信任")
 		return response:status(500)
 	end
@@ -157,16 +157,16 @@ function vip:api_payHook(params)
 	local vipTradeDB = models.vip_trade:new()
 	local vipTrade = vipTradeDB:api_getById({_id=params.vip_order_no}).data
 
-	if not vipTrade  or vipTrade.price ~= params.price then
-		if vipTrade.price ~= params.price then
-			LOG.std(nil, "error", "keepwork", "支付价格错误")
-			vipTradeDB:api_updateById({_id=vip_order_no, state="failed", comment="价格错误"})
-			return response:status(500)
-		elseif vipTrade.state == "finish" then
-			LOG.std(nil, "error", "keepwork", "交易已完成, 重复交易")
-			return response:status(500)
-		end
-		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	if not vipTrade then
+		LOG.std(nil, "error", "keepwork", "交易不存在")
+		return response:status(500)
+	elseif vipTrade.price ~= params.price then
+		LOG.std(nil, "error", "keepwork", "支付价格错误")
+		vipTradeDB:api_updateById({_id=vip_order_no, state="failed", comment="价格错误"})
+		return response:status(500)
+	elseif vipTrade.state == "finish" then
+		LOG.std(nil, "error", "keepwork", "交易已完成, 重复交易")
+		return response:status(500)
 	end
 
 	local vipInfo = self:api_getByUsername({username=params.username}).data
@@ -185,6 +185,7 @@ function vip:api_payHook(params)
 	--local year, mm, dd = currentDate:match("^(%d%d%d%d)%D*(%d%d)%D*(%d%d)")
 
 	vipTradeDB:api_updateById({_id=vip_order_no, state="finish", comment="交易完成"})
+	LOG.std(nil, "error", "keepwork", "充值成功")
 
 	-- 更新用户服务表
 	local userServiceDB = models.user_service:new()

@@ -4,6 +4,7 @@
 
 define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlContent) {
     app.controller('appsController', ['$scope', '$location', '$anchorScroll', '$timeout', 'Message', function ($scope, $location, $anchorScroll, $timeout, Message) {
+        $scope.developingLogo = "http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504863330607.png";
         $scope.recommentApps = [
             {
                 "name":"Paracraft创意空间",
@@ -22,7 +23,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
             {
                 "name":"3D打印",
                 "title":"3D打印网络平台",
-                "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
+                "siteUrl":"http://keepwork.com/idreamtech/3dprint",
                 "bgColor":"#91C3FF",
                 "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png",
             },
@@ -49,7 +50,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                     {
                         "name":"3D 打印",
                         "details":"用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
-                        "siteUrl":"http://keepwork.com/idreamtech/mysite3dprint",
+                        "siteUrl":"http://keepwork.com/idreamtech/3dprint",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
                     },
                     {
@@ -126,13 +127,13 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                     {
                         "name":"中药溯源",
                         "details":"提供中药溯源系统的公共查询服务",
-                        "siteUrl":"http://keepwork.com/idreamtech/mysitezysy",
+                        "siteUrl":"http://keepwork.com/idreamtech/zysy",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502249323964.png"
                     },
                     {
                         "name":"电子铜人",
                         "details":"利用3D计算机技术展示人体内部结构",
-                        "siteUrl":"http://keepwork.com/idreamtech/mysitedztr",
+                        "siteUrl":"http://keepwork.com/idreamtech/dztr",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502248544807.png"
                     }
                 ]

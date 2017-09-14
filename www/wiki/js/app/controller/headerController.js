@@ -13,22 +13,55 @@ define([
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
+        const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
+        $scope.searchRange = [];
+        $scope.searchRange.push(SearchRangeText[0]);
+        $scope.nowSearchRange = $scope.searchRange[0];
+
         // 通过站点名搜索
         $scope.goSearchPage = function () {
             //window.location.reload(false);
 			var params = {
-				searchType:"siteinfo",
+				searchType:"pageinfo",
 				keyword:$scope.search || "",
-			}
+			};
+			switch ($scope.nowSearchRange){
+                case SearchRangeText[1]:
+                    params.sitename = $scope.urlObj.sitename;
+                    break;
+                case SearchRangeText[2]:
+                    params.username = $scope.user.username;
+                    break;
+                default:
+                    break;
+            }
             util.go("search?" + util.getQueryString(params));
+        };
+
+        $scope.changeSearchRange = function (range) {
+            $scope.nowSearchRange = range;
+        };
+
+        function initSearchRange() {
+            var urlObj = $scope.urlObj || util.parseUrl(),
+                hasUserInfo = $scope.isLogin,
+                hasSiteInfo = urlObj.sitename;
+
+            if (hasSiteInfo && $scope.searchRange.indexOf(SearchRangeText[1]) == -1){
+                $scope.searchRange.push(SearchRangeText[1]);
+            }
+            if (hasUserInfo && $scope.searchRange.indexOf(SearchRangeText[2]) == -1){
+                $scope.searchRange.push(SearchRangeText[2]);
+            }
         }
 
         function init() {
             $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
+            $scope.isSearch = (window.location.pathname == "/wiki/search") ? true : false;
             $scope.userSiteList = [{name: 'home'}, {name: 'login'}, {name: 'userCenter'},{name:'wikieditor'}];
             var urlObj = util.parseUrl();
 
@@ -61,6 +94,7 @@ define([
                 }
             }
 
+            initSearchRange();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
         }
@@ -193,7 +227,7 @@ define([
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/") {
+            if (!config.isOfficialDomain() || (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/")) {
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg',

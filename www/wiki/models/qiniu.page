@@ -6,8 +6,130 @@ Date: 2017/2/27
 ]]
 
 include_once("./abstract/base.page")
+include_once("./qiniu_files.page")
+--include_once("./bigfile.page")
 
 local qiniu = inherit(models.abstract.base, gettable("models.qiniu"))
+qiniu.db_name = "qiniu"
+
+function qiniu:ctor() 
+	self:addfield("username", "string") -- 用户名
+	self:addfield("used", "number")   -- 用户已使用的大小
+	self:addfield("total", "number")  -- 用户存贮空间大小
+end
+
+
+function qiniu:api_upsert(params)
+	
+end
+
+-- 获取用户存贮使用状态
+function qiniu:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 删除文件
+function qiniu:api_deleteByFileId(params)
+	if not params.file_id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local qiniuFilesDB = models.qiniu_files:new()
+
+	local qiniuFiles = qiniuFilesDB:api_getById({_id=params.file_id}).data
+
+	if not qiniuFiles then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	self:db():findOne({["+username"]={qiniuFiles.username}}, resume)
+	local _, data = yield()
+
+	if not data then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	local ret = self:api_deleteFile({key=qiniuFiles.key}).data
+	if ret ~= 0 then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	local ret = qiniuFilesDB:api_deleteById({_id=params.file_id}).error
+	if errors:isError(ret) then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	data.used = data.used - qiniuFiles.size
+	self:db():updateOne({["+username"]={qiniuFiles.username}}, data, resume)
+	yield()
+
+	return errors:wrap(nil)
+end
+
+
+-- 用户上传文件
+function qiniu:api_upload(params)
+	local username = getUsername()
+	
+	local download_url = self:api_getDownloadUrl(params).data
+	download_url = download_url and download_url.download_url
+
+	if not download_url or not params.size or not params.hash or not params.size or params.size < 1 then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={username}}, resume)
+	local _, data = yield()
+
+	if not data then
+		data = {
+			username=username,
+			used = 0,
+			total = 2 * 1024 * 1024 * 1024,
+		}
+		--return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	data.used = data.used + params.size
+	if data.used > data.total then
+		return errors:wrap(errors:new("用户空间使用已超限制"))
+	end
+		
+	params.username = username
+	params.download_url = download_url
+
+	local qiniu_files_db = models.qiniu_files:new()
+
+	local file = qiniu_files_db:api_upsert(params).data
+
+	if not file then
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
+
+	self:db():insertOne({["+username"]={username}}, data, resume)
+	yield()
+
+	--local bigfileDB = models.bigfile:new()
+	--local bf = bigfileDB:api_upsert({channel=const.BIGFILE_QINIU, file_id=file._id}).data
+	return errors:wrap(nil, file)
+end
+
+-- 获取用户存贮空间状态
+function qiniu:api_getByUsername(params)
+	if not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username"]={params.username}}, resume)
+	
+	return errors:wrap(yield())
+end
 
 
 function qiniu:api_uploadToken(params)
@@ -38,3 +160,22 @@ function qiniu:api_getDownloadUrl(params)
 	-- msg = {download_url:"xx"}
 	return errors:wrap(nil, msg)
 end
+
+-- 删除文件七牛接口
+function qiniu:api_deleteFile(params)
+	if not params.key then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local bucket = params.bucket or "keepwork"
+
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
+	-- msg = {result:1 or 0}
+	return errors:wrap(nil, msg)
+end
+
+
+
+
+
+

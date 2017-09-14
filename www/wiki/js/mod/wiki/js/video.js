@@ -4,13 +4,30 @@
 
 define([
     'app',
+	'helper/util',
     'text!wikimod/wiki/html/video.html',
-], function (app, htmlContent) {
+], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("videoController", ['$scope', '$sce', function ($scope, $sce) {
             function init() {
-                var url = wikiBlock.modParams.videoUrl || "http://static.video.qq.com/TPout.swf?vid=l01276tvc8i";
-                $scope.videoUrl = $sce.trustAsResourceUrl(url);
+				var modParams = wikiBlock.modParams;
+                var url = wikiBlock.modParams.videoUrl;
+				if (url) {
+					$scope.videoUrl = $sce.trustAsResourceUrl(url);
+				} else if (modParams.channel == "qiniu") {
+					if (!modParams.bigfileId) {
+						console.log("video module params error!!!");
+						return;
+					}
+
+					util.post(config.apiUrlPrefix + "bigfile/getDownloadUrlById", {
+						_id:modParams.bigfileId,
+					}, function(data){
+						if (data) {
+							$scope.videoUrl = $sce.trustAsResourceUrl(data);
+						}
+					});
+				}
             }
 
             init();

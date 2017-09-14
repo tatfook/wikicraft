@@ -1,0 +1,102 @@
+<?npl
+--[[
+Title: qiniu file list
+Author: wuxiangan
+Date: 2017/09/11
+]]
+
+include_once("./abstract/base.page")
+
+local qiniu_files = inherit(models.abstract.base, gettable("models.qiniu_files"))
+qiniu_files.db_name = "qiniu_files"
+
+function qiniu_files:ctor() 
+	self:addfield("username", "string")     -- 用户名
+	self:addfield("filename", "string")     -- 文件名
+	self:addfield("domain", "string")       -- 域名
+	self:addfield("key", "string")          -- 文件名
+	self:addfield("download_url", "string") -- 下载url
+	self:addfield("hash", "string")         -- hash
+	self:addfield("size", "number")         -- file size
+
+	self:addfield("usedCount", "number")      -- 使用次数
+	self:addfield("updateDate", "string")     -- 最近使用时间
+	self:addfield("createDate", "string")     -- 创建时间
+end
+
+-- 添加记录
+function qiniu_files:api_upsert(params)
+	local username = getUsername()
+	if not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.usedCount = (params.usedCount or 0) + 1
+
+	self:db():insertOne({["+username+domain+key"]={params.username, params.domain, params.key}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 通过id获取记录
+function qiniu_files:api_getById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 通过id删除文件
+function qiniu_files:api_deleteById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 获取用户文件列表
+function qiniu_files:api_getByUsername(params)
+	local username = getUsername()
+
+	if not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local skip, limit = util:pagination(params)
+
+	self:db():count({["+username"]={params.username}}, resume)
+	local _, total = yield()
+
+	self:db():find({["+username"]={username, skip=skip, limit=limit}}, resume)
+	local _, list = yield()
+
+
+	return errors:wrap(nil, {total=total or 0, list=list});
+end
+
+-- 通过id获取download_url
+function qiniu_files:api_getDownloadUrlById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+	local _, qiniuFiles = yield()
+	
+	if not qiniuFiles then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	return errors:wrap(nil, qiniuFiles.download_url)
+end
+

@@ -303,6 +303,29 @@ body,
     margin-left: 5px;
     margin-bottom: 1px;
 }
+.treeview .badge > .show-empty-node{
+    position: absolute;
+    background-color: #3977ad;
+    z-index: 0;
+}
+.treeview .badge > .show-empty-node:nth-child(1){
+    right: 0;
+    top: 0;
+    padding: 5px 4px;
+    font-size: 16px;
+}
+.treeview .badge > .show-empty-node:nth-child(2){
+    right: 24px;
+    top: 0;
+    padding: 5px 4px;
+    font-size: 16px;
+}
+.treeview .list-group-item:hover .badge>.show-empty-node{
+    background-color: #E6E6E6;
+}
+.treeview .node-selected:hover .badge>.show-empty-node{
+    background-color: #3977AD;
+}
 .treeview .icon.fa-chevron-down{
     color: #333;
 }

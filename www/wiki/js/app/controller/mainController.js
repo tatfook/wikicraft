@@ -15,7 +15,8 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent) {
+    'controller/crosController',
+], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
@@ -38,6 +39,7 @@ define([
             
             // 初始化基本信息
             function initBaseInfo() {
+				config.isBoostrap = true;
                 //配置一些全局服务
                 config.services = {
                     $rootScope: $rootScope,
@@ -254,7 +256,7 @@ define([
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
-									content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
+									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
 									util.html('#__UserSitePageContent__', content, $scope);
 									//config.loading.hideLoading();
 								};
@@ -300,7 +302,7 @@ define([
 						}
                     },function (err) {
                         console.log(err);
-                        var errContent = md.render(notfoundHtmlContent);
+                        var errContent = notfoundHtmlContent;
                         util.html('#__UserSitePageContent__', errContent, $scope);
                     });
                 } else if (urlObj.username){

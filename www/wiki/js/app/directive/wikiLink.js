@@ -35,9 +35,11 @@ define([
 
                 var pageinfo = $rootScope.pageinfo;
 				//console.log(pageinfo);
-				if (/^\/[^\/]+\/[^\/]+\/_mods\/.+/.test(href) && pageinfo && pageinfo.username && pageinfo.sitename) {
+				//console.log(href);
+				if (/^http[s]?:\/\/keepwork.com\/[^\/]+\/[^\/]+\/_mods\/.+/.test(href) && pageinfo && pageinfo.username && pageinfo.sitename) {
+					var path = href.replace(/http[s]?:\/\/keepwork.com/,"");
 					var currentDataSource = dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
-					currentDataSource.getRawContent({path:href + config.pageSuffixName}, function(content){
+					currentDataSource.getRawContent({path:path + config.pageSuffixName}, function(content){
 						//console.log(content);
 						content = mdconf.toMod(content || "");
 						//console.log(content);

@@ -30,14 +30,9 @@ is_test() {
   [[ $ENV_TYPE == "test" ]]
 }
 
-# FIXME
-# clone main pkg for now
-if [[ ! -d "npl_packages" ]]; then
-  mkdir -p npl_packages
-  cd npl_packages
-  git clone https://github.com/NPLPackages/main
-  # TODO checkout one specific version
-  cd ..
+# use npl_packages in runtime image, not in local dir
+if [[ -d "npl_packages" ]]; then
+  rm -rf npl_packages
 fi
 
 # copy config file (cp will override config file)

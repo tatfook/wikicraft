@@ -69,15 +69,26 @@ function getTokenInfo()
 end
 
 function getUsername() 
-	local token = getTokenInfo()
-	if token then
-		return token.username
+	if request.username then
+		return request.username
 	end
 
-	return nil
+	local token = getTokenInfo()
+	if not token or not token.username then
+		return nil
+		
+	end
+
+	request.username = token.username
+
+	return token.username
 end
 
 function getUser()
+	if request.user then
+		return request.user
+	end
+
 	local username = getUsername()
 
 	if not username then
@@ -88,6 +99,8 @@ function getUser()
 
 	local _, user = yield()
 
+	request.user = user
+
 	return user
 end
 
@@ -97,6 +110,10 @@ end
 
 function fromJson(s)
 	return commonlib.Json.Decode(s)
+end
+
+function datetime()
+	 return  ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 end
 
 -- 初始化数据库

@@ -548,10 +548,16 @@ define([
             return wikiBlock;
         }
         mdwiki.getBlockCache = function (text, token) {
+			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
             //var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
             var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
             var blockCache = undefined;
+
+			//console.log(token);
+			if (!isWikiBlock && token.type != "html_block") {
+				//htmlContent = '<div class="markdown-body" id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
+			}
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
             for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {

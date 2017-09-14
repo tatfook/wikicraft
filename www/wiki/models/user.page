@@ -259,10 +259,8 @@ function user:api_verifyCellphoneOne(params)
 	end
 
 	local smsCode = tostring(math.random(1000,9999))
-	local smsParams = {to=params.cellphone, datas={smsCode,"3分钟"}, templateId="1"}
-	sendTemplateSms(smsParams, resume)
-	local _, data = yield()
-	data = data.data
+	local smsParams = {to=params.cellphone, datas={smsCode,"3分钟"}, templateId="194013"}
+	local data = sendTemplateSms(smsParams)
 	if not data or  data.statusCode ~= "000000" then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
@@ -539,8 +537,8 @@ function user:api_register(params)
 		return errors:wrap(errors:new("用户名不合法"))
 	end
 
-	if not string.match(params.username, "^%l+$") then
-		return errors:wrap(errors:new("用户名只能由小写字母组成"))
+	if not string.match(params.username, "^[%w]+$") then
+		return errors:wrap(errors:new("用户名只能由字母和数字组成"))
 	end
 
 	-- 查找用户名是否可用
@@ -924,7 +922,11 @@ function user:api_isLogin(params)
 	local origin = request:header("Origin")
 	if not origin then
 		local refer = request:header("Referer")
-		origin = string.match(refer, "http[s]?://[^/]*")
+		if not refer then
+			origin = "http://" .. request:header("Host")
+		else
+			origin = string.match(refer, "http[s]?://[^/]*")
+		end
 	end
 	--log(origin)
 	
