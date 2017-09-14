@@ -19,7 +19,7 @@ define([
             var reset      = true;
 
             $scope.otherUserinfo       = {};
-            $scope.method              = "alipay";
+            $scope.method              = "wechat";
             $scope.subject             = "LOADING";
             $scope.body                = "LOADING";
             $scope.returnUrl           = "";
