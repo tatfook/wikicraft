@@ -12,9 +12,9 @@ define([
 				var iframeUrl = wikiBlock.modParams.iframeUrl;
 				var iframeId = wikiBlock.modParams.iframeId;
 
-				if (!iframeId || !iframeUrl) {
-					return;
-				}
+				//if (!iframeId || !iframeUrl) {
+					//return;
+				//}
 
 				if ($auth.isAuthenticated()) {
 					var token = $auth.getToken();
