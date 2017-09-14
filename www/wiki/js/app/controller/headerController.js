@@ -51,10 +51,10 @@ define([
                 hasUserInfo = $scope.isLogin,
                 hasSiteInfo = urlObj.sitename;
 
-            if (hasSiteInfo){
+            if (hasSiteInfo && $scope.searchRange.indexOf(SearchRangeText[1]) == -1){
                 $scope.searchRange.push(SearchRangeText[1]);
             }
-            if (hasUserInfo){
+            if (hasUserInfo && $scope.searchRange.indexOf(SearchRangeText[2]) == -1){
                 $scope.searchRange.push(SearchRangeText[2]);
             }
         }

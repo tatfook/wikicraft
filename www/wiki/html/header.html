@@ -466,7 +466,7 @@
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange track by $index"><a>{{item}}</a></li>
                                     </ul>
                                 </div><!-- /btn-group -->
                                 <input id="searchbar" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
