@@ -13,11 +13,13 @@ define([
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
+        const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
-        $scope.searchRange = ["全部"];
+        $scope.searchRange = [];
+        $scope.searchRange.push(SearchRangeText[0]);
         $scope.nowSearchRange = $scope.searchRange[0];
 
         // 通过站点名搜索
@@ -28,12 +30,11 @@ define([
 				keyword:$scope.search || "",
 			};
 			switch ($scope.nowSearchRange){
-                case "本站":
+                case SearchRangeText[1]:
                     params.sitename = $scope.urlObj.sitename;
                     break;
-                case "当前用户":
-                    var username = $scope.urlObj.username ? ($scope.urlObj.username == "wiki" ? $scope.user.username : $scope.urlObj.username) : $scope.user.username;
-                    params.username = username;
+                case SearchRangeText[2]:
+                    params.username = $scope.user.username;
                     break;
                 default:
                     break;
@@ -47,14 +48,14 @@ define([
 
         function initSearchRange() {
             var urlObj = $scope.urlObj || util.parseUrl(),
-                hasUserInfo = $scope.isLogin || (urlObj.username && urlObj.username != "wiki"),
+                hasUserInfo = $scope.isLogin,
                 hasSiteInfo = urlObj.sitename;
 
             if (hasSiteInfo){
-                $scope.searchRange.push("本站");
+                $scope.searchRange.push(SearchRangeText[1]);
             }
             if (hasUserInfo){
-                $scope.searchRange.push("当前用户");
+                $scope.searchRange.push(SearchRangeText[2]);
             }
         }
 
