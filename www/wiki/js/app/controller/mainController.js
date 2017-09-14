@@ -256,7 +256,7 @@ define([
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
-									content = md.render((content!=undefined) ? content :  notfoundHtmlContent);
+									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
 									util.html('#__UserSitePageContent__', content, $scope);
 									//config.loading.hideLoading();
 								};
@@ -302,7 +302,7 @@ define([
 						}
                     },function (err) {
                         console.log(err);
-                        var errContent = md.render(notfoundHtmlContent);
+                        var errContent = notfoundHtmlContent;
                         util.html('#__UserSitePageContent__', errContent, $scope);
                     });
                 } else if (urlObj.username){

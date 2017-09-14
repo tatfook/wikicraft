@@ -52,7 +52,11 @@ define([
 			if (query.isTagSearch) {
 				data.tags = "*[" + query.keyword + "]*";
 			} else {
-				data.extra_search = "*" + query.keyword + "*";
+			    if (fuzzymatch == 0){
+                    data.extra_search = "*" + query.keyword + "*";
+                } else {
+                    data.extra_search = query.keyword || undefined;
+                }
 			}
 
 			util.ajax({
