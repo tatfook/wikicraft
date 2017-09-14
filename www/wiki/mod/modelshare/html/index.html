@@ -101,9 +101,9 @@
         <!-- 顶部按钮/导航与文字 -->
         <div class="header">
             <div class="nav">
-                <button class="btn btn-default button1" type="submit" id="newButton" ng-click="set(1)">最新作品</button>
-                <button class="btn btn-default button2" type="submit" id="hotButton" ng-click="set(2)">热门作品</button>
-                <button class="btn btn-default button3" type="submit" id="actButon" ng-click="set(3)">活动专区</button>
+                <button class="btn btn-default button1" type="submit" id="newButton" ng-click="getListNew()">最新作品</button>
+                <button class="btn btn-default button2" type="submit" id="hotButton" ng-click="getListHot()">热门作品</button>
+                <button class="btn btn-default button3" type="submit" id="actButon" ng-click="">活动专区</button>
                 <div class="number">
                     <span id="span1">作品数：{{totalItems}}件</span>
                 </div>
@@ -127,7 +127,7 @@
                         <span class="ulspan">{{item.templateName}}</span>
                         <span>☆☆☆☆☆</span>
                         <div class="liicon"></div>
-                        <span class="ulnumber">{{item.modelsnumber}}</span>
+                        <span class="ulnumber">{{item.count}}</span>
                         <br />
                         <span class="introduce"><span>作者：{{item.username}}</span>|<span>方块数量：{{item.blocks}}</span>|<span>体积：{{item.volume}}</span>|<span>{{item.createDate}}</span></span>
                         <div class="xianzhi">
@@ -139,57 +139,63 @@
         </div>
         <!-- 最新作品 -->
         <div class="form" id="newWorks" ng-if="divVar == 1">
-            <ul class="form1">
+            <ul class="form1" ng-repeat="item in list">
                 <li class="form2">
                     <div class="uldiv">
                         <img src="" />
                     </div>
-                    <span class="ulspan">最新</span>
-                    <span>☆☆☆☆☆</span>
-                    <div class="liicon"></div>
-                    <span class="ulnumber">65535</span>
-                    <br />
-                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
-                    <div class="xianzhi">
-                        
+                    <div>
+                        <span class="ulspan">{{item.templateName}}</span>
+                        <span>☆☆☆☆☆</span>
+                        <div class="liicon"></div>
+                        <span class="ulnumber">{{item.count}}</span>
+                        <br />
+                        <span class="introduce"><span>作者：{{item.username}}</span>|<span>方块数量：{{item.blocks}}</span>|<span>体积：{{item.volume}}</span>|<span>{{item.createDate}}</span></span>
+                        <div class="xianzhi">
+                            {{item.desc}}
+                        </div>
                     </div>
                 </li>
 			</ul>
         </div>
         <!-- 热门作品 -->
         <div class="form" id="hotWorks" ng-if="divVar == 2">
-            <ul class="form1">
+            <ul class="form1" ng-repeat="item in list">
                 <li class="form2">
                     <div class="uldiv">
                         <img src="" />
                     </div>
-                    <span class="ulspan">热门</span>
-                    <span>☆☆☆☆☆</span>
-                    <div class="liicon"></div>
-                    <span class="ulnumber">65535</span>
-                    <br />
-                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
-                    <div class="xianzhi">
-                        
+                    <div>
+                        <span class="ulspan">{{item.templateName}}</span>
+                        <span>☆☆☆☆☆</span>
+                        <div class="liicon"></div>
+                        <span class="ulnumber">{{item.count}}</span>
+                        <br />
+                        <span class="introduce"><span>作者：{{item.username}}</span>|<span>方块数量：{{item.blocks}}</span>|<span>体积：{{item.volume}}</span>|<span>{{item.createDate}}</span></span>
+                        <div class="xianzhi">
+                            {{item.desc}}
+                        </div>
                     </div>
                 </li>
 			</ul>
         </div>
         <!-- 活动专区 -->
         <div class="form" id="act" ng-if="divVar == 3">
-            <ul class="form1">
+            <ul class="form1" ng-repeat="item in list">
                 <li class="form2">
                     <div class="uldiv">
                         <img src="" />
                     </div>
-                    <span class="ulspan">活动</span>
-                    <span>☆☆☆☆☆</span>
-                    <div class="liicon"></div>
-                    <span class="ulnumber">65535</span>
-                    <br />
-                    <span class="introduce">作者：用户名|方块数量：65535|体积：128*128*128|2017-06-01</span>
-                    <div class="xianzhi">
-                        
+                    <div>
+                        <span class="ulspan">{{item.templateName}}</span>
+                        <span>☆☆☆☆☆</span>
+                        <div class="liicon"></div>
+                        <span class="ulnumber">{{item.count}}</span>
+                        <br />
+                        <span class="introduce"><span>作者：{{item.username}}</span>|<span>方块数量：{{item.blocks}}</span>|<span>体积：{{item.volume}}</span>|<span>{{item.createDate}}</span></span>
+                        <div class="xianzhi">
+                            {{item.desc}}
+                        </div>
                     </div>
                 </li>
 			</ul>
