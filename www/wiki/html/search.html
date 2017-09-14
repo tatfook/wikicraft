@@ -52,13 +52,23 @@
     .search-result{
         padding-top: 40px;
     }
-    .search-result .search{
+    .search-result .nav-container{
         position: relative;
     }
-    .search-result .search > .glyphicon-search{
+    .search-result .nav-container > .input-group{
         position: absolute;
-        right: 7px;
-        top: 10px;
+        right: 0;
+        width: 220px;
+        top: 0;
+    }
+    .search-result .nav-container > .input-group > .form-control {
+        border-right: 0;
+        box-shadow: none;
+        border-left: 0;
+    }
+    .search-result .nav-container .glyphicon-search{
+        top:0;
+        background-color: transparent;
     }
     .search-result .works .col-md-3{
         margin-top: 30px;
@@ -157,27 +167,35 @@
 
 <div ng-controller="searchController" class="search-result">
     <div class="container">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-class="{true:'active'}[searchType == 'pageinfo']" ng-click="changeSearch('pageinfo')">
-                <a href="#pageinfo" aria-controls="pageinfo" role="tab" data-toggle="tab">用户页</a>
-            </li>
-            <li role="presentation" ng-class="{true:'active'}[searchType == 'userinfo']" ng-click="changeSearch('userinfo')">
-                <a href="#userinfo" aria-controls="userinfo" role="tab" data-toggle="tab">用户</a>
-            </li>
-            <li role="presentation" ng-class="{true:'active'}[searchType == 'siteinfo']" ng-click="changeSearch('siteinfo')">
-                <a href="#siteinfo" aria-controls="siteinfo" role="tab" data-toggle="tab">站点</a>
-            </li>
-            <li class="pull-right search">
-                <input id="searchpage-search" type="text" class="form-control" placeholder="{{searchText || ''}}" ng-model="searchText">
-                <span ng-click="changeSearch(searchType, searchText)" class="glyphicon glyphicon-search text-muted"></span>
-            </li>
-        </ul>
+        <div class="nav-container">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" ng-class="{true:'active'}[searchType == 'pageinfo']" ng-click="changeSearch('pageinfo')">
+                    <a href="#pageinfo" aria-controls="pageinfo" role="tab" data-toggle="tab">用户页</a>
+                </li>
+                <li role="presentation" ng-class="{true:'active'}[searchType == 'userinfo']" ng-click="changeSearch('userinfo')">
+                    <a href="#userinfo" aria-controls="userinfo" role="tab" data-toggle="tab">用户</a>
+                </li>
+                <li role="presentation" ng-class="{true:'active'}[searchType == 'siteinfo']" ng-click="changeSearch('siteinfo')">
+                    <a href="#siteinfo" aria-controls="siteinfo" role="tab" data-toggle="tab">站点</a>
+                </li>
+            </ul>
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                    </ul>
+                </div><!-- /btn-group -->
+                <input id="searchpage-search" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="searchText">
+                <span class="input-group-addon glyphicon glyphicon-search" ng-click="changeSearch(searchType, searchText)"></span>
+            </div>
+        </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
                 <h4 class="title">共{{totalItems || 0}}条用户页：</h4>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
-                        <h3><a href="{{item.access_url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
+                        <h3><a href="{{item.url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
                         <p class="info"><a href="{{item.url}}">{{item.url}}</a></p>
                         <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
                     </div>

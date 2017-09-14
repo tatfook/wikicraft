@@ -6,7 +6,7 @@ Date: 2017/09/11
 ]]
 
 include_once("./abstract/base.page")
-include_once("./qiniu_files.page")
+include_once("./qiniu.page")
 
 local bigfile = inherit(models.abstract.base, gettable("models.bigfile"))
 bigfile.db_name = "bigfile"
@@ -65,8 +65,8 @@ function bigfile:api_upload(params)
 	local data = {channel=params.channel}
 
 	if params.channel == const.BIGFILE_QINIU then
-		local qiniuFileDB = models.qiniu_files:new()
-		local ret = qiniuFileDB:api_upload(params)
+		local qiniuDB = models.qiniu:new()
+		local ret = qiniuDB:api_upload(params)
 		if ret.error.id ~= 0 then
 			return ret
 		end

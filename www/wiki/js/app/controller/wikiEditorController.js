@@ -280,11 +280,36 @@ define([
 				drop_element: 'drapUploadVideoContainer', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
 				uptoken_url:'/api/wiki/models/qiniu/uploadToken',
 				success: function(data) {
-					result.filename = data.filename;
-					result.url = data.download_url;
+					var obj = {
+						mod:{
+							video:{
+								cmdName:"@wiki/js/video",
+								modName:"video",
+								params:{
+									filename:data.filename,
+									channel:data.channel,
+									bigfileId:data._id,
+								}
+							}
+						}
+					};
+					var content = mdconf.toMd(obj);
+					var filename = data.filename || (new Date()).getTime();
+					var path = '/' + currentPage.username + '/' + currentPage.sitename + '/_mods/' + filename;
 
-					$scope.filename = data.filename;
-					util.$apply($scope);
+					var currentDataSource = getCurrentDataSource();
+					if (!currentDataSource) {
+						console.log("当前数据不可用!!!");
+						return;
+					}
+					currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
+						result.filename = data.filename;
+						result.url = "http://keepwork.com" + path;
+						$scope.filename = data.filename;
+						util.$apply($scope);
+						currentDataSource.getLastCommitId();
+					});
+
 				},
 				failed: function() {
 					console.log("上传文件失败");
@@ -1974,28 +1999,9 @@ define([
                 }).result.then(function (result) {
 					console.log(result);
                     if (result) {
-						var obj = {
-							mod:{
-								video:{
-									cmdName:"@wiki/js/video",
-									modName:"video",
-									params:{
-										videoUrl:result.url,
-									}
-								}
-							}
-						};
-						var content = mdconf.toMd(obj);
-						var filename = result.filename || (new Date()).getTime();
-						var path = '/' + currentPage.username + '/' + currentPage.sitename + '/_mods/' + filename;
-
-						var currentDataSource = getCurrentDataSource();
-						currentDataSource && currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
-							var videoContent = '['+ filename +'](' + path + ')';
-							//var videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"'+ result + '"\n}\n```';
-							editor.replaceSelection(videoContent);
-							editor.focus();
-						});
+						var videoContent = '['+ result.filename +'](' + result.url + ')';
+						editor.replaceSelection(videoContent);
+						editor.focus();
                     }
                 });
             }

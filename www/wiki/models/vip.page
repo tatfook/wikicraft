@@ -185,6 +185,7 @@ function vip:api_payHook(params)
 	--local year, mm, dd = currentDate:match("^(%d%d%d%d)%D*(%d%d)%D*(%d%d)")
 
 	vipTradeDB:api_updateById({_id=vip_order_no, state="finish", comment="交易完成"})
+	LOG.std(nil, "error", "keepwork", "充值成功")
 
 	-- 更新用户服务表
 	local userServiceDB = models.user_service:new()
