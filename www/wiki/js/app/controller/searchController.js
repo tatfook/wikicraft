@@ -55,7 +55,7 @@ define([
 			    if (fuzzymatch == 0){
                     data.extra_search = "*" + query.keyword + "*";
                 } else {
-                    data.extra_search = query.keyword;
+                    data.extra_search = query.keyword || undefined;
                 }
 			}
 
