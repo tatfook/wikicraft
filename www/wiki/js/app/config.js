@@ -27,6 +27,7 @@
 			"dev.qiankunew.com",
 			"stage.qiankunew.com",
 			"test.qiankunew.com",
+			"wxa.keepwork.tk",
 		],
 		// 预加载模块列表
 		preloadModuleList:[
@@ -95,6 +96,20 @@
 		}
 	};
 
+	config.isDebugEnv = function() {
+		if (config.isLocal()) {
+			return true;
+		}
+		
+		if (window.location.hostname == "wxa.keepwork.tk") {
+			return true;
+		}
+
+		if (window.location.hostname.indexOf("localhost") >=0 ) {
+			return true;
+		}
+		return false;
+	}
 	function filterIE() {
         var b_name = navigator.appName;
         var b_version = navigator.appVersion;

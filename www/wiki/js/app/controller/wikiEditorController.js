@@ -803,6 +803,7 @@ define([
 				// 私有项目不提交
                 var site = getCurrentSite(page.username, page.sitename);
                 if (site && site.visibility == "private") {
+					params.visibility = "private";
 					return; 
                 }
 

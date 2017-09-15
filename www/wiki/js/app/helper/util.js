@@ -4,6 +4,7 @@
 
 define([
     'jquery',
+	"js-base32"
 ], function ($) {
     var util = {
         stack:[],   // 堆栈操作模拟
@@ -556,6 +557,14 @@ define([
 			return false;
 		}
 		return true;
+	}
+
+	util.base32Encode = function(str) {
+		return base32.encode(str);
+	}
+
+	util.base32Decode = function(str) {
+		return base32.decode(str);
 	}
 
     config.util = util;

@@ -128,9 +128,9 @@ end
 
 -- 网络爬虫提交数据
 function elastic_search:api_spiderSubmitPageinfo(params)
-	if true then
-		return 
-	end
+	--if true then
+		--return 
+	--end
 
 	if not params.content or not params.filepath then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -138,7 +138,8 @@ function elastic_search:api_spiderSubmitPageinfo(params)
 
 	params.filepath = string.gsub(params.filepath, ".md", "")
 	local content = params.content
-	local url = "/keepwork/baike" .. params.filepath
+	--local url = "/keepwork/baike" .. params.filepath
+	local url = params.filepath
 	local username = "keepwork"
 	local sitename = "baike"
 	local pagename = params.filepath
