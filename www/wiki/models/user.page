@@ -944,7 +944,7 @@ function user:api_isLogin(params)
 		isLogin = true
 	end
 
-	ocal cookie_token = request:get_cookie("token")
+	local cookie_token = request:get_cookie("token")
 
 	return errors:wrap(nil, {isLogin=isLogin, token=cookie_token})
 end
