@@ -1,4 +1,7 @@
 <style>
+    .org-apply p > .stress{
+        font-weight: bold;
+    }
     .org-apply .breadcrumb{
         max-width: 750px;
         width: 70%;
@@ -28,7 +31,8 @@
         border-bottom: 1px solid #DCDCDC;
     }
     .org-apply .panel-body{
-        padding: 80px 0 130px;
+        padding: 40px 0 130px;
+        font-size: 16px;
     }
     .org-apply .btn{
         padding: 9px 53px;
@@ -87,9 +91,9 @@
         <div class="panel-heading">申请加入</div>
         <div class="panel-body">
             <div class="form-apply">
-                <p>申请加入{{siteinfo.displayName}}</p>
+                <p>申请加入 <span class="stress">{{siteinfo.displayName}}</span></p>
                 <div class="intro">
-                    <p>个人简介：</p>
+                    <p>请输入验证信息：</p>
                     <textarea ng-model="userDesc" class="form-control"></textarea>
                 </div>
                 <div>
