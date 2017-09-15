@@ -249,9 +249,9 @@
         top: 0;
         z-index: 2;
     }
-    .timeline .img-text:hover .rubbish{
-        visibility: visible;
-    }
+    /*.timeline .img-text:hover .rubbish{*/
+        /*visibility: visible;*/
+    /*}*/
     .timeline .rubbish {
         padding: 0 42px;
         text-align: center;
@@ -269,6 +269,11 @@
         height: auto;
         vertical-align: text-bottom;
         margin-right: 5px;
+    }
+    .timeline .ellipsis-1{
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
 
     /*我的粉丝*/
@@ -722,9 +727,9 @@
             <div class="img-text" ng-repeat="site in visitHistoryList" ng-show="site.siteinfo">
                 <img ng-src="{{site.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                 <div class="text">
-					<h4><a href="{{site.url}}">{{site.siteinfo.name}}</a></h4>
-                    <p>作者：{{site.siteinfo.username}}</p>
-                    <p>页数：{{site.siteinfo.pageCount}}</p>
+					<h4 class="ellipsis-1"><a href="{{site.url}}">{{site.siteinfo.name}}</a></h4>
+                    <p class="ellipsis-1"><a ng-href="{{'/'+site.siteinfo.username}}"></a>作者：{{site.siteinfo.displayName || site.siteinfo.username}}</p>
+                    <!--<p class="ellipsis-1">页数：{{site.siteinfo.pageCount || 1}}</p>-->
                     <div class="col-md-12 info">
                         <div class="col-sm-6">
                             <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{site.siteinfo.visitCount}}

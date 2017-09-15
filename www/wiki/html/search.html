@@ -66,9 +66,19 @@
         box-shadow: none;
         border-left: 0;
     }
+    .search-result .nav-container > .input-group > .form-control:focus{
+        border-color: #CCC;
+    }
     .search-result .nav-container .glyphicon-search{
         top:0;
         background-color: transparent;
+        cursor: pointer;
+    }
+    .search-result .nav-container .dropdown-menu{
+        min-width: 95px;
+    }
+    .search-result .nav-container .dropdown-menu > li > a{
+        padding: 5px 12px;
     }
     .search-result .works .col-md-3{
         margin-top: 30px;
@@ -183,7 +193,7 @@
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        <li ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                        <li ng-repeat="item in searchRange" ng-click="changeSearchRange(item)"><a>{{item}}</a></li>
                     </ul>
                 </div><!-- /btn-group -->
                 <input id="searchpage-search" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="searchText">
@@ -206,7 +216,7 @@
                 <div class="col-md-12 fans-row" ng-repeat="item in searchList">
                     <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
                     <div class="intro">
-                        <h4><a class="text-muted" ng-click="goUserIndexPage(item.username)">{{item.username || item.displayName}}</a></h4>
+                        <h4><a class="text-muted" ng-href="{{'/'+item.username}}">{{item.username || item.displayName}}</a></h4>
                         <p>{{item.introduce || "暂无简介"}}</p>
                     </div>
                     <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?"取消关注":"关 注"}}</div>
@@ -216,8 +226,8 @@
                 <h4 class="title">共{{totalItems || 0}}个站点：</h4>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
-                        <h3><a ng-click="goUserSite(item)">{{item.displayName || item.sitename || site.name}}</a></h3>
-                        <p class="info"><a ng-click="goUserSite(item)">{{"/"+item.username+"/"+item.name+"/index"}}</a></p>
+                        <h3><a ng-href="{{'/' + item.username + '/' + item.name + '/index'}}">{{item.displayName || item.sitename || site.name}}</a></h3>
+                        <p class="info"><a ng-href="{{'/' + item.username + '/' + item.name + '/index'}}">{{"/"+item.username+"/"+item.name+"/index"}}</a></p>
                         <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
                         <p class="tags"><span ng-repeat="tag in item.tagsArr track by $index" ng-show="tag" ng-click="seachTag(tag)">{{tag}}</span></p>
                     </div>

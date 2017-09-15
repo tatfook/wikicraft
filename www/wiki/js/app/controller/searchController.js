@@ -10,10 +10,12 @@ define([
 ], function (app, util, storage, htmlContent) {
     app.controller('searchController', ['$scope', '$location', '$sce', 'Account','Message', 'modal', function ($scope, $location, $sce, Account, Message, modal) {
         const tagSplitRegexp = /\[([^\]]+)\]/;
+        const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;
-        $scope.searchRange = ["全部"];
+        $scope.searchRange = [];
+        $scope.searchRange.push(SearchRangeText[0]);
         $scope.nowSearchRange = $scope.searchRange[0];
 
 		// 站点信息: siteinfo
@@ -86,13 +88,27 @@ define([
 			});
 		}
 
+        // 确定下拉框选择项
+        function initSearchRange() {
+            var hasUserInfo = $scope.user;
+
+            if (hasUserInfo && $scope.searchRange.indexOf(SearchRangeText[2]) == -1){
+                $scope.searchRange.push(SearchRangeText[2]);
+            }
+        }
+
         function init() {
             console.log('init search controller');
             searchParams = util.getQueryObject() || searchParams;
             $scope.searchType = searchParams.searchType || "pageinfo";
             $scope.searchText = searchParams.keyword;
             getSiteList();
+            initSearchRange();
         }
+
+        $scope.changeSearchRange = function (range) {
+            $scope.nowSearchRange = range;
+        };
 
         $scope.sitePageChanged = function () {
             getSiteList();
@@ -102,8 +118,18 @@ define([
         $scope.changeSearch = function (searchType, searchText) {
             $scope.searchList = [];
             $scope.totalItems = 0;
+
             searchParams.searchType = searchType;
             searchParams.keyword = searchText || $scope.searchText || "";
+
+            switch ($scope.nowSearchRange){
+                case SearchRangeText[2]:
+                    searchParams.username = $scope.user.username;
+                    break;
+                default:
+                    break;
+            }
+
             elasticSearch(searchParams);
             $scope.searchType = searchType;
             $scope.searchText = searchParams.keyword;
@@ -208,6 +234,8 @@ define([
                     fansUser.concerned=false;
                 });
             }else{
+                console.log(fansUser);
+                console.log($scope.user);
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
                     console.log("关注成功");
                     Message.info("关注成功");
