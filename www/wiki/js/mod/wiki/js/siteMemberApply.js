@@ -39,9 +39,14 @@ define([
                 };
 
                 util.post(config.apiUrlPrefix + 'website_member/submitMemberApply', apply, function () {
-                    config.services.confirmDialog({title:"成员申请", content:"成员申请成功", cancelBtn:false}, finish);
+                    config.services.confirmDialog({
+                        title:"成员申请",
+                        theme: "success",
+                        content:"申请已提交，请等待管理员审核",
+                        cancelBtn:false
+                    }, finish);
                 }, function () {
-                    config.services.confirmDialog({title:"成员申请", content:"成员申请失败", cancelBtn:false}, finish);
+                    config.services.confirmDialog({title:"成员申请", content:"申请提交失败", cancelBtn:false}, finish);
                 });
             }
 

@@ -10,9 +10,15 @@
         display: inline-block;
         border-radius: 50%;
         line-height: 30px;
-        color: #ED381C;
         margin-right: 10px;
         font-weight: bold;
+    }
+    .confirm-dialog .icon.text-danger{
+        color: #ED381C;
+    }
+    .confirm-dialog .icon.text-success{
+        color: #3C763D;
+        font-weight: normal;
     }
     .confirm-dialog .titleinfo{
         font-weight: normal;
@@ -27,7 +33,8 @@
         </div>
         <div class="modal-body">
             <h3>
-                <span class="icon" ng-show="confirmObj.theme == 'danger'">!</span>
+                <span class="icon text-danger" ng-show="confirmObj.theme == 'danger'">!</span>
+                <span class="icon text-success glyphicon glyphicon-ok" ng-show="confirmObj.theme == 'success'"></span>
                 {{confirmObj.content}}
             </h3>
         </div>
