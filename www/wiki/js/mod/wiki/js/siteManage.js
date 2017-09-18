@@ -29,7 +29,17 @@ define([
             $scope.modParams = modParams;
             $scope.isLogin = false;
 
+            function initBtnLink() {
+                modParams.links = {
+                    "memberManage": (modParams.links && modParams.links.memberManage) ? modParams.links.memberManage : "/wiki/js/mod/wiki/js/siteMemberManage",
+                    "worksManage": (modParams.links && modParams.links.worksManage) ? modParams.links.worksManage : "/wiki/js/mod/wiki/js/siteWorksManage",
+                    "submitWork": (modParams.links && modParams.links.submitWork) ? modParams.links.submitWork : "/wiki/js/mod/wiki/js/siteSubmitWorks",
+                    "memberApply": (modParams.links && modParams.links.memberApply) ? modParams.links.memberApply : "/wiki/js/mod/wiki/js/siteMemberApply",
+                }
+            }
+
             function init() {
+                storage.sessionStorageSetItem("wikiModParams", {username:modParams.username, sitename:modParams.sitename});
                 // $scope.user 为当前使用用户也是当前访问者
                 $scope.modParams.memberApply = false;
                 $scope.modParams.worksApply = false;
@@ -66,6 +76,7 @@ define([
                         });
                     }
                 }
+                initBtnLink();
             }
 
             $scope.$watch("$viewContentLoaded", function () {
