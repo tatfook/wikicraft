@@ -14,10 +14,19 @@ local oauth_app = inherit(models.abstract.base, gettable("models.oauth_app"))
 oauth_app.db_name = "oauth_app"
 
 function oauth_app:ctor()
-	self:addfield("appName", "string")            -- 应用名称  key
-	self:addfield("clientId", "string")           -- oauth client id
-	self:addfield("clientSecret", "string")       -- oauth client secret
-	self:addfield("redirectUrl", "string")        -- oauth redirect url
+	self:addfield("appName"        , "string"); -- 应用名称  key
+	self:addfield("company"        , "string"); -- 公司名
+	self:addfield("clientId"       , "string"); -- oauth client id
+	self:addfield("clientSecret"   , "string"); -- oauth client secret
+	self:addfield("redirectUrl"    , "string"); -- oauth redirect url
+	self:addfield("skipUserGrant"  , "string"); -- 是否可以跳过用户授权
+	self:addfield("RedirectUrl"    , "string"); -- 登陆成功后跳转地址
+	self:addfield("payCallbackUrl" , "string"); -- 支付成功后，后台回掉地址
+	self:addfield("autoAuthorize"  , "string"); -- 是否可以自动授权APP
+
+	---------- following is query only, not saved to columns ----------------
+	self:addfield("limit" , "number"); -- 限制查询条数
+	self:addfield("skip"  , "number"); -- 跳过查询条数
 end
 
 local oauthApp = {
@@ -88,6 +97,183 @@ local oauthApp = {
 
 function oauth_app:api_get()
 	return oauthApp
+end
+
+function oauth_app:checkAdmin()
+	response:status(503);
+	local adminInfo = getTokenInfo();
+
+	-- 判断是否为管理员
+	if(not adminInfo or adminInfo.isAdmin ~= true) then
+		return false;
+	else
+		return true;
+	end
+end
+
+function oauth_app:get(params)
+	if(not self:checkAdmin()) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+
+	local err, query = self:validateQuery(params);
+
+	if(not query.limit or not query.skip) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():find({["createDate"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
+	local err, data = yield();
+
+	if(not err) then
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function oauth_app:api_count()
+	if(not self:checkAdmin()) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+
+	self:db():find({}, resume);
+
+	local err, data = yield();
+
+	if(not err) then
+		response:status(200);
+		return errors:wrap(nil, #data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function oauth_app:create(params)
+	if(not self:checkAdmin()) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+
+	local err, query = self:validateQuery(params);
+
+	if(not query or not next(query)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	if(not query.appName or not query.company or not query.clientId or not query.clientSecret) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	-- 判断是否存在appName
+	self:db():findOne({appName = query.appName}, resume);
+	local err, data = yield();
+
+	if(err) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	if(data) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	-- 判断是否存在clientId
+	self:db():findOne({clientId = query.clientId}, resume);
+	local err, data = yield();
+
+	if(err) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	if(data) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	query.createDate = self:getNow();
+
+	self:db():insertOne(query, resume);
+
+	local err, data = yield();
+
+	if(not err and data) then
+		response:status(200);
+		return errors:wrap(errors.SUCCESS);
+	end
+
+	return errors:wrap(errors.SERVER_INNER_ERROR);
+end
+
+function oauth_app:update(params)
+	if(not self:checkAdmin()) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+
+	local err, query = self:validateQuery(params);
+
+	if(not query or not next(query)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	if(not query.clientId or not query.clientSecret) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	-- 判断是否存在clientId
+	self:db():findOne({clientId = query.clientId}, resume);
+	local err, data = yield();
+
+	if(err) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	if(not data) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	local updateParams = {
+		clientSecret   = query.clientSecret,
+		RedirectUrl    = query.RedirectUrl,
+		payCallbackUrl = query.payCallbackUrl, 
+		createDate     = self:getNow();
+	}
+
+	self:db():updateOne({clientId = query.clientId}, updateParams, resume);
+	local err, data = yield();
+
+	if(not err and data) then
+		response:status(200);
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function oauth_app:delete(params)
+	if(not self:checkAdmin()) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+
+	local err, query = self:validateQuery(params);
+	
+	-- 判断是否存在clientId
+	self:db():findOne({clientId = query.clientId}, resume);
+	local err, data = yield();
+
+	if(err) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	if(not data) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	self:db():deleteOne({clientId = query.clientId}, resume);
+	local err, data = yield()
+
+	if(not err) then
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
 end
 
 function oauth_app:getByAppName(appName)
@@ -229,6 +415,9 @@ function oauth_app:api_callback(params)
 	return tokenData
 end
 
+function oauth_app:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+end
 
 
 

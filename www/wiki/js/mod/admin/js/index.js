@@ -153,6 +153,11 @@ define([
 				$scope.totalItems = data.total || 0;
 			});
 		}
+		//Oauth 管理
+		$scope.getOauthList = function(){
+			$scope.selectMenuItem = "oauth";
+			
+		}
 		// 搜索管理员账号
 		$scope.managerSearch = function (){
 			//util.post(config.apiUrlPrefix + "tabledb/query", {
