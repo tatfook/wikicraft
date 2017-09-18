@@ -41,12 +41,11 @@ define([
                 // return result;
             }, function (result) {
                 console.log(result);
-                if (!result.content){
+                if (result.content == undefined || result.message){
                     errcb && errcb();
                     return;
                 }
                 var content = Base64.decode(result.content);
-                console.log(content);
                 defaultDataSource.writeFile({path: path, content:content}, cb, errcb);
             }, isShowLoading);
         }
@@ -75,12 +74,7 @@ define([
                     for (var i = 0; i < contentPageList.length; i++) {
                         fnList.push((function (index) {
                             return function (cb, errcb) {
-                                require([contentPageList[index].contentUrl], function (content) {
-                                    defaultDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
-                                }, function () {
-                                    doGitlabTemplate(contentPageList[index].pagepath,contentPageList[index].contentUrl.substring(contentUrlPrefix.length), defaultDataSource, cb, errcb);
-                                    console.log("local server request md file failed");
-                                });
+                                doGitlabTemplate(contentPageList[index].pagepath,contentPageList[index].contentUrl.substring(contentUrlPrefix.length), defaultDataSource, cb, errcb);
                             }
                         })(i));
                     }
@@ -157,7 +151,7 @@ define([
                     var style = $scope.style || $scope.styles[0];
                     $scope.website.styleId = style._id;
                     $scope.website.styleName = style.name;
-                    $scope.website.logoUrl = $scope.imgsPath + style.logoUrl;
+                    $scope.website.logoUrl = style.logoUrl;
                 }
 
                 //$scope.errMsg = "建站中...";

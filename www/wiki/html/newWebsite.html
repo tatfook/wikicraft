@@ -332,7 +332,7 @@
                         <div class="tab-content website-model col-sm-10">
                             <div role="tabpanel" class="tab-pane active clearfix" id="personal-web-modal">
                                 <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
-                                    <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
+                                    <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-md-12 btn-group">
                                         <div class="btn col-sm-6 btn-lg" ng-click="previewTemplate(template)">预览</div>
                                         <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
@@ -351,7 +351,7 @@
                     <div class="col-sm-6">
                         功能模板：
                         <div class="label-img">
-                            <img ng-src="{{ imgsPath + (template.logoUrl || 'wiki_works.jpg') }}" alt="">
+                            <img ng-src="{{template.logoUrl}}" alt="">
                             <div class="label">{{website.templateName}}</div>
                         </div>
                     </div>
