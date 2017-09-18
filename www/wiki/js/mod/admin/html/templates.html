@@ -195,7 +195,7 @@
             </div>
             <div class="clearfix">
                 <div class="col-sm-3" ng-repeat="template in activeCategories.templates track by $index" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
-                    <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
+                    <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                     <div class="content">
                         <h3>
                             {{template.name}}

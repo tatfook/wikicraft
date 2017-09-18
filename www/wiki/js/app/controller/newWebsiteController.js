@@ -13,10 +13,10 @@ define([
     var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
         const GITLAB = {
             "API_BASE_URL": "http://git.keepwork.com/api/v4",
-            "FILE_PATH": "kaitlyn%2Ftemplates%2Findex%2Emd",// 网站模板配置保存路径
+            "FILE_PATH": "official%2Ftemplate%2FwebTemplateConfig%2Emd",// 网站模板配置保存路径
             "REF": "master",
-            "PRIVATE_TOKEN": "5V78ZVAuFRqE2ZeZjw5X",
-            "ID": "6795"
+            "PRIVATE_TOKEN": "Gsx7JYVFxvsDod2MY2x5",
+            "ID": "6803"
         };
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
