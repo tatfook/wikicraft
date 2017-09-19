@@ -6,6 +6,7 @@ Date: 2016/11/29
 ]]
 
 include_once("./abstract/base.page");
+include_once("./site_group.page");
 
 local elastic_search = inherit(models.abstract.base, gettable("models.elastic_search"))
 
@@ -94,7 +95,7 @@ function elastic_search:api_submitSiteinfo(params)
 	end
 	
 
-	self:api_submitToES({
+	local data = {
 		url=url, 
 		tags = tags,
 		user_name = params.username,
@@ -102,11 +103,34 @@ function elastic_search:api_submitSiteinfo(params)
 		extra_type = "siteinfo",
 		extra_search= content,
 		extra_data=extra_data,
-	})
+	}
+
+	if pageinfo.visibility == "private" then
+		params.extra_type = "siteinfo:" .. self:api_getUserStr(params).data
+	else
+		params.extra_type = "siteinfo:[]"
+	end
+
+	self:api_submitToES(data)
 
 	return errors:wrap(nil)
 end
 
+function elastic_search:api_getUserStr(params)
+	if not params.username or not params.sitename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local siteGroupDB = models.site_group:new()
+	local userlist = siteGroupDB:api_getGuestUserList().data or {}
+
+	local str = "[" .. params.username .. "]"
+	for _, username in ipairs(userlist) do
+		str = str .. "[" .. username .. "]"
+	end
+
+	return errors:wrap(nil, str)
+end
 
 -- 提交网页信息
 function elastic_search:api_submitPageinfo(params)
@@ -121,6 +145,12 @@ function elastic_search:api_submitPageinfo(params)
 	params.content = nil
 	params.extra_data = toJson(pageinfo)
 
+	if pageinfo.visibility == "private" then
+		params.extra_type = "pageinfo:" .. self:api_getUserStr(pageinfo).data
+	else
+		params.extra_type = "pageinfo:[]"
+	end
+	
 	self:api_submitToES(params)
 
 	return errors:wrap(nil)

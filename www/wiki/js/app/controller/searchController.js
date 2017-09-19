@@ -33,6 +33,34 @@ define([
 			elasticSearch(searchParams);
         }
 
+		function esSearch(query) {
+			util.ajax({
+				url:"http://221.0.111.131:19001/Application/kwcustom_search",
+				type:"GET",
+				data:{
+					keyword:{
+						query:{
+							bool:{
+								must:{
+									wildcard:{
+										extra_search:"*test*",
+									}
+								},
+								should:{
+									term:{
+										extra_type:"pageinfo:[]",
+									},
+									wildcard:{
+										extra_type:"pageinfo:*[test]*",
+									}
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+
 		function elasticSearch(query) {
 			var searchType = query.searchType || "pageinfo";
 			var fuzzymatch = 0;
