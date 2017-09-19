@@ -126,6 +126,6 @@ define([
 })
 
 /*
- ```@wiki/js/orgManage
+ ```@wiki/js/siteMemberManage
  ```
  */

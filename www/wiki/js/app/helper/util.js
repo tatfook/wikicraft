@@ -308,7 +308,7 @@ define([
         this.http("POST", url, params, callback, errorCallback, isShowLoading);
     }
 
-    util.get = function (url, params, callback, errorCallback) {
+    util.get = function (url, params, callback, errorCallback, isShowLoading) {
         this.http("GET", url, params, callback, errorCallback, isShowLoading);
     }
 
