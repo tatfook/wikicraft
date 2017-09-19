@@ -88,13 +88,13 @@ define([
         $scope.addTag = function (tagName) {
             tagName = util.stringTrim(tagName);
             if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
-                $scope.errMsg="该标签已添加";
+                $scope.tagErrMsg="该标签已添加";
                 $scope.tag="";
                 $scope.$apply();
                 return;
             }
             if (tagName.length>10){
-                $scope.errMsg="标签最长10个字";
+                $scope.tagErrMsg="标签最长10个字";
                 $scope.tag="";
                 $scope.$apply();
                 return;
@@ -102,7 +102,7 @@ define([
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
             $scope.tag="";
-            $scope.errMsg="";
+            $scope.tagErrMsg="";
             $scope.$apply();
             $("#tagInput").focus();
         }
