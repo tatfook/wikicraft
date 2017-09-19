@@ -28,6 +28,7 @@
 			"stage.qiankunew.com",
 			"test.qiankunew.com",
 			"wxa.keepwork.tk",
+			"inside.keepwork.tk",
 		],
 		// 预加载模块列表
 		preloadModuleList:[
@@ -100,7 +101,7 @@
 		if (config.isLocal()) {
 			return true;
 		}
-		
+
 		if (window.location.hostname == "wxa.keepwork.tk") {
 			return true;
 		}
