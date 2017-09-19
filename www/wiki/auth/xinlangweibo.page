@@ -26,8 +26,7 @@ local url = accessTokenUrl .. "?client_id=" .. params.client_id .. "&client_secr
 -- Step 1. Exchange authorization code for access token.
 util.GetUrl({url=url, form = params }, resume)
 local err, data = yield()
-data = data.data
-data = commonlib.Json.Decode(data)
+data = commonlib.Json.Decode(data.data) or data.data
 log("=====================xin lang wei bo authenticate======================")
 LOG.std(nil, "error", "keepwork", toJson(data))
 
