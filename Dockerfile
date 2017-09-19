@@ -1,4 +1,4 @@
-FROM xuntian/npl-runtime:latest
+FROM xuntian/npl-runtime:prod
 MAINTAINER zdw "favorofife@yeah.net"
 
 RUN mkdir -p /project/wikicraft
