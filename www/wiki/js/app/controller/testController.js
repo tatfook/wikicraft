@@ -11,30 +11,41 @@ define([
 	app.registerController("testController", ['$scope','$http','$auth', function ($scope, $http, $auth ) {
 		function init() {
 			function esSearch(query) {
+				console.log("-----------------");
 				util.ajax({
 					url:"http://221.0.111.131:19001/Application/kwcustom_search",
 					type:"GET",
 					data:{
 						keyword:angular.toJson({
+							from:0,
+							size:10,
 							query:{
 								bool:{
-									must:{
-										wildcard:{
-											"extra_search.keyword":"*吴香安*",
-										}
-									},
-									should:[
+									must:[
 									{
-										term:{
-											extra_type:"pageinfo:[]",
+										wildcard:{
+											"extra_search.keyword":"*",
 										},
-
+										//match:{
+											//"extra_search":"wuxiangan",
+										//},
 									},
 									{
-										wildcard:{
-											extra_type:"pageinfo:*[test]*",
+										bool:{
+											should:[
+												{
+													term:{
+														"extra_type.keyword":"pageinfo:[]",
+													}
+												},
+												{
+													wildcard:{
+														"extra_type.keyword":"pageinfo:*[wxatest]*",
+													}
+												},
+											],
 										}
-									}		
+									}
 									]
 								}
 							},
@@ -47,12 +58,10 @@ define([
 								],
 								fields:{
 									extra_search:{},
+									//"extra_search.keyword":{},
 								}
 							}
 						}),
-						from:1,
-						highlight:1,
-						size:10,
 					}
 				});
 			}

@@ -33,35 +33,136 @@ define([
 			elasticSearch(searchParams);
         }
 
-		function esSearch(query) {
+		function elasticSearch(query) {
+			var searchType = query.searchType || "pageinfo";
+			var page = query.currentPage || $scope.currentPage;
+			var size = query.pageSize || $scope.pageSize;
+			var keyword = {};
+			
+			if (query.keyword && searchType == "pageinfo") {
+				keyword = {
+					match:{
+						"extra_search":query.keyword,
+					}
+				}
+			} else {
+				if (query.isTagSearch && query.keyword) {
+					keyword = {
+						wildcard:{
+							"tags.keyword":"*[" + (query.keyword || "") + "]*",
+						}
+					}
+				} else {
+					keyword = {
+						wildcard:{
+							"extra_search.keyword":"*" + (query.keyword || "") + "*",
+						}
+					}
+				}
+			}
+
+			var data = {
+				from: (page-1) * size,
+				size: size,
+				query:{
+					bool:{
+						must:[
+							keyword,
+						]
+					}
+				},
+				highlight:{
+					pre_tags:[
+						"<span>"
+					],
+					post_tags:[
+						"</span>"
+					],
+					fields:{
+						extra_search:{},
+						//"extra_search.keyword":{},
+					}
+				}
+			}
+
+			var must = data.query.bool.must;
+			if (query.username) {
+				must.push({
+					term:{
+						"user_name.keyword":query.username,
+					}
+				});
+			}
+
+			if (query.sitename) {
+				must.push({
+					term:{
+						"site_name.keyword":query.username,
+					}
+				});
+			}
+
+			var username = undefined;
+			if (Account.isAuthenticated()) {
+				username = $scope.user.username;
+			}
+
+			if (username && (searchType == "siteinfo" || searchType == "pageinfo")) {
+				must.push({
+					bool:{
+						should:[
+						{
+							term:{
+								"extra_type.keyword":searchType + ":[]",
+							}
+						},
+						{
+							wildcard:{
+								"extra_type.keyword":searchType + ":*["+ username +	"]*",
+							}
+						}
+						]
+					}
+				})
+			} else {
+				must.push({
+					term:{
+						"extra_type.keyword":searchType + (searchType == "userinfo" ? "" : ":[]")
+					}
+				});
+			}
+
 			util.ajax({
 				url:"http://221.0.111.131:19001/Application/kwcustom_search",
 				type:"GET",
 				data:{
-					keyword:{
-						query:{
-							bool:{
-								must:{
-									wildcard:{
-										extra_search:"*test*",
-									}
-								},
-								should:{
-									term:{
-										extra_type:"pageinfo:[]",
-									},
-									wildcard:{
-										extra_type:"pageinfo:*[test]*",
-									}
-								}
-							}
-						}
+					keyword:angular.toJson(data),
+				},
+				success: function(result, status, xhr) {
+					if (result.code != 200) {
+						return;
 					}
+					var searchList = [];
+					$scope.totalItems = result.total;
+					for (var i = 0; i < result.data.list.length; i++) {
+						var obj = result.data.list[i];
+						var site = angular.fromJson(obj.extra_data);
+						site.highlight_ext = obj.highlight_ext;
+						site.tagsArr = obj.tags ? obj.tags.split(tagSplitRegexp) : [];
+						searchList.push(site);
+					}
+					$scope.searchList = searchList;
+					console.log($scope.searchList);
+					util.$apply($scope);
+				},
+				error: function(xhr, status, error){
+
 				}
 			});
+
 		}
 
-		function elasticSearch(query) {
+		function elasticSearch_old(query) {
 			var searchType = query.searchType || "pageinfo";
 			var fuzzymatch = 0;
 			var data = {
