@@ -12,7 +12,7 @@ local elastic_search = inherit(models.abstract.base, gettable("models.elastic_se
 
 -- 提交到搜索引擎
 function elastic_search:api_submitToES(params)
-	--log(params, true)
+	log(params, true)
 	local url = "http://221.0.111.131:19001/Application/kwupsert"
 	System.os.GetUrl({
 		url=url,
@@ -105,10 +105,10 @@ function elastic_search:api_submitSiteinfo(params)
 		extra_data=extra_data,
 	}
 
-	if pageinfo.visibility == "private" then
-		params.extra_type = "siteinfo:" .. self:api_getUserStr(params).data
+	if params.visibility == "private" then
+		data.extra_type = "siteinfo:" .. self:api_getUserStr(params).data
 	else
-		params.extra_type = "siteinfo:[]"
+		data.extra_type = "siteinfo:[]"
 	end
 
 	self:api_submitToES(data)
@@ -122,7 +122,7 @@ function elastic_search:api_getUserStr(params)
 	end
 
 	local siteGroupDB = models.site_group:new()
-	local userlist = siteGroupDB:api_getGuestUserList().data or {}
+	local userlist = siteGroupDB:api_getGuestUserList(params).data or {}
 
 	local str = "[" .. params.username .. "]"
 	for _, username in ipairs(userlist) do
@@ -145,6 +145,7 @@ function elastic_search:api_submitPageinfo(params)
 	params.content = nil
 	params.extra_data = toJson(pageinfo)
 
+	--log(pageinfo)
 	if pageinfo.visibility == "private" then
 		params.extra_type = "pageinfo:" .. self:api_getUserStr(pageinfo).data
 	else
