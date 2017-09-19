@@ -115,6 +115,9 @@
         font-weight: normal;
         font-size: 16px;
     }
+    .setting-form .form-group-lg .control-label.text-danger{
+        text-align: left;
+    }
     .setting-form .save-origin {
         text-align: left;
     }
@@ -220,7 +223,7 @@
         <div class="tab-content">
             <div class="tab-pane active" role="tabpanel" id="common">
                 <span style="color: red">{{errMsg}}</span>
-                <form class="form-horizontal setting-form" role="form">
+                <div class="form-horizontal setting-form">
                     <div class="form-group form-group-lg sr-only">
                         <legend>网站设置</legend>
                     </div>
@@ -261,20 +264,22 @@
                         <label class="col-sm-2 control-label">本站标签：</label>
                         <div class="col-sm-5">
                             <div class="col-sm-8 add-label">
-                                <input id="tagInput" type="text" class="col-sm-8 form-control" ng-model="tag">
+                                <input id="tagInput" type="text" class="col-sm-8 form-control" ng-model="tag" ng-hide="tags.length >= 20">
+                                <input type="text" placeholder="最多支持20个标签" class="col-sm-8 form-control" disabled ng-show="tags.length >= 20">
                             </div>
-                            <div class="col-sm-4 btn btn-primary" ng-click="addTag(tag)">添加</div>
+                            <div class="col-sm-4 btn btn-primary" ng-disabled="tags.length >= 20" ng-click="addTag(tag)">添加</div>
                             <div class="col-sm-12 labels-box">
                                 <div ng-repeat="tag in tags" class="label-selected">{{tag}}<span ng-click="removeTag(tag)" class="glyphicon glyphicon-remove text-danger"></span></div>
                             </div>
                         </div>
+                        <div class="col-sm-5 text-danger control-label">{{errMsg}}</div>
                     </div>
                     <div class="form-group form-group-lg">
                         <div class="col-sm-12 save-setting">
                             <button ng-click="modifyWebsite()" class="btn btn-primary save-btn">保存</button>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="tab-pane" role="tabpanel" id="datasource">
                 <form class="form-horizontal setting-form" role="form">
