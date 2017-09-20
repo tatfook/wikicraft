@@ -46,13 +46,14 @@ define([
                         return;
                     }
                     util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
+                        $scope.comment.content = "";
                         console.log(data);
                         $scope.getCommentList();
                     });
                 }
 
                 $scope.getCommentList = function () {
-                    util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname }, function (data) {
+                    util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname, pageSize:10000000 }, function (data) {
                         $scope.commentObj = data;
                     });
                 }
