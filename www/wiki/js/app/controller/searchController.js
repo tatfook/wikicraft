@@ -61,6 +61,11 @@ define([
 				}
 			}
 
+			var host = window.location.host;
+			if (config.isLocal()) {
+				host = "dev.keepwork.com";
+			}
+
 			var data = {
 				from: (page-1) * size,
 				size: size,
@@ -68,6 +73,11 @@ define([
 					bool:{
 						must:[
 							keyword,
+							{
+								wildcard:{
+									"access_url":"*"+host+"*",
+								}
+							},
 						]
 					}
 				},

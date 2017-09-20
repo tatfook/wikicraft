@@ -51,6 +51,7 @@ function elastic_search:api_submitUserinfo(params)
 
 	self:api_submitToES({
 		url=url,
+		access_url = (request:header("Host") or "") .. url,
 		user_name = params.username,
 		extra_type = "userinfo",
 		extra_search= content,
@@ -97,6 +98,7 @@ function elastic_search:api_submitSiteinfo(params)
 
 	local data = {
 		url=url, 
+		access_url = (request:header("Host") or "") .. url,
 		tags = tags,
 		user_name = params.username,
 		site_name = params.sitename,
@@ -159,10 +161,6 @@ end
 
 -- 网络爬虫提交数据
 function elastic_search:api_spiderSubmitPageinfo(params)
-	--if true then
-		--return 
-	--end
-
 	if not params.content or not params.filepath then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -186,6 +184,7 @@ function elastic_search:api_spiderSubmitPageinfo(params)
 
 	local pageinfo = {
 		url = url, 
+		access_url = (request:header("Host") or "") .. url,
 		content = content,
 		user_name = "keepwork",
 		sitename = "baike",

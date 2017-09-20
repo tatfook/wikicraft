@@ -24,28 +24,30 @@ define([
 									must:[
 									{
 										wildcard:{
-											"extra_search.keyword":"*",
+											"extra_search.keyword":"**",
 										},
-										//match:{
-											//"extra_search":"wuxiangan",
-										//},
 									},
 									{
-										bool:{
-											should:[
-												{
-													term:{
-														"extra_type.keyword":"pageinfo:[]",
-													}
-												},
-												{
-													wildcard:{
-														"extra_type.keyword":"pageinfo:*[wxatest]*",
-													}
-												},
-											],
-										}
+										term:{
+											"extra_type.keyword":"siteinfo:[]",
+										},
 									}
+									//{
+										//bool:{
+											//should:[
+												//{
+													//term:{
+														//"extra_type.keyword":"siteinfo:[]",
+													//}
+												//},
+												//{
+													//wildcard:{
+														//"extra_type.keyword":"siteinfo:*[atest]*",
+													//}
+												//},
+											//],
+										//}
+									//}
 									]
 								}
 							},
