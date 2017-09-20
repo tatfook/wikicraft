@@ -1,0 +1,35 @@
+<style>
+    .pptMod .ppt-bg{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top:0;
+        background-color: #FFF;
+    }
+    .pptMod .ppt-bg > img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+<div ng-controller="pptController" id="pptMod">
+    <div class="ppt1 swiper-container" ng-show="modParams.moduleKind == 'ppt1' || !modParams.moduleKind">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" ng-repeat="page in modParams.pages">
+                <div ng-show="page.kind == 'kind1'">
+                    <div class="ppt-bg">
+                        <img ng-src="{{page.bgImgUrl}}" alt="">
+                    </div>
+                    <h1>{{page.mainTitle}}</h1>
+                    <h2>{{page.title}}</h2>
+                    <div class="info">
+                        <span ng-repeat="info in page.contents track by $index">{{info}}</span>
+                    </div>
+                </div>
+                <div ng-show="page.kind == 'kind2'">{{page.mainTitle}}</div>
+                <div ng-show="page.kind == 'kind3'">{{page.mainTitle}}</div>
+            </div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
