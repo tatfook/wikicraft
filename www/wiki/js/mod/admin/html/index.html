@@ -130,6 +130,34 @@ li{
 	}
 	.oauth-table-head{
 		text-align:center;
+		table-layout:fixed;
+	}
+	.oauth-table-head{
+		word-break: break-word;
+	}
+	.oauth-table-head tr td:nth-child(1){
+		width:116px;
+	}
+	.oauth-table-head tr td:nth-child(2){
+		width:100px;
+	}
+	.oauth-table-head tr td:nth-child(3){
+		width:116px;
+	}
+	.oauth-table-head tr td:nth-child(4){
+		width:305px;
+	}
+	.oauth-table-head tr td:nth-child(5){
+		width:50px;
+	}
+	.oauth-table-head tr td:nth-child(6){
+		width:148px;
+	}
+	.oauth-table-head tr td:nth-child(7){
+		width:117px;
+	}
+	.oauth-table-head tr td:nth-child(8){
+		width:141px;
 	}
 	.oauth-button{
 		margin:10px 0;
@@ -139,8 +167,7 @@ li{
 	}
 	.oauth-a{
 		position:relative;
-		left: 700px;
-		top: -40px;
+		top:5px;
 	}
 	.oauth-skip{
 		position:relative;
@@ -153,6 +180,10 @@ li{
 	}
 	.form-control{
 		width:78%;
+	}
+	.oauth-label{
+		position:relative;
+		left: -133px
 	}
 	@media(max-width: 768px){
 		.subnav .list-group-item:first-child .list-group-item{
@@ -354,29 +385,29 @@ li{
 			</div>
 			<!-- Oauth 管理 -->
 			<div ng-show='selectMenuItem=="oauth"'>
-				<button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".oauth">添加Oauth账号</button>
+				<button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".oauth" ng-click="clickOauthToggle(1)">添加Oauth账号</button>
 				<table class="table table-bordered oauth-table-head">
 					<tr>
 						<td><strong>app名称</strong></td>
 						<td><strong>公司名</strong></td>
 						<td><strong>Clientld</strong></td>
-						<td><strong>ClientldSecret</strong></td>
+						<td><strong>ClientSecret</strong></td>
 						<td><strong>跳过授权</strong></td>
 						<td><strong>PayCallbackUrl</strong></td>
 						<td><strong>RedirectUrl</strong></td>
 						<td><strong>操作</strong></td>
 					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-						<td>4</td>
-						<td>5</td>
-						<td>6</td>
-						<td>7</td>
+					<tr ng-repeat="item in oauthData">
+						<td>{{item.appName}}</td>
+						<td>{{item.company}}</td>
+						<td>{{item.clientId}}</td>
+						<td>{{item.clientSecret}}</td>
+						<td>{{item.skipUserGrant==1?"是":"否"}}</td>
+						<td>{{item.redirectUrl}}</td>
+						<td>{{item.payCallbackUrl}}</td>
 						<td>
-							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".oauth">修改</button>&nbsp;
-							<button class="btn btn-default" type="submit">删除</button>
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".oauth" ng-click="clickOauthToggle(2, item.clientId)">修改</button>&nbsp;
+							<button class="btn btn-default" type="submit" ng-click="deleteOauthRecord(item.clientId)">删除</button>
 						</td>
 					</tr>
 				</table>
@@ -385,63 +416,69 @@ li{
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title" id="myModalLabel">添加Oauth账号</h4>
+							<h4 class="modal-title" ng-if="oauthVar == 1">添加Oauth账号</h4>
+							<h4 class="modal-title" ng-if="oauthVar == 2">修改Oauth账号</h4>
 						</div>
 						<div class="modal-content">
 							<form class="form-horizontal oauth-add">
 								<div class="form-group">
-									<label for="inputEmail3" class="col-sm-2 control-label">app名称</label>
+									<label class="col-sm-2 control-label">app名称</label>
 									<div class="col-sm-10">
-									  <input type="test" class="form-control" id="" placeholder="">
+									  <input type="text" class="form-control" ng-model="oauthParams.appName" ng-if="oauthVar == 1" placeholder="" />
+									  <input type="text" class="form-control" ng-model="oauthParams.appName" ng-if="oauthVar == 2" placeholder="" disabled="disabled" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="inputPassword3" class="col-sm-2 control-label">公司名</label>
+									<label class="col-sm-2 control-label">公司名</label>
 									<div class="col-sm-10">
-									  <input type="test" class="form-control" id="" placeholder="">
+									  <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 1" ng-model="oauthParams.company">
+									  <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 2" ng-model="oauthParams.company" disabled="disabled">
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="inputPassword3" class="col-sm-2 control-label">Clientld</label>
+									<label class="col-sm-2 control-label">Clientld</label>
 									<div class="col-sm-10">
-									  <input type="test" class="form-control" id="" placeholder="">
+									  <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 1" ng-model="oauthParams.clientId">
+									  <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 2" ng-model="oauthParams.clientId" disabled="disabled">
 									</div>
 								</div>
 								<div class="form-group oauth-group">
-									<label for="inputPassword3" class="col-sm-2 control-label">ClientldSecret</label>
+									<label class="col-sm-2 control-label">ClientSecret</label>
 									<div class="col-sm-10">
-									  <input type="test" class="form-control" id="" placeholder="">
+									  <input type="text" class="form-control pull-left" placeholder="" ng-model="oauthParams.clientSecret">
+									  <a class="oauth-a" ng-click="selectOAuthValue()">随机生成</a>
 									</div>
 								</div>
-								<a class="oauth-a">随机生成</a>
+								
 								<div class="form-group">
 									<div class="col-sm-offset-2 col-sm-10">
 									  <div class="checkbox oauth-skip2">
-										<label for="inputPassword3" class="col-sm-2 control-label oauth-skip"><strong>是否跳过授权</strong></label>
-										<label>
-										  <input name="oauth" type="radio"> 是
+										<label class="col-sm-2 control-label oauth-skip"><strong>是否跳过授权</strong></label>
+										<label class="oauth-label">
+										  <input name="oauth" type="radio" ng-model="oauthParams.skipUserGrant" ng-value=1> 是
 										</label>
-										<label>
-										  <input name="oauth" type="radio"> 否
+										<label class="oauth-label">
+										  <input name="oauth" type="radio" ng-model="oauthParams.skipUserGrant" ng-value=0> 否
 										</label>
 									  </div>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="inputPassword3" class="col-sm-2 control-label">PayCallbackUrl</label>
+									<label class="col-sm-2 control-label">PayCallbackUrl</label>
 									<div class="col-sm-10">
-									  <input type="test" class="form-control" id="" placeholder="">
+									  <input type="test" class="form-control" placeholder="" ng-model="oauthParams.payCallbackUrl">
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="inputPassword3" class="col-sm-2 control-label">RedirectUrl</label>
+									<label class="col-sm-2 control-label">RedirectUrl</label>
 									<div class="col-sm-10">
-									  <input type="test" class="form-control" id="" placeholder="">
+									  <input type="test" class="form-control" placeholder="" ng-model="oauthParams.redirectUrl">
 									</div>
 								</div>
 								<div class="form-group">
 									<div class="col-sm-offset-2 col-sm-10">
-									  <button type="submit" class="btn btn-default">添加</button>
+									  <button type="submit" class="btn btn-default" ng-if="oauthVar == 1" ng-click="oauthAdd()">添加</button>
+									  <button type="submit" class="btn btn-default" ng-if="oauthVar == 2" ng-click="oauthModify()">修改</button>
 									</div>
 								</div>
 							</form>
@@ -449,6 +486,21 @@ li{
 					</div>
 					</div>
 				</div>
+				<ul uib-pagination
+					class="pagination-sm"
+					boundary-link-numbers="true"
+					first-text="首页" 
+					last-text="尾页" 
+					next-text="下一页" 
+					previous-text="上一页"
+					items-per-page="itemPrePage"
+					total-items="totalItems"
+					ng-model="currentPage"
+					max-size="maxSize"
+					boundary-links="true"
+					ng-change = "oauthList()"
+					num-pages="numPages"></ul>		
+				<pre>Page: {{currentPage}} / {{numPages}}</pre>
 			</div>
 			
 			<!--用户管理-->

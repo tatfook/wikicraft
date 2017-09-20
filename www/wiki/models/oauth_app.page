@@ -111,7 +111,7 @@ function oauth_app:checkAdmin()
 	end
 end
 
-function oauth_app:get(params)
+function oauth_app:get(params) -- /api/wiki/models/oauth_app/ POST
 	if(not self:checkAdmin()) then
 		return errors:wrap(errors.FORBIDDEN_ACCESS);
 	end
@@ -119,20 +119,43 @@ function oauth_app:get(params)
 	local err, query = self:validateQuery(params);
 
 	if(not query.limit or not query.skip) then
-		return errors:wrap(errors.SERVER_INNER_ERROR);
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
 	self:db():find({["createDate"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
 	local err, data = yield();
 
 	if(not err) then
+		response:status(200);
 		return errors:wrap(nil, data);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 end
 
-function oauth_app:api_count()
+function oauth_app:api_getOne(params) -- /api/wiki/models/oauth_app/getOne POST
+	if(not self:checkAdmin()) then
+		return errors:wrap(errors.FORBIDDEN_ACCESS);
+	end
+
+	local err, query = self:validateQuery(params);
+
+	if(not query.clientId) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	self:db():findOne({clientId = query.clientId}, resume);
+	local err, data = yield();
+
+	if(not err) then
+		response:status(200);
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function oauth_app:api_count() -- /api/wiki/models/oauth_app/count GET
 	if(not self:checkAdmin()) then
 		return errors:wrap(errors.FORBIDDEN_ACCESS);
 	end
@@ -149,7 +172,7 @@ function oauth_app:api_count()
 	end
 end
 
-function oauth_app:create(params)
+function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	if(not self:checkAdmin()) then
 		return errors:wrap(errors.FORBIDDEN_ACCESS);
 	end
@@ -173,7 +196,7 @@ function oauth_app:create(params)
 	end
 
 	if(data) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		return errors:wrap(errors.RECORD_ALREADY_EXIST);
 	end
 
 	-- 判断是否存在clientId
@@ -185,7 +208,7 @@ function oauth_app:create(params)
 	end
 
 	if(data) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		return errors:wrap(errors.RECORD_ALREADY_EXIST);
 	end
 
 	query.createDate = self:getNow();
@@ -202,7 +225,7 @@ function oauth_app:create(params)
 	return errors:wrap(errors.SERVER_INNER_ERROR);
 end
 
-function oauth_app:update(params)
+function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 	if(not self:checkAdmin()) then
 		return errors:wrap(errors.FORBIDDEN_ACCESS);
 	end
@@ -267,9 +290,10 @@ function oauth_app:delete(params)
 	end
 
 	self:db():deleteOne({clientId = query.clientId}, resume);
-	local err, data = yield()
+	local err, data = yield();
 
 	if(not err) then
+		response:status(200);
 		return errors:wrap(errors.SUCCESS);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
