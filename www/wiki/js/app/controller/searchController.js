@@ -87,7 +87,7 @@ define([
 							keyword,
 							{
 								wildcard:{
-									"access_url":"*"+host+"*",
+									"access_url.keyword":"*"+host+"*",
 								}
 							},
 						]
