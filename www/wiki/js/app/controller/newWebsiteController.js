@@ -6,11 +6,18 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'helper/siteStyle',
+    'markdown-it',
     'text!html/newWebsite.html',
     'controller/editWebsiteController',
-], function (app, util, storage, siteStyle, htmlContent, editWebsiteHtmlContent) {
+], function (app, util, storage, markdownit, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
+        const GITLAB = {
+            "API_BASE_URL": "http://git.keepwork.com/api/v4",
+            "FILE_PATH": "official%2Ftemplate%2FwebTemplateConfig%2Emd",// 网站模板配置保存路径
+            "REF": "master",
+            "PRIVATE_TOKEN": "Gsx7JYVFxvsDod2MY2x5",
+            "ID": "6803"
+        };
         $scope.website = {};
         $scope.websiteNameErrMsg = "";
         $scope.websiteDomainErrMsg = "";
@@ -21,6 +28,27 @@ define([
         $scope.subCategories = [];
         $scope.step = 1;
         $scope.nextStepDisabled = !$scope.website.name;
+
+        function doGitlabTemplate(path, filepath, defaultDataSource, cb, errcb) {
+            filepath = encodeURIComponent(filepath);
+            var url = GITLAB.API_BASE_URL + "/projects/" + GITLAB.ID +"/repository/files/" + filepath;
+            var params = {
+                "ref": GITLAB.REF
+            };
+            var isShowLoading = true;
+            util.http("GET", url, params, function (result) {
+                console.log(result);
+                // return result;
+            }, function (result) {
+                console.log(result);
+                if (result.content == undefined || result.message){
+                    errcb && errcb();
+                    return;
+                }
+                var content = Base64.decode(result.content);
+                defaultDataSource.writeFile({path: path, content:content}, cb, errcb);
+            }, isShowLoading);
+        }
 
         function createSite(siteinfo, cb , errcb) {
             siteinfo.userId = $scope.user._id;
@@ -46,13 +74,7 @@ define([
                     for (var i = 0; i < contentPageList.length; i++) {
                         fnList.push((function (index) {
                             return function (cb, errcb) {
-                                require([contentPageList[index].contentUrl], function (content) {
-                                    defaultDataSource.writeFile({path:contentPageList[index].pagepath, content:content}, cb, errcb);
-                                }, function () {
-                                    console.log("local server request md file failed");
-                                    // 本地文件请求失败直接跳过
-                                    errcb && errcb();
-                                });
+                                doGitlabTemplate(contentPageList[index].pagepath,contentPageList[index].contentUrl.substring(contentUrlPrefix.length), defaultDataSource, cb, errcb);
                             }
                         })(i));
                     }
@@ -129,7 +151,7 @@ define([
                     var style = $scope.style || $scope.styles[0];
                     $scope.website.styleId = style._id;
                     $scope.website.styleName = style.name;
-                    $scope.website.logoUrl = $scope.imgsPath + style.logoUrl;
+                    $scope.website.logoUrl = style.logoUrl;
                 }
 
                 //$scope.errMsg = "建站中...";
@@ -162,7 +184,7 @@ define([
             }
         };
 
-        function init() {
+        function initSiteStyle(siteStyle) {
             $scope.categories = siteStyle;
             $scope.templates = $scope.categories[0].templates;
             $scope.styles = $scope.templates[0].styles;
@@ -176,6 +198,39 @@ define([
             $scope.category = $scope.categories[0];
             $scope.template = $scope.templates[0];
             $scope.style = $scope.styles[0];
+        }
+
+        function getSiteStyle() {
+            var url = GITLAB.API_BASE_URL + "/projects/" + GITLAB.ID +"/repository/files/" + GITLAB.FILE_PATH;
+            var params = {
+                "ref": GITLAB.REF
+            };
+            var isShowLoading = true;
+            util.http("GET", url, params, function (result) {
+                console.log(result);
+            }, function (result) {
+                console.log(result);
+                if (!result.content){
+                    return;
+                }
+                var content = Base64.decode(result.content),
+                    md = markdownit(),
+                    parserContent = md.parse(content)[0].content || "";
+                try{
+                    var siteStyle = angular.fromJson(parserContent);
+                    initSiteStyle(siteStyle);
+                }catch (e){
+                    console.log(e);
+                }
+            }, isShowLoading);
+        }
+
+        function init() {
+            if (!$scope.categories || $scope.categories.length <= 0){
+                getSiteStyle();
+            }else{
+                console.log($scope.categories);
+            }
 
             if((util.getPathname() !="/wiki/user_center")){
                 $scope.isModal=true;

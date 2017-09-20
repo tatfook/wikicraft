@@ -72,14 +72,14 @@ char* ParaEngine::CQiNiu::getDownloadUrl(const char* domain, const char* key, in
     return strbuf;
 }
 
-int ParaEngine::CQiNiu::deleteFile(const char* domain, const char* key) {
+int ParaEngine::CQiNiu::deleteFile(const char* bucket, const char* key) {
 	Qiniu_Mac mac;
 	mac.accessKey = this->m_accessKey;
 	mac.secretKey = this->m_secretKey;
 	
 	Qiniu_Client client;
 	Qiniu_Client_InitMacAuth(&client, 1024, &mac);
-	Qiniu_Error error = Qiniu_RS_Delete(&client, domain, key);
+	Qiniu_Error error = Qiniu_RS_Delete(&client, bucket, key);
 	if (error.code != 200) {
 		//WriteLog(itoa(error.code));
 		WriteLog(error.message);

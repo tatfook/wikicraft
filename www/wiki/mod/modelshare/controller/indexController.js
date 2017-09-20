@@ -14,6 +14,7 @@
 		
 		http("POST", apiUrl + "/getListCount", function(data){
 			$scope.totalItems = data.data;
+			console.log(data)
 		});
 
 		//查找数据
@@ -27,10 +28,42 @@
 			
 			http("POST", apiUrl + "/getList", params, function(data){
 				$scope.list = data.data;
+				console.log(data)
 			});
 		}
 		
 		$scope.getList();
+		
+		//最新
+		$scope.getListNew = function(){
+			var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+			
+			var params = {
+				"limit" : $scope.itemPrePage,
+				"skip"  : skip
+			};
+			
+			http("POST", apiUrl + "/getListNew", params, function(data){
+				$scope.list = data.data;
+				console.log(data)
+			});
+		}
+		
+		//热门
+		$scope.getListHot = function(){
+			var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+			
+			var params = {
+				"limit" : $scope.itemPrePage,
+				"skip"  : skip
+			};
+			
+			http("POST", apiUrl + "/getListHot", params, function(data){
+				$scope.list = data.data;
+				console.log(data)
+			});
+		}
+		
 
 		//整合
 		function http(type, url, params, cb_success, cb_fail){

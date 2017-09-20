@@ -29,11 +29,12 @@ define([
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
         function sendModifyWebsiteRequest() {
+            console.log("33333333");
 			$scope.website.sitename = $scope.website.name;
             util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
                 Message.info("站点配置修改成功!!!");
-                $rootScope.$broadcast('userCenterContentType', 'websiteManager');
+                // $rootScope.$broadcast('userCenterContentType', 'websiteManager');
             }, function () {
                 Message.warning("站点配置修改失败!!!");
             });
@@ -87,15 +88,22 @@ define([
         $scope.addTag = function (tagName) {
             tagName = util.stringTrim(tagName);
             if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
+                $scope.tagErrMsg="该标签已添加";
+                $scope.tag="";
+                $scope.$apply();
                 return;
             }
-            if (tagName.length>30){
-                $scope.errMsg="标签最长30个字符";
+            if (tagName.length>10){
+                $scope.tagErrMsg="标签最长10个字";
+                $scope.tag="";
+                $scope.$apply();
                 return;
             }
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
             $scope.tag="";
+            $scope.tagErrMsg="";
+            $scope.$apply();
             $("#tagInput").focus();
         }
 
@@ -598,6 +606,8 @@ define([
         $(document).keyup(function (event) {
             if(event.keyCode=="13" && $("#groupUserName").is(":focus")){
                 $scope.addUser();
+            }else if(event.keyCode=="13" && $("#tagInput").is(":focus")){
+                $scope.addTag($scope.tag);
             }
         });
     }]);

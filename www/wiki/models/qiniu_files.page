@@ -17,6 +17,7 @@ function qiniu_files:ctor()
 	self:addfield("key", "string")          -- 文件名
 	self:addfield("download_url", "string") -- 下载url
 	self:addfield("hash", "string")         -- hash
+	self:addfield("type", "string")         -- hash
 	self:addfield("size", "number")         -- file size
 
 	self:addfield("usedCount", "number")      -- 使用次数
@@ -36,6 +37,29 @@ function qiniu_files:api_upsert(params)
 	params.usedCount = (params.usedCount or 0) + 1
 
 	self:db():insertOne({["+username+domain+key"]={params.username, params.domain, params.key}}, params, resume)
+
+	return errors:wrap(yield())
+end
+
+
+-- 通过id获取记录
+function qiniu_files:api_getById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({_id=params._id}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 通过id删除文件
+function qiniu_files:api_deleteById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():deleteOne({_id=params._id}, resume)
 
 	return errors:wrap(yield())
 end

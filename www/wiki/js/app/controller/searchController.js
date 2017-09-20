@@ -34,6 +34,157 @@ define([
         }
 
 		function elasticSearch(query) {
+			query.keyword = query.keyword || "";
+			var searchType = query.searchType || "pageinfo";
+			var page = query.currentPage || $scope.currentPage;
+			var size = query.pageSize || $scope.pageSize;
+			var keyword = {
+				bool:{
+					should:[
+					{
+						wildcard:{
+							"url.keyword":"*" + query.keyword + "*",
+						}
+					}
+					]
+				}
+			};
+			var should = keyword.bool.should;
+			
+			if (query.keyword && searchType == "pageinfo") {
+				should.push({
+					match:{
+						"extra_search":query.keyword,
+					}
+				});
+			} else {
+				if (query.isTagSearch && query.keyword) {
+					should.push({
+						wildcard:{
+							"tags.keyword":"*[" + (query.keyword || "") + "]*",
+						}
+					});
+				} else {
+					should.push({
+						wildcard:{
+							"extra_search.keyword":"*" + (query.keyword || "") + "*",
+						}
+					});
+				}
+			}
+
+			var host = window.location.host;
+			if (config.isLocal()) {
+				host = "dev.keepwork.com";
+			}
+
+			var data = {
+				from: (page-1) * size,
+				size: size,
+				query:{
+					bool:{
+						must:[
+							keyword,
+							{
+								wildcard:{
+									"access_url.keyword":"*"+host+"*",
+								}
+							},
+						]
+					}
+				},
+				highlight:{
+					pre_tags:[
+						"<span>"
+					],
+					post_tags:[
+						"</span>"
+					],
+					fields:{
+						extra_search:{},
+						//"extra_search.keyword":{},
+					}
+				}
+			}
+
+			var must = data.query.bool.must;
+			if (query.username) {
+				must.push({
+					term:{
+						"user_name.keyword":query.username,
+					}
+				});
+			}
+
+			if (query.sitename) {
+				must.push({
+					term:{
+						"site_name.keyword":query.username,
+					}
+				});
+			}
+
+			var username = undefined;
+			if (Account.isAuthenticated()) {
+				username = $scope.user.username;
+			}
+
+			if (username && (searchType == "siteinfo" || searchType == "pageinfo")) {
+				must.push({
+					bool:{
+						should:[
+						{
+							term:{
+								"extra_type.keyword":searchType + ":[]",
+							}
+						},
+						{
+							wildcard:{
+								"extra_type.keyword":searchType + ":*["+ username +	"]*",
+							}
+						}
+						]
+					}
+				})
+			} else {
+				must.push({
+					term:{
+						"extra_type.keyword":searchType + (searchType == "userinfo" ? "" : ":[]")
+					}
+				});
+			}
+
+			util.ajax({
+				url:"http://221.0.111.131:19001/Application/kwcustom_search",
+				type:"GET",
+				data:{
+					keyword:angular.toJson(data),
+				},
+				success: function(result, status, xhr) {
+					if (result.code != 200) {
+						return;
+					}
+					var searchList = [];
+					$scope.totalItems = result.total;
+					for (var i = 0; i < result.data.list.length; i++) {
+						var obj = result.data.list[i];
+						var site = angular.fromJson(obj.extra_data);
+						site.highlight_ext = obj.highlight_ext;
+						site.tagsArr = obj.tags ? obj.tags.split(tagSplitRegexp) : [];
+						searchList.push(site);
+					}
+					$scope.searchList = searchList;
+					console.log($scope.searchList);
+					util.$apply($scope);
+				},
+				error: function(xhr, status, error){
+
+				}
+			});
+
+		}
+
+		function elasticSearch_old(query) {
 			var searchType = query.searchType || "pageinfo";
 			var fuzzymatch = 0;
 			var data = {

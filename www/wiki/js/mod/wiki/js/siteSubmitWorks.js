@@ -236,10 +236,6 @@ define([
 });
 
 /*
-```@wiki/js/submitWork
-{
-    "username":"keepwork",
-    "sitename":"game",
-}
-```
+ ```@wiki/js/siteSubmitWorks
+ ```
  */

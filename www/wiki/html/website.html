@@ -1,22 +1,75 @@
 <style>
-    .website-table {
+    .website-flex{
+        padding: 0;
+    }
+    .website-flex .title{
+        text-align: left;
+        display: flex;
+        align-items: center;
+        padding:0 60px 0 85px;
+        margin: 30px 0;
+        font-weight: normal;
+    }
+    .website-flex .title > span{
+        flex: 1;
+    }
+    .website-flex .fthead, .website-flex .ftbody-item{
         text-align: center;
-        padding:20px 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 60px;
+        color: #666;
     }
-    .website-table table {
-        margin-bottom: 120px;
+    .website-flex .fthead{
+        height: 46px;
+        background-color: #B1D4F3;
+        font-size: 16px;
     }
-    .website-table table > thead > tr > th {
-        text-align: center;
+    .website-flex .ftbody-item{
+        height: 50px;
+        border-bottom: 1px solid #E9E9E9;
+        font-size: 14px;
     }
-    .website-table tbody > tr > td {
-        vertical-align: middle;
+    .website-flex .ftbody-item > div, .website-flex .fthead > div{
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-    .website-table tbody > tr:hover a {
+    .website-flex .ftbody-item > div:first-child, .website-flex .fthead > div:first-child{
+        text-align: left;
+        padding-left: 25px;
+        position: relative;
+    }
+    .website-flex .ftbody-item .icon-lock{
+        position: absolute;
+        left: 0;
+        top: -2px;
+        color: #B1B1B1;
+    }
+    .website-flex .ftbody-item a{
+        color: #666;
+    }
+    .website-flex .ftbody-item a:hover{
         color: #3977AD;
     }
+    .website-flex .ftbody-item > .site-link, .website-flex .fthead > .site-link{
+        flex: 2;
+    }
+    .website-flex .ftbody-item .iconfont:not(.icon-lock){
+        font-size: 24px;
+        width: 36px;
+        height: 36px;
+        display: inline-block;
+        color: #1E94EC;
+        background-color: #D3EAFF;
+    }
+    .website-flex .ftbody-item .iconfont.text-danger{
+        color: #EC1E1E;
+        background-color: #FFD3D3;
+    }
     .new-web-btn {
-        margin-bottom: 20px;
         font-size: 16px;
         padding: 9px 27px;
     }
@@ -27,33 +80,35 @@
         <div class="panel-heading">
             我的站点
         </div>
-        <div class="panel-body website-table">
-            <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
-            <table class="table table-hover table-bordered">
-                <thead>
-                <tr>
-                    <th>站点名称</th>
-                    <th>站点备注</th>
-                    <th>站点地址</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="website in websites" ng-hide="website.isDelete">
-                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">{{website.displayName || website.name}}</a></td><!--站点名称-->
-                    <td>{{website.desc}}</td><!--站点备注-->
-                    <td><a ng-click="goWebsiteIndexPage(website.name)" class="text-primary">keepwork.com/{{user.username}}/{{website.name}}</a></td><!--站点地址-->
-                    <td>{{website.createDate}}</td><!--创建时间-->
-                    <td>
-                        <a class="btn"  ng-click="goWebsiteIndexPage(website.name)">打开</a>
-                        <a class="btn"  ng-click="goEditWebsitePagePage(website)">编辑</a>
-                        <a class="btn"  ng-click="goEditWebsitePage(website)">设置</a>
-                        <a class="btn"  ng-click="deleteWebsite(website)">删除</a>
-                    </td><!--操作-->
-                </tr>
-                </tbody>
-            </table>
+        <div class="panel-body website-flex">
+            <h3 class="title clearfix">
+                <span>网站数量：<span class="text-primary">{{websites.length}}</span></span>
+                <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
+            </h3>
+            <div class="flex-table">
+                <div class="fthead">
+                    <div>站点名称</div>
+                    <div class="site-link">站点地址</div>
+                    <div>创建时间</div>
+                    <div>操作</div>
+                </div>
+                <div class="ftbody-item" ng-repeat="website in websites" ng-hide="website.isDelete">
+                    <div>
+                        <span class="iconfont icon-lock" ng-show="website.visibility == 'private'"></span>
+                        {{website.displayName || website.name}}
+                    </div>
+                    <div class="site-link">
+                        <a ng-href="/{{user.username}}/{{website.name}}" target="_blank">keepwork.com/{{user.username}}/{{website.name}}</a>
+                    </div>
+                    <div>{{website.createDate}}</div>
+                    <div>
+                        <a class="iconfont icon-bianjiqi-dakai" ng-href="/{{user.username}}/{{website.name}}" target="_blank" title="打开"></a>
+                        <a class="iconfont icon-bianjiqi-bianji" ng-href="/wiki/wikieditor#/{{user.username}}/{{website.name}}/index" title="编辑"></a>
+                        <a class="iconfont icon-bianjiqi-shezhi"  ng-click="goEditWebsitePage(website)" title="设置"></a>
+                        <a class="iconfont icon-bianjiqi-shanchu text-danger" ng-click="deleteWebsite(website)" title="删除"></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

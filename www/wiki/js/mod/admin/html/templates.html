@@ -195,7 +195,7 @@
             </div>
             <div class="clearfix">
                 <div class="col-sm-3" ng-repeat="template in activeCategories.templates track by $index" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
-                    <img ng-src="{{imgsPath + (template.logoUrl || 'wiki_works.jpg')}}" ng-click="selectTemplate(template)" alt="">
+                    <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                     <div class="content">
                         <h3>
                             {{template.name}}
@@ -251,6 +251,7 @@
                             <label class="col-sm-2 control-label">styles</label>
                             <div class="col-sm-9">
                                 <span ng-repeat="style in newTemplate.styles track by $index" ng-click="setValue({'key': 'newStyle', 'value': style, 'index': $index})" data-target="#editStyles" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editStyles">{{style.name}}</span>
+                                <a href="#editStyles" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editStyles">添加</a>
                             </div>
                         </div>
                         <div id="editStyles" class="collapse">
@@ -276,6 +277,7 @@
                                 <label class="col-sm-2 control-label">contents</label>
                                 <div class="col-sm-9">
                                     <span ng-repeat="content in newStyle.contents track by $index" ng-click="setValue({'key':'newContent', 'value':content, 'index':$index})" data-target="#editContent" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editContent">{{content.pagepath}}</span>
+                                    <a href="#editContent" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editContent">添加</a>
                                 </div>
                             </div>
                             <div id="editContent" class="collapse">

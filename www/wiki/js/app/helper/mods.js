@@ -386,7 +386,15 @@ define([], function () {
             "desc": "添加课程",
             "content": '```@course/js/course\n```',
             "logoUrl":"wiki/assets/imgs/wiki_layout2.jpg"
-        }
+        },
+        {
+            "name": "VIP阅读权限",
+            "classifyName": "未分类",
+            "wikiCmdName": "@wiki/js/permission",
+            "desc": "文章需要VIP才能阅读全文",
+            "content": '```@wiki/js/permission\n{"moduleKind":"vipPermission"\n}\n```',
+            "logoUrl": "wiki/assets/imgs/wiki_vipmore.png"
+        },
     ];
 
     return mods;

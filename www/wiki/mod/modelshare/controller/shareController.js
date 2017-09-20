@@ -6,13 +6,46 @@
     app.controller('shareController', ['$scope' , '$http' , function ($scope,$http) {
 		console.log(util.getQueryObject());
         $scope.parameter = util.getQueryObject();
+		$scope.count = 0;
+		$scope.isFirst = true;
 		
+		$scope.DownClick = function(item){
+			var params = {
+				"_id"          : $scope.parameter.id,
+				"count"        : $scope.count,
+			}
+			$scope.count++;
+		
+			http("POST","api/mod/modelshare/models/modelshare/modify", params, function(data){
+				console.log(data);
+				if(data.error.id == 0){
+					alert("下载成功");
+				}else{
+					alert("下载失败");
+				}
+			})
+		}
+		/*$scope.DownClick = function(){
+			$scope.count++;
+			console.log($scope.count);
+			
+			http("POST","api/mod/modelshare/models/modelshare/modify",{"count" : $scope.count},function(data){
+					console.log(data);
+			});
+		}
+		
+		/*$scope.DownClick = function() {
+				$scope.count++;
+				console.log($scope.count);
+			}*/
+			
 		if($scope.parameter.id){
 			$scope.parameter.id
 		}else{
 			location.href = "/wiki/notfound"
 			return;
 		}
+		
 		
 
 		$scope.delete = function(item, index){
@@ -29,12 +62,14 @@
 			}
 			
 			http("POST","api/mod/modelshare/models/modelshare/getOne", params, function(data){
+				
 				$scope.templateName = data.data.templateName;
 				$scope.username     = data.data.username;
 				$scope.modelsnumber = data.data.modelsnumber;
 				$scope.blocks       = data.data.blocks;
 				$scope.volume       = data.data.volume;
 				$scope.createDate   = data.data.createDate;
+				$scope.count  = data.data.count?data.data.count:0;
 			});
 		}
 		
@@ -70,43 +105,31 @@
 
 
 			$scope.clickStart = function(index) {
-				$scope.clearStart();
-				for (var i = 1; i <= index; i++) {
+				//$scope.clearStart();
+				if($scope.isFirst){
+					for (var i = 1; i <= index; i++) {
 					var span = document.getElementById('start' + i);
 					span.innerHTML = '★';
+					}
+					$scope.isFirst = false;
 				}
-
 			}
 
 
-			$scope.clearStart = function() {
+			/*$scope.clearStart = function() {
 				for (var i = 1; i <= 5; i++) {
 					var span = document.getElementById('start' + i);
 					span.innerHTML = '☆';
 				}
 
-			} 
+			} */
 		}]);
 
 		return htmlContent;
 });
 
 
-/*$scope.add = function(){
-			var Ason = {
-					"username"     : $.username,
-					"author"       : parameter.author,
-					"modelsnumber" : parameter.modelsnumber,
-					"blocks"       : parameter.blocks,
-					"volume"       : parameter.volume,
-					"words"        : parameter.words,
-			}
-			console.log(Ason)
-			http("POST","api/mod/modelshare/models/modelshare/add",Ason,function(data){
-					//console.log($scope.h2h2)
-					$scope.h2h2[$scope.h2h2.length] = data;
-			});
-		}*/
+
 		
 		/*$scope.modify = function(item){
 			var params = {

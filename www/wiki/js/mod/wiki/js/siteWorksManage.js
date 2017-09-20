@@ -111,9 +111,6 @@ define([
 });
 
 /*
- ```@wiki/js/worksManage
- {
-    "sitename":"xiaoyao"
- }
+ ```@wiki/js/siteWorksManage
  ```
  */

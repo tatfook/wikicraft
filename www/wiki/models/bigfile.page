@@ -7,6 +7,7 @@ Date: 2017/09/11
 
 include_once("./abstract/base.page")
 include_once("./qiniu.page")
+include_once("./qiniu_files.page")
 
 local bigfile = inherit(models.abstract.base, gettable("models.bigfile"))
 bigfile.db_name = "bigfile"
@@ -30,6 +31,31 @@ function bigfile:api_upsert(params)
 	end
 
 	return errors:wrap(yield())
+end
+
+
+function bigfile:api_deleteById(params)
+	if not params._id then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({_id=params._id}, resume)
+	local _, bf = yield()
+
+	if not bf then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	if bf.channel == const.BIGFILE_QINIU and bf.file_id then
+		local qiniuDB = models.qiniu:new()
+		local ret = qiniuDB:api_deleteByFileId({file_id=bf.file_id}).error
+		if errors:isError(ret) then
+			return errors:wrap(ret)
+		end
+	end
+
+	self:db():deleteOne({_id=params._id})
+	return errors:wrap(nil)
 end
 
 
@@ -80,6 +106,8 @@ function bigfile:api_upload(params)
 
 	return self:api_upsert(data)
 end
+
+
 
 
 

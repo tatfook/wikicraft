@@ -71,6 +71,10 @@ define([
 						data.filename = params.filename;
 						console.log(data);
 						opt.success && opt.success(data);
+					}, function(){
+						util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
+							key:params.key,
+						});
 					});
 				},
 				'Error': function(up, err, errTip) {

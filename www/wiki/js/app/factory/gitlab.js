@@ -90,7 +90,13 @@ define([
 		//}
 
         gitlab.getLongPath = function (params) {
-            return this.rootPath + (params.path || "");
+			return this.rootPath + (params.path || "");
+
+			//if (this.rootPath || this.sitename == "__keepwork__") {
+				//return this.rootPath + (params.path || "");
+			//}
+
+			//return "/" + this.keepwrokUsername + "/" + this.keepworkSitename + "/" + (params.path || "");
         }
 
 		gitlab.getToken = function() {
@@ -505,6 +511,9 @@ define([
             self.projectId = dataSource.projectId || undefined;
 			self.visibility = dataSource.visibility || "public";
 			self.dataSource = dataSource;
+
+			self.keepwrokUsername = dataSource.username;
+			self.keepworkSitename = dataSource.sitename;
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
                 console.log("gitlab data source init failed!!!");

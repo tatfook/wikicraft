@@ -83,6 +83,6 @@ define([
 });
 
 /*
- ```@wiki/js/organizationMemberApply
+ ```@wiki/js/siteMemberApply
  ```
  */

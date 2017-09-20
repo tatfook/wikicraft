@@ -27,6 +27,7 @@ function modelshare:ctor()
 	self:addfield("isShare","number",false);
 	self:addfield("desc","string",false);
 	self:addfield("Authorization","string",false);
+	self:addfield("count","number",false);
 	-- pre page of limit
 	self:addfield("limit", "number", false);
 	-- skip items
@@ -47,6 +48,10 @@ function modelshare:api_add(params)
 		return errors:wrap(errors.NOT_FOUND);
 	end
 	
+	if not query.templateName then
+		return errors:wrap(errors.NOT_FOUND);
+	end
+	
 	self:db():insertOne(
 		{
 			templateName = query.templateName,
@@ -57,7 +62,7 @@ function modelshare:api_add(params)
 			isShare      = query.isShare,
 			createDate   = modelshare:getNow(),
 			desc         = query.desc,
-			
+			count        = query.count,
 		}, resume);
 	
 	local err, data = yield();
@@ -85,21 +90,23 @@ function modelshare:api_getOne(params)
 end
 
 --列表页数据查找
+
 function modelshare:api_getList(params)
 	local err, query = self:validateQuery(params);
-	
-	if(not self:getUsername()) then
+	log(query)
+	--[[if(not self:getUsername()) then
 		return errors:wrap(errors.NOT_FOUND);
-	end
+	end]]
 	
 	if(not query.limit or not query.skip) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 	
-	self:db():find({["+username+-createDate"] = {self:getUsername(),gt=-1, limit = query.limit, skip = query.skip}},resume);
+	--self:db():find({["+username+-createDate"] = {self:getUsername(),gt=-1, limit = query.limit, skip = query.skip}},resume);
+	self:db():find({["createDate"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
 	
 	local err, data = yield();
-	
+	log(data)
 	if not err then	
 		return errors:wrap(nil, data);
 	else
@@ -107,9 +114,52 @@ function modelshare:api_getList(params)
 	end	
 end
 
+--最新
+
+function modelshare:api_getListNew(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not query.limit or not query.skip) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():find({["-createDate"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
+	
+	local err, data = yield();
+	log(data)
+	if not err then	
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end	
+end
+
+--热门
+
+function modelshare:api_getListHot(params)
+	local err, query = self:validateQuery(params);
+	
+	if(not query.limit or not query.skip) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+	self:db():find({["-count"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
+	
+	local err, data = yield();
+	log(data)
+	if not err then	
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end	
+end
+
+
+--模型总数
+
 function modelshare:api_getListCount()
 	local err, query = self:validateQuery(params);
-	self:db():find({["+username"]={self:getUsername()}},resume);
+	self:db():find({--[["+username"]={self:getUsername()}]]},resume);
 	
 	local err, data = yield();
 	local page = #data;
@@ -122,24 +172,26 @@ end
 function modelshare:api_modify(params)
 	local err, query = self:validateQuery(params);
 	
-	if(not query._id) then
+	if(not query._id and type(query._id) == "number") then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 	
-	if(not query.foo) then
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+	self:db():findOne({_id = query._id}, resume);
+	local err, data = yield();
+	
+	local current_count = data.count and data.count or 0;
+	local new_count = current_count + 1;
 	
 	self:db():updateOne({_id = query._id},
 	{
 			templateName = query.templateName,
-			username      = query.username,
-			modelsnumber = query.modelsnumber,
-			blocks       = query.block,
+			blocks       = query.blocks,
 			volume       = query.volume,
-			words        = query.words,
+			isShare      = query.isShare,
+			count        = new_count,
 			
 	},resume);
+	
 	local err,data = yield();
 	
 	if not err then
