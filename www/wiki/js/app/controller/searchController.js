@@ -34,30 +34,42 @@ define([
         }
 
 		function elasticSearch(query) {
+			query.keyword = query.keyword || "";
 			var searchType = query.searchType || "pageinfo";
 			var page = query.currentPage || $scope.currentPage;
 			var size = query.pageSize || $scope.pageSize;
-			var keyword = {};
+			var keyword = {
+				bool:{
+					should:[
+					{
+						wildcard:{
+							"url.keyword":"*" + query.keyword + "*",
+						}
+					}
+					]
+				}
+			};
+			var should = keyword.bool.should;
 			
 			if (query.keyword && searchType == "pageinfo") {
-				keyword = {
+				should.push({
 					match:{
 						"extra_search":query.keyword,
 					}
-				}
+				});
 			} else {
 				if (query.isTagSearch && query.keyword) {
-					keyword = {
+					should.push({
 						wildcard:{
 							"tags.keyword":"*[" + (query.keyword || "") + "]*",
 						}
-					}
+					});
 				} else {
-					keyword = {
+					should.push({
 						wildcard:{
 							"extra_search.keyword":"*" + (query.keyword || "") + "*",
 						}
-					}
+					});
 				}
 			}
 

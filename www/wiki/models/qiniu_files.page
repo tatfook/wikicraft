@@ -17,6 +17,7 @@ function qiniu_files:ctor()
 	self:addfield("key", "string")          -- 文件名
 	self:addfield("download_url", "string") -- 下载url
 	self:addfield("hash", "string")         -- hash
+	self:addfield("type", "string")         -- hash
 	self:addfield("size", "number")         -- file size
 
 	self:addfield("usedCount", "number")      -- 使用次数
