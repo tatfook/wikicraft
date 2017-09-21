@@ -45,23 +45,26 @@ function qiniu:api_deleteByFileId(params)
 	local qiniuFiles = qiniuFilesDB:api_getById({_id=params.file_id}).data
 
 	if not qiniuFiles then
-		return errors:wrap(errors.NOT_FOUND)
+		return errors:wrap(nil)
 	end
 
 	self:db():findOne({["+username"]={qiniuFiles.username}}, resume)
 	local _, data = yield()
 
 	if not data then
+		LOG.std(nil, "error", "keepwork", data)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
 	local ret = self:api_deleteFile({key=qiniuFiles.key}).data
-	if ret ~= 0 then
+	if ret.result ~= 0 then
+		LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
 	local ret = qiniuFilesDB:api_deleteById({_id=params.file_id}).error
 	if errors:isError(ret) then
+		LOG.std(nil, "error", "keepwork", ret)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
@@ -131,6 +134,19 @@ function qiniu:api_getByUsername(params)
 	return errors:wrap(yield())
 end
 
+-- 通过文件名获取
+function qiniu:api_getByFilename(params)
+	if not params.username or not params.filename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local qiniuFilesDB = models.qiniu_files:new()
+
+	qiniuFilesDB:db():findOne({["+username+filename"]={params.username, params.filename}}, resume)
+	--local _, data = yield()
+
+	return errors:wrap(yield())
+end
 
 function qiniu:api_uploadToken(params)
 	local data = self:api_getUploadToken(params).data

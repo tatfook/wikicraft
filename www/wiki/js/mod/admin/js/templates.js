@@ -11,10 +11,10 @@ define([
 ], function (app, util, storage, markdownit, htmlContent) {
     const GITLAB = {
         "API_BASE_URL": "http://git.keepwork.com/api/v4",
-        "FILE_PATH": "kaitlyn%2Ftemplates%2Findex%2Emd",
+        "FILE_PATH": "official%2Ftemplate%2FwebTemplateConfig%2Emd",// 模板配置保存页面 official/template/webTemplateConfig
         "REF": "master",
-        "PRIVATE_TOKEN": "5V78ZVAuFRqE2ZeZjw5X",
-        "ID": "6795"
+        "PRIVATE_TOKEN": "Gsx7JYVFxvsDod2MY2x5",
+        "ID": "6803"
     };
 
     app.registerController("templatesController", ["$scope","$uibModal", "$http", "Message", function ($scope, $uibModal, $http, Message) {

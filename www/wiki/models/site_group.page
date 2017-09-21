@@ -135,7 +135,27 @@ function site_group:api_getByUsername(params)
 end
 
 
+-- 获取站点可读权限的用户列表
+function site_group:api_getGuestUserList(params)
+	if not params.username or not params.sitename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	self:db():find({["+username+sitename+level"]={params.username, params.sitename, gt=const.SITE_PRIVILEGE_GUEST_LEVEL}}, resume)
+	local _, groups = yield()
+
+	local userlist = {}
+	local groupUserDB = models.group_user:new()
+	for _, group in ipairs(groups or {}) do
+		groupUserDB:db():find({["+username+groupname"]={group.username, group.groupname}}, resume)
+		local _, users = yield()
+		for _, user in ipairs(users or {}) do
+			userlist[#userlist+1] = user.memberName
+		end
+	end
+
+	return errors:wrap(nil, userlist)
+end
 
 
 

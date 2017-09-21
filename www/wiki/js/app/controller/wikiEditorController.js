@@ -261,16 +261,29 @@ define([
 
     app.registerController('videoCtrl', ['$scope', '$rootScope', '$uibModalInstance', 'github', function ($scope, $rootScope, $uibModalInstance, github) {//{{{
         $scope.video = {url: '', txt: '', file: '', dat: '', nam: ''};
-		var result = {url:"", filename:""};
+		var result = {url:"", filename:"", bigfileId:undefined};
 
         $scope.cancel = function () {
+			if (result.bigfileId) {
+				deleteFile(result.bigfileId);
+			}
             $uibModalInstance.dismiss('');
         }
 
 		$scope.video_insert = function () {
 			console.log(result);
+			if ($scope.videoUrl) {
+				result.url = $scope.videoUrl;
+				result.isNetUrl = true;
+			}
 			$uibModalInstance.close(result);
         }
+
+		function deleteFile(bigfileId) {
+			util.post(config.apiUrlPrefix + "bigfile/deleteById", {
+				_id:bigfileId,
+			});
+		}
 
 		function init() {
 			$scope.filelist = {};
@@ -297,20 +310,25 @@ define([
 					var filename = data.filename || (new Date()).getTime();
 					var path = '/' + currentPage.username + '/' + currentPage.sitename + '/_mods/' + filename;
 
+					result.bigfileId = data._id;
+
 					var currentDataSource = getCurrentDataSource();
 					if (!currentDataSource) {
 						console.log("当前数据不可用!!!");
 						return;
 					}
+
 					currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
 						result.filename = data.filename;
 						result.url = "http://keepwork.com" + path;
 						$scope.filename = data.filename;
 						util.$apply($scope);
 						currentDataSource.getLastCommitId();
+					}, function(){
+						deleteFile(data._id);
 					});
-
 				},
+
 				failed: function() {
 					console.log("上传文件失败");
 				},
@@ -787,10 +805,11 @@ define([
 				};
 				
 				// 私有项目不提交
-                var site = getCurrentSite(page.username, page.sitename);
-                if (site && site.visibility == "private") {
-					return; 
-                }
+                //var site = getCurrentSite(page.username, page.sitename);
+                //if (site && site.visibility == "private") {
+					//params.visibility = "private";
+					//return; 
+                //}
 
 				util.post(config.apiUrlPrefix + "elastic_search/submitPageinfo", params);
 
@@ -864,14 +883,16 @@ define([
                     cb && cb();
                 };
 
-				submitToSearchEngine(page);
-
 				//makeSnapshot(currentDataSource, page);
-
                 currentSite = getCurrentSite(page.username, page.sitename);
                 if (currentSite) {
+					page.visibility = currentSite.visibility || "public";
                     util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
                 }
+
+				//console.log(currentSite);
+				page.visibility = page.visibility || "public";
+				submitToSearchEngine(page);
 
                 currentDataSource.writeFile({
                     path: page.url + pageSuffixName,
@@ -1999,7 +2020,13 @@ define([
                 }).result.then(function (result) {
 					console.log(result);
                     if (result) {
-						var videoContent = '['+ result.filename +'](' + result.url + ')';
+						var videoContent = "";
+						if (result.isNetUrl) {
+							videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"' + result.url + '"\n}\n```';
+
+						} else {
+							videoContent = '['+ result.filename +'](' + result.url + ')';
+						}
 						editor.replaceSelection(videoContent);
 						editor.focus();
                     }

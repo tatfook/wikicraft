@@ -128,7 +128,7 @@ define([
 			return;
 		}
 
-		/*
+
 		$scope.clickMenuItem = function(menuItem) {
 			$scope.query = {};
 			$scope.selectMenuItem = menuItem;
@@ -139,7 +139,7 @@ define([
 			} else if ($scope.selectMenuItem == "site") {
 				$scope.getSiteList();
 			}
-		}*/
+		}
 
 		// 获取管理员列表
 		$scope.getManagerList = function (){

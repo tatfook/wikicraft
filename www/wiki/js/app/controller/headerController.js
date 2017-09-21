@@ -46,10 +46,11 @@ define([
             $scope.nowSearchRange = range;
         };
 
+        // 确定下拉框选择项
         function initSearchRange() {
             var urlObj = $scope.urlObj || util.parseUrl(),
                 hasUserInfo = $scope.isLogin,
-                hasSiteInfo = urlObj.sitename;
+                hasSiteInfo = urlObj.sitename && (urlObj.username != "wiki");
 
             if (hasSiteInfo && $scope.searchRange.indexOf(SearchRangeText[1]) == -1){
                 $scope.searchRange.push(SearchRangeText[1]);

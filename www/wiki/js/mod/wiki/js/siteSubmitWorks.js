@@ -187,7 +187,12 @@ define([
                 };
 
                 util.post(config.apiUrlPrefix + 'website_works/submitWorksApply', $scope.works, function (data) {
-                    config.services.confirmDialog({title:"作品提交", content:"作品提交成功", cancelBtn:false}, finish, finish);
+                    config.services.confirmDialog({
+                        title:"作品提交", 
+                        theme: "success",
+                        content:"作品提交成功,请等待管理员审核",
+                        cancelBtn:false
+                    }, finish, finish);
                 },function () {
                     config.services.confirmDialog({title:"作品提交", content:"作品提交失败", cancelBtn:false});
                 });
@@ -231,10 +236,6 @@ define([
 });
 
 /*
-```@wiki/js/submitWork
-{
-    "username":"keepwork",
-    "sitename":"game",
-}
-```
+ ```@wiki/js/siteSubmitWorks
+ ```
  */

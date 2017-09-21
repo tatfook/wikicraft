@@ -25,6 +25,7 @@ define([
              */
 
             // 为认证且域名为子域名
+			//console.log($.cookie("token"));
 			if (!$auth.isAuthenticated() && window.location.hostname != config.hostname && $.cookie('token')) {
 				$auth.setToken($.cookie('token'));
 			}
