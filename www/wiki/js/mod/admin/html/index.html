@@ -139,16 +139,16 @@ li{
 		width:116px;
 	}
 	.oauth-table-head tr td:nth-child(2){
-		width:100px;
+		width:90px;
 	}
 	.oauth-table-head tr td:nth-child(3){
-		width:116px;
+		width:96px;
 	}
 	.oauth-table-head tr td:nth-child(4){
 		width:305px;
 	}
 	.oauth-table-head tr td:nth-child(5){
-		width:50px;
+		width:90px;
 	}
 	.oauth-table-head tr td:nth-child(6){
 		width:148px;
@@ -184,6 +184,14 @@ li{
 	.oauth-label{
 		position:relative;
 		left: -133px
+	}
+	.oauth-pre {
+		display: inline-block;
+		width: 12%;
+		height: 30px;
+		margin-bottom: 20px;
+		padding-top: 5px;
+		overflow:hidden;
 	}
 	@media(max-width: 768px){
 		.subnav .list-group-item:first-child .list-group-item{
@@ -403,10 +411,10 @@ li{
 						<td>{{item.clientId}}</td>
 						<td>{{item.clientSecret}}</td>
 						<td>{{item.skipUserGrant==1?"是":"否"}}</td>
-						<td>{{item.redirectUrl}}</td>
 						<td>{{item.payCallbackUrl}}</td>
+						<td>{{item.redirectUrl}}</td>
 						<td>
-							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".oauth" ng-click="clickOauthToggle(2, item.clientId)">修改</button>&nbsp;
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".oauth" ng-click="clickOauthToggle(2, item)">修改</button>&nbsp;
 							<button class="btn btn-default" type="submit" ng-click="deleteOauthRecord(item.clientId)">删除</button>
 						</td>
 					</tr>
@@ -486,6 +494,7 @@ li{
 					</div>
 					</div>
 				</div>
+				<pre class="oauth-pre">Page: {{currentPage}} / {{numPages}}</pre>
 				<ul uib-pagination
 					class="pagination-sm"
 					boundary-link-numbers="true"
@@ -499,8 +508,7 @@ li{
 					max-size="maxSize"
 					boundary-links="true"
 					ng-change = "oauthList()"
-					num-pages="numPages"></ul>		
-				<pre>Page: {{currentPage}} / {{numPages}}</pre>
+					num-pages="numPages"></ul>
 			</div>
 			
 			<!--用户管理-->

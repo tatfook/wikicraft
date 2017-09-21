@@ -20,7 +20,6 @@ function oauth_app:ctor()
 	self:addfield("clientSecret"   , "string"); -- oauth client secret
 	self:addfield("redirectUrl"    , "string"); -- oauth redirect url
 	self:addfield("skipUserGrant"  , "string"); -- 是否可以跳过用户授权
-	self:addfield("RedirectUrl"    , "string"); -- 登陆成功后跳转地址
 	self:addfield("payCallbackUrl" , "string"); -- 支付成功后，后台回掉地址
 	self:addfield("autoAuthorize"  , "string"); -- 是否可以自动授权APP
 
@@ -122,7 +121,7 @@ function oauth_app:get(params) -- /api/wiki/models/oauth_app/ POST
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
-	self:db():find({["createDate"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
+	self:db():find({["-createDate"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
 	local err, data = yield();
 
 	if(not err) then
@@ -254,8 +253,9 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 
 	local updateParams = {
 		clientSecret   = query.clientSecret,
-		RedirectUrl    = query.RedirectUrl,
+		redirectUrl    = query.redirectUrl,
 		payCallbackUrl = query.payCallbackUrl, 
+		skipUserGrant  = query.skipUserGrant,
 		createDate     = self:getNow();
 	}
 
