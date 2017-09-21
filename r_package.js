@@ -32,6 +32,7 @@
         'markdown-it':'lib/markdown-it/markdown-it.min',
         'highlight': 'lib/highlight/highlight.pack', 
         'js-base64': 'lib/js-base64/base64.min',
+		'js-base32': 'lib/js-base32/base32.min',
         'text': 'lib/requirejs/text',
         'domReady': 'lib/requirejs/domReady',
 		'jquery-sharejs': 'lib/sharejs/js/jquery.share.min',// 社交分享

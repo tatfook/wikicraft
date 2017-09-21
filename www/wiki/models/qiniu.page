@@ -134,6 +134,19 @@ function qiniu:api_getByUsername(params)
 	return errors:wrap(yield())
 end
 
+-- 通过文件名获取
+function qiniu:api_getByFilename(params)
+	if not params.username or not params.filename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local qiniuFilesDB = models.qiniu_files:new()
+
+	qiniuFilesDB:db():findOne({["+username+filename"]={params.username, params.filename}}, resume)
+	--local _, data = yield()
+
+	return errors:wrap(yield())
+end
 
 function qiniu:api_uploadToken(params)
 	local data = self:api_getUploadToken(params).data
