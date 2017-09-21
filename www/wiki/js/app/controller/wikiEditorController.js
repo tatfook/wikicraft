@@ -272,6 +272,10 @@ define([
 
 		$scope.video_insert = function () {
 			console.log(result);
+			if ($scope.videoUrl) {
+				result.url = $scope.videoUrl;
+				result.isNetUrl = true;
+			}
 			$uibModalInstance.close(result);
         }
 
@@ -2016,7 +2020,13 @@ define([
                 }).result.then(function (result) {
 					console.log(result);
                     if (result) {
-						var videoContent = '['+ result.filename +'](' + result.url + ')';
+						var videoContent = "";
+						if (result.isNetUrl) {
+							videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"' + result.url + '"\n}\n```';
+
+						} else {
+							videoContent = '['+ result.filename +'](' + result.url + ')';
+						}
 						editor.replaceSelection(videoContent);
 						editor.focus();
                     }
