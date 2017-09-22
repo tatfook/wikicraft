@@ -1565,7 +1565,7 @@ define([
                 event && event.stopPropagation();
                 storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
                 storage.sessionStorageSetItem("editWebsiteParams", website);
-                util.go("userCenter");
+                util.go("userCenter", true);
                 util.html('#userCenterSubPage', editWebsiteHtmlContent);
             };//}}}
 
