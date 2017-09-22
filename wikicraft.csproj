@@ -56,6 +56,7 @@
     <Content Include="www\wiki\index.html" />
     <Content Include="www\wiki\js\app.js" />
     <Content Include="www\wiki\js\app\controller\appsController.js" />
+    <Content Include="www\wiki\js\app\controller\crosController.js" />
     <Content Include="www\wiki\js\app\controller\iframeAgentController.js" />
     <Content Include="www\wiki\js\app\controller\inviteController.js" />
     <Content Include="www\wiki\js\app\controller\payController.js" />
@@ -884,7 +885,12 @@
     <Content Include="www\wiki\js\lib\wangEditor\js\wangEditor.min.js" />
     <Content Include="www\wiki\js\mod\admin\html\index.html" />
     <Content Include="www\wiki\js\mod\admin\html\login.html" />
+    <Content Include="www\wiki\js\mod\admin\html\tabledb.html" />
+    <Content Include="www\wiki\js\mod\admin\html\templates.html" />
+    <Content Include="www\wiki\js\mod\admin\js\index.js" />
     <Content Include="www\wiki\js\mod\admin\js\login.js" />
+    <Content Include="www\wiki\js\mod\admin\js\tabledb.js" />
+    <Content Include="www\wiki\js\mod\admin\js\templates.js" />
     <Content Include="www\wiki\js\mod\course\html\catalog.html" />
     <Content Include="www\wiki\js\mod\course\html\course.html" />
     <Content Include="www\wiki\js\mod\course\js\course.js" />
@@ -963,6 +969,7 @@
     <None Include="www\wiki\data\website_member.sh" />
     <None Include="www\wiki\data\website_works.sh" />
     <None Include="www\wiki\helpers\config.page" />
+    <None Include="www\wiki\helpers\cros.page" />
     <None Include="www\wiki\helpers\filter.page" />
     <None Include="www\wiki\helpers\index.page" />
     <None Include="www\wiki\helpers\sms.page" />
@@ -1105,6 +1112,7 @@
     <None Include="www\wiki\js\mod\wiki\config.page" />
     <None Include="www\wiki\js\mod\wiki\temp" />
     <None Include="www\wiki\models\admin.page" />
+    <None Include="www\wiki\models\bigfile.page" />
     <None Include="www\wiki\models\data_source.page" />
     <None Include="www\wiki\models\data_upgrade.page" />
     <None Include="www\wiki\models\elastic_search.page" />
@@ -1115,6 +1123,7 @@
     <None Include="www\wiki\models\oauth_user.page" />
     <None Include="www\wiki\models\pay.page" />
     <None Include="www\wiki\models\qiniu.page" />
+    <None Include="www\wiki\models\qiniu_files.page" />
     <None Include="www\wiki\models\sitepage.page" />
     <None Include="www\wiki\models\sitepage_renewal.page" />
     <None Include="www\wiki\models\site_data_source.page" />
@@ -1155,25 +1164,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="script\**" />
-    <Content Include="www\dev\edit.page" />
-    <Content Include="www\dev\lib\css\index.css" />
-    <Content Include="www\dev\lib\img\u617.png" />
-    <Content Include="www\dev\lib\js\ace.js" />
-    <Content Include="www\dev\lib\js\bootstrap-treeview.js" />
-    <Content Include="www\dev\lib\js\edit.npl.js" />
-    <Content Include="www\dev\lib\js\index.js" />
-    <Content Include="www\dev\lib\js\markdown-it.js" />
-    <Content Include="www\dev\lib\js\markdown-it.min.js" />
-    <Content Include="www\dev\lib\js\mode-html.js" />
-    <Content Include="www\dev\lib\js\mode-lua.js" />
-    <Content Include="www\dev\lib\js\mode-markdown.js" />
-    <Content Include="www\dev\lib\js\npl.editor.js" />
-    <Content Include="www\dev\lib\js\theme-tomorrow.js" />
-    <Content Include="www\dev\lib\js\twemoji.js" />
-    <Content Include="www\dev\lib\js\twemoji.min.js" />
-    <Content Include="www\dev\lib\js\worker-html.js" />
-    <Content Include="www\dev\lib\js\worker-lua.js" />
-    <Content Include="www\dev\test.page" />
     <Content Include="www\index.page" />
     <Content Include="www\license.txt" />
     <Content Include="www\test.page" />
