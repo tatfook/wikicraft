@@ -294,9 +294,6 @@
                         <a href="#wiki_preview" aria-controls="preview" role="tab" data-toggle="tab">概况</a>
                     </li>
                     <li role="presentation">
-                        <a href="#wiki_works" aria-controls="wiki_works" role="tab" data-toggle="tab">网站<span class="info">({{allSiteTotal}})</span></a>
-                    </li>
-                    <li role="presentation">
                         <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab">关注</a>
                     </li>
                     <li role="presentation">
@@ -306,15 +303,35 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active clearfix" id="wiki_preview">
-                        <div class="col-md-12">
-                            <h3 class="title">热门作品</h3>
-                            <p ng-show="hotSiteTotal==0">暂无热门作品</p>
-                            <div class="img-text col-md-6" ng-repeat="x in hotSiteList" ng-hide="x.visibility == 'private' && user._id != userinfo._id">
+                        <div class="col-xs-12">
+                            <h3 class="title">创建的网站</h3>
+                            <p ng-show="allSiteTotal==0">暂未创建网站</p>
+                            <div class="img-text col-md-6" ng-repeat="x in allSiteList" ng-hide="x.visibility == 'private' && user._id != userinfo._id">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
                                     <p>{{x.desc}}</p>
+                                    <div class="col-md-12 info">
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <h3 class="title">参与的网站</h3>
+                            <p ng-show="joinSiteTotal==0 || !joinSiteTotal">暂无参与的网站</p>
+                            <div class="img-text col-md-6" ng-repeat="x in joinSiteList">
+                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
+                                <div class="text">
+                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
+                                    <p>作者：{{x.username}} </p>
+                                    <p>{{x.desc || "暂无简介"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
@@ -354,48 +371,6 @@
                                 </div>
                             </div>
                             <div ng-show="trendsCount>0" class="btn btn-block btn-outline col-md-12" ng-click="loadActivity()">查看更多活动</div>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane clearfix" id="wiki_works">
-                        <div class="col-xs-12">
-                            <h3 class="title">创建的网站</h3>
-                            <p ng-show="allSiteTotal==0">暂未创建网站</p>
-                            <div class="img-text col-md-6" ng-repeat="x in allSiteList" ng-hide="x.visibility == 'private' && user._id != userinfo._id">
-                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
-                                <div class="text">
-                                    <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
-                                    <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc}}</p>
-                                    <div class="col-md-12 info">
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12">
-                            <h3 class="title">参与的网站</h3>
-                            <p ng-show="joinSiteTotal==0 || !joinSiteTotal">暂无参与的网站</p>
-                            <div class="img-text col-md-6" ng-repeat="x in joinSiteList">
-                                <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
-                                <div class="text">
-                                    <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
-                                    <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc}}</p>
-                                    <div class="col-md-12 info">
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix" id="wiki_concern">
