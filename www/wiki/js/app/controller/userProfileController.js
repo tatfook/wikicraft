@@ -261,8 +261,21 @@ define(['app',
                 //Message.info("邮件发送成功，请按邮件指引完成绑定");
             },function (err) {
                 console.log(err);
-                Message.info(err.message);
+                $scope.errorMsg = err.message;
             });
+        };
+
+        function showModalInit() {
+            if ($scope.emailWait > 0){
+                $scope.emailVerifyCode = "";
+                $scope.errorMsg = "";
+                $('#emailModal').modal("show");
+                return;
+            }
+            $scope.emailVerifyCode = "";
+            $scope.errorMsg = "";
+            $scope.emailWait = 0;
+            $('#emailModal').modal('show');
         }
 
 		$scope.bindEmail = function () {
@@ -282,17 +295,18 @@ define(['app',
 				return;
 			}
 
-            if ($scope.emailWait > 0){
-                $scope.emailVerifyCode = "";
-                $scope.errorMsg = "";
-                $('#emailModal').modal("show");
-                return;
-            }
-
-            $scope.emailVerifyCode = "";
-            $scope.errorMsg = "";
-            $scope.emailWait = 0;
-            $('#emailModal').modal({});
+			util.post(config.apiUrlPrefix + "user/getByEmail", {
+			    "email": email
+            }, function (result) {
+                console.log(result);
+                if (result && result.username != $scope.user.username){
+                    $scope.emailErrMsg = "该邮箱已被绑定";
+                    return;
+                }
+                showModalInit();
+            }, function (err) {
+                showModalInit();
+            });
 		};
 
 		$scope.confirmPhoneBind = function() {
