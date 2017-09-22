@@ -147,6 +147,9 @@ define([
                     var node = pageTree.children[key];
                     node.name = site.displayName ? site.displayName + '(' + site.name + ')' : site.name;
                     isExist = true;
+                    if (site.isEditable || site.isReadable){
+                        node.name = site.displayName ? site.displayName + '(' + site.username + '/' + site.name + ')' : site.username + '/' + site.name;
+                    }
                     break;
                 }
             }
@@ -161,6 +164,12 @@ define([
                 username: site.username,
                 children: {},
 				isLeaf: false,
+                isEditable: site.isEditable || false,
+                isReadable: site.isReadable || false
+            }
+
+            if (site.isEditable || site.isReadable){
+                pageTree.children[site.name].name = site.displayName ? site.displayName + '(' + site.username + '/' + site.name + ')' : site.username + '/' + site.name;
             }
         }
         //console.log(pageTree.children);
@@ -191,7 +200,7 @@ define([
                 treeNode.tags = [];
                 var key = pageNode.username + "_" + pageNode.sitename;
                 treeNode.tags.push([
-                    "<img class='show-parent' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'/>",
+                    "<img class='show-parent setting-icon' onclick='angular.element(this).scope().cmd_goSetting("+ '"' + key + '"' + ", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_setting.png' title='设置'/>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newFile(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newFile.png' title='新建文件夹'/>",
                     "<img class='show-parent' onclick='angular.element(this).scope().cmd_newpage(true, "+ '"' + pageNode.url+ '"'+", event)' src='"+config.services.$rootScope.imgsPath+"icon/wiki_newPage.png' title='新建页面'/>",
                 ]);

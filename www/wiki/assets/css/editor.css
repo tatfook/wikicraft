@@ -402,6 +402,21 @@ select.resize-view {
     padding-right: 0;
     padding-left:0;
 }
+#editableTree .list-group-item .badge>img.setting-icon{
+    display: none;
+}
+#editableTree .list-group-item:hover .badge>img.show-parent:nth-child(2){
+    right:0;
+}
+#editableTree .list-group-item:hover .badge>img.show-parent:nth-child(3){
+    right:24px;
+}
+#readableTree .list-group-item .badge > img.show-parent{
+    display: none;
+}
+#readableTree .badge > .show-empty-node{
+    display: none;
+}
 
 .opened,.joined-treeview, .temp-treeview{
     color: #3977AD;
