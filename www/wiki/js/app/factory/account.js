@@ -184,6 +184,7 @@ define([
                 logout: function () {
 					$.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
                     $auth.logout();
+                    this.send("onLogout", "");
                 },
 
                 // github s授权认证
