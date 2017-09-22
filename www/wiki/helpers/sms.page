@@ -7,8 +7,8 @@ Date: 2017/3/13
 
 NPL.load("(gl)script/ide/System/os/GetUrl.lua")
 NPL.load("(gl)script/ide/System/Encoding/base64.lua")
-NPL.load("(gl)script/ide/math/MD5.lua")
-local md5 = commonlib.LibStub("MD5")
+--NPL.load("(gl)script/ide/math/MD5.lua")
+--local md5 = commonlib.LibStub("MD5")
 local Encoding = commonlib.gettable("System.Encoding")
 
 -- 主帐号,对应开官网发者主账号下的 ACCOUNT SID
@@ -38,7 +38,10 @@ local batch =  ParaGlobal.GetDateFormat("yyyyMMdd") .. ParaGlobal.GetTimeFormat(
 local params = request:getparams()
 params = {to="18702759796", datas={"6532","5"}, templateId="1", appId=appId}
 
-local sig = string.upper(md5:MD5(accountSid .. accountToken .. batch))
+--local sig = string.upper(md5:MD5(accountSid .. accountToken .. batch))
+--log(sig)
+local sig = string.upper(ParaMisc.md5(accountSid .. accountToken .. batch))
+--log(sig)
 local url = "https://" .. serverIP .. ":" .. serverPort .. "/" .. softVersion .. "/Accounts/" .. accountSid .."/SMS/TemplateSMS?sig=" .. sig
 
 local authenticate = Encoding.base64(accountSid .. ":" .. batch)

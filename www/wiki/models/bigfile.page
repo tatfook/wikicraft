@@ -159,7 +159,7 @@ function bigfile:api_getByUsername(params)
 	self:db():find({["+username"]={username, skip=skip, limit=limit}}, resume)
 	local _, bfs = yield()
 
-	log(bfs)
+	--log(bfs)
 
 	local qiniuFilesDB = models.qiniu_files:new()
 	for _, bf in ipairs(bfs or {}) do
