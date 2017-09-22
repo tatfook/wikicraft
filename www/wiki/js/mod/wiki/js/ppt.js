@@ -17,26 +17,30 @@ define([
             $scope.modParams = getModParams(wikiblock);
 
             function initHeight() {
-                var winH = $(document.body).height();
-                var headerH = $rootScope.frameHeaderExist ? $("#__wikiHeader__").height() : 0;
+                var winH = $(window).height();
+                var headerH = $rootScope.frameHeaderExist ? 52 : 0;
                 var footerH = $rootScope.frameHeaderExist ? $("#__wikiFooter__").height() : 0;
+                console.log(winH+"+"+headerH+"+"+footerH);
                 $(".swiper-container").height(winH - headerH - footerH);
             }
 
-
             var init = function () {
                 initHeight();
-                var swiper1 = new swiper('#pptMod .swiper-container', {
-                    pagination: '.swiper-pagination',
-                    paginationClickable: true,
-                    mousewheelControl : true,
-                    direction: 'vertical'
+                setTimeout(function () {
+                    var swiper1 = new swiper('#pptMod .swiper-container', {
+                        pagination: '.swiper-pagination',
+                        paginationClickable: true,
+                        mousewheelControl : true,
+                        direction: 'vertical'
+                    });
                 });
             };
 
             $scope.$watch("$viewContentLoaded", function () {
                 init();
             });
+
+            window.onresize = initHeight;
         }]);
     }
     return {
