@@ -34,6 +34,7 @@ define([
                     websiteId: siteinfo._id,
                     websiteType: siteinfo.type,
                     username: $scope.user.username,
+					portrait: $scope.user.portrait,
                     location: $scope.user.location,
                     userDesc: $scope.userDesc,
                 };
