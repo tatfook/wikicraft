@@ -84,9 +84,19 @@
     .pptMod .swiper-slide .container{
         height: 100%;
     }
+    @media (max-width: 1200px){
+        .mod-ppt1 .ppt-header{
+            padding: 30px 110px;
+        }
+    }
     @media (max-width: 768px) {
+        .mod-ppt1 p{
+            font-size: 14px;
+            line-height: 1.5;
+        }
         .mod-ppt1 .ppt-header{
             padding: 15px 15px 0 30px;
+            margin-bottom: 30px;
         }
         .mod-ppt1 .ppt-header h3 {
             padding: 6px 0;
@@ -256,12 +266,26 @@
     .mod-ppt1 .kind3 p{
         margin: 40px 0;
     }
+    @media (max-width: 992px) {
+        .mod-ppt1 .kind3{
+            width: 90%;
+        }
+        .mod-ppt1 .kind3 p{
+            margin: 15px 0;
+        }
+    }
+    @media (max-width: 768px){
+        .mod-ppt1 .kind3{
+            width: 100%;
+        }
+    }
 
     .mod-ppt1 .kind4{
         display: -webkit-box;
         display: -ms-flexbox;
         display: -webkit-flex;
         display: flex;
+        align-items: flex-start;
     }
     .mod-ppt1 .kind4 h4{
         padding-left: 10px;
@@ -280,6 +304,28 @@
     }
     .mod-ppt1 .kind4 .content-item{
         margin-bottom: 45px;
+    }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind4 .content{
+            padding: 30px 15px;
+        }
+    }
+    @media (max-width: 768px) {
+        .mod-ppt1 .kind4{
+            display: block;
+        }
+        .mod-ppt1 .kind4 img{
+            max-height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        .mod-ppt1 .kind4 .content{
+            margin: 15px 0;
+            padding: 15px;
+        }
+        .mod-ppt1 .kind4 .content-item{
+            margin-bottom: 15px;
+        }
     }
 
     .mod-ppt1 .kind5, .mod-ppt1 .kind6, .mod-ppt1 .kind6 .content-item{
@@ -314,6 +360,29 @@
     .mod-ppt1 .kind5 p{
         margin: 30px 0;
     }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind5 .content{
+            padding: 0 15px;
+        }
+    }
+    @media (max-width: 992px) {
+        .mod-ppt1 .kind5 img{
+            width: 50%;
+        }
+        .mod-ppt1 .kind5 p{
+            margin: 15px 0;
+        }
+    }
+    @media (max-width: 768px) {
+        .mod-ppt1 .kind5{
+            display: block;
+        }
+        .mod-ppt1 .kind5 img{
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+        }
+    }
 
     .mod-ppt1 .kind6 h5{
         margin-top: 0;
@@ -338,6 +407,30 @@
     }
     .mod-ppt1 .kind6 .icon-img > img{
         transform: skewX(20deg);
+    }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind6 p{
+            line-height: 1.5;
+        }
+        .mod-ppt1 .kind6 .content{
+            margin: 0 15px 0 35px;
+        }
+        .mod-ppt1 .kind6 .content-item{
+            margin-bottom: 15px;
+        }
+    }
+    @media (max-width: 992px) {
+        .mod-ppt1 .kind6{
+            display: block;
+        }
+        .mod-ppt1 .kind6 > img{
+            max-height: 200px;
+            width: 100%;
+            object-fit: contain;
+        }
+        .mod-ppt1 .kind6 .content{
+            margin: 0 15px;
+        }
     }
 
     .mod-ppt1 .kind7 h5{
