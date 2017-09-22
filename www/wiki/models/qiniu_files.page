@@ -12,7 +12,7 @@ qiniu_files.db_name = "qiniu_files"
 
 function qiniu_files:ctor() 
 	self:addfield("username", "string")     -- 用户名
-	self:addfield("filename", "string")     -- 文件名
+	--self:addfield("filename", "string")     -- 文件名
 	self:addfield("domain", "string")       -- 域名
 	self:addfield("key", "string")          -- 文件名
 	self:addfield("download_url", "string") -- 下载url
@@ -28,7 +28,7 @@ end
 -- 添加记录
 function qiniu_files:api_upsert(params)
 	local username = getUsername()
-	if not params.filename or not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
+	if not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -36,8 +36,8 @@ function qiniu_files:api_upsert(params)
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.usedCount = (params.usedCount or 0) + 1
 
-	--self:db():insertOne({["+username+domain+key"]={params.username, params.domain, params.key}}, params, resume)
-	self:db():insertOne({["+username+filename"]={params.username, params.filename}}, params, resume)
+	self:db():insertOne({["+username+domain+key"]={params.username, params.domain, params.key}}, params, resume)
+	--self:db():insertOne({["+username+filename"]={params.username, params.filename}}, params, resume)
 
 	return errors:wrap(yield())
 end

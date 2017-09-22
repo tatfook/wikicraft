@@ -21,6 +21,10 @@ function bigfile:ctor()
 end
 
 
+function bigfile:api_test()
+	return "hello world"
+end
+
 function bigfile:api_upsert(params)
 	if not params.channel then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -85,13 +89,45 @@ function bigfile:api_getDownloadUrlById(params)
 end
 
 
-function bigfile:api_upload(params)
+function bigfile:deleteFile(params)
+	local qiniuDB = models.qiniu:new()
+
+	if params.channel == const.BIGFILE_QINIU then
+		qiniuDB:api_deleteByFileId({file_id=params.file_id})
+	end
+end
+
+-- 改变文件名
+function bigfile:api_changeFilename(params)
 	local username = getUsername()
-	if not params.channel or not params.filename then
+
+	if not username or not params._id or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local data = {username=username, channel=params.channel, filename=params.filename}
+	self:db():updateOne({_id=params._id},{filename=params.filename}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 上传文件
+function bigfile:api_upload(params)
+	local username = getUsername()
+	if not username or not params.channel or not params.filename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username+filename"]={username, params.filename}}, resume)
+	local _, data = yield()
+
+	if data then
+		self:deleteFile(data)
+	end
+
+	data = data or {}
+	data.username=username
+	data.channel=params.channel
+	data.filename=params.filename
 
 	if params.channel == const.BIGFILE_QINIU then
 		local qiniuDB = models.qiniu:new()
@@ -117,70 +153,109 @@ function bigfile:api_getByUsername(params)
 
 	local skip, limit = util:pagination(params)
 
+	self:db():count({["+username"]={username}}, resume)
+	local _, total = yield()
+
 	self:db():find({["+username"]={username, skip=skip, limit=limit}}, resume)
 	local _, bfs = yield()
+
+	log(bfs)
 
 	local qiniuFilesDB = models.qiniu_files:new()
 	for _, bf in ipairs(bfs or {}) do
 		if bf.channel == const.BIGFILE_QINIU then
-			bfs.file = qiniuDB:api_getById(_id=bf.file_id).data
+			bf.file = qiniuFilesDB:api_getById({_id=bf.file_id}).data
 		end
 	end
 
-	return errors:wrap(nil, bfs)
+	return errors:wrap(nil, {total=total or 0, filelist = bfs})
 end
 
 
 -- 更新文件
-function bigfile:api_updateById(params)
-	local username = getUsername()
-	if not params._id or not params.channel or not params.filename then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
+--function bigfile:api_updateById(params)
+	--local username = getUsername()
+	--if not params._id or not params.channel or not params.filename then
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	--end
 
-	self:db():findOne({_id=params._id}, resume)
-	local _, data = yield()
+	--self:db():findOne({_id=params._id}, resume)
+	--local _, data = yield()
 
-	if not data or data.username ~= username then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
+	--if not data or data.username ~= username then
+		--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	--end
 
-	local new_data = {}
-	local qiniuDB = models.qiniu:new()
-	new_data.username = username
-	new_data.channel = params.channel
-	new_data.filename = params.filename
+	--local new_data = {}
+	--local qiniuDB = models.qiniu:new()
+	--new_data.username = username
+	--new_data.channel = params.channel
+	--new_data.filename = params.filename
 
-	-- 先增后删
-	if params.channel == const.BIGFILE_QINIU then
-		local ret = qiniuDB:api_upload(params)
-		if ret.error.id ~= 0 then
-			return ret
-		end
-		new_data.file_id = ret.data._id
-	else
-		if not params.download_url then
-			return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-		end
-		new_data.source_url = params.download_url
-	end
+	---- 先增后删
+	--if params.channel == const.BIGFILE_QINIU then
+		--local ret = qiniuDB:api_upload(params)
+		--if ret.error.id ~= 0 then
+			--return ret
+		--end
+		--new_data.file_id = ret.data._id
+	--else
+		--if not params.download_url then
+			--return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+		--end
+		--new_data.source_url = params.download_url
+	--end
 
-	-- 删除旧内容
-	if data.channel == const.BIGFILE_QINIU then
-		local ret = qiniuDB:api_deleteByFileId({file_id=data.file_id}).error
-		if errors:isError(ret) then
-			return errors:wrap(ret)
-		end
-	end
+	---- 删除旧内容
+	--if data.channel == const.BIGFILE_QINIU then
+		--local ret = qiniuDB:api_deleteByFileId({file_id=data.file_id}).error
+		--if errors:isError(ret) then
+			--return errors:wrap(ret)
+		--end
+	--end
 	
-	self:db():updateOne({_id=data._id},new_data, resume)
+	--self:db():updateOne({_id=data._id},new_data, resume)
 
+	--return errors:wrap(yield())
+--end
+
+function bigfile:api_getByFilename(params)
+	local username = getUsername()
+
+	if not username or params.filename then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+username+filename"]={username, params.filename}}, resume)
 	return errors:wrap(yield())
 end
 
 
+function bigfile:api_getByFilenameList(params)
+	local filelist = params.filelist
+	local files = {}
+
+	for _, file in ipairs(filelist or {}) do
+		files[#files+1] = self:api_getByFilename({filename=file.name}).data
+	end
+
+	return errors:wrap(nil, files)
+end
 
 
+function bigfile:api_getUserStoreInfo(params)
+	local username = getUsername()
+
+	if not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local qiniuDB = models.qiniu:new()
+
+	qiniuDB:db():findOne({["+username"]={username}}, resume)
+
+	return errors:wrap(yield())
+end
 
 
 
