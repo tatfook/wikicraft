@@ -20,8 +20,11 @@ define([
                 var winH = $(window).height();
                 var headerH = $rootScope.frameHeaderExist ? 52 : 0;
                 var footerH = $rootScope.frameHeaderExist ? $("#__wikiFooter__").height() : 0;
-                console.log(winH+"+"+headerH+"+"+footerH);
-                $(".swiper-container").height(winH - headerH - footerH);
+                var minH=winH-headerH-footerH;
+                $(".swiper-container").height(minH);
+                var w = $("#__mainContent__");
+                w.css("min-height", minH);
+                console.log(minH);
             }
 
             var init = function () {
@@ -40,7 +43,16 @@ define([
                 init();
             });
 
-            window.onresize = initHeight;
+            function throttle(method, context) {
+                clearTimeout(method.stickTimer);
+                method.stickTimer = setTimeout(function () {
+                    method.call(context);
+                },100);
+            }
+
+            window.onresize = function () {
+                throttle(init);
+            };
         }]);
     }
     return {
