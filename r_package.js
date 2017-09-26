@@ -12,8 +12,24 @@
     optimizeAllPluginResources: true,  // text 插件配置
     modules:[
         {
-            name:'main'
+            name:'main',
+			include:[
+				'angular',
+				'app',
+				'preload'
+			]
         },
+		{
+			name:"controller/wikiEditorController",
+			exclude:[
+				'app'
+				//'helper/markdownwiki',
+				//'helper/util',
+				//'helper/storage',
+				//'helper/dataSource',
+				//'helper/mdconf'
+			]
+		}
     ],
     //out:'build/main.js',
     paths:{
@@ -112,27 +128,5 @@
             location: "lib/codemirror",
             main: "lib/codemirror"
         },
-    ],
-    
-    deps:[
-		'angular',
-		'app',
-		'preload',
-
-        'controller/websiteController',
-        'controller/newWebsiteController',
-        'controller/editWebsiteController',
-        'controller/wikiEditorController',
-        'controller/gitVersionController',
-        'controller/homeController',
-        'controller/loginController',
-        'controller/previewController',
-        'controller/userCenterController',
-
-        // directives
-        //'directive/moduleDirective',
-
-        // factory
-        //'factory/account',
     ]
 })
