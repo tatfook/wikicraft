@@ -9,6 +9,7 @@ define([
 	'text!wikimod/admin/html/index.html',
     'templates.js',
     'text!wikimod/admin/html/templates.html',
+	'/wiki/js/lib/md5.js',
 ], function (app, util, mods, htmlContent, websiteTemplateContent) {
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
@@ -24,12 +25,14 @@ define([
 		$scope.VIPCurrentPage = 1;
 		$scope.totalItems = 0;
 		$scope.data = [];
-		$scope.test = [];
+		$scope.oauthData = [];
+		$scope.oauthParams = {};
 		//$scope.roleId = 10;
+		
 		
 		$scope.managerSearchById;
 		$scope.managerSearchByUsername;
-
+		
 		// 确保为管理员
 		function ensureAdminAuth() {
 			if (!Account.isAuthenticated()) {
@@ -47,8 +50,8 @@ define([
 
 		function init() {
 			ensureAdminAuth();
-			$scope.getTemplates();
-			// $scope.getManagerList();
+			//$scope.getTemplates();
+			$scope.getManagerList();
 			//$scope.clickMenuItem($scope.selectMenuItem);
 		}
 
@@ -153,6 +156,168 @@ define([
 				$scope.totalItems = data.total || 0;
 			});
 		}
+		
+		//Oauth 管理
+		$scope.oauthVar = 1;
+		$scope.maxSize     = 10;
+		$scope.totalItems  = 0;
+		$scope.currentPage = 1;
+		
+        $scope.itemPrePage = 10;
+		
+		//判定是否为添加框/修改框
+		$scope.clickOauthToggle = function (params, item) {
+			$scope.oauthVar = params;
+			
+			if(params == 2){
+				$scope.getOneOAuthInfo(item);
+			}
+		};
+		
+		$scope.selectOAuthValue = function(){
+			var randomStr = hex_md5(new Date().toLocaleTimeString());
+			$scope.oauthParams.clientSecret = randomStr;
+		}
+		
+		//oauth管理菜单
+		$scope.getOauthList = function(){
+			$scope.selectMenuItem = "oauth";
+			$scope.oauthList();
+			$scope.listCount();
+		}
+		
+		//oauth管理添加数据
+		$scope.oauthAdd = function(){
+			var addUrl = config.apiUrlPrefix + "oauth_app/new";
+			
+			if(!$scope.oauthParams.appName){
+				return alert("请输入app名称");
+			};
+			if(!$scope.oauthParams.company){
+				return alert("请输入公司名称");
+			};
+			if(!$scope.oauthParams.clientId){
+				return alert("请输入clientId");
+			};
+			if(!$scope.oauthParams.clientSecret){
+				return alert("请输入clientSecret");
+			};
+			var params = {
+				"appName"        : $scope.oauthParams.appName,
+				"company"        : $scope.oauthParams.company,
+				"clientId"       : $scope.oauthParams.clientId,
+				"clientSecret"   : $scope.oauthParams.clientSecret,
+				"skipUserGrant"  : $scope.oauthParams.skipUserGrant,
+				"redirectUrl"    : $scope.oauthParams.redirectUrl,
+				"payCallbackUrl" : $scope.oauthParams.payCallbackUrl,
+			};
+			console.log(params);
+			util.post(addUrl, params, function(data){
+				alert("添加成功！");
+				$('.modal').modal('hide');
+				$scope.oauthList();
+			},function(data){
+				if(data.id == 2){
+					alert("添加失败");
+				}else if(data.id == 7){
+					alert("数据重复");
+				}
+			});
+		}
+		
+		//oauth管理 获取列表
+		$scope.listCount = function(){
+			var getListCount = config.apiUrlPrefix + "oauth_app/count";
+			util.post(getListCount, {}, function(data){
+				$scope.totalItems = data;
+				console.log(data);
+			});
+		}
+		
+		$scope.oauthList = function(){
+			var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+			var params = {
+				"limit" : $scope.itemPrePage,
+				"skip"  : skip
+			};
+			
+			var getListUrl = config.apiUrlPrefix + "oauth_app/";
+			util.post(getListUrl, params, function(data){
+				console.log(data);
+				$scope.oauthData = data;
+			});
+		}
+		
+		$scope.getOneOAuthInfo = function(item){
+			var getOneOAuthUrl = config.apiUrlPrefix + "oauth_app/getOne/";
+			
+			$scope.currentItem = item;
+			
+			util.post(getOneOAuthUrl, {clientId : item.clientId}, function(data){
+				if(data){
+					$scope.oauthParams.appName        = data.appName;
+					$scope.oauthParams.clientId       = data.clientId;
+					$scope.oauthParams.clientSecret   = data.clientSecret;
+					$scope.oauthParams.company        = data.company;
+					$scope.oauthParams.payCallbackUrl = data.payCallbackUrl;
+					$scope.oauthParams.redirectUrl    = data.redirectUrl;
+					$scope.oauthParams.skipUserGrant  = data.skipUserGrant;
+				}
+			})
+		}
+		
+		//oauth管理 修改
+		$scope.oauthModify = function(){
+			var oauthModifyUrl = config.apiUrlPrefix + "oauth_app/";
+			
+			var params = {
+				"appName"        : $scope.oauthParams.appName,
+				"company"        : $scope.oauthParams.company,
+				"clientId"       : $scope.oauthParams.clientId,
+				"clientSecret"   : $scope.oauthParams.clientSecret,
+				"skipUserGrant"  : $scope.oauthParams.skipUserGrant,
+				"redirectUrl"    : $scope.oauthParams.redirectUrl,
+				"payCallbackUrl" : $scope.oauthParams.payCallbackUrl,
+			}
+			
+			util.http("PUT", oauthModifyUrl, params, function(data){
+					alert("修改成功");
+					$('.modal').modal('hide');
+					$scope.currentItem.payCallbackUrl  = $scope.oauthParams.payCallbackUrl;
+					$scope.currentItem.redirectUrl     = $scope.oauthParams.redirectUrl;
+					$scope.currentItem.clientSecret    = $scope.oauthParams.clientSecret;
+					$scope.currentItem.skipUserGrant   = $scope.oauthParams.skipUserGrant;
+			}, function(data){
+				if(data.id == 2){
+					alert("修改失败，缺少clientId");
+				}else{
+					alert("不明原因修改失败");
+				}
+			})
+		}
+		
+		//oauth管理 删除
+		$scope.deleteOauthRecord = function(clientId){
+			var oauthDeleteUrl = config.apiUrlPrefix + "oauth_app/";
+			console.log(oauthDeleteUrl);
+			var con;
+			con = confirm("是否删除");
+			if(con == true){
+				util.http("DELETE", oauthDeleteUrl, {clientId:clientId}, function(data){
+						alert("删除成功");
+						$scope.oauthList();
+				},function(data){
+					if(data.id == 2){
+						alert("删除失败，缺少clientId")
+					}else{
+						alert("删除失败")
+					}
+				})
+			}else{
+				$scope.oauthList();
+			};
+		}
+		
 		// 搜索管理员账号
 		$scope.managerSearch = function (){
 			//util.post(config.apiUrlPrefix + "tabledb/query", {

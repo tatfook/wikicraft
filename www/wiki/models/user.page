@@ -91,6 +91,27 @@ function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
 end
 
+-- 发短信
+function user:api_sendSms(params)
+	local ip = getpeername()
+
+	if ip ~= "121.14.117.239" then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if not params.cellphone or not params.code or not params.expires then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	local smsParams = {to=params.cellphone, datas={params.code, params.expires}, templateId="194013"}
+
+	local data = sendTemplateSms(smsParams)
+	if not data or  data.statusCode ~= "000000" then
+		return errors:wrap(errors:new(data.statusMsg))
+	end
+
+	return errors:wrap(nil)
+end
+
 -- 用户是否受限 1 -- 受限  0 -- 不受限
 function user:api_isBlock(params)
 	if not params.username then

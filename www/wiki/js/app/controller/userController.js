@@ -64,6 +64,23 @@ define([
                     });
                 }
             });
+
+            // 获取参与的网站
+            util.post(config.apiUrlPrefix + "site_user/getSiteListByMemberName", {
+                memberName: username,
+            }, function(data){
+                $scope.joinSiteList = [];
+                $scope.joinSiteTotal = 0;
+                data = data || [];
+                for (var i = data.length - 1; i>=0; i--){
+                    if (data[i].siteinfo){
+                        $scope.joinSiteList.push(data[i].siteinfo);
+                        $scope.joinSiteTotal++;
+                    }
+                }
+            }, function (err) {
+                console.log(err);
+            });
         }
 
         $scope.favoriteUser = function (fansUser) {

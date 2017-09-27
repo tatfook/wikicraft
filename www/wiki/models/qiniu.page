@@ -57,10 +57,10 @@ function qiniu:api_deleteByFileId(params)
 	end
 
 	local ret = self:api_deleteFile({key=qiniuFiles.key}).data
-	if ret.result ~= 0 then
-		LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
-		return errors:wrap(errors.SERVER_INNER_ERROR)
-	end
+	--if ret.result ~= 0 then
+		--LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
+		--return errors:wrap(errors.SERVER_INNER_ERROR)
+	--end
 
 	local ret = qiniuFilesDB:api_deleteById({_id=params.file_id}).error
 	if errors:isError(ret) then
@@ -83,7 +83,9 @@ function qiniu:api_upload(params)
 	local download_url = self:api_getDownloadUrl(params).data
 	download_url = download_url and download_url.download_url
 
-	if not download_url or not params.size or not params.hash or not params.size or params.size < 1 then
+	params.size = tonumber(params.size or 0) or 0
+	if not params.domain or not params.key or not username or not download_url or not params.hash or not params.size or params.size < 1 then
+		self:deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -101,6 +103,7 @@ function qiniu:api_upload(params)
 
 	data.used = data.used + params.size
 	if data.used > data.total then
+		self:deleteFile(params)
 		return errors:wrap(errors:new("用户空间使用已超限制"))
 	end
 		
@@ -112,6 +115,7 @@ function qiniu:api_upload(params)
 	local file = qiniu_files_db:api_upsert(params).data
 
 	if not file then
+		self:deleteFile(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 

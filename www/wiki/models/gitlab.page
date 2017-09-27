@@ -1,0 +1,72 @@
+<?npl
+--[[
+Title: gitlab
+Author: wuxiangan
+Date: 2017/09/25
+]]
+
+include_once("./abstract/base.page")
+
+local gitlab = inherit(models.abstract.base, gettable("models.gitlab"))
+
+function gitlab:ctor()
+end
+
+local http = function(config)
+	System.os.GetUrl(config, resume)
+	local code, data = yield()
+
+	return data
+end
+
+--local gitlab={}
+
+function gitlab:new(obj)
+	obj = obj or {}
+
+	setmetatable(obj, self)
+	self.__index = self
+	
+
+	return obj
+end
+
+
+function gitlab:init(config)
+	self.type = config.type or "gitlab"
+	self.token = config.token or self.token
+	self.apiBaseUrl = config.apiBaseUrl or self.apiBaseUrl
+	self.rawBaseUrl = config.rawBaseUrl or self.rawBaseUrl
+	self.externalUserId = config.externalUserId or self.externalUserId
+	self.externalUsername = config.externalUsername or self.externalUsername
+
+	if not self.token or not self.apiBaseUrl or not self.rawBaseUrl then
+		log("params errors")
+		return -1
+	end
+	
+	if not self.externalUserId or not self.externalUsername then
+		data = http({
+			url=self.apiBaseUrl .. "/user",
+			headers={['PRIVATE-TOKEN'] = self.token},
+			method = "GET",
+			json = true,
+		})
+
+		return data
+	end
+
+	return 0
+end
+
+
+function gitlab:api_test()
+	local data = gitlab:init({
+		apiBaseUrl="http://git.keepwork.com/api/v4",
+		rawBaseUrl="http://git.keepwork.com",
+		token="71Zk5yetZErcJjwjD3nk"
+	})
+
+	log(data)
+	return data
+end

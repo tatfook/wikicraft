@@ -215,6 +215,8 @@ define([
             $scope.$watch('$viewContentLoaded',function () {
                 Account.getUser(function (userinfo) {
                     $scope.user = userinfo;
+                    modParams.username = modParams.username || $scope.urlObj.username || "";
+                    modParams.sitename = modParams.sitename || $scope.urlObj.sitename || "";
                     if (modParams.username && modParams.sitename) {
                         util.post(config.apiUrlPrefix + "website/getUserSiteInfo", {username:modParams.username, sitename:modParams.sitename}, function (data) {
                             userinfo = data.userinfo;

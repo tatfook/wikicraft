@@ -41,8 +41,9 @@ elseif(ajax_type == "wiki") then
 	addheader('Access-Control-Allow-Methods',"OPTIONS GET, POST, PUT, DELETE");  -- debug use
 	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"); -- debug use
 
-	addheader( 'Content-Type', 'text/html');
-	addheader( 'X-Robots-Tag', 'noindex');
+	addheader('Access-Control-Expose-Headers', 'Date')
+	addheader('Content-Type', 'text/html');
+	addheader('X-Robots-Tag', 'noindex');
 
 	addheader('X-KeepWork-Defined-Message', request:header('X-KeepWork-Defined-Message')); -- 淘米专用
 

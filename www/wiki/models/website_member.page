@@ -17,7 +17,7 @@ function website_member:ctor()
 	self:addfield("websiteId","number")    -- 站点ID
 	self:addfield("websiteType", "string") -- 站点类型
 	self:addfield("username", "string")    -- 成员名
-	self:addfield("userLogo", "string")    -- 成员logo
+	self:addfield("portrait", "string")    -- 成员logo
 	self:addfield("roleName", "string")    -- 角色
 	self:addfield("desc", "string")        -- 角色
 	self:addfield("state", "string")       -- 角色

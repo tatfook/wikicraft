@@ -1,0 +1,69 @@
+<style>
+.kp_thead {
+	display:flex;
+	flex-direction:row;
+}
+
+.kp_tbody {
+	display:flex;
+	flex-direction:column;
+}
+
+.kp_tbody_row {
+	display:flex;
+	flex-direction:row;
+}
+
+.kp_tbody_row>div, .kp_thead>div { 
+	flex:1;
+	justify-content:center
+}
+
+.upload_area {
+	width: 200px;
+	height: 200px;
+	border: 1px solid;
+}
+</style>
+
+<div ng-controller="tempController">
+	<div>
+		<div class="kp_thead">
+			<div>文件名</div>
+			<div>文件类型</div>
+			<div>文件大小</div>
+			<div>更新时间</div>
+			<div>操作</div>
+		</div>
+
+		<div class="kp_tbody">
+			<div class="kp_tbody_row" ng-repeat="x in filelist">
+				<div>
+					{{x.file.filename}}
+				</div>
+				<div>
+					{{x.file.type}}
+				</div>
+				<div>
+					{{x.file.size + "MB"}}
+				</div>
+				<div>
+					{{x.file.updateDate}}
+				</div>
+				<div>
+					<button ng-click="deleteFile(x)">删除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<div id="dropAreaId" class="upload_area">
+
+		</div>
+
+		<div>
+			<button id="uploadFileId">选择文件</button>
+		</div>
+	</div>
+</div>

@@ -79,6 +79,17 @@ define([
                 initBtnLink();
             }
 
+            $scope.$on("onUserProfile", function (event, user) {
+                $scope.user = user;
+                init();
+            });
+
+            $scope.$on("onLogout", function (event, data) {
+                $scope.user = {};
+                $scope.isLogin = false;
+                init();
+            });
+
             $scope.$watch("$viewContentLoaded", function () {
                 if (userinfo && siteinfo) {
                     modParams.username = userinfo.username;

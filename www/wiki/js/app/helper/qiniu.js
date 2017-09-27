@@ -10,9 +10,9 @@ define([
 		opt = opt || {};
 		var uploader = Qiniu.uploader({
 			runtimes: opt.runtimes || 'html5,flash,html4',       // 上传模式，依次退化
-			container: opt.container || 'container',             // 上传区域DOM ID，默认是browser_button的父元素
+			container: opt.container /*|| 'container'*/,             // 上传区域DOM ID，默认是browse_button的父元素
 			browse_button: opt.browse_button || 'browse_button', // 上传选择的点选按钮，必需
-			drop_element: opt.drop_element || 'drop_element',    // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+			drop_element: opt.drop_element /* || 'drop_element'*/,    // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
 			                                                     // uptoken:"LYZsjH0681n9sWZqCM4E2KmU6DsJOE7CAM4O3eJq:zIm-Yrq9OnJP4PaiIIjR6h-TUIk=:eyJzY29wZSI6ImtlZXB3b3JrIiwiZGVhZGxpbmUiOjE1MDQ1NjU4MjF9",
 			uptoken_url: opt.uptoken_url || '/api/wiki/models/qiniu/uploadToken',
 			get_new_uptoken: opt.get_new_uptoken || false,     // 设置上传文件的时候是否每次都重新获取新的uptoken
@@ -26,11 +26,23 @@ define([
 			max_retries: opt.max_retries || 3,                 // 上传失败最大重试次数
 			dragdrop: opt.dragdrop || true,                    // 开启可拖曳上传
 			chunk_size: opt.chunk_size || '4mb',               // 分块上传时，每块的体积
-			auto_start: opt.auto_start || true,                // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
+			auto_start: opt.auto_start,                // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
 			init: {
 				'FilesAdded': function(up, files) {
-					plupload.each(files, function(file) {
-						// 文件添加进队列后，处理相关的事情
+					var self = this;
+					console.log(up);
+					console.log(files);
+					var filelist = [];
+					for (var i = 0; i < files.length; i++) {
+						filelist.push(files[i].name)
+					}
+					util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:filelist}, function(data){
+						console.log(data);
+						if (data.length) {
+							console.log("存在同名文件是否覆盖");
+							return ;
+						}
+						self.start();
 					});
 				},
 				'BeforeUpload': function(up, file) {
