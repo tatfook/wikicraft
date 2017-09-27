@@ -58,6 +58,7 @@
             'pingpp': libPathPrefix + 'pingpp-js/dist/pingpp',
 			'plupload': libPathPrefix + "qiniu/plupload.full.min",
 			'qiniu': libPathPrefix + "qiniu/qiniu.min",
+			'swiper': libPathPrefix + "swiper/swiper.min",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			// 自定义模块

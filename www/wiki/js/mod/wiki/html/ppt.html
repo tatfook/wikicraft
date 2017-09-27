@@ -1,0 +1,542 @@
+<style>
+    .pptMod .ppt-bg{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top:0;
+        bottom:0;
+        background-color: #FFF;
+        z-index: -1;
+    }
+    .pptMod .ppt-bg > img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .mod-ppt1 h1{
+        font-size: 200px;
+        color: #4D4D4D;
+        margin: 0;
+        line-height: 1;
+    }
+    .mod-ppt1 h2{
+        font-size: 60px;
+        color: #FF9000;
+        margin:0;
+        text-align: right;
+    }
+    .mod-ppt1 .ppt-header{
+        padding: 80px 110px 70px;
+    }
+    .mod-ppt1 .ppt-header h3{
+        font-size: 48px;
+        color: #4D4D4D;
+        padding-left: 30px;
+        padding-bottom: 20px;
+        margin: 0;
+        border-bottom: 2px solid #4D4D4D;
+        position: relative;
+    }
+    .mod-ppt1 .ppt-header h3:before{
+        content: '';
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        background-color: #FF9000;
+        position: absolute;
+        left: -80px;
+        bottom: 0;
+    }
+    .mod-ppt1 .ppt-header h3:after{
+        content: '';
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        border: 5px solid #FF9000;
+        position: absolute;
+        left: -110px;
+        bottom: 30px;
+    }
+    .mod-ppt1 .ppt-header h3 > .subtitle{
+        font-size: 30px;
+    }
+    .mod-ppt1 h4{
+        font-size: 36px;
+    }
+    .mod-ppt1 h5{
+        font-size: 24px;
+    }
+    .mod-ppt1 p{
+        line-height: 2;
+        font-size: 16px;
+        color: #3E3E3E;
+        margin: 0;
+    }
+    .mod-ppt1 .title-info{
+        padding-left: 600px;
+        text-align: left;
+        display: inline-block;
+        float: left;
+    }
+    .pptMod .swiper-slide{
+        overflow: hidden;
+    }
+    .pptMod .swiper-slide .container{
+        height: 100%;
+    }
+    @media (max-width: 1200px){
+        .mod-ppt1 .ppt-header{
+            padding: 30px 110px;
+        }
+    }
+    @media (max-width: 768px) {
+        .mod-ppt1 p{
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .mod-ppt1 .ppt-header{
+            padding: 15px 15px 0 30px;
+            margin-bottom: 30px;
+        }
+        .mod-ppt1 .ppt-header h3 {
+            padding: 6px 0;
+            font-size: 28px;
+        }
+        .mod-ppt1 .ppt-header h3:before{
+            width: 20px;
+            height: 20px;
+            left: -25px;
+        }
+        .mod-ppt1 .ppt-header h3:after{
+            width: 20px;
+            height: 20px;
+            left: -35px;
+            bottom: 10px;
+            border-width: 3px;
+        }
+    }
+</style>
+<style>
+    .pptMod .swiper-slide .kind1{
+        height:100%;
+        text-align: center;
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+    .mod-ppt1 .info{
+        background-color: #4D4D4D;
+        font-size: 16px;
+        color: #FFF;
+        height: 40px;
+        line-height: 40px;
+        margin-top: 30px;
+        position: relative;
+        display: inline-block;
+    }
+    .mod-ppt1 .info > span{
+        padding: 0 20px 0 30px;
+    }
+    .mod-ppt1 .info:before{
+        content: "";
+        background-color: transparent;
+        display: inline-block;
+        width: 600px;
+        height: 300px;
+        position: absolute;
+        top: -300px;
+        left: -600px;
+        border: 6px solid #4D4D4D;
+    }
+    @media (max-width: 1200px) {
+        .pptMod .swiper-slide .kind1{
+            justify-content: stretch;
+        }
+        .mod-ppt1 .title-info{
+            padding-left: 480px;
+        }
+        .mod-ppt1 .info:before{
+            width: 480px;
+            left: -480px;
+        }
+    }
+    @media (max-width: 992px) {
+        .mod-ppt1 h1{
+            font-size: 120px;
+        }
+        .mod-ppt1 h2{
+            font-size: 52px;
+        }
+        .mod-ppt1 .info{
+            font-size: 14px;
+        }
+        .mod-ppt1 .info > span {
+            padding: 0 10px 0 15px;
+        }
+        .mod-ppt1 .title-info{
+            padding-left: 380px;
+        }
+        .mod-ppt1 .info:before{
+            width: 380px;
+            left: -380px;
+            height: 220px;
+            top: -220px;
+        }
+    }
+    @media (max-width: 768px) {
+        .pptMod .swiper-slide .kind1{
+            justify-content: center;
+        }
+        .mod-ppt1 .title-info{
+            padding-left: 0;
+        }
+        .mod-ppt1 .info:before{
+            display: none;
+        }
+    }
+
+    .mod-ppt1 .kind2{
+        align-self: flex-start;
+        text-align: left;
+    }
+    .mod-ppt1 .kind2 .directory-item{
+        float: left;
+        width: 50%;
+        text-align: center;
+        margin: 40px 0;
+        font-size: 24px;
+    }
+    .mod-ppt1 .kind2 .directory-item > .bg{
+        padding-left: 60px;
+        height: 60px;
+        width: 380px;
+        background: #4D4D4D;
+        display: inline-block;
+        line-height: 60px;
+        color: #FFF;
+        text-align: left;
+        transform: skewX(-30deg);
+        border:10px solid #FE9300;
+        border-width: 0 10px;
+    }
+    .mod-ppt1 .kind2 .directory-item > .bg .text{
+        transform: skewX(30deg);
+        display: inline-block;
+    }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind2 .directory-item{
+            margin: 20px 0;
+        }
+    }
+    @media (max-width: 992px){
+        .mod-ppt1 .kind2 .directory-item > .bg{
+            width: 90%;
+        }
+    }
+    @media (max-width: 768px) {
+        .mod-ppt1 .kind2 .directory-item{
+            width: 100%;
+            margin: 10px 0;
+        }
+        .mod-ppt1 .kind2 .directory-item > .bg{
+            height: 35px;
+            line-height: 35px;
+            font-size: 18px;
+        }
+    }
+
+    .mod-ppt1 .kind3{
+        width: 900px;
+        margin: 0 auto;
+    }
+    .mod-ppt1 .kind3 img{
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .mod-ppt1 .kind3 p{
+        margin: 40px 0;
+    }
+    @media (max-width: 992px) {
+        .mod-ppt1 .kind3{
+            width: 90%;
+        }
+        .mod-ppt1 .kind3 p{
+            margin: 15px 0;
+        }
+    }
+    @media (max-width: 768px){
+        .mod-ppt1 .kind3{
+            width: 100%;
+        }
+    }
+
+    .mod-ppt1 .kind4{
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        align-items: flex-start;
+    }
+    .mod-ppt1 .kind4 h4{
+        padding-left: 10px;
+        border-left: 5px solid #FF9000;
+        margin: 0 0 24px 0;
+    }
+    .mod-ppt1 .kind4 p{
+        color: #FFF;
+    }
+    .mod-ppt1 .kind4 .content {
+        flex: 1;
+        background-color: #424344;
+        color: #FFF;
+        padding: 80px 30px;
+        margin-left: 50px;
+    }
+    .mod-ppt1 .kind4 .content-item{
+        margin-bottom: 45px;
+    }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind4 .content{
+            padding: 30px 15px;
+        }
+    }
+    @media (max-width: 768px) {
+        .mod-ppt1 .kind4{
+            display: block;
+        }
+        .mod-ppt1 .kind4 img{
+            max-height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        .mod-ppt1 .kind4 .content{
+            margin: 15px 0;
+            padding: 15px;
+        }
+        .mod-ppt1 .kind4 .content-item{
+            margin-bottom: 15px;
+        }
+    }
+
+    .mod-ppt1 .kind5, .mod-ppt1 .kind6, .mod-ppt1 .kind6 .content-item{
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        align-items: flex-start;
+    }
+    .mod-ppt1 .kind5 h5{
+        text-align: center;
+    }
+    .mod-ppt1 .kind5 h5 > span{
+        padding: 0 45px 8px;
+        position: relative;
+    }
+    .mod-ppt1 .kind5 h5 > span:after{
+        content: "";
+        background-color: #FF9000;
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        right:0;
+        bottom: -4px;
+        height: 4px;
+        transform: skewX(-45deg);
+    }
+    .mod-ppt1 .kind5 .content{
+        padding: 0 105px 0 110px;
+        flex: 1;
+    }
+    .mod-ppt1 .kind5 p{
+        margin: 30px 0;
+    }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind5 .content{
+            padding: 0 15px;
+        }
+    }
+    @media (max-width: 992px) {
+        .mod-ppt1 .kind5 img{
+            width: 50%;
+        }
+        .mod-ppt1 .kind5 p{
+            margin: 15px 0;
+        }
+    }
+    @media (max-width: 768px) {
+        .mod-ppt1 .kind5{
+            display: block;
+        }
+        .mod-ppt1 .kind5 img{
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+        }
+    }
+
+    .mod-ppt1 .kind6 h5{
+        margin-top: 0;
+    }
+    .mod-ppt1 .kind6 .content{
+        margin: 0 60px;
+    }
+    .mod-ppt1 .kind6 .content-item{
+        margin-bottom: 50px;
+    }
+    .mod-ppt1 .kind6 .icon-img{
+        height: 80px;
+        background-color: #4D4D4D;
+        transform: skewX(-20deg);
+        margin-right: 40px;
+        flex-shrink: 0;
+        flex-basis: 80px;
+        flex-grow: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .mod-ppt1 .kind6 .icon-img > img{
+        transform: skewX(20deg);
+    }
+    @media (max-width: 1200px) {
+        .mod-ppt1 .kind6 p{
+            line-height: 1.5;
+        }
+        .mod-ppt1 .kind6 .content{
+            margin: 0 15px 0 35px;
+        }
+        .mod-ppt1 .kind6 .content-item{
+            margin-bottom: 15px;
+        }
+    }
+    @media (max-width: 992px) {
+        .mod-ppt1 .kind6{
+            display: block;
+        }
+        .mod-ppt1 .kind6 > img{
+            max-height: 200px;
+            width: 100%;
+            object-fit: contain;
+        }
+        .mod-ppt1 .kind6 .content{
+            margin: 0 15px;
+        }
+    }
+
+    .mod-ppt1 .kind7 h5{
+        margin-top: 0;
+    }
+    .mod-ppt1 .kind7 .content-item{
+        border: 1px solid #FF9000;
+        border-width: 0 1px 1px 0;
+        padding: 50px 20px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+    }
+    .mod-ppt1 .kind7 .content-item:nth-child(2n){
+        border-right-width: 0;
+        flex-direction: row-reverse;
+    }
+    .mod-ppt1 .kind7 .content-item:nth-child(2n+1):nth-last-child(2), .mod-ppt1 .kind7 .content-item:last-child{
+        border-bottom-width: 0;
+    }
+    .mod-ppt1 .kind7 .content-item > img{
+        margin: 0 0 0 20px;
+    }
+    .mod-ppt1 .kind7 .content-item:nth-child(2n) > img{
+        margin: 0 20px 0 0;
+    }
+</style>
+<div ng-controller="pptController" id="pptMod" class="pptMod">
+    <div class="mod-ppt1 swiper-container" ng-show="modParams.moduleKind == 'ppt1' || !modParams.moduleKind">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" ng-repeat="page in modParams.pages track by $index">
+                <div class="ppt-bg">
+                    <img ng-src="{{page.bgImgUrl}}" alt="">
+                </div>
+                <div class="container clearfix">
+                    <div class="ppt-header" ng-hide="page.kind == 'kind1'">
+                        <h3>{{page.mainTitle}} <span class="subtitle">{{page.title}}</span></h3>
+                    </div>
+                    <div ng-show="page.kind == 'kind1'" class="kind1">
+                        <div>
+                            <h1>{{page.mainTitle}}</h1>
+                            <div class="title-info">
+                                <h2>{{page.title}}</h2>
+                                <div class="info">
+                                    <span ng-repeat="info in page.contents track by $index">{{info}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="page.kind == 'kind2'" class="kind2">
+                        <div class="directory clearfix">
+                            <div class="directory-item" ng-repeat="item in page.contents">
+                                <div class="bg">
+                                    <span class="text">{{item}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="page.kind == 'kind3'" class="kind3">
+                        <img ng-src="{{page.imgUrl}}" alt="">
+                        <p ng-repeat="content in page.contents track by $index">{{content}}</p>
+                    </div>
+                    <div ng-show="page.kind == 'kind4'" class="kind4">
+                        <img ng-src="{{page.imgUrl}}" alt="">
+                        <div class="content">
+                            <div class="content-item" ng-repeat="item in page.contents">
+                                <h4>{{item.title}}</h4>
+                                <p ng-repeat="section in item.sections">{{section}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="page.kind == 'kind5'" class="kind5">
+                        <div class="content">
+                            <h5><span>{{page.subTitle}}</span></h5>
+                            <p ng-repeat="content in page.contents track by $index">{{content}}</p>
+                        </div>
+                        <img ng-src="{{page.imgUrl}}" alt="">
+                    </div>
+                    <div ng-show="page.kind == 'kind6'" class="kind6">
+                        <img ng-src="{{page.imgUrl}}" alt="">
+                        <div class="content">
+                            <div class="content-item" ng-repeat="content in page.contents">
+                                <div class="icon-img">
+                                    <img ng-src="{{content.iconUrl}}" alt="">
+                                </div>
+                                <div class="text">
+                                    <h5>{{content.title}}</h5>
+                                    <p ng-repeat="section in content.sections">{{section}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="page.kind == 'kind7'" class="kind7 clearfix">
+                        <div class="content-item col-sm-6" ng-repeat="content in page.contents">
+                            <div class="text">
+                                <h5>{{content.title}}</h5>
+                                <p ng-repeat="section in content.sections">{{section}}</p>
+                            </div>
+                            <img ng-src="{{content.iconUrl}}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
