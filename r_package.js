@@ -16,7 +16,8 @@
 			include:[
 				'angular',
 				'app',
-				'preload'
+				'preload',
+				'bootstrap'
 			]
         },
 		{
