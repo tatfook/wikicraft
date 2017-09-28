@@ -235,8 +235,8 @@ function bigfile:api_getByFilenameList(params)
 	local filelist = params.filelist
 	local files = {}
 
-	for _, file in ipairs(filelist or {}) do
-		files[#files+1] = self:api_getByFilename({filename=file.name}).data
+	for _, filename in ipairs(filelist or {}) do
+		files[#files+1] = self:api_getByFilename({filename=filename}).data
 	end
 
 	return errors:wrap(nil, files)
