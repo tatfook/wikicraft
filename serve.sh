@@ -42,19 +42,27 @@ esac
 
 LOG_DIR=log
 mkdir -p $LOG_DIR
+logfile="$LOG_DIR/${ENV_TYPE}-${DATE}.log"
+runtime_error_logfile="$LOG_DIR/prod-runtime-error.log"
 
 ulimit -c unlimited
-logfile="$LOG_DIR/${ENV_TYPE}-${DATE}.log"
-
 npl -D bootstrapper="script/apps/WebServer/WebServer.lua"  root="$ROOT_DIR/" port="$PORT" logfile="$logfile"
-
 exit_code=$?
+
+cat $logfile | grep -i '<runtime' >> $runtime_error_logfile
+
+
+echo -e "\n"  >> $logfile
+echo "current dir file status:"  >> $logfile
+echo "$(ls -alh)" >> $logfile
+
 
 EXIT_DATE=$(date +"%Y-%m-%d-%H-%M")
 if [[ -e core ]]; then
   mv core $LOG_DIR/core.$EXIT_DATE
 fi
 
+echo -e "\n"  >> $logfile
 echo "log from serve.sh: =========================================="  >> $logfile
 echo "log from serve.sh: npl process exit with code: $exit_code"      >> $logfile
 echo "log from serve.sh: =========================================="  >> $logfile
