@@ -71,6 +71,7 @@
         height: 36px;
         background-color: #D3EAFF;
         line-height: 36px;
+        cursor: pointer;
     }
     .bigfile-modal .manage-table .operate-column{
         width: 220px;
@@ -92,9 +93,10 @@
     }
     .bigfile-modal .upload-info{
         text-align: center;
-        line-height: 270px;
+        line-height: 265px;
         font-size: 18px;
         color: #666;
+        margin-bottom: 0;
     }
     /*.bigfile-modal .file-input-btn{*/
         /*position: relative;*/
@@ -163,6 +165,24 @@
     .bigfile-modal .file-group-item .progress-bar{
         background-color: #43A8FF;
     }
+    p.dialog-info-title{
+        font-size: 20px;
+        text-align: left;
+        padding-left: 60px;
+    }
+    p.dialog-info{
+        text-align: left;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 60px;
+        line-height: 1.5;
+    }
+    .dialog-info > .text-success{
+        color: #51CB00;
+        font-size: 12px;
+    }
 </style>
 <div ng-controller="bigfileController">
     <div class="bigfile-modal">
@@ -223,7 +243,7 @@
                         <tbody>
                             <tr ng-repeat="file in filelist" ng-hide="file.isDelete">
                                 <td class="checkbox-column"><input type="checkbox"></td>
-                                <td class="file-column">{{file.file.filename}}</td>
+                                <td class="file-column">{{file.filename}}</td>
                                 <td class="type-column">{{file.file.type}}</td>
                                 <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
                                 <td class="date-column">{{file.file.updateDate}}</td>
@@ -258,13 +278,13 @@
                             <td class="checkbox-column">
                                 <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
                             </td>
-                            <td class="file-column">{{file.file.filename}}</td>
+                            <td id="{{file.file._id}}" class="file-column">{{file.filename}}</td>
                             <td class="type-column">{{file.file.type}}</td>
                             <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
                             <td class="date-column">{{file.file.updateDate}}</td>
                             <td class="operate-column">
                                 <span><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
-                                <span><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
+                                <span ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
                                 <a ng-href="{{file.file.download_url}}" target="_blank"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></a>
                                 <a ng-click="deleteFile(file, $index)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></a>
                             </td>

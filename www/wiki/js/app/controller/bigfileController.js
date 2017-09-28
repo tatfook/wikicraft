@@ -23,6 +23,9 @@ define([
 
         var getUserStoreInfo = function () {
             util.get(config.apiUrlPrefix+"bigfile/getUserStoreInfo", {}, function (result) {
+                if (!result){
+                    return;
+                }
                 $scope.storeInfo = {
                     "used": result.used / 1024 / 1024 / 1024 || 0,
                     "total": result.total / 1024 / 1024 / 1024 || 0,
@@ -53,16 +56,36 @@ define([
                             filelist.push(files[i].name)
                         }
                         util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:filelist}, function(data){
+                            console.log("存在同名文件");
                         	console.log(data);
-                        	if (data.length) {
-                        		console.log("存在同名文件是否覆盖");
+                        	if (data.length > 0) {
+                        	    var conflictFileName = [];
+                        	    var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
+                        	    data.map(function (file) {
+                                    conflictFileName.push(file.filename);
+                                    contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
+                                });
+
+                                config.services.confirmDialog({
+                                    "title": "上传提醒",
+                                    "contentHtml": contentHtml
+                                }, function () {
+                                    $scope.uploadingFiles = files;
+                                    self.start();
+                                }, function () {
+                                    files = files.filter(function (file) {
+                                        return conflictFileName.indexOf(file.name) < 0;
+                                    });
+                                    if(files.length > 0){
+                                        $scope.uploadingFiles = files;
+                                        self.start();
+                                    }
+                                });
                         		return ;
                         	}
-                        	// self.start();
+                            $scope.uploadingFiles = files;
+                        	self.start();
                         });
-
-                        // $scope.uploadingFiles = files;
-                        // self.start();
                     },
                     'BeforeUpload': function(up, file) {
                         $scope.uploadingFiles[file.id] = file;
@@ -168,6 +191,60 @@ define([
             });
             $scope.deleteFile(deletingArr);
             console.log(deletingArr);
+        }
+
+        var changeFileName = function (file, filename, targetElem) {
+            targetElem.attr("contenteditable", "false");
+            $scope.nameErr="";
+            // filename = filename.trim();
+            console.log(file);
+            console.log(filename);
+
+            var newFileSplit = filename.split(".");
+            var newExt = newFileSplit[newFileSplit.length-1];
+            var oldFileSplit = file.filename.split(".");
+            var oldExt = oldFileSplit[oldFileSplit.length-1];
+            oldExt = oldExt.trim();
+            if (newFileSplit.length <= 1){// 文件扩展名被删，补扩展名
+                filename+="."+oldExt;
+                newFileSplit.push(oldExt);
+                newExt = oldExt;
+            }
+            if (file.filename == filename){
+                targetElem.html(filename);
+                return;
+            }
+            if (oldExt != newExt){// 文件扩展名被修改
+                filename+="." + oldExt;
+                newFileSplit.push(oldExt);
+                targetElem.html(filename);
+                newExt = oldExt;
+            }
+
+            util.post(config.apiUrlPrefix+"bigfile/changeFilename",{
+                "_id": file._id,
+                "filename": filename
+            }, function (result) {
+                console.log(result);
+            }, function (err) {
+                console.log(err);
+            });
+        };
+
+        $scope.renameFile = function (file) {
+            var targetFileId = file.file_id;
+            var targetElem = $("#"+targetFileId);
+            if (!targetElem){
+                return;
+            }
+            targetElem.attr("contenteditable", "true");
+            targetElem.focus();
+            targetElem.bind("blur", function () {
+                var filename = targetElem.html();
+                filename = filename.replace(/[\n|<br>]/g, "").trim();
+                targetElem.html(filename);
+                changeFileName(file, filename, targetElem);
+            });
         }
     }]);
     return htmlContent;
