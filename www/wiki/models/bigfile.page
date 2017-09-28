@@ -222,7 +222,7 @@ end
 function bigfile:api_getByFilename(params)
 	local username = getUsername()
 
-	if not username or params.filename then
+	if not username or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
