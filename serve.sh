@@ -53,18 +53,26 @@ cat $logfile | grep -i '<runtime' >> $runtime_error_logfile
 
 
 echo -e "\n"  >> $logfile
+echo "log from serve.sh: =========================================="  >> $logfile
+echo "log from serve.sh: npl process exit with code: $exit_code"      >> $logfile
+echo "log from serve.sh: =========================================="  >> $logfile
+
+
+echo -e "\n"  >> $logfile
 echo "current dir file status:"  >> $logfile
 echo "$(ls -alh)" >> $logfile
 
 
-EXIT_DATE=$(date +"%Y-%m-%d-%H-%M")
-if [[ -e core ]]; then
-  mv core $LOG_DIR/core.$EXIT_DATE
-fi
+# gather core file
+# refs: https://abcdabcd987.com/core-dump-file-in-docker/
+#
+# default core_pattern is |/usr/share/apport/apport %p %s %c %P
+# container have no privilege to geenrate core dump
+# container share /proc with host machine, we change core_pattern to local place
+# echo 'core.%s.%t' > /proc/sys/kernel/core_pattern
+# %s is signal, %t is timestamp
 
-echo -e "\n"  >> $logfile
-echo "log from serve.sh: =========================================="  >> $logfile
-echo "log from serve.sh: npl process exit with code: $exit_code"      >> $logfile
-echo "log from serve.sh: =========================================="  >> $logfile
+EXIT_DATE=$(date +"%Y-%m-%d-%H-%M")
+find . -maxdepth 1 -type f -iname *core* -exec mv {} $LOG_DIR/{}.$EXIT_DATE \;
 
 exit $exit_code
