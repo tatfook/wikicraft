@@ -2040,8 +2040,24 @@ define([
 						editor.focus();
                     }
                 });
-            }
+            };
 
+            // 大文件
+            $scope.cmd_bigfile = function () {
+                modal('controller/bigfileController', {
+                    controller: 'bigfileController',
+                    size: 'lg',
+                    backdrop: 'static'
+                }, function (wikiBlock) {
+                    console.log(wikiBlock);
+                }, function (result) {
+                    if (result.finished){
+                        var key = result.website.username + "_" + result.website.name;
+                        allSiteMap[key] = result.website;
+                        initTree();
+                    }
+                });
+            };
             /**
              * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
              * @param dataURI
