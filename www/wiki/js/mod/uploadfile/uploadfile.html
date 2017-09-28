@@ -1,0 +1,200 @@
+<style type="text/css">
+    body {
+        font-family: "微软雅黑";
+    }
+
+    .panel-heading{
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .panel-body {
+        text-align: center;
+    }
+    
+    .remind {
+        font-size: 15px;
+        text-align: center;
+    }
+    
+    .git {
+        margin: 15px 6px 0 6px;
+        overflow: hidden;
+    }
+
+    .git .lab {
+        float: left;
+        width: 7%;
+        margin-top: 3px;
+    }
+
+    .git .uploadgite {
+        float: left;
+        width: 83%;
+        height: 49px;
+    }
+
+    .git .git-btn {
+        float: right;
+        width: 9%;
+    }
+
+     .list {
+        width: 100%; 
+        overflow: hidden; 
+    }
+    .left {
+        width: 25%; 
+        float: left;
+        margin: 6px 0 6px 6px;
+        height: 500px; 
+        border: 1px solid #CCC;
+        box-sizing: border-box;
+    }
+
+    .left input {
+       float: right;
+       margin-right: 5px;
+    }
+
+    .select {
+        border-bottom: 1px solid #ccc;
+        height: 45px;
+        line-height: 45px;
+    }
+
+    .select input{
+        margin-top: 16px;
+    }
+
+    .all-select {
+        margin-left: 10px;
+    }
+
+    .select-file {
+        overflow-y: hidden;
+        overflow: auto;
+        height: 450px;
+        padding-top: 6px;
+        box-sizing: border-box;
+        padding-left: 10px;
+    }
+
+    .right {
+        width: 72%; 
+        float: right; 
+        margin: 6px 6px 6px 0;
+        height: 500px;
+        border: 1px solid #CCC;
+        box-sizing: border-box;
+    }
+
+    .iframe {
+        width: 100%;
+        height: 100%;
+        min-height: 493px;
+        text-align: center;
+    }
+
+    .wait {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .wait p {
+        text-align: center;
+    }
+
+    .panel-body {
+        border: 1px solid #ccc;
+    }
+
+    .current {
+        background: #337ab7;
+        color: #fff;
+    }
+
+    ul li {
+        list-style: none;
+    }
+
+    .form-inline {
+        overflow: hidden;
+    }
+
+    #images1 {
+        width: 280px;
+    }
+
+    #parent {
+        width: 300px; 
+        height:14px; 
+        border:2px solid #337ab7; 
+        border-radius: 5px;
+        vertical-align: middle;
+        display: inline-block;
+    }  
+
+    #son {
+        width:0; 
+        height:100%; 
+        background-color:#337ab7; 
+        text-align:center; 
+        line-height:14px; 
+        font-size:14px; 
+        font-weight:bold;
+    } 
+
+    .panel-body {
+        border-left: none;
+        border-right: none;
+    } 
+</style>
+
+<div ng-controller="fileControlleraa">
+    <div class="panel panel-primary"> 
+        <div class="panel-heading">                       
+            <label>文 件 上 传</label>  
+        </div> 
+        <div class="panel-body">
+            <p class="remind">提示：请选择要转换的文件或将其拖拽至"选择文件"标签处，支持doc/docx/ppt/pptx/pdf/html/txt文件</p> 
+            <form id="form" enctype="multipart/form-data">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input id="file" name="file" type="file">
+                    </div>
+                    <div class="form-group" id="file-progress">
+                        <div id="parent" style="display:none;">
+                            <div id="son"></div>
+                        </div> 
+                    </div>
+                    <input type="button" class="btn btn-primary" ng-click="connect()" value="上传文件" id="btn-file"/>
+                    <input type="reset" class="btn btn-primary" id="close" value="移除文件"/>     
+                </div>
+            </form>
+            <div id="wait" class="wait"></div>
+            <div id="progress1" class="progress1">
+                <span style="display:none" class="trip">转换进度: </span><img ng-src="{{imgsPath+'progress.gif'}}" alt="" style="display:none" id="images1">
+            </div>
+        </div>
+        <div class="git">
+            <form id="uploadgit" method="post">
+                <div class="lab">上传位置：</div>    
+                <ul id="uploadgite" class="uploadgite"></ul>
+                <div class="git-btn">
+                    <input type="button" class="btn btn-primary" id="upload" ng-click="uploadgitlab()" value="上传gitlab" />
+                </div>
+            </form>
+        </div>   
+        <div class="list">
+            <div id="left" class="left">
+                <div class="select"></div>
+                <div class="select-file"></div>
+            </div>
+            <div id="right" class="right">
+                <iframe id="iframe" class="iframe" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+</div>    
+
