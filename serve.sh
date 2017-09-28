@@ -44,6 +44,19 @@ LOG_DIR=log
 mkdir -p $LOG_DIR
 
 ulimit -c unlimited
-npl -D bootstrapper="script/apps/WebServer/WebServer.lua"  root="$ROOT_DIR/" port="$PORT" logfile="$LOG_DIR/${ENV_TYPE}-${DATE}.log"
+logfile="$LOG_DIR/${ENV_TYPE}-${DATE}.log"
 
+npl -D bootstrapper="script/apps/WebServer/WebServer.lua"  root="$ROOT_DIR/" port="$PORT" logfile="$logfile"
 
+exit_code=$?
+
+EXIT_DATE=$(date +"%Y-%m-%d-%H-%M")
+if [[ -e core ]]; then
+  mv core $LOG_DIR/core.$EXIT_DATE
+fi
+
+echo "log from serve.sh: =========================================="  >> $logfile
+echo "log from serve.sh: npl process exit with code: $exit_code"      >> $logfile
+echo "log from serve.sh: =========================================="  >> $logfile
+
+exit $exit_code
