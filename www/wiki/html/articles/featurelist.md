@@ -267,11 +267,9 @@ Neural Parallel Language(NPL)语言是一个开源的高性能的通用脚本语
 
 
 
-<p style="font-size:30px;">用户可创建收费内容</p>
+<p style="font-size:30px;">打造个人信息收费价值链</p>
 
 
-
-- 打造个人信息收费价值链。
 
 - 方便的创建需要收费其它用户才能访问的网页或网站。
 
