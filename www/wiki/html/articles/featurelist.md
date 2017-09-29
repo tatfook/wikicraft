@@ -258,4 +258,25 @@ Neural Parallel Language(NPL)语言是一个开源的高性能的通用脚本语
 
 
 [如果你与我们有相同的愿景，加入我们...](https://github.com/LiXizhi/ParaCraft/wiki/JoinUs)
+
+
+
+
+# 创建vip才可以访问的内容 ![](http://git.keepwork.com/gitlab_rls_tibet/keepworkweekly/raw/master/tibet_images/img_1506654494992.png)
+
+
+
+
+<p style="font-size:30px;">创建vip才可以访问的内容</p>
+
+
+
+- 我们为用户提供丰富的网站模版支持。
+
+- 支持您方便的将自己的网站内容设定为仅对vip开放全部。
+
+- 非vip在访问网站的时候，只能预览到40%的内容。
+
+
+
 </br>
