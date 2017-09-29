@@ -2051,14 +2051,24 @@ define([
                 }, function (wikiBlock) {
                     console.log(wikiBlock);
                 }, function (files) {
-                    files.map(function (file) {
-                        if (/image\/\w+/.test(file.type)){ // 插入图片
-                            var imgContent = "![" + file.text+ "](" + file.url + ")";
-                            console.log(imgContent);
-                            editor.replaceSelection(imgContent);
-                            editor.focus();
-                        }
-                    });
+                    console.log(files);
+                    // if (!files){
+                    //     return;
+                    // }
+                    // var insertContent = "";
+                    // files.map(function (file) {
+                    //     switch(file.type){
+                    //         case "image":
+                    //             insertContent += "![" + file.text+ "](" + file.url + ")\n";
+                    //             break;
+                    //         default:
+                    //             insertContent = "["+file.text+"]("+file.url+")\n";
+                    //             break;
+                    //     }
+                    //     console.log(insertContent);
+                    //     editor.replaceSelection(insertContent);
+                    //     editor.focus();
+                    // });
                 });
             };
             /**

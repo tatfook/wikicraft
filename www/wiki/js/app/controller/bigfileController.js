@@ -265,49 +265,38 @@ define([
             }
         }
 
-        function getFileUrl(fileId) {
-            util.get(config.apiUrlPrefix+"bigfile/getDownloadUrlById")
-        }
-
         $scope.insertFiles = function (files) {
             if (!files){
                 files = $scope.filelist.filter(function (file) {
                     return file.checkedIndex >= 0;
                 });
             }
-            console.log(files);
             
             var fnList = [];
             var insertFiles = [];
-            files.map(function (file) {
-                fnList.push(function (file) {
+            files.map((function (file) {
+                fnList.push((function (file) {
                     return function (finish) {
                         var fileType = getFileType(file);
-                        var fileUrl = getFileUrl(fileId);
-                        var fileName = getFileName(file);
-                        var insertFile = {
-                            "url" : fileUrl,
-                            "text": file.filename,
-                            "type": type
-                        };
-                        insertFiles.push(insertFile);
+                        var filename = file.filename;
+                        util.get(config.apiUrlPrefix+"bigfile/getDownloadUrlById", {_id: file._id}, function (download_url) {
+                            var fileUrl = download_url;
+                            var insertFile = {
+                                "url": fileUrl,
+                                "text": filename,
+                                "type": fileType
+                            };
+                            insertFiles.push(insertFile);
+                            finish();
+                        },function (err) {
+                            console.log(err);
+                        });
                     }
-                })
+                })(file));
+            }));
+            util.batchRun(fnList, function () {
+                $scope.$dismiss(insertFiles);
             });
-
-            var insertFiles = [];
-            files.map(function (file) {
-                var fileType = getFileType(file);
-                var fileUrl = getFileUrl(file._id);
-                var fileName = getFileName(file);
-                var insertFile = {
-                   "url" : fileUrl,
-                   "text": file.filename,
-                   "type": fileType
-                };
-                insertFiles.push(insertFile);
-            });
-            $scope.$dismiss(insertFiles);
         }
     }]);
     return htmlContent;
