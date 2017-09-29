@@ -245,6 +245,69 @@ define([
                 targetElem.html(filename);
                 changeFileName(file, filename, targetElem);
             });
+        };
+
+        $scope.insertFile = function (file) {
+            var insertingFiles = [];
+            insertingFiles.push(file);
+            $scope.insertFiles(insertingFiles);
+        };
+
+        function getFileType(file) {
+            if (!file.file || !file.file.type){
+                return;
+            }
+            var fileType = file.file.type;
+            if (/image\/\w+/.test(fileType)){
+                return "image";
+            }else {
+                return;
+            }
+        }
+
+        function getFileUrl(fileId) {
+            util.get(config.apiUrlPrefix+"bigfile/getDownloadUrlById")
+        }
+
+        $scope.insertFiles = function (files) {
+            if (!files){
+                files = $scope.filelist.filter(function (file) {
+                    return file.checkedIndex >= 0;
+                });
+            }
+            console.log(files);
+            
+            var fnList = [];
+            var insertFiles = [];
+            files.map(function (file) {
+                fnList.push(function (file) {
+                    return function (finish) {
+                        var fileType = getFileType(file);
+                        var fileUrl = getFileUrl(fileId);
+                        var fileName = getFileName(file);
+                        var insertFile = {
+                            "url" : fileUrl,
+                            "text": file.filename,
+                            "type": type
+                        };
+                        insertFiles.push(insertFile);
+                    }
+                })
+            });
+
+            var insertFiles = [];
+            files.map(function (file) {
+                var fileType = getFileType(file);
+                var fileUrl = getFileUrl(file._id);
+                var fileName = getFileName(file);
+                var insertFile = {
+                   "url" : fileUrl,
+                   "text": file.filename,
+                   "type": fileType
+                };
+                insertFiles.push(insertFile);
+            });
+            $scope.$dismiss(insertFiles);
         }
     }]);
     return htmlContent;

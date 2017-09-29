@@ -2050,12 +2050,15 @@ define([
                     backdrop: 'static'
                 }, function (wikiBlock) {
                     console.log(wikiBlock);
-                }, function (result) {
-                    if (result.finished){
-                        var key = result.website.username + "_" + result.website.name;
-                        allSiteMap[key] = result.website;
-                        initTree();
-                    }
+                }, function (files) {
+                    files.map(function (file) {
+                        if (/image\/\w+/.test(file.type)){ // 插入图片
+                            var imgContent = "![" + file.text+ "](" + file.url + ")";
+                            console.log(imgContent);
+                            editor.replaceSelection(imgContent);
+                            editor.focus();
+                        }
+                    });
                 });
             };
             /**

@@ -242,18 +242,18 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="file in filelist" ng-hide="file.isDelete">
-                                <td class="checkbox-column"><input type="checkbox"></td>
+                                <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column">{{file.filename}}</td>
                                 <td class="type-column">{{file.file.type}}</td>
                                 <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
                                 <td class="date-column">{{file.file.updateDate}}</td>
                                 <td class="operate-column">
-                                    <span><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
+                                    <span ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary pull-right" ng-click="">插入选中</button>
+                    <button class="btn btn-primary pull-right" ng-click="insertFiles()">插入选中</button>
                 </div>
                 <div class="tab-pane clearfix" role="tabpanel" id="fileManage">
                     <div class="only-search clearfix">
