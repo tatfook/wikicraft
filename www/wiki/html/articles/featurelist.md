@@ -262,14 +262,18 @@ Neural Parallel Language(NPL)语言是一个开源的高性能的通用脚本语
 
 
 
-# 创建vip才可以访问的内容 ![](http://git.keepwork.com/gitlab_rls_tibet/keepworkweekly/raw/master/tibet_images/img_1506654494992.png)
+# 用户可创建收费内容 ![](http://git.keepwork.com/gitlab_rls_tibet/keepworkweekly/raw/master/tibet_images/img_1506654494992.png)
 
 
 
 
-<p style="font-size:30px;">创建vip才可以访问的内容</p>
+<p style="font-size:30px;">用户可创建收费内容</p>
 
 
+
+- 打造个人信息收费价值链。
+
+- 方便的创建需要收费其它用户才能访问的网页或网站。
 
 - 我们为用户提供丰富的网站模版支持。
 
