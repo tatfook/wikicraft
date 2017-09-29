@@ -498,11 +498,12 @@ function user:api_login(params)
 
 	if (string.find(params.username, '@')) then
 		self:db():findOne({["+email"]={params.username}}, resume)
-	elseif (string.match(username,"^%d*$")) then
+	elseif (string.match(params.username,"^%d*$")) then
 		self:db():findOne({["+cellphone"]={params.username}}, resume)
 	else
 		self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
 	end
+
 	local _, userinfo = yield()
 	if not userinfo then
 		return errors:wrap("用户不存在")
