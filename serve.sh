@@ -43,7 +43,7 @@ esac
 LOG_DIR=log
 mkdir -p $LOG_DIR
 logfile="$LOG_DIR/${ENV_TYPE}-${DATE}.log"
-runtime_error_logfile="$LOG_DIR/prod-runtime-error.log"
+runtime_error_logfile="$LOG_DIR/runtime-error.log"
 
 ulimit -c unlimited
 npl -D bootstrapper="script/apps/WebServer/WebServer.lua"  root="$ROOT_DIR/" port="$PORT" logfile="$logfile"
