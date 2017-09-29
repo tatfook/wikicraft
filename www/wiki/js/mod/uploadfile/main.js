@@ -4,7 +4,8 @@ define([
 	   	'helper/dataSource'
 ], function (app, htmlContent,dataSource) {
     function uploadController(wikiBlock) {
-    	app.registerController("fileControlleraa", function($scope,Account,gitlab) {    			
+    	app.registerController("fileControlleraa", function($scope,Account,gitlab) {
+            $scope.imgsPath1 = config.wikiModPath + 'uploadfile/';
 			//建立连接
 			$scope.connect=(function(){
 				var file = $("#file").val();

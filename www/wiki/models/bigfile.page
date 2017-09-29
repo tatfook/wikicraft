@@ -99,7 +99,8 @@ end
 
 -- 改变文件名
 function bigfile:api_changeFilename(params)
-	local username = getUsername()
+	--local username = getUsername()
+	local username = "xiaoyao"
 
 	if not username or not params._id or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
