@@ -231,6 +231,11 @@ define([
             });
         };
 
+        $scope.updateFile = function (file) {
+            console.log("更新功能开发中。。。");
+            Message.info("更新功能开发中。。。");
+        };
+
         $scope.renameFile = function (file) {
             var targetFileId = file.file_id;
             var targetElem = $("#"+targetFileId);
@@ -271,32 +276,8 @@ define([
                     return file.checkedIndex >= 0;
                 });
             }
-            
-            var fnList = [];
-            var insertFiles = [];
-            files.map((function (file) {
-                fnList.push((function (file) {
-                    return function (finish) {
-                        var fileType = getFileType(file);
-                        var filename = file.filename;
-                        util.get(config.apiUrlPrefix+"bigfile/getDownloadUrlById", {_id: file._id}, function (download_url) {
-                            var fileUrl = download_url;
-                            var insertFile = {
-                                "url": fileUrl,
-                                "text": filename,
-                                "type": fileType
-                            };
-                            insertFiles.push(insertFile);
-                            finish();
-                        },function (err) {
-                            console.log(err);
-                        });
-                    }
-                })(file));
-            }));
-            util.batchRun(fnList, function () {
-                $scope.$dismiss(insertFiles);
-            });
+
+            $scope.$dismiss(files);
         }
     }]);
     return htmlContent;

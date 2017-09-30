@@ -2052,23 +2052,16 @@ define([
                     console.log(wikiBlock);
                 }, function (files) {
                     console.log(files);
-                    // if (!files){
-                    //     return;
-                    // }
-                    // var insertContent = "";
-                    // files.map(function (file) {
-                    //     switch(file.type){
-                    //         case "image":
-                    //             insertContent += "![" + file.text+ "](" + file.url + ")\n";
-                    //             break;
-                    //         default:
-                    //             insertContent = "["+file.text+"]("+file.url+")\n";
-                    //             break;
-                    //     }
-                    //     console.log(insertContent);
-                    //     editor.replaceSelection(insertContent);
-                    //     editor.focus();
-                    // });
+                    if (!files){
+                        return;
+                    }
+                    var insertContent = "";
+                    files.map(function (file) {
+                        insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'","extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
+                    });
+
+                    editor.replaceSelection(insertContent);
+                    editor.focus();
                 });
             };
             /**
