@@ -56,7 +56,6 @@ define([
                             filelist.push(files[i].name)
                         }
                         util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:filelist}, function(data){
-                            console.log("存在同名文件");
                         	console.log(data);
                         	if (data.length > 0) {
                         	    var conflictFileName = [];
@@ -115,8 +114,6 @@ define([
                             data = data || {};
                             data.filename = params.filename;
                             $scope.uploadingFiles[file.id].status = "success";
-                            getUserStoreInfo();
-                            $scope.filelist.push({file: params});
                         }, function(){
                             util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
                                 key:params.key,
@@ -133,9 +130,28 @@ define([
                     },
                     'UploadComplete': function() {
                         //队列文件处理完毕后，处理相关的事情
+                        getFileByUsername();
+                        getUserStoreInfo();
                     },
                 }
             };
+            if ($scope.updatingFile){// 更新文件
+                var type = $scope.updatingFile.file.type;
+                var filenameSplit = $scope.updatingFile.filename.split(".");
+                var fileExt = filenameSplit[filenameSplit.length - 1];
+                var minTypes = [];
+                minTypes.push({
+                    "title": type,
+                    "extensions": "'"+fileExt+"'"
+                });
+
+                option.multi_selection = false;
+                option.filters = {
+                    "prevent_duplicates": true,
+                    "mine_types": minTypes
+                }
+                console.log(option.filters);
+            }
             qiniuBack= Qiniu.uploader(option);
             console.log(qiniuBack);
         };
@@ -232,8 +248,11 @@ define([
         };
 
         $scope.updateFile = function (file) {
-            console.log("更新功能开发中。。。");
-            Message.info("更新功能开发中。。。");
+            // console.log("更新功能开发中。。。");
+            $scope.updatingFile = file;
+            $("#activeUpload").tab("show");
+            $scope.initQiniu();
+            // Message.info("更新功能开发中。。。");
         };
 
         $scope.renameFile = function (file) {
