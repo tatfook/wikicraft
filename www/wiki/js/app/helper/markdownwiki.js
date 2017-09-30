@@ -520,6 +520,9 @@ define([
         }
 
         mdwiki.parseWikiBlock = function (token) {
+            console.log("--------");
+            console.log(token);
+            console.log("--------");
             var wikiCmdRE = /^\s*([\/@][\w_\/]+)/;
             var wikiModNameRE = /^[\/@]+([\w_]+)/;
             var cmdname = token.info.match(wikiCmdRE)[1];
