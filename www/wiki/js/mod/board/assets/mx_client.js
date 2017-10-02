@@ -89648,7 +89648,7 @@ EditorUi = function(editor, container, lightbox)
 	this.destroyFunctions = [];
 
 	this.editor    = editor    || new Editor();
-	this.container = container || document.querySelector("#mx-client")//document.body;
+	this.container = container || document.body;
 
 	var graph      = this.editor.graph;
 	graph.lightbox = lightbox;
@@ -89739,7 +89739,7 @@ EditorUi = function(editor, container, lightbox)
 	{
 		graph.panningHandler.usePopupTrigger = false;
 	}
-
+    
 	// Contains the main graph instance inside the given panel
 	graph.init(this.diagramContainer);
 

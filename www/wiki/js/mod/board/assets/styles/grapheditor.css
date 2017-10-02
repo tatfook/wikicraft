@@ -312,7 +312,7 @@ div.mxWindow .geButton {
 	border-style: solid;
 	border-color: #e5e5e5;
 	border-width: 1px 0px 0px 1px;
-    position: absolute!important;
+    /*position: absolute!important;*/
 }
 .geSidebarContainer {
 	background:#ffffff;

@@ -1,10 +1,131 @@
 <link rel="stylesheet" type="text/css" href="/wiki/js/mod/board/assets/styles/grapheditor.css">
+<script type="text/javascript" src="/wiki/js/mod/board/assets/mx_client.js"></script>
+<div ng-controller="boardController" id="mx-client"></div>
+<script type="text/javascript">
+    var editorUiInit = EditorUi.prototype.init;
 
+    EditorUi.prototype.init = function () {
+        editorUiInit.apply(this, arguments);
+
+        this.actions.get('export').setEnabled(false);
+
+        // Updates action states which require a backend
+        return;
+        if (!Editor.useLocalStorage) {
+            console.log(OPEN_URL);
+
+            mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function (req) {
+                var enabled = req.getStatus() != 404;
+                console.log(enabled);
+                this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
+                this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
+                this.actions.get('save').setEnabled(enabled);
+                this.actions.get('saveAs').setEnabled(enabled);
+                this.actions.get('export').setEnabled(enabled);
+            }));
+        }
+    };
+
+    // Adds required resources (disables loading of fallback properties, this can only
+    // be used if we know that all keys are defined in the language specific file)
+    mxResources.loadDefaultBundle = false;
+
+    var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+
+    // Fixes possible asynchronous requests
+    mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
+        // Adds bundle text to resources
+        mxResources.parse(xhr[0].getText());
+
+        // Configures the default graph theme
+        var themes = new Object();
+        themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+
+        // Main
+        new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
+
+        var mxClientHeight = $(window).height() - 160;
+        var mxClientWidth  = $(window).width();
+
+        $(document).ready(function () {
+            $("#mx-client").css({
+                "width": mxClientWidth + "px",
+                "height": mxClientHeight + "px",
+                "position": "relative",
+            });
+
+            $(window).scrollTop(0)
+        });
+    }, function () {
+        document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
+    });
+</script>
 <style>
     #mx-client {
         overflow: hidden;
-        position: relative;
+    }
+
+    #mx-client * {
+        font-size: 13.33333px;
+    }
+
+    .mxPopupMenu hr,
+    .geMenubarMenu hr {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .geDialog table,
+    .mxPopupMenu table,
+    .geMenubarMenu table {
+        display: unset;
+        border-spacing: unset;
+        border-collapse: unset;
+        background-color: unset;
+        width: auto;
+        max-width: unset;
+        margin-bottom: auto;
+        border: none;
+    }
+
+    .geDialog table>tbody>tr>td,
+    .geDialog table>tbody>tr>th,
+    .geDialog table>tfoot>tr>td,
+    .geDialog table>tfoot>tr>th,
+    .geDialog table>thead>tr>td,
+    .geDialog table>thead>tr>th,
+    .mxPopupMenu table>tbody>tr>td,
+    .mxPopupMenu table>tbody>tr>th,
+    .mxPopupMenu table>tfoot>tr>td,
+    .mxPopupMenu table>tfoot>tr>th,
+    .mxPopupMenu table>thead>tr>td,
+    .mxPopupMenu table>thead>tr>th,
+    .geMenubarMenu table>tbody>tr>td,
+    .geMenubarMenu table>tbody>tr>th,
+    .geMenubarMenu table>tfoot>tr>td,
+    .geMenubarMenu table>tfoot>tr>th,
+    .geMenubarMenu table>thead>tr>td,
+    .geMenubarMenu table>thead>tr>th {
+        line-height: unset;
+        vertical-align: unset;
+        border-top :unset;
+        border: none;
+    }
+
+    .geToolbarContainer,
+    .geToolbarContainer *,
+    .geDiagramContainer,
+    .geSidebarContainer *,
+    .geDialog,
+    .geDialog * {
+        -moz-box-sizing: unset; /*Firefox3.5+*/
+        -webkit-box-sizing: unset; /*Safari3.2+*/
+        -o-box-sizing: unset; /*Opera9.6*/
+        -ms-box-sizing: unset; /*IE8*/
+        box-sizing: unset; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing*/
+    }
+
+    .geDialog table, .geDialog table tbody{
+        display: table;
     }
 </style>
-
-<div ng-controller="boardController" id="mx-client"></div>

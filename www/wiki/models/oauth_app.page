@@ -188,6 +188,12 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	if(not query.appName or not query.company or not query.clientSecret) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
+	
+	local reg1 = '%a'
+	
+	if(not string.find(query.appName,reg1)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
 
 	-- 判断是否存在appName
 	self:db():findOne({appName = query.appName}, resume);
