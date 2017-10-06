@@ -89739,7 +89739,7 @@ EditorUi = function(editor, container, lightbox)
 	{
 		graph.panningHandler.usePopupTrigger = false;
 	}
-    
+
 	// Contains the main graph instance inside the given panel
 	graph.init(this.diagramContainer);
 
@@ -99472,14 +99472,15 @@ Graph = function(container, model, renderHint, stylesheet, themes)
 {
 	mxGraph.call(this, container, model, renderHint, stylesheet);
 	
-	this.themes = themes || this.defaultThemes;
-	this.currentEdgeStyle = mxUtils.clone(this.defaultEdgeStyle);
+	this.themes             = themes || this.defaultThemes;
+	this.currentEdgeStyle   = mxUtils.clone(this.defaultEdgeStyle);
 	this.currentVertexStyle = mxUtils.clone(this.defaultVertexStyle);
 
 	// Sets the base domain URL and domain path URL for relative links.
 	var b = this.baseUrl;
 	var p = b.indexOf('//');
-	this.domainUrl = '';
+
+	this.domainUrl     = '';
 	this.domainPathUrl = '';
 	
 	if (p > 0)
@@ -100398,14 +100399,14 @@ Graph.prototype.init = function(container)
 		mxCellRenderer.prototype.initializeLabel.apply(this, arguments);
 		
 		// Checks tolerance for clicks on links
-		var tol = state.view.graph.tolerance;
+		var tol         = state.view.graph.tolerance;
 		var handleClick = true;
-		var first = null;
+		var first       = null;
 		
 		var down = mxUtils.bind(this, function(evt)
 		{
 			handleClick = true;
-			first = new mxPoint(mxEvent.getClientX(evt), mxEvent.getClientY(evt));
+			first       = new mxPoint(mxEvent.getClientX(evt), mxEvent.getClientY(evt));
 		});
 		
 		var move = mxUtils.bind(this, function(evt)
@@ -110736,6 +110737,7 @@ Actions.prototype.init = function()
 		
 		window.openFile.setConsumer(mxUtils.bind(this, function(xml, filename)
 		{
+            console.log(filename);
 			try
 			{
 				var doc = mxUtils.parseXml(xml);
