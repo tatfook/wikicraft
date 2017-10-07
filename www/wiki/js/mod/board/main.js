@@ -4,19 +4,24 @@
     'text!wikimod/board/main.html',
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("boardController", ['$scope', function ($scope) {
+        app.registerController("boardController", ['$scope', '$uibModal', function ($scope, $uibModal) {
             window.boardWikiBlock = wikiBlock;
 
-            $scope.test = function () {
-                alert("123123123");
+            $scope.edit = function () {
+                if (!wikiBlock.editorMode) {
+                    return;
+                }
+
+                $uibModal.open({
+                    "animation": true,
+                    "ariaLabeledBy": "title",
+                    "ariaDescribedBy": "body",
+                    "template": "hahaha",
+                    "controller": "boardController",
+                    "size": "lg",
+                    "openedClass": "mx-client-modal",
+                });
             }
-            //console.log(wikiBlock.editorMode);
-
-            //if (wikiBlock.editorMode) {
-            //    return true;
-            //}
-
-            //alert(222222222);
         }])
     }
 

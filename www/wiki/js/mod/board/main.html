@@ -1,6 +1,10 @@
-<link rel="stylesheet" type="text/css" href="/wiki/js/mod/board/assets/styles/grapheditor.css">
+Ôªø<link rel="stylesheet" type="text/css" href="/wiki/js/mod/board/assets/styles/grapheditor.css">
 
 <style>
+    .mx-client-modal .modal-lg{
+        width: 90%;
+    }
+
     #mx-client {
         overflow: hidden;
     }
@@ -62,7 +66,7 @@
         -webkit-box-sizing: unset; /*Safari3.2+*/
         -o-box-sizing: unset; /*Opera9.6*/
         -ms-box-sizing: unset; /*IE8*/
-        box-sizing: unset; /*W3C±Í◊º(IE9+£¨Safari5.1+,Chrome10.0+,Opera10.6+∂º∑˚∫œbox-sizing*/
+        box-sizing: unset; /*W3CÊ†áÂáÜ(IE9+ÔºåSafari5.1+,Chrome10.0+,Opera10.6+ÈÉΩÁ¨¶Âêàbox-sizing*/
     }
 
     .geDialog table, .geDialog table tbody {
@@ -72,16 +76,10 @@
 
 <script type="text/javascript" src="/wiki/js/mod/board/assets/mx_client.js"></script>
 
-<div ng-controller="boardController" id="mx-client">
-    <div></div>
-</div>
+<div ng-controller="boardController" id="mx-client" ng-click="edit()"></div>
 
 <script type="text/javascript">
-    function init() {
-        if (!boardWikiBlock.editorMode) {
-            //return;
-        }
-
+    window.initEditor = function() {
         var editorUiInit = EditorUi.prototype.init;
 
         EditorUi.prototype.init = function () {
@@ -141,5 +139,25 @@
         });
     }
 
-    init();
+    window.initPreview = function() {
+        alert("111122233333");
+    }
+
+    if (boardWikiBlock.editorMode) {
+        $("#mx-client").css("cursor", "pointer");
+
+        if ($("#mx-client").html().length == 0) {
+            $("#mx-client").html("ÁÇπÂáªÊ≠§Â§ÑÂºÄÂßãÁºñËæëÂõæÂΩ¢");
+
+            $("#mx-client").css({
+                "background-color" : "#dedede",
+                "color"            : "#333",
+                "height"           : "100px",
+                "line-height"      : "100px",
+                "text-align"       : "center",
+                "font-size"        : "30px",
+            })
+        }
+    }
+    
 </script>

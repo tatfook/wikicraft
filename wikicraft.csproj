@@ -63,6 +63,7 @@
     <Content Include="www\wiki\js\app\controller\searchController.js" />
     <Content Include="www\wiki\js\app\controller\servicesController.js" />
     <Content Include="www\wiki\js\app\controller\staticsController.js" />
+    <Content Include="www\wiki\js\app\controller\tempController.js" />
     <Content Include="www\wiki\js\app\helper\mdconf.js" />
     <Content Include="www\wiki\js\app\helper\mods.js" />
     <Content Include="www\wiki\js\app\helper\qiniu.js" />
@@ -972,6 +973,11 @@
     <Content Include="www\wiki\js\mod\board\assets\styles\thumb_vertical.png" />
     <Content Include="www\wiki\js\mod\board\assets\styles\up.gif" />
     <Content Include="www\wiki\js\mod\board\index.html" />
+    <Content Include="www\wiki\js\mod\board\jscolor\arrow.gif" />
+    <Content Include="www\wiki\js\mod\board\jscolor\cross.gif" />
+    <Content Include="www\wiki\js\mod\board\jscolor\hs.png" />
+    <Content Include="www\wiki\js\mod\board\jscolor\hv.png" />
+    <Content Include="www\wiki\js\mod\board\jscolor\jscolor.js" />
     <Content Include="www\wiki\js\mod\board\main.html" />
     <Content Include="www\wiki\js\mod\board\main.js" />
     <Content Include="www\wiki\js\mod\course\html\catalog.html" />
