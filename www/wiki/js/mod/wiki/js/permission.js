@@ -27,8 +27,8 @@ define([
                 if (!containerHeight){
                     containerHeight = containerElement.height();
                 }
-                var height = containerHeight * 0.4;
-                return ((height < 500) ? height : 500);
+                var height = containerHeight * 0.75;
+                return ((height < 1500) ? height : 1500);
             }
 
             var initMorePosition = function (containerElement) {
