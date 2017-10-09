@@ -206,7 +206,7 @@ define([
 				return alert("请输入clientSecret");
 			};
 			
-			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)/;
+			/*var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)/;
 			var reg2 = /([.][cC][oO][mM])$/;
 			var reg3 = /^[A-Za-z]+$/;
 			var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
@@ -233,7 +233,7 @@ define([
 			
 			if(!reg4.test($scope.oauthParams.company)){
 				return alert("公司名称只能输入英文和汉字");
-			}
+			}*/
 			
 			var params = {
 				"appName"        : $scope.oauthParams.appName,

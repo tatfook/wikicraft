@@ -5,12 +5,53 @@
         width: 90%;
     }
 
+    .mx-client-modal .modal-content {
+        overflow: hidden;
+    }
+
+    .mx-client-modal .mx-client-close {
+        display: block;
+        position: absolute;
+        top: 10px;
+        color: #fff;
+        right: 10px;
+        z-index: 1;
+        width: 40px;
+        height: 40px;
+        background: #e61111;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        line-height: 35px;
+        font-size: 40px!important;
+        border-radius: 20px;
+        transform: rotate(45deg);
+        cursor: pointer;
+    }
+
     #mx-client {
         overflow: hidden;
     }
 
     #mx-client * {
         font-size: 13.33333px;
+    }
+
+    .mx-client-edit {
+        cursor: pointer;
+    }
+
+    .mx-client-start {
+        background-color: #dedede;
+        color: #333;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+        font-size: 30px;
+    }
+
+    .mxWindow {
+        z-index: 1051!important;
     }
 
     .mxPopupMenu hr,
@@ -74,90 +115,7 @@
     }
 </style>
 
-<script type="text/javascript" src="/wiki/js/mod/board/assets/mx_client.js"></script>
-
-<div ng-controller="boardController" id="mx-client" ng-click="edit()"></div>
-
-<script type="text/javascript">
-    window.initEditor = function() {
-        var editorUiInit = EditorUi.prototype.init;
-
-        EditorUi.prototype.init = function () {
-            editorUiInit.apply(this, arguments);
-
-            this.actions.get('export').setEnabled(false);
-
-            // Updates action states which require a backend
-            return;
-            if (!Editor.useLocalStorage) {
-                console.log(OPEN_URL);
-
-                mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function (req) {
-                    var enabled = req.getStatus() != 404;
-                    console.log(enabled);
-                    this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
-                    this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
-                    this.actions.get('save').setEnabled(enabled);
-                    this.actions.get('saveAs').setEnabled(enabled);
-                    this.actions.get('export').setEnabled(enabled);
-                }));
-            }
-        };
-
-        // Adds required resources (disables loading of fallback properties, this can only
-        // be used if we know that all keys are defined in the language specific file)
-        mxResources.loadDefaultBundle = false;
-
-        var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
-
-        // Fixes possible asynchronous requests
-        mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-            // Adds bundle text to resources
-            mxResources.parse(xhr[0].getText());
-
-            // Configures the default graph theme
-            var themes = new Object();
-            themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
-
-            // Main
-            new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
-
-            var mxClientHeight = $(window).height() - 160;
-            var mxClientWidth = $("#mx-client").outerWidth();
-
-            $(document).ready(function () {
-                $("#mx-client").css({
-                    "width": mxClientWidth + "px",
-                    "height": mxClientHeight + "px",
-                    "position": "relative",
-                });
-
-                $(window).scrollTop(0)
-            });
-        }, function () {
-            document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-        });
-    }
-
-    window.initPreview = function() {
-        alert("111122233333");
-    }
-
-    if (boardWikiBlock.editorMode) {
-        $("#mx-client").css("cursor", "pointer");
-
-        if ($("#mx-client").html().length == 0) {
-            $("#mx-client").html("点击此处开始编辑图形");
-
-            $("#mx-client").css({
-                "background-color" : "#dedede",
-                "color"            : "#333",
-                "height"           : "100px",
-                "line-height"      : "100px",
-                "text-align"       : "center",
-                "font-size"        : "30px",
-            })
-        }
-    }
-    
-</script>
+<div ng-controller="boardController" ng-class="{'mx-client-edit' : mxClientEdit}" ng-click="edit()">
+    <div ng-bind-html="preview"></div>
+    <div ng-if="mxClientStart" ng-class="{'mx-client-start' : mxClientStart}">{{startNotice}}</div>
+</div>

@@ -92952,9 +92952,6 @@ EditorUi.prototype.save = function(name)
 		
 		var xml = mxUtils.getXml(this.editor.getGraphXml());
 		
-		console.log(xml);
-		console.log(Editor.useLocalStorage);
-		return;
 		try
 		{
 			console.log(Editor.useLocalStorage);
@@ -92994,6 +92991,11 @@ EditorUi.prototype.save = function(name)
 		}
 	}
 };
+
+EditorUi.prototype.returnXml = function()
+{
+	return mxUtils.getXml(this.editor.getGraphXml());
+}
 
 /**
  * Executes the given layout.
@@ -94586,14 +94588,16 @@ PrintDialog.prototype.create = function(editorUi)
 	var row, td;
 	
 	var table = document.createElement('table');
-	table.style.width = '100%';
+	table.style.width  = '100%';
 	table.style.height = '100%';
+
 	var tbody = document.createElement('tbody');
 	
 	row = document.createElement('tr');
 	
 	var onePageCheckBox = document.createElement('input');
 	onePageCheckBox.setAttribute('type', 'checkbox');
+
 	td = document.createElement('td');
 	td.setAttribute('colspan', '2');
 	td.style.fontSize = '10pt';
@@ -94622,6 +94626,7 @@ PrintDialog.prototype.create = function(editorUi)
 	
 	var pageCountCheckBox = document.createElement('input');
 	pageCountCheckBox.setAttribute('type', 'checkbox');
+	
 	td = document.createElement('td');
 	td.style.fontSize = '10pt';
 	td.appendChild(pageCountCheckBox);
@@ -110737,10 +110742,9 @@ Actions.prototype.init = function()
 		
 		window.openFile.setConsumer(mxUtils.bind(this, function(xml, filename)
 		{
-            console.log(filename);
 			try
 			{
-				var doc = mxUtils.parseXml(xml);
+				var doc   = mxUtils.parseXml(xml);
 				var model = new mxGraphModel();
 				var codec = new mxCodec(doc);
 				codec.decode(doc.documentElement, model);

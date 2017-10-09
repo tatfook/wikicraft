@@ -189,7 +189,14 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
-	local reg1 = '%a'
+	local reg1 = '^%a+$'
+	local reg2 = '[\176-\254]'
+	
+	if(string.find(query.company, reg2) or string.find(query.company,reg1))then
+		errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
 	
 	if(not string.find(query.appName,reg1)) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
