@@ -4,7 +4,7 @@
     'text!wikimod/board/main.html',
     '/wiki/js/mod/board/assets/mx_client.js',
 ], function (app, util, htmlContent) {
-    var initEditor = function (callback) {
+    var initEditor = function (data, callback) {
         var mxClientHeight = $(window).height() - 160;
         var mxClientWidth = $("#mx-client").outerWidth();
 
@@ -43,6 +43,16 @@
             // Main
             var editor = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
+            if (data && data.length > 0) {
+                var doc = mxUtils.parseXml(data);
+                var model = new mxGraphModel();
+                var codec = new mxCodec(doc);
+                codec.decode(doc.documentElement, model);
+
+                var children = model.getChildren(model.getChildAt(model.getRoot(), 0));
+                editor.editor.graph.importCells(children);
+            }
+
             if (typeof (callback) == "function") {
                 callback(editor);
             }
@@ -57,32 +67,29 @@
             // Displays an error message if the browser is not supported.
             mxUtils.error('Browser is not supported!', 200, false);
         } else {
-            var container = document.createElement("div");
-            var data      = wikiBlock.modParams;
+            var container   = document.createElement("div");
+            var xmlDocuemnt = {};
 
-            // Disables the built-in context menu
-            mxEvent.disableContextMenu(container);
+            if (wikiBlock.modParams) {
+                xmlDocument = mxUtils.parseXml(wikiBlock.modParams);
+
+                if (xmlDocument.documentElement == null || xmlDocument.documentElement.nodeName != "mxGraphModel") {
+                    return "";
+                }
+            }
+
+            var decoder = new mxCodec(xmlDocument);
+            var node    = xmlDocument.documentElement;
 
             var graph = new mxGraph(container);
+            graph.centerZoom = false;
+            graph.setTooltips(false);
             graph.setEnabled(false);
 
-            new mxRubberband(graph);
+            decoder.decode(node, graph.getModel());
 
-            var paraent = graph.getDefaultParent();
-
-            graph.getModel().beginUpdate();
-
-            var doc   = mxUtils.parseXml(data);
-            var model = new mxGraphModel();
-            var codec = new mxCodec(doc);
-
-            codec.decode(doc.documentElement, model);
-
-            var children = model.getChildren(model.getChildAt(model.getRoot(), 0));
-
-            graph.importCells(children);
-
-            graph.getModel().endUpdate();
+            var svg = container.querySelector("svg");
+            svg.style.backgroundImage = null;
 
             return container.innerHTML;
         }
@@ -112,20 +119,21 @@
                     "animation": true,
                     "ariaLabeledBy": "title",
                     "ariaDescribedBy": "body",
-                    "template": "<div id='mx-client'><span class='mx-client-close ng-scope' ng-click='close()'>+</span></div>",
+                    "template": "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>保存并关闭</div></div>",
                     "controller": "mxController",
                     "size": "lg",
                     "openedClass": "mx-client-modal",
                 })
                 .result.then(function (params) {
                     var data = $scope.editor.returnXml();
+                    console.log(data);
                     wikiBlock.applyModParams(data);
                 }, function (params) {
                     console.log($scope.editor);
                 });
 
                 setTimeout(function () {
-                    initEditor(function (editor) {
+                    initEditor(wikiBlock.modParams, function (editor) {
                         $scope.editor = editor;
                     });
                 }, 500)
@@ -137,28 +145,6 @@
                 $uibModalInstance.close();
             }
         }]);
-
-        //app.directive('compile', ['$compile', function ($compile) {
-        //    return function (scope, element, attrs) {
-        //        scope.$watch(
-        //            function (scope) {
-        //                // watch the 'compile' expression for changes
-        //                return scope.$eval(attrs.compile);
-        //            },
-        //            function (value) {
-        //                // when the 'compile' expression changes
-        //                // assign it into the current DOM
-        //                element.html(value);
-
-        //                // compile the new DOM and link it to the current
-        //                // scope.
-        //                // NOTE: we only compile .childNodes so that
-        //                // we don't get into infinite loop compiling ourselves
-        //                $compile(element.contents())(scope);
-        //            }
-        //        );
-        //    };
-        //}])
     }
 
     return {
