@@ -24,6 +24,8 @@
     .bigfile-modal .form-inline .form-control{
         width: 360px;
         padding: 8px 15px;
+    }
+    .bigfile-modal .form-inline .input-group{
         margin-right: 15px;
     }
     .bigfile-modal .search-zone{
@@ -218,14 +220,25 @@
                     <p>输入已有url地址：</p>
                     <form class="form-inline">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="http://">
-                            <button class="btn btn-primary">插 入</button>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="http://" ng-model="insertUrl" required>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedType}} <span class="caret"></span></button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li ng-click="selectedType = '图片'"><a>图片</a></li>
+                                        <li ng-click="selectedType = '视频'"><a>视频</a></li>
+                                        <li ng-click="selectedType = '其它'"><a>其它</a></li>
+                                    </ul>
+                                </div><!-- /btn-group -->
+                            </div>
+                            <button class="btn btn-primary" ng-click="insertFilesUrl()">插 入</button>
+                            <span class="text-danger" ng-show="insertFileUrlErr">{{insertFileUrlErr}}</span>
                         </div>
                     </form>
                     <div class="search-zone clearfix">
                         <span>或者在我的大文件中选择：</span>
                         <div class="searchbar pull-right">
-                            <input type="text" class="form-control" placeholder="搜索我的网盘">
+                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
@@ -241,7 +254,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="file in filelist" ng-hide="file.isDelete">
+                            <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
                                 <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column">{{file.filename}}</td>
                                 <td class="type-column">{{file.file.type}}</td>
@@ -258,7 +271,7 @@
                 <div class="tab-pane clearfix" role="tabpanel" id="fileManage">
                     <div class="only-search clearfix">
                         <div class="searchbar pull-right">
-                            <input type="text" class="form-control" placeholder="搜索我的网盘">
+                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
@@ -274,7 +287,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="file in filelist" ng-hide="file.isDelete">
+                        <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
                             <td class="checkbox-column">
                                 <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
                             </td>

@@ -4,15 +4,36 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/wiki/html/bigfile.html',
+    'text!wikimod/wiki/html/bigfile.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("bigFileController", ['$scope', '$sce', function ($scope, $sce) {
             function getFileType(fileType) {
                 if (/image\/\w+/.test(fileType)){
                     return "image";
-                }else {
+                }else if (/video\/\w+/.test(fileType)){
+                    return "video";
+                } else {
                     return;
+                }
+            }
+
+            function typeUrl(type, url) {
+                $scope.errMsg = "";
+                if (!url){
+                    $scope.errMsg = "内容找不到了";
+                    return;
+                }
+                switch(type){
+                    case "image":
+                        $scope.imgUrl = $sce.trustAsResourceUrl(url);
+                        break;
+                    case "video":
+                        $scope.videoUrl = $sce.trustAsResourceUrl(url);
+                        break;
+                    default:
+                        $scope.linkUrl = $sce.trustAsResourceUrl(url);
+                        break;
                 }
             }
 
@@ -31,16 +52,16 @@ define([
                         _id:modParams.fileId,
                     }, function(data){
                         if (data) {
-                            switch(type){
-                                case "image":
-                                    $scope.imgUrl = $sce.trustAsResourceUrl(data);
-                                    break;
-                                default:
-                                    $scope.linkUrl = $sce.trustAsResourceUrl(data);
-                                    break;
-                            }
+                            typeUrl(type, data);
+                        }else {
+                            typeUrl();
                         }
+                    }, function () {
+                        typeUrl();
                     });
+                }else if (modParams.fileUrl){
+                    console.log(modParams);
+                    typeUrl(modParams.fileType, modParams.fileUrl);
                 }
             }
 

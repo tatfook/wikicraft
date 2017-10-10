@@ -2055,10 +2055,15 @@ define([
                     if (!files){
                         return;
                     }
+
                     var insertContent = "";
-                    files.map(function (file) {
-                        insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'","extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
-                    });
+                    if (files.url && files.type){
+                        insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
+                    }else{
+                        files.map(function (file) {
+                            insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'",\n"extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
+                        });
+                    }
 
                     editor.replaceSelection(insertContent);
                     editor.focus();
