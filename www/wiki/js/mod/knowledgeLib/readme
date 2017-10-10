@@ -1,0 +1,19 @@
+访问:localhost:8099/wiki/editor, 粘贴如下模块代码, 实现代码见该目录相关代码
+
+
+```@knowledgeLib/js/knowledgeLib
+{
+    "moduleKind":"game",
+    "title":"百科推荐",
+    "rules":[
+    {
+     "title":"标题一",
+     "describe":"第一项内容介绍"
+    },
+    {
+     "title":"标题二",
+      "describe":"第二项内容描述"
+    }
+    ]
+ }
+```

@@ -50,7 +50,7 @@ function requestCountLimit(obj)
 		else
 		end
 		--log(limitObj, true)
-		LOG.std(nil, "error", "keepwork", limitObj)
+		--LOG.std(nil, "error", "keepwork", limitObj)
 		mem_cache:set(key, limitObj)
 
 		return result
@@ -65,7 +65,7 @@ function authenticated()
 
 	local token = request:header('Authorization'):match("%s+(%S+)");
 	local payload = decodeJWT(token)
-	LOG.std(nil, "error", "keepwork", payload)
+	--LOG.std(nil, "error", "keepwork", payload)
 	if not payload then
 		return false
 	end
@@ -81,7 +81,7 @@ function authenticatedVip()
 
 	local token = request:header('Authorization'):match("%s+(%S+)");
 	local payload = decodeJWT(token)
-	LOG.std(nil, "error", "keepwork", payload)
+	--LOG.std(nil, "info", "keepwork", payload)
 	if not payload then
 		return false
 	end

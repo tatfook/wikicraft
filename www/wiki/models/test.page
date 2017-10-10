@@ -6,6 +6,7 @@ Date: 2017/2/27
 ]]
 
 include_once("./abstract/base.page")
+include_once("user.page")
 
 local test = inherit(models.abstract.base, gettable("models.test"))
 local testDir = WIKI_ROOT .. "test/"
@@ -77,7 +78,10 @@ function test:api_test()
 end
 
 function test:api_echo(params)
-	return params
+	local userDB = models.user:new()
+	userDB:db():find({username="xiaoyao",{"displayName", "wxatest"}}, resume)
+
+	return errors:wrap(yield())
 end
 
 function test:api_sendEmail(params)
