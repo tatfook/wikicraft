@@ -9,6 +9,7 @@ define([
 ], function (app, qiniu, util, htmlContent) {
     app.registerController("bigfileController", ["$scope", function ($scope) {
         var qiniuBack;
+        $scope.selectedType = "图片";
         $scope.cancel = function () {
             $scope.$dismiss();
         };
@@ -45,7 +46,7 @@ define([
             var option = {
                 "browse_button":"selectFileInput",
                 "drop_element":"dropFile",
-                "unique_name": true,
+                "unique_names": true,
                 "auto_start": false,
                 "uptoken_url": '/api/wiki/models/qiniu/uploadToken',
                 "domain": 'ov62qege8.bkt.clouddn.com',
@@ -111,20 +112,21 @@ define([
                         var params = {
                             filename:file.name,
                             domain:domain,
-                            key:file.name,
+                            key:file.target_name,
                             size:file.size,
                             type:file.type,
                             hash:info.hash,
-                            channel:"qiniu",
+                            channel:"qiniu"
                         };
 
-                        if ($scope.updatingFile){
+                        if ($scope.updatingFile && $scope.updatingFile._id){
                             params._id = $scope.updatingFile._id;
                             util.post(config.apiUrlPrefix + 'bigfile/updateById', params, function(data){
                                 console.log(data);
                                 data = data || {};
                                 data.filename = params.filename;
                                 $scope.uploadingFiles[file.id].status = "success";
+                                getFileByUsername();
                             }, function(err){
                                 console.log(err);
                             });
@@ -325,18 +327,6 @@ define([
             $scope.insertFiles(insertingFiles);
         };
 
-        function getFileType(file) {
-            if (!file.file || !file.file.type){
-                return;
-            }
-            var fileType = file.file.type;
-            if (/image\/\w+/.test(fileType)){
-                return "image";
-            }else {
-                return;
-            }
-        }
-
         $scope.insertFiles = function (files) {
             if (!files){
                 files = $scope.filelist.filter(function (file) {
@@ -345,6 +335,28 @@ define([
             }
 
             $scope.$dismiss(files);
+        }
+
+        $scope.insertFilesUrl = function () {
+            var type = "";
+            var url = $scope.insertUrl;
+            switch ($scope.selectedType){
+                case "图片":
+                    type = "image";
+                    break;
+                case "视频":
+                    type = "video";
+                    break;
+                default:
+                    break;
+            }
+            if (!url){
+                return;
+            }
+            $scope.$dismiss({
+                "type": type,
+                "url": url
+            });
         }
     }]);
     return htmlContent;
