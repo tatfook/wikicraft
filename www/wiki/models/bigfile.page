@@ -252,9 +252,7 @@ function bigfile:api_getUserStoreInfo(params)
 
 	local qiniuDB = models.qiniu:new()
 
-	qiniuDB:db():findOne({["+username"]={username}}, resume)
-
-	return errors:wrap(yield())
+	return qiniuDB:api_getByUsername({username=username})
 end
 
 
