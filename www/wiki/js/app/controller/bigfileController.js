@@ -11,6 +11,9 @@ define([
         var qiniuBack;
         $scope.selectedType = "图片";
         $scope.cancel = function () {
+            if ($scope.uploadingFiles.length > 0){
+                console.log("正在上传");
+            }
             $scope.$dismiss();
         };
 
@@ -41,6 +44,8 @@ define([
         $scope.initQiniu = function(){
             if ($scope.finishUploading){
                 $scope.uploadingFiles = [];
+            }else if ($scope.finishUploading === false){
+                return;
             }
             var qiniu = new QiniuJsSDK();
             var option = {
@@ -62,9 +67,7 @@ define([
                             self.start();
                             return;
                         }
-                        console.log("1111111111");
                         util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:filelist}, function(data){
-                        	console.log(data);
                         	if (data.length > 0) {
                         	    var conflictFileName = [];
                         	    var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
@@ -77,20 +80,26 @@ define([
                                     "title": "上传提醒",
                                     "contentHtml": contentHtml
                                 }, function () {
-                                    $scope.uploadingFiles = files;
+                                    $scope.uploadingFiles = $scope.uploadingFiles || [];
+                                    $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
+                                    $scope.finishUploading = false;
                                     self.start();
                                 }, function () {
                                     files = files.filter(function (file) {
                                         return conflictFileName.indexOf(file.name) < 0;
                                     });
                                     if(files.length > 0){
-                                        $scope.uploadingFiles = files;
+                                        $scope.uploadingFiles = $scope.uploadingFiles || [];
+                                        $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
+                                        $scope.finishUploading = false;
                                         self.start();
                                     }
                                 });
                         		return ;
                         	}
-                            $scope.uploadingFiles = files;
+                            $scope.uploadingFiles = $scope.uploadingFiles || [];
+                            $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
+                            $scope.finishUploading = false;
                         	self.start();
                         });
                     },
@@ -248,8 +257,6 @@ define([
             targetElem.attr("contenteditable", "false");
             $scope.nameErr="";
             // filename = filename.trim();
-            console.log(file);
-            console.log(filename);
 
             var newFileSplit = filename.split(".");
             var newExt = newFileSplit[newFileSplit.length-1];
@@ -289,6 +296,11 @@ define([
             $scope.initQiniu();
             // Message.info("更新功能开发中。。。");
         };
+        
+        var removeAllTags = function (str) {
+            console.log(str);
+            return str.replace(/<\/?(\w+)\s*[\w\W]*?>/g, '').replace(/^&nbsp;|&nbsp;$/g, '');
+        };
 
         $scope.renameFile = function (file) {
             var targetFileId = file.file_id;
@@ -304,6 +316,12 @@ define([
                 targetElem.html(filename);
                 changeFileName(file, filename, targetElem);
             });
+            targetElem.on("paste", function () { // contenteditable中粘贴会包含html结构
+                setTimeout(function () {
+                    console.log(targetElem.html());
+                    targetElem.html(removeAllTags(targetElem.html()));
+                });
+            })
         };
 
         $scope.downloadFile = function (file) {
@@ -319,7 +337,7 @@ define([
                     a.click();
                 }
             });
-        }
+        };
 
         $scope.insertFile = function (file) {
             var insertingFiles = [];
@@ -340,6 +358,10 @@ define([
         $scope.insertFilesUrl = function () {
             var type = "";
             var url = $scope.insertUrl;
+            if (!url){
+                return;
+            }
+            console.log($scope.selectedType);
             switch ($scope.selectedType){
                 case "图片":
                     type = "image";
@@ -350,9 +372,8 @@ define([
                 default:
                     break;
             }
-            if (!url){
-                return;
-            }
+            console.log(type);
+            console.log(url);
             $scope.$dismiss({
                 "type": type,
                 "url": url

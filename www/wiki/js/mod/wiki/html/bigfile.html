@@ -32,7 +32,7 @@
 
 <div ng-controller="bigFileController">
     <img ng-show="imgUrl" ng-src="{{imgUrl}}" alt="{{modParams.extraMsg}}">
-    <a ng-show="linkUrl" ng-href="{{linkUrl}}">{{modParams.extraMsg}}</a>
+    <a ng-show="linkUrl" ng-href="{{linkUrl}}">{{modParams.extraMsg || linkUrl}}</a>
     <div ng-show="videoUrl" class="container iframe-container">
         <iframe ng-src="{{videoUrl}}"></iframe>
     </div>
