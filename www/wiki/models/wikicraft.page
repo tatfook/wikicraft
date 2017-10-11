@@ -31,7 +31,7 @@ function wikicraft:api_updateCode(params)
 	os.execute("bash start.sh reset_restart_dev")
 end
 
-function wikicraft:deployEnv(params)
+function wikicraft:api_deployEnv(params)
     if not params.branch_name or not params.env_name then
         return errors:wrap(errors.PARAMS_ERROR)
     end
