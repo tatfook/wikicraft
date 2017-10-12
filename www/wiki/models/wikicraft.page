@@ -40,3 +40,12 @@ function wikicraft:api_deployEnv(params)
 
     os.execute(cmd_str)
 end
+
+
+function wikicraft:checkSensitiveWord(params)
+	if not params.word then
+		return errors:wrap(errors.PARAMS_ERROR)
+	end
+
+	return errors:wrap(nil, sensitive_word_match(params.word))
+end

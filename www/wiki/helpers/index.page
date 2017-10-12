@@ -23,6 +23,7 @@ function getpeername()
 	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP")
 end
 
+include_once(WIKI_ROOT .. "helpers/aho_corasick.page")
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
 include_once(WIKI_ROOT .. "helpers/filter.page")
@@ -213,12 +214,58 @@ function getServerUpdateTime()
 	return serverUpdateTime
 end
 
+function load_sensitive_word()
+	local file = ParaIO.open("www/sensitive_word.txt", "r")
+	local words = {}
+	if not file then
+		return words
+	end
+
+	repeat
+		line = file:readline()
+		if line and line ~= "" then
+			words[#words+1] = line
+		end
+	until (line == nil)
+	
+	file:close()
+	
+	return words
+end
+
+function sensitive_word_match(s)
+	local t = mem_cache:get("aho_corasick")
+	if not t then
+		return {}
+	end
+
+	local ac = KEEPWORK["aho_corasick"]
+	return ac.match(t, s)
+end
+
+
+-- 执行启动一次的功能
+function execute_once()
+	local isWebServerStart = mem_cache:get("isWebServerStart")
+	if isWebServerStart then
+		return
+	end
+
+	mem_cache:set("isWebServerStart", true)
+
+	local ac = KEEPWORK["aho_corasick"]
+	local words = load_sensitive_word()
+	local t = ac.build(words)
+	mem_cache:set("aho_corasick", t)
+end
 
 function init()
 	init_db()
 	--init_wiki_module()
 	request_before_filter()
 	-- log(getTokenInfo())
+	
+	execute_once()
 end
 
 init()
