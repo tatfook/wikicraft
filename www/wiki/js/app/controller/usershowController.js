@@ -2,7 +2,7 @@
  * Created by wuxiangan on 2016/12/21.
  */
 
-define(['app','helper/util', 'helper/storage', 'text!usershow.html'], function (app, util, storage, htmlContent) {
+define(['app','helper/util', 'helper/storage', 'text!html/usershow.html'], function (app, util, storage, htmlContent) {
     app.registerController('usershowController', ['$scope',function ($scope) {
         var usershowObj = storage.sessionStorageGetItem("usershow");
         //console.log(usershowObj);

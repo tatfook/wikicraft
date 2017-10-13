@@ -24,13 +24,26 @@
 			name:"controller/wikiEditorController",
 			exclude:[
 				'app'
-				//'helper/markdownwiki',
-				//'helper/util',
-				//'helper/storage',
-				//'helper/dataSource',
-				//'helper/mdconf'
 			]
-		}
+		},
+		{
+			name:"controller/websiteController",
+			exclude:[
+				'app'
+			]
+		},
+		{
+			name:"controller/userCenterController",
+			exclude:[
+				'app'
+			]
+		},
+		{
+			name:"controller/knowledgeController",
+			exclude:[
+				'app'
+			]
+		},
     ],
     //out:'build/main.js',
     paths:{
