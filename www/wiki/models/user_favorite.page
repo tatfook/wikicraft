@@ -39,7 +39,7 @@ function user_favorite:api_favoriteSite(params)
 	self:db():findOne({["+userId+siteId"]={params.userId, params.siteId}}, resume)
 	local _, data = yield()
 	if data then
-		return errors:warp(nil, data)
+		return errors:wrap(nil, data)
 	end
 	-- 创建收藏记录
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")

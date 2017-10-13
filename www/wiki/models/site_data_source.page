@@ -153,7 +153,7 @@ function site_data_source:api_createProject(params)
 		url=params.apiBaseUrl .. "/projects",
 		headers={['PRIVATE-TOKEN'] = params.token},
 		method="POST",
-		form={name=params.projectName, request_access_enabled=true, visibility="public"}
+		form={name=params.projectName, request_access_enabled=true, visibility= params.visibility or "public"}
 	}, resume)
 
 	local _, resp = yield()
@@ -378,7 +378,7 @@ function site_data_source:api_createSiteDataSource(params)
 	end
 
 	if params.isolateDataSource == 1 then
-		local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName}).data
+		local project = self:api_createProject({apiBaseUrl=dataSource.apiBaseUrl, token=dataSource.dataSourceToken, projectName=params.projectName, visibility = params.visibility}).data
 		if project then
 			params.projectId = project.id
 		end

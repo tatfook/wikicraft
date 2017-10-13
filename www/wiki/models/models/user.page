@@ -1,0 +1,36 @@
+<?npl
+--[[
+Title: user profile
+Author: wuxiangan
+Date: 2016/10/21
+]]
+
+include_once("../abstract/base.page")
+
+local user = inherit(models.abstract.base, gettable("models.models.user"))
+user.db_name = "user"
+
+function user:ctor()
+	self:addfield("username", "string", false, 30)     -- 用户名  唯一不可改
+	self:addfield("displayName", "string", false, 30)  -- 显示名
+	self:addfield("introduce", "string", false)     -- 简介
+	self:addfield("email", "string", false, 30)     -- 邮箱
+	self:addfield("password", "string", false, 256) -- hashed password
+	self:addfield("cellphone", "string", false, 12) -- 手机
+	self:addfield("sex", "string", false, 12)
+	self:addfield("defaultDataSourceSitename", "string")    -- 默认数据源的站点名
+	self:addfield("defaultDataSourceName", "string")    -- 默认数据源的站点名
+	self:addfield("portrait", "string", false, 200) -- picture url
+	self:addfield("roleId", "number")
+	self:addfield("vipLevel", "number")
+	self:addfield("location", "string", false, 50)
+	self:addfield("joindate", "string", false, 30)
+	-- 以下字段不明确用途会废弃
+	self:addfield("comment", "string", false, 300)
+	self:addfield("company", "string", false, 30)
+	self:addfield("favoriteCount", "number")   -- 收藏量
+	self:addfield("fansCount", "number")  -- 粉丝数量
+	self:addfield("websiteCount", "number") -- 作品数量
+	self:addfield("signature", "string")
+	self:addfield("isadmin", "boolean", false)
+end

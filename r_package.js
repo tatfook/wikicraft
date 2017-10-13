@@ -12,7 +12,14 @@
     optimizeAllPluginResources: true,  // text 插件配置
     modules:[
         {
-            name:'main'
+            name:'main',
+			include:[
+				'angular',
+				'app',
+				'preload',
+				'bootstrap'
+			]
+
         },
     ],
     //out:'build/main.js',
