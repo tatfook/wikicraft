@@ -63,6 +63,7 @@ function website:ctor()
 	self:addfield("memberCount", "number")
 	self:addfield("worksCount", "number")
 	self:addfield("state", "number")
+	self:addfield("sensitiveWordLevel", "number")
 end
 
 -- 创建站点 paracraft 客户端有使用 以后可能废弃  
