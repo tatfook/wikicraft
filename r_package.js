@@ -38,6 +38,12 @@
 				'app'
 			]
 		},
+		{
+			name:"controller/knowledgeController",
+			exclude:[
+				'app'
+			]
+		},
     ],
     //out:'build/main.js',
     paths:{
