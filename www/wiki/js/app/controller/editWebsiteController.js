@@ -29,7 +29,6 @@ define([
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
         function sendModifyWebsiteRequest() {
-            console.log("33333333");
 			$scope.website.sitename = $scope.website.name;
             util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
@@ -117,8 +116,31 @@ define([
 
         // 修改网站设置
         $scope.modifyWebsite = function () {
+            $scope.websiteErr = "";
+            var websiteParams = $scope.website;
+            var checkSensitives = [websiteParams.displayName, websiteParams.desc];
+            var isSensitive = false;
+
+            $.each(checkSensitives, function (index,word) {
+                if (!word || word == ""){
+                    return true;
+                }
+                config.services.sensitiveTest.checkSensitiveWord(word, function (foundWords, replacedStr) {
+                    if (foundWords.length > 0){
+                        isSensitive = true;
+                        console.log("包含敏感词:" + foundWords.join("|"));
+                        console.log(replacedStr);
+                        return false;
+                    }
+                });
+            });
+
+            if (isSensitive){
+                $scope.websiteErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
+                return;
+            }
             sendModifyWebsiteRequest();
-        }
+        };
 
 		function initGroup() {
             $scope.changeType = siteinfo.visibility || "public";
