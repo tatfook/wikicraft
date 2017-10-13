@@ -47,17 +47,17 @@ stop_server() {
 	local server_type=$1
 
 	if [ $server_type = "test" ]; then
-		pid=`ps uax | grep "npl.*port=8099.*" | grep -v grep | awk '{print $2}'`
+		pid=`ps uax | grep "npl -d.*port=8099.*" | grep -v grep | awk '{print $2}'`
 		if [ ! -z $pid ]; then
 			kill -9 $((pid))
 		fi
 	elif [ $server_type = "dev" ]; then 
-		pid=`ps uax | grep "npl.*port=8900.*" | grep -v grep | awk '{print $2}'`
+		pid=`ps uax | grep "npl -d.*port=8900.*" | grep -v grep | awk '{print $2}'`
 		if [ ! -z $pid ]; then
 			kill -9 $((pid))
 		fi
 	elif [ $server_type = "rls" ]; then 
-		pid=`ps uax | grep "npl.*port=8088.*" | grep -v grep | awk '{print $2}'`
+		pid=`ps uax | grep "npl -d.*port=8088.*" | grep -v grep | awk '{print $2}'`
 		if [ ! -z $pid ]; then
 			kill -9 $((pid))
 		fi
@@ -115,3 +115,5 @@ main() {
 }
 
 main $1 $2
+
+exit 0

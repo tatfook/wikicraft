@@ -2,6 +2,7 @@ assets.log
 log.txt
 .idea/
 database/
+database
 log/
 obj/
 Properties/
