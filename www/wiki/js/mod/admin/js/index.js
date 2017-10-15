@@ -206,25 +206,17 @@ define([
 				return alert("请输入clientSecret");
 			};
 			
-			/*var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)/;
-			var reg2 = /([.][cC][oO][mM])$/;
+			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+			//var reg2 = /([.][A-Za-z])$/
 			var reg3 = /^[A-Za-z]+$/;
 			var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
 			
 			if(!reg1.test($scope.oauthParams.payCallbackUrl)){
-				return alert("payCallbackUrl请使用http://或https://作为开头");
-			};
-			
-			if(!reg2.test($scope.oauthParams.payCallbackUrl)){
-				return alert("payCallbackUrl请使用.com结尾");
+				return alert("payCallbackUrl请使用正确的格式");
 			};
 			
 			if(!reg1.test($scope.oauthParams.redirectUrl)){
-				return alert("redirectUrl请使用http://或https://作为开头");
-			};
-			
-			if(!reg2.test($scope.oauthParams.redirectUrl)){
-				return alert("redirectUrl请使用.com结尾");
+				return alert("payCallbackUrl请使用正确的格式");
 			};
 			
 			if(!reg3.test($scope.oauthParams.appName)){
@@ -233,7 +225,7 @@ define([
 			
 			if(!reg4.test($scope.oauthParams.company)){
 				return alert("公司名称只能输入英文和汉字");
-			}*/
+			}
 			
 			var params = {
 				"appName"        : $scope.oauthParams.appName,

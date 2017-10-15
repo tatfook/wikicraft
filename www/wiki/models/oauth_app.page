@@ -189,17 +189,51 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
+	local ret1 = '%d'
+	local ret2 = '%p'
+	local ret3 = '%s'
+	
 	local reg1 = '^%a+$'
 	local reg2 = '[\176-\254]'
+	local reg3 = '^http://(%a+).(%a+).(%a+)$'
+	local reg4 = '^http://(%a+).(%a+)$'
+	local reg5 = '^https://(%a+).(%a+).(%a+)$'
+	local reg6 = '^https://(%a+).(%a+)$'
 	
+	--判断appName格式是否正确/只能输入英文
+	if(not string.find(query.appName,reg1)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断company格式是否正确/只能输入英文/中文/中英结合
 	if(string.find(query.company, reg2) or string.find(query.company,reg1))then
-		errors:wrap(errors.SUCCESS);
+		if(string.find(query.company, ret1) or string.find(query.company, ret2) or string.find(query.company, ret3))then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
 	else
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
-	if(not string.find(query.appName,reg1)) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	--判断redirectUrl格式是否正确
+	if(not string.find(query.redirectUrl, reg3))then
+		if(not string.find(query.redirectUrl, reg4))then
+			if(not string.find(query.redirectUrl, reg5))then
+				if(not string.find(query.redirectUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
+	end
+	
+	--判断payCallbackUrl格式是否正确
+	if(not string.find(query.payCallbackUrl, reg3))then
+		if(not string.find(query.payCallbackUrl, reg4))then
+			if(not string.find(query.payCallbackUrl, reg5))then
+				if(not string.find(query.payCallbackUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
 	end
 
 	-- 判断是否存在appName
@@ -248,6 +282,53 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 
 	if(not query.clientId or not query.clientSecret) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	local ret1 = '%d'
+	local ret2 = '%p'
+	local ret3 = '%s'
+	
+	local reg1 = '^%a+$'
+	local reg2 = '[\176-\254]'
+	local reg3 = '^http://(%a+).(%a+).(%a+)$'
+	local reg4 = '^http://(%a+).(%a+)$'
+	local reg5 = '^https://(%a+).(%a+).(%a+)$'
+	local reg6 = '^https://(%a+).(%a+)$'
+	
+	--判断appName格式是否正确/只能输入英文
+	if(not string.find(query.appName,reg1)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断company格式是否正确/只能输入英文/中文/中英结合
+	if(string.find(query.company, reg2) or string.find(query.company,reg1))then
+		if(string.find(query.company, ret1) or string.find(query.company, ret2) or string.find(query.company, ret3))then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+	else
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断redirectUrl格式是否正确
+	if(not string.find(query.redirectUrl, reg3))then
+		if(not string.find(query.redirectUrl, reg4))then
+			if(not string.find(query.redirectUrl, reg5))then
+				if(not string.find(query.redirectUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
+	end
+	
+	--判断payCallbackUrl格式是否正确
+	if(not string.find(query.payCallbackUrl, reg3))then
+		if(not string.find(query.payCallbackUrl, reg4))then
+			if(not string.find(query.payCallbackUrl, reg5))then
+				if(not string.find(query.payCallbackUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
 	end
 
 	-- 判断是否存在clientId

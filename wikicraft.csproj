@@ -1231,6 +1231,7 @@
     <None Include="www\wiki\models\goods.page" />
     <None Include="www\wiki\models\group.page" />
     <None Include="www\wiki\models\group_user.page" />
+    <None Include="www\wiki\models\models\user.page" />
     <None Include="www\wiki\models\oauth_app.page" />
     <None Include="www\wiki\models\oauth_user.page" />
     <None Include="www\wiki\models\pay.page" />

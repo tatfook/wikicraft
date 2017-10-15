@@ -2,15 +2,22 @@
     'app',
     'helper/util',
     'text!wikimod/board/main.html',
-    '/wiki/js/mod/board/assets/mx_client.js',
-], function (app, util, htmlContent) {
+    'pako',
+    '/wiki/js/mod/board/assets/graph.min.js',
+], function (app, util, htmlContent, pako) {
+    jscolor.dir = "/wiki/js/mod/board/assets/images/";
+
     var initEditor = function (data, callback) {
+        if (!mxClient.isBrowserSupported()) {
+            document.querySelector("#mx-client").innerHTML("Browser is not supported!");
+        }
+
         var mxClientHeight = $(window).height() - 160;
-        var mxClientWidth = $("#mx-client").outerWidth();
+        var mxClientWidth  = $("#mx-client").outerWidth();
 
         $("#mx-client").css({
-            "width": mxClientWidth + "px",
-            "height": mxClientHeight + "px",
+            "width"  : mxClientWidth + "px",
+            "height" : mxClientHeight + "px",
         });
 
         var editorUiInit = EditorUi.prototype.init;
@@ -41,47 +48,52 @@
             themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
 
             // Main
-            var editor = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
+            var ui = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
             if (data && data.length > 0) {
-                var doc = mxUtils.parseXml(data);
-                var model = new mxGraphModel();
-                var codec = new mxCodec(doc);
-                codec.decode(doc.documentElement, model);
+                data = ui.editor.graph.decompress(data);
 
-                var children = model.getChildren(model.getChildAt(model.getRoot(), 0));
-                editor.editor.graph.importCells(children);
+                var doc = mxUtils.parseXml(data);
+                ui.editor.setGraphXml(doc.documentElement);
             }
 
             if (typeof (callback) == "function") {
-                callback(editor);
+                callback(ui);
             }
 
         }, function () {
-            document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
+            document.querySelector("#mx-client").innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
         });
     }
 
-    var initPreview = function (wikiBlock) {
+    var initPreview = function (wikiBlock, callback) {
         if (!mxClient.isBrowserSupported()) {
-            // Displays an error message if the browser is not supported.
-            mxUtils.error('Browser is not supported!', 200, false);
-        } else {
-            var container   = document.createElement("div");
-            var xmlDocuemnt = {};
+            return "Browser is not supported!";
+        }
+
+        var container   = document.createElement("div");
+
+        mxResources.loadDefaultBundle = false;
+
+        var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+
+        mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
+            // Adds bundle text to resources
+            mxResources.parse(xhr[0].getText());
+
+            // Configures the default graph theme
+            var themes = new Object();
+            themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+
+            var graph = new Graph(container, null, null, null, themes);
 
             if (wikiBlock.modParams) {
-                xmlDocument = mxUtils.parseXml(wikiBlock.modParams);
-
-                if (xmlDocument.documentElement == null || xmlDocument.documentElement.nodeName != "mxGraphModel") {
-                    return "";
-                }
+                var mxGraphModelData = mxUtils.parseXml(graph.decompress(wikiBlock.modParams));
             }
 
-            var decoder = new mxCodec(xmlDocument);
-            var node    = xmlDocument.documentElement;
+            var decoder = new mxCodec(mxGraphModelData);
+            var node    = mxGraphModelData.documentElement;
 
-            var graph = new mxGraph(container);
             graph.centerZoom = false;
             graph.setTooltips(false);
             graph.setEnabled(false);
@@ -91,8 +103,10 @@
             var svg = container.querySelector("svg");
             svg.style.backgroundImage = null;
 
-            return container.innerHTML;
-        }
+            if (typeof (callback) == "function") {
+                callback(container.innerHTML);
+            }
+        });
     }
 
     function registerController(wikiBlock) {
@@ -102,12 +116,17 @@
 
                 if (typeof (wikiBlock.modParams) == "string" && wikiBlock.modParams.length == 0) {
                     $scope.mxClientStart = true;
-                    $scope.startNotice = "点击此处开始编辑";
+                    $scope.startNotice   = "点击此处开始编辑";
                 } else {
-                    $scope.preview = $sce.trustAsHtml(initPreview(wikiBlock));
+                    initPreview(wikiBlock, function (svg) {
+                        $scope.preview = $sce.trustAsHtml(svg);
+                    });
+                    
                 }
             } else {
-                $scope.preview = $sce.trustAsHtml(initPreview(wikiBlock));
+                initPreview(wikiBlock, function (svg) {
+                    $scope.preview = $sce.trustAsHtml(svg);
+                });
             }
 
             $scope.edit = function () {
@@ -116,25 +135,26 @@
                 }
 
                 $uibModal.open({
-                    "animation": true,
-                    "ariaLabeledBy": "title",
+                    "animation"      : true,
+                    "ariaLabeledBy"  : "title",
                     "ariaDescribedBy": "body",
-                    "template": "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>保存并关闭</div></div>",
-                    "controller": "mxController",
-                    "size": "lg",
-                    "openedClass": "mx-client-modal",
+                    "template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
+                    "controller"     : "mxController",
+                    "size"           : "lg",
+                    "openedClass"    : "mx-client-modal",
                 })
-                .result.then(function (params) {
-                    var data = $scope.editor.returnXml();
-                    console.log(data);
-                    wikiBlock.applyModParams(data);
+                .result.then(function () {
+                    var compressData = $scope.ui.getCurrentCompressData();
+
+                    //console.log(compressData);
+                    wikiBlock.applyModParams(compressData);
                 }, function (params) {
-                    console.log($scope.editor);
+                    
                 });
 
                 setTimeout(function () {
-                    initEditor(wikiBlock.modParams, function (editor) {
-                        $scope.editor = editor;
+                    initEditor(wikiBlock.modParams, function (ui) {
+                        $scope.ui = ui;
                     });
                 }, 500)
             };
