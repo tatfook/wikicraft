@@ -42,6 +42,7 @@ define([
     'factory/modal',
     'factory/confirmDialog',
     'factory/loadingInterceptor',
+    'factory/sensitiveTest',
 
 ], function () {
     return {};
