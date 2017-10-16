@@ -163,9 +163,9 @@ KEEPWORK["request_before_filter"] = {
 		authenticatedVip,
 	},
 
-	[filter.API_URL_PREFIX .. "website/updateByName"] = {
-		sensitiveWordFilter,
-	},
+	--[filter.API_URL_PREFIX .. "website/updateByName"] = {
+		--sensitiveWordFilter,
+	--},
 	[filter.API_URL_PREFIX .. "website/upsert"] = {
 		sensitiveWordFilter,
 	},
