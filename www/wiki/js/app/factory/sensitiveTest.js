@@ -36,6 +36,10 @@ define([
         }
         sensive.checkSensitiveWord = function (word, callback) {
             var foundWords = [];
+            if (!word){
+                callback && callback(foundWords, "");
+                return;
+            }
             AhoCorasick.search(word, trie, function (found_word, data) {
                 console.log(found_word);
                 foundWords.push(found_word);
