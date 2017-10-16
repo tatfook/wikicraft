@@ -15,4 +15,4 @@ RUN chmod +x ./lib/qiniu/build/build.sh; sync; ./lib/qiniu/build/build.sh
 
 VOLUME ["/project/wikicraft/database", "/project/wikicraft/log"]
 
-ENTRYPOINT ["/tini", "--", "./serve.sh"]
+ENTRYPOINT ["/tini", "--", "./ci/serve.sh"]
