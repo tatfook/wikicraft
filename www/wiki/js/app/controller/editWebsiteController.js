@@ -92,6 +92,19 @@ define([
                 $scope.$apply();
                 return;
             }
+            var isSensitive = false;
+            config.services.sensitiveTest.checkSensitiveWord(tagName, function (foundWords, replacedStr) {
+                if (foundWords.length > 0){
+                    isSensitive = true;
+                    console.log("包含敏感词:" + foundWords.join("|"));
+                    return false;
+                }
+            });
+            if (isSensitive){
+                $scope.nextStepDisabled = true;
+                $scope.tagErrMsg="您输入的内容不符合互联网安全规范，请修改";
+                return;
+            }
             if (tagName.length>10){
                 $scope.tagErrMsg="标签最长10个字";
                 $scope.tag="";
@@ -136,7 +149,7 @@ define([
             });
 
             if (isSensitive){
-                $scope.websiteErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
+                $scope.websiteErr = "您输入的内容不符合互联网安全规范，请修改";
                 return;
             }
             sendModifyWebsiteRequest();
