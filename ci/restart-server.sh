@@ -4,7 +4,7 @@
 #
 # restart container after building image
 
-set -x
+set -ex
 
 usage() {
   echo "usage error"

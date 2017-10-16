@@ -6,7 +6,7 @@
 # usage:
 #   ./build-image.sh dev|test
 #
-set -x
+set -ex
 
 usage() {
   echo "usage error"
@@ -36,7 +36,7 @@ CONFIG_FILE_USE_PATH=$WORKSPACE/www/wiki/helpers/config.page
 cp -a $CONFIG_FILE_BACKUP_PATH $CONFIG_FILE_USE_PATH
 
 
-docker build -t wikicraft-dist -f ./ci/Dockerfile.dist ..
+docker build -t wikicraft-dist -f Dockerfile.dist ..
 docker run --rm wikicraft-dist > build.tar.gz
 docker rmi wikicraft-dist
 
