@@ -144,6 +144,7 @@ KEEPWORK["request_before_filter"] = {
 	-- 注册限制
 	[filter.API_URL_PREFIX .. "user/register"] = {
 		requestCountLimit({typ="register"}),
+		sensitiveWordFilter,
 	},
 	-- 获得用户配置信息
 	[filter.API_URL_PREFIX .. "user/getProfile"] = {
@@ -163,6 +164,12 @@ KEEPWORK["request_before_filter"] = {
 	},
 
 	[filter.API_URL_PREFIX .. "website/updateByName"] = {
+		sensitiveWordFilter,
+	},
+	[filter.API_URL_PREFIX .. "website/upsert"] = {
+		sensitiveWordFilter,
+	},
+	[filter.API_URL_PREFIX .. "website/createSite"] = {
 		sensitiveWordFilter,
 	},
 	[filter.API_URL_PREFIX .. "user/updateUserInfo"] = {
