@@ -9,7 +9,7 @@ define([
 	'text!wikimod/admin/html/index.html',
     'templates.js',
     'text!wikimod/admin/html/templates.html',
-	'/wiki/js/lib/md5.js',
+	'md5',
 ], function (app, util, mods, htmlContent, websiteTemplateContent) {
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";

@@ -60,6 +60,7 @@
 			'qiniu': libPathPrefix + "qiniu/qiniu.min",
 			'swiper': libPathPrefix + "swiper/swiper.min",
 			'js-aho-corasick': libPathPrefix + "js-aho-corasick/aho-corasick",
+			'md5': libPathPrefix + "md5",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			// 自定义模块
