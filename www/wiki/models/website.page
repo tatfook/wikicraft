@@ -24,6 +24,8 @@ include_once("./website_domain.page")
 include_once("./site_data_source.page")
 include_once("./site_group.page")
 
+NPL.load("(gl)script/ide/math/bit.lua")
+
 local website = inherit(models.abstract.base, gettable("models.website"))
 
 website.db_name = "website"
@@ -63,6 +65,7 @@ function website:ctor()
 	self:addfield("memberCount", "number")
 	self:addfield("worksCount", "number")
 	self:addfield("state", "number")
+	self:addfield("sensitiveWordLevel", "number")
 end
 
 -- 创建站点 paracraft 客户端有使用 以后可能废弃  
@@ -310,6 +313,17 @@ function website:api_updateByName(params)
 	local tokeninfo = getTokenInfo()
 	if (tokeninfo.username ~= params.username) and (not tokeninfo.isAdmin) then
 		return errors:wrap(errors.NOT_PRIVILEGES)
+	end
+
+	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
+	local _, siteinfo = yield()
+	if not siteinfo then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	local sensitiveWordLevel = siteinfo.sensitiveWordLevel or 0
+
+	if not sensitiveWordFilter() and not mathlib.bit.band(const.SENSITIVE_WORD_SITE) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local sitename = params.sitename
