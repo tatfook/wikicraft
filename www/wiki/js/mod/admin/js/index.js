@@ -27,6 +27,17 @@ define([
 		$scope.data = [];
 		$scope.oauthData = [];
 		$scope.oauthParams = {};
+		$scope.whiteList = [{
+			"trueValue": 1,
+            "falseValue": 0,
+			"displayValue":"用户页显示",
+			"result":"markdownShow"
+		},{
+            "trueValue": 2,
+            "falseValue": 0,
+            "displayValue":"网站设置保存",
+            "result":"saveSetting"
+        }];
 		//$scope.roleId = 10;
 		
 		
@@ -42,7 +53,7 @@ define([
 
 			var payload = $auth.getPayload();
 			$scope.roleId = payload.roleId;
-			
+
 			if (!payload.isAdmin) {
 				util.go(urlPrefix + "login");
 			}
@@ -486,7 +497,26 @@ define([
 				$scope.siteList = data.siteList || [];
 				$scope.totalItems = data.total || 0;
 			});
-		}
+		};
+		$scope.getInit = function (sensitiveItem, site) {
+			return (site.sensitiveWordLevel & sensitiveItem.trueValue);
+        };
+
+		$scope.setSensitive = function (sensitiveItem, site) {
+			if (site[sensitiveItem.result] > 0){// 取消权限
+                site.sensitiveWordLevel = site.sensitiveWordLevel | sensitiveItem.trueValue;
+			}else{
+                site.sensitiveWordLevel = site.sensitiveWordLevel ^ sensitiveItem.trueValue;
+			}
+
+			site.sitename = site.name;
+            util.post(config.apiUrlPrefix + 'website/updateByName', site, function (data) {
+                Message.info("权限修改成功!!!");
+            }, function () {
+                Message.warning("权限修改失败!!!");
+            });
+        };
+
 		//搜索网站
 		$scope.siteSearchById;
 		$scope.siteSearchByUsername = "";
@@ -510,34 +540,34 @@ define([
 				$scope.siteList = data.data || [];
 				$scope.totalItems = data.total || 0;
 			});
-		}
+		};
 
 		// 点击编辑站点
 		$scope.clickEditSite = function () {
 
-		}
+		};
 		// 点击禁用的站点
-		$scope.clickEnableSite = function () {
+		$scope.clickEnableSite = function (site) {
 			site.state = site.state == -1 ? 0 :  -1;
 			util.post(config.apiUrlPrefix + "website/updateByName", {username:site.username, sitename:site.name, state:site.state}, function () {
 			});
-		}
+		};
 		// 点击删除站点
 		$scope.clickDeleteSite = function (site) {
 			util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
 				site.isDelete = true;
 			});
-		}
+		};
 
 		
 		//
 		$scope.getoperationLogList = function () {
 			$scope.selectMenuItem = "operationLog";
-		}
+		};
 		
 		$scope.getFileCheckList = function () {
 			$scope.selectMenuItem = "fileCheck";
-		}
+		};
 
 		// wiki cmd
 		$scope.clickUpsertWikicmd = function() {
