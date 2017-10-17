@@ -1,13 +1,12 @@
 #! /usr/bin/env bash
 #
-# build-image.sh
 #
 # build docker image
 #
 # usage:
 #   ./build-image.sh dev|test
 #
-set -x
+set -ex
 
 usage() {
   echo "usage error"
@@ -26,10 +25,6 @@ fi
 
 ENV_TYPE=$1
 
-is_test() {
-  [[ $ENV_TYPE == "test" ]]
-}
-
 # use npl_packages in runtime image, not in local dir
 if [[ -d "npl_packages" ]]; then
   rm -rf npl_packages
@@ -41,14 +36,9 @@ CONFIG_FILE_USE_PATH=$WORKSPACE/www/wiki/helpers/config.page
 cp -a $CONFIG_FILE_BACKUP_PATH $CONFIG_FILE_USE_PATH
 
 
-if is_test; then
-  docker build -t wikicraft-dist -f Dockerfile.dist .
-  docker run --rm wikicraft-dist > build.tar.gz
-  docker rmi wikicraft-dist
-else
-  touch build.tar.gz
-  tar -czf build.tar.gz --exclude build.tar.gz .
-fi
+docker build -t wikicraft-dist -f Dockerfile.dist ..
+docker run --rm wikicraft-dist > build.tar.gz
+docker rmi wikicraft-dist
 
 # build image with build.tar.gz file
 docker build -t keepwork/$ENV_TYPE:b$BUILD_NUMBER .
