@@ -22,6 +22,9 @@
         },
 		{
 			name:"controller/wikiEditorController",
+			include:[
+				"controller/newWebsiteController"
+			],
 			exclude:[
 				'app'
 			]
