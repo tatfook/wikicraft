@@ -186,11 +186,14 @@ end
 
 function admin:api_insertUserLog(params)
 	if params.userid ~= nil and params.username ~= nil and params.operation ~= nil and params.description ~= nil and params.targetType ~= nil and params.targetId ~= nil and params.createAt ~= nil then
+		local userLogDB = models.user_log:new()
+		userLogDB:db():insertOne(nil, {createAt=params.createAt, userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
+		local _, insertedLog = yield()
+		return errors:wrap(nil, {insertedLog = insertedLog})
+	else 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	self:db():insertOne(nil, {createAt=params.createAt, userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
-	local _, insertedLog = yield()
-	return errors:wrap(nil, {insertedLog = insertedLog})
+	
 end
 
 -- 获取操作日志列表

@@ -489,6 +489,28 @@ define([
 			});
 		}
 		
+		//创建用户日志
+		$scope.createUserLog = function () {
+			util.post(config.apiUrlPrefix + "admin/insertUserLog", {
+				createAt:"2017-10-17 11:41:07",
+				userid:"1",
+				username:"lizq",
+				userip:"0.0.0.0",
+				operation:"delete",
+				description:"info",
+				targetType:"user_log",
+				targetId:0,
+			}, function (data) {
+				data = data || {};
+				//$scope.userLogList = data.userLogList || [];
+				//$scope.totalItems = data.total || 0;
+				var newUserLog = data.userLogList || [];
+				if(newUserLog){
+					alert("创建成功！");
+				}
+			});
+		}
+		
 		// 获取站点列表
 		$scope.getSiteList = function () {
 			$scope.selectMenuItem = "site";

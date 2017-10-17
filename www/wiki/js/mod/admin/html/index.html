@@ -708,6 +708,7 @@ li{
 							<input ng-model="userLogSearchByOperation" type="text" class="form-control" placeholder="请输入用户操作">
 						</div>
 						<button class="btn btn-default" ng-click="userLogSearch()">查询</button>
+						<button class="btn btn-default" ng-click="createUserLog()">测试创建</button>
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -719,8 +720,8 @@ li{
 							<th>创建时间</th>
 							<th>用户操作</th>
 							<th>描述</th>
-							<th>targetType</th>
-							<th>targetID</th>
+							<th>操作类型</th>
+							<th>操作ID</th>
 						</tr>
 					</thead>
 					<tbody>
