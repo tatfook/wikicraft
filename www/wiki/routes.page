@@ -176,7 +176,7 @@ function RenderServerWikiScript()
 	config.webroot = '/' .. WIKI_CODE_ENV .. '/'
 	--config.token = getTokenStr()
 	local devIndex = string.find(config.hostname, ".dev.keepwork.com")
-	if config.hostname == "dev.keepwork.com" or devIndex then
+	if config.hostname == "dev.keepwork.com" or config.hostname == "stage.keepwork.com" or devIndex then
 		config.bustVersion = os.time()
 	else 
 		config.bustVersion = getBustVersion()
