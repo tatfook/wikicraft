@@ -476,18 +476,8 @@ define([
             return md;
         };
 
-        var filterSensitive = function (inputText) {
-            var result = "";
-            config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
-                result = outputText;
-                return inputText;
-            });
-            return result;
-        };
-
         // force render a given text
         mdwiki.render = function (text) {
-            text = filterSensitive(text) || text;
             text = encodeURI(text);
             if (mdwiki.mdwikiContainerSelector) {
                 mdwikiRender(mdwikiName, text);
