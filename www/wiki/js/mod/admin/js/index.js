@@ -19,6 +19,7 @@ define([
 		$scope.managerCurrentPage = 1;
 		$scope.operationLogCurrentPage = 1;
 		$scope.userCurrentPage = 1;
+		$scope.userLogCurrentPage = 1;
 		$scope.siteCurrentPage = 1;
 		$scope.domainCurrentPage = 1;
 		$scope.fileCheckCurrentPage = 1;
@@ -475,6 +476,19 @@ define([
 			});
 		}
 
+		//用户日志列表
+		$scope.getUserLogList = function () {
+			$scope.selectMenuItem = "userLog";
+			util.post(config.apiUrlPrefix + "admin/getUserLogList", {
+				page:$scope.userLogCurrentPage,
+				pageSize:$scope.pageSize,
+			}, function (data) {
+				data = data || {};
+				$scope.userLogList = data.userLogList || [];
+				$scope.totalItems = data.total || 0;
+			});
+		}
+		
 		// 获取站点列表
 		$scope.getSiteList = function () {
 			$scope.selectMenuItem = "site";
@@ -527,16 +541,6 @@ define([
 			util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
 				site.isDelete = true;
 			});
-		}
-
-		
-		//
-		$scope.getoperationLogList = function () {
-			$scope.selectMenuItem = "operationLog";
-		}
-		
-		$scope.getUserLog = function () {
-			$scope.selectMenuItem = "userLog";
 		}
 
 		// wiki cmd

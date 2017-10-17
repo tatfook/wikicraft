@@ -7,6 +7,7 @@ Date: 2016/10/21
 
 include_once("./user.page")
 include_once("./website.page")
+include_once("./user_log.page")
 
 local admin = inherit(models.abstract.base, gettable("models.admin"))
 admin.db_name = "admin"
@@ -166,10 +167,14 @@ function admin:api_getVIPList(params)
 	return errors:wrap(nil, {total=total, VIPList = VIPList})
 end
 
-function admin:api_getLogList(params)
+function admin:api_getUserLogList(params)
 	self:adminAuth()
 	local skip, limit = util:pagination(params)
 	local userLogDB = models.user_log:new()
+	
+	--local createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	--userLogDB:db():insertOne(nil, {createAt=createAt, userid=1, username="lizq", userip="0.0.0.0", operation="add", description="init", targetType="user_log", targetId=0}, resume)
+	
 	userLogDB:db():count({}, resume)
 	local _,total = yield()
 	
@@ -178,6 +183,15 @@ function admin:api_getLogList(params)
 	
 	return errors:wrap(nil, {total=total, userLogList = userLogList})
 end 
+
+function admin:api_insertUserLog(params)
+	if params.userid ~= nil and params.username ~= nil and params.operation ~= nil and params.description ~= nil and params.targetType ~= nil and params.targetId ~= nil and params.createAt ~= nil then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	self:db():insertOne(nil, {createAt=params.createAt, userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
+	local _, insertedLog = yield()
+	return errors:wrap(nil, {insertedLog = insertedLog})
+end
 
 -- 获取操作日志列表
 --[[

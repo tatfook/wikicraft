@@ -264,7 +264,7 @@ li{
 							</li>
 							<li>
 								<div ng-class='getStyleClass("userLog")'>
-									<div class="panel-heading" ng-click='getUserLog()'>用户日志</div>
+									<div class="panel-heading" ng-click='getUserLogList()'>用户日志</div>
 								</div>
 							</li>
 							<li>
@@ -691,9 +691,59 @@ li{
 				</div>
 				
 			</div>
-			<!--文件审核-->
+			<!--用户日志-->
 			<div ng-show='selectMenuItem=="userLog"'>
-				用户日志
+				<div style="margin: 10px;">
+					<form role="form" class="form-inline">
+						<div class="form-group">
+							<label>
+								用户名:
+							</label>
+							<input ng-model="userLogSearchByUserName" type="text" class="form-control" placeholder="请输入用户名">
+						</div>
+						<div class="form-group">
+							<label>
+								用户操作:
+							</label>
+							<input ng-model="userLogSearchByOperation" type="text" class="form-control" placeholder="请输入用户操作">
+						</div>
+						<button class="btn btn-default" ng-click="userLogSearch()">查询</button>
+					</form>
+				</div>
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>用户名</th>
+							<th>用户IP</th>
+							<th>创建时间</th>
+							<th>用户操作</th>
+							<th>描述</th>
+							<th>targetType</th>
+							<th>targetID</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="x in userLogList" ng-hide="x.isDelete">
+							<td>{{x._id}}</td>
+							<td>{{x.username}}</td>
+							<td>{{x.userip}}</td>
+							<td>{{x.createAt}}</td>
+							<td>{{x.operation}}</td>
+							<td>{{x.description}}</td>
+							<td>{{x.targetType}}</td>
+							<td>{{x.targetId}}</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				<div class="pagination-box">
+					<ul uib-pagination ng-change="getVIPList()" items-per-page='pageSize' previous-text="上一页"
+																		   next-text="下一页" total-items="totalItems" ng-model="VIPCurrentPage" max-size="5"
+																						   class="pagination-sm" boundary-link-numbers="true">
+					</ul>
+				</div>
+				
 			</div>
 			<!--VIP管理-->
 			<div ng-show='selectMenuItem=="vip"'>
