@@ -37,6 +37,7 @@
                 <span class="icon text-success glyphicon glyphicon-ok" ng-show="confirmObj.theme == 'success'"></span>
                 {{confirmObj.content}}
             </h3>
+            <p ng-bind-html="confirmObj.contentHtml"></p>
         </div>
         <div class="modal-footer">
             <button ng-show="confirmObj.confirmBtn" type="submit" class="btn btn-fill {{confirmObj.confirmBtnClass || 'btn-primary'}}">确定</button>

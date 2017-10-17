@@ -215,7 +215,7 @@ function bigfile:api_updateById(params)
 		new_data.source_url = params.download_url
 	end
 
-	self:db():updateOne({_id=params._id}, new_data)
+	self:db():updateOne({_id=params._id}, new_data, resume)
 	return errors:wrap(yield())
 end
 
@@ -252,9 +252,7 @@ function bigfile:api_getUserStoreInfo(params)
 
 	local qiniuDB = models.qiniu:new()
 
-	qiniuDB:db():findOne({["+username"]={username}}, resume)
-
-	return errors:wrap(yield())
+	return qiniuDB:api_getByUsername({username=username})
 end
 
 

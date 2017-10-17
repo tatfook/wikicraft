@@ -6,6 +6,7 @@ Date: 2017/09/11
 ]]
 
 include_once("./abstract/base.page")
+include_once("./qiniu.page")
 
 local qiniu_files = inherit(models.abstract.base, gettable("models.qiniu_files"))
 qiniu_files.db_name = "qiniu_files"
@@ -99,6 +100,10 @@ function qiniu_files:api_getDownloadUrlById(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
-	return errors:wrap(nil, qiniuFiles.download_url)
+	local qiniuDB = models.qiniu:new()
+	local download_url = qiniuDB:api_getDownloadUrl(qiniuFiles).data
+	download_url = download_url and download_url.download_url
+
+	return errors:wrap(nil, download_url or qiniuFiles.download_url)
 end
 

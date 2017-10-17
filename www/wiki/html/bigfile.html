@@ -1,0 +1,343 @@
+<style>
+    .searchbar{
+        position: relative;
+    }
+    .searchbar .glyphicon-search {
+        position: absolute;
+        right: 12px;
+        top: 8px;
+    }
+    .bigfile-modal .btn-primary{
+        padding: 6px 20px;
+        font-size: 16px;
+    }
+    .bigfile-modal .tab-pane {
+        padding: 30px 40px;
+        font-size: 16px;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .bigfile-modal .form-inline{
+        padding: 5px 0 30px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .bigfile-modal .form-inline .form-control{
+        width: 360px;
+        padding: 8px 15px;
+    }
+    .bigfile-modal .form-inline .input-group{
+        margin-right: 15px;
+    }
+    .bigfile-modal .search-zone{
+        padding: 30px 0 10px;
+        display: flex;
+        align-items: center;
+    }
+    .bigfile-modal .search-zone > span{
+        flex: 1;
+    }
+    .bigfile-modal .only-search{
+        padding: 10px 0;
+    }
+    .bigfile-modal .table{
+        text-align: center;
+        font-size: 14px;
+        table-layout: fixed;
+    }
+    .bigfile-modal .table > thead{
+        background-color: #B1D4F3;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .bigfile-modal .table tr > td{
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .bigfile-modal .table tr > td[contenteditable = true]{
+        text-overflow: unset;
+    }
+    .bigfile-modal .table .checkbox-column{
+        width: 50px;
+    }
+    .bigfile-modal .table .type-column, .bigfile-modal .table .size-column{
+        width: 80px;
+    }
+    .bigfile-modal .table .date-column{
+        width: 120px;
+    }
+    .bigfile-modal .table .operate-column{
+        width: 160px;
+    }
+    .bigfile-modal .table .operate-column > span, .bigfile-modal .table .operate-column > a {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        background-color: #D3EAFF;
+        line-height: 36px;
+        cursor: pointer;
+    }
+    .bigfile-modal .manage-table .operate-column{
+        width: 220px;
+        font-size: 0;
+        -webkit-text-size-adjust: none;
+    }
+    .bigfile-modal .manage-table .operate-column > span, .bigfile-modal .manage-table .operate-column > a{
+        margin: 0 5px;
+    }
+    .bigfile-modal .manage-table thead .operate-column{
+        font-size: 14px;
+    }
+    .bigfile-modal .file-progress{
+        border: 1px solid #3977AD;
+        width: 100%;
+        height: 270px;
+        overflow-y: auto;
+        margin-top: 20px;
+    }
+    .bigfile-modal .upload-info{
+        text-align: center;
+        line-height: 265px;
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 0;
+    }
+    /*.bigfile-modal .file-input-btn{*/
+        /*position: relative;*/
+        /*overflow: hidden;*/
+    /*}*/
+    /*.bigfile-modal .file-input-btn > input{*/
+        /*position: absolute;*/
+        /*top: 0;*/
+        /*right: 0;*/
+        /*bottom: 0;*/
+        /*opacity: 0;*/
+        /*background-color: red;*/
+        /*cursor: pointer;*/
+    /*}*/
+    .bigfile-modal .process-li {
+        padding: 10px 0;
+    }
+    .bigfile-modal .process-li .progress {
+        display: inline-block;
+        margin-bottom: -5px;
+        width: 220px;
+        position: relative;
+        background-color: #B4BBC6;
+        border-radius: 10px;
+        box-shadow: none;
+    }
+    .bigfile-modal .process-li .progress-bar{
+        background-color: #43A8FF;
+    }
+    .bigfile-modal .process-li .info{
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-evenly;
+        color: #FFF;
+    }
+    .bigfile-modal .file-group-item{
+        display: flex;
+        padding: 0 70px 0 40px;
+        align-items: center;
+        height: 50px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+    .bigfile-modal .file-group-item .left-col{
+        white-space: nowrap;
+        overflow: hidden;
+        flex: 1;
+        font-size: 14px;
+        text-overflow: ellipsis;
+    }
+    .bigfile-modal .file-group-item .right-col {
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        margin-left: 20px;
+    }
+    .bigfile-modal .file-group-item .progress{
+        display: inline-block;
+        width: 200px;
+        margin: 0 10px;
+        height: 12px;
+        border-radius: 0;
+    }
+    .bigfile-modal .file-group-item .progress-bar{
+        background-color: #43A8FF;
+    }
+    p.dialog-info-title{
+        font-size: 20px;
+        text-align: left;
+        padding-left: 60px;
+    }
+    p.dialog-info{
+        text-align: left;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 60px;
+        line-height: 1.5;
+    }
+    .dialog-info > .text-success{
+        color: #51CB00;
+        font-size: 12px;
+    }
+</style>
+<div ng-controller="bigfileController">
+    <div class="bigfile-modal">
+        <div class="modal-header">
+            网盘功能
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+            <ul class="nav nav-tabs clearfix" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#insert" aria-controls="insert" role="tab" data-toggle="tab">插入文件</a>
+                </li>
+                <li role="presentation">
+                    <a href="#fileManage" aria-controls="fileManage" role="tab" data-toggle="tab">网盘管理</a>
+                </li>
+                <li role="presentation">
+                    <a id="activeUpload" href="#uploadFile" aria-controls="uploadFile" role="tab" data-toggle="tab" ng-click="initQiniu()">上传文件</a>
+                </li>
+                <li class="pull-right process-li">
+                    当前使用：
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
+                        </div>
+                        <div class="info">
+                            <span>{{storeInfo.unUsed | number:2}}GB可用</span>
+                            <span>总共{{storeInfo.total | number:2}}GB</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active clearfix" role="tabpanel" id="insert">
+                    <p>输入已有url地址：</p>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="http://" ng-model="insertUrl" required>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedType}} <span class="caret"></span></button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li ng-click="selectedType = '图片'"><a>图片</a></li>
+                                        <li ng-click="selectedType = '视频'"><a>视频</a></li>
+                                        <li ng-click="selectedType = '其它'"><a>其它</a></li>
+                                    </ul>
+                                </div><!-- /btn-group -->
+                            </div>
+                            <button class="btn btn-primary" ng-click="insertFilesUrl()">插 入</button>
+                            <span class="text-danger" ng-show="insertFileUrlErr">{{insertFileUrlErr}}</span>
+                        </div>
+                    </form>
+                    <div class="search-zone clearfix">
+                        <span>或者在我的大文件中选择：</span>
+                        <div class="searchbar pull-right">
+                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </div>
+                    </div>
+                    <table class="table insert-table">
+                        <thead>
+                            <tr>
+                                <td class="checkbox-column">多选</td>
+                                <td class="file-column">文件名</td>
+                                <td class="type-column">文件类型</td>
+                                <td class="size-column">大小</td>
+                                <td class="date-column">更新时间</td>
+                                <td class="operate-column">操作</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                                <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
+                                <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
+                                <td class="type-column" title="{{file.file.type}}">{{file.file.type}}</td>
+                                <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
+                                <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                                <td class="operate-column">
+                                    <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary pull-right" ng-click="insertFiles()">插入选中</button>
+                </div>
+                <div class="tab-pane clearfix" role="tabpanel" id="fileManage">
+                    <div class="only-search clearfix">
+                        <div class="searchbar pull-right">
+                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </div>
+                    </div>
+                    <table class="table manage-table">
+                        <thead>
+                        <tr>
+                            <td class="checkbox-column">多选</td>
+                            <td class="file-column">文件名</td>
+                            <td class="type-column">文件类型</td>
+                            <td class="size-column">大小</td>
+                            <td class="date-column">更新时间</td>
+                            <td class="operate-column">操作</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                            <td class="checkbox-column">
+                                <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
+                            </td>
+                            <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
+                            <td class="type-column" title="{{file.file.type}}">{{file.file.type}}</td>
+                            <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
+                            <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                            <td class="operate-column">
+                                <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
+                                <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
+                                <span title="下载" ng-click="downloadFile(file)"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></span>
+                                <!--<a ng-href="{{file.file.download_url}}" target="_blank"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></a>-->
+                                <span title="删除" ng-click="deleteFile(file, $index)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary pull-right" ng-click="deleteFiles()">删除选中</button>
+                </div>
+                <div class="tab-pane" role="tabpanel" id="uploadFile">
+                    <h3 ng-show="updatingFile && updatingFile.filename">选择 {{updatingFile.filename}} 的更新文件</h3>
+                    <button id="selectFileInput" class="btn btn-primary file-input-btn">选中本地文件</button>
+                    <div id="dropFile" class="file-progress">
+                        <p ng-show="!uploadingFiles || uploadingFiles.length  < 1" class="upload-info">
+                            <img ng-src="{{getImageUrl('icon/wiki_upload_file.png', imgsPath)}}" alt="">
+                            也可将上传的文件拖拽到此
+                        </p>
+                        <div class="file-group" ng-show="uploadingFiles">
+                            <div class="file-group-item" ng-repeat="file in uploadingFiles" ng-hide="file.isDelete">
+                                <div class="left-col">
+                                    <img alt="">{{file.name}}
+                                </div>
+                                <div class="right-col">
+                                    <span>{{file.size * file.percent/100/1024/1024 | number:2}}MB/{{file.size/1024/1024 | number:2}}MB</span>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="{{file.percent}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': file.percent+'%'}">
+                                            <span class="sr-only">{{file.pervent}}% Complete</span>
+                                        </div>
+                                    </div>
+                                    <span ng-click="stopUpload(file, $index)" ng-show="!file.status || file.status != 'success'" class="glyphicon glyphicon-remove"></span>
+                                    <span ng-show="file.status == 'success'" class="text-success glyphicon glyphicon-ok"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
