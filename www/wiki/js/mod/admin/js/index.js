@@ -9,7 +9,7 @@ define([
 	'text!wikimod/admin/html/index.html',
     'templates.js',
     'text!wikimod/admin/html/templates.html',
-	'/wiki/js/lib/md5.js',
+	//'/wiki/js/lib/md5.js',
 ], function (app, util, mods, htmlContent, websiteTemplateContent) {
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
@@ -535,8 +535,8 @@ define([
 			$scope.selectMenuItem = "operationLog";
 		}
 		
-		$scope.getFileCheckList = function () {
-			$scope.selectMenuItem = "fileCheck";
+		$scope.getUserLog = function () {
+			$scope.selectMenuItem = "userLog";
 		}
 
 		// wiki cmd

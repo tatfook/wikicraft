@@ -1,0 +1,39 @@
+<?npl
+--[[
+Title: user log
+Author: lizhiqiang
+Date: 2017/10/16
+]]
+
+NPL.load("(gl)script/ide/DateTime.lua")
+include_once("./abstract/base.page")
+
+local user_log = inherit(models.abstract.base, gettable("models.user_log"))
+user_log.db_name = 'user_log'
+
+function user_log:ctor()
+	self:addfield("userid", "number")
+	self:addfield("username", "string")
+	self:addfield("userip","string")
+	self:addfield("operation","string")
+	self:addfield("description","string")
+	self:addfield("targetType", "string")
+	self:addfield("targetId", "number")
+end
+
+function insertLog(params)
+	if params.userid ~= nil and params.username ~= nil and params.operation ~= nil and params.description ~= nil and params.targetType ~= nil and params.targetId ~= nil then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	self:db():insertOne(nil, {userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
+	local _, insertedLog = yield()
+	return errors:wrap(nil, {insertedLog = insertedLog})
+	
+end
+
+function test()
+	self:db():insertOne(nil, {userid=1, username="lizq", userip="0.0.0.0", operation="add", description="init", targetType="user_log", targetId=0}, resume)
+	local _, insertedLog = yield()
+	return errors:wrap(nil, {insertedLog = insertedLog})
+end 
+

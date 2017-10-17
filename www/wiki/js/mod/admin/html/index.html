@@ -228,7 +228,7 @@ li{
 									<div class="panel-heading" ng-click='getManagerList()'>管理员</div>
 								</div>
 							</li>
-							<li>
+							<li ng-show=false>
 								<div ng-class='getStyleClass("operationLog")'>
 									<div class="panel-heading" ng-click='getoperationLogList()'>操作日志</div>
 								</div>
@@ -263,8 +263,8 @@ li{
 								</div>
 							</li>
 							<li>
-								<div ng-class='getStyleClass("fileCheck")'>
-									<div class="panel-heading" ng-click='getFileCheckList()'>文件审核</div>
+								<div ng-class='getStyleClass("userLog")'>
+									<div class="panel-heading" ng-click='getUserLog()'>用户日志</div>
 								</div>
 							</li>
 							<li>
@@ -692,8 +692,8 @@ li{
 				
 			</div>
 			<!--文件审核-->
-			<div ng-show='selectMenuItem=="fileCheck"'>
-				文件审核
+			<div ng-show='selectMenuItem=="userLog"'>
+				用户日志
 			</div>
 			<!--VIP管理-->
 			<div ng-show='selectMenuItem=="vip"'>
