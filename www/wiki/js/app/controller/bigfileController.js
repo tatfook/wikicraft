@@ -11,7 +11,7 @@ define([
         var qiniuBack;
         $scope.selectedType = "图片";
         $scope.cancel = function () {
-            if ($scope.uploadingFiles.length > 0){
+            if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0){
                 console.log("正在上传");
             }
             $scope.$dismiss();
@@ -171,7 +171,6 @@ define([
                     },
                 }
             };
-            console.log($scope.updatingFile);
 
             if ($scope.updatingFile && $scope.updatingFile._id){// 更新文件
                 var type = $scope.updatingFile.file.type;
@@ -188,15 +187,11 @@ define([
                     "prevent_duplicates": true,
                     "mime_types": minTypes
                 };
-                console.log(option.filters);
             }
-            console.log(option);
             if (qiniuBack){
                 qiniuBack.destroy();
             }
-            console.log(qiniuBack);
             qiniuBack = qiniu.uploader(option);
-            console.log(qiniuBack);
         };
 
         var init = function () {
@@ -211,8 +206,17 @@ define([
         $scope.$watch("$viewContentLoaded", init);
 
         $scope.stopUpload = function (file) {
-            qiniuBack.removeFile(file);
-            file.isDelete = true;
+            qiniuBack.stop();
+            config.services.confirmDialog({
+                "title": "取消上传",
+                "confirmBtnClass": "btn-danger",
+                "theme": "danger",
+                "content": "确定取消该文件上传吗？"
+            }, function () {
+                qiniuBack.removeFile(file);
+                file.isDelete = true;
+            });
+            qiniuBack.start();
         };
 
         $scope.deleteFile = function(files, index) {
@@ -356,9 +360,16 @@ define([
         }
 
         $scope.insertFilesUrl = function () {
+            $scope.insertFileUrlErr = "";
             var type = "";
             var url = $scope.insertUrl;
+            var urlReg= /^(http|https):\/\//;
             if (!url){
+                $scope.insertFileUrlErr = "请输入要插入的url地址！";
+                return;
+            }
+            if (!urlReg.test(url)){
+                $scope.insertFileUrlErr = "请输入正确的url地址！";
                 return;
             }
             console.log($scope.selectedType);
