@@ -34,7 +34,8 @@ define([
         'modal',
         'gitlab',
         'confirmDialog',
-        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
+        'sensitiveTest',
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, sensitiveTest) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -58,6 +59,7 @@ define([
                     dataSource:dataSource,
                     loading:loading,
                     confirmDialog:confirmDialog,
+                    sensitiveTest: sensitiveTest
                 };
 
                 util.setAngularServices({
@@ -77,7 +79,7 @@ define([
                     gitlab:gitlab,
                     dataSource:dataSource,
                     loading:loading,
-                    confirmDialog:confirmDialog,
+                    confirmDialog:confirmDialog
                 });
 
                 $rootScope.imgsPath = config.imgsPath;
@@ -248,6 +250,14 @@ define([
                         $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
+                        var filterSensitive = function (inputText) {
+                            var result = "";
+                            config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
+                                result = outputText;
+                                return inputText;
+                            });
+                            return result;
+                        };
 						var callback = function() {
 							if (!$scope.user || $scope.user.username != data.userinfo.username) {
 								userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
@@ -256,7 +266,8 @@ define([
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
-									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
+									// console.log(content);
+									content = (content!=undefined) ? md.render(filterSensitive(content)) : notfoundHtmlContent;
 									util.html('#__UserSitePageContent__', content, $scope);
 									//config.loading.hideLoading();
 								};
@@ -279,7 +290,7 @@ define([
 									renderContent();
 								});
 							});
-						}
+						};
 						// 使用自己的token
 						if (Account.isAuthenticated()) {
 							Account.getUser(function(userinfo){

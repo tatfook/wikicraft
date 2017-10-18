@@ -96,6 +96,26 @@ function authenticatedVip()
 	return true
 end
 
+-- 敏感词过滤
+function sensitiveWordFilter()
+	local params = request:getparams()
+	if type(params) ~= "table" then
+		params = {params}
+	end
+
+	local str = ""
+	for _, value in pairs(params) do
+		str = str .. tostring(value)
+	end
+
+	local result = sensitive_word_match(str)
+	if not result or #result == 0 then
+		return true
+	end
+
+	return false
+end
+
 function testFilter()
 	log("test filter")
 	return true
@@ -124,6 +144,7 @@ KEEPWORK["request_before_filter"] = {
 	-- 注册限制
 	[filter.API_URL_PREFIX .. "user/register"] = {
 		requestCountLimit({typ="register"}),
+		sensitiveWordFilter,
 	},
 	-- 获得用户配置信息
 	[filter.API_URL_PREFIX .. "user/getProfile"] = {
@@ -140,6 +161,19 @@ KEEPWORK["request_before_filter"] = {
 	-- 添加cname
 	[filter.API_URL_PREFIX .. "website_domain/upsert"] = {
 		authenticatedVip,
+	},
+
+	--[filter.API_URL_PREFIX .. "website/updateByName"] = {
+		--sensitiveWordFilter,
+	--},
+	[filter.API_URL_PREFIX .. "website/upsert"] = {
+		sensitiveWordFilter,
+	},
+	[filter.API_URL_PREFIX .. "website/createSite"] = {
+		sensitiveWordFilter,
+	},
+	[filter.API_URL_PREFIX .. "user/updateUserInfo"] = {
+		sensitiveWordFilter,
 	},
 }
 
