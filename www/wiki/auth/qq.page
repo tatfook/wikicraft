@@ -28,7 +28,7 @@ local err, data = yield()
 local accessToken = util.parse_str(data.data)
 log("auth step 1")
 LOG.std(nil, "error", "keepwork", accessToken)
-if((not accessToken) or (accessToken.error)) then
+if not accessToken or accessToken.error or not accessToken.access_token then
 	return response:send({error=1, message="access token invaild"})
 end
 

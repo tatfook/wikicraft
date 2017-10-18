@@ -31,7 +31,9 @@ cp -a $DEV_DIR $TEMP_DIR
 node r.js -o r_package.js
 clean_dir $TEMP_DIR
 
+clean_dir $DEV_DIR
 clean_dir $TEST_DIR
 clean_dir $PROD_DIR
+ln -s $BUILD_DIR $DEV_DIR
 ln -s $BUILD_DIR $TEST_DIR
 ln -s $BUILD_DIR $PROD_DIR

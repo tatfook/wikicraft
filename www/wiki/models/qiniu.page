@@ -129,13 +129,22 @@ end
 
 -- 获取用户存贮空间状态
 function qiniu:api_getByUsername(params)
-	if not params.username then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
+	local username = getUsername()
 
-	self:db():findOne({["+username"]={params.username}}, resume)
+	self:db():findOne({["+username"]={username}}, resume)
+	local _, data = yield()
+
+	if not data then
+		data = {
+			username=username,
+			used = 0,
+			total = 2 * 1024 * 1024 * 1024,
+		}
+		self:db():insertOne({["+username"]={username}}, data, resume)
+		yield()
+	end
 	
-	return errors:wrap(yield())
+	return errors:wrap(nil, data)
 end
 
 -- 通过文件名获取

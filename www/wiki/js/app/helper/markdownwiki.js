@@ -368,7 +368,7 @@ define([
             }
 
             renderWikiBlock(mdwiki, mdwiki.template);
-        }
+        };
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
@@ -450,31 +450,31 @@ define([
 
 		mdwiki.registerRenderAfterCallback = function(name, fn) {
 			this.renderAfterCBMap[name] = fn;
-		}
+		};
 		
 		mdwiki.renderAfterCallback = function() {
 			for (var key in this.renderAfterCBMap) {
 				var fn = this.renderAfterCBMap[key];
 				fn && fn();
 			}
-		}
+		};
 
         mdwiki.enableEditor = function () {
             mdwiki.editorMode = true;
-        }
+        };
 
         mdwiki.disableEditor = function () {
             mdwiki.editorMode = false;
-        }
+        };
 
         mdwiki.isEditor = function () {
             return mdwiki.editorMode;
-        }
+        };
 
         // 获取原生markdown
         mdwiki.getMarkdown = function () {
             return md;
-        }
+        };
 
         // force render a given text
         mdwiki.render = function (text) {

@@ -22,15 +22,31 @@
         },
 		{
 			name:"controller/wikiEditorController",
+			include:[
+				"controller/newWebsiteController"
+			],
 			exclude:[
 				'app'
-				//'helper/markdownwiki',
-				//'helper/util',
-				//'helper/storage',
-				//'helper/dataSource',
-				//'helper/mdconf'
 			]
-		}
+		},
+		{
+			name:"controller/websiteController",
+			exclude:[
+				'app'
+			]
+		},
+		{
+			name:"controller/userCenterController",
+			exclude:[
+				'app'
+			]
+		},
+		{
+			name:"controller/knowledgeController",
+			exclude:[
+				'app'
+			]
+		},
     ],
     //out:'build/main.js',
     paths:{
@@ -59,6 +75,8 @@
 		'pingpp': 'lib/pingpp-js/dist/pingpp',
 		'plupload': "lib/qiniu/plupload.full.min",
 		'qiniu': "lib/qiniu/qiniu.min",
+        'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
+        'md5': "lib/md5",
 
         // 自定义模块
         'app': 'app',
