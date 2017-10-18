@@ -166,7 +166,7 @@ end
 
 function RenderServerWikiCss()
 	local bustVersion = getBustVersion()
-	echo(format('<link href="/wiki/assets/css/main.css?bust=%s" rel="stylesheet">\n', bustVersion))
+	echo(format('<link href="/' .. WIKI_CODE_ENV .. '/assets/css/main.css?bust=%s" rel="stylesheet">\n', bustVersion))
 end
 
 function RenderServerWikiScript() 
