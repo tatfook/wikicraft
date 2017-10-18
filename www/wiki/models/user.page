@@ -260,6 +260,7 @@ function user:api_updateUserInfo(params)
 	params.dataSource = nil
 
 	self:db():updateOne({["+username"]={username}}, params, resume)
+	user_log(params.username .. "更新用户基本信息")
 
 	return errors:wrap(yield())
 end
