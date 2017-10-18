@@ -108,20 +108,52 @@ define([
 			$scope.query = x;
 		}
 
-		$scope.clickDelete = function(x) {
-			var tableName = getTableName();
-			util.post(config.apiUrlPrefix + "tabledb/delete", {
+		
+		*/
+		$scope.clickDelete = function(x, tableName) {
+			//var tableName = getTableName();
+			var deleteConfirm = confirm("确定删除该项么？");
+			if(deleteConfirm){
+				util.post(config.apiUrlPrefix + "tabledb/delete", {
 				tableName:tableName,
 				query:{
 					_id:x._id,
 				}
 			}, function(){
-				$scope.totalItems--;
 				x.isDelete = true;
-			}, function(){
 			});
-		}*/
-
+			}
+		}
+		$scope.clickUpsert = function(x, tableName) {
+			//console.log($scope.query);
+			//for (var key in $scope.query) {
+			//	if ($scope.query[key] == "") {
+			//		$scope.query[key] = undefined;
+			//	}
+			//}
+			//var tableName = getTableName();
+			if(x.state == -1){
+				
+			}
+			util.post(config.apiUrlPrefix + "tabledb/upsert", {
+				tableName:tableName,
+				query:{
+					_id:x._id,
+					state:
+				}
+			}, function(data){
+				if (data) {
+					Message.info("添加成功");
+					$scope.data.push(data);
+					$scope.totalItems++;
+				} else {
+					Message.info("添加失败");
+				}
+			}, function(){
+				Message.info("添加失败");
+			});
+		}
+		
 		$scope.getStyleClass = function (item) {
 			if ($scope.selectMenuItem == item) {
 				return "panel-primary";

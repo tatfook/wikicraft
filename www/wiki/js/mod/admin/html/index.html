@@ -369,7 +369,7 @@ li{
 							<td>{{x.roleId}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<!-- <button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
 								<!-- <button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>  -->
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">编辑权限</button>
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">修改密码</button>
@@ -554,10 +554,10 @@ li{
 							<td>{{x.websiteCount}}</td>
 							<td>{{x.fansCount}}</td>
 							<td>{{x.roleId}}</td>
-							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
+							<td>{{x.roleId == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+								<button class="btn btn-default" ng-click="clickEnableUser(x,'user')">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDelete(x,'user')">删除</button>
 							</td>
 						</tr>
 					</tbody>
@@ -572,7 +572,7 @@ li{
 				</div>
 			</div><!--}}}-->
 
-			<!--站点管理-->
+			<!--网站管理-->
 			<div ng-show='selectMenuItem=="site"'><!--{{{-->
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
@@ -620,8 +620,8 @@ li{
 							<td>{{x.visitCount}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteSite(x)">删除</button>
+								<button class="btn btn-default" ng-click="xxx(x,"website")">{{x.state == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDelete(x,'website')">删除</button>
 							</td>
 						</tr>
 					</tbody>
@@ -678,7 +678,7 @@ li{
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+								<button class="btn btn-default" ng-click="clickDelete(x,'website_domain')">删除</button>
 							</td>
 						</tr>
 					</tbody>
@@ -788,7 +788,7 @@ li{
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+								<button class="btn btn-default" ng-click="clickDelete(x,'vip')">删除</button>
 							</td>
 						</tr>
 					</tbody>
