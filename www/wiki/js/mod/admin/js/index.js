@@ -378,6 +378,13 @@ define([
 			};
 		}
 		
+		
+		//商品管理
+		$scope.getMnagerList = function(){
+			$scope.selectMenuItem = "manager";
+		}
+		
+		
 		// 搜索管理员账号
 		$scope.managerSearch = function (){
 			//util.post(config.apiUrlPrefix + "tabledb/query", {

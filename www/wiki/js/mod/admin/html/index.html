@@ -255,6 +255,11 @@ li{
 								</div>
 							</li>
 							<li>
+								<div ng-class='getStyleClass("manager")' >
+									<div class="panel-heading" ng-click='getMnagerList()'>商品管理</div>
+								</div>
+							</li>
+							<li>
 								<div ng-class='getStyleClass("user")' >
 									<div class="panel-heading" ng-click='getUserList()'>用户</div>
 								</div>
@@ -520,6 +525,9 @@ li{
 					boundary-links="true"
 					ng-change = "oauthList()"
 					num-pages="numPages"></ul>
+			</div>
+			<!--manger-->
+			<div ng-show='selectMenuItem=="oauth"'>
 			</div>
 			<!--用户管理-->
 			<div ng-show='selectMenuItem=="user"'><!--{{{-->
