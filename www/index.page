@@ -14,7 +14,7 @@ include_once("script/apps/WebServer/admin/wp-main.page");
 
 WIKI_CODE_ENV = "wiki"
 local devDomain = ".dev.keepwork.com"
-local host = request:GetHost()
+local host = request:GetHost() or ""
 local pos = string.find(host, devDomain)
 
 if pos and pos > 1 then

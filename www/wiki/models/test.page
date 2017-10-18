@@ -24,6 +24,10 @@ function test:api_get()
 	return tostring(testObj.testApiId)	
 end
 
+function test:api_file(params)
+	return sensitive_word_match(params.word)
+end
+
 function test:api_post(params)
 	log("------------------test post-----------------")
 	log(params)

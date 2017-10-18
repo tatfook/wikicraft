@@ -195,6 +195,9 @@ const.BIGFILE_NONE = "none"
 const.BIGFILE_QINIU = "qiniu"
 
 
+-- 敏感词
+const.SENSITIVE_WORD_MARKDOWN = 1
+const.SENSITIVE_WORD_SITE = 2
 
 
 

@@ -59,6 +59,8 @@
 			'plupload': libPathPrefix + "qiniu/plupload.full.min",
 			'qiniu': libPathPrefix + "qiniu/qiniu.min",
 			'pako': libPathPrefix + "pako/pako.min",
+			'js-aho-corasick': libPathPrefix + "js-aho-corasick/aho-corasick",
+			'md5': libPathPrefix + "md5",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			// 自定义模块

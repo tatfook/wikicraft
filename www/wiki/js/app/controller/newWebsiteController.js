@@ -339,10 +339,24 @@ define([
         }
 
         $scope.checkWebsiteName = function () {
+            $scope.errMsg="";
             if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
                 return;
             }
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
+            var isSensitive = false;
+            config.services.sensitiveTest.checkSensitiveWord($scope.website.name, function (foundWords, replacedStr) {
+                if (foundWords.length > 0){
+                    isSensitive = true;
+                    console.log("包含敏感词:" + foundWords.join("|"));
+                    return false;
+                }
+            });
+            if (isSensitive){
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="您输入的内容不符合互联网安全规范，请修改";
+                return;
+            }
             if($scope.website.name.length>30){
                 $scope.nextStepDisabled = true;
                 $scope.errMsg="访问地址最长30个字符";
@@ -356,11 +370,11 @@ define([
                 $scope.nextStepDisabled = true;
                 $scope.errMsg="访问地址不符合规范";
             }
-        }
+        };
 
         $scope.goPreviewPage = function (url) {
             window.open(url);
-        }
+        };
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (sitename) {

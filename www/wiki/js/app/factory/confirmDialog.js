@@ -4,17 +4,19 @@
 
 define([
     'app',
+    'markdown-it',
     'text!html/partial/confirmDialog.html',
-], function (app, htmlContent) {
+], function (app, markdownit, htmlContent) {
     var confirmObj = {};
     app.factory('confirmDialog', ['$uibModal', function ($uibModal) {
         function confirmDialog(params, cb, errcb) {
-            if (!params.title || !params.content) {
+            if (!params.title || (!params.content && !params.contentHtml)) {
                 cb && cb();
                 return;
             }
             confirmObj.title = params.title;
             confirmObj.content = params.content;
+            confirmObj.contentHtml = markdownit({html: true}).render(params.contentHtml || "");
             confirmObj.confirmBtn = params.confirmBtn == undefined ? true : params.confirmBtn;
             confirmObj.cancelBtn = params.cancelBtn == undefined ? true : params.cancelBtn;
             confirmObj.confirmBtnClass = params.confirmBtnClass ? params.confirmBtnClass : false;
