@@ -58,7 +58,7 @@
             'pingpp': libPathPrefix + 'pingpp-js/dist/pingpp',
 			'plupload': libPathPrefix + "qiniu/plupload.full.min",
 			'qiniu': libPathPrefix + "qiniu/qiniu.min",
-			'swiper': libPathPrefix + "swiper/swiper.min",
+			'pako': libPathPrefix + "pako/pako.min",
 			'js-aho-corasick': libPathPrefix + "js-aho-corasick/aho-corasick",
 			'md5': libPathPrefix + "md5",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
