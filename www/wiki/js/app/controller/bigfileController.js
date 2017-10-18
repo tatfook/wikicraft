@@ -13,15 +13,24 @@ define([
         $scope.cancel = function () {
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0){
                 console.log("正在上传");
+                config.services.confirmDialog({
+                    "title": "关闭提示",
+                    "confirmBtnClass": "btn-danger",
+                    "theme": "danger",
+                    "content": "还有文件正在上传，确定关闭窗口？"
+                }, function () {
+                    $scope.$dismiss();
+                });
+            }else{
+                $scope.$dismiss();
             }
-            $scope.$dismiss();
+
         };
 
         var getFileByUsername = function () {
             util.post(config.apiUrlPrefix + "bigfile/getByUsername",{}, function(data){
                 data = data || {};
                 $scope.filelist = data.filelist;
-                console.log($scope.filelist);
             });
         };
 
@@ -35,7 +44,6 @@ define([
                     "total": result.total / 1024 / 1024 / 1024 || 0,
                     "unUsed": (result.total - result.used) / 1024 / 1024 / 1024
                 };
-                console.log($scope.storeInfo);
             }, function (err) {
                 console.log(err);
             }, false);
@@ -220,7 +228,6 @@ define([
         };
 
         $scope.deleteFile = function(files, index) {
-            console.log(files);
             config.services.confirmDialog({
                 "title":"删除文件",
                 "confirmBtnClass":"btn-danger",
@@ -254,8 +261,7 @@ define([
                 return file.index >= 0;
             });
             $scope.deleteFile(deletingArr);
-            console.log(deletingArr);
-        }
+        };
 
         var changeFileName = function (file, filename, targetElem) {
             targetElem.attr("contenteditable", "false");
@@ -302,7 +308,6 @@ define([
         };
         
         var removeAllTags = function (str) {
-            console.log(str);
             return str.replace(/<\/?(\w+)\s*[\w\W]*?>/g, '').replace(/^&nbsp;|&nbsp;$/g, '');
         };
 
@@ -357,7 +362,7 @@ define([
             }
 
             $scope.$dismiss(files);
-        }
+        };
 
         $scope.insertFilesUrl = function () {
             $scope.insertFileUrlErr = "";
@@ -372,7 +377,6 @@ define([
                 $scope.insertFileUrlErr = "请输入正确的url地址！";
                 return;
             }
-            console.log($scope.selectedType);
             switch ($scope.selectedType){
                 case "图片":
                     type = "image";
@@ -383,8 +387,6 @@ define([
                 default:
                     break;
             }
-            console.log(type);
-            console.log(url);
             $scope.$dismiss({
                 "type": type,
                 "url": url

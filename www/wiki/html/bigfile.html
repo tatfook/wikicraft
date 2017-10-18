@@ -97,6 +97,15 @@
         overflow-y: scroll;
         margin-bottom: 20px;
     }
+    .bigfile-modal .empty-box{
+        text-align: center;
+        color: #999;
+        font-size: 16px;
+    }
+    .bigfile-modal .empty-box .iconfont{
+        font-size: 145px;
+        line-height:1;
+    }
     .bigfile-modal .manage-table .operate-column{
         width: 220px;
         font-size: 0;
@@ -238,7 +247,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane active clearfix" role="tabpanel" id="insert">
+                 <div class="tab-pane active clearfix" role="tabpanel" id="insert">
                     <p>输入已有url地址：</p>
                     <form class="form-inline">
                         <div class="form-group">
@@ -277,13 +286,16 @@
                         </thead>
                     </table>
                     <div class="insert-table insert-table-box">
-                        <span ng-hide="filelist.length > 0" class="iconfont icon-kongbaiyemian"></span>
+                        <div class="empty-box" ng-hide="filelist.length > 0">
+                            <span class="iconfont icon-kongbaiyemian"></span>
+                            <p>暂无相关内容...</p>
+                        </div>
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
                             <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
                                 <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
-                                <td class="type-column" title="{{file.file.type}}">{{file.file.type}}</td>
+                                <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                 <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
                                 <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
                                 <td class="operate-column">
@@ -315,6 +327,10 @@
                             </thead>
                         </table>
                         <div class="manage-table table-box">
+                            <div class="empty-box" ng-hide="filelist.length > 0">
+                                <span class="iconfont icon-kongbaiyemian"></span>
+                                <p>暂无相关内容...</p>
+                            </div>
                             <table class="table">
                                 <tbody>
                                 <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
@@ -322,7 +338,7 @@
                                         <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
                                     </td>
                                     <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
-                                    <td class="type-column" title="{{file.file.type}}">{{file.file.type}}</td>
+                                    <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                     <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
                                     <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
                                     <td class="operate-column">
