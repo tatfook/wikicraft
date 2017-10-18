@@ -21,5 +21,17 @@ function user_log:ctor()
 	self:addfield("targetId", "number")
 end
 
+function user_log:api_upsert(params)
+	if not params.description then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
 
+	params.createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	params.userip = params.userip or getpeername()
+	params.username = params.username or getUsername()
+
+	self:insertOne(nil, params, resume)
+
+	return errors:wrap(yield())
+end
 
