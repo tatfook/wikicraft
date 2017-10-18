@@ -149,7 +149,7 @@
 				return "";
 			}
 
-			return "bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+			return "?bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
 		},
 	});
 
