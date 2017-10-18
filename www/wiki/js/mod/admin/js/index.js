@@ -493,7 +493,6 @@ define([
 		$scope.createUserLog = function () {
 			util.post(config.apiUrlPrefix + "admin/insertUserLog", {
 				createAt:"2017-10-17 11:41:07",
-				userid:"1",
 				username:"lizq",
 				userip:"0.0.0.0",
 				operation:"delete",
