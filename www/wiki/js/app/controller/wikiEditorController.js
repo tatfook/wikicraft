@@ -2444,7 +2444,9 @@ define([
                     renderTimer && clearTimeout(renderTimer);
                     renderTimer = setTimeout(function () {
                         var text = editor.getValue();
-                        text = filterSensitive(text) || text;
+                        if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
+                            text = filterSensitive(text) || text;
+                        }
                         mdwiki.render(text);
                         renderAutoSave();
 

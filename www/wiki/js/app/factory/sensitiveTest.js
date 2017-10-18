@@ -41,9 +41,8 @@ define([
                 return;
             }
             AhoCorasick.search(word, trie, function (found_word, data) {
-                console.log(found_word);
                 foundWords.push(found_word);
-                word = word.replace(found_word, repeatStr("*", found_word.length));
+                word = word.replace(found_word, repeatStr("●", found_word.length));
             });
             callback && callback(foundWords, word);
         };

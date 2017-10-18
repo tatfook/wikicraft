@@ -266,8 +266,10 @@ define([
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
-									// console.log(content);
-									content = (content!=undefined) ? md.render(filterSensitive(content)) : notfoundHtmlContent;
+                                    if (content && (data.siteinfo.sensitiveWordLevel & 1) <= 0){
+                                        content = filterSensitive(content) || content;
+                                    }
+									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
 									util.html('#__UserSitePageContent__', content, $scope);
 									//config.loading.hideLoading();
 								};
