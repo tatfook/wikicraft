@@ -51,9 +51,8 @@
             var ui = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
             if (data && data.length > 0) {
-                data = ui.editor.graph.decompress(data);
+                doc = ui.editor.graph.getDecompressData(data);
 
-                var doc = mxUtils.parseXml(data);
                 ui.editor.setGraphXml(doc.documentElement);
             }
 
@@ -71,7 +70,7 @@
             return "Browser is not supported!";
         }
 
-        var container   = document.createElement("div");
+        var container = document.createElement("div");
 
         mxResources.loadDefaultBundle = false;
 
@@ -88,7 +87,8 @@
             var graph = new Graph(container, null, null, null, themes);
 
             if (wikiBlock.modParams) {
-                var mxGraphModelData = mxUtils.parseXml(graph.decompress(wikiBlock.modParams));
+                var mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
+                
             }
 
             var decoder = new mxCodec(mxGraphModelData);
