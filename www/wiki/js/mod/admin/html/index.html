@@ -343,7 +343,7 @@ li{
 							<input ng-model="managerSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
 						<button class="btn btn-default" ng-click="managerSearch()">查询</button>
-						<button class="btn btn-default pull-right" ng-click="newManager()" >新建管理员账号</button>
+						<!-- <button class="btn btn-default pull-right" ng-click="newManager()" >新建管理员账号</button>  -->
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -370,7 +370,7 @@ li{
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
+								<!-- <button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>  -->
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">编辑权限</button>
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">修改密码</button>
 							</td>

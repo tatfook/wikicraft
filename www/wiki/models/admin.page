@@ -185,9 +185,10 @@ function admin:api_getUserLogList(params)
 end 
 
 function admin:api_insertUserLog(params)
-	if params.userid ~= nil and params.username ~= nil and params.operation ~= nil and params.description ~= nil and params.targetType ~= nil and params.targetId ~= nil and params.createAt ~= nil then
+	local createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	if params.username ~= nil and params.operation ~= nil and params.description ~= nil then
 		local userLogDB = models.user_log:new()
-		userLogDB:db():insertOne(nil, {createAt=params.createAt, userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
+		userLogDB:db():insertOne(nil, {createAt=createAt, userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
 		local _, insertedLog = yield()
 		return errors:wrap(nil, {insertedLog = insertedLog})
 	else 
