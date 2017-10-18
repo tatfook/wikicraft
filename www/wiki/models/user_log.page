@@ -21,20 +21,5 @@ function user_log:ctor()
 	self:addfield("targetId", "number")
 end
 
-function insertLog(params)
-	if params.userid ~= nil and params.username ~= nil and params.operation ~= nil and params.description ~= nil and params.targetType ~= nil and params.targetId ~= nil and params.createAt ~= nil then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-	self:db():insertOne(nil, {createAt=params.createAt, userid=params.userid, username=params.username, userip=params.userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
-	local _, insertedLog = yield()
-	return errors:wrap(nil, {insertedLog = insertedLog})
-	
-end
 
-function test()
-	local createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
-	self:db():insertOne(nil, {createAt==createAt, userid=1, username="lizq", userip="0.0.0.0", operation="add", description="init", targetType="user_log", targetId=0}, resume)
-	local _, insertedLog = yield()
-	return errors:wrap(nil, {insertedLog = insertedLog})
-end 
 
