@@ -30,7 +30,7 @@ function user_log:api_upsert(params)
 	params.userip = params.userip or getpeername()
 	params.username = params.username or getUsername()
 
-	self:insertOne(nil, params, resume)
+	self:db():insertOne(nil, params, resume)
 
 	return errors:wrap(yield())
 end

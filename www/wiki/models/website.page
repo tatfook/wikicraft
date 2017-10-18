@@ -145,6 +145,7 @@ function website:api_upsert(params)
 	params.visitCount = 0
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.sitename = params.name
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
@@ -172,6 +173,7 @@ function website:api_upsert(params)
 	trend.desc = site.username .. "创建站点" .. site.name
 	userTrendsDB:api_upsert(trend)
 	
+	--user_log(trend.desc)
 	return errors:wrap(nil, site)
 end
 
@@ -196,6 +198,9 @@ function website:deleteById(websiteId)
 	if not site then
 		return errors:wrap(nil)
 	end
+
+	--user_log("删除站点:" .. site.sitename)
+
 	local tokeninfo = getTokenInfo()	
 	if (site.username ~= tokeninfo.username) and (not tokeninfo.isAdmin) then
 		return errors:wrap(nil)
@@ -254,7 +259,6 @@ function website:api_deleteById(params)
 	end
 		
 	self:deleteById(websiteId)
-
 	return errors:wrap(nil)
 end
 
@@ -319,6 +323,7 @@ function website:api_updateByName(params)
 
 	self:db():updateOne({["+username+name"]={params.username, sitename}}, params, resume)
 
+	user_log("更新站点信息:" .. params.sitename)
 	return errors:wrap(yield())
 end
 

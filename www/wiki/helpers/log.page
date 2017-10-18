@@ -10,5 +10,5 @@ include_once(WIKI_ROOT .. 'models/user_log.page')
 function user_log(msg)
 	local user_log_db = models.user_log:new()
 
-	reutrn user_log_db:api_upsert({description=msg})
+	return user_log_db:api_upsert({description=msg})
 end
