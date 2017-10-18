@@ -102011,10 +102011,12 @@ Graph.prototype.bytesToString = function(arr)
 Graph.prototype.compress = function(data)
 {
 	if(typeof(require) == 'function') {
-		window.pako = require('pako');
-	}
+		var pako = require('pako');
+	}else{
+        var pako = window.pako;
+    }
 
-	if (data == null || data.length == 0 || typeof(window.pako) === 'undefined')
+	if (data == null || data.length == 0 || typeof(pako) === 'undefined')
 	{
 		return data;
 	}
@@ -102032,10 +102034,12 @@ Graph.prototype.compress = function(data)
 Graph.prototype.decompress = function(data)
 {
 	if(typeof(require) == 'function') {
-		window.pako = require('pako');
-	}
+		var pako = require('pako');
+	}else{
+        var pako = window.pako;
+    }
 	
-   	if (data == null || data.length == 0 || typeof(window.pako) === 'undefined')
+   	if (data == null || data.length == 0 || typeof(pako) === 'undefined')
 	{
 		return data;
 	}
