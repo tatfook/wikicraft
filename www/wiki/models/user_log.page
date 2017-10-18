@@ -13,7 +13,6 @@ user_log.db_name = 'user_log'
 
 function user_log:ctor()
 	self:addfield("createAt", "string")
-	self:addfield("userid", "number")
 	self:addfield("username", "string")
 	self:addfield("userip","string")
 	self:addfield("operation","string")
