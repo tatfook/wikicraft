@@ -3,7 +3,7 @@
     'helper/util',
     'text!wikimod/board/main.html',
     'pako',
-    '/wiki/js/mod/board/assets/graph.min.js',
+    '/wiki/js/mod/board/assets/graph.js',
 ], function (app, util, htmlContent, pako) {
     jscolor.dir = "/wiki/js/mod/board/assets/images/";
 
@@ -88,7 +88,7 @@
 
             if (wikiBlock.modParams) {
                 var mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
-                
+                console.log(mxGraphModelData);
             }
 
             var decoder = new mxCodec(mxGraphModelData);
