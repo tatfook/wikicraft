@@ -9,7 +9,7 @@ define([
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
         app.registerController('world3DController',['$scope', '$http', function ($scope, $http) {
-            $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
+            $scope.imgsPath  = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.showModal = false;
 
@@ -20,13 +20,17 @@ define([
                 $scope.modParams.filesTotals = parseInt($scope.modParams.filesTotals / 1024 / 1024) + "M";
             }
 
-            $scope.modParams.logoUrl = JSON.parse($scope.modParams.logoUrl);
-            $scope.modParams.logoUrl = $scope.modParams.logoUrl[0].previewUrl;
+            try {
+                $scope.modParams.logoUrl = JSON.parse($scope.modParams.logoUrl);
+                $scope.modParams.logoUrl = $scope.modParams.logoUrl[0].previewUrl;
+            } catch(e) {
+                $scope.modParams.logoUrl = "";
+            }
+
             var paracraftUrl = "paracraft://cmd/loadworld " + $scope.modParams.worldUrl;
+            //console.log(paracraftUrl);
 
-            console.log(paracraftUrl);
-
-            $scope.checkEngine=function () {
+            $scope.checkEngine = function () {
                 if(true){// 判断是否安装了Paracraft
                     $scope.showModal=true;
                 }
@@ -34,7 +38,7 @@ define([
                 window.open(paracraftUrl);
             }
 
-            $scope.closeModal=function () {
+            $scope.closeModal = function () {
                 $scope.showModal=false;
             }
 
@@ -52,9 +56,10 @@ define([
             }
 
             $scope.clickDownload = function() {
-                $scope.showModal=false;
+                $scope.showModal = false;
                 window.open("http://www.paracraft.cn");
             }
+
             $scope.viewTimes = 0;
             var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
             var params = { opusId: $scope.modParams.opusId };

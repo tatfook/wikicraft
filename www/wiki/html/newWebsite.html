@@ -229,21 +229,7 @@
         </div>
         <div class="panel-body">
             <div class="step-content clearfix">
-                <div ng-show="step == 1" class="step2">
-                    <p>设定网站的访问地址</p>
-                    <div class="col-sm-7 form-group">
-                        http://keepwork.com/{{user.username}}/<input id="websiteName" ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
-                    </div>
-                    <div class="col-sm-5 error-msg-box">
-                        <p class="text-danger">{{errMsg}}</p>
-                    </div>
-                    <div class="col-sm-12 info no-padding-left">
-                        <p>*可使用小写字母、数字（例如：mysite123）</p>
-                        <p>设定后不可修改</p>
-                        <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
-                    </div>
-                </div>
-                <div ng-show="step == 2">
+                <div ng-show="step == 1">
                     <h4>选择功能模板：</h4>
                     <div role="tabpanel" class="clearfix model-select">
                         <!-- Nav tabs -->
@@ -266,6 +252,21 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div ng-show="step == 2" class="step2">
+                    <p>设定网站的访问地址</p>
+                    <div class="col-sm-7 form-group">
+                        http://keepwork.com/{{user.username}}/<input id="websiteName" ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
+                    </div>
+                    <div class="col-sm-5 error-msg-box">
+                        <p class="text-danger">{{errMsg}}</p>
+                    </div>
+                    <div class="col-sm-12 info no-padding-left">
+                        <p>*可使用小写字母、数字（例如：mysite123）</p>
+                        <p>设定后不可修改</p>
+                        <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
                     </div>
                 </div>
                 <div ng-show="step == 3" class="confirm-msg">
@@ -304,21 +305,7 @@
         </div>
         <div class="modal-body">
             <div class="step-content clearfix">
-                <div ng-show="step == 1" class="step2">
-                    <p>设定网站的访问地址</p>
-                    <div class="col-sm-8 form-group">
-                        http://keepwork.com/{{user.username}}/<input id="websiteName_modal" ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
-                    </div>
-                    <div class="col-sm-4 error-msg-box">
-                        <p class="text-danger">{{errMsg}}</p>
-                    </div>
-                    <div class="col-sm-12 info no-padding-left">
-                        <p>*可使用小写字母、数字（例如：mysite123）</p>
-                        <p>设定后不可修改</p>
-                        <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
-                    </div>
-                </div>
-                <div ng-show="step == 2">
+                <div ng-show="step == 1">
                     <h4>选择功能模板：</h4>
                     <div role="tabpanel" class="clearfix model-select">
                         <!-- Nav tabs -->
@@ -341,6 +328,20 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div ng-show="step == 2" class="step2">
+                    <p>设定网站的访问地址</p>
+                    <div class="col-sm-8 form-group">
+                        http://keepwork.com/{{user.username}}/<input id="websiteName_modal" ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
+                    </div>
+                    <div class="col-sm-4 error-msg-box">
+                        <p class="text-danger">{{errMsg}}</p>
+                    </div>
+                    <div class="col-sm-12 info no-padding-left">
+                        <p>*可使用小写字母、数字（例如：mysite123）</p>
+                        <p>设定后不可修改</p>
+                        <p>如需将其他域名绑定到该网站，可在网站设置中进行cname转发</p>
                     </div>
                 </div>
                 <div ng-show="step == 3" class="confirm-msg">

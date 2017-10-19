@@ -215,7 +215,7 @@ function getServerUpdateTime()
 end
 
 function load_sensitive_word()
-	local file = ParaIO.open("www/sensitive_word.txt", "r")
+	local file = ParaIO.open(WIKI_ROOT .. "html/sensitive_word.txt", "r")
 	local words = {}
 	if not file then
 		return words

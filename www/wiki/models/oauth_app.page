@@ -13,6 +13,9 @@ include_once("./user.page")
 local oauth_app = inherit(models.abstract.base, gettable("models.oauth_app"))
 oauth_app.db_name = "oauth_app"
 
+local ouath_clientld   = inherit(models.abstract.base, gettable("models.ouath_clientld"));
+ouath_clientld.db_name = "ouath_clientld"
+
 function oauth_app:ctor()
 	self:addfield("appName"        , "string"); -- 应用名称  key
 	self:addfield("company"        , "string"); -- 公司名
@@ -182,8 +185,55 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
-	if(not query.appName or not query.company or not query.clientId or not query.clientSecret) then
+	if(not query.appName or not query.company or not query.clientSecret) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	local ret1 = '%d'
+	local ret2 = '%p'
+	local ret3 = '%s'
+	
+	local reg1 = '^%a+$'
+	local reg2 = '[\176-\254]'
+	local reg3 = '^http://(%a+).(%a+).(%a+)$'
+	local reg4 = '^http://(%a+).(%a+)$'
+	local reg5 = '^https://(%a+).(%a+).(%a+)$'
+	local reg6 = '^https://(%a+).(%a+)$'
+	
+	--判断appName格式是否正确/只能输入英文
+	if(not string.find(query.appName,reg1)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断company格式是否正确/只能输入英文/中文/中英结合
+	if(string.find(query.company, reg2) or string.find(query.company,reg1))then
+		if(string.find(query.company, ret1) or string.find(query.company, ret2) or string.find(query.company, ret3))then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+	else
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断redirectUrl格式是否正确
+	if(not string.find(query.redirectUrl, reg3))then
+		if(not string.find(query.redirectUrl, reg4))then
+			if(not string.find(query.redirectUrl, reg5))then
+				if(not string.find(query.redirectUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
+	end
+	
+	--判断payCallbackUrl格式是否正确
+	if(not string.find(query.payCallbackUrl, reg3))then
+		if(not string.find(query.payCallbackUrl, reg4))then
+			if(not string.find(query.payCallbackUrl, reg5))then
+				if(not string.find(query.payCallbackUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
 	end
 
 	-- 判断是否存在appName
@@ -197,23 +247,18 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	if(data) then
 		return errors:wrap(errors.RECORD_ALREADY_EXIST);
 	end
-
-	-- 判断是否存在clientId
-	self:db():findOne({clientId = query.clientId}, resume);
-	local err, data = yield();
-
-	if(err) then
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
-
-	if(data) then
-		return errors:wrap(errors.RECORD_ALREADY_EXIST);
-	end
-
-	query.createDate = self:getNow();
-
-	self:db():insertOne(query, resume);
-
+	
+	self:db():insertOne(
+	{
+		appName        = query.appName,
+		company        = query.company,
+		clientId       = ouath_clientld:getClientld(),
+		clientSecret   = query.clientSecret,
+		skipUserGrant  = query.skipUserGrant,
+		redirectUrl    = query.redirectUrl,
+		payCallbackUrl = query.payCallbackUrl,
+		createDate     = self:getNow(),
+	}, resume);
 	local err, data = yield();
 
 	if(not err and data) then
@@ -237,6 +282,53 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 
 	if(not query.clientId or not query.clientSecret) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	local ret1 = '%d'
+	local ret2 = '%p'
+	local ret3 = '%s'
+	
+	local reg1 = '^%a+$'
+	local reg2 = '[\176-\254]'
+	local reg3 = '^http://(%a+).(%a+).(%a+)$'
+	local reg4 = '^http://(%a+).(%a+)$'
+	local reg5 = '^https://(%a+).(%a+).(%a+)$'
+	local reg6 = '^https://(%a+).(%a+)$'
+	
+	--判断appName格式是否正确/只能输入英文
+	if(not string.find(query.appName,reg1)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断company格式是否正确/只能输入英文/中文/中英结合
+	if(string.find(query.company, reg2) or string.find(query.company,reg1))then
+		if(string.find(query.company, ret1) or string.find(query.company, ret2) or string.find(query.company, ret3))then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+	else
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	--判断redirectUrl格式是否正确
+	if(not string.find(query.redirectUrl, reg3))then
+		if(not string.find(query.redirectUrl, reg4))then
+			if(not string.find(query.redirectUrl, reg5))then
+				if(not string.find(query.redirectUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
+	end
+	
+	--判断payCallbackUrl格式是否正确
+	if(not string.find(query.payCallbackUrl, reg3))then
+		if(not string.find(query.payCallbackUrl, reg4))then
+			if(not string.find(query.payCallbackUrl, reg5))then
+				if(not string.find(query.payCallbackUrl, reg6))then
+					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+				end
+			end
+		end
 	end
 
 	-- 判断是否存在clientId
@@ -443,9 +535,24 @@ function oauth_app:getNow()
 	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end
 
+-- 生成Clientld
 
+function ouath_clientld:getClientld()
+	self:db():insertOne({},resume);
+	local err, phoneNumber = yield();
+	
+	local sn = "1";
+	
+	phoneNumber  = tostring(phoneNumber._id);
+	a =5 - #phoneNumber;
 
+	for i=1,a do 
+		phoneNumber = "0" .. phoneNumber;
+		i=i+1;
+	end
 
+	return sn .. phoneNumber
+end
 
 
 

@@ -102,25 +102,33 @@ define([
                 }
 
                 $rootScope.getImageUrl = function(imgUrl,imgsPath) {
+					var bustVersion = config.bustVersion;
+					if (imgUrl.indexOf("?bust=") > 0 || imgUrl.indexOf("?ver=") > 0) {
+						bustVersion = "";
+					}
                     if (imgUrl.indexOf("://") >= 0) {
                         return imgUrl;
                     }
                     if (imgUrl.indexOf("/wiki/") >= 0) {
-                        return imgUrl + "?bust=" + config.bustVersion;
+                        return imgUrl + "?bust=" + bustVersion;
                     }
 
-                    return (imgsPath || $rootScope.imgsPath) + imgUrl + "?bust=" + config.bustVersion;
+                    return (imgsPath || $rootScope.imgsPath) + imgUrl + "?bust=" + bustVersion;
                 }
 
                 $rootScope.getCssUrl = function(cssUrl, cssPath) {
+					var bustVersion = config.bustVersion;
+					if (cssUrl.indexOf("?bust=") > 0 || cssUrl.indexOf("?ver=") > 0) {
+						bustVersion = "";
+					}
                     if (cssUrl.indexOf("://") >= 0) {
                         return cssUrl;
                     }
                     if (cssUrl.indexOf("/wiki/") >= 0) {
-                        return cssUrl + "?bust=" + config.bustVersion;
+                        return cssUrl + "?bust=" + bustVersion;
                     }
 
-                    return (cssPath || $rootScope.cssPath) + cssUrl + "?bust=" + config.bustVersion;
+                    return (cssPath || $rootScope.cssPath) + cssUrl + "?bust=" + bustVersion;
                 }
                 
                 $rootScope.getRenderText = function (text) {
@@ -266,8 +274,10 @@ define([
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
-									// console.log(content);
-									content = (content!=undefined) ? md.render(filterSensitive(content)) : notfoundHtmlContent;
+                                    if (content && (data.siteinfo.sensitiveWordLevel & 1) <= 0){
+                                        content = filterSensitive(content) || content;
+                                    }
+									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
 									util.html('#__UserSitePageContent__', content, $scope);
 									//config.loading.hideLoading();
 								};
