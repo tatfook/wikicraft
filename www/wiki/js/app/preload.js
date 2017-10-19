@@ -73,7 +73,6 @@ define([
     'factory/modal',
     'factory/confirmDialog',
     'factory/loadingInterceptor',
-
 ], function () {
     return {};
 });
