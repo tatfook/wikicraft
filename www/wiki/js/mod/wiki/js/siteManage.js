@@ -30,11 +30,12 @@ define([
             $scope.isLogin = false;
 
             function initBtnLink() {
+				var urlPrefix = "/" + siteinfo.username + "/" + siteinfo.sitename + "/";
                 modParams.links = {
-                    "memberManage": (modParams.links && modParams.links.memberManage) ? modParams.links.memberManage : "/wiki/js/mod/wiki/js/siteMemberManage",
-                    "worksManage": (modParams.links && modParams.links.worksManage) ? modParams.links.worksManage : "/wiki/js/mod/wiki/js/siteWorksManage",
-                    "submitWork": (modParams.links && modParams.links.submitWork) ? modParams.links.submitWork : "/wiki/js/mod/wiki/js/siteSubmitWorks",
-                    "memberApply": (modParams.links && modParams.links.memberApply) ? modParams.links.memberApply : "/wiki/js/mod/wiki/js/siteMemberApply",
+                    "memberManage": (modParams.links && modParams.links.memberManage) ? (urlPrefix + modParams.links.memberManage) : "/wiki/js/mod/wiki/js/siteMemberManage",
+                    "worksManage": (modParams.links && modParams.links.worksManage) ? (urlPrefix + modParams.links.worksManage) : "/wiki/js/mod/wiki/js/siteWorksManage",
+                    "submitWork": (modParams.links && modParams.links.submitWork) ? (urlPrefix + modParams.links.submitWork) : "/wiki/js/mod/wiki/js/siteSubmitWorks",
+                    "memberApply": (modParams.links && modParams.links.memberApply) ? (urlPrefix + modParams.links.memberApply) : "/wiki/js/mod/wiki/js/siteMemberApply",
                 }
             }
 
