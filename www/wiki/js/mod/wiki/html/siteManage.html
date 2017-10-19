@@ -49,10 +49,10 @@
 <div ng-controller="siteManageController">
     <div class="site-btn-group" ng-show='modParams.moduleKind == "siteManage" || !modParams.moduleKind'>
         <p style="text-align: center;font-size: 18px;" ng-show="!isLogin">点击<a href="/wiki/join">注册</a> / <a ng-click="goLogin()">登录</a>Keepwork账号，报名参加大赛</p>
-        <a ng-show="modParams.memberManage" class="btn btn-primary large-btn" ng-href="{{modParams.links.memberManage}}">{{modParams.memberManageText || "成员管理"}}</a>
-        <a ng-show="modParams.worksManage" class="btn btn-primary large-btn" ng-href="{{modParams.links.worksManage}}">{{modParams.worksManageText || "作品管理"}}</a>
-        <a ng-show="modParams.worksApply"  class="btn btn-primary large-btn" ng-href="{{modParams.links.submitWork}}">{{modParams.worksApplyText || "提交作品"}}</a>
-        <a ng-show="modParams.memberApply" class="btn btn-primary large-btn" ng-href="{{modParams.links.memberApply}}">{{modParams.memberApplyText || "申请加入"}}</a>
+        <a ng-show="modParams.memberManage" class="btn btn-primary large-btn" ng-click="goMemberManagePage()">{{modParams.memberManageText || "成员管理"}}</a>
+        <a ng-show="modParams.worksManage" class="btn btn-primary large-btn" ng-click="goWorksManagePage()">{{modParams.worksManageText || "作品管理"}}</a>
+        <a ng-show="modParams.worksApply"  class="btn btn-primary large-btn" ng-click="goSubmitWorksPage()">{{modParams.worksApplyText || "提交作品"}}</a>
+        <a ng-show="modParams.memberApply" class="btn btn-primary large-btn" ng-click="goMemberApplyPage()">{{modParams.memberApplyText || "申请加入"}}</a>
     </div>
 
     <div class="site-btn-group" ng-show='modParams.moduleKind == "siteManagePreview"'>
