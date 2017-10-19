@@ -166,7 +166,7 @@ end
 
 function RenderServerWikiCss()
 	local bustVersion = getBustVersion()
-	echo(format('<link href="/wiki/assets/css/main.css?bust=%s" rel="stylesheet">\n', bustVersion))
+	echo(format('<link href="/' .. WIKI_CODE_ENV .. '/assets/css/main.css?bust=%s" rel="stylesheet">\n', bustVersion))
 end
 
 function RenderServerWikiScript() 
@@ -176,15 +176,15 @@ function RenderServerWikiScript()
 	config.webroot = '/' .. WIKI_CODE_ENV .. '/'
 	--config.token = getTokenStr()
 	local devIndex = string.find(config.hostname, ".dev.keepwork.com")
-	if config.hostname == "dev.keepwork.com" or devIndex then
+	if config.hostname == "dev.keepwork.com" or config.hostname == "stage.keepwork.com" or devIndex then
 		config.bustVersion = os.time()
 	else 
 		config.bustVersion = getBustVersion()
 	end
 	-- log(config)
 	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
-	echo(format('<script src="/wiki/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
-	echo(format('<script data-main="/wiki/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js?bust=%s"></script>\n', config.bustVersion, config.bustVersion))
+	echo(format('<script src="/' .. WIKI_CODE_ENV .. '/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
+	echo(format('<script data-main="/' .. WIKI_CODE_ENV .. '/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js?bust=%s"></script>\n', config.bustVersion, config.bustVersion))
 end
 
 -- 加载通用页

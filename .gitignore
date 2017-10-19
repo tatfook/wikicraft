@@ -8,6 +8,7 @@ obj/
 Properties/
 *.out
 *.log
+.vscode/
 .vs/
 *.user
 *.ffs_gui

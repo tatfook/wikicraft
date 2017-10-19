@@ -7,8 +7,9 @@ define([
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+	'helper/sensitiveWord',
     'text!html/editWebsite.html',
-], function (app, util, storage,dataSource, htmlContent) {
+], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
     app.registerController('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
@@ -29,7 +30,6 @@ define([
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
         function sendModifyWebsiteRequest() {
-            console.log("33333333");
 			$scope.website.sitename = $scope.website.name;
             util.post(config.apiUrlPrefix + 'website/updateByName', $scope.website, function (data) {
                 $scope.website = data;
@@ -78,32 +78,44 @@ define([
 					console.log("域名已存在");
 				}	
 			});
-        }
+        };
 
         $scope.removeDomain=function(domainObj){
             domainObj.isDelete = true;
             util.post(config.apiUrlPrefix + 'website_domain/deleteByDomain', {domain:domainObj.domain});
-        }
+        };
 
         $scope.addTag = function (tagName) {
             tagName = util.stringTrim(tagName);
             if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
                 $scope.tagErrMsg="该标签已添加";
                 $scope.tag="";
-                $scope.$apply();
+                return;
+            }
+            var isSensitive = false;
+            if (($scope.website.sensitiveWordLevel & 2) <= 0){
+                sensitiveWord.checkSensitiveWord(tagName, function (foundWords, replacedStr) {
+                    if (foundWords.length > 0){
+                        isSensitive = true;
+                        console.log("包含敏感词:" + foundWords.join("|"));
+                        return false;
+                    }
+                });
+            }
+            if (isSensitive){
+                $scope.nextStepDisabled = true;
+                $scope.tagErrMsg="您输入的内容不符合互联网安全规范，请修改";
                 return;
             }
             if (tagName.length>10){
                 $scope.tagErrMsg="标签最长10个字";
                 $scope.tag="";
-                $scope.$apply();
                 return;
             }
             $scope.tags.push(tagName);
             $scope.website.tags = $scope.tags.join('|');
             $scope.tag="";
             $scope.tagErrMsg="";
-            $scope.$apply();
             $("#tagInput").focus();
         }
 
@@ -117,8 +129,33 @@ define([
 
         // 修改网站设置
         $scope.modifyWebsite = function () {
+            $scope.websiteErr = "";
+            var websiteParams = $scope.website;
+            var checkSensitives = [websiteParams.displayName, websiteParams.desc];
+            var isSensitive = false;
+
+            if (($scope.website.sensitiveWordLevel & 2) <= 0){
+                $.each(checkSensitives, function (index,word) {
+                    if (!word || word == ""){
+                        return true;
+                    }
+                    sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
+                        if (foundWords.length > 0){
+                            isSensitive = true;
+                            console.log("包含敏感词:" + foundWords.join("|"));
+                            console.log(replacedStr);
+                            return false;
+                        }
+                    });
+                });
+            }
+            
+            if (isSensitive){
+                $scope.websiteErr = "您输入的内容不符合互联网安全规范，请修改";
+                return;
+            }
             sendModifyWebsiteRequest();
-        }
+        };
 
 		function initGroup() {
             $scope.changeType = siteinfo.visibility || "public";
