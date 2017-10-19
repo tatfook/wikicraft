@@ -255,12 +255,13 @@ function user:api_updateUserInfo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	user_log(params.username .. "更新用户基本信息")
+
 	local username = params.username
 	self:filterUserInfo(params)
 	params.dataSource = nil
 
 	self:db():updateOne({["+username"]={username}}, params, resume)
-	user_log(params.username .. "更新用户基本信息")
 
 	return errors:wrap(yield())
 end
