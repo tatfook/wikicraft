@@ -6,10 +6,11 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/sensitiveWord',
     'markdown-it',
     'text!html/newWebsite.html',
     'controller/editWebsiteController',
-], function (app, util, storage, markdownit, htmlContent, editWebsiteHtmlContent) {
+], function (app, util, storage, sensitiveWord, markdownit, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
         const GITLAB = {
             "API_BASE_URL": "http://git.keepwork.com/api/v4",
@@ -344,7 +345,7 @@ define([
             }
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
             var isSensitive = false;
-            config.services.sensitiveTest.checkSensitiveWord($scope.website.name, function (foundWords, replacedStr) {
+            sensitiveWord.checkSensitiveWord($scope.website.name, function (foundWords, replacedStr) {
                 if (foundWords.length > 0){
                     isSensitive = true;
                     console.log("包含敏感词:" + foundWords.join("|"));

@@ -6,9 +6,10 @@ define(['app',
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+	'helper/sensitiveWord',
     'text!html/userProfile.html',
     'cropper',
-], function (app, util, storage,dataSource, htmlContent) {
+], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
     app.registerController('userProfileController', ['$scope', '$interval', 'Account', 'Message', function ($scope, $interval, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
@@ -196,7 +197,7 @@ define(['app',
                 if (word == ""){
                     return true;
                 }
-                config.services.sensitiveTest.checkSensitiveWord(word, function (foundWords, replacedStr) {
+                sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
                     if (foundWords.length > 0){
                         isSensitive = true;
                         console.log("包含敏感词:" + foundWords.join("|"));

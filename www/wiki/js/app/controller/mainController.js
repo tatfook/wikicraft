@@ -34,8 +34,7 @@ define([
         'modal',
         'gitlab',
         'confirmDialog',
-        'sensitiveTest',
-        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, sensitiveTest) {
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -59,7 +58,6 @@ define([
                     dataSource:dataSource,
                     loading:loading,
                     confirmDialog:confirmDialog,
-                    sensitiveTest: sensitiveTest
                 };
 
                 util.setAngularServices({
@@ -258,14 +256,14 @@ define([
                         $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
-                        var filterSensitive = function (inputText) {
-                            var result = "";
-                            config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
-                                result = outputText;
-                                return inputText;
-                            });
-                            return result;
-                        };
+                        //var filterSensitive = function (inputText) {
+                            //var result = "";
+                            //config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
+                                //result = outputText;
+                                //return inputText;
+                            //});
+                            //return result;
+                        //};
 						var callback = function() {
 							if (!$scope.user || $scope.user.username != data.userinfo.username) {
 								userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
@@ -275,7 +273,7 @@ define([
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
                                     if (content && (data.siteinfo.sensitiveWordLevel & 1) <= 0){
-                                        content = filterSensitive(content) || content;
+                                        //content = filterSensitive(content) || content;
                                     }
 									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
 									util.html('#__UserSitePageContent__', content, $scope);

@@ -7,8 +7,9 @@ define([
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+	'helper/sensitiveWord',
     'text!html/editWebsite.html',
-], function (app, util, storage,dataSource, htmlContent) {
+], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
     app.registerController('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
@@ -93,7 +94,7 @@ define([
             }
             var isSensitive = false;
             if (($scope.website.sensitiveWordLevel & 2) <= 0){
-                config.services.sensitiveTest.checkSensitiveWord(tagName, function (foundWords, replacedStr) {
+                sensitiveWord.checkSensitiveWord(tagName, function (foundWords, replacedStr) {
                     if (foundWords.length > 0){
                         isSensitive = true;
                         console.log("包含敏感词:" + foundWords.join("|"));
@@ -138,7 +139,7 @@ define([
                     if (!word || word == ""){
                         return true;
                     }
-                    config.services.sensitiveTest.checkSensitiveWord(word, function (foundWords, replacedStr) {
+                    sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
                         if (foundWords.length > 0){
                             isSensitive = true;
                             console.log("包含敏感词:" + foundWords.join("|"));
