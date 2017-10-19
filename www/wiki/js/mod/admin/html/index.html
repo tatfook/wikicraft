@@ -620,7 +620,7 @@ li{
 							<td>{{x.visitCount}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="xxx(x,"website")">{{x.state == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickUpsert(x,'website')">{{x.state == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDelete(x,'website')">删除</button>
 							</td>
 						</tr>
@@ -677,7 +677,7 @@ li{
 							<td>{{x.endAt}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickUpsert(x,'website_domain')">{{x.state == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDelete(x,'website_domain')">删除</button>
 							</td>
 						</tr>
@@ -695,6 +695,7 @@ li{
 			<div ng-show='selectMenuItem=="userLog"'>
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
+						<!--
 						<div class="form-group">
 							<label>
 								用户名:
@@ -707,8 +708,14 @@ li{
 							</label>
 							<input ng-model="userLogSearchByOperation" type="text" class="form-control" placeholder="请输入用户操作">
 						</div>
+						-->
+						<label>搜索选项:</label>
+						<select class="form-control" ng-model="itemName">
+							<option ng-repeat="item in itemsOnView" value="{{item}}">{{item}}</option>
+						</select>
+						<input ng-model="userLogSearchByItem" type="text" class="form-control" placeholder="请输入关键字">
 						<button class="btn btn-default" ng-click="userLogSearch()">查询</button>
-						<button class="btn btn-default" ng-click="createUserLog()">测试创建</button>
+						<!-- <button class="btn btn-default" ng-click="createUserLog()">测试创建</button>  -->
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -787,7 +794,7 @@ li{
 							<td>{{x.endDate}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickUpsert(x,'vip')">{{x.state == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDelete(x,'vip')">删除</button>
 							</td>
 						</tr>

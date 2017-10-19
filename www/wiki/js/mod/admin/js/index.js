@@ -124,6 +124,37 @@ define([
 			});
 			}
 		}
+		/*
+		$scope.clickEnableUser = function(x, tableName) {
+			if(x.roleId = -1){
+				var enableConfirm = confirm("确定启用该用户么？");
+				if(enableConfirm){
+					util.post(config.apiUrlPrefix + "tabledb/upsert", {
+					tableName:tableName,
+					query:{
+						_id:x._id,
+						roleId:0,
+					}
+				}, function(){
+					x.isDelete = true;
+				});
+				}
+			}else{
+				var disableConfirm = confirm("确定禁用该用户么？");
+				if(disableConfirm){
+					util.post(config.apiUrlPrefix + "tabledb/upsert", {
+					tableName:tableName,
+					query:{
+						_id:x._id,
+						roleId:-1,
+					}
+				}, function(){
+					x.isDelete = true;
+				});
+				}
+			}
+			
+		}*/
 		$scope.clickUpsert = function(x, tableName) {
 			//console.log($scope.query);
 			//for (var key in $scope.query) {
@@ -133,25 +164,58 @@ define([
 			//}
 			//var tableName = getTableName();
 			if(x.state == -1){
-				
+				var enableConfirm = confirm("确定启用该项么？");
+				if(enableConfirm){
+					util.post(config.apiUrlPrefix + "tabledb/upsert", {
+					tableName:tableName,
+					query:{
+						_id:x._id,
+						state:0,
+					}
+				}, function(){
+					x.state = 0;
+				});
+				}
+			}else{
+				var disableConfirm = confirm("确定禁用该项么？");
+				if(disableConfirm){
+					util.post(config.apiUrlPrefix + "tabledb/upsert", {
+					tableName:tableName,
+					query:{
+						_id:x._id,
+						state:-1,
+					}
+				}, function(){
+					x.state = -1;
+				});
+				}
 			}
-			util.post(config.apiUrlPrefix + "tabledb/upsert", {
-				tableName:tableName,
-				query:{
-					_id:x._id,
-					state:
-				}
+			
+		}
+		$scope.itemName = "";
+		$scope.items = ["username", "userip", "operation", "description", "targetType"];
+		$scope.itemsOnView = ["用户名", "用户IP", "用户操作", "描述", "操作类型"];
+		$scope.userLogSearchByItem = "";
+		$scope.userLogCurrentPage = 1;
+		$scope.userLogSearch = function () {
+			if($scope.userLogSearchByItem != "" && $scope.itemName != ""){
+				var index = $scope.itemsOnView.indexOf($scope.itemName);
+				var item = $scope.items[index];
+				var query = {};
+				query[item] = $scope.userLogSearchByItem;
+				util.post(config.apiUrlPrefix+"tabledb/query", {
+				tableName:"user_log",
+				page:$scope.userLogCurrentPage,
+				pageSize:$scope.pageSize,
+				query:query,
 			}, function(data){
-				if (data) {
-					Message.info("添加成功");
-					$scope.data.push(data);
-					$scope.totalItems++;
-				} else {
-					Message.info("添加失败");
-				}
-			}, function(){
-				Message.info("添加失败");
+				$scope.userLogList = data.data;
+				$scope.totalItems = data.total;
+				//outputEditor.setValue(angular.toJson(data.data,4));
 			});
+			}else{
+				alert("关键字不能为空！");
+			}
 		}
 		
 		$scope.getStyleClass = function (item) {
