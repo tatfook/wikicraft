@@ -74,7 +74,6 @@ define([
     'factory/confirmDialog',
     'factory/loadingInterceptor',
     'factory/sensitiveTest',
-
 ], function () {
     return {};
 });

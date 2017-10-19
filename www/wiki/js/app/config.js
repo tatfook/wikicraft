@@ -33,7 +33,7 @@
 		],
 		// 预加载模块列表
 		preloadModuleList:[
-			'directive/directive', // 不支持打包 动态加载
+			//'directive/directive', // 不支持打包 动态加载
 		],
 
 		// wiki 模块解析函数
