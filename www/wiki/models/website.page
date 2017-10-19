@@ -316,12 +316,13 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
+	user_log("更新站点信息:" .. params.sitename)
+
 	local sitename = params.sitename
 	--params.sitename = nil   -- 防止名字被改
 	params.name = nil   -- 防止名字被改
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
-	user_log("更新站点信息:" .. params.sitename)
 	self:db():updateOne({["+username+name"]={params.username, sitename}}, params, resume)
 
 	return errors:wrap(yield())
