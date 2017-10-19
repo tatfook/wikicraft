@@ -329,9 +329,6 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
-<<<<<<< HEAD
-	user_log("更新站点" .. params.sitename .. "基本信息:")
-=======
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	if not siteinfo then
@@ -343,7 +340,6 @@ function website:api_updateByName(params)
 	if not isOk and not mathlib.bit.band(const.SENSITIVE_WORD_SITE) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
->>>>>>> origin/dev
 
 	local sitename = params.sitename
 	--params.sitename = nil   -- 防止名字被改

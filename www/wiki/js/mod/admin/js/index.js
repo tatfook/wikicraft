@@ -745,9 +745,6 @@ define([
 			});
 		};
 
-<<<<<<< HEAD
-=======
-		
 		//
 		$scope.getoperationLogList = function () {
 			$scope.selectMenuItem = "operationLog";
@@ -757,7 +754,6 @@ define([
 			$scope.selectMenuItem = "fileCheck";
 		};
 
->>>>>>> origin/dev
 		// wiki cmd
 		$scope.clickUpsertWikicmd = function() {
 			util.post(config.apiUrlPrefix + 'wiki_module/upsert', $scope.query, function(data){
