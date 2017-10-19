@@ -84,7 +84,7 @@ function user_favorite:api_unfavoriteSite(params)
 	websiteDB:api_updateFavoriteNumById({websiteId=params.siteId, count = -1})
 	
 	-- 增加收藏动态
-	local userDB = model.user:new()
+	local userDB = models.user:new()
 	local userinfo = userDB:api_getById({userId=params.userId}).data
 	local siteinfo = websiteDB:api_getById({websiteId=params.siteId}).data
 	if not userinfo or (not siteinfo) then
