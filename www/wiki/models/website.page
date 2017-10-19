@@ -316,7 +316,7 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
-	user_log("更新站点信息:" .. params.sitename)
+	user_log("更新站点" .. params.sitename .. "基本信息:")
 
 	local sitename = params.sitename
 	--params.sitename = nil   -- 防止名字被改
