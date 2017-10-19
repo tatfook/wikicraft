@@ -3,7 +3,7 @@
  */
 define([
     'app',
-    'text!/sensitive_word.txt',
+    'text!html/sensitive_word.txt',
     'js-aho-corasick',
 ], function (app, sensitiveText) {
     app.factory("sensitiveTest", [function () {

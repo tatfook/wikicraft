@@ -27,6 +27,7 @@ define([
 		$scope.data = [];
 		$scope.oauthData = [];
 		$scope.oauthParams = {};
+		$scope.oauthParams.skipUserGrant = 1;
 		$scope.whiteList = [{
 			"trueValue": 1,
             "falseValue": 0,
@@ -169,7 +170,7 @@ define([
 		}
 		
 		//Oauth 管理
-		$scope.oauthVar = 1;
+		$scope.oauthVar    = 1;
 		$scope.maxSize     = 10;
 		$scope.totalItems  = 0;
 		$scope.currentPage = 1;
@@ -179,7 +180,10 @@ define([
 		//判定是否为添加框/修改框
 		$scope.clickOauthToggle = function (params, item) {
 			$scope.oauthVar = params;
-			
+			if(params == 1){
+				$scope.oauthParams = {};
+				$scope.oauthParams.skipUserGrant = 1;
+			}
 			if(params == 2){
 				$scope.getOneOAuthInfo(item);
 			}
@@ -204,24 +208,46 @@ define([
 			if(!$scope.oauthParams.appName){
 				return alert("请输入app名称");
 			};
+			
 			if(!$scope.oauthParams.company){
 				return alert("请输入公司名称");
 			};
-			if(!$scope.oauthParams.clientId){
-				return alert("请输入clientId");
-			};
+			
 			if(!$scope.oauthParams.clientSecret){
 				return alert("请输入clientSecret");
 			};
+			
+			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+			//var reg2 = /([.][A-Za-z])$/
+			var reg3 = /^[A-Za-z]+$/;
+			var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
+			
+			if(!reg1.test($scope.oauthParams.payCallbackUrl)){
+				return alert("payCallbackUrl请使用正确的格式");
+			};
+			
+			if(!reg1.test($scope.oauthParams.redirectUrl)){
+				return alert("payCallbackUrl请使用正确的格式");
+			};
+			
+			if(!reg3.test($scope.oauthParams.appName)){
+				return alert("app名称只能输入英文");
+			}
+			
+			if(!reg4.test($scope.oauthParams.company)){
+				return alert("公司名称只能输入英文和汉字");
+			}
+			
 			var params = {
 				"appName"        : $scope.oauthParams.appName,
 				"company"        : $scope.oauthParams.company,
-				"clientId"       : $scope.oauthParams.clientId,
+				//"clientId"       : $scope.oauthParams.clientId,
 				"clientSecret"   : $scope.oauthParams.clientSecret,
 				"skipUserGrant"  : $scope.oauthParams.skipUserGrant,
 				"redirectUrl"    : $scope.oauthParams.redirectUrl,
 				"payCallbackUrl" : $scope.oauthParams.payCallbackUrl,
 			};
+			
 			console.log(params);
 			util.post(addUrl, params, function(data){
 				alert("添加成功！");
@@ -280,6 +306,35 @@ define([
 		//oauth管理 修改
 		$scope.oauthModify = function(){
 			var oauthModifyUrl = config.apiUrlPrefix + "oauth_app/";
+			
+			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)/;
+			var reg2 = /([.][cC][oO][mM])$/;
+			var reg3 = /^[A-Za-z]+$/;
+			var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
+			
+			if(!reg1.test($scope.oauthParams.payCallbackUrl)){
+				return alert("payCallbackUrl请使用http://或https://作为开头");
+			};
+			
+			if(!reg2.test($scope.oauthParams.payCallbackUrl)){
+				return alert("payCallbackUrl请使用.com结尾");
+			};
+			
+			if(!reg1.test($scope.oauthParams.redirectUrl)){
+				return alert("redirectUrl请使用http://或https://作为开头");
+			};
+			
+			if(!reg2.test($scope.oauthParams.redirectUrl)){
+				return alert("redirectUrl请使用.com结尾");
+			};
+			
+			if(!reg3.test($scope.oauthParams.appName)){
+				return alert("app名称只能输入英文");
+			}
+			
+			if(!reg4.test($scope.oauthParams.company)){
+				return alert("公司名称只能输入英文和汉字");
+			}
 			
 			var params = {
 				"appName"        : $scope.oauthParams.appName,
