@@ -7,7 +7,8 @@ define(['app',
     'helper/util',
     'helper/storage',
     'text!html/services.html',
-], function (app, util, storage, htmlContent) {
+    'controller/bigfileController',
+], function (app, util, storage, htmlContent, bigfileContent) {
     app.registerController('servicesController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message) {
         $scope.showItem = "myVIP";
 
@@ -61,6 +62,9 @@ define(['app',
                 $scope.showMyPay();
             else if(item == 'myVIP'){
                 $scope.showMyVIP();
+            }else if(item == 'qiniuPan'){
+                $scope.showItem = 'qiniuPan';
+                util.html('#qiniuPan', bigfileContent);
             }
         });
 
