@@ -91,7 +91,9 @@
         'helper': 'app/helper',
         // html dir
         'html': '../html',
-		'css': '../assets/css'
+		'css': '../assets/css',
+
+		'helper/sensitiveWord':"empty:"
     },
     shim: {
         'angular': {
