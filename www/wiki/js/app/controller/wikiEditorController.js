@@ -2425,14 +2425,14 @@ define([
                 });
                 // 渲染后自动保存
                 var renderTimer = undefined;
-                var filterSensitive = function (inputText) {
-                    var result = "";
-                    config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
-                        result = outputText;
-                        return inputText;
-                    });
-                    return result;
-                };
+                //var filterSensitive = function (inputText) {
+                    //var result = "";
+                    //config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
+                        //result = outputText;
+                        //return inputText;
+                    //});
+                    //return result;
+                //};
 
                 editor.on("change", function (cm, changeObj) {
                     changeCallback(cm, changeObj);
