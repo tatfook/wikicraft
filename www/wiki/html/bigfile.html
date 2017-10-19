@@ -159,6 +159,12 @@
     .bigfile-modal .process-li .progress-bar{
         background-color: #43A8FF;
     }
+    .bigfile-modal .process-li .progress-bar.warning-bar{
+        background-color: #F97B00;
+    }
+    .bigfile-modal .process-li .progress-bar.danger-bar{
+        background-color: #FF1E02;
+    }
     .bigfile-modal .process-li .info{
         position: absolute;
         left: 0;
@@ -237,7 +243,10 @@
                 <li class="pull-right process-li">
                     当前使用：
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                             ng-class = "{'warning-bar': (storeInfo.used / storeInfo.total) >= 0.7, 'danger-bar': (storeInfo.used / storeInfo.total) >= 0.9}"
+                             aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}"
+                             ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
                         </div>
                         <div class="info">
                             <span>{{storeInfo.unUsed | number:2}}GB可用</span>
