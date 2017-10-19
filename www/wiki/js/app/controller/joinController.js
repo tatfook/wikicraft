@@ -7,8 +7,9 @@ define([
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+    'helper/sensitiveWord',
     'text!html/join.html',
-], function (app, util, storage, dataSource, htmlContent) {
+], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
         var userThreeService = undefined;
@@ -41,6 +42,18 @@ define([
                 pwd=$scope.otherPassword?$scope.otherPassword : "";
             }
             if (checks.username){
+                var isSensitive = false;
+                sensitiveWord.checkSensitiveWord(username, function (foundWords, replacedStr) {
+                    if (foundWords.length > 0){
+                        isSensitive = true;
+                        console.log("包含敏感词:" + foundWords.join("|"));
+                        return false;
+                    }
+                });
+                if (isSensitive){
+                    $scope.nameErrMsg="您输入的内容不符合互联网安全规范，请修改";
+                    return;
+                }
                 if(username.length>30){
                     $scope.nameErrMsg="*账户名需小于30位";
                     return;
@@ -92,6 +105,17 @@ define([
             if(!params.username){
                 $scope.nameErrMsg="*账户名为必填项";
                 $scope.$apply();
+                return;
+            }
+            var isSensitive = false;
+            sensitiveWord.checkSensitiveWord(params.username, function (foundWords, replacedStr) {
+                if (foundWords.length > 0){
+                    isSensitive = true;
+                    console.log("包含敏感词:" + foundWords.join("|"));
+                }
+            });
+            if (isSensitive){
+                $scope.nameErrMsg="您输入的内容不符合互联网安全规范，请修改";
                 return;
             }
             if(params.username.length>30){

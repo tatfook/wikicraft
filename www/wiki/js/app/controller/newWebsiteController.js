@@ -6,10 +6,11 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/sensitiveWord',
     'markdown-it',
     'text!html/newWebsite.html',
     'controller/editWebsiteController',
-], function (app, util, storage, markdownit, htmlContent, editWebsiteHtmlContent) {
+], function (app, util, storage, sensitiveWord, markdownit, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
         const GITLAB = {
             "API_BASE_URL": "http://git.keepwork.com/api/v4",
@@ -27,7 +28,6 @@ define([
         $scope.categories = [];//[{name:'个人网站'},{name:'作品网站'},{name:'组织网站'}];
         $scope.subCategories = [];
         $scope.step = 1;
-        $scope.nextStepDisabled = !$scope.website.name;
 
         function doGitlabTemplate(path, filepath, defaultDataSource, cb, errcb) {
             filepath = encodeURIComponent(filepath);
@@ -107,6 +107,15 @@ define([
         $scope.nextStep = function () {
             $scope.errMsg = "";
             if ($scope.step == 1) {
+                if (!$scope.website.templateName) {
+                    Message.info("请选择站点类型和模板");
+                    $scope.errMsg = "请选择站点类型和模板";
+                    return;
+                }
+                $scope.step++;
+                $scope.nextStepDisabled = !$scope.website.name;
+                return;
+            } else if ($scope.step == 2) {
                 if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
                     $scope.errMsg = "域名为必填字段";
                     return;
@@ -132,14 +141,6 @@ define([
                 $scope.website.visibility = $scope.visibility ? "private" : "public";
 
                 $scope.nextStepDisabled = !$scope.website.templateName;
-                return;
-            } else if ($scope.step == 2) {
-                if (!$scope.website.templateName) {
-                    Message.info("请选择站点类型和模板");
-                    $scope.errMsg = "请选择站点类型和模板";
-                    return;
-                }
-                $scope.step++;
                 return;
             } else if ($scope.step == 3) {
                 // $scope.nextStepDisabled = !$scope.website.templateName;
@@ -209,7 +210,6 @@ define([
             util.http("GET", url, params, function (result) {
                 console.log(result);
             }, function (result) {
-                console.log(result);
                 if (!result.content){
                     return;
                 }
@@ -255,7 +255,7 @@ define([
 
         $scope.getActiveStyleClass = function (category) {
             return category.name == $scope.website.categoryName ? 'active' : '';
-        }
+        };
 
         $scope.selectCategory = function (category) {
             $scope.category = category;
@@ -271,7 +271,7 @@ define([
             $scope.nextStepDisabled = false;
             $scope.template = $scope.templates[0];
             $scope.style = $scope.styles[0];
-        }
+        };
 
         $scope.selectTemplate = function (template) {
             $scope.template = template;
@@ -283,7 +283,7 @@ define([
             $scope.nextStepDisabled = false;
             $scope.website.logoUrl=template.logoUrl;
             $scope.style = $scope.styles[0];
-        }
+        };
 
         $scope.selectStyle = function (style) {
             $scope.style = style;
@@ -291,7 +291,7 @@ define([
             $scope.website.styleName = style.name;
             $scope.nextStepDisabled = false;
             $scope.style.logoUrl=style.logoUrl;
-        }
+        };
 
         $scope.addTag = function (tagName) {
             tagName = util.stringTrim(tagName);
@@ -307,7 +307,7 @@ define([
             $scope.website.tags = $scope.tags.join('|');
             $scope.tag="";
             $("input").focus();
-        }
+        };
 
         $scope.removeTag = function (tagName) {
             var index = $scope.tags.indexOf(tagName);
@@ -315,7 +315,7 @@ define([
                 $scope.tags.splice(index, 1);
             }
             $scope.website.tags = $scope.tags.join('|');
-        }
+        };
 
         $scope.checkWebsiteDisplayName = function () {
             if (/^\s+/.test($scope.website.displayName)){
@@ -336,13 +336,27 @@ define([
             }
             $scope.errMsg="";
             $scope.nextStepDisabled = false;
-        }
+        };
 
         $scope.checkWebsiteName = function () {
+            $scope.errMsg="";
             if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
                 return;
             }
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
+            var isSensitive = false;
+            sensitiveWord.checkSensitiveWord($scope.website.name, function (foundWords, replacedStr) {
+                if (foundWords.length > 0){
+                    isSensitive = true;
+                    console.log("包含敏感词:" + foundWords.join("|"));
+                    return false;
+                }
+            });
+            if (isSensitive){
+                $scope.nextStepDisabled = true;
+                $scope.errMsg="您输入的内容不符合互联网安全规范，请修改";
+                return;
+            }
             if($scope.website.name.length>30){
                 $scope.nextStepDisabled = true;
                 $scope.errMsg="访问地址最长30个字符";
@@ -356,11 +370,11 @@ define([
                 $scope.nextStepDisabled = true;
                 $scope.errMsg="访问地址不符合规范";
             }
-        }
+        };
 
         $scope.goPreviewPage = function (url) {
             window.open(url);
-        }
+        };
 
         // 访问网站
         $scope.goWebsiteIndexPage = function (sitename) {
@@ -368,7 +382,7 @@ define([
                 $scope.cancel();
             }
             util.go('/' + $scope.user.username + '/' + $scope.website.name + '/index?branch=master');
-        }
+        };
 
         $scope.cancel = function () {
             var result = {};
@@ -386,13 +400,13 @@ define([
             storage.sessionStorageSetItem("userCenterContentType", "editWebsite");
             util.go('/wiki/userCenter');
             //window.open(window.location.href);
-        }
+        };
 
         // 网站编辑
         $scope.goEditerPage = function () {
             storage.sessionStorageSetItem("urlObj",{username:$scope.website.username, sitename:$scope.website.name});
             util.go('wikieditor');
-        }
+        };
 
         // VIP付费页面
         $scope.goVIP = function () {

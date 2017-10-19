@@ -2,6 +2,7 @@
 #
 # push-image.sh
 #
+set -ex
 
 ADDR=121.14.117.251:5000
 

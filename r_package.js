@@ -10,6 +10,7 @@
     optimizeCss: 'standard',
     removeCombined:true,
     optimizeAllPluginResources: true,  // text 插件配置
+	skipDirOptimize: true,
     modules:[
         {
             name:'main',
@@ -22,6 +23,9 @@
         },
 		{
 			name:"controller/wikiEditorController",
+			include:[
+				"controller/newWebsiteController"
+			],
 			exclude:[
 				'app'
 			]
@@ -72,6 +76,8 @@
 		'pingpp': 'lib/pingpp-js/dist/pingpp',
 		'plupload': "lib/qiniu/plupload.full.min",
 		'qiniu': "lib/qiniu/qiniu.min",
+        'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
+        'md5': "lib/md5",
 
         // 自定义模块
         'app': 'app',

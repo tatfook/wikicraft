@@ -6,9 +6,10 @@ define(['app',
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+	'helper/sensitiveWord',
     'text!html/userProfile.html',
     'cropper',
-], function (app, util, storage,dataSource, htmlContent) {
+], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
     app.registerController('userProfileController', ['$scope', '$interval', 'Account', 'Message', function ($scope, $interval, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
@@ -19,6 +20,7 @@ define(['app',
         $scope.userEmail="";
         $scope.userPhone="";
         $scope.myPays = [];// code为0表示成功，isConsume为true时表示为消费，否则为收入
+        var sensitiveElems = [];
 
         function getResultCanvas(sourceCanvas) {
             var canvas = document.createElement('canvas');
@@ -182,10 +184,34 @@ define(['app',
 
         // 保存用户信息
         $scope.saveProfile = function () {
+            $scope.formErr = "";
             var user = angular.copy($scope.user);
             user.dataSource = undefined;
 			user.defaultSiteDataSource = undefined;
 			user.vipInfo = undefined;
+
+			var checkSensitives = [user.displayName, user.location, user.introduce];
+			var isSensitive = false;
+
+			$.each(checkSensitives, function (index,word) {
+                if (word == ""){
+                    return true;
+                }
+                sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
+                    if (foundWords.length > 0){
+                        isSensitive = true;
+                        console.log("包含敏感词:" + foundWords.join("|"));
+                        console.log(replacedStr);
+                        return false;
+                    }
+                });
+            });
+
+			if (isSensitive){
+			    $scope.formErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
+			    return;
+            }
+
             util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
 				data.vipInfo = $scope.user.vipInfo;
 				data.dataSource = $scope.user.dataSource;

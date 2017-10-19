@@ -2040,8 +2040,37 @@ define([
 						editor.focus();
                     }
                 });
-            }
+            };
 
+            // 大文件
+            $scope.cmd_bigfile = function () {
+				return ;
+                modal('controller/bigfileController', {
+                    controller: 'bigfileController',
+                    size: 'lg',
+                    backdrop: 'static'
+                }, function (wikiBlock) {
+                    console.log(wikiBlock);
+                }, function (files) {
+                    console.log(files);
+                    if (!files){
+                        return;
+                    }
+
+                    var insertContent = "";
+                    console.log(files);
+                    if (files.url){
+                        insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
+                    }else{
+                        files.map(function (file) {
+                            insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'",\n"extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
+                        });
+                    }
+
+                    editor.replaceSelection(insertContent);
+                    editor.focus();
+                });
+            };
             /**
              * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
              * @param dataURI
@@ -2397,6 +2426,15 @@ define([
                 });
                 // 渲染后自动保存
                 var renderTimer = undefined;
+                //var filterSensitive = function (inputText) {
+                    //var result = "";
+                    //config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
+                        //result = outputText;
+                        //return inputText;
+                    //});
+                    //return result;
+                //};
+
                 editor.on("change", function (cm, changeObj) {
                     changeCallback(cm, changeObj);
 
@@ -2407,6 +2445,9 @@ define([
                     renderTimer && clearTimeout(renderTimer);
                     renderTimer = setTimeout(function () {
                         var text = editor.getValue();
+                        //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
+                            //text = filterSensitive(text) || text;
+                        //}
                         mdwiki.render(text);
                         renderAutoSave();
 
