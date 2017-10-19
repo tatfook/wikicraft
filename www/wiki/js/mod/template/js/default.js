@@ -49,7 +49,6 @@ define([
 ```@template/js/default
 {
     "class": "container",
-    "headerpage":"_header",
     "footerpage":"_bottom"
 }
 ```
