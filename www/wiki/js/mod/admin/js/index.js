@@ -192,13 +192,13 @@ define([
 			}
 			
 		}
-		$scope.itemName = "";
+		$scope.itemName = "用户名";
 		$scope.items = ["username", "userip", "operation", "description", "targetType"];
 		$scope.itemsOnView = ["用户名", "用户IP", "用户操作", "描述", "操作类型"];
 		$scope.userLogSearchByItem = "";
 		$scope.userLogCurrentPage = 1;
 		$scope.userLogSearch = function () {
-			if($scope.userLogSearchByItem != "" && $scope.itemName != ""){
+			if($scope.userLogSearchByItem != ""){
 				var index = $scope.itemsOnView.indexOf($scope.itemName);
 				var item = $scope.items[index];
 				var query = {};
@@ -214,7 +214,7 @@ define([
 				//outputEditor.setValue(angular.toJson(data.data,4));
 			});
 			}else{
-				alert("关键字不能为空！");
+				$scope.getUserLogList();
 			}
 		}
 		
