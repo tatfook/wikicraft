@@ -60,7 +60,6 @@ define([
                         typeUrl();
                     });
                 }else if (modParams.fileUrl){
-                    console.log(modParams);
                     typeUrl(modParams.fileType, modParams.fileUrl);
                 }
             }

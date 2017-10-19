@@ -33,14 +33,14 @@ function bigfile:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	params.createDate = params.createDate or (ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"))
+
 	if params._id then
 		self:db():updateOne({_id=params._id}, params, resume)
 	else
 		self:db():insertOne(nil, params, resume)
 	end
-
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
 	return errors:wrap(yield())
 end

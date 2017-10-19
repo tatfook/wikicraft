@@ -18,7 +18,7 @@
         overflow-y: auto;
     }
     .bigfile-modal .form-inline{
-        padding: 5px 0 30px;
+        padding: 0 0 30px;
         border-bottom: 1px solid #DCDCDC;
     }
     .bigfile-modal .form-inline .form-control{
@@ -29,7 +29,7 @@
         margin-right: 15px;
     }
     .bigfile-modal .search-zone{
-        padding: 30px 0 10px;
+        padding: 20px 0 10px;
         display: flex;
         align-items: center;
     }
@@ -78,6 +78,34 @@
         line-height: 36px;
         cursor: pointer;
     }
+    .bigfile-modal .table-box{
+        height: 320px;
+        overflow-y: scroll;
+        margin-bottom: 20px;
+    }
+    .bigfile-modal .thead-table{
+        margin-bottom: 0;
+    }
+    .bigfile-modal .thead-table td.operate-column{
+        width: 237px;
+    }
+    .bigfile-modal .insert-table.thead-table td.operate-column{
+        width: 177px;
+    }
+    .bigfile-modal .insert-table-box {
+        height: 211px;
+        overflow-y: scroll;
+        margin-bottom: 20px;
+    }
+    .bigfile-modal .empty-box{
+        text-align: center;
+        color: #999;
+        font-size: 16px;
+    }
+    .bigfile-modal .empty-box .iconfont{
+        font-size: 145px;
+        line-height:1;
+    }
     .bigfile-modal .manage-table .operate-column{
         width: 220px;
         font-size: 0;
@@ -92,13 +120,13 @@
     .bigfile-modal .file-progress{
         border: 1px solid #3977AD;
         width: 100%;
-        height: 270px;
+        height: 412px;
         overflow-y: auto;
         margin-top: 20px;
     }
     .bigfile-modal .upload-info{
         text-align: center;
-        line-height: 265px;
+        line-height: 410px;
         font-size: 18px;
         color: #666;
         margin-bottom: 0;
@@ -219,12 +247,12 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane active clearfix" role="tabpanel" id="insert">
+                 <div class="tab-pane active clearfix" role="tabpanel" id="insert">
                     <p>输入已有url地址：</p>
                     <form class="form-inline">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="http://" ng-model="insertUrl" required>
+                                <input type="text" class="form-control" placeholder="http://" ng-model="insertUrl">
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedType}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
@@ -245,7 +273,7 @@
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
-                    <table class="table insert-table">
+                    <table class="table insert-table thead-table">
                         <thead>
                             <tr>
                                 <td class="checkbox-column">多选</td>
@@ -256,19 +284,27 @@
                                 <td class="operate-column">操作</td>
                             </tr>
                         </thead>
-                        <tbody>
+                    </table>
+                    <div class="insert-table insert-table-box">
+                        <div class="empty-box" ng-hide="filelist.length > 0">
+                            <span class="iconfont icon-kongbaiyemian"></span>
+                            <p>暂无相关内容...</p>
+                        </div>
+                        <table class="table" ng-show="filelist.length > 0">
+                            <tbody>
                             <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
                                 <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
-                                <td class="type-column" title="{{file.file.type}}">{{file.file.type}}</td>
+                                <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                 <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
                                 <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
                                 <td class="operate-column">
                                     <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                     <button class="btn btn-primary pull-right" ng-click="insertFiles()">插入选中</button>
                 </div>
                 <div class="tab-pane clearfix" role="tabpanel" id="fileManage">
@@ -278,36 +314,44 @@
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
-                    <table class="table manage-table">
-                        <thead>
-                        <tr>
-                            <td class="checkbox-column">多选</td>
-                            <td class="file-column">文件名</td>
-                            <td class="type-column">文件类型</td>
-                            <td class="size-column">大小</td>
-                            <td class="date-column">更新时间</td>
-                            <td class="operate-column">操作</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
-                            <td class="checkbox-column">
-                                <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
-                            </td>
-                            <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
-                            <td class="type-column" title="{{file.file.type}}">{{file.file.type}}</td>
-                            <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
-                            <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
-                            <td class="operate-column">
-                                <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
-                                <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
-                                <span title="下载" ng-click="downloadFile(file)"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></span>
-                                <!--<a ng-href="{{file.file.download_url}}" target="_blank"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></a>-->
-                                <span title="删除" ng-click="deleteFile(file, $index)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <table class="table manage-table thead-table">
+                            <thead>
+                            <tr>
+                                <td class="checkbox-column">多选</td>
+                                <td class="file-column">文件名</td>
+                                <td class="type-column">文件类型</td>
+                                <td class="size-column">大小</td>
+                                <td class="date-column">更新时间</td>
+                                <td class="operate-column">操作</td>
+                            </tr>
+                            </thead>
+                        </table>
+                        <div class="manage-table table-box">
+                            <div class="empty-box" ng-hide="filelist.length > 0">
+                                <span class="iconfont icon-kongbaiyemian"></span>
+                                <p>暂无相关内容...</p>
+                            </div>
+                            <table class="table">
+                                <tbody>
+                                <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                                    <td class="checkbox-column">
+                                        <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
+                                    </td>
+                                    <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
+                                    <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
+                                    <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
+                                    <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                                    <td class="operate-column">
+                                        <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
+                                        <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
+                                        <span title="下载" ng-click="downloadFile(file)"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></span>
+                                        <!--<a ng-href="{{file.file.download_url}}" target="_blank"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></a>-->
+                                        <span title="删除" ng-click="deleteFile(file, $index)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     <button class="btn btn-primary pull-right" ng-click="deleteFiles()">删除选中</button>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
