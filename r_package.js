@@ -62,7 +62,8 @@
         'satellizer': 'lib/satellizer/satellizer.min',
         'bootstrap-treeview': 'lib/bootstrap-treeview/bootstrap-treeview.min',
         //'github-api': 'lib/github-api/GitHub.bundle.min',
-        'cropper': 'lib/cropper/cropper.min',
+        //'cropper': 'lib/cropper/cropper.min',
+        'cropper': 'empty:',
         'markdown-it':'lib/markdown-it/markdown-it.min',
         'highlight': 'lib/highlight/highlight.pack', 
         'js-base64': 'lib/js-base64/base64.min',
@@ -91,7 +92,9 @@
         'helper': 'app/helper',
         // html dir
         'html': '../html',
-		'css': '../assets/css'
+		'css': '../assets/css',
+
+		'helper/sensitiveWord':"empty:"
     },
     shim: {
         'angular': {
