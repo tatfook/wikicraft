@@ -33,7 +33,8 @@ define([
                 }
             }
 
-            init();
+            // init();
+            $scope.$watch('$viewContentLoaded', init);
         }]);
     }
 
