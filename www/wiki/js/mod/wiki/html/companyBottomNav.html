@@ -3,10 +3,10 @@
         background-color: #323232;
         padding: 50px 0;
     }
-    .companybottomNav .list-title a{
+    .companybottomNav .list-title a, .companybottomNav .list-title span{
         color: #FFF;
     }
-    .companybottomNav a{
+    .companybottomNav a, .companybottomNav span{
         color: #A0A0A0;
         height:32px;
         line-height: 32px;
@@ -30,7 +30,8 @@
     <div class="container">
         <ul ng-repeat="navItem in modParams.navItems">
             <li class="list-title">
-                <a href="{{navItem.url}}" target="_blank">{{navItem.name}}</a>
+                <span ng-hide="navItem.url">{{navItem.name}}</span>
+                <a ng-show="navItem.url" ng-href="{{navItem.url}}" target="_blank">{{navItem.name}}</a>
             </li>
             <li ng-repeat="subNavItem in navItem.subUrl">
                 <a href="{{subNavItem.url}}">{{subNavItem.name}}</a>

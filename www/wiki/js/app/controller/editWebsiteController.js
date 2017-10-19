@@ -86,7 +86,12 @@ define([
 
         $scope.addTag = function (tagName) {
             tagName = util.stringTrim(tagName);
-            if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
+            if (!tagName){
+                $scope.tagErrMsg="标签不能为空";
+                $scope.tag="";
+                return;
+            }
+            if ($scope.tags.indexOf(tagName) >= 0) {
                 $scope.tagErrMsg="该标签已添加";
                 $scope.tag="";
                 return;

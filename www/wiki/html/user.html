@@ -423,7 +423,7 @@
                                 <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
                             </div>
-                            <div class="btn btn-primary" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?"取消关注":"关 注"}}</div>
+                            <div class="btn btn-primary" ng-disabled="x.fansUserId == user._id" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?"取消关注":"关 注"}}</div>
                         </div>
                     </div>
                 </div>
