@@ -321,9 +321,9 @@ function website:api_updateByName(params)
 	params.name = nil   -- 防止名字被改
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
+	user_log("更新站点信息:" .. params.sitename)
 	self:db():updateOne({["+username+name"]={params.username, sitename}}, params, resume)
 
-	user_log("更新站点信息:" .. params.sitename)
 	return errors:wrap(yield())
 end
 

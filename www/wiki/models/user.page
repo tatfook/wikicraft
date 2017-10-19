@@ -259,8 +259,8 @@ function user:api_updateUserInfo(params)
 	self:filterUserInfo(params)
 	params.dataSource = nil
 
-	self:db():updateOne({["+username"]={username}}, params, resume)
 	user_log(params.username .. "更新用户基本信息")
+	self:db():updateOne({["+username"]={username}}, params, resume)
 
 	return errors:wrap(yield())
 end
