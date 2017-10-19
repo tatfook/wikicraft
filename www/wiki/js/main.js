@@ -143,7 +143,14 @@
 		deps:['bootstrap'],
 		waitSeconds:10,
 		// urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
-		urlArgs: "bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+		//urlArgs: "bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+		urlArgs: function(id, url){
+			if(url.indexOf("?bust=") > 0 || url.indexOf("?ver=") > 0) {
+				return "";
+			}
+
+			return "?bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+		},
 	});
 
 	

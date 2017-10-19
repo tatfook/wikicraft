@@ -8,20 +8,40 @@ define([
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
     app.registerController("bigfileController", ["$scope", function ($scope) {
+        $(window).on("beforeunload", function (e) {//{{{
+            e = e || window.event;
+            var returnValue = '您的页面还未保存，需要手动保存';
+            e.returnValue = returnValue;
+            return returnValue;
+        });
+
         var qiniuBack;
+        const biteToG = 1024*1024*1024;
         $scope.selectedType = "图片";
+        if((util.getPathname() !="/wiki/user_center")){
+            $scope.isModal=true;
+        }
         $scope.cancel = function () {
-            if ($scope.uploadingFiles.length > 0){
+            if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 console.log("正在上传");
+                config.services.confirmDialog({
+                    "title": "关闭提示",
+                    "confirmBtnClass": "btn-danger",
+                    "theme": "danger",
+                    "content": "还有文件正在上传，确定关闭窗口？"
+                }, function () {
+                    $scope.$dismiss();
+                });
+            }else{
+                $scope.$dismiss();
             }
-            $scope.$dismiss();
+
         };
 
         var getFileByUsername = function () {
             util.post(config.apiUrlPrefix + "bigfile/getByUsername",{}, function(data){
                 data = data || {};
                 $scope.filelist = data.filelist;
-                console.log($scope.filelist);
             });
         };
 
@@ -31,14 +51,28 @@ define([
                     return;
                 }
                 $scope.storeInfo = {
-                    "used": result.used / 1024 / 1024 / 1024 || 0,
-                    "total": result.total / 1024 / 1024 / 1024 || 0,
-                    "unUsed": (result.total - result.used) / 1024 / 1024 / 1024
+                    "used": result.used / biteToG || 0,
+                    "total": result.total / biteToG || 0,
+                    "unUsed": (result.total - result.used) / biteToG
                 };
-                console.log($scope.storeInfo);
             }, function (err) {
                 console.log(err);
             }, false);
+        };
+
+        var isExceed = function (unUsed, uploadingSize) {
+            if (unUsed > uploadingSize){
+                return false;
+            } else {
+                config.services.confirmDialog({
+                    "title": "空间不足",
+                    "content": "网盘可用空间不足，无法上传！",
+                    "cancelBtn": false
+                }, function () {
+                    return true;
+                });
+                return true;
+            }
         };
 
         $scope.initQiniu = function(){
@@ -59,10 +93,16 @@ define([
                     'FilesAdded': function(up, files) {
                         var self = this;
                         var filelist = [];
+                        var filesSize = 0;
+                        var conflictSize = 0;
                         for (var i = 0; i < files.length; i++) {
-                            filelist.push(files[i].name)
+                            filelist.push(files[i].name);
+                            filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - $scope.updatingFile.file.size))){
+                                return;
+                            }
                             $scope.uploadingFiles = files;
                             self.start();
                             return;
@@ -74,17 +114,27 @@ define([
                         	    data.map(function (file) {
                                     conflictFileName.push(file.filename);
                                     contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
+                                    conflictSize += file.size;
                                 });
+
+                        	    if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - conflictSize))){
+                                    return;
+                                }
 
                                 config.services.confirmDialog({
                                     "title": "上传提醒",
                                     "contentHtml": contentHtml
                                 }, function () {
+                                    if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                                        return;
+                                    }
+                                    $scope.storeInfo.unUsed -= filesSize/biteToG;
                                     $scope.uploadingFiles = $scope.uploadingFiles || [];
                                     $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                     $scope.finishUploading = false;
                                     self.start();
                                 }, function () {
+                                    $scope.storeInfo.unUsed -= (filesSize - conflictSize)/biteToG;
                                     files = files.filter(function (file) {
                                         return conflictFileName.indexOf(file.name) < 0;
                                     });
@@ -97,6 +147,10 @@ define([
                                 });
                         		return ;
                         	}
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                                return;
+                            }
+                            $scope.storeInfo.unUsed -= filesSize/biteToG;
                             $scope.uploadingFiles = $scope.uploadingFiles || [];
                             $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                             $scope.finishUploading = false;
@@ -171,7 +225,6 @@ define([
                     },
                 }
             };
-            console.log($scope.updatingFile);
 
             if ($scope.updatingFile && $scope.updatingFile._id){// 更新文件
                 var type = $scope.updatingFile.file.type;
@@ -188,15 +241,11 @@ define([
                     "prevent_duplicates": true,
                     "mime_types": minTypes
                 };
-                console.log(option.filters);
             }
-            console.log(option);
             if (qiniuBack){
                 qiniuBack.destroy();
             }
-            console.log(qiniuBack);
             qiniuBack = qiniu.uploader(option);
-            console.log(qiniuBack);
         };
 
         var init = function () {
@@ -211,17 +260,26 @@ define([
         $scope.$watch("$viewContentLoaded", init);
 
         $scope.stopUpload = function (file) {
-            qiniuBack.removeFile(file);
-            file.isDelete = true;
+            qiniuBack.stop();
+            config.services.confirmDialog({
+                "title": "取消上传",
+                "confirmBtnClass": "btn-danger",
+                "theme": "danger",
+                "content": "确定取消该文件上传吗？"
+            }, function () {
+                $scope.storeInfo.unUsed += file.size/biteToG;
+                qiniuBack.removeFile(file);
+                file.isDelete = true;
+            });
+            qiniuBack.start();
         };
 
         $scope.deleteFile = function(files, index) {
-            console.log(files);
             config.services.confirmDialog({
                 "title":"删除文件",
                 "confirmBtnClass":"btn-danger",
                 "theme":"danger",
-                "content":"确定删除所选文件吗？"
+                "content":"确定删除文件吗？"
             },function(){
                 if (index && !Array.isArray(files)){
                     var file = files;
@@ -250,8 +308,7 @@ define([
                 return file.index >= 0;
             });
             $scope.deleteFile(deletingArr);
-            console.log(deletingArr);
-        }
+        };
 
         var changeFileName = function (file, filename, targetElem) {
             targetElem.attr("contenteditable", "false");
@@ -298,7 +355,6 @@ define([
         };
         
         var removeAllTags = function (str) {
-            console.log(str);
             return str.replace(/<\/?(\w+)\s*[\w\W]*?>/g, '').replace(/^&nbsp;|&nbsp;$/g, '');
         };
 
@@ -353,15 +409,21 @@ define([
             }
 
             $scope.$dismiss(files);
-        }
+        };
 
         $scope.insertFilesUrl = function () {
+            $scope.insertFileUrlErr = "";
             var type = "";
             var url = $scope.insertUrl;
+            var urlReg= /^(http|https):\/\//;
             if (!url){
+                $scope.insertFileUrlErr = "请输入要插入的url地址！";
                 return;
             }
-            console.log($scope.selectedType);
+            if (!urlReg.test(url)){
+                $scope.insertFileUrlErr = "请输入正确的url地址！";
+                return;
+            }
             switch ($scope.selectedType){
                 case "图片":
                     type = "image";
@@ -372,8 +434,6 @@ define([
                 default:
                     break;
             }
-            console.log(type);
-            console.log(url);
             $scope.$dismiss({
                 "type": type,
                 "url": url

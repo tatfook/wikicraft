@@ -4,14 +4,14 @@
 # build docker image
 #
 # usage:
-#   ./build-image.sh dev|test
+#   ./build-image.sh dev|test|release
 #
 set -ex
 
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|test"
+  echo "usage: $0 dev|test|release"
   exit 1
 }
 
@@ -19,7 +19,7 @@ if [[ $# -eq 0 ]] || [[ $# -gt 1 ]]; then
   usage
 fi
 
-if [[ $1 != "test" ]] && [[ $1 != "dev" ]]; then
+if [[ $1 != "test" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
   usage
 fi
 

@@ -88,7 +88,6 @@
 
             if (wikiBlock.modParams) {
                 var mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
-                
             }
 
             var decoder = new mxCodec(mxGraphModelData);
