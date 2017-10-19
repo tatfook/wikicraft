@@ -1,2 +1,2 @@
-echo "\nhello world\n" >> www_log.log
+npl root="www/"
 

@@ -1,5 +1,6 @@
 ```@template/js/default
 {
-    "class":"container"
+    "class":"container",
+    "footerpage":"_bottom"
 }
 ```
