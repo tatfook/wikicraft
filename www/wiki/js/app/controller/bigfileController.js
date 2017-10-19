@@ -68,7 +68,7 @@ define([
                         var self = this;
                         var filelist = [];
                         for (var i = 0; i < files.length; i++) {
-                            filelist.push(files[i].name)
+                            filelist.push(files[i].name);
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
                             $scope.uploadingFiles = files;
@@ -232,7 +232,7 @@ define([
                 "title":"删除文件",
                 "confirmBtnClass":"btn-danger",
                 "theme":"danger",
-                "content":"确定删除所选文件吗？"
+                "content":"确定删除文件吗？"
             },function(){
                 if (index && !Array.isArray(files)){
                     var file = files;

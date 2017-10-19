@@ -273,10 +273,6 @@ define([
             util.go("apps");
         };
 
-		$scope.goHelp = function () {
-            util.go("knowledge");
-        };
-
 		$scope.isAdmin = function() {
 			if (Account.isAuthenticated() && $scope.user && $scope.user.roleId) {
 				if ($scope.user.roleId == 8  || $scope.user.roleId == 10) {

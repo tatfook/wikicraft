@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 #
-# restart-server.sh
-#
 # restart container after building image
 
 set -ex
@@ -9,23 +7,25 @@ set -ex
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|test"
+  echo "usage: $0 dev|test|release"
   exit 1
 }
 
 if [[ $# -eq 0 ]] || [[ $# -gt 1 ]]; then
   usage
 fi
-if [[ $1 != "test" ]] && [[ $1 != "dev" ]]; then
+if [[ $1 != "test" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
   usage
 fi
 
 ENV_TYPE=$1
 
-# dev port is 8900, test port 8099
-port=8900
-if [[ ${ENV_TYPE} == "test" ]]; then
+if [[ ${ENV_TYPE} == "dev" ]]; then
+  port=8900
+elif [[ ${ENV_TYPE} == "test" ]]; then
   port=8099
+elif [[ ${ENV_TYPE} == "release" ]]; then
+  port=8088
 fi
 
 name=keepwork-${ENV_TYPE}-server

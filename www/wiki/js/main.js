@@ -58,8 +58,9 @@
             'pingpp': libPathPrefix + 'pingpp-js/dist/pingpp',
 			'plupload': libPathPrefix + "qiniu/plupload.full.min",
 			'qiniu': libPathPrefix + "qiniu/qiniu.min",
-			'swiper': libPathPrefix + "swiper/swiper.min",
+			'pako': libPathPrefix + "pako/pako.min",
 			'js-aho-corasick': libPathPrefix + "js-aho-corasick/aho-corasick",
+			'md5': libPathPrefix + "md5",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			// 自定义模块
@@ -142,7 +143,14 @@
 		deps:['bootstrap'],
 		waitSeconds:10,
 		// urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用
-		urlArgs: "bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+		//urlArgs: "bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+		urlArgs: function(id, url){
+			if(url.indexOf("?bust=") > 0 || url.indexOf("?ver=") > 0) {
+				return "";
+			}
+
+			return "?bust=" + (config.isDebugEnv() ? ((new Date()).getTime()) : (config.bustVersion || ''))   //防止读取缓存，调试用
+		},
 	});
 
 	
