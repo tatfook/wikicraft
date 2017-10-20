@@ -329,6 +329,7 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
+	user_log("用户" .. params.username .. "更新站点" .. params.sitename .. "信息")
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	if not siteinfo then
