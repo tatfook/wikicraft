@@ -119,7 +119,6 @@ define([
 
             if(fansUser.concerned){//取消关注
                 util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    $scope.fansCount--;
                     console.log("取消关注成功");
                     Message.info("取消关注成功");
                     fansUser.concerned=false;
@@ -129,15 +128,16 @@ define([
                                 $scope.fansList[index].isDelete = true;
                             }
                         });
+                        $scope.fansCount--;
                     }
                 });
             }else{
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    $scope.fansCount++;
                     console.log("关注成功");
                     Message.info("关注成功");
                     fansUser.concerned=true;
                     if (subInfo && subInfo == "fansOpt"){
+                        $scope.fansCount++;
                         $scope.fansList.push(ownUserFan);
                     }
                 });
