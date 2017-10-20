@@ -311,7 +311,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc}}</p>
+                                    <p class="ellipsis-1" title="{{x.desc}}">{{x.desc}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
@@ -331,7 +331,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc || "暂无简介"}}</p>
+                                    <p class="ellipsis-1" title="{{x.desc}}">{{x.desc || "暂无简介"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
@@ -382,7 +382,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
                                     <p>作者： <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
-                                    <p>{{x.userinfo.desc || "暂无简介"}}</p>
+                                    <p class="ellipsis-1" title="{{x.userinfo.desc}}">{{x.userinfo.desc || "暂无简介"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.userinfo.visitCount || 0}}
@@ -402,7 +402,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name || "作品名未知"}}</a></h4>
                                     <p>作者：{{x.username || "作者未知"}} </p>
-                                    <p>{{x.desc || "暂无描述"}}</p>
+                                    <p title="x.desc" class="ellipsis-1">{{x.desc || "暂无描述"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount || 0}}
