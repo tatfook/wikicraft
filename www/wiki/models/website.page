@@ -90,6 +90,11 @@ function website:api_createSite(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local isOk = sensitiveWordFilter({sitename=params.sitename, displayName=params.displayName, desc=params.desc, tags=params.tags})
+	if not isOk then
+		return errors:wrap("含有非法字符")
+	end
+
 	local userDB = models.user:new()
 	userDB:db():findOne({["+username"]={params.username}}, resume)
 	local _, userinfo = yield()
@@ -133,6 +138,11 @@ function website:api_upsert(params)
 	
 	if #params.name > 30 then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local isOk = sensitiveWordFilter({sitename=params.sitename, displayName=params.displayName, desc=params.desc, tags=params.tags})
+	if not isOk then
+		return errors:wrap("含有非法字符")
 	end
 
 	local userDB = models.user:new()
@@ -322,7 +332,8 @@ function website:api_updateByName(params)
 	end
 	local sensitiveWordLevel = siteinfo.sensitiveWordLevel or 0
 
-	if not sensitiveWordFilter() and not mathlib.bit.band(const.SENSITIVE_WORD_SITE) then
+	local isOk = sensitiveWordFilter({sitename=params.sitename, displayName=params.displayName, desc=params.desc, tags=params.tags})
+	if not isOk and not mathlib.bit.band(const.SENSITIVE_WORD_SITE) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
