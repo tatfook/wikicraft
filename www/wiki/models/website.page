@@ -90,6 +90,11 @@ function website:api_createSite(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local isOk = sensitiveWordFilter({sitename=params.sitename, displayName=params.displayName, desc=params.desc, tags=params.tags})
+	if not isOk then
+		return errors:wrap("含有非法字符")
+	end
+
 	local userDB = models.user:new()
 	userDB:db():findOne({["+username"]={params.username}}, resume)
 	local _, userinfo = yield()
@@ -135,6 +140,11 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local isOk = sensitiveWordFilter({sitename=params.sitename, displayName=params.displayName, desc=params.desc, tags=params.tags})
+	if not isOk then
+		return errors:wrap("含有非法字符")
+	end
+
 	local userDB = models.user:new()
 	userDB:db():findOne({["+username"]={params.username}}, resume)
 	local _, userinfo = yield()
@@ -148,6 +158,7 @@ function website:api_upsert(params)
 	params.visitCount = 0
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.sitename = params.name
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
@@ -175,6 +186,7 @@ function website:api_upsert(params)
 	trend.desc = site.username .. "创建站点" .. site.name
 	userTrendsDB:api_upsert(trend)
 	
+	--user_log(trend.desc)
 	return errors:wrap(nil, site)
 end
 
@@ -199,6 +211,9 @@ function website:deleteById(websiteId)
 	if not site then
 		return errors:wrap(nil)
 	end
+
+	--user_log("删除站点:" .. site.sitename)
+
 	local tokeninfo = getTokenInfo()	
 	if (site.username ~= tokeninfo.username) and (not tokeninfo.isAdmin) then
 		return errors:wrap(nil)
@@ -257,7 +272,6 @@ function website:api_deleteById(params)
 	end
 		
 	self:deleteById(websiteId)
-
 	return errors:wrap(nil)
 end
 
@@ -315,6 +329,7 @@ function website:api_updateByName(params)
 		return errors:wrap(errors.NOT_PRIVILEGES)
 	end
 
+	user_log("用户" .. params.username .. "更新站点" .. params.sitename .. "信息")
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	if not siteinfo then
@@ -322,7 +337,8 @@ function website:api_updateByName(params)
 	end
 	local sensitiveWordLevel = siteinfo.sensitiveWordLevel or 0
 
-	if not sensitiveWordFilter() and not mathlib.bit.band(const.SENSITIVE_WORD_SITE) then
+	local isOk = sensitiveWordFilter({sitename=params.sitename, displayName=params.displayName, desc=params.desc, tags=params.tags})
+	if not isOk and not mathlib.bit.band(const.SENSITIVE_WORD_SITE) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 

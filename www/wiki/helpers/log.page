@@ -1,0 +1,14 @@
+<?npl
+--[[
+Title: wiki module
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+include_once(WIKI_ROOT .. 'models/user_log.page')
+
+function user_log(msg)
+	local user_log_db = models.user_log:new()
+
+	return user_log_db:api_upsert({description=msg})
+end

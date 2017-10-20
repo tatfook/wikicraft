@@ -1,0 +1,37 @@
+<?npl
+--[[
+Title: user log
+Author: lizhiqiang
+Date: 2017/10/16
+]]
+
+NPL.load("(gl)script/ide/DateTime.lua")
+include_once("./abstract/base.page")
+
+local user_log = inherit(models.abstract.base, gettable("models.user_log"))
+user_log.db_name = 'user_log'
+
+function user_log:ctor()
+	self:addfield("createAt", "string")
+	self:addfield("username", "string")
+	self:addfield("userip","string")
+	self:addfield("operation","string")
+	self:addfield("description","string")
+	self:addfield("targetType", "string")
+	self:addfield("targetId", "number")
+end
+
+function user_log:api_upsert(params)
+	if not params.description then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	params.userip = params.userip or getpeername()
+	params.username = params.username or getUsername()
+
+	self:db():insertOne(nil, params, resume)
+
+	return errors:wrap(yield())
+end
+

@@ -7,8 +7,9 @@ define([
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+    'helper/sensitiveWord',
     'text!html/join.html',
-], function (app, util, storage, dataSource, htmlContent) {
+], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
         var userThreeService = undefined;
@@ -42,7 +43,7 @@ define([
             }
             if (checks.username){
                 var isSensitive = false;
-                config.services.sensitiveTest.checkSensitiveWord(username, function (foundWords, replacedStr) {
+                sensitiveWord.checkSensitiveWord(username, function (foundWords, replacedStr) {
                     if (foundWords.length > 0){
                         isSensitive = true;
                         console.log("包含敏感词:" + foundWords.join("|"));
@@ -107,7 +108,7 @@ define([
                 return;
             }
             var isSensitive = false;
-            config.services.sensitiveTest.checkSensitiveWord(params.username, function (foundWords, replacedStr) {
+            sensitiveWord.checkSensitiveWord(params.username, function (foundWords, replacedStr) {
                 if (foundWords.length > 0){
                     isSensitive = true;
                     console.log("包含敏感词:" + foundWords.join("|"));

@@ -21,6 +21,7 @@
 		hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
 		officialDomainList:["keepwork.com", "qiankunew.com"],                                                      // 官方域名 因存在用户官方子域名和其它域名 故需记录
 		officialSubDomainList:[                                                                                    // 官方占用的子域名列表
+			"release.keepwork.com",
 			"dev.keepwork.com",
 			"stage.keepwork.com",
 			"test.keepwork.com",
@@ -32,7 +33,7 @@
 		],
 		// 预加载模块列表
 		preloadModuleList:[
-			'directive/directive', // 不支持打包 动态加载
+			//'directive/directive', // 不支持打包 动态加载
 		],
 
 		// wiki 模块解析函数

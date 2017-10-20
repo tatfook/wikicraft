@@ -5,8 +5,9 @@
 define([
     'app',
     'helper/util',
+    'helper/sensitiveWord',
     'text!wikimod/wiki/html/comment.html',
-], function (app, util, htmlContent) {
+], function (app, util, sensitiveWord, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("commentController", ['$scope', '$rootScope', 'Account', function ($scope, $rootScope, Account) {
             $scope.user = Account.getUser();
@@ -47,7 +48,7 @@ define([
                         return;
                     }
                     var isSensitive = false;
-                    config.services.sensitiveTest.checkSensitiveWord($scope.comment.content, function (foundWords, replacedStr) {
+                    sensitiveWord.checkSensitiveWord($scope.comment.content, function (foundWords, replacedStr) {
                         if (foundWords.length > 0){
                             isSensitive = true;
                             console.log("包含敏感词:" + foundWords.join("|"));

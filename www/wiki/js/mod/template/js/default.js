@@ -2,9 +2,14 @@
  * Created by wuxiangan on 2017/1/4.
  */
 
-define(['app', 'helper/util'], function (app, util) {
+define([
+    'app',
+    'helper/util',
+    'helper/dataSource',
+    'helper/markdownwiki'
+], function (app, util, dataSource, markdownwiki) {
     function registerController(wikiBlock) {
-        app.registerController("defaultTemplateController", ['$scope', function ($scope) {
+        app.registerController("defaultTemplateController", ['$rootScope','$scope', function ($rootScope, $scope) {
             function init() {
                 var moduleParams = wikiBlock.modParams || {};
                 //console.log(moduleParams);
@@ -16,16 +21,27 @@ define(['app', 'helper/util'], function (app, util) {
                 };
 
                 $scope.class = moduleParams.class;
+
+                if(moduleParams.footerpage &&  moduleParams.footerpage!=""){
+                    var footerPageMD = markdownwiki({html:true, use_template:false});
+                    var pageinfo = $rootScope.pageinfo;
+                    var ds = dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
+                    var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.sitename + '/';
+                    ds.getRawContent({path: pathPrefix + moduleParams.footerpage + config.pageSuffixName}, function (content) {
+                        util.html('#_footerPageContentId', footerPageMD.render(content||''), $scope);
+                    });
+                }
             }
 
-            init();
+            // init();
+            $scope.$watch('$viewContentLoaded', init);
         }]);
     }
 
     return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
-            return '<div ng-controller="defaultTemplateController" ng-class="class" ng-style="style">'+ wikiBlock.content +'</div>'
+            return '<div ng-controller="defaultTemplateController" ng-class="class" ng-style="style">'+ wikiBlock.content + '<div id="_footerPageContentId"></div></div>'
         }
     }
 });
@@ -33,7 +49,8 @@ define(['app', 'helper/util'], function (app, util) {
 /*
 ```@template/js/default
 {
-    "class": "container"
+    "class": "container",
+    "footerpage":"_bottom"
 }
 ```
 */
