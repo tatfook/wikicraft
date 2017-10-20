@@ -566,6 +566,10 @@ function user:api_register(params)
 		return errors:wrap(errors:new("用户名不合法"))
 	end
 
+	if (string.match(params.username, "^[%d]+$")) then
+		return errors:wrap(errors:new("用户名不能全为数字"))
+	end
+
 	if not string.match(params.username, "^[%w]+$") then
 		return errors:wrap(errors:new("用户名只能由字母和数字组成"))
 	end

@@ -33,7 +33,7 @@ function website_domain:api_insert(params)
 	local vipDB = models.vip:new()
 	if vipDB:api_isValidVip({username=username}).data == false then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
-end
+	end
 
 	if (not params.username) or (not params.sitename) or (not params.domain) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -44,26 +44,16 @@ end
 	return errors:wrap(yield())
 end
 
--- 创建记录
-function website_domain:api_upsert(params)
-	local username = getUsername()
-
-	if not username then
-		return errors:wrap(errors.SERVER_INNER_ERROR)
+function website_domain:api_upsertCname(params)
+	if not params.domain then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-
-	local vipDB = models.vip:new()
-	if vipDB:api_isValidVip({username=username}).data == false then
-		return errors:wrap(errors.SERVER_INNER_ERROR)
-end
-
-	if (not params.username) or (not params.sitename) or (not params.domain) then
+	
+	if (string.find(params.domain, ".keepwork.com")) or params.domain == "keepwork.com" then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():insertOne({['+domain']={params.domain}}, params, resume)
-
-	return errors:wrap(yield())
+	return website_domain:api_insert(params)
 end
 
 -- 删除记录
