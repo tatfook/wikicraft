@@ -501,15 +501,20 @@ function user:api_login(params)
 	user_log("用户" .. params.username .. "登录系统")
 	if (string.find(params.username, '@')) then
 		self:db():findOne({["+email"]={params.username}}, resume)
-	elseif (string.match(params.username,"^%d*$")) then
-		self:db():findOne({["+cellphone"]={params.username}}, resume)
+	--else (string.match(params.username,"^%d*$")) --  用户名也可以全数字
 	else
-		self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
+		self:db():findOne({["+cellphone"]={params.username}}, resume)
+	--else
+		--self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
 	end
 
 	local _, userinfo = yield()
 	if not userinfo then
-		return errors:wrap("用户不存在")
+		self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
+		 _, userinfo = yield()
+		if not userinfo then
+			return errors:wrap("用户不存在")
+		end
 	end
 
 	user_log("用户" .. params.username .. "登录成功")
@@ -559,6 +564,10 @@ function user:api_register(params)
 	params.username = string.lower(params.username)
 	if #params.username < 4 or #params.username > 30 then
 		return errors:wrap(errors:new("用户名不合法"))
+	end
+
+	if (string.match(params.username, "^[%d]+$")) then
+		return errors:wrap(errors:new("用户名不能全为数字"))
 	end
 
 	if not string.match(params.username, "^[%w]+$") then
