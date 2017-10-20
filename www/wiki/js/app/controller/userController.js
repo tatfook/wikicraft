@@ -83,7 +83,7 @@ define([
             });
         }
 
-        $scope.favoriteUser = function (fansUser) {
+        $scope.favoriteUser = function (fansUser, subInfo) {
             if (!$scope.userinfo) {
                 $scope.concerned = !$scope.concerned;
                 return;
@@ -119,19 +119,27 @@ define([
 
             if(fansUser.concerned){//取消关注
                 util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    $scope.fansList.pop(ownUserFan);
                     $scope.fansCount--;
                     console.log("取消关注成功");
                     Message.info("取消关注成功");
                     fansUser.concerned=false;
+                    if (subInfo && subInfo == "fansOpt"){
+                        $.each($scope.fansList, function (index, fansItem) {
+                            if (fansItem.fansUserId == $scope.user._id){
+                                $scope.fansList[index].isDelete = true;
+                            }
+                        });
+                    }
                 });
             }else{
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    $scope.fansList.push(ownUserFan);
                     $scope.fansCount++;
                     console.log("关注成功");
                     Message.info("关注成功");
                     fansUser.concerned=true;
+                    if (subInfo && subInfo == "fansOpt"){
+                        $scope.fansList.push(ownUserFan);
+                    }
                 });
             }
         };

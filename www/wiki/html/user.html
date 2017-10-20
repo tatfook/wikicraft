@@ -245,7 +245,7 @@
                 <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
             </p>
             <p>{{userinfo.introduce}}</p>
-            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo)">{{userinfo.concerned?"取消关注":"关 注"}}</div>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?"取消关注":"关 注"}}</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="mailto:{{userinfo.email}}" target="_blank" class="text-primary">{{userinfo.email}}</a></p>
@@ -417,7 +417,7 @@
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
                         <p ng-show="fansCount==0" style="text-align: center;margin-top: 40px;">暂无粉丝</p>
-                        <div class="col-md-12 fans-row" ng-repeat="x in fansList">
+                        <div class="col-md-12 fans-row" ng-repeat="x in fansList" ng-hide="x.isDelete">
                             <img ng-src="{{x.userinfo.portrait || getImageUrl('wiki_default_profile.jpg',imgsPath)}}" alt="">
                             <div class="intro">
                                 <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
