@@ -501,7 +501,8 @@ function user:api_login(params)
 	user_log("用户" .. params.username .. "登录系统")
 	if (string.find(params.username, '@')) then
 		self:db():findOne({["+email"]={params.username}}, resume)
-	else (string.match(params.username,"^%d*$")) --  用户名也可以全数字
+	--else (string.match(params.username,"^%d*$")) --  用户名也可以全数字
+	else
 		self:db():findOne({["+cellphone"]={params.username}}, resume)
 	--else
 		--self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
@@ -509,7 +510,7 @@ function user:api_login(params)
 
 	local _, userinfo = yield()
 	if not userinfo then
-		self:db():findOne({["+cellphone"]={params.username}}, resume)
+		self:db():findOne({["+username"]={params.username}}, resume)
 		local _, userinfo = yield()
 		if not userinfo then
 			return errors:wrap("用户不存在")
