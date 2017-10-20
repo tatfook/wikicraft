@@ -2044,7 +2044,7 @@ define([
 
             // 大文件
             $scope.cmd_bigfile = function () {
-				return ;
+				//return ;
                 modal('controller/bigfileController', {
                     controller: 'bigfileController',
                     size: 'lg',
