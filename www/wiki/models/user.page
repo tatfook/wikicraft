@@ -510,8 +510,8 @@ function user:api_login(params)
 
 	local _, userinfo = yield()
 	if not userinfo then
-		self:db():findOne({["+username"]={params.username}}, resume)
-		local _, userinfo = yield()
+		self:db():findOne({["+username"]={string.lower(params.username)}}, resume)
+		 _, userinfo = yield()
 		if not userinfo then
 			return errors:wrap("用户不存在")
 		end
