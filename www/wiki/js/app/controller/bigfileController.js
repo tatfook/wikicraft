@@ -8,13 +8,6 @@ define([
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
     app.registerController("bigfileController", ["$scope", function ($scope) {
-        $(window).on("beforeunload", function (e) {//{{{
-            e = e || window.event;
-            var returnValue = '您的页面还未保存，需要手动保存';
-            e.returnValue = returnValue;
-            return returnValue;
-        });
-
         var qiniuBack;
         const biteToG = 1024*1024*1024;
         $scope.selectedType = "图片";
