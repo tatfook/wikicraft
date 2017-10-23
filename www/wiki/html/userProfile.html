@@ -1,16 +1,15 @@
-
 <style>
-    .btn-md{
-        padding:9px 41px;
+    .btn-md {
+        padding: 9px 41px;
         font-size: 16px;
     }
-    .form-horizontal .form-group-lg .control-label{
+    .form-horizontal .form-group-lg .control-label {
         font-size: 16px;
         font-weight: normal;
         padding-right: 0;
     }
-    .form-group-lg .form-control{
-        height:42px;
+    .form-group-lg .form-control {
+        height: 42px;
         font-size: 16px;
     }
     /*我的资料页*/
@@ -616,7 +615,7 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
-                    <a href="#userTrends"  ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
+                    <a href="#userTrends" ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
                 </li>
                 <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
                     <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
@@ -629,6 +628,10 @@
             <!-- Tab panes -->
             <div class="tab-content clearfix">
                 <div role="tabpanel" class="tab-pane active col-sm-12" id="wiki_organize">
+                    <div class="empty-box" ng-hide="trendsList.length > 0">
+                        <span class="iconfont icon-kongbaiyemian"></span>
+                        <p>暂无相关内容...</p>
+                    </div>
                     <div class="status-row col-sm-12" ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
                         <p class="pull-right info">{{x.updateDate}}</p>
                         <div class="col-sm-12">
@@ -658,7 +661,11 @@
             <!-- Tab panes -->
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active img-text-box collection-pane" id="wiki_user">
-                    <div class="col-sm-12">
+                    <div class="empty-box" ng-hide="userList.length > 0">
+                        <span class="iconfont icon-kongbaiyemian"></span>
+                        <p>暂无相关内容...</p>
+                    </div>
+                    <div class="col-sm-12" ng-show="userList.length > 0">
                         <div class="img-text col-md-6 col-sm-12" ng-repeat="x in userList">
                             <img ng-src="{{x.userinfo.portrait || imgsPath + 'default_portrait.png'}}" alt="">
                             <div class="text">
@@ -680,7 +687,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="pagination-box">
+                    <div class="pagination-box" ng-show="userList.length > 0">
                         <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="上一页"
                             next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                             class="pagination-sm" boundary-link-numbers="true">
@@ -688,7 +695,11 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane img-text-box collection-pane" id="wiki_works">
-                    <div class="col-sm-12">
+                    <div class="empty-box" ng-hide="siteList.length > 0">
+                        <span class="iconfont icon-kongbaiyemian"></span>
+                        <p>暂无相关内容...</p>
+                    </div>
+                    <div class="col-sm-12" ng-show="siteList.length > 0">
                         <div class="img-text col-md-6 col-sm-12" ng-repeat="x in siteList">
                             <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                             <div class="text">
@@ -710,7 +721,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="pagination-box">
+                    <div class="pagination-box" ng-show="siteList.length > 0">
                         <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="上一页"
                             next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                             class="pagination-sm" boundary-link-numbers="true">
@@ -724,11 +735,17 @@
     <!--我的历史-->
     <div ng-show="showItem == 'myHistory'" class="col-xs-12 main-content panel">
         <div class="panel-heading">我的历史</div>
-        <div class="panel-body timeline">
+        <div class="panel-body" ng-hide="visitHistoryList.length > 0">
+            <div class="empty-box">
+                <span class="iconfont icon-kongbaiyemian"></span>
+                <p>暂无相关内容...</p>
+            </div>
+        </div>
+        <div class="panel-body timeline" ng-show="visitHistoryList.length > 0">
             <div class="img-text" ng-repeat="site in visitHistoryList" ng-show="site.siteinfo">
                 <img ng-src="{{site.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                 <div class="text">
-					<h4 class="ellipsis-1"><a href="{{site.url}}">{{site.siteinfo.name}}</a></h4>
+                    <h4 class="ellipsis-1"><a href="{{site.url}}">{{site.siteinfo.name}}</a></h4>
                     <p class="ellipsis-1"><a ng-href="{{'/'+site.siteinfo.username}}"></a>作者：{{site.siteinfo.displayName || site.siteinfo.username}}</p>
                     <!--<p class="ellipsis-1">页数：{{site.siteinfo.pageCount || 1}}</p>-->
                     <div class="col-md-12 info">
@@ -744,11 +761,11 @@
                 <div class="rubbish" ng-click="deleteHistory(site)"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
             </div>
         </div>
-		<div class="pagination-box">
-			<ul uib-pagination ng-change="getUserVisitHistory()" items-per-page='pageSize' previous-text="上一页"
-				next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-				class="pagination-sm" boundary-link-numbers="true"></ul>
-		</div>
+        <div class="pagination-box" ng-show="visitHistoryList.length > 0">
+            <ul uib-pagination ng-change="getUserVisitHistory()" items-per-page='pageSize' previous-text="上一页"
+                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                class="pagination-sm" boundary-link-numbers="true"></ul>
+        </div>
     </div>
 
     <!--我的粉丝-->
@@ -756,7 +773,7 @@
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-				<li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''">
+                <li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''">
                     <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans"
                        role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount || 0}})</span></a>
                 </li>
@@ -881,48 +898,48 @@
 
     <!--消费记录-->
     <!--<div ng-show="showItem == 'myPay'" class="col-xs-12 main-content panel">-->
-        <!--<div class="panel-heading clearfix">-->
-            <!--<div style="float:left">消费记录</div>-->
-            <!--<div style="float:right">余额{{balance/100 || "0"}}元</div>-->
-        <!--</div>-->
-        <!--<div class="panel-body mypay-panel">-->
-            <!--<table class="table mypay-table">-->
-                <!--<tr ng-repeat="item in myPays">-->
-                    <!--<td class="icon-time">-->
-                        <!--<span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.method == 'spend']"></span>-->
-                        <!--<span class="time">{{item.create_date}}</span>-->
-                    <!--</td>-->
-                    <!--<td>{{item.subject}}</td>-->
-                    <!--<td class="money">{{item.method == 'Spend' ? "-" : "+"}} &yen; {{item.price < 0 ? -item.price/100 : item.price/100}}</td>-->
-                    <!--<td>{{payStatus[item.status]}}</td>-->
-                    <!--&lt;!&ndash;<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>-->
-                    <!--<td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>&ndash;&gt;-->
-                <!--</tr>-->
-            <!--</table>-->
-        <!--</div>-->
+    <!--<div class="panel-heading clearfix">-->
+    <!--<div style="float:left">消费记录</div>-->
+    <!--<div style="float:right">余额{{balance/100 || "0"}}元</div>-->
+    <!--</div>-->
+    <!--<div class="panel-body mypay-panel">-->
+    <!--<table class="table mypay-table">-->
+    <!--<tr ng-repeat="item in myPays">-->
+    <!--<td class="icon-time">-->
+    <!--<span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.method == 'spend']"></span>-->
+    <!--<span class="time">{{item.create_date}}</span>-->
+    <!--</td>-->
+    <!--<td>{{item.subject}}</td>-->
+    <!--<td class="money">{{item.method == 'Spend' ? "-" : "+"}} &yen; {{item.price < 0 ? -item.price/100 : item.price/100}}</td>-->
+    <!--<td>{{payStatus[item.status]}}</td>-->
+    <!--&lt;!&ndash;<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>-->
+    <!--<td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>&ndash;&gt;-->
+    <!--</tr>-->
+    <!--</table>-->
+    <!--</div>-->
     <!--</div>-->
 
     <!--邀请注册-->
     <!--<div ng-show="showItem == 'invite'" class="col-md-10 panel main-content">-->
-        <!--<div class="panel-heading">-->
-            <!--邀请注册-->
-        <!--</div>-->
-        <!--<div class="panel-body">-->
-            <!--<form class="form-horizontal" role="form">-->
-                <!--<div class="form-group sr-only form-group-lg">-->
-                    <!--<legend>邀请注册表单</legend>-->
-                <!--</div>-->
-                <!--<div class="form-group form-group-lg">-->
-                    <!--<label for="email" class="control-label col-sm-2">好友email：</label>-->
-                    <!--<div class="col-sm-4">-->
-                        <!--<input type="email" ng-model="friendMail" class="form-control">-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-3">-->
-                        <!--<div ng-click="inviteFriend()" class="btn btn-primary btn-md">邀 请</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</form>-->
-        <!--</div>-->
+    <!--<div class="panel-heading">-->
+    <!--邀请注册-->
+    <!--</div>-->
+    <!--<div class="panel-body">-->
+    <!--<form class="form-horizontal" role="form">-->
+    <!--<div class="form-group sr-only form-group-lg">-->
+    <!--<legend>邀请注册表单</legend>-->
+    <!--</div>-->
+    <!--<div class="form-group form-group-lg">-->
+    <!--<label for="email" class="control-label col-sm-2">好友email：</label>-->
+    <!--<div class="col-sm-4">-->
+    <!--<input type="email" ng-model="friendMail" class="form-control">-->
+    <!--</div>-->
+    <!--<div class="col-sm-3">-->
+    <!--<div ng-click="inviteFriend()" class="btn btn-primary btn-md">邀 请</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</div>-->
     <!--</div>-->
 
     <!--邮箱绑定弹窗-->
@@ -970,10 +987,10 @@
                         <div class="form-group form-group-lg">
                             <label class="control-label col-sm-3">图片验证码：</label>
                             <div class="col-sm-6">
-								<input type="text" class="form-control" ng-model="imageCode">
+                                <input type="text" class="form-control" ng-model="imageCode">
                             </div>
                             <div class="col-sm-3 captcha">
-								<img ng-src="{{imageCodeUrl}}" alt="验证码">
+                                <img ng-src="{{imageCodeUrl}}" alt="验证码">
                                 <span class="glyphicon glyphicon-repeat" ng-click="refreshImageCode()" title="刷新"></span>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">

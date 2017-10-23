@@ -7,6 +7,12 @@
         right: 12px;
         top: 8px;
     }
+    .bigfile-modal .modal-body{
+        padding: 0;
+    }
+    .bigfile-modal .nav-tabs{
+        padding:10px 15px 0;
+    }
     .bigfile-modal .btn-primary{
         padding: 6px 20px;
         font-size: 16px;
@@ -131,19 +137,6 @@
         color: #666;
         margin-bottom: 0;
     }
-    /*.bigfile-modal .file-input-btn{*/
-        /*position: relative;*/
-        /*overflow: hidden;*/
-    /*}*/
-    /*.bigfile-modal .file-input-btn > input{*/
-        /*position: absolute;*/
-        /*top: 0;*/
-        /*right: 0;*/
-        /*bottom: 0;*/
-        /*opacity: 0;*/
-        /*background-color: red;*/
-        /*cursor: pointer;*/
-    /*}*/
     .bigfile-modal .process-li {
         padding: 10px 0;
     }
@@ -158,6 +151,12 @@
     }
     .bigfile-modal .process-li .progress-bar{
         background-color: #43A8FF;
+    }
+    .bigfile-modal .process-li .progress-bar.warning-bar{
+        background-color: #F97B00;
+    }
+    .bigfile-modal .process-li .progress-bar.danger-bar{
+        background-color: #FF1E02;
     }
     .bigfile-modal .process-li .info{
         position: absolute;
@@ -217,18 +216,26 @@
         font-size: 12px;
     }
 </style>
+<style>
+    .bigfile-content{
+        background-color: #FFF;
+    }
+    .bigfile-content .modal-header{
+        display: none;
+    }
+</style>
 <div ng-controller="bigfileController">
-    <div class="bigfile-modal">
+    <div class="bigfile-modal" ng-class="{true: 'bigfile-content'}[!isModal]">
         <div class="modal-header">
             网盘功能
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
             <ul class="nav nav-tabs clearfix" role="tablist">
-                <li role="presentation" class="active">
+                <li role="presentation" ng-show="isModal" class="active">
                     <a href="#insert" aria-controls="insert" role="tab" data-toggle="tab">插入文件</a>
                 </li>
-                <li role="presentation">
+                <li role="presentation" ng-class="{true:'active'}[!isModal]">
                     <a href="#fileManage" aria-controls="fileManage" role="tab" data-toggle="tab">网盘管理</a>
                 </li>
                 <li role="presentation">
@@ -237,7 +244,10 @@
                 <li class="pull-right process-li">
                     当前使用：
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                             ng-class = "{'warning-bar': (storeInfo.used / storeInfo.total) >= 0.7, 'danger-bar': (storeInfo.used / storeInfo.total) >= 0.9}"
+                             aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}"
+                             ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
                         </div>
                         <div class="info">
                             <span>{{storeInfo.unUsed | number:2}}GB可用</span>
@@ -247,7 +257,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                 <div class="tab-pane active clearfix" role="tabpanel" id="insert">
+                <div class="tab-pane active clearfix" role="tabpanel" ng-show="isModal"  id="insert">
                     <p>输入已有url地址：</p>
                     <form class="form-inline">
                         <div class="form-group">
@@ -307,7 +317,7 @@
                     </div>
                     <button class="btn btn-primary pull-right" ng-click="insertFiles()">插入选中</button>
                 </div>
-                <div class="tab-pane clearfix" role="tabpanel" id="fileManage">
+                <div class="tab-pane clearfix" ng-class="{true:'active'}[!isModal]" role="tabpanel" id="fileManage">
                     <div class="only-search clearfix">
                         <div class="searchbar pull-right">
                             <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">

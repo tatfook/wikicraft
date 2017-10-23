@@ -26,7 +26,7 @@ char* ParaEngine::CQiNiu::getUploadToken(int expires) {
 	if (expires > 0) {
 		putPolicy.expires = expires;
 	} else {
-		//putPolicy.expires = 3600; // 默认10分钟
+		putPolicy.expires = 3600 * 24 * 7; // 7 day
 	}
 	uptoken = Qiniu_RS_PutPolicy_Token(&putPolicy, &mac);
 
@@ -53,7 +53,7 @@ char* ParaEngine::CQiNiu::getDownloadUrl(const char* domain, const char* key, in
 	if (expires > 0) {
 		getPolicy.expires = expires;
 	} else {
-		//getPolicy.expires = 3600; // 默认10分钟
+		getPolicy.expires = 3600 * 24 * 7 * 365 * 100; // 100 year
 	}
 	
 	Qiniu_Mac mac;

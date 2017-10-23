@@ -9,9 +9,13 @@ define([
 ], function (app, qiniu, util, htmlContent) {
     app.registerController("bigfileController", ["$scope", function ($scope) {
         var qiniuBack;
+        const biteToG = 1024*1024*1024;
         $scope.selectedType = "图片";
+        if((util.getPathname() !="/wiki/user_center")){
+            $scope.isModal=true;
+        }
         $scope.cancel = function () {
-            if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0){
+            if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 console.log("正在上传");
                 config.services.confirmDialog({
                     "title": "关闭提示",
@@ -40,13 +44,28 @@ define([
                     return;
                 }
                 $scope.storeInfo = {
-                    "used": result.used / 1024 / 1024 / 1024 || 0,
-                    "total": result.total / 1024 / 1024 / 1024 || 0,
-                    "unUsed": (result.total - result.used) / 1024 / 1024 / 1024
+                    "used": result.used / biteToG || 0,
+                    "total": result.total / biteToG || 0,
+                    "unUsed": (result.total - result.used) / biteToG
                 };
             }, function (err) {
                 console.log(err);
             }, false);
+        };
+
+        var isExceed = function (unUsed, uploadingSize) {
+            if (unUsed > uploadingSize){
+                return false;
+            } else {
+                config.services.confirmDialog({
+                    "title": "空间不足",
+                    "content": "网盘可用空间不足，无法上传！",
+                    "cancelBtn": false
+                }, function () {
+                    return true;
+                });
+                return true;
+            }
         };
 
         $scope.initQiniu = function(){
@@ -67,10 +86,16 @@ define([
                     'FilesAdded': function(up, files) {
                         var self = this;
                         var filelist = [];
+                        var filesSize = 0;
+                        var conflictSize = 0;
                         for (var i = 0; i < files.length; i++) {
                             filelist.push(files[i].name);
+                            filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - $scope.updatingFile.file.size))){
+                                return;
+                            }
                             $scope.uploadingFiles = files;
                             self.start();
                             return;
@@ -82,17 +107,27 @@ define([
                         	    data.map(function (file) {
                                     conflictFileName.push(file.filename);
                                     contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
+                                    conflictSize += file.size;
                                 });
+
+                        	    if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - conflictSize))){
+                                    return;
+                                }
 
                                 config.services.confirmDialog({
                                     "title": "上传提醒",
                                     "contentHtml": contentHtml
                                 }, function () {
+                                    if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                                        return;
+                                    }
+                                    $scope.storeInfo.unUsed -= filesSize/biteToG;
                                     $scope.uploadingFiles = $scope.uploadingFiles || [];
                                     $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                     $scope.finishUploading = false;
                                     self.start();
                                 }, function () {
+                                    $scope.storeInfo.unUsed -= (filesSize - conflictSize)/biteToG;
                                     files = files.filter(function (file) {
                                         return conflictFileName.indexOf(file.name) < 0;
                                     });
@@ -105,6 +140,10 @@ define([
                                 });
                         		return ;
                         	}
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                                return;
+                            }
+                            $scope.storeInfo.unUsed -= filesSize/biteToG;
                             $scope.uploadingFiles = $scope.uploadingFiles || [];
                             $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                             $scope.finishUploading = false;
@@ -221,6 +260,7 @@ define([
                 "theme": "danger",
                 "content": "确定取消该文件上传吗？"
             }, function () {
+                $scope.storeInfo.unUsed += file.size/biteToG;
                 qiniuBack.removeFile(file);
                 file.isDelete = true;
             });

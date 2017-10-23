@@ -43,13 +43,18 @@ a:hover {
     -ms-flex-direction:column;
     -o-flex-direction:column;
 }
-    .modal-xxl > .modal-content > .modal-body {
-        flex-basis:100%;
-        -webkit-flex-basis:100%;
-        -moz-flex-basis:100%;
-        -ms-flex-basis:100%;
-        -o-flex-basis:100%;
-    }
+.modal-xxl > .modal-content > .modal-body {
+    flex-basis:100%;
+    -webkit-flex-basis:100%;
+    -moz-flex-basis:100%;
+    -ms-flex-basis:100%;
+    -o-flex-basis:100%;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{
+    border: none;
+    border-bottom: 2px solid #3977AD;
+}
 
 #__WikiPageContentContainer__{
     width: auto;
@@ -91,4 +96,13 @@ textarea{
 }
 .text-primary{
     color: #3977AD;
+}
+.empty-box {
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+}
+.empty-box .iconfont {
+    font-size: 145px;
+    line-height: 1;
 }
