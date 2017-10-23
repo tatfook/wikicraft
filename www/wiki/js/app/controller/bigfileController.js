@@ -106,8 +106,7 @@ define([
                         	    var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
                         	    data.map(function (file) {
                                     conflictFileName.push(file.filename);
-                                    contentHtml+='<p claszs="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
-                                    console.log(file);
+                                    contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
                                     conflictSize += file.size || 0;
                                 });
 
@@ -314,9 +313,7 @@ define([
         };
 
         var changeFileName = function (file, filename, targetElem) {
-            // targetElem.attr("contenteditable", "false");
             $scope.nameErr="";
-            // filename = filename.trim();
 
             var newFileSplit = filename.split(".");
             var newExt = newFileSplit[newFileSplit.length-1];
@@ -347,17 +344,12 @@ define([
             }, function (err) {
                 console.log(err);
             });
-
-            // setTimeout(function () {
-            // });
         };
 
         $scope.updateFile = function (file) {
-            // console.log("更新功能开发中。。。");
             $scope.updatingFile = file;
             $("#activeUpload").tab("show");
             $scope.initQiniu();
-            // Message.info("更新功能开发中。。。");
         };
         
         var removeAllTags = function (str) {
