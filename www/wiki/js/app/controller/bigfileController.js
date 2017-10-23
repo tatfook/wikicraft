@@ -32,7 +32,7 @@ define([
         };
 
         var getFileByUsername = function () {
-            util.post(config.apiUrlPrefix + "bigfile/getByUsername",{}, function(data){
+            util.post(config.apiUrlPrefix + "bigfile/getByUsername",{pageSize:100000}, function(data){
                 data = data || {};
                 $scope.filelist = data.filelist;
             });
@@ -54,7 +54,7 @@ define([
         };
 
         var isExceed = function (unUsed, uploadingSize) {
-            if (unUsed > uploadingSize){
+            if (!unUsed || !uploadingSize || unUsed > uploadingSize){
                 return false;
             } else {
                 config.services.confirmDialog({
@@ -106,8 +106,9 @@ define([
                         	    var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
                         	    data.map(function (file) {
                                     conflictFileName.push(file.filename);
-                                    contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
-                                    conflictSize += file.size;
+                                    contentHtml+='<p claszs="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
+                                    console.log(file);
+                                    conflictSize += file.size || 0;
                                 });
 
                         	    if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - conflictSize))){
@@ -274,7 +275,7 @@ define([
                 "theme":"danger",
                 "content":"确定删除文件吗？"
             },function(){
-                if (index && !Array.isArray(files)){
+                if (index >= 0 && !Array.isArray(files)){
                     var file = files;
                     file.index = index;
                     files = [];
@@ -300,11 +301,20 @@ define([
             var deletingArr = $scope.filelist.filter(function (file) {
                 return file.index >= 0;
             });
-            $scope.deleteFile(deletingArr);
+            if (deletingArr.length <= 0){
+                config.services.confirmDialog({
+                    "title": "插入提示",
+                    "content": "请至少选择一个要删除的文件！",
+                    "cancelBtn": false
+                }, function () {
+                });
+            }else{
+                $scope.deleteFile(deletingArr);
+            }
         };
 
         var changeFileName = function (file, filename, targetElem) {
-            targetElem.attr("contenteditable", "false");
+            // targetElem.attr("contenteditable", "false");
             $scope.nameErr="";
             // filename = filename.trim();
 
@@ -337,6 +347,9 @@ define([
             }, function (err) {
                 console.log(err);
             });
+
+            // setTimeout(function () {
+            // });
         };
 
         $scope.updateFile = function (file) {
@@ -362,8 +375,8 @@ define([
             targetElem.bind("blur", function () {
                 var filename = targetElem.html();
                 filename = filename.replace(/[\n|<br>]/g, "").trim();
-                targetElem.html(filename);
                 changeFileName(file, filename, targetElem);
+                targetElem.attr("contenteditable", "false");
             });
             targetElem.on("paste", function () { // contenteditable中粘贴会包含html结构
                 setTimeout(function () {
@@ -401,7 +414,16 @@ define([
                 });
             }
 
-            $scope.$dismiss(files);
+            if (files.length <= 0){
+                config.services.confirmDialog({
+                    "title": "插入提示",
+                    "content": "请至少选择一个要插入的文件！",
+                    "cancelBtn": false
+                }, function () {
+                });
+            }else{
+                $scope.$dismiss(files);
+            }
         };
 
         $scope.insertFilesUrl = function () {

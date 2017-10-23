@@ -61,7 +61,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    .bigfile-modal .table tr > td[contenteditable = true]{
+    .bigfile-modal .table tr > td[contenteditable]{
         text-overflow: unset;
     }
     .bigfile-modal .table .checkbox-column{
@@ -71,7 +71,7 @@
         width: 80px;
     }
     .bigfile-modal .table .date-column{
-        width: 120px;
+        width: 155px;
     }
     .bigfile-modal .table .operate-column{
         width: 160px;
@@ -307,7 +307,7 @@
                                 <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                 <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                 <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
-                                <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                                <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                 <td class="operate-column">
                                     <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                 </td>
@@ -350,7 +350,7 @@
                                     <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                     <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
-                                    <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                                    <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
                                         <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
                                         <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
