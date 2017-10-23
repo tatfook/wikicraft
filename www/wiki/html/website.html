@@ -82,7 +82,7 @@
         </div>
         <div class="panel-body website-flex">
             <h3 class="title clearfix">
-                <span>网站数量：<span class="text-primary">{{websites.length}}</span></span>
+                <span>网站数量：<span class="text-primary">{{websites.count}}</span></span>
                 <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
             </h3>
             <div class="flex-table">
@@ -91,6 +91,10 @@
                     <div class="site-link">站点地址</div>
                     <div>创建时间</div>
                     <div>操作</div>
+                </div>
+                <div class="empty-box" ng-hide="websites.length > 0">
+                    <span class="iconfont icon-kongbaiyemian"></span>
+                    <p>暂无相关内容...</p>
                 </div>
                 <div class="ftbody-item" ng-repeat="website in websites" ng-hide="website.isDelete">
                     <div>

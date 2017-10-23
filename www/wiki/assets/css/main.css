@@ -97,3 +97,12 @@ textarea{
 .text-primary{
     color: #3977AD;
 }
+.empty-box {
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+}
+.empty-box .iconfont {
+    font-size: 145px;
+    line-height: 1;
+}

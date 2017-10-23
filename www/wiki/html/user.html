@@ -245,7 +245,7 @@
                 <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
             </p>
             <p>{{userinfo.introduce}}</p>
-            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo)">{{userinfo.concerned?"取消关注":"关 注"}}</div>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?"取消关注":"关 注"}}</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="mailto:{{userinfo.email}}" target="_blank" class="text-primary">{{userinfo.email}}</a></p>
@@ -311,7 +311,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc}}</p>
+                                    <p class="ellipsis-1" title="{{x.desc}}">{{x.desc}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
@@ -331,7 +331,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
-                                    <p>{{x.desc || "暂无简介"}}</p>
+                                    <p class="ellipsis-1" title="{{x.desc}}">{{x.desc || "暂无简介"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
@@ -382,7 +382,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
                                     <p>作者： <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
-                                    <p>{{x.userinfo.desc || "暂无简介"}}</p>
+                                    <p class="ellipsis-1" title="{{x.userinfo.desc}}">{{x.userinfo.desc || "暂无简介"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.userinfo.visitCount || 0}}
@@ -402,7 +402,7 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name || "作品名未知"}}</a></h4>
                                     <p>作者：{{x.username || "作者未知"}} </p>
-                                    <p>{{x.desc || "暂无描述"}}</p>
+                                    <p title="x.desc" class="ellipsis-1">{{x.desc || "暂无描述"}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount || 0}}
@@ -417,13 +417,13 @@
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
                         <p ng-show="fansCount==0" style="text-align: center;margin-top: 40px;">暂无粉丝</p>
-                        <div class="col-md-12 fans-row" ng-repeat="x in fansList">
+                        <div class="col-md-12 fans-row" ng-repeat="x in fansList" ng-hide="x.isDelete">
                             <img ng-src="{{x.userinfo.portrait || getImageUrl('wiki_default_profile.jpg',imgsPath)}}" alt="">
                             <div class="intro">
                                 <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
                             </div>
-                            <div class="btn btn-primary" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?"取消关注":"关 注"}}</div>
+                            <div class="btn btn-primary" ng-disabled="x.fansUserId == user._id" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?"取消关注":"关 注"}}</div>
                         </div>
                     </div>
                 </div>

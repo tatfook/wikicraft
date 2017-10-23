@@ -158,11 +158,12 @@ define([
                         $scope.step++;
                     }
                 };
-                if (data.isNewUser) {
-                    createTutorialSite(data.userinfo, _go, _go);
-                } else {
-                    _go();
-                }
+                _go();
+                // if (data.isNewUser) {
+                //     createTutorialSite(data.userinfo, _go, _go);
+                // } else {
+                //
+                // }
             }, function (error) {
                 $scope.errMsg = error.message;
                 console.log($scope.errMsg );

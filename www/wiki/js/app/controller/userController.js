@@ -83,7 +83,7 @@ define([
             });
         }
 
-        $scope.favoriteUser = function (fansUser) {
+        $scope.favoriteUser = function (fansUser, subInfo) {
             if (!$scope.userinfo) {
                 $scope.concerned = !$scope.concerned;
                 return;
@@ -111,52 +111,70 @@ define([
                 return; // 自己不关注自己
             }
 
+            var ownUserFan = {
+                "userId": fansUser._id,
+                "fansUserId": $scope.user._id,
+                "userinfo": $scope.user
+            };
+
             if(fansUser.concerned){//取消关注
                 util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
                     console.log("取消关注成功");
                     Message.info("取消关注成功");
                     fansUser.concerned=false;
+                    if (subInfo && subInfo == "fansOpt"){
+                        $.each($scope.fansList, function (index, fansItem) {
+                            if (fansItem.fansUserId == $scope.user._id){
+                                $scope.fansList[index].isDelete = true;
+                            }
+                        });
+                        $scope.fansCount--;
+                    }
                 });
             }else{
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
                     console.log("关注成功");
                     Message.info("关注成功");
                     fansUser.concerned=true;
+                    if (subInfo && subInfo == "fansOpt"){
+                        $scope.fansCount++;
+                        $scope.fansList.push(ownUserFan);
+                    }
                 });
             }
-        }
+        };
         
         $scope.isShowNavBar = function () {
             if ($scope.user && $scope.userinfo && $scope.user.username == $scope.userinfo.username) {
                 return true;
             }
             return false;
-        }
+        };
 
         $scope.loadActivity = function () {
             Message.info("暂无更多活动");
-        }
+        };
 
         $scope.goUserSite = function (x) {
             util.goUserSite('/' + x.username + '/' + x.name, true);
-        }
+        };
 
         $scope.goUserIndexPage = function (name) {
             util.go("/"+name);
-        }
+        };
         $scope.goHelpPage = function () {
             util.go("knowledge");
-        }
+        };
 
         $scope.goNewWebsitePage = function () {
             storage.sessionStorageSetItem('userCenterContentType', "newWebsite");
             util.go("userCenter");
-        }
+        };
         
         $scope.goWebsitePage = function () {
             storage.sessionStorageSetItem('userCenterContentType', "websiteManager");
             util.go("userCenter");
-        }
+        };
         
         $scope.goEditorPage = function () {
             util.go("wikieditor");

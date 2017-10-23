@@ -25,6 +25,8 @@ define([
 		var siteDataSource = undefined;
         var siteinfo = storage.sessionStorageGetItem("editWebsiteParams");
         var currentDomain = siteinfo.domain;
+        var keepworkReg = new RegExp("(.keepwork.com|^keepwork.com)");
+        var domainReg = new RegExp("^[\\d\\w][\\d\\w\\.]+$");
         //console.log(siteinfo);
         $scope.website = siteinfo;
         $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
@@ -59,14 +61,27 @@ define([
                 }
                 //currentDomain = $scope.website.domain;
             });
-        }
+        };
 
         $scope.addDomain=function(){
-            //if (!/^[\d\w]+$/.test($scope.domain)) {
-                //$scope.errMsg = "CName域名格式错误, 域名只能为数字和字母组合";
-                //return;
-            //}
+            $scope.domainErrMsg = "";
             if (!$scope.user.vipInfo.isValid){
+                return;
+            }
+            $scope.domain = $scope.domain ? $scope.domain.trim():"";
+            if (!$scope.domain){
+                return;
+            }
+
+            if (!domainReg.test($scope.domain)){
+                $scope.domain = "";
+                $scope.domainErrMsg = "* 请输入合法的域名";
+                return;
+            }
+
+            if (keepworkReg.test($scope.domain)){
+                $scope.domain = "";
+                $scope.domainErrMsg = "* keepwork短域名稍候开放";
                 return;
             }
 
@@ -87,7 +102,12 @@ define([
 
         $scope.addTag = function (tagName) {
             tagName = util.stringTrim(tagName);
-            if (!tagName || $scope.tags.indexOf(tagName) >= 0) {
+            if (!tagName){
+                $scope.tagErrMsg="标签不能为空";
+                $scope.tag="";
+                return;
+            }
+            if ($scope.tags.indexOf(tagName) >= 0) {
                 $scope.tagErrMsg="该标签已添加";
                 $scope.tag="";
                 return;
@@ -117,7 +137,7 @@ define([
             $scope.tag="";
             $scope.tagErrMsg="";
             $("#tagInput").focus();
-        }
+        };
 
         $scope.removeTag = function (tagName) {
             var index = $scope.tags.indexOf(tagName);
@@ -125,7 +145,7 @@ define([
                 $scope.tags.splice(index, 1);
             }
             $scope.website.tags = $scope.tags.join('|');
-        }
+        };
 
         // 修改网站设置
         $scope.modifyWebsite = function () {

@@ -42,6 +42,12 @@
         color: #3977AD;
         cursor: pointer;
     }
+    .setting-form .col-sm-12.text-danger{
+        padding: 10px 0;
+    }
+    .setting-form .control-message{
+        line-height: 40px;
+    }
     .setting-form .add-cname {
         padding-left: 0;
     }
@@ -321,9 +327,10 @@
                         <label for="cname" class="col-sm-2 control-label">Cname转发：</label>
                         <div class="col-sm-5">
                             <div class="col-sm-8 add-cname">
-                                <input type="text" class="form-control" id="cname" ng-model="domain">
+                                <input type="text" class="form-control" id="cname" ng-model="domain" ng-disabled="!user.vipInfo.isValid">
                             </div>
-                            <div class="btn btn-primary btn-add-cname col-sm-4" ng-disabled="!user.vipInfo.isValid" ng-click="addDomain()">添加</div>
+                            <div class="btn btn-primary btn-add-cname col-sm-4" ng-disabled="!user.vipInfo.isValid || !domain" ng-click="addDomain()">添加</div>
+                            <div class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能设置cname <a href="/wiki/vip" target="_blank">成为VIP</a></div>
                             <div class="col-sm-12 cname-list">
                                 <div ng-show="!x.isDelete" ng-repeat="x in domainList" class="">
                                     <span>{{x.domain}}</span>
@@ -331,6 +338,7 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-5 text-danger control-message" ng-show="domainErrMsg">{{domainErrMsg}}</div>
                     </div>
                 </form>
             </div>
