@@ -1,5 +1,8 @@
  <!--Created by Karlwu on 2016-11-11-->
  <style>
+     .newpage-modal{
+         padding: 15px 100px;
+     }
      .newpage-modal .col-md-6:first-child{
          border-right:1px solid #DCDCDC;
      }
@@ -16,6 +19,69 @@
          /*background-color: #3977AD;*/
          /*color: #FFF;*/
      /*}*/
+     .template-select{
+         border: 1px solid #DDD;
+         padding:0;
+     }
+     .template-select .nav-tabs{
+         padding:20px 0;
+         border-bottom: 0;
+     }
+     .template-select .nav-tabs > li{
+         width: 100%;
+         text-align: center;
+     }
+     .template-select .nav-tabs > li > a{
+         color: #333;
+     }
+     .template-select .nav-tabs > li.active > a{
+         border: none;
+         background-color: #3977AD;
+         color: #FFF;
+         border-radius: 0;
+         margin: 0;
+     }
+     .template-select .tab-content{
+         border-left: 1px solid #DDD;
+         padding: 20px 30px;
+     }
+     .template-select .label {
+         background-color: rgba(0,0,0,.35);
+         padding: 11px 18px;
+         position: absolute;
+         left: 15px;
+         font-weight: normal;
+         top: 0;
+         font-size: 18px;
+         border-radius: 0;
+         color: #FFF;
+     }
+     .template-select .active>img{
+         border: 2px solid #3977AD;
+         border-bottom: none;
+         -webkit-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         -moz-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+     }
+     .template-select .active>.btn-group {
+         border: 2px solid #3977AD;
+         border-top: none;
+         -webkit-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         -moz-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+     }
+     .template-select img{
+         width: 100%;
+         object-fit: cover;
+         height: 180px;
+     }
+     .template-select .btn-group{
+         background-color: #F9F9F9;
+         box-shadow: 0 1px 3px 0 rgba(44,62,80,.35);
+         padding: 0;
+         border: 2px solid transparent;
+         border-top: none;
+     }
  </style>
 <div>
     <form name="pageForm" ng-submit="website_new()">
@@ -32,10 +98,30 @@
                     </div>
                 </div>
                 <div ng-class="hidePageTree?'col-md-10':'col-md-6'">
-                    <!-- NAME -->
                     <div class="form-group">
                         <label>页面名</label>
                         <input autofocus type="text" name="name" class="form-control" ng-model="websitePage.pagename" required>
+                    </div>
+                </div>
+                <div class="col-md-12 template-select">
+                    <ul class="nav nav-tabs col-sm-2" role="tablist">
+                        <li role="presentation" ng-repeat="pageTemplate in pageTemplates" ng-class="getActiveStyleClass(pageTemplate)">
+                            <a ng-click="selectCategory(pageTemplate)" aria-controls="personal-web" role="tab" data-toggle="tab">{{pageTemplate.name}}</a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content website-model col-sm-10">
+                        <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
+                            <div class="col-sm-5" ng-repeat="template in activePageTemplate.templates" ng-class="websitePage.template.name == template.name ? 'active' : ''" style="margin-bottom: 20px;">
+                                <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
+                                <div class="col-md-12 btn-group">
+                                    <div class="btn col-sm-6 btn-lg" ng-href="{{template.previewUrl}}">预览</div>
+                                    <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                                </div>
+                                <span class="label">{{template.name}}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

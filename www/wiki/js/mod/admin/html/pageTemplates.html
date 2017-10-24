@@ -1,0 +1,265 @@
+<style>
+    .template-config{
+        padding: 0;
+        margin-left: -1px;
+        margin-top: 0;
+        min-height: 500px;
+    }
+    .template-config .nav>li>a{
+        padding: 10px 25px;
+        border-radius: 0;
+    }
+    .template-config .nav-tabs>li>.delete{
+        display: none;
+    }
+    .template-config .nav-tabs>li.active>.delete{
+        display: inline-block;
+    }
+    .template-config h3{
+        margin: 0;
+        padding: 12px 15px;
+    }
+    .template-config .col-sm-9 > span, .template-config .col-sm-9 > a {
+        padding-top: 7px;
+        display: inline-block;
+        margin-right: 15px;
+    }
+    .template-config .btns .btn {
+        margin-right: 20px;
+    }
+    .template-config .collapse.in {
+        border: 1px solid #FFF;
+        padding: 15px 0;
+        margin-bottom: 15px;
+    }
+    .template-config .well {
+        width: 600px;
+        margin: 0 auto;
+    }
+    .template-config .btn-add-template{
+        margin: 20px 15px;
+    }
+    .template-config img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border: 1px solid #DCDCDC;
+        border-bottom: none;
+    }
+    .template-config .content{
+        border: 1px solid #DCDCDC;
+        border-top: none;
+    }
+    .template-config .content .btn-block{
+        border-radius: 0;
+    }
+    .template-config .drop-down{
+        position: relative;
+        font-size: 14px;
+        font-weight: normal;
+        text-align: center;
+    }
+    .template-config .drop-down .drop-toggle{
+        margin-top: -7px;
+    }
+    .template-config .dropdown-menu{
+        text-align: center;
+    }
+    .template-config .delete{
+        position: absolute;
+        right: 10px;
+        top: 14px;
+        font-size: 12px;
+        color: #FFF;
+        background-color: #DCDCDC;
+        width: 15px;
+        height: 15px;
+        text-align: center;
+        line-height: 15px;
+        border-radius: 50%;
+    }
+</style>
+<div ng-controller="pageTemplatesController" class="template-config">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" ng-repeat="category in categories track by $index" ng-class="{true:'active'}[$index==0]">
+            <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name}}</a>
+            <span class="delete" ng-click="deleteClassify(category, $index)"><span aria-hidden="true">&times;</span></span>
+        </li>
+        <li role="presentation" class="pull-right">
+            <a href="#addClassify" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="addClassify">添加模板分类</a>
+        </li>
+    </ul>
+
+    <div id="addClassify" class="collapse">
+        <form class="well">
+            <div class="form-group">
+                <label class="sr-only">name</label>
+                <input type="text" class="form-control" placeholder="name" ng-model="newClassify.name"/>
+            </div>
+            <div class="form-group">
+                <label class="sr-only">classify</label>
+                <input type="text" class="form-control" placeholder="classify" ng-model="newClassify.classify"/>
+            </div>
+            <div class="btns clearfix">
+                <button type="button" class="btn btn-default pull-right" data-toggle="collapse" data-target="#addClassify">取 消</button>
+                <button type="button" class="btn btn-primary pull-right" ng-click="saveClassify()" data-toggle="collapse" data-target="#addClassify">确 定</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
+            <button ng-show="categories" class="btn btn-primary btn-add-template" type="button" data-toggle="collapse" data-target="#addTemplate" aria-expanded="false" aria-controls="addTemplate" ng-click="">添加模板</button>
+            <div class="collapse" id="addTemplate">
+                <form class="well form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">logoUrl</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.logoUrl">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">previewUrl</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.previewUrl">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">contentUrl</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="newTemplate.contentUrl">
+                        </div>
+                    </div>
+                    <div class="footer clearfix btns">
+                        <div class="btn btn-primary pull-right" ng-click="addTemplate()" data-toggle="collapse" data-target="#addTemplate">确定添加</div>
+                        <div class="btn btn-default pull-right" data-toggle="collapse" data-target="#addTemplate">取 消</div>
+                    </div>
+                </form>
+            </div>
+            <div class="clearfix">
+                <div class="col-sm-3" ng-repeat="template in activeCategories.templates track by $index" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
+                    <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
+                    <div class="content">
+                        <h3>
+                            {{template.name}}
+                            <div class="pull-right drop-down">
+                                <span class="drop-toggle btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{template.styles[0].name}} <span class="caret"></span>
+                                </span>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="style in template.styles track by $index">{{style.name}}</li>
+                                </ul>
+                            </div>
+                        </h3>
+                        <div class="clearfix">
+                            <div class="btn col-xs-4" ng-click="goPreviewPage(template.previewUrl)">预 览</div>
+                            <div class="btn col-xs-4" ng-click="editTemplate(template, $index)">编 辑</div>
+                            <div class="btn col-xs-4" ng-click="deleteTemplate(template, $index)">删 除</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--编辑模板-->
+    <div id="editTemplateModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">编辑模板 》 {{newTemplate.name}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="newTemplate.name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">logoUrl</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="newTemplate.logoUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">previewUrl</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" ng-model="newTemplate.previewUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">styles</label>
+                            <div class="col-sm-9">
+                                <span ng-repeat="style in newTemplate.styles track by $index" ng-click="setValue({'key': 'newStyle', 'value': style, 'index': $index})" data-target="#editStyles" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editStyles">{{style.name}}</span>
+                                <a href="#editStyles" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editStyles">添加</a>
+                            </div>
+                        </div>
+                        <div id="editStyles" class="collapse">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-model="newStyle.name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">logoUrl</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-model="newStyle.logoUrl">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">previewUrl</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-model="newStyle.previewUrl">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">contents</label>
+                                <div class="col-sm-9">
+                                    <span ng-repeat="content in newStyle.contents track by $index" ng-click="setValue({'key':'newContent', 'value':content, 'index':$index})" data-target="#editContent" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editContent">{{content.pagepath}}</span>
+                                    <a href="#editContent" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="editContent">添加</a>
+                                </div>
+                            </div>
+                            <div id="editContent" class="collapse">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">pagepath</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" ng-model="newContent.pagepath">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">contentUrl</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" ng-model="newContent.contentUrl">
+                                    </div>
+                                </div>
+                                <div class="btns clearfix">
+                                    <div class="btn btn-primary pull-right" ng-click="addContent(newContent.index)" data-toggle="collapse" data-target="#editContent">保存</div>
+                                    <div class="btn btn-default pull-right" data-toggle="collapse" data-target="#editContent">取消</div>
+                                </div>
+                            </div>
+                            <div class="btns clearfix">
+                                <div class="btn btn-primary pull-right" ng-click="addStyle(newStyle.index)" data-toggle="collapse" data-target="#editStyles">保存</div>
+                                <div class="btn btn-default pull-right" data-toggle="collapse" data-target="#editStyles">取消</div>
+                            </div>
+                        </div>
+                        <div class="footer clearfix btns">
+                            <div class="btn btn-primary pull-right" ng-click="addTemplate(newTemplate.index)">保存</div>
+                            <div class="btn btn-default pull-right" data-dismiss="modal">取消</div>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
