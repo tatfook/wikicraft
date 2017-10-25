@@ -245,9 +245,9 @@
                     当前使用：
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                             ng-class = "{'warning-bar': (storeInfo.used / storeInfo.total) >= 0.7, 'danger-bar': (storeInfo.used / storeInfo.total) >= 0.9}"
-                             aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}"
-                             ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
+                             ng-class = "{'warning-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.7, 'danger-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.9}"
+                             aria-valuenow="{{(storeInfo.total - storeInfo.unUsed) / storeInfo.total * 100}}"
+                             ng-style="{'width': (storeInfo.total - storeInfo.unUsed)/storeInfo.total*100+'%'}">
                         </div>
                         <div class="info">
                             <span>{{storeInfo.unUsed | number:2}}GB可用</span>
@@ -296,13 +296,13 @@
                         </thead>
                     </table>
                     <div class="insert-table insert-table-box">
-                        <div class="empty-box" ng-hide="filelist.length > 0">
+                        <div class="empty-box" ng-hide="filelist.length > 0 || filesCount > 0">
                             <span class="iconfont icon-kongbaiyemian"></span>
                             <p>暂无相关内容...</p>
                         </div>
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
-                            <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                            <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
                                 <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                 <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
@@ -337,13 +337,13 @@
                             </thead>
                         </table>
                         <div class="manage-table table-box">
-                            <div class="empty-box" ng-hide="filelist.length > 0">
+                            <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
                                 <span class="iconfont icon-kongbaiyemian"></span>
                                 <p>暂无相关内容...</p>
                             </div>
                             <table class="table">
                                 <tbody>
-                                <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
                                     <td class="checkbox-column">
                                         <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
                                     </td>

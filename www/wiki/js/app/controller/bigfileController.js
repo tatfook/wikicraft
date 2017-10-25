@@ -35,6 +35,7 @@ define([
             util.post(config.apiUrlPrefix + "bigfile/getByUsername",{pageSize:100000}, function(data){
                 data = data || {};
                 $scope.filelist = data.filelist;
+                $scope.filesCount = data.total;
             });
         };
 
@@ -253,7 +254,9 @@ define([
         $scope.$watch("$viewContentLoaded", init);
 
         $scope.stopUpload = function (file) {
-            qiniuBack.stop();
+            if (file.status == 2){
+                qiniuBack.stop();
+            }
             config.services.confirmDialog({
                 "title": "取消上传",
                 "confirmBtnClass": "btn-danger",
@@ -261,10 +264,15 @@ define([
                 "content": "确定取消该文件上传吗？"
             }, function () {
                 $scope.storeInfo.unUsed += file.size/biteToG;
-                qiniuBack.removeFile(file);
                 file.isDelete = true;
+                qiniuBack.removeFile(file.id);
+                if (qiniuBack.files.length <=0){
+                    $scope.uploadingFiles = [];
+                }
+                qiniuBack.start();
+            }, function () {
+                qiniuBack.start();
             });
-            qiniuBack.start();
         };
 
         $scope.deleteFile = function(files, index) {
@@ -286,6 +294,8 @@ define([
                         return function (finish) {
                             util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
                                 $scope.filelist[files[index].index].isDelete = true;
+                                $scope.filesCount--;
+                                console.log($scope.filesCount);
                             }, function (err) {
                                 console.log(err);
                             });
@@ -315,6 +325,17 @@ define([
         var changeFileName = function (file, filename, targetElem) {
             $scope.nameErr="";
 
+            if (!filename || file == ""){
+                targetElem.html(file.filename);
+                config.services.confirmDialog({
+                    "title": "重命名失败",
+                    "content": "文件名不能为空！",
+                    "cancelBtn": false
+                }, function () {
+                });
+                return;
+            }
+
             var newFileSplit = filename.split(".");
             var newExt = newFileSplit[newFileSplit.length-1];
             var oldFileSplit = file.filename.split(".");
@@ -336,13 +357,26 @@ define([
                 newExt = oldExt;
             }
 
-            util.post(config.apiUrlPrefix+"bigfile/changeFilename",{
-                "_id": file._id,
-                "filename": filename
-            }, function (result) {
-                console.log(result);
-            }, function (err) {
-                console.log(err);
+            util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:[filename]}, function(data){
+                if (data.length > 0){
+                    targetElem.html(file.filename);
+                    config.services.confirmDialog({
+                        "title": "重命名失败",
+                        "content": "网盘中已存在该文件名！",
+                        "cancelBtn": false
+                    }, function () {
+                    });
+                }else{
+                    util.post(config.apiUrlPrefix+"bigfile/changeFilename",{
+                        "_id": file._id,
+                        "filename": filename
+                    }, function (result) {
+                        file.filename = filename;
+                        console.log(result);
+                    }, function (err) {
+                        console.log(err);
+                    });
+                }
             });
         };
 
