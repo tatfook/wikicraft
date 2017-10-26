@@ -15,7 +15,7 @@ define([
         if((util.getPathname() !="/wiki/user_center")){
             $scope.isModal=true;
         }
-        $scope.cancel = function () {
+        $scope.cancel = function (params) {
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 console.log("正在上传");
                 config.services.confirmDialog({
@@ -24,10 +24,10 @@ define([
                     "theme": "danger",
                     "content": "还有文件正在上传，确定关闭窗口？"
                 }, function () {
-                    $scope.$dismiss();
+                    $scope.$dismiss(params);
                 });
             }else{
-                $scope.$dismiss();
+                $scope.$dismiss(params);
             }
 
         };
@@ -472,7 +472,7 @@ define([
                 }, function () {
                 });
             }else{
-                $scope.$dismiss(files);
+                $scope.cancel(files);
             }
         };
 
@@ -499,7 +499,7 @@ define([
                 default:
                     break;
             }
-            $scope.$dismiss({
+            $scope.cancel({
                 "type": type,
                 "url": url
             });
