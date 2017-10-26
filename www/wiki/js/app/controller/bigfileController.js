@@ -18,12 +18,21 @@ define([
         $scope.cancel = function (params) {
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 console.log("正在上传");
-                config.services.confirmDialog({
-                    "title": "关闭提示",
+                var confirmObj = {
+                    "title": "提示",
                     "confirmBtnClass": "btn-danger",
                     "theme": "danger",
                     "content": "还有文件正在上传，确定关闭窗口？"
-                }, function () {
+                };
+                if (params){
+                    confirmObj.content = "还有文件正在上传，请完成后重试，或者打开新窗口操作";
+                    confirmObj.cancelBtn = false;
+                    confirmObj.confirmBtnClass = "";
+                }
+                config.services.confirmDialog(confirmObj, function () {
+                    if (params){
+                        return;
+                    }
                     $scope.$dismiss(params);
                 });
             }else{
