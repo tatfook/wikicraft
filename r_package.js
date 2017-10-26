@@ -18,7 +18,7 @@
 				'angular',
 				'app',
 				'preload',
-				'bootstrap'
+				'bootstrap',
 			]
         },
 		{
@@ -27,25 +27,29 @@
 				"controller/newWebsiteController"
 			],
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
 		{
 			name:"controller/websiteController",
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
 		{
 			name:"controller/userCenterController",
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
 		{
 			name:"controller/knowledgeController",
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
     ],
