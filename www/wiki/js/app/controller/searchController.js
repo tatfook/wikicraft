@@ -166,6 +166,7 @@ define([
 					}
 					var searchList = [];
 					$scope.totalItems = result.total;
+					$scope.searchKeyword = query.keyword;
 					for (var i = 0; i < result.data.list.length; i++) {
 						var obj = result.data.list[i];
 						var site = angular.fromJson(obj.extra_data);
@@ -174,7 +175,6 @@ define([
 						searchList.push(site);
 					}
 					$scope.searchList = searchList;
-					console.log($scope.searchList);
 					util.$apply($scope);
 				},
 				error: function(xhr, status, error){
@@ -278,6 +278,7 @@ define([
                     searchParams.username = $scope.user.username;
                     break;
                 default:
+                    searchParams.username = "";
                     break;
             }
 
