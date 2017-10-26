@@ -123,9 +123,10 @@
             <div style="float:right">余额{{balance/100 || "0"}}元</div>
         </div>
         <div class="panel-body mypay-panel">
-            <p ng-show="myPays.length <= 0" style="margin: 15px;">
-                暂无消费记录
-            </p>
+            <div class="empty-box" ng-hide="myPays.length > 0">
+                <span class="iconfont icon-kongbaiyemian"></span>
+                <p>暂无消费记录...</p>
+            </div>
             <table class="table mypay-table" ng-show="myPays.length > 0">
                 <tr ng-repeat="item in myPays">
                     <td class="icon-time">
@@ -145,9 +146,10 @@
     <div ng-show="showItem == 'orders'" class="col-md-10 main-content panel">
         <div class="panel-heading">订单中心</div>
         <div class="panel-body">
-            <p ng-show="serviceList.length <= 0">
-                暂无订单记录
-            </p>
+            <div class="empty-box" ng-hide="serviceList.length > 0">
+                <span class="iconfont icon-kongbaiyemian"></span>
+                <p>暂无订单记录...</p>
+            </div>
             <table class="table orders-table" ng-show="serviceList.length > 0">
                 <thead>
                     <tr>
@@ -213,5 +215,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div ng-show="showItem == 'qiniuPan'" class="col-md-10">
+        <div id="qiniuPan"></div>
     </div>
 </div>

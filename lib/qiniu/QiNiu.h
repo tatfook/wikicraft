@@ -14,6 +14,7 @@ namespace ParaEngine
 		static CQiNiu* init();  
 		static CQiNiu* getInstance();
 
+		const char* m_bucket;
 	protected:
 
 	private:
@@ -21,7 +22,7 @@ namespace ParaEngine
 
 		const char* const m_accessKey = "LYZsjH0681n9sWZqCM4E2KmU6DsJOE7CAM4O3eJq";
 		const char* const m_secretKey = "IHdepXixI3ZHsQeH662Tf5CPhqWnFpXxc2GF2UXf";
-		const char* const m_bucket = "keepwork";
+		//const char* const m_bucket = "keepwork";
 		Qiniu_Mac m_mac;
 		//Qiniu_Io_PutRet m_putRet;
 		//Qiniu_Client m_client;

@@ -168,10 +168,31 @@ function qiniu:api_uploadToken(params)
 	return {uptoken=data.token}
 end
 
+
+local function getBucketName()
+	local bucket = "keepwork-dev"
+	if WIKI_ENV == "rls" then
+		bucket = "keepwork-release"
+	end
+
+	return bucket
+end
+
+
+local function getDownloadDomain()
+	local defaultDomain = "oy41aju0m.bkt.clouddn.com"
+	if WIKI_ENV == "rls" then
+		defaultDomain = "oy41jt2uj.bkt.clouddn.com"
+	end
+
+	return defaultDomain
+end
+
 -- 获取上传token
 function qiniu:api_getUploadToken(params)
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", expires=params.expires})
-	--log(msg)
+	local bucket = getBucketName()
+
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", bucket=bucket, expires=params.expires})
 	-- msg = {token:"xxx"}
 	return errors:wrap(nil, msg)
 end
@@ -182,9 +203,11 @@ function qiniu:api_getDownloadUrl(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local domain = params.domain or "ov62qege8.bkt.clouddn.com"
+	--local domain = params.domain or defaultDomain
+	local domain = getDownloadDomain()
+	local bucket = getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", domain=domain, key=params.key, expires=params.expires})
+	NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires})
 	--log(msg)
 	-- msg = {download_url:"xx"}
 	return errors:wrap(nil, msg)
@@ -196,7 +219,7 @@ function qiniu:api_deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local bucket = params.bucket or "keepwork"
+	local bucket = getBucketName()
 
 	NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
 	-- msg = {result:1 or 0}

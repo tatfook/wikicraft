@@ -203,6 +203,10 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
                 <h4 class="title">共{{totalItems || 0}}条用户页：</h4>
+                <div class="empty-box" ng-hide="searchList.length > 0">
+                    <span class="iconfont icon-sousuo"></span>
+                    <p>抱歉！ ~没有搜索到 {{searchText}} 相关的用户页</p>
+                </div>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
                         <h3><a href="{{item.url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
@@ -213,6 +217,12 @@
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
                 <h4 class="title">共{{totalItems || 0}}名用户：</h4>
+                <div class="empty-box" ng-hide="searchList.length > 0">
+                    <span class="iconfont icon-sousuo"></span>
+                    <p>抱歉！ ~没有搜索到
+                        <span title="{{searchText}}">{{searchText.length > 10 ? (searchText | limitTo: 10) + '...' : searchText}}</span>
+                        相关的用户</p>
+                </div>
                 <div class="col-md-12 fans-row" ng-repeat="item in searchList">
                     <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
                     <div class="intro">
@@ -224,6 +234,10 @@
             </div>
             <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
                 <h4 class="title">共{{totalItems || 0}}个站点：</h4>
+                <div class="empty-box" ng-hide="searchList.length > 0">
+                    <span class="iconfont icon-sousuo"></span>
+                    <p>抱歉！ ~没有搜索到 {{searchText.length > 10 ? (searchText | limitTo: 10 + '...') : searchText}} 相关的站点</p>
+                </div>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
                         <h3><a ng-href="{{'/' + item.username + '/' + item.name + '/index'}}">{{item.displayName || item.sitename || site.name}}</a></h3>
@@ -234,7 +248,7 @@
                 </div>
             </div>
         </div>
-        <div class="pagination-box">
+        <div class="pagination-box" ng-show="searchList.length > 0">
             <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
                 next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                 class="pagination-sm" boundary-link-numbers="true"></ul>

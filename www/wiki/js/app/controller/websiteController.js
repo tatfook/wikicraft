@@ -18,6 +18,7 @@ define([
         function getUserSiteList() {
             util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username: $scope.user.username}, function (data) {
                 $scope.websites = data;
+                $scope.websites.count = $scope.websites.length;
             });
         }
 
@@ -68,6 +69,7 @@ define([
                     site.isDelete = true;
                     $('#deleteModal').modal("hide");
                     $scope.deletingWebsite="";
+                    $scope.websites.count --;
                 });
             });
         };
