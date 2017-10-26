@@ -86,8 +86,9 @@
 
             var graph = new Graph(container, null, null, null, themes);
 
+            var mxGraphModelData;
             if (wikiBlock.modParams) {
-                var mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
+                mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
             }
 
             var decoder = new mxCodec(mxGraphModelData);
@@ -116,15 +117,18 @@
                 if (typeof (wikiBlock.modParams) == "string" && wikiBlock.modParams.length == 0) {
                     $scope.mxClientStart = true;
                     $scope.startNotice   = "点击此处开始编辑";
+                    $scope.$apply();
                 } else {
                     initPreview(wikiBlock, function (svg) {
                         $scope.preview = $sce.trustAsHtml(svg);
+                        $scope.$apply();
                     });
                     
                 }
             } else {
                 initPreview(wikiBlock, function (svg) {
                     $scope.preview = $sce.trustAsHtml(svg);
+                    $scope.$apply();
                 });
             }
 
@@ -154,6 +158,7 @@
                 setTimeout(function () {
                     initEditor(wikiBlock.modParams, function (ui) {
                         $scope.ui = ui;
+                        $scope.$apply();
                     });
                 }, 500)
             };
