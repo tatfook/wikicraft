@@ -278,6 +278,7 @@ define([
                     searchParams.username = $scope.user.username;
                     break;
                 default:
+                    searchParams.username = "";
                     break;
             }
 
