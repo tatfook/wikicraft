@@ -10,6 +10,7 @@ define([
     app.registerController("bigfileController", ["$scope", function ($scope) {
         var qiniuBack;
         const biteToG = 1024*1024*1024;
+        const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
         if((util.getPathname() !="/wiki/user_center")){
             $scope.isModal=true;
@@ -69,7 +70,10 @@ define([
             }
         };
 
-        $scope.initQiniu = function(){
+        $scope.initQiniu = function(type){
+            if (type !== "isUpdating"){
+                $scope.updatingFile = {};
+            }
             if ($scope.finishUploading){
                 $scope.uploadingFiles = [];
             }else if ($scope.finishUploading === false){
@@ -205,6 +209,14 @@ define([
                         });
                     },
                     'Error': function(up, err, errTip) {
+                        if (err.code == -601){
+                            option.filters = {};
+                            $scope.uploadingFiles = $scope.uploadingFiles || [];
+                            $scope.uploadingFiles.push(err.file);
+                            up.files.push(err.file);
+                            up.start();
+                            return;
+                        }
                         //上传出错时，处理相关的事情
                         $scope.uploadingFiles = [];
                         $scope.updatingFile = [];
@@ -282,27 +294,32 @@ define([
                 "theme":"danger",
                 "content":"确定删除文件吗？"
             },function(){
-                if (index >= 0 && !Array.isArray(files)){
+                if (!Array.isArray(files)){
                     var file = files;
                     file.index = index;
                     files = [];
                     files.push(file);
                 }
                 var fnList = [];
+                var deleteFileSize = 0;
                 for (var i=files.length -1; i >= 0;i--){
                     fnList.push((function (index) {
                         return function (finish) {
                             util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
-                                $scope.filelist[files[index].index].isDelete = true;
+                                files[index].isDelete = true;
                                 $scope.filesCount--;
-                                console.log($scope.filesCount);
+                                deleteFileSize += files[index].file.size;
+                                finish();
                             }, function (err) {
                                 console.log(err);
+                                finish();
                             });
                         }
                     })(i));
-                    util.batchRun(fnList);
                 }
+                util.batchRun(fnList, function () {
+                    $scope.storeInfo.unUsed += deleteFileSize/biteToG;
+                });
             });
         };
 
@@ -312,7 +329,7 @@ define([
             });
             if (deletingArr.length <= 0){
                 config.services.confirmDialog({
-                    "title": "插入提示",
+                    "title": "提示",
                     "content": "请至少选择一个要删除的文件！",
                     "cancelBtn": false
                 }, function () {
@@ -372,7 +389,6 @@ define([
                         "filename": filename
                     }, function (result) {
                         file.filename = filename;
-                        console.log(result);
                     }, function (err) {
                         console.log(err);
                     });
@@ -383,7 +399,7 @@ define([
         $scope.updateFile = function (file) {
             $scope.updatingFile = file;
             $("#activeUpload").tab("show");
-            $scope.initQiniu();
+            $scope.initQiniu("isUpdating");
         };
         
         var removeAllTags = function (str) {
@@ -400,13 +416,22 @@ define([
             targetElem.focus();
             targetElem.bind("blur", function () {
                 var filename = targetElem.html();
-                filename = filename.replace(/[\n|<br>]/g, "").trim();
+                filename = filename.replace(/\n|<br>|&nbsp;/g, "").trim();
+                if (!ErrFilenamePatt.test(filename)){
+                    targetElem.html(file.filename);
+                    config.services.confirmDialog({
+                        "title": "重命名失败",
+                        "content": '文件名不能包含下列任何字符：\\\\ / : * ? " < > |',
+                        "cancelBtn": false
+                    }, function () {
+                    });
+                    return;
+                }
                 changeFileName(file, filename, targetElem);
                 targetElem.attr("contenteditable", "false");
             });
             targetElem.on("paste", function () { // contenteditable中粘贴会包含html结构
                 setTimeout(function () {
-                    console.log(targetElem.html());
                     targetElem.html(removeAllTags(targetElem.html()));
                 });
             })
@@ -417,7 +442,6 @@ define([
                 _id:file._id,
             }, function(data){
                 if (data) {
-                    console.log(data);
                     var a = document.createElement('a');
                     var url = data;
                     a.href = url;
@@ -442,7 +466,7 @@ define([
 
             if (files.length <= 0){
                 config.services.confirmDialog({
-                    "title": "插入提示",
+                    "title": "提示",
                     "content": "请至少选择一个要插入的文件！",
                     "cancelBtn": false
                 }, function () {
