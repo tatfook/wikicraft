@@ -340,13 +340,18 @@ define([
                 }
                 var params = {
                     userId: $scope.user._id,
-					siteId: $rootScope.siteinfo._id,
-                }
+					siteId: $rootScope.siteinfo._id
+                };
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
                 util.post(url, params, function () {
                     Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
                 });
+                if (isFavorite){
+                    $scope.userFansCount++;
+                }else{
+                    $scope.userFansCount--;
+                }
             };
 
             if (doCollect){

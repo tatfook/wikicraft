@@ -8,6 +8,12 @@ define([
 	
 	qiniu.upload = function(opt) {
 		opt = opt || {};
+
+		if (config.wikiConfig.wikiEnv == "rls"){
+			opt.domain = "oy41jt2uj.bkt.clouddn.com";
+		} else {
+			opt.domain = "oy41aju0m.bkt.clouddn.com";
+		}
 		var uploader = Qiniu.uploader({
 			runtimes: opt.runtimes || 'html5,flash,html4',       // 上传模式，依次退化
 			container: opt.container /*|| 'container'*/,             // 上传区域DOM ID，默认是browse_button的父元素
@@ -20,7 +26,7 @@ define([
 			                                                   // Ajax请求downToken的Url，私有空间时使用，JS-SDK将向该地址POST文件的key和domain，服务端返回的JSON必须包含url字段，url值为该文件的下载地址
 			unique_names: true,                                                                        // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
 			                                                   // save_key: true,                                                                            // 默认false。若在服务端生成uptoken的上传策略中指定了sava_key，则开启，SDK在前端将不对key进行任何处理
-			domain: opt.domain || 'ov62qege8.bkt.clouddn.com', // bucket域名，下载资源时用到，必需
+			domain: opt.domain,                                // bucket域名，下载资源时用到，必需
 			max_file_size: opt.max_file_size || '100mb',       // 最大文件体积限制
 			                                                   // flash_swf_url: 'path/of/plupload/Moxie.swf',                                               // 引入flash，相对路径
 			max_retries: opt.max_retries || 3,                 // 上传失败最大重试次数
