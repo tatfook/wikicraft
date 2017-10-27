@@ -135,6 +135,12 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "details":"利用3D计算机技术展示人体内部结构",
                         "siteUrl":"http://keepwork.com/idreamtech/dztr",
                         "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502248544807.png"
+                    },
+                    {
+                        "name":"医时空",
+                        "details":"更懂中医馆的SaaS服务平台",
+                        "siteUrl":"http://www.sktcm.com",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509096193919.jpeg"
                     }
                 ]
             },

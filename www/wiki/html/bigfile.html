@@ -197,6 +197,10 @@
     .bigfile-modal .file-group-item .progress-bar{
         background-color: #43A8FF;
     }
+    .bigfile-modal .file-group-item .text-danger{
+        position: absolute;
+        right: 18px;
+    }
     p.dialog-info-title{
         font-size: 20px;
         text-align: left;
@@ -391,16 +395,14 @@
                                         {{(file.size/1024/1024/1024 > 0.1) ? (file.size/1024/1024/1024 | number:2)+"GB" :
                                         (file.size/1024/1024 > 0.1) ? (file.size/1024/1024 | number:2) + "MB" : ((file.size/1024 | number:2) + "KB")}}
                                     </span>
-                                    <!--<span>-->
-                                        <!--&lt;!&ndash;{{file.size * file.percent/100/1024/1024 | number:2}}MB/{{file.size/1024/1024 | number:2}}MB&ndash;&gt;-->
-                                    <!--</span>-->
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="{{file.percent}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': file.percent+'%'}">
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
                                     </div>
-                                    <span ng-click="stopUpload(file, $index)" ng-show="!file.status || file.status != 'success'" class="glyphicon glyphicon-remove"></span>
-                                    <span ng-show="file.status == 'success'" class="text-success glyphicon glyphicon-ok"></span>
+                                    <span ng-show="file.status == 4" class="text-danger" title="{{file.errTip}}">上传失败</span>
+                                    <span ng-click="stopUpload(file, $index)" ng-show="file.status < 5" class="glyphicon glyphicon-remove"></span>
+                                    <span ng-show="file.status == 5" class="text-success glyphicon glyphicon-ok"></span>
                                 </div>
                             </div>
                         </div>
