@@ -96,6 +96,7 @@ define([
                 "auto_start": false,
                 "uptoken_url": '/api/wiki/models/qiniu/uploadToken',
                 "domain": 'ov62qege8.bkt.clouddn.com',
+                "chunk_size": "4mb",
                 "init": {
                     'FilesAdded': function(up, files) {
                         var self = this;
@@ -111,6 +112,7 @@ define([
                                 return;
                             }
                             $scope.uploadingFiles = files;
+                            $scope.finishUploading = false;
                             self.start();
                             return;
                         }
@@ -167,7 +169,6 @@ define([
                     'BeforeUpload': function(up, file) {
                         $scope.uploadingFiles[file.id] = file;
                         util.$apply();
-                        console.log(file);
                         // 每个文件上传前，处理相关的事情
                     },
                     'UploadProgress': function(up, file) {
@@ -195,7 +196,7 @@ define([
                                 console.log(data);
                                 data = data || {};
                                 data.filename = params.filename;
-                                $scope.uploadingFiles[file.id].status = "success";
+                                // $scope.uploadingFiles[file.id].status = "success";
                                 getFileByUsername();
                             }, function(err){
                                 console.log(err);
@@ -206,7 +207,6 @@ define([
                         util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
                             data = data || {};
                             data.filename = params.filename;
-                            $scope.uploadingFiles[file.id].status = "success";
                         }, function(){
                             util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
                                 key:params.key,
@@ -218,6 +218,9 @@ define([
                         });
                     },
                     'Error': function(up, err, errTip) {
+                        if ($scope.uploadingFiles && $scope.uploadingFiles[err.file.id]){
+                            $scope.uploadingFiles[err.file.id].errTip = err.message + "(" + err.code + ")";
+                        }
                         if (err.code == -601){
                             option.filters = {};
                             $scope.uploadingFiles = $scope.uploadingFiles || [];
@@ -227,9 +230,6 @@ define([
                             return;
                         }
                         //上传出错时，处理相关的事情
-                        $scope.uploadingFiles = [];
-                        $scope.updatingFile = [];
-                        $scope.finishUploading = true;
                     },
                     'UploadComplete': function() {
                         //队列文件处理完毕后，处理相关的事情
@@ -237,7 +237,8 @@ define([
                         getUserStoreInfo();
                         $scope.finishUploading = true;
                         $scope.updatingFile = {};
-                    },
+                        $scope.initQiniu();
+                    }
                 }
             };
 
@@ -274,7 +275,21 @@ define([
         };
         $scope.$watch("$viewContentLoaded", init);
 
+        function fileStop(file) {
+            $scope.storeInfo.unUsed += file.size/biteToG;
+            file.isDelete = true;
+            qiniuBack.removeFile(file.id);
+            if (qiniuBack.files.length <=0){
+                $scope.uploadingFiles = [];
+            }
+            qiniuBack.start();
+        }
+
         $scope.stopUpload = function (file) {
+            if (file.status == 4){
+                fileStop(file);
+                return;
+            }
             if (file.status == 2){
                 qiniuBack.stop();
             }
@@ -284,13 +299,7 @@ define([
                 "theme": "danger",
                 "content": "确定取消该文件上传吗？"
             }, function () {
-                $scope.storeInfo.unUsed += file.size/biteToG;
-                file.isDelete = true;
-                qiniuBack.removeFile(file.id);
-                if (qiniuBack.files.length <=0){
-                    $scope.uploadingFiles = [];
-                }
-                qiniuBack.start();
+                fileStop(file);
             }, function () {
                 qiniuBack.start();
             });
@@ -406,6 +415,16 @@ define([
         };
 
         $scope.updateFile = function (file) {
+            if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
+                config.services.confirmDialog({
+                    "title": "提示",
+                    "content": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+                    "cancelBtn": false
+                }, function () {
+                    $("#activeUpload").tab("show");
+                });
+                return;
+            }
             $scope.updatingFile = file;
             $("#activeUpload").tab("show");
             $scope.initQiniu("isUpdating");
