@@ -11,6 +11,9 @@ include_once("./user.page");
 local goods = inherit(models.abstract.multi_user_base, gettable("models.goods"));
 goods.db_name = "goods";
 
+local gooodsId   = inherit(models.abstract.base, gettable("models.gooodsId"));
+gooodsId.db_name = "gooodsId"
+
 local goodsData = {
 	{
 		goods_id          = 1,
@@ -64,27 +67,27 @@ local goodsData = {
 		},
 	},
 	{
-		goods_id          = 4,
-		app_goods_id      = 1,
-		subject           = "道峰学堂教学服务",
-		body              = "道峰学堂，人人都可以在线学习，人人都可以成为导师",
-		price             = 1,
-		exchange_rate     = 1,
-		default_buy_count = 10,
-		min_buy_count     = 100,
-		max_buy_count     = 1000,
-		app_name          = "教育平台",
-		is_on_sale        = 1,
-		create_date       = "2017-9-4 14:40:01",
+		goods_id          = 4,   --自行递增
+		app_goods_id      = 1,    --管理员自定义
+		subject           = "道峰学堂教学服务",   --商品名称
+		body              = "道峰学堂，人人都可以在线学习，人人都可以成为导师",  --商品详情
+		price             = 1, --价格
+		exchange_rate     = 1,  --汇率
+		default_buy_count = 10,  --默认购买数量
+		min_buy_count     = 100,  --最少购买数量
+		max_buy_count     = 1000,  --最大购买数量
+		app_name          = "教育平台",  --第三方oauth账号  
+		is_on_sale        = 1,    --销售状态再卖的
+		create_date       = "2017-9-4 14:40:01",  --生成时间 无需填写  后台生成
 		additional_field  = {
-			{name="order_no", displayName = "订单号", desc="订单号", required = true},
+			{name="order_no", displayName = "角色ID", desc="订单号", required = true},  --自行填写可添加多条
 		},
 	}
 }
 
 function goods:ctor()
 	-- goods id
-	self:addfield("goods_id","number",false);
+	self:addfield("goods_id","string",false);
 	-- the third party goods id
 	self:addfield("app_goods_id","number",false);
 	-- product name
@@ -103,6 +106,10 @@ function goods:ctor()
 	self:addfield("is_on_sale","number",false);
 	-- product create date
 	self:addfield("create_date","string",false);
+	-- additional_field
+	self:addfield("additional_field","table",false);
+	-- exchange_rate
+	self:addfield("default_buy_count","number",false);
 end
 
 function goods:api_getAppGoodsInfo(params)
@@ -117,4 +124,190 @@ function goods:api_getAppGoodsInfo(params)
 
 	response:status(404);
 	return errors:wrap(errors.NOT_FOUND);
+end
+
+function goods:api_addGoods(params)	             --Goods添加数据
+	local err, query = self:validateQuery(params);
+	
+	if(not query or not next(query)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	if(query.default_buy_count >= 100) then
+		if(query.default_buy_count <= 1000) then
+			errors:wrap(errors.SUCCESS);
+		else
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			
+		end
+	else
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	self:db():insertOne(
+	{
+		goods_id          = gooodsId:getGoodsId(),    --自动递增
+		app_goods_id      = query.app_goods_id,    --管理员自定义
+		body              = query.body,
+		subject           = query.subject,   --商品名称
+		price             = query.price, --价格
+		app_name          = query.app_name,  --第三方oauth账号  
+		default_buy_count = query.default_buy_count,   --汇率
+		is_on_sale        = query.is_on_sale,    --销售状态再卖的
+		create_date       = goods:getNow(),   --生成时间 无需填写  后台生成
+		additional_field  = query.additional_field, --该项为table
+	}, resume);
+	local err, data = yield();
+
+	if(not err and data) then
+		response:status(200);
+		return errors:wrap(errors.SUCCESS);
+	end
+
+	return errors:wrap(errors.SERVER_INNER_ERROR);
+	
+end
+
+function goods:api_modifyGoods(params)     --Goods修改
+	local err, query = self:validateQuery(params);
+	
+	if(not query.goods_id) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	if(query.default_buy_count >= 100) then
+		if(query.default_buy_count <= 1000) then
+			errors:wrap(errors.SUCCESS);
+		else
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			
+		end
+	else
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	self:db():findOne({goods_id = query.goods_id}, resume);
+	local err, data = yield();
+
+	if(err) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	if(not data) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	local modifyGoodsParams = {
+		app_goods_id      = query.app_goods_id,  
+		subject           = query.subject,  
+		price             = query.price, 
+		app_name          = query.app_name,  
+		default_buy_count = query.default_buy_count,
+		is_on_sale        = query.is_on_sale,    
+		additional_field  = query.additional_field,
+	} 
+	self:db():updateOne({goods_id = query.goods_id}, modifyGoodsParams, resume);
+	local err, data = yield();
+
+	if(not err and data) then
+		response:status(200);
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+	
+end
+
+function goods:api_getOne(params) -- 单个获取
+	local err, query = self:validateQuery(params);
+
+	if(not query.goods_id) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	self:db():findOne({goods_id = query.goods_id}, resume);
+	local err, data = yield();
+
+	if(not err) then
+		response:status(200);
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function goods:api_deleteGoods(params)   --Goods删除
+	local err,query = self:validateQuery(params);
+	
+	if(not query or not next(query)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	self:db():findOne({goods_id = query.goods_id}, resume);
+	local err, data = yield();
+	
+	if(err) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
+	if(not data) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	self:db():deleteOne({goods_id = query.goods_id}, resume);
+	local err, data = yield();
+
+	if(not err) then
+		response:status(200);
+		return errors:wrap(errors.SUCCESS);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function goods:api_goodsList(params)--Goods查找
+	local err, query = self:validateQuery(params);
+	log(query)
+	
+	self:db():find({["-create_date"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
+	
+	local err, data = yield();
+	log(data)
+	if not err then	
+		return errors:wrap(nil, data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end	
+end
+
+function goods:api_count()--总数
+
+	self:db():find({}, resume);
+
+	local err, data = yield();
+
+	if(not err) then
+		response:status(200);
+		return errors:wrap(nil, #data);
+	else
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+end
+
+function gooodsId:getGoodsId()   -- goods_id生成
+	self:db():insertOne({},resume);
+	local err, goodsNumber = yield();
+	
+	goodsNumber  = tostring(goodsNumber._id);
+	a = #goodsNumber;
+	
+	for i=1,a do
+		i=i+1;
+	end
+
+	return goodsNumber;
+end
+
+function goods:getNow()
+	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end

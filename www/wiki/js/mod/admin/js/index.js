@@ -11,12 +11,11 @@ define([
     'pageTemplates.js',
     'text!wikimod/admin/html/templates.html',
 	'/wiki/js/lib/md5.js',
-    'Fuse'
-], function (app, util, mods, htmlContent, websiteTemplateContent, pageTemplateContent, textWikimodAdminHtmlTemplatesHtml, md5, Fuse) {
-	app.registerController('indexController', ['$scope', '$auth', "$location", 'Account','modal', 'Message', function ($scope, $auth, $location, Account, modal, Message) {
+], function (app, util, mods, htmlContent, websiteTemplateContent) {
+	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', '$http', function ($scope, $auth, Account, modal, Message, $http) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
-		$scope.selectMenuItem = "";
+		$scope.selectMenuItem = "manager";
 		$scope.pageSize = 15;
 		$scope.managerCurrentPage = 1;
 		$scope.operationLogCurrentPage = 1;
@@ -310,20 +309,20 @@ define([
 			var oauthModifyUrl = config.apiUrlPrefix + "oauth_app/";
 			
 			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
-			var reg2 = /([.][A-Za-z])$/
+			//var reg2 = /([.][A-Za-z])$/
 			var reg3 = /^[A-Za-z]+$/;
 			var reg4 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
 			
-			// if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
-			// 	return alert("payCallbackUrl请使用正确的格式");
-			// };
+			if(!reg1.test($scope.oauthParams.payCallbackUrl)){
+				return alert("payCallbackUrl请使用正确的格式");
+			};
 			
-			// if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
-			// 	return alert("redirectUrl请使用正确的格式");
-			// };
+			if(!reg1.test($scope.oauthParams.redirectUrl)){
+				return alert("payCallbackUrl请使用正确的格式");
+			};
 			
-			if(!reg4.test($scope.oauthParams.appName)){
-				return alert("app名称只能输入中文英文数字");
+			if(!reg3.test($scope.oauthParams.appName)){
+				return alert("app名称只能输入英文");
 			}
 			
 			if(!reg4.test($scope.oauthParams.company)){
@@ -379,11 +378,158 @@ define([
 		}
 		
 		
-		//商品管理
-		$scope.getMnagerList = function(){
-			$scope.selectMenuItem = "manager";
+		//商品管理/goodsManager
+		$scope.getGoodmnagerList = function(){
+			$scope.selectMenuItem = "goodsManager";
+			$scope.getGoods();
+			$scope.listGoodsCount();
 		}
 		
+		//商品管理判断是否为添加/修改/查看详情
+		
+		$scope.clickGoodsToggle = function (params,item) {
+			$scope.goodsVar = params;
+			if(params == 1){
+				$scope.getOneGoodsInfo(item);
+			}
+			if(params == 2){
+				$scope.goodsParams = {};
+			}
+			if(params == 3){
+				console.log(item)
+				$scope.getOneGoodsInfo(item);
+				$scope.goodsParams.is_on_sale = 1;
+			}
+		};
+		
+		//商品列表
+		$scope.maxSize     = 10;
+		$scope.totalItems  = 0;
+		$scope.currentPage = 1;
+		
+        $scope.itemPrePage = 10;
+		
+		$scope.listGoodsCount = function(){
+			var getListCount = config.apiUrlPrefix + "goods/count";
+			util.post(getListCount, {}, function(data){
+				$scope.totalItems = data;
+				console.log(data);
+			});
+		}
+		
+		$scope.getGoods = function(){
+			var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+			var params = {
+				"limit" : $scope.itemPrePage,
+				"skip"  : skip
+			};
+			
+			
+			var goodsListUrl = config.apiUrlPrefix + "goods/goodsList";
+			util.post(goodsListUrl, params, function(data){
+				console.log(data);
+				$scope.goodsData = data;
+			});
+		}
+		
+		//商品添加
+		$scope.goodsAdd = function(){
+			var goodsAddUrl = config.apiUrlPrefix + "goods/addGoods";
+			$scope.goodsParams.additional_field = {
+				"name"        : $scope.goodsParams.name,
+				"displayName" : $scope.goodsParams.displayName,
+				"desc"        : $scope.goodsParams.desc,
+				"required"    : $scope.goodsParams.required,
+			}
+			
+			var params = {
+				"subject"           : $scope.goodsParams.subject,
+				"app_goods_id"      : $scope.goodsParams.app_goods_id,
+				"body"              : $scope.goodsParams.body,
+				"price"             : $scope.goodsParams.price,
+				"default_buy_count" : $scope.goodsParams.default_buy_count,
+				"app_name"          : $scope.goodsParams.app_name,
+				"is_on_sale"        : $scope.goodsParams.is_on_sale,
+				"additional_field"  : $scope.goodsParams.additional_field,
+			}
+			util.post(goodsAddUrl, params, function(data){
+				$scope.getGoods();
+			});
+		}
+		
+		//商品信息修改
+		$scope.goodsModify = function(){
+			var goodsModifyUrl = config.apiUrlPrefix + "goods/modifyGoods";
+			$scope.goodsParams.additional_field = {
+				"name"        : $scope.goodsParams.name,
+				"displayName" : $scope.goodsParams.displayName,
+				"desc"        : $scope.goodsParams.desc,
+				"required"    : $scope.goodsParams.required,
+			}
+			
+			var params = {
+				"subject"           : $scope.goodsParams.subject,
+				"goods_id"          : $scope.goodsParams.goods_id,
+				"app_goods_id"      : $scope.goodsParams.app_goods_id,
+				"body"              : $scope.goodsParams.body,
+				"price"             : $scope.goodsParams.price,
+				"default_buy_count" : $scope.goodsParams.default_buy_count,
+				"app_name"          : $scope.goodsParams.app_name,
+				"is_on_sale"        : $scope.goodsParams.is_on_sale,
+				"additional_field"  : $scope.goodsParams.additional_field,
+			}
+			util.post(goodsModifyUrl, params, function(data){
+				console.log(data);
+				$scope.getGoods();
+			});
+		}
+
+		$scope.getOneGoodsInfo = function(item){
+			var getOneGoodsUrl = config.apiUrlPrefix + "goods/getOne";
+			
+			$scope.currentItem = item;
+			
+			util.post(getOneGoodsUrl, {goods_id : item.goods_id}, function(data){
+				if(data){
+					$scope.goodsParams.subject           = data.subject;
+					$scope.goodsParams.goods_id          = data.goods_id;
+					$scope.goodsParams.app_goods_id      = data.app_goods_id;
+					$scope.goodsParams.body              = data.body;
+					$scope.goodsParams.price             = data.price;
+					$scope.goodsParams.default_buy_count = data.default_buy_count;
+					$scope.goodsParams.app_name          = data.app_name;
+					$scope.goodsParams.is_on_sale        = data.is_on_sale;
+					$scope.goodsParams.name              = data.additional_field.name;
+					$scope.goodsParams.displayName       = data.additional_field.displayName;
+					$scope.goodsParams.desc              = data.additional_field.desc;
+					$scope.goodsParams.required          = data.additional_field.required;
+					
+				}
+			})
+		}
+		
+		
+		//商品信息删除
+		$scope.deleteGoodsRecord = function(goods_id){
+			var goodsDeleteUrl = config.apiUrlPrefix + "goods/deleteGoods";
+			console.log(goodsDeleteUrl);
+			var con;
+			con = confirm("是否删除");
+			if(con == true){
+				util.http("DELETE", goodsDeleteUrl, {goods_id:goods_id}, function(data){
+						alert("删除成功");
+						$scope.getGoods();
+				},function(data){
+					if(data.id == 2){
+						alert("删除失败，缺少goods_id")
+					}else{
+						alert("删除失败")
+					}
+				})
+			}else{
+				$scope.getGoods();
+			};
+		}
 		
 		// 搜索管理员账号
 		$scope.managerSearch = function (){
