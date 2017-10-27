@@ -98,9 +98,14 @@ end
 function bigfile:deleteFile(params)
 	local qiniuDB = models.qiniu:new()
 
-	if params.channel == const.BIGFILE_QINIU then
-		qiniuDB:api_deleteByFileId({file_id=params.file_id})
+	if params.channel == const.BIGFILE_QINIU and params.file_id then
+		local ret = qiniuDB:api_deleteByFileId({file_id=params.file_id})
+		if ret.error.id == 0 then
+			return true
+		end
 	end
+
+	return false
 end
 
 -- 改变文件名
@@ -194,7 +199,9 @@ function bigfile:api_updateById(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:deleteFile(data)
+	if not self:deleteFile(data) then 
+		return errors:wrap("旧文件无法删除")
+	end
 
 	local new_data = {}
 	local qiniuDB = models.qiniu:new()

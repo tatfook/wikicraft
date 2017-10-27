@@ -794,7 +794,10 @@
                             next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                             class="pagination-sm" boundary-link-numbers="true"></ul>
                     </div>
-                    <p ng-hide="site.favoriteCount && site.favoriteCount>0" style="text-align: center">暂无粉丝</p>
+                    <div class="empty-box" ng-hide="fansUserList && fansUserList.length>0">
+                        <span class="iconfont icon-kongbaiyemian"></span>
+                        <p>暂无粉丝...</p>
+                    </div>
                 </div>
             </div>
         </div>

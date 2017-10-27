@@ -61,7 +61,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    .bigfile-modal .table tr > td[contenteditable = true]{
+    .bigfile-modal .table tr > td[contenteditable]{
         text-overflow: unset;
     }
     .bigfile-modal .table .checkbox-column{
@@ -71,7 +71,7 @@
         width: 80px;
     }
     .bigfile-modal .table .date-column{
-        width: 120px;
+        width: 155px;
     }
     .bigfile-modal .table .operate-column{
         width: 160px;
@@ -197,6 +197,10 @@
     .bigfile-modal .file-group-item .progress-bar{
         background-color: #43A8FF;
     }
+    .bigfile-modal .file-group-item .text-danger{
+        position: absolute;
+        right: 18px;
+    }
     p.dialog-info-title{
         font-size: 20px;
         text-align: left;
@@ -245,9 +249,9 @@
                     当前使用：
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                             ng-class = "{'warning-bar': (storeInfo.used / storeInfo.total) >= 0.7, 'danger-bar': (storeInfo.used / storeInfo.total) >= 0.9}"
-                             aria-valuenow="{{storeInfo.used / storeInfo.total * 100}}"
-                             ng-style="{'width': storeInfo.used/storeInfo.total*100+'%'}">
+                             ng-class = "{'warning-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.7, 'danger-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.9}"
+                             aria-valuenow="{{(storeInfo.total - storeInfo.unUsed) / storeInfo.total * 100}}"
+                             ng-style="{'width': (storeInfo.total - storeInfo.unUsed)/storeInfo.total*100+'%'}">
                         </div>
                         <div class="info">
                             <span>{{storeInfo.unUsed | number:2}}GB可用</span>
@@ -296,18 +300,21 @@
                         </thead>
                     </table>
                     <div class="insert-table insert-table-box">
-                        <div class="empty-box" ng-hide="filelist.length > 0">
+                        <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
                             <span class="iconfont icon-kongbaiyemian"></span>
                             <p>暂无相关内容...</p>
                         </div>
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
-                            <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                            <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
                                 <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                 <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
-                                <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
-                                <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                                <td class="size-column">
+                                    {{(file.file.size/1024/1024/1024 > 0.1) ? (file.file.size/1024/1024/1024 | number:2)+"GB" :
+                                    (file.file.size/1024/1024 > 0.1) ? (file.file.size/1024/1024 | number:2) + "MB" : ((file.file.size/1024 | number:2) + "KB")}}
+                                </td>
+                                <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                 <td class="operate-column">
                                     <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                 </td>
@@ -337,26 +344,29 @@
                             </thead>
                         </table>
                         <div class="manage-table table-box">
-                            <div class="empty-box" ng-hide="filelist.length > 0">
+                            <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
                                 <span class="iconfont icon-kongbaiyemian"></span>
                                 <p>暂无相关内容...</p>
                             </div>
                             <table class="table">
                                 <tbody>
-                                <tr ng-repeat="file in filelist | filter:{filename:searchName}" ng-hide="file.isDelete">
+                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
                                     <td class="checkbox-column">
                                         <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
                                     </td>
                                     <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
-                                    <td class="size-column">{{file.file.size/1024/1024 | number:2}}MB</td>
-                                    <td class="date-column" title="{{file.file.updateDate}}">{{file.file.updateDate}}</td>
+                                    <td class="size-column">
+                                        {{(file.file.size/1024/1024/1024 > 0.1) ? (file.file.size/1024/1024/1024 | number:2)+"GB" :
+                                        (file.file.size/1024/1024 > 0.1) ? (file.file.size/1024/1024 | number:2) + "MB" : ((file.file.size/1024 | number:2) + "KB")}}
+                                    </td>
+                                    <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
                                         <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
                                         <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
                                         <span title="下载" ng-click="downloadFile(file)"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></span>
                                         <!--<a ng-href="{{file.file.download_url}}" target="_blank"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></a>-->
-                                        <span title="删除" ng-click="deleteFile(file, $index)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
+                                        <span title="删除" ng-click="deleteFile(file)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -378,14 +388,21 @@
                                     <img alt="">{{file.name}}
                                 </div>
                                 <div class="right-col">
-                                    <span>{{file.size * file.percent/100/1024/1024 | number:2}}MB/{{file.size/1024/1024 | number:2}}MB</span>
+                                    <span>
+                                        {{(file.size * file.percent/100/1024/1024/1024 > 0.1) ? (file.size * file.percent/100/1024/1024/1024 | number:2)+"GB" :
+                                        (file.size * file.percent/100/1024/1024 > 0.1) ? (file.size * file.percent/100/1024/1024 | number:2) + "MB" : ((file.size * file.percent/100/1024 | number:2) + "KB")}}
+                                        /
+                                        {{(file.size/1024/1024/1024 > 0.1) ? (file.size/1024/1024/1024 | number:2)+"GB" :
+                                        (file.size/1024/1024 > 0.1) ? (file.size/1024/1024 | number:2) + "MB" : ((file.size/1024 | number:2) + "KB")}}
+                                    </span>
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="{{file.percent}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': file.percent+'%'}">
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
                                     </div>
-                                    <span ng-click="stopUpload(file, $index)" ng-show="!file.status || file.status != 'success'" class="glyphicon glyphicon-remove"></span>
-                                    <span ng-show="file.status == 'success'" class="text-success glyphicon glyphicon-ok"></span>
+                                    <span ng-show="file.status == 4" class="text-danger" title="{{file.errTip}}">上传失败</span>
+                                    <span ng-click="stopUpload(file, $index)" ng-show="file.status < 5" class="glyphicon glyphicon-remove"></span>
+                                    <span ng-show="file.status == 5" class="text-success glyphicon glyphicon-ok"></span>
                                 </div>
                             </div>
                         </div>
