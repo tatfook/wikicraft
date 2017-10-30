@@ -101,7 +101,7 @@
         color: #666;
     }
     .completeMsg .btn-primary{
-        margin-top: 65px;
+        /*margin-top: 65px;*/
     }
     @media(max-width: 768px){
         .container-fluid{
@@ -206,7 +206,12 @@
                         {{pwdErrMsg}}
                     </div>
                 </div>
-                <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg">确 定</div>
+                <div class="checkbox clearfix">
+                    <label>
+                        <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()">《KeepWork用户协议》</a>
+                    </label>
+                </div>
+                <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree">确 定</div>
             </form>
         </div>
     </div>
