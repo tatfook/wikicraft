@@ -431,7 +431,7 @@
                 <div id="cropper" class="cropper-zone sr-only visible-hidden" style="width: 500px; height: 340px;">
                     <!--img ng-src="{{imgsPath + 'wiki_header.png'}}" alt=""-->
                 </div>
-                <form id="data-form" class="form-horizontal col-md-12 data-form" role="form">
+                <form id="data-form" name="userProfileForm" class="form-horizontal col-md-12 data-form" role="form">
                     <div class="form-group sr-only">
                         <legend>完善资料</legend>
                     </div>
@@ -477,13 +477,14 @@
                     <div class="form-group">
                         <label for="intro" class="col-sm-2 control-label">个人简介：</label>
                         <div class="col-sm-10">
-                            <textarea name="intro" id="intro" rows="6" ng-model="user.introduce"></textarea>
+                            <textarea name="intro" id="intro" rows="6" ng-model="user.introduce" maxutf8length="introMaxUtf8Length"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
                             <p class="text-danger" ng-show="formErr">{{formErr}}</p>
-                            <button ng-click="saveProfile()" class="btn btn-primary btn-md">保 存</button>
+                            <p class="text-danger" ng-show="userProfileForm.$error.maxutf8length">个人简介字数超过限制。</p>
+                            <button ng-click="saveProfile()" class="btn btn-primary btn-md" ng-disabled="userProfileForm.$invalid">保 存</button>
                         </div>
                     </div>
                 </form>

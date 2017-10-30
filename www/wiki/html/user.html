@@ -233,6 +233,14 @@
         position: absolute;
         z-index: 1;
     }
+    .userinfoIntroduce{
+        -webkit-line-clamp: 8;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        word-break: break-all;
+    }
 </style>
 
 <div class="container" ng-controller="userController">
@@ -244,7 +252,7 @@
                 <span title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</span>
                 <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
             </p>
-            <p>{{userinfo.introduce}}</p>
+            <p class="userinfoIntroduce">{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?"取消关注":"关 注"}}</div>
             <div class="message-row">
                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
