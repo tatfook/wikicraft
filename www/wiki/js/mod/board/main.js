@@ -145,6 +145,8 @@
                     "controller"     : "mxController",
                     "size"           : "lg",
                     "openedClass"    : "mx-client-modal",
+                    "backdrop"       : "static",
+                    "keyboard"       : false,
                 })
                 .result.then(function () {
                     var compressData = $scope.ui.getCurrentCompressData();
