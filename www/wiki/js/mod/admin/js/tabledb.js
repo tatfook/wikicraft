@@ -42,7 +42,10 @@ define([
 			ensureAdminAuth();
 
 			$scope.path      = $location.search().path || $scope.path;
-			$scope.tableName = $location.search().tableName || $scope.tableName;
+            $scope.tableName = $location.search().tableName || $scope.tableName;
+            $scope.pageSize  = $location.search().pageSize || $scope.pageSize;
+            $scope.page      = $location.search().page || $scope.page;
+            
 			//$location.search("path", $scope.path);
 			$location.search("tableName", $scope.tableName);
 
@@ -127,25 +130,37 @@ define([
 
 			var query = $scope.query || {};
 			var tableName = query.tableName || $scope.tableName;
-			query.tableName = undefined;
-			util.post(config.apiUrlPrefix + "tabledb/upsert", {
-				tableName:tableName,
-				query:query,
-			}, function(data) {
-				outputEditor.setValue(angular.toJson(data,4));
-			});
-		}
+            query.tableName = undefined;
+
+            //support update a bunch of data
+            Array.isArray(query) ? query.forEach(postUpsert) : postUpsert(query);
+
+            function postUpsert(queryData) {
+                util.post(config.apiUrlPrefix + "tabledb/upsert", {
+                    tableName:tableName,
+                    query:queryData,
+                }, function(data) {
+                    outputEditor.setValue(angular.toJson(data,4));
+                });
+            }
+        }
+
 		$scope.clickDelete = function() {
 			var queryStr = inputEditor.getValue();
 			var query = angular.fromJson(queryStr || "{}");
 
-			util.post(config.apiUrlPrefix + "tabledb/delete", {
-				tableName:query.tableName || $scope.tableName,
-				query:query,
-			}, function(data){
-				outputEditor.setValue(angular.toJson(data,4));
-			}, function(data){
-			});
+            //support delete a bunch of data
+            Array.isArray(query) ? query.forEach(postDelete) : postDelete(query);
+            
+            function postDelete(queryData) {
+                util.post(config.apiUrlPrefix + "tabledb/delete", {
+                    tableName:query.tableName || $scope.tableName,
+                    query:queryData,
+                }, function(data){
+                    outputEditor.setValue(angular.toJson(data,4));
+                }, function(data){
+                });
+            }
 		}
 
 		$scope.editIndex = function (index) {
