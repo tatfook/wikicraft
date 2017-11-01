@@ -314,6 +314,14 @@ define([
 			if(!$scope.oauthParams.clientSecret){
 				return alert("请输入clientSecret");
 			};
+
+			if(!$scope.oauthParams.payCallbackUrl){
+				return alert("请输入payCallbackUrl");
+			};
+
+			if(!$scope.oauthParams.redirectUrl){
+				return alert("请输入redirectUrl");
+			};
 			
 			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
 			//var reg2 = /([.][A-Za-z])$/
@@ -325,7 +333,7 @@ define([
 			};
 			
 			if(!reg1.test($scope.oauthParams.redirectUrl)){
-				return alert("payCallbackUrl请使用正确的格式");
+				return alert("redirectUrl请使用正确的格式");
 			};
 			
 			if(!reg3.test($scope.oauthParams.appName)){
