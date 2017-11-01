@@ -273,6 +273,7 @@ define([
 
                         if ($scope.updatingFile && $scope.updatingFile._id){
                             params._id = $scope.updatingFile._id;
+                            params.filename = $scope.updatingFile.filename;
                             util.post(config.apiUrlPrefix + 'bigfile/updateById', params, function(data){
                                 data = data || {};
                                 data.filename = params.filename;
