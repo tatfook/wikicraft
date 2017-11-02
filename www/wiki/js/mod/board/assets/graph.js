@@ -93149,7 +93149,14 @@ EditorUi.prototype.save = function(name)
 
 EditorUi.prototype.getCurrentCompressData = function()
 {
-    var currentGraphXml     = mxUtils.getXml(this.editor.getGraphXml());
+    var currentGraphElement = this.editor.getGraphXml();
+
+    if(currentGraphElement && currentGraphElement.childNodes[0] &&
+       currentGraphElement.childNodes[0].childNodes.length <= 2){
+        return null;
+    }
+
+    var currentGraphXml     = mxUtils.getXml(currentGraphElement);
     var currentCompressText = this.editor.graph.compress(this.editor.graph.zapGremlins(currentGraphXml));
 
     var container = document.createElement("div");

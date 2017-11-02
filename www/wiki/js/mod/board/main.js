@@ -50,7 +50,7 @@
             // Main
             var ui = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
-            if (data && data.length > 0) {
+            if (data && data.length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
                 doc = ui.editor.graph.getDecompressData(data);
 
                 ui.editor.setGraphXml(doc.documentElement);
@@ -109,14 +109,12 @@
         });
     }
 
-    var blankCompressData = `<diagram version="0.0.1">dZHNEoIgFIWfhj2Bje3NatPKRWsCRCbkOoST9fRpYA5jsWAO3/05cEG0aIejY11zBiENIlgMiO4RITucjfsEngFkeR6AcloEtFlApV8yQhxpr4W8J4kewHjdpZCDtZL7hDHn4JGm1WBS144puQIVZ2ZNL1r4Jj5rixd+klo1s/MGx8iV8Zty0NvohwitP2vStES0cAA+qHYopJnGNo8k9Dj8iX7v5KT1PwpGsfQeD8nf0PIN</diagram>`;
-
     function registerController(wikiBlock) {
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
             if (wikiBlock.editorMode) {
                 $scope.mxClientEdit = true;
 
-                if ((typeof(wikiBlock.modParams) == "string" && wikiBlock.modParams.length == 0) || wikiBlock.modParams.replace(/\s/g, "") == blankCompressData.replace(/\s/g, "")) {
+                if (typeof(wikiBlock.modParams) == "string" && wikiBlock.modParams.length == 0 || wikiBlock.modParams.replace(/[\ \r\n]+/g, "") == "blank") {
                     $scope.mxClientStart = true;
                     $scope.startNotice   = "点击此处开始编辑";
                     $scope.$apply();
@@ -153,8 +151,11 @@
                 .result.then(function () {
                     var compressData = $scope.ui.getCurrentCompressData();
 
-                    //console.log(compressData);
-                    wikiBlock.applyModParams(compressData);
+                    if(compressData){
+                        wikiBlock.applyModParams(compressData);
+                    }else{
+                        wikiBlock.applyModParams("blank");
+                    }
                 }, function (params) {
                     
                 });
