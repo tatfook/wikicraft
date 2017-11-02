@@ -9,6 +9,8 @@ define([
 ], function (app, qiniu, util, htmlContent) {
     app.registerController("bigfileController", ["$scope", function ($scope) {
         var qiniuBack;
+        var uploadTotalSecond = 0;
+        var fileUploadTime = 0;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
@@ -38,7 +40,26 @@ define([
             }else{
                 $scope.$dismiss(params);
             }
+        };
 
+        $scope.sizeTransfer = function (file) {
+            if (file.filesize){
+                return file.filesize;
+            }
+            if (!file.file || !file.file.size){
+                return;
+            }
+            var filesize = file.file.size;
+            if (filesize/1024/1024/1024 > 0.1){
+                file.filesize = (filesize/biteToG).toFixed(2)+"GB";
+                return file.filesize;
+            }
+            if (filesize/1024/1024 > 0.1){
+                file.filesize = (filesize/1024/1024).toFixed(2) + "MB";
+                return file.filesize;
+            }
+            file.filesize = (filesize/1024).toFixed(2) + "KB";
+            return file.filesize;
         };
 
         var getFileByUsername = function () {
@@ -64,6 +85,32 @@ define([
             }, false);
         };
 
+        var getFinishTime = function (filesize, speed) {
+            filesize = filesize || $scope.remainSize;
+            speed = speed || $scope.speed || 0;
+            if (speed <=0){
+                $scope.finishTime = $scope.finishTime || "等待计算";
+                $scope.remainTime = $scope.remainTime || "0秒";
+                return;
+            }
+            var waitTime = filesize/speed;
+            var finishTime = new Date(new Date().getTime() + parseInt(waitTime*1000));
+            $scope.finishTime = fix(finishTime.getHours(), 2) + ":" + fix(finishTime.getMinutes(), 2);
+            var remainTime = sToTime(waitTime, 1).split(":");
+            $scope.remainTime = "";
+            if (remainTime[0] != "0"){
+                $scope.remainTime += remainTime[0] + "小时";
+            }
+            if (remainTime[1] != "0"){
+                $scope.remainTime += remainTime[1] + "分";
+            }
+            if (remainTime[2] != "0"){
+                $scope.remainTime += remainTime[2] + "秒";
+            }
+
+            // $scope.finishTime = sToTime(parseInt(finishSecond));
+        };
+
         var isExceed = function (unUsed, uploadingSize) {
             if (!unUsed || !uploadingSize || unUsed > uploadingSize){
                 return false;
@@ -79,15 +126,35 @@ define([
             }
         };
 
+        var fix = function (num, length) {
+            length = length || 2;
+            return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
+        };
+
+        var sToTime = function (stime, fixNum) {
+            fixNum = fixNum || 2;
+            var h, m, s;
+            h = fix(parseInt(stime / 3600), fixNum);
+            stime = stime % 3600;
+            m = fix(parseInt(stime / 60), fixNum);
+            stime = stime % 60;
+            s = fix(parseInt(stime), fixNum);
+            return (h+":"+m+":"+s);
+        };
+
         $scope.initQiniu = function(type){
-            if (type !== "isUpdating"){
+            if (type !== "isUpdating" && !$scope.startUpdating){
                 $scope.updatingFile = {};
             }
             if ($scope.finishUploading){
                 $scope.uploadingFiles = [];
+                $scope.totalTime = "";
+                uploadTotalSecond = 0;
+                $scope.remainSize = 0;
             }else if ($scope.finishUploading === false){
                 return;
             }
+            $scope.remainSize = $scope.remainSize|| 0;
             var qiniu = new QiniuJsSDK();
             var option = {
                 "browse_button":"selectFileInput",
@@ -97,6 +164,7 @@ define([
                 "uptoken_url": '/api/wiki/models/qiniu/uploadToken',
                 "domain": 'ov62qege8.bkt.clouddn.com',
                 "chunk_size": "4mb",
+                "filters":{},
                 "init": {
                     'FilesAdded': function(up, files) {
                         var self = this;
@@ -108,11 +176,13 @@ define([
                             filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
-                            if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - $scope.updatingFile.file.size))){
+                            $scope.remainSize = $scope.updatingFile.file.size;
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, $scope.uploadingSize)){
                                 return;
                             }
                             $scope.uploadingFiles = files;
                             $scope.finishUploading = false;
+                            $scope.startUpdating = true;
                             self.start();
                             return;
                         }
@@ -141,6 +211,8 @@ define([
                                     $scope.uploadingFiles = $scope.uploadingFiles || [];
                                     $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                     $scope.finishUploading = false;
+                                    $scope.remainSize += filesSize;
+                                    // $scope.$apply();
                                     self.start();
                                 }, function () {
                                     $scope.storeInfo.unUsed -= (filesSize - conflictSize)/biteToG;
@@ -151,6 +223,7 @@ define([
                                         $scope.uploadingFiles = $scope.uploadingFiles || [];
                                         $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                         $scope.finishUploading = false;
+                                        $scope.remainSize += (filesSize - conflictSize);
                                         self.start();
                                     }
                                 });
@@ -163,19 +236,27 @@ define([
                             $scope.uploadingFiles = $scope.uploadingFiles || [];
                             $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                             $scope.finishUploading = false;
+                            $scope.remainSize += filesSize;
                         	self.start();
                         });
                     },
                     'BeforeUpload': function(up, file) {
                         $scope.uploadingFiles[file.id] = file;
-                        util.$apply();
                         // 每个文件上传前，处理相关的事情
                     },
                     'UploadProgress': function(up, file) {
                         $scope.uploadingFiles[file.id] = file;
+                        var remainSize = $scope.remainSize - file.loaded;
+                        getFinishTime(remainSize, file.speed);
+                        if (file.speed <= 0){
+                            return;
+                        }
+                        var waitTime = (file.size - file.loaded) / (file.speed);
+                        file.waitTime = sToTime(waitTime);
                         util.$apply();
                     },
                     'FileUploaded': function(up, file, response) {
+                        $scope.uploadingSize -= file.size;
                         var domain = up.getOption('domain');
                         var info = JSON.parse(response.response);
                         var hash = info.hash;
@@ -192,15 +273,20 @@ define([
 
                         if ($scope.updatingFile && $scope.updatingFile._id){
                             params._id = $scope.updatingFile._id;
+                            params.filename = $scope.updatingFile.filename;
                             util.post(config.apiUrlPrefix + 'bigfile/updateById', params, function(data){
-                                console.log(data);
                                 data = data || {};
                                 data.filename = params.filename;
+                                $scope.updatingFile = {};
+                                option.filters = {};
+                                qiniuBack.destroy();
+                                qiniuBack = qiniu.uploader(option);
                                 // $scope.uploadingFiles[file.id].status = "success";
                                 getFileByUsername();
                             }, function(err){
                                 console.log(err);
                             });
+                            $scope.startUpdating = false;
                             return;
                         }
 
@@ -225,6 +311,7 @@ define([
                             option.filters = {};
                             $scope.uploadingFiles = $scope.uploadingFiles || [];
                             $scope.uploadingFiles.push(err.file);
+                            $scope.remainSize += err.file.size;
                             up.files.push(err.file);
                             up.start();
                             return;
@@ -232,12 +319,14 @@ define([
                         //上传出错时，处理相关的事情
                     },
                     'UploadComplete': function() {
+                        $scope.remainSize = 0;
+                        $scope.remainTime = 0;
+                        getFinishTime(0, 0);
                         //队列文件处理完毕后，处理相关的事情
                         getFileByUsername();
                         getUserStoreInfo();
                         $scope.finishUploading = true;
-                        $scope.updatingFile = {};
-                        $scope.initQiniu();
+                        $scope.remainSize = 0;
                     }
                 }
             };
@@ -277,10 +366,19 @@ define([
 
         function fileStop(file) {
             $scope.storeInfo.unUsed += file.size/biteToG;
+            $scope.remainSize += file.size;
             file.isDelete = true;
+            file._start_at = file._start_at || new Date();
             qiniuBack.removeFile(file.id);
+            if ($scope.updatingFile){
+                $scope.startUpdating = false;
+            }
             if (qiniuBack.files.length <=0){
                 $scope.uploadingFiles = [];
+                $scope.totalTime = "";
+                $scope.remainSize = 0;
+                getFinishTime(0, 0);
+                uploadTotalSecond = 0;
             }
             qiniuBack.start();
         }
@@ -442,7 +540,7 @@ define([
             }
             targetElem.attr("contenteditable", "true");
             targetElem.focus();
-            targetElem.bind("blur", function () {
+            targetElem.unbind("blur").bind("blur", function () {
                 var filename = targetElem.html();
                 filename = filename.replace(/\n|<br>|&nbsp;/g, "").trim();
                 if (!ErrFilenamePatt.test(filename)){
