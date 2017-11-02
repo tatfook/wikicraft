@@ -80,7 +80,8 @@
 		'wangEditor': 'lib/wangEditor/js/wangEditor',
 		'pingpp': 'lib/pingpp-js/dist/pingpp',
 		'plupload': "lib/qiniu/plupload.full.min",
-		'qiniu': "lib/qiniu/qiniu.min",
+        //'qiniu': "lib/qiniu/qiniu.min",
+		'qiniu': "empty:",
         'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
         'md5': "lib/md5",
 

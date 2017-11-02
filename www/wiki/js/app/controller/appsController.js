@@ -85,6 +85,12 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 "targetId":"baikehezhishiku",
                 "info":"大数据与个人百科平台",
                 "apps":[
+                    {
+                        "name":"十方百科",
+                        "details":"",
+                        "siteUrl":"http://baike.keepwork.com/",
+                        "logoUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509613900057.png"
+                    }
                 ]
             },
             {
