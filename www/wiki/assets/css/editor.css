@@ -346,6 +346,15 @@ select.resize-view {
     border-bottom-left-radius: 0;
 }
 
+.toolbar-avatar {
+}
+.toolbar-avatar img {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .toolbar-brand{
     padding:6px 12px;
     background-color: #FFF;

@@ -20,6 +20,7 @@ define(['app',
         $scope.userEmail="";
         $scope.userPhone="";
         $scope.myPays = [];// code为0表示成功，isConsume为true时表示为消费，否则为收入
+        $scope.introMaxUtf8Length = 1024;
         var sensitiveElems = [];
 
         function getResultCanvas(sourceCanvas) {
@@ -206,7 +207,7 @@ define(['app',
                     }
                 });
             });
-
+            
 			if (isSensitive){
 			    $scope.formErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
 			    return;
