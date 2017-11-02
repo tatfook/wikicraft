@@ -21,4 +21,34 @@ define(['require', 'app'], function (require, app) {
             },
         };
     }]);
+
+    app.directive('maxutf8length', function () {
+        return {
+            require: 'ngModel',
+            scope: {
+                maxutf8length: '='
+            },
+            link: function (scope, elem, attr, ngModel) {
+                var maxutf8length = +scope.maxutf8length || 0;
+                //For DOM -> model validation
+                ngModel.$parsers.unshift(function (value) {
+                    var valid = lengthInUtf8Bytes(value) <= maxutf8length;
+                    ngModel.$setValidity('maxutf8length', valid);
+                    return valid ? value : undefined;
+                });
+            
+                //For model -> DOM validation
+                ngModel.$formatters.unshift(function(value) {
+                    ngModel.$setValidity('maxutf8length', lengthInUtf8Bytes(value) <= maxutf8length);
+                    return value;
+                });
+
+                function lengthInUtf8Bytes(str) {
+                    // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
+                    var m = encodeURIComponent(str).match(/%[89ABab]/g);
+                    return str.length + (m ? m.length : 0);
+                }
+            }
+        };
+    });
 });

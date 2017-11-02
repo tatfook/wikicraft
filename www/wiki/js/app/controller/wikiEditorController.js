@@ -538,7 +538,7 @@ define([
             $rootScope.frameFooterExist = false;
             $rootScope.frameHeaderExist = false;
             $rootScope.userinfo = $rootScope.user;
-
+            
             $scope.enableTransform = true;
             $scaleValue = "";
             $scope.scales = [
@@ -663,7 +663,7 @@ define([
                 fnList.push(function (finish) {
 					var urlObj = storage.sessionStorageGetItem('urlObj'); 
 					//console.log(urlObj);
-					if (urlObj && $scope.user.username != urlObj.username && urlObj.sitename) {
+					if (urlObj && $scope.user && $scope.user.username != urlObj.username && urlObj.sitename) {
 						util.post(config.apiUrlPrefix + 'website/getWithDataSourceByName', {
 							username:urlObj.username,
 							sitename:urlObj.sitename,
