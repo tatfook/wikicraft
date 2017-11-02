@@ -44,7 +44,7 @@ define(['require', 'app'], function (require, app) {
                 });
 
                 function lengthInUtf8Bytes(str) {
-                    // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
+                    if (!str) return 0;
                     var m = encodeURIComponent(str).match(/%[89ABab]/g);
                     return str.length + (m ? m.length : 0);
                 }
