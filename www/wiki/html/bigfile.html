@@ -17,6 +17,11 @@
         padding: 6px 20px;
         font-size: 16px;
     }
+    .bigfile-modal .time{
+        margin-bottom: 0;
+        padding-top: 16px;
+        font-size: 14px;
+    }
     .bigfile-modal .tab-pane {
         padding: 30px 40px;
         font-size: 16px;
@@ -88,6 +93,10 @@
         height: 320px;
         overflow-y: scroll;
         margin-bottom: 20px;
+        border: 1px solid #DCDCDC;
+    }
+    .bigfile-modal .table-box .checkbox-column{
+        border-left-color: transparent;
     }
     .bigfile-modal .thead-table{
         margin-bottom: 0;
@@ -102,11 +111,16 @@
         height: 211px;
         overflow-y: scroll;
         margin-bottom: 20px;
+        border:1px solid #DCDCDC;
+    }
+    .bigfile-modal .insert-table-box .checkbox-column{
+        border-left-color: transparent;
     }
     .bigfile-modal .empty-box{
         text-align: center;
         color: #999;
         font-size: 16px;
+        margin-top: 14px;
     }
     .bigfile-modal .empty-box .iconfont{
         font-size: 145px;
@@ -187,6 +201,9 @@
         font-size: 12px;
         margin-left: 20px;
     }
+    .bigfile-modal .file-group-item .right-col > span:first-child{
+        margin-right: 20px;
+    }
     .bigfile-modal .file-group-item .progress{
         display: inline-block;
         width: 200px;
@@ -196,6 +213,10 @@
     }
     .bigfile-modal .file-group-item .progress-bar{
         background-color: #43A8FF;
+    }
+    .bigfile-modal .file-group-item .text-danger{
+        position: absolute;
+        right: 18px;
     }
     p.dialog-info-title{
         font-size: 20px;
@@ -306,9 +327,8 @@
                                 <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                 <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                 <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
-                                <td class="size-column">
-                                    {{(file.file.size/1024/1024/1024 > 0.1) ? (file.file.size/1024/1024/1024 | number:2)+"GB" :
-                                    (file.file.size/1024/1024 > 0.1) ? (file.file.size/1024/1024 | number:2) + "MB" : ((file.file.size/1024 | number:2) + "KB")}}
+                                <td class="size-column" title="{{file.filesize || sizeTransfer(file)}}">
+                                    {{file.filesize || sizeTransfer(file)}}
                                 </td>
                                 <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                 <td class="operate-column">
@@ -352,9 +372,8 @@
                                     </td>
                                     <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
-                                    <td class="size-column">
-                                        {{(file.file.size/1024/1024/1024 > 0.1) ? (file.file.size/1024/1024/1024 | number:2)+"GB" :
-                                        (file.file.size/1024/1024 > 0.1) ? (file.file.size/1024/1024 | number:2) + "MB" : ((file.file.size/1024 | number:2) + "KB")}}
+                                    <td class="size-column" title="{{file.filesize || sizeTransfer(file)}}">
+                                        {{file.filesize || sizeTransfer(file)}}
                                     </td>
                                     <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
@@ -371,8 +390,16 @@
                     <button class="btn btn-primary pull-right" ng-click="deleteFiles()">删除选中</button>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
-                    <h3 ng-show="updatingFile && updatingFile.filename">选择 {{updatingFile.filename}} 的更新文件</h3>
-                    <button id="selectFileInput" class="btn btn-primary file-input-btn">选中本地文件</button>
+                    <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
+                    <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
+                    <div class="clearfix">
+                        <button id="selectFileInput" ng-disabled="startUpdating && !finishUploading" class="btn btn-primary file-input-btn">选中本地文件</button>
+                        <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
+                            <span class="preview-time">
+                                预估完成时间:{{finishTime || "00:00"}} (剩余 {{remainTime}})
+                            </span>
+                        </p>
+                    </div>
                     <div id="dropFile" class="file-progress">
                         <p ng-show="!uploadingFiles || uploadingFiles.length  < 1" class="upload-info">
                             <img ng-src="{{getImageUrl('icon/wiki_upload_file.png', imgsPath)}}" alt="">
@@ -384,6 +411,7 @@
                                     <img alt="">{{file.name}}
                                 </div>
                                 <div class="right-col">
+                                    <span ng-show="file.status == 2">{{file.waitTime}} </span>
                                     <span>
                                         {{(file.size * file.percent/100/1024/1024/1024 > 0.1) ? (file.size * file.percent/100/1024/1024/1024 | number:2)+"GB" :
                                         (file.size * file.percent/100/1024/1024 > 0.1) ? (file.size * file.percent/100/1024/1024 | number:2) + "MB" : ((file.size * file.percent/100/1024 | number:2) + "KB")}}
@@ -391,16 +419,14 @@
                                         {{(file.size/1024/1024/1024 > 0.1) ? (file.size/1024/1024/1024 | number:2)+"GB" :
                                         (file.size/1024/1024 > 0.1) ? (file.size/1024/1024 | number:2) + "MB" : ((file.size/1024 | number:2) + "KB")}}
                                     </span>
-                                    <!--<span>-->
-                                        <!--&lt;!&ndash;{{file.size * file.percent/100/1024/1024 | number:2}}MB/{{file.size/1024/1024 | number:2}}MB&ndash;&gt;-->
-                                    <!--</span>-->
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="{{file.percent}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': file.percent+'%'}">
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
                                     </div>
-                                    <span ng-click="stopUpload(file, $index)" ng-show="!file.status || file.status != 'success'" class="glyphicon glyphicon-remove"></span>
-                                    <span ng-show="file.status == 'success'" class="text-success glyphicon glyphicon-ok"></span>
+                                    <span ng-show="file.status == 4" class="text-danger" title="{{file.errTip}}">上传失败</span>
+                                    <span ng-click="stopUpload(file, $index)" ng-show="file.status < 5" class="glyphicon glyphicon-remove"></span>
+                                    <span ng-show="file.status == 5" class="text-success glyphicon glyphicon-ok"></span>
                                 </div>
                             </div>
                         </div>
