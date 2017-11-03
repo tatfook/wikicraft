@@ -5,8 +5,8 @@
 define([
     'app',
 	//'html2canvas',
-    'to-markdown',
     'markdown-it',
+    'to-markdown',
     'codemirror',
     'helper/markdownwiki',
     'helper/util',
@@ -34,8 +34,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
-    //console.log("wiki editor controller!!!");//{{{
+], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
@@ -395,6 +394,7 @@ define([
         $scope.website = {};             //当前选中站点
         $scope.websitePage = {};        //当前选中页面
         $scope.errInfo = "";             // 错误提示
+        $scope.step = 1;
         var treeNode = undefined;       // 目录节点
 
         $scope.$watch('$viewContentLoaded', init);
@@ -467,24 +467,8 @@ define([
 			//console.log(treeNode);
         }
 
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-
-        $scope.getActiveStyleClass = function (pageTemplate) {
-            return pageTemplate.name == $scope.activePageTemplate.name ? 'active' : '';
-        };
-
-        $scope.selectCategory = function (pageTemplate) {
-            $scope.activePageTemplate = pageTemplate;
-            $scope.websitePage.template = $scope.activePageTemplate.templates[0];
-        };
-
-        $scope.selectTemplate = function (template) {
-            $scope.websitePage.template = template;
-        };
-
-         $scope.website_new = function () {
+        function isValidName() {
+            $scope.errInfo = "";
             if (!treeNode) {
                 $scope.errInfo = '请选择站点';
                 return false;
@@ -521,8 +505,41 @@ define([
                 }
             }
 
+            return true;
+        }
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.nextStep = function () {
+            if (isValidName()){
+                $scope.step++;
+            }
+        };
+
+        $scope.prevStep = function () {
+            $scope.step--;
+        };
+
+        $scope.getActiveStyleClass = function (pageTemplate) {
+            return pageTemplate.name == $scope.activePageTemplate.name ? 'active' : '';
+        };
+
+        $scope.selectCategory = function (pageTemplate) {
+            $scope.activePageTemplate = pageTemplate;
+            $scope.websitePage.template = $scope.activePageTemplate.templates[0];
+        };
+
+        $scope.selectTemplate = function (template) {
+            $scope.websitePage.template = template;
+        };
+
+         $scope.website_new = function () {
+             if (isValidName()){
             currentPage = $scope.websitePage;
             $uibModalInstance.close("page");
+        }
         }
     }]);//}}}
 
@@ -574,7 +591,7 @@ define([
                 }
             });//}}}
 
-            //console.log("wikiEditorController");//{{{
+            console.log("wikiEditorController");//{{{
             $rootScope.frameFooterExist = false;
             $rootScope.frameHeaderExist = false;
             $rootScope.userinfo = $rootScope.user;
@@ -1483,7 +1500,7 @@ define([
                         //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
                         templateUrl: config.htmlPath + "editorNewPage.html",
                         controller: "pageCtrl",
-                        size: 'lg',
+                        size: (hidePageTree? "lg":"sm"),
                         scope: $scope
                     }).result.then(function (provider) {
                         if (provider == "page") {
@@ -3268,6 +3285,5 @@ define([
 				//}}}
             }
         }]);
-
     return htmlContent;
 });
