@@ -18,7 +18,7 @@
 				'angular',
 				'app',
 				'preload',
-				'bootstrap'
+				'bootstrap',
 			]
         },
 		{
@@ -27,25 +27,29 @@
 				"controller/newWebsiteController"
 			],
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
 		{
 			name:"controller/websiteController",
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
 		{
 			name:"controller/userCenterController",
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
 		{
 			name:"controller/knowledgeController",
 			exclude:[
-				'app'
+				'app',
+				'bootstrap',
 			]
 		},
     ],
@@ -76,7 +80,8 @@
 		'wangEditor': 'lib/wangEditor/js/wangEditor',
 		'pingpp': 'lib/pingpp-js/dist/pingpp',
 		'plupload': "lib/qiniu/plupload.full.min",
-		'qiniu': "lib/qiniu/qiniu.min",
+        //'qiniu': "lib/qiniu/qiniu.min",
+		'qiniu': "empty:",
         'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
         'md5': "lib/md5",
 

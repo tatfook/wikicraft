@@ -112,6 +112,10 @@ define([
                     $scope.errMsg = "请选择站点类型和模板";
                     return;
                 }
+                if ($scope.template.isThirdWay){
+                    util.go($scope.template.extraLink);
+                    return;
+                }
                 $scope.step++;
                 $scope.nextStepDisabled = !$scope.website.name;
                 return;
@@ -266,10 +270,14 @@ define([
             $scope.website.type = category.classify;
             $scope.website.templateId = $scope.templates[0]._id;
             $scope.website.templateName = $scope.templates[0].name;
-            $scope.website.styleId = $scope.styles[0]._id;
-            $scope.website.styleName = $scope.styles[0].name;
             $scope.nextStepDisabled = false;
             $scope.template = $scope.templates[0];
+
+            if (!$scope.styles){
+                return;
+            }
+            $scope.website.styleId = $scope.styles[0]._id;
+            $scope.website.styleName = $scope.styles[0].name;
             $scope.style = $scope.styles[0];
         };
 
@@ -278,6 +286,9 @@ define([
             $scope.styles = template.styles;
             $scope.website.templateId = template._id;
             $scope.website.templateName = template.name;
+            if (!$scope.styles){
+                return;
+            }
             $scope.website.styleId = $scope.styles[0]._id;
             $scope.website.styleName = $scope.styles[0].name;
             $scope.nextStepDisabled = false;

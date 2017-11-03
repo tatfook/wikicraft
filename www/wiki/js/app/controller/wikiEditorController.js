@@ -16,6 +16,7 @@ define([
 	'helper/qiniu',
     'text!html/wikiEditor.html',
     'controller/editWebsiteController',
+    'controller/bigfileController',
     'codemirror/mode/markdown/markdown',
     // 代码折叠
     'codemirror/addon/fold/foldgutter',
@@ -33,8 +34,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-    'js-base64',
-], function (app, /*html2canvas,*/ toMarkdown, markdownit, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent) {
+], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
     //console.log("wiki editor controller!!!");//{{{
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -703,7 +703,7 @@ define([
                 fnList.push(function (finish) {
 					var urlObj = storage.sessionStorageGetItem('urlObj'); 
 					//console.log(urlObj);
-					if (urlObj && $scope.user.username != urlObj.username && urlObj.sitename) {
+					if (urlObj && $scope.user && $scope.user.username != urlObj.username && urlObj.sitename) {
 						util.post(config.apiUrlPrefix + 'website/getWithDataSourceByName', {
 							username:urlObj.username,
 							sitename:urlObj.sitename,

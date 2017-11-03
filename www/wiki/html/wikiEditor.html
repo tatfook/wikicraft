@@ -17,9 +17,11 @@
                                     <!--<li><a ng-click="goModPackagePage()">Mod扩展</a></li>-->
                                 <!--</ul>-->
                             <!--</div>-->
-                            <a ng-click="isLogin ? goUserPage() : goHomePage()" class="toolbar-brand">
-                                <img class="show-md" ng-src="{{imgsPath+'icon/logo.svg'}}" alt="">
-                                <img class="show-sm" ng-src="{{imgsPath+'icon/logo_sm.png'}}" alt="">
+                            <a ng-if="isLogin" ng-click="goUserPage()" class="toolbar-avatar">
+                                <img ng-src="{{user.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
+                            </a>
+                            <a ng-if="!isLogin" ng-click="goHomePage()" class="toolbar-avatar">
+                                <img ng-src="{{imgsPath+'default_portrait_anonymous.png'}}" alt="">
                             </a>
                         </div>
 

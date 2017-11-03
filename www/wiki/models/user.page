@@ -27,7 +27,7 @@ user.db_name = "user"
 function user:ctor()
 	self:addfield("username", "string", false, 30)     -- 用户名  唯一不可改
 	self:addfield("displayName", "string", false, 30)  -- 显示名
-	self:addfield("introduce", "string", false)     -- 简介
+	self:addfield("introduce", "string", false, 1024)     -- 简介
 	self:addfield("email", "string", false, 30)     -- 邮箱
 	self:addfield("password", "string", false, 256) -- hashed password
 	self:addfield("cellphone", "string", false, 12) -- 手机

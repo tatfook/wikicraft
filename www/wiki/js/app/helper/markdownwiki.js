@@ -212,9 +212,9 @@ define([
         var wikiBlock = blockCache.wikiBlock;
         var render = getRenderFunc(wikiBlock.modName);
         var editor = mdwiki.editor;
-        var pos = block.textPosition;
 
         var wikiBlockParams = {
+			blockCache:blockCache,
             modName: wikiBlock.modName,
             cmdName: wikiBlock.cmdName,
             modParams: wikiBlock.modParams,
@@ -238,6 +238,7 @@ define([
                 }
             },
             applyModParams: function (modParams) {
+				var pos = blockCache.block.textPosition;
                 //console.log(modParams);
                 if (!modParams || !editor || !mdwiki.options.editorMode) {
                     return;
@@ -291,6 +292,7 @@ define([
             var blockCache = block.blockCache;
             //console.log(blockCache);
             if (blockCache.domNode) {
+				blockCache.block.textPosition = block.textPosition;
                 $(selector).append(blockCache.domNode);
                 continue;
             }
@@ -663,6 +665,7 @@ define([
                     }
                     // 获取的对应的html标签内容
                     block.blockCache = mdwiki.getBlockCache(block.content, token);
+					block.blockCache.block = block;
                     block.isTemplate = block.blockCache.isTemplate;
                     if (block.blockCache.isTemplate) {
                         mdwiki.template = block;
