@@ -33,9 +33,17 @@
     .companyNavbar .search-row>input{
         width: 205px;
     }
+    .companyNavbar .search-row .glyphicon-search{
+        position: absolute;
+        right: 7px;
+        top: 10px;
+    }
     .companyNavbar .breadcrumb{
         margin-top:17px;
         margin-bottom:0;
+    }
+    .companyNavbar .nav>li{
+        float: left;
     }
     .companyNavbar .nav>li>a{
         color: #333;
@@ -63,12 +71,26 @@
         display: none !important;
     }
 </style>
+<style>
+    @media (max-width: 768px) {
+        .companyNavbar .navbar-header {
+            text-align: left;
+            padding-left: 15px;
+        }
+        .companyNavbar .navbar>.container h1>.navbar-brand{
+            font-size: 30px;
+        }
+        .companyNavbar .nav>li{
+            float: none;
+        }
+    }
+</style>
 <div class="companyNavbar" ng-controller="companyNavbarController">
     <nav class="navbar navbar-default">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="{{'#modnavbar'+modParams.brandUrl}}" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -81,7 +103,7 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="{{'modnavbar'+modParams.brandUrl}}">
                 <div class="nav navbar-nav navbar-right">
                     <div class="navbar-right-top clearfix">
                         <form class="navbar-form pull-right" role="search">
@@ -96,7 +118,7 @@
                         </ol>
                     </div>
                     <ul class="nav clearfix">
-                        <li class="pull-left" ng-repeat="navItem in modParams.navItems" ng-class={"dropdown":navItem.subUrl}>
+                        <li class="" ng-repeat="navItem in modParams.navItems" ng-class={"dropdown":navItem.subUrl}>
                             <a href="{{navItem.url}}" ng-show="!navItem.subUrl">{{navItem.name}}</a>
                             <a ng-show="navItem.subUrl" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{navItem.name}}</a>
                             <ul class="dropdown-menu" ng-show="navItem.subUrl">

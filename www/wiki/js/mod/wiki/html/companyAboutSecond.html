@@ -41,15 +41,25 @@
         line-height: 27px;
     }
 </style>
+<style>
+    @media (max-width: 768px) {
+        .company-about-second .container{
+            padding: 0 15px;
+        }
+        .company-about-second .container .col-sm-6:last-child{
+            padding: 0;
+        }
+    }
+</style>
 <div class="company-about-second" ng-controller="companyAboutSecondController">
     <div class="container">
         <div class="col-sm-6 content-box">
-            <h2>{{modParams.columnName}} <span class="info">{{modParams.columnInfo}}</span></h2>
+            <h2 ng-show="modParams.columnName">{{modParams.columnName}} <span class="info">{{modParams.columnInfo}}</span></h2>
             <div class="content">
                 <p ng-repeat="paragraph in modParams.paragraphs">
                     {{paragraph}}
                 </p>
-                <p><a href="{{modParams.moreNewsLink}}" class="pull-right" target="_blank">了解详情>></a></p>
+                <p ng-show="modParams.moreNewsLink"><a href="{{modParams.moreNewsLink}}" class="pull-right" target="_blank">{{modParams.moreText || "了解详情>>"}}</a></p>
             </div>
         </div>
         <div class="col-sm-6">
