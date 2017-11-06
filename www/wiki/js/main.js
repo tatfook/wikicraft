@@ -58,6 +58,7 @@
             'pingpp': libPathPrefix + 'pingpp-js/dist/pingpp',
 			'plupload': libPathPrefix + "qiniu/plupload.full.min",
 			'qiniu': libPathPrefix + "qiniu/qiniu.min",
+			'Fuse': libPathPrefix + "fuse/fuse.min",
 			'pako': libPathPrefix + "pako/pako.min",
 			'js-aho-corasick': libPathPrefix + "js-aho-corasick/aho-corasick",
 			'md5': libPathPrefix + "md5",
