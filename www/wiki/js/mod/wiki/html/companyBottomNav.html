@@ -26,6 +26,13 @@
         list-style:none;
     }
 </style>
+<style>
+    @media (max-width: 768px) {
+        .companybottomNav ul{
+            width: 100%;
+        }
+    }
+</style>
 <div class="companybottomNav" ng-controller="companybottomNavController">
     <div class="container">
         <ul ng-repeat="navItem in modParams.navItems">

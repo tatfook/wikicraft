@@ -39,10 +39,29 @@
         font-weight: normal;
     }
 </style>
+<style>
+    @media(max-width: 768px) {
+        .company-works-second{
+            padding: 15px 0;
+        }
+        .company-works-second h2{
+            margin-bottom: 20px;
+        }
+        .company-works-second h3{
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .company-works-second .show-col{
+            margin-bottom: 20px;
+        }
+    }
+</style>
 <div class="company-works-second" ng-controller="companyWorksListSecondController">
     <div class="container">
-        <h2>{{modParams.columnName}} <span class="info">{{modParams.columnInfo}}</span><a href="{{modParams.moreNewsLink}}" class="btn">更多></a></h2>
-        <div class="show-col col-xs-4" ng-repeat="workItem in modParams.works">
+        <h2>{{modParams.columnName}} <span class="info">{{modParams.columnInfo}}</span><a ng-show="modParams.moreNewsLink" href="{{modParams.moreNewsLink}}" class="btn">{{modParams.moreText || "更多>"}}</a></h2>
+        <div class="show-col col-sm-4 col-xs-12" ng-repeat="workItem in modParams.works">
             <a href="{{workItem.workLink}}" target="_blank">
                 <h3>{{workItem.workTitle}}</h3>
                 <img ng-src="{{workItem.workImg}}" alt="">
