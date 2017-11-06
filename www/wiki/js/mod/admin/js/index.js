@@ -8,9 +8,10 @@ define([
     'helper/mods',
 	'text!wikimod/admin/html/index.html',
     'templates.js',
+    'pageTemplates.js',
     'text!wikimod/admin/html/templates.html',
 	'md5',
-], function (app, util, mods, htmlContent, websiteTemplateContent) {
+], function (app, util, mods, htmlContent, websiteTemplateContent, pageTemplateContent) {
 	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
@@ -63,8 +64,8 @@ define([
 
 		function init() {
 			ensureAdminAuth();
-			//$scope.getTemplates();
-			$scope.getManagerList();
+			$scope.getTemplates();
+			// $scope.getManagerList();
 			//$scope.clickMenuItem($scope.selectMenuItem);
 		}
 
@@ -568,7 +569,20 @@ define([
 
 		$scope.getTemplates = function () {
 			$scope.selectMenuItem = "templates";
-            util.html('#websiteTemplate', websiteTemplateContent);
+            $scope.showTemplates("website");
+        };
+
+		$scope.showTemplates = function (type) {
+			switch (type){
+				case "website":
+                    util.html('#websiteTemplate', websiteTemplateContent);
+                    break;
+				case "page":
+                    util.html('#websiteTemplate', pageTemplateContent);
+                    break;
+				default:
+					break;
+			}
         };
 		//搜索VIP
 		$scope.vipSearchById;

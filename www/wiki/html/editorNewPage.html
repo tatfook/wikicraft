@@ -1,5 +1,13 @@
  <!--Created by Karlwu on 2016-11-11-->
  <style>
+     .newpage-modal{
+         padding: 15px 85px;
+     }
+     .newpage-modal .modal-footer .btn{
+         font-size: 16px;
+         width: 80px;
+         padding: 9px 0;
+     }
      .newpage-modal .col-md-6:first-child{
          border-right:1px solid #DCDCDC;
      }
@@ -12,30 +20,189 @@
          white-space: nowrap;
          overflow: hidden;
      }
-     /*.newpage-modal .treeview .list-group-item:first-child{*/
-         /*background-color: #3977AD;*/
-         /*color: #FFF;*/
-     /*}*/
+     .newpage-modal .title{
+         font-weight: normal;
+         margin: 0 0 15px 0;
+         font-size: 16px;
+     }
+     .newpage-modal .input-lg{
+         height: 42px;
+         padding: 8px 18px;
+     }
+     .template-select{
+         border: 1px solid #DDD;
+         padding:0;
+         position: relative;
+     }
+     .template-select .nav-tabs{
+         padding:20px 0;
+         border-bottom: 0;
+         width: 160px;
+         position: absolute;
+         left: 0;
+     }
+     .template-select .nav-tabs > li{
+         width: 100%;
+         text-align: center;
+     }
+     .template-select .nav-tabs > li > a{
+         color: #333;
+         font-size:16px;
+     }
+     .template-select .nav-tabs > li.active > a{
+         border: none;
+         background-color: #3977AD;
+         color: #FFF;
+         border-radius: 0;
+         margin: 0;
+     }
+     .template-select .tab-content{
+         border-left: 1px solid #DDD;
+         padding: 20px 15px;
+         margin-left: 160px;
+     }
+     .template-select .label {
+         background-color: rgba(0,0,0,.35);
+         padding: 11px 18px;
+         position: absolute;
+         left: 15px;
+         font-weight: normal;
+         top: 0;
+         font-size: 18px;
+         border-radius: 0;
+         color: #FFF;
+     }
+     .template-select .active>img{
+         border: 2px solid #3977AD;
+         border-bottom: none;
+         -webkit-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         -moz-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+     }
+     .template-select .active>.btn-group {
+         border: 2px solid #3977AD;
+         border-top: none;
+         -webkit-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         -moz-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+         box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
+     }
+     .template-select img{
+         width: 100%;
+         object-fit: cover;
+         height: 160px;
+     }
+     .template-select .btn-group{
+         background-color: #F9F9F9;
+         box-shadow: 0 1px 3px 0 rgba(44,62,80,.35);
+         padding: 0;
+         border: 2px solid transparent;
+         border-top: none;
+     }
+
+     .tree-modal .template-select .tab-content{
+         padding: 20px 0;
+         height: 100%;
+         overflow-y: auto;
+         margin-left: 140px;
+     }
+     .tree-modal .newpage-modal{
+         padding: 15px 30px;
+         height: 340px;
+         overflow-y: auto;
+     }
+     .tree-modal .newpage-modal .col-md-6:first-child{
+         height: 310px;
+         max-height: 100%;
+         overflow-y: auto;
+         padding:0 40px 0 0;
+     }
+
+     .tree-modal .newpage-modal .margin_12_0_20_0{
+         margin: 12px 0 20px;
+     }
+     .tree-modal .newpage-modal .pad40{
+         padding:0 0 0 40px;
+     }
+     .tree-modal .newpage-modal .treeview .list-group-item{
+         font-size: 16px;
+         line-height: 30px;
+     }
+     .tree-modal .template-select{
+         border-bottom: none;
+         margin-bottom: -15px;
+         height: 276px;
+         overflow: hidden;
+     }
+     .tree-modal .template-select .nav-tabs{
+         height:100%;
+         overflow-y: auto;
+         width:140px;
+     }
+     .tree-modal .template-select .nav-tabs::-webkit-scrollbar{
+         display: none;
+     }
+
+     .notree-modal .input-lg{
+         margin-bottom: 60px;
+     }
+     .notree-modal label.title{
+         margin-top: 25px;
+     }
+     .notree-modal .modal-footer{
+         border-top: none;
+         padding: 25px 100px 40px;
+     }
+
+     @media (min-width: 992px) {
+         .modal-lg{
+             width: 980px;
+         }
+         .modal-sm{
+             width: 720px;
+         }
+     }
  </style>
-<div>
+<div ng-class="hidePageTree?'notree-modal':'tree-modal'">
     <form name="pageForm" ng-submit="website_new()">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
         <h4 class="modal-title">新建页 <span ng-show="hidePageTree" class="now-page">&gt; {{routes}}</span></h4>
     </div>
     <div class="modal-body newpage-modal">
-        <div>
-            <div class="row">
-                <div class="col-md-6" ng-hide="hidePageTree">
-                    <div>
-                        <div id="newPageTreeId"></div>
-                    </div>
+        <div class="clearfix">
+            <div class="col-md-6" ng-hide="hidePageTree || step != 1">
+                <div>
+                    <h4 class="title">选择网站</h4>
+                    <div id="newPageTreeId"></div>
                 </div>
-                <div ng-class="hidePageTree?'col-md-10':'col-md-6'">
-                    <!-- NAME -->
-                    <div class="form-group">
-                        <label>页面名</label>
-                        <input autofocus type="text" name="name" class="form-control" ng-model="websitePage.pagename" required>
+            </div>
+            <div class="pad40" ng-class="hidePageTree?'col-md-7':'col-md-6'" ng-show="step == 1">
+                <div class="form-group">
+                    <label class="title">页面名：</label>
+                    <input autofocus type="text" name="name" class="form-control input-lg" ng-model="websitePage.pagename" required>
+                </div>
+            </div>
+            <div class="col-md-12" ng-show="step == 2 || hidePageTree">
+                <h4 class="title margin_12_0_20_0">选择页面模板：</h4>
+                <div class="template-select clearfix">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" ng-repeat="pageTemplate in pageTemplates" ng-class="getActiveStyleClass(pageTemplate)">
+                            <a ng-click="selectCategory(pageTemplate)" aria-controls="personal-web" role="tab" data-toggle="tab">{{pageTemplate.name}}</a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content website-model">
+                        <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
+                            <div ng-class="{'col-sm-5':hidePageTree, 'col-sm-6':!hidePageTree, 'active':(websitePage.template.name == template.name)}" ng-repeat="template in activePageTemplate.templates" style="margin-bottom: 20px;">
+                                <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
+                                <div class="col-md-12 btn-group">
+                                    <div class="btn col-sm-6 btn-lg" ng-href="{{template.previewUrl}}">预览</div>
+                                    <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                                </div>
+                                <span class="label">{{template.name}}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,7 +210,9 @@
     </div>
     <div class="modal-footer">
         <span style="color: red; padding-right: 10px">{{errInfo}}</span>
-        <button type="submit" class="btn btn-primary btn-fill">确定</button>
+        <div class="btn btn-primary btn-fill" ng-show="step == 1 && !hidePageTree" ng-click="nextStep()">下一步</div>
+        <div class="btn btn-primary btn-fill" ng-show="step == 2" ng-click="prevStep()">上一步</div>
+        <button type="submit" class="btn btn-primary btn-fill" ng-show="step == 2 || hidePageTree">确定</button>
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
     </div>
     </form>

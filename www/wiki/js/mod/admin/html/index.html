@@ -825,7 +825,8 @@ li{
 			<!--模板管理-->
 			<div ng-show="selectMenuItem == 'templates'" class="panel templates-panel">
 				<div class="panel-heading">
-					网站模板
+					<span ng-click="showTemplates('website')">网站模板</span>
+					<span ng-click="showTemplates('page')">网页模板</span>
 				</div>
 				<div class="panel-body" id="websiteTemplate"></div>
 			</div>
