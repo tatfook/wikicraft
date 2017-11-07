@@ -91,6 +91,9 @@
         background-color: #999;
     }
     /*我的动态*/
+    .main-content.my-status-main-content .tab-content {
+        padding-top: 15px;
+    }
     .tab-content .status-row{
         padding:0;
         border-bottom: 1px solid #DCDCDC;
@@ -100,9 +103,10 @@
         border-bottom: none;
     }
     .tab-content .status-row .col-sm-12{
-        height: 160px;
+        /* height: 160px; */
         padding-left: 50px;
-        line-height: 130px;
+        padding-bottom: 42px;
+        /* line-height: 130px; */
     }
     .tab-content .status-row .glyphicon{
         width: 35px;
@@ -462,7 +466,7 @@
                     <div class="form-group">
                         <label for="location" class="col-sm-2 control-label">位置：</label>
                         <div class="col-sm-10">
-                            <input id='location' type="text" class="form-control" ng-model="user.location">
+                            <input id='location' type="text" class="form-control" name="userLocation" ng-model="user.location" maxutf8length="locationMaxUtf8Length">
                             <!--select name="" id="">省
                                 <option value="广东">广东省</option>
                             </select>
@@ -477,13 +481,14 @@
                     <div class="form-group">
                         <label for="intro" class="col-sm-2 control-label">个人简介：</label>
                         <div class="col-sm-10">
-                            <textarea name="intro" id="intro" rows="6" ng-model="user.introduce" maxutf8length="introMaxUtf8Length"></textarea>
+                            <textarea name="intro" rows="6" ng-model="user.introduce" maxutf8length="introMaxUtf8Length"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
                             <p class="text-danger" ng-show="formErr">{{formErr}}</p>
-                            <p class="text-danger" ng-show="userProfileForm.$error.maxutf8length">个人简介字数超过限制。</p>
+                            <p class="text-danger" ng-show="userProfileForm.userLocation.$error.maxutf8length">位置字数超过限制。</p>
+                            <p class="text-danger" ng-show="userProfileForm.intro.$error.maxutf8length">个人简介字数超过限制。</p>
                             <button ng-click="saveProfile()" class="btn btn-primary btn-md" ng-disabled="userProfileForm.$invalid">保 存</button>
                         </div>
                     </div>
@@ -611,7 +616,7 @@
     </div>
 
     <!--我的动态-->
-    <div ng-show="showItem == 'myTrends'" class="ccol-xs-12 main-content">
+    <div ng-show="showItem == 'myTrends'" class="ccol-xs-12 main-content my-status-main-content">
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">

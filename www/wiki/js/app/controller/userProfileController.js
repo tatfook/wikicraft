@@ -21,6 +21,7 @@ define(['app',
         $scope.userPhone="";
         $scope.myPays = [];// code为0表示成功，isConsume为true时表示为消费，否则为收入
         $scope.introMaxUtf8Length = 1024;
+        $scope.locationMaxUtf8Length = 256;
         var sensitiveElems = [];
 
         function getResultCanvas(sourceCanvas) {
@@ -181,7 +182,9 @@ define(['app',
 					init(userinfo);
 				});
 			});
-		});
+        });
+        
+        window.x = $scope;
 
         // 保存用户信息
         $scope.saveProfile = function () {
