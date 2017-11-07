@@ -91,6 +91,9 @@
         background-color: #999;
     }
     /*我的动态*/
+    .main-content.my-status-main-content .tab-content {
+        padding-top: 15px;
+    }
     .tab-content .status-row{
         padding:0;
         border-bottom: 1px solid #DCDCDC;
@@ -100,9 +103,10 @@
         border-bottom: none;
     }
     .tab-content .status-row .col-sm-12{
-        height: 160px;
+        /* height: 160px; */
         padding-left: 50px;
-        line-height: 130px;
+        padding-bottom: 42px;
+        /* line-height: 130px; */
     }
     .tab-content .status-row .glyphicon{
         width: 35px;
@@ -611,7 +615,7 @@
     </div>
 
     <!--我的动态-->
-    <div ng-show="showItem == 'myTrends'" class="ccol-xs-12 main-content">
+    <div ng-show="showItem == 'myTrends'" class="ccol-xs-12 main-content my-status-main-content">
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
