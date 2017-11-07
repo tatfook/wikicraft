@@ -7,13 +7,14 @@ define([
     "helper/util",
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
-    app.registerController("bigfileController", ["$scope", function ($scope) {
+    app.registerController("bigfileController", ["$scope", "$rootScope", function ($scope, $rootScope) {
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
+        $rootScope.isBigfileUploading = false;
         if((util.getPathname() !="/wiki/user_center")){
             $scope.isModal=true;
         }
@@ -183,6 +184,7 @@ define([
                             $scope.uploadingFiles = files;
                             $scope.finishUploading = false;
                             $scope.startUpdating = true;
+                            $rootScope.isBigfileUploading = true;
                             self.start();
                             return;
                         }
@@ -212,6 +214,7 @@ define([
                                     $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                     $scope.finishUploading = false;
                                     $scope.remainSize += filesSize;
+                                    $rootScope.isBigfileUploading = true;
                                     // $scope.$apply();
                                     self.start();
                                 }, function () {
@@ -223,6 +226,7 @@ define([
                                         $scope.uploadingFiles = $scope.uploadingFiles || [];
                                         $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                         $scope.finishUploading = false;
+                                        $rootScope.isBigfileUploading = true;
                                         $scope.remainSize += (filesSize - conflictSize);
                                         self.start();
                                     }
@@ -237,6 +241,7 @@ define([
                             $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                             $scope.finishUploading = false;
                             $scope.remainSize += filesSize;
+                            $rootScope.isBigfileUploading = true;
                         	self.start();
                         });
                     },
@@ -326,6 +331,7 @@ define([
                         getFileByUsername();
                         getUserStoreInfo();
                         $scope.finishUploading = true;
+                        $rootScope.isBigfileUploading = false;
                         $scope.remainSize = 0;
                     }
                 }
