@@ -24,7 +24,9 @@ define([
 
         $scope.$watch('$viewContentLoaded', function() {
             getClassifyData(updateClassifyListView);
-            getWikiBlockData('all', resetFilter);
+            getWikiBlockData('all', function() {
+                getWikiBlockData('favorite', resetFilter);
+            });
         });
 
         function resetFilter() {
