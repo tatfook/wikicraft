@@ -359,6 +359,14 @@
         cursor: pointer;
     }
 
+    .tab-pane .empty-box {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100%;
+    }
+
     @media (min-width: 768px) and (max-width: 992px) {
         .panel-body, .col-sm-9{
             padding:0;
@@ -634,7 +642,7 @@
             <!-- Tab panes -->
             <div class="tab-content clearfix">
                 <div role="tabpanel" class="tab-pane active col-sm-12" id="wiki_organize">
-                    <div class="empty-box" ng-hide="trendsList.length > 0">
+                    <div class="empty-box" ng-show="isShowTrendsEmpty()">
                         <span class="iconfont icon-kongbaiyemian"></span>
                         <p>暂无相关内容...</p>
                     </div>
