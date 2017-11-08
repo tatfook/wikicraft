@@ -494,6 +494,7 @@ define(['app',
         $scope.clickMyTrends = function () {
             $scope.showItem = 'myTrends';
             $scope.trendsType = "organization";
+            $scope.trendsTypeList = ["organization","favorite","works"];
             getUserTrends();
 
             $scope.selectTrendsType = function (trendsType) {
@@ -507,8 +508,13 @@ define(['app',
             }
 
             $scope.isShowTrend = function (trends) {
-                var trendsTypeList = ["organization","favorite","works"];
-                return  $scope.trendsType == trendsTypeList[trends.trendsType];
+                return  $scope.trendsType == $scope.trendsTypeList[trends.trendsType];
+            }
+
+            $scope.isShowTrendsEmpty = function() {
+                return !($scope.trendsList || []).filter(function(item) {
+                    return $scope.trendsTypeList[item.trendsType] == $scope.trendsType;
+                }).length;
             }
         }
 
