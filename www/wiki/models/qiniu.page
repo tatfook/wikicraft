@@ -57,10 +57,10 @@ function qiniu:api_deleteByFileId(params)
 	end
 
 	local ret = self:api_deleteFile({key=qiniuFiles.key}).data
-	--if ret.result ~= 0 then
-		--LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
-		--return errors:wrap(errors.SERVER_INNER_ERROR)
-	--end
+	if ret.result ~= 0 then
+		LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
 
 	local ret = qiniuFilesDB:api_deleteById({_id=params.file_id}).error
 	if errors:isError(ret) then
@@ -69,6 +69,7 @@ function qiniu:api_deleteByFileId(params)
 	end
 
 	data.used = data.used - qiniuFiles.size
+	--LOG.std(nil, "error", "keepwork", qiniuFiles)
 	self:db():updateOne({["+username"]={qiniuFiles.username}}, data, resume)
 	yield()
 
@@ -84,8 +85,8 @@ function qiniu:api_upload(params)
 	download_url = download_url and download_url.download_url
 
 	params.size = tonumber(params.size or 0) or 0
-	if not params.domain or not params.key or not username or not download_url or not params.hash or not params.size or params.size < 1 then
-		self:deleteFile(params)
+	if not params.domain or not params.key or not username or not download_url or not params.hash or not params.size or params.size < 0 then
+		--self:deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -192,9 +193,13 @@ end
 function qiniu:api_getUploadToken(params)
 	local bucket = getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", bucket=bucket, expires=params.expires})
+	--NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", bucket=bucket, expires=params.expires})
+	local obj = {cmd="getUploadToken", bucket=bucket, expires=params.expires}
+	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
+	local err, data = yield()
+
 	-- msg = {token:"xxx"}
-	return errors:wrap(nil, msg)
+	return errors:wrap(err, data)
 end
 
 -- 获取下载url
@@ -207,10 +212,13 @@ function qiniu:api_getDownloadUrl(params)
 	local domain = getDownloadDomain()
 	local bucket = getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires})
-	--log(msg)
+	--NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires})
+	local obj = {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires}
+	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
+	local err, data = yield()
+
 	-- msg = {download_url:"xx"}
-	return errors:wrap(nil, msg)
+	return errors:wrap(err, data)
 end
 
 -- 删除文件七牛接口
@@ -221,9 +229,13 @@ function qiniu:api_deleteFile(params)
 
 	local bucket = getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
+	--NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
+	local obj = {cmd="deleteFile", bucket=bucket, key=params.key}
+	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
+	local err, data = yield()
+
 	-- msg = {result:1 or 0}
-	return errors:wrap(nil, msg)
+	return errors:wrap(err, data)
 end
 
 

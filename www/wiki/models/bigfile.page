@@ -55,13 +55,16 @@ function bigfile:api_deleteById(params)
 	local _, bf = yield()
 
 	if not bf then
+		LOG.std(nil, "error", "keepwork", "not found")
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	if bf.channel == const.BIGFILE_QINIU and bf.file_id then
 		local qiniuDB = models.qiniu:new()
 		local ret = qiniuDB:api_deleteByFileId({file_id=bf.file_id}).error
+		--LOG.std(nil, "error", "keepwork", ret)
 		if errors:isError(ret) then
+			--LOG.std(nil, "error", "keepwork", "------------------")
 			return errors:wrap(ret)
 		end
 	end
