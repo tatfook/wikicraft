@@ -236,6 +236,7 @@ define([
                 util.post(config.apiUrlPrefix + 'wiki_module_favorite/unfavorite', {userId:$scope.user._id, moduleId:moduleId}, function () {
                     $scope.wikiBlockListDataStore[moduleId].myfavorite = false;
                     Message.info("取消收藏");
+                    updateContentView();
                 });
             } else {
                 // 收藏模块
