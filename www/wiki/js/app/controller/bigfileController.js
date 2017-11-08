@@ -298,6 +298,7 @@ define([
                         util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
                             data = data || {};
                             data.filename = params.filename;
+                            getFileByUsername();
                         }, function(){
                             util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
                                 key:params.key,
