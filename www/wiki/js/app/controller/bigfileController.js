@@ -374,7 +374,7 @@ define([
 
         function fileStop(file) {
             $scope.storeInfo.unUsed += file.size/biteToG;
-            $scope.remainSize += file.size;
+            $scope.remainSize -= file.size;
             file.isDelete = true;
             file._start_at = file._start_at || new Date();
             qiniuBack.removeFile(file.id);
@@ -387,6 +387,8 @@ define([
                 $scope.remainSize = 0;
                 getFinishTime(0, 0);
                 uploadTotalSecond = 0;
+            }else{
+                getFinishTime();
             }
             qiniuBack.start();
         }
