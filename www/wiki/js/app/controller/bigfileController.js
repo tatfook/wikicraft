@@ -174,6 +174,7 @@ define([
                         var conflictSize = 0;
                         for (var i = 0; i < files.length; i++) {
                             filelist.push(files[i].name);
+                            files[i].size = files[i].size || 0;
                             filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
@@ -448,7 +449,7 @@ define([
 
         $scope.deleteFiles = function () {
             var deletingArr = $scope.filelist.filter(function (file) {
-                return file.index >= 0;
+                return file.index >= 0 && !file.isDelete;
             });
             if (deletingArr.length <= 0){
                 config.services.confirmDialog({
