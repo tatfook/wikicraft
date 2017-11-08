@@ -7,6 +7,14 @@
         padding: 0;
         overflow: hidden;
     }
+    .wikitabpanel .empty-box {
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
     /* vertical divider */
     .wikitabpanel .wikiblock-tab::before {
         display: block;
@@ -284,10 +292,14 @@
                                     </h4>
                                     <p class="info">
                                         热度：{{wikiBlock.useCount}}
-                                        <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="labelItem == 'favorite' ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
+                                        <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="wikiBlock.myfavorite ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
                                     </p>
                                     <p title="{{wikiBlock.desc}}">{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
                                 </div>
+                            </div>
+                            <div class="empty-box" ng-if="!wikiBlockListFilteredToDisplay.length">
+                                <span class="iconfont icon-kongbaiyemian"></span>
+                                <p>暂无相关内容...</p>
                             </div>
                         </div>
 
