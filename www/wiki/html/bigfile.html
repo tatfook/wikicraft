@@ -69,6 +69,12 @@
     .bigfile-modal .table tr > td[contenteditable]{
         text-overflow: unset;
     }
+    .bigfile-modal .table tr > td[contenteditable=true]{
+        overflow-x: scroll;
+    }
+    .bigfile-modal .table tr > td[contenteditable=true]::-webkit-scrollbar{
+        display: none;
+    }
     .bigfile-modal .table .checkbox-column{
         width: 50px;
     }
