@@ -127,7 +127,7 @@ function elastic_search:api_getUserStr(params)
 	local userlist = siteGroupDB:api_getGuestUserList(params).data or {}
 
 	local str = "[" .. params.username .. "]"
-	for _, username in ipairs(userlist) do
+	for _, username in ipairs(userlist or {}) do
 		str = str .. "[" .. username .. "]"
 	end
 

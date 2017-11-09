@@ -116,7 +116,7 @@ function vip:api_payVip(params)
 	end
 	
 	local vipSvr = nil
-	for _, obj in ipairs(vip_services) do
+	for _, obj in ipairs(vip_services or {}) do
 		if obj.id == params.id then
 			vipSvr = obj
 		end

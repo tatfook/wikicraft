@@ -283,7 +283,7 @@ function website:deleteUserWebsite(userId)
 		return 
 	end
 
-	for _, obj in pairs(data) do
+	for _, obj in pairs(data or {}) do
 		self:deleteById(obj._id)
 	end
 	

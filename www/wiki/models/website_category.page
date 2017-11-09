@@ -38,7 +38,7 @@ function website_category:get(params)
 	
 	local template = models.website_template:new();
 
-	for key, value in pairs(data) do
+	for key, value in pairs(data or {}) do
 		value.templates = template:get({categoryId=value._id}).data;
 	end
 
