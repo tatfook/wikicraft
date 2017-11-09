@@ -86,7 +86,7 @@ function qiniu:api_upload(params)
 
 	params.size = tonumber(params.size or 0) or 0
 	if not params.domain or not params.key or not username or not download_url or not params.size or params.size < 0 then
-		--self:deleteFile(params)
+		self:api_deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -104,7 +104,7 @@ function qiniu:api_upload(params)
 
 	data.used = data.used + params.size
 	if data.used > data.total then
-		self:deleteFile(params)
+		self:api_deleteFile(params)
 		return errors:wrap(errors:new("用户空间使用已超限制"))
 	end
 		
@@ -116,7 +116,7 @@ function qiniu:api_upload(params)
 	local file = qiniu_files_db:api_upsert(params).data
 
 	if not file then
-		self:deleteFile(params)
+		self:api_deleteFile(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
