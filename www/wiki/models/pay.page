@@ -146,7 +146,7 @@ function pay:api_createCharge(params)
 		apiParams.extra = {product_id = trade_no};
 	end
 
-	if(query.app_name == "HAQI") then
+	if(query.app_name == "魔法哈奇") then
 		local additional = {}
 		additional.url     = 'Pay';
 		additional.gsid	   = tostring(query.app_goods_id);
@@ -159,7 +159,7 @@ function pay:api_createCharge(params)
 		for key,item in pairs(additional or {}) do
 			query.additional[key] = item;
 		end
-	elseif(query.app_name == "HAQI2") then
+	elseif(query.app_name == "魔法哈奇2") then
 		local additional = {}
 		additional.url     = 'Pay';
 		additional.gsid	   = tostring(query.app_goods_id);
