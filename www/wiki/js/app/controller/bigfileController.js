@@ -655,6 +655,7 @@ define([
                     var url = data;
                     a.href = url;
                     a.target = "_blank";
+                    a.download = file.filename || "";
                     a.click();
                 }
             });

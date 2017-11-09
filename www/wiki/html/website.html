@@ -74,6 +74,27 @@
         padding: 9px 27px;
     }
 </style>
+<style>
+    @media (max-width: 768px) {
+        .new-web-btn{
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+        .website-flex .title{
+            padding: 0 15px;
+            font-size: 14px;
+            margin: 12px 0;
+        }
+        .website-flex .fthead, .website-flex .ftbody-item{
+            padding: 0 15px;
+        }
+        .website-flex .ftbody-item .iconfont:not(.icon-lock){
+            width: 28px;
+            height: 28px;
+            font-size: 20px;
+        }
+    }
+</style>
 
 <div ng-controller="websiteController">
     <div class="col-md-10 panel main-content">
@@ -88,8 +109,8 @@
             <div class="flex-table">
                 <div class="fthead">
                     <div>站点名称</div>
-                    <div class="site-link">站点地址</div>
-                    <div>创建时间</div>
+                    <div class="hidden-xs site-link">站点地址</div>
+                    <div class="hidden-xs">创建时间</div>
                     <div>操作</div>
                 </div>
                 <div class="empty-box" ng-hide="websites.count > 0">
@@ -101,10 +122,10 @@
                         <span class="iconfont icon-lock" ng-show="website.visibility == 'private'"></span>
                         {{website.displayName || website.name}}
                     </div>
-                    <div class="site-link">
+                    <div class="site-link hidden-xs">
                         <a ng-href="/{{user.username}}/{{website.name}}" target="_blank">keepwork.com/{{user.username}}/{{website.name}}</a>
                     </div>
-                    <div>{{website.createDate}}</div>
+                    <div class="hidden-xs">{{website.createDate}}</div>
                     <div>
                         <a class="iconfont icon-bianjiqi-dakai" ng-href="/{{user.username}}/{{website.name}}" target="_blank" title="打开"></a>
                         <a class="iconfont icon-bianjiqi-bianji" ng-href="/wiki/wikieditor#/{{user.username}}/{{website.name}}/index" title="编辑"></a>

@@ -146,7 +146,7 @@ define([
             function stickFooter() {
                 var winH=$(window).height();
                 var headerH=52;
-                var footerH=100;
+                var footerH=$("#_footer_").height();
                 var minH=winH-headerH-footerH;
                 var w = $("#__mainContent__");
                 w.css("min-height", minH);
