@@ -166,9 +166,6 @@ define([
                 "domain": 'ov62qege8.bkt.clouddn.com',
                 "chunk_size": "4mb",
                 "filters":{},
-				"x_vars":{
-					"uid": uid,
-				},
                 "init": {
                     'FilesAdded': function(up, files) {
                         var self = this;
@@ -354,8 +351,47 @@ define([
             if (qiniuBack){
                 qiniuBack.destroy();
             }
-            qiniuBack = qiniu.uploader(option);
+            // 获取上传uid
+            if (uid){
+                option.x_vars = {
+                    "uid": uid
+                };
+                qiniuBack = qiniu.uploader(option);
+            }else {
+                util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                    if(data && data.uid) {
+                        $scope.isUidErr = false;
+                        uid = data.uid;
+                        option.x_vars = {
+                            "uid": uid
+                        };
+                        qiniuBack = qiniu.uploader(option);
+                    }else{
+                        $scope.isUidErr = true;
+                        console.log("uid获取失败");
+                    }
+                }, function () {
+                    $scope.isUidErr = true;
+                    console.log("uid获取失败");
+                });
+            }
+
         };
+
+        function getUid() {
+            util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                if(data && data.uid) {
+                    uid = data.uid;
+                    $scope.isUidErr = false;
+                }else{
+                    $scope.isUidErr = true;
+                    console.log("uid获取失败");
+                }
+            }, function () {
+                $scope.isUidErr = true;
+                console.log("uid获取失败");
+            });
+        }
 
         var init = function () {
             if (!$scope.filelist){
@@ -364,13 +400,7 @@ define([
             if (!$scope.storeInfo){
                 getUserStoreInfo();
             }
-
-			// 获取上传uid
-			util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
-				if(data && data.uid) {
-					uid = data.uid;
-				}	
-			});
+            getUid();
             // initQiniu();
         };
         $scope.$watch("$viewContentLoaded", init);
