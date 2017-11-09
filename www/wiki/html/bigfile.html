@@ -393,7 +393,8 @@
                     <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
                     <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
                     <div class="clearfix">
-                        <button id="selectFileInput" ng-disabled="startUpdating && !finishUploading" class="btn btn-primary file-input-btn">选中本地文件</button>
+                        <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn">选中本地文件</button>
+                        <span class="text-danger" ng-show="isUidErr">出错了，请稍后重试</span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
                             <span class="preview-time">
                                 预估完成时间:{{finishTime || "00:00"}} (剩余 {{remainTime}})
