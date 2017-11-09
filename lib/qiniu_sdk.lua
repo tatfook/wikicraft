@@ -20,7 +20,7 @@ rpc:new():init("qiniu_sdk.qiniu_sdk", function(self, params)
 
 	NPL.call("lib/libQiNiuPlugin.so", obj)
 
-	log(msg)
+	--log(msg)
 
 	return msg
 end, "lib/qiniu_sdk.lua")
