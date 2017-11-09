@@ -34,7 +34,8 @@ define([
         'modal',
         'gitlab',
         'confirmDialog',
-        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog) {
+        'realnameVerifyModal',
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, realnameVerifyModal) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -58,6 +59,7 @@ define([
                     dataSource:dataSource,
                     loading:loading,
                     confirmDialog:confirmDialog,
+                    realnameVerifyModal:realnameVerifyModal,
                 };
 
                 util.setAngularServices({
@@ -77,7 +79,8 @@ define([
                     gitlab:gitlab,
                     dataSource:dataSource,
                     loading:loading,
-                    confirmDialog:confirmDialog
+                    confirmDialog:confirmDialog,
+                    realnameVerifyModal:realnameVerifyModal
                 });
 
                 $rootScope.imgsPath = config.imgsPath;

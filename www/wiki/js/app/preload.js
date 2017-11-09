@@ -72,6 +72,7 @@ define([
     'factory/gitlab',
     'factory/modal',
     'factory/confirmDialog',
+    'factory/realnameVerifyModal',
     'factory/loadingInterceptor',
 ], function () {
     return {};
