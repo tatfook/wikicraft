@@ -186,7 +186,8 @@ CORE_EXPORT_DECL void LibActivate(int nType, void* pVoid)
 		//GetCoreInterface()->GetAppInterface()->WriteToLog("cmd:%s, expires:%d\n",sCmd.c_str(), (int)expires);
 	
 		if(sCmd == "getUploadToken"){
-			output_msg["token"] = qiniu->getUploadToken(expires);
+			const std::string& callback_url = input_msg["callback_url"];
+			output_msg["token"] = qiniu->getUploadToken(callback_url.c_str(), expires);
 		} else if (sCmd == "getDownloadUrl") {
 			const std::string& domain = input_msg["domain"];
 			const std::string& key = input_msg["key"];

@@ -189,12 +189,25 @@ local function getDownloadDomain()
 	return defaultDomain
 end
 
+local function getCalllbackUrl()
+	return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
+end
+
+-- 七牛上传回调
+function qiniu:api_callback(params)
+	log("-------------")
+	log(params)
+end
+
+function qiniu:api_getUid(params)
+
+end
 -- 获取上传token
 function qiniu:api_getUploadToken(params)
 	local bucket = getBucketName()
 
 	--NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", bucket=bucket, expires=params.expires})
-	local obj = {cmd="getUploadToken", bucket=bucket, expires=params.expires}
+	local obj = {cmd="getUploadToken", bucket=bucket, expires=params.expires, callback_url = getCalllbackUrl()}
 	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
 	local err, data = yield()
 
