@@ -54,7 +54,7 @@ function multi_user_base:get(params)
 		self:db():find({userid=query.userid or request.userid}, resume);
 		local err, data = yield(); 
 		if(not err and data) then
-			for _, row in ipairs(data) do
+			for _, row in ipairs(data or {}) do
 				row = self:validateRow(row);
 			end
 		end

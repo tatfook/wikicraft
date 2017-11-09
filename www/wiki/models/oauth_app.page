@@ -397,7 +397,7 @@ function oauth_app:getByAppName(appName)
 		return false;
 	end
 
-	for _, item in ipairs(oauthApp) do
+	for _, item in ipairs(oauthApp or {}) do
 		if(item.appName == appName) then
 			return item;
 		end
@@ -410,7 +410,7 @@ function oauth_app:getByClientId(params)
 	end
 
 	local app = {}
-	for _, obj in ipairs(oauthApp) do
+	for _, obj in ipairs(oauthApp or {}) do
 		if obj.clientId == params.clientId then
 			app = obj
 			break
@@ -428,7 +428,7 @@ function oauth_app:api_getByClientId(params)
 	end
 
 	local app = {}
-	for _, obj in ipairs(oauthApp) do
+	for _, obj in ipairs(oauthApp or {}) do
 		if obj.clientId == params.clientId then
 			app = obj
 			break;

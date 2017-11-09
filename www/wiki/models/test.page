@@ -75,7 +75,7 @@ end
 
 function test:api_test()
 	local result = commonlib.Files.Find(nil,WIKI_ROOT .. 'js/mod', 4, 500, "config.page", nil)
-	for _, value in ipairs(result) do
+	for _, value in ipairs(result or {}) do
 		include_once(WIKI_ROOT ..'js/mod/'.. value.filename)
 	end
 	return result

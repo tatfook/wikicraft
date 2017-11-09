@@ -19,7 +19,7 @@ end
 
 function website_category:categoryArrayToTree(parentId ,array) 
 	local result = {}
-	for key, value in pairs(array) do
+	for key, value in pairs(array or {}) do
 		if value.parentId == parentId then
 			value.subCategories = self:categoryArrayToTree(value._id, array); 
 			result[#result+1] = value;
