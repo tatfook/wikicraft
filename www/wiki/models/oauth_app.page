@@ -150,11 +150,13 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	end
 
 	--判断appName是否为中文/英文
-	--[[if(not string.find(query.appName,reg1)) then
+	if(not string.find(query.appName,reg1)) then
 		if(not string.find(query.appName,reg2))then
-			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			if(not string.find(query.appName, ret1)) then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
 		end
-	end]]
+	end
 	
 	--判断company格式是否正确/只能输入英文/中文/中英结合
 	if(string.find(query.company, reg2) or string.find(query.company,reg1))then
