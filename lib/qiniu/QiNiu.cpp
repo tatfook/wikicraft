@@ -24,7 +24,7 @@ char* ParaEngine::CQiNiu::getUploadToken(const char *callback_url, int expires) 
 	Qiniu_Zero(putPolicy);
 	putPolicy.scope = this->m_bucket;
 	putPolicy.callbackUrl = callback_url;
-	putPolicy.callbackBody = "uid=$(x:uid)&size=$(fsize)&bucket=$(bucket)&key=($key)";
+	putPolicy.callbackBody = "uid=$(x:uid)&size=$(fsize)&bucket=$(bucket)&key=$(key)";
 	if (expires > 0) {
 		putPolicy.expires = expires;
 	} else {

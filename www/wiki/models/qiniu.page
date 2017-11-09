@@ -196,28 +196,32 @@ end
 -- 七牛上传回调
 function qiniu:api_callback(params)
 	if not params or not params.uid or not params.size or not tonumber(params.size) or not params.bucket or not params.key then
-		self:deleteFile({bucket=params.bucket, key=params.key})
-		return response:send_json({error = "参数错误"}, 400)
+		response:send_json({error = "参数错误"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
 	end
 
 	local username = mem_cache:get(params.uid)
 	if not username then
-		self:deleteFile({bucket=params.bucket, key=params.key})
-		return response:send_json({error = "uid失效"}, 400)
+		response:send_json({error = "uid失效"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
 	end
 
 	self:db():findOne({["+username"]={username}}, resume)
 	local _, data = yield()
 	
 	if not data then
-		self:deleteFile({bucket=params.bucket, key=params.key})
-		return response:send_json({error = "无用户记录"}, 400)
+		response:send_json({error = "无用户记录"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
 	end
 
 	local size = tonumber(params.size)
 	if data.used + size > data.total then
-		self:deleteFile({bucket=params.bucket, key=params.key})
-		return response:send_json({error = "用户存贮空间不足"}, 400)
+		response:send_json({error = "用户存贮空间不足"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
 	end
 
 	return {error = "ok"}
