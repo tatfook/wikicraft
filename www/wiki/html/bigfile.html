@@ -69,6 +69,12 @@
     .bigfile-modal .table tr > td[contenteditable]{
         text-overflow: unset;
     }
+    .bigfile-modal .table tr > td[contenteditable=true]{
+        overflow-x: scroll;
+    }
+    .bigfile-modal .table tr > td[contenteditable=true]::-webkit-scrollbar{
+        display: none;
+    }
     .bigfile-modal .table .checkbox-column{
         width: 50px;
     }
@@ -394,9 +400,9 @@
                     <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
                     <div class="clearfix">
                         <button id="selectFileInput" ng-disabled="startUpdating && !finishUploading" class="btn btn-primary file-input-btn">选中本地文件</button>
-                        <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
+                        <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1 || finishUploading">
                             <span class="preview-time">
-                                预估完成时间:{{finishTime || "00:00"}} (剩余 {{remainTime}})
+                                预估完成时间:{{finishTime || "等待计算"}} (剩余 {{remainTime}})
                             </span>
                         </p>
                     </div>

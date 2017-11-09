@@ -79,6 +79,14 @@
          -moz-box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
          box-shadow: 0 5px 14px 0 rgba(44,62,80,.35);
      }
+     .template-select .btn-group > a{
+         color: #333;
+     }
+     .template-select .btn-group .btn-lg.active{
+         background-color: #eee;
+         color: #3977AD;
+         box-shadow: none;
+     }
      .template-select .active>.btn-group {
          border: 2px solid #3977AD;
          border-top: none;
@@ -197,8 +205,8 @@
                             <div ng-class="{'col-sm-5':hidePageTree, 'col-sm-6':!hidePageTree, 'active':(websitePage.template.name == template.name)}" ng-repeat="template in activePageTemplate.templates" style="margin-bottom: 20px;">
                                 <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                                 <div class="col-md-12 btn-group">
-                                    <div class="btn col-sm-6 btn-lg" ng-href="{{template.previewUrl}}">预览</div>
-                                    <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                                    <a class="btn col-sm-6 btn-lg" ng-href="{{template.previewUrl}}" target="_blank">预览</a>
+                                    <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="websitePage.template.name == template.name ? 'active' : ''">选择</div>
                                 </div>
                                 <span class="label">{{template.name}}</span>
                             </div>

@@ -7,13 +7,14 @@ define([
     "helper/util",
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
-    app.registerController("bigfileController", ["$scope", function ($scope) {
+    app.registerController("bigfileController", ["$scope", "$rootScope", function ($scope, $rootScope) {
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
+        $rootScope.isBigfileUploading = false;
         if((util.getPathname() !="/wiki/user_center")){
             $scope.isModal=true;
         }
@@ -173,6 +174,7 @@ define([
                         var conflictSize = 0;
                         for (var i = 0; i < files.length; i++) {
                             filelist.push(files[i].name);
+                            files[i].size = files[i].size || 0;
                             filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
@@ -183,6 +185,7 @@ define([
                             $scope.uploadingFiles = files;
                             $scope.finishUploading = false;
                             $scope.startUpdating = true;
+                            $rootScope.isBigfileUploading = true;
                             self.start();
                             return;
                         }
@@ -212,6 +215,7 @@ define([
                                     $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                     $scope.finishUploading = false;
                                     $scope.remainSize += filesSize;
+                                    $rootScope.isBigfileUploading = true;
                                     // $scope.$apply();
                                     self.start();
                                 }, function () {
@@ -223,6 +227,7 @@ define([
                                         $scope.uploadingFiles = $scope.uploadingFiles || [];
                                         $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                         $scope.finishUploading = false;
+                                        $rootScope.isBigfileUploading = true;
                                         $scope.remainSize += (filesSize - conflictSize);
                                         self.start();
                                     }
@@ -237,6 +242,7 @@ define([
                             $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                             $scope.finishUploading = false;
                             $scope.remainSize += filesSize;
+                            $rootScope.isBigfileUploading = true;
                         	self.start();
                         });
                     },
@@ -293,6 +299,7 @@ define([
                         util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
                             data = data || {};
                             data.filename = params.filename;
+                            getFileByUsername();
                         }, function(){
                             util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
                                 key:params.key,
@@ -326,6 +333,7 @@ define([
                         getFileByUsername();
                         getUserStoreInfo();
                         $scope.finishUploading = true;
+                        $rootScope.isBigfileUploading = false;
                         $scope.remainSize = 0;
                     }
                 }
@@ -366,7 +374,7 @@ define([
 
         function fileStop(file) {
             $scope.storeInfo.unUsed += file.size/biteToG;
-            $scope.remainSize += file.size;
+            $scope.remainSize -= file.size;
             file.isDelete = true;
             file._start_at = file._start_at || new Date();
             qiniuBack.removeFile(file.id);
@@ -379,6 +387,8 @@ define([
                 $scope.remainSize = 0;
                 getFinishTime(0, 0);
                 uploadTotalSecond = 0;
+            }else{
+                getFinishTime();
             }
             qiniuBack.start();
         }
@@ -441,7 +451,7 @@ define([
 
         $scope.deleteFiles = function () {
             var deletingArr = $scope.filelist.filter(function (file) {
-                return file.index >= 0;
+                return file.index >= 0 && !file.isDelete;
             });
             if (deletingArr.length <= 0){
                 config.services.confirmDialog({
