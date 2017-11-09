@@ -195,28 +195,32 @@ end
 
 -- 七牛上传回调
 function qiniu:api_callback(params)
-	if not params or not params.uid or not params.size or not tonumber(params.size) then
-		return {id=-1, message = "参数错误"}
+	if not params or not params.uid or not params.size or not tonumber(params.size) or not params.bucket or not params.key then
+		self:deleteFile({bucket=params.bucket, key=params.key})
+		return response:send_json({error = "参数错误"}, 400)
 	end
 
 	local username = mem_cache:get(params.uid)
 	if not username then
-		return {id=-1, message = "uid失效"}
+		self:deleteFile({bucket=params.bucket, key=params.key})
+		return response:send_json({error = "uid失效"}, 400)
 	end
 
 	self:db():findOne({["+username"]={username}}, resume)
 	local _, data = yield()
 	
 	if not data then
-		return {id=-1, message = "无用户记录"}
+		self:deleteFile({bucket=params.bucket, key=params.key})
+		return response:send_json({error = "无用户记录"}, 400)
 	end
 
 	local size = tonumber(params.size)
 	if data.used + size > data.total then
-		return {id=-1, message = "用户存贮空间不足"}
+		self:deleteFile({bucket=params.bucket, key=params.key})
+		return response:send_json({error = "用户存贮空间不足"}, 400)
 	end
 
-	return {id=0, message = "ok"}
+	return {error = "ok"}
 end
 
 function qiniu:api_getUid(params)
@@ -272,7 +276,7 @@ function qiniu:api_deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local bucket = getBucketName()
+	local bucket = params.bucket or getBucketName()
 
 	--NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
 	local obj = {cmd="deleteFile", bucket=bucket, key=params.key}

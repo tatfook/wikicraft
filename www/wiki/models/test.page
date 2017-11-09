@@ -30,7 +30,7 @@ end
 
 function test:api_post(params)
 	log("------------------test post-----------------")
-	return {key="test"}
+	return response:send_json({key="test"}, 400)
 end
 
 function test:api_getToken(params)
