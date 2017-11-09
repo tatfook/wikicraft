@@ -7,7 +7,7 @@ namespace ParaEngine
 	class CQiNiu
 	{
 	public: 
-		char* getUploadToken(int expires);
+		char* getUploadToken(const char* callback_url, int expires);
 		char* getDownloadUrl(const char *, const char *, int);
 		int   deleteFile(const char*, const char*);
 

@@ -11,6 +11,7 @@ define([
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
+		var uid = undefined; 
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
@@ -165,6 +166,9 @@ define([
                 "domain": 'ov62qege8.bkt.clouddn.com',
                 "chunk_size": "4mb",
                 "filters":{},
+				"x_vars":{
+					"uid": uid,
+				},
                 "init": {
                     'FilesAdded': function(up, files) {
                         var self = this;
@@ -360,6 +364,13 @@ define([
             if (!$scope.storeInfo){
                 getUserStoreInfo();
             }
+
+			// 获取上传uid
+			util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+				if(data && data.uid) {
+					uid = data.uid;
+				}	
+			});
             // initQiniu();
         };
         $scope.$watch("$viewContentLoaded", init);

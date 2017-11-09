@@ -85,7 +85,7 @@ function qiniu:api_upload(params)
 	download_url = download_url and download_url.download_url
 
 	params.size = tonumber(params.size or 0) or 0
-	if not params.domain or not params.key or not username or not download_url or not params.hash or not params.size or params.size < 0 then
+	if not params.domain or not params.key or not username or not download_url or not params.size or params.size < 0 then
 		--self:deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -195,13 +195,45 @@ end
 
 -- 七牛上传回调
 function qiniu:api_callback(params)
-	log("-------------")
-	log(params)
+	if not params or not params.uid or not params.size or not tonumber(params.size) then
+		return {id=-1, message = "参数错误"}
+	end
+
+	local username = mem_cache:get(params.uid)
+	if not username then
+		return {id=-1, message = "uid失效"}
+	end
+
+	self:db():findOne({["+username"]={username}}, resume)
+	local _, data = yield()
+	
+	if not data then
+		return {id=-1, message = "无用户记录"}
+	end
+
+	local size = tonumber(params.size)
+	if data.used + size > data.total then
+		return {id=-1, message = "用户存贮空间不足"}
+	end
+
+	return {id=0, message = "ok"}
 end
 
 function qiniu:api_getUid(params)
+	local username = getUsername()
+	--username = "xiaoyao"
 
+	if not username then
+		return errors:wrap(nil)
+	end
+	
+	local random_str = tostring(math.random(10000,99999))
+	local uid = ParaMisc.md5(username .. random_str)
+	mem_cache:set(uid, username, nil, 3600 * 24 * 7)
+
+	return errors:wrap(nil,{uid=uid})
 end
+
 -- 获取上传token
 function qiniu:api_getUploadToken(params)
 	local bucket = getBucketName()
