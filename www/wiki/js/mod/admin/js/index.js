@@ -193,6 +193,12 @@ define([
 			$scope.listCount();
 		}
 		
+		var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~_]+)\.)+([A-Za-z0-9-~\/:.s])+$/;
+		//var reg2 = /([.][A-Za-z])$/
+		var reg3 = /^[A-Za-z]+$/;
+		var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
+		var reg5 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
+
 		//oauth管理添加数据
 		$scope.oauthAdd = function(){
 			var addUrl = config.apiUrlPrefix + "oauth_app/new";
