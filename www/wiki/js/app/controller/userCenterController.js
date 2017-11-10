@@ -81,6 +81,16 @@ define(['app',
         $scope.$watch('$viewContentLoaded', init);
         
         $scope.selectContentType = function (contentType, subContentType) {
+            if ($rootScope.isBigfileUploading){
+                config.services.confirmDialog({
+                    "title": "提示",
+                    "content": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+                    "cancelBtn": false
+                }, function () {
+                    return;
+                });
+                return;
+            }
             //console.log(contentType);
             $scope.contentType = contentType;
             //console.log($('#userCenterSubPage'));
