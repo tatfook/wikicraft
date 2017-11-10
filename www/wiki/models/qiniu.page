@@ -68,8 +68,8 @@ function qiniu:api_deleteByFileId(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
+	--LOG.std(nil, "error", "keepwork", {used=data.used, size=qiniuFiles.size})
 	data.used = data.used - qiniuFiles.size
-	--LOG.std(nil, "error", "keepwork", qiniuFiles)
 	self:db():updateOne({["+username"]={qiniuFiles.username}}, data, resume)
 	yield()
 
@@ -198,9 +198,9 @@ local function getCalllbackUrl()
 	
 	if hostname == "release.keepwork.com" then
 		host = "121.14.117.251:8088"
-	else if hostname == "keepwork.com" then
+	elseif hostname == "keepwork.com" then
 		host = "121.14.117.252:8000"
-	else if hostname == "dev.keepwork.com" then
+	elseif hostname == "dev.keepwork.com" then
 		host = "121.14.117.252:8900"
 	end
 

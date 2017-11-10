@@ -12,6 +12,7 @@ define([
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
 		var uid = undefined; 
+		var isUploading = false;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
@@ -291,18 +292,29 @@ define([
                             return;
                         }
 
-                        util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
-                            data = data || {};
-                            data.filename = params.filename;
-                        }, function(){
-                            util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
-                                key:params.key,
-                            }, function (result) {
-                                console.log(result);
-                            }, function (err) {
-                                console.log(err);
-                            });
-                        });
+						var bigfileUpload = function() {
+							if (isUploading) {
+								setTimeout(bigfileUpload, 1000);
+								return;
+							}
+
+							isUploading = true;
+							util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
+								data = data || {};
+								data.filename = params.filename;
+								isUploading = false;
+							}, function(){
+								isUploading = false;
+								util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
+									key:params.key,
+								}, function (result) {
+									console.log(result);
+								}, function (err) {
+									console.log(err);
+								});
+							});
+						}
+						setTimeout(bigfileUpload);
                     },
                     'Error': function(up, err, errTip) {
                         if ($scope.uploadingFiles && $scope.uploadingFiles[err.file.id]){
