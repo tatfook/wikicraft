@@ -17,6 +17,8 @@ rpc:new():init("qiniu_sdk.qiniu_sdk", function(self, params)
 	obj.key = params.key
 	obj.expires = params.expires
 	obj.callback_url = params.callback_url
+	obj.accessKey = params.accessKey
+	obj.secretKey = params.secretKey
 
 	NPL.call("lib/libQiNiuPlugin.so", obj)
 
