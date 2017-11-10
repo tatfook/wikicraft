@@ -190,20 +190,27 @@ local function getDownloadDomain()
 end
 
 local function getCalllbackUrl()
-	return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
+	log(request:GetHost())
+	local host = "121.14.117.252:8900"
+	if WIKI_ENV == "rls" then
+		host = "121.14.117.252:8088"
+	end
+
+	--return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
+	return "http://" .. host .. "/api/wiki/models/qiniu/callback"
 end
 
 -- 七牛上传回调
 function qiniu:api_callback(params)
 	if not params or not params.uid or not params.size or not tonumber(params.size) or not params.bucket or not params.key then
-		response:send_json({error = "参数错误"}, 400)
+		response:status(400):send({error = "参数错误"}, 400)
 		self:api_deleteFile({bucket=params.bucket, key=params.key})
 		return
 	end
 
 	local username = mem_cache:get(params.uid)
 	if not username then
-		response:send_json({error = "uid失效"}, 400)
+		response:status(400):send({error = "uid失效"}, 400)
 		self:api_deleteFile({bucket=params.bucket, key=params.key})
 		return
 	end
@@ -212,14 +219,14 @@ function qiniu:api_callback(params)
 	local _, data = yield()
 	
 	if not data then
-		response:send_json({error = "无用户记录"}, 400)
+		response:status(400):send({error = "无用户记录"}, 400)
 		self:api_deleteFile({bucket=params.bucket, key=params.key})
 		return
 	end
 
 	local size = tonumber(params.size)
 	if data.used + size > data.total then
-		response:send_json({error = "用户存贮空间不足"}, 400)
+		response:status(400):send({error = "用户存贮空间不足"}, 400)
 		self:api_deleteFile({bucket=params.bucket, key=params.key})
 		return
 	end
