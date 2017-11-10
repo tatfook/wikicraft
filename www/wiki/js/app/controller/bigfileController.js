@@ -11,6 +11,8 @@ define([
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
+		var uid = undefined; 
+		var isUploading = false;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
@@ -296,19 +298,30 @@ define([
                             return;
                         }
 
-                        util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
-                            data = data || {};
-                            data.filename = params.filename;
-                            getFileByUsername();
-                        }, function(){
-                            util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
-                                key:params.key,
-                            }, function (result) {
-                                console.log(result);
-                            }, function (err) {
-                                console.log(err);
-                            });
-                        });
+						var bigfileUpload = function() {
+							if (isUploading) {
+								setTimeout(bigfileUpload, 1000);
+								return;
+							}
+
+							isUploading = true;
+							util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
+								data = data || {};
+								data.filename = params.filename;
+								isUploading = false;
+							}, function(){
+								isUploading = false;
+								util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
+									key:params.key,
+								}, function (result) {
+									console.log(result);
+								}, function (err) {
+									console.log(err);
+								});
+							});
+						}
+						setTimeout(bigfileUpload);
+
                     },
                     'Error': function(up, err, errTip) {
                         if ($scope.uploadingFiles && $scope.uploadingFiles[err.file.id]){
@@ -358,8 +371,47 @@ define([
             if (qiniuBack){
                 qiniuBack.destroy();
             }
-            qiniuBack = qiniu.uploader(option);
+            // 获取上传uid
+            if (uid){
+                option.x_vars = {
+                    "uid": uid
+                };
+                qiniuBack = qiniu.uploader(option);
+            }else {
+                util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                    if(data && data.uid) {
+                        $scope.isUidErr = false;
+                        uid = data.uid;
+                        option.x_vars = {
+                            "uid": uid
+                        };
+                        qiniuBack = qiniu.uploader(option);
+                    }else{
+                        $scope.isUidErr = true;
+                        console.log("uid获取失败");
+                    }
+                }, function () {
+                    $scope.isUidErr = true;
+                    console.log("uid获取失败");
+                });
+            }
+
         };
+
+        function getUid() {
+            util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                if(data && data.uid) {
+                    uid = data.uid;
+                    $scope.isUidErr = false;
+                }else{
+                    $scope.isUidErr = true;
+                    console.log("uid获取失败");
+                }
+            }, function () {
+                $scope.isUidErr = true;
+                console.log("uid获取失败");
+            });
+        }
 
         var init = function () {
             if (!$scope.filelist){
@@ -368,6 +420,7 @@ define([
             if (!$scope.storeInfo){
                 getUserStoreInfo();
             }
+            getUid();
             // initQiniu();
         };
         $scope.$watch("$viewContentLoaded", init);
@@ -428,24 +481,44 @@ define([
                 }
                 var fnList = [];
                 var deleteFileSize = 0;
-                for (var i=files.length -1; i >= 0;i--){
-                    fnList.push((function (index) {
-                        return function (finish) {
-                            util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
-                                files[index].isDelete = true;
-                                $scope.filesCount--;
-                                deleteFileSize += files[index].file.size;
-                                finish();
-                            }, function (err) {
-                                console.log(err);
-                                finish();
-                            });
-                        }
-                    })(i));
-                }
-                util.batchRun(fnList, function () {
+				for (var i=files.length-1; i >= 0; i --){
+					fnList.push(function(index){
+						return function(cb, errcb) {
+							util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
+								files[index].isDelete = true;
+								$scope.filesCount--;
+								deleteFileSize += files[index].file.size;
+								cb && cb();
+							}, function (err) {
+								console.log(err);
+								errcb && errcb();
+							});
+						}
+					}(i))
+				}
+				util.sequenceRun(fnList, undefined, function(){
                     $scope.storeInfo.unUsed += deleteFileSize/biteToG;
-                });
+				}, function(){
+                    $scope.storeInfo.unUsed += deleteFileSize/biteToG;
+				});
+                //for (var i=files.length -1; i >= 0;i--){
+                    //fnList.push((function (index) {
+                        //return function (finish) {
+                            //util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
+                                //files[index].isDelete = true;
+                                //$scope.filesCount--;
+                                //deleteFileSize += files[index].file.size;
+                                //finish();
+                            //}, function (err) {
+                                //console.log(err);
+                                //finish();
+                            //});
+                        //}
+                    //})(i));
+                //}
+                //util.batchRun(fnList, function () {
+                    //$scope.storeInfo.unUsed += deleteFileSize/biteToG;
+                //});
             });
         };
 

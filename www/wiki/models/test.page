@@ -30,8 +30,7 @@ end
 
 function test:api_post(params)
 	log("------------------test post-----------------")
-	log(params)
-	return params or {key="test"}
+	return response:send_json({key="test"}, 400)
 end
 
 function test:api_getToken(params)
@@ -120,4 +119,11 @@ function test:api_getCookie(params)
 	log(token)
 
 	return token	
+end
+
+function test:api_getUrl(params)
+	System.os.GetUrl("http://localhost:8900/api/wiki/models/test/post", resume)
+	local _, data = yield()
+	return data
+	--return "hello world"
 end

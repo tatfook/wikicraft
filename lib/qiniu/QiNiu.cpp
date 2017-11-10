@@ -7,11 +7,11 @@ void WriteLog(const char* str);
 
 ParaEngine::CQiNiu::CQiNiu()
 {
-	this->m_mac.accessKey = this->m_accessKey;
-	this->m_mac.secretKey = this->m_secretKey;
+	//this->m_mac.accessKey = this->m_accessKey;
+	//this->m_mac.secretKey = this->m_secretKey;
 }
 
-char* ParaEngine::CQiNiu::getUploadToken(int expires) {
+char* ParaEngine::CQiNiu::getUploadToken(const char *callback_url, int expires) {
 	Qiniu_RS_PutPolicy putPolicy;
 	static char strbuf[1024] = {'\0'};
 	char *uptoken = NULL;
@@ -23,6 +23,8 @@ char* ParaEngine::CQiNiu::getUploadToken(int expires) {
 	//简单上传凭证
 	Qiniu_Zero(putPolicy);
 	putPolicy.scope = this->m_bucket;
+	putPolicy.callbackUrl = callback_url;
+	putPolicy.callbackBody = "uid=$(x:uid)&size=$(fsize)&bucket=$(bucket)&key=$(key)";
 	if (expires > 0) {
 		putPolicy.expires = expires;
 	} else {
