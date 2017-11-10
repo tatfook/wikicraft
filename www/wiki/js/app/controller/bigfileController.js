@@ -459,24 +459,44 @@ define([
                 }
                 var fnList = [];
                 var deleteFileSize = 0;
-                for (var i=files.length -1; i >= 0;i--){
-                    fnList.push((function (index) {
-                        return function (finish) {
-                            util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
-                                files[index].isDelete = true;
-                                $scope.filesCount--;
-                                deleteFileSize += files[index].file.size;
-                                finish();
-                            }, function (err) {
-                                console.log(err);
-                                finish();
-                            });
-                        }
-                    })(i));
-                }
-                util.batchRun(fnList, function () {
+				for (var i=files.length-1; i >= 0; i --){
+					fnList.push(function(index){
+						return function(cb, errcb) {
+							util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
+								files[index].isDelete = true;
+								$scope.filesCount--;
+								deleteFileSize += files[index].file.size;
+								cb && cb();
+							}, function (err) {
+								console.log(err);
+								errcb && errcb();
+							});
+						}
+					}(i))
+				}
+				util.sequenceRun(fnList, undefined, function(){
                     $scope.storeInfo.unUsed += deleteFileSize/biteToG;
-                });
+				}, function(){
+                    $scope.storeInfo.unUsed += deleteFileSize/biteToG;
+				});
+                //for (var i=files.length -1; i >= 0;i--){
+                    //fnList.push((function (index) {
+                        //return function (finish) {
+                            //util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
+                                //files[index].isDelete = true;
+                                //$scope.filesCount--;
+                                //deleteFileSize += files[index].file.size;
+                                //finish();
+                            //}, function (err) {
+                                //console.log(err);
+                                //finish();
+                            //});
+                        //}
+                    //})(i));
+                //}
+                //util.batchRun(fnList, function () {
+                    //$scope.storeInfo.unUsed += deleteFileSize/biteToG;
+                //});
             });
         };
 

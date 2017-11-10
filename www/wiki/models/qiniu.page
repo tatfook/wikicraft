@@ -190,10 +190,18 @@ local function getDownloadDomain()
 end
 
 local function getCalllbackUrl()
-	log(request:GetHost())
+	local hostname = request:GetHost()
 	local host = "121.14.117.252:8900"
 	if WIKI_ENV == "rls" then
-		host = "121.14.117.252:8088"
+		host = "121.14.117.252:8000"
+	end
+	
+	if hostname == "release.keepwork.com" then
+		host = "121.14.117.251:8088"
+	else if hostname == "keepwork.com" then
+		host = "121.14.117.252:8000"
+	else if hostname == "dev.keepwork.com" then
+		host = "121.14.117.252:8900"
 	end
 
 	--return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
