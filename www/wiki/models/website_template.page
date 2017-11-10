@@ -30,7 +30,7 @@ function website_template:get(params)
 
 	local template_style = models.website_template_style:new();
 
-	for key, value in pairs(data) do
+	for key, value in pairs(data or {}) do
 		-- self:loadTemplateContent(value);	
 		value.styles = template_style:get({templateId=value._id}).data;		
 	end

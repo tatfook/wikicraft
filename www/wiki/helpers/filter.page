@@ -104,7 +104,7 @@ function sensitiveWordFilter(params)
 	end
 
 	local str = ""
-	for _, value in pairs(params) do
+	for _, value in pairs(params or {}) do
 		str = str .. tostring(value)
 	end
 

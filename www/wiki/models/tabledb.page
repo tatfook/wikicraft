@@ -34,8 +34,8 @@ function tabledb:api_getIndexes(params)
 	table:exec("SELECT name as indexName FROM indexes", resume(err, rows))
 	local err, rows = yield()
 	local indexes = {}
-	for i, obj in pairs(rows) do
-		for j, value in pairs(obj) do
+	for i, obj in pairs(rows or {}) do
+		for j, value in pairs(obj or {}) do
 			indexes[#indexes + 1] = value
 		end
 	end
@@ -82,7 +82,7 @@ function tabledb:api_query(params)
 	local query = params.query or {}
 	local key = ""
 	local value = {}
-	for k, v in pairs(query) do
+	for k, v in pairs(query or {}) do
 		key = key .. "+" .. k
 		value[#value+1] = v
 	end
@@ -160,8 +160,8 @@ function tabledb:api_getIndexes(params)
 
 	local _, rows = yield();
 	local indexes = {};
-	for i, obj in pairs(rows) do
-		for j, value in pairs(obj) do
+	for i, obj in pairs(rows or {}) do
+		for j, value in pairs(obj or {}) do
 			indexes[#indexes + 1] = value;
 		end
 	end

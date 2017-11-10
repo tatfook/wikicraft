@@ -131,7 +131,7 @@ function website_works:api_getByWorksUrlList(params)
 	end
 	
 	local worksList = {}
-	for _, worksUrl in ipairs(params.worksUrlList) do
+	for _, worksUrl in ipairs(params.worksUrlList or {}) do
 		self:db():findOne({["+websiteId+worksUrl"]={params.websiteId, worksUrl}}, resume)
 		local _, works = yield()
 		worksList[#worksList+1] = works

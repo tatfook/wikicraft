@@ -88,7 +88,9 @@ function qiniu:api_upload(params)
 	download_url = download_url and download_url.download_url
 
 	params.size = tonumber(params.size or 0) or 0
+
 	if not params.domain or not params.key or not username or not download_url or not params.size or params.size < 0 then
+
 		self:api_deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

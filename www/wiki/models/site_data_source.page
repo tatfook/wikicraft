@@ -142,7 +142,7 @@ function site_data_source:api_createProject(params)
 	end
 
 	data = resp.data or {}
-	for _, project in ipairs(data) do
+	for _, project in ipairs(data or {}) do
 		if string.lower(project.name) == string.lower(params.projectName) then
 			return errors:wrap(nil, project)
 		end

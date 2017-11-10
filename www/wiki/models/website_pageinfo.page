@@ -84,7 +84,7 @@ function website_pageinfo:api_getByUsername(params)
 	local siteList = websiteDB:api_getAllByUsername({username=params.username}).data or {}
 
 	-- 获取站点的页面信息
-	for _, site in ipairs(siteList) do
+	for _, site in ipairs(siteList or {}) do
 		site.pageinfo = self:api_get({websiteName=site.name, username=site.username, dataSourceId=site.dataSourceId or 0}).data or {}
 		site.pageinfo = site.pageinfo.pageinfo
 		pageinfoList[#pageinfoList+1] = site.pageinfo
@@ -93,7 +93,7 @@ function website_pageinfo:api_getByUsername(params)
 	-- 获取没有站点的页面信息	
 	self:db():find({["+username+isExistSite"]={params.username, WEBSITE_PAGEINFO_SITE_NOT_EXIST}}, resume)
 	local _, tmpList = yield()
-	for _, pageinfo in ipairs(tmpList) do
+	for _, pageinfo in ipairs(tmpList or {}) do
 		pageinfoList[#pageinfoList+1] = pageinfo.pageinfo
 	end
 	

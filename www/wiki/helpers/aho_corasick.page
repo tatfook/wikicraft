@@ -65,7 +65,7 @@ function M.build(m)
     while #q > 0 do
         local path = table.remove(q, 1)
 
-        for c, p in pairs(t[path].to) do
+        for c, p in pairs(t[path].to or {}) do
             table.insert(q, p)
 
             local fail = p:sub(2)

@@ -91,7 +91,7 @@ function website_renewal:get(params)
 
 	local siteList = {}
 	local websiteDB = models.website:new()
-	for _, value in pairs(data) do
+	for _, value in pairs(data or {}) do
 		siteList[#siteList + 1] = websiteDB:api_getById({websiteId=value.worksId}).data
 	end
 
