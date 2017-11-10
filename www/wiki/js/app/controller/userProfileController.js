@@ -228,21 +228,6 @@ define(['app',
 			util.post(config.apiUrlPrefix + "elastic_search/submitUserinfo", user);
         }
 
-        // 修改密码
-        $scope.modifyPassword = function () {
-            console.log($scope.passwordObj);
-            if ($scope.passwordObj.newPassword1 != $scope.passwordObj.newPassword2) {
-                Message.info("两次新密码不一致!!!");
-                return;
-            }
-            var params = {oldpassword: $scope.passwordObj.oldPassword, newpassword: $scope.passwordObj.newPassword1};
-            util.http("POST", config.apiUrlPrefix + "user/changepw", params, function (data) {
-                Message.success("密码修改成功");
-            }, function (error) {
-                Message.info(error.message);
-            });
-        };
-
 		$scope.isBind = function(type) {
 			if (type == "email") {
 				return $scope.user.email ? true : false;
@@ -374,7 +359,7 @@ define(['app',
 				$scope.rightImageCode += Math.floor(Math.random() * 10);
 			}
 			$scope.imageCodeUrl = "http://keepwork.com/captcha/get?" + $scope.rightImageCode;
-		}
+		};
 
 		$scope.showBindPhone = function() {
 			//console.log("手机绑定开发中");
@@ -391,8 +376,10 @@ define(['app',
 			$scope.wait = 0;
             $scope.smsCode = "";
             $scope.imageCode = "";
+            $scope.imageCodeErrMsg = "";
+            $scope.errorMsg = "";
 			$('#phoneModal').modal("show");//重新发送不弹窗
-		}
+		};
 
         //安全验证
         $scope.bindPhone=function () {
@@ -427,7 +414,7 @@ define(['app',
 			}, function (err) {
 			    $scope.errorMsg = err.message;
             });
-        }
+        };
 
         // 修改用户信息
         $scope.clickMyProfile = function () {
@@ -438,6 +425,7 @@ define(['app',
         // 账号安全
         $scope.clickAccountSafe = function () {
             $scope.showItem = 'accountSafe';
+            $scope.passwordObj = {};
 
             var getUserThresServiceList = function () {
                 util.post(config.apiUrlPrefix + 'user_three_service/getByUsername', {username:$scope.user.username}, function (serviceList) {
@@ -485,10 +473,37 @@ define(['app',
 
             $scope.getBindServiceClass = function (serviceName) {
                 return $scope.isBindThreeService(serviceName) ? "btn-outline" : "btn-primary";
-            }
+            };
+
+            // 修改密码
+            $scope.modifyPassword = function () {
+                if (!$scope.passwordObj || !$scope.passwordObj.oldPassword || !$scope.passwordObj.newPassword1 || !$scope.passwordObj.newPassword2){
+                    Message.info("请输入密码");
+                    return;
+                }
+                if ($scope.passwordObj.newPassword1 != $scope.passwordObj.newPassword2) {
+                    Message.info("两次新密码不一致!!!");
+                    return;
+                }
+                var params = {oldpassword: $scope.passwordObj.oldPassword, newpassword: $scope.passwordObj.newPassword1};
+                util.http("POST", config.apiUrlPrefix + "user/changepw", params, function (data) {
+                    Message.success("密码修改成功");
+                    $scope.passwordObj = {};
+                }, function (error) {
+                    Message.info(error.message);
+                });
+            };
+
+            $('a[data-toggle="tab"]').on('hidden.bs.tab', function (e) {
+                $scope.passwordObj = {};
+                $scope.emailErrMsg = "";
+                $scope.userEmail = "";
+                $scope.userPhone = "";
+                $scope.$apply();
+            });
 
             getUserThresServiceList();
-        }
+        };
 
         // 我的动态
         $scope.clickMyTrends = function () {
