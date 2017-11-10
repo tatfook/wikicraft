@@ -176,9 +176,18 @@ end
 
 
 local function getBucketName()
+	local hostname = request:GetHost()
 	local bucket = "keepwork-dev"
 	if WIKI_ENV == "rls" then
 		bucket = "keepwork-release"
+	end
+
+	if hostname == "release.keepwork.com" then
+		bucket = "keepwork-dev"
+	elseif hostname == "keepwork.com" then
+		bucket = "keepwork-release"
+	elseif hostname == "dev.keepwork.com" then
+		bucket = "keepwork-dev"
 	end
 
 	return bucket
@@ -186,9 +195,18 @@ end
 
 
 local function getDownloadDomain()
+	local hostname = request:GetHost()
 	local defaultDomain = "oy41aju0m.bkt.clouddn.com"
 	if WIKI_ENV == "rls" then
 		defaultDomain = "oy41jt2uj.bkt.clouddn.com"
+	end
+
+	if hostname == "release.keepwork.com" then
+		defaultDomain = "oy41aju0m.bkt.clouddn.com"
+	elseif hostname == "keepwork.com" then
+		defaultDomain = "oy41jt2uj.bkt.clouddn.com"
+	elseif hostname == "dev.keepwork.com" then
+		defaultDomain = "oy41aju0m.bkt.clouddn.com"
 	end
 
 	return defaultDomain
