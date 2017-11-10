@@ -176,12 +176,16 @@ CORE_EXPORT_DECL void LibActivate(int nType, void* pVoid)
 		NPLInterface::NPLObjectProxy input_msg = NPLInterface::NPLHelper::MsgStringToNPLTable(sMsg);
 		NPLInterface::NPLObjectProxy output_msg;
 		std::string output;
+		const std::string& accessKey = input_msg["accessKey"];
+		const std::string& secretKey = input_msg["secretKey"];
 		const std::string& bucket = input_msg["bucket"];
 		const std::string& sCmd = input_msg["cmd"];
 		const double expires = input_msg["expires"];
 
 		// bucket
 		qiniu->m_bucket = bucket.c_str();
+		qiniu->m_accessKey = accessKey.c_str();
+		qiniu->m_secretKey = secretKey.c_str();
 
 		//GetCoreInterface()->GetAppInterface()->WriteToLog("cmd:%s, expires:%d\n",sCmd.c_str(), (int)expires);
 	

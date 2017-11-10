@@ -7,8 +7,8 @@ void WriteLog(const char* str);
 
 ParaEngine::CQiNiu::CQiNiu()
 {
-	this->m_mac.accessKey = this->m_accessKey;
-	this->m_mac.secretKey = this->m_secretKey;
+	//this->m_mac.accessKey = this->m_accessKey;
+	//this->m_mac.secretKey = this->m_secretKey;
 }
 
 char* ParaEngine::CQiNiu::getUploadToken(const char *callback_url, int expires) {

@@ -15,13 +15,13 @@ namespace ParaEngine
 		static CQiNiu* getInstance();
 
 		const char* m_bucket;
+		const char* m_accessKey;
+		const char* m_secretKey;
 	protected:
 
 	private:
 		CQiNiu();
 
-		const char* const m_accessKey = "LYZsjH0681n9sWZqCM4E2KmU6DsJOE7CAM4O3eJq";
-		const char* const m_secretKey = "IHdepXixI3ZHsQeH662Tf5CPhqWnFpXxc2GF2UXf";
 		//const char* const m_bucket = "keepwork";
 		Qiniu_Mac m_mac;
 		//Qiniu_Io_PutRet m_putRet;
