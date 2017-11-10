@@ -601,7 +601,7 @@ end
 
 -- 访问站点
 function website:api_visitWebsite(params)
-	if (not params.username) or (not params.sitename) then
+	if (not params.username) or (not params.sitename) or not params.url then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
