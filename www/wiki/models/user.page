@@ -310,11 +310,19 @@ function user:api_verifyCellphoneTwo(params)
 	end
 	mem_cache:set(params.smsId, nil)
 
-	local cellphone = ""
+	local cellphone = value.cellphone
+
 	if params.bind then 
-		cellphone = value.cellphone
-	end
-	self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
+        self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
+    end
+
+    if params.setRealNameInfo then 
+        local realNameInfo = {
+            cellphone = cellphone,
+            verified = true
+        }
+        self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
+    end
 
 	return errors:wrap(yield())
 end

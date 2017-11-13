@@ -354,6 +354,7 @@ select.resize-view {
     border: 2px transparent solid;
     position: relative;
     margin-top: -5px;
+    border-radius: 50%;
 }
 .toolbar-avatar img:hover {
     border: 2px #3977ad solid;
