@@ -49,7 +49,7 @@ define([
             if (file.filesize){
                 return file.filesize;
             }
-            if (!file.file || !file.file.size){
+            if (!file.file || (!file.file.size && file.file.size != 0)){
                 return;
             }
             var filesize = file.file.size;
@@ -92,8 +92,8 @@ define([
             filesize = filesize || $scope.remainSize;
             speed = speed || $scope.speed || 0;
             if (speed <=0){
-                $scope.finishTime = $scope.finishTime || "等待计算";
-                $scope.remainTime = $scope.remainTime || "0秒";
+                $scope.finishTime = "等待计算";
+                $scope.remainTime = "0秒";
                 return;
             }
             var waitTime = filesize/speed;
@@ -159,6 +159,22 @@ define([
             }
             $scope.remainSize = $scope.remainSize|| 0;
             var qiniu = new QiniuJsSDK();
+            var clearQue = function (files) {
+                if (!qiniuBack){
+                    return;
+                }
+                if (files && files.length > 0){
+                    files.map(function (file) {
+                        file._start_at = file._start_at || new Date();
+                        qiniuBack.removeFile(file);
+                    });
+                    return;
+                }
+                qiniuBack.files.map(function (file) {
+                    file._start_at = file._start_at || new Date();
+                    qiniuBack.removeFile(file);
+                });
+            };
             var option = {
                 "browse_button":"selectFileInput",
                 "drop_element":"dropFile",
@@ -175,13 +191,18 @@ define([
                         var filesSize = 0;
                         var conflictSize = 0;
                         for (var i = 0; i < files.length; i++) {
+                            if (files[i].name.split(".").length <= 1){
+                                files[i].name += ".part";
+                            }
                             filelist.push(files[i].name);
                             files[i].size = files[i].size || 0;
+                            files[i].type = files[i].type || "multipart/part";
                             filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
                             $scope.remainSize = $scope.updatingFile.file.size;
                             if (isExceed($scope.storeInfo.unUsed * biteToG, $scope.uploadingSize)){
+                                clearQue(files);
                                 return;
                             }
                             $scope.uploadingFiles = files;
@@ -202,6 +223,7 @@ define([
                                 });
 
                         	    if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - conflictSize))){
+                                    clearQue(files);
                                     return;
                                 }
 
@@ -210,6 +232,7 @@ define([
                                     "contentHtml": contentHtml
                                 }, function () {
                                     if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                                        clearQue(files);
                                         return;
                                     }
                                     $scope.storeInfo.unUsed -= filesSize/biteToG;
@@ -223,6 +246,10 @@ define([
                                 }, function () {
                                     $scope.storeInfo.unUsed -= (filesSize - conflictSize)/biteToG;
                                     files = files.filter(function (file) {
+                                        if (conflictFileName.indexOf(file.name) >= 0){ // 将覆盖文件从上传队列中清除
+                                            file._start_at = file._start_at || new Date();
+                                            qiniuBack.removeFile(file);
+                                        }
                                         return conflictFileName.indexOf(file.name) < 0;
                                     });
                                     if(files.length > 0){
@@ -237,6 +264,7 @@ define([
                         		return ;
                         	}
                             if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                        	    clearQue(files);
                                 return;
                             }
                             $scope.storeInfo.unUsed -= filesSize/biteToG;
@@ -291,6 +319,7 @@ define([
                                 qiniuBack = qiniu.uploader(option);
                                 // $scope.uploadingFiles[file.id].status = "success";
                                 getFileByUsername();
+                                getUserStoreInfo();
                             }, function(err){
                                 console.log(err);
                             });
@@ -308,6 +337,8 @@ define([
 							util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
 								data = data || {};
 								data.filename = params.filename;
+                                getFileByUsername();
+                                getUserStoreInfo();
 								isUploading = false;
 							}, function(){
 								isUploading = false;
@@ -487,7 +518,7 @@ define([
 							util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
 								files[index].isDelete = true;
 								$scope.filesCount--;
-								deleteFileSize += files[index].file.size;
+								// deleteFileSize += files[index].file.size;
 								cb && cb();
 							}, function (err) {
 								console.log(err);
@@ -497,28 +528,10 @@ define([
 					}(i))
 				}
 				util.sequenceRun(fnList, undefined, function(){
-                    $scope.storeInfo.unUsed += deleteFileSize/biteToG;
+                    getUserStoreInfo();
 				}, function(){
-                    $scope.storeInfo.unUsed += deleteFileSize/biteToG;
+                    getUserStoreInfo();
 				});
-                //for (var i=files.length -1; i >= 0;i--){
-                    //fnList.push((function (index) {
-                        //return function (finish) {
-                            //util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
-                                //files[index].isDelete = true;
-                                //$scope.filesCount--;
-                                //deleteFileSize += files[index].file.size;
-                                //finish();
-                            //}, function (err) {
-                                //console.log(err);
-                                //finish();
-                            //});
-                        //}
-                    //})(i));
-                //}
-                //util.batchRun(fnList, function () {
-                    //$scope.storeInfo.unUsed += deleteFileSize/biteToG;
-                //});
             });
         };
 
@@ -653,8 +666,10 @@ define([
                 if (data) {
                     var a = document.createElement('a');
                     var url = data;
+                    url += ";attname=" + file.filename;
                     a.href = url;
                     a.target = "_blank";
+                    a.download = file.filename || "";
                     a.click();
                 }
             });
