@@ -321,11 +321,11 @@ define([
                                 option.filters = {};
                                 qiniuBack.destroy();
                                 qiniuBack = qiniu.uploader(option);
-                                $scope.uploadingFiles[file.id].backuped = "success";
+                                $scope.uploadingFiles[file.id].backStatus = "success";
                                 getFileByUsername();
                                 getUserStoreInfo();
                             }, function(err){
-                                $scope.uploadingFiles[file.id].backuped = "failed";
+                                $scope.uploadingFiles[file.id].backStatus = "failed";
                                 console.log(err);
                             });
                             $scope.startUpdating = false;
@@ -340,14 +340,14 @@ define([
 
 							isUploading = true;
 							util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
-                                $scope.uploadingFiles[file.id].backuped = "success";
+                                $scope.uploadingFiles[file.id].backStatus = "success";
 								data = data || {};
 								data.filename = params.filename;
                                 getFileByUsername();
                                 getUserStoreInfo();
 								isUploading = false;
 							}, function(){
-                                $scope.uploadingFiles[file.id].backuped = "failed";
+                                $scope.uploadingFiles[file.id].backStatus = "failed";
 								isUploading = false;
 								util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
 									key:params.key,
@@ -357,7 +357,7 @@ define([
 									console.log(err);
 								});
 							});
-						}
+						};
 						setTimeout(bigfileUpload);
 
                     },
