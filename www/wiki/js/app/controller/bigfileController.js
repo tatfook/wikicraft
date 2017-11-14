@@ -375,6 +375,7 @@ define([
                             return;
                         }
                         //上传出错时，处理相关的事情
+                        $scope.uploadingFiles[err.file.id].backStatus = "failed";
                     },
                     'UploadComplete': function() {
                         $scope.remainSize = 0;
