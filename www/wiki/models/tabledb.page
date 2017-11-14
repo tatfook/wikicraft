@@ -122,7 +122,11 @@ function tabledb:api_upsert(params)
 		table:updateOne({_id=record._id}, record, resume)
 	else
 		table:insertOne(nil, record, resume)
-	end
+    end
+
+    if params.tableName == "sensitive_words" then
+        reset_aho_corasick()
+    end
 
 	return errors:wrap(yield())
 end
@@ -143,7 +147,11 @@ function tabledb:api_delete(params)
 
 	log(query)
 
-	table:delete(query, resume)
+    table:delete(query, resume)
+
+    if params.tableName == "sensitive_words" then
+        reset_aho_corasick()
+    end
 
 	return errors:wrap(yield())
 end

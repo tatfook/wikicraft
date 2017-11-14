@@ -47,23 +47,25 @@ define([
                     if (!$scope.comment.content || $scope.comment.content.length == 0) {
                         return;
                     }
-                    var isSensitive = false;
-                    sensitiveWord.checkSensitiveWord($scope.comment.content, function (foundWords, replacedStr) {
-                        if (foundWords.length > 0){
-                            isSensitive = true;
-                            console.log("包含敏感词:" + foundWords.join("|"));
-                            return false;
+
+                    sensitiveWord.getAllSensitiveWords($scope.comment.content).then(function(results) {
+                        var isSensitive = results && results.length;
+                        isSensitive && console.log("包含敏感词:" + results.join("|"));
+                        trySaveComment(isSensitive);
+                    });
+
+                    function trySaveComment(isSensitive) {
+                        if (isSensitive) {
+                            $scope.tipInfo="您输入的内容不符合互联网安全规范，请修改";
+                            $scope.$apply();
+                            return;
                         }
-                    });
-                    if (isSensitive){
-                        $scope.tipInfo="您输入的内容不符合互联网安全规范，请修改";
-                        return;
+                        util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
+                            $scope.comment.content = "";
+                            console.log(data);
+                            $scope.getCommentList();
+                        });
                     }
-                    util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
-                        $scope.comment.content = "";
-                        console.log(data);
-                        $scope.getCommentList();
-                    });
                 }
 
                 $scope.getCommentList = function () {
