@@ -10,9 +10,9 @@ define([
     'templates.js',
     'pageTemplates.js',
     'text!wikimod/admin/html/templates.html',
-	'md5',
-], function (app, util, mods, htmlContent, websiteTemplateContent, pageTemplateContent) {
-	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
+	'/wiki/js/lib/md5.js',
+], function (app, util, mods, htmlContent, websiteTemplateContent) {
+	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', '$http', function ($scope, $auth, Account, modal, Message, $http) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
 		$scope.selectMenuItem = "manager";
@@ -20,7 +20,6 @@ define([
 		$scope.managerCurrentPage = 1;
 		$scope.operationLogCurrentPage = 1;
 		$scope.userCurrentPage = 1;
-		$scope.userLogCurrentPage = 1;
 		$scope.siteCurrentPage = 1;
 		$scope.domainCurrentPage = 1;
 		$scope.fileCheckCurrentPage = 1;
@@ -30,18 +29,9 @@ define([
 		$scope.oauthData = [];
 		$scope.oauthParams = {};
 		$scope.oauthParams.skipUserGrant = 1;
-		$scope.whiteList = [{
-			"trueValue": 1,
-            "falseValue": 0,
-			"displayValue":"用户页显示",
-			"result":"markdownShow"
-		},{
-            "trueValue": 2,
-            "falseValue": 0,
-            "displayValue":"网站设置保存",
-            "result":"saveSetting"
-        }];
 		//$scope.roleId = 10;
+		$scope.goodsData = [];
+		$scope.goodsParams = {};
 		
 		
 		$scope.managerSearchById;
@@ -56,7 +46,7 @@ define([
 
 			var payload = $auth.getPayload();
 			$scope.roleId = payload.roleId;
-
+			
 			if (!payload.isAdmin) {
 				util.go(urlPrefix + "login");
 			}
@@ -121,116 +111,20 @@ define([
 			$scope.query = x;
 		}
 
-		
-		*/
-		$scope.clickDelete = function(x, tableName) {
-			//var tableName = getTableName();
-			var deleteConfirm = confirm("确定删除该项么？");
-			if(deleteConfirm){
-				util.post(config.apiUrlPrefix + "tabledb/delete", {
+		$scope.clickDelete = function(x) {
+			var tableName = getTableName();
+			util.post(config.apiUrlPrefix + "tabledb/delete", {
 				tableName:tableName,
 				query:{
 					_id:x._id,
 				}
 			}, function(){
+				$scope.totalItems--;
 				x.isDelete = true;
+			}, function(){
 			});
-			}
-		}
-		/*
-		$scope.clickEnableUser = function(x, tableName) {
-			if(x.roleId = -1){
-				var enableConfirm = confirm("确定启用该用户么？");
-				if(enableConfirm){
-					util.post(config.apiUrlPrefix + "tabledb/upsert", {
-					tableName:tableName,
-					query:{
-						_id:x._id,
-						roleId:0,
-					}
-				}, function(){
-					x.isDelete = true;
-				});
-				}
-			}else{
-				var disableConfirm = confirm("确定禁用该用户么？");
-				if(disableConfirm){
-					util.post(config.apiUrlPrefix + "tabledb/upsert", {
-					tableName:tableName,
-					query:{
-						_id:x._id,
-						roleId:-1,
-					}
-				}, function(){
-					x.isDelete = true;
-				});
-				}
-			}
-			
 		}*/
-		$scope.clickUpsert = function(x, tableName) {
-			//console.log($scope.query);
-			//for (var key in $scope.query) {
-			//	if ($scope.query[key] == "") {
-			//		$scope.query[key] = undefined;
-			//	}
-			//}
-			//var tableName = getTableName();
-			if(x.state == -1){
-				var enableConfirm = confirm("确定启用该项么？");
-				if(enableConfirm){
-					util.post(config.apiUrlPrefix + "tabledb/upsert", {
-					tableName:tableName,
-					query:{
-						_id:x._id,
-						state:0,
-					}
-				}, function(){
-					x.state = 0;
-				});
-				}
-			}else{
-				var disableConfirm = confirm("确定禁用该项么？");
-				if(disableConfirm){
-					util.post(config.apiUrlPrefix + "tabledb/upsert", {
-					tableName:tableName,
-					query:{
-						_id:x._id,
-						state:-1,
-					}
-				}, function(){
-					x.state = -1;
-				});
-				}
-			}
-			
-		}
-		$scope.itemName = "用户名";
-		$scope.items = ["username", "userip", "operation", "description", "targetType"];
-		$scope.itemsOnView = ["用户名", "用户IP", "用户操作", "描述", "操作类型"];
-		$scope.userLogSearchByItem = "";
-		$scope.userLogCurrentPage = 1;
-		$scope.userLogSearch = function () {
-			if($scope.userLogSearchByItem != ""){
-				var index = $scope.itemsOnView.indexOf($scope.itemName);
-				var item = $scope.items[index];
-				var query = {};
-				query[item] = $scope.userLogSearchByItem;
-				util.post(config.apiUrlPrefix+"tabledb/query", {
-				tableName:"user_log",
-				page:$scope.userLogCurrentPage,
-				pageSize:$scope.pageSize,
-				query:query,
-			}, function(data){
-				$scope.userLogList = data.data;
-				$scope.totalItems = data.total;
-				//outputEditor.setValue(angular.toJson(data.data,4));
-			});
-			}else{
-				$scope.getUserLogList();
-			}
-		}
-		
+
 		$scope.getStyleClass = function (item) {
 			if ($scope.selectMenuItem == item) {
 				return "panel-primary";
@@ -299,6 +193,12 @@ define([
 			$scope.listCount();
 		}
 		
+		var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~_]+)\.)+([A-Za-z0-9-~\/:.s])+$/;
+		//var reg2 = /([.][A-Za-z])$/
+		var reg3 = /^[A-Za-z]+$/;
+		var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
+		var reg5 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
+
 		//oauth管理添加数据
 		$scope.oauthAdd = function(){
 			var addUrl = config.apiUrlPrefix + "oauth_app/new";
@@ -316,20 +216,20 @@ define([
 			};
 			
 			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
-			//var reg2 = /([.][A-Za-z])$/
+			var reg2 = /([.][A-Za-z])$/
 			var reg3 = /^[A-Za-z]+$/;
-			var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
+			var reg4 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
 			
-			if(!reg1.test($scope.oauthParams.payCallbackUrl)){
+			if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
 				return alert("payCallbackUrl请使用正确的格式");
 			};
 			
-			if(!reg1.test($scope.oauthParams.redirectUrl)){
-				return alert("payCallbackUrl请使用正确的格式");
+			if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
+				return alert("redirectUrl请使用正确的格式");
 			};
 			
-			if(!reg3.test($scope.oauthParams.appName)){
-				return alert("app名称只能输入英文");
+			if(!reg4.test($scope.oauthParams.appName)){
+				return alert("app名称只能输入中文英文数字");
 			}
 			
 			if(!reg4.test($scope.oauthParams.company)){
@@ -382,7 +282,6 @@ define([
 				$scope.oauthData = data;
 			});
 		}
-		
 		$scope.getOneOAuthInfo = function(item){
 			var getOneOAuthUrl = config.apiUrlPrefix + "oauth_app/getOne/";
 			
@@ -405,29 +304,21 @@ define([
 		$scope.oauthModify = function(){
 			var oauthModifyUrl = config.apiUrlPrefix + "oauth_app/";
 			
-			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)/;
-			var reg2 = /([.][cC][oO][mM])$/;
+			var reg1 = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|[fF][tT][pP]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+			var reg2 = /([.][A-Za-z])$/
 			var reg3 = /^[A-Za-z]+$/;
-			var reg4 = /^[\u4E00-\u9FA5A-Za-z]+$/;
+			var reg4 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
 			
-			if(!reg1.test($scope.oauthParams.payCallbackUrl)){
-				return alert("payCallbackUrl请使用http://或https://作为开头");
+			if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
+				return alert("payCallbackUrl请使用正确的格式");
 			};
 			
-			if(!reg2.test($scope.oauthParams.payCallbackUrl)){
-				return alert("payCallbackUrl请使用.com结尾");
+			if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
+				return alert("redirectUrl请使用正确的格式");
 			};
 			
-			if(!reg1.test($scope.oauthParams.redirectUrl)){
-				return alert("redirectUrl请使用http://或https://作为开头");
-			};
-			
-			if(!reg2.test($scope.oauthParams.redirectUrl)){
-				return alert("redirectUrl请使用.com结尾");
-			};
-			
-			if(!reg3.test($scope.oauthParams.appName)){
-				return alert("app名称只能输入英文");
+			if(!reg4.test($scope.oauthParams.appName)){
+				return alert("app名称只能输入中文英文数字");
 			}
 			
 			if(!reg4.test($scope.oauthParams.company)){
@@ -652,40 +543,6 @@ define([
 			});
 		}
 
-		//用户日志列表
-		$scope.getUserLogList = function () {
-			$scope.selectMenuItem = "userLog";
-			util.post(config.apiUrlPrefix + "admin/getUserLogList", {
-				page:$scope.userLogCurrentPage,
-				pageSize:$scope.pageSize,
-			}, function (data) {
-				data = data || {};
-				$scope.userLogList = data.userLogList || [];
-				$scope.totalItems = data.total || 0;
-			});
-		}
-		
-		//创建用户日志
-		$scope.createUserLog = function () {
-			util.post(config.apiUrlPrefix + "admin/insertUserLog", {
-				createAt:"2017-10-17 11:41:07",
-				username:"lizq",
-				userip:"0.0.0.0",
-				operation:"delete",
-				description:"info",
-				targetType:"user_log",
-				targetId:0,
-			}, function (data) {
-				data = data || {};
-				//$scope.userLogList = data.userLogList || [];
-				//$scope.totalItems = data.total || 0;
-				var newUserLog = data.userLogList || [];
-				if(newUserLog){
-					alert("创建成功！");
-				}
-			});
-		}
-		
 		// 获取站点列表
 		$scope.getSiteList = function () {
 			$scope.selectMenuItem = "site";
@@ -697,26 +554,7 @@ define([
 				$scope.siteList = data.siteList || [];
 				$scope.totalItems = data.total || 0;
 			});
-		};
-		$scope.getInit = function (sensitiveItem, site) {
-			return (site.sensitiveWordLevel & sensitiveItem.trueValue);
-        };
-
-		$scope.setSensitive = function (sensitiveItem, site) {
-			if (site[sensitiveItem.result] > 0){// 取消权限
-                site.sensitiveWordLevel = site.sensitiveWordLevel | sensitiveItem.trueValue;
-			}else{
-                site.sensitiveWordLevel = site.sensitiveWordLevel ^ sensitiveItem.trueValue;
-			}
-
-			site.sitename = site.name;
-            util.post(config.apiUrlPrefix + 'website/updateByName', site, function (data) {
-                Message.info("权限修改成功!!!");
-            }, function () {
-                Message.warning("权限修改失败!!!");
-            });
-        };
-
+		}
 		//搜索网站
 		$scope.siteSearchById;
 		$scope.siteSearchByUsername = "";
@@ -740,33 +578,34 @@ define([
 				$scope.siteList = data.data || [];
 				$scope.totalItems = data.total || 0;
 			});
-		};
+		}
 
 		// 点击编辑站点
 		$scope.clickEditSite = function () {
 
-		};
+		}
 		// 点击禁用的站点
-		$scope.clickEnableSite = function (site) {
+		$scope.clickEnableSite = function () {
 			site.state = site.state == -1 ? 0 :  -1;
 			util.post(config.apiUrlPrefix + "website/updateByName", {username:site.username, sitename:site.name, state:site.state}, function () {
 			});
-		};
+		}
 		// 点击删除站点
 		$scope.clickDeleteSite = function (site) {
 			util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
 				site.isDelete = true;
 			});
-		};
+		}
 
+		
 		//
 		$scope.getoperationLogList = function () {
 			$scope.selectMenuItem = "operationLog";
-		};
+		}
 		
 		$scope.getFileCheckList = function () {
 			$scope.selectMenuItem = "fileCheck";
-		};
+		}
 
 		// wiki cmd
 		$scope.clickUpsertWikicmd = function() {

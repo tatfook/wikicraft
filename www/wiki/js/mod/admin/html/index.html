@@ -193,6 +193,13 @@ li{
 		padding-top: 5px;
 		overflow:hidden;
 	}
+	.goods{
+		text-align:center;
+		margin-top:10px;
+	}
+	.goods-control{
+		margin-left:40px;
+	}
 	@media(max-width: 768px){
 		.subnav .list-group-item:first-child .list-group-item{
 			padding: 10px 5px;
@@ -228,7 +235,7 @@ li{
 									<div class="panel-heading" ng-click='getManagerList()'>管理员</div>
 								</div>
 							</li>
-							<li ng-show=false>
+							<li>
 								<div ng-class='getStyleClass("operationLog")'>
 									<div class="panel-heading" ng-click='getoperationLogList()'>操作日志</div>
 								</div>
@@ -263,8 +270,8 @@ li{
 								</div>
 							</li>
 							<li>
-								<div ng-class='getStyleClass("userLog")'>
-									<div class="panel-heading" ng-click='getUserLogList()'>用户日志</div>
+								<div ng-class='getStyleClass("fileCheck")'>
+									<div class="panel-heading" ng-click='getFileCheckList()'>文件审核</div>
 								</div>
 							</li>
 							<li>
@@ -343,7 +350,7 @@ li{
 							<input ng-model="managerSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
 						</div>
 						<button class="btn btn-default" ng-click="managerSearch()">查询</button>
-						<!-- <button class="btn btn-default pull-right" ng-click="newManager()" >新建管理员账号</button>  -->
+						<button class="btn btn-default pull-right" ng-click="newManager()" >新建管理员账号</button>
 					</form>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -369,8 +376,8 @@ li{
 							<td>{{x.roleId}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<!-- <button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-								<!-- <button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>  -->
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">编辑权限</button>
 								<button class="btn btn-default" ng-click="clickDeleteUser(x)">修改密码</button>
 							</td>
@@ -509,7 +516,6 @@ li{
 					ng-change = "oauthList()"
 					num-pages="numPages"></ul>
 			</div>
-			
 			<!--用户管理-->
 			<div ng-show='selectMenuItem=="user"'><!--{{{-->
 				
@@ -553,10 +559,10 @@ li{
 							<td>{{x.websiteCount}}</td>
 							<td>{{x.fansCount}}</td>
 							<td>{{x.roleId}}</td>
-							<td>{{x.roleId == -1 ? "异常" : "正常"}}</td>
+							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickEnableUser(x,'user')">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDelete(x,'user')">删除</button>
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
 							</td>
 						</tr>
 					</tbody>
@@ -571,7 +577,7 @@ li{
 				</div>
 			</div><!--}}}-->
 
-			<!--网站管理-->
+			<!--站点管理-->
 			<div ng-show='selectMenuItem=="site"'><!--{{{-->
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
@@ -606,7 +612,6 @@ li{
 							<th>网站类别</th>
 							<th>访问次数</th>
 							<th>状态</th>
-							<th>敏感词权限</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -619,20 +624,6 @@ li{
 							<td>{{x.categoryName}}</td>
 							<td>{{x.visitCount}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
-							<td>
-
-								<span class="checkbox" ng-repeat="item in whiteList">
-									<label>
-										<input type="checkbox"
-											   ng-model="x[item.result]"
-											   ng-init="x[item.result]=getInit(item, x)"
-											   ng-true-value="{{item.trueValue}}"
-											   ng-false-value="{{item.falseValue}}"
-											   ng-change="setSensitive(item, x)"
-										>{{item.displayValue}}
-									</label>
-								</span>
-							</td>
 							<td>
 								<button class="btn btn-default" ng-click="clickEnableSite(x)">{{x.state == -1 ? "启用" : "禁用"}}</button>
 								<button class="btn btn-default" ng-click="clickDeleteSite(x)">删除</button>
@@ -691,8 +682,8 @@ li{
 							<td>{{x.endAt}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickUpsert(x,'website_domain')">{{x.state == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDelete(x,'website_domain')">删除</button>
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
 							</td>
 						</tr>
 					</tbody>
@@ -705,67 +696,9 @@ li{
 				</div>
 				
 			</div>
-			<!--用户日志-->
-			<div ng-show='selectMenuItem=="userLog"'>
-				<div style="margin: 10px;">
-					<form role="form" class="form-inline">
-						<!--
-						<div class="form-group">
-							<label>
-								用户名:
-							</label>
-							<input ng-model="userLogSearchByUserName" type="text" class="form-control" placeholder="请输入用户名">
-						</div>
-						<div class="form-group">
-							<label>
-								用户操作:
-							</label>
-							<input ng-model="userLogSearchByOperation" type="text" class="form-control" placeholder="请输入用户操作">
-						</div>
-						-->
-						<label>搜索选项:</label>
-						<select class="form-control" ng-model="itemName">
-							<option ng-repeat="item in itemsOnView" value="{{item}}">{{item}}</option>
-						</select>
-						<input ng-model="userLogSearchByItem" type="text" class="form-control" placeholder="请输入关键字">
-						<button class="btn btn-default" ng-click="userLogSearch()">查询</button>
-						<!-- <button class="btn btn-default" ng-click="createUserLog()">测试创建</button>   -->
-					</form>
-				</div>
-				<table class="table table-hover table-bordered">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>用户名</th>
-							<th>用户IP</th>
-							<th>创建时间</th>
-							<th>用户操作</th>
-							<th>描述</th>
-							<th>操作类型</th>
-							<th>操作ID</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="x in userLogList" ng-hide="x.isDelete">
-							<td>{{x._id}}</td>
-							<td>{{x.username}}</td>
-							<td>{{x.userip}}</td>
-							<td>{{x.createAt}}</td>
-							<td>{{x.operation}}</td>
-							<td>{{x.description}}</td>
-							<td>{{x.targetType}}</td>
-							<td>{{x.targetId}}</td>
-							
-						</tr>
-					</tbody>
-				</table>
-				<div class="pagination-box">
-					<ul uib-pagination ng-change="getUserLogList()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="userLogCurrentPage" max-size="5"
-																						   class="pagination-sm" boundary-link-numbers="true">
-					</ul>
-				</div>
-				
+			<!--文件审核-->
+			<div ng-show='selectMenuItem=="fileCheck"'>
+				文件审核
 			</div>
 			<!--VIP管理-->
 			<div ng-show='selectMenuItem=="vip"'>
@@ -808,8 +741,8 @@ li{
 							<td>{{x.endDate}}</td>
 							<td>{{x.state == -1 ? "异常" : "正常"}}</td>
 							<td>
-								<button class="btn btn-default" ng-click="clickUpsert(x,'vip')">{{x.state == -1 ? "启用" : "禁用"}}</button>
-								<button class="btn btn-default" ng-click="clickDelete(x,'vip')">删除</button>
+								<button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
+								<button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
 							</td>
 						</tr>
 					</tbody>
