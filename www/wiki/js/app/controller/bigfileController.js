@@ -186,6 +186,10 @@ define([
                 "filters":{},
                 "init": {
                     'FilesAdded': function(up, files) {
+                        if ($scope.updatingFile && $scope.updatingFile.filename && $scope.startUpdating){
+                            clearQue(files);
+                            return;
+                        }
                         var self = this;
                         var filelist = [];
                         var filesSize = 0;
@@ -200,8 +204,8 @@ define([
                             filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
-                            $scope.remainSize = $scope.updatingFile.file.size;
-                            if (isExceed($scope.storeInfo.unUsed * biteToG, $scope.uploadingSize)){
+                            $scope.remainSize = filesSize;
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - $scope.updatingFile.file.size))){
                                 clearQue(files);
                                 return;
                             }
@@ -317,10 +321,11 @@ define([
                                 option.filters = {};
                                 qiniuBack.destroy();
                                 qiniuBack = qiniu.uploader(option);
-                                // $scope.uploadingFiles[file.id].status = "success";
+                                $scope.uploadingFiles[file.id].backuped = "success";
                                 getFileByUsername();
                                 getUserStoreInfo();
                             }, function(err){
+                                $scope.uploadingFiles[file.id].backuped = "failed";
                                 console.log(err);
                             });
                             $scope.startUpdating = false;
@@ -335,12 +340,14 @@ define([
 
 							isUploading = true;
 							util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
+                                $scope.uploadingFiles[file.id].backuped = "success";
 								data = data || {};
 								data.filename = params.filename;
                                 getFileByUsername();
                                 getUserStoreInfo();
 								isUploading = false;
 							}, function(){
+                                $scope.uploadingFiles[file.id].backuped = "failed";
 								isUploading = false;
 								util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
 									key:params.key,
@@ -360,11 +367,11 @@ define([
                         }
                         if (err.code == -601){
                             option.filters = {};
-                            $scope.uploadingFiles = $scope.uploadingFiles || [];
-                            $scope.uploadingFiles.push(err.file);
-                            $scope.remainSize += err.file.size;
-                            up.files.push(err.file);
-                            up.start();
+                            // $scope.uploadingFiles = $scope.uploadingFiles || [];
+                            // $scope.uploadingFiles.push(err.file);
+                            // $scope.remainSize += err.file.size;
+                            up.setOption("filters",{});
+                            up.addFile(err.file);
                             return;
                         }
                         //上传出错时，处理相关的事情
