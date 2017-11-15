@@ -20,6 +20,8 @@
             "height" : mxClientHeight + "px",
         });
 
+        Menus.prototype.defaultMenuItems = ['file', 'edit', 'view', 'arrange', 'extras'];
+
         var editorUiInit = EditorUi.prototype.init;
 
         EditorUi.prototype.init = function () {
