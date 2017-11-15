@@ -15,7 +15,7 @@ set -ex
 TEMP_DIR=temp_www_build
 BUILD_DIR=www_build
 DEV_DIR=www
-TEST_DIR=test
+STAGE_DIR=stage
 PROD_DIR=rls
 
 clean_dir() {
@@ -32,8 +32,8 @@ node r.js -o r_package.js
 clean_dir $TEMP_DIR
 
 clean_dir $DEV_DIR
-clean_dir $TEST_DIR
+clean_dir $STAGE_DIR
 clean_dir $PROD_DIR
 ln -s $BUILD_DIR $DEV_DIR
-ln -s $BUILD_DIR $TEST_DIR
+ln -s $BUILD_DIR $STAGE_DIR
 ln -s $BUILD_DIR $PROD_DIR

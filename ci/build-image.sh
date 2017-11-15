@@ -4,14 +4,14 @@
 # build docker image
 #
 # usage:
-#   ./build-image.sh dev|test|release $BUILD_NUMBER
+#   ./build-image.sh dev|stage|test|release $BUILD_NUMBER
 #
 set -ex
 
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|test|release BUILD_NUMBER"
+  echo "usage: $0 dev|stage|test|release BUILD_NUMBER"
   exit 1
 }
 
@@ -19,7 +19,7 @@ if [[ $# -ne 2 ]]; then
   usage
 fi
 
-if [[ $1 != "test" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
+if [[ $1 != "test" ]] && [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
   usage
 fi
 
