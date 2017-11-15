@@ -12,7 +12,7 @@
             document.querySelector("#mx-client").innerHTML("Browser is not supported!");
         }
 
-        var mxClientHeight = $(window).height() - 160;
+        var mxClientHeight = $(window).height();
         var mxClientWidth  = $("#mx-client").outerWidth();
 
         $("#mx-client").css({
