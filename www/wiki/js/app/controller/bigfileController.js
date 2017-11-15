@@ -362,8 +362,11 @@ define([
 
                     },
                     'Error': function(up, err, errTip) {
+                        console.log(up);
+                        console.log(err);
                         if ($scope.uploadingFiles && $scope.uploadingFiles[err.file.id]){
                             $scope.uploadingFiles[err.file.id].errTip = err.message + "(" + err.code + ")";
+                            $scope.uploadingFiles[err.file.id].backStatus = "failed";
                         }
                         if (err.code == -601){
                             option.filters = {};
@@ -375,7 +378,6 @@ define([
                             return;
                         }
                         //上传出错时，处理相关的事情
-                        $scope.uploadingFiles[err.file.id].backStatus = "failed";
                     },
                     'UploadComplete': function() {
                         $scope.remainSize = 0;

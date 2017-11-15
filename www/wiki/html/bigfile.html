@@ -432,7 +432,7 @@
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
                                     </div>
-                                    <span ng-show="file.status == 4 || file.backup == 'failed'" class="text-danger" title="{{file.errTip}}">上传失败</span>
+                                    <span ng-show="file.status == 4 || file.backStatus == 'failed'" class="text-danger" title="{{file.errTip}}">上传失败</span>
                                     <span ng-click="stopUpload(file, $index)" ng-show="file.status < 5 || file.backStatus == 'failed' || (file.status == 5 && (!file.backStatus || file.backStatus != 'success'))" class="glyphicon glyphicon-remove"></span>
                                     <span ng-show="file.status == 5 && file.backStatus == 'success'" class="text-success glyphicon glyphicon-ok"></span>
                                 </div>
