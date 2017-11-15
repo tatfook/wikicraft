@@ -110,6 +110,8 @@ function goods:ctor()
 	self:addfield("additional_field","table",false);
 	-- exchange_rate
 	self:addfield("default_buy_count","number",false);
+	self:addfield("limit","number",false);
+	self:addfield("skip","number",false);
 end
 
 function goods:api_getAppGoodsInfo(params)

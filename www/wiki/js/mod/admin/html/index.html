@@ -194,11 +194,7 @@ li{
 		overflow:hidden;
 	}
 	.goods{
-		text-align:center;
-		margin-top:10px;
-	}
-	.goods-control{
-		margin-left:40px;
+		text-align: center;
 	}
 	@media(max-width: 768px){
 		.subnav .list-group-item:first-child .list-group-item{
@@ -527,13 +523,13 @@ li{
 					num-pages="numPages"></ul>
 			</div>
 			<!--manger-->
-			<div ng-show='selectMenuItem=="goodsManager"'>
+			<div ng-show='selectMenuItem=="goodsManager"' ng-controller="goodsController">
 				<button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(2)">添加商品信息</button>
 				<table class="table table-bordered goods">
 					<tr>
 						<td><strong>商品名称</strong></td>
-						<td><strong>app_goods_id</strong></td>
-						<td><strong>goods_id</strong></td>
+						<td><strong>第三方商品ID</strong></td>
+						<td><strong>商品ID</strong></td>
 						<td><strong>商品详情</strong></td>
 						<td><strong>价格</strong></td>
 						<td><strong>购买数量</strong></td>
@@ -554,7 +550,7 @@ li{
 						<td>{{item.is_on_sale==1?"是":"否"}}</td>
 						<td>{{item.create_date}}</td>
 						<td>
-							<button class="btn btn-default" type="button" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(1, item)">查看详情</button>
+							<button class="btn btn-default" type="button" ng-click="ceshidianji(item)">查看详情</button>
 						</td>
 						<td>
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField"  ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
@@ -575,184 +571,212 @@ li{
 							<div class="modal-body">
 							<!-- A表单 -->
 								<form class="form-horizontal">
-									<div ng-if="goodsVar == 1">
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">name</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.name">
+									<!--<div ng-if="goodsVar == 1">
+										<div ng-repeat="x in data.additional_field">
+											<div class="form-group">
+												<label class="col-sm-2 control-label">name</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="data.additional_field.name">
+												</div>
 											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputPassword3" class="col-sm-2 control-label">角色ID</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputPassword3" ng-model="goodsParams.displayName">
+											<div class="form-group">
+												<label for="inputPassword3" class="col-sm-2 control-label">角色ID</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="data.additional_field.displayName">
+												</div>
 											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputPassword3" class="col-sm-2 control-label">desc</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputPassword3" ng-model="goodsParams.desc">
+											<div class="form-group">
+												<label for="inputPassword3" class="col-sm-2 control-label">desc</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="data.additional_field.desc">
+												</div>
 											</div>
-										</div>
-										<div class="form-group">
-											<div class="col-sm-offset-2 col-sm-10">
-												<div class="checkbox">
-													<label>
-														<input name="goods" type="radio"> 是
-													</label>
-													<label>
-														<input name="goods" type="radio"> 否
-													</label>
+											<div class="form-group">
+												<div class="col-sm-offset-2 col-sm-10">
+													<div class="checkbox">
+														<label>
+															<input name="goods" type="radio" ng-model="data.additional_field.required" ng-value=1> 是
+														</label>
+														<label>
+															<input name="goods" type="radio" ng-model="data.additional_field.required" ng-value=0> 否
+														</label>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
+									</div>-->
 									<!-- 添加商品 -->
 									<div ng-if="goodsVar == 2">
 										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">subject/商品名称</label>
+											<label class="col-sm-2 control-label">subject/商品名称</label>
 											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.subject" placeholder="">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.subject" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">商品详情</label>
+											<label class="col-sm-2 control-label">商品详情</label>
 											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.body" placeholder="">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.body" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">购买数量</label>
+											<label class="col-sm-2 control-label">购买数量</label>
 											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.default_buy_count" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
+											<label class="col-sm-2 control-label">price/价格</label>
 											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.price" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">app_name/第三方</label>
+											<label class="col-sm-2 control-label">app_name/第三方</label>
 											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.app_name" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">app_goods_id</label>
+											<label class="col-sm-2 control-label">app_goods_id</label>
 											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_goods_id" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">name</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.name" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.displayName" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputPassword3" class="col-sm-2 control-label">desc</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputPassword3" ng-model="goodsParams.desc" placeholder="">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.app_goods_id" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
 											<div class="col-sm-offset-2 col-sm-10">
-												<label for="inputEmail3" class="col-sm-2 control-label">is_on_sale</label>
+												<label class="col-sm-2 control-label">is_on_sale</label>
 												<div class="checkbox">
 													<label>
-														<input name="goods" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
+														<input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
 													</label>
 													<label>
-														<input name="goods" type="radio" ng-model="goodsParams.is_on_sale" ng-value=0> 否
+														<input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=0> 否
 													</label>
 												</div>
 											</div>
 										</div>
+										<div ng-repeat="x in goodsMan">
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">name</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="x.name" id="inputEmail3" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">desc</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-offset-2 col-sm-10">
+													<label for="inputEmail3" class="col-sm-2 control-label">required</label>
+													<div class="checkbox">
+														<label>
+															<input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
+														</label>
+														<label>
+															<input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<button class="btn btn-default" type="submit" ng-click="addGoodsAccount()">添加多个信息</button>									
 									</div>
 									<!-- 修改商品信息 -->
 									<div ng-if="goodsVar == 3">
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">subject/商品名称</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.subject" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">商品详情</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.body" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">购买数量</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">app_name/第三方</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">goods_id</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.goods_id" placeholder="" disabled="disabled">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">app_goods_id</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_goods_id" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">name</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.name" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.displayName" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="inputPassword3" class="col-sm-2 control-label">desc</label>
-											<div class="col-sm-10">
-												<input type="test" class="form-control goods-control" id="inputPassword3" ng-model="goodsParams.desc" placeholder="">
-											</div>
-										</div>
-										<div class="form-group">
-											<div class="col-sm-offset-2 col-sm-10">
-												<label for="inputEmail3" class="col-sm-2 control-label">is_on_sale</label>
-												<div class="checkbox">
-													<label>
-														<input name="goods" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
-													</label>
-													<label>
-														<input name="goods" type="radio" ng-model="goodsParams.is_on_sale" ng-value=0> 否
-													</label>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">subject/商品名称</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.subject" placeholder="">
 												</div>
 											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">商品详情</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.body" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">购买数量</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">app_name/第三方</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="inputEmail3" class="col-sm-2 control-label">app_goods_id</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_goods_id" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-offset-2 col-sm-10">
+													<label for="inputEmail3" class="col-sm-2 control-label">is_on_sale</label>
+													<div class="checkbox">
+														<label>
+															<input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
+														</label>
+														<label>
+															<input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=0> 否
+														</label>
+													</div>
+												</div>
+											</div>
+											<div ng-repeat="x in goodsParams.additional_field">
+												<div class="form-group">
+													<label for="inputEmail3" class="col-sm-2 control-label">name</label>
+													<div class="col-sm-10">
+														<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.name" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
+													<div class="col-sm-10">
+														<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="inputEmail3" class="col-sm-2 control-label">desc</label>
+													<div class="col-sm-10">
+														<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-sm-offset-2 col-sm-10">
+														<label for="inputEmail3" class="col-sm-2 control-label">required</label>
+														<div class="checkbox">
+															<label>
+																<input name="goods" type="radio" ng-model="x.required" ng-value=1> 是
+															</label>
+															<label>
+																<input name="goods" type="radio" ng-model="x.required" ng-value=0> 否
+															</label>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div id="accounttGoods"></div>										
 										</div>
-									</div>
 									<div class="modal-footer" ng-if="goodsVar == 2">
 										<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goodsAdd()">添加</button>
 									</div>

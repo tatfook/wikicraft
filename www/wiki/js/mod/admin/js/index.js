@@ -12,7 +12,26 @@ define([
     'text!wikimod/admin/html/templates.html',
 	'/wiki/js/lib/md5.js',
 ], function (app, util, mods, htmlContent, websiteTemplateContent) {
-	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', '$http', function ($scope, $auth, Account, modal, Message, $http) {
+	app.factory('goodsFactory',[function(){
+		var currentAdditionalField = {}
+		var item;
+
+		//接受外部数据
+		currentAdditionalField.itemSet = function(newItem){
+			item = newItem;
+		}
+		//返回数据
+		currentAdditionalField.name = "hello world"
+		currentAdditionalField.itemGet = function(){
+			return item;
+		}
+
+		return currentAdditionalField;
+	}]);
+	app.registerController('goodsController',['$scope','goodsFactory',function($scope,goodsFactory){
+		$scope.currentAdditionalField = goodsFactory.itemGet()
+	}]);
+	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', '$http', '$uibModal','goodsFactory',function ($scope, $auth, Account, modal, Message, $http, $uibModal, goodsFactory, item) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
 		$scope.selectMenuItem = "manager";
@@ -389,18 +408,50 @@ define([
 		
 		$scope.clickGoodsToggle = function (params,item) {
 			$scope.goodsVar = params;
-			if(params == 1){
+			/*if(params == 1){
 				$scope.getOneGoodsInfo(item);
-			}
+			}*/
 			if(params == 2){
 				$scope.goodsParams = {};
-			}
-			if(params == 3){
-				console.log(item)
-				$scope.getOneGoodsInfo(item);
+				$scope.goodsMan = [];
 				$scope.goodsParams.is_on_sale = 1;
 			}
+			if(params == 3){
+				$scope.getOneGoodsInfo(item);
+			}
 		};
+
+		$scope.ceshidianji = function(item){
+			goodsFactory.itemSet(item.additional_field)
+			$uibModal.open({
+				"animation"       :true,
+				"ariaLabeledBy"   :"title",
+				"ariaDescribedBy" :"body",
+				"template"        :`
+				<table class="table table-bordered goods">
+					<tr>
+						<td><strong>name</strong></td>
+						<td><strong>displayName</strong></td>
+						<td><strong>desc</strong></td>
+						<td><strong>required</strong></td>
+					</tr>
+					<tr ng-repeat="x in currentAdditionalField">
+						<td>{{x.name}}</td>
+						<td>{{x.displayName}}</td>
+						<td>{{x.desc}}</td>
+						<td>{{x.required==1?"是":"否"}}</td>
+					</tr>
+				</table>
+			`,
+				"controller"      :"goodsController",
+				"size"            :"lg",
+				"keyboard"        :false,
+			})
+			.result.then(function(){
+				
+			},function(){}
+			)
+		}
 		
 		//商品列表
 		$scope.maxSize     = 10;
@@ -435,12 +486,7 @@ define([
 		//商品添加
 		$scope.goodsAdd = function(){
 			var goodsAddUrl = config.apiUrlPrefix + "goods/addGoods";
-			$scope.goodsParams.additional_field = {
-				"name"        : $scope.goodsParams.name,
-				"displayName" : $scope.goodsParams.displayName,
-				"desc"        : $scope.goodsParams.desc,
-				"required"    : $scope.goodsParams.required,
-			}
+			$scope.goodsParams.additional_field = $scope.goodsMan;
 			
 			var params = {
 				"subject"           : $scope.goodsParams.subject,
@@ -460,12 +506,7 @@ define([
 		//商品信息修改
 		$scope.goodsModify = function(){
 			var goodsModifyUrl = config.apiUrlPrefix + "goods/modifyGoods";
-			$scope.goodsParams.additional_field = {
-				"name"        : $scope.goodsParams.name,
-				"displayName" : $scope.goodsParams.displayName,
-				"desc"        : $scope.goodsParams.desc,
-				"required"    : $scope.goodsParams.required,
-			}
+			$scope.goodsParams.additional_field = $scope.goodsMan;
 			
 			var params = {
 				"subject"           : $scope.goodsParams.subject,
@@ -499,11 +540,7 @@ define([
 					$scope.goodsParams.default_buy_count = data.default_buy_count;
 					$scope.goodsParams.app_name          = data.app_name;
 					$scope.goodsParams.is_on_sale        = data.is_on_sale;
-					$scope.goodsParams.name              = data.additional_field.name;
-					$scope.goodsParams.displayName       = data.additional_field.displayName;
-					$scope.goodsParams.desc              = data.additional_field.desc;
-					$scope.goodsParams.required          = data.additional_field.required;
-					
+					$scope.goodsParams.additional_field  = data.additional_field
 				}
 			})
 		}
@@ -530,6 +567,15 @@ define([
 				$scope.getGoods();
 			};
 		}
+
+		//添加多个账号信息
+		var goods_count = 0;
+		$scope.goodsMan = [];
+		$scope.addGoodsAccount = function(){
+			$("#changeName").name = goods_count + 1
+			$scope.goodsMan.push({})
+		}
+
 		
 		// 搜索管理员账号
 		$scope.managerSearch = function (){
