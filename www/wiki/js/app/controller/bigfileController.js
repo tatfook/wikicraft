@@ -49,7 +49,7 @@ define([
             if (file.filesize){
                 return file.filesize;
             }
-            if (!file.file || (!file.file.size && file.file.size != 0)){
+            if (!(file.file || file.file.size || angular.isNumber(file.file.size))){
                 return;
             }
             var filesize = file.file.size;
