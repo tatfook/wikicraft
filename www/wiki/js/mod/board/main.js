@@ -20,7 +20,39 @@
             "height" : mxClientHeight + "px",
         });
 
-        Menus.prototype.defaultMenuItems = ['file', 'edit', 'view', 'arrange', 'extras'];
+        Menus.prototype.defaultMenuItems = ['edit', 'view', 'arrange'];
+        
+        var menusInit = Menus.prototype.init;
+        Menus.prototype.init = function()
+        {
+            menusInit.apply(this, arguments);
+    
+            var menus = this.menus;
+    
+            menus.arrange = new Menu(mxUtils.bind(this, function(menu, parent)
+            {
+                this.addMenuItems(menu, ['toFront', 'toBack', '-'], parent);
+                this.addSubmenu('direction', menu, parent);
+                this.addMenuItems(menu, ['turn', '-'], parent);
+                this.addSubmenu('align', menu, parent);
+                this.addSubmenu('distribute', menu, parent);
+                menu.addSeparator(parent);
+                this.addSubmenu('navigation', menu, parent);
+                this.addSubmenu('insert', menu, parent);
+                this.addMenuItems(menu, ['-', 'group', 'ungroup', 'removeFromGroup', '-', 'clearWaypoints', 'autosize'], parent);
+            }));
+    
+            this.menus = menus;
+        }
+
+        var diagramFormatPanelAddView = DiagramFormatPanel.prototype.addView;
+        DiagramFormatPanel.prototype.addView = function(div)
+        {
+            diagramFormatPanelAddView.apply(this, arguments);
+            div.removeChild(div.lastChild);
+            
+            return div;
+        }
 
         var editorUiInit = EditorUi.prototype.init;
 
