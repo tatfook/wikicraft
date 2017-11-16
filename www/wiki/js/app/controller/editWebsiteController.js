@@ -198,11 +198,26 @@ define([
 				return;
 			}
 			
+			$scope.shareGroups = [];
+			util.post(config.apiUrlPrefix + 'group_user/getByMember', {memberName:siteinfo.username},function(data){
+				data = data || [];
+				for (var i = 0; i < data.length; i++){
+					data[i].name = data[i].username + '/' + data[i].groupname;
+					data[i].id = data[i].dataSourceGroupId;
+					$scope.shareGroups.push(data[i]);
+				}
+			});
 			siteDataSource.getGroupList({owned:true}, function(data){
 				data = data || {};
 				$scope.groups = data;	
 				//console.log($scope.groups);
 				for (var i = 0; i < data.length; i++) {
+					$scope.shareGroups.push({
+						username:data[i].groupUsername,
+						groupname:data[i].name,
+						name:data[i].groupUsername + '/' + data[i].name,
+						id:data[i].id,
+					});
 					(function(index){
 						var group = data[index];
 						siteDataSource.getGroupMemberList(group, function(data){
@@ -269,7 +284,8 @@ define([
 
 			siteDataSource.addProjectGroup(params, function(){
 				var params = {
-					groupname: group.name,
+					groupUsername: group.username,
+					groupname: group.groupname,
 					sitename: siteinfo.name,
 				    username: siteinfo.username,
 					level: level.level,
@@ -303,7 +319,7 @@ define([
 
                 siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
                     group.isDelete = true;
-                    util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
+                    util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename,groupUsername:group.groupUsername, groupname:group.groupname,level:group.level});
                 });
             });
 		};
@@ -375,7 +391,7 @@ define([
 				util.post(config.apiUrlPrefix + 'group/upsert', {
 					username:siteinfo.username,
 					groupname:group.name,
-					dataSourceUserId:data.id, // 需不需要存
+					dataSourceGroupId:data.id, // 需不需要存
 					visibility:"public",
 				});
 				$scope.groups.push(data);
