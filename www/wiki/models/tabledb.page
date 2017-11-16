@@ -115,20 +115,30 @@ function tabledb:api_upsert(params)
 	end
 
 	local table = defaultTableDB[params.tableName]
-	local record = params.query or {}
+    local record = params.query or {}
 
-	--log(record)
-	if record._id then
-		table:updateOne({_id=record._id}, record, resume)
-	else
-		table:insertOne(nil, record, resume)
+    local function insert(v)
+        if v._id then
+            table:updateOne({_id=v._id}, v, resume)
+        else
+            table:insertOne(nil, v, resume)
+        end
+        return errors:wrap(yield())
     end
 
     if params.tableName == "sensitive_words" then
         reset_aho_corasick()
     end
 
-	return errors:wrap(yield())
+    if not util:isArray(record) then
+        return insert(record)
+    else
+        local result = {}
+        for k, v in pairs(record) do
+            result[#result+1] = insert(v)
+        end
+        return errors:wrap(nil, result)
+    end
 end
 
 function tabledb:api_delete(params)
@@ -137,23 +147,34 @@ function tabledb:api_delete(params)
 	end
 
 	local table = defaultTableDB[params.tableName]
-	local query = params.query or {}
+	local record = params.query or {}
 
-	local query, pageQuery, isAll = util:getQueryObj(query)
+	local query, pageQuery, isAll = util:getQueryObj(record)
 
 	if isAll then
 		return errors:wrap(nil, {message="无法删除整张表"})
 	end
 
-	log(query)
+    log(query)
 
-    table:delete(query, resume)
+    local function delete(v)
+        table:delete(v, resume)
+        return errors:wrap(yield())
+    end
 
     if params.tableName == "sensitive_words" then
         reset_aho_corasick()
     end
 
-	return errors:wrap(yield())
+    if not util:isArray(record) then
+        return delete(record)
+    else
+        local result = {}
+        for k, v in pairs(record) do
+            result[#result+1] = delete(v)
+        end
+        return errors:wrap(nil, result)
+    end
 end
 
 
