@@ -30,7 +30,7 @@ function group_user:api_upsert(params)
 	local data = siteGroupDB:api_getByUserGroupName({username=params.username, groupname=params.groupname, pageSize=const.MAX_SITE_NUM}).data.groupList
 
 	local siteUserDB = models.site_user:new()
-	for _, obj in ipairs(data) do
+	for _, obj in ipairs(data or {}) do
 		siteUserDB:api_upsert({
 			username=params.username,
 			groupname=params.groupname,
@@ -56,7 +56,7 @@ function group_user:api_deleteMember(params)
 	local data = siteGroupDB:api_getByUserGroupName({username=params.username, groupname=params.groupname, pageSize=const.MAX_SITE_NUM}).data.groupList
 
 	local siteUserDB = models.site_user:new()
-	for _, obj in ipairs(data) do
+	for _, obj in ipairs(data or {}) do
 		siteUserDB:api_deleteByName({
 			username=params.username,
 			groupname=params.groupname,

@@ -84,6 +84,13 @@ function pay:api_createCharge(params)
 
 	local err, query = self:validateQuery(params);
 
+	if(query.price > 1000) then
+		local limitMessage = commonlib.copy(errors.SERVER_INNER_ERROR);
+		limitMessage.extra = "充值金额不能大于1000元";
+
+		return errors:wrap(limitMessage);
+	end
+
 	local appInfo = oauth_app:getByAppName(query.app_name);
 	
 	if(not appInfo) then
@@ -156,7 +163,7 @@ function pay:api_createCharge(params)
 		additional.orderno = tostring(trade_no);
 		additional.from    = tostring(0);
 
-		for key,item in pairs(additional) do
+		for key,item in pairs(additional or {}) do
 			query.additional[key] = item;
 		end
 	elseif(query.app_name == "魔法哈奇2") then
@@ -169,7 +176,7 @@ function pay:api_createCharge(params)
 		additional.orderno = tostring(trade_no);
 		additional.from    = tostring(0);
 
-		for key,item in pairs(additional) do
+		for key,item in pairs(additional or {}) do
 			query.additional[key] = item;
 		end
 		
@@ -332,7 +339,7 @@ function pay:api_webhooks(params)
 
 				url = url .. "?";
 
-				for key,value in pairs(apiParams) do
+				for key,value in pairs(apiParams or {}) do
 					url = url .. key .. "=" .. value .. "&";
 				end
 
@@ -412,14 +419,14 @@ function pay:validate(appGoodsInfo, query)
 	local validate = true;
 
 	if(appGoodsInfo.additional_field and type(appGoodsInfo.additional_field) == "table") then
-		for KeyA, itemA in ipairs(appGoodsInfo.additional_field) do
+		for KeyA, itemA in ipairs(appGoodsInfo.additional_field or {}) do
 			local checkField = true;
 			local field      = itemA;
 
 			if (field.required) then
 				checkField = false
 
-				for KeyB, itemB in pairs(query.additional) do
+				for KeyB, itemB in pairs(query.additional or {}) do
 					if (field.name == KeyB) then
 						checkField = true;
 					end

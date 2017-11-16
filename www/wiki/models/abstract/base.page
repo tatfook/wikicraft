@@ -47,7 +47,7 @@ end
 function base:getUniqueQuery(params, bForceAll)
 	local query = {};
 	local fields = self:getfields();
-	for name, _ in pairs(params) do
+	for name, _ in pairs(params or {}) do
 		if(fields[name].uniqueIndex) then
 			if(params[name]) then
 				query[name] = params[name];
@@ -69,7 +69,7 @@ function base:findUnqiueIndexName(params)
 		return "_id";
 	end
 	local fields = self:getfields();
-	for name, _ in pairs(params) do
+	for name, _ in pairs(params or {}) do
 		if(fields[name] and fields[name].uniqueIndex) then
 			return name;
 		end
@@ -85,11 +85,11 @@ function base:validateQuery(params)
 	end
 	local fields = self:getfields();
 	local err;
-	for name, value in pairs(params) do
+	for name, value in pairs(params or {}) do
 		if(name == "_unset") then
 			local _unset = {};
 			if(type(value) == "table") then
-				for name, v in pairs(value) do
+				for name, v in pairs(value or {}) do
 					if(type(name) == "string") then
 						v = name;
 					end
@@ -150,7 +150,7 @@ function base:validateRow(data)
 	end
 	local fields = self:getfields();
 	local invalid_fields;
-	for name, value in pairs(data) do
+	for name, value in pairs(data or {}) do
 		local new_value = value;
 		if(fields[name]) then
 			local field_type = fields[name].type;
@@ -179,7 +179,7 @@ function base:validateRow(data)
 	end
 	if(invalid_fields) then
 		-- remove non-exist fields
-		for i, name in ipairs(invalid_fields) do
+		for i, name in ipairs(invalid_fields or {}) do
 			data[name] = nil;
 		end
 		-- also remove non-exist fields from database, this will auto-fix schema

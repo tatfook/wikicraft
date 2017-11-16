@@ -69,6 +69,12 @@
     .bigfile-modal .table tr > td[contenteditable]{
         text-overflow: unset;
     }
+    .bigfile-modal .table tr > td[contenteditable=true]{
+        overflow-x: scroll;
+    }
+    .bigfile-modal .table tr > td[contenteditable=true]::-webkit-scrollbar{
+        display: none;
+    }
     .bigfile-modal .table .checkbox-column{
         width: 50px;
     }
@@ -393,10 +399,12 @@
                     <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
                     <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
                     <div class="clearfix">
-                        <button id="selectFileInput" ng-disabled="startUpdating && !finishUploading" class="btn btn-primary file-input-btn">选中本地文件</button>
+                        <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn">选中本地文件</button>
+                        <span class="text-danger" ng-show="isUidErr">出错了，请稍后重试</span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
+
                             <span class="preview-time">
-                                预估完成时间:{{finishTime || "00:00"}} (剩余 {{remainTime}})
+                                预估完成时间:{{finishTime || "等待计算"}} (剩余 {{remainTime}})
                             </span>
                         </p>
                     </div>
@@ -424,9 +432,9 @@
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
                                     </div>
-                                    <span ng-show="file.status == 4" class="text-danger" title="{{file.errTip}}">上传失败</span>
-                                    <span ng-click="stopUpload(file, $index)" ng-show="file.status < 5" class="glyphicon glyphicon-remove"></span>
-                                    <span ng-show="file.status == 5" class="text-success glyphicon glyphicon-ok"></span>
+                                    <span ng-show="file.status == 4 || file.backStatus == 'failed'" class="text-danger" title="{{file.errTip}}">上传失败</span>
+                                    <span ng-click="stopUpload(file, $index)" ng-show="file.backStatus != 'success'" class="glyphicon glyphicon-remove"></span>
+                                    <span ng-show="file.status == 5 && file.backStatus == 'success'" class="text-success glyphicon glyphicon-ok"></span>
                                 </div>
                             </div>
                         </div>

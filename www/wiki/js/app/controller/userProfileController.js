@@ -9,7 +9,8 @@ define(['app',
 	'helper/sensitiveWord',
     'text!html/userProfile.html',
     'cropper',
-], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
+    'bluebird'
+], function (app, util, storage, dataSource, sensitiveWord, htmlContent, cropper, Promise) {
     app.registerController('userProfileController', ['$scope', '$interval', 'Account', 'Message', function ($scope, $interval, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
@@ -21,6 +22,7 @@ define(['app',
         $scope.userPhone="";
         $scope.myPays = [];// code为0表示成功，isConsume为true时表示为消费，否则为收入
         $scope.introMaxUtf8Length = 1024;
+        $scope.locationMaxUtf8Length = 256;
         var sensitiveElems = [];
 
         function getResultCanvas(sourceCanvas) {
@@ -181,7 +183,9 @@ define(['app',
 					init(userinfo);
 				});
 			});
-		});
+        });
+        
+        window.x = $scope;
 
         // 保存用户信息
         $scope.saveProfile = function () {
@@ -192,53 +196,32 @@ define(['app',
 			user.vipInfo = undefined;
 
 			var checkSensitives = [user.displayName, user.location, user.introduce];
-			var isSensitive = false;
 
-			$.each(checkSensitives, function (index,word) {
-                if (word == ""){
-                    return true;
+            sensitiveWord.getAllSensitiveWords(checkSensitives).then(function(results) {
+                var isSensitive = results && results.length;
+                isSensitive && console.log("包含敏感词:" + results.join("|"));
+                trySaveProfile(isSensitive);
+            });
+
+            function trySaveProfile(isSensitive) {
+                if (isSensitive){
+                    $scope.formErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
+                    $scope.$apply();
+                    return;
                 }
-                sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
-                    if (foundWords.length > 0){
-                        isSensitive = true;
-                        console.log("包含敏感词:" + foundWords.join("|"));
-                        console.log(replacedStr);
-                        return false;
-                    }
+    
+                util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
+                    data.vipInfo = $scope.user.vipInfo;
+                    data.dataSource = $scope.user.dataSource;
+                    data.defaultSiteDataSource = $scope.user.defaultSiteDataSource;
+                    Account.setUser(data);
+                    Message.success("修改成功");
                 });
-            });
-            
-			if (isSensitive){
-			    $scope.formErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
-			    return;
+    
+                // 提交用户信息给搜索引擎
+                util.post(config.apiUrlPrefix + "elastic_search/submitUserinfo", user);
             }
-
-            util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
-				data.vipInfo = $scope.user.vipInfo;
-				data.dataSource = $scope.user.dataSource;
-				data.defaultSiteDataSource = $scope.user.defaultSiteDataSource;
-                Account.setUser(data);
-                Message.success("修改成功");
-            });
-
-			// 提交用户信息给搜索引擎
-			util.post(config.apiUrlPrefix + "elastic_search/submitUserinfo", user);
         }
-
-        // 修改密码
-        $scope.modifyPassword = function () {
-            console.log($scope.passwordObj);
-            if ($scope.passwordObj.newPassword1 != $scope.passwordObj.newPassword2) {
-                Message.info("两次新密码不一致!!!");
-                return;
-            }
-            var params = {oldpassword: $scope.passwordObj.oldPassword, newpassword: $scope.passwordObj.newPassword1};
-            util.http("POST", config.apiUrlPrefix + "user/changepw", params, function (data) {
-                Message.success("密码修改成功");
-            }, function (error) {
-                Message.info(error.message);
-            });
-        };
 
 		$scope.isBind = function(type) {
 			if (type == "email") {
@@ -371,7 +354,7 @@ define(['app',
 				$scope.rightImageCode += Math.floor(Math.random() * 10);
 			}
 			$scope.imageCodeUrl = "http://keepwork.com/captcha/get?" + $scope.rightImageCode;
-		}
+		};
 
 		$scope.showBindPhone = function() {
 			//console.log("手机绑定开发中");
@@ -388,8 +371,10 @@ define(['app',
 			$scope.wait = 0;
             $scope.smsCode = "";
             $scope.imageCode = "";
+            $scope.imageCodeErrMsg = "";
+            $scope.errorMsg = "";
 			$('#phoneModal').modal("show");//重新发送不弹窗
-		}
+		};
 
         //安全验证
         $scope.bindPhone=function () {
@@ -424,7 +409,7 @@ define(['app',
 			}, function (err) {
 			    $scope.errorMsg = err.message;
             });
-        }
+        };
 
         // 修改用户信息
         $scope.clickMyProfile = function () {
@@ -435,6 +420,7 @@ define(['app',
         // 账号安全
         $scope.clickAccountSafe = function () {
             $scope.showItem = 'accountSafe';
+            $scope.passwordObj = {};
 
             var getUserThresServiceList = function () {
                 util.post(config.apiUrlPrefix + 'user_three_service/getByUsername', {username:$scope.user.username}, function (serviceList) {
@@ -482,15 +468,43 @@ define(['app',
 
             $scope.getBindServiceClass = function (serviceName) {
                 return $scope.isBindThreeService(serviceName) ? "btn-outline" : "btn-primary";
-            }
+            };
+
+            // 修改密码
+            $scope.modifyPassword = function () {
+                if (!$scope.passwordObj || !$scope.passwordObj.oldPassword || !$scope.passwordObj.newPassword1 || !$scope.passwordObj.newPassword2){
+                    Message.info("请输入密码");
+                    return;
+                }
+                if ($scope.passwordObj.newPassword1 != $scope.passwordObj.newPassword2) {
+                    Message.info("两次新密码不一致!!!");
+                    return;
+                }
+                var params = {oldpassword: $scope.passwordObj.oldPassword, newpassword: $scope.passwordObj.newPassword1};
+                util.http("POST", config.apiUrlPrefix + "user/changepw", params, function (data) {
+                    Message.success("密码修改成功");
+                    $scope.passwordObj = {};
+                }, function (error) {
+                    Message.info(error.message);
+                });
+            };
+
+            $('a[data-toggle="tab"]').on('hidden.bs.tab', function (e) {
+                $scope.passwordObj = {};
+                $scope.emailErrMsg = "";
+                $scope.userEmail = "";
+                $scope.userPhone = "";
+                $scope.$apply();
+            });
 
             getUserThresServiceList();
-        }
+        };
 
         // 我的动态
         $scope.clickMyTrends = function () {
             $scope.showItem = 'myTrends';
             $scope.trendsType = "organization";
+            $scope.trendsTypeList = ["organization","favorite","works"];
             getUserTrends();
 
             $scope.selectTrendsType = function (trendsType) {
@@ -504,8 +518,13 @@ define(['app',
             }
 
             $scope.isShowTrend = function (trends) {
-                var trendsTypeList = ["organization","favorite","works"];
-                return  $scope.trendsType == trendsTypeList[trends.trendsType];
+                return  $scope.trendsType == $scope.trendsTypeList[trends.trendsType];
+            }
+
+            $scope.isShowTrendsEmpty = function() {
+                return !($scope.trendsList || []).filter(function(item) {
+                    return $scope.trendsTypeList[item.trendsType] == $scope.trendsType;
+                }).length;
             }
         }
 

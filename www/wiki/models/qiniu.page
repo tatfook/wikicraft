@@ -12,6 +12,9 @@ include_once("./qiniu_files.page")
 local qiniu = inherit(models.abstract.base, gettable("models.qiniu"))
 qiniu.db_name = "qiniu"
 
+local accessKey = KEEPWORK["config"]["default"]["threeService"]["qiniu"]["accessKey"]
+local secretKey = KEEPWORK["config"]["default"]["threeService"]["qiniu"]["secretKey"]
+
 function qiniu:ctor() 
 	self:addfield("username", "string") -- 用户名
 	self:addfield("used", "number")   -- 用户已使用的大小
@@ -57,10 +60,10 @@ function qiniu:api_deleteByFileId(params)
 	end
 
 	local ret = self:api_deleteFile({key=qiniuFiles.key}).data
-	--if ret.result ~= 0 then
-		--LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
-		--return errors:wrap(errors.SERVER_INNER_ERROR)
-	--end
+	if ret.result ~= 0 then
+		LOG.std(nil, "error", "keepwork", "delete file failed:" .. qiniuFiles.key)
+		return errors:wrap(errors.SERVER_INNER_ERROR)
+	end
 
 	local ret = qiniuFilesDB:api_deleteById({_id=params.file_id}).error
 	if errors:isError(ret) then
@@ -68,6 +71,7 @@ function qiniu:api_deleteByFileId(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
+	--LOG.std(nil, "error", "keepwork", {used=data.used, size=qiniuFiles.size})
 	data.used = data.used - qiniuFiles.size
 	self:db():updateOne({["+username"]={qiniuFiles.username}}, data, resume)
 	yield()
@@ -84,8 +88,10 @@ function qiniu:api_upload(params)
 	download_url = download_url and download_url.download_url
 
 	params.size = tonumber(params.size or 0) or 0
-	if not params.domain or not params.key or not username or not download_url or not params.hash or not params.size or params.size < 1 then
-		self:deleteFile(params)
+
+	if not params.domain or not params.key or not username or not download_url or not params.size or params.size < 0 then
+
+		self:api_deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -103,7 +109,7 @@ function qiniu:api_upload(params)
 
 	data.used = data.used + params.size
 	if data.used > data.total then
-		self:deleteFile(params)
+		self:api_deleteFile(params)
 		return errors:wrap(errors:new("用户空间使用已超限制"))
 	end
 		
@@ -115,7 +121,7 @@ function qiniu:api_upload(params)
 	local file = qiniu_files_db:api_upsert(params).data
 
 	if not file then
-		self:deleteFile(params)
+		self:api_deleteFile(params)
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
 
@@ -170,9 +176,18 @@ end
 
 
 local function getBucketName()
+	local hostname = request:GetHost()
 	local bucket = "keepwork-dev"
 	if WIKI_ENV == "rls" then
 		bucket = "keepwork-release"
+	end
+
+	if hostname == "release.keepwork.com" then
+		bucket = "keepwork-dev"
+	elseif hostname == "keepwork.com" then
+		bucket = "keepwork-release"
+	elseif hostname == "dev.keepwork.com" then
+		bucket = "keepwork-dev"
 	end
 
 	return bucket
@@ -180,21 +195,102 @@ end
 
 
 local function getDownloadDomain()
+	local hostname = request:GetHost()
 	local defaultDomain = "oy41aju0m.bkt.clouddn.com"
 	if WIKI_ENV == "rls" then
 		defaultDomain = "oy41jt2uj.bkt.clouddn.com"
 	end
 
+	if hostname == "release.keepwork.com" then
+		defaultDomain = "oy41aju0m.bkt.clouddn.com"
+	elseif hostname == "keepwork.com" then
+		defaultDomain = "oy41jt2uj.bkt.clouddn.com"
+	elseif hostname == "dev.keepwork.com" then
+		defaultDomain = "oy41aju0m.bkt.clouddn.com"
+	end
+
 	return defaultDomain
+end
+
+local function getCalllbackUrl()
+	local hostname = request:GetHost()
+	local host = "121.14.117.252:8900"
+	if WIKI_ENV == "rls" then
+		host = "121.14.117.252:8000"
+	end
+	
+	if hostname == "release.keepwork.com" then
+		host = "121.14.117.251:8088"
+	elseif hostname == "keepwork.com" then
+		host = "121.14.117.252:8000"
+	elseif hostname == "dev.keepwork.com" then
+		host = "121.14.117.252:8900"
+	end
+
+	--return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
+	return "http://" .. host .. "/api/wiki/models/qiniu/callback"
+end
+
+-- 七牛上传回调
+function qiniu:api_callback(params)
+	if not params or not params.uid or not params.size or not tonumber(params.size) or not params.bucket or not params.key then
+		response:status(400):send({error = "参数错误"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
+	end
+
+	local username = mem_cache:get(params.uid)
+	if not username then
+		response:status(400):send({error = "uid失效"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
+	end
+
+	self:db():findOne({["+username"]={username}}, resume)
+	local _, data = yield()
+	
+	if not data then
+		response:status(400):send({error = "无用户记录"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
+	end
+
+	local size = tonumber(params.size)
+	if data.used + size > data.total then
+		response:status(400):send({error = "用户存贮空间不足"}, 400)
+		self:api_deleteFile({bucket=params.bucket, key=params.key})
+		return
+	end
+
+	return {error = "ok"}
+end
+
+function qiniu:api_getUid(params)
+	local username = getUsername()
+	--username = "xiaoyao"
+
+	if not username then
+		return errors:wrap(nil)
+	end
+	
+	local random_str = tostring(math.random(10000,99999))
+	local uid = ParaMisc.md5(username .. random_str)
+	mem_cache:set(uid, username, nil, 3600 * 24 * 7)
+
+	return errors:wrap(nil,{uid=uid})
 end
 
 -- 获取上传token
 function qiniu:api_getUploadToken(params)
 	local bucket = getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", bucket=bucket, expires=params.expires})
+	--NPL.call("lib/libQiNiuPlugin.so", {cmd="getUploadToken", bucket=bucket, expires=params.expires})
+	local obj = {cmd="getUploadToken", bucket=bucket, expires=params.expires, callback_url = getCalllbackUrl(), accessKey=accessKey, secretKey=secretKey}
+	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
+	local err, data = yield()
+
 	-- msg = {token:"xxx"}
-	return errors:wrap(nil, msg)
+	return errors:wrap(err, data)
 end
 
 -- 获取下载url
@@ -207,10 +303,13 @@ function qiniu:api_getDownloadUrl(params)
 	local domain = getDownloadDomain()
 	local bucket = getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires})
-	--log(msg)
+	--NPL.call("lib/libQiNiuPlugin.so", {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires})
+	local obj = {cmd="getDownloadUrl", bucket=bucket, domain=domain, key=params.key, expires=params.expires, accessKey=accessKey, secretKey=secretKey}
+	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
+	local err, data = yield()
+
 	-- msg = {download_url:"xx"}
-	return errors:wrap(nil, msg)
+	return errors:wrap(err, data)
 end
 
 -- 删除文件七牛接口
@@ -219,11 +318,15 @@ function qiniu:api_deleteFile(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local bucket = getBucketName()
+	local bucket = params.bucket or getBucketName()
 
-	NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
+	--NPL.call("lib/libQiNiuPlugin.so", {cmd="deleteFile", bucket=bucket, key=params.key})
+	local obj = {cmd="deleteFile", bucket=bucket, key=params.key, accessKey=accessKey, secretKey=secretKey}
+	qiniu_sdk.qiniu_sdk("(qiniu)", obj, resume)
+	local err, data = yield()
+
 	-- msg = {result:1 or 0}
-	return errors:wrap(nil, msg)
+	return errors:wrap(err, data)
 end
 
 

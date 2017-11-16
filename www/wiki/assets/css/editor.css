@@ -349,10 +349,16 @@ select.resize-view {
 .toolbar-avatar {
 }
 .toolbar-avatar img {
-    width: 34px;
-    height: 34px;
+    width: 46px;
+    height: 46px;
+    border: 2px transparent solid;
+    position: relative;
+    margin-top: -5px;
     border-radius: 50%;
-    object-fit: cover;
+}
+.toolbar-avatar img:hover {
+    border: 2px #3977ad solid;
+    box-shadow: 0 0 2px #2c3e50;
 }
 
 .toolbar-brand{

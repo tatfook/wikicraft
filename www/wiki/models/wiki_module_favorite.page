@@ -35,7 +35,7 @@ function wiki_module_favorite:api_getByUserId(params)
 	local err, data = yield()
 	
 	local moduleList = {}
-	for _, value in pairs(data) do
+	for _, value in pairs(data or {}) do
 		moduleList[#moduleList+1] = wikiModuleDB:api_getById({moduleId=value.moduleId}).data
 	end		
 

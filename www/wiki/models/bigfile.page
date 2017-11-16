@@ -18,6 +18,7 @@ function bigfile:ctor()
 	self:addfield("channel", "string") -- 存贮方式 qiniu  youku  
 	self:addfield("source_url", "string") -- channel=none 网络视屏地址
 	self:addfield("file_id", "number") -- channel ~= none 文件id
+	self:addfield("size", "number")  -- 文件大小
 
 	self:addfield("updateDate", "string")     -- 最近使用时间
 	self:addfield("createDate", "string")     -- 创建时间
@@ -55,13 +56,16 @@ function bigfile:api_deleteById(params)
 	local _, bf = yield()
 
 	if not bf then
+		LOG.std(nil, "error", "keepwork", "not found")
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
 	if bf.channel == const.BIGFILE_QINIU and bf.file_id then
 		local qiniuDB = models.qiniu:new()
 		local ret = qiniuDB:api_deleteByFileId({file_id=bf.file_id}).error
+		--LOG.std(nil, "error", "keepwork", ret)
 		if errors:isError(ret) then
+			--LOG.std(nil, "error", "keepwork", "------------------")
 			return errors:wrap(ret)
 		end
 	end

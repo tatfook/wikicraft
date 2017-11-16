@@ -68,7 +68,7 @@ function website_comment:api_getByPageUrl(params)
 	end
 	-- TODO 联表查用户信息
 	local userDB = models.user:new()
-	for _, obj in pairs(data) do
+	for _, obj in pairs(data or {}) do
 		obj.userInfo = userDB:api_getById({userId=obj.userId}).data	
 	end
 

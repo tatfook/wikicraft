@@ -98,7 +98,7 @@ function website_apply:api_worksBatchApply(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
-	for _, applyId in pairs(params.applyIdList) do
+	for _, applyId in pairs(params.applyIdList or {}) do
 		self:api_worksApply({websiteId=params.websiteId, applyId=applyId})
 	end	
 	

@@ -37,11 +37,11 @@
     <!--The default duration in seconds to cache a static document when no expiry date is specified.-->
     <number name='CacheDefaultExpire'>240000</number>
 	<!--number of libcurl http thread count. For server who needs to send many http request, use a higher value like 10. -->
-    <!-- <number name='ServerCurlThreadCount'>20</number>  -->
+	<number name='ServerCurlThreadCount'>20</number>  
     <!--queue size of the libcurl http request. default to 500.  One can set to a smaller value, if one does not want to cache too many requests in the queue. 
     if request queue is full, System.os.GetUrl() will be ignored. 
     -->
-	<!-- <number name='ServerCurlThreadQueueSize'>500</number> -->
+	<number name='ServerCurlThreadQueueSize'>50</number> 
     <!--HTTP server related-->
     <table name='NPLRuntime'>
       <!--whether to use compression for incoming connections. This must be true in order for CompressionLevel and CompressionThreshold to take effect--> 

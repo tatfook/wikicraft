@@ -7,13 +7,16 @@ define([
     "helper/util",
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
-    app.registerController("bigfileController", ["$scope", function ($scope) {
+    app.registerController("bigfileController", ["$scope", "$rootScope", function ($scope, $rootScope) {
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
+		var uid = undefined; 
+		var isUploading = false;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
+        $rootScope.isBigfileUploading = false;
         if((util.getPathname() !="/wiki/user_center")){
             $scope.isModal=true;
         }
@@ -46,7 +49,8 @@ define([
             if (file.filesize){
                 return file.filesize;
             }
-            if (!file.file || !file.file.size){
+            var sizeIsNumber = file.file && angular.isNumber(file.file.size);
+            if (!sizeIsNumber){
                 return;
             }
             var filesize = file.file.size;
@@ -89,8 +93,8 @@ define([
             filesize = filesize || $scope.remainSize;
             speed = speed || $scope.speed || 0;
             if (speed <=0){
-                $scope.finishTime = $scope.finishTime || "等待计算";
-                $scope.remainTime = $scope.remainTime || "0秒";
+                $scope.finishTime = "等待计算";
+                $scope.remainTime = "0秒";
                 return;
             }
             var waitTime = filesize/speed;
@@ -156,6 +160,22 @@ define([
             }
             $scope.remainSize = $scope.remainSize|| 0;
             var qiniu = new QiniuJsSDK();
+            var clearQue = function (files) {
+                if (!qiniuBack){
+                    return;
+                }
+                if (files && files.length > 0){
+                    files.map(function (file) {
+                        file._start_at = file._start_at || new Date();
+                        qiniuBack.removeFile(file);
+                    });
+                    return;
+                }
+                qiniuBack.files.map(function (file) {
+                    file._start_at = file._start_at || new Date();
+                    qiniuBack.removeFile(file);
+                });
+            };
             var option = {
                 "browse_button":"selectFileInput",
                 "drop_element":"dropFile",
@@ -167,22 +187,33 @@ define([
                 "filters":{},
                 "init": {
                     'FilesAdded': function(up, files) {
+                        if ($scope.updatingFile && $scope.updatingFile.filename && $scope.startUpdating){
+                            clearQue(files);
+                            return;
+                        }
                         var self = this;
                         var filelist = [];
                         var filesSize = 0;
                         var conflictSize = 0;
                         for (var i = 0; i < files.length; i++) {
+                            if (files[i].name.split(".").length <= 1){
+                                files[i].name += ".part";
+                            }
                             filelist.push(files[i].name);
+                            files[i].size = files[i].size || 0;
+                            files[i].type = files[i].type || "multipart/part";
                             filesSize += files[i].size;
                         }
                         if ($scope.updatingFile && $scope.updatingFile._id){
-                            $scope.remainSize = $scope.updatingFile.file.size;
-                            if (isExceed($scope.storeInfo.unUsed * biteToG, $scope.uploadingSize)){
+                            $scope.remainSize = filesSize;
+                            if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - $scope.updatingFile.file.size))){
+                                clearQue(files);
                                 return;
                             }
                             $scope.uploadingFiles = files;
                             $scope.finishUploading = false;
                             $scope.startUpdating = true;
+                            $rootScope.isBigfileUploading = true;
                             self.start();
                             return;
                         }
@@ -197,6 +228,7 @@ define([
                                 });
 
                         	    if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - conflictSize))){
+                                    clearQue(files);
                                     return;
                                 }
 
@@ -205,6 +237,7 @@ define([
                                     "contentHtml": contentHtml
                                 }, function () {
                                     if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                                        clearQue(files);
                                         return;
                                     }
                                     $scope.storeInfo.unUsed -= filesSize/biteToG;
@@ -212,17 +245,23 @@ define([
                                     $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                     $scope.finishUploading = false;
                                     $scope.remainSize += filesSize;
+                                    $rootScope.isBigfileUploading = true;
                                     // $scope.$apply();
                                     self.start();
                                 }, function () {
                                     $scope.storeInfo.unUsed -= (filesSize - conflictSize)/biteToG;
                                     files = files.filter(function (file) {
+                                        if (conflictFileName.indexOf(file.name) >= 0){ // 将覆盖文件从上传队列中清除
+                                            file._start_at = file._start_at || new Date();
+                                            qiniuBack.removeFile(file);
+                                        }
                                         return conflictFileName.indexOf(file.name) < 0;
                                     });
                                     if(files.length > 0){
                                         $scope.uploadingFiles = $scope.uploadingFiles || [];
                                         $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                                         $scope.finishUploading = false;
+                                        $rootScope.isBigfileUploading = true;
                                         $scope.remainSize += (filesSize - conflictSize);
                                         self.start();
                                     }
@@ -230,6 +269,7 @@ define([
                         		return ;
                         	}
                             if (isExceed($scope.storeInfo.unUsed * biteToG, filesSize)){
+                        	    clearQue(files);
                                 return;
                             }
                             $scope.storeInfo.unUsed -= filesSize/biteToG;
@@ -237,6 +277,7 @@ define([
                             $scope.uploadingFiles = $scope.uploadingFiles.concat(files);
                             $scope.finishUploading = false;
                             $scope.remainSize += filesSize;
+                            $rootScope.isBigfileUploading = true;
                         	self.start();
                         });
                     },
@@ -281,39 +322,60 @@ define([
                                 option.filters = {};
                                 qiniuBack.destroy();
                                 qiniuBack = qiniu.uploader(option);
-                                // $scope.uploadingFiles[file.id].status = "success";
+                                $scope.uploadingFiles[file.id].backStatus = "success";
                                 getFileByUsername();
+                                getUserStoreInfo();
                             }, function(err){
+                                $scope.uploadingFiles[file.id].backStatus = "failed";
                                 console.log(err);
                             });
                             $scope.startUpdating = false;
                             return;
                         }
 
-                        util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
-                            data = data || {};
-                            data.filename = params.filename;
-                        }, function(){
-                            util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
-                                key:params.key,
-                            }, function (result) {
-                                console.log(result);
-                            }, function (err) {
-                                console.log(err);
-                            });
-                        });
+						var bigfileUpload = function() {
+							if (isUploading) {
+								setTimeout(bigfileUpload, 1000);
+								return;
+							}
+
+							isUploading = true;
+							util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
+                                $scope.uploadingFiles[file.id].backStatus = "success";
+								data = data || {};
+								data.filename = params.filename;
+                                getFileByUsername();
+                                getUserStoreInfo();
+								isUploading = false;
+							}, function(){
+                                $scope.uploadingFiles[file.id].backStatus = "failed";
+								isUploading = false;
+								util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
+									key:params.key,
+								}, function (result) {
+									console.log(result);
+								}, function (err) {
+									console.log(err);
+								});
+							});
+						};
+						setTimeout(bigfileUpload);
+
                     },
                     'Error': function(up, err, errTip) {
+                        console.log(up);
+                        console.log(err);
                         if ($scope.uploadingFiles && $scope.uploadingFiles[err.file.id]){
                             $scope.uploadingFiles[err.file.id].errTip = err.message + "(" + err.code + ")";
+                            $scope.uploadingFiles[err.file.id].backStatus = "failed";
                         }
                         if (err.code == -601){
                             option.filters = {};
-                            $scope.uploadingFiles = $scope.uploadingFiles || [];
-                            $scope.uploadingFiles.push(err.file);
-                            $scope.remainSize += err.file.size;
-                            up.files.push(err.file);
-                            up.start();
+                            // $scope.uploadingFiles = $scope.uploadingFiles || [];
+                            // $scope.uploadingFiles.push(err.file);
+                            // $scope.remainSize += err.file.size;
+                            up.setOption("filters",{});
+                            up.addFile(err.file);
                             return;
                         }
                         //上传出错时，处理相关的事情
@@ -326,6 +388,7 @@ define([
                         getFileByUsername();
                         getUserStoreInfo();
                         $scope.finishUploading = true;
+                        $rootScope.isBigfileUploading = false;
                         $scope.remainSize = 0;
                     }
                 }
@@ -350,8 +413,47 @@ define([
             if (qiniuBack){
                 qiniuBack.destroy();
             }
-            qiniuBack = qiniu.uploader(option);
+            // 获取上传uid
+            if (uid){
+                option.x_vars = {
+                    "uid": uid
+                };
+                qiniuBack = qiniu.uploader(option);
+            }else {
+                util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                    if(data && data.uid) {
+                        $scope.isUidErr = false;
+                        uid = data.uid;
+                        option.x_vars = {
+                            "uid": uid
+                        };
+                        qiniuBack = qiniu.uploader(option);
+                    }else{
+                        $scope.isUidErr = true;
+                        console.log("uid获取失败");
+                    }
+                }, function () {
+                    $scope.isUidErr = true;
+                    console.log("uid获取失败");
+                });
+            }
+
         };
+
+        function getUid() {
+            util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                if(data && data.uid) {
+                    uid = data.uid;
+                    $scope.isUidErr = false;
+                }else{
+                    $scope.isUidErr = true;
+                    console.log("uid获取失败");
+                }
+            }, function () {
+                $scope.isUidErr = true;
+                console.log("uid获取失败");
+            });
+        }
 
         var init = function () {
             if (!$scope.filelist){
@@ -360,13 +462,14 @@ define([
             if (!$scope.storeInfo){
                 getUserStoreInfo();
             }
+            getUid();
             // initQiniu();
         };
         $scope.$watch("$viewContentLoaded", init);
 
         function fileStop(file) {
             $scope.storeInfo.unUsed += file.size/biteToG;
-            $scope.remainSize += file.size;
+            $scope.remainSize -= file.size;
             file.isDelete = true;
             file._start_at = file._start_at || new Date();
             qiniuBack.removeFile(file.id);
@@ -379,6 +482,8 @@ define([
                 $scope.remainSize = 0;
                 getFinishTime(0, 0);
                 uploadTotalSecond = 0;
+            }else{
+                getFinishTime();
             }
             qiniuBack.start();
         }
@@ -418,30 +523,32 @@ define([
                 }
                 var fnList = [];
                 var deleteFileSize = 0;
-                for (var i=files.length -1; i >= 0;i--){
-                    fnList.push((function (index) {
-                        return function (finish) {
-                            util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
-                                files[index].isDelete = true;
-                                $scope.filesCount--;
-                                deleteFileSize += files[index].file.size;
-                                finish();
-                            }, function (err) {
-                                console.log(err);
-                                finish();
-                            });
-                        }
-                    })(i));
-                }
-                util.batchRun(fnList, function () {
-                    $scope.storeInfo.unUsed += deleteFileSize/biteToG;
-                });
+				for (var i=files.length-1; i >= 0; i --){
+					fnList.push(function(index){
+						return function(cb, errcb) {
+							util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
+								files[index].isDelete = true;
+								$scope.filesCount--;
+								// deleteFileSize += files[index].file.size;
+								cb && cb();
+							}, function (err) {
+								console.log(err);
+								errcb && errcb();
+							});
+						}
+					}(i))
+				}
+				util.sequenceRun(fnList, undefined, function(){
+                    getUserStoreInfo();
+				}, function(){
+                    getUserStoreInfo();
+				});
             });
         };
 
         $scope.deleteFiles = function () {
             var deletingArr = $scope.filelist.filter(function (file) {
-                return file.index >= 0;
+                return file.index >= 0 && !file.isDelete;
             });
             if (deletingArr.length <= 0){
                 config.services.confirmDialog({
@@ -570,8 +677,10 @@ define([
                 if (data) {
                     var a = document.createElement('a');
                     var url = data;
+                    url += ";attname=" + file.filename;
                     a.href = url;
                     a.target = "_blank";
+                    a.download = file.filename || "";
                     a.click();
                 }
             });

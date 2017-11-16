@@ -93,7 +93,7 @@ function worlds:get(params)
 	self:db():find({["+userid"] = {userid,limit=limit,skip=skip}},resume);
 	local err,response = yield(true);
 
-	for key,value in ipairs(response) do
+	for key,value in ipairs(response or {}) do
 		local userParams = {};
 		userParams._id = value.userid;
 		local userInfor  = models.user:new():api_getminiprofile(userParams);
@@ -107,7 +107,7 @@ function worlds:get(params)
 		elseif(query.sort == "modDate") then
 			local modDateTable = {};
 
-			for key,value in ipairs(response) do
+			for key,value in ipairs(response or {}) do
 				for modDateEle in string.gmatch(value.modDate,"[^-]+") do
 					modDateTable[#modDateTable+1] = modDateEle;
 				end
@@ -169,7 +169,7 @@ function worlds:api_getOneOpus(params)
 		
 		local userInfor  = models.user:new():api_getminiprofile(userParams);
 
-		for key,value in pairs(userInfor) do
+		for key,value in pairs(userInfor or {}) do
 			if(key ~= "_id") then
 				opusResponse[key] = value;
 			end
@@ -230,7 +230,7 @@ function worlds:api_refresh(params)
 
 			LOG.std("worlds","debug","DataSource :",dataSource);
 
-			for key,value in ipairs(dataSource.data) do
+			for key,value in ipairs(dataSource.data or {}) do
 				if(value._id == userInfor.dataSourceId) then
 						defaultDataSource = value;
 					break;

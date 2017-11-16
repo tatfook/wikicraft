@@ -171,7 +171,7 @@ end
 
 function RenderServerWikiScript() 
 	local config = {}
-	config.hostname = request:GetHost()
+	config.hostname = request:GetHost() or ""
 	config.serverUpdateTime = getServerUpdateTime()
 	config.webroot = '/' .. WIKI_CODE_ENV .. '/'
 	config.wikiEnv = WIKI_ENV

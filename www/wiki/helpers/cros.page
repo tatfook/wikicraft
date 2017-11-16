@@ -25,7 +25,7 @@ end
 
 
 function isAllowCros(origin) 
-	for _, item in ipairs(allow_cros_list) do
+	for _, item in ipairs(allow_cros_list or {}) do
 		if item == origin then
 			return true
 		end

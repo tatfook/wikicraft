@@ -267,7 +267,7 @@ function data_source:api_createInnerGitlab(params)
 			return errors:wrap(errors.SERVER_INNER_ERROR)
 		end	
 		data = data.data or {}
-		for _, token in ipairs(data) do
+		for _, token in ipairs(data or {}) do
 			if not token.revoked and token.active then
 				ds.dataSourceToken = token.token		
 				break

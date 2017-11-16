@@ -5,6 +5,7 @@
 define([
     'app',
 	//'html2canvas',
+    'markdown-it',
     'to-markdown',
     'codemirror',
     'helper/markdownwiki',
@@ -33,8 +34,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, /*html2canvas,*/ toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
-    //console.log("wiki editor controller!!!");//{{{
+], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
@@ -394,6 +394,7 @@ define([
         $scope.website = {};             //当前选中站点
         $scope.websitePage = {};        //当前选中页面
         $scope.errInfo = "";             // 错误提示
+        $scope.step = 1;
         var treeNode = undefined;       // 目录节点
 
         $scope.$watch('$viewContentLoaded', init);
@@ -428,6 +429,31 @@ define([
             }
         }
 
+        function initPageTemplates() {
+            var url = "http://git.keepwork.com/api/v4/projects/6803/repository/files/official%2Ftemplate%2FpageTemplateConfig%2Emd?ref=master";
+            var isShowLoading = true;
+            $http({
+                "method": "GET",
+                "url": url
+            }).then(function (result) {
+                if (!result.data.content) {
+                    return;
+                }
+                var content = Base64.decode(result.data.content),
+                    md = markdownit(),
+                    parserContent = md.parse(content)[0].content || "";
+                try {
+                    $scope.pageTemplates = angular.fromJson(parserContent);
+                    $scope.activePageTemplate= $scope.pageTemplates[0];
+                    $scope.websitePage.template = $scope.activePageTemplate.templates[0];
+                } catch (e) {
+                    console.log(e);
+                }
+            }, function () {
+
+            });
+        }
+
         //初始化
         function init() {
 			if ($scope.hidePageTree) {
@@ -437,14 +463,12 @@ define([
 			} else {
 				initTree();
 			}
+            initPageTemplates();
 			//console.log(treeNode);
         }
 
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        }
-
-         $scope.website_new = function () {
+        function isValidName() {
+            $scope.errInfo = "";
             if (!treeNode) {
                 $scope.errInfo = '请选择站点';
                 return false;
@@ -481,8 +505,41 @@ define([
                 }
             }
 
+            return true;
+        }
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.nextStep = function () {
+            if (isValidName()){
+                $scope.step++;
+            }
+        };
+
+        $scope.prevStep = function () {
+            $scope.step--;
+        };
+
+        $scope.getActiveStyleClass = function (pageTemplate) {
+            return pageTemplate.name == $scope.activePageTemplate.name ? 'active' : '';
+        };
+
+        $scope.selectCategory = function (pageTemplate) {
+            $scope.activePageTemplate = pageTemplate;
+            $scope.websitePage.template = $scope.activePageTemplate.templates[0];
+        };
+
+        $scope.selectTemplate = function (template) {
+            $scope.websitePage.template = template;
+        };
+
+         $scope.website_new = function () {
+             if (isValidName()){
             currentPage = $scope.websitePage;
             $uibModalInstance.close("page");
+        }
         }
     }]);//}}}
 
@@ -534,11 +591,11 @@ define([
                 }
             });//}}}
 
-            //console.log("wikiEditorController");//{{{
+            console.log("wikiEditorController");//{{{
             $rootScope.frameFooterExist = false;
             $rootScope.frameHeaderExist = false;
             $rootScope.userinfo = $rootScope.user;
-            
+
             $scope.enableTransform = true;
             $scaleValue = "";
             $scope.scales = [
@@ -1409,6 +1466,27 @@ define([
                 }
             }//}}}
 
+            function getPageTemplateContent(pageUrl, contentUrl) {
+                var url = "http://git.keepwork.com/api/v4/projects/6803/repository/files/" + encodeURI(contentUrl) + "?ref=master";
+                $http({
+                    "method": "GET",
+                    "url": url
+                }).then(function (result) {
+                    if (!result.data.content) {
+                        return;
+                    }
+                    var content = Base64.decode(result.data.content)
+                    try {
+                        allWebstePageContent[pageUrl] = content;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    openPage(false);
+                }, function () {
+
+                });
+            }
+
             $scope.cmd_newpage = function (hidePageTree, url, event) {//{{{
 				if (hidePageTree && !treeNodeMap[url]) {
 					return;
@@ -1422,15 +1500,14 @@ define([
                         //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
                         templateUrl: config.htmlPath + "editorNewPage.html",
                         controller: "pageCtrl",
+                        size: (hidePageTree? "lg":"sm"),
                         scope: $scope
                     }).result.then(function (provider) {
-                        //console.log(provider);
                         if (provider == "page") {
-                            console.log(currentPage);
+                            getPageTemplateContent(currentPage.url, currentPage.template.contentUrl);
                             allPageMap[currentPage.url] = currentPage;
                             currentSite = getCurrentSite();
                             initTree();
-                            openPage(false);
                         }
                     }, function (text, error) {
                         return;
@@ -3208,6 +3285,5 @@ define([
 				//}}}
             }
         }]);
-
     return htmlContent;
 });

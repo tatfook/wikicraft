@@ -253,7 +253,7 @@ function website_member:api_getWebsiteListByUsername(params)
 	local err, data = yield()
 	
 	local websiteDB = models.website:new()
-	for _, value in ipairs(data) do
+	for _, value in ipairs(data or {}) do
 		value["siteinfo"] = websiteDB:api_getById({websiteId=value.websiteId}).data
 	end
 	
@@ -275,7 +275,7 @@ function website_member:api_getOrganizationListByUsername(params)
 	local err, data = yield()
 	
 	local websiteDB = models.website:new()
-	for _, value in ipairs(data) do
+	for _, value in ipairs(data or {}) do
 		value["siteinfo"] = websiteDB:api_getById({websiteId=value.websiteId}).data
 	end
 	

@@ -283,7 +283,7 @@ function website:deleteUserWebsite(userId)
 		return 
 	end
 
-	for _, obj in pairs(data) do
+	for _, obj in pairs(data or {}) do
 		self:deleteById(obj._id)
 	end
 	
@@ -601,7 +601,7 @@ end
 
 -- 访问站点
 function website:api_visitWebsite(params)
-	if (not params.username) or (not params.sitename) then
+	if (not params.username) or (not params.sitename) or not params.url then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	

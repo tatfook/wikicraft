@@ -1,23 +1,100 @@
 <style>
+    .wikiblock-modal-body {
+        padding-bottom: 50px;
+    }
     .wikitabpanel{
         border: 1px solid #DCDCDC;
         padding: 0;
+        overflow: hidden;
     }
-    .wikitabpanel .nav-tabs > li > a {
+    .wikitabpanel .empty-box {
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    /* vertical divider */
+    .wikitabpanel .wikiblock-tab::before {
+        display: block;
+        content: '';
+        height: 10000px;
+        width: 1px;
+        background: #DCDCDC;
+        position: absolute;
+        top: 0;
+    }
+    .wikitabpanel .nav-sidebar {
+        padding-right: 0;
+        max-height: 600px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .wikitabpanel li a {
+        color: initial;
+        padding-left: 30px;
+        position: relative;
+    }
+
+    .wikitabpanel li[class^="wiki-mod-nav-"] a:hover,
+    .wikitabpanel li[class^="wiki-mod-nav-"] a:focus,
+    .wikitabpanel li[class^="wiki-mod-nav-"].active a{
+        background-color: #0081ba;
+        color: white;
+    }
+    .wikitabpanel li[class^="wiki-mod-nav-"] a img {
+        position: absolute;
+        top: 11px;
+        left: 7px;
+    }
+    .wikitabpanel li[class^="wiki-mod-nav-"] a .img-selected {
+        display: none;
+    }
+    .wikitabpanel li[class^="wiki-mod-nav-"] a .img-unselected {
+        display: block;
+    }
+    .wikitabpanel li[class^="wiki-mod-nav-"] a:hover .img-selected,
+    .wikitabpanel li[class^="wiki-mod-nav-"] a:focus .img-selected,
+    .wikitabpanel li[class^="wiki-mod-nav-"].active a .img-selected {
+        display: block;
+    }
+    .wikitabpanel li[class^="wiki-mod-nav-"] a:hover .img-unselected,
+    .wikitabpanel li[class^="wiki-mod-nav-"] a:focus .img-unselected,
+    .wikitabpanel li[class^="wiki-mod-nav-"].active a .img-unselected {
+        display: none;
+    }
+
+    .wikitabpanel li.has-sub-classifies a.classify-name img{
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 11px;
+        left: 8px;
+    }
+    
+    .wikitabpanel li > a {
         border-radius: 0;
     }
-    .dropdown-toggle a {
-        line-height: 1.42857143;
+    .wikitabpanel li a.active {
+        background-color: #eee;
+    }
+    .wikitabpanel li a.sub-classify-name {
+        display: none;
+        left: 1.5em;
+    }
+    .wikitabpanel li.show-sub-classify-name a.sub-classify-name {
         display: block;
-        padding: 10px 15px;
     }
     .wikiblock-tab {
-        max-height: 500px;
         overflow-y: auto;
         padding-top: 20px;
     }
     .wikiblock-tab .tab-pane{
         min-height:438px;
+        max-height: 580px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
     .wikiblock-tab .col-md-4{
         margin-bottom: 20px;
@@ -82,10 +159,26 @@
     .wikiblock-tab .pagination{
         margin: 0;
     }
+    .wiki-searchbar {
+        padding-right: 0;
+    }
     .wiki-searchbar > span {
         position: absolute;
         right: 25px;
         top: 10px;
+    }
+    .wikiblock-mod-item {
+        position: relative;
+    }
+    .wikiblock-mod-id-label {
+        position: absolute;
+        top: 0;
+        left: 15px;
+        padding: 5px 15px;
+        z-index: 1;
+        background: rgba(0,0,0,.5);
+        color: white;
+        font-weight: 600;
     }
     @media (max-width: 1200px) {
         .modal-lg {
@@ -100,11 +193,11 @@
             width: 1170px;
         }
         .modal-lg .tab-pane{
-            width:840px;
+            /* width:840px; */
             margin:0 auto;
         }
         .wikiblock-tab .col-md-4{
-            width: 280px;
+            /* width: 280px; */
         }
     }
 </style>
@@ -114,47 +207,80 @@
         <h4 class="modal-title">WIKI模块</h4>
     </div>
 
-    <div class="modal-body">
+    <div class="modal-body wikiblock-modal-body">
         <div class="container-fluid">
             <div class="row">
                 <form role="form">
                     <div class="form-group clearfix">
-                        <label class="control-label sr-only">模块名称</label>
-                        <div class="col-xs-4 col-xs-offset-4 wiki-searchbar">
-                            <input id="modelSearch" type="text" ng-model="moduleName" class="form-control" placeholder="模块名">
-                            <span ng-click="getByName()" class="glyphicon glyphicon-search text-muted"></span>
+                        <label class="control-label sr-only">搜索模块</label>
+                        <div class="col-xs-4 col-xs-offset-8 col-md-4 col-md-offset-7 wiki-searchbar">
+                            <input id="modelSearch" type="text" ng-model="moduleQueryStr" ng-keyup="queryInputKeyup($event)" class="form-control" placeholder="输入搜索内容" ng-model-options="{debounce: 300}">
+                            <span ng-click="searchWikiBlock()" class="glyphicon glyphicon-search text-muted"></span>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="row">
                 <div role="tabpanel" class="col-md-10 col-md-offset-1 wikitabpanel">
+
                     <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a href="#wikiBlockListView" ng-click="getHot()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">热门</a>
+                    <ul class="col-sm-3 col-md-2 sidebar nav nav-sidebar">
+                        <li class="wiki-mod-nav-favorite" ng-class="{active: filterNavType=='favorite'}">
+                            <a href="javascript:;" ng-click="showFavorite()"><img 
+                                class="img-selected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_favorite_selected.png'}}" alt=""><img 
+                                class="img-unselected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_favorite_unselected.png'}}" alt=""
+                            >关注</a>
                         </li>
-                        <li role="presentation" class="dropdown">
-                            <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents" aria-expanded="false">Mod分类 <span class="caret"></span></a>
-                            <ul class="dropdown-menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
-                                <li><a href="#wikiBlockListView" ng-click="getClassify()" role="tab" data-toggle="tab" aria-controls="wikiBlockListView" aria-expanded="true">全部</a></li>
-                                <li ng-repeat="classify in moduleClassifyList">
-                                    <a href="#wikiBlockListView" ng-click="getClassify(classify.name)" role="tab" data-toggle="tab" aria-controls="wikiBlockListView" aria-expanded="false">{{classify.name}}</a>
-                                </li>
-                            </ul>
+                        <li class="wiki-mod-nav-all" ng-class="{active: filterNavType=='all'}">
+                            <a href="javascript:;" ng-click="showAll()"><img
+                                class="img-selected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_all_selected.png'}}" alt=""><img 
+                                class="img-unselected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_all_unselected.png'}}" alt=""
+                            >全部</a>
                         </li>
-                        <li role="presentation">
-                            <a href="#wikiBlockListView" ng-click="getAll()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">排行榜</a>
+                        <li 
+                            ng-repeat="classify in modClassifyList"
+                            ng-class="{
+                                'has-sub-classifies': classify.children.length,
+                                'show-sub-classify-name': subClassifyShowTurnOn[classify.name]
+                            }"
+                        >
+                            <a  class="classify-name"
+                                ng-click="showByClassifyName(classify.name)"
+                                ng-class="{
+                                    active: filterNavType==classify.name
+                                }"
+                                href="javascript:;"
+                            ><img 
+                                ng-if="classify.children.length && subClassifyShowTurnOn[classify.name]" 
+                                ng-src="{{imgsPath+'icon/wiki_mod_block_nav_classify_open.png'}}" alt=""><img 
+                                ng-if="classify.children.length && !subClassifyShowTurnOn[classify.name]" 
+                                ng-src="{{imgsPath+'icon/wiki_mod_block_nav_classify_close.png'}}" alt=""
+                            >{{classify.name}}</a>
+                            <a  class="sub-classify-name"
+                                ng-repeat="subClassify in classify.children"
+                                ng-class="{
+                                    active: filterNavType == (classify.name + '>' + subClassify.name)
+                                }"
+                                ng-click="showByClassifyName(classify.name, subClassify.name)"
+                                href="javascript:;"
+                            >{{subClassify.name}}</a>
                         </li>
-                        <li role="presentation">
-                            <a href="#wikiBlockListView" ng-click="getFavorite()" aria-controls="wikiBlockListView" role="tab" data-toggle="tab">关注</a>
-                        </li>
+
+                        <!--
+                            <li class="active">
+                                <a href="javascript:;" ng-click="getHot()">热门</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" ng-click="getAll()">排行榜</a>
+                            </li>
+                        -->
                     </ul>
 
                     <!-- Tab panes -->
-                    <div class="tab-content col-md-12 wikiblock-tab" id="js-module-container">
+                    <div class="tab-content wikiblock-tab" id="js-module-container">
                         <div role="tabpanel" class="tab-pane active clearfix" id="wikiBlockListView">
-                            <div class="col-md-4" ng-repeat="wikiBlock in wikiBlockList">
+                            <div class="col-md-4 wikiblock-mod-item" ng-repeat="wikiBlock in wikiBlockListFilteredToDisplay">
+                                <div class="wikiblock-mod-id-label">#{{wikiBlock._id}}</div>
                                 <div class="img-hover">
                                     <img ng-src="{{getWikiBlockLogoUrl(wikiBlock)}}" alt="">
                                     <p class="code">{{wikiBlock.wikiCmdName}}</p>
@@ -166,19 +292,24 @@
                                     </h4>
                                     <p class="info">
                                         热度：{{wikiBlock.useCount}}
-                                        <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="labelItem == 'favorite' ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
+                                        <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="wikiBlock.myfavorite ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
                                     </p>
                                     <p title="{{wikiBlock.desc}}">{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
                                 </div>
                             </div>
+                            <div class="empty-box" ng-if="!wikiBlockListFilteredToDisplay.length">
+                                <span class="iconfont icon-kongbaiyemian"></span>
+                                <p>暂无相关内容...</p>
+                            </div>
                         </div>
 
-                        <div class="pagination-box">
+                        <!-- <div class="pagination-box">
                             <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
                                 next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                                 class="pagination-sm" boundary-link-numbers="true"></ul>
-                        </div>
+                        </div> -->
                     </div>
+
                 </div>
             </div>
         </div>

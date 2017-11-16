@@ -46,7 +46,7 @@ function user_service:api_getByUsername(params)
 	local _, serviceList = yield()
 
 	local date = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-	for _, svr in ipairs(serviceList) do
+	for _, svr in ipairs(serviceList or {}) do
 		if svr.startDate <= date and date <= svr.endDate then
 			svr.state = "有效"
 		else

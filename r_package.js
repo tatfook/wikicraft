@@ -81,7 +81,8 @@
 		'pingpp': 'lib/pingpp-js/dist/pingpp',
 		'plupload': "lib/qiniu/plupload.full.min",
         //'qiniu': "lib/qiniu/qiniu.min",
-		'qiniu': "empty:",
+        'qiniu': "empty:",
+        'bluebird': "empty:",
         'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
         'md5': "lib/md5",
 
