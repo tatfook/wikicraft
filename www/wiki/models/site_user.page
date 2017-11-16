@@ -16,10 +16,11 @@ site_user.db_name = "site_user"
 function site_user:ctor()
 	self:addfield("username", "string")            -- 用户名  组的所属者
 	self:addfield("sitename", "string")            -- 站点名
+	self:addfield("groupUsername", "string")
 	self:addfield("groupname", "string")           -- 组名 
 	self:addfield("memberName", "string")          -- 成员名
-	-- self:addfield("level", "number")               -- 权限级别
-	-- self:addfield("levelName", "string")           -- 级别名
+	self:addfield("level", "number")               -- 权限级别
+	self:addfield("levelName", "string")           -- 级别名
 end
 
 
@@ -48,18 +49,18 @@ end
 
 -- 添加一个组的用户
 function site_user:api_addGroupUser(params) 
-	if (not params.username) or (not params.sitename) or (not params.groupname) then
+	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local limit = 100000
 	
-	models.group_user:new():db():find({["+username+groupname"]={params.username, params.groupname, limit=limit}}, resume)
+	models.group_user:new():db():find({["+username+groupname"]={params.groupUsername, params.groupname, limit=limit}}, resume)
 	
 	local _, groupUserList = yield()
 
 	for _, groupUser in ipairs(groupUserList or {}) do
-		self:api_upsert({username=params.username, sitename=params.sitename, groupname=params.groupname,memberName=groupUser.memberName})
+		self:api_upsert({username=params.username, sitename=params.sitename, groupUsername=params.groupUsername, groupname=params.groupname,memberName=groupUser.memberName})
 	end
 
 	return errors:wrap(nil)
@@ -67,18 +68,18 @@ end
 
 -- 删除一个组的用户
 function site_user:api_deleteGroupUser(params)
-	if (not params.username) or (not params.sitename) or (not params.groupname) then
+	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	local limit = 100000
 	
-	models.group_user:new():db():find({["+username+groupname"]={params.username, params.groupname, limit=limit}}, resume)
+	models.group_user:new():db():find({["+username+groupname"]={params.groupUsername, params.groupname, limit=limit}}, resume)
 	
 	local _, groupUserList = yield()
 
 	for _, groupUser in ipairs(groupUserList or {}) do
-		self:api_deleteByName({username=params.username, sitename=params.sitename, groupname=params.groupname,memberName=groupUser.memberName})
+		self:api_deleteByName({username=params.username, sitename=params.sitename, memberName=groupUser.memberName})
 	end
 
 	return errors:wrap(nil)

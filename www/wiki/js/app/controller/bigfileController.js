@@ -305,7 +305,7 @@ define([
                         var params = {
                             filename:file.name,
                             domain:domain,
-                            key:file.target_name,
+                            key:info.key || file.target_name,
                             size:file.size,
                             type:file.type,
                             hash:info.hash,

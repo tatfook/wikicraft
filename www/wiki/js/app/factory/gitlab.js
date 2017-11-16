@@ -128,7 +128,10 @@ define([
 			
 			self.httpRequest("GET", url, {owned:true, isFetchAll:true, search:params.search}, function(data){
 				for (var i = 0; i < (data || []).length; i++) {
-					data[i].name = data[i].name.substring((self.username+'_group_').length);
+					//data[i].name = data[i].name.substring((self.username+'_group_').length);
+					var temp = data[i].name.match(/gitlab_(www|rls|test)_([\w\d]+)_group_([\w\d]+)/);
+					data[i].groupUsername = temp[2] || "";
+					data[i].name = temp[3] || "";
 				}
 				cb && cb(data);
 			}, function(){
@@ -235,7 +238,10 @@ define([
 				var groupList = data.shared_with_groups || [];
 				for (var i = 0; i < groupList.length; i++) {
 					var group = groupList[i];
-					group.group_name = group.group_name.substring((self.username+'_group_').length);
+					//group.group_name = group.group_name.substring((self.username+'_group_').length);
+					var temp = group.group_name.match(/gitlab_(www|test|rls)_([\w\d]+)_group_([\w\d]+)/);
+					group.groupUsername = temp[2] || "";
+					group.group_name = temp[3] || "";
 				}
 				cb && cb(groupList);
 			});
