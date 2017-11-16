@@ -482,19 +482,19 @@ end
 
 function ouath_clientld:getClientld()
 	self:db():insertOne({},resume);
-	local err, phoneNumber = yield();
+	local err, id = yield();
 	
 	local sn = "1";
 	
-	phoneNumber  = tostring(phoneNumber._id);
-	a =5 - #phoneNumber;
+	id  = tostring(id._id);
+	a = 6 - #id;
 
-	for i=1,a do 
-		phoneNumber = "0" .. phoneNumber;
-		i=i+1;
+	for i = 1, a do 
+		id = "0" .. id;
+		i = i + 1;
 	end
 
-	return sn .. phoneNumber
+	return sn .. id
 end
 
 

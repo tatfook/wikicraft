@@ -225,13 +225,13 @@ define([
 			var reg3 = /^[A-Za-z]+$/;
 			var reg4 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
 			
-			if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
-				return alert("payCallbackUrl请使用正确的格式");
-			};
+			// if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
+			// 	return alert("payCallbackUrl请使用正确的格式");
+			// };
 			
-			if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
-				return alert("redirectUrl请使用正确的格式");
-			};
+			// if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
+			// 	return alert("redirectUrl请使用正确的格式");
+			// };
 			
 			if(!reg4.test($scope.oauthParams.appName)){
 				return alert("app名称只能输入中文英文数字");
@@ -314,13 +314,13 @@ define([
 			var reg3 = /^[A-Za-z]+$/;
 			var reg4 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
 			
-			if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
-				return alert("payCallbackUrl请使用正确的格式");
-			};
+			// if($scope.oauthParams.payCallbackUrl && !reg1.test($scope.oauthParams.payCallbackUrl)){
+			// 	return alert("payCallbackUrl请使用正确的格式");
+			// };
 			
-			if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
-				return alert("redirectUrl请使用正确的格式");
-			};
+			// if($scope.oauthParams.redirectUrl && !reg1.test($scope.oauthParams.redirectUrl)){
+			// 	return alert("redirectUrl请使用正确的格式");
+			// };
 			
 			if(!reg4.test($scope.oauthParams.appName)){
 				return alert("app名称只能输入中文英文数字");
