@@ -55,7 +55,8 @@ define([
             event.keyCode == "13" && $scope.searchWikiBlock();
         }
 
-        $scope.$watch('moduleQueryStr', function(newVal, oldVal) {
+        $scope.unwatchModuleQueryStr && $scope.unwatchModuleQueryStr();
+        $scope.unwatchModuleQueryStr = $scope.$watch('moduleQueryStr', function(newVal, oldVal) {
             newVal != oldVal && $scope.searchWikiBlock();
         })
 

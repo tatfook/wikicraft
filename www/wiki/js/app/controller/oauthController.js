@@ -11,9 +11,11 @@ define([
     	$scope.checkAll = true;
         function init() {
 			$scope.logined = Account.isAuthenticated();
+
 			if (!$scope.logined){
 				return;
 			}
+
 			var queryArgs = util.getQueryObject();
 
 			//console.log(queryArgs);
@@ -29,27 +31,29 @@ define([
 				//return;
 			//}
 
-			util.post(config.apiUrlPrefix + "oauth_app/getByClientId", {clientId:queryArgs.client_id}, function(data){
+			util.post("/api/wiki/models/oauth_app/getByClientId", {"clientId" : queryArgs.client_id}, function(data){
 				$scope.oauthApp = data || {};
+
 				if (data.skipUserGrant && queryArgs.skipUserGrant == "yes") {
 					$scope.agree();
 				}
 			});
 
 			$scope.agree = function(){
-				console.log("user agree auth");
-				util.post(config.apiUrlPrefix + "oauth_app/agreeOauth", {
-					client_id:queryArgs.client_id,
-					redirectUri:queryArgs.redirect_uri,
-					username:$scope.user.username,
+				util.post("/api/wiki/models/oauth_app/agreeOauth", {
+					"client_id"   : queryArgs.client_id,
+					"redirectUri" : queryArgs.redirect_uri,
+					"username"    : $scope.user.username,
 				}, function(data){
 					data = data || {};
-					data.client_id = queryArgs.client_id;
+
+					data.client_id    = queryArgs.client_id;
 					data.redirect_uri = queryArgs.redirect_uri;
+
 					var searchStr = util.getQueryString(data);
-					console.log(queryArgs, data);
-					// 重定向到client home page
-					window.location.href = queryArgs.redirect_uri + "?" + searchStr;
+					
+					//console.log(queryArgs, data);
+					window.location.href = queryArgs.redirect_uri + "?" + searchStr; // 重定向到client home page
 				});
 				
 				return ;
@@ -60,7 +64,8 @@ define([
 				util.go("home");
 				return ;
 			}
-        }
+		}
+		
 		$scope.$watch("$viewContentLoaded", function(){
 			if (!Account.isAuthenticated()){
                 modal('controller/loginController', {

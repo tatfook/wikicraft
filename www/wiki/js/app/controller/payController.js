@@ -107,6 +107,11 @@ define([
                     return;
                 }
 
+                if ($scope.goods.price > 1000){
+                    alert("充值金额不能大于1000元");
+                    return;
+                }
+
                 reset = false;
 
                 if ($scope.method == "alipay") {

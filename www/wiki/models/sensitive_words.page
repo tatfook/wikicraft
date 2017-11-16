@@ -1,0 +1,50 @@
+<?npl
+--[[
+Title: sensitive words
+Author: Rango Yuan
+Date: 2017/14/11
+]]
+
+
+include_once("./abstract/base.page")
+local sensitive_words = inherit(models.abstract.base, gettable("models.sensitive_words"))
+sensitive_words.db_name = "sensitive_words"
+
+
+function sensitive_words:ctor()
+	self:addfield("name", "string")
+end
+
+
+-- Query All Sensitive Words
+function sensitive_words:api_query(params)
+    local table = self:db();
+    local skip, limit = util:pagination(params)
+    local query = params.query or {}
+    local key = ""
+    local value = {}
+    for k, v in pairs(query or {}) do
+        key = key .. "+" .. k
+        value[#value+1] = v
+    end
+
+    if key == "" then
+        table:count({}, resume)
+        local _, total = yield()
+        table:find({_id={gt=0, skip=skip, limit=limit}}, resume)
+        local _, data = yield()
+        return errors:wrap(nil,{total=total,data=data})
+    end
+
+    local queryParams = {}
+    queryParams[key] = value
+    table:count(queryParams, resume)
+    local _, total = yield()
+
+    value["skip"] = skip
+    value["limit"] = limit
+    table:find(queryParams, resume)
+    local _, data = yield()
+
+    return errors:wrap(nil,{total=total,data=data})
+end

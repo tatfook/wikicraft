@@ -364,31 +364,34 @@ define([
                 return;
             }
             $scope.website.name = $scope.website.name.replace(/(^\s*)|(\s*$)/g, "");
-            var isSensitive = false;
-            sensitiveWord.checkSensitiveWord($scope.website.name, function (foundWords, replacedStr) {
-                if (foundWords.length > 0){
-                    isSensitive = true;
-                    console.log("包含敏感词:" + foundWords.join("|"));
-                    return false;
-                }
+
+            sensitiveWord.getAllSensitiveWords($scope.website.name).then(function(results) {
+                var isSensitive = results && results.length;
+                isSensitive && console.log("包含敏感词:" + results.join("|"));
+                doCheckWebsiteName(isSensitive);
             });
-            if (isSensitive){
-                $scope.nextStepDisabled = true;
-                $scope.errMsg="您输入的内容不符合互联网安全规范，请修改";
-                return;
-            }
-            if($scope.website.name.length>30){
-                $scope.nextStepDisabled = true;
-                $scope.errMsg="访问地址最长30个字符";
-                return;
-            }
-            if (/^[a-z0-9]+$/.test($scope.website.name)){
-                $scope.nextStepDisabled = false;
-                $scope.website.domain = $scope.website.name;
-                $scope.errMsg="";
-            }else{
-                $scope.nextStepDisabled = true;
-                $scope.errMsg="访问地址不符合规范";
+
+            function doCheckWebsiteName(isSensitive) {
+                util.$apply($scope);
+
+                if (isSensitive){
+                    $scope.nextStepDisabled = true;
+                    $scope.errMsg="您输入的内容不符合互联网安全规范，请修改";
+                    return;
+                }
+                if($scope.website.name.length>30){
+                    $scope.nextStepDisabled = true;
+                    $scope.errMsg="访问地址最长30个字符";
+                    return;
+                }
+                if (/^[a-z0-9]+$/.test($scope.website.name)){
+                    $scope.nextStepDisabled = false;
+                    $scope.website.domain = $scope.website.name;
+                    $scope.errMsg="";
+                }else{
+                    $scope.nextStepDisabled = true;
+                    $scope.errMsg="访问地址不符合规范";
+                }
             }
         };
 

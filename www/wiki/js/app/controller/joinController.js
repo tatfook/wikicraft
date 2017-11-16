@@ -42,14 +42,20 @@ define([
                 pwd=$scope.otherPassword?$scope.otherPassword : "";
             }
             if (checks.username){
-                var isSensitive = false;
-                sensitiveWord.checkSensitiveWord(username, function (foundWords, replacedStr) {
-                    if (foundWords.length > 0){
-                        isSensitive = true;
-                        console.log("包含敏感词:" + foundWords.join("|"));
-                        return false;
-                    }
+                sensitiveWord.getAllSensitiveWords(username).then(function(results) {
+                    var isSensitive = results && results.length;
+                    isSensitive && console.log("包含敏感词:" + results.join("|"));
+                    doCheckUsername(isSensitive, username);
                 });
+            }
+            if (checks.password){
+                if(pwd.length<6){
+                    $scope.pwdErrMsg="*密码最少6位";
+                    return;
+                }
+            }
+
+            function doCheckUsername(isSensitive, username) {
                 if (isSensitive){
                     $scope.nameErrMsg="您输入的内容不符合互联网安全规范，请修改";
                     return;
@@ -68,12 +74,6 @@ define([
                 }
                 if (!/^[a-z_0-9]+$/.test(username)){
                     $scope.nameErrMsg="*账户名只能包含小写字母、数字";
-                    return;
-                }
-            }
-            if (checks.password){
-                if(pwd.length<6){
-                    $scope.pwdErrMsg="*密码最少6位";
                     return;
                 }
             }

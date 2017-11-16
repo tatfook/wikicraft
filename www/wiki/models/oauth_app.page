@@ -31,76 +31,6 @@ function oauth_app:ctor()
 	self:addfield("skip"  , "number"); -- 跳过查询条数
 end
 
-local oauthApp = {
-	{
-		appName       = "test",
-		company       = "keepwork",
-		clientId      = "1000000",
-		clientSecret  = "keepwork",
-		skipUserGrant = true, -- 是否可以跳过用户授权
-		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
-	},
-	{
-		appName        = "教育平台",
-		company        = "道峰科技",
-		clientId       = "1000001",
-		clientSecret   = "daofengkeji",
-		payCallbackUrl = "http://121.14.117.239/api/util/kpPayCallBack", 
-		skipUserGrant  = true, -- 是否可以跳过用户授权
-		-- RedirectUrl="http://localhost:8900/api/wiki/auth/haqi",
-	},
-	{
-		appName       = "共享制造平台",
-		company       = "爱致科技",
-		clientId      = "1000002",
-		clientSecret  = "gongxiangzhizaopingtai",
-		RedirectUrl   = "http://3dprint.idreamtech.com.cn/",
-		skipUserGrant = true, -- 是否可以跳过用户授权
-	},
-	{
-		appName        = "魔法哈奇",
-		company        = "大富网络",
-		clientId       = "1000003",
-		clientSecret   = "mofahaqi",
-		RedirectUrl    = "",
-		payCallbackUrl = "http://121.14.117.238:56888/HttpPayHandle.lua",
-	},
-	{
-		appName      = "卡车之星",
-		company      = "上海配天智慧云",
-		clientId     = "1000004",
-		clientSecret = "shanghaipeitianzhihuiyun",
-		RedirectUrl  = "",
-	},
-	{
-		appName        = "魔法哈奇2",
-		company        = "大富网络",
-		clientId       = "1000005",
-		clientSecret   = "mofahaqi2",
-		RedirectUrl    = "",
-		payCallbackUrl = "http://115.29.230.154:56888/HttpPayHandle.lua",
-	},
-	{
-		appName        = "Adas",
-		company        = "成都配天智能技术有限公司",
-		clientId       = "1000006",
-		clientSecret   = "chengdupeitianzhinengjishuyouxiangongsi",
-		RedirectUrl    = "",
-	},
-	{
-		appName        = "KEEPWORK",
-		company        = "大富网络",
-		clientId       = "1000007",
-		clientSecret   = "12345678",
-		RedirectUrl    = "",
-		payCallbackUrl = "http://" .. request:GetHost() .. "/api/wiki/models/vip/payHook",
-	},
-}
-
-function oauth_app:api_get()
-	return oauthApp
-end
-
 function oauth_app:checkAdmin()
 	response:status(503);
 	local adminInfo = getTokenInfo();
@@ -135,10 +65,8 @@ function oauth_app:get(params) -- /api/wiki/models/oauth_app/ POST
 	end
 end
 
-function oauth_app:api_getOne(params) -- /api/wiki/models/oauth_app/getOne POST
-	if(not self:checkAdmin()) then
-		return errors:wrap(errors.FORBIDDEN_ACCESS);
-	end
+function oauth_app:api_getOne(params, isApi) -- /api/wiki/models/oauth_app/getOne POST
+	self:ensureAuthenticated();
 
 	local err, query = self:validateQuery(params);
 
@@ -149,11 +77,19 @@ function oauth_app:api_getOne(params) -- /api/wiki/models/oauth_app/getOne POST
 	self:db():findOne({clientId = query.clientId}, resume);
 	local err, data = yield();
 
-	if(not err) then
-		response:status(200);
-		return errors:wrap(nil, data);
+	if(not isApi) then
+		if(not err) then
+			response:status(200);
+			return errors:wrap(nil, data);
+		else
+			return errors:wrap(errors.SERVER_INNER_ERROR);
+		end
 	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
+		if(not err) then
+			return data;
+		else
+			return false;
+		end
 	end
 end
 
@@ -195,14 +131,31 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	
 	local reg1 = '^%a+$'
 	local reg2 = '[\176-\254]'
-	local reg3 = '^http://(%a+).(%a+).(%a+)$'
-	local reg4 = '^http://(%a+).(%a+)$'
-	local reg5 = '^https://(%a+).(%a+).(%a+)$'
-	local reg6 = '^https://(%a+).(%a+)$'
-	
+	local reg3 = '^(http://)[%w_]+%.%w+.+$'
+	local reg4 = '^(https://)[%w_]+%.%w+.+$'
+	local reg5 = '^(ftp://)[%w_]+%.%w+.+$'
+
 	--判断appName格式是否正确/只能输入英文
+	-- if(not string.find(query.appName,reg1)) then
+	-- 	return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	-- end
+
+	--判断appName是否为中文/英文
 	if(not string.find(query.appName,reg1)) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		if(not string.find(query.appName,reg2))then
+			if(not string.find(query.appName, ret1)) then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
+		end
+	end
+
+	--判断appName是否为中文/英文
+	if(not string.find(query.appName,reg1)) then
+		if(not string.find(query.appName,reg2))then
+			if(not string.find(query.appName, ret1)) then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
+		end
 	end
 	
 	--判断company格式是否正确/只能输入英文/中文/中英结合
@@ -215,27 +168,25 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	end
 	
 	--判断redirectUrl格式是否正确
-	if(not string.find(query.redirectUrl, reg3))then
-		if(not string.find(query.redirectUrl, reg4))then
-			if(not string.find(query.redirectUrl, reg5))then
-				if(not string.find(query.redirectUrl, reg6))then
+	if(query.redirectUrl ~= nil)then
+		if(not string.find(query.redirectUrl, reg3))then
+			if(not string.find(query.redirectUrl, reg4))then
+				if(not string.find(query.redirectUrl, reg5))then
 					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 				end
 			end
 		end
 	end
-	
 	--判断payCallbackUrl格式是否正确
-	if(not string.find(query.payCallbackUrl, reg3))then
-		if(not string.find(query.payCallbackUrl, reg4))then
-			if(not string.find(query.payCallbackUrl, reg5))then
-				if(not string.find(query.payCallbackUrl, reg6))then
+	if(query.payCallbackUrl ~= nil)then
+		if(not string.find(query.payCallbackUrl, reg3))then
+			if(not string.find(query.payCallbackUrl, reg4))then
+				if(not string.find(query.payCallbackUrl, reg5))then
 					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 				end
 			end
 		end
 	end
-
 	-- 判断是否存在appName
 	self:db():findOne({appName = query.appName}, resume);
 	local err, data = yield();
@@ -290,14 +241,20 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 	
 	local reg1 = '^%a+$'
 	local reg2 = '[\176-\254]'
-	local reg3 = '^http://(%a+).(%a+).(%a+)$'
-	local reg4 = '^http://(%a+).(%a+)$'
-	local reg5 = '^https://(%a+).(%a+).(%a+)$'
-	local reg6 = '^https://(%a+).(%a+)$'
+	local reg3 = '^(http://)[%w_]+%.%w+.+$'
+	local reg4 = '^(https://)[%w_]+%.%w+.+$'
+	local reg5 = '^(ftp://)[%w_]+%.%w+.+$'
 	
 	--判断appName格式是否正确/只能输入英文
+	-- if(not string.find(query.appName,reg1)) then
+	-- 	return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	-- end
+
+	--判断appName是否为中文/英文
 	if(not string.find(query.appName,reg1)) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		if(not string.find(query.appName,reg2))then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
 	end
 	
 	--判断company格式是否正确/只能输入英文/中文/中英结合
@@ -310,26 +267,26 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 	end
 	
 	--判断redirectUrl格式是否正确
-	if(not string.find(query.redirectUrl, reg3))then
-		if(not string.find(query.redirectUrl, reg4))then
-			if(not string.find(query.redirectUrl, reg5))then
-				if(not string.find(query.redirectUrl, reg6))then
-					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-				end
-			end
-		end
-	end
+	-- if(query.redirectUrl ~= nil)then
+	-- 	if(not string.find(query.redirectUrl, reg3))then
+	-- 		if(not string.find(query.redirectUrl, reg4))then
+	-- 			if(not string.find(query.redirectUrl, reg5))then
+	-- 				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 	
 	--判断payCallbackUrl格式是否正确
-	if(not string.find(query.payCallbackUrl, reg3))then
-		if(not string.find(query.payCallbackUrl, reg4))then
-			if(not string.find(query.payCallbackUrl, reg5))then
-				if(not string.find(query.payCallbackUrl, reg6))then
-					return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-				end
-			end
-		end
-	end
+	-- if(query.payCallbackUrl ~= nil)then
+	-- 	if(not string.find(query.payCallbackUrl, reg3))then
+	-- 		if(not string.find(query.payCallbackUrl, reg4))then
+	-- 			if(not string.find(query.payCallbackUrl, reg5))then
+	-- 				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 
 	-- 判断是否存在clientId
 	self:db():findOne({clientId = query.clientId}, resume);
@@ -397,64 +354,49 @@ function oauth_app:getByAppName(appName)
 		return false;
 	end
 
-	for _, item in ipairs(oauthApp or {}) do
-		if(item.appName == appName) then
-			return item;
-		end
-	end
-end
+	self:db():findOne({appName = appName}, resume);
+	local err, data = yield();
 
-function oauth_app:getByClientId(params)
-	if not params.clientId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	if(not err) then
+		return data;
+	else
+		return false;
 	end
-
-	local app = {}
-	for _, obj in ipairs(oauthApp or {}) do
-		if obj.clientId == params.clientId then
-			app = obj
-			break
-		end
-	end
-
-	return app
 end
 
 -- 通过客户端id获取
 function oauth_app:api_getByClientId(params)
-	self:ensureAuthenticated()
-	if not params.clientId then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	self:ensureAuthenticated();
+
+	local data = self:api_getOne(params);
+	
+	if(data and data.data and data.data.clientSecret) then
+		data.data.clientSecret = nil;
 	end
 
-	local app = {}
-	for _, obj in ipairs(oauthApp or {}) do
-		if obj.clientId == params.clientId then
-			app = obj
-			break;
-		end
-	end
-
-	app.clientSecret = nil
-
-	return errors:wrap(nil, app)
+	return data;
 end
 
 -- 同意客户端授权
 function oauth_app:api_agreeOauth(params)
-	self:ensureAuthenticated()
-	local tokeninfo = getTokenInfo()
+	self:ensureAuthenticated();
+
+	local tokeninfo = getTokenInfo();
+
 	if (tokeninfo.username ~= params.username) or (not params.username) or (not params.client_id) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local oauthCode = nil
+	local oauthCode = nil;
+
 	while (true) do
-		oauthCode = tostring(math.random(1000000,9999999))
-		local key = params.client_id .. "_" .. oauthCode
+		oauthCode = tostring(math.random(1000000,9999999));
+
+		local key = params.client_id .. "_" .. oauthCode;
+
 		if not mem_cache:get(key) then
-			mem_cache:set(key, params.username)
-			break
+			mem_cache:set(key, params.username);
+			break;
 		end
 	end
 
@@ -468,14 +410,15 @@ function oauth_app:api_getTokenByCode(params)
 	end
 
 	-- TODO DB select
-	local app = self:getByClientId({clientId=params.client_id})
+	local app = self:api_getOne({clientId = params.client_id}, true);
+
 	if app.clientSecret ~= params.client_secret then
-		return {error=10000, message="secret invalid"}
+		return {error = 10000, message="secret invalid"}
 	end
 
-	-- local oauthUsername = "xiaoyao"
-	local key = params.client_id .. "_" .. params.code
-	local oauthUsername = mem_cache:get(key)
+	local key           = params.client_id .. "_" .. params.code;
+	local oauthUsername = mem_cache:get(key);
+
 	if not oauthUsername then
 		return {error=10001, message="authorized code invalid"}
 	end
