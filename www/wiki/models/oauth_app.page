@@ -190,7 +190,7 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	-- 判断是否存在appName
 	self:db():findOne({appName = query.appName}, resume);
 	local err, data = yield();
-
+	
 	if(err) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
@@ -411,6 +411,10 @@ function oauth_app:api_getTokenByCode(params)
 
 	-- TODO DB select
 	local app = self:api_getOne({clientId = params.client_id}, true);
+
+	if(not app) then
+		return errors.NOT_FOUND;
+	end
 
 	if app.clientSecret ~= params.client_secret then
 		return {error = 10000, message="secret invalid"}
