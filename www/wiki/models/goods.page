@@ -145,7 +145,39 @@ function goods:api_addGoods(params)	             --Goods添加数据
 	else
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
+
+	local ret1 = '%d'			--数字
+	local ret2 = '%p'   		--标点字符
+	local ret3 = '%s'			--空白字符
+	local ret4 = '[\176-\254]'	--中文
+	local ret5 = '%a'			--英文字母
+
+	if(not string.find(query.app_goods_id,ret1)) then
+		if(not string.find(query.app_goods_id,ret4)) then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+	end
+
+	if(not string.find(query.subject,ret1)) then
+		if(not string.find(query.subject,ret4)) then
+			if(not string.find(query.subject,ret5)) then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
+		end
+	end
+
+	if(not string.find(query.price,ret1))then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
 	
+	if(not string.find(query.app_name,ret1))then
+		if(not string.find(query.app_name,ret4))then
+			if(not string.find(query.app_name,ret5))then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
+		end
+	end
+
 	self:db():insertOne(
 	{
 		goods_id          = gooodsId:getGoodsId(),    --自动递增
@@ -154,7 +186,7 @@ function goods:api_addGoods(params)	             --Goods添加数据
 		subject           = query.subject,   --商品名称
 		price             = query.price, --价格
 		app_name          = query.app_name,  --第三方oauth账号  
-		default_buy_count = query.default_buy_count,   --汇率
+		default_buy_count = query.default_buy_count,   --购买数量
 		is_on_sale        = query.is_on_sale,    --销售状态再卖的
 		create_date       = goods:getNow(),   --生成时间 无需填写  后台生成
 		additional_field  = query.additional_field, --该项为table
@@ -186,6 +218,38 @@ function goods:api_modifyGoods(params)     --Goods修改
 		end
 	else
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	local ret1 = '%d'			--数字
+	local ret2 = '%p'   		--标点字符
+	local ret3 = '%s'			--空白字符
+	local ret4 = '[\176-\254]'	--中文
+	local ret5 = '%a'			--英文字母
+
+	if(not string.find(query.app_goods_id,ret1)) then
+		if(not string.find(query.app_goods_id,ret4)) then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+	end
+
+	if(not string.find(query.subject,ret1)) then
+		if(not string.find(query.subject,ret4)) then
+			if(not string.find(query.subject,ret5)) then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
+		end
+	end
+
+	if(not string.find(query.price,ret1))then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+	
+	if(not string.find(query.app_name,ret1))then
+		if(not string.find(query.app_name,ret4))then
+			if(not string.find(query.app_name,ret5))then
+				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+			end
+		end
 	end
 	
 	self:db():findOne({goods_id = query.goods_id}, resume);

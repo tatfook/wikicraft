@@ -559,7 +559,7 @@ li{
 					</tr>
 				</table>
 				<!-- additional_field -->
-				<div class="modal fade additionalField" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal fade additionalField" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 								<div class="modal-header">
@@ -571,40 +571,6 @@ li{
 							<div class="modal-body">
 							<!-- A表单 -->
 								<form class="form-horizontal">
-									<!--<div ng-if="goodsVar == 1">
-										<div ng-repeat="x in data.additional_field">
-											<div class="form-group">
-												<label class="col-sm-2 control-label">name</label>
-												<div class="col-sm-10">
-													<input type="test" class="form-control goods-control" ng-model="data.additional_field.name">
-												</div>
-											</div>
-											<div class="form-group">
-												<label for="inputPassword3" class="col-sm-2 control-label">角色ID</label>
-												<div class="col-sm-10">
-													<input type="test" class="form-control goods-control" ng-model="data.additional_field.displayName">
-												</div>
-											</div>
-											<div class="form-group">
-												<label for="inputPassword3" class="col-sm-2 control-label">desc</label>
-												<div class="col-sm-10">
-													<input type="test" class="form-control goods-control" ng-model="data.additional_field.desc">
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-offset-2 col-sm-10">
-													<div class="checkbox">
-														<label>
-															<input name="goods" type="radio" ng-model="data.additional_field.required" ng-value=1> 是
-														</label>
-														<label>
-															<input name="goods" type="radio" ng-model="data.additional_field.required" ng-value=0> 否
-														</label>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>-->
 									<!-- 添加商品 -->
 									<div ng-if="goodsVar == 2">
 										<div class="form-group">
@@ -778,10 +744,10 @@ li{
 											<div id="accounttGoods"></div>										
 										</div>
 									<div class="modal-footer" ng-if="goodsVar == 2">
-										<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goodsAdd()">添加</button>
+										<button type="submit" class="btn btn-default" ng-click="goodsAdd()">添加</button>
 									</div>
 									<div class="modal-footer" ng-if="goodsVar == 3">
-										<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="goodsModify()">修改</button>
+										<button type="submit" class="btn btn-default" ng-click="goodsModify()">修改</button>
 									</div>
 							</div>
 						</div>
