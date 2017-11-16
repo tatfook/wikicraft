@@ -9,7 +9,8 @@ define(['app',
 	'helper/sensitiveWord',
     'text!html/userProfile.html',
     'cropper',
-], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
+    'bluebird'
+], function (app, util, storage, dataSource, sensitiveWord, htmlContent, cropper, Promise) {
     app.registerController('userProfileController', ['$scope', '$interval', 'Account', 'Message', function ($scope, $interval, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
@@ -195,37 +196,31 @@ define(['app',
 			user.vipInfo = undefined;
 
 			var checkSensitives = [user.displayName, user.location, user.introduce];
-			var isSensitive = false;
 
-			$.each(checkSensitives, function (index,word) {
-                if (word == ""){
-                    return true;
+            sensitiveWord.getAllSensitiveWords(checkSensitives).then(function(results) {
+                var isSensitive = results && results.length;
+                isSensitive && console.log("包含敏感词:" + results.join("|"));
+                trySaveProfile(isSensitive);
+            });
+
+            function trySaveProfile(isSensitive) {
+                if (isSensitive){
+                    $scope.formErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
+                    $scope.$apply();
+                    return;
                 }
-                sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
-                    if (foundWords.length > 0){
-                        isSensitive = true;
-                        console.log("包含敏感词:" + foundWords.join("|"));
-                        console.log(replacedStr);
-                        return false;
-                    }
+    
+                util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
+                    data.vipInfo = $scope.user.vipInfo;
+                    data.dataSource = $scope.user.dataSource;
+                    data.defaultSiteDataSource = $scope.user.defaultSiteDataSource;
+                    Account.setUser(data);
+                    Message.success("修改成功");
                 });
-            });
-            
-			if (isSensitive){
-			    $scope.formErr = "对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能保存";
-			    return;
+    
+                // 提交用户信息给搜索引擎
+                util.post(config.apiUrlPrefix + "elastic_search/submitUserinfo", user);
             }
-
-            util.http("PUT", config.apiUrlPrefix + "user/updateUserInfo", user, function (data) {
-				data.vipInfo = $scope.user.vipInfo;
-				data.dataSource = $scope.user.dataSource;
-				data.defaultSiteDataSource = $scope.user.defaultSiteDataSource;
-                Account.setUser(data);
-                Message.success("修改成功");
-            });
-
-			// 提交用户信息给搜索引擎
-			util.post(config.apiUrlPrefix + "elastic_search/submitUserinfo", user);
         }
 
 		$scope.isBind = function(type) {

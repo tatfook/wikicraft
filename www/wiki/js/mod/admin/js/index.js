@@ -11,11 +11,12 @@ define([
     'pageTemplates.js',
     'text!wikimod/admin/html/templates.html',
 	'/wiki/js/lib/md5.js',
-], function (app, util, mods, htmlContent, websiteTemplateContent) {
-	app.registerController('indexController', ['$scope', '$auth', 'Account','modal', 'Message', '$http', function ($scope, $auth, Account, modal, Message, $http) {
+    'Fuse'
+], function (app, util, mods, htmlContent, websiteTemplateContent, pageTemplateContent, textWikimodAdminHtmlTemplatesHtml, md5, Fuse) {
+	app.registerController('indexController', ['$scope', '$auth', "$location", 'Account','modal', 'Message', function ($scope, $auth, $location, Account, modal, Message) {
 		var urlPrefix = "/wiki/js/mod/admin/js/";
 		var tableName = "user";
-		$scope.selectMenuItem = "manager";
+		$scope.selectMenuItem = "";
 		$scope.pageSize = 15;
 		$scope.managerCurrentPage = 1;
 		$scope.operationLogCurrentPage = 1;
@@ -53,10 +54,17 @@ define([
 		}
 
 		function init() {
-			ensureAdminAuth();
-			$scope.getTemplates();
-			// $scope.getManagerList();
-			//$scope.clickMenuItem($scope.selectMenuItem);
+            ensureAdminAuth();
+
+            var subpage = capitalize($location.search().subpage || 'templates');
+
+            $scope['get'+subpage] 
+                ? $scope['get' + subpage]() 
+                : $scope.getTemplates();
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
 		}
 
 		$scope.$watch('$viewContentLoaded', init);
@@ -83,22 +91,22 @@ define([
 			});
 		}
 
-		$scope.clickUpsert = function() {
-			console.log($scope.query);
-			for (var key in $scope.query) {
-				if ($scope.query[key] == "") {
-					$scope.query[key] = undefined;
-				}
-			}
-			var tableName = getTableName();
+		$scope.clickEdit = function(x) {
+			$scope.query = x;
+		}
+
+		
+        */
+
+        $scope.clickUpsert = function(query, tableName, ngForm, callBack) {
 			util.post(config.apiUrlPrefix + "tabledb/upsert", {
-				tableName:tableName,
-				query:$scope.query,
+				tableName: tableName,
+				query: query,
 			}, function(data){
 				if (data) {
 					Message.info("添加成功");
-					$scope.data.push(data);
-					$scope.totalItems++;
+                    ngForm && ngForm.$setPristine && ngForm.$setPristine();
+                    callBack && callBack();
 				} else {
 					Message.info("添加失败");
 				}
@@ -107,23 +115,20 @@ define([
 			});
 		}
 
-		$scope.clickEdit = function(x) {
-			$scope.query = x;
-		}
-
-		$scope.clickDelete = function(x) {
-			var tableName = getTableName();
-			util.post(config.apiUrlPrefix + "tabledb/delete", {
-				tableName:tableName,
-				query:{
-					_id:x._id,
-				}
-			}, function(){
-				$scope.totalItems--;
-				x.isDelete = true;
-			}, function(){
-			});
-		}*/
+		$scope.clickDelete = function(x, tableName) {
+			var deleteConfirm = confirm("确定删除该项么？");
+			if(deleteConfirm){
+				util.post(config.apiUrlPrefix + "tabledb/delete", {
+                    tableName:tableName,
+                    query:{
+                        _id:x._id,
+                    }
+                }, function(){
+                    $scope.totalItems--;
+                    x.isDelete = true;
+                });
+            }
+        }
 
 		$scope.getStyleClass = function (item) {
 			if ($scope.selectMenuItem == item) {
@@ -475,6 +480,52 @@ define([
 					break;
 			}
         };
+
+        $scope.getSensitiveWords = function () {
+            $scope.selectMenuItem = "sensitiveWords";
+            $scope.sensitiveWordsList = [];
+            $scope.sensitiveWordsQueryName = "";
+            $scope.sensitiveWordsQueryStr = "";
+
+            $scope.sensitiveWordsListPageSize = 20;
+            $scope.sensitiveWordsListTotalItems = 0;
+            $scope.sensitiveWordsListPageIndex = 1;
+
+            $scope.updateSensitiveWordsView = function () {
+                if (!$scope.sensitiveWordsQueryStr) {
+                    $scope.sensitiveWordsListDisplay = $scope.sensitiveWordsList;
+                } else {
+                    $scope.sensitiveWordsListDisplay = new Fuse(
+                        $scope.sensitiveWordsList,
+                        {keys: ['name']}
+                    ).search($scope.sensitiveWordsQueryStr);
+                }
+
+                $scope.sensitiveWordsListTotalItems = $scope.sensitiveWordsListDisplay.length;
+
+                //initial index in view is 1, not 0
+                var minIndex = ($scope.sensitiveWordsListPageIndex - 1) * $scope.sensitiveWordsListPageSize;
+                var maxIndex = $scope.sensitiveWordsListPageIndex * $scope.sensitiveWordsListPageSize;
+
+                $scope.sensitiveWordsListDisplayInCurrentPage = $scope.sensitiveWordsListDisplay.filter(function(item, index) {
+                    return index >= minIndex && index < maxIndex;
+                });
+            }
+
+            $scope.unwatchSensitiveWordsQueryStr && $scope.unwatchSensitiveWordsQueryStr();
+            $scope.unwatchSensitiveWordsQueryStr = $scope.$watch('sensitiveWordsQueryStr', $scope.updateSensitiveWordsView);
+
+            util.post(config.apiUrlPrefix+"tabledb/query", {
+				tableName: 'sensitive_words',
+				page: 1,
+				pageSize: 1000000,
+				query: {},
+			}, function(data){
+                $scope.sensitiveWordsList = data.data;
+                $scope.updateSensitiveWordsView();
+            });
+        }
+
 		//搜索VIP
 		$scope.vipSearchById;
 		$scope.vipSearchByUsername = "";
@@ -636,19 +687,7 @@ define([
                 });
 			}
         }
-	}]);
+    }]);
 
 	return htmlContent;
 });
-
-
-
-
-
-
-
-
-
-
-
-
