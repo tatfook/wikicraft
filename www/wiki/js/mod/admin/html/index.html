@@ -774,16 +774,16 @@ li{
                     <form class="form-inline" class="pull-right">
                         <div class="searchbar pull-right" style="position: relative;">
                             <label>搜索敏感词：</label>
-                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="sensitiveWordsQueryStr" ng-model-options="{debounce: 300}">
+                            <input type="text" class="form-control" placeholder="搜索敏感词" ng-model="sensitiveWordsQueryStr" ng-model-options="{debounce: 300}">
                             <span class="glyphicon glyphicon-search" style="position:absolute; top:10px; right:25px;"></span>
                         </div>
                     </form>
                     <form role="form" class="form-inline" name="sensitiveWordsForm" ng-submit="clickUpsert({name: sensitiveWordsNewName}, 'sensitive_words', sensitiveWordsForm, getSensitiveWords)">
                         <div class="form-group">
                             <label>
-                                新增铭感词：
+                                新增敏感词：
                             </label>
-                            <input ng-model="sensitiveWordsNewName" required type="text" class="form-control" placeholder="请输入铭感词">
+                            <input ng-model="sensitiveWordsNewName" required type="text" class="form-control" placeholder="请输入敏感词">
                         </div>
                         <button class="btn btn-default" type="submit">新增</button>
                     </form>

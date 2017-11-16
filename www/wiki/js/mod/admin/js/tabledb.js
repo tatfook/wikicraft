@@ -126,41 +126,27 @@ define([
 
 		$scope.clickUpsert = function() {
 			var queryStr = inputEditor.getValue();
-			$scope.query = angular.fromJson(queryStr || "{}");
+            var query = angular.fromJson(queryStr || "{}");
 
-			var query = $scope.query || {};
-			var tableName = query.tableName || $scope.tableName;
-            query.tableName = undefined;
-
-            //support update a bunch of data
-            Array.isArray(query) ? query.forEach(postUpsert) : postUpsert(query);
-
-            function postUpsert(queryData) {
-                util.post(config.apiUrlPrefix + "tabledb/upsert", {
-                    tableName:tableName,
-                    query:queryData,
-                }, function(data) {
-                    outputEditor.setValue(angular.toJson(data,4));
-                });
-            }
+            util.post(config.apiUrlPrefix + "tabledb/upsert", {
+                tableName:$scope.tableName,
+                query:query,
+            }, function(data) {
+                outputEditor.setValue(angular.toJson(data,4));
+            });
         }
 
 		$scope.clickDelete = function() {
 			var queryStr = inputEditor.getValue();
-			var query = angular.fromJson(queryStr || "{}");
-
-            //support delete a bunch of data
-            Array.isArray(query) ? query.forEach(postDelete) : postDelete(query);
-            
-            function postDelete(queryData) {
-                util.post(config.apiUrlPrefix + "tabledb/delete", {
-                    tableName:query.tableName || $scope.tableName,
-                    query:queryData,
-                }, function(data){
-                    outputEditor.setValue(angular.toJson(data,4));
-                }, function(data){
-                });
-            }
+            var query = angular.fromJson(queryStr || "{}");
+        
+            util.post(config.apiUrlPrefix + "tabledb/delete", {
+                tableName:$scope.tableName,
+                query:query,
+            }, function(data){
+                outputEditor.setValue(angular.toJson(data,4));
+            }, function(data){
+            });
 		}
 
 		$scope.editIndex = function (index) {
