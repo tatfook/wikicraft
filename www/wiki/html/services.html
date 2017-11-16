@@ -115,6 +115,54 @@
         padding: 4px 23px;
     }
 </style>
+<style>
+    @media  (max-width: 680px){
+        .myvip .row{
+            padding:0;
+            border-bottom: none;
+        }
+        .myvip h3{
+            margin-bottom: 15px;
+        }
+        .myvip .compares {
+            width: 100%;
+        }
+        .myvip .feature-box{
+            width: 50%;
+            padding: 0 10px;
+            margin: 0;
+            border: 0;
+        }
+        .myvip .feature-box h2{
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .myvip .feature-box ul > li{
+            font-size: 12px;
+            padding-left: 17px;
+            line-height: 30px;
+        }
+        .myvip .feature-box .glyphicon-ok{
+            width:15px;
+            height:15px;
+            line-height:15px;
+            top:6px;
+        }
+        .myvip .gopay-btn{
+            margin: 10px 0;
+            font-size: 14px;
+            height: 32px;
+            line-height: 32px;
+            width: 80px;
+        }
+    }
+    @media (max-width: 768px) {
+        .myvip .vipinfo{
+            padding:15px 0;
+            text-align: center;
+        }
+    }
+</style>
 <div ng-controller="servicesController">
     <!--消费记录-->
     <div ng-show="showItem == 'myPay'" class="col-md-10 main-content panel">
