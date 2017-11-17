@@ -18,6 +18,7 @@ site_group.db_name = "site_group"
 function site_group:ctor()
 	self:addfield("username", "string")            -- 用户名  组的所属者
 	self:addfield("sitename", "string")            -- 站点名
+	self:addfield("groupUsername", "string")       -- 组用户名
 	self:addfield("groupname", "string")           -- 组名 
 	self:addfield("level", "number")               -- 权限级别
 	self:addfield("levelName", "string")           -- 级别名
@@ -25,13 +26,13 @@ end
 
 -- 创建一个站点组
 function site_group:api_upsert(params)
-	if (not params.username) or (not params.sitename) or (not params.groupname) then
+	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
 	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
 
-	self:db():insertOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, params, resume)
+	self:db():insertOne({["+username+sitename+groupUsername+groupname"]={params.username, params.sitename, params.groupUsername, params.groupname}}, params, resume)
 	local _, siteGroup = yield()
 
 	if (params.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL) then
@@ -43,11 +44,11 @@ end
 
 -- 删除一个站点组
 function site_group:api_deleteByName(params)
-	if (not params.username) or (not params.sitename) or (not params.groupname) then
+	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():deleteOne({["+username+sitename+groupname"]={params.username, params.sitename, params.groupname}}, resume)
+	self:db():deleteOne({["+username+sitename+groupUsername+groupname"]={params.username, params.sitename, params.groupUsername, params.groupname}}, resume)
 	yield()
 
 	local siteUserDB = models.site_user:new()
@@ -89,7 +90,7 @@ function site_group:api_getByMemberName(params)
 	for _, group in ipairs(groupList or {}) do
 		result[#result+1] = {} 
 		-- result[#result]["groupUser"] = group
-		self:db():find({["+username+groupname+level"]={group.username, group.groupname, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
+		self:db():find({["+groupUsername+groupname+level"]={group.username, group.groupname, gt=const.SITE_PRIVILEGE_DEVELOPER_LEVEL}}, resume)
 		local _, siteGroupList = yield()	
 		for _, siteGroup in ipairs(siteGroupList or {}) do
 			result[#result]["siteGroup"] = siteGroup
@@ -108,10 +109,10 @@ function site_group:api_getByUserGroupName(params)
 	end
 
 	local skip, limit = util:pagination(params)
-	self:db():count({["+username+groupname"]={params.username, params.groupname}}, resume)
+	self:db():count({["+groupUsername+groupname"]={params.username, params.groupname}}, resume)
 	local _, total = yield()
 
-	self:db():find({["+username+groupname"]={params.username, params.groupname, skip=skip, limit=limit}}, resume)
+	self:db():find({["+groupUsername+groupname"]={params.username, params.groupname, skip=skip, limit=limit}}, resume)
 	local _, groupList = yield()
 
 	return errors:wrap(nil, {total=total, groupList=groupList})
@@ -147,7 +148,7 @@ function site_group:api_getGuestUserList(params)
 	local userlist = {}
 	local groupUserDB = models.group_user:new()
 	for _, group in ipairs(groups or {}) do
-		groupUserDB:db():find({["+username+groupname"]={group.username, group.groupname}}, resume)
+		groupUserDB:db():find({["+username+groupname"]={group.groupUsername, group.groupname}}, resume)
 		local _, users = yield()
 		for _, user in ipairs(users or {}) do
 			userlist[#userlist+1] = user.memberName

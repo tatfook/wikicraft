@@ -7,6 +7,7 @@ Date: 2017/06/08
 
 
 include_once("./abstract/base.page")
+include_once("./group.page")
 include_once("./site_group.page")
 include_once("./site_user.page")
 
@@ -31,12 +32,15 @@ function group_user:api_upsert(params)
 
 	local siteUserDB = models.site_user:new()
 	for _, obj in ipairs(data or {}) do
-		siteUserDB:api_upsert({
-			username=params.username,
-			groupname=params.groupname,
-			memberName=params.memberName,
-			sitename=obj.sitename,
-		})
+		if obj.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL then
+			siteUserDB:api_upsert({
+				username=obj.username,
+				groupname=obj.groupname,
+				groupUsername=obj.groupUsername,
+				memberName=params.memberName,
+				sitename=obj.sitename,
+			})
+		end
 	end
 
 	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
@@ -57,12 +61,13 @@ function group_user:api_deleteMember(params)
 
 	local siteUserDB = models.site_user:new()
 	for _, obj in ipairs(data or {}) do
-		siteUserDB:api_deleteByName({
-			username=params.username,
-			groupname=params.groupname,
-			memberName=params.memberName,
-			sitename=obj.sitename,
-		})
+		if obj.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL then
+			siteUserDB:api_deleteByName({
+				username=obj.username,
+				memberName=params.memberName,
+				sitename=obj.sitename,
+			})
+		end
 	end
 
 	self:db():deleteOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, resume)
@@ -91,3 +96,46 @@ function group_user:api_delete(params)
 
 	return errors:wrap(yield())
 end
+
+-- getlist by memberName
+function group_user:api_getByMember(params)
+	if not params.memberName then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	local limit = 100000
+	self:db():find({["+memberName"]={params.memberName, limit=limit}}, resume)
+	local _, data = yield()
+
+	local groupDB = models.group:new()
+	for _, obj in ipairs(data or {}) do
+		groupDB:db():findOne({["+username+groupname"]={obj.username, obj.groupname}}, resume)
+		local _, group = yield()
+		if group then
+			obj.dataSourceGroupId = group.dataSourceGroupId
+		end
+	end
+
+	return errors:wrap(nil, data)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
