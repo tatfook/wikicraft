@@ -94,7 +94,7 @@ define([
             $scope.$dismiss('Canceled')
         }
 
-        $scope.user.realNameInfo.verified && $scope.user.realNameInfo.cellphone && $scope.$watch("$viewContentLoaded", function() {
+        $scope.user && $scope.user.realNameInfo && $scope.user.realNameInfo.verified && $scope.user.realNameInfo.cellphone && $scope.$watch("$viewContentLoaded", function() {
             $scope.$close($scope.user.realNameInfo)
         });
     }]);
