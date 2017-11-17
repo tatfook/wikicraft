@@ -118,6 +118,14 @@ define([
                 }
                 $scope.step++;
                 $scope.nextStepDisabled = !$scope.website.name;
+                setTimeout(function () {
+                    if ($scope.isModal){
+                        $("#websiteName_modal").focus();
+                    }else{
+                        $("#websiteName").focus();
+                        $("#websiteName1").focus();
+                    }
+                });
                 return;
             } else if ($scope.step == 2) {
                 if (!$scope.website.name || $scope.website.name.replace(/(^\s*)|(\s*$)/g, "") == "") {
@@ -182,9 +190,14 @@ define([
         $scope.prevStep = function () {
             $scope.step--;
             $scope.nextStepDisabled = false;
-            if ($scope.step==1){
+            if ($scope.step == 2){
                 setTimeout(function () {
-                    $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
+                    if ($scope.isModal){
+                        $("#websiteName_modal").focus();
+                    }else{
+                        $("#websiteName").focus();
+                        $("#websiteName1").focus();
+                    }
                 });
             }
         };
@@ -239,10 +252,6 @@ define([
             if((util.getPathname() !="/wiki/user_center")){
                 $scope.isModal=true;
             }
-
-            setTimeout(function () {
-                $scope.isModal ? $("#websiteName_modal").focus() : $("#websiteName").focus();
-            });
         }
 
         // 文档加载完成

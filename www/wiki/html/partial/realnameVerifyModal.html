@@ -1,0 +1,84 @@
+<style>
+    .confirm-dialog .modal-body {
+        max-height: 530px;
+        overflow-y: auto;
+    }
+
+    .confirm-dialog h3 {
+        text-align: center;
+        font-weight: normal;
+    }
+
+    .confirm-dialog span.icon {
+        width: 32px;
+        height: 32px;
+        border: 2px solid;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 30px;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .confirm-dialog .icon.text-danger {
+        color: #ED381C;
+    }
+
+    .confirm-dialog .icon.text-success {
+        color: #3C763D;
+        font-weight: normal;
+    }
+
+    .confirm-dialog .titleinfo {
+        font-weight: normal;
+        color: #666;
+    }
+</style>
+<div class="confirm-dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="$dismiss()">&times;</button>
+        <h4 class="modal-title">实名手机认证</h4>
+    </div>
+    <div class="modal-body">
+        <div class="tab-content col-sm-10 col-sm-offset-1">
+            <div role="tabpanel" class="tab-pane safety-panel active">
+                <div ng-show="user.realNameInfo.verified && user.realNameInfo.cellphone" class="realname-verified-info">
+                    <p>认证状态：已经认证</p>
+                    <p>认证号码：{{ cellphone2UI(user.realNameInfo.cellphone) }}</p>
+                </div>
+                <form ng-hide="user.realNameInfo.verified && user.realNameInfo.cellphone" class="form-horizontal" role="form">
+                    <div class="form-group sr-only">
+                        <legend>手机认证表单</legend>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">输入手机号：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" ng-model="realNameInfo.cellphone">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">短信验证码：</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" ng-model="realNameInfo.SMSCode">
+                        </div>
+                        <div class="col-sm-4 verify-btn">
+                            <div class="btn btn-block" ng-class="{
+                                            true: 'btn-default',
+                                            false: 'btn-primary'
+                                        }[realNameCellPhoneSMSCodeWait>0]" ng-disabled="realNameCellPhoneSMSCodeWait > 0"
+                                ng-click="sendRealNameCellPhoneSMSCode()">{{(realNameCellPhoneSMSCodeWait == 0) ? "发送验证码" : "重新发送(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
+                        </div>
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <p class="text-danger">{{errorMsg}}</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-fill btn-md btn-primary" ng-click="submitRealnameInfo()">确定</button>
+        <button type="button" class="btn btn-md" data-dismiss="modal" ng-click="cancel()">取消</button>
+    </div>
+</div>

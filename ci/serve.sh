@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# serve.sh dev|test|prod
+# serve.sh dev|stage|release
 #
 # serve npl web server
 #
@@ -10,7 +10,7 @@ set -x
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|test|release|prod"
+  echo "usage: $0 dev|stage|release|prod"
   exit 1
 }
 
@@ -18,7 +18,7 @@ if [[ $# -eq 0 ]] || [[ $# -gt 1 ]]; then
   usage
 fi
 
-if [[ $1 != "test" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]] && [[ $1 != "prod" ]]; then
+if [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]] && [[ $1 != "prod" ]]; then
   usage
 fi
 
@@ -30,8 +30,8 @@ case $ENV_TYPE in
     ROOT_DIR=www
     PORT=8900
     ;;
-  test)
-    ROOT_DIR=test
+  stage)
+    ROOT_DIR=stage
     PORT=8099
     ;;
   release)

@@ -7,28 +7,33 @@ set -ex
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|test|release"
+  echo "usage: $0 dev|stage|test|release [branch_name] [port]"
   exit 1
 }
 
-if [[ $# -eq 0 ]] || [[ $# -gt 1 ]]; then
-  usage
-fi
-if [[ $1 != "test" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
+if [[ $1 != "test" ]] && [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
   usage
 fi
 
 ENV_TYPE=$1
 
 if [[ ${ENV_TYPE} == "dev" ]]; then
-  port=8900
-elif [[ ${ENV_TYPE} == "test" ]]; then
-  port=8099
+  name=keepwork-${ENV_TYPE}-server
+  outside_port=8900
+  inside_port=8900
 elif [[ ${ENV_TYPE} == "release" ]]; then
-  port=8088
+  name=keepwork-${ENV_TYPE}-server
+  outside_port=8088
+  inside_port=8088
+elif [[ ${ENV_TYPE} == "release" ]]; then
+  name=keepwork-${ENV_TYPE}-server
+  outside_port=8088
+  inside_port=8088
+elif [[ ${ENV_TYPE} == "stage" ]]; then
+  name=$2
+  outside_port=$3
+  inside_port=8099
 fi
-
-name=keepwork-${ENV_TYPE}-server
 
 if docker ps -f name=$name | grep $name; then
   docker stop $name
@@ -38,7 +43,7 @@ fi
 docker run -d --restart=always --name=$name \
   -v "${ENV_TYPE}-database:/project/wikicraft/database" \
   -v "${ENV_TYPE}-log:/project/wikicraft/log" \
-  -p "${port}:${port}" \
+  -p "${outside_port}:${inside_port}" \
   keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
 

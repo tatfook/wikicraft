@@ -4,7 +4,9 @@ MAINTAINER zdw "favorofife@yeah.net"
 ARG DIST_PKG
 
 # compile qiniu sdk (libboost ver > 1.55)
-RUN apt update && apt install -y libboost-all-dev
+# install boost in npl image
+#RUN apt-get update
+#RUN apt-get install -y libboost-all-dev
 
 ADD ./bin/tini /tini
 RUN chmod +x /tini

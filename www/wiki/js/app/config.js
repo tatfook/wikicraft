@@ -161,7 +161,7 @@
 			return true;
 		}
 
-		if (hostname.indexOf(".dev.keepwork.com") >= 0 || hostname.indexOf("localhost") >= 0) {
+		if (hostname.indexOf(".dev.keepwork.com") >= 0 || hostname.indexOf(".stage.keepwork.com") >= 0 || hostname.indexOf("localhost") >= 0) {
 			return true;
 		}
 
