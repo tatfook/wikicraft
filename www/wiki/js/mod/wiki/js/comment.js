@@ -36,6 +36,11 @@ define([
                 $scope.comment = { url: util.parseUrl().pathname, websiteId: currentScope.siteinfo._id, userId: $rootScope.user._id };
 
                 $scope.submitComment = function () {
+                    $scope.comment.content = util.stringTrim($scope.comment.content);
+                    if (!$scope.comment.content || $scope.comment.content.length == 0) {
+                        return;
+                    }
+
                     //$scope.isAuthenticated = true;
                     $scope.tipInfo = "";
                     if (!$scope.isAuthenticated) {
@@ -43,15 +48,16 @@ define([
                         return;
                     }
 
-                    $scope.comment.content = util.stringTrim($scope.comment.content);
-                    if (!$scope.comment.content || $scope.comment.content.length == 0) {
-                        return;
-                    }
-
-                    sensitiveWord.getAllSensitiveWords($scope.comment.content).then(function(results) {
+                    // window.x = config.services.realnameVerifyModal();
+                    
+                    config.services.realnameVerifyModal().then(function() {
+                        return sensitiveWord.getAllSensitiveWords($scope.comment.content);
+                    }).then(function(results) {
                         var isSensitive = results && results.length;
                         isSensitive && console.log("包含敏感词:" + results.join("|"));
                         trySaveComment(isSensitive);
+                    }).catch(function(error) {
+                        console.log('error');
                     });
 
                     function trySaveComment(isSensitive) {
