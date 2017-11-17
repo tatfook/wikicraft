@@ -184,8 +184,6 @@ define(['app',
 				});
 			});
         });
-        
-        window.x = $scope;
 
         // 保存用户信息
         $scope.saveProfile = function () {
