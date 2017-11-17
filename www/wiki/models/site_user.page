@@ -55,7 +55,7 @@ function site_user:api_addGroupUser(params)
 
 	local limit = 100000
 	
-	models.group_user:new():db():find({["+groupUsername+groupname"]={params.groupUsername, params.groupname, limit=limit}}, resume)
+	models.group_user:new():db():find({["+username+groupname"]={params.groupUsername, params.groupname, limit=limit}}, resume)
 	
 	local _, groupUserList = yield()
 
@@ -74,7 +74,7 @@ function site_user:api_deleteGroupUser(params)
 
 	local limit = 100000
 	
-	models.group_user:new():db():find({["+groupUsername+groupname"]={params.groupUsername, params.groupname, limit=limit}}, resume)
+	models.group_user:new():db():find({["+username+groupname"]={params.groupUsername, params.groupname, limit=limit}}, resume)
 	
 	local _, groupUserList = yield()
 
