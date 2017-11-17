@@ -32,13 +32,15 @@ function group_user:api_upsert(params)
 
 	local siteUserDB = models.site_user:new()
 	for _, obj in ipairs(data or {}) do
-		siteUserDB:api_upsert({
-			username=obj.username,
-			groupname=obj.groupname,
-			groupUsername=obj.groupUsername,
-			memberName=params.memberName,
-			sitename=obj.sitename,
-		})
+		if obj.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL then
+			siteUserDB:api_upsert({
+				username=obj.username,
+				groupname=obj.groupname,
+				groupUsername=obj.groupUsername,
+				memberName=params.memberName,
+				sitename=obj.sitename,
+			})
+		end
 	end
 
 	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
@@ -59,11 +61,13 @@ function group_user:api_deleteMember(params)
 
 	local siteUserDB = models.site_user:new()
 	for _, obj in ipairs(data or {}) do
-		siteUserDB:api_deleteByName({
-			username=obj.username,
-			memberName=params.memberName,
-			sitename=obj.sitename,
-		})
+		if obj.level >= const.SITE_PRIVILEGE_DEVELOPER_LEVEL then
+			siteUserDB:api_deleteByName({
+				username=obj.username,
+				memberName=params.memberName,
+				sitename=obj.sitename,
+			})
+		end
 	end
 
 	self:db():deleteOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, resume)
