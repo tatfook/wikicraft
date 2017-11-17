@@ -232,6 +232,7 @@ define([
 				var data = data || [];
 				for(var i = 0; i < data.length; i++) {
 					var group = data[i];
+					group.groupUsername = group.groupUsername;
 					group.username = siteinfo.username;
 					group.sitename = siteinfo.name;
 					group.groupname = group.group_name;

@@ -464,7 +464,7 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="group in groupAuths" ng-hide="group.isDelete">
-                                    <td><a ng-click="" class="text-primary">{{group.username + '/' + group.groupname}}</a></td><!--分组名-->
+                                    <td><a ng-click="" class="text-primary">{{group.groupUsername + '/' + group.groupname}}</a></td><!--分组名-->
                                     <td>{{group.levelName}}</td><!--成员-->
                                     <td>
                                         <a ng-click="deleteShareGroup(group)">删除</a>
