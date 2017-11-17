@@ -19,8 +19,8 @@ function site_user:ctor()
 	self:addfield("groupUsername", "string")
 	self:addfield("groupname", "string")           -- 组名 
 	self:addfield("memberName", "string")          -- 成员名
-	-- self:addfield("level", "number")               -- 权限级别
-	-- self:addfield("levelName", "string")           -- 级别名
+	self:addfield("level", "number")               -- 权限级别
+	self:addfield("levelName", "string")           -- 级别名
 end
 
 

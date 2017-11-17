@@ -360,6 +360,12 @@ define([
                             break;
                         }
                     }
+                    for (var i = 0; i < $scope.shareGroups.length; i++) {
+                        if (group.name == $scope.shareGroups[i].groupname && $scope.shareGroups[i].username == siteinfo.username) {
+                            $scope.shareGroups.splice(i,1);
+                            break;
+                        }
+                    }
                     siteDataSource.deleteGroup({id:group.id}, function(){
                         util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
                     });
@@ -395,6 +401,7 @@ define([
 					visibility:"public",
 				});
 				$scope.groups.push(data);
+				$scope.shareGroups.push({username:siteinfo.username, groupname:group.name, id:data.id,name:siteinfo.username+"/"+group.name});
 				$scope.nowGroup = {};
 				//console.log(data);
 			}, function(){
