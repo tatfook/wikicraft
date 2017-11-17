@@ -65,7 +65,7 @@ function oauth_app:get(params) -- /api/wiki/models/oauth_app/ POST
 	end
 end
 
-function oauth_app:api_getOne(params, isApi) -- /api/wiki/models/oauth_app/getOne POST
+function oauth_app:api_getOne(params) -- /api/wiki/models/oauth_app/getOne POST
 	self:ensureAuthenticated();
 
 	local err, query = self:validateQuery(params);
@@ -77,19 +77,11 @@ function oauth_app:api_getOne(params, isApi) -- /api/wiki/models/oauth_app/getOn
 	self:db():findOne({clientId = query.clientId}, resume);
 	local err, data = yield();
 
-	if(not isApi) then
-		if(not err) then
-			response:status(200);
-			return errors:wrap(nil, data);
-		else
-			return errors:wrap(errors.SERVER_INNER_ERROR);
-		end
+	if(not err) then
+		response:status(200);
+		return errors:wrap(nil, data);
 	else
-		if(not err) then
-			return data;
-		else
-			return false;
-		end
+		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 end
 
@@ -190,7 +182,7 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	-- 判断是否存在appName
 	self:db():findOne({appName = query.appName}, resume);
 	local err, data = yield();
-
+	
 	if(err) then
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
@@ -405,40 +397,47 @@ end
 
 -- 通过code获取token
 function oauth_app:api_getTokenByCode(params)
+	response:status(503);
+
 	if not params.code or (not params.client_id) or (not params.client_secret) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	-- TODO DB select
-	local app = self:api_getOne({clientId = params.client_id}, true);
+	self:db():findOne({clientId = params.client_id}, resume);
+	local err, app = yield();
+
+	if(not app) then
+		return errors.NOT_FOUND;
+	end
 
 	if app.clientSecret ~= params.client_secret then
-		return {error = 10000, message="secret invalid"}
+		return {error = 10000, message="secret invalid"};
 	end
 
 	local key           = params.client_id .. "_" .. params.code;
 	local oauthUsername = mem_cache:get(key);
 
 	if not oauthUsername then
-		return {error=10001, message="authorized code invalid"}
+		return {error=10001, message="authorized code invalid"};
 	end
 
 	if params.username and oauthUsername ~= params.username then
-		return {error=10003, message="username error"}
+		return {error=10003, message="username error"};
 	end
 
-	local userDB = models.user:new()
+	local userDB = models.user:new();
 	userDB:db():findOne({["+username"]={oauthUsername}}, resume)
 	local _, userinfo = yield()
 
 	if not userinfo then
-		return {error=10002, message="server inner errror"}
+		return {error=10002, message="server inner errror"};
 	end
 
 	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
 	local token = jwt.encode({authway="oauth", username=userinfo.username},secret["token_secret"], nil, secret["token_expire"] or 3600)
 
-	return {token=token}
+	response:status(200);
+	return {token=token};
 end
 
 -- client callback
@@ -456,19 +455,20 @@ function oauth_app:api_callback(params)
 	params.client_secret = "keepwork"
 
 	local apiUrl = "http://localhost:8900/api/wiki/models/oauth_app/getTokenByCode"
+
 	System.os.GetUrl({
-		url=apiUrl,
-		method="GET",
-		json=true,
-		qs=params,
+		url    = apiUrl,
+		method = "GET",
+		json   = true,
+		qs     = params,
 	}, resume)
+
 	local code, data = yield()
 
 	if code ~= 200 then
-		log(code)
-		log(data)
 		return {message="authorized server error"}
 	end
+
 	local tokenData = data.data
 
 	return tokenData
@@ -482,19 +482,19 @@ end
 
 function ouath_clientld:getClientld()
 	self:db():insertOne({},resume);
-	local err, phoneNumber = yield();
+	local err, id = yield();
 	
 	local sn = "1";
 	
-	phoneNumber  = tostring(phoneNumber._id);
-	a =5 - #phoneNumber;
+	id  = tostring(id._id);
+	a = 6 - #id;
 
-	for i=1,a do 
-		phoneNumber = "0" .. phoneNumber;
-		i=i+1;
+	for i = 1, a do 
+		id = "0" .. id;
+		i = i + 1;
 	end
 
-	return sn .. phoneNumber
+	return sn .. id
 end
 
 
