@@ -104,6 +104,7 @@
         margin-top: 14px;
         background-repeat: no-repeat;
         background-size: cover;
+        cursor: pointer;
     }
 
     .org .org-title {
@@ -453,20 +454,16 @@
         color: #01C9AC;
     }
 
-    .disabled {
-        cursor: not-allowed;
-        opacity: 0.65;
-        background-color: #ffc107;
-        border-color: #ffc107;
-    }
-
     .chp-enroll a {
         background-color: #f9963b;
         border-color: #f5aa66;
     }
 
-    .chp-enroll a:hover {
+    .chp-enroll.disabled a:hover {
         cursor: not-allowed;
+        opacity: 0.65;
+        background-color: #ffc107;
+        border-color: #ffc107;
     }
 
     .chp-rec {
@@ -480,7 +477,7 @@
 
 <div class="cont" ng-controller="entriesController">
     <div class="org" ng-show="org.show">
-        <div class="org-img" style="background-image: url({{org.image}})" title="{{org.name}}">
+        <div class="org-img" style="background-image: url({{org.image}})" title="{{org.name}}" ng-click="openUrl(org.url)">
             <!-- <a ng-href="" style="background-image: url({{org.image}})" title="{{org.name}}">图片</a> -->
         </div>
         <div class="org-title">
@@ -611,7 +608,7 @@
         </div>
         <div class="teach-list" ng-show="showTeachRec">
             <div class="teach-list-item" ng-repeat="tt in teachRec track by $index">
-                <div class="teach-content" ng-click="openUserHome(tt.url)">
+                <div class="teach-content" ng-click="openUrl(tt.url)">
                     <div class="img clearfix" style="background-image: url({{tt.userImg}})">
                     </div>
                     <div class="teach-info clearfix">

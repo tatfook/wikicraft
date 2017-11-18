@@ -50,6 +50,7 @@ define(['app',
                         $scope.org.cnum = item.subject_num;
                         $scope.org.tnum = item.teacher_num;
                         $scope.org.snum = item.student_num;
+                        $scope.org.url = window.location.origin + '/lecture/main/institutional?insti_name=' + item.organization_name;
 
                         $scope.org.show = true;
 
@@ -169,7 +170,7 @@ define(['app',
             //推荐的章节
             var chpRecPageIdx = 1, //当前的页码
                 chpRecPageSize = 50; //每页显示多少个
-                
+
             $scope.chpRec = [];
             $scope.chpRecVisabled = false;
             //初始化推荐文章推荐
@@ -205,7 +206,7 @@ define(['app',
                         }
                     },
                     onSlideNextEnd: function (swiper) {
-                        chpRecPageIdx ++;
+                        chpRecPageIdx++;
                     }
                 });
 
@@ -234,9 +235,9 @@ define(['app',
 
                     }
 
-                    setTimeout(function(){
+                    setTimeout(function () {
                         teacherSlide.slideTo(0);
-                        $timeout(function(){
+                        $timeout(function () {
                             $scope.chpRecVisabled = true;
                         }, 300)
                     }, 0);
@@ -304,7 +305,7 @@ define(['app',
             }
 
             //打开用户页面
-            $scope.openUserHome = function (url) {
+            $scope.openUrl = function (url) {
                 window.location.href = url;
             }
 
