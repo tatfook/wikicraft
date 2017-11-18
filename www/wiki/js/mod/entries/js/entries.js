@@ -12,7 +12,7 @@ define(['app',
 
     function registerController(wikiBlock) {
         app.registerController("entriesController", ['$scope', '$http', '$timeout', '$uibModal', function ($scope, $http, $timeout, $uibModal) {
-            var host = 'http://localhost:3000',
+            var host = 'http://121.14.117.239',
                 chpApi = host + '/api/lecture/course/get_chapter_details',
                 orgApi = host + '/api/organization/detailByCourseId/',
                 usebuyApi = host + '/api/lecture/course/check_chapter',
