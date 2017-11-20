@@ -103,7 +103,7 @@
         border: 2px solid #eeeeee;
         margin-top: 14px;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
         cursor: pointer;
     }
 
@@ -191,7 +191,7 @@
         margin-bottom: 18px;
         border-radius: 50%;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
     }
 
     .chp .user-info .user-name {
@@ -278,7 +278,7 @@
 
     .chp-rec .swiper-slide {
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
     }
 
     .chp-rec .swiper-slide:nth-child(4n+0) {
@@ -411,7 +411,7 @@
         /* background-color: rebeccapurple; */
         display: inline-block;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
     }
 
     .teach-content .teach-info {
@@ -472,6 +472,32 @@
 
     .chp-rec.visabled {
         visibility: visible;
+    }
+
+    .chp-rec .chp {
+        cursor: pointer;
+
+        transition: 0.3s ease-out;
+        -webkit-transition: 0.3s ease-out;
+        -moz-transition: 0.3s ease-out;
+        -ms-transition: 0.3s ease-out;
+        -o-transition: 0.3s ease-out;
+    }
+
+    .chp-rec .chp:hover {
+        /* opacity: 0.9; */
+        /* filter: alpha(opacity=0.9); */
+        color: #6f6767;
+    }
+
+    .teach-rec .teach-list {
+        overflow: hidden;
+        height: 0;
+
+        -webkit-transition: height 0.3s linear;
+        -moz-transition: height 0.3s linear;
+        -o-transition: height 0.3s linear;
+        transition: height 0.3s linear;
     }
 </style>
 
@@ -543,7 +569,7 @@
         <div class="swiper-container swiper-container-autoheight" id="chapSlide">
 
             <div class="swiper-wrapper">
-                <div class="swiper-slide" ng-repeat="cr in chpRec track by $index">
+                <div class="swiper-slide chp" ng-repeat="cr in chpRec track by $index" ng-click="openUrl(cr.churl)">
                     <div class="desc">{{cr.chapter_title}}</div>
                     <span>{{cr.pprice}}</span>
                 </div>
@@ -600,37 +626,38 @@
         <div class="swiper-button-prev spb"></div>
         <div class="swiper-button-next spb"></div>
     </div>
-    <div class="teach-rec" ng-class="{active:showTeachRec}" ng-show="chpRec.length">
+    <div class="teach-rec" ng-show="chpRec.length && teachRec.length">
         <div class="b-div">
             <button class="c-btn" ng-click="showTRec()">导师推荐
                 <span></span>
             </button>
         </div>
-        <div class="teach-list" ng-show="showTeachRec">
-            <div class="teach-list-item" ng-repeat="tt in teachRec track by $index">
-                <div class="teach-content" ng-click="openUrl(tt.url)">
-                    <div class="img clearfix" style="background-image: url({{tt.userImg}})">
-                    </div>
-                    <div class="teach-info clearfix">
-                        <span class="user-name ">{{tt.display_name || tt.user_name}}</span>
-                        <div class="user-start">
-                            <span ng-repeat="ts in tt.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
-                                <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
-                                    <path d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
-                                    <path d="M0 0h24v24H0z" fill="none"></path>
-                                </svg>
-                            </span>
+        <div class="teach-list">
+            <div class="teach-list-content">
+                <div class="teach-list-item" ng-repeat="tt in teachRec track by $index">
+                    <div class="teach-content" ng-click="openUrl(tt.url)">
+                        <div class="img clearfix" style="background-image: url({{tt.userImg}})">
+                        </div>
+                        <div class="teach-info clearfix">
+                            <span class="user-name ">{{tt.display_name || tt.user_name}}</span>
+                            <div class="user-start">
+                                <span ng-repeat="ts in tt.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
+                                    <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                    </svg>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- <div class="teach-list-item">
+                    <!-- <div class="teach-list-item">
                 <div class="teach-content"></div>
             </div>
             <div class="teach-list-item">
                 <div class="teach-content"></div>
             </div>  -->
-
+                </div>
             </div>
             <div class="load-more" ng-show="showTeachRec && teachMore" ng-click="loadMore(1)">
 

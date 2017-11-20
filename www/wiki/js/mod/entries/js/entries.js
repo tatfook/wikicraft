@@ -37,7 +37,7 @@ define(['app',
             function initOrg() {
                 $http({
                     method: 'GET',
-                    url: orgApi + $scope.chap.id
+                    url: orgApi + $scope.chap.cid
                 }).then(function (data) {
 
                     if (data.data.err == 0) {
@@ -57,7 +57,7 @@ define(['app',
                     }
 
                 }).catch(function (data) {
-                    console.log('oooooooooooo')
+                    // console.log('oooooooooooo')
                     console.log(data)
                 });
             }
@@ -65,6 +65,7 @@ define(['app',
             //章节信息
             $scope.chap = {
                 id: '', //章节id
+                cid: '', //课程id
                 ctitle: '', //课程标题
                 curl: '', //课程url                
                 ptitle: '', //章节标题
@@ -97,6 +98,7 @@ define(['app',
 
                         $scope.chap.ctitle = data.course_title;
                         $scope.chap.ptitle = data.chapter_title;
+                        $scope.chap.cid = data.course_id;
                         $scope.chap.cidx = parseInt(data.item_order, 10) + 1;
                         $scope.chap.curl = data.course_url;
                         $scope.chap.username = data.display_name || data.user_name;
@@ -225,10 +227,14 @@ define(['app',
                     if (data.data && data.data.data) {
                         var items = data.data.data;
 
+                        // debugger;
+
                         for (var i = 0; i < items.length; i++) {
                             var it = items[i];
 
                             it.pprice = it.price > 0 ? '¥' + it.price : '免费';
+
+                            it.churl = window.location.origin + it.chapter_url;
 
                             $scope.chpRec.push(it);
                         }
@@ -251,8 +257,8 @@ define(['app',
             var teachRecPageIdx = 1, //当前的页码
                 teachRecPageSize = 8; //每页显示多少个
 
-            $scope.showTeachRec = true;
-            $scope.teachMore = true;
+            $scope.showTeachRec = false;
+            $scope.teachMore = false;
 
             $scope.teachRec = [];
             // 初始化导师推荐
@@ -289,8 +295,14 @@ define(['app',
                             $scope.teachRec.push(items[i]);
                         }
 
-                        if (items.length !== teachRecPageSize) {
+                        if (items.length === data.data.itemCount) {
                             $scope.teachMore = false;
+                        }
+
+                        if (teachRecPageIdx !== 1) { //第一次不滑动
+                            setTimeout(function () {
+                                $('.teach-rec .teach-list').css('height', $('.teach-rec .teach-list .teach-list-content').height());
+                            }, 100)
                         }
                     }
 
@@ -299,9 +311,23 @@ define(['app',
                 });
             }
 
+            // var firstOpen = true;
+
             //展开推荐导师
             $scope.showTRec = function () {
                 $scope.showTeachRec = !$scope.showTeachRec;
+
+                // if (firstOpen) {
+                //     initTeachRec(1);
+                //     firstOpen = false;
+                // }else{
+                if ($scope.showTeachRec) {
+                    $('.teach-rec .teach-list').css('height', $('.teach-rec .teach-list .teach-list-content').height());
+                } else {
+                    $('.teach-rec .teach-list').css('height', 0);
+                }
+                // }                
+
             }
 
             //打开用户页面
@@ -322,7 +348,7 @@ define(['app',
                     initTeachRec();
                 } else {
                     initChpRec();
-                    initTeachRec();
+                    // initTeachRec();
                 }
             }
 
