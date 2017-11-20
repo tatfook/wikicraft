@@ -1,4 +1,4 @@
- <!--Created by Karlwu on 2016-11-11-->
+<!--Created by Karlwu on 2016-11-11-->
  <style>
      .newpage-modal{
          padding: 15px 85px;
@@ -169,59 +169,107 @@
              width: 720px;
          }
      }
- </style>
+    
+    @media (max-width:768px) {
+        .tree-modal .newpage-modal {
+            height: 400px;
+            padding: 15px;
+        }
+        .tree-modal .newpage-modal .treeview {
+            height: 250px;
+        }
+        .tree-modal .newpage-modal .pad40 {
+            padding: 0;
+        }
+        .newpage-modal .input-lg {
+            height: 36px;
+            padding: 6px 12px;
+        }
+        .newpage-modal>.clearfix>.col-xs-12 {
+            padding: 0;
+        }
+        .notree-modal .form-group {
+            margin-bottom: 0;
+        }
+        .tree-modal .template-select {
+            height: 335px;
+        }
+        .tree-modal .template-select .nav-tabs {
+            width: 50px;
+            padding-top: 15px;
+        }
+        .tree-modal .template-select .tab-content {
+            margin-left: 50px;
+            padding: 15px 0 0;
+        }
+        .template-select img {
+            height: 90px;
+        }
+        .template-select .label {
+            font-size: 12px;
+            padding: 6px 12px;
+            left: 9px;
+        }
+        .template-select .btn-group .btn-lg {
+            font-size: 16px;
+        }
+        .template-select .tab-content>.active .col-xs-6 {
+            padding: 0 8px;
+        }
+    }
+</style>
 <div ng-class="hidePageTree?'notree-modal':'tree-modal'">
     <form name="pageForm" ng-submit="website_new()">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">新建页 <span ng-show="hidePageTree" class="now-page">&gt; {{routes}}</span></h4>
-    </div>
-    <div class="modal-body newpage-modal">
-        <div class="clearfix">
-            <div class="col-md-6" ng-hide="hidePageTree || step != 1">
-                <div>
-                    <h4 class="title">选择网站</h4>
-                    <div id="newPageTreeId"></div>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+            <h4 class="modal-title">新建页 <span ng-show="hidePageTree" class="now-page">&gt; {{routes}}</span></h4>
+        </div>
+        <div class="modal-body newpage-modal">
+            <div class="clearfix">
+                <div class="col-md-6" ng-hide="hidePageTree || step != 1">
+                    <div>
+                        <h4 class="title">选择网站</h4>
+                        <div id="newPageTreeId"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="pad40" ng-class="hidePageTree?'col-md-7':'col-md-6'" ng-show="step == 1">
-                <div class="form-group">
-                    <label class="title">页面名：</label>
-                    <input autofocus type="text" name="name" class="form-control input-lg" ng-model="websitePage.pagename" required>
+                <div class="pad40" ng-class="hidePageTree?'col-md-7':'col-md-6'" ng-show="step == 1">
+                    <div class="form-group">
+                        <label class="title">页面名：</label>
+                        <input autofocus type="text" name="name" class="form-control input-lg" ng-model="websitePage.pagename" required>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12" ng-show="step == 2 || hidePageTree">
-                <h4 class="title margin_12_0_20_0">选择页面模板：</h4>
-                <div class="template-select clearfix">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" ng-repeat="pageTemplate in pageTemplates" ng-class="getActiveStyleClass(pageTemplate)">
-                            <a ng-click="selectCategory(pageTemplate)" aria-controls="personal-web" role="tab" data-toggle="tab">{{pageTemplate.name}}</a>
-                        </li>
-                    </ul>
+                <div class="col-xs-12" ng-show="step == 2 || hidePageTree">
+                    <h4 class="title margin_12_0_20_0">选择页面模板：</h4>
+                    <div class="template-select clearfix">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" ng-repeat="pageTemplate in pageTemplates" ng-class="getActiveStyleClass(pageTemplate)">
+                                <a ng-click="selectCategory(pageTemplate)" aria-controls="personal-web" role="tab" data-toggle="tab">{{pageTemplate.name}}</a>
+                            </li>
+                        </ul>
 
-                    <!-- Tab panes -->
-                    <div class="tab-content website-model">
-                        <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
-                            <div ng-class="{'col-sm-5':hidePageTree, 'col-sm-6':!hidePageTree, 'active':(websitePage.template.name == template.name)}" ng-repeat="template in activePageTemplate.templates" style="margin-bottom: 20px;">
-                                <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
-                                <div class="col-md-12 btn-group">
-                                    <a class="btn col-sm-6 btn-lg" ng-href="{{template.previewUrl}}" target="_blank">预览</a>
-                                    <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="websitePage.template.name == template.name ? 'active' : ''">选择</div>
+                        <!-- Tab panes -->
+                        <div class="tab-content website-model">
+                            <div role="tabpanel" class="tab-pane active clearfix" id="personal-web">
+                                <div ng-class="{'col-sm-5':hidePageTree, 'col-xs-6':!hidePageTree, 'active':(websitePage.template.name == template.name)}" ng-repeat="template in activePageTemplate.templates" style="margin-bottom: 20px;">
+                                    <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
+                                    <div class="col-xs-12 btn-group">
+                                        <a class="btn col-sm-6 col-xs-12 btn-lg" ng-href="{{template.previewUrl}}" target="_blank">预览</a>
+                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-click="selectTemplate(template)" ng-class="websitePage.template.name == template.name ? 'active' : ''">选择</div>
+                                    </div>
+                                    <span class="label">{{template.name}}</span>
                                 </div>
-                                <span class="label">{{template.name}}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <span style="color: red; padding-right: 10px">{{errInfo}}</span>
-        <div class="btn btn-primary btn-fill" ng-show="step == 1 && !hidePageTree" ng-click="nextStep()">下一步</div>
-        <div class="btn btn-primary btn-fill" ng-show="step == 2" ng-click="prevStep()">上一步</div>
-        <button type="submit" class="btn btn-primary btn-fill" ng-show="step == 2 || hidePageTree">确定</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
-    </div>
+        <div class="modal-footer">
+            <span style="color: red; padding-right: 10px">{{errInfo}}</span>
+            <div class="btn btn-primary btn-fill" ng-show="step == 1 && !hidePageTree" ng-click="nextStep()">下一步</div>
+            <div class="btn btn-primary btn-fill" ng-show="step == 2" ng-click="prevStep()">上一步</div>
+            <button type="submit" class="btn btn-primary btn-fill" ng-show="step == 2 || hidePageTree">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        </div>
     </form>
 </div>

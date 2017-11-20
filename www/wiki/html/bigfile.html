@@ -251,6 +251,83 @@
         display: none;
     }
 </style>
+<style>
+        @media(max-width:768px) {
+        .bigfile-modal .tab-pane {
+            padding: 15px;
+            position: relative;
+        }
+        .bigfile-modal .table-box {
+            height: 407px;
+        }
+        .bigfile-modal .btn-primary {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        .bigfile-modal .form-inline {
+            padding-bottom: 15px;
+        }
+        .bigfile-modal .form-inline .input-group {
+            margin-right: 0;
+        }
+        .bigfile-modal .form-inline .form-control {
+            width: 100%;
+        }
+        .bigfile-modal .form-inline .btn-primary {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+        .bigfile-modal .tab-pane>p {
+            height: 36px;
+            line-height: 36px;
+        }
+        .bigfile-modal .search-zone {
+            display: block;
+            padding: 10px 0;
+        }
+        .bigfile-modal .file-progress {
+            height: 391px;
+        }
+        .bigfile-modal .upload-info {
+            line-height: 389px;
+        }
+        .bigfile-modal .file-group-item {
+            padding: 0 15px;
+        }
+        .bigfile-modal .table .operate-column,
+        .bigfile-modal .insert-table.thead-table td.operate-column {
+            width: 53px;
+        }
+        .bigfile-modal .insert-table-box .checkbox-column,
+        .bigfile-modal .table .checkbox-column {
+            width: 45px;
+        }
+        .bigfile-modal .manage-table .operate-column>span,
+        .bigfile-modal .manage-table .operate-column>a,
+        .bigfile-modal .table .operate-column>span,
+        .bigfile-modal .table .operate-column>a {
+            margin: 0 1px;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+        }
+        .bigfile-modal .manage-table .operate-column>span>img,
+        .bigfile-modal .table .operate-column>span>img {
+            width: 20px;
+            height: 20px;
+        }
+        .bigfile-modal .manage-table .operate-column,
+        .bigfile-modal .thead-table td.operate-column {
+            width: 143px;
+        }
+        .bigfile-modal .table tr>td {
+            padding: 4px;
+        }
+        .bigfile-modal .file-group-item .text-danger {
+            top: 0;
+        }
+</style>
 <div ng-controller="bigfileController">
     <div class="bigfile-modal" ng-class="{true: 'bigfile-content'}[!isModal]">
         <div class="modal-header">
@@ -284,7 +361,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane active clearfix" role="tabpanel" ng-show="isModal"  id="insert">
+                <div class="tab-pane active clearfix" role="tabpanel" ng-show="isModal" id="insert">
                     <p>输入已有url地址：</p>
                     <form class="form-inline">
                         <div class="form-group">
@@ -304,7 +381,7 @@
                         </div>
                     </form>
                     <div class="search-zone clearfix">
-                        <span>或者在我的大文件中选择：</span>
+                        <span class="hidden-xs">或者在我的大文件中选择：</span>
                         <div class="searchbar pull-right">
                             <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
@@ -316,8 +393,8 @@
                                 <td class="checkbox-column">多选</td>
                                 <td class="file-column">文件名</td>
                                 <td class="type-column">文件类型</td>
-                                <td class="size-column">大小</td>
-                                <td class="date-column">更新时间</td>
+                                <td class="size-column hidden-xs">大小</td>
+                                <td class="date-column hidden-xs">更新时间</td>
                                 <td class="operate-column">操作</td>
                             </tr>
                         </thead>
@@ -329,18 +406,18 @@
                         </div>
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
-                            <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
-                                <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
-                                <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
-                                <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
-                                <td class="size-column" title="{{file.filesize || sizeTransfer(file)}}">
-                                    {{file.filesize || sizeTransfer(file)}}
-                                </td>
-                                <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
-                                <td class="operate-column">
-                                    <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
-                                </td>
-                            </tr>
+                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
+                                    <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
+                                    <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
+                                    <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
+                                    <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
+                                        {{file.filesize || sizeTransfer(file)}}
+                                    </td>
+                                    <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
+                                    <td class="operate-column">
+                                        <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -353,35 +430,35 @@
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
-                        <table class="table manage-table thead-table">
-                            <thead>
+                    <table class="table manage-table thead-table">
+                        <thead>
                             <tr>
                                 <td class="checkbox-column">多选</td>
                                 <td class="file-column">文件名</td>
-                                <td class="type-column">文件类型</td>
-                                <td class="size-column">大小</td>
-                                <td class="date-column">更新时间</td>
+                                <td class="type-column hidden-xs">文件类型</td>
+                                <td class="size-column hidden-xs">大小</td>
+                                <td class="date-column hidden-xs">更新时间</td>
                                 <td class="operate-column">操作</td>
                             </tr>
-                            </thead>
-                        </table>
-                        <div class="manage-table table-box">
-                            <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
-                                <span class="iconfont icon-kongbaiyemian"></span>
-                                <p>暂无相关内容...</p>
-                            </div>
-                            <table class="table">
-                                <tbody>
+                        </thead>
+                    </table>
+                    <div class="manage-table table-box">
+                        <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
+                            <span class="iconfont icon-kongbaiyemian"></span>
+                            <p>暂无相关内容...</p>
+                        </div>
+                        <table class="table">
+                            <tbody>
                                 <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
                                     <td class="checkbox-column">
                                         <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
                                     </td>
                                     <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
-                                    <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
-                                    <td class="size-column" title="{{file.filesize || sizeTransfer(file)}}">
+                                    <td class="type-column hidden-xs" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
+                                    <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
-                                    <td class="date-column" title="{{file.updateDate}}">{{file.updateDate}}</td>
+                                    <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
                                         <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
                                         <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
@@ -390,9 +467,9 @@
                                         <span title="删除" ng-click="deleteFile(file)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
+                    </div>
                     <button class="btn btn-primary pull-right" ng-click="deleteFiles()">删除选中</button>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
@@ -402,7 +479,6 @@
                         <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn">选中本地文件</button>
                         <span class="text-danger" ng-show="isUidErr">出错了，请稍后重试</span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
-
                             <span class="preview-time">
                                 预估完成时间:{{finishTime || "等待计算"}} (剩余 {{remainTime}})
                             </span>
@@ -419,7 +495,7 @@
                                     <img alt="">{{file.name}}
                                 </div>
                                 <div class="right-col">
-                                    <span ng-show="file.status == 2">{{file.waitTime}} </span>
+                                    <span ng-show="file.status == 2" class="hidden-xs">{{file.waitTime}} </span>
                                     <span>
                                         {{(file.size * file.percent/100/1024/1024/1024 > 0.1) ? (file.size * file.percent/100/1024/1024/1024 | number:2)+"GB" :
                                         (file.size * file.percent/100/1024/1024 > 0.1) ? (file.size * file.percent/100/1024/1024 | number:2) + "MB" : ((file.size * file.percent/100/1024 | number:2) + "KB")}}
@@ -427,7 +503,7 @@
                                         {{(file.size/1024/1024/1024 > 0.1) ? (file.size/1024/1024/1024 | number:2)+"GB" :
                                         (file.size/1024/1024 > 0.1) ? (file.size/1024/1024 | number:2) + "MB" : ((file.size/1024 | number:2) + "KB")}}
                                     </span>
-                                    <div class="progress">
+                                    <div class="progress hidden-xs">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="{{file.percent}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': file.percent+'%'}">
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
