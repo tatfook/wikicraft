@@ -97,7 +97,7 @@ define(['app',
 
                         $scope.chap.ctitle = data.course_title;
                         $scope.chap.ptitle = data.chapter_title;
-                        $scope.chap.cidx = data.item_order + 1;
+                        $scope.chap.cidx = parseInt(data.item_order, 10) + 1;
                         $scope.chap.curl = data.course_url;
                         $scope.chap.username = data.display_name || data.user_name;
                         $scope.chap.id = data.id;
@@ -111,7 +111,7 @@ define(['app',
                         }
 
                         //立即报名
-                        $scope.userbuy.href = window.location.origin + '/lecture/main/takeTeacher?type=0&username=' + data.user_name + '&title=' + data.course_title;
+                        $scope.userbuy.href = window.location.origin + '/lecture/main/taketeacher?type=0&username=' + data.user_name + '&title=' + data.course_title;
 
                         $scope.chap.star = Array(5).fill('');
 
