@@ -24,6 +24,9 @@ define(['app',
                 course_title = moduleParams.course_title,
                 chapter_title = moduleParams.chapter_title;
 
+
+                // $scope.originUrl = window.location.origin;
+
             //机构信息
             $scope.org = {
                 image: '',
