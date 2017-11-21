@@ -57,8 +57,11 @@
         border-color: #ffc107;
     }
 
-    .cont {
+    .cont-relative {
         position: relative;
+    }
+
+    .cont {
         margin-bottom: 30px;
     }
 
@@ -66,29 +69,44 @@
         height: 91px;
     }
 
-    .org,
-    .chp,
-    .chp .user-info .user-img {
+    .tip-font {
+        font-size: 13px;
+    }
+
+    .tip-font-color {
+        color: #999;
+    }
+
+    .line-border-bottom {
         border-bottom: 1px solid #eeeeee;
     }
-    /* .chp-rec .btn-left  */
 
-    .org>div,
-    .chp .chp-info,
-    .teach-content .img {
+    .border-all {
+        border: 1px solid #eeeeee;
+    }
+
+    .d-flt {
         float: left;
     }
-    /* .chp-rec .btn-right, */
 
     .chp .user-info {
         float: right;
     }
 
-    .org .org-info .n-txt,
-    .chp-info .cour-title,
-    .chp-info .chp-title .chp-idx,
-    .chp .user-info .user-name {
+    .d-amin {
+        transition: all 0.3s ease-out;
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -ms-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+    }
+
+    .font-size-16 {
         font-size: 16px;
+    }
+
+    .hover-color:hover{
+        color: #01c9ac !important;
     }
 
     .chp-info .chp-title,
@@ -100,10 +118,10 @@
         height: 64px;
         width: 64px;
         margin-right: 17px;
-        border: 2px solid #eeeeee;
+        border-width: 2px;
         margin-top: 14px;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
         cursor: pointer;
     }
 
@@ -164,7 +182,7 @@
 
     .chp-info .chp-title .p-title {
         display: inline-block;
-        margin-left: 20px;
+        margin-left: 10px;
         font-size: 26px;
     }
 
@@ -174,7 +192,6 @@
         width: 223px;
         overflow: hidden;
         background-color: #f0f7f9;
-        position: relative;
         text-align: center;
         padding: 20px 0;
     }
@@ -191,7 +208,8 @@
         margin-bottom: 18px;
         border-radius: 50%;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
+        display: block;
     }
 
     .chp .user-info .user-name {
@@ -199,12 +217,7 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-    }
-
-    .chp .user-info .user-name:hover,
-    .chp-info .cour-title .c-title:hover {
-        color: #01c9ac;
-    }
+    }    
 
     .chp .user-info::after {
         content: '';
@@ -230,7 +243,11 @@
 
     .chp-rec {
         margin-top: 39px;
-        position: relative;
+        visibility: hidden;
+    }
+
+    .chp-rec.visabled {
+        visibility: visible;
     }
 
     .chp-rec #chapSlide {
@@ -243,11 +260,18 @@
         height: 50px;
         background-size: 20px;
         background-color: #f5f5f5;
-        transition: all 0.58s ease;
-        -webkit-transition: all 0.58s ease;
-        -moz-transition: all 0.58s ease;
-        -ms-transition: all 0.58s ease;
-        -o-transition: all 0.58s ease;
+    }
+
+    .chp-rec .chp {
+        cursor: pointer;
+    }
+
+    .chp-rec .chp-rec-txt {
+        margin-bottom: 20px;
+    }
+
+    .chp-rec .chp:hover {
+        color: #6f6767;
     }
 
     .chp-rec .swiper-slide {
@@ -271,34 +295,38 @@
         -webkit-box-orient: vertical;
         word-break: break-word;
     }
-    /* .chp-rec .swiper-slide .desc:after {
-        content: "...";
-        font-weight: bold;
-    } */
 
     .chp-rec .swiper-slide {
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
     }
 
     .chp-rec .swiper-slide:nth-child(4n+0) {
         background-image: url(http://121.14.117.239/imgs/red.png);
-        background-position: right center;
     }
 
     .chp-rec .swiper-slide:nth-child(4n+1) {
         background-image: url(http://121.14.117.239/imgs/orange.png);
-        background-position: right center;
     }
 
     .chp-rec .swiper-slide:nth-child(4n+2) {
         background-image: url(http://121.14.117.239/imgs/blue.png);
-        background-position: right center;
     }
 
     .chp-rec .swiper-slide:nth-child(4n+3) {
         background-image: url(http://121.14.117.239/imgs/green.png);
-        background-position: right center;
+    }
+
+    .chp-enroll a {
+        background-color: #f9963b;
+        border-color: #f5aa66;
+    }
+
+    .chp-enroll.disabled a:hover {
+        cursor: not-allowed;
+        opacity: 0.65;
+        background-color: #ffc107;
+        border-color: #ffc107;
     }
 
     .teach-rec {
@@ -314,7 +342,6 @@
         border: 1px solid #f01414;
         color: #f01414;
         border-radius: 30px;
-        font-size: 16px;
         padding: 8px 12px;
         width: 100%;
     }
@@ -325,7 +352,6 @@
         border-left: 4px solid transparent;
         border-right: 4px solid transparent;
         border-top: 6px solid #f01414;
-        position: relative;
         top: 15px;
     }
 
@@ -336,7 +362,6 @@
         border-left: 4px solid transparent;
         border-right: 4px solid transparent;
         border-bottom: 6px solid #f01414;
-        position: relative;
         top: -12px;
     }
 
@@ -377,6 +402,10 @@
         -o-justify-content: flex-start;
     }
 
+    .teach-rec .teach-list {
+        margin-bottom: 30px;
+    }
+
     .teach-rec .teach-list .teach-list-item {
         flex-basis: 25%;
         height: 100px;
@@ -386,19 +415,11 @@
     .teach-rec .teach-list .teach-list-item .teach-content {
         margin-right: 14px;
         border-radius: 3px;
-        border: 1px solid #eeeeee;
         height: 100%;
         padding: 15px;
-
-        transition: 0.3s ease-out;
-        -webkit-transition: 0.3s ease-out;
-        -moz-transition: 0.3s ease-out;
-        -ms-transition: 0.3s ease-out;
-        -o-transition: 0.3s ease-out;
     }
 
     .teach-rec .teach-list .teach-list-item .teach-content:hover {
-        color: #01c9ac;
         border-color: #01c9ac;
         cursor: pointer;
     }
@@ -406,12 +427,10 @@
     .teach-rec .teach-list .teach-list-item .teach-content .img {
         height: 70px;
         width: 70px;
-        border: 1px solid #eeeeee;
         border-radius: 50%;
-        /* background-color: rebeccapurple; */
         display: inline-block;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% 100%;
     }
 
     .teach-content .teach-info {
@@ -431,18 +450,17 @@
         display: inline-block;
     }
 
+    .teach-rec .teach-list {
+        overflow: hidden;
+        height: 0;
+    }
+
     .load-more {
         cursor: pointer;
         height: 30px;
         width: 30px;
         margin: auto;
         margin-top: 23px;
-
-        transition: 0.3s ease-out;
-        -webkit-transition: 0.3s ease-out;
-        -moz-transition: 0.3s ease-out;
-        -ms-transition: 0.3s ease-out;
-        -o-transition: 0.3s ease-out;
     }
 
     .load-more:hover {
@@ -451,76 +469,53 @@
         -moz-transform: scale(1.2);
         -ms-transform: scale(1.2);
         -o-transform: scale(1.2);
-        color: #01C9AC;
-    }
-
-    .chp-enroll a {
-        background-color: #f9963b;
-        border-color: #f5aa66;
-    }
-
-    .chp-enroll.disabled a:hover {
-        cursor: not-allowed;
-        opacity: 0.65;
-        background-color: #ffc107;
-        border-color: #ffc107;
-    }
-
-    .chp-rec {
-        visibility: hidden;
-    }
-
-    .chp-rec.visabled {
-        visibility: visible;
     }
 </style>
 
-<div class="cont" ng-controller="entriesController">
-    <div class="org" ng-show="org.show">
-        <div class="org-img" style="background-image: url({{org.image}})" title="{{org.name}}" ng-click="openUrl(org.url)">
-            <!-- <a ng-href="" style="background-image: url({{org.image}})" title="{{org.name}}">图片</a> -->
-        </div>
-        <div class="org-title">
+<div class="cont cont-relative" ng-controller="entriesController">
+    <div class="org line-border-bottom" ng-show="org.show">
+        <a ng-href="{{org.url}}" class="org-img border-all d-flt" style="background-image: url({{org.image}})" title="{{org.name}}">
+        </a>
+        <a class="org-title d-flt hover-color" ng-href="{{org.url}}">
             {{org.name}}
-        </div>
-        <div class="org-info">
+        </a>
+        <div class="org-info d-flt">
             <div>
                 <span class="t-txt">课程</span>
                 <br />
-                <span class="n-txt">{{org.cnum}}</span>
+                <span class="n-txt font-size-16">{{org.cnum}}</span>
             </div>
             <div class="v-line"></div>
             <div>
-                <span class="t-txt">导师</span>
+                <span class="t-txt font-size-16">导师</span>
                 <br />
-                <span class="n-txt">{{org.tnum}}</span>
+                <span class="n-txt font-size-16">{{org.tnum}}</span>
             </div>
             <div class="v-line"></div>
             <div>
                 <span class="t-txt">学员</span>
                 <br />
-                <span class="n-txt">{{org.snum}}</span>
+                <span class="n-txt font-size-16">{{org.snum}}</span>
             </div>
         </div>
-
     </div>
-    <div class="chp" ng-show="chap.show">
-        <div class="chp-info">
-            <div class="cour-title">
-                <span class="c-label">课程 : </span>
-                <a ng-href="{{chap.curl}}" class="c-title">{{chap.ctitle}}</a>
+    <div class="chp line-border-bottom" ng-show="chap.show">
+        <div class="chp-info d-flt">
+            <div class="cour-title font-size-16">
+                <span class="c-label tip-font tip-font-color">课程 : </span>
+                <a class="tip-font hover-color" ng-href="{{chap.curl}}" class="c-title hover-color">{{chap.ctitle}}</a>
             </div>
             <div class="chp-title">
-                <span class="chp-idx">第{{c.idx}}章</span>
+                <span class="chp-idx tip-font tip-font tip-font-color">第{{chap.cidx}}章</span>
                 <span class="p-title">{{chap.ptitle}}</span>
             </div>
             <div class="chp-enroll">
                 <a class="c-btn btn-warning" ng-href="{{userbuy.href}}" ng-class="{disabled:userbuy.disabled}">{{userbuy.text}}</a>
             </div>
         </div>
-        <div class="user-info">
-            <div class="user-img" style="background-image: url({{chap.userImg}})"></div>
-            <a ng-href="{{chap.userUrl}}" class="user-name">{{chap.username}}</a>
+        <div class="user-info cont-relative">
+            <a class="user-img border-all" style="background-image: url({{chap.userImg}})"></a>
+            <a ng-href="{{chap.userUrl}}" class="user-name font-size-16 hover-color">{{chap.username}}</a>
             <div class="user-start">
                 <span ng-repeat="s in chap.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
                     <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
@@ -532,110 +527,56 @@
             </div>
         </div>
     </div>
-    <div class="chp-rec" ng-class="{visabled:chpRecVisabled}" ng-show="chpRec.length">
-        <!-- <div class="btn-left">
-            <button class="c-btn sbtn"></button>
+
+    <div class="chp-rec cont-relative" ng-class="{visabled:chpRecVisabled}" ng-show="chpRec.length">
+
+        <div class="tip-font tip-font-color chp-rec-txt">
+            课程推荐
         </div>
-        <div class="chp-list"></div>
-        <div class="btn-right">
-            <button class="c-btn sbtn">></button>
-        </div> -->
-        <div class="swiper-container swiper-container-autoheight" id="chapSlide">
-
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" ng-repeat="cr in chpRec track by $index">
-                    <div class="desc">{{cr.chapter_title}}</div>
-                    <span>{{cr.pprice}}</span>
+        <div class="cont-relative">
+            <div class="swiper-container swiper-container-autoheight" id="chapSlide">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide chp 
+                    d-amin" ng-repeat="cr in chpRec track by $index" ng-click="openUrl(cr.churl)">
+                        <div class="desc">{{cr.chapter_title}}</div>
+                        <span>{{cr.pprice}}</span>
+                    </div>
                 </div>
-
-                <!-- <div class="swiper-slide">
-                    <div class="desc">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
-                    <span>6666666666</span>
-                </div> -->
-                <!-- <div class="swiper-slide">
-                    bbbb
-                </div> -->
-                <!-- <div class="swiper-slide">
-                    cccc
-                </div>
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-                <div class="swiper-slide">
-                    dddd
-                </div>
-                <div class="swiper-slide">
-                    dddd
-                </div>
-
-                <div class="swiper-slide">
-                    dddd
-                </div> -->
             </div>
 
+            <div class="swiper-button-prev spb d-amin"></div>
+            <div class="swiper-button-next spb d-amin"></div>
         </div>
-
-        <div class="swiper-button-prev spb"></div>
-        <div class="swiper-button-next spb"></div>
     </div>
-    <div class="teach-rec" ng-class="{active:showTeachRec}" ng-show="chpRec.length">
+    <div class="teach-rec line-border-bottom" ng-show="chpRec.length && teachRec.length">
         <div class="b-div">
             <button class="c-btn" ng-click="showTRec()">导师推荐
-                <span></span>
+                <span class="cont-relative"></span>
             </button>
         </div>
-        <div class="teach-list" ng-show="showTeachRec">
-            <div class="teach-list-item" ng-repeat="tt in teachRec track by $index">
-                <div class="teach-content" ng-click="openUrl(tt.url)">
-                    <div class="img clearfix" style="background-image: url({{tt.userImg}})">
-                    </div>
-                    <div class="teach-info clearfix">
-                        <span class="user-name ">{{tt.display_name || tt.user_name}}</span>
-                        <div class="user-start">
-                            <span ng-repeat="ts in tt.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
-                                <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
-                                    <path d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
-                                    <path d="M0 0h24v24H0z" fill="none"></path>
-                                </svg>
-                            </span>
+        <div class="teach-list d-amin">
+            <div class="teach-list-content">
+                <div class="teach-list-item" ng-repeat="tt in teachRec track by $index">
+                    <div class="teach-content border-all d-amin hover-color" ng-click="openUrl(tt.url)">
+                        <div class="img border-all d-flt" style="background-image: url({{tt.userImg}})">
+                        </div>
+                        <div class="teach-info">
+                            <span class="user-name ">{{tt.display_name || tt.user_name}}</span>
+                            <div class="user-start">
+                                <span ng-repeat="ts in tt.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
+                                    <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                    </svg>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- <div class="teach-list-item">
-                <div class="teach-content"></div>
             </div>
-            <div class="teach-list-item">
-                <div class="teach-content"></div>
-            </div>  -->
-
-            </div>
-            <div class="load-more" ng-show="showTeachRec && teachMore" ng-click="loadMore(1)">
-
+            <div class="load-more d-amin" ng-show="showTeachRec && teachMore" ng-click="loadMore(1)">
                 <span class="icon" icon-name="ic_down" onclick="majorMore()" ___loading="ic_down" style="fill: rgb(153, 153, 153);">
-                    <!--?xml version="1.0" standalone="no"?-->
                     <svg t="1506070303649" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4402"
                         xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" icon-name="ic_down">
                         <defs>
@@ -647,7 +588,6 @@
                             p-id="4404"></path>
                     </svg>
                 </span>
-
             </div>
         </div>
     </div>
