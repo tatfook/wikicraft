@@ -83,6 +83,44 @@
         left:0;
         top:0;
     }
+
+    @media(max-width:768px){
+        .companyWorksList{
+            margin: 0;
+        }
+        .companyWorksList .container{
+            padding: 15px;
+            flex-direction: column-reverse;
+        }
+        .companyWorksList .bg-img{
+            height: 316px;
+        }
+        .companyWorksList .sidebar{
+            width: 100%;
+            height: auto;
+            padding: 15px;
+        }
+        .companyWorksList .sidebar p{
+            margin-bottom: 0;
+        }
+        .companyWorksList .sidebar a.btn{
+            right: 15px;
+            left: auto;
+            bottom: 15px;
+        }
+        .companyWorksList .main-content img{
+            height: 100px;
+        }
+        .companyWorksList .sidebar h1{
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .companyWorksList .main-content h2{
+            height: 100px;
+            line-height: 100px;
+            font-size: 18px;
+        }
+    }
 </style>
 <div class="companyWorksList" ng-controller="companyWorksListController">
     <div class="bg-img">
@@ -90,7 +128,7 @@
         <div class="mask"></div>
     </div>
     <div class="container">
-        <div class="main-content">
+        <div class="main-content clearfix">
             <div class="show-col col-xs-4" ng-repeat="workItem in modParams.works">
                 <a href="{{workItem.workLink}}" ng-show="($index%2==0)" target="_blank">
                     <img ng-src="{{workItem.workImg}}" alt="">
