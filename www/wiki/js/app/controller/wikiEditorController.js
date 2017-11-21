@@ -260,7 +260,7 @@ define([
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result}, function (url) {
+                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result, isShowLoading: true}, function (url) {
                         $scope.img.url = url;
                     });
                 };
