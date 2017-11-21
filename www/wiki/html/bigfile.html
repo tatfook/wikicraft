@@ -137,7 +137,10 @@
         font-size: 0;
         -webkit-text-size-adjust: none;
     }
-    .bigfile-modal .manage-table .operate-column > span, .bigfile-modal .manage-table .operate-column > a{
+    .bigfile-modal .manage-table .operate-column > span,
+    .bigfile-modal .insert-table .operate-column > span,
+    .bigfile-modal .manage-table .operate-column > a,
+    .bigfile-modal .insert-table .operate-column > a{
         margin: 0 5px;
     }
     .bigfile-modal .manage-table thead .operate-column{
@@ -415,6 +418,7 @@
                                     </td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
+                                        <span title="拷贝链接" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
                                         <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>

@@ -2137,7 +2137,9 @@ define([
 
                     var insertContent = "";
                     console.log(files);
-                    if (files.url){
+                    if (files.pasteUrl){
+                        insertContent = files.pasteUrl;
+                    } else if (files.url){
                         insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
                     }else{
                         files.map(function (file) {
