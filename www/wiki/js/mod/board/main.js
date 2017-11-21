@@ -3,7 +3,7 @@
     'helper/util',
     'text!wikimod/board/main.html',
     'pako',
-    '/wiki/js/mod/board/assets/graph.min.js?bust=1',
+    '/wiki/js/mod/board/board.min.js?bust=1',
 ], function (app, util, htmlContent, pako) {
     jscolor.dir = "/wiki/js/mod/board/assets/images/";
 
@@ -20,69 +20,17 @@
             "height" : mxClientHeight + "px",
         });
 
-        Menus.prototype.defaultMenuItems = ['edit', 'view', 'arrange'];
-        
-        var menusInit = Menus.prototype.init;
-        Menus.prototype.init = function()
-        {
-            menusInit.apply(this, arguments);
-    
-            var menus = this.menus;
-    
-            menus.arrange = new Menu(mxUtils.bind(this, function(menu, parent)
-            {
-                this.addMenuItems(menu, ['toFront', 'toBack', '-'], parent);
-                this.addSubmenu('direction', menu, parent);
-                this.addMenuItems(menu, ['turn', '-'], parent);
-                this.addSubmenu('align', menu, parent);
-                this.addSubmenu('distribute', menu, parent);
-                menu.addSeparator(parent);
-                this.addSubmenu('navigation', menu, parent);
-                this.addSubmenu('insert', menu, parent);
-                this.addMenuItems(menu, ['-', 'group', 'ungroup', 'removeFromGroup', '-', 'clearWaypoints', 'autosize'], parent);
-            }));
-    
-            this.menus = menus;
-        }
-
-        var diagramFormatPanelAddView = DiagramFormatPanel.prototype.addView;
-        DiagramFormatPanel.prototype.addView = function(div)
-        {
-            diagramFormatPanelAddView.apply(this, arguments);
-            div.removeChild(div.lastChild);
-            
-            return div;
-        }
-
-        var editorUiInit = EditorUi.prototype.init;
-
-        EditorUi.prototype.init = function () {
-            editorUiInit.apply(this, arguments);
-
-            this.actions.get('export').setEnabled(false);
-            this.actions.get('import').setEnabled(false);
-            this.actions.get('open').setEnabled(false);
-            this.actions.get('save').setEnabled(false);
-            this.actions.get('saveAs').setEnabled(false);
-        };
-
-        // Adds required resources (disables loading of fallback properties, this can only
-        // be used if we know that all keys are defined in the language specific file)
         mxResources.loadDefaultBundle = false;
 
         var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
 
-        // Fixes possible asynchronous requests
         mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-            // Adds bundle text to resources
             mxResources.parse(xhr[0].getText());
 
-            // Configures the default graph theme
             var themes = new Object();
             themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
 
-            // Main
-            var ui = new EditorUi(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
+            var ui = new Board(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
             if (data && data.length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
                 doc = ui.editor.graph.getDecompressData(data);
@@ -111,16 +59,15 @@
         var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
 
         mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-            // Adds bundle text to resources
             mxResources.parse(xhr[0].getText());
 
-            // Configures the default graph theme
             var themes = new Object();
             themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
 
             var graph = new Graph(container, null, null, null, themes);
 
             var mxGraphModelData;
+
             if (wikiBlock.modParams) {
                 mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
             }
