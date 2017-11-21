@@ -251,18 +251,28 @@ define([
         }
 
         $scope.img_insert = function () {
-            $rootScope.img = $scope.img;
-            $uibModalInstance.close("img");
+            $scope.imgErr = "";
+            if ($scope.imgContent) {
+                var currentDataSource = getCurrentDataSource();
+                currentDataSource && currentDataSource.uploadImage({ content: $scope.imgContent, isShowLoading: true }, function(url) {
+                      $scope.img.url = url;
+                      $rootScope.img = $scope.img;
+                      $uibModalInstance.close("img");
+                    }, function(err) {
+                      console.log(err);
+                      $scope.imgErr = "图片上传失败，请稍后重试";
+                    });
+            }else{
+                $rootScope.img = $scope.img;
+                $uibModalInstance.close("img");
+            }
         }
 
         $scope.imageLocal = function () {
-            var currentDataSource = getCurrentDataSource();
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result, isShowLoading: true}, function (url) {
-                        $scope.img.url = url;
-                    });
+                    $scope.imgContent = fileReader.result;
                 };
                 fileReader.readAsDataURL(e.target.files[0]);
             });
