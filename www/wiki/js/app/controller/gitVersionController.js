@@ -33,6 +33,10 @@ define([
 
         // 获得git文件列表
         function init() {
+            $scope.selected = $scope.currentPage;
+            $scope.selectItem = $scope.currentPage;
+            $scope.dtEnd = new Date();
+            $scope.submit();
 			var username = $scope.user.username;
 			var dataSourceList = dataSource.getDataSourceList($scope.user.username);
 			$scope.filelist = [];
@@ -44,7 +48,7 @@ define([
 							continue;
 						}
 						$scope.filelist.push(data[i]);
-					}
+                    }
 					//$scope.filelist = $scope.filelist.concat(data || []);
 				});
 			}

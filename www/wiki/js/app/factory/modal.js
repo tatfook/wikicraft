@@ -13,6 +13,7 @@ define(['app'], function (app) {
                     size: option.size,
                     controller: option.controller,
                     backdrop: option.backdrop,
+                    scope: option.scope
                 }).result.then(cb, errcb);
             });
         }

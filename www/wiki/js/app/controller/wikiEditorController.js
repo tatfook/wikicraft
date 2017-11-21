@@ -2245,10 +2245,12 @@ define([
             //版本
             $scope.cmd_version = function () {//{{{
                 // util.go("gitVersion");
+                $scope.currentPage = currentPage;
                 modal('controller/gitVersionController', {
                     controller: 'gitVersionController',
                     size: 'lg',
-                    backdrop: true
+                    backdrop: true,
+                    scope: $scope
                 }, function (wikiBlock) {
                     console.log(wikiBlock);
                 }, function (result) {
