@@ -84,9 +84,9 @@ function pay:api_createCharge(params)
 
 	local err, query = self:validateQuery(params);
 
-	if(query.price > 1000) then
+	if(query.price > 200000) then
 		local limitMessage = commonlib.copy(errors.SERVER_INNER_ERROR);
-		limitMessage.extra = "充值金额不能大于1000元";
+		limitMessage.extra = "充值金额不能大于20万元";
 
 		return errors:wrap(limitMessage);
 	end
