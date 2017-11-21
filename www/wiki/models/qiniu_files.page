@@ -107,3 +107,23 @@ function qiniu_files:api_getDownloadUrlById(params)
 	return errors:wrap(nil, download_url or qiniuFiles.download_url)
 end
 
+-- 通过key获取download_url
+function qiniu_files:api_getDownloadUrlByKey(params)
+	if not params.key then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({key=params.key}, resume)
+	local _, qiniuFiles = yield()
+
+	if not qiniuFiles then
+		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	local qiniuDB = models.qiniu:new()
+	local download_url = qiniuDB:api_getDownloadUrl(qiniuFiles).data
+	download_url = download_url and download_url.download_url
+
+	return errors:wrap(nil, download_url or qiniuFiles.download_url)
+end
+
