@@ -311,22 +311,15 @@ define(['app',
                 });
             }
 
-            // var firstOpen = true;
-
             //展开推荐导师
             $scope.showTRec = function () {
                 $scope.showTeachRec = !$scope.showTeachRec;
 
-                // if (firstOpen) {
-                //     initTeachRec(1);
-                //     firstOpen = false;
-                // }else{
                 if ($scope.showTeachRec) {
                     $('.teach-rec .teach-list').css('height', $('.teach-rec .teach-list .teach-list-content').height());
                 } else {
                     $('.teach-rec .teach-list').css('height', 0);
-                }
-                // }                
+                }            
 
             }
 
@@ -348,7 +341,7 @@ define(['app',
                     initTeachRec();
                 } else {
                     initChpRec();
-                    // initTeachRec();
+                    initTeachRec();
                 }
             }
 
