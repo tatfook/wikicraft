@@ -523,7 +523,7 @@ li{
 					num-pages="numPages"></ul>
 			</div>
 			<!--manger-->
-			<div ng-show='selectMenuItem=="goodsManager"' ng-controller="goodsController">
+			<div ng-show='selectMenuItem=="goodsManager"'>
 				<button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(2)">添加商品信息</button>
 				<table class="table table-bordered goods">
 					<tr>
@@ -550,7 +550,7 @@ li{
 						<td>{{item.is_on_sale==1?"是":"否"}}</td>
 						<td>{{item.create_date}}</td>
 						<td>
-							<button class="btn btn-default" type="button" ng-click="ceshidianji(item)">查看详情</button>
+							<button class="btn btn-default" type="button" ng-click="additionalfieldSee(item)">查看详情</button>
 						</td>
 						<td>
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField"  ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
