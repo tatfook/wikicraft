@@ -960,21 +960,25 @@ define([
                     cb && cb();
                 };
 
-				//makeSnapshot(currentDataSource, page);
-                currentSite = getCurrentSite(page.username, page.sitename);
-                if (currentSite) {
-					page.visibility = currentSite.visibility || "public";
-                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
+                config.services.realnameVerifyModal().then(doSavePageContent).catch(saveFailedCB);
+
+                function doSavePageContent() {
+                    //makeSnapshot(currentDataSource, page);
+                    currentSite = getCurrentSite(page.username, page.sitename);
+                    if (currentSite) {
+                        page.visibility = currentSite.visibility || "public";
+                        util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
+                    }
+
+                    //console.log(currentSite);
+                    page.visibility = page.visibility || "public";
+                    submitToSearchEngine(page);
+
+                    currentDataSource.writeFile({
+                        path: page.url + pageSuffixName,
+                        content: content
+                    }, saveSuccessCB, saveFailedCB);
                 }
-
-				//console.log(currentSite);
-				page.visibility = page.visibility || "public";
-				submitToSearchEngine(page);
-
-                currentDataSource.writeFile({
-                    path: page.url + pageSuffixName,
-                    content: content
-                }, saveSuccessCB, saveFailedCB);
             }//}}}
 
 
