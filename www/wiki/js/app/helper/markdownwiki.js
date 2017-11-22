@@ -204,6 +204,30 @@ define([
         return preprocessText;
     }
 
+	//function moduleEditorInit(containerId, wikiBlockParams) {
+		//$("#" + containerId).on("click", ".kp_module_editor_input_tag", function(e){
+			//console.log(e);
+			//console.log(e.target.dataset.id);
+			//console.log("---------------");
+			//console.log(wikiBlockParams);
+			//config.services.modal('controller/moduleEditorController', {
+				//controller: 'moduleEditorController',
+				//backdrop: true,
+			//}, function(){
+				
+			//}, function(){
+
+			//});
+			////var key = e.target.dataset.id;
+			////if (!key) {
+				////return;
+			////}
+
+			////$scope.data = get_value(key, $scope.params);
+			////console.log($scope.data);
+			////$scope.$apply();
+		//});
+	//}
     // 渲染wiki block
     function renderWikiBlock(mdwiki, block) {
         var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
@@ -232,10 +256,13 @@ define([
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
                 }
                 util.html('#' + blockCache.containerId, htmlContent);
+
                 blockCache.domNode = $('#' + blockCache.containerId);
                 if (block.isTemplate) {
                     setMdWikiContent(mdwiki);
                 }
+
+				//moduleEditorInit(blockCache.containerId, wikiBlockParams);
             },
             applyModParams: function (modParams) {
 				var pos = blockCache.block.textPosition;
@@ -251,7 +278,26 @@ define([
                     line: pos.to - 1,
                     ch: 0
                 });
-            }
+            },
+			initScope: function(scope) {
+				var self = this;
+				scope.params = self.modParams;
+				self.scope = scope;
+				scope.viewEditorClick = function(obj) {
+					scope.kp_editor_params = obj;
+					config.services.modal('controller/moduleEditorController', {
+						controller: 'moduleEditorController',
+						backdrop: true,
+						scope:scope,
+					}, function(){
+						console.log("ok");	
+						self.applyModParams(scope.params);
+					}, function(){
+						console.log("cancel");
+					});
+
+				};
+			},
         };
         render(wikiBlockParams);
 		// 渲染后回调
@@ -549,6 +595,7 @@ define([
             }
             return wikiBlock;
         }
+
         mdwiki.getBlockCache = function (text, token) {
 			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;

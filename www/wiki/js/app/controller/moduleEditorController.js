@@ -39,16 +39,11 @@ define([
 		}
 
 		function init() {
-			$scope.message = "angular test";
+			console.log($scope.kp_editor_params);
+			$scope.data = $scope.kp_editor_params || {};
 
+			$scope.data.type = $scope.data.type || "text";
 
-			$scope.fields = [
-			{
-				type:"text",
-				displayName:"标题",
-				id:"title",
-			}
-			];
 			//$scope.params = {
 				//meta_data:{
 					//title:{
@@ -122,22 +117,6 @@ define([
 				},
 			}
 
-			setTimeout(function(){
-				$(".kp_module_editor_input_tag").click(function(e){
-					console.log(e);
-					console.log(e.target.dataset.id);
-					var key = e.target.dataset.id;
-					if (!key) {
-						return;
-					}
-
-					$scope.data = get_value(key, $scope.params);
-					console.log($scope.data);
-					$scope.$apply();
-				});
-
-				$("#id").focus();
-			});
 		}
 
 		$scope.test = function() {

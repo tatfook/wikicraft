@@ -55,6 +55,7 @@ define([
                     Account: Account,
                     Message: Message,
                     github: github,
+					modal: modal,
                     gitlab:gitlab,
                     dataSource:dataSource,
                     loading:loading,
