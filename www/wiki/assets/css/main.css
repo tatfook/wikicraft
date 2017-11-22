@@ -106,3 +106,18 @@ textarea{
     font-size: 145px;
     line-height: 1;
 }
+
+/*module editor css begin*/
+.kp_module_editor_input_tag {
+
+}
+
+.kp_module_editor_input_tag:hover {
+	background: gray;
+	cursor: pointer;
+}
+
+.kp_wiki_module {
+
+}
+/*module editor css end*/
