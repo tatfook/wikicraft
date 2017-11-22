@@ -52,6 +52,13 @@
 	}
 	.personal-header .intro{
 		line-height: 25px;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        word-break: break-all;
+        margin-bottom: 0;
 	}
 	@media (min-width:768px ) {
 		.personal-header{
@@ -421,9 +428,12 @@
 			margin-top: 20px;
 		}
 		.personal3-header .contact{
-			top: 25px;
+			top: 10px;
 			bottom: auto;
 		}
+        .personal3-header .contact > div{
+            margin-left: 10px;
+        }
 	}
 </style>
 <style>
@@ -633,9 +643,9 @@
 			object-fit: cover;
 		}
 		.gameHeader .banner-info {
-			width: 80%;
-			right: 10%;
-			padding: 10px 15px;
+			width: 90%;
+			right: 5%;
+			padding: 15px 20px;
 			bottom: 15px;
 			background-color: rgba(0, 0, 0, 0.6);
 		}
@@ -659,14 +669,17 @@
 			font-size: 14px;
 			letter-spacing: normal;
 			margin: 0;
+            margin-top: 8px;
 		}
 		.gameHeader .game-time{
 			font-size: 12px;
 			padding: 0 18px;
 			margin-top: 10px;
-			height: 25px;
 			line-height: 22px;
 		}
+        .gameHeader .game-time p{
+            margin-bottom: 0;
+        }
 	}
 </style>
 <style>
@@ -828,6 +841,16 @@
 			bottom:10%;
 		}
 	}
+    @media (max-width: 768px) {
+        .haqi-game .btns{
+            position: relative;
+            padding-bottom: 7px;
+        }
+        .haqi-game .btns .btn{
+            margin: 20px auto 0;
+            display: block;
+        }
+    }
 </style>
 
 <div ng-controller="headerController">
@@ -968,7 +991,7 @@
 	</div>
 	<!--哈奇头部-->
 	<div ng-show="modParams.moduleKind=='haqiGame'" class="haqi-game">
-		<div class="bg-img">
+		<div class="bg-img hidden-xs">
 			<img ng-src="{{modParams.bgImg || getImageUrl('haqi_banner.jpg',imgsPath)}}" alt="weizhi">
 		</div>
 		<div class="btns">
