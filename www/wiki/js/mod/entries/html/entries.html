@@ -1,4 +1,4 @@
-<style scoped>
+<!-- <style>
     .c-btn {
         cursor: pointer;
         display: inline-block;
@@ -376,6 +376,7 @@
 
     .teach-rec .b-div button:hover span {
         border-top-color: white;
+        margin-left: 5px;
     }
 
     .teach-rec .teach-list {
@@ -470,9 +471,9 @@
         -ms-transform: scale(1.2);
         -o-transform: scale(1.2);
     }
-</style>
+</style> -->
 
-<div class="cont cont-relative" ng-controller="entriesController">
+<!-- <div class="cont cont-relative" ng-controller="entriesController">
     <div class="org line-border-bottom" ng-show="org.show">
         <a ng-href="{{org.url}}" class="org-img border-all d-flt" style="background-image: url({{org.image}})" title="{{org.name}}">
         </a>
@@ -591,4 +592,6 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
+
+<div class="cont cont-relative" ng-controller="entriesController" ng-bind-html="detailHmtl"></div>
