@@ -3,7 +3,7 @@
     'helper/util',
     'text!wikimod/board/main.html',
     'pako',
-    '/wiki/js/mod/board/board.min.js?bust=1',
+    '/wiki/js/mod/board/board.min.js?bust=2',
 ], function (app, util, htmlContent, pako) {
     jscolor.dir = "/wiki/js/mod/board/assets/images/";
 
