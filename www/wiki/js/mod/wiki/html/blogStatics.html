@@ -25,9 +25,23 @@
         font-size: 18px;
         margin: 25px 0 0;
     }
+    @media(max-width: 768px){
+        .blog-statics, .blog-statics .item{
+            padding: 15px 0;
+        }
+        .blog-statics .item > img{
+            width: 50px;
+        }
+        .blog-statics .item>p{
+            margin-top: 10px;
+        }
+        .blog-statics .col-xs-12{
+            padding: 0 15px;
+        }
+    }
 </style>
 <div class="blog-statics clearfix template-theme" ng-class="themeClass" ng-controller="blogStaticsController">
-    <div class="col-xs-8 col-xs-offset-2 col-lg-4 col-lg-offset-4">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-lg-4 col-lg-offset-4">
         <div class="col-xs-4 item theme-bg-color theme-shadow">
             <img ng-src="{{imgsPath+'icon/blog_webnum.png'}}" alt="">
             <p>总数：0</p>
