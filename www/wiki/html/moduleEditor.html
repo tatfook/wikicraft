@@ -1,64 +1,68 @@
 
-<div ng-controller="moduleEditorController">
-	<div class="modal-header">
-		<h4 class="modal-title">模块参数编辑</h4>
-	</div>
-	<div class="modal-body">
-		<div ng-if='data.type == "text"'>
-			<div>
-				<div class="pull-left">{{data.name}}</div>
-				<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
-			</div>
-			<div>
-				<input class="form-control" ng-model="data.value"/>
-			</div>
-		</div>
-		<div ng-if='data.type == "link"'>
-			<div>
-				<div class="pull-left">{{data.name}}</div>
-				<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
-			</div>
-			<div>
-				<div>LINK TEXT</div>
-				<div>
-					<input class="form-control" ng-model="data.value_text"/>
-				</div>
-			</div>
-			<div>
-				<div>LINK ADDRESS</div>
-				<div>
-					<input class="form-control" ng-model="data.value_href"/>
-				</div>
-			</div>
-		</div>
-		<div ng-if='data.type == "image"'>
-			<div>
-				<div class="pull-left">{{data.name || "URL"}}</div>
-				<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
-			</div>
-			<div>
-				<input class="form-control" ng-model="data.value"/>
-			</div>
-		</div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary btn-fill" ng-click="$close()">确定</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
-	</div>
+<style>
+.input_item_container {
+	margin: 10px 0px;
+}
 
-	<!--[> wiki moduel 模拟<]-->
-   <!--<div style="margin:30px" class="kp_wiki_module“>-->
-		<!--<div style="display:flex; flex-direction:row;">-->
-			<!--<div>-->
-				<!--<div data-id="title" class="kp_module_editor_input_tag">{{params.title.value}}</div>-->
-				<!--<div data-id="subtitle" class="kp_module_editor_input_tag">{{params.subtitle.value}}</div>-->
-				<!--<div data-id="description" class="kp_module_editor_input_tag">{{params.description.value}}</div>-->
-			<!--</div>-->
-			<!--<div data-id="link" class="kp_module_editor_input_tag">-->
-				<!--<a ng-href="{{params.link.value_href}}">{{params.link.value_text}}</a>-->
-			<!--</div>-->
-			<!--[><div><]-->
-				<!--[><img id="quote_img_url" ng-src="params.imgUrl"/><]-->
-			<!--[></div><]-->
-		<!--</div>-->
-	<!--</div>-->
+.input_item_body {
+	margin: 10px;
+}
+</style>
+
+<div ng-controller="moduleEditorController" style="width:100%">
+	<div class="modal-header">
+		<div class="pull-left">
+			<h4 class="modal-title">模块参数编辑</h4>
+		</div>
+		<div class="pull-right">
+			<button type="button" class="close" ng-click="close()">&times;</button>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="modal-body">
+		<div ng-repeat="data in datas">
+			<div ng-if='data.type == "text" || !data.type' class="input_item_container">
+				<div>
+					<div class="pull-left">{{data.name}}</div>
+					<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+				</div>
+				<div class="input_item_body">
+					<input class="form-control" ng-model="data.text"/>
+				</div>
+			</div>
+			<div ng-if='data.type == "link"' class="input_item_container">
+				<div>
+					<div class="pull-left">{{data.name}}</div>
+					<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+				</div>
+				<div class="clearfix"></div>
+				<div class="input_item_body">
+					<div>
+						<div>LINK TEXT</div>
+						<div>
+							<input class="form-control" ng-model="data.text"/>
+						</div>
+					</div>
+					<div>
+						<div>LINK ADDRESS</div>
+						<div>
+							<input class="form-control" ng-model="data.href"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-if='data.type == "list"' class="input_item_container">
+				<div>
+					<div class="pull-left">{{data.name}}</div>
+					<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+				</div>
+				<div class="clearfix"></div>
+				<div class="input_item_body">
+					<ul>
+						<li ng-repeat="item in data.list track by $index"><a ng-click="click_list_item(item)" class="btn">{{"LIST ITEM " + ($index + 1)}}</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

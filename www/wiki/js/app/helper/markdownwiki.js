@@ -272,7 +272,8 @@ define([
                 }
 
                 if (typeof(modParams) == "object") {
-                    modParams = angular.toJson(modParams, 4);
+					//modParams = angular.toJson(modParams, 4);
+					modParams = mdconf.toMd(modParams);
                 }
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
@@ -281,22 +282,27 @@ define([
             },
 			initScope: function(scope) {
 				var self = this;
+				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 				scope.params = self.modParams;
 				self.scope = scope;
 				scope.viewEditorClick = function(obj) {
-					scope.kp_editor_params = obj;
-					config.services.modal('controller/moduleEditorController', {
-						controller: 'moduleEditorController',
-						backdrop: true,
-						scope:scope,
-					}, function(){
-						console.log("ok");	
-						self.applyModParams(scope.params);
-					}, function(){
-						console.log("cancel");
-					});
-
+					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+					config.shareMap.moduleEditorParams = moduleEditorParams;
+					moduleEditorParams.wikiBlock = self;
+					moduleEditorParams.editorObj = obj;
+					moduleEditorParams.setEditorObj(self.modParams);
+					moduleEditorParams.is_show = true;
+					$("#moduleEditorContainer").show();
 				};
+
+				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor) {
+					var cursor_pos = editor.getCursor();
+					var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
+					var pos = blockCache.block.textPosition;
+					if (cursor_line_no > pos.from && cursor_line_no < pos.to) {
+						scope.viewEditorClick();
+					}
+				}
 			},
         };
         render(wikiBlockParams);
@@ -578,8 +584,9 @@ define([
                 modParams = angular.fromJson(token.content)
             }
             catch (e) {
-				var params = mdconf.toJson(token.content).params;
+				//var params = mdconf.toJson(token.content).params;
 
+				var params = mdconf.toJson(token.content);
                 modParams = params || token.content;
             }
 

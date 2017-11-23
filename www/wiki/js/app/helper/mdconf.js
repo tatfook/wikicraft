@@ -124,7 +124,7 @@ define([
 		return text;
 	}
 
-	mdconf.toJson = function(text) {
+	mdconf._mdToJson = function(text) {
 		var blocks = parseMd(text);
 		
 		var keys = [];
@@ -133,6 +133,11 @@ define([
 		var topDepth = 0;
 		var isExistKey = false;
 
+		console.log(blocks);
+		if (blocks.length == 1 && blocks[1].tag == "p") {
+			
+		}
+		return;
 		for (var i = 0; i < blocks.length; i++) {
 			var block = blocks[i];
 			
@@ -190,7 +195,13 @@ define([
 					var value = line.substring(delim+1).trim();
 
 					if (isObject) {
-						curConf[curKey][key] = value;
+						if (value == "true") {
+							curConf[curKey][key] = true;
+						} else if (value == "false") {
+							curConf[curKey][key] = false;
+						} else {
+							curConf[curKey][key] = value;
+						}
 					} else {
 						curConf[curKey].push(key);
 					}
@@ -224,78 +235,156 @@ define([
 		//console.log(conf);	
 		return conf;
 	}
+	// md 转json对象
+	mdconf.mdToJson = function(text) {
+		var temp_lines = text.split("/n");
+		var lines = [];
+		var line = "";
+		var conf = {};
+		var curConf = conf;
 
-	mdconf.toMd = function(obj, depth, isTable) {
-		var self = this;
-		var text = "";
-		var head = ["#", "##", "###", "####", "#####", "######"];
-		depth = depth || 0;
-
-		if (obj.length == undefined) {
-			// table
-			// 优先写非对象值
-			for (var key in obj) {
-				var value = obj[key];
-				if (typeof(value) == "object") {
-					continue;
-				}
-
-				if (isTable) {
-					text += "|" + value;
-				} else {
-					text += "- " + key + " : " + value + "\n";
-				}
+		var getObj = function(key) {
+			if (!key) {
+				return conf;
+			}
+			var keys = key.split(".");
+			var tmpConf = conf;
+			for (var i = 0; i < keys.length; i++){
+				tmpConf[keys[i]] = tmpConf[keys[i]] || {};
+				tmpConf = tmpConf[keys[i]];
 			}
 
-			if (isTable) {
-				text += "|\n";
+			return tmpConf;
+		}
+
+		var confConvert(c) {
+			var nc = c.length ? [] : {};
+
+			if (c.length) {
+				for (var i = 0; i < c.length; i++) {
+					nc.push(confConvert(c[i+""]));
+				}
 			} else {
-				for (var key in obj) {
-					var value = obj[key];
-
-					if (typeof(value) != "object") {
-						continue;
-					}
-
-					text += "\n\n" + head[depth] + " " + key + "\n\n";
-					text += self.toMd(value, depth+1);
+				for (var key in c) {
+					nc[key] = confConvert(c[key]);
 				}
 			}
 
-		} else {
-			// list
-			var isFirst = true;
-			for (var i = 0; i < obj.length; i++) {
-				var value = obj[i];
+			return nc;
+		}
 
-				if (typeof(value) == "object") {
-					// 表
-					if (value.length == undefined) {
-						// 不支持数组嵌套数组
-						if (isFirst) {
-							var tableHead = "";
-							var tableDelimit = "";
-							for (var field in value) {
-								tableHead += "|" + field;
-								tableDelimit += "|:--:";
-							}
-							text +=  tableHead + "|\n" + tableDelimit + "|\n";
-							isFirst = false;
-						}
-						text += self.toMd(value, undefined, true);
-					}
+		var _mdToJson = function(line) {
+			var temp = line.match(/([#-+]) (.*)/);
+			var flag = temp[1];
+			var content = temp[2].trim();	
+			var key, value;
 
-					continue;
+			if (flag == "#") {
+				curConf = getObj(content);
+			}
+
+			if (flag == "+" || flag == "-") {
+				content = content.split(":");
+
+				if (content.length > 1) {
+					key = content[1].trim(); 
+					value = content[2].trim();
+				} else {
+					curConf.length = curConf.length || 0;
+					key = curConf.length + "";
+					value = content[1].trim();
+					curConf.length = curConf.length + 1;
 				}
-				
-				text += "- " + value + "\n\1";
+
+				if (value == "true") {
+					value = true;
+				} else if (value == "false") {
+					value = false;
+				} else {
+					value = value;
+				}
+
+				curConf[key] = value;
 			}
 		}
 
-		//text += "\n";
-		return text;
+		for (var i = 0; i < temp_lines.length; i++) {
+			if (!temp_lines[i].match(/[#-+] .*/)) {
+				line += temp_lines[i] + "\n";
+				continue;
+			}
+			if (line) {
+				lines.push(line);
+			}
+			line = temp_lines[i];
+		}
+
+		if (line) {
+			lines.push(line);
+		}
+
+		if (lines.length == 1) {
+			return lines[0];
+		} else {
+			for (var i = 0; i < lines.length; i++) {
+				_mdToJson(lines[i]);
+			}
+		}
+
+
+		return confConvert(conf);
 	}
 
+	// json对象转markdown文本
+	mdconf.jsonToMd = function(obj) {
+		var text = "";
+		var value;
+
+		// 非对象直接写入
+		if (typeof(obj) != "object") {
+			text += obj + "\n";
+			return text;
+		}
+		
+		var _jsonToMd = function(obj, key_prefix) {
+			key_prefix = key_prefix ? key_prefix + "." : "";
+			if (obj.length == undefined) {
+				// 单对象对应列表
+				for (var key in obj) {
+					// 优先写非对象值
+					value = obj[key];
+					if (key.indexOf("$$") == 0 || typeof(value) == "object") {
+						continue;
+					}
+					text += "- " + key + " : " + value + "\n";
+				}
+				for (var key in obj) {
+					// 写对象值
+					value = obj[key];
+					if (key.indexOf("$$") == 0 || typeof(value) != "object") {
+						continue;
+					}
+
+					text += "\n# " + key_prefix + key + "\n";
+					_jsonToMd(value, key_prefix + key)
+				}
+			} else {
+				for (var i = 0; i < obj.length; i++) {
+					value = obj[i];
+					if (typeof(value) != "object") {
+						text += "- " + obj[i] + "\n";
+						continue;
+					} 
+
+					text += "\n# " + key_prefix + i + "\n";
+					_jsonToMd(value, key_prefix + i)
+				}		
+			}
+		}
+
+		_jsonToMd(obj);
+		return text;
+	}
 
 	return mdconf;
 })

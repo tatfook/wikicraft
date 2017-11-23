@@ -1,16 +1,34 @@
 
-<div ng-controller="headlinerController">
+<div ng-controller="headlinerController" class="container">
 	<div ng-if='params.design.value="default"'>
-		<div>
-			<!--<div data-id="title" class="kp_module_editor_input_tag">{{params.title.value}}</div>-->
-			<!--<div data-id="subtitle" class="kp_module_editor_input_tag">{{params.subtitle.value}}</div>-->
-			<!--<div data-id="paragraph" class="kp_module_editor_input_tag">{{params.paragraph.value}}</div>-->
-			<div ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide"class="kp_module_editor_input_tag">{{params.title.value}}</div>
-			<div ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide" class="kp_module_editor_input_tag">{{params.subtitle.value}}</div>
-			<div ng-click="viewEditorClick(params.paragraph)" class="kp_module_editor_input_tag">{{params.paragraph.value}}</div>
+		<div class="col-xs-6">
+			<div ng-hide="params.image.is_hide" class="kp_module_editor_input_tag">
+				<img class="center-block" alt="{{params.image.text}}" ng-src="{{params.image.href}}"/>
+			</div>
 		</div>
-		<div data-id="link" class="kp_module_editor_input_tag">
-			<a ng-href="{{params.link.value_href}}">{{params.link.value_text}}</a>
+		<div class="col-xs-6" style="padding-top:70px">
+			<div ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide"class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size: 18px">
+					{{params.title.text}}
+				</div>
+			</div>
+			<div ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size:16px">
+					{{params.subtitle.text}}
+				</div>
+			</div>
+			<div ng-click="viewEditorClick(params.paragraph)" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size:18px">
+					{{params.paragraph.text}}
+				</div>
+			</div>
+			<div class="kp_module_editor_input_tag">
+				<a class="btn center-block" ng-href="{{params.link.href}}">{{params.link.text || "BUTTON"}}</a>
+			</div>
+		</div>
+
+		<div ng-repeat="item in params.list.list" class="kp_module_editor_input_tag">
+			<div>{{item.title.text}}</div>
 		</div>
 	</div>
 </div>
