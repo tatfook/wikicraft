@@ -588,7 +588,7 @@ define([
                     var img = "<img src='" + arg.target.result + "' alt='preview' />";
                     cropper.html(img);
                     var $previews = $('.preview');
-                    $('#cropper > img').cropper({
+                    var options = { 
                         aspectRatio: 4 / 3,
                         viewMode: 1,
                         dragMode: 'move',
@@ -598,41 +598,23 @@ define([
                         cropBoxMovable: false,
                         cropBoxResizable: false,
                         minCropBoxWidth:280,
-                        build:function(){
-                            var $clone = $(this).clone().removeClass('cropper-hidden');
-                            $clone.css({
-                                display: 'block',
-                                width:'320px',
-                                height:'240px'
-                            });
-
-                            $previews.css({
-                                overflow: 'hidden'
-                            }).html($clone);
+                        preview: ".preview", 
+                        crop: function(e) {} 
+                    };
+                    $("#cropper > img")
+                      .on({
+                        ready: function(e) {},
+                        cropstart: function(e) {},
+                        cropmove: function(e) {},
+                        cropend: function(e) {},
+                        crop: function(e) {
+                          croppedCanvas = $(this).cropper("getCroppedCanvas");
+                          resultCanvas = getResultCanvas(croppedCanvas);
+                          $scope.imgUrl = resultCanvas.toDataURL(); //产生裁剪后的图片的url
                         },
-                        crop: function (e) {
-                            var imageData = $(this).cropper('getImageData');
-                            var previewAspectRatio = e.width / e.height;
-
-                            $previews.each(function () {
-                                var $preview = $(this);
-                                var previewWidth = $preview.width();
-                                var previewHeight = previewWidth / previewAspectRatio;
-                                var imageScaledRatio = e.width / previewWidth;
-
-                                $preview.height(previewHeight).find('img').css({
-                                    width: imageData.naturalWidth / imageScaledRatio,
-                                    height: imageData.naturalHeight / imageScaledRatio,
-                                    marginLeft: -e.x / imageScaledRatio,
-                                    marginTop: -e.y / imageScaledRatio
-                                });
-                            });
-
-                            croppedCanvas=$(this).cropper('getCroppedCanvas');
-                            resultCanvas=getResultCanvas(croppedCanvas);
-                            $scope.imgUrl=resultCanvas.toDataURL();//产生裁剪后的图片的url
-                        }
-                    });
+                        zoom: function(e) {}
+                      })
+                      .cropper(options);
                 }
             };
             finishBtn.on("click", function () {
@@ -646,7 +628,7 @@ define([
                     return;
                 }
                 var imgUrl=$scope.imgUrl;
-                siteDataSource.uploadImage({content:imgUrl}, function (url) {
+                siteDataSource.uploadImage({content:imgUrl, isShowLoading: true}, function (url) {
                     $scope.website.logoUrl = url;
                     // util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                     //     $scope.website = data;
