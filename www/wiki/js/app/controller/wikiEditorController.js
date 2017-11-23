@@ -180,9 +180,6 @@ define([
             treeNode.text = pageNode.name;
 			//console.log(pageNode);
 			if (pageNode.isLeaf) {
-				if (pageNode.isModify) {
-					treeNode.text += " *";
-				}
 				if (pageNode.isConflict) {
 					treeNode.text += " !";
 				}

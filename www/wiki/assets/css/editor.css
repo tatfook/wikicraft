@@ -332,6 +332,17 @@ body,
 .treeview .icon.fa-chevron-right{
     color: #999;
 }
+.treeview .fa-edit{
+    position: relative;
+}
+.treeview .fa-edit::after{
+    content: "*";
+    position: absolute;
+    left: -19px;
+    font-size: 23px;
+    top: 0;
+    color: #FE3266;
+}
 /*.treeview .node-parent .show-empty-node{*/
     /*display: none;*/
 /*}*/
