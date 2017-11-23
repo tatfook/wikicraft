@@ -4,8 +4,9 @@
 
 define([
     'jquery',
-	"js-base32"
-], function ($) {
+    "js-base32",
+    "./errTranslate"
+], function ($, jsbase32, errTranslate) {
     var util = {
         stack:[],   // 堆栈操作模拟
         id:0,       // ID产生器 局部唯一性
@@ -281,6 +282,7 @@ define([
                 callback && callback(data.data);
             } else {
                 console.log(obj.url, data);
+                data.error && (data.error.message = errTranslate(data.error.message));
                 errorCallback && errorCallback(data.error);
             }
             //Loading.hideLoading();
@@ -288,7 +290,7 @@ define([
             console.log(response);
             //Loading.hideLoading();
             // 网络错误
-            errorCallback && errorCallback(response.data);
+            errorCallback && errorCallback( errTranslate(response.data) );
         });
 
 	}
