@@ -138,6 +138,12 @@
         margin: 0;
         line-height: 32px;
     }
+    .wikiblock-tab .text h4 a:not(.btn) {
+        display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
     .wikiblock-tab .text h4 .btn{
         padding:4px 25px;
     }
@@ -185,7 +191,7 @@
             width: 900px;
         }
         .wikiblock-tab {
-            max-height: 340px;
+            /* max-height: 340px; */
         }
     }
     @media (min-width: 1200px) {
