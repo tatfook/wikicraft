@@ -465,7 +465,7 @@ define([
                 message: self.getCommitMessagePrefix() + path,
                 content: content,
                 encoding: 'base64',
-				isShowLoading:false,
+				isShowLoading: params.isShowLoading || false,
             }, function (data) {
 				//var imgUrl = self.getRawContentUrlPrefix({sha:"master"}) + '/' + data.file_path + (self.dataSource.visibility  == "private" ? ("?private_token=" + self.dataSource.dataSourceToken) : ""); 
 				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"}); 

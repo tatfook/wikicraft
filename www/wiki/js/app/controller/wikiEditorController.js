@@ -251,18 +251,28 @@ define([
         }
 
         $scope.img_insert = function () {
-            $rootScope.img = $scope.img;
-            $uibModalInstance.close("img");
+            $scope.imgErr = "";
+            if ($scope.imgContent) {
+                var currentDataSource = getCurrentDataSource();
+                currentDataSource && currentDataSource.uploadImage({ content: $scope.imgContent, isShowLoading: true }, function(url) {
+                      $scope.img.url = url;
+                      $rootScope.img = $scope.img;
+                      $uibModalInstance.close("img");
+                    }, function(err) {
+                      console.log(err);
+                      $scope.imgErr = "图片上传失败，请稍后重试";
+                    });
+            }else{
+                $rootScope.img = $scope.img;
+                $uibModalInstance.close("img");
+            }
         }
 
         $scope.imageLocal = function () {
-            var currentDataSource = getCurrentDataSource();
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result}, function (url) {
-                        $scope.img.url = url;
-                    });
+                    $scope.imgContent = fileReader.result;
                 };
                 fileReader.readAsDataURL(e.target.files[0]);
             });
@@ -950,21 +960,25 @@ define([
                     cb && cb();
                 };
 
-				//makeSnapshot(currentDataSource, page);
-                currentSite = getCurrentSite(page.username, page.sitename);
-                if (currentSite) {
-					page.visibility = currentSite.visibility || "public";
-                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
+                config.services.realnameVerifyModal().then(doSavePageContent).catch(saveFailedCB);
+
+                function doSavePageContent() {
+                    //makeSnapshot(currentDataSource, page);
+                    currentSite = getCurrentSite(page.username, page.sitename);
+                    if (currentSite) {
+                        page.visibility = currentSite.visibility || "public";
+                        util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
+                    }
+
+                    //console.log(currentSite);
+                    page.visibility = page.visibility || "public";
+                    submitToSearchEngine(page);
+
+                    currentDataSource.writeFile({
+                        path: page.url + pageSuffixName,
+                        content: content
+                    }, saveSuccessCB, saveFailedCB);
                 }
-
-				//console.log(currentSite);
-				page.visibility = page.visibility || "public";
-				submitToSearchEngine(page);
-
-                currentDataSource.writeFile({
-                    path: page.url + pageSuffixName,
-                    content: content
-                }, saveSuccessCB, saveFailedCB);
             }//}}}
 
 
@@ -2137,7 +2151,9 @@ define([
 
                     var insertContent = "";
                     console.log(files);
-                    if (files.url){
+                    if (files.pasteUrl){
+                        insertContent = files.pasteUrl;
+                    } else if (files.url){
                         insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
                     }else{
                         files.map(function (file) {
@@ -2245,10 +2261,12 @@ define([
             //版本
             $scope.cmd_version = function () {//{{{
                 // util.go("gitVersion");
+                $scope.currentPage = currentPage;
                 modal('controller/gitVersionController', {
                     controller: 'gitVersionController',
                     size: 'lg',
-                    backdrop: true
+                    backdrop: true,
+                    scope: $scope
                 }, function (wikiBlock) {
                     console.log(wikiBlock);
                 }, function (result) {

@@ -51,57 +51,61 @@ define([
         }
 
         function createSite(siteinfo, cb , errcb) {
-            siteinfo.userId = $scope.user._id;
-            siteinfo.username = $scope.user.username;
-			siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
-			//siteinfo.isolateDataSource = true;
-            config.loading.showLoading();
-            util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
-				var userDataSource = dataSource.getUserDataSource(siteinfo.username);
-                var callback = function () {
-					var defaultDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
-                    var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
-                    var contentUrlPrefix = "text!html/";
-                    var contentPageList = [];
-                    for (var i = 0; i < $scope.style.contents.length; i++) {
-                        var content = $scope.style.contents[i];
-                        contentPageList.push({
-                            "pagepath": pagepathPrefix + content.pagepath + config.pageSuffixName,
-                            "contentUrl": contentUrlPrefix + content.contentUrl,
-                        });
-                    }
-                    var fnList = [];
-                    for (var i = 0; i < contentPageList.length; i++) {
-                        fnList.push((function (index) {
-                            return function (cb, errcb) {
-                                doGitlabTemplate(contentPageList[index].pagepath,contentPageList[index].contentUrl.substring(contentUrlPrefix.length), defaultDataSource, cb, errcb);
-                            }
-                        })(i));
-                    }
+            config.services.realnameVerifyModal().then(doCreateSite).catch(errcb);
 
-                    util.sequenceRun(fnList, undefined, function(){
-                        config.loading.hideLoading();
-                        cb && cb();
-                    }, function () {
-                        util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId:siteinfo._id});
-                        config.loading.hideLoading();
-                        errcb && errcb();
-                    });
-                };
-				if (siteinfo.dataSource) {
-					var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
-					userDataSource.registerDataSource(siteinfo.name, dataSourceInst);
-					dataSourceInst.init(siteinfo.dataSource, function() {
-						Account.initDataSource(callback, callback);
-						//callback();
-					}, errcb);
-				} else {
-					callback();
-				}
-            }, function () {
-                config.loading.hideLoading();
-                errcb && errcb();
-            });
+            function doCreateSite() {
+                siteinfo.userId = $scope.user._id;
+                siteinfo.username = $scope.user.username;
+                siteinfo.defaultDataSourceName = $scope.user.defaultDataSourceName;
+                //siteinfo.isolateDataSource = true;
+                config.loading.showLoading();
+                util.post(config.apiUrlPrefix + 'website/upsert', siteinfo, function (siteinfo) {
+                    var userDataSource = dataSource.getUserDataSource(siteinfo.username);
+                    var callback = function () {
+                        var defaultDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
+                        var pagepathPrefix = "/" + siteinfo.username + "/" + siteinfo.name + "/";
+                        var contentUrlPrefix = "text!html/";
+                        var contentPageList = [];
+                        for (var i = 0; i < $scope.style.contents.length; i++) {
+                            var content = $scope.style.contents[i];
+                            contentPageList.push({
+                                "pagepath": pagepathPrefix + content.pagepath + config.pageSuffixName,
+                                "contentUrl": contentUrlPrefix + content.contentUrl,
+                            });
+                        }
+                        var fnList = [];
+                        for (var i = 0; i < contentPageList.length; i++) {
+                            fnList.push((function (index) {
+                                return function (cb, errcb) {
+                                    doGitlabTemplate(contentPageList[index].pagepath,contentPageList[index].contentUrl.substring(contentUrlPrefix.length), defaultDataSource, cb, errcb);
+                                }
+                            })(i));
+                        }
+    
+                        util.sequenceRun(fnList, undefined, function(){
+                            config.loading.hideLoading();
+                            cb && cb();
+                        }, function () {
+                            util.post(config.apiUrlPrefix + 'website/deleteById', {websiteId:siteinfo._id});
+                            config.loading.hideLoading();
+                            errcb && errcb();
+                        });
+                    };
+                    if (siteinfo.dataSource) {
+                        var dataSourceInst = dataSource.getDataSourceInstance(siteinfo.dataSource.type);
+                        userDataSource.registerDataSource(siteinfo.name, dataSourceInst);
+                        dataSourceInst.init(siteinfo.dataSource, function() {
+                            Account.initDataSource(callback, callback);
+                            //callback();
+                        }, errcb);
+                    } else {
+                        callback();
+                    }
+                }, function () {
+                    config.loading.hideLoading();
+                    errcb && errcb();
+                });
+            }
         }
 
         $scope.nextStep = function () {

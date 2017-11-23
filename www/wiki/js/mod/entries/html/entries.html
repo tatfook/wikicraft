@@ -1,444 +1,597 @@
-<div>
+<!-- <style>
+    .c-btn {
+        cursor: pointer;
+        display: inline-block;
+        border: 1px solid transparent;
+        /*.borderRadius(3px);*/
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -o-border-radius: 4px;
+        outline: none;
+        /*padding:8px 16px;*/
+        padding: 12px 26px;
+        margin: 0px 4px;
+        /*font-size:13px;*/
+        font-size: 18px;
+        font-family: 'Hiragino Sans GB', 'Microsoft Yahei', Arial, sans-serif, tahoma;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        letter-spacing: normal;
+        line-height: normal;
+        vertical-align: middle;
+        background-color: transparent;
+    }
 
-    <style scoped>
-        .layout-swiper {
-            width: 100%;
-            height: 180px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            position: relative;
-            background-color: #aed1f0;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-            position: relative;
-        }
+    button.btn-warning,
+    .btn.btn-warning {
+        color: white;
+    }
 
-        .layout-swiper .swiper-slide {
-            padding: 0 5px;
-            margin: 5px 0;
-            box-sizing: border-box;
-        }
+    button.btn-warning:not([disabled]),
+    .btn.btn-warning:not([disabled]) {
+        background-color: #f9963b;
+        border-color: #f5aa66;
+    }
 
-        .not-data {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            font-size: 14px;
-            color: #fff;
-            transform: translate(-50%, -50%);
-        }
+    button.btn-warning:not([disabled]):hover,
+    .btn.btn-warning:not([disabled]):hover {
+        background-color: #f5aa66;
+    }
 
-        #sliding-loading .swiper-slide .inner-box {
-            height: auto;
-            padding: 10px 15px 12px;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            -o-border-radius: 5px;
-            border-radius: 5px;
-            border: 1px solid #f9f9f9;
-            background-color: #fff;
-            box-shadow: 0 0 3px #999;
-        }
+    button.btn-warning:not([disabled]):active,
+    .btn.btn-warning:not([disabled]):active {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
 
-        .inner-box:hover {
-            -webkit-transition: all 0.3s;
-            transition: all 0.3s;
-            background-color: #fff;
-            border: 1px solid #337ab7;
-            box-shadow: none;
-        }
+    button.btn-warning[disabled],
+    .btn.btn-warning[disabled] {
+        cursor: not-allowed;
+        opacity: 0.65;
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
 
-        .inner-box>a {
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            position: relative;
-            z-index: 999;
-        }
+    .cont-relative {
+        position: relative;
+    }
 
-        .inner-box .item-title {
-            -webkit-line-clamp: 3;
-            height: 60px;
-            margin-bottom: 8px;
-            color: #666;
-        }
+    .cont {
+        margin-bottom: 30px;
+    }
 
-        .inner-box .item-nickname {
-            max-width: 100%;
-            -webkit-line-clamp: 1;
-            text-align: right;
-            color: #666;
-        }
+    .org {
+        height: 91px;
+    }
 
-        .inner-box .item-title:hover,
-        .inner-box .item-nickname:hover {
-            color: #337ab7;
-        }
+    .tip-font {
+        font-size: 13px;
+    }
 
-        .teacher-btn {
-            box-sizing: border-box;
-        }
+    .tip-font-color {
+        color: #999;
+    }
 
-        .teacher-btn .set-btn {
-            width: 100%;
-            display: block;
-            line-height: 45px;
-            box-sizing: border-box;
-            background-color: #efefef;
-            border: 1px solid #f1f1f1;
-            box-sizing: border-box;
-            outline: none;
-            color: #337ab7;
-        }
+    .line-border-bottom {
+        border-bottom: 1px solid #eeeeee;
+    }
 
-        .prev-btn,
-        .next-btn {
-            width: 32px;
-            height: 45%;
-            position: absolute;
-            z-index: 99;
-            top: 50%;
-            -webkit-transform: translateY(-50%);
-            transform: translateY(-50%);
-            /*-webkit-border-radius:50%;
-           border-radius:50%;*/
-            /*background-color:rgba(63, 152, 254, 1);*/
-            cursor: pointer;
-            text-align: center;
-            opacity: 0;
-        }
+    .border-all {
+        border: 1px solid #eeeeee;
+    }
 
-        .prev-btn a,
-        .next-btn a {
-            color: #fff;
-            font-size: 18px;
-            line-height: 4;
-        }
+    .d-flt {
+        float: left;
+    }
 
-        .prev-btn:hover,
-        .next-btn:hover {
-            background-color: rgba(0, 0, 0, .66);
-        }
-        
-        .btn-display.next-btn{
-            display: none !important;
-        }
+    .chp .user-info {
+        float: right;
+    }
 
-        .btn-display.next-btn a:hover{
-            display: none !important;
-        }
+    .d-amin {
+        transition: all 0.3s ease-out;
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -ms-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+    }
 
-        .prev-btn {
-            left: 0;
-            -webkit-border-top-right-radius: 5px;
-            border-top-right-radius: 5px;
-            -webkit-border-bottom-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
+    .font-size-16 {
+        font-size: 16px;
+    }
 
-        .next-btn {
-            right: 0;
-            -webkit-border-top-left-radius: 5px;
-            border-top-left-radius: 5px;
-            -webkit-border-bottom-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-        }
+    .hover-color:hover{
+        color: #01c9ac !important;
+    }
 
-        .layout-swiper:hover .prev-btn {
-            opacity: 1;
-            left: 0;
-            -webkit-transition: all 0.2s ease-out 0s;
-            transition: all 0.2s ease-out 0s;
-        }
+    .chp-info .chp-title,
+    .chp-info .chp-enroll {
+        margin-top: 20px;
+    }
 
-        .layout-swiper:hover .next-btn {
-            opacity: 1;
-            right: 0;
-            -webkit-transition: all 0.2s ease-out 0s;
-            transition: all 0.2s ease-out 0s;
-        }
+    .org .org-img {
+        height: 64px;
+        width: 64px;
+        margin-right: 17px;
+        border-width: 2px;
+        margin-top: 14px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
 
-        .teachers-list {
-            width: 100%;
-            height: auto;
-            max-height: 300px;
-            box-sizing: border-box;
-            overflow: auto;
-            background-color: #fafafa;
-            position: relative;
-        }
+    .org .org-title {
+        font-size: 22px;
+        color: #333333;
+        line-height: 91px;
+        margin-right: 150px;
+    }
 
-        .teachers-list::-webkit-scrollbar {
-            width: 6px;
-            height: 18px;
-            background: rgba(0, 0, 0, .1);
-        }
+    .org .org-info {
+        margin-top: 23px;
+    }
 
-        .teachers-list::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-            border-radius: 10px;
-            background-color: #f5f5f5;
-        }
+    .org .org-info>div {
+        margin-right: 46px;
+        display: inline-block;
+        text-align: center;
+    }
 
-        .teachers-list::-webkit-scrollbar-thumb {
-            width: 10px;
-            height: 20px;
-            border-radius: 10px;
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-            background-color: rgba(0, 0, 0, .4);
-        }
+    .org .org-info .v-line {
+        height: 36px;
+        width: 1px;
+        background-color: #c7c7c7;
+    }
 
-        .teachers-list .teach-item {
-            padding: 15px 30px 15px 15px;
-            line-height: 46px;
-            margin: 5px 0;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        /*.teach-item:hover{
-            background-color:#fff;
-        }*/
+    .org .org-info .t-txt {
+        font-size: 14px;
+        color: #999999;
+        display: inline-block;
+        margin-bottom: 2px;
+    }
 
-        .teach-box:hover {
-            transform: translateY(-5px);
-            transition: all ease-out .3s;
-        }
+    .org .org-info .n-txt {
+        color: #656565;
+    }
 
-        .teach-box:hover span {
-            color: #337ab7;
-        }
+    .chp {
+        height: 220px;
+    }
 
-        .teach-item .teach-box {
-            display: inline-block;
-            margin: 0 25px 10px 0;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
+    .chp .cour-title {
+        margin-top: 40px;
+    }
 
-        .teach-box .pic {
-            width: 45px;
-            -webkit-border-radius: 50%;
-            border-radius: 50%;
-            vertical-align: middle;
-        }
+    .chp-info .cour-title .c-label {
+        color: #999;
+    }
 
-        .teach-box .name {
-            color: #444;
-            margin-left: 8px;
-        }
+    .chp-info .cour-title .c-title,
+    .chp .user-info .user-name {
+        color: #333;
+    }
 
-        .actived {
-            height: 200px;
-            transition: all linear .5s;
-            -webkit-transition: all linear .5s;
-            -moz-transition: all linear .5s;
-            -ms-transition: all linear .5s;
-            -o-transition: all linear .5s;
-        }
+    .chp-info .chp-title {
+        text-align: left;
+    }
 
-        .inactived {
-            height: 0px;
-            transition: all linear .5s;
-            -webkit-transition: all linear .5s;
-            -moz-transition: all linear .5s;
-            -ms-transition: all linear .5s;
-            -o-transition: all linear .5s;
-        }
+    .chp-info .chp-title .p-title {
+        display: inline-block;
+        margin-left: 10px;
+        font-size: 26px;
+    }
 
-        #pull-slide .swiper-slide {
-            height: 100% !important;
-        }
+    .chp .user-info {
+        margin-top: 14px;
+        height: 190px;
+        width: 223px;
+        overflow: hidden;
+        background-color: #f0f7f9;
+        text-align: center;
+        padding: 20px 0;
+    }
 
-        .set-btn.moreShow {
-            display: none;
-        }
+    .chp .user-info .user-img,
+    .chp .user-info .user-name,
+    .chp .user-info .user-start {
+        margin: auto;
+    }
 
-        #pull-slide {
-            width: 100%;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
+    .chp .user-info .user-img {
+        height: 77px;
+        width: 77px;
+        margin-bottom: 18px;
+        border-radius: 50%;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        display: block;
+    }
 
-        #entriesWrap .top-block {
-            position: relative;
-            height: 60px;
-            line-height: 60px;
-            margin-top: 10px;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-        }
+    .chp .user-info .user-name {
+        width: 120px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }    
 
-        .return-layer {
-            position: absolute;
-            left: 0;
-            z-index: 1;
-        }
+    .chp .user-info::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 80px;
+        width: 0;
+        height: 0;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+        border-left: 15px solid white;
+    }
 
-        .authorInfo {
-            position: absolute;
-            right: 0;
-            z-index: 1;
-        }
+    .chp .user-info .user-start {
+        margin-top: 10px;
+    }
 
-        .authorInfo img {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            -webkit-border-radius: 50%;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
+    .chp .user-info .user-start span {
+        height: 20px;
+        width: 20px;
+        display: inline-block;
+    }
 
-        .authorInfo a:hover {
-            text-decoration: underline;
-        }
+    .chp-rec {
+        margin-top: 39px;
+        visibility: hidden;
+    }
 
-        .authorInfo a:last-child:hover {
-            text-decoration: none;
-        }
+    .chp-rec.visabled {
+        visibility: visible;
+    }
 
-        @media screen and (max-width:1000px) {
-            .entries-container {
-                padding: 0 !important;
-            }
+    .chp-rec #chapSlide {
+        margin-left: 60px;
+        margin-right: 60px;
+    }
 
-            .layout-swiper {
-                margin: 10px auto 0;
-                padding: 15px 10px;
-            }
+    .chp-rec .spb {
+        width: 35px;
+        height: 50px;
+        background-size: 20px;
+        background-color: #f5f5f5;
+    }
 
-            .prev-btn,
-            .next-btn {
-                display: none;
-            }
+    .chp-rec .chp {
+        cursor: pointer;
+    }
 
-            .layout-swiper .swiper-slide {
-                padding: 0;
-                margin: 0 8px 0 0;
-            }
+    .chp-rec .chp-rec-txt {
+        margin-bottom: 20px;
+    }
 
-            .layout-swiper:hover .prev-btn {
-                display: none;
-            }
+    .chp-rec .chp:hover {
+        color: #6f6767;
+    }
 
-            .layout-swiper:hover .next-btn {
-                display: none;
-            }
+    .chp-rec .swiper-slide {
+        height: 80px;
+        border-radius: 10px;
+        padding: 10px;
+        color: white;
+    }
 
-            .teachers-list .teach-item {
-                padding: 5px 15px 5px 15px;
-                line-height: 36px;
-                margin: 5px 0;
-                cursor: pointer;
-            }
+    .chp-rec .swiper-slide span {
+        overflow: hidden;
+        display: inline-block;
+    }
 
-            .teach-box .pic {
-                width: 28px;
-                height: 28px;
-            }
-            .teach-item .teach-box {
-                margin: 0 15px 5px 0;
-            }
-            .teach-box:hover {
-                transform: initial;
-            }
+    .chp-rec .swiper-slide .desc {
+        height: 40px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-word;
+    }
 
-            .actived {
-                height: 100%;
-                max-height: 100%;
-            }
-        }
+    .chp-rec .swiper-slide {
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
 
-        .disabled {
-            position: relative;
-            z-index: -1;
-        }
-    </style>
+    .chp-rec .swiper-slide:nth-child(4n+0) {
+        background-image: url(http://121.14.117.239/imgs/red.png);
+    }
 
-    <div id="entriesWrap">
+    .chp-rec .swiper-slide:nth-child(4n+1) {
+        background-image: url(http://121.14.117.239/imgs/orange.png);
+    }
 
-        <div class="top-block">
-            <div class="return-layer" ng-hide="isHide"><a href="{{course_url}}">课程：<span>{{entries_title}}</span></a></div>
+    .chp-rec .swiper-slide:nth-child(4n+2) {
+        background-image: url(http://121.14.117.239/imgs/blue.png);
+    }
 
-            <div class="authorInfo" ng-show="isCreate">
-                <span>导师：</span>
-                <a href="{{urlPath}}teacher_index?user_name={{userinfo.username}}">
-                    <!--<img src="{{thisUserPic}}" alt="{{userinfo.username}}"/>-->
-                    {{userinfo.username}}
-                </a>
-                &nbsp;
-                <a href="{{urlPath}}follow/take?url={{current_url}}" type="button" class="btn btn-danger btn-sm" style="width:80px;">拜师</a>
+    .chp-rec .swiper-slide:nth-child(4n+3) {
+        background-image: url(http://121.14.117.239/imgs/green.png);
+    }
+
+    .chp-enroll a {
+        background-color: #f9963b;
+        border-color: #f5aa66;
+    }
+
+    .chp-enroll.disabled a:hover {
+        cursor: not-allowed;
+        opacity: 0.65;
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .teach-rec {
+        margin-top: 44px;
+    }
+
+    .teach-rec .b-div {
+        margin: auto;
+        width: 140px;
+    }
+
+    .teach-rec .b-div button {
+        border: 1px solid #f01414;
+        color: #f01414;
+        border-radius: 30px;
+        padding: 8px 12px;
+        width: 100%;
+    }
+
+    .teach-rec:not(.active) .b-div button span {
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 6px solid #f01414;
+        top: 15px;
+    }
+
+    .teach-rec.active .b-div button span {
+        width: 0;
+        height: 0;
+        border: none;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 6px solid #f01414;
+        top: -12px;
+    }
+
+    .teach-rec .b-div button:hover {
+        color: white;
+        background-color: #e93a3a;
+    }
+
+    .teach-rec.active .b-div button:hover span {
+        border-bottom-color: white;
+    }
+
+    .teach-rec .b-div button:hover span {
+        border-top-color: white;
+        margin-left: 5px;
+    }
+
+    .teach-rec .teach-list {
+        margin-top: 26px;
+        display: flex;
+        display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flex;
+        display: -o-flex;
+        flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+        -moz-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        -o-flex-wrap: wrap;
+        align-items: center;
+        -webkit-align-items: center;
+        -moz-align-items: center;
+        -ms-align-items: center;
+        -o-align-items: center;
+        justify-content: flex-start;
+        -webkit-justify-content: flex-start;
+        -moz-justify-content: flex-start;
+        -ms-justify-content: flex-start;
+        -o-justify-content: flex-start;
+    }
+
+    .teach-rec .teach-list {
+        margin-bottom: 30px;
+    }
+
+    .teach-rec .teach-list .teach-list-item {
+        flex-basis: 25%;
+        height: 100px;
+        margin-top: 12px;
+    }
+
+    .teach-rec .teach-list .teach-list-item .teach-content {
+        margin-right: 14px;
+        border-radius: 3px;
+        height: 100%;
+        padding: 15px;
+    }
+
+    .teach-rec .teach-list .teach-list-item .teach-content:hover {
+        border-color: #01c9ac;
+        cursor: pointer;
+    }
+
+    .teach-rec .teach-list .teach-list-item .teach-content .img {
+        height: 70px;
+        width: 70px;
+        border-radius: 50%;
+        display: inline-block;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .teach-content .teach-info {
+        padding-left: 80px;
+        margin-top: 10px;
+    }
+
+    .teach-content .teach-info .user-name {
+        padding-left: 2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .teach-content .teach-info .user-start span {
+        height: 20px;
+        width: 20px;
+        display: inline-block;
+    }
+
+    .teach-rec .teach-list {
+        overflow: hidden;
+        height: 0;
+    }
+
+    .load-more {
+        cursor: pointer;
+        height: 30px;
+        width: 30px;
+        margin: auto;
+        margin-top: 23px;
+    }
+
+    .load-more:hover {
+        transform: scale(1.2);
+        -webkit-transform: scale(1.2);
+        -moz-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        -o-transform: scale(1.2);
+    }
+</style> -->
+
+<!-- <div class="cont cont-relative" ng-controller="entriesController">
+    <div class="org line-border-bottom" ng-show="org.show">
+        <a ng-href="{{org.url}}" class="org-img border-all d-flt" style="background-image: url({{org.image}})" title="{{org.name}}">
+        </a>
+        <a class="org-title d-flt hover-color" ng-href="{{org.url}}">
+            {{org.name}}
+        </a>
+        <div class="org-info d-flt">
+            <div>
+                <span class="t-txt">课程</span>
+                <br />
+                <span class="n-txt font-size-16">{{org.cnum}}</span>
             </div>
-
+            <div class="v-line"></div>
+            <div>
+                <span class="t-txt font-size-16">导师</span>
+                <br />
+                <span class="n-txt font-size-16">{{org.tnum}}</span>
+            </div>
+            <div class="v-line"></div>
+            <div>
+                <span class="t-txt">学员</span>
+                <br />
+                <span class="n-txt font-size-16">{{org.snum}}</span>
+            </div>
         </div>
-
-
-        <div class="entries-container">
-
-            <!-- 词条标题，昵称信息 左右轮播 start -->
-            <div class="layout-swiper">
-                <div class="data-show" ng-show="dataShow">
-                    <div class="swiper-container" id="sliding-loading">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide item-slide" ng-repeat="item in chapters.data">
-                                <div class="inner-box">
-                                    <a href="{{item.url}}" title="{{item.title}}" class="item-title">{{item.title}}</a>
-                                    <a href="{{urlPath}}teacher_index?user_name={{item.create_user}}" title="{{item.create_nickname}}" class="item-nickname">【{{item.create_nickname}}】</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="prev-btn text-center"><a href="javascript:;" class="glyphicon glyphicon-chevron-left"></a></div>
-                    <div class="next-btn text-center" ng-click="nextPage()" ><a href="javascript:;" class="glyphicon glyphicon-chevron-right"></a></div>
-                </div>
-                <div class="not-data" ng-show="notData">
-                    <p>暂时没有相关推荐的文章~</p>
-                </div>
-            </div>
-
-            <!-- 词条标题，昵称信息 左右轮播 end -->
-
-            <div ng-show="dataShow">
-                <!-- 词条用户头像，昵称信息 下拉加载 start -->
-                <div class="teachers-list" id="teachWrap" ng-class="{true: 'actived', false: 'inactived inactive-border'}[teacher.show]">
-                    <div id="pull-slide" ng-show="teacherData">
-
-                        <div class="swiper-slide">
-                            <div class="teach-item col-xs-4 col-sm-4 col-md-2 col-lg-2" ng-repeat="item in teacher.data">
-                                <a href="{{urlPath}}teacher_index?user_name={{item.user_name}}" target="_blank" title="{{item.user_name}}" class="teach-box pull-left">
-                                    <img src="{{item.protrait}}" class="pic" alt="{{item.display_name}}" />
-                                    <span class="name">{{item.display_name}}</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="not-data" ng-show="notTeacher">
-                        <p style="color:#454545;">暂时没有相关推荐的导师~</p>
-                    </div>
-                </div>
-                <!-- 词条用户头像，昵称信息 上拉加载 end -->
-
-                <div class="teacher-btn text-center">
-                    <button class="set-btn moreShow" ng-click="moreShowThearch()" ng-disabled="isGetPage"><span>上拉或点击加载更多</span><span class="glyphicon glyphicon-chevron-up"></span></button>
-                    <button class="set-btn phone-hide" ng-click="teacher.showTeachers(!teacher.show); toggleIco =! toggleIco">
-                    <span ng-if="teacher.show">
-                        收起
-                    </span>
-                    <span ng-if="!teacher.show">
-                        相关导师
-                    </span>
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-up':toggleIco, 'glyphicon-chevron-down':!toggleIco}"></span>
-                </button>
-                </div>
-            </div>
-
-        </div>
-
     </div>
-</div>
+    <div class="chp line-border-bottom" ng-show="chap.show">
+        <div class="chp-info d-flt">
+            <div class="cour-title font-size-16">
+                <span class="c-label tip-font tip-font-color">课程 : </span>
+                <a class="tip-font hover-color" ng-href="{{chap.curl}}" class="c-title hover-color">{{chap.ctitle}}</a>
+            </div>
+            <div class="chp-title">
+                <span class="chp-idx tip-font tip-font tip-font-color">第{{chap.cidx}}章</span>
+                <span class="p-title">{{chap.ptitle}}</span>
+            </div>
+            <div class="chp-enroll">
+                <a class="c-btn btn-warning" ng-href="{{userbuy.href}}" ng-class="{disabled:userbuy.disabled}">{{userbuy.text}}</a>
+            </div>
+        </div>
+        <div class="user-info cont-relative">
+            <a class="user-img border-all" style="background-image: url({{chap.userImg}})"></a>
+            <a ng-href="{{chap.userUrl}}" class="user-name font-size-16 hover-color">{{chap.username}}</a>
+            <div class="user-start">
+                <span ng-repeat="s in chap.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
+                    <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                    </svg>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chp-rec cont-relative" ng-class="{visabled:chpRecVisabled}" ng-show="chpRec.length">
+
+        <div class="tip-font tip-font-color chp-rec-txt">
+            课程推荐
+        </div>
+        <div class="cont-relative">
+            <div class="swiper-container swiper-container-autoheight" id="chapSlide">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide chp 
+                    d-amin" ng-repeat="cr in chpRec track by $index" ng-click="openUrl(cr.churl)">
+                        <div class="desc">{{cr.chapter_title}}</div>
+                        <span>{{cr.pprice}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-button-prev spb d-amin"></div>
+            <div class="swiper-button-next spb d-amin"></div>
+        </div>
+    </div>
+    <div class="teach-rec line-border-bottom" ng-show="chpRec.length && teachRec.length">
+        <div class="b-div">
+            <button class="c-btn" ng-click="showTRec()">导师推荐
+                <span class="cont-relative"></span>
+            </button>
+        </div>
+        <div class="teach-list d-amin">
+            <div class="teach-list-content">
+                <div class="teach-list-item" ng-repeat="tt in teachRec track by $index">
+                    <div class="teach-content border-all d-amin hover-color" ng-click="openUrl(tt.url)">
+                        <div class="img border-all d-flt" style="background-image: url({{tt.userImg}})">
+                        </div>
+                        <div class="teach-info">
+                            <span class="user-name ">{{tt.display_name || tt.user_name}}</span>
+                            <div class="user-start">
+                                <span ng-repeat="ts in tt.star track by $index" class="icon text-warning" icon-name="star" ___loading="star" style="fill: rgb(249, 150, 59);">
+                                    <svg height="100%" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg" icon-name="star">
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="load-more d-amin" ng-show="showTeachRec && teachMore" ng-click="loadMore(1)">
+                <span class="icon" icon-name="ic_down" onclick="majorMore()" ___loading="ic_down" style="fill: rgb(153, 153, 153);">
+                    <svg t="1506070303649" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4402"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" icon-name="ic_down">
+                        <defs>
+                            <style type="text/css"></style>
+                        </defs>
+                        <path d="M511.700171 485.241566c-5.929036 0-11.858072-2.051729-16.649192-6.15928L112.093984 150.817937c-10.727319-9.195429-11.969613-25.345248-2.774183-36.072567 9.195429-10.726296 25.345248-11.970636 36.072567-2.77316l366.232079 313.927829L874.470405 112.045889c10.688433-9.243525 26.842345-8.073886 36.08587 2.612501s8.073886 26.841322-2.612501 36.084846L528.436344 479.007585C523.632945 483.162208 517.666046 485.241566 511.700171 485.241566z"
+                            p-id="4403"></path>
+                        <path d="M511.700171 926.776701c-5.929036 0-11.858072-2.051729-16.649192-6.15928L112.093984 592.353073c-10.727319-9.195429-11.969613-25.345248-2.774183-36.072567 9.195429-10.726296 25.345248-11.970636 36.072567-2.77316l366.232079 313.927829L874.470405 553.581024c10.688433-9.243525 26.842345-8.073886 36.08587 2.612501s8.073886 26.841322-2.612501 36.084846L528.436344 920.54272C523.632945 924.697343 517.666046 926.776701 511.700171 926.776701z"
+                            p-id="4404"></path>
+                    </svg>
+                </span>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="cont cont-relative" ng-controller="entriesController" ng-bind-html="detailHmtl"></div>

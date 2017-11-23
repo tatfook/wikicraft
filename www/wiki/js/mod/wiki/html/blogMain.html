@@ -47,6 +47,35 @@
         border-top: 1px solid #DCDCDC;
         margin-top: 10px;
     }
+    @media(max-width:768px){
+        .blog-main{
+            padding-bottom: 15px;
+        }
+        .blog-main .header > img{
+            width: 100%;
+            height: 42px;
+            object-fit: cover;
+        }
+        .blog-main .header .btn{
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            top: 5px;
+        }
+        .blog-main .blog-item{
+            margin-top: 15px;
+            padding: 15px;
+        }
+        .blog-main .blog-item .item-header p{
+            margin-bottom: 0;
+        }
+        .blog-main .blog-item .icon{
+            padding-left: 15px;
+        }
+        .blog-main .blog-item .item-footer{
+            padding-top: 5px;
+        }
+    }
 </style>
 <style>
     .blog-main1{
@@ -127,12 +156,12 @@
 </style>
 <div ng-controller="blogMainController">
     <div class="blog-main clearfix template-theme" ng-class="themeClass" ng-show="modParams.moduleKind=='blogMain' || !modParams.moduleKind">
-        <div class="header col-xs-10 col-xs-offset-1 col-lg-6 col-lg-offset-3">
+        <div class="header col-xs-12 col-sm-10 col-sm-offset-1 col-lg-6 col-lg-offset-3">
             <img ng-src="{{imgsPath+'blog_writingBtnBg.jpg'}}" alt="" ng-show="!modParams.theme">
             <img ng-src="{{imgsPath+'blog_writingBtnBg_'+modParams.theme+'.jpg'}}" alt="" ng-show="modParams.theme">
             <div class="btn btn-lg theme-font-color theme-btn-outline">写日志</div>
         </div>
-        <div class="blog-list col-xs-10 col-xs-offset-1 col-lg-6 col-lg-offset-3">
+        <div class="blog-list col-xs-12 col-sm-10 col-sm-offset-1 col-lg-6 col-lg-offset-3">
             <div class="blog-item">
                 <div class="item-header">
                     <div class="title">
@@ -160,7 +189,7 @@
                     爱肚皮下的藻荇我在尽心尽力地多情,直到那一天,你的衣衫破旧而歌声却温柔陪我漫无目的四处漂流，我的背脊如荒丘而你却微笑摆首把它当成整个宇宙,
                     你与太阳挥手也同海鸥问候陪我爱天爱地四处风流只是遗憾你终究无法躺在我胸口欣赏夜辽阔的不朽，把星子放入眸...
                 </div>
-                <div class="item-footer">
+                <div class="item-footer clearfix">
                     <a class="pull-right">查看更多》</a>
                 </div>
             </div>

@@ -66,6 +66,18 @@
         margin-top: 20px;
         color: #666;
     }
+
+    @media(max-width:768px){
+        .resume-detail{
+            padding: 0 15px;
+        }
+        .resume-detail .kind{
+            margin: 0;
+        }
+        .resume-detail h3{
+            margin-bottom: 15px;
+        }
+    }
 </style>
 <div ng-controller="resumeDetailController" class="clearfix">
     <div class="resume-detail" ng-show="modParams.moduleKind=='simple' || !modParams.moduleKind">

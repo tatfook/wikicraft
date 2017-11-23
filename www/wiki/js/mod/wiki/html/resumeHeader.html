@@ -74,13 +74,39 @@
     .resume-top .intro {
         line-height: 25px;
     }
+
+    @media(max-width:768px){
+        .resume-top{
+            height: auto;
+        }
+        .resume-top .user-msg{
+            position: relative;
+            display: block;
+            padding: 0 15px;
+            border-radius: 0;
+            box-shadow: none;
+            margin-top: 15px;
+        }
+        .resume-top .user-msg > img{
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        .resume-top .text{
+            padding: 0;
+            text-align: left;
+        }
+        .resume-top .msg-top{
+            margin-bottom: 0;
+        }
+    }
 </style>
 <div ng-controller="resumeHeaderController" class="clearfix">
-    <div class="resume-top col-sm-12">
-        <div class="profile">
+    <div class="resume-top col-xs-12">
+        <div class="profile hidden-xs">
             <img ng-src="{{modParams.backgroundImage || imgsPath + 'wiki_header_banner.jpg'}}" alt="">
         </div>
-        <div class="user-msg col-xs-8 col-xs-offset-2">
+        <div class="user-msg col-sm-8 col-sm-offset-2 col-xs-12">
             <img ng-src="{{modParams.portrait || imgsPath + 'wiki_header_profile.jpg'}}" alt="用户头像" class="pull-left">
             <div class="text pull-left">
                 <div class="msg-top">

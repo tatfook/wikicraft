@@ -225,6 +225,8 @@ local function getCalllbackUrl()
 		host = "121.14.117.252:8000"
 	elseif hostname == "dev.keepwork.com" then
 		host = "121.14.117.252:8900"
+	elseif hostname == "stage.keepwork.com" then
+		host = "121.14.117.251:8900"
 	end
 
 	--return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
