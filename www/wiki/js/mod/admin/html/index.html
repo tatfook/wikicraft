@@ -532,7 +532,10 @@ li{
 						<td><strong>商品ID</strong></td>
 						<td><strong>商品详情</strong></td>
 						<td><strong>价格</strong></td>
-						<td><strong>购买数量</strong></td>
+						<td><strong>汇率</strong></td>
+						<td><strong>默认购买数量</strong></td>
+						<td><strong>最少购买数量</strong></td>
+						<td><strong>最大购买数量</strong></td>
 						<td><strong>第三方oauth账号</strong></td>
 						<td><strong>销售状态</strong></td>
 						<td><strong>交易时间</strong></td>
@@ -545,7 +548,10 @@ li{
 						<td>{{item.goods_id}}</td>
 						<td>{{item.body}}</td>
 						<td>{{item.price}}</td>
+						<td>{{item.exchange_rate}}</td>
 						<td>{{item.default_buy_count}}</td>
+						<td>{{item.min_buy_count}}</td>
+						<td>{{item.max_buy_count}}</td>
 						<td>{{item.app_name}}</td>
 						<td>{{item.is_on_sale==1?"是":"否"}}</td>
 						<td>{{item.create_date}}</td>
@@ -586,9 +592,27 @@ li{
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="col-sm-2 control-label">购买数量</label>
+											<label class="col-sm-2 control-label">默认购买数量</label>
 											<div class="col-sm-10">
 												<input type="test" class="form-control goods-control" ng-model="goodsParams.default_buy_count" placeholder="">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">最少购买数量</label>
+											<div class="col-sm-10">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">最大购买数量</label>
+											<div class="col-sm-10">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">汇率</label>
+											<div class="col-sm-10">
+												<input type="test" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="">
 											</div>
 										</div>
 										<div class="form-group">
@@ -672,15 +696,33 @@ li{
 												</div>
 											</div>
 											<div class="form-group">
-												<label for="inputEmail3" class="col-sm-2 control-label">购买数量</label>
+												<label for="inputEmail3" class="col-sm-2 control-label">默认购买数量</label>
 												<div class="col-sm-10">
 													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">最少购买数量</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">最大购买数量</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="">
 												</div>
 											</div>
 											<div class="form-group">
 												<label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
 												<div class="col-sm-10">
 													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">汇率</label>
+												<div class="col-sm-10">
+													<input type="test" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="">
 												</div>
 											</div>
 											<div class="form-group">

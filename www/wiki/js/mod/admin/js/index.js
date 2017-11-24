@@ -463,11 +463,13 @@ define([
 				var goodsAddUrl = config.apiUrlPrefix + "goods/addGoods";
 	
 				var reg1 = /^[A-Za-z]+$/;
-				var reg2 = /^[\u4E00-\u9FA5A-Za-z]+$/;
-				var reg3 = /^[A-Za-z0-9]+$/;
+				var reg2 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
+				var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9_]+$/;
 				var reg4 = /^[1-9]\d*$/;
+				var reg5 = /^[0-9]*$/;
+				
 	
-				if(!reg2.test($scope.goodsParams.subject)){
+				if(!reg3.test($scope.goodsParams.subject)){
 					return alert("商品名称请使用正确的格式");
 				};
 	
@@ -479,17 +481,19 @@ define([
 					return alert("价格请输入非0的正整数");
 				};
 	
-				if($scope.goodsParams.default_buy_count < 100){
-					return alert("购买数量只能大于或等于100");
-				};
-	
-				if($scope.goodsParams.default_buy_count > 1000){
-					return alert("购买数量只能少于或等于1000");
-				};
-	
 				if(!reg3.test($scope.goodsParams.app_name)){
 					return alert("第三方交易账号请输入正确的格式");
 				};
+
+				if(!reg4.test($scope.goodsParams.app_goods_id)){
+					return alert("第三方id仅可输入数字");
+				};
+				
+				if($scope.goodsParams.min_buy_count%10 != 0){
+					return alert("最少购买数量只可以为10的倍数");
+				};
+
+
 	
 				$scope.goodsParams.additional_field = $scope.goodsMan;
 				
@@ -499,6 +503,9 @@ define([
 					"body"              : $scope.goodsParams.body,
 					"price"             : $scope.goodsParams.price,
 					"default_buy_count" : $scope.goodsParams.default_buy_count,
+					"exchange_rate"     : $scope.goodsParams.exchange_rate,
+					"min_buy_count"     : $scope.goodsParams.min_buy_count,
+					"max_buy_count"     : $scope.goodsParams.max_buy_count,
 					"app_name"          : $scope.goodsParams.app_name,
 					"is_on_sale"        : $scope.goodsParams.is_on_sale,
 					"additional_field"  : $scope.goodsParams.additional_field,
@@ -520,10 +527,10 @@ define([
 	
 				var reg1 = /^[A-Za-z]+$/;
 				var reg2 = /^[\u4E00-\u9FA5A-Za-z]+$/;
-				var reg3 = /^[A-Za-z0-9]+$/;
+				var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
 				var reg4 = /^[1-9]\d*$/;
 	
-				if(!reg2.test($scope.goodsParams.subject)){
+				/*if(!reg2.test($scope.goodsParams.subject)){
 					return alert("商品名称请使用正确的格式");
 				};
 	
@@ -535,26 +542,26 @@ define([
 					return alert("价格请输入非0的正整数");
 				};
 	
-				if(!$scope.goodsParams.default_buy_count >= 100){
-					return alert("购买数量只能大于或等于100");
-				};
-				if(!$scope.goodsParams.default_buy_count <= 1000){
-					return alert("购买数量只能少于或等于1000");
-				};
-	
 				if(!reg3.test($scope.goodsParams.app_name)){
 					return alert("第三方交易账号请输入正确的格式");
+				};*/
+				if($scope.goodsParams.min_buy_count%10 != 0){
+					return alert("最少购买数量只可以为10的倍数");
 				};
+
 				
 				$scope.goodsParams.additional_field = $scope.goodsMan;
 				
 				var params = {
-					"subject"           : $scope.goodsParams.subject,
 					"goods_id"          : $scope.goodsParams.goods_id,
+					"subject"           : $scope.goodsParams.subject,
 					"app_goods_id"      : $scope.goodsParams.app_goods_id,
 					"body"              : $scope.goodsParams.body,
 					"price"             : $scope.goodsParams.price,
+					"exchange_rate"     : $scope.goodsParams.exchange_rate,
 					"default_buy_count" : $scope.goodsParams.default_buy_count,
+					"min_buy_count"     : $scope.goodsParams.min_buy_count,
+					"max_buy_count"     : $scope.goodsParams.max_buy_count,
 					"app_name"          : $scope.goodsParams.app_name,
 					"is_on_sale"        : $scope.goodsParams.is_on_sale,
 					"additional_field"  : $scope.goodsParams.additional_field,
@@ -564,9 +571,10 @@ define([
 					$('.modal').modal('hide')
 					console.log(data);
 					$scope.getGoods();
-				},function(){
+				},function(data){
 					if(data.id == 2){
 						alert("修改失败");
+						$scope.getOneGoodsInfo();
 					}
 				});
 			}
@@ -584,6 +592,9 @@ define([
 						$scope.goodsParams.body              = data.body;
 						$scope.goodsParams.price             = data.price;
 						$scope.goodsParams.default_buy_count = data.default_buy_count;
+						$scope.goodsParams.exchange_rate     = data.exchange_rate;
+						$scope.goodsParams.min_buy_count     = data.min_buy_count;
+						$scope.goodsParams.max_buy_count     = data.max_buy_count;
 						$scope.goodsParams.app_name          = data.app_name;
 						$scope.goodsParams.is_on_sale        = data.is_on_sale;
 						$scope.goodsParams.additional_field  = data.additional_field
