@@ -545,7 +545,7 @@ li{
 					<tr ng-repeat="item in goodsData">
 						<td>{{item.subject}}</td>
 						<td>{{item.app_goods_id}}</td>
-						<td>{{item.goods_id}}</td>
+						<td>{{item._id}}</td>
 						<td>{{item.body}}</td>
 						<td>{{item.price}}</td>
 						<td>{{item.exchange_rate}}</td>
@@ -560,7 +560,7 @@ li{
 						</td>
 						<td>
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField"  ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
-							<button class="btn btn-default" type="submit" ng-click="deleteGoodsRecord(item.goods_id)">删除</button>
+							<button class="btn btn-default" type="submit" ng-click="deleteGoodsRecord(item._id)">删除</button>
 						</td>
 					</tr>
 				</table>

@@ -566,7 +566,7 @@ define([
 				$scope.goodsParams.additional_field = $scope.goodsMan;
 				
 				var params = {
-					"goods_id"          : $scope.goodsParams.goods_id,
+					"_id"               : $scope.goodsParams._id,
 					"subject"           : $scope.goodsParams.subject,
 					"app_goods_id"      : $scope.goodsParams.app_goods_id,
 					"body"              : $scope.goodsParams.body,
@@ -597,10 +597,10 @@ define([
 				
 				$scope.currentItem = item;
 				
-				util.post(getOneGoodsUrl, {goods_id : item.goods_id}, function(data){
+				util.post(getOneGoodsUrl, {_id : item._id}, function(data){
 					if(data){
 						$scope.goodsParams.subject           = data.subject;
-						$scope.goodsParams.goods_id          = data.goods_id;
+						$scope.goodsParams._id               = data._id;
 						$scope.goodsParams.app_goods_id      = data.app_goods_id;
 						$scope.goodsParams.body              = data.body;
 						$scope.goodsParams.price             = data.price;
@@ -617,13 +617,13 @@ define([
 			
 			
 			//商品信息删除
-			$scope.deleteGoodsRecord = function(goods_id){
+			$scope.deleteGoodsRecord = function(_id){
 				var goodsDeleteUrl = config.apiUrlPrefix + "goods/deleteGoods";
 				console.log(goodsDeleteUrl);
 				var con;
 				con = confirm("是否删除");
 				if(con == true){
-					util.http("DELETE", goodsDeleteUrl, {goods_id:goods_id}, function(data){
+					util.http("DELETE", goodsDeleteUrl, {_id:_id}, function(data){
 							alert("删除成功");
 							$scope.getGoods();
 					},function(data){
