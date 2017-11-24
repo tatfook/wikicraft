@@ -493,6 +493,9 @@ define([
 					return alert("最少购买数量只可以为10的倍数");
 				};
 
+				if($scope.goodsParams.max_buy_count%10 != 0){
+					return alert("最大购买数量只可以为10的倍数");
+				};
 
 	
 				$scope.goodsParams.additional_field = $scope.goodsMan;
@@ -526,11 +529,12 @@ define([
 				var goodsModifyUrl = config.apiUrlPrefix + "goods/modifyGoods";
 	
 				var reg1 = /^[A-Za-z]+$/;
-				var reg2 = /^[\u4E00-\u9FA5A-Za-z]+$/;
-				var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
+				var reg2 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
+				var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9_]+$/;
 				var reg4 = /^[1-9]\d*$/;
+				var reg5 = /^[0-9]*$/;
 	
-				/*if(!reg2.test($scope.goodsParams.subject)){
+				if(!reg3.test($scope.goodsParams.subject)){
 					return alert("商品名称请使用正确的格式");
 				};
 	
@@ -544,9 +548,18 @@ define([
 	
 				if(!reg3.test($scope.goodsParams.app_name)){
 					return alert("第三方交易账号请输入正确的格式");
-				};*/
+				};
+
+				if(!reg4.test($scope.goodsParams.app_goods_id)){
+					return alert("第三方id仅可输入数字");
+				};
+				
 				if($scope.goodsParams.min_buy_count%10 != 0){
 					return alert("最少购买数量只可以为10的倍数");
+				};
+
+				if($scope.goodsParams.max_buy_count%10 != 0){
+					return alert("最大购买数量只可以为10的倍数");
 				};
 
 				
