@@ -20,49 +20,60 @@
 	</div>
 	<div class="clearfix"></div>
 	<div class="modal-body">
-		<div ng-repeat="data in datas">
-			<div ng-if='data.type == "text" || !data.type' class="input_item_container">
-				<div>
-					<div class="pull-left">{{data.name}}</div>
-					<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
-				</div>
-				<div class="input_item_body">
-					<input class="form-control" ng-model="data.text"/>
-				</div>
-			</div>
-			<div ng-if='data.type == "link"' class="input_item_container">
-				<div>
-					<div class="pull-left">{{data.name}}</div>
-					<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
-				</div>
-				<div class="clearfix"></div>
-				<div class="input_item_body">
+		<div ng-if='show_type == "editor"'>
+			<div ng-repeat="data in datas">
+				<div ng-if='data.type == "text" || !data.type' class="input_item_container">
 					<div>
-						<div>LINK TEXT</div>
-						<div>
-							<input class="form-control" ng-model="data.text"/>
-						</div>
+						<div class="pull-left">{{data.name}}</div>
+						<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
 					</div>
-					<div>
-						<div>LINK ADDRESS</div>
-						<div>
-							<input class="form-control" ng-model="data.href"/>
-						</div>
+					<div class="input_item_body">
+						<input class="form-control" ng-model="data.text"/>
 					</div>
 				</div>
-			</div>
-			<div ng-if='data.type == "list"' class="input_item_container">
-				<div>
-					<div class="pull-left">{{data.name}}</div>
-					<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+				<div ng-if='data.type == "link"' class="input_item_container">
+					<div>
+						<div class="pull-left">{{data.name}}</div>
+						<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="input_item_body">
+						<div>
+							<div>LINK TEXT</div>
+							<div>
+								<input class="form-control" ng-model="data.text"/>
+							</div>
+						</div>
+						<div>
+							<div>LINK ADDRESS</div>
+							<div>
+								<input class="form-control" ng-model="data.href"/>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="clearfix"></div>
-				<div class="input_item_body">
-					<ul>
-						<li ng-repeat="item in data.list track by $index"><a ng-click="click_list_item(item)" class="btn">{{"LIST ITEM " + ($index + 1)}}</a></li>
-					</ul>
+				<div ng-if='data.type == "list"' class="input_item_container">
+					<div>
+						<div class="pull-left">{{data.name}}</div>
+						<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="input_item_body">
+						<ul>
+							<li ng-repeat="item in data.list track by $index"><a ng-click="click_list_item(item)" class="btn">{{"LIST ITEM " + ($index + 1)}}</a></li>
+						</ul>
+					</div>
 				</div>
 			</div>
+		</div>
+		<div ng-if='show_type == "design"'>
+			<div ng-repeat="design_view in design_view_list track by $index" style="transform:scale(0.15,0.2); transform-origin:left top;">
+				<div wiki-html="design_view" ></div>
+				<!--<div style="position:relative">-->
+					<!--<div style="position:absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;"></div>	-->
+				<!--</div>-->
+				<!--<div><button ng-click="click_apply_design($index)">APPLY</button></div>	-->
+			</div>	
 		</div>
 	</div>
 </div>

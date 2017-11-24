@@ -2,7 +2,7 @@
 <div ng-controller="headlinerController" class="container">
 	<div ng-if='params.design.value="default"'>
 		<div class="col-xs-6">
-			<div ng-hide="params.image.is_hide" class="kp_module_editor_input_tag">
+			<div ng-hide="params.image.is_hide">
 				<img class="center-block" alt="{{params.image.text}}" ng-src="{{params.image.href}}"/>
 			</div>
 		</div>
@@ -22,12 +22,12 @@
 					{{params.paragraph.text}}
 				</div>
 			</div>
-			<div class="kp_module_editor_input_tag">
+			<div class="kp_module_editor_input_tag" ng-click="viewEditorClick(params.link)">
 				<a class="btn center-block" ng-href="{{params.link.href}}">{{params.link.text || "BUTTON"}}</a>
 			</div>
 		</div>
 
-		<div ng-repeat="item in params.list.list" class="kp_module_editor_input_tag">
+		<div ng-repeat="item in params.list.list" ng-click="viewEditorClick(params.list)" class="kp_module_editor_input_tag">
 			<div>{{item.title.text}}</div>
 		</div>
 	</div>

@@ -2,8 +2,9 @@
 define([
 	'app',
 	'helper/util',
+    'helper/markdownwiki',
 	'text!html/moduleEditor.html',
-], function(app, util, htmlContent){
+], function(app, util, markdownwiki, htmlContent){
 	var objectEditor = {
 		data: {},
 		fields:[],
@@ -23,6 +24,7 @@ define([
 
 	app.registerController("moduleEditorController", ['$scope', function($scope){
 		var moduleEditorParams = {};
+		var design_list = [];
 		// 转换数据格式
 		function get_order_list(obj){
 			var list = [];
@@ -70,17 +72,33 @@ define([
 			}
 		}
 
-		//$scope.$on("onModuleEditor", function(event, data){
-
-		//});
+		$scope.click_apply_design = function(index) {
+			var modParams = design_list[index];
+			if (moduleEditorParams.wikiBlock) {
+				moduleEditorParams.wikiBlock.applyModParams(modParams);
+			}
+		}
 
 		function init() {
 			moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
 			moduleEditorParams.$scope = $scope;
 			moduleEditorParams.setEditorObj = function(obj) {
+				$scope.show_type = "editor";
 				$scope.datas = get_order_list(obj);
 			}
+			moduleEditorParams.setDesignList = function(list) {
+				$scope.show_type = "design";
+				design_list = list || [];
+				$scope.design_view_list = [];
+				for (var i = 0; i < design_list.length; i++) {
+					var md = markdownwiki({html:true, use_template:false});
+					var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + angular.toJson(design_list[i]) + "\n```\n";
+					var view = md.render(text);
+					$scope.design_view_list.push(view);
+				}
+			}
+			$scope.show_type = "editor";
 			$scope.datas_stack = [];
 			//var params = {
 				//title: {

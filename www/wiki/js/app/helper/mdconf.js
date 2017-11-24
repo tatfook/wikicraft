@@ -3,102 +3,7 @@ define([
     'helper/util',
     'markdown-it',
 ], function (util, markdownit) {
-	var delimit = "$";
 	var mdconf = {};
-
-	function parseMd(text) {
-		var textLineList = text.split('\n');
-		var md = markdownit();
-		var tokens = md.parse(text, {});
-		var blockList = [];
-		var stack = 0;
-		var maxValue = 99999999;
-		var block = {
-			from: maxValue,
-		   	to: 0,
-			lines:[],
-		}
-
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token.type.indexOf('_open') >= 0) {
-				stack++;
-			}
-			if (token.type.indexOf('_close') >= 0) {
-				stack--;
-			}
-
-			block.tag = token.tag || block.tag;
-
-			// 获取文本位置
-			block.from = block.from == maxValue && token.map ? token.map[0] : block.from;
-			block.to = token.map ? token.map[1] : block.to;
-
-			if (stack == 0) {
-				for (var j = block.from; j < block.to; j++) {
-					block.lines.push(textLineList[j]);
-				}
-				blockList.push(block);
-				// 重置初始状态
-				block = {
-					from: maxValue,
-				   	to: 0,
-					lines: [],
-				}
-			}
-		}
-		//console.log(blockList);
-		return blockList;
-	}
-
-	function specialCharEscape(str, ch) {
-		ch = ch || '\\|';
-
-		var ret = "";
-		for (var i = 0; i < str.length; i++) {
-			console.log(str[i], ch.indexOf(str[i]));
-			if (ch.indexOf(str[i]) >= 0) {
-				ret += '\\' + str[i];
-			} else {
-				ret += str[i];
-			}
-		}
-		return ret;
-	}
-
-	function specialCharUnescape(str, ch) {
-		ch = ch || "\\|";
-
-		var ret = "";
-		for (var i = 0; i < str.length; i++) {
-			if (str[i] == "\\" && str[i+1] && ch.indexOf(str[i+1]) >=0) {
-				ret += str[i+1];
-				i++;
-			} else {
-				ret += str[i];
-			}
-		}
-
-		return ret;
-	}
-
-	function split(str, delim) {
-		var list = [];
-		var start = 0;
-
-		for (var i = 0; i < str.length; i++) {
-			if (str[i] == delim && str[i-1] != "\\") {
-				list.push(str.substring(start, i));
-				start = i + 1;
-			}
-		}
-
-		if (start == str.length) {
-			list.push("");
-		}
-
-		return list;
-	}
 
 	mdconf.toMod = function(text) {
 		var self = this;
@@ -124,120 +29,9 @@ define([
 		return text;
 	}
 
-	mdconf._mdToJson = function(text) {
-		var blocks = parseMd(text);
-		
-		var keys = [];
-		var conf = {};
-
-		var topDepth = 0;
-		var isExistKey = false;
-
-		console.log(blocks);
-		if (blocks.length == 1 && blocks[1].tag == "p") {
-			
-		}
-		return;
-		for (var i = 0; i < blocks.length; i++) {
-			var block = blocks[i];
-			
-			if (/^[hH][1-6$]/.test(block.tag)) {
-				var depth = parseInt(block.tag[1]);
-				while(topDepth-- >= depth) {
-					keys.pop();
-				}
-				topDepth =depth;
-
-				var line = block.lines[0] || "";
-				var key = line.replace(/^[ #]*/, "");
-				if (key) {
-					keys.push(key);
-					isExistKey = true;
-				}
-				continue;
-			}
-			
-			if (!isExistKey) {
-				continue;
-			}
-
-			var curConf = conf;
-			var curKey = keys[0];
-			for (var j = 1; j < keys.length; j++) {
-				curConf[curKey] = curConf[curKey] || {};
-				curConf = curConf[curKey];
-				curKey = keys[j];
-			}
-
-			if (block.tag == "ul") {
-				var lines = block.lines;
-				var isObject = undefined;
-				for (var j = 0; j < lines.length; j++) {
-					var line = lines[j];
-					line = line.replace(/^[-* ]*/, "").trim();
-					if (!line) {
-						continue;
-					}
-
-					var delim = line.indexOf(":");
-					if (isObject == undefined) {
-						if (delim > 0) {
-							isObject = true;
-							curConf[curKey] = {};
-						} else {
-							isObject = false;
-							curConf[curKey] = [];
-						}
-					}
-					
-					delim = delim < 0 ? line.length : delim;
-					var key = line.substring(0, delim).trim();
-					var value = line.substring(delim+1).trim();
-
-					if (isObject) {
-						if (value == "true") {
-							curConf[curKey][key] = true;
-						} else if (value == "false") {
-							curConf[curKey][key] = false;
-						} else {
-							curConf[curKey][key] = value;
-						}
-					} else {
-						curConf[curKey].push(key);
-					}
-				}
-
-				isExistKey = false;
-			}
-
-			if (block.tag == "table") {
-				var lines = block.lines;
-				var line = lines[0];
-				var fieldList = line.split("|");
-				
-				curConf[curKey] = [];
-				
-				for (var j = 2; j < lines.length-1; j++) {
-					line = lines[j];
-					var valueList = split(line, "|");
-					var tempConf = {};
-
-					for (var k = 1; k < valueList.length-1; k++) {
-						tempConf[fieldList[k]] = valueList[k].trim();
-					}
-
-					curConf[curKey].push(tempConf);
-				}
-				isExistKey = false;
-			}
-		}
-
-		//console.log(conf);	
-		return conf;
-	}
 	// md 转json对象
 	mdconf.mdToJson = function(text) {
-		var temp_lines = text.split("/n");
+		var temp_lines = text.trim().split("\n");
 		var lines = [];
 		var line = "";
 		var conf = {};
@@ -251,13 +45,26 @@ define([
 			var tmpConf = conf;
 			for (var i = 0; i < keys.length; i++){
 				tmpConf[keys[i]] = tmpConf[keys[i]] || {};
+
+				if (keys[i].match(/\d+/)) {
+					var tmp = parseInt(keys[i]);
+					tmpConf.length = tmpConf.length || -1;
+					if (tmpConf.length <= tmp) {
+						tmpConf.length = tmp + 1;
+					}
+				
+				}
 				tmpConf = tmpConf[keys[i]];
 			}
 
 			return tmpConf;
 		}
 
-		var confConvert(c) {
+		var confConvert = function(c) {
+			if (typeof(c) != "object") {
+				return c;
+			}
+
 			var nc = c.length ? [] : {};
 
 			if (c.length) {
@@ -274,7 +81,7 @@ define([
 		}
 
 		var _mdToJson = function(line) {
-			var temp = line.match(/([#-+]) (.*)/);
+			var temp = line.match(/^([-+#]) (.*)/);
 			var flag = temp[1];
 			var content = temp[2].trim();	
 			var key, value;
@@ -284,15 +91,15 @@ define([
 			}
 
 			if (flag == "+" || flag == "-") {
-				content = content.split(":");
+				temp = content.indexOf(":");
 
-				if (content.length > 1) {
-					key = content[1].trim(); 
-					value = content[2].trim();
+				if (temp > 0) {
+					key = content.substring(0, temp).trim(); 
+					value = content.substring(temp + 1).trim();
 				} else {
 					curConf.length = curConf.length || 0;
 					key = curConf.length + "";
-					value = content[1].trim();
+					value = content.trim();
 					curConf.length = curConf.length + 1;
 				}
 
@@ -308,8 +115,22 @@ define([
 			}
 		}
 
+		var is_comment = false;
 		for (var i = 0; i < temp_lines.length; i++) {
-			if (!temp_lines[i].match(/[#-+] .*/)) {
+			if (temp_lines[i].match(/^<!--.*-->\s*$/)) {
+				continue;
+			}
+			if (temp_lines[i].match(/^<!--/)) {
+				is_comment = true;
+				continue;
+			}
+			if (is_comment) {
+				if (temp_lines[i].match(/-->\s*$/)) {
+					is_comment = false;
+				}
+				continue;
+			}
+			if (!temp_lines[i].match(/^[-+#] .*/)) {
 				line += temp_lines[i] + "\n";
 				continue;
 			}
@@ -323,15 +144,14 @@ define([
 			lines.push(line);
 		}
 
-		if (lines.length == 1) {
+		if (lines.length == 1 && !lines[0].match(/^[-+#] .*/)) {
 			return lines[0];
 		} else {
 			for (var i = 0; i < lines.length; i++) {
 				_mdToJson(lines[i]);
 			}
 		}
-
-
+		
 		return confConvert(conf);
 	}
 
@@ -384,6 +204,52 @@ define([
 
 		_jsonToMd(obj);
 		return text;
+	}
+
+	mdconf.test = function() {
+		var obj = undefined, text = undefined;
+		//obj = "hello world"
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value"}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = ["list1", "list2"]
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = [["list1", "list2"], ["list3", "list4"]]
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value", list:["list1", "list2"]}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value", list:[{key1:"value1"},{key2:"value2"}]}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value", list:[{key1:"value1"},{key2:"value2", list:["list1"]}]}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
 	}
 
 	return mdconf;

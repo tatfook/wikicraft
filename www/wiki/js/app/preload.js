@@ -64,6 +64,7 @@ define([
     'directive/wikiImage',
     'directive/wikiLink',
     'directive/wikiUISelect',
+    'directive/wikiHtml',
 
     // factory
     'factory/account',

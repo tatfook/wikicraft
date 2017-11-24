@@ -204,30 +204,6 @@ define([
         return preprocessText;
     }
 
-	//function moduleEditorInit(containerId, wikiBlockParams) {
-		//$("#" + containerId).on("click", ".kp_module_editor_input_tag", function(e){
-			//console.log(e);
-			//console.log(e.target.dataset.id);
-			//console.log("---------------");
-			//console.log(wikiBlockParams);
-			//config.services.modal('controller/moduleEditorController', {
-				//controller: 'moduleEditorController',
-				//backdrop: true,
-			//}, function(){
-				
-			//}, function(){
-
-			//});
-			////var key = e.target.dataset.id;
-			////if (!key) {
-				////return;
-			////}
-
-			////$scope.data = get_value(key, $scope.params);
-			////console.log($scope.data);
-			////$scope.$apply();
-		//});
-	//}
     // 渲染wiki block
     function renderWikiBlock(mdwiki, block) {
         var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
@@ -273,7 +249,7 @@ define([
 
                 if (typeof(modParams) == "object") {
 					//modParams = angular.toJson(modParams, 4);
-					modParams = mdconf.toMd(modParams);
+					modParams = mdconf.jsonToMd(modParams);
                 }
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
@@ -285,17 +261,47 @@ define([
 				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 				scope.params = self.modParams;
 				self.scope = scope;
-				scope.viewEditorClick = function(obj) {
+
+				if (!editor) {
+					return;
+				}
+
+				config.services.$rootScope.viewEditorClick = function(obj) {
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 					config.shareMap.moduleEditorParams = moduleEditorParams;
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.editorObj = obj;
 					moduleEditorParams.setEditorObj(self.modParams);
 					moduleEditorParams.is_show = true;
+					moduleEditorParams.show_type = "editor";
 					$("#moduleEditorContainer").show();
 				};
 
-				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor) {
+				config.services.$rootScope.viewDesignClick = function() {
+					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+					config.shareMap.moduleEditorParams = moduleEditorParams;
+					moduleEditorParams.wikiBlock = self;
+					moduleEditorParams.is_show = true;
+					moduleEditorParams.show_type = "design";
+					moduleEditorParams.setDesignList(scope.get_design_list());
+					$("#moduleEditorContainer").show();
+				}
+
+				var containerId = "#" + self.containerId;
+				if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
+					$(containerId).on("mouseenter mouseleave", function(e) {
+						if (e.handleObj.origType == "mouseenter") {
+							var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick()">编辑</button><button class="btn" ng-click="viewDesignClick()">样式</button></div></div>';
+							html_str = util.compile(html_str);
+							$(containerId).prepend(html_str);
+							util.$apply();	
+						} else {
+							$(containerId).children()[0].remove();
+						}
+					});
+				}
+
+				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor && moduleEditorParams.show_type == "editor") {
 					var cursor_pos = editor.getCursor();
 					var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
 					var pos = blockCache.block.textPosition;
@@ -586,7 +592,7 @@ define([
             catch (e) {
 				//var params = mdconf.toJson(token.content).params;
 
-				var params = mdconf.toJson(token.content);
+				var params = mdconf.mdToJson(token.content);
                 modParams = params || token.content;
             }
 
@@ -606,14 +612,9 @@ define([
         mdwiki.getBlockCache = function (text, token) {
 			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            //var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
-            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
+            var htmlContent = '<div id="' + idx + '"' + '></div>';
             var blockCache = undefined;
 
-			//console.log(token);
-			if (!isWikiBlock && token.type != "html_block") {
-				//htmlContent = '<div class="markdown-body" id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
-			}
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
             for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {
@@ -649,9 +650,12 @@ define([
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;
+                //blockCache.htmlContent = '<div id="' + idx + '"></div>';
                 blockCache.htmlContent = '<div id="' + idx + '"></div>';
                 blockCache.wikiBlock = wikiBlock;
                 blockCache.isWikiBlock = true;
+
+                //blockCache.htmlContent = '<div style="position: relative;"><div style="position: absolute;"><button class="btn">编辑</button></div><div id="' + idx + '"></div></div>';
             }
             mdwiki.blockCacheMap[text] = mdwiki.blockCacheMap[text] || [];
             mdwiki.blockCacheMap[text].push(blockCache);
