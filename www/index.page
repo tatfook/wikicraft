@@ -20,6 +20,6 @@ local pos = string.find(host, devDomain)
 if pos and pos > 1 then
 	WIKI_CODE_ENV = string.sub(host,1, pos-1)
 end
-log("111222333")
+
 include_once("./" .. WIKI_CODE_ENV .. "/routes.page")
 --include_once("./wiki/routes.page");
