@@ -270,8 +270,8 @@ end
 function user:api_verifyCellphoneOne(params)
 	if not params.cellphone then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
+    end
+    
 	if params.bind then
 		self:db():find({["+cellphone"]={params.cellphone}}, resume)
 		local _, data = yield()
@@ -312,19 +312,24 @@ function user:api_verifyCellphoneTwo(params)
 
 	local cellphone = value.cellphone
 
-	if params.bind then 
+    -- if params.bind is true, it's for binding
+    -- if params.bind is false, it's for unbinding
+    if params.bind ~= nil then 
         self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
+        return errors:wrap(yield())
     end
 
-    if params.setRealNameInfo then 
+    -- for realname verification
+    if params.setRealNameInfo ~= nil then 
         local realNameInfo = {
             cellphone = cellphone,
             verified = true
         }
         self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
+        return errors:wrap(yield())
     end
 
-	return errors:wrap(yield())
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 end
 
 
