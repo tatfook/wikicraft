@@ -309,8 +309,8 @@ function user:api_verifyCellphoneTwo(params)
 		return errors:wrap(errors:new("验证码错误"))
 	end
 	mem_cache:set(params.smsId, nil)
-
-	local cellphone = value.cellphone
+	
+    local cellphone = value.cellphone
 
     -- if params.bind is true, it's for binding
     -- if params.bind is false, it's for unbinding

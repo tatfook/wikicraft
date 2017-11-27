@@ -5,7 +5,7 @@
 define([
     'jquery',
     "js-base32",
-    "./errTranslate"
+    "helper/errTranslate"
 ], function ($, jsbase32, errTranslate) {
     var util = {
         stack:[],   // 堆栈操作模拟
