@@ -279,7 +279,7 @@ function user:api_verifyCellphoneOne(params)
 		if data and #data > 0 then
 			return errors:new("手机号已绑定:" .. data[1].username)
 		end
-	end
+    end
 
 	local smsCode = tostring(math.random(1000,9999))
 	local smsParams = {to=params.cellphone, datas={smsCode,"3分钟"}, templateId="194013"}
@@ -314,7 +314,11 @@ function user:api_verifyCellphoneTwo(params)
 
     -- if params.bind is true, it's for binding
     -- if params.bind is false, it's for unbinding
-    if params.bind ~= nil then 
+    if params.bind ~= nil then
+        -- set cellphone to '' if it's unbinding 
+        if not params.bind then
+            cellphone = '' 
+        end
         self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
         return errors:wrap(yield())
     end
