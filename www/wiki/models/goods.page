@@ -18,6 +18,7 @@ gooodsId.db_name = "gooodsId"
 function goods:ctor()
 	-- goods id
 	self:addfield("goods_id","number",false);
+	-- data id
 	self:addfield("_id","number",false);
 	-- the third party goods id
 	self:addfield("app_goods_id","number",false);
@@ -41,8 +42,11 @@ function goods:ctor()
 	self:addfield("additional_field","table",false);
 	-- exchange_rate
 	self:addfield("exchange_rate","number",false);
+	-- default_buy_count
 	self:addfield("default_buy_count","number",false);
+	-- Flip limit
 	self:addfield("limit","number",false);
+	-- Flip skip
 	self:addfield("skip","number",false);
 end
 
