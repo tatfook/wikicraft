@@ -503,7 +503,6 @@ define([
 
 	
 				$scope.goodsParams.additional_field = $scope.goodsMan;
-				
 				var params = {
 					"subject"           : $scope.goodsParams.subject,
 					"app_goods_id"      : $scope.goodsParams.app_goods_id,
@@ -581,7 +580,7 @@ define([
 				$scope.goodsParams.additional_field = $scope.goodsMan;
 				
 				var params = {
-					"_id"               : $scope.goodsParams._id,
+					"goods_id"          : $scope.goodsParams._id,
 					"subject"           : $scope.goodsParams.subject,
 					"app_goods_id"      : $scope.goodsParams.app_goods_id,
 					"body"              : $scope.goodsParams.body,
@@ -612,10 +611,10 @@ define([
 				
 				$scope.currentItem = item;
 				
-				util.post(getOneGoodsUrl, {_id : item._id}, function(data){
+				util.post(getOneGoodsUrl, {goods_id : item.goods_id}, function(data){
 					if(data){
 						$scope.goodsParams.subject           = data.subject;
-						$scope.goodsParams._id               = data._id;
+						$scope.goodsParams.goods_id          = data.goods_id;
 						$scope.goodsParams.app_goods_id      = data.app_goods_id;
 						$scope.goodsParams.body              = data.body;
 						$scope.goodsParams.price             = data.price;
