@@ -7,17 +7,19 @@ define([
 		'angular-ui-bootstrap',
 		'angular-ui-select',
 		'angular-sanitize',
+		'angular-translate',
 		'satellizer',
-		'angular-toggle-switch',
-], function (angular) {
+        'angular-toggle-switch',
+        'helper/translationsTable'
+], function (angular, ngUiBootstrap, ngUiSelect, ngSanitize, ngTranslate, satellizer, ngToggleSwitch, translationsTable) {
 	//console.log("app");
-	var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'satellizer', 'ngSanitize', 'toggle-switch']).run(function () {
+	var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(function () {
 		config.angularBootstrap = true;
 	});
 
 	app.registerController = app.controller;
 
-	app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider) {
+	app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider', '$translateProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider, $translateProvider) {
 		//$locationProvider.hashPrefix('!');
 		//$locationProvider.html5Mode({enabled:true});
 		// 提供动态注册控制接口
@@ -27,7 +29,16 @@ define([
 			} else {
 				app.controller(name, constructor);
 			}
-		};
+        };
+
+        for (var locale in translationsTable) {
+            $translateProvider.translations(locale, translationsTable[locale]);
+        }
+
+        var browserLocale = (window.navigator.userLanguage || window.navigator.language);
+        browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
+        var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
+        $translateProvider.preferredLanguage(locale);
 
 		// 注册loading拦截器
 		$httpProvider.interceptors.push("loadingInterceptor");

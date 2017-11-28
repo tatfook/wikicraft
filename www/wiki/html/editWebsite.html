@@ -320,7 +320,7 @@
                         <label class="col-sm-2 control-label">数据源：</label>
                         <div class="col-sm-5">
                             <select class="form-control" ng-model="dataSourceName" ng-change="changeDataSource()">
-                                <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{x.name || '内置GItlab'}}</option>
+                                <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{x.name || '官方git数据源'}}</option>
                             </select>
                         </div>
                         <div class="col-sm-12 save-setting">

@@ -62,6 +62,7 @@
         'angular-toggle-switch': 'lib/angular-toggle-switch/angular-toggle-switch.min',
         'angular-ui-select': 'lib/angular-ui-select/select.min',
         'angular-sanitize': 'lib/angular-sanitize/angular-sanitize.min',
+        'angular-translate': 'empty:',
         'bootstrap': "lib/bootstrap/js/bootstrap.min",
         'satellizer': 'lib/satellizer/satellizer.min',
         'bootstrap-treeview': 'lib/bootstrap-treeview/bootstrap-treeview.min',
