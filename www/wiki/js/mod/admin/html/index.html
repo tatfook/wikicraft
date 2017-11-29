@@ -625,7 +625,7 @@ li{
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="col-sm-2 control-label">app_name/第三方</label>
+											<label class="col-sm-2 control-label">app_name</label>
 											<div class="col-sm-10">
 												<input type="test" class="form-control goods-control" ng-model="goodsParams.app_name" placeholder="可输入中文/英文/数字或混合输入">
 											</div>
@@ -732,7 +732,7 @@ li{
 												</div>
 											</div>
 											<div class="form-group">
-												<label for="inputEmail3" class="col-sm-2 control-label">app_name/第三方</label>
+												<label for="inputEmail3" class="col-sm-2 control-label">app_name</label>
 												<div class="col-sm-10">
 													<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="可输入中文/英文/数字或混合输入">
 												</div>
@@ -780,10 +780,10 @@ li{
 														<label for="inputEmail3" class="col-sm-2 control-label">required</label>
 														<div class="checkbox">
 															<label>
-																<input name="goods" type="radio" ng-model="x.required" ng-value=1> 是
+																<input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
 															</label>
 															<label>
-																<input name="goods" type="radio" ng-model="x.required" ng-value=0> 否
+																<input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
 															</label>
 														</div>
 													</div>
@@ -828,7 +828,7 @@ li{
 													<button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsMans($index)">删除</button>
 												</div>
 											</div>
-											<button class="btn btn-default" type="submit" ng-click="modifyGoodsAccount()">添加多个信息</button>
+											<button class="btn btn-default" type="submit" ng-click="modifyGoodsAccount()">添加额外字段</button>
 											<div id="accounttGoods"></div>										
 										</div>
 									<div class="modal-footer" ng-if="goodsVar == 2">

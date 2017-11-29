@@ -439,7 +439,6 @@ define([
 				var getListCount = config.apiUrlPrefix + "goods/count";
 				util.post(getListCount, {}, function(data){
 					$scope.totalItems = data;
-					console.log(data);
 				});
 			}
 			
@@ -453,7 +452,6 @@ define([
 				
 				var goodsListUrl = config.apiUrlPrefix + "goods/goodsList";
 				util.post(goodsListUrl, params, function(data){
-					console.log(data);
 					$scope.goodsData = data;
 				});
 			}
@@ -577,7 +575,7 @@ define([
 				};
 
 				
-				$scope.goodsParams.additional_field = $scope.goodsMan;
+				$scope.goodsParams.additional_field = $scope.goodsMan.concat($scope.goodsParams.additional_field);
 				
 				var params = {
 					"goods_id"          : $scope.goodsParams.goods_id,
@@ -596,8 +594,8 @@ define([
 				util.post(goodsModifyUrl, params, function(data){
 					alert("修改成功！");
 					$('.modal').modal('hide')
-					console.log(data);
 					$scope.getGoods();
+					$scope.goodsMan = [];
 				},function(data){
 					if(data.id == 2){
 						alert("修改失败");
@@ -633,7 +631,6 @@ define([
 			//商品信息删除
 			$scope.deleteGoodsRecord = function(goods_id){
 				var goodsDeleteUrl = config.apiUrlPrefix + "goods/deleteGoods";
-				console.log(goodsDeleteUrl);
 				var con;
 				con = confirm("是否删除");
 				if(con == true){
@@ -660,10 +657,10 @@ define([
 				$scope.goodsMan.push({})
 			}
 
-			var goods_count = 0;
+			//var goods_count2 = hex_md5(new Date().toLocaleTimeString());
 			$scope.goodsMan = [];
 			$scope.modifyGoodsAccount = function(){
-				$("#changeName").name = goods_count + 1
+				$("#changeName").name = hex_md5(new Date().toLocaleTimeString())
 				$scope.goodsMan.push({})
 			}
 
