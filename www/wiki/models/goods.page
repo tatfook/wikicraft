@@ -11,8 +11,6 @@ include_once("./user.page");
 local goods = inherit(models.abstract.multi_user_base, gettable("models.goods"));
 goods.db_name = "goods";
 
-local gooodsId   = inherit(models.abstract.base, gettable("models.gooodsId"));
-gooodsId.db_name = "gooodsId"
 
 
 function goods:ctor()
@@ -73,6 +71,8 @@ function goods:api_addGoods(params)	             --Goods添加数据
 	if(not query or not next(query)) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
+
+
 
 	self:db():insertOne(
 	{	
