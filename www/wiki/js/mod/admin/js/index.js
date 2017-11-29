@@ -631,13 +631,13 @@ define([
 			
 			
 			//商品信息删除
-			$scope.deleteGoodsRecord = function(_id){
+			$scope.deleteGoodsRecord = function(goods_id){
 				var goodsDeleteUrl = config.apiUrlPrefix + "goods/deleteGoods";
 				console.log(goodsDeleteUrl);
 				var con;
 				con = confirm("是否删除");
 				if(con == true){
-					util.http("DELETE", goodsDeleteUrl, {_id:_id}, function(data){
+					util.http("DELETE", goodsDeleteUrl, {goods_id:goods_id}, function(data){
 							alert("删除成功");
 							$scope.getGoods();
 					},function(data){

@@ -18,8 +18,6 @@ gooodsId.db_name = "gooodsId"
 function goods:ctor()
 	-- goods id
 	self:addfield("goods_id","number",false);
-	-- data id
-	self:addfield("_id","number",false);
 	-- the third party goods id
 	self:addfield("app_goods_id","number",false);
 	-- product name
@@ -178,7 +176,7 @@ function goods:api_deleteGoods(params)   --Goods删除
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
-	self:db():findOne({_id = query._id}, resume);
+	self:db():findOne({goods_id = query.goods_id}, resume);
 	local err, data = yield();
 	
 	if(err) then
@@ -189,7 +187,7 @@ function goods:api_deleteGoods(params)   --Goods删除
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 	
-	self:db():deleteOne({_id = query._id}, resume);
+	self:db():deleteOne({goods_id = query.goods_id}, resume);
 	local err, data = yield();
 
 	if(not err) then
