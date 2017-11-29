@@ -580,7 +580,7 @@ define([
 				$scope.goodsParams.additional_field = $scope.goodsMan;
 				
 				var params = {
-					"goods_id"          : $scope.goodsParams._id,
+					"goods_id"          : $scope.goodsParams.goods_id,
 					"subject"           : $scope.goodsParams.subject,
 					"app_goods_id"      : $scope.goodsParams.app_goods_id,
 					"body"              : $scope.goodsParams.body,
