@@ -541,9 +541,9 @@ li{
 						<td><strong>最大购买数量</strong></td>
 						<td><strong>第三方oauth账号</strong></td>
 						<td><strong>销售状态</strong></td>
-						<td><strong>交易时间</strong></td>
 						<td><strong>additional_field</strong></td>
 						<td><strong>操作</strong></td>
+						<td><strong>修改时间</strong></td>
 					</tr>
 					<tr ng-repeat="item in goodsData">
 						<td>{{item.subject}}</td>
@@ -557,7 +557,6 @@ li{
 						<td>{{item.max_buy_count}}</td>
 						<td>{{item.app_name}}</td>
 						<td>{{item.is_on_sale==1?"是":"否"}}</td>
-						<td>{{item.create_date}}</td>
 						<td>
 							<button class="btn btn-default" type="button" ng-click="additionalfieldSee(item)">查看详情</button>
 						</td>
@@ -565,6 +564,7 @@ li{
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField"  ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
 							<button class="btn btn-default" type="submit" ng-click="deleteGoodsRecord(item.goods_id)">删除</button>
 						</td>
+						<td>{{item.create_date}}</td>
 					</tr>
 				</table>
 				<!-- additional_field -->
