@@ -788,7 +788,47 @@ li{
 														</div>
 													</div>
 												</div>
+												<div>
+													<button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsParamsAdditionalField($index)">删除</button>
+												</div>
 											</div>
+											<div ng-repeat="x in goodsMan">
+												<div class="form-group">
+													<label for="inputEmail3" class="col-sm-2 control-label">name</label>
+													<div class="col-sm-10">
+														<input type="test" class="form-control goods-control" ng-model="x.name" id="inputEmail3" placeholder="暂无限制，未知所需">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
+													<div class="col-sm-10">
+														<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="inputEmail3" class="col-sm-2 control-label">desc</label>
+													<div class="col-sm-10">
+														<input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-sm-offset-2 col-sm-10">
+														<label for="inputEmail3" class="col-sm-2 control-label">required</label>
+														<div class="checkbox">
+															<label>
+																<input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
+															</label>
+															<label>
+																<input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
+															</label>
+														</div>
+													</div>
+												</div>
+												<div>
+													<button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsMans($index)">删除</button>
+												</div>
+											</div>
+											<button class="btn btn-default" type="submit" ng-click="modifyGoodsAccount()">添加多个信息</button>
 											<div id="accounttGoods"></div>										
 										</div>
 									<div class="modal-footer" ng-if="goodsVar == 2">

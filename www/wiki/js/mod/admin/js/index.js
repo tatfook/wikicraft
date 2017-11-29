@@ -660,10 +660,25 @@ define([
 				$scope.goodsMan.push({})
 			}
 
+			var goods_count = 0;
+			$scope.goodsMan = [];
+			$scope.modifyGoodsAccount = function(){
+				$("#changeName").name = goods_count + 1
+				$scope.goodsMan.push({})
+			}
+
 			//删除多个账号信息
 			$scope.deleteGoodsMan = function($index){  
 				$scope.goodsMan.splice($index, 1);  
 			}  
+
+			$scope.deleteGoodsMans = function($index){  
+				$scope.goodsMan.splice($index, 1);  
+			}  
+
+			$scope.deleteGoodsParamsAdditionalField = function($index){  
+				$scope.goodsParams.additional_field.splice($index, 1);  
+			} 
 	
 			
 			// 搜索管理员账号
