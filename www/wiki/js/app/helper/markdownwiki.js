@@ -739,8 +739,8 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-			//console.log(tokenList);
-			//console.log(blockList);
+			console.log(tokenList);
+			console.log(blockList);
             return blockList;
         }
         return mdwiki;
