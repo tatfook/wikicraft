@@ -436,7 +436,7 @@ function pay:validate(appGoodsInfo, query)
 			local checkField = true;
 			local field      = itemA;
 
-			if (field.required) then
+			if (field.required == 1) then
 				checkField = false
 
 				for KeyB, itemB in pairs(query.additional or {}) do
