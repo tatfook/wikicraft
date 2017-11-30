@@ -1,0 +1,26 @@
+<style>
+    .goods{
+		text-align: center;
+	}
+    .goods-button{
+        float: right;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+    
+</style>
+<table class="table table-bordered goods">
+        <tr>
+            <td><strong>name</strong></td>
+            <td><strong>displayName</strong></td>
+            <td><strong>desc</strong></td>
+            <td><strong>required</strong></td>
+        </tr>
+        <tr ng-repeat="x in currentAdditionalField">
+            <td>{{x.name}}</td>
+            <td>{{x.displayName}}</td>
+            <td>{{x.desc}}</td>
+            <td>{{x.required==1?"是":"否"}}</td>
+        </tr>
+        <button type="button" class="close goods-button" type="submit" ng-click="abc()"><span>&times;</span></button>
+</table>
