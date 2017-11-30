@@ -23,7 +23,6 @@ define([
 	}
 
 	app.registerController("moduleEditorController", ['$scope', function($scope){
-		var moduleEditorParams = {};
 		var design_list = [];
 		// 转换数据格式
 		function get_order_list(obj){
@@ -49,6 +48,7 @@ define([
 			return list;
 		}
 
+
 		// 隐藏事件
 		$scope.click_hide = function(data) {
 			data.is_hide = !data.is_hide;
@@ -61,18 +61,25 @@ define([
 		}
 
 		$scope.close = function() {
+			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			$scope.datas = $scope.datas_stack.pop();
 			if (!$scope.datas) {
 				//$scope.$close();
 				$("#moduleEditorContainer").hide();
 				moduleEditorParams.is_show = false;
 				if (moduleEditorParams.wikiBlock) {
-					moduleEditorParams.wikiBlock.applyModParams(moduleEditorParams.wikiBlock.modParams);
+					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
+					var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
+					modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, true);
+					//console.log(modParams);
+					moduleEditorParams.wikiBlock.applyModParams(modParams);
+					//config.shareMap.moduleEditorParams = undefined;
 				}
 			}
 		}
 
 		$scope.click_apply_design = function(index) {
+			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			var modParams = design_list[index];
 			if (moduleEditorParams.wikiBlock) {
 				moduleEditorParams.wikiBlock.applyModParams(modParams);
@@ -80,67 +87,30 @@ define([
 		}
 
 		function init() {
-			moduleEditorParams = config.shareMap.moduleEditorParams || {};
+			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
-			moduleEditorParams.$scope = $scope;
+			//moduleEditorParams.$scope = $scope;
 			moduleEditorParams.setEditorObj = function(obj) {
+				moduleEditorParams = config.shareMap.moduleEditorParams || {};
 				$scope.show_type = "editor";
 				$scope.datas = get_order_list(obj);
 			}
 			moduleEditorParams.setDesignList = function(list) {
+				moduleEditorParams = config.shareMap.moduleEditorParams || {};
+				var style_list = moduleEditorParams.wikiBlock.style_list || {};
 				$scope.show_type = "design";
-				design_list = list || [];
 				$scope.design_view_list = [];
-				for (var i = 0; i < design_list.length; i++) {
+				for (var i = 0; i < style_list.length; i++) {
+					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
+					modParams = angular.merge(modParams, style_list[i]);
 					var md = markdownwiki({html:true, use_template:false});
-					var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + angular.toJson(design_list[i]) + "\n```\n";
+					var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + angular.toJson(modParams) + "\n```\n";
 					var view = md.render(text);
 					$scope.design_view_list.push(view);
 				}
 			}
 			$scope.show_type = "editor";
 			$scope.datas_stack = [];
-			//var params = {
-				//title: {
-					//name:"标题",
-					//id:"title",
-					//desc:"输入标题文本",
-					//type:"text",
-					//text:"this is a title",
-					//order:1,
-					//editable:true,
-				//},
-				//link: {
-					//name:"链接",
-					//id:"link",
-					//desc:"链接编辑",
-					//type:"link",
-					//text:"链接文本",
-					//href:"链接地址",
-					//order:2,
-					//editable:true,
-				//},
-				//list: {
-					//name:"列表",
-					//id:'list',
-					//desc:"列表对象",
-					//type:"list",
-					//editable:true,
-					//list:[
-					//{
-						//listItemTitle: {
-							//name:"标题",
-							//id:"list_item_title",
-							//desc:"列表项标题",
-							//type:"text",
-							//text:"list item title",
-							//editable:true,
-						//}
-					//}
-					//]
-				//}
-			//};
-			//console.log($scope.datas);
 		}
 
 		$scope.$watch("$viewContentLoaded", init);

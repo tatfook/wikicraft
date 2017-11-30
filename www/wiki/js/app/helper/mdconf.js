@@ -5,6 +5,18 @@ define([
 ], function (util, markdownit) {
 	var mdconf = {};
 
+	function isEmptyObject(obj) {
+		if (!obj) {
+			return true;
+		}
+
+		for (var k in obj) {
+			return false;
+		}
+
+		return true;
+	}
+
 	mdconf.toMod = function(text) {
 		var self = this;
 		var obj = self.toJson(text) || {};
@@ -181,7 +193,7 @@ define([
 				for (var key in obj) {
 					// 写对象值
 					value = obj[key];
-					if (key.indexOf("$$") == 0 || typeof(value) != "object") {
+					if (key.indexOf("$$") == 0 || typeof(value) != "object" || isEmptyObject(value)) {
 						continue;
 					}
 

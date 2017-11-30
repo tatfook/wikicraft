@@ -217,7 +217,7 @@ define([
 			blockCache:blockCache,
             modName: wikiBlock.modName,
             cmdName: wikiBlock.cmdName,
-            modParams: wikiBlock.modParams,
+            modParams: wikiBlock.modParams || {},
             editorMode: mdwiki.options.editorMode,
 			containerId: blockCache.containerId,
 			blockList:mdwiki.blockList,
@@ -256,11 +256,120 @@ define([
                     ch: 0
                 });
             },
-			initScope: function(scope) {
+
+
+			//formatParams: function(params, params_template) {
+				//var self = this;
+
+				//if (typeof(params_template) != "object") {
+					//return;
+				//}
+
+				//if (params_template.is_leaf) {
+					//params.type = params_template.type;
+					//params.editable = params_template.editable;
+				//}
+
+				//if (angular.isArray(params_template)) {
+					//for (var i = 0; i < params.length; i++) {
+						//self.formatParams(params[i], params_template[i] || params_template[0]);
+					//}
+				//} else {
+					//for (var key in params_template) {
+						//self.formatParams(params[key], params_template[key]);
+					//}
+				//}
+			//},
+			formatModParams: function(key, datas, data, hideDefauleValue) {
+				if (typeof(datas) != "object"){
+					return undefined;
+				}
+
+				var self = this;
+				if (datas.is_leaf == true) {
+					data = data || {};
+					if (datas.require) {
+						if (datas.type == "text") {
+							data.text = data.text || datas.text;
+						}
+						if (datas.type == "link") {
+							data.text = data.text || datas.text;
+							data.href = data.href || datas.href;
+						}
+					}
+					if (hideDefauleValue) {
+						if (datas.type == "text" && datas.text == data.text) {
+							delete data.text;
+						}
+
+						if (datas.type == "link") {
+							if (data.text == datas.text) {
+								delete data.text;
+							}
+							if (data.href == datas.href) {
+								delete data.href;
+							}
+						}
+					} else {
+						datas.is_show = datas.is_show == undefined ? datas.editable : datas.is_show;
+						if (datas.is_show) {
+							// 暂不支持单值 应都对象 因为至少存在 text, is_hide 两个值
+							if (typeof(data) != "object")  {
+								datas.value = data;
+								datas.type = datas.type || "text";
+							} else {
+								if (datas.type == "text") {
+									datas.text = data.text;
+								}
+								if (datas.type == "link") {
+									datas.text = data.text;
+									datas.href = data.href;
+								}
+								datas.is_hide = data.is_hide;
+							}
+						}
+						datas.data = data;
+						datas.$kp_key = key[0] == "." ? key.substring(1) : key;
+					}
+					return data;
+				}
+
+				if (typeof(datas) == "object") {
+					if (angular.isArray(datas)) {
+						if (!angular.isArray(data)) {
+							data = [];
+						}
+						for (var i = 0; i < datas.length; i++) {
+							data[i] = self.formatModParams(key + "." + i, datas[i], data[i],hideDefauleValue);
+						}
+					} else {
+						if (angular.isArray(data) || typeof(data) != "object") {
+							data = {};
+						}
+						for (var k in datas) {
+							data[k] = self.formatModParams(key + "." + k, datas[k], data[k], hideDefauleValue);
+						}
+					}
+				}
+				return data;
+			},
+			init: function(obj) {
+				// {"scope":scope, style_list:[],  params_template:{}}
+				if (!obj || !obj.scope) {
+					return;
+				}
+
 				var self = this;
 				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-				scope.params = self.modParams;
-				self.scope = scope;
+				self.scope = obj.scope;
+				self.params_template = obj.params_template || {};
+				self.style_list = obj.style_list || [];
+
+				var params_template = angular.copy(self.params_template);
+				self.modParams = self.formatModParams("", params_template, self.modParams);
+				obj.scope.params = self.modParams;
+				//console.log(params_template, self.modParams);
+				//console.log(self.modParams);
 
 				if (!editor) {
 					return;
@@ -268,10 +377,11 @@ define([
 
 				config.services.$rootScope.viewEditorClick = function(obj) {
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-					config.shareMap.moduleEditorParams = moduleEditorParams;
+					var params_template = angular.copy(self.params_template);
+					self.formatModParams("", params_template, self.modParams);
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.editorObj = obj;
-					moduleEditorParams.setEditorObj(self.modParams);
+					moduleEditorParams.setEditorObj(params_template);
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
 					$("#moduleEditorContainer").show();
@@ -279,11 +389,10 @@ define([
 
 				config.services.$rootScope.viewDesignClick = function() {
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-					config.shareMap.moduleEditorParams = moduleEditorParams;
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "design";
-					moduleEditorParams.setDesignList(scope.get_design_list());
+					moduleEditorParams.setDesignList();
 					$("#moduleEditorContainer").show();
 				}
 
@@ -739,8 +848,8 @@ define([
             }
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-			console.log(tokenList);
-			console.log(blockList);
+			//console.log(tokenList);
+			//console.log(blockList);
             return blockList;
         }
         return mdwiki;
