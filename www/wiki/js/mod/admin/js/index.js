@@ -518,6 +518,7 @@ define([
 					alert("添加成功！");
 					$('.modal').modal('hide')
 					$scope.getGoods();
+					$scope.goodsMan = [];
 				},function(data){
 					if(data.id == 2){
 						alert("添加失败");

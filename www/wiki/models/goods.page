@@ -109,7 +109,7 @@ function goods:api_modifyGoods(params)     --Goods修改
 	if(not query.goods_id) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
-	
+
 	self:db():findOne({goods_id = query.goods_id}, resume);
 	local err, data = yield();
 
