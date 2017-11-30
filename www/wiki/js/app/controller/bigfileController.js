@@ -76,6 +76,7 @@ define([
                 data = data || {};
                 $scope.filelist = data.filelist;
                 $scope.filesCount = data.total;
+                $scope.isSelectAll = false;
             });
         };
 
