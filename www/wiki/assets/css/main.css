@@ -97,6 +97,10 @@ textarea{
 .text-primary{
     color: #3977AD;
 }
+.btn-danger{
+    background-color: #FC3B00;
+    border-color: #FC3B00;
+}
 .empty-box {
     text-align: center;
     color: #999;

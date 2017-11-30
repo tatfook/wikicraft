@@ -13,9 +13,14 @@ define([
         var fileUploadTime = 0;
 		var uid = undefined; 
 		var isUploading = false;
+		var selectCount = 0;
         const biteToG = 1024*1024*1024;
         const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
+        $scope.order = {
+            "expression": "updateDate",
+            "reverse": true
+        };
         $rootScope.isBigfileUploading = false;
         if((util.getPathname() !="/wiki/user_center")){
             $scope.isModal=true;
@@ -71,6 +76,7 @@ define([
                 data = data || {};
                 $scope.filelist = data.filelist;
                 $scope.filesCount = data.total;
+                $scope.isSelectAll = false;
             });
         };
 
@@ -176,6 +182,16 @@ define([
                     qiniuBack.removeFile(file);
                 });
             };
+            var getExisitedFileSize = function (files, filename) {
+                var resultSize = 0;
+                for (var i = 0; i<files.length; i++){
+                    if (files[i].name == filename){
+                        resultSize = files[i].size;
+                        break;
+                    }
+                }
+                return resultSize;
+            };
             var option = {
                 "browse_button":"selectFileInput",
                 "drop_element":"dropFile",
@@ -224,7 +240,7 @@ define([
                         	    data.map(function (file) {
                                     conflictFileName.push(file.filename);
                                     contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ file.filename +'</p>';
-                                    conflictSize += file.size || 0;
+                                    conflictSize += getExisitedFileSize(files, file.filename) || 0;
                                 });
 
                         	    if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - conflictSize))){
@@ -517,7 +533,6 @@ define([
             },function(){
                 if (!Array.isArray(files)){
                     var file = files;
-                    file.index = index;
                     files = [];
                     files.push(file);
                 }
@@ -529,6 +544,12 @@ define([
 							util.post(config.apiUrlPrefix + 'bigfile/deleteById', {_id:files[index]._id}, function (data) {
 								files[index].isDelete = true;
 								$scope.filesCount--;
+                                if (files[index].isSelected){
+                                    selectCount--;
+                                }
+                                if (selectCount == $scope.filesCount){
+                                    $scope.isSelectAll = true;
+                                }
 								// deleteFileSize += files[index].file.size;
 								cb && cb();
 							}, function (err) {
@@ -548,7 +569,7 @@ define([
 
         $scope.deleteFiles = function () {
             var deletingArr = $scope.filelist.filter(function (file) {
-                return file.index >= 0 && !file.isDelete;
+                return file.isSelected && !file.isDelete;
             });
             if (deletingArr.length <= 0){
                 config.services.confirmDialog({
@@ -612,6 +633,7 @@ define([
                         "filename": filename
                     }, function (result) {
                         file.filename = filename;
+                        targetElem.html(filename);
                     }, function (err) {
                         console.log(err);
                     });
@@ -670,18 +692,52 @@ define([
             })
         };
 
-        $scope.downloadFile = function (file) {
-            util.get(config.apiUrlPrefix + "bigfile/getDownloadUrlById", {
-                _id:file._id,
-            }, function(data){
-                if (data) {
-                    var a = document.createElement('a');
-                    var url = data;
-                    url += ";attname=" + file.filename;
-                    a.href = url;
-                    a.target = "_blank";
-                    a.download = file.filename || "";
-                    a.click();
+        $scope.downloadFile = function (files) {
+            if (!angular.isArray(files)){
+                var file = files;
+                files = [];
+                files.push(file);
+            }
+            files.map(function (file) {
+                util.get(config.apiUrlPrefix + "bigfile/getDownloadUrlById", {
+                    _id:file._id,
+                }, function(data){
+                    if (data) {
+                        var a = document.createElement('a');
+                        var url = data;
+                        url += ";attname=" + file.filename;
+                        a.href = url;
+                        a.target = "_blank";
+                        a.download = file.filename || "";
+                        a.click();
+                        file.isSelected = false;
+                    }
+                });
+            });
+            $scope.isSelectAll = false;
+        };
+
+        $scope.downloadFiles = function () {
+            var downloadingArr = $scope.filelist.filter(function (file) {
+                return file.isSelected && !file.isDelete;
+            });
+            if (downloadingArr.length <= 0){
+                config.services.confirmDialog({
+                    "title": "提示",
+                    "content": "请至少选择一个要下载的文件！",
+                    "cancelBtn": false
+                }, function () {
+                });
+            }else {
+                $scope.downloadFile(downloadingArr);
+            }
+        };
+
+        $scope.selectAll = function () {
+            selectCount = $scope.isSelectAll ? $scope.filesCount : 0;
+            $scope.filelist.map(function (file) {
+                if (!file.isDelete){
+                    file.isSelected = $scope.isSelectAll;
                 }
             });
         };
@@ -749,6 +805,43 @@ define([
                 "type": type,
                 "url": url
             });
+        };
+
+        $scope.getIconClass = function (file) {
+            const ImgReg = /^image\/+/;
+            const VideoReg = /^video\/+/;
+            const AudioReg = /^audio\/+/;
+            const PdfReg = /^application\/pdf$/;
+            var type = file.type;
+
+            if (ImgReg.test(type)){
+                return "icon-tupian";
+            }else if (VideoReg.test(type)){
+                return "icon-shipin";
+            }else if (AudioReg.test(type)){
+                return "icon-yinpin";
+            }else if (PdfReg.test(type)){
+                return "icon-PDF";
+            }else{
+                return "icon-wenjian";
+            }
+        }
+
+        $scope.changeOrder = function (expression) {
+            $scope.order.reverse = ($scope.order.expression==expression) ? !$scope.order.reverse : $scope.order.reverse;
+            $scope.order.expression = expression;
+        };
+
+        $scope.judgeSelectAll = function (file) {
+            $scope.isSelectAll = ($scope.isSelectAll && !file.isSelected) ? false : $scope.isSelectAll;
+            if (file.isSelected){
+                selectCount ++;
+            }else {
+                selectCount--;
+            }
+            if (selectCount == $scope.filesCount){
+                $scope.isSelectAll = true;
+            }
         }
     }]);
     return htmlContent;

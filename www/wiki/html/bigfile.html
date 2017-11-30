@@ -13,9 +13,15 @@
     .bigfile-modal .nav-tabs{
         padding:10px 15px 0;
     }
-    .bigfile-modal .btn-primary{
+    .bigfile-modal .btn-primary, .bigfile-modal .btn-danger{
         padding: 6px 20px;
         font-size: 16px;
+        margin-left: 15px;
+    }
+    .bigfile-modal .operation label{
+        font-size: 14px;
+        font-weight: normal;
+        vertical-align: middle;
     }
     .bigfile-modal .time{
         margin-bottom: 0;
@@ -78,8 +84,11 @@
     .bigfile-modal .table .checkbox-column{
         width: 50px;
     }
-    .bigfile-modal .table .type-column, .bigfile-modal .table .size-column{
+    .bigfile-modal .table .size-column{
         width: 80px;
+    }
+    .bigfile-modal .table .type-column{
+        width: 100px;
     }
     .bigfile-modal .table .date-column{
         width: 155px;
@@ -121,16 +130,6 @@
     }
     .bigfile-modal .insert-table-box .checkbox-column{
         border-left-color: transparent;
-    }
-    .bigfile-modal .empty-box{
-        text-align: center;
-        color: #999;
-        font-size: 16px;
-        margin-top: 14px;
-    }
-    .bigfile-modal .empty-box .iconfont{
-        font-size: 145px;
-        line-height:1;
     }
     .bigfile-modal .manage-table .operate-column{
         width: 220px;
@@ -227,6 +226,39 @@
         position: absolute;
         right: 18px;
     }
+    .bigfile-modal .file-group-item .iconfont{
+        margin-right: 5px;
+    }
+    .bigfile-modal .manage-table .iconfont, .bigfile-modal .insert-table .iconfont{
+        color: #929292;
+        line-height: 17px;
+        position: relative;
+        left: -4px;
+        vertical-align: middle;
+        display: inline-block;
+        width: 0;
+    }
+    .bigfile-modal .manage-table .icon-paixuright, .bigfile-modal .insert-table .icon-paixuright{
+        position: relative;
+        left: -7px;
+    }
+    .bigfile-modal .manage-table .iconfont.active, .bigfile-modal .insert-table .iconfont.active{
+        color: #3977AD;
+    }
+    .bigfile-modal .order-column{
+        cursor: pointer;
+    }
+    .bigfile-modal .empty-box{
+        text-align: center;
+        color: #999;
+        font-size: 16px;
+        margin-top: 14px;
+    }
+    .bigfile-modal .empty-box .iconfont{
+        font-size: 145px;
+        line-height:1;
+        width: auto;
+    }
     p.dialog-info-title{
         font-size: 20px;
         text-align: left;
@@ -261,7 +293,7 @@
             position: relative;
         }
         .bigfile-modal .table-box {
-            height: 407px;
+            height: 305px;
         }
         .bigfile-modal .btn-primary {
             padding: 6px 12px;
@@ -300,11 +332,15 @@
         }
         .bigfile-modal .table .operate-column,
         .bigfile-modal .insert-table.thead-table td.operate-column {
-            width: 53px;
+            width: 78px;
         }
         .bigfile-modal .insert-table-box .checkbox-column,
         .bigfile-modal .table .checkbox-column {
-            width: 45px;
+            width: 37px;
+        }
+        .bigfile-modal .table .type-column{
+            width: 85px;
+            padding: 4px 0;
         }
         .bigfile-modal .manage-table .operate-column>span,
         .bigfile-modal .manage-table .operate-column>a,
@@ -329,6 +365,7 @@
         }
         .bigfile-modal .file-group-item .text-danger {
             top: 0;
+        }
         }
 </style>
 <div ng-controller="bigfileController">
@@ -394,10 +431,22 @@
                         <thead>
                             <tr>
                                 <td class="checkbox-column">多选</td>
-                                <td class="file-column">文件名</td>
-                                <td class="type-column">文件类型</td>
-                                <td class="size-column hidden-xs">大小</td>
-                                <td class="date-column hidden-xs">更新时间</td>
+                                <td class="file-column order-column" ng-click="changeOrder('filename')">文件名
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == true]"></span>
+                                </td>
+                                <td class="type-column order-column" ng-click="changeOrder('file.type')">文件类型
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == true]"></span>
+                                </td>
+                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">大小
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span>
+                                </td>
+                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">更新时间
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
+                                </td>
                                 <td class="operate-column">操作</td>
                             </tr>
                         </thead>
@@ -409,7 +458,7 @@
                         </div>
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
-                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
+                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: order.expression: order.reverse" ng-hide="file.isDelete">
                                     <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
                                     <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
@@ -438,10 +487,21 @@
                         <thead>
                             <tr>
                                 <td class="checkbox-column">多选</td>
-                                <td class="file-column">文件名</td>
-                                <td class="type-column hidden-xs">文件类型</td>
-                                <td class="size-column hidden-xs">大小</td>
-                                <td class="date-column hidden-xs">更新时间</td>
+                                <td class="file-column order-column" ng-click="changeOrder('filename')">文件名
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == true]"></span>
+                                </td>
+                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">文件类型
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == true]"></span>
+                                </td>
+                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">大小
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span></td>
+                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">更新时间
+                                    <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
+                                </td>
                                 <td class="operate-column">操作</td>
                             </tr>
                         </thead>
@@ -453,9 +513,9 @@
                         </div>
                         <table class="table">
                             <tbody>
-                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: ['updateDate', 'filename']: true" ng-hide="file.isDelete">
+                                <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: order.expression: order.reverse" ng-hide="file.isDelete">
                                     <td class="checkbox-column">
-                                        <input type="checkbox" ng-model="file.index" ng-true-value="{{$index}}">
+                                        <input type="checkbox" ng-model="file.isSelected" ng-change="judgeSelectAll(file)">
                                     </td>
                                     <td id="{{file.file._id}}" class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column hidden-xs" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
@@ -474,7 +534,14 @@
                             </tbody>
                         </table>
                     </div>
-                    <button class="btn btn-primary pull-right" ng-click="deleteFiles()">删除选中</button>
+                    <div class="operation clearfix">
+                        <div class="pull-left">
+                            <input id="selectAll" ng-change="selectAll()" ng-model="isSelectAll" type="checkbox">
+                            <label for="selectAll">全选</label>
+                        </div>
+                        <button class="btn btn-danger pull-right" ng-click="deleteFiles()">删除选中</button>
+                        <button class="btn btn-primary pull-right" ng-click="downloadFiles()">下载选中</button>
+                    </div>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
                     <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
@@ -496,7 +563,7 @@
                         <div class="file-group" ng-show="uploadingFiles">
                             <div class="file-group-item" ng-repeat="file in uploadingFiles" ng-hide="file.isDelete">
                                 <div class="left-col">
-                                    <img alt="">{{file.name}}
+                                    <span class="iconfont" ng-class="getIconClass(file)"></span>{{file.name}}
                                 </div>
                                 <div class="right-col">
                                     <span ng-show="file.status == 2" class="hidden-xs">{{file.waitTime}} </span>
