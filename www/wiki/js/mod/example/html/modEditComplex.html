@@ -1,5 +1,5 @@
 
-<div ng-controller="headlinerController" class="container">
+<div ng-controller="modEditComplexController" class="container">
 	<div ng-if='params.design.text=="style1"'>
 		<div class="col-xs-6">
 			<div ng-hide="params.image.is_hide">
@@ -27,8 +27,17 @@
 			</div>
 		</div>
 
+		<h3>简单列表</h3>
 		<div ng-repeat="item in params.list.list" ng-click="viewEditorClick(params.list)" class="kp_module_editor_input_tag">
-			<div>{{item.title.text}}</div>
+			<div ng-click="viewEditorClick(item, $event)">
+				{{item.text}}
+			</div>
+		</div>
+		<h3>对象列表</h3>
+		<div ng-repeat="item in params.object_list.list" ng-click="viewEditorClick(params.object_list)" class="kp_module_editor_input_tag">
+			<div ng-click="viewEditorClick(item.link, $event)" style="margin:20px">
+				{{item.link.text}}
+			</div>
 		</div>
 	</div>
 	<div ng-if='params.design.text=="style2"'>

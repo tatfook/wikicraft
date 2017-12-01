@@ -24,6 +24,7 @@ define([
 
 	app.registerController("moduleEditorController", ['$scope', function($scope){
 		var design_list = [];
+		var lastSelectObj = undefined;
 		// 转换数据格式
 		function get_order_list(obj){
 			var list = [];
@@ -57,7 +58,12 @@ define([
 		// 点击列表项
 		$scope.click_list_item = function(item) {
 			$scope.datas_stack.push($scope.datas);
-			$scope.datas = item;
+			//console.log(item);
+			if (item.is_leaf) {
+				$scope.datas = [item];
+			} else {
+				$scope.datas = item;
+			}
 		}
 
 		$scope.close = function() {
@@ -69,7 +75,9 @@ define([
 				moduleEditorParams.is_show = false;
 				if (moduleEditorParams.wikiBlock) {
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
+					//console.log(modParams);
 					var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
+					//console.log(paramsTemplate, modParams);
 					modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, true);
 					//console.log(modParams);
 					moduleEditorParams.wikiBlock.applyModParams(modParams);
@@ -80,7 +88,8 @@ define([
 
 		$scope.click_apply_design = function(index) {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-			var modParams = design_list[index];
+			var modParams = $scope.styles[index];
+			console.log(modParams);
 			if (moduleEditorParams.wikiBlock) {
 				moduleEditorParams.wikiBlock.applyModParams(modParams);
 			}
@@ -92,19 +101,32 @@ define([
 			//moduleEditorParams.$scope = $scope;
 			moduleEditorParams.setEditorObj = function(obj) {
 				moduleEditorParams = config.shareMap.moduleEditorParams || {};
+				var selectObj = moduleEditorParams.selectObj;
+				console.log(selectObj);
+				if (selectObj) {
+					setTimeout(function(){
+						$("#" + selectObj.id).css("background-color", "red");
+					});
+				}
 				$scope.show_type = "editor";
+
+				if (obj.is_leaf) {
+					obj = [obj];
+				}
 				$scope.datas = get_order_list(obj);
 			}
 			moduleEditorParams.setDesignList = function(list) {
 				moduleEditorParams = config.shareMap.moduleEditorParams || {};
-				var style_list = moduleEditorParams.wikiBlock.style_list || {};
+				var style_list = moduleEditorParams.wikiBlock.styles || [];
 				$scope.show_type = "design";
+				$scope.styles = [];
 				$scope.design_view_list = [];
 				for (var i = 0; i < style_list.length; i++) {
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
 					modParams = angular.merge(modParams, style_list[i]);
+					$scope.styles[i] = modParams;
 					var md = markdownwiki({html:true, use_template:false});
-					var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + angular.toJson(modParams) + "\n```\n";
+					var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";
 					var view = md.render(text);
 					$scope.design_view_list.push(view);
 				}

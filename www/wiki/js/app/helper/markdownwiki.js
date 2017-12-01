@@ -18,6 +18,12 @@ define([
         count: 0,    // markdownwiki 数量
     };
 
+	var wikiBlockMap = {};
+
+	function getWikiBlock(containerId) {
+		wikiBlockMap[containerId] = wikiBlockMap[containerId] || {};
+		return wikiBlockMap[containerId];
+	}
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
         mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {};
@@ -212,7 +218,7 @@ define([
         var wikiBlock = blockCache.wikiBlock;
         var render = getRenderFunc(wikiBlock.modName);
         var editor = mdwiki.editor;
-
+		
         var wikiBlockParams = {
 			blockCache:blockCache,
             modName: wikiBlock.modName,
@@ -257,29 +263,6 @@ define([
                 });
             },
 
-
-			//formatParams: function(params, params_template) {
-				//var self = this;
-
-				//if (typeof(params_template) != "object") {
-					//return;
-				//}
-
-				//if (params_template.is_leaf) {
-					//params.type = params_template.type;
-					//params.editable = params_template.editable;
-				//}
-
-				//if (angular.isArray(params_template)) {
-					//for (var i = 0; i < params.length; i++) {
-						//self.formatParams(params[i], params_template[i] || params_template[0]);
-					//}
-				//} else {
-					//for (var key in params_template) {
-						//self.formatParams(params[key], params_template[key]);
-					//}
-				//}
-			//},
 			formatModParams: function(key, datas, data, hideDefauleValue) {
 				if (typeof(datas) != "object"){
 					return undefined;
@@ -287,6 +270,7 @@ define([
 
 				var self = this;
 				if (datas.is_leaf == true) {
+					datas.type = datas.type || "text";
 					data = data || {};
 					if (datas.require) {
 						if (datas.type == "text") {
@@ -295,6 +279,14 @@ define([
 						if (datas.type == "link") {
 							data.text = data.text || datas.text;
 							data.href = data.href || datas.href;
+						}
+						if (datas.type == "list") {
+							if (!angular.isArray(data.list)) {
+								data.list = [];
+							}
+							for (var i = 0; i < datas.list.length; i++) {
+								data.list[i] = self.formatModParams(key + '.list.' + i, datas.list[i], data.list[i]);
+							}
 						}
 					}
 					if (hideDefauleValue) {
@@ -310,13 +302,16 @@ define([
 								delete data.href;
 							}
 						}
+
+						if (datas.type == "list") {
+							// 列表不作默认隐藏
+						}
 					} else {
 						datas.is_show = datas.is_show == undefined ? datas.editable : datas.is_show;
 						if (datas.is_show) {
 							// 暂不支持单值 应都对象 因为至少存在 text, is_hide 两个值
 							if (typeof(data) != "object")  {
 								datas.value = data;
-								datas.type = datas.type || "text";
 							} else {
 								if (datas.type == "text") {
 									datas.text = data.text;
@@ -325,10 +320,22 @@ define([
 									datas.text = data.text;
 									datas.href = data.href;
 								}
+								if (datas.type == "list") {
+									if (!angular.isArray(data.list)) {
+										data.list = [];
+									}
+									for (var i = 0; i < data.list.length; i++) {
+										datas.list[i] = datas.list[i] || angular.copy(datas.list[0]);
+										self.formatModParams(key + ".list." + i, datas.list[i], data.list[i]);
+									}
+								}
 								datas.is_hide = data.is_hide;
 							}
 						}
+						datas.id = util.getId();
 						datas.data = data;
+						datas.containerId = self.containerId;
+						data.$kp_datas = datas;
 						datas.$kp_key = key[0] == "." ? key.substring(1) : key;
 					}
 					return data;
@@ -363,44 +370,85 @@ define([
 				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 				self.scope = obj.scope;
 				self.params_template = obj.params_template || {};
-				self.style_list = obj.style_list || [];
+				self.styles = obj.styles || [];
 
-				var params_template = angular.copy(self.params_template);
-				self.modParams = self.formatModParams("", params_template, self.modParams);
+				self.format_params_template = angular.copy(self.params_template);
+				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
+				self.setEditorObj = moduleEditorParams.setEditorObj;
+				self.setDesignList = moduleEditorParams.setDesignList;
 				obj.scope.params = self.modParams;
-				//console.log(params_template, self.modParams);
+				//console.log(self.format_params_template, self.modParams);
 				//console.log(self.modParams);
 
 				if (!editor) {
 					return;
 				}
 
-				config.services.$rootScope.viewEditorClick = function(obj) {
-					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-					var params_template = angular.copy(self.params_template);
-					self.formatModParams("", params_template, self.modParams);
+				var getSelf = function(obj){
+					if (typeof(obj) == "string") {
+						return getWikiBlock(obj);
+					} else if (angular.isArray(obj) && obj.length > 0) {
+						return getWikiBlock(obj[0].$kp_datas.containerId);	
+					} else if (angular.isObject(obj)){
+						return getWikiBlock(obj.$kp_datas.containerId);
+					}
+				}
+				config.services.$rootScope.viewEditorClick = function(obj, $event) {
+					var self = getSelf(obj);	
+					if (!self) {
+						return;
+					}
+					if ($event) {
+						$event.stopPropagation();
+					}
+					moduleEditorParams.selectObj = obj && obj.$kp_datas;
+					//console.log(obj);
+					if (obj && obj.$kp_datas) {
+						obj = obj.$kp_datas;
+						var keys = obj.$kp_key && obj.$kp_key.split(".");
+						if (keys && keys.length>1) {
+							var root_obj = self.format_params_template;
+							for (var i = 0; i < keys.length-1; i++) {
+								if (angular.isArray(root_obj)) {
+									root_obj = root_obj[parseInt(keys[i])];
+								} else {
+									root_obj = root_obj[keys[i]];
+								}
+							}
+							if (!angular.isArray(root_obj)) {
+								obj = root_obj;
+							}
+						} else {
+							obj = self.format_params_template;
+						}
+					} else {
+						obj = self.format_params_template;
+					}
 					moduleEditorParams.wikiBlock = self;
-					moduleEditorParams.editorObj = obj;
-					moduleEditorParams.setEditorObj(params_template);
+					moduleEditorParams.setEditorObj(obj);
+					//console.log(params_template);
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
 					$("#moduleEditorContainer").show();
 				};
 
-				config.services.$rootScope.viewDesignClick = function() {
+
+				config.services.$rootScope.viewDesignClick = function(obj, $event) {
+					var self = getSelf(obj);	
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "design";
 					moduleEditorParams.setDesignList();
 					$("#moduleEditorContainer").show();
+
 				}
 
 				var containerId = "#" + self.containerId;
 				if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
 					$(containerId).on("mouseenter mouseleave", function(e) {
 						if (e.handleObj.origType == "mouseenter") {
-							var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick()">编辑</button><button class="btn" ng-click="viewDesignClick()">样式</button></div></div>';
+							var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick(\'' + self.containerId+ '\')">编辑</button><button class="btn" ng-click="viewDesignClick(\''+self.containerId+'\')">样式</button></div></div>';
 							html_str = util.compile(html_str);
 							$(containerId).prepend(html_str);
 							util.$apply();	
@@ -420,6 +468,7 @@ define([
 				}
 			},
         };
+		wikiBlockMap[wikiBlockParams.containerId] = wikiBlockParams;
         render(wikiBlockParams);
 		// 渲染后回调
 		defaultRender(wikiBlockParams, true);

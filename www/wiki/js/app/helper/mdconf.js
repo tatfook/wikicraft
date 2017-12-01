@@ -167,6 +167,13 @@ define([
 		return confConvert(conf);
 	}
 
+	mdconf.filter = function(key) {
+		if (key && key.indexOf("$") == 0){
+			return true;
+		}
+
+		return false;
+	}
 	// json对象转markdown文本
 	mdconf.jsonToMd = function(obj) {
 		var text = "";
@@ -185,7 +192,7 @@ define([
 				for (var key in obj) {
 					// 优先写非对象值
 					value = obj[key];
-					if (key.indexOf("$$") == 0 || typeof(value) == "object") {
+					if (mdconf.filter(key) || typeof(value) == "object") {
 						continue;
 					}
 					text += "- " + key + " : " + value + "\n";
@@ -193,7 +200,7 @@ define([
 				for (var key in obj) {
 					// 写对象值
 					value = obj[key];
-					if (key.indexOf("$$") == 0 || typeof(value) != "object" || isEmptyObject(value)) {
+					if (mdconf.filter(key)|| typeof(value) != "object" || isEmptyObject(value)) {
 						continue;
 					}
 
