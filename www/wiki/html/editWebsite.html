@@ -105,6 +105,7 @@
     .setting-form .preview {
         width: 280px;
         height: 210px;
+        overflow: hidden;
         margin-bottom: 30px;
     }
     .setting-form .cropper-zone {
@@ -369,7 +370,7 @@
                     <h4>http://keepwork.com/{{user.username}}/{{website.name}}</h4>
                     <p>*权限管理按照从严原则，如果一个账号同时存在于几个权限分组，则按照最严格计算。</p>
                     <p>例如：某用户同时存在于“编辑”权限与“禁止访问”权限的2个组，则会禁止访问。</p>
-                    <p>*超级管理员不受分组配置影响</p>
+                    <p>*网站拥有者不受分组配置影响</p>
                 </div>
                 <div class="change-type">
                     <h4 class="light-title">项目类型：</h4>
@@ -461,7 +462,7 @@
                                 <div class="form-group form-group-lg">
                                     <label class="col-sm-2 control-label">选择分组：</label>
                                     <div class="col-sm-5">
-                                        <select class="form-control" ng-model="selectGroup" ng-options="x.name for x in groups" ng-hide="x.isDelete">
+                                        <select class="form-control" ng-model="selectGroup" ng-options="x.name for x in shareGroups" ng-hide="x.isDelete">
                                         </select>
                                     </div>
                                 </div>
@@ -486,7 +487,7 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="group in groupAuths" ng-hide="group.isDelete">
-                                    <td><a ng-click="" class="text-primary">{{group.groupname}}</a></td><!--分组名-->
+                                    <td><a ng-click="" class="text-primary">{{group.groupUsername + '/' + group.groupname}}</a></td><!--分组名-->
                                     <td>{{group.levelName}}</td><!--成员-->
                                     <td>
                                         <a ng-click="deleteShareGroup(group)">删除</a>

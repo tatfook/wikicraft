@@ -21,13 +21,6 @@ local user       = models.user:new();
 
 pay.db_name  = "pay";
 pay.apiUrl   = "https://api.pingxx.com/v1/";
-if WIKI_ENV == "test" or WIKI_ENV == "www" then
-	pay.appToken = KEEPWORK["config"]["test"]["threeService"]["pingxx"]["appToken"];
-	pay.appId    = KEEPWORK["config"]["test"]["threeService"]["pingxx"]["appId"];
-else
-	pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
-	pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
-end
 
 tradeno.db_name = "tradeno";
 tradeno         = tradeno:new();
@@ -79,14 +72,34 @@ function pay:ctor()
 	self:addfield("data","table",false);
 end
 
+function pay:getPingxxToken()
+	if(KEEPWORK and KEEPWORK.config and 
+		KEEPWORK.config.default and KEEPWORK.config.default.threeService and
+		KEEPWORK.config.default.threeService.pingxx and KEEPWORK.config.default.threeService.pingxx.appToken and
+		KEEPWORK.config.default.threeService.pingxx.appId) then
+	
+		pay.appToken = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appToken"];
+		pay.appId    = KEEPWORK["config"]["default"]["threeService"]["pingxx"]["appId"];
+		
+		return true;
+	else
+		log("pingxx token can not found!");
+		return false;
+	end
+end
+
 function pay:api_createCharge(params)
 	response:status(503);
 
+	if(not self:getPingxxToken()) then
+		return errors:wrap(errors.SERVER_INNER_ERROR);
+	end
+
 	local err, query = self:validateQuery(params);
 
-	if(query.price > 1000) then
+	if(query.price > 200000) then
 		local limitMessage = commonlib.copy(errors.SERVER_INNER_ERROR);
-		limitMessage.extra = "充值金额不能大于1000元";
+		limitMessage.extra = "充值金额不能大于20万元";
 
 		return errors:wrap(limitMessage);
 	end
@@ -423,7 +436,7 @@ function pay:validate(appGoodsInfo, query)
 			local checkField = true;
 			local field      = itemA;
 
-			if (field.required) then
+			if (field.required == 1) then
 				checkField = false
 
 				for KeyB, itemB in pairs(query.additional or {}) do

@@ -98,6 +98,16 @@ function bigfile:api_getDownloadUrlById(params)
 	return errors:wrap(nil, download_url)
 end
 
+function bigfile:api_getDownloadUrlByKey(params)
+	if not params.key then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+
+    local qiniuFileDB = models.qiniu_files:new()
+    download_url = qiniuFileDB:api_getDownloadUrlByKey(params).data
+
+	return errors:wrap(nil, download_url)
+end
 
 function bigfile:deleteFile(params)
 	local qiniuDB = models.qiniu:new()

@@ -59,7 +59,7 @@ define([
 			return false;
 		}
 		return true;
-	}
+    }
 
     function getCurrentDataSource() {
 		if (currentPage && currentPage.username) {
@@ -180,9 +180,6 @@ define([
             treeNode.text = pageNode.name;
 			//console.log(pageNode);
 			if (pageNode.isLeaf) {
-				if (pageNode.isModify) {
-					treeNode.text += " *";
-				}
 				if (pageNode.isConflict) {
 					treeNode.text += " !";
 				}
@@ -251,18 +248,28 @@ define([
         }
 
         $scope.img_insert = function () {
-            $rootScope.img = $scope.img;
-            $uibModalInstance.close("img");
+            $scope.imgErr = "";
+            if ($scope.imgContent) {
+                var currentDataSource = getCurrentDataSource();
+                currentDataSource && currentDataSource.uploadImage({ content: $scope.imgContent, isShowLoading: true }, function(url) {
+                      $scope.img.url = url;
+                      $rootScope.img = $scope.img;
+                      $uibModalInstance.close("img");
+                    }, function(err) {
+                      console.log(err);
+                      $scope.imgErr = "图片上传失败，请稍后重试";
+                    });
+            }else{
+                $rootScope.img = $scope.img;
+                $uibModalInstance.close("img");
+            }
         }
 
         $scope.imageLocal = function () {
-            var currentDataSource = getCurrentDataSource();
             $('#uploadImageId').change(function (e) {
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
-                    currentDataSource && currentDataSource.uploadImage({content: fileReader.result}, function (url) {
-                        $scope.img.url = url;
-                    });
+                    $scope.imgContent = fileReader.result;
                 };
                 fileReader.readAsDataURL(e.target.files[0]);
             });
@@ -597,6 +604,7 @@ define([
             $rootScope.userinfo = $rootScope.user;
 
             $scope.enableTransform = true;
+            $scope.isEmptyObject = isEmptyObject;
             $scaleValue = "";
             $scope.scales = [
                 {"id":0,"showValue": "45%", "scaleValue": "0.25"},
@@ -928,7 +936,8 @@ define([
 
                 var currentDataSource = getCurrentDataSource();
                 var page = angular.copy(currentPage);
-                var content = editor.getValue();
+                console.log(currentPage);
+                var content = page.content || editor.getValue();
 				page.timestamp = (new Date()).getTime();
 				page.content = content;
                 var saveFailedCB = function () {
@@ -950,21 +959,25 @@ define([
                     cb && cb();
                 };
 
-				//makeSnapshot(currentDataSource, page);
-                currentSite = getCurrentSite(page.username, page.sitename);
-                if (currentSite) {
-					page.visibility = currentSite.visibility || "public";
-                    util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
+                config.services.realnameVerifyModal().then(doSavePageContent).catch(saveFailedCB);
+
+                function doSavePageContent() {
+                    //makeSnapshot(currentDataSource, page);
+                    currentSite = getCurrentSite(page.username, page.sitename);
+                    if (currentSite) {
+                        page.visibility = currentSite.visibility || "public";
+                        util.post(config.apiUrlPrefix + 'website/updateWebsitePageinfo', page);
+                    }
+
+                    //console.log(currentSite);
+                    page.visibility = page.visibility || "public";
+                    submitToSearchEngine(page);
+
+                    currentDataSource.writeFile({
+                        path: page.url + pageSuffixName,
+                        content: content
+                    }, saveSuccessCB, saveFailedCB);
                 }
-
-				//console.log(currentSite);
-				page.visibility = page.visibility || "public";
-				submitToSearchEngine(page);
-
-                currentDataSource.writeFile({
-                    path: page.url + pageSuffixName,
-                    content: content
-                }, saveSuccessCB, saveFailedCB);
             }//}}}
 
 
@@ -1537,7 +1550,7 @@ define([
                         Message.info("文件保存成功");
                     }, function () {
                         errcb && errcb();
-                        Message.info("文件保存失败");
+                        Message.danger("文件保存失败");
                     });
                 } else {
                     storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
@@ -1684,7 +1697,7 @@ define([
 					Message.info("全部保存成功");
 				}, function() {
 					callback();
-					Message.info("全部保存失败");
+					Message.danger("全部保存失败");
 				});
             };//}}}
 
@@ -2137,7 +2150,9 @@ define([
 
                     var insertContent = "";
                     console.log(files);
-                    if (files.url){
+                    if (files.pasteUrl){
+                        insertContent = files.pasteUrl;
+                    } else if (files.url){
                         insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
                     }else{
                         files.map(function (file) {

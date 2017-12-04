@@ -198,11 +198,26 @@ define([
 				return;
 			}
 			
+			$scope.shareGroups = [];
+			util.post(config.apiUrlPrefix + 'group_user/getByMember', {memberName:siteinfo.username},function(data){
+				data = data || [];
+				for (var i = 0; i < data.length; i++){
+					data[i].name = data[i].username + '/' + data[i].groupname;
+					data[i].id = data[i].dataSourceGroupId;
+					$scope.shareGroups.push(data[i]);
+				}
+			});
 			siteDataSource.getGroupList({owned:true}, function(data){
 				data = data || {};
 				$scope.groups = data;	
 				//console.log($scope.groups);
 				for (var i = 0; i < data.length; i++) {
+					$scope.shareGroups.push({
+						username:data[i].groupUsername,
+						groupname:data[i].name,
+						name:data[i].groupUsername + '/' + data[i].name,
+						id:data[i].id,
+					});
 					(function(index){
 						var group = data[index];
 						siteDataSource.getGroupMemberList(group, function(data){
@@ -217,6 +232,7 @@ define([
 				var data = data || [];
 				for(var i = 0; i < data.length; i++) {
 					var group = data[i];
+					group.groupUsername = group.groupUsername;
 					group.username = siteinfo.username;
 					group.sitename = siteinfo.name;
 					group.groupname = group.group_name;
@@ -269,7 +285,8 @@ define([
 
 			siteDataSource.addProjectGroup(params, function(){
 				var params = {
-					groupname: group.name,
+					groupUsername: group.username,
+					groupname: group.groupname,
 					sitename: siteinfo.name,
 				    username: siteinfo.username,
 					level: level.level,
@@ -303,7 +320,7 @@ define([
 
                 siteDataSource.deleteProjectGroup({group_id:group.dataSourceGroupId}, function(){
                     group.isDelete = true;
-                    util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename, groupname:group.groupname,level:group.level});
+                    util.post(config.apiUrlPrefix + "site_group/deleteByName", {username:group.username, sitename:group.sitename,groupUsername:group.groupUsername, groupname:group.groupname,level:group.level});
                 });
             });
 		};
@@ -344,6 +361,12 @@ define([
                             break;
                         }
                     }
+                    for (var i = 0; i < $scope.shareGroups.length; i++) {
+                        if (group.name == $scope.shareGroups[i].groupname && $scope.shareGroups[i].username == siteinfo.username) {
+                            $scope.shareGroups.splice(i,1);
+                            break;
+                        }
+                    }
                     siteDataSource.deleteGroup({id:group.id}, function(){
                         util.post(config.apiUrlPrefix + "group/deleteByName", {username:siteinfo.username, groupname:group.name});
                     });
@@ -375,10 +398,11 @@ define([
 				util.post(config.apiUrlPrefix + 'group/upsert', {
 					username:siteinfo.username,
 					groupname:group.name,
-					dataSourceUserId:data.id, // 需不需要存
+					dataSourceGroupId:data.id, // 需不需要存
 					visibility:"public",
 				});
 				$scope.groups.push(data);
+				$scope.shareGroups.push({username:siteinfo.username, groupname:group.name, id:data.id,name:siteinfo.username+"/"+group.name});
 				$scope.nowGroup = {};
 				//console.log(data);
 			}, function(){
@@ -564,7 +588,7 @@ define([
                     var img = "<img src='" + arg.target.result + "' alt='preview' />";
                     cropper.html(img);
                     var $previews = $('.preview');
-                    $('#cropper > img').cropper({
+                    var options = { 
                         aspectRatio: 4 / 3,
                         viewMode: 1,
                         dragMode: 'move',
@@ -574,41 +598,23 @@ define([
                         cropBoxMovable: false,
                         cropBoxResizable: false,
                         minCropBoxWidth:280,
-                        build:function(){
-                            var $clone = $(this).clone().removeClass('cropper-hidden');
-                            $clone.css({
-                                display: 'block',
-                                width:'320px',
-                                height:'240px'
-                            });
-
-                            $previews.css({
-                                overflow: 'hidden'
-                            }).html($clone);
+                        preview: ".preview", 
+                        crop: function(e) {} 
+                    };
+                    $("#cropper > img")
+                      .on({
+                        ready: function(e) {},
+                        cropstart: function(e) {},
+                        cropmove: function(e) {},
+                        cropend: function(e) {},
+                        crop: function(e) {
+                          croppedCanvas = $(this).cropper("getCroppedCanvas");
+                          resultCanvas = getResultCanvas(croppedCanvas);
+                          $scope.imgUrl = resultCanvas.toDataURL(); //产生裁剪后的图片的url
                         },
-                        crop: function (e) {
-                            var imageData = $(this).cropper('getImageData');
-                            var previewAspectRatio = e.width / e.height;
-
-                            $previews.each(function () {
-                                var $preview = $(this);
-                                var previewWidth = $preview.width();
-                                var previewHeight = previewWidth / previewAspectRatio;
-                                var imageScaledRatio = e.width / previewWidth;
-
-                                $preview.height(previewHeight).find('img').css({
-                                    width: imageData.naturalWidth / imageScaledRatio,
-                                    height: imageData.naturalHeight / imageScaledRatio,
-                                    marginLeft: -e.x / imageScaledRatio,
-                                    marginTop: -e.y / imageScaledRatio
-                                });
-                            });
-
-                            croppedCanvas=$(this).cropper('getCroppedCanvas');
-                            resultCanvas=getResultCanvas(croppedCanvas);
-                            $scope.imgUrl=resultCanvas.toDataURL();//产生裁剪后的图片的url
-                        }
-                    });
+                        zoom: function(e) {}
+                      })
+                      .cropper(options);
                 }
             };
             finishBtn.on("click", function () {
@@ -622,7 +628,7 @@ define([
                     return;
                 }
                 var imgUrl=$scope.imgUrl;
-                siteDataSource.uploadImage({content:imgUrl}, function (url) {
+                siteDataSource.uploadImage({content:imgUrl, isShowLoading: true}, function (url) {
                     $scope.website.logoUrl = url;
                     // util.post(config.apiUrlPrefix + 'website/updateWebsite', $scope.website, function (data) {
                     //     $scope.website = data;

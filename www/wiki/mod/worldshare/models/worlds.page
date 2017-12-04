@@ -12,13 +12,15 @@ include_once("./worlds_star.page");
 
 --NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 NPL.load("(gl)script/ide/System/Encoding/basexx.lua");
-
-local worlds    = inherit(models.abstract.multi_user_base, gettable("models.worlds"));
 --local Encoding = commonlib.gettable("System.Encoding");
-local Encoding  = commonlib.gettable("System.Encoding.basexx");
+local Encoding = commonlib.gettable("System.Encoding.basexx");
+
+local worlds = inherit(models.abstract.multi_user_base, gettable("models.worlds"));
 
 worlds.db_name = "worlds";
 worlds.max_items_per_user = 1000;
+
+local user = models.user:new();
 
 function worlds:ctor()
 	self:addfield("userid","number",false,10);
@@ -85,20 +87,19 @@ function worlds:get(params)
 		query.sort = nil;
 	end
 
-	--LOG.std(nil,"debug","query",query);
-
-	local skip  = query.page == 1 and 0 or query.page*query.amount-query.amount;
+	local skip  = query.page == 1 and 0 or query.page * query.amount - query.amount;
 	local limit = query.amount;
 
 	self:db():find({["+userid"] = {userid,limit=limit,skip=skip}},resume);
-	local err,response = yield(true);
+	local err, response = yield(true);
 
-	for key,value in ipairs(response or {}) do
-		local userParams = {};
-		userParams._id = value.userid;
-		local userInfor  = models.user:new():api_getminiprofile(userParams);
+	user:db():findOne({_id = tonumber(userid)}, resume);
+	local _, userinfo = yield();
 
-		value.userInfor = userInfor;
+	if(not err and userinfo) then
+		for key,value in ipairs(response or {}) do
+			value.username = userinfo.username;
+		end
 	end
 
 	if(not err) then
@@ -120,14 +121,9 @@ function worlds:get(params)
 			local compareResponse = commonlib.copy(response);
 
 			for i=1,#response do
-				-- LOG.std(nil,"debug","response[i].value",{"response",response[i]});
-
 				for j=i+1,#compareResponse do
-					-- LOG.std(nil,"debug","response[j].value",{"compareResponse",compareResponse[j]});
-
 					if(response[i].formatDate > compareResponse[j].formatDate) then
 						local new   = response[i];
-						-- LOG.std(nil,"debug","newnewnew",new);
 						response[i] = compareResponse[j];
 						response[j] = new;
 					end

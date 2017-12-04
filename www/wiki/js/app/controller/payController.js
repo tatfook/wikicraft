@@ -107,8 +107,8 @@ define([
                     return;
                 }
 
-                if ($scope.goods.price > 1000){
-                    alert("充值金额不能大于1000元");
+                if ($scope.goods.price > 200000){
+                    alert("充值金额不能大于20万元");
                     return;
                 }
 

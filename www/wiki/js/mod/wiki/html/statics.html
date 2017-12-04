@@ -84,10 +84,18 @@
         }
         .org-statics .msg p{
             font-size: 14px;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            margin-bottom: 0;
         }
         .org-statics .msg p>span{
-            font-size: 18px;
-            margin-left: 10px;
+            font-size: 14px;
+            margin-left: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
         }
     }
 </style>

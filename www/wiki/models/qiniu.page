@@ -264,7 +264,7 @@ function qiniu:api_callback(params)
 		return
 	end
 
-	return {error = "ok"}
+	return {error = "ok", key=params.key}
 end
 
 function qiniu:api_getUid(params)

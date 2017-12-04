@@ -2,7 +2,10 @@
  * Created by wuxiangan on 2016/12/20.
  */
 
-define(['angular'], function (angular) {
+define([
+    'angular',
+    'helper/crossTabsMemoryStorage'
+], function (angular, crossTabsMemoryStorage) {
     var fakeStorage = {};
     fakeStorage.setItem = function (key,value) {
         fakeStorage.key = value;
@@ -22,7 +25,7 @@ define(['angular'], function (angular) {
 
     var storage = {};
     storage.localStorage = window.localStorage || fakeStorage;
-    storage.sessionStorage = window.sessionStorage || fakeStorage;
+    storage.sessionStorage = crossTabsMemoryStorage;
 
     storage.localStorageSetItem = function (key, value) {
         storage.localStorage.setItem(key, angular.toJson(value));
