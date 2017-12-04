@@ -238,7 +238,38 @@ define([
             }
 
             function getUserPage() {
-                var urlObj = $rootScope.urlObj;
+                var urlObjInfos = location.pathname.split('/');
+
+                var urlObj = {
+                    pagename: urlObjInfos[3],
+                    pathname: location.pathname,
+                    sitename: urlObjInfos[2],
+                    username: urlObjInfos[1]
+                }
+
+                if (!urlObj.sitename) {
+                    util.html('#__UserSitePageContent__', userHtmlContent, $scope);
+                    return;
+                }
+
+                if (urlObj.pagename) {
+                    urlObj.pagepath = urlObj.pathname;
+                    doGetUserPage(urlObj);
+                } else {
+                    //todo: get defauflt pagename
+
+                    util.post(config.apiUrlPrefix + 'website/getByName', {
+                        username: urlObj.username, 
+                        sitename: urlObj.sitename
+                    }, function (data) {
+                        urlObj.pagename = data.defaultPage || "index";
+                        urlObj.pagepath = (urlObj.pathname + '/' + urlObj.pagename).replace(/\/+/g,'/');
+                        doGetUserPage(urlObj);
+                    }, null, true);
+                }
+            }
+
+            function doGetUserPage(urlObj) {
                 // 访问用户页
                 $rootScope.userinfo = undefined;
                 $rootScope.siteinfo = undefined;
