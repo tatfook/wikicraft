@@ -2206,16 +2206,14 @@ define([
 
 			// 文件上传
 			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
-                const UpperLimit = 10 * 1024;
+                const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");
 					return;
                 }
-				var username = $scope.user.username;
                 var qiniuBack;
 
-				//var path = "/" + username + "_files/" + fileObj.name;
 				var path = fileObj.name;
 				
 				var initQiniu = function () {
@@ -2274,6 +2272,7 @@ define([
                                 setBigfileValue();
                             },
                             "Error": function (up, file, errTip) {
+                                console.log(file);
                                 line_keyword_nofocus(dropFiles[file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
                             }
                         }
@@ -2293,7 +2292,7 @@ define([
                         console.log("uid获取失败");
                     });
                 };
-				initQiniu();
+                initQiniu();
 
 				var timer;
 
@@ -2317,11 +2316,13 @@ define([
                                "contentHtml": contentHtml
                            }, function () {
                                qiniuBack.addFile(fileObj);
+                               qiniuBack.start();
                            }, function () {
                                line_keyword_nofocus(insertLineNum, "", 0);
                            });
                        }else{
                            qiniuBack.addFile(fileObj);
+                           qiniuBack.start();
                        }
                     });
                 };
@@ -2334,8 +2335,6 @@ define([
 				    while (content){
 				        content = editor.getLine(++lineNo);
                     }
-                    console.log(lineNo);
-				    console.log(content);
 				    if (!angular.isDefined(content)){
 				        editor.replaceRange("\n",{line: lineNo, ch: 0});
                     }
@@ -2348,7 +2347,6 @@ define([
 					fileReader.onloadstart = function () {
                         console.log("fileLoadStart");
                         var insertLineNum = getEmptyLine(cursor.line);
-                        console.log(insertLineNum);
                         dropFiles[fileObj.name].insertLinum = insertLineNum;
                         var onloadInfo = "***正在获取文件 0/"+ fileObj.size +"***";
                         line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onloadInfo, 0);
@@ -2356,14 +2354,21 @@ define([
                         // cursor = editor.getCursor();
                     };
 					fileReader.onprogress = function (file) {
-					    console.log(dropFiles[fileObj.name].insertLinum);
 					    var onprogressInfo = "***正在获取文件 "+ file.loaded +"/" + fileObj.size  + "***";
                         line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onprogressInfo, 0);
                     };
 					fileReader.onload = function () {
                         if (fileObj.size > UpperLimit){ // 上传到七牛
                             console.log("正在上传到七牛");
-                            qiniuUpload(fileObj, dropFiles[fileObj.name].insertLinum);
+                            $scope.storeInfo.used += fileObj.size || 0;
+
+                            if ($scope.storeInfo.used > $scope.storeInfo.total){
+                                $scope.storeInfo.used -= fileObj.size || 0;
+                                line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
+                                return;
+                            }
+
+                            qiniuUpload(fileObj);
                         }else{ // 上传到数据源
                             console.log("正在上传到数据源");
                             if (/image\/\w+/.test(fileObj.type)) {
@@ -2999,7 +3004,6 @@ define([
                     if (isEmptyObject(dropFiles)){
                         return;
                     }
-                    var origin = changeObj && changeObj.origin;
                     var changeLine = changeObj.from.line;
                     var ch = changeObj.from.ch;
                     for(var url in dropFiles){
@@ -3399,17 +3403,39 @@ define([
                     }
                 });
 
+                var getUserStoreInfoPromise = new Promise(function (resolve, reject) {
+                    util.get(config.apiUrlPrefix+"bigfile/getUserStoreInfo", {}, function (result) {
+                        if (!result){
+                            return;
+                        }
+                        resolve(result);
+                    }, function (err) {
+                        // console.log(err);
+                        reject(err);
+                    }, false);
+                });
+
                 editor.on("drop", function (editor, e) {
                     if (!(e.dataTransfer && e.dataTransfer.files.length)) {
                         alert("该浏览器不支持操作");
                         return;
                     }
                     var dropUploadList = [];
-                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                        var file = e.dataTransfer.files[i];
-                        dropFiles[file.name] = file;
-                        fileUpload(file);
-                    }
+
+                    getUserStoreInfoPromise.then(function (result) {
+                        $scope.storeInfo = {
+                            "used": result.used || 0,
+                            "total": result.total || 0
+                        };
+                        for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                            var file = e.dataTransfer.files[i];
+                            dropFiles[file.name] = file;
+                            fileUpload(file);
+                        }
+                    }, function (err) {
+                        console.log(err);
+                    });
+
                     e.preventDefault();
                 });
 
