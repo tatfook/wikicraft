@@ -22,7 +22,7 @@ WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
 
 --log("----------------------")
 --log(request:GetHost())
-
+log(request:GetMsg())
 -- 加载helper相关文件
 include_once(WIKI_ROOT .. 'helpers/index.page')
 
