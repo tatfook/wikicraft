@@ -191,9 +191,9 @@ end
 function RenderPageContent()
 	local isSpider = is_spider()
 
-	--if not isSpider then
-		--return ""
-	--end
+	if not isSpider then
+		return echo("")
+	end
 
 	local paths = {}
 	for s in string.gmatch(path, "([^/]+)") do
@@ -204,18 +204,18 @@ function RenderPageContent()
 	local sitename = paths[2] or "";
 
 	if username == "" or (username == "wiki" and sitename == "home") then
-		return "KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。"
+		return echo("KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。")
 	end
 
 	if username == "wiki" then
-		return ""
+		return echo("")
 	end
 	
 	db.site_data_source:findOne({username=username,sitename=sitename}, resume)
 	local _, siteDataSource = yield()
 
 	if not siteDataSource or siteDataSource.visibility == "private" then
-		return ""
+		return echo("")
 	end
 
 	db.data_source:findOne({username = username, name=siteDataSource.dataSourceName}, resume)
@@ -228,10 +228,10 @@ function RenderPageContent()
 	System.os.GetUrl(urlstr, resume)
 	local _, data = yield()
 	if not data or data.rcode ~= 200 or not data.data then
-		return ""
+		return echo("")
 	end
 
-	return data.data
+	return echo(data.data)
 end
 
 -- 加载通用页
