@@ -1,0 +1,44 @@
+<?npl
+--[[
+Title: cros handle
+Author: wuxiangan
+Date: 2017/3/13
+]]
+
+
+function is_spider()
+	local userAgent = request:header("User-Agent") or ""
+	--log(request, true)
+
+	local spider_list = {
+		"Baiduspider",
+		"YodaoBot",
+		"Sogou web spider",
+		"Googlebot",
+		"Yahoo! Slurp",
+		"Yahoo ContentMatch Crawler",
+		"Sogou-Test-Spider",
+		"Twiceler",
+		"Yahoo! Slurp China",
+		"Sosospider",
+		"CollapsarWEB qihoobot",
+		"NaverBot",
+		"Sogou Orion spider",
+		"Sogou head spider",
+		"SurveyBot",
+		"Yanga WorldSearch Bot",
+		"baiduspider-mobile-gate",
+		"discobot",
+		"ia_archiver",
+		"msnbot",
+		"sogou in spider",
+	}
+
+	for spiderName in ipairs(spider_list) do
+		if (string.find(userAgent, spiderName)) then
+			return true
+		end
+	end
+
+	return false
+end

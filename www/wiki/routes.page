@@ -22,7 +22,7 @@ WIKI_WEBROOT = WIKI_WEBROOT or "/wiki/";
 
 --log("----------------------")
 --log(request:GetHost())
-log(request:GetMsg())
+--log(request:GetMsg())
 -- 加载helper相关文件
 include_once(WIKI_ROOT .. 'helpers/index.page')
 
@@ -186,6 +186,52 @@ function RenderServerWikiScript()
 	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
 	echo(format('<script src="/' .. WIKI_CODE_ENV .. '/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
 	echo(format('<script data-main="/' .. WIKI_CODE_ENV .. '/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js?bust=%s"></script>\n', config.bustVersion, config.bustVersion))
+end
+
+function RenderPageContent()
+	local isSpider = is_spider()
+
+	--if not isSpider then
+		--return ""
+	--end
+
+	local paths = {}
+	for s in string.gmatch(path, "([^/]+)") do
+		paths[#paths+1] = s
+	end
+	--log(paths)
+	local username = paths[1] or "";
+	local sitename = paths[2] or "";
+
+	if username == "" or (username == "wiki" and sitename == "home") then
+		return "KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。"
+	end
+
+	if username == "wiki" then
+		return ""
+	end
+	
+	db.site_data_source:findOne({username=username,sitename=sitename}, resume)
+	local _, siteDataSource = yield()
+
+	if not siteDataSource or siteDataSource.visibility == "private" then
+		return ""
+	end
+
+	db.data_source:findOne({username = username, name=siteDataSource.dataSourceName}, resume)
+	local _, dataSource = yield()
+
+	local urlstr = "http://git.keepwork.com/" .. dataSource.dataSourceUsername .. "/" .. siteDataSource.projectName .. "/raw/".. (siteDataSource.lastCommitId or "master") .. "/" .. path .. ".md"
+	--log(dataSource)
+	--log(siteDataSource)
+	--log(urlstr)
+	System.os.GetUrl(urlstr, resume)
+	local _, data = yield()
+	if not data or data.rcode ~= 200 or not data.data then
+		return ""
+	end
+
+	return data.data
 end
 
 -- 加载通用页

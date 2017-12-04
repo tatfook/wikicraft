@@ -31,6 +31,7 @@ include_once(WIKI_ROOT .. "helpers/sms.page")
 include_once(WIKI_ROOT .. "helpers/filter.page")
 include_once(WIKI_ROOT .. "helpers/cros.page")
 include_once(WIKI_ROOT .. "helpers/log.page")
+include_once(WIKI_ROOT .. "helpers/spider.page")
 WIKI_ENV="www"
 WIKI_DB_PATH="database/www/"
 

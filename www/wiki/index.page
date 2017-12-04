@@ -2,7 +2,7 @@
 <html lang="zh-cn">
 <head>
     <meta charset="utf-8">
-	<meta name="baidu-site-verification" content="TP1ZsTDElU" />
+	<meta name="baidu-site-verification" content="EK3ntTabe5" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title ng-bind="title">keepwork.com</title>
@@ -33,7 +33,9 @@
         <!--用户站点内容体-->
         <div>
             <div id="__UserSitePageContentContainer__">
-                <div id="__UserSitePageContent__"></div>
+                <div id="__UserSitePageContent__">
+				<? RenderPageContent() ?>
+				</div>
             </div>
         </div>
     </div>
