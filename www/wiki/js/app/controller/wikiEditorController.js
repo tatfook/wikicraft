@@ -2258,6 +2258,8 @@ define([
                                 };
                                 util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
                                     dropFiles[file.name]._id = data._id;
+                                    var insertContent = '```@wiki/js/bigfile\n{\n\t"fileId":"' + data._id + '","fileType":"'+file.type+'",\n"extraMsg":"'+file.name+'","channel":"qiniu"\n}\n```\n';
+                                    line_keyword_nofocus(dropFiles[file.name].insertLinum, insertContent);
                                 }, function(){
                                     line_keyword_nofocus(dropFiles[file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
                                     util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
@@ -2269,11 +2271,12 @@ define([
                             },
                             "UploadComplete": function (up, files, info) {
                                 console.log("UploadComplete");
-                                setBigfileValue();
+                                // setBigfileValue();
                             },
                             "Error": function (up, file, errTip) {
-                                console.log(file);
-                                line_keyword_nofocus(dropFiles[file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
+                                console.log(file.file);
+                                console.log(dropFiles[file.name]);
+                                line_keyword_nofocus(dropFiles[file.file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
                             }
                         }
                     };
@@ -3396,6 +3399,7 @@ define([
                             })
                         } else if (item.kind === "file") {
                             var pasteFile = item.getAsFile();
+                            dropFiles[pasteFile.name] = pasteFile;
                             // pasteFile就是获取到的文件
                             //console.log(pasteFile);
                             fileUpload(pasteFile);
