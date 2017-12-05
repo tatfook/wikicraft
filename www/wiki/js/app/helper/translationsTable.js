@@ -20,6 +20,141 @@ define([], function () {
             "en": "English"
         },
         {
+            "_key": "我的资料",
+            "zh-cn": "我的资料",
+            "en": "My Profile"
+        },
+        {
+            "_key": "账户安全",
+            "zh-cn": "账户安全",
+            "en": "Account Security"
+        },
+        {
+            "_key": "我的动态",
+            "zh-cn": "我的动态",
+            "en": "My tidings"
+        },
+        {
+            "_key": "我的关注",
+            "zh-cn": "我的关注",
+            "en": "My attention"
+        },
+        {
+            "_key": "我的历史",
+            "zh-cn": "我的历史",
+            "en": "I am at history"
+        },
+        {
+            "_key": "我的粉丝",
+            "zh-cn": "我的粉丝",
+            "en": "My fans"
+        },
+        {
+            "_key": "实名认证",
+            "zh-cn": "实名认证",
+            "en": "real-name authentication"
+        },
+        {
+            "_key": "消费记录",
+            "zh-cn": "消费记录",
+            "en": "Purchase History"
+        },
+        {
+            "_key": "数据源",
+            "zh-cn": "数据源",
+            "en": "data source"
+        },
+        {
+            "_key": "邀请注册",
+            "zh-cn": "邀请注册",
+            "en": "Invitation to register"
+        },
+        {
+            "_key": "我的站点",
+            "zh-cn": "我的站点",
+            "en": "My Site"
+        },
+        {
+            "_key": "我的VIP",
+            "zh-cn": "我的VIP",
+            "en": "My VIP"
+        },
+        {
+            "_key": "邀请注册",
+            "zh-cn": "邀请注册",
+            "en": "Invitation to register"
+        },
+        {
+            "_key": "订单中心",
+            "zh-cn": "订单中心",
+            "en": "view order"
+        },
+        {
+            "_key": "消费记录",
+            "zh-cn": "消费记录",
+            "en": "Purchase History"
+        },
+        {
+            "_key": "我的网盘",
+            "zh-cn": "我的网盘",
+            "en": "My SkyDrive"
+        },
+        {
+            "_key": "数据源配置",
+            "zh-cn": "数据源配置",
+            "en": "Data Source Configuration"
+        },
+        {
+            "_key": "HEADER_ACTIVITIES_TIP",
+            "zh-cn": "有{{trendsCount}}条动态更新",
+            "en": "has {{trendsCount}} new activities"
+        },
+        {
+            "_key": "应用中心",
+            "zh-cn": "应用中心",
+            "en": "App Center"
+        },
+        {
+            "_key": "paracraft",
+            "zh-cn": "paracraft",
+            "en": "paracraft"
+        },
+        {
+            "_key": "全部内容",
+            "zh-cn": "全部内容",
+            "en": "All content"
+        },
+        {
+            "_key": "当前站点",
+            "zh-cn": "当前站点",
+            "en": "Current site"
+        },
+        {
+            "_key": "动态",
+            "zh-cn": "动态",
+            "en": "Activity"
+        },
+        {
+            "_key": "网站数量：",
+            "zh-cn": "网站数量：",
+            "en": "Website count:"
+        },
+        {
+            "_key": "我的网站",
+            "zh-cn": "我的网站",
+            "en": "My sites"
+        },
+        {
+            "_key": "帮助",
+            "zh-cn": "帮助",
+            "en": "help"
+        },
+        {
+            "_key": "追加续费",
+            "zh-cn": "追加续费",
+            "en": "Additional renewals"
+        },
+        {
             "_key": "KeepWork应用中心",
             "zh-cn": "KeepWork应用中心",
             "en": "KeepWork Application Center"
@@ -173,6 +308,26 @@ define([], function () {
             "_key": "删除选中",
             "zh-cn": "删除选中",
             "en": "Delete selection"
+        },
+        {
+            "_key": "下载选中",
+            "zh-cn": "下载选中",
+            "en": "Download selection"
+        },
+        {
+            "_key": "当前使用：",
+            "zh-cn": "当前使用：",
+            "en": "Usage: ",
+        },
+        {
+            "_key": "可用",
+            "zh-cn": "可用",
+            "en": "available"
+        },
+        {
+            "_key": "总共",
+            "zh-cn": "总共",
+            "en": "Total"
         },
         {
             "_key": "选中本地文件",
@@ -1493,6 +1648,11 @@ define([], function () {
             "_key": "马上配置",
             "zh-cn": "马上配置",
             "en": "Immediate configuration"
+        },
+        {
+            "_key": "功能",
+            "zh-cn": "功能",
+            "en": "function"
         },
         {
             "_key": "选择功能模板：",
@@ -2853,11 +3013,15 @@ define([], function () {
 
     var translationsTable = {};
 
+    var capitalizeFirstLetter = function (string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     translations.forEach(function (translation) {
         for (var key in translation) {
             if (key == '_key') continue;
             translationsTable[key] = translationsTable[key] || {};
-            translationsTable[key][translation._key] = translation[key];
+            translationsTable[key][translation._key] = capitalizeFirstLetter(translation[key]);
         }
     });
 

@@ -225,7 +225,7 @@
                 <div class="col-sm-4" ng-show="user.vipInfo.endDate">您的VIP特权将在<span class="text-danger">{{user.vipInfo.endDate}}</span>到期</div>
                 <div class="col-sm-4" ng-show="!user.vipInfo.endDate" translate="您还不是VIP用户。"></div>
                 <div class="col-sm-3">
-                    <div class="btn btn-primary" ng-click="goPayPage()">{{user.vipInfo.endDate ? "追加续费" : "成为VIP"}}</div>
+                    <div class="btn btn-primary" ng-click="goPayPage()">{{(user.vipInfo.endDate ? "追加续费" : "成为VIP") | translate}}</div>
                 </div>
             </div>
             <div class="clearfix compares">
