@@ -8,21 +8,21 @@
     <form name="tableForm" role="form" ng-submit="table_insert()" novalidate>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">插入表格</h4>
+        <h4 class="modal-title" translate="插入表格"></h4>
     </div>
     <div class="modal-body">
         <div>
             <div class="row">
                 <div class="form-group col-xs-12">
-                    <label for="rows">行数</label>
+                    <label for="rows" translate="行数"></label>
                     <input id="rows" type="number" class="form-control" name="rows" ng-model="table.rows" min="1">
                 </div>
                 <div class="form-group col-xs-12">
-                    <label for="cols">列数</label>
+                    <label for="cols" translate="列数"></label>
                     <input id="cols" type="number" class="form-control" name="cols" ng-model="table.cols" min="1">
                 </div>
                 <div class="form-group col-xs-12">
-                    <label>对齐方式</label>
+                    <label translate="对齐方式"></label>
                     <label class="checkbox-inline">
                         <input type="radio" name="alignment" ng-model="table.alignment" ng-value="0">默认
                     </label>
@@ -44,8 +44,8 @@
     </div>
     <div class="modal-footer">
         <span style="color: red; padding-right: 10px">{{errInfo}}</span>
-        <button type="submit" class="btn btn-primary btn-fill">确定</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <button type="submit" class="btn btn-primary btn-fill" translate="确定"></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
     </div>
     </form>
 </div>

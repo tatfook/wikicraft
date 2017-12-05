@@ -228,18 +228,18 @@
             <div class="clearfix">
                 <div class="col-md-6" ng-hide="hidePageTree || step != 1">
                     <div>
-                        <h4 class="title">选择网站</h4>
+                        <h4 class="title" translate="选择网站"></h4>
                         <div id="newPageTreeId"></div>
                     </div>
                 </div>
                 <div class="pad40" ng-class="hidePageTree?'col-md-7':'col-md-6'" ng-show="step == 1">
                     <div class="form-group">
-                        <label class="title">页面名：</label>
+                        <label class="title" translate="页面名："></label>
                         <input autofocus type="text" name="name" class="form-control input-lg" ng-model="websitePage.pagename" required>
                     </div>
                 </div>
                 <div class="col-xs-12" ng-show="step == 2 || hidePageTree">
-                    <h4 class="title margin_12_0_20_0">选择页面模板：</h4>
+                    <h4 class="title margin_12_0_20_0" translate="选择页面模板："></h4>
                     <div class="template-select clearfix">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" ng-repeat="pageTemplate in pageTemplates" ng-class="getActiveStyleClass(pageTemplate)">
@@ -253,8 +253,8 @@
                                 <div ng-class="{'col-sm-5':hidePageTree, 'col-xs-6':!hidePageTree, 'active':(websitePage.template.name == template.name)}" ng-repeat="template in activePageTemplate.templates" style="margin-bottom: 20px;">
                                     <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-xs-12 btn-group">
-                                        <a class="btn col-sm-6 col-xs-12 btn-lg" ng-href="{{template.previewUrl}}" target="_blank">预览</a>
-                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-click="selectTemplate(template)" ng-class="websitePage.template.name == template.name ? 'active' : ''">选择</div>
+                                        <a class="btn col-sm-6 col-xs-12 btn-lg" ng-href="{{template.previewUrl}}" target="_blank" translate="预览"></a>
+                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-click="selectTemplate(template)" ng-class="websitePage.template.name == template.name ? 'active' : ''" translate="选择"></div>
                                     </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
@@ -266,10 +266,10 @@
         </div>
         <div class="modal-footer">
             <span style="color: red; padding-right: 10px">{{errInfo}}</span>
-            <div class="btn btn-primary btn-fill" ng-show="step == 1 && !hidePageTree" ng-click="nextStep()">下一步</div>
-            <div class="btn btn-primary btn-fill" ng-show="step == 2" ng-click="prevStep()">上一步</div>
-            <button type="submit" class="btn btn-primary btn-fill" ng-show="step == 2 || hidePageTree">确定</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+            <div class="btn btn-primary btn-fill" ng-show="step == 1 && !hidePageTree" ng-click="nextStep()" translate="下一步"></div>
+            <div class="btn btn-primary btn-fill" ng-show="step == 2" ng-click="prevStep()" translate="上一步"></div>
+            <button type="submit" class="btn btn-primary btn-fill" ng-show="step == 2 || hidePageTree" translate="确定"></button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
         </div>
     </form>
 </div>

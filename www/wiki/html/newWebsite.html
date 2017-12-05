@@ -260,13 +260,11 @@
 
 <div ng-controller="newWebsiteController">
     <div class="col-md-10 main-content" ng-show="!isModal">
-        <div class="panel-heading">
-            新建网站
-        </div>
+        <div class="panel-heading" translate="新建网站"></div>
         <div class="panel-body">
             <div class="step-content clearfix">
                 <div ng-show="step == 1">
-                    <h4>选择功能模板：</h4>
+                    <h4 translate="选择功能模板："></h4>
                     <div role="tabpanel" class="clearfix model-select">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs col-xs-2" role="tablist">
@@ -281,8 +279,8 @@
                                 <div class="col-sm-5 col-xs-6" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
                                     <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-xs-12 btn-group">
-                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-disabled="!template.previewUrl" ng-click="template.previewUrl && goPreviewPage(template.previewUrl)">预览</div>
-                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-disabled="!template.previewUrl" ng-click="template.previewUrl && goPreviewPage(template.previewUrl)" translate="预览"></div>
+                                        <div class="btn col-sm-6 col-xs-12 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''" translate="选择"></div>
                                     </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
@@ -292,7 +290,7 @@
                 </div>
 
                 <div ng-show="step == 2" class="step2">
-                    <p>设定网站的访问地址</p>
+                    <p translate="设定网站的访问地址"></p>
                     <div class="col-sm-7 form-group hidden-xs break-all">
                         http://keepwork.com/{{user.username}}/<input id="websiteName" ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
                     </div>
@@ -304,13 +302,13 @@
                         <p class="text-danger">{{errMsg}}</p>
                     </div>
                     <div class="col-sm-12 info no-padding-left">
-                        <p>*可使用小写字母、数字（例如：mysite123）</p>
-                        <p>设定后不可修改</p>
-                        <p>VIP可在网站设置中设置cname转发</p>
+                        <p translate="*可使用小写字母、数字（例如：mysite123）"></p>
+                        <p translate="设定后不可修改"></p>
+                        <p translate="VIP可在网站设置中设置cname转发"></p>
                     </div>
                 </div>
                 <div ng-show="step == 3" class="confirm-msg">
-                    <h4>信息确认：</h4>
+                    <h4 translate="信息确认："></h4>
                     <div class="col-sm-12">
                         URL：<span class="break-all">{{'/' + user.username + '/' + website.name + '/index'}}</span>
                     </div>
@@ -324,17 +322,17 @@
                 </div>
                 <div ng-show="step == 4" class="congratulation">
                     <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">恭喜你，网站创建成功！ </h4>
-                    <p>网站名：<a ng-click="goEditWebsitePage()">前往设置</a></p>
+                    <p>网站名：<a ng-click="goEditWebsitePage()" translate="前往设置"></a></p>
                     <p class="break-all">网址：http://keepwork.com/{{user.username}}/{{website.name}}</p>
-                    <p>您还可以在 <a ng-click="goEditWebsitePage()">网站配置</a> 页面设置网站名称、标签</p>
-                    <p><a ng-click="goVIP()">开启VIP</a>，额外支持私有权限以及权限管理等特权</p>
+                    <p>您还可以在 <a ng-click="goEditWebsitePage()" translate="网站配置"></a> 页面设置网站名称、标签</p>
+                    <p><a ng-click="goVIP()" translate="开启VIP"></a>，额外支持私有权限以及权限管理等特权</p>
                 </div>
             </div>
             <div class="step-footer">
                 <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
                 <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? '确认' : '下一步'}}</button>
-                <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()">马上编辑</button>
-                <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()">马上配置</button>
+                <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()" translate="马上编辑"></button>
+                <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()" translate="马上配置"></button>
             </div>
         </div>
     </div>
@@ -346,7 +344,7 @@
         <div class="modal-body">
             <div class="step-content clearfix">
                 <div ng-show="step == 1">
-                    <h4>选择功能模板：</h4>
+                    <h4 translate="选择功能模板："></h4>
                     <div role="tabpanel" class="clearfix model-select">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs col-sm-2" role="tablist">
@@ -361,8 +359,8 @@
                                 <div class="col-sm-5" ng-repeat="template in templates" ng-class="website.templateName == template.name ? 'active' : ''" style="margin-bottom: 20px;">
                                     <img ng-src="{{template.logoUrl}}" ng-click="selectTemplate(template)" alt="">
                                     <div class="col-md-12 btn-group">
-                                        <div class="btn col-sm-6 btn-lg" ng-disabled="!template.previewUrl" ng-click="template.previewUrl && goPreviewPage(template.previewUrl)">预览</div>
-                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''">选择</div>
+                                        <div class="btn col-sm-6 btn-lg" ng-disabled="!template.previewUrl" ng-click="template.previewUrl && goPreviewPage(template.previewUrl)" translate="预览"></div>
+                                        <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''" translate="选择"></div>
                                     </div>
                                     <span class="label">{{template.name}}</span>
                                 </div>
@@ -371,7 +369,7 @@
                     </div>
                 </div>
                 <div ng-show="step == 2" class="step2">
-                    <p>设定网站的访问地址</p>
+                    <p translate="设定网站的访问地址"></p>
                     <div class="col-sm-8 form-group">
                         http://keepwork.com/{{user.username}}/<input id="websiteName_modal" ng-model="website.name" ng-change="checkWebsiteName()" type="text" class="form-control">
                     </div>
@@ -379,13 +377,13 @@
                         <p class="text-danger">{{errMsg}}</p>
                     </div>
                     <div class="col-sm-12 info no-padding-left">
-                        <p>*可使用小写字母、数字（例如：mysite123）</p>
-                        <p>设定后不可修改</p>
-                        <p>VIP可在网站设置中设置cname转发</p>
+                        <p translate="*可使用小写字母、数字（例如：mysite123）"></p>
+                        <p translate="设定后不可修改"></p>
+                        <p translate="VIP可在网站设置中设置cname转发"></p>
                     </div>
                 </div>
                 <div ng-show="step == 3" class="confirm-msg">
-                    <h4>信息确认：</h4>
+                    <h4 translate="信息确认："></h4>
                     <div class="col-sm-12">
                         URL：<span>{{'/' + user.username + '/' + website.name + '/index'}}</span>
                     </div>
@@ -399,17 +397,17 @@
                 </div>
                 <div ng-show="step == 4" class="congratulation">
                     <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">恭喜你，网站创建成功！ </h4>
-                    <p>网站名：<a ng-click="goEditWebsitePage()">前往设置</a></p>
+                    <p>网站名：<a ng-click="goEditWebsitePage()" translate="前往设置"></a></p>
                     <p>网址：http://keepwork.com/{{user.username}}/{{website.name}}</p>
-                    <p>您还可以在 <a ng-click="goEditWebsitePage()">网站配置</a> 页面设置网站名称、标签</p>
-                    <p><a ng-click="goVIP()">开启VIP</a>，额外支持私有权限以及权限管理等特权</p>
+                    <p>您还可以在 <a ng-click="goEditWebsitePage()" translate="网站配置"></a> 页面设置网站名称、标签</p>
+                    <p><a ng-click="goVIP()" translate="开启VIP"></a>，额外支持私有权限以及权限管理等特权</p>
                 </div>
             </div>
             <div class="step-footer">
                 <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
                 <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? '确认' : '下一步'}}</button>
-                <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()">马上编辑</button>
-                <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()">马上配置</button>
+                <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()" translate="马上编辑"></button>
+                <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()" translate="马上配置"></button>
             </div>
         </div>
     </div>

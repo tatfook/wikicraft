@@ -37,35 +37,33 @@
 <div class="confirm-dialog">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="$dismiss()">&times;</button>
-        <h4 class="modal-title">实名手机认证</h4>
+        <h4 class="modal-title" translate="实名手机认证"></h4>
     </div>
     <div class="modal-body">
         <div class="tab-content col-sm-10 col-sm-offset-1">
             <div role="tabpanel" class="tab-pane safety-panel active">
                 <div ng-show="user.realNameInfo.verified && user.realNameInfo.cellphone" class="realname-verified-info">
-                    <p>认证状态：已经认证</p>
+                    <p translate="认证状态：已经认证"></p>
                     <p>认证号码：{{ cellphone2UI(user.realNameInfo.cellphone) }}</p>
                 </div>
                 <form ng-hide="user.realNameInfo.verified && user.realNameInfo.cellphone" class="form-horizontal" role="form">
                     <div class="form-group sr-only">
-                        <legend>手机认证表单</legend>
+                        <legend translate="手机认证表单"></legend>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-sm-12">
-                            响应国家号召，Keepwork已开启用户实名制。通过实名认证后，才可发表信息与参与评论。如果您不进行实名认证，仍可浏览Keepwork的资源与内容，并在需要的时候得到提示。
-                        </div>
+                        <div class="col-sm-12" translate="响应国家号召，Keepwork已开启用户实名制。通过实名认证后，才可发表信息与参与评论。如果您不进行实名认证，仍可浏览Keepwork的资源与内容，并在需要的时候得到提示。"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-3">输入手机号：</label>
+                        <label class="control-label col-sm-3" translate="输入手机号："></label>
                         <div class="col-sm-9">
                             <input class="form-control" ng-model="realNameInfo.cellphone">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-3">短信验证码：</label>
+                        <label class="control-label col-sm-3" translate="短信验证码："></label>
                         <div class="col-sm-5">
                             <input type="text" class="form-control" ng-model="realNameInfo.SMSCode">
                         </div>
@@ -85,7 +83,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-fill btn-md btn-primary" ng-click="submitRealnameInfo()">确定</button>
-        <button type="button" class="btn btn-md" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <button type="submit" class="btn btn-fill btn-md btn-primary" ng-click="submitRealnameInfo()" translate="确定"></button>
+        <button type="button" class="btn btn-md" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
     </div>
 </div>
