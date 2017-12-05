@@ -195,7 +195,7 @@ const.SITE_PRIVILEGE_MASTER_LEVEL=40       -- 读写
 const.SITE_PRIVILEGE_OWNER_LEVEL=50        -- 
 
 -- 默认数据源名
-const.DEFAULT_DATA_SOURCE_NAME="内置gitlab"       -- 默认数据源名
+const.DEFAULT_DATA_SOURCE_NAME="官方git数据源"       -- 默认数据源名
 const.DEFAULT_DATA_SOURCE_SITENAME="__keepwork__" -- 默认数据源的站点名
 const.DEFAULT_DATA_SOURCE_PROJECT_NAME="keepworkdatasource" -- 默认数据源的项目名
 
