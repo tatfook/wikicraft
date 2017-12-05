@@ -82,30 +82,30 @@
 </style>
 <div ng-controller="oauthController" class="oauth-container clearfix">
 	<div class="page-login pull-left" ng-show="logined && !isAuth">
-		<h3>Keepwork快速安全登录</h3>
+		<h3 translate="Keepwork快速安全登录"></h3>
 		<div class="login-user">
 			<img ng-src="{{user.portrait || imgsPath+'wiki_default_profile.jpg '}}" alt="用户头像" class="user-logo left-to-right">
 			<p>{{user.displayName || user.username}}</p>
 		</div>
 		<div class="btns">
-			<div class="btn btn-primary" ng-click="agree()">同 意</div>
-			<div class="btn btn-danger" ng-click="refuse()">拒 绝</div>
+			<div class="btn btn-primary" ng-click="agree()" translate="同 意"></div>
+			<div class="btn btn-danger" ng-click="refuse()" translate="拒 绝"></div>
 		</div>
 		<p class="clearfix otherway">
-			<a href="http://keepwork.com/wiki/join" class="pull-right">注册新账号</a>
+			<a href="http://keepwork.com/wiki/join" class="pull-right" translate="注册新账号"></a>
 			<span class="pull-right"> | </span>
-			<a href="http://keepwork.com/wiki/home" class="pull-right">账号密码登录</a>
+			<a href="http://keepwork.com/wiki/home" class="pull-right" translate="账号密码登录"></a>
 		</p>
 	</div>
 	<div class="page-accredit pull-left" ng-show="logined && !isAuth">
 		<p><a class="oauth-origin">{{oauthApp.appName || "未知应用"}} </a>将获得以下权限：</p>
 		<div class="accredit-info">
 			<ul class="list-group">
-				<li class="list-group-item"><input ng-model="checkAll" type="checkbox" value="all" id="selectAll"><label for="selectAll">全选</label></li>
-				<li class="list-group-item"><input type="checkbox" value="all" id="userinfo" checked="checked" disabled><label for="userinfo">获取个人用户信息</label></li>
+				<li class="list-group-item"><input ng-model="checkAll" type="checkbox" value="all" id="selectAll"><label for="selectAll" translate="全选"></label></li>
+				<li class="list-group-item"><input type="checkbox" value="all" id="userinfo" checked="checked" disabled><label for="userinfo" translate="获取个人用户信息"></label></li>
 			</ul>
 		</div>
 	</div>
 	<p ng-show="isAuth">{{message}}</p>
-	<p ng-show="!logined">请先登录</p>
+	<p ng-show="!logined" translate="请先登录"></p>
 </div>

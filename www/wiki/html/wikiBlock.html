@@ -210,7 +210,7 @@
 <div>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">WIKI模块</h4>
+        <h4 class="modal-title" translate="WIKI模块"></h4>
     </div>
 
     <div class="modal-body wikiblock-modal-body">
@@ -218,7 +218,7 @@
             <div class="row">
                 <form role="form">
                     <div class="form-group clearfix">
-                        <label class="control-label sr-only">搜索模块</label>
+                        <label class="control-label sr-only" translate="搜索模块"></label>
                         <div class="col-xs-4 col-xs-offset-8 col-md-4 col-md-offset-7 wiki-searchbar">
                             <input id="modelSearch" type="text" ng-model="moduleQueryStr" ng-keyup="queryInputKeyup($event)" class="form-control" placeholder="输入搜索内容" ng-model-options="{debounce: 300}">
                             <span ng-click="searchWikiBlock()" class="glyphicon glyphicon-search text-muted"></span>
@@ -274,10 +274,10 @@
 
                         <!--
                             <li class="active">
-                                <a href="javascript:;" ng-click="getHot()">热门</a>
+                                <a href="javascript:;" ng-click="getHot()" translate="热门"></a>
                             </li>
                             <li>
-                                <a href="javascript:;" ng-click="getAll()">排行榜</a>
+                                <a href="javascript:;" ng-click="getAll()" translate="排行榜"></a>
                             </li>
                         -->
                     </ul>
@@ -294,7 +294,7 @@
                                 <div class="text">
                                     <h4>
                                         <a ng-click="selectWikiBlock(wikiBlock)">{{wikiBlock.name}}</a>
-                                        <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)">添加</a>
+                                        <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)" translate="添加"></a>
                                     </h4>
                                     <p class="info">
                                         热度：{{wikiBlock.useCount}}
@@ -305,7 +305,7 @@
                             </div>
                             <div class="empty-box" ng-if="!wikiBlockListFilteredToDisplay.length">
                                 <span class="iconfont icon-kongbaiyemian"></span>
-                                <p>暂无相关内容...</p>
+                                <p translate="暂无相关内容..."></p>
                             </div>
                         </div>
 
@@ -322,7 +322,7 @@
     </div>
 
     <!--<div class="modal-footer">-->
-    <!--<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="no()">否</button>-->
-    <!--<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="yes()">是</button>-->
+    <!--<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="no()" translate="否"></button>-->
+    <!--<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="yes()" translate="是"></button>-->
     <!--</div>-->
 </div>

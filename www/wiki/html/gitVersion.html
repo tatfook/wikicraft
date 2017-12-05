@@ -59,12 +59,12 @@
     <div class="container" ng-show="!isModal">
         <div class="panel panel-default col-md-12 git-version">
             <div class="panel-heading">
-                <h4>站点版本管理</h4>
+                <h4 translate="站点版本管理"></h4>
             </div>
             <div class="panel-body">
                 <form role="form" class="form-horizontal git-version-form">
                     <div class="form-group">
-                        <label class="control-label col-md-2">文件路径：</label>
+                        <label class="control-label col-md-2" translate="文件路径："></label>
                         <div class="col-md-6">
                             <!--input type="text" class="form-control" ng-model="path"-->
                             <div>
@@ -78,13 +78,13 @@
                         </div>
                     </div>
                     <!--div class="form-group">
-                        <label class="control-label col-md-2">起始sha：</label>
+                        <label class="control-label col-md-2" translate="起始sha："></label>
                         <div class="col-md-6">
                             <input placeholder="sha过滤(选填)" type="text" class="form-control" ng-model="sha">
                         </div>
                     </div-->
                     <div class="form-group">
-                        <label class="control-label col-md-2">起始日期：</label>
+                        <label class="control-label col-md-2" translate="起始日期："></label>
                         <div class="col-md-6">
                             <div class="input-group">
                                 <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-2">终止日期：</label>
+                        <label class="control-label col-md-2" translate="终止日期："></label>
                         <div class="col-md-6">
                             <div class="input-group">
                                 <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
@@ -113,20 +113,20 @@
                     </div>
                     <div class="form-group">
                         <div class="btn-box col-md-8">
-                            <button class="btn btn-primary" ng-click="submit()">查询</button>
+                            <button class="btn btn-primary" ng-click="submit()" translate="查询"></button>
                         </div>
                     </div>
                 </form>
             </div>
             <div style="margin: 20px;" class="col-md-8">
                 <table class="table table-bordered">
-                    <caption>提交记录</caption>
+                    <caption translate="提交记录"></caption>
                     <thead>
                     <tr>
                         <!--th>SHA</th-->
-                        <th>备注</th>
-                        <th>日期</th>
-                        <th>操作</th>
+                        <th translate="备注"></th>
+                        <th translate="日期"></th>
+                        <th translate="操作"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -147,12 +147,12 @@
     <div ng-show="isModal" class="panel panel-default col-md-12 git-version git-version-modal">
         <div class="modal-header">
             <button type="button" class="close"  ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
-            <h4>站点版本管理</h4>
+            <h4 translate="站点版本管理"></h4>
         </div>
         <div class="modal-body col-md-10 col-md-offset-1">
             <form role="form" class="form-horizontal git-version-form">
                 <div class="form-group">
-                    <label class="control-label col-md-2">文件路径：</label>
+                    <label class="control-label col-md-2" translate="文件路径："></label>
                     <div class="col-md-10">
                         <div>
                             <ui-select ng-model="selected" ng-disabled on-select="pathSelected($item, $model)">
@@ -165,7 +165,7 @@
                     </div>
                 </div>
                 <!--div class="form-group">
-                    <label class="control-label col-md-2">选择站点：</label>
+                    <label class="control-label col-md-2" translate="选择站点："></label>
                     <div class="col-md-10">
 						<select ng-model="selectSitename">
 							<option ng-repeat="x in siteList" value="{{x.name}}">{{x.displayName + "(" + x.name + ")"}}</option>
@@ -173,7 +173,7 @@
                     </div>
                 </div-->
                 <div class="form-group">
-                    <label class="control-label col-md-2">起始日期：</label>
+                    <label class="control-label col-md-2" translate="起始日期："></label>
                     <div class="col-md-10">
                         <div class="input-group">
                             <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-2">终止日期：</label>
+                    <label class="control-label col-md-2" translate="终止日期："></label>
                     <div class="col-md-10">
                         <div class="input-group">
                             <input type="text" placeholder="选填" class="form-control" uib-datepicker-popup
@@ -202,19 +202,19 @@
                 </div>
                 <div class="form-group">
                     <div class="btn-box col-md-12">
-                        <button class="btn btn-primary" ng-click="submit()">查询</button>
+                        <button class="btn btn-primary" ng-click="submit()" translate="查询"></button>
                     </div>
                 </div>
             </form>
             <div style="margin: 20px 0;" class="col-md-12">
                 <table class="table table-bordered">
-                    <caption>提交记录</caption>
+                    <caption translate="提交记录"></caption>
                     <thead>
                     <tr>
                         <!--th>SHA</th-->
-                        <th>备注</th>
-                        <th>日期</th>
-                        <th>操作</th>
+                        <th translate="备注"></th>
+                        <th translate="日期"></th>
+                        <th translate="操作"></th>
                     </tr>
                     </thead>
                     <tbody>

@@ -73,6 +73,28 @@
         font-size: 16px;
         padding: 9px 27px;
     }
+    .delete-website-confirm-modal label {
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        align-items: center;
+    }
+    .delete-website-confirm-modal label span {
+        font-weight: normal;
+    }
+    .delete-website-confirm-modal label input {
+        margin: 0 5px 0 0;
+    }
+    .delete-website-confirm-modal .delete-website-confirm-msg {
+        display: flex;
+        align-items: center;
+    }
+    .delete-website-confirm-modal .icon-exclamation-circle {
+        margin-left: -15px;
+        margin-right: 10px;
+        font-size: 40px;
+        font-weight: 100;
+    }
 </style>
 <style>
     @media (max-width: 768px) {
@@ -98,24 +120,22 @@
 
 <div ng-controller="websiteController">
     <div class="col-md-10 panel main-content">
-        <div class="panel-heading">
-            我的站点
-        </div>
+        <div class="panel-heading" translate="我的站点"></div>
         <div class="panel-body website-flex">
             <h3 class="title clearfix">
                 <span>网站数量：<span class="text-primary">{{websites.count}}</span></span>
-                <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
+                <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()" translate="新建网站"></a>
             </h3>
             <div class="flex-table">
                 <div class="fthead">
-                    <div>站点名称</div>
-                    <div class="hidden-xs site-link">站点地址</div>
-                    <div class="hidden-xs">创建时间</div>
-                    <div>操作</div>
+                    <div translate="站点名称"></div>
+                    <div class="hidden-xs site-link" translate="站点地址"></div>
+                    <div class="hidden-xs" translate="创建时间"></div>
+                    <div translate="操作"></div>
                 </div>
                 <div class="empty-box" ng-hide="websites.count > 0">
                     <span class="iconfont icon-kongbaiyemian"></span>
-                    <p>暂无相关内容...</p>
+                    <p translate="暂无相关内容..."></p>
                 </div>
                 <div class="ftbody-item" ng-repeat="website in websites" ng-hide="website.isDelete">
                     <div>
@@ -132,6 +152,30 @@
                         <a class="iconfont icon-bianjiqi-shezhi"  ng-click="goEditWebsitePage(website)" title="设置"></a>
                         <a class="iconfont icon-bianjiqi-shanchu text-danger" ng-click="deleteWebsite(website)" title="删除"></a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--删除网站-->
+    <div class="modal fade delete-website-confirm-modal" id="deleteWebsiteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteWebsiteConfirmModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteWebsiteConfirmModalLabel">删除提醒</h4>
+                </div>
+                <div class="modal-body" style="padding: 30px 80px;">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <h4 class="delete-website-confirm-msg"><i class="iconfont icon-exclamation-circle text-danger"></i><span>{{ deleteWebsiteConfirmMsg }}</span></h4>
+                            <label><input type="checkbox" ng-model="deleteWebsiteWithGitlabData" /><span>同时清空全部数据</span></label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" ng-click="confirmDeleteWebsite(deleteWebsiteConfirmSite)">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div>
         </div>

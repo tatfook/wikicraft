@@ -27,16 +27,16 @@
     <form name="videoForm" role="form" ng-submit="video_insert()" novalidate>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">插入视频</h4>
+        <h4 class="modal-title" translate="插入视频"></h4>
     </div>
     <div class="modal-body">
         <ul class="nav nav-btn-tabs">
-            <li class="active"><a href="#video_url" data-toggle="tab" class="btn">网络地址</a></li>
-            <li><a href="#video_local" data-toggle="tab" class="btn">本地上传</a></li>
+            <li class="active"><a href="#video_url" data-toggle="tab" class="btn" translate="网络地址"></a></li>
+            <li><a href="#video_local" data-toggle="tab" class="btn" translate="本地上传"></a></li>
         </ul>
 		<ul>
 			<div class="tab-pane fade in active padding" id="video_url">
-				<p>请输入视频地址（url）：</p>
+				<p translate="请输入视频地址（url）："></p>
 				<p>
 					<input id="url" type="text" class="form-control" name="url" ng-model="videoUrl" placeholder="http://...">
 				</p>
@@ -46,15 +46,15 @@
 					<!--<div ng-repeat="(key, value) in filelist">{{key}}</div>-->
 					<div>{{filename}}</div>
 					<p id=uploadVideoContainer>
-						<button id="uploadVideoId" class="btn btn-default">打开文件浏览器</button>
+						<button id="uploadVideoId" class="btn btn-default" translate="打开文件浏览器"></button>
 					</p>
 				</div>
 			</div>
 		</ul>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary btn-fill">确定</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <button type="submit" class="btn btn-primary btn-fill" translate="确定"></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
     </div>
     </form>
 </div>

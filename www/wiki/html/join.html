@@ -129,29 +129,29 @@
                 {{nameErrMsg}}
             </div>
             <div class="form-group">
-                <label class="sr-only">账户名</label>
+                <label class="sr-only" translate="账户名"></label>
                 <input type="text" class="form-control" name="username" placeholder="账户名" ng-model="username" ng-blur="checkInput({'username': true})">
-                <p>登录账号注册后不可更改</p>
-                <p>可以使用英文字母、数字组合（例如：keep123）</p>
-                <p>系统默认个人网址地址：</p>
+                <p translate="登录账号注册后不可更改"></p>
+                <p translate="可以使用英文字母、数字组合（例如：keep123）"></p>
+                <p translate="系统默认个人网址地址："></p>
                 <p class="user-link">http://keepwork.com/{{username || "???"}}</p>
             </div>
             <div class="form-group text-danger">
                 {{pwdErrMsg}}
             </div>
             <div class="form-group">
-                <label class="sr-only">密码</label>
+                <label class="sr-only" translate="密码"></label>
                 <input type="password" style="display: none;" name="password">
                 <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password" ng-blur="checkInput({'password': true})">
             </div>
             <div class="checkbox clearfix">
                 <label>
-                    <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()">《KeepWork用户协议》</a>
+                    <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>
                 </label>
             </div>
-            <a ng-click="register()" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree">注册</a>
+            <a ng-click="register()" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree" translate="注册"></a>
             <div class="otherLogin">
-                <div class="title">直接使用以下账号登录</div>
+                <div class="title" translate="直接使用以下账号登录"></div>
                 <div class="login-way">
                     <a ng-click="qqLogin()">
                         <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">
@@ -178,28 +178,28 @@
                 <p>请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开 <a ng-click="goUserCenter()">>>个人资料管理 << </a>，进行绑定。</p>
             </div>
             <div class="btns-group">
-                <div class="btn btn-primary" ng-click="goBack()">返 回</div>
-                <div class="btn btn-primary" ng-click="goUserHome()">跳转个人首页</div>
+                <div class="btn btn-primary" ng-click="goBack()" translate="返 回"></div>
+                <div class="btn btn-primary" ng-click="goUserHome()" translate="跳转个人首页"></div>
             </div>
         </div>
         <div class="completeMsg" ng-show="step==3">
-            <h2>完善账号信息</h2>
-            <p class="info">完善信息后可使用第三方账号登录页可使用本站账号密码登录。</p>
+            <h2 translate="完善账号信息"></h2>
+            <p class="info" translate="完善信息后可使用第三方账号登录页可使用本站账号密码登录。"></p>
             <form>
                 <div class="text-danger">{{errMsg}}</div>
                 <div class="form-group">
-                    <label class="sr-only">账户名</label>
+                    <label class="sr-only" translate="账户名"></label>
                     <input type="text" class="form-control" name="otherUsername" placeholder="账户名" ng-model="otherUsername" ng-blur="checkInput({'username': true}, 'other')">
-                    <p>登录账号注册后不可更改</p>
-                    <p>可以使用英文字母、数字组合（例如：keep123）</p>
-                    <p>系统默认个人网址地址：</p>
+                    <p translate="登录账号注册后不可更改"></p>
+                    <p translate="可以使用英文字母、数字组合（例如：keep123）"></p>
+                    <p translate="系统默认个人网址地址："></p>
                     <p class="user-link">http://keepwork.com/{{otherUsername || "???"}}</p>
                     <div class="text-danger input-err">
                         {{nameErrMsg}}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="sr-only">密码</label>
+                    <label class="sr-only" translate="密码"></label>
                     <input type="password" name="otherPassword" style="display: none">
                     <input type="password" class="form-control" name="otherPassword" placeholder="密码" ng-model="otherPassword" ng-blur="checkInput({'password': true}, 'other')">
                     <div class="text-danger input-err">
@@ -208,10 +208,10 @@
                 </div>
                 <div class="checkbox clearfix">
                     <label>
-                        <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()">《KeepWork用户协议》</a>
+                        <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>
                     </label>
                 </div>
-                <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree">确 定</div>
+                <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree" translate="确 定"></div>
             </form>
         </div>
     </div>

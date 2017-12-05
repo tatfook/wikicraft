@@ -54,15 +54,13 @@
         <img ng-src="{{imgsPath+'wiki_404.jpg'}}" alt="">
     </div>
     <div class="text">
-        <h1>很抱歉！您访问的页面不存在...</h1>
+        <h1 translate="很抱歉！您访问的页面不存在..."></h1>
         <div class="btns">
             <div class="btn btn-primary-outline" ng-click="goBack()">
                 <i class="fa fa-arrow-circle-o-left"></i>
                 返回上一页
             </div>
-            <div class="btn btn-primary-outline" ng-click="newPage()" ng-show="showNewPageBtn">
-                创建该页面
-            </div>
+            <div class="btn btn-primary-outline" ng-click="newPage()" ng-show="showNewPageBtn" translate="创建该页面"></div>
         </div>
     </div>
 </div>

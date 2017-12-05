@@ -44,8 +44,8 @@
             <p ng-bind-html="confirmObj.contentHtml"></p>
         </div>
         <div class="modal-footer">
-            <button ng-show="confirmObj.confirmBtn" type="submit" class="btn btn-fill {{confirmObj.confirmBtnClass || 'btn-primary'}}">确定</button>
-            <button ng-show="confirmObj.cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
+            <button ng-show="confirmObj.confirmBtn" type="submit" class="btn btn-fill {{confirmObj.confirmBtnClass || 'btn-primary'}}" translate="确定"></button>
+            <button ng-show="confirmObj.cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()" translate="取消"></button>
         </div>
     </form>
 </div>

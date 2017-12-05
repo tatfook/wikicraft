@@ -37,6 +37,7 @@
 			'angular-toggle-switch': libPathPrefix + 'angular-toggle-switch/angular-toggle-switch.min',
 			'angular-ui-select': libPathPrefix + 'angular-ui-select/select.min',
 			'angular-sanitize': libPathPrefix + 'angular-sanitize/angular-sanitize.min',
+			'angular-translate': libPathPrefix + 'angular-translate/angular-translate.min',
             'bootstrap': libPathPrefix + "bootstrap/js/bootstrap.min",
             'bluebird':  libPathPrefix + "bluebird/bluebird.min",
 			'satellizer': libPathPrefix + 'satellizer/satellizer.min',
@@ -98,6 +99,9 @@
 				deps:['angular']
 			},
 			'angular-sanitize':{
+				deps:['angular']
+			},
+			'angular-translate':{
 				deps:['angular']
 			},
 			'satellizer':{
