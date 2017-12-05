@@ -196,8 +196,8 @@
             <img ng-src="{{getImageUrl('wiki_banner_right.png', imgsPath)}}" class="right-banner-bg">
         </div>
         <div class="recomment">
-            <h1>KeepWork应用中心</h1>
-            <h2>让你的网站更加生动的创作工具与网络服务</h2>
+            <h1 translate="KeepWork应用中心"></h1>
+            <h2 translate="让你的网站更加生动的创作工具与网络服务"></h2>
             <div class="apps clearfix">
                 <div class="app-item" ng-repeat="item in recommentApps">
                     <div class="show" ng-style="{'background-color': item.bgColor}">
@@ -215,19 +215,19 @@
         <div class="col-sm-3 sidebar-nav hidden-xs">
             <div class="affix-ctrl">
                 <div class="search">
-                    <h4>搜索应用中心</h4>
+                    <h4 translate="搜索应用中心"></h4>
                     <input id="searchBox" ng-model="searchText" class="form-control" type="text" placeholder="输入名字或描述">
                 </div>
                 <div class="classes">
-                    <h4>分类</h4>
+                    <h4 translate="分类"></h4>
                     <ul class="class-treeview">
                         <li class="treeview-item" ng-class="{true:'active'}[activeItemId == item.targetId]" ng-repeat="item in classApps" ng-click="goPart($event, item)">
                             <i class="glyphicon glyphicon-play"></i>
                             {{item.classes}}
                         </li>
                     </ul>
-                    <a href="https://github.com/tatfook/wikicraft/issues/415" class="btn btn-primary">申请提交应用</a>
-                    <a href="http://keepwork.com/official/open" class="btn btn-primary">了解开放平台</a>
+                    <a href="https://github.com/tatfook/wikicraft/issues/415" class="btn btn-primary" translate="申请提交应用"></a>
+                    <a href="http://keepwork.com/official/open" class="btn btn-primary" translate="了解开放平台"></a>
                 </div>
             </div>
         </div>

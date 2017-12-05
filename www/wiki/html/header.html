@@ -387,7 +387,7 @@
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5 title="{{user.displayName || user.username}}" class="title">{{user.displayName || user.username}}</h5>
                                 <div class="level clearfix">
-                                    <p class="info clearfix"><span class="pull-left">等级0</span><span class="pull-right">0/2536</span>
+                                    <p class="info clearfix"><span class="pull-left" translate="等级0"></span><span class="pull-right">0/2536</span>
                                     </p>
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="0"
@@ -395,21 +395,21 @@
                                             <span class="sr-only">0% Complete</span>
                                         </div>
                                     </div>
-                                    <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
+                                    <p><a ng-click="goVIPLevel()" class="pull-right" translate="会员等级说明"></a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
-                                    <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
-                                    <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
-                                    <li><a ng-click="goUserCenterPage('services', 'qiniuPan')">我的网盘</a></li>
-                                    <!--<li><a ng-click="goUserCenterPage('userProfile', 'dataSource')">数据源</a></li>-->
+                                    <li><a ng-click="goUserIndexPage(user.username)" translate="我的主页"></a></li>
+                                    <li><a ng-click="goUserCenterPage('websiteManager')" translate="网站管理"></a></li>
+                                    <li><a ng-click="goWikiEditorPage()" translate="页面编辑器"></a></li>
+                                    <li><a ng-click="goUserCenterPage('services', 'qiniuPan')" translate="我的网盘"></a></li>
+                                    <!--<li><a ng-click="goUserCenterPage('userProfile', 'dataSource')" translate="数据源"></a></li>-->
                                     <li role="separator" class="divider"></li>
-                                    <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
+                                    <li><a ng-click="goUserCenterPage('userProfile')" translate="设置中心"></a></li>
                                     <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
-                                    <li><a ng-click="goAdminPage()" ng-show="isAdmin()">后台管理</a></li>
+                                    <li><a ng-click="goAdminPage()" ng-show="isAdmin()" translate="后台管理"></a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
-                                    <a ng-click="logout()" class="pull-right">退出登录</a>
+                                    <a ng-click="logout()" class="pull-right" translate="退出登录"></a>
                                 </div>
                             </div>
                         </li>
@@ -421,13 +421,13 @@
                                 <div class="tab-box">
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="组织"></a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'attent' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('attent')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('attent')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="关注"></a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="作品"></a>
                                         </li>
                                     </ul>
                                 </div>
@@ -447,7 +447,7 @@
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-                               ng-click="clickMyFavorite()">关注</a>
+                               ng-click="clickMyFavorite()" translate="关注"></a>
                             <div class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
                                     <li ng-repeat="x in favoriteWebsiteObj.siteList">
@@ -459,7 +459,7 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" ng-click="clickMyHistory()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="true">历史</a>
+                               aria-expanded="true" translate="历史"></a>
                             <ul class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
                                     <li ng-repeat="x in visitHistoryList">
@@ -554,8 +554,8 @@
                             </div>
                         </li>
                         <li><a ng-click="goVipPay()">VIP</a></li>
-                        <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
-                        <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}">注册</a></li>
+                        <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}" translate="登录"></a></li>
+                        <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}" translate="注册"></a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->

@@ -3,13 +3,13 @@
     <form name="linkForm" role="form" ng-submit="link_insert()" novalidate>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">插入链接</h4>
+        <h4 class="modal-title" translate="插入链接"></h4>
     </div>
     <div class="modal-body">
         <div >
             <div class="row">
                 <div class="form-group span12" style="padding: 0 15px;">
-                    <label for="url">链接</label>
+                    <label for="url" translate="链接"></label>
                     <ui-select wiki-ui-select ng-model="selected" id="url" name="url" on-select="urlSelected($item, $model)">
                         <ui-select-match>
                             <span ng-bind="$select.selected.url"></span>
@@ -23,8 +23,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary btn-fill">确定</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">取消</button>
+        <button type="submit" class="btn btn-primary btn-fill" translate="确定"></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
     </div>
     </form>
 </div>

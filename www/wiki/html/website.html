@@ -98,24 +98,22 @@
 
 <div ng-controller="websiteController">
     <div class="col-md-10 panel main-content">
-        <div class="panel-heading">
-            我的站点
-        </div>
+        <div class="panel-heading" translate="我的站点"></div>
         <div class="panel-body website-flex">
             <h3 class="title clearfix">
                 <span>网站数量：<span class="text-primary">{{websites.count}}</span></span>
-                <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()">新建网站</a>
+                <a class="btn btn-primary pull-right new-web-btn" ng-click="goNewWebsitePage()" translate="新建网站"></a>
             </h3>
             <div class="flex-table">
                 <div class="fthead">
-                    <div>站点名称</div>
-                    <div class="hidden-xs site-link">站点地址</div>
-                    <div class="hidden-xs">创建时间</div>
-                    <div>操作</div>
+                    <div translate="站点名称"></div>
+                    <div class="hidden-xs site-link" translate="站点地址"></div>
+                    <div class="hidden-xs" translate="创建时间"></div>
+                    <div translate="操作"></div>
                 </div>
                 <div class="empty-box" ng-hide="websites.count > 0">
                     <span class="iconfont icon-kongbaiyemian"></span>
-                    <p>暂无相关内容...</p>
+                    <p translate="暂无相关内容..."></p>
                 </div>
                 <div class="ftbody-item" ng-repeat="website in websites" ng-hide="website.isDelete">
                     <div>

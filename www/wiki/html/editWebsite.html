@@ -236,16 +236,16 @@
     <div class="col-xs-12 panel main-content" role="tabpanel">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
-                <a href="#common" aria-controls="common" role="tab" data-toggle="tab">常用设置</a>
+                <a href="#common" aria-controls="common" role="tab" data-toggle="tab" translate="常用设置"></a>
             </li>
             <li role="presentation">
-                <a href="#datasource" aria-controls="datasource" role="tab" data-toggle="tab">数据源设置</a>
+                <a href="#datasource" aria-controls="datasource" role="tab" data-toggle="tab" translate="数据源设置"></a>
             </li>
             <li role="presentation">
-                <a href="#domain" aria-controls="domain" role="tab" data-toggle="tab">域名管理</a>
+                <a href="#domain" aria-controls="domain" role="tab" data-toggle="tab" translate="域名管理"></a>
             </li>
             <li role="presentation">
-                <a href="#permission" aria-controls="permission" role="tab" data-toggle="tab">权限管理</a>
+                <a href="#permission" aria-controls="permission" role="tab" data-toggle="tab" translate="权限管理"></a>
             </li>
         </ul>
 
@@ -254,43 +254,43 @@
                 <span style="color: red">{{errMsg}}</span>
                 <div class="form-horizontal setting-form">
                     <div class="form-group form-group-lg sr-only">
-                        <legend>网站设置</legend>
+                        <legend translate="网站设置"></legend>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label class="col-sm-2 control-label">站点图标：</label>
+                        <label class="col-sm-2 control-label" translate="站点图标："></label>
                         <div class="col-sm-10 preview-zone">
                             <div class="preview">
                                 <img ng-src="{{website.logoUrl || imgsPath+'wiki_cover.jpg'}}" alt="">
                             </div>
                             <p class="crop-control">
                                 <input class="change-btn" onchange="angular.element(this).scope().fileUpload(event)" type="file">
-                                <a class="change-btn">点击修改</a>
-                                <a id="finish" class="btn btn-primary sr-only">确 定</a>
+                                <a class="change-btn" translate="点击修改"></a>
+                                <a id="finish" class="btn btn-primary sr-only" translate="确 定"></a>
                             </p>
                             <div id="cropper" class="cropper-zone sr-only visible-hidden">
                             </div>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="webName" class="col-sm-2 control-label">站点名称：</label>
+                        <label for="webName" class="col-sm-2 control-label" translate="站点名称："></label>
                         <div class="col-sm-5">
                             <input type="text" class="form-control" id="webName" ng-model="website.displayName">
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="webName" class="col-sm-2 control-label">网站地址：</label>
+                        <label for="webName" class="col-sm-2 control-label" translate="网站地址："></label>
                         <div class="col-sm-5">
                             <p class="info-msg break-all">keepwork.com/{{user.username}}/{{website.name}}</p>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="intro" class="col-sm-2 control-label">网站介绍：</label>
+                        <label for="intro" class="col-sm-2 control-label" translate="网站介绍："></label>
                         <div class="col-sm-5">
                             <textarea id="intro" rows="4" ng-model="website.desc"></textarea>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label class="col-sm-2 control-label">本站标签：</label>
+                        <label class="col-sm-2 control-label" translate="本站标签："></label>
                         <div class="col-sm-5">
                             <div class="col-sm-8 add-label">
                                 <input id="tagInput" type="text" class="col-sm-8 form-control" ng-model="tag" ng-hide="tags.length >= 20">
@@ -306,7 +306,7 @@
                     <div class="form-group form-group-lg">
                         <div class="col-sm-12 save-setting">
                             <p class="text-danger" ng-show="websiteErr">{{websiteErr}}</p>
-                            <button ng-click="modifyWebsite()" class="btn btn-primary save-btn">保存</button>
+                            <button ng-click="modifyWebsite()" class="btn btn-primary save-btn" translate="保存"></button>
                         </div>
                     </div>
                 </div>
@@ -314,17 +314,17 @@
             <div class="tab-pane" role="tabpanel" id="datasource">
                 <form class="form-horizontal setting-form" role="form">
                     <div class="form-group form-group-lg sr-only">
-                        <legend>数据源设置</legend>
+                        <legend translate="数据源设置"></legend>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label class="col-sm-2 control-label">数据源：</label>
+                        <label class="col-sm-2 control-label" translate="数据源："></label>
                         <div class="col-sm-5">
                             <select class="form-control" ng-model="dataSourceName" ng-change="changeDataSource()">
                                 <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{x.name || '官方git数据源'}}</option>
                             </select>
                         </div>
                         <div class="col-sm-12 save-setting">
-                            <button ng-click="modifyWebsite()" class="btn btn-primary save-btn">保存</button>
+                            <button ng-click="modifyWebsite()" class="btn btn-primary save-btn" translate="保存"></button>
                         </div>
                     </div>
                 </form>
@@ -332,28 +332,28 @@
             <div class="tab-pane" role="tabpanel" id="domain">
                 <form class="form-horizontal setting-form" role="form">
                     <div class="form-group form-group-lg sr-only">
-                        <legend>域名管理</legend>
+                        <legend translate="域名管理"></legend>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="webName" class="col-sm-2 control-label">网站地址：</label>
+                        <label for="webName" class="col-sm-2 control-label" translate="网站地址："></label>
                         <div class="col-sm-5">
                             <p class="info-msg">keepwork.com/{{user.username}}/{{website.name}}</p>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label for="webName" class="col-sm-2 control-label">独立域名：</label>
+                        <label for="webName" class="col-sm-2 control-label" translate="独立域名："></label>
                         <div class="col-sm-5">
                             <p class="info-msg">{{user.username}}-{{website.name}}.keepwork.com</p>
                         </div>
                     </div>
                     <div class="form-group form-group-lg" id="cnameBox">
-                        <label for="cname" class="col-sm-2 control-label">Cname转发：</label>
+                        <label for="cname" class="col-sm-2 control-label" translate="Cname转发："></label>
                         <div class="col-sm-5">
                             <div class="col-sm-8 add-cname">
                                 <input type="text" class="form-control" id="cname" ng-model="domain" ng-disabled="!user.vipInfo.isValid">
                             </div>
-                            <div class="btn btn-primary btn-add-cname col-sm-4" ng-disabled="!user.vipInfo.isValid || !domain" ng-click="addDomain()">添加</div>
-                            <div class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能设置cname <a href="/wiki/vip" target="_blank">成为VIP</a></div>
+                            <div class="btn btn-primary btn-add-cname col-sm-4" ng-disabled="!user.vipInfo.isValid || !domain" ng-click="addDomain()" translate="添加"></div>
+                            <div class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能设置cname <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></div>
                             <div class="col-sm-12 cname-list">
                                 <div ng-show="!x.isDelete" ng-repeat="x in domainList" class="">
                                     <span>{{x.domain}}</span>
@@ -368,29 +368,29 @@
             <div class="tab-pane setting-form" role="tabpanel" id="permission">
                 <div class="inner-info">
                     <h4>http://keepwork.com/{{user.username}}/{{website.name}}</h4>
-                    <p>*权限管理按照从严原则，如果一个账号同时存在于几个权限分组，则按照最严格计算。</p>
-                    <p>例如：某用户同时存在于“编辑”权限与“禁止访问”权限的2个组，则会禁止访问。</p>
-                    <p>*网站拥有者不受分组配置影响</p>
+                    <p translate="*权限管理按照从严原则，如果一个账号同时存在于几个权限分组，则按照最严格计算。"></p>
+                    <p translate="例如：某用户同时存在于“编辑”权限与“禁止访问”权限的2个组，则会禁止访问。"></p>
+                    <p translate="*网站拥有者不受分组配置影响"></p>
                 </div>
                 <div class="change-type">
-                    <h4 class="light-title">项目类型：</h4>
+                    <h4 class="light-title" translate="项目类型："></h4>
                     <div class="form-group clearfix">
-                        <p class="text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能更改项目类型 <a href="/wiki/vip" target="_blank">成为VIP</a></p>
+                        <p class="text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能更改项目类型 <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></p>
                         <div class="col-sm-12">
-                            <h4 class="light-title"><input id="publicItem" type="radio" ng-model="changeType" value="public" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="publicItem">公有项目</label></h4>
-                            <p>默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。</p>
+                            <h4 class="light-title"><input id="publicItem" type="radio" ng-model="changeType" value="public" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="publicItem" translate="公有项目"></label></h4>
+                            <p translate="默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。"></p>
                         </div>
                         <div class="col-sm-12">
-                            <h4 class="light-title"><input id="privateItem" type="radio" ng-model="changeType" value="private" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="privateItem">私有项目</label></h4>
-                            <p>默认不允许未登录用户浏览。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员；可以为部分人设定浏览权限，则他们可以浏览您创建的内容，其他未授权用户均无法浏览</p>
+                            <h4 class="light-title"><input id="privateItem" type="radio" ng-model="changeType" value="private" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="privateItem" translate="私有项目"></label></h4>
+                            <p translate="默认不允许未登录用户浏览。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员；可以为部分人设定浏览权限，则他们可以浏览您创建的内容，其他未授权用户均无法浏览"></p>
                         </div>
                     </div>
                 </div>
                 <div class="authority">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#authorize" aria-controls="authorize" role="tab" data-toggle="tab">授权管理</a></li>
-                        <li role="presentation"><a href="#grouping" aria-controls="grouping" role="tab" data-toggle="tab">分组管理</a></li>
+                        <li role="presentation" class="active"><a href="#authorize" aria-controls="authorize" role="tab" data-toggle="tab" translate="授权管理"></a></li>
+                        <li role="presentation"><a href="#grouping" aria-controls="grouping" role="tab" data-toggle="tab" translate="分组管理"></a></li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -398,26 +398,26 @@
                         <div role="tabpanel" class="tab-pane authority-tab" id="grouping">
                             <form class="form-horizontal setting-form" role="form">
                                 <div class="form-group form-group-lg sr-only">
-                                    <legend>分组管理</legend>
+                                    <legend translate="分组管理"></legend>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    <label for="groupName" class="col-sm-2 control-label">分组名称：</label>
+                                    <label for="groupName" class="col-sm-2 control-label" translate="分组名称："></label>
                                     <div class="col-sm-5">
                                         <div class="col-sm-8 add-cname">
                                             <input type="text" class="form-control" id="groupName" ng-model="nowGroup.name" ng-disabled="editing">
                                         </div>
-                                        <div ng-hide="editing" class="btn btn-primary btn-add-cname col-sm-4" ng-click="createGroup()">创建</div>
+                                        <div ng-hide="editing" class="btn btn-primary btn-add-cname col-sm-4" ng-click="createGroup()" translate="创建"></div>
                                     </div>
-                                    <div class="col-sm-10 col-sm-offset-2 info" ng-class="{'text-danger':groupnameErr}">* 分组名称仅支持英文、数字</div>
+                                    <div class="col-sm-10 col-sm-offset-2 info" ng-class="{'text-danger':groupnameErr}" translate="* 分组名称仅支持英文、数字"></div>
                                 </div>
                                 <div class="form-group form-group-lg" ng-show="editing">
-                                    <label class="col-sm-2 control-label">分组成员：</label>
+                                    <label class="col-sm-2 control-label" translate="分组成员："></label>
                                     <div class="col-sm-5">
                                         <div class="col-sm-8 add-cname">
                                             <input id="groupUserName" type="text" class="form-control" ng-model="groupUser.name">
                                         </div>
-                                        <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addUser()">添加</div>
-                                        <div class="col-sm-12 info">* 可同时添加多名成员，用户名之间以英文半角逗号(,)隔开</div>
+                                        <div class="btn btn-primary btn-add-cname col-sm-4" ng-click="addUser()" translate="添加"></div>
+                                        <div class="col-sm-12 info" translate="* 可同时添加多名成员，用户名之间以英文半角逗号(,)隔开"></div>
                                         <div class="col-sm-12 labels-box">
                                             <div ng-show="!x.isDelete" ng-repeat="x in nowGroup.userList" class="label-selected">
                                                 <span>{{x.name}} </span>
@@ -427,19 +427,19 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-12 save-setting" ng-show="editing">
-                                    <div class="btn btn-primary save-btn" ng-click="editGroup(nowGroup,true)">返回分组</div>
+                                    <div class="btn btn-primary save-btn" ng-click="editGroup(nowGroup,true)" translate="返回分组"></div>
                                 </div>
                                 <!--div class="col-sm-12 save-setting">
-                                    <div class="btn btn-primary save-btn" ng-click="createGroup()" ng-show="!editing">创建</div>
-                                    <div class="btn btn-primary save-btn" ng-click="editGroup(nowGroup,true)" ng-show="editing">确定</div>
+                                    <div class="btn btn-primary save-btn" ng-click="createGroup()" ng-show="!editing" translate="创建"></div>
+                                    <div class="btn btn-primary save-btn" ng-click="editGroup(nowGroup,true)" ng-show="editing" translate="确定"></div>
                                 </div-->
                             </form>
                             <table class="table table-hover table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>分组名</th>
-                                    <th>成员</th>
-                                    <th>操作</th>
+                                    <th translate="分组名"></th>
+                                    <th translate="成员"></th>
+                                    <th translate="操作"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -447,8 +447,8 @@
                                     <td><a ng-click="" class="text-primary">{{group.name}}</a></td><!--分组名-->
                                     <td><span ng-repeat="user in group.userList" ng-hide="user.isDelete">{{user.name}}、</span></td><!--成员-->
                                     <td>
-                                        <a ng-click="editGroup(group,false)">编辑</a>
-                                        <a ng-click="deleteGroup(group)">删除</a>
+                                        <a ng-click="editGroup(group,false)" translate="编辑"></a>
+                                        <a ng-click="deleteGroup(group)" translate="删除"></a>
                                     </td><!--操作-->
                                 </tr>
                                 </tbody>
@@ -457,32 +457,32 @@
                         <div role="tabpanel" class="tab-pane active" id="authorize">
                             <form class="form-horizontal setting-form" role="form">
                                 <div class="form-group form-group-lg sr-only">
-                                    <legend>授权列表</legend>
+                                    <legend translate="授权列表"></legend>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    <label class="col-sm-2 control-label">选择分组：</label>
+                                    <label class="col-sm-2 control-label" translate="选择分组："></label>
                                     <div class="col-sm-5">
                                         <select class="form-control" ng-model="selectGroup" ng-options="x.name for x in shareGroups" ng-hide="x.isDelete">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    <label class="col-sm-2 control-label">选择权限：</label>
+                                    <label class="col-sm-2 control-label" translate="选择权限："></label>
                                     <div class="col-sm-5">
                                         <select class="form-control" ng-model="selectLevel" ng-options="x.name for x in authorities">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-12 save-setting">
-                                    <button class="btn btn-primary save-btn" ng-click="createShareGroup(selectGroup, selectLevel)">添加</button>
+                                    <button class="btn btn-primary save-btn" ng-click="createShareGroup(selectGroup, selectLevel)" translate="添加"></button>
                                 </div>
                             </form>
                             <table class="table table-hover table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>分组</th>
-                                    <th>权限</th>
-                                    <th>删除</th>
+                                    <th translate="分组"></th>
+                                    <th translate="权限"></th>
+                                    <th translate="删除"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -490,7 +490,7 @@
                                     <td><a ng-click="" class="text-primary">{{group.groupUsername + '/' + group.groupname}}</a></td><!--分组名-->
                                     <td>{{group.levelName}}</td><!--成员-->
                                     <td>
-                                        <a ng-click="deleteShareGroup(group)">删除</a>
+                                        <a ng-click="deleteShareGroup(group)" translate="删除"></a>
                                     </td><!--操作-->
                                 </tr>
                                 </tbody>
@@ -506,14 +506,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="exampleModalLabel">项目类型</h4>
+                    <h4 class="modal-title" id="exampleModalLabel" translate="项目类型"></h4>
                 </div>
                 <div class="modal-body">
                     <h3><span class="icon">!</span>确定设为{{changeType=="private" ? "私有项目" : "公有项目"}}？</h3>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" ng-click="changeSiteType(true)">确 定</button>
-                    <button type="button" class="btn btn-default" ng-click="cancelChange()">取 消</button>
+                    <button class="btn btn-danger" ng-click="changeSiteType(true)" translate="确 定"></button>
+                    <button type="button" class="btn btn-default" ng-click="cancelChange()" translate="取 消"></button>
                 </div>
             </div>
         </div>
