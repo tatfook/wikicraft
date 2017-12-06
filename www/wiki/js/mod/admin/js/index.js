@@ -310,12 +310,11 @@ define([
 				var getListCount = config.apiUrlPrefix + "oauth_app/count";
 				util.post(getListCount, {}, function(data){
 					$scope.OAuthTotalItems = data;
-					console.log(data);
 				});
 			}
 			
 			$scope.oauthList = function(){
-				var skip = ($scope.OAuthCurrentPage - 1) * $scope.itemPrePage;
+				var skip = ($scope.OAuthCurrentPage - 1) * $scope.OAuthItemPrePage;
 				var params = {
 					"limit" : $scope.OAuthItemPrePage,
 					"skip"  : skip
@@ -323,10 +322,10 @@ define([
 				
 				var getListUrl = config.apiUrlPrefix + "oauth_app/";
 				util.post(getListUrl, params, function(data){
-					console.log(data);
 					$scope.oauthData = data;
 				});
 			}
+			
 			$scope.getOneOAuthInfo = function(item){
 				var getOneOAuthUrl = config.apiUrlPrefix + "oauth_app/getOne/";
 				
@@ -931,25 +930,28 @@ define([
 					});
 				}
 
-				$scope.clickUpsert = function() {
-					//console.log($scope.query);
+				$scope.unwatchSensitiveWordsQueryStr && $scope.unwatchSensitiveWordsQueryStr();
+				$scope.unwatchSensitiveWordsQueryStr = $scope.$watch('sensitiveWordsQueryStr', $scope.updateSensitiveWordsView);
 
-					for (var key in $scope.query) {
-						if ($scope.query[key] == "") {
-							$scope.query[key] = undefined;
-						}
-					}
+				util.post(config.apiUrlPrefix + "tabledb/query", {
+					tableName: 'sensitive_words',
+					page: 1,
+					pageSize: 1000000,
+					query: {},
+				}, function(data){
+					$scope.sensitiveWordsList = data.data;
+					$scope.updateSensitiveWordsView();
+				});
 
-					var tableName = getTableName();
-
+				$scope.clickUpsert = function(query, tableName, ngForm, callBack) {
 					util.post(config.apiUrlPrefix + "tabledb/upsert", {
-						tableName:tableName,
-						query:$scope.query,
+						tableName: tableName,
+						query: query,
 					}, function(data){
 						if (data) {
 							Message.info("添加成功");
-							$scope.data.push(data);
-							$scope.totalItems++;
+							ngForm && ngForm.$setPristine && ngForm.$setPristine();
+							callBack && callBack();
 						} else {
 							Message.info("添加失败");
 						}
@@ -958,66 +960,61 @@ define([
 					});
 				}
 
-				$scope.clickDelete = function(x) {
-					var tableName = getTableName();
-					util.post(config.apiUrlPrefix + "tabledb/delete", {
-						tableName:tableName,
-						query:{
-							_id:x._id,
-						}
-					}, function(){
-						$scope.totalItems--;
-						x.isDelete = true;
-					}, function(){
-					});
-				}
+				$scope.clickDelete = function(x, tableName) {
+					var deleteConfirm = confirm("确定删除该项么？");
 
-				$scope.unwatchSensitiveWordsQueryStr && $scope.unwatchSensitiveWordsQueryStr();
-				$scope.unwatchSensitiveWordsQueryStr = $scope.$watch('sensitiveWordsQueryStr', $scope.updateSensitiveWordsView);
+					if(deleteConfirm){
+						util.post(config.apiUrlPrefix + "tabledb/delete", {
+							tableName:tableName,
+							query:{
+								_id:x._id,
+							}
+						}, function(){
+							$scope.totalItems--;
+							x.isDelete = true;
+						});
+					}
+				}
 			}
 
 /********** 敏感词管理结束 **********/
+
+
 
 /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|开始 **********/
 			$scope.serverCurrentPage = 1;			
 
 			$scope.clickMenuItem = function(menuItem) {
+				alert("功能开发中...")
+				return;
 				$scope.query = {};
 				$scope.selectMenuItem = menuItem;
 				$scope.clickQuery();
-
-				if ($scope.selectMenuItem == "manager") {
-					$scope.query = {};
-					$scope.getManagerList();
-				} else if ($scope.selectMenuItem == "site") {
-					$scope.getSiteList();
-				}
 			}
 
 			$scope.clickQuery = function() {
-				console.log($scope.query);
 				for (var key in $scope.query) {
 					if ($scope.query[key] == "") {
 						$scope.query[key] = undefined;
 					}
 				}
 				
-				var tableName = getTableName();
-
 				util.post(config.apiUrlPrefix + "tabledb/query", {
-					tableName:tableName,
-					page:$scope.serverCurrentPage,
-					pageSize:$scope.pageSize,
-					query:$scope.query,
+					tableName : tableName,
+					page      : $scope.serverCurrentPage,
+					pageSize  : $scope.pageSize,
+					query     : $scope.query,
 				}, function(data){
 					data = data || {};
 					$scope.data = data.data || [];
 					$scope.totalItems = data.total || 0;
-					console.log($scope.datas);
+					//console.log($scope.datas);
 				});
 			}
 
 /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|结束 **********/
+
+
 
 /********** wikicmd开始 **********/
 			$scope.wikiPageSize = 15;
