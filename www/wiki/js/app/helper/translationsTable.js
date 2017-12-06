@@ -305,6 +305,11 @@ define([], function () {
             "en": "There is no relevant content for the moment."
         },
         {
+            "_key": "内置gitlab",
+            "zh-cn": "官方git数据源",
+            "en": "Official git data source"
+        },
+        {
             "_key": "删除选中",
             "zh-cn": "删除选中",
             "en": "Delete selection"
