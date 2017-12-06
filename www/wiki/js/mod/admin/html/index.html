@@ -8,7 +8,7 @@
 
 	/*左侧菜单栏*/
 	.subnav {
-		text-align: center;
+		text-align: left;
 	}
 	.subnav > .list-group > .list-group-item{
 		padding: 0;
@@ -1237,9 +1237,9 @@
 				<div class="pagination-box">
 					<ul uib-pagination ng-change="clickQuery()"
 						items-per-page='wikiPageSize' previous-text="上一页"
-								next-text="下一页" total-items="wikicmdTotalItems"
-							  ng-model="wikiCurrentPage" max-size="5"
-								class="pagination-sm" boundary-link-numbers="true">
+						next-text="下一页" total-items="wikicmdTotalItems"
+						ng-model="wikiCurrentPage" max-size="5"
+						class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 			</div>
@@ -1247,33 +1247,3 @@
 		</div>
 	</div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

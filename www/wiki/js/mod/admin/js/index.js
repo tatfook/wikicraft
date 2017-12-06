@@ -985,14 +985,24 @@ define([
 			$scope.serverCurrentPage = 1;			
 
 			$scope.clickMenuItem = function(menuItem) {
-				alert("功能开发中...")
-				return;
+				if(menuItem != "wikicmd"){
+					alert("功能开发中...")
+					return;
+				}
+				
 				$scope.query = {};
 				$scope.selectMenuItem = menuItem;
-				$scope.clickQuery();
+
+				var tableName;
+
+				if(menuItem == "wikicmd"){
+					tableName = "wiki_module";
+				}
+
+				$scope.clickQuery(tableName);
 			}
 
-			$scope.clickQuery = function() {
+			$scope.clickQuery = function(tableName) {
 				for (var key in $scope.query) {
 					if ($scope.query[key] == "") {
 						$scope.query[key] = undefined;
