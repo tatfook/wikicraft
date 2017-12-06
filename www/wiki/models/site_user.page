@@ -99,9 +99,11 @@ function site_user:api_getSiteListByMemberName(params)
 	local websiteDB = models.website:new()
 	local result = {}
 	for _, siteUser in ipairs(siteUserList or {}) do
-		result[#result+1] = {}
-		result[#result]["siteuser"] = siteUser
-		result[#result]["siteinfo"] = websiteDB:api_getWithDataSourceByName({username=siteUser.username, sitename=siteUser.sitename}).data
+		if siteUser.username ~= params.memberName then
+			result[#result+1] = {}
+			result[#result]["siteuser"] = siteUser
+			result[#result]["siteinfo"] = websiteDB:api_getWithDataSourceByName({username=siteUser.username, sitename=siteUser.sitename}).data
+		end
 	end
 	
 	return errors:wrap(nil, result)
