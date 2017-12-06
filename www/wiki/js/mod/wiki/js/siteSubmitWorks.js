@@ -7,9 +7,10 @@ define([
     'helper/util',
     'helper/storage',
     'helper/dataSource',
+    'helper/sensitiveWord',
     'text!wikimod/wiki/html/siteSubmitWorks.html',
     'cropper'
-], function (app, util, storage, dataSource, htmlContent) {
+], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
 
     function getModParams(wikiblock) {
         var modParams = wikiblock.modParams || storage.sessionStorageGetItem("wikiModParams") || {};
@@ -182,21 +183,35 @@ define([
                 $scope.works.websiteId = siteinfo._id;
                 $scope.works.worksUsername = $scope.user.username;
 
+                var checkSensitives = [$scope.works.worksTitle, $scope.works.worksDesc];
+
+                sensitiveWord.getAllSensitiveWords(checkSensitives).then(function(results) {
+                    var isSensitive = results && results.length;
+                    isSensitive && console.log("包含敏感词:" + results.join("|"));
+                    trySaveWork(isSensitive);
+                });
+                
                 var finish = function () {
                     window.history.back();
                 };
 
-                util.post(config.apiUrlPrefix + 'website_works/submitWorksApply', $scope.works, function (data) {
-                    config.services.confirmDialog({
-                        title:"作品提交", 
-                        theme: "success",
-                        content:"作品提交成功,请等待管理员审核",
-                        cancelBtn:false
-                    }, finish, finish);
-                },function () {
-                    config.services.confirmDialog({title:"作品提交", content:"作品提交失败", cancelBtn:false});
-                });
-                //console.log($scope.works);
+                var trySaveWork = function(isSensitive) {
+                    if (isSensitive){
+                        Message.danger("对不起，您的输入内容有不符合互联网相关安全规范内容，暂不能提交");
+                        return;
+                    }
+
+                    util.post(config.apiUrlPrefix + 'website_works/submitWorksApply', $scope.works, function (data) {
+                        config.services.confirmDialog({
+                            title:"作品提交", 
+                            theme: "success",
+                            content:"作品提交成功,请等待管理员审核",
+                            cancelBtn:false
+                        }, finish, finish);
+                    },function () {
+                        config.services.confirmDialog({title:"作品提交", content:"作品提交失败", cancelBtn:false});
+                    });
+                }
             }
 
             $scope.clickCancelWorks = function () {
