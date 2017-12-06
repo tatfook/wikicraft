@@ -513,10 +513,10 @@
 					last-text="尾页" 
 					next-text="下一页" 
 					previous-text="上一页"
-					items-per-page="itemPrePage"
-					total-items="totalItems"
-					ng-model="currentPage"
-					max-size="maxSize"
+					items-per-page="OAuthItemPrePage"
+					total-items="OAuthTotalItems"
+					ng-model="OAuthCurrentPage"
+					max-size="OAuthMaxSize"
 					boundary-links="true"
 					ng-change = "oauthList()"
 					num-pages="numPages"></ul>
@@ -846,10 +846,10 @@
 					last-text="尾页" 
 					next-text="下一页" 
 					previous-text="上一页"
-					items-per-page="itemPrePage"
-					total-items="totalItems"
-					ng-model="currentPage"
-					max-size="maxSize"
+					items-per-page="GoodsItemPrePage"
+					total-items="GoodsTotalItems"
+					ng-model="GoodsCurrentPage"
+					max-size="GoodsMaxSize"
 					boundary-links="true"
 					ng-change = "getGoods()"
 					num-pages="numPages"></ul>
@@ -857,7 +857,6 @@
 
 			<!--用户管理-->
 			<div ng-show='selectMenuItem=="user"'>
-				
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
 						<div class="form-group">
@@ -908,15 +907,15 @@
 				</table>
 				<div class="pagination-box">
 					<ul uib-pagination ng-change="getUserList()"
-						items-per-page='pageSize' previous-text="上一页"
-								next-text="下一页" total-items="totalItems"
-							  ng-model="userCurrentPage" max-size="5"
-								class="pagination-sm" boundary-link-numbers="true">
+						items-per-page='userPageSize' previous-text="上一页"
+						next-text="下一页" total-items="userTotalItems"
+						ng-model="userCurrentPage" max-size="5"
+						class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 			</div>
 
-			<!--站点管理-->
+			<!--网站管理-->
 			<div ng-show='selectMenuItem=="site"'>
 				<div style="margin: 10px;">
 					<form role="form" class="form-inline">
@@ -971,9 +970,9 @@
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="getSiteList()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="siteCurrentPage" max-size="5"
-																						   class="pagination-sm" boundary-link-numbers="true">
+					<ul uib-pagination ng-change="getSiteList()" items-per-page='sitePageSize' previous-text="上一页"
+						next-text="下一页" total-items="siteTotalItems" ng-model="siteCurrentPage" max-size="5"
+						class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 			</div>
@@ -1028,9 +1027,9 @@
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="getDomainList()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="domainCurrentPage" max-size="5"
-																						   class="pagination-sm" boundary-link-numbers="true">
+					<ul uib-pagination ng-change="getDomainList()" items-per-page='domainPageSize' previous-text="上一页"
+						next-text="下一页" total-items="domainTotalItems" ng-model="domainCurrentPage" max-size="5"
+						class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
 				
@@ -1089,12 +1088,11 @@
 					</tbody>
 				</table>
 				<div class="pagination-box">
-					<ul uib-pagination ng-change="getVIPList()" items-per-page='pageSize' previous-text="上一页"
-																		   next-text="下一页" total-items="totalItems" ng-model="VIPCurrentPage" max-size="5"
-																						   class="pagination-sm" boundary-link-numbers="true">
+					<ul uib-pagination ng-change="getVIPList()" items-per-page='VIPPageSize' previous-text="上一页"
+						next-text="下一页" total-items="VIPTotalItems" ng-model="VIPCurrentPage" max-size="5"
+						class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>
-
 			</div>
 
 			<!--模板管理-->
@@ -1240,7 +1238,7 @@
 					<ul uib-pagination ng-change="clickQuery()"
 						items-per-page='wikiPageSize' previous-text="上一页"
 								next-text="下一页" total-items="wikicmdTotalItems"
-							  ng-model="currentPage" max-size="5"
+							  ng-model="wikiCurrentPage" max-size="5"
 								class="pagination-sm" boundary-link-numbers="true">
 					</ul>
 				</div>

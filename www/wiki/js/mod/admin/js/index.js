@@ -39,9 +39,7 @@ define([
 				function ($scope, $auth, Account, modal, Message, $http , goodsFactory , $uibModal) {
 
 /********** Common and Init 开始 **********/
-
 			var urlPrefix = "/wiki/js/mod/admin/js/";
-			var tableName = "user";
 
 			//进入后台默认页面
 			$scope.selectMenuItem = "manager";
@@ -214,10 +212,10 @@ define([
 /********** OAuth管理开始 **********/
 
 			$scope.oauthVar    = 1;
-			$scope.maxSize     = 10;
+			$scope.OAuthMaxSize     = 10;
 			$scope.OAuthTotalItems  = 0;
-			$scope.currentPage = 1;
-			$scope.itemPrePage = 10;
+			$scope.OAuthCurrentPage = 1;
+			$scope.OAuthItemPrePage = 10;
 
 			$scope.oauthData = [];
 			$scope.oauthParams = {};
@@ -294,7 +292,6 @@ define([
 					"payCallbackUrl" : $scope.oauthParams.payCallbackUrl,
 				};
 				
-				console.log(params);
 				util.post(addUrl, params, function(data){
 					alert("添加成功！");
 					$('.modal').modal('hide');
@@ -318,9 +315,9 @@ define([
 			}
 			
 			$scope.oauthList = function(){
-				var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+				var skip = ($scope.OAuthCurrentPage - 1) * $scope.itemPrePage;
 				var params = {
-					"limit" : $scope.itemPrePage,
+					"limit" : $scope.OAuthItemPrePage,
 					"skip"  : skip
 				};
 				
@@ -471,11 +468,11 @@ define([
 			
 	
 			//商品列表
-			$scope.maxSize     = 10;
+			$scope.GoodsMaxSize     = 10;
 			$scope.GoodsTotalItems  = 0;
-			$scope.currentPage = 1;
+			$scope.GoodsCurrentPage = 1;
 			
-			$scope.itemPrePage = 10;
+			$scope.GoodsItemPrePage = 10;
 			
 			$scope.listGoodsCount = function(){
 				var getListCount = config.apiUrlPrefix + "goods/count";
@@ -485,7 +482,7 @@ define([
 			}
 			
 			$scope.getGoods = function(){
-				var skip = ($scope.currentPage - 1) * $scope.itemPrePage;
+				var skip = ($scope.GoodsCurrentPage - 1) * $scope.GoodsItemPrePage;
 				var params = {
 					"limit" : $scope.itemPrePage,
 					"skip"  : skip
@@ -903,7 +900,6 @@ define([
 
 
 /********** 敏感词管理开始 **********/
-
 			$scope.getSensitiveWords = function () {
 				$scope.selectMenuItem = "sensitiveWords";
 				$scope.sensitiveWordsList = [];
@@ -936,13 +932,16 @@ define([
 				}
 
 				$scope.clickUpsert = function() {
-					console.log($scope.query);
+					//console.log($scope.query);
+
 					for (var key in $scope.query) {
 						if ($scope.query[key] == "") {
 							$scope.query[key] = undefined;
 						}
 					}
+
 					var tableName = getTableName();
+
 					util.post(config.apiUrlPrefix + "tabledb/upsert", {
 						tableName:tableName,
 						query:$scope.query,
@@ -980,48 +979,50 @@ define([
 /********** 敏感词管理结束 **********/
 
 /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|开始 **********/
+			$scope.serverCurrentPage = 1;			
 
-	$scope.clickMenuItem = function(menuItem) {
-		$scope.query = {};
-		$scope.selectMenuItem = menuItem;
-		$scope.clickQuery();
+			$scope.clickMenuItem = function(menuItem) {
+				$scope.query = {};
+				$scope.selectMenuItem = menuItem;
+				$scope.clickQuery();
 
-		if ($scope.selectMenuItem == "manager") {
-			$scope.query = {};
-			$scope.getManagerList();
-		} else if ($scope.selectMenuItem == "site") {
-			$scope.getSiteList();
-		}
-	}
-
-	$scope.clickQuery = function() {
-		console.log($scope.query);
-		for (var key in $scope.query) {
-			if ($scope.query[key] == "") {
-				$scope.query[key] = undefined;
+				if ($scope.selectMenuItem == "manager") {
+					$scope.query = {};
+					$scope.getManagerList();
+				} else if ($scope.selectMenuItem == "site") {
+					$scope.getSiteList();
+				}
 			}
-		}
-		
-		var tableName = getTableName();
 
-		util.post(config.apiUrlPrefix + "tabledb/query", {
-			tableName:tableName,
-			page:$scope.currentPage,
-			pageSize:$scope.pageSize,
-			query:$scope.query,
-		}, function(data){
-			data = data || {};
-			$scope.data = data.data || [];
-			$scope.totalItems = data.total || 0;
-			console.log($scope.datas);
-		});
-	}
+			$scope.clickQuery = function() {
+				console.log($scope.query);
+				for (var key in $scope.query) {
+					if ($scope.query[key] == "") {
+						$scope.query[key] = undefined;
+					}
+				}
+				
+				var tableName = getTableName();
+
+				util.post(config.apiUrlPrefix + "tabledb/query", {
+					tableName:tableName,
+					page:$scope.serverCurrentPage,
+					pageSize:$scope.pageSize,
+					query:$scope.query,
+				}, function(data){
+					data = data || {};
+					$scope.data = data.data || [];
+					$scope.totalItems = data.total || 0;
+					console.log($scope.datas);
+				});
+			}
 
 /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|结束 **********/
 
 /********** wikicmd开始 **********/
 			$scope.wikiPageSize = 15;
 			$scope.wikicmdTotalItems = 0;
+			$scope.wikiCurrentPage = 1;
 			$scope.wikiData = [];
 
 			$scope.clickEdit = function(x) {
