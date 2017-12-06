@@ -248,10 +248,16 @@ define([
                     util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
                         username: urlObj.username,
                         sitename: urlObj.sitename,
-                        pagename: urlObj.pagename || 'index',
+                        pagename: urlObj.pagename,
 						url:urlObj.pagepath,
                     }, function (data) {
                         data = data || {};
+
+                        if (!urlObj.pagename) {
+                            urlObj.pagename = data.siteinfo.defaultPage || "index"
+                            urlObj.pagepath += urlObj.pagename
+                        }
+
                         // 这三种基本信息根化，便于用户页内模块公用
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo || {};
