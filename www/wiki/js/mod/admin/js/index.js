@@ -11,7 +11,10 @@ define([
     'pageTemplates.js',
     'text!wikimod/admin/html/templates.html',
 	'/wiki/js/lib/md5.js',
+	'Fuse',
 ], function (app, util, mods, htmlContent, websiteTemplateContent) {
+	
+/********** 商品管理 Factory 开始 **********/
 	app.factory('goodsFactory',[function(){
 		var currentAdditionalField = {}
 		var item;
@@ -28,32 +31,20 @@ define([
 
 		return currentAdditionalField;
 	}]);
+/********** 商品管理 Factory 结束 **********/
 
 	function registerController(wikiBlock){
-		app.registerController('indexController', ['$scope', '$auth', 'Account', 'modal', 'Message', '$http', 'goodsFactory' , '$uibModal' , function ($scope, $auth, Account, modal, Message, $http , goodsFactory , $uibModal) {
+		app.registerController('indexController', 
+			['$scope', '$auth', 'Account', 'modal', 'Message', '$http', 'goodsFactory' , '$uibModal' , 
+				function ($scope, $auth, Account, modal, Message, $http , goodsFactory , $uibModal) {
+
+/********** Common and Init 开始 **********/
+
 			var urlPrefix = "/wiki/js/mod/admin/js/";
 			var tableName = "user";
+
+			//进入后台默认页面
 			$scope.selectMenuItem = "manager";
-			$scope.pageSize = 15;
-			$scope.managerCurrentPage = 1;
-			$scope.operationLogCurrentPage = 1;
-			$scope.userCurrentPage = 1;
-			$scope.siteCurrentPage = 1;
-			$scope.domainCurrentPage = 1;
-			$scope.fileCheckCurrentPage = 1;
-			$scope.VIPCurrentPage = 1;
-			$scope.totalItems = 0;
-			$scope.data = [];
-			$scope.oauthData = [];
-			$scope.oauthParams = {};
-			$scope.oauthParams.skipUserGrant = 1;
-			//$scope.roleId = 10;
-			$scope.goodsData = [];
-			$scope.goodsParams = {};
-			
-			
-			$scope.managerSearchById;
-			$scope.managerSearchByUsername;
 			
 			// 确保为管理员
 			function ensureAdminAuth() {
@@ -72,76 +63,10 @@ define([
 	
 			function init() {
 				ensureAdminAuth();
-				//$scope.getTemplates();
 				$scope.getManagerList();
-				//$scope.clickMenuItem($scope.selectMenuItem);
 			}
 	
 			$scope.$watch('$viewContentLoaded', init);
-	
-			/*
-			$scope.clickQuery = function() {
-				console.log($scope.query);
-				for (var key in $scope.query) {
-					if ($scope.query[key] == "") {
-						$scope.query[key] = undefined;
-					}
-				}
-				var tableName = getTableName();
-				util.post(config.apiUrlPrefix + "tabledb/query", {
-					tableName:tableName,
-					page:$scope.currentPage,
-					pageSize:$scope.pageSize,
-					query:$scope.query,
-				}, function(data){
-					data = data || {};
-					$scope.data = data.data || [];
-					$scope.totalItems = data.total || 0;
-					console.log($scope.datas);
-				});
-			}
-	
-			$scope.clickUpsert = function() {
-				console.log($scope.query);
-				for (var key in $scope.query) {
-					if ($scope.query[key] == "") {
-						$scope.query[key] = undefined;
-					}
-				}
-				var tableName = getTableName();
-				util.post(config.apiUrlPrefix + "tabledb/upsert", {
-					tableName:tableName,
-					query:$scope.query,
-				}, function(data){
-					if (data) {
-						Message.info("添加成功");
-						$scope.data.push(data);
-						$scope.totalItems++;
-					} else {
-						Message.info("添加失败");
-					}
-				}, function(){
-					Message.info("添加失败");
-				});
-			}
-	
-			$scope.clickEdit = function(x) {
-				$scope.query = x;
-			}
-	
-			$scope.clickDelete = function(x) {
-				var tableName = getTableName();
-				util.post(config.apiUrlPrefix + "tabledb/delete", {
-					tableName:tableName,
-					query:{
-						_id:x._id,
-					}
-				}, function(){
-					$scope.totalItems--;
-					x.isDelete = true;
-				}, function(){
-				});
-			}*/
 	
 			$scope.getStyleClass = function (item) {
 				if ($scope.selectMenuItem == item) {
@@ -149,20 +74,19 @@ define([
 				}
 				return;
 			}
-	
-	
-			$scope.clickMenuItem = function(menuItem) {
-				$scope.query = {};
-				$scope.selectMenuItem = menuItem;
-				$scope.clickQuery();
-				if ($scope.selectMenuItem == "manager") {
-					$scope.query = {};
-					$scope.getManagerList();
-				} else if ($scope.selectMenuItem == "site") {
-					$scope.getSiteList();
-				}
-			}
-	
+
+/********** Common and Init 结束 **********/
+
+
+
+/********** 管理员管理开始 **********/
+
+			$scope.managerPageSize = 15;
+			$scope.managerCurrentPage = 1;
+			$scope.managerSearchById;
+			$scope.managerSearchByUsername;
+			$scope.managerTotalItems = 0;
+
 			// 获取管理员列表
 			$scope.getManagerList = function (){
 				//alert("asdasdasdasd");
@@ -171,21 +95,133 @@ define([
 				$scope.managerSearchByUsername = "";
 				util.post(config.apiUrlPrefix + "admin/getManagerList", {
 					page:$scope.managerCurrentPage,
-					pageSize:$scope.pageSize,
+					pageSize:$scope.managerPageSize,
 				}, function (data) {
 					data = data || {};
 					$scope.managerList = data.managerList || [];
-					$scope.totalItems = data.total || 0;
+					$scope.managerTotalItems = data.total || 0;
 				});
 			}
-			
-			//Oauth 管理
+
+			// 搜索管理员账号
+			$scope.managerSearch = function (){
+				//util.post(config.apiUrlPrefix + "tabledb/query", {
+				util.post(config.apiUrlPrefix + "admin/managerSearch", {
+					_id:$scope.managerSearchById,
+					username:$scope.managerSearchByUsername,
+				}, function (data) {
+					data = data || {};
+					$scope.managerList = data.searchManagerList ;
+					$scope.managerTotalItems = data.total || 0;
+				});
+			}
+
+			/*
+			$scope.managerSearch = function (){
+				$scope.query = {
+					roleId:10,
+					_id:$scope.managerSearchById,
+					username:$scope.managerSearchByUsername,
+				};
+				util.post(config.apiUrlPrefix + "tabledb/query", {
+					tableName:"user",
+					roleId:10,
+					page:$scope.currentPage,
+					pageSize:$scope.pageSize,
+					query:$scope.query,
+				}, function (data) {
+					data = data || {};
+					$scope.managerList = data.data || [];
+					$scope.managerTotalItems = data.total || 0;
+				});
+			}*/
+
+			// 新建管理员账号
+			$scope.newManager = function (){
+			}
+
+/********** 管理员管理结束 **********/
+
+
+
+/********** 操作日志开始 **********/
+			$scope.operationLogCurrentPage = 1;
+
+			$scope.getoperationLogList = function () {
+				$scope.selectMenuItem = "operationLog";
+			}
+
+/********** 操作日志结束 **********/
+
+
+
+/********** 用户管理开始 **********/
+			$scope.userCurrentPage = 1;
+			$scope.userPageSize = 15;
+			$scope.userTotalItems = 0;
+
+			// 获取用户列表
+			$scope.getUserList = function (){
+				$scope.selectMenuItem = "user";
+				util.post(config.apiUrlPrefix + "admin/getUserList", {
+					page:$scope.userCurrentPage,
+					pageSize:$scope.userPageSize,
+				}, function (data) {
+					data = data || {};
+					$scope.userList = data.userList || [];
+					$scope.userTotalItems = data.total || 0;
+				});
+			}
+			//搜索用户
+			$scope.userSearch = function (){
+				$scope.query = {
+					_id:$scope.userSearchById,
+					username:$scope.userSearchByUsername,
+				};
+				util.post(config.apiUrlPrefix + "tabledb/query", {
+					tableName:"user",
+					page:$scope.userCurrentPage,
+					pageSize:$scope.userPageSize,
+					query:$scope.query,
+				}, function (data) {
+					data = data || {};
+					$scope.userList = data.data || [];
+					$scope.userTotalItems = data.total || 0;
+				});
+			}
+
+			// 点击编辑用户
+			$scope.clickEditUser = function (user) {
+
+			}
+			// 点击禁用用户
+			$scope.clickEnableUser = function (user) {
+				user.roleId = user.roleId == -1 ? 0 : -1;
+				util.post(config.apiUrlPrefix + "user/updateByName", {username:user.username, roleId:user.roleId}, function () {
+				});
+			}
+			// 点击删除用户
+			$scope.clickDeleteUser = function (user) {
+				util.post(config.apiUrlPrefix + "user/deleteByName", user, function () {
+					user.isDelete = true;
+				});
+			}
+
+/********** 用户管理结束 **********/
+
+
+
+/********** OAuth管理开始 **********/
+
 			$scope.oauthVar    = 1;
 			$scope.maxSize     = 10;
-			$scope.totalItems  = 0;
+			$scope.OAuthTotalItems  = 0;
 			$scope.currentPage = 1;
-			
 			$scope.itemPrePage = 10;
+
+			$scope.oauthData = [];
+			$scope.oauthParams = {};
+			$scope.oauthParams.skipUserGrant = 1;
 			
 			//判定是否为添加框/修改框
 			$scope.clickOauthToggle = function (params, item) {
@@ -276,7 +312,7 @@ define([
 			$scope.listCount = function(){
 				var getListCount = config.apiUrlPrefix + "oauth_app/count";
 				util.post(getListCount, {}, function(data){
-					$scope.totalItems = data;
+					$scope.OAuthTotalItems = data;
 					console.log(data);
 				});
 			}
@@ -384,9 +420,16 @@ define([
 					$scope.oauthList();
 				};
 			}
-			
-			
-			//商品管理/goodsManager
+		
+/********** OAuth管理结束 **********/
+
+
+
+/********** 商品管理开始 **********/
+
+			$scope.goodsData = [];
+			$scope.goodsParams = {};
+
 			$scope.getGoodmnagerList = function(){
 				$scope.selectMenuItem = "goodsManager";
 				$scope.getGoods();
@@ -394,7 +437,6 @@ define([
 			}
 			
 			//商品管理判断是否为添加/修改/查看详情
-			
 			$scope.clickGoodsToggle = function (params,item) {
 				$scope.goodsVar = params;
 				/*if(params == 1){
@@ -430,7 +472,7 @@ define([
 	
 			//商品列表
 			$scope.maxSize     = 10;
-			$scope.totalItems  = 0;
+			$scope.GoodsTotalItems  = 0;
 			$scope.currentPage = 1;
 			
 			$scope.itemPrePage = 10;
@@ -438,7 +480,7 @@ define([
 			$scope.listGoodsCount = function(){
 				var getListCount = config.apiUrlPrefix + "goods/count";
 				util.post(getListCount, {}, function(data){
-					$scope.totalItems = data;
+					$scope.GoodsTotalItems = data;
 				});
 			}
 			
@@ -677,56 +719,96 @@ define([
 			$scope.deleteGoodsParamsAdditionalField = function($index){  
 				$scope.goodsParams.additional_field.splice($index, 1);  
 			} 
-	
-			
-			// 搜索管理员账号
-			$scope.managerSearch = function (){
-				//util.post(config.apiUrlPrefix + "tabledb/query", {
-				util.post(config.apiUrlPrefix + "admin/managerSearch", {
-					_id:$scope.managerSearchById,
-					username:$scope.managerSearchByUsername,
+
+/********** 商品管理结束 **********/
+
+
+
+/********** 网站管理开始 **********/
+
+			$scope.sitePageSize = 15;
+			$scope.siteCurrentPage = 1;
+			$scope.siteTotalItems = 0;
+
+			// 获取站点列表
+			$scope.getSiteList = function () {
+				$scope.selectMenuItem = "site";
+				util.post(config.apiUrlPrefix + "admin/getSiteList", {
+					page:$scope.siteCurrentPage,
+					pageSize: $scope.sitePageSize,
 				}, function (data) {
 					data = data || {};
-					$scope.managerList = data.searchManagerList ;
-					$scope.totalItems = data.total || 0;
+					$scope.siteList = data.siteList || [];
+					$scope.siteTotalItems = data.total || 0;
 				});
 			}
-			/*
-			$scope.managerSearch = function (){
+
+			//搜索网站
+			$scope.siteSearchById;
+			$scope.siteSearchByUsername = "";
+			$scope.siteSearchBySitename = "";
+
+			$scope.siteSearch = function (){
+				var username = $scope.siteSearchByUsername == "" ? undefined : $scope.siteSearchByUsername;
+				var sitename = $scope.siteSearchBySitename == "" ? undefined : $scope.siteSearchBySitename;
 				$scope.query = {
-					roleId:10,
-					_id:$scope.managerSearchById,
-					username:$scope.managerSearchByUsername,
+					_id:$scope.siteSearchById,
+					username:username,
+					name:sitename,
 				};
 				util.post(config.apiUrlPrefix + "tabledb/query", {
-					tableName:"user",
-					roleId:10,
-					page:$scope.currentPage,
-					pageSize:$scope.pageSize,
+					tableName:"website",
+					page:$scope.siteCurrentPage,
+					pageSize:$scope.sitePageSize,
 					query:$scope.query,
 				}, function (data) {
 					data = data || {};
-					$scope.managerList = data.data || [];
-					$scope.totalItems = data.total || 0;
+					$scope.siteList = data.data || [];
+					$scope.siteTotalItems = data.total || 0;
 				});
-			}*/
-			// 新建管理员账号
-			$scope.newManager = function (){
-				
 			}
-			
+
+			// 点击编辑站点
+			$scope.clickEditSite = function () {
+
+			}
+
+			// 点击禁用的站点
+			$scope.clickEnableSite = function () {
+				site.state = site.state == -1 ? 0 :  -1;
+				util.post(config.apiUrlPrefix + "website/updateByName", {username:site.username, sitename:site.name, state:site.state}, function () {
+				});
+			}
+
+			// 点击删除站点
+			$scope.clickDeleteSite = function (site) {
+				util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
+					site.isDelete = true;
+				});
+			}
+
+/********** 网站管理结束 **********/
+
+
+
+/********** 域名管理开始 **********/
+			$scope.domainPageSize = 15;
+			$scope.domainCurrentPage = 1;
+			$scope.domainTotalItems = 0;		
+
 			$scope.getDomainList = function (){
 				//alert("asdasdasdasd");
 				$scope.selectMenuItem = "domain";
 				util.post(config.apiUrlPrefix + "admin/getDomainList", {
 					page:$scope.domainCurrentPage,
-					pageSize:$scope.pageSize,
+					pageSize:$scope.domainPageSize,
 				}, function (data) {
 					data = data || {};
 					$scope.domainList = data.domainList || [];
-					$scope.totalItems = data.total || 0;
+					$scope.domainTotalItems = data.total || 0;
 				});
 			}
+
 			//搜索域名
 			$scope.domainSearchById;
 			$scope.domainSearchByUsername = "";
@@ -741,33 +823,49 @@ define([
 				};
 				util.post(config.apiUrlPrefix + "tabledb/query", {
 					tableName:"website_domain",
-					page:$scope.userCurrentPage,
-					pageSize:$scope.pageSize,
+					page:$scope.domainCurrentPage,
+					pageSize:$scope.domainPageSize,
 					query:$scope.query,
 				}, function (data) {
 					data = data || {};
 					$scope.domainList = data.data || [];
-					$scope.totalItems = data.total || 0;
+					$scope.domainTotalItems = data.total || 0;
 				});
 			}
+
+/********** 域名管理结束 **********/
+
+
+
+/********** 文件审核开始 **********/
+
+			$scope.getFileCheckList = function () {
+				$scope.selectMenuItem = "fileCheck";
+			}
+
+/********** 文件审核结束 **********/
+
+
+
+/********** VIP管理开始 **********/
+			$scope.VIPCurrentPage = 1;
+			$scope.VIPPageSize = 15;
+			$scope.VIPTotalItems = 0;
+
 			//获取VIP列表
 			$scope.getVIPList = function (){
 				//alert("asdasdasdasd");
 				$scope.selectMenuItem = "vip";
 				util.post(config.apiUrlPrefix + "admin/getVIPList", {
 					page:$scope.VIPCurrentPage,
-					pageSize:$scope.pageSize,
+					pageSize:$scope.VIPPageSize,
 				}, function (data) {
 					data = data || {};
 					$scope.VIPList = data.VIPList || [];
-					$scope.totalItems = data.total || 0;
+					$scope.VIPTotalItems = data.total || 0;
 				});
 			}
-	
-			$scope.getTemplates = function () {
-				$scope.selectMenuItem = "templates";
-				util.html('#websiteTemplate', websiteTemplateContent);
-			};
+			
 			//搜索VIP
 			$scope.vipSearchById;
 			$scope.vipSearchByUsername = "";
@@ -780,133 +878,162 @@ define([
 				util.post(config.apiUrlPrefix + "tabledb/query", {
 					tableName:"vip",
 					page:$scope.VIPCurrentPage,
-					pageSize:$scope.pageSize,
+					pageSize:$scope.VIPPageSize,
 					query:$scope.query,
 				}, function (data) {
 					data = data || {};
 					$scope.VIPList = data.data || [];
-					$scope.totalItems = data.total || 0;
+					$scope.VIPTotalItems = data.total || 0;
 				});
 			}
-			
-			// 获取用户列表
-			$scope.getUserList = function (){
-				$scope.selectMenuItem = "user";
-				util.post(config.apiUrlPrefix + "admin/getUserList", {
-					page:$scope.userCurrentPage,
-					pageSize:$scope.pageSize,
-				}, function (data) {
-					data = data || {};
-					$scope.userList = data.userList || [];
-					$scope.totalItems = data.total || 0;
-				});
+
+/********** VIP管理结束 **********/
+
+
+
+/********** 模板管理开始 **********/
+
+	$scope.getTemplates = function () {
+		$scope.selectMenuItem = "templates";
+		util.html('#websiteTemplate', websiteTemplateContent);
+	};
+
+/********** 模板管理结束 **********/
+
+
+
+/********** 敏感词管理开始 **********/
+
+			$scope.getSensitiveWords = function () {
+				$scope.selectMenuItem = "sensitiveWords";
+				$scope.sensitiveWordsList = [];
+				$scope.sensitiveWordsQueryName = "";
+				$scope.sensitiveWordsQueryStr = "";
+
+				$scope.sensitiveWordsListPageSize = 20;
+				$scope.sensitiveWordsListTotalItems = 0;
+				$scope.sensitiveWordsListPageIndex = 1;
+
+				$scope.updateSensitiveWordsView = function () {
+					if (!$scope.sensitiveWordsQueryStr) {
+						$scope.sensitiveWordsListDisplay = $scope.sensitiveWordsList;
+					} else {
+						$scope.sensitiveWordsListDisplay = new Fuse(
+							$scope.sensitiveWordsList,
+							{keys: ['name']}
+						).search($scope.sensitiveWordsQueryStr);
+					}
+
+					$scope.sensitiveWordsListTotalItems = $scope.sensitiveWordsListDisplay.length;
+
+					//initial index in view is 1, not 0
+					var minIndex = ($scope.sensitiveWordsListPageIndex - 1) * $scope.sensitiveWordsListPageSize;
+					var maxIndex = $scope.sensitiveWordsListPageIndex * $scope.sensitiveWordsListPageSize;
+
+					$scope.sensitiveWordsListDisplayInCurrentPage = $scope.sensitiveWordsListDisplay.filter(function(item, index) {
+						return index >= minIndex && index < maxIndex;
+					});
+				}
+
+				$scope.clickUpsert = function() {
+					console.log($scope.query);
+					for (var key in $scope.query) {
+						if ($scope.query[key] == "") {
+							$scope.query[key] = undefined;
+						}
+					}
+					var tableName = getTableName();
+					util.post(config.apiUrlPrefix + "tabledb/upsert", {
+						tableName:tableName,
+						query:$scope.query,
+					}, function(data){
+						if (data) {
+							Message.info("添加成功");
+							$scope.data.push(data);
+							$scope.totalItems++;
+						} else {
+							Message.info("添加失败");
+						}
+					}, function(){
+						Message.info("添加失败");
+					});
+				}
+
+				$scope.clickDelete = function(x) {
+					var tableName = getTableName();
+					util.post(config.apiUrlPrefix + "tabledb/delete", {
+						tableName:tableName,
+						query:{
+							_id:x._id,
+						}
+					}, function(){
+						$scope.totalItems--;
+						x.isDelete = true;
+					}, function(){
+					});
+				}
+
+				$scope.unwatchSensitiveWordsQueryStr && $scope.unwatchSensitiveWordsQueryStr();
+				$scope.unwatchSensitiveWordsQueryStr = $scope.$watch('sensitiveWordsQueryStr', $scope.updateSensitiveWordsView);
 			}
-			//搜索用户
-			$scope.userSearch = function (){
-				$scope.query = {
-					_id:$scope.userSearchById,
-					username:$scope.userSearchByUsername,
-				};
-				util.post(config.apiUrlPrefix + "tabledb/query", {
-					tableName:"user",
-					page:$scope.userCurrentPage,
-					pageSize:$scope.pageSize,
-					query:$scope.query,
-				}, function (data) {
-					data = data || {};
-					$scope.userList = data.data || [];
-					$scope.totalItems = data.total || 0;
-				});
+
+/********** 敏感词管理结束 **********/
+
+/********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|开始 **********/
+
+	$scope.clickMenuItem = function(menuItem) {
+		$scope.query = {};
+		$scope.selectMenuItem = menuItem;
+		$scope.clickQuery();
+
+		if ($scope.selectMenuItem == "manager") {
+			$scope.query = {};
+			$scope.getManagerList();
+		} else if ($scope.selectMenuItem == "site") {
+			$scope.getSiteList();
+		}
+	}
+
+	$scope.clickQuery = function() {
+		console.log($scope.query);
+		for (var key in $scope.query) {
+			if ($scope.query[key] == "") {
+				$scope.query[key] = undefined;
 			}
-			
-			// 点击编辑用户
-			$scope.clickEditUser = function (user) {
-	
+		}
+		
+		var tableName = getTableName();
+
+		util.post(config.apiUrlPrefix + "tabledb/query", {
+			tableName:tableName,
+			page:$scope.currentPage,
+			pageSize:$scope.pageSize,
+			query:$scope.query,
+		}, function(data){
+			data = data || {};
+			$scope.data = data.data || [];
+			$scope.totalItems = data.total || 0;
+			console.log($scope.datas);
+		});
+	}
+
+/********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|结束 **********/
+
+/********** wikicmd开始 **********/
+			$scope.wikiPageSize = 15;
+			$scope.wikicmdTotalItems = 0;
+			$scope.wikiData = [];
+
+			$scope.clickEdit = function(x) {
+				$scope.query = x;
 			}
-			// 点击禁用用户
-			$scope.clickEnableUser = function (user) {
-				user.roleId = user.roleId == -1 ? 0 : -1;
-				util.post(config.apiUrlPrefix + "user/updateByName", {username:user.username, roleId:user.roleId}, function () {
-				});
-			}
-			// 点击删除用户
-			$scope.clickDeleteUser = function (user) {
-				util.post(config.apiUrlPrefix + "user/deleteByName", user, function () {
-					user.isDelete = true;
-				});
-			}
-	
-			// 获取站点列表
-			$scope.getSiteList = function () {
-				$scope.selectMenuItem = "site";
-				util.post(config.apiUrlPrefix + "admin/getSiteList", {
-					page:$scope.siteCurrentPage,
-					pageSize: $scope.pageSize,
-				}, function (data) {
-					data = data || {};
-					$scope.siteList = data.siteList || [];
-					$scope.totalItems = data.total || 0;
-				});
-			}
-			//搜索网站
-			$scope.siteSearchById;
-			$scope.siteSearchByUsername = "";
-			$scope.siteSearchBySitename = "";
-			
-			$scope.siteSearch = function (){
-				var username = $scope.siteSearchByUsername == "" ? undefined : $scope.siteSearchByUsername;
-				var sitename = $scope.siteSearchBySitename == "" ? undefined : $scope.siteSearchBySitename;
-				$scope.query = {
-					_id:$scope.siteSearchById,
-					username:username,
-					name:sitename,
-				};
-				util.post(config.apiUrlPrefix + "tabledb/query", {
-					tableName:"website",
-					page:$scope.userCurrentPage,
-					pageSize:$scope.pageSize,
-					query:$scope.query,
-				}, function (data) {
-					data = data || {};
-					$scope.siteList = data.data || [];
-					$scope.totalItems = data.total || 0;
-				});
-			}
-	
-			// 点击编辑站点
-			$scope.clickEditSite = function () {
-	
-			}
-			// 点击禁用的站点
-			$scope.clickEnableSite = function () {
-				site.state = site.state == -1 ? 0 :  -1;
-				util.post(config.apiUrlPrefix + "website/updateByName", {username:site.username, sitename:site.name, state:site.state}, function () {
-				});
-			}
-			// 点击删除站点
-			$scope.clickDeleteSite = function (site) {
-				util.post(config.apiUrlPrefix + "website/deleteById", {websiteId:site._id}, function () {
-					site.isDelete = true;
-				});
-			}
-	
-			
-			//
-			$scope.getoperationLogList = function () {
-				$scope.selectMenuItem = "operationLog";
-			}
-			
-			$scope.getFileCheckList = function () {
-				$scope.selectMenuItem = "fileCheck";
-			}
-	
-			// wiki cmd
+
 			$scope.clickUpsertWikicmd = function() {
 				util.post(config.apiUrlPrefix + 'wiki_module/upsert', $scope.query, function(data){
 					if (data) {
 						Message.info("添加成功");
-						$scope.data.push(data);
-						$scope.totalItems++;
+						$scope.wikiData.push(data);
+						$scope.wikicmdTotalItems++;
 					} else {
 						Message.info("添加失败");
 					}
@@ -920,8 +1047,8 @@ define([
 					util.post(config.apiUrlPrefix + 'wiki_module/upsert', mods[i], function(data){
 						if (data) {
 							Message.info("添加成功");
-							$scope.data.push(data);
-							$scope.totalItems++;
+							$scope.wikiData.push(data);
+							$scope.wikicmdTotalItems++;
 						} else {
 							Message.info("添加失败");
 							console.log(mods[i]);
@@ -929,8 +1056,14 @@ define([
 					});
 				}
 			}
+/********** wikicmd结束 **********/
+
 		}]);
+
 	
+
+/********** 商品管理 additional field Controller 开始 **********/
+
 		app.registerController('goodsController', ['$scope', 'goodsFactory', '$uibModalInstance', function($scope, goodsFactory , $uibModalInstance){
 			$scope.currentAdditionalField = goodsFactory.itemGet()
 			$scope.abc = function () {
@@ -938,7 +1071,9 @@ define([
 			};
 		}]);
 	}
-	
+
+/********** 商品管理 additional field Controller 结束 **********/
+
 	return {
         render: function (wikiBlock) {
             registerController(wikiBlock);
