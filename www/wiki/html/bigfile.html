@@ -386,7 +386,7 @@
                     <a id="activeUpload" href="#uploadFile" aria-controls="uploadFile" role="tab" data-toggle="tab" ng-click="initQiniu()" translate="上传文件"></a>
                 </li>
                 <li class="pull-right process-li">
-                    当前使用：
+                    {{"当前使用：" | translate}}
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                              ng-class = "{'warning-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.7, 'danger-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.9}"
@@ -394,8 +394,8 @@
                              ng-style="{'width': (storeInfo.total - storeInfo.unUsed)/storeInfo.total*100+'%'}">
                         </div>
                         <div class="info">
-                            <span>{{storeInfo.unUsed | number:2}}GB可用</span>
-                            <span>总共{{storeInfo.total | number:2}}GB</span>
+                            <span>{{storeInfo.unUsed | number:2}}GB {{"可用" | translate}}</span>
+                            <span>{{"总共" | translate}} {{storeInfo.total | number:2}}GB</span>
                         </div>
                     </div>
                 </li>
@@ -431,19 +431,19 @@
                         <thead>
                             <tr>
                                 <td class="checkbox-column" translate="多选"></td>
-                                <td class="file-column order-column" ng-click="changeOrder('filename')">文件名
+                                <td class="file-column order-column" ng-click="changeOrder('filename')">{{ "文件名" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == true]"></span>
                                 </td>
-                                <td class="type-column order-column" ng-click="changeOrder('file.type')">文件类型
+                                <td class="type-column order-column" ng-click="changeOrder('file.type')">{{ "文件类型" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == true]"></span>
                                 </td>
-                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">大小
+                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">{{ "大小" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span>
                                 </td>
-                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">更新时间
+                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">{{ "更新时间" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
@@ -487,18 +487,18 @@
                         <thead>
                             <tr>
                                 <td class="checkbox-column" translate="多选"></td>
-                                <td class="file-column order-column" ng-click="changeOrder('filename')">文件名
+                                <td class="file-column order-column" ng-click="changeOrder('filename')">{{ "文件名" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == true]"></span>
                                 </td>
-                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">文件类型
+                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">{{ "文件类型" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == true]"></span>
                                 </td>
-                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">大小
+                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">{{ "大小" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span></td>
-                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">更新时间
+                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">{{ "更新时间" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>

@@ -415,7 +415,7 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" ng-click="clickMyTrends()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="true">动态(<span>{{trendsCount || 0}}</span>)</a>
+                               aria-expanded="true">{{'动态' | translate}}(<span>{{trendsCount || 0}}</span>)</a>
                             <div class="dropdown-menu dropdown-menu-center news-dropdown-menu"
                                  aria-labelledby="dropdownMenu1">
                                 <div class="tab-box">
@@ -434,7 +434,7 @@
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="userTrends">
-                                        <p class="info">有{{trendsCount}}条动态更新</p>
+                                        <p class="info" translate="HEADER_ACTIVITIES_TIP" translate-values="{trendsCount: trendsCount}"></p>
                                         <ul>
                                             <li ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
                                                 <a ng-click="rendTrends(x)" class="text-muted">{{x.desc}}</a>
@@ -474,9 +474,9 @@
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0] | translate}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange track by $index"><a>{{item}}</a></li>
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange track by $index"><a>{{item | translate}}</a></li>
                                     </ul>
                                 </div><!-- /btn-group -->
                                 <input id="searchbar" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
@@ -519,12 +519,12 @@
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> 功能</li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> <span translate="功能"></span></li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> <span translate="应用中心"></span></li>
                         <li class="iconfont-icon" ng-show="!isIconShow">
-                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>帮助</a>
+                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i><span translate="帮助"></span></a>
                         </li>
-                        <li class=""><a href="http://para.keepwork.com" target="_blank">paracraft</a></li>
+                        <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
                         <li class="icon dropdown share-dropdown" ng-show="isIconShow">
@@ -533,20 +533,20 @@
                                 <div class="social-share" data-title="{{tit}}"></div>
                             </div>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> 功能</li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i>{{"功能" | translate}}</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i>{{"应用中心" | translate}}</li>
                         <li class="iconfont-icon" ng-show="!isIconShow">
-                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>帮助</a>
+                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
                         </li>
-                        <li class=""><a href="http://para.keepwork.com" target="_blank">paracraft</a></li>
+                        <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar">
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{(nowSearchRange || searchRange[0]) | translate}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item | translate}}</a></li>
                                     </ul>
                                 </div><!-- /btn-group -->
                                 <input id="searchbar-nologin" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
