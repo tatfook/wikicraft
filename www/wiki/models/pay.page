@@ -244,19 +244,19 @@ function pay:api_spend(params)
 	end
 end
 
-function pay:spend(query)
+function pay:spend(spendInfo)
 	local trade_no     = tradeno:getTradeNo();
-	local appGoodsInfo = self:getGoodsInfo(query);
+	local appGoodsInfo = self:getGoodsInfo(spendInfo);
 
 	if(not appGoodsInfo or not trade_no) then
 		return false;
 	end
 
-	if(not query.username) then
-		query.username = self:getUsername();
+	if(not spendInfo.username) then
+		spendInfo.username = self:getUsername();
 	end
 
-	local bSuccess =  wallet:balance(query.price, query.username);
+	local bSuccess =  wallet:balance(spendInfo.price, spendInfo.username);
 
 	if(not bSuccess) then
 		return;
@@ -264,16 +264,16 @@ function pay:spend(query)
 
 	local tradeInfo = {};
 	tradeInfo.trade_no     = trade_no;
-	tradeInfo.username     = query.username;
-	tradeInfo.price        = query.price;
+	tradeInfo.username     = spendInfo.username;
+	tradeInfo.price        = spendInfo.price;
 	tradeInfo.subject      = appGoodsInfo.subject;
 	tradeInfo.body         = appGoodsInfo.body;
 	tradeInfo.channel      = "wallet";
 	tradeInfo.status       = "Finish";
 	tradeInfo.method       = "Spend";
-	tradeInfo.app_name     = query.app_name;
-	tradeInfo.app_goods_id = query.app_goods_id; 
-	tradeInfo.additional   = query.additional;
+	tradeInfo.app_name     = spendInfo.app_name;
+	tradeInfo.app_goods_id = spendInfo.app_goods_id; 
+	tradeInfo.additional   = spendInfo.additional;
 	tradeInfo.create_date  = self:getNow();
 	
 	self:db():insertOne({trade_no = trade_no}, tradeInfo, resume);
@@ -324,75 +324,75 @@ function pay:api_webhooks(params)
 	response:status(503);
 	local err, query = self:validateQuery(params);
 
-	if(query.type == "charge.succeeded") then
-		local chargeInfo = params.data.object;
+	if(type(query) == "table" and query.type == "charge.succeeded") then
+		local chargeInfo;
+		
+		if(query.data and query.data.object) then
+			chargeInfo = query.data.object;
+		else
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
 
-		self:db():findOne({trade_no = chargeInfo.order_no}, resume);
+		if(chargeInfo.order_no) then
+			self:db():findOne({trade_no = chargeInfo.order_no}, resume);
+		else
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+		
 		local err, payInfo = yield();
 
-		if not err and payInfo ~= nil and payInfo.status ~= "Finish" and payInfo.method == "Recharge" then
+		if not err and type(payInfo) == "table" and payInfo.status ~= "Finish" and payInfo.method == "Recharge" then
 			-- 充值
-			local bSuccess = wallet:balance(payInfo.price, payInfo.username);
+			local bSuccess;
+
+			if(payInfo.price and payInfo.username) then
+				bSuccess = wallet:balance(payInfo.price, payInfo.username);
+			else
+				return errors:wrap(errors.SERVER_INNER_ERROR);
+			end
 
 			if(not bSuccess) then
 				return errors:wrap(errors.SERVER_INNER_ERROR);
 			end
 
-			self:db():updateOne({trade_no = chargeInfo.order_no},{status = "Finish"}, resume);
+			self:db():updateOne({trade_no = chargeInfo.order_no}, {status = "Finish"}, resume);
 			local err, _ = yield();
 
 			-- 消费
-			appInfo = oauth_app:getByAppName(payInfo.app_name);
+			local appInfo;
 
-			if (payInfo.app_name == '魔法哈奇' and tonumber(payInfo.app_goods_id) == 984) or
-			   (payInfo.app_name == '魔法哈奇2' and tonumber(payInfo.app_goods_id) == 984) then
+			if(payInfo.app_name and payInfo.additional) then
+				appInfo = oauth_app:getByAppName(payInfo.app_name);
 
-				local url       = appInfo.payCallbackUrl;
-				local apiParams = commonlib.copy(payInfo.additional);
-
-				url = url .. "?";
-
-				for key,value in pairs(apiParams or {}) do
-					url = url .. key .. "=" .. value .. "&";
+				if(type(appInfo) ~= "table" or not appInfo.payCallbackUrl) then
+					return errors:wrap(errors.SERVER_INNER_ERROR);
 				end
-
-				url = string.sub(url, 1, -2);
-
-				local err, data = self:http("GET", url, apiParams);
-
-				if(err == 200) then
-					local spendInfo = payInfo;
-					spendInfo.price = spendInfo.price * -1;
-
-					local bSuccess = self:spend(spendInfo);
-
-					if(bSuccess) then
-						response:status(200);
-						return errors.wrap(errors.SUCCESS);
-					end
-				end
+			else
+				return errors:wrap(errors.SERVER_INNER_ERROR);
 			end
 
-			if(payInfo.app_name == 'KEEPWORK' and tonumber(payInfo.app_goods_id) == 1 or
-			   payInfo.app_name == '教育平台' and tonumber(payInfo.app_goods_id) == 1) then
-				local url       = appInfo.payCallbackUrl;
-				local apiParams = commonlib.copy(payInfo.additional);
+			local url       = appInfo.payCallbackUrl;
+			local apiParams = commonlib.copy(payInfo.additional);
 
-				apiParams.price    = payInfo.price;
-				apiParams.username = payInfo.username;
+			url = url .. "?";
 
-				local err, data = self:http("POST", url, apiParams);
+			for key,value in pairs(apiParams or {}) do
+				url = url .. key .. "=" .. value .. "&";
+			end
 
-				if(err == 200) then
-					local spendInfo = payInfo;
-					spendInfo.price = spendInfo.price * -1;
+			url = string.sub(url, 1, -2);
 
-					local bSuccess = self:spend(spendInfo);
+			local err, data = self:http("GET", url, apiParams);
 
-					if(bSuccess) then
-						response:status(200);
-						return errors.wrap(errors.SUCCESS);
-					end
+			if(err == 200) then
+				local spendInfo = payInfo;
+				spendInfo.price = spendInfo.price * -1;
+
+				local bSuccess = self:spend(spendInfo);
+
+				if(bSuccess) then
+					response:status(200);
+					return errors.wrap(errors.SUCCESS);
 				end
 			end
 
@@ -404,10 +404,6 @@ function pay:api_webhooks(params)
 	end
 
 	return errors:wrap(errors.SERVER_INNER_ERROR);
-end
-
-function pay:api_simulate()
-	return errors:wrap(errors.SUCCESS);
 end
 
 function pay:getGoodsInfo(query)
