@@ -139,7 +139,7 @@ define([
 
             $scope.alipayClient = function () {
                 var params = {
-                    "channel"   : "alipay_pc_direct",
+                    "channel"   : "alipay_wap",
                 };
 
                 createCharge(params, function (charge) {
