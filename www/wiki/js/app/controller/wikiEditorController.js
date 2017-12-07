@@ -619,6 +619,7 @@ define([
             $scope.full=false;
             $scope.opens={};
             var dropFiles = {};
+            var isBigfileModalShow = false;
 //}}}
 
             // 格式化html文本
@@ -2133,17 +2134,21 @@ define([
                 });
             };
 
+            var bigfileModal;
             // 大文件
             $scope.cmd_bigfile = function () {
-				//return ;
-                modal('controller/bigfileController', {
-                    controller: 'bigfileController',
-                    size: 'lg',
-                    backdrop: 'static'
-                }, function (wikiBlock) {
+                bigfileModal = $uibModal.open({
+                    "template": bigfileContent,
+                    "size": "lg",
+                    "controller": "bigfileController",
+                    "backdrop": "static",
+                    "scope": $scope
+                });
+                bigfileModal.result.then(function (wikiBlock) {
+                    isBigfileModalShow = false;
                     console.log(wikiBlock);
                 }, function (files) {
-                    console.log(files);
+                    isBigfileModalShow = false;
                     if (!files){
                         return;
                     }
@@ -2163,6 +2168,36 @@ define([
                     editor.replaceSelection(insertContent);
                     editor.focus();
                 });
+                /* modalmodal('controller/bigfileController', {
+                    controller: 'bigfileController',
+                    size: 'lg',
+                    backdrop: 'static',
+                    scope: $scope
+                }, function (wikiBlock) {
+                    isBigfileModalShow = false;
+                    console.log(wikiBlock);
+                }, function (files) {
+                    isBigfileModalShow = false;
+                    console.log(files);
+                    if (!files){
+                        return;
+                    }
+
+                    var insertContent = "";
+                    console.log(files);
+                    if (files.pasteUrl){
+                        insertContent = files.pasteUrl;
+                    } else if (files.url){
+                        insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
+                    }else{
+                        files.map(function (file) {
+                            insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'",\n"extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
+                        });
+                    }
+
+                    editor.replaceSelection(insertContent);
+                    editor.focus();
+                }); */
             };
             /**
              * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
@@ -2207,6 +2242,7 @@ define([
 			// 文件上传
 			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
                 const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
+                const BrowerUpperLimit = 0.02 * 1024 * 1024 * 1024; // 大于20MB提示
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");
@@ -2362,16 +2398,80 @@ define([
                     };
 					fileReader.onload = function () {
                         if (fileObj.size > UpperLimit){ // 上传到七牛
-                            console.log("正在上传到七牛");
-                            $scope.storeInfo.used += fileObj.size || 0;
-
-                            if ($scope.storeInfo.used > $scope.storeInfo.total){
-                                $scope.storeInfo.used -= fileObj.size || 0;
-                                line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
-                                return;
+                            var cmd_bigfile = function(params) {
+                                var msg = "editorUploadFile";
+                                var data = dropFiles[fileObj.name];
+                                line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
+                                if (isBigfileModalShow) {
+                                    $scope.$broadcast(msg, data); 
+                                    return;
+                                }
+                                $scope.cmd_bigfile();
+                                
+                                bigfileModal.opened.then(function() {
+                                    isBigfileModalShow = true;
+                                    $scope.$broadcast(msg, data); 
+                                    $rootScope.$broadcast("selectCmdBigfile");
+                                });
                             }
 
-                            qiniuUpload(fileObj);
+                            var stop = function(params) {
+                                line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**因为 "+fileObj.name+" 容量较大，已取消上传。**", 0);
+                            }
+
+                            var editorToQiniu = function() {
+                                console.log("正在上传到七牛");
+                                $scope.storeInfo.used += fileObj.size || 0;
+                            
+                                if ($scope.storeInfo.used > $scope.storeInfo.total){
+                                    $scope.storeInfo.used -= fileObj.size || 0;
+                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
+                                    return;
+                                }
+    
+                                qiniuUpload(fileObj);
+                            }
+                            if (fileObj.size > BrowerUpperLimit) {
+                                if (isBigfileModalShow) {
+                                    console.log(isBigfileModalShow);
+                                    cmd_bigfile();
+                                    return;
+                                }
+                                var contentHtml = "<p class='file-large-info'>识别到您上传的文件：<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
+                                var confirmDialog = config.services.confirmDialog({
+                                    "title": "提醒",
+                                    "confirmBtn": false,
+                                    "cancelBtn": false,
+                                    "contentHtml": contentHtml,
+                                    "operationBtns": [
+                                        {
+                                            "text": "打开上传工具",
+                                            "clickHandler": function () {
+                                                cmd_bigfile();
+                                            }
+                                        },
+                                        {
+                                            "text": "继续上传",
+                                            "clickHandler": function (params) {
+                                                editorToQiniu();
+                                            }
+                                        },
+                                        {
+                                            "text": "取消上传",
+                                            "clickHandler": function (params) {
+                                                stop();
+                                            }
+                                        },
+                                    ],
+                                    "openedCb": function() {
+                                        $rootScope.$on("selectCmdBigfile", function() {
+                                            cmd_bigfile();
+                                        })
+                                    }
+                                });
+                            }else {
+                                editorToQiniu();
+                            }
                         }else{ // 上传到数据源
                             console.log("正在上传到数据源");
                             if (/image\/\w+/.test(fileObj.type)) {

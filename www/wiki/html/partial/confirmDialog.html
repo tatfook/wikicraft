@@ -46,6 +46,9 @@
         <div class="modal-footer">
             <button ng-show="confirmObj.confirmBtn" type="submit" class="btn btn-fill {{confirmObj.confirmBtnClass || 'btn-primary'}}">确定</button>
             <button ng-show="confirmObj.cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="$dismiss()">取消</button>
+            <button ng-repeat="btnObj in confirmObj.operationBtns" class="btn {{btnObj.class || 'btn-fill btn-primary'}}" ng-click="btnClickHandler(btnObj)">
+                {{btnObj.text}}
+            </button>
         </div>
     </form>
 </div>

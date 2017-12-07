@@ -842,6 +842,23 @@ define([
                 $scope.isSelectAll = true;
             }
         }
+
+        var autoUpload = function(file) {
+            if (!qiniuBack) {
+                $scope.initQiniu();
+                setTimeout(function() {
+                    autoUpload(file);
+                }, 500);
+                return;
+            }
+
+            $("#activeUpload").tab("show");
+            qiniuBack.addFile(file);
+        }
+
+        $scope.$on("editorUploadFile", function(event,file) {
+            autoUpload(file);
+        });
     }]);
     return htmlContent;
 });
