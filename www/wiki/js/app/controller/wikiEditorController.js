@@ -621,6 +621,8 @@ define([
             $scope.opens={};
             var dropFiles = {};
             var isBigfileModalShow = false;
+            var isConfirmDialogShow = false;
+            var confirmFilesQue = [];
 //}}}
 
             // 格式化html文本
@@ -2401,6 +2403,7 @@ define([
 					fileReader.onload = function () {
                         if (fileObj.size > UpperLimit){ // 上传到七牛
                             var cmd_bigfile = function(params) {
+                                console.log(fileObj.name);
                                 var msg = "editorUploadFile";
                                 var data = dropFiles[fileObj.name];
                                 line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
@@ -2412,41 +2415,49 @@ define([
                                 
                                 bigfileModal.opened.then(function() {
                                     isBigfileModalShow = true;
+                                    isConfirmDialogShow = false;
                                     $scope.$broadcast(msg, data); 
                                     $rootScope.$broadcast("selectCmdBigfile");
+
+                                    confirmFilesQue.filter(function(file) {
+                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, "**已选择使用上传工具上传 "+file.name+"。**", 0);
+                                        $scope.$broadcast(msg, file);
+                                        return false;
+                                    });
                                 });
                             }
 
                             var stop = function(params) {
                                 line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**因为 "+fileObj.name+" 容量较大，已取消上传。**", 0);
+                                confirmFilesQue[0] && confirmFun(confirmFilesQue[0]) && confirmFilesQue.shift();
                             }
 
-                            var editorToQiniu = function() {
+                            var editorToQiniu = function(fileObj) {
                                 console.log("正在上传到七牛");
-                                $scope.storeInfo.used += fileObj.size || 0;
+                                $scope.storeInfoByte.used += fileObj.size || 0;
                             
-                                if ($scope.storeInfo.used > $scope.storeInfo.total){
-                                    $scope.storeInfo.used -= fileObj.size || 0;
+                                if ($scope.storeInfoByte.used > $scope.storeInfoByte.total){
+                                    $scope.storeInfoByte.used -= fileObj.size || 0;
                                     line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
                                     return;
                                 }
     
                                 qiniuUpload(fileObj);
+                                confirmFilesQue[0] && confirmFun(confirmFilesQue[0]) && confirmFilesQue.shift();
                             }
-                            if (fileObj.size > BrowerUpperLimit) {
-                                if (isBigfileModalShow) {
-                                    console.log(isBigfileModalShow);
-                                    cmd_bigfile();
-                                    return;
-                                }
+
+                            var confirmFun = function(fileObj){
                                 var contentHtml = "<p class='file-large-info'>识别到您上传的文件：<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
+                                var uploadId = fileObj.name;
                                 var confirmDialog = config.services.confirmDialog({
                                     "title": "提醒",
                                     "confirmBtn": false,
                                     "cancelBtn": false,
+                                    "backdrop": "static",
                                     "contentHtml": contentHtml,
                                     "operationBtns": [
                                         {
+                                            "id": uploadId,
                                             "text": "打开上传工具",
                                             "clickHandler": function () {
                                                 cmd_bigfile();
@@ -2466,11 +2477,28 @@ define([
                                         },
                                     ],
                                     "openedCb": function() {
-                                        $rootScope.$on("selectCmdBigfile", function() {
-                                            cmd_bigfile();
-                                        })
                                     }
-                                });
+                                }, function(){
+                                    isBigfileModalShow = false;
+                                }, function(){
+                                    isBigfileModalShow = false;
+                                }); 
+                            }
+
+                            if (fileObj.size > BrowerUpperLimit) {
+                                if (isBigfileModalShow) {
+                                    console.log(isBigfileModalShow);
+                                    cmd_bigfile();
+                                    return;
+                                }
+                                if (isConfirmDialogShow) {
+                                    confirmFilesQue = confirmFilesQue || [];
+                                    confirmFilesQue.push(fileObj);
+                                    return;
+                                }
+                                
+                                isConfirmDialogShow = true;
+                                confirmFun(fileObj);
                             }else {
                                 editorToQiniu();
                             }
@@ -3529,7 +3557,7 @@ define([
                     var dropUploadList = [];
 
                     getUserStoreInfoPromise.then(function (result) {
-                        $scope.storeInfo = {
+                        $scope.storeInfoByte = {
                             "used": result.used || 0,
                             "total": result.total || 0
                         };

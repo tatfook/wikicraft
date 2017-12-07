@@ -35,6 +35,7 @@ define([
             var modal = $uibModal.open({
                 template: htmlContent,
                 size: confirmObj.size,
+                backdrop: params.backdrop || true,
                 controller: 'confirmDialogController',
             });
             modal.opened.then(params.openedCb, params.openedErrcb);

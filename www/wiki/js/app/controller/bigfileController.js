@@ -43,9 +43,11 @@ define([
                     if (params){
                         return;
                     }
+                    addedFiles = [];
                     $scope.$dismiss(params);
                 });
             }else{
+                addedFiles = [];
                 $scope.$dismiss(params);
             }
         };
@@ -859,6 +861,8 @@ define([
             }
         }
 
+        var addedFiles = [];
+
         var autoUpload = function(file) {
             if (!qiniuBack) {
                 $scope.initQiniu();
@@ -867,11 +871,29 @@ define([
                 }, 500);
                 return;
             }
+            
+            if (isAdded(file)) {
+                return;
+            }
 
             $("#activeUpload").tab("show");
             qiniuBack.addFile(file);
+            addedFiles.push(file);
         }
 
+        var isAdded = function(file) {
+            var haveAdded = false;
+            for (var i = 0; i < addedFiles.length; i++) {
+                var element = addedFiles[i];
+                if (element.name == file.name) {
+                    haveAdded = true;
+                }
+            }
+            if (haveAdded) {
+                return true;
+            }
+            return false;
+        }
         $scope.$on("editorUploadFile", function(event,file) {
             autoUpload(file);
         });
