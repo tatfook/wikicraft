@@ -150,8 +150,9 @@ define([
         // 修改网站设置
         $scope.modifyWebsite = function () {
             $scope.websiteErr = "";
+            $scope.domainErrMsg = "";
             var websiteParams = $scope.website;
-            var checkSensitives = [websiteParams.displayName, websiteParams.desc];
+            var checkSensitives = [websiteParams.displayName, websiteParams.desc,websiteParams.defaultPage];
             var isSensitive = false;
 
             if (($scope.website.sensitiveWordLevel & 2) <= 0){
@@ -174,6 +175,12 @@ define([
                 $scope.websiteErr = "您输入的内容不符合互联网安全规范，请修改";
                 return;
             }
+            
+            if (!/^[\d\w-]+$/.test($scope.website.defaultPage)) {
+                $scope.domainErrMsg = "域名格式错误, 域名只能为数字和字母组合";
+                return;
+            }
+
             sendModifyWebsiteRequest();
         };
 
