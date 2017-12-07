@@ -11,9 +11,8 @@ define([
     'pageTemplates.js',
     'text!wikimod/admin/html/templates.html',
     '/wiki/js/lib/md5.js',
-    'Fuse',
-], function (app, util, mods, htmlContent, websiteTemplateContent) {
-    
+	'Fuse',
+], function (app, util, mods, htmlContent, websiteTemplateContent, pageTemplateContent, textWikimodAdminHtmlTemplatesHtml, md5, Fuse) {
 /********** 商品管理 Factory 开始 **********/
     app.factory('goodsFactory',[function(){
         var currentAdditionalField = {}
