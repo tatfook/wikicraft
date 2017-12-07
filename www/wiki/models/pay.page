@@ -51,25 +51,25 @@ function pay:ctor()
 	-- pay or recharge date
 	self:addfield("create_date", "string", false);
 	-- additional fields
-	self:addfield("additional","table",false);
+	self:addfield("additional", "table", false, 10000);
 
 	-- from ping++
 	-- 事件对象  id ，由 Ping++ 生成，28 位长度字符串
 	self:addfield("id", "string", false);
 	-- 值为 "event"
-	self:addfield("event","string",false);
+	self:addfield("event", "string", false);
 	-- 事件是否发生在生产环境
-	self:addfield("livemode","string",false);
+	self:addfield("livemode", "string", false);
 	-- 事件发生的时间
-	self:addfield("created","string",false);
+	self:addfield("created", "string", false);
 	-- 推送未成功的 webhooks 数量
-	self:addfield("pending_webhooks","number",false);
+	self:addfield("pending_webhooks", "number", false);
 	-- 事件类型，详见 事件类型
-	self:addfield("type","string",false);
+	self:addfield("type", "string", false);
 	-- API Request ID。值 "null" 表示该事件不是由 API 请求触发的
-	self:addfield("request","string",false);
+	self:addfield("request", "string", false);
 	-- 绑定在事件上的数据对象,具体参考下表  data 参数说明
-	self:addfield("data","table",false);
+	self:addfield("data", "table", false, 10000);
 end
 
 function pay:getPingxxToken()
@@ -326,7 +326,7 @@ function pay:api_webhooks(params)
 
 	if(type(query) == "table" and query.type == "charge.succeeded") then
 		local chargeInfo;
-		
+
 		if(query.data and query.data.object) then
 			chargeInfo = query.data.object;
 		else
@@ -338,7 +338,7 @@ function pay:api_webhooks(params)
 		else
 			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 		end
-		
+
 		local err, payInfo = yield();
 
 		if not err and type(payInfo) == "table" and payInfo.status ~= "Finish" and payInfo.method == "Recharge" then
@@ -374,6 +374,9 @@ function pay:api_webhooks(params)
 			local url       = appInfo.payCallbackUrl;
 			local apiParams = commonlib.copy(payInfo.additional);
 
+			apiParams.price    = payInfo.price;
+			apiParams.username = payInfo.username;
+
 			url = url .. "?";
 
 			for key,value in pairs(apiParams or {}) do
@@ -382,7 +385,7 @@ function pay:api_webhooks(params)
 
 			url = string.sub(url, 1, -2);
 
-			local err, data = self:http("GET", url, apiParams);
+			local err, data = self:http("GET", url, {});
 
 			if(err == 200) then
 				local spendInfo = payInfo;
