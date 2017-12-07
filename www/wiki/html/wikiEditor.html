@@ -187,7 +187,7 @@
                                 <li class="list-group-item">
                                     <span class="icon expand-icon fa fa-chevron-down"></span>
                                     已打开
-                                    <span class="badge">
+                                    <span class="badge" ng-hide="isEmptyObject(opens)">
                                         <img class="show-parent" ng-click="cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
                                         <img class="show-parent" ng-click="cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
                                     </span>

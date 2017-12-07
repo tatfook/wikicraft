@@ -278,7 +278,7 @@ body,
 .treeview .list-group-item:hover .badge{
     display: inline-block;
 }
-.treeview .list-group-item:hover .badge>img.show-parent{
+.treeview .list-group-item .badge>img.show-parent{
     width: 16px;
     height: auto;
     background-color: #E6E6E6;
@@ -288,13 +288,13 @@ body,
     margin: 0;
     top: 1px;
 }
-.treeview .list-group-item:hover .badge>img.show-parent:nth-child(1){
+.treeview .list-group-item .badge>img.show-parent:nth-child(1){
     right: 0;
 }
-.treeview .list-group-item:hover .badge>img.show-parent:nth-child(2){
+.treeview .list-group-item .badge>img.show-parent:nth-child(2){
     right: 24px;
 }
-.treeview .list-group-item:hover .badge>img.show-parent:nth-child(3){
+.treeview .list-group-item .badge>img.show-parent:nth-child(3){
     right: 48px;
 }
 .treeview img.show-parent{
@@ -459,6 +459,12 @@ select.resize-view {
 .opened .node-selected, .joined-treeview .node-selected, .temp-treeview .node-selected{
     background-color: #3977AD;
     color: #FFF;
+}
+.opened .list-group-item:first-child .badge{
+    display: inline-block;
+}
+.opened .list-group-item:first-child .badge > img.show-parent{
+    background-color: transparent;
 }
 
 .bg-title h1{

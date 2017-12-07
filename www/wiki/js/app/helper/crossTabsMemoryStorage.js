@@ -12,6 +12,7 @@ define([], function() {
             id: Date.now() + '_' + Math.random(),
             _getMemoryKey: '_crossTabsMemoryStorageGetMemoryKey',
             _publishMemoryKey: '_crossTabsMemoryStoragePublishMemoryKey',
+            _sessionStorageTempKey: '_crossTabsMemoryStorageTempKey', //it's for keeping sessionStorage feature, can still get data after reload page
             data: {},
             updateCallbacks: [],
             onUpdate: function(func) {
@@ -54,8 +55,22 @@ define([], function() {
                 to  ? console.log('Tab ' + to + ' asked for the memoryStorage -> ' + me.id + ' send it')
                     : console.log(me.id + ' publish data');  
             },
+            revealDataFromSessionStorage: function() {
+                var me = this;
+                var data = window.sessionStorage.getItem(this._sessionStorageTempKey);
+                if (!data) return;
+                try {
+                    data = JSON.parse(data);
+                    for (key in data) me.data[key] = data[key];
+                } catch(e) {}
+            },
+            saveDataToSessionStorage: function() {
+                var me = this;
+                window.sessionStorage.setItem(this._sessionStorageTempKey, JSON.stringify(this.data));
+            },
             init: function() {
                 var me = this;
+                me.revealDataFromSessionStorage();
                 window.addEventListener('storage', function(event) {
                     if (event.key == me._getMemoryKey) {
                         // console.log('Some tab asked for the Memory -> send it');
@@ -74,6 +89,11 @@ define([], function() {
                         me.setData(msg.data);
                     }
                 });
+
+                window.addEventListener('beforeunload', function() {
+                    me.saveDataToSessionStorage();
+                });
+
                 me.getMemoryFromOtherTabs();
                 return this;
             },

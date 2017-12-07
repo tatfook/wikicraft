@@ -76,6 +76,7 @@ define([
                 data = data || {};
                 $scope.filelist = data.filelist;
                 $scope.filesCount = data.total;
+                $scope.isSelectAll = false;
             });
         };
 
@@ -210,15 +211,30 @@ define([
                         var filelist = [];
                         var filesSize = 0;
                         var conflictSize = 0;
-                        for (var i = 0; i < files.length; i++) {
-                            if (files[i].name.split(".").length <= 1){
-                                files[i].name += ".part";
+                        files = files.filter(function (file) {
+                            if (file.name.split(".").length <= 1){
+                                file.name += ".part";
                             }
-                            filelist.push(files[i].name);
-                            files[i].size = files[i].size || 0;
-                            files[i].type = files[i].type || "multipart/part";
-                            filesSize += files[i].size;
-                        }
+                            var uploadingFiles = $scope.uploadingFiles || [];
+                            for(var i = 0; i< uploadingFiles.length; i++){
+                                if (uploadingFiles[i].name == file.name){
+                                    file.isInUploadQue = true;
+                                    break;
+                                }
+                            }
+
+                            if (file.isInUploadQue){
+                                file._start_at = file._start_at || new Date();
+                                qiniuBack.removeFile(file);
+                                return false;
+                            }
+
+                            filelist.push(file.name);
+                            file.size = file.size || 0;
+                            file.type = file.type || "multipart/part";
+                            filesSize += file.size;
+                            return true;
+                        });
                         if ($scope.updatingFile && $scope.updatingFile._id){
                             $scope.remainSize = filesSize;
                             if (isExceed($scope.storeInfo.unUsed * biteToG, (filesSize - $scope.updatingFile.file.size))){

@@ -60,7 +60,7 @@ define([
 			return false;
 		}
 		return true;
-	}
+    }
 
     function getCurrentDataSource() {
 		if (currentPage && currentPage.username) {
@@ -605,6 +605,7 @@ define([
             $rootScope.userinfo = $rootScope.user;
 
             $scope.enableTransform = true;
+            $scope.isEmptyObject = isEmptyObject;
             $scaleValue = "";
             $scope.scales = [
                 {"id":0,"showValue": "45%", "scaleValue": "0.25"},
@@ -938,7 +939,8 @@ define([
 
                 var currentDataSource = getCurrentDataSource();
                 var page = angular.copy(currentPage);
-                var content = editor.getValue();
+                console.log(currentPage);
+                var content = page.content || editor.getValue();
 				page.timestamp = (new Date()).getTime();
 				page.content = content;
                 var saveFailedCB = function () {
@@ -1551,7 +1553,7 @@ define([
                         Message.info("文件保存成功");
                     }, function () {
                         errcb && errcb();
-                        Message.info("文件保存失败");
+                        Message.danger("文件保存失败");
                     });
                 } else {
                     storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
@@ -1698,7 +1700,7 @@ define([
 					Message.info("全部保存成功");
 				}, function() {
 					callback();
-					Message.info("全部保存失败");
+					Message.danger("全部保存失败");
 				});
             };//}}}
 
