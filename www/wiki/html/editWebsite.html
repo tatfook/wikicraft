@@ -283,9 +283,9 @@
                             <p class="info-msg break-all">keepwork.com/{{user.username}}/{{website.name}}</p>
                         </div>
                     </div>
-                    <div class="form-group" ng-show="domainErrMsg">
+                    <div class="form-group" ng-hide="!defaultPageErrMsg">
                         <div class="col-sm-6 col-sm-offset-2">
-                            <span style="color: red;margin-left:3%">{{ domainErrMsg }}</span>
+                            <span style="color: red;margin-left:3%">{{ defaultPageErrMsg }}</span>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">

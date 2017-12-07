@@ -150,7 +150,7 @@ define([
         // 修改网站设置
         $scope.modifyWebsite = function () {
             $scope.websiteErr = "";
-            $scope.domainErrMsg = "";
+            $scope.defaultPageErrMsg = "";
             var websiteParams = $scope.website;
             var checkSensitives = [websiteParams.displayName, websiteParams.desc,websiteParams.defaultPage];
             var isSensitive = false;
@@ -176,8 +176,8 @@ define([
                 return;
             }
             
-            if (!/^[\d\w-]+$/.test($scope.website.defaultPage)) {
-                $scope.domainErrMsg = "域名格式错误, 域名只能为数字和字母组合";
+            if (!/^[\d\w-(\u4e00-\u9fff)]+$/.test($scope.website.defaultPage)) {
+                $scope.defaultPageErrMsg = "域名格式错误";
                 return;
             }
 
