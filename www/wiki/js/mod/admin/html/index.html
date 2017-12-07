@@ -505,7 +505,7 @@
                     </div>
                     </div>
                 </div>
-                <pre class="oauth-pre">Page: {{currentPage}} / {{numPages}}</pre>
+                <pre class="oauth-pre">Page: {{OAuthCurrentPage}} / {{OAuthNumPages}}</pre>
                 <ul uib-pagination
                     class="pagination-sm"
                     boundary-link-numbers="true"
@@ -519,7 +519,7 @@
                     max-size="OAuthMaxSize"
                     boundary-links="true"
                     ng-change = "oauthList()"
-                    num-pages="numPages"></ul>
+                    num-pages="OAuthNumPages"></ul>
             </div>
 
             <!--商品管理-->
@@ -838,7 +838,7 @@
                         </div>
                     </div>
                 </div>
-                <pre class="oauth-pre">Page: {{currentPage}} / {{numPages}}</pre>
+                <pre class="oauth-pre">Page: {{GoodsCurrentPage}} / {{GoosNumPages}}</pre>
                 <ul uib-pagination
                     class="pagination-sm"
                     boundary-link-numbers="true"
@@ -852,7 +852,7 @@
                     max-size="GoodsMaxSize"
                     boundary-links="true"
                     ng-change = "getGoods()"
-                    num-pages="numPages"></ul>
+                    num-pages="GoosNumPages"></ul>
             </div>
 
             <!--用户管理-->
