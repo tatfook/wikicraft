@@ -17,7 +17,7 @@ define(['app',
             var moduleParams = wikiBlock.modParams || {};
 
             function init() {
-                require(['http://121.14.117.239/js/keepwork_chapter.js'], function (initChapter) {
+                require(['http://www.daofeng-school.com/js/keepwork_chapter.js'], function (initChapter) {
                     initChapter(moduleParams.type, function (data, successCallback) {
 
                         $scope.detailHmtl = $sce.trustAsHtml(data);
