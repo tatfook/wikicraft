@@ -12,6 +12,15 @@ define([
         app.registerController("commentController", ['$scope', '$rootScope', 'Account', function ($scope, $rootScope, Account) {
             $scope.user = Account.getUser();
             $scope.isAuthenticated = Account.isAuthenticated();
+            $scope.dateToStandard = function(inputDate) {
+                if (!inputDate) {
+                    return "";
+                }
+                var outputDate = "";
+                var arrs = inputDate.split(" ");
+                outputDate+= arrs[0] + " " + arrs[1].split("-").join(":");
+                return outputDate;
+            }
 
             var path = util.parseUrl().pathname;
             var params = path.split("/");
