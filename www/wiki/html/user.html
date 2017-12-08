@@ -302,8 +302,8 @@
                 <p class="ellipsis-1" title="http://keepwork.com/{{userinfo.username}}"><img ng-src="{{imgsPath+'icon/wiki_link.png'}}" alt="" class="icon">{{"http://keepwork.com/" + userinfo.username}}</p>
             </div>
             <div class="message-row">
-                <h4>创建的组织：</h4>
-                <p ng-show="selfOrganizationCount==0">暂未创建组织</p>
+                <h4 translate="创建的组织："></h4>
+                <p ng-show="selfOrganizationCount==0" translate="暂未创建组织"></p>
                 <ul class="list-item">
                     <li ng-repeat="x in selfOrganizationList">
                         <a href="{{'/'+x.username+'/'+x.name+'/index'}}" class="text-muted">{{x.displayName}}</a>
@@ -311,12 +311,12 @@
                 </ul>
             </div>
             <div class="message-row">
-                <h4>加入的组织：</h4>
-                <p ng-show="(joinOrganizationCount-selfOrganizationCount)==0 || !joinOrganizationCount">暂未加入组织</p>
+                <h4 translate="加入的组织："></h4>
+                <p ng-show="(joinOrganizationCount-selfOrganizationCount)==0 || !joinOrganizationCount" translate="暂未加入组织"></p>
                 <ul class="list-item">
 					<li class="ellipsis-1" ng-repeat="x in joinOrganizationList" ng-hide="userinfo._id == x.siteinfo.userId || x.isDelete">
                         <a href="{{'/' + x.siteinfo.username + '/' + x.siteinfo.name + '/index'}}" class="text-muted pull-left">{{x.siteinfo.displayName}}</a>
-                        <a class="pull-right" ng-click="exitOrg(x)" ng-show="user._id==userinfo._id">退出</a>
+                        <a class="pull-right" ng-click="exitOrg(x)" ng-show="user._id==userinfo._id" translate="退出"></a>
                     </li>
                 </ul>
             </div>
@@ -325,15 +325,15 @@
             <div class="main-content clearfix bar-nav" ng-show="user._id==userinfo._id">
                 <div class="col-xs-4" ng-click="goNewWebsitePage()">
                     <img ng-src="{{imgsPath + 'icon/wiki_new_site.png'}}" alt="">
-                    <p>新建网站</p>
+                    <p translate="新建网站"></p>
                 </div>
                 <div class="col-xs-4" ng-click="goWebsitePage()">
                     <img ng-src="{{imgsPath + 'icon/wiki_site_manage.png'}}" alt="">
-                    <p>网站管理</p>
+                    <p translate="网站管理"></p>
                 </div>
                 <div class="col-xs-4" ng-click="goEditorPage()">
                     <img ng-src="{{imgsPath + 'icon/wiki_editor.png'}}" alt="">
-                    <p>页面编辑器</p>
+                    <p translate="页面编辑器"></p>
                 </div>
                 <!--<p class="help" ng-click="goHelpPage()"><span class="icon">?</span> 知识库</p>-->
             </div>
@@ -341,10 +341,10 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
-                        <a href="#wiki_preview" aria-controls="preview" role="tab" data-toggle="tab">概况</a>
+                        <a href="#wiki_preview" aria-controls="preview" role="tab" data-toggle="tab" translate="概况"></a>
                     </li>
                     <li role="presentation">
-                        <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab">关注</a>
+                        <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab" translate="关注"></a>
                     </li>
                     <li role="presentation">
                         <a href="#wiki_fans" aria-controls="wiki_fans" role="tab" data-toggle="tab">粉丝<span class="info">({{fansCount || 0}})</span></a>
@@ -354,8 +354,8 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active clearfix" id="wiki_preview">
                         <div class="col-xs-12">
-                            <h3 class="title">创建的网站</h3>
-                            <p ng-show="allSiteTotal==0">暂未创建网站</p>
+                            <h3 class="title" translate="创建的网站"></h3>
+                            <p ng-show="allSiteTotal==0" translate="暂未创建网站"></p>
                             <div class="img-text col-md-6 col-xs-12" ng-repeat="x in allSiteList" ng-hide="x.visibility == 'private' && user._id != userinfo._id">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
@@ -374,8 +374,8 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <h3 class="title">参与的网站</h3>
-                            <p ng-show="joinSiteTotal==0 || !joinSiteTotal">暂无参与的网站</p>
+                            <h3 class="title" translate="参与的网站"></h3>
+                            <p ng-show="joinSiteTotal==0 || !joinSiteTotal" translate="暂无参与的网站"></p>
                             <div class="img-text col-md-6" ng-repeat="x in joinSiteList">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
@@ -394,11 +394,11 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <h3 class="title">活跃度</h3>
+                            <h3 class="title" translate="活跃度"></h3>
                             <div id="contributeCalendar" class="contributeCalendar col-md-12 user-activation">
                                 <div class="col-md-12" id="calendarSibling">
                                     <div class="pull-left hidden-xs">
-                                        <a title="在编辑器页面点击保存一次即为一条统计数据">查看数据统计方法</a>
+                                        <a title="在编辑器页面点击保存一次即为一条统计数据" translate="查看数据统计方法"></a>
                                     </div>
                                     <div class="pull-right hidden-xs">
                                         弱
@@ -426,8 +426,8 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <h3 class="title">活动</h3>
-                            <p ng-show="trendsCount==0">暂无活动</p>
+                            <h3 class="title" translate="活动"></h3>
+                            <p ng-show="trendsCount==0" translate="暂无活动"></p>
                             <div ng-show="trendsCount>0" class="active-row-box col-xs-12">
                                 <div class="col-xs-12 active-row" ng-repeat="x in trendsList">
                                     <img ng-src="{{userinfo.portrait || imgsPath+'default_portrait.png'}}" alt="">{{x.desc}}
@@ -439,8 +439,8 @@
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix" id="wiki_concern">
                         <div class="col-xs-12">
-                            <h3 class="title">关注的作者</h3>
-                            <p ng-show="followUserTotal==0">暂未关注他人</p>
+                            <h3 class="title" translate="关注的作者"></h3>
+                            <p ng-show="followUserTotal==0" translate="暂未关注他人"></p>
                             <div class="img-text col-md-6" ng-repeat="x in followUserList">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
@@ -459,8 +459,8 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <h3 class="title">关注的网站</h3>
-                            <p ng-show="followSiteTotal==0">暂无关注的网站</p>
+                            <h3 class="title" translate="关注的网站"></h3>
+                            <p ng-show="followSiteTotal==0" translate="暂无关注的网站"></p>
                             <div class="img-text col-md-6" ng-repeat="x in followSiteList">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
@@ -480,7 +480,7 @@
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix fans" id="wiki_fans">
-                        <p ng-show="fansCount==0" style="text-align: center;margin-top: 40px;">暂无粉丝</p>
+                        <p ng-show="fansCount==0" style="text-align: center;margin-top: 40px;" translate="暂无粉丝"></p>
                         <div class="col-md-12 fans-row" ng-repeat="x in fansList" ng-hide="x.isDelete">
                             <img ng-src="{{x.userinfo.portrait || getImageUrl('wiki_default_profile.jpg',imgsPath)}}" alt="">
                             <div class="intro">

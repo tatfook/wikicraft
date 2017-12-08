@@ -492,9 +492,7 @@
 
 <div ng-controller="userProfileController" class="col-sm-9 col-md-10">
     <div ng-show="showItem == 'myProfile'" class="panel main-content col-xs-12">
-        <div class="panel-heading">
-            我的资料
-        </div>
+        <div class="panel-heading" translate="我的资料"></div>
         <div class="panel-body">
             <div class="col-md-3 preview-zone">
                 <div class="preview">
@@ -503,7 +501,7 @@
                 </div>
                 <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)"
                                                      type="file"></p>
-                <a id="finish" class="btn btn-primary sr-only">确 定</a>
+                <a id="finish" class="btn btn-primary sr-only" translate="确 定"></a>
             </div>
             <div class="col-md-9">
                 <div id="cropper" class="cropper-zone sr-only visible-hidden" style="width: 500px; height: 340px;">
@@ -511,16 +509,16 @@
                 </div>
                 <form id="data-form" name="userProfileForm" class="form-horizontal col-md-12 data-form" role="form">
                     <div class="form-group sr-only">
-                        <legend>完善资料</legend>
+                        <legend translate="完善资料"></legend>
                     </div>
                     <div class="form-group">
-                        <label for="displayName" class="col-sm-2 control-label">昵称：</label>
+                        <label for="displayName" class="col-sm-2 control-label" translate="昵称："></label>
                         <div class="col-sm-10">
                             <input id='displayName' type="text" class="form-control" ng-model="user.displayName">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">性别：</label>
+                        <label class="col-sm-2 control-label" translate="性别："></label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
                                 <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="M"
@@ -538,22 +536,22 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="location" class="col-sm-2 control-label">位置：</label>
+                        <label for="location" class="col-sm-2 control-label" translate="位置："></label>
                         <div class="col-sm-10">
                             <input id='location' type="text" class="form-control" name="userLocation" ng-model="user.location" maxutf8length="locationMaxUtf8Length">
                             <!--select name="" id="">省
-                                <option value="广东">广东省</option>
+                                <option value="广东" translate="广东省"></option>
                             </select>
                             <select name="" id="">省
-                                <option value="广东">广东省</option>
+                                <option value="广东" translate="广东省"></option>
                             </select>
                             <select name="" id="">省
-                                <option value="广东">广东省</option>
+                                <option value="广东" translate="广东省"></option>
                             </select-->
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="intro" class="col-sm-2 control-label">个人简介：</label>
+                        <label for="intro" class="col-sm-2 control-label" translate="个人简介："></label>
                         <div class="col-sm-10">
                             <textarea name="intro" rows="6" ng-model="user.introduce" maxutf8length="introMaxUtf8Length"></textarea>
                         </div>
@@ -561,9 +559,9 @@
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
                             <p class="text-danger" ng-show="formErr">{{formErr}}</p>
-                            <p class="text-danger" ng-show="userProfileForm.userLocation.$error.maxutf8length">位置字数超过限制。</p>
-                            <p class="text-danger" ng-show="userProfileForm.intro.$error.maxutf8length">个人简介字数超过限制。</p>
-                            <button ng-click="saveProfile()" class="btn btn-primary btn-md" ng-disabled="userProfileForm.$invalid">保 存</button>
+                            <p class="text-danger" ng-show="userProfileForm.userLocation.$error.maxutf8length" translate="位置字数超过限制。"></p>
+                            <p class="text-danger" ng-show="userProfileForm.intro.$error.maxutf8length" translate="个人简介字数超过限制。"></p>
+                            <button ng-click="saveProfile()" class="btn btn-primary btn-md" ng-disabled="userProfileForm.$invalid" translate="保 存"></button>
                         </div>
                     </div>
                 </form>
@@ -578,10 +576,10 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
-                    <a href="#change" aria-controls="change" role="tab" data-toggle="tab">修改密码</a>
+                    <a href="#change" aria-controls="change" role="tab" data-toggle="tab" translate="修改密码"></a>
                 </li>
                 <li role="presentation">
-                    <a href="#verify" aria-controls="verify" role="tab" data-toggle="tab">账号绑定</a>
+                    <a href="#verify" aria-controls="verify" role="tab" data-toggle="tab" translate="账号绑定"></a>
                 </li>
             </ul>
 
@@ -590,23 +588,23 @@
                 <div role="tabpanel" class="tab-pane safety-panel active" id="change">
                     <form class="form-horizontal" role="form">
                         <div class="form-group sr-only">
-                            <legend>修改密码表单</legend>
+                            <legend translate="修改密码表单"></legend>
                         </div>
                         <div class="form-group">
-                            <label for="old" class="control-label col-sm-3">旧密码：</label>
+                            <label for="old" class="control-label col-sm-3" translate="旧密码："></label>
                             <div class="col-sm-9">
                                 <input type="password" id="old" class="form-control" ng-model="passwordObj.oldPassword">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="new" class="control-label col-sm-3">新密码：</label>
+                            <label for="new" class="control-label col-sm-3" translate="新密码："></label>
                             <div class="col-sm-9">
                                 <input type="password" id="new" class="form-control"
                                        ng-model="passwordObj.newPassword1">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="reNew" class="control-label col-sm-3">重复新密码：</label>
+                            <label for="reNew" class="control-label col-sm-3" translate="重复新密码："></label>
                             <div class="col-sm-9">
                                 <input type="password" id="reNew" class="form-control"
                                        ng-model="passwordObj.newPassword2">
@@ -614,7 +612,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-9 col-sm-offset-3">
-                                <button ng-click="modifyPassword()" class="btn btn-primary btn-md">修 改</button>
+                                <button ng-click="modifyPassword()" class="btn btn-primary btn-md" translate="修 改"></button>
                             </div>
                         </div>
                     </form>
@@ -622,33 +620,33 @@
                 <div role="tabpanel" class="tab-pane safety-panel" id="verify">
                     <form class="form-horizontal bind-form" role="form">
                         <div class="form-group sr-only">
-                            <legend>安全验证表单</legend>
+                            <legend translate="安全验证表单"></legend>
                         </div>
                         <div class="form-group"><div class="col-sm-6 col-sm-offset-3 text-danger">{{emailErrMsg}}</div></div>
                         <div class="form-group">
-                            <label for="email" class="control-label col-sm-3">邮箱绑定：</label>
+                            <label for="email" class="control-label col-sm-3" translate="邮箱绑定："></label>
                             <div class="col-sm-6">
                                 <input type="text" id="email" class="form-control" ng-model="userEmail" ng-show="!isBind('email')">
                                 <p ng-show="isBind('email')" class="form-control">{{user.email}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="bindEmail()" ng-hide="isBind('email')">绑定</div>
-                                <div class="btn btn-block btn-outline" ng-click="bindEmail()" ng-show="isBind('email')">解绑</div>
+                                <div class="btn btn-block btn-primary" ng-click="bindEmail()" ng-hide="isBind('email')" translate="绑定"></div>
+                                <div class="btn btn-block btn-outline" ng-click="bindEmail()" ng-show="isBind('email')" translate="解绑"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3">手机绑定：</label>
+                            <label for="phone" class="control-label col-sm-3" translate="手机绑定："></label>
                             <div class="col-sm-6">
                                 <input type="text" id="phone" class="form-control" ng-model="userPhone" ng-show="!isBind('phone')">
                                 <p ng-show="isBind('phone')" class="form-control">{{user.cellphone}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block btn-primary" ng-click="showBindPhone()" ng-hide="isBind('phone')">绑定</div>
-                                <div class="btn btn-block btn-outline" ng-click="showBindPhone()" ng-show="isBind('phone')">解绑</div>
+                                <div class="btn btn-block btn-primary" ng-click="showBindPhone()" ng-hide="isBind('phone')" translate="绑定"></div>
+                                <div class="btn btn-block btn-outline" ng-click="showBindPhone()" ng-show="isBind('phone')" translate="解绑"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3">QQ绑定：</label>
+                            <label for="phone" class="control-label col-sm-3" translate="QQ绑定："></label>
                             <div class="col-sm-6">
                                 <p class="form-control">{{getServiceUsername("qq")}}</p>
                             </div>
@@ -657,7 +655,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3">微信绑定：</label>
+                            <label for="phone" class="control-label col-sm-3" translate="微信绑定："></label>
                             <div class="col-sm-6">
                                 <p class="form-control">{{getServiceUsername("weixin")}}</p>
                             </div>
@@ -666,7 +664,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3">微博绑定：</label>
+                            <label for="phone" class="control-label col-sm-3" translate="微博绑定："></label>
                             <div class="col-sm-6">
                                 <p class="form-control">{{getServiceUsername("xinlangweibo")}}</p>
                             </div>
@@ -675,7 +673,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3">Github绑定：</label>
+                            <label for="phone" class="control-label col-sm-3" translate="Github绑定："></label>
                             <div class="col-sm-6">
                                 <p class="form-control">{{getServiceUsername("github")}}</p>
                             </div>
@@ -695,13 +693,13 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
-                    <a href="#userTrends" ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
+                    <a href="#userTrends" ng-click="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="组织"></a>
                 </li>
                 <li role="presentation" ng-class="trendsType == 'favorite' ? 'active' : ''">
-                    <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
+                    <a href="#userTrends" ng-click="selectTrendsType('favorite')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="关注"></a>
                 </li>
                 <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
-                    <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
+                    <a href="#userTrends" ng-click="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="作品"></a>
                 </li>
             </ul>
 
@@ -710,7 +708,7 @@
                 <div role="tabpanel" class="tab-pane active col-xs-12" id="wiki_organize">
                     <div class="empty-box" ng-show="isShowTrendsEmpty()">
                         <span class="iconfont icon-kongbaiyemian"></span>
-                        <p>暂无相关内容...</p>
+                        <p translate="暂无相关内容..."></p>
                     </div>
                     <div class="status-row col-xs-12" ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
                         <p class="pull-right info">{{x.updateDate}}</p>
@@ -730,11 +728,11 @@
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
                     <a ng-click="clickCollectionUser()" href="#wiki_user" aria-controls="user" role="tab"
-                       data-toggle="tab">作者</a>
+                       data-toggle="tab" translate="作者"></a>
                 </li>
                 <li role="presentation">
                     <a ng-click="clickCollectionWorks()" href="#wiki_works" aria-controls="works" role="tab"
-                       data-toggle="tab">网站</a>
+                       data-toggle="tab" translate="网站"></a>
                 </li>
             </ul>
 
@@ -743,7 +741,7 @@
                 <div role="tabpanel" class="tab-pane active img-text-box collection-pane" id="wiki_user">
                     <div class="empty-box" ng-hide="userList.length > 0">
                         <span class="iconfont icon-kongbaiyemian"></span>
-                        <p>暂无相关内容...</p>
+                        <p translate="暂无相关内容..."></p>
                     </div>
                     <div class="col-sm-12" ng-show="userList.length > 0">
                         <div class="img-text col-md-6 col-sm-12" ng-repeat="x in userList">
@@ -751,7 +749,7 @@
                             <div class="text">
                                 <h4>
                                     <a ng-click="goUserPage(x.userinfo.username)">{{x.userinfo.displayName || x.userinfo.username}}</a>
-                                    <!--<span class="pull-right info">关注于2017-03-02</span>-->
+                                    <!--<span class="pull-right info" translate="关注于2017-03-02"></span>-->
                                 </h4>
                                 <p>作者：{{x.userinfo.username}}</p>
                                 <p>说明：{{x.siteinfo.desc || "暂无说明"}}</p>
@@ -777,7 +775,7 @@
                 <div role="tabpanel" class="tab-pane img-text-box collection-pane" id="wiki_works">
                     <div class="empty-box" ng-hide="siteList.length > 0">
                         <span class="iconfont icon-kongbaiyemian"></span>
-                        <p>暂无相关内容...</p>
+                        <p translate="暂无相关内容..."></p>
                     </div>
                     <div class="col-sm-12" ng-show="siteList.length > 0">
                         <div class="img-text col-md-6 col-sm-12" ng-repeat="x in siteList">
@@ -785,7 +783,7 @@
                             <div class="text">
                                 <h4>
                                     <a ng-click="goSitePage(x.siteinfo.username, x.siteinfo.name)">{{x.siteinfo.displayName || x.siteinfo.name || "站点名未知"}}</a>
-                                    <!--<span class="pull-right info">关注于2017-03-02</span>-->
+                                    <!--<span class="pull-right info" translate="关注于2017-03-02"></span>-->
                                 </h4>
                                 <p>作者：{{x.siteinfo.username || "作者未知"}}</p>
                                 <p>说明：{{x.siteinfo.desc || "暂无简介"}}</p>
@@ -814,11 +812,11 @@
 
     <!--我的历史-->
     <div ng-show="showItem == 'myHistory'" class="col-xs-12 main-content panel">
-        <div class="panel-heading">我的历史</div>
+        <div class="panel-heading" translate="我的历史"></div>
         <div class="panel-body" ng-hide="visitHistoryList.length > 0">
             <div class="empty-box">
                 <span class="iconfont icon-kongbaiyemian"></span>
-                <p>暂无相关内容...</p>
+                <p translate="暂无相关内容..."></p>
             </div>
         </div>
         <div class="panel-body timeline" ng-show="visitHistoryList.length > 0">
@@ -876,7 +874,7 @@
                     </div>
                     <div class="empty-box" ng-hide="fansUserList && fansUserList.length>0">
                         <span class="iconfont icon-kongbaiyemian"></span>
-                        <p>暂无粉丝...</p>
+                        <p translate="暂无粉丝..."></p>
                     </div>
                 </div>
             </div>
@@ -885,26 +883,26 @@
 
     <!--实名认证-->
     <div ng-show="showItem == 'realName'" class="col-md-10 main-content">
-        <div class="panel-heading">手机认证</div>
+        <div class="panel-heading" translate="手机认证"></div>
         <div class="tab-content col-lg-7 col-sm-10 col-xs-12">
             <div role="tabpanel" class="tab-pane safety-panel active">
                 <div ng-show="user.realNameInfo.verified && user.realNameInfo.cellphone" class="realname-verified-info">
-                    <p>认证状态：已经认证</p>
+                    <p translate="认证状态：已经认证"></p>
                     <p>认证号码：{{ cellphone2UI(user.realNameInfo.cellphone) }}</p>
                 </div>
                 <form ng-hide="user.realNameInfo.verified && user.realNameInfo.cellphone" class="form-horizontal" role="form">
                     <div class="form-group sr-only">
-                        <legend>手机认证表单</legend>
+                        <legend translate="手机认证表单"></legend>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-3">输入手机号：</label>
+                        <label class="control-label col-sm-3" translate="输入手机号："></label>
                         <div class="col-sm-9">
                             <input class="form-control" ng-model="realNameInfo.cellphone">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-3">短信验证码：</label>
+                        <label class="control-label col-sm-3" translate="短信验证码："></label>
                         <div class="col-sm-5">
                             <input type="text" class="form-control" ng-model="realNameInfo.SMSCode">
                         </div>
@@ -926,7 +924,7 @@
 
                     <div class="form-group">
                         <div class="col-sm-9 col-sm-offset-3">
-                            <button ng-click="submitRealnameInfo()" class="btn btn-primary btn-md">确认</button>
+                            <button ng-click="submitRealnameInfo()" class="btn btn-primary btn-md" translate="确认"></button>
                         </div>
                     </div>
                 </form>
@@ -942,13 +940,11 @@
 
     <!--数据源-->
     <div ng-show="showItem == 'dataSource'" class="col-md-10 panel main-content">
-        <div class="panel-heading">
-            数据源配置
-        </div>
+        <div class="panel-heading" translate="数据源配置"></div>
         <div class="panel-body data-source bottom-boder">
             <form role="form" class="form-horizontal">
                 <div class="form-group form-group-md">
-                    <label class="col-xs-2 control-label">默认数据源：</label>
+                    <label class="col-xs-2 control-label" translate="默认数据源："></label>
                     <div class="col-xs-7">
                         <select class="form-control" ng-model="defaultDataSourceName" ng-change="changeDefaultDataSource()">
                             <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{x.name || '内置GItlab'}}</option>
@@ -956,17 +952,17 @@
                     </div>
                 </div>
             </form>
-            <h4>已配置的数据源</h4>
+            <h4 translate="已配置的数据源"></h4>
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>数据源名</th>
-                    <th>类型</th>
+                    <th translate="数据源名"></th>
+                    <th translate="类型"></th>
                     <th class="hidden-xs">apiBaseUrl</th>
                     <th class="hidden-xs">rawBaseUrl</th>
                     <th class="hidden-xs">Token</th>
-                    <th>状态</th>
-                    <th class="set-width">操作</th>
+                    <th translate="状态"></th>
+                    <th class="set-width" translate="操作"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -979,8 +975,8 @@
                     <td>{{x.dataSourceUserId ? "有效" : "无效"}}</td>
                     <td>
                         <div>
-                            <a class="btn" ng-click="clickModifyDataSource(x)">修改</a>
-                            <a class="btn" ng-click="clickDeleteDataSource(x)">删除</a>
+                            <a class="btn" ng-click="clickModifyDataSource(x)" translate="修改"></a>
+                            <a class="btn" ng-click="clickDeleteDataSource(x)" translate="删除"></a>
                         </div>
                     </td>
                 </tr>
@@ -988,10 +984,10 @@
             </table>
         </div>
         <div class="panel-body data-source">
-            <h4>增改数据源</h4>
+            <h4 translate="增改数据源"></h4>
             <form role="form" class="form-horizontal">
                 <div class="form-group form-group-md">
-                    <label class="col-xs-2 control-label">数据源类型：</label>
+                    <label class="col-xs-2 control-label" translate="数据源类型："></label>
                     <div class="col-xs-7">
                         <select class="form-control" ng-model="newDataSource.type">
                             <option ng-repeat="x in dataSourceTypeList" value="{{x}}">{{x}}</option>
@@ -999,7 +995,7 @@
                     </div>
                 </div>
                 <div class="form-group form-group-md">
-                    <label class="col-xs-2 control-label">数据源名:</label>
+                    <label class="col-xs-2 control-label" translate="数据源名:"></label>
                     <div class="col-xs-7">
                         <input ng-model="newDataSource.name" type="text" class="form-control" placeholder="github">
                     </div>
@@ -1023,7 +1019,7 @@
                     </div>
                 </div>
                 <div class="form-group form-group-md btn-submit">
-                    <button class="btn btn-primary" ng-click="clickNewDataSource()">提交</button>
+                    <button class="btn btn-primary" ng-click="clickNewDataSource()" translate="提交"></button>
                     <span style="color: red">{{errMsg}}</span>
                 </div>
             </form>
@@ -1033,7 +1029,7 @@
     <!--消费记录-->
     <!--<div ng-show="showItem == 'myPay'" class="col-xs-12 main-content panel">-->
     <!--<div class="panel-heading clearfix">-->
-    <!--<div style="float:left">消费记录</div>-->
+    <!--<div style="float:left" translate="消费记录"></div>-->
     <!--<div style="float:right">余额{{balance/100 || "0"}}元</div>-->
     <!--</div>-->
     <!--<div class="panel-body mypay-panel">-->
@@ -1061,15 +1057,15 @@
     <!--<div class="panel-body">-->
     <!--<form class="form-horizontal" role="form">-->
     <!--<div class="form-group sr-only form-group-lg">-->
-    <!--<legend>邀请注册表单</legend>-->
+    <!--<legend translate="邀请注册表单"></legend>-->
     <!--</div>-->
     <!--<div class="form-group form-group-lg">-->
-    <!--<label for="email" class="control-label col-sm-2">好友email：</label>-->
+    <!--<label for="email" class="control-label col-sm-2" translate="好友email："></label>-->
     <!--<div class="col-sm-4">-->
     <!--<input type="email" ng-model="friendMail" class="form-control">-->
     <!--</div>-->
     <!--<div class="col-sm-3">-->
-    <!--<div ng-click="inviteFriend()" class="btn btn-primary btn-md">邀 请</div>-->
+    <!--<div ng-click="inviteFriend()" class="btn btn-primary btn-md" translate="邀 请"></div>-->
     <!--</div>-->
     <!--</div>-->
     <!--</form>-->
@@ -1087,7 +1083,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group form-group-lg">
-                            <label class="control-label col-sm-3">邮箱验证码：</label>
+                            <label class="control-label col-sm-3" translate="邮箱验证码："></label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" ng-model="emailVerifyCode">
                             </div>
@@ -1101,8 +1097,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" ng-click="confirmEmailBind()">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" ng-click="confirmEmailBind()" translate="确定"></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="取消"></button>
                 </div>
             </div>
         </div>
@@ -1122,7 +1118,7 @@
                             每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。<br/><br/>
                         </div>
                         <div class="form-group form-group-lg">
-                            <label class="control-label col-sm-3">图片验证码：</label>
+                            <label class="control-label col-sm-3" translate="图片验证码："></label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" ng-model="imageCode">
                             </div>
@@ -1135,7 +1131,7 @@
                             </div>
                         </div>
                         <div class="form-group form-group-lg">
-                            <label class="control-label col-sm-3">短信验证码：</label>
+                            <label class="control-label col-sm-3" translate="短信验证码："></label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" ng-model="smsCode">
                             </div>
@@ -1149,8 +1145,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" ng-click="confirmPhoneBind()">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" ng-click="confirmPhoneBind()" translate="确定"></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="取消"></button>
                 </div>
             </div>
         </div>

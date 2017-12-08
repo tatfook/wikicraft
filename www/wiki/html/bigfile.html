@@ -377,16 +377,16 @@
         <div class="modal-body">
             <ul class="nav nav-tabs clearfix" role="tablist">
                 <li role="presentation" ng-show="isModal" class="active">
-                    <a href="#insert" aria-controls="insert" role="tab" data-toggle="tab">插入文件</a>
+                    <a href="#insert" aria-controls="insert" role="tab" data-toggle="tab" translate="插入文件"></a>
                 </li>
                 <li role="presentation" ng-class="{true:'active'}[!isModal]">
-                    <a href="#fileManage" aria-controls="fileManage" role="tab" data-toggle="tab">网盘管理</a>
+                    <a href="#fileManage" aria-controls="fileManage" role="tab" data-toggle="tab" translate="网盘管理"></a>
                 </li>
                 <li role="presentation">
-                    <a id="activeUpload" href="#uploadFile" aria-controls="uploadFile" role="tab" data-toggle="tab" ng-click="initQiniu()">上传文件</a>
+                    <a id="activeUpload" href="#uploadFile" aria-controls="uploadFile" role="tab" data-toggle="tab" ng-click="initQiniu()" translate="上传文件"></a>
                 </li>
                 <li class="pull-right process-li">
-                    当前使用：
+                    {{"当前使用：" | translate}}
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                              ng-class = "{'warning-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.7, 'danger-bar': ((storeInfo.total - storeInfo.unUsed) / storeInfo.total) >= 0.9}"
@@ -394,15 +394,15 @@
                              ng-style="{'width': (storeInfo.total - storeInfo.unUsed)/storeInfo.total*100+'%'}">
                         </div>
                         <div class="info">
-                            <span>{{storeInfo.unUsed | number:2}}GB可用</span>
-                            <span>总共{{storeInfo.total | number:2}}GB</span>
+                            <span>{{storeInfo.unUsed | number:2}}GB {{"可用" | translate}}</span>
+                            <span>{{"总共" | translate}} {{storeInfo.total | number:2}}GB</span>
                         </div>
                     </div>
                 </li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active clearfix" role="tabpanel" ng-show="isModal" id="insert">
-                    <p>输入已有url地址：</p>
+                    <p translate="输入已有url地址："></p>
                     <form class="form-inline">
                         <div class="form-group">
                             <div class="input-group">
@@ -410,18 +410,18 @@
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{selectedType}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                        <li ng-click="selectedType = '图片'"><a>图片</a></li>
-                                        <li ng-click="selectedType = '视频'"><a>视频</a></li>
-                                        <li ng-click="selectedType = '其它'"><a>其它</a></li>
+                                        <li ng-click="selectedType = '图片'"><a translate="图片"></a></li>
+                                        <li ng-click="selectedType = '视频'"><a translate="视频"></a></li>
+                                        <li ng-click="selectedType = '其它'"><a translate="其它"></a></li>
                                     </ul>
                                 </div><!-- /btn-group -->
                             </div>
-                            <button class="btn btn-primary" ng-click="insertFilesUrl()">插 入</button>
+                            <button class="btn btn-primary" ng-click="insertFilesUrl()" translate="插 入"></button>
                             <span class="text-danger" ng-show="insertFileUrlErr">{{insertFileUrlErr}}</span>
                         </div>
                     </form>
                     <div class="search-zone clearfix">
-                        <span class="hidden-xs">或者在我的大文件中选择：</span>
+                        <span class="hidden-xs" translate="或者在我的大文件中选择："></span>
                         <div class="searchbar pull-right">
                             <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
@@ -430,31 +430,31 @@
                     <table class="table insert-table thead-table">
                         <thead>
                             <tr>
-                                <td class="checkbox-column">多选</td>
-                                <td class="file-column order-column" ng-click="changeOrder('filename')">文件名
+                                <td class="checkbox-column" translate="多选"></td>
+                                <td class="file-column order-column" ng-click="changeOrder('filename')">{{ "文件名" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == true]"></span>
                                 </td>
-                                <td class="type-column order-column" ng-click="changeOrder('file.type')">文件类型
+                                <td class="type-column order-column" ng-click="changeOrder('file.type')">{{ "文件类型" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == true]"></span>
                                 </td>
-                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">大小
+                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">{{ "大小" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span>
                                 </td>
-                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">更新时间
+                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">{{ "更新时间" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
-                                <td class="operate-column">操作</td>
+                                <td class="operate-column" translate="操作"></td>
                             </tr>
                         </thead>
                     </table>
                     <div class="insert-table insert-table-box">
                         <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
                             <span class="iconfont icon-kongbaiyemian"></span>
-                            <p>暂无相关内容...</p>
+                            <p translate="暂无相关内容..."></p>
                         </div>
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
@@ -474,7 +474,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <button class="btn btn-primary pull-right" ng-click="insertFiles()">插入选中</button>
+                    <button class="btn btn-primary pull-right" ng-click="insertFiles()" translate="插入选中"></button>
                 </div>
                 <div class="tab-pane clearfix" ng-class="{true:'active'}[!isModal]" role="tabpanel" id="fileManage">
                     <div class="only-search clearfix">
@@ -486,30 +486,30 @@
                     <table class="table manage-table thead-table">
                         <thead>
                             <tr>
-                                <td class="checkbox-column">多选</td>
-                                <td class="file-column order-column" ng-click="changeOrder('filename')">文件名
+                                <td class="checkbox-column" translate="多选"></td>
+                                <td class="file-column order-column" ng-click="changeOrder('filename')">{{ "文件名" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'filename' && order.reverse == true]"></span>
                                 </td>
-                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">文件类型
+                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">{{ "文件类型" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.type' && order.reverse == true]"></span>
                                 </td>
-                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">大小
+                                <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">{{ "大小" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span></td>
-                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">更新时间
+                                <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">{{ "更新时间" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
-                                <td class="operate-column">操作</td>
+                                <td class="operate-column" translate="操作"></td>
                             </tr>
                         </thead>
                     </table>
                     <div class="manage-table table-box">
                         <div class="empty-box" ng-hide="filelist.length > 0 && filesCount > 0">
                             <span class="iconfont icon-kongbaiyemian"></span>
-                            <p>暂无相关内容...</p>
+                            <p translate="暂无相关内容..."></p>
                         </div>
                         <table class="table">
                             <tbody>
@@ -537,18 +537,18 @@
                     <div class="operation clearfix">
                         <div class="pull-left">
                             <input id="selectAll" ng-change="selectAll()" ng-model="isSelectAll" type="checkbox">
-                            <label for="selectAll">全选</label>
+                            <label for="selectAll" translate="全选"></label>
                         </div>
-                        <button class="btn btn-danger pull-right" ng-click="deleteFiles()">删除选中</button>
-                        <button class="btn btn-primary pull-right" ng-click="downloadFiles()">下载选中</button>
+                        <button class="btn btn-danger pull-right" ng-click="deleteFiles()" translate="删除选中"></button>
+                        <button class="btn btn-primary pull-right" ng-click="downloadFiles()" translate="下载选中"></button>
                     </div>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
                     <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
                     <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
                     <div class="clearfix">
-                        <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn">选中本地文件</button>
-                        <span class="text-danger" ng-show="isUidErr">出错了，请稍后重试</span>
+                        <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn" translate="选中本地文件"></button>
+                        <span class="text-danger" ng-show="isUidErr" translate="出错了，请稍后重试"></span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
                             <span class="preview-time">
                                 预估完成时间:{{finishTime || "等待计算"}} (剩余 {{remainTime}})
@@ -579,7 +579,7 @@
                                             <span class="sr-only">{{file.pervent}}% Complete</span>
                                         </div>
                                     </div>
-                                    <span ng-show="file.status == 4 || file.backStatus == 'failed'" class="text-danger" title="{{file.errTip}}">上传失败</span>
+                                    <span ng-show="file.status == 4 || file.backStatus == 'failed'" class="text-danger" title="{{file.errTip}}" translate="上传失败"></span>
                                     <span ng-click="stopUpload(file, $index)" ng-show="file.backStatus != 'success'" class="glyphicon glyphicon-remove"></span>
                                     <span ng-show="file.status == 5 && file.backStatus == 'success'" class="text-success glyphicon glyphicon-ok"></span>
                                 </div>

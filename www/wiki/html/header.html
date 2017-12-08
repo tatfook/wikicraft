@@ -387,7 +387,7 @@
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5 title="{{user.displayName || user.username}}" class="title">{{user.displayName || user.username}}</h5>
                                 <div class="level clearfix">
-                                    <p class="info clearfix"><span class="pull-left">等级0</span><span class="pull-right">0/2536</span>
+                                    <p class="info clearfix"><span class="pull-left" translate="等级0"></span><span class="pull-right">0/2536</span>
                                     </p>
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="0"
@@ -395,46 +395,46 @@
                                             <span class="sr-only">0% Complete</span>
                                         </div>
                                     </div>
-                                    <p><a ng-click="goVIPLevel()" class="pull-right">会员等级说明</a></p>
+                                    <p><a ng-click="goVIPLevel()" class="pull-right" translate="会员等级说明"></a></p>
                                 </div>
                                 <ul class="dropdown-list">
-                                    <li><a ng-click="goUserIndexPage(user.username)">我的主页</a></li>
-                                    <li><a ng-click="goUserCenterPage('websiteManager')">网站管理</a></li>
-                                    <li><a ng-click="goWikiEditorPage()">页面编辑器</a></li>
-                                    <li><a ng-click="goUserCenterPage('services', 'qiniuPan')">我的网盘</a></li>
-                                    <!--<li><a ng-click="goUserCenterPage('userProfile', 'dataSource')">数据源</a></li>-->
+                                    <li><a ng-click="goUserIndexPage(user.username)" translate="我的主页"></a></li>
+                                    <li><a ng-click="goUserCenterPage('websiteManager')" translate="网站管理"></a></li>
+                                    <li><a ng-click="goWikiEditorPage()" translate="页面编辑器"></a></li>
+                                    <li><a ng-click="goUserCenterPage('services', 'qiniuPan')" translate="我的网盘"></a></li>
+                                    <!--<li><a ng-click="goUserCenterPage('userProfile', 'dataSource')" translate="数据源"></a></li>-->
                                     <li role="separator" class="divider"></li>
-                                    <li><a ng-click="goUserCenterPage('userProfile')">设置中心</a></li>
+                                    <li><a ng-click="goUserCenterPage('userProfile')" translate="设置中心"></a></li>
                                     <li><a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a></li>
-                                    <li><a ng-click="goAdminPage()" ng-show="isAdmin()">后台管理</a></li>
+                                    <li><a ng-click="goAdminPage()" ng-show="isAdmin()" translate="后台管理"></a></li>
                                 </ul>
                                 <div class="clearfix dropdown-footer">
-                                    <a ng-click="logout()" class="pull-right">退出登录</a>
+                                    <a ng-click="logout()" class="pull-right" translate="退出登录"></a>
                                 </div>
                             </div>
                         </li>
                         <li class="dropdown">
                             <a href="#" ng-click="clickMyTrends()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="true">动态(<span>{{trendsCount || 0}}</span>)</a>
+                               aria-expanded="true">{{'动态' | translate}}(<span>{{trendsCount || 0}}</span>)</a>
                             <div class="dropdown-menu dropdown-menu-center news-dropdown-menu"
                                  aria-labelledby="dropdownMenu1">
                                 <div class="tab-box">
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li role="presentation" ng-class="trendsType == 'organization' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab">组织</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('organization')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="组织"></a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'attent' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('attent')" aria-controls="userTrends" role="tab" data-toggle="tab">关注</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('attent')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="关注"></a>
                                         </li>
                                         <li role="presentation" ng-class="trendsType == 'works' ? 'active' : ''">
-                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab">作品</a>
+                                            <a href="#userTrends" ng-mouseover="selectTrendsType('works')" aria-controls="userTrends" role="tab" data-toggle="tab" translate="作品"></a>
                                         </li>
                                     </ul>
                                 </div>
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="userTrends">
-                                        <p class="info">有{{trendsCount}}条动态更新</p>
+                                        <p class="info" translate="HEADER_ACTIVITIES_TIP" translate-values="{trendsCount: trendsCount}"></p>
                                         <ul>
                                             <li ng-repeat="x in trendsList" ng-show="isShowTrend(x)">
                                                 <a ng-click="rendTrends(x)" class="text-muted">{{x.desc}}</a>
@@ -447,7 +447,7 @@
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-                               ng-click="clickMyFavorite()">关注</a>
+                               ng-click="clickMyFavorite()" translate="关注"></a>
                             <div class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
                                     <li ng-repeat="x in favoriteWebsiteObj.siteList">
@@ -459,7 +459,7 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" ng-click="clickMyHistory()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="true">历史</a>
+                               aria-expanded="true" translate="历史"></a>
                             <ul class="dropdown-menu dropdown-menu-center list-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <ul>
                                     <li ng-repeat="x in visitHistoryList">
@@ -474,9 +474,9 @@
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0] | translate}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange track by $index"><a>{{item}}</a></li>
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange track by $index"><a>{{item | translate}}</a></li>
                                     </ul>
                                 </div><!-- /btn-group -->
                                 <input id="searchbar" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
@@ -519,12 +519,12 @@
                             <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> 功能</li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> <span translate="功能"></span></li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> <span translate="应用中心"></span></li>
                         <li class="iconfont-icon" ng-show="!isIconShow">
-                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>帮助</a>
+                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i><span translate="帮助"></span></a>
                         </li>
-                        <li class=""><a href="http://para.keepwork.com" target="_blank">paracraft</a></li>
+                        <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
                         <li class="icon dropdown share-dropdown" ng-show="isIconShow">
@@ -533,20 +533,20 @@
                                 <div class="social-share" data-title="{{tit}}"></div>
                             </div>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> 功能</li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i> 应用中心</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i>{{"功能" | translate}}</li>
+                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()"><i class="iconfont icon-yingyongguanli"></i>{{"应用中心" | translate}}</li>
                         <li class="iconfont-icon" ng-show="!isIconShow">
-                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>帮助</a>
+                            <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
                         </li>
-                        <li class=""><a href="http://para.keepwork.com" target="_blank">paracraft</a></li>
+                        <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar">
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{(nowSearchRange || searchRange[0]) | translate}} <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
-                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item}}</a></li>
+                                        <li ng-click="changeSearchRange(item)" ng-repeat="item in searchRange"><a>{{item | translate}}</a></li>
                                     </ul>
                                 </div><!-- /btn-group -->
                                 <input id="searchbar-nologin" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="search">
@@ -554,8 +554,8 @@
                             </div>
                         </li>
                         <li><a ng-click="goVipPay()">VIP</a></li>
-                        <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}">登录</a></li>
-                        <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}">注册</a></li>
+                        <li><a ng-click="goLoginPage()" class="btn btn-primary" ng-class="{'btn btn-primary':!isJoin}" translate="登录"></a></li>
+                        <li><a ng-click="goRegisterPage()" ng-class="{'btn btn-primary':isJoin}" translate="注册"></a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->

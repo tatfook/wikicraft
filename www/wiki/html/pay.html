@@ -446,10 +446,10 @@
                 <div class="pay-item">
                     <ul class="clearfix">
                         <li ng-class="{active: method == 'wechat'}" ng-click="onChange('wechat')">
-                            <span>微信支付</span>
+                            <span translate="微信支付"></span>
                         </li>
                         <li ng-class="{active: method == 'alipay'}" ng-click="onChange('alipay')">
-                            <span>支付宝充值</span>
+                            <span translate="支付宝充值"></span>
                         </li>
                     </ul>
                 </div>
@@ -463,21 +463,21 @@
                     </div>
                     <div class="pay-main-field">
                         <div class="field-item">
-                            <lable class="desc">Keepwork 账号：</lable>
+                            <lable class="desc" translate="Keepwork 账号："></lable>
                             <input type="text" name="username" ng-model="otherUserinfo.username" ng-disabled="!hasUserNid()"/>
                         </div>
                         <div class="field-item" ng-if="hasUserNid()">
-                            <lable class="desc">充值到数字账号：</lable>
+                            <lable class="desc" translate="充值到数字账号："></lable>
                             <input type="text" name="app_user_id" ng-model="additional.user_nid"/>
                         </div>
                         <div class="field-item">
-                            <lable class="desc">充值金额：</lable>
+                            <lable class="desc" translate="充值金额："></lable>
                             <div class="price-field">
                                 <input type="text" name="price" ng-model="goods.price" ng-disabled="!hasUserNid()"/>元
                             </div>
                         </div>
                         <div class="field-item" ng-if="hasUserNid()">
-                            <lable class="desc">兑换魔豆：</lable>
+                            <lable class="desc" translate="兑换魔豆："></lable>
                             <lable class="rules">
                                 <span class="light light-bigger">{{ideal_money}}</span>
                                 魔豆
@@ -491,7 +491,7 @@
                             </lable>
                         </div>
                         <div class="field-item" ng-if="!hasUserNid()">
-                            <label class="desc">支付信息：</label>
+                            <label class="desc" translate="支付信息："></label>
                             <div class="pay-info">
                                 {{subject}}
                             </div>
@@ -502,9 +502,7 @@
                     </div>
                 </div>
                 <div ng-if="page == 'alipay'" class="alipay-pay-qrcode">
-                    <div class="qrcode-desc">
-                        扫一扫付款（元）
-                    </div>
+                    <div class="qrcode-desc" translate="扫一扫付款（元）"></div>
                     <div class="money">
                         ￥{{goods.price}}
                     </div>
@@ -519,7 +517,7 @@
                             </div>
                         </div>
                         <div class="alipay-download">
-                            <a target="_blank" href="https://mobile.alipay.com/index.htm">首次使用请下载手机支付宝</a>
+                            <a target="_blank" href="https://mobile.alipay.com/index.htm" translate="首次使用请下载手机支付宝"></a>
                         </div>
                     </div>
                     <div class="alipay-notice" ng-click="alipayChangeNotice()">
@@ -540,14 +538,12 @@
                     <div class="pull-left">
                         <div class="success-info">
                             恭喜，您已支付成功！
-                            <div class="success-return" ng-if="returnUrl">
-                                5秒钟后将返回...
-                            </div>
+                            <div class="success-return" ng-if="returnUrl" translate="5秒钟后将返回..."></div>
                         </div>
                         <div class="success-operate">
-                            <a ng-click="goMypay()">查看支付记录</a>
+                            <a ng-click="goMypay()" translate="查看支付记录"></a>
                             或
-                            <a ng-click="back()">返回</a>
+                            <a ng-click="back()" translate="返回"></a>
                         </div>
                     </div>
                 </div>
@@ -559,7 +555,7 @@
                     <div class="fail-code">ERROR: NO FAIL MESSAGE</div>
                 </div>
             </div>
-            <div class="col-md-3 hidden-xs hidden-sm advice" id="hot-service">热门服务</div>
+            <div class="col-md-3 hidden-xs hidden-sm advice" id="hot-service" translate="热门服务"></div>
         </div>
     </div>
 </div>
