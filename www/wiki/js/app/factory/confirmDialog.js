@@ -28,7 +28,7 @@ define([
                 $scope.confirmObj = confirmObj;
 
                 $scope.btnClickHandler = function(btnObj) {
-                    btnObj.clickHandler();
+                    btnObj.clickHandler($scope);
                 }
             }]);
 

@@ -2145,8 +2145,7 @@ define([
                     "template": bigfileContent,
                     "size": "lg",
                     "controller": "bigfileController",
-                    "backdrop": "static",
-                    "scope": $scope
+                    "backdrop": "static"
                 });
                 bigfileModal.result.then(function (wikiBlock) {
                     isBigfileModalShow = false;
@@ -2172,36 +2171,6 @@ define([
                     editor.replaceSelection(insertContent);
                     editor.focus();
                 });
-                /* modalmodal('controller/bigfileController', {
-                    controller: 'bigfileController',
-                    size: 'lg',
-                    backdrop: 'static',
-                    scope: $scope
-                }, function (wikiBlock) {
-                    isBigfileModalShow = false;
-                    console.log(wikiBlock);
-                }, function (files) {
-                    isBigfileModalShow = false;
-                    console.log(files);
-                    if (!files){
-                        return;
-                    }
-
-                    var insertContent = "";
-                    console.log(files);
-                    if (files.pasteUrl){
-                        insertContent = files.pasteUrl;
-                    } else if (files.url){
-                        insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
-                    }else{
-                        files.map(function (file) {
-                            insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'",\n"extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
-                        });
-                    }
-
-                    editor.replaceSelection(insertContent);
-                    editor.focus();
-                }); */
             };
             /**
              * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
@@ -2246,7 +2215,7 @@ define([
 			// 文件上传
 			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
                 const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
-                const BrowerUpperLimit = 0.02 * 1024 * 1024 * 1024; // 大于20MB提示
+                const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");
@@ -2402,34 +2371,36 @@ define([
                     };
 					fileReader.onload = function () {
                         if (fileObj.size > UpperLimit){ // 上传到七牛
-                            var cmd_bigfile = function(params) {
+                            var cmd_bigfile = function(fileObj) {
                                 console.log(fileObj.name);
                                 var msg = "editorUploadFile";
                                 var data = dropFiles[fileObj.name];
                                 line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
                                 if (isBigfileModalShow) {
-                                    $scope.$broadcast(msg, data); 
+                                    $rootScope.$broadcast(msg, data); 
                                     return;
                                 }
                                 $scope.cmd_bigfile();
                                 
                                 bigfileModal.opened.then(function() {
                                     isBigfileModalShow = true;
-                                    isConfirmDialogShow = false;
-                                    $scope.$broadcast(msg, data); 
-                                    $rootScope.$broadcast("selectCmdBigfile");
+                                    $rootScope.$broadcast(msg, data); 
 
                                     confirmFilesQue.filter(function(file) {
                                         line_keyword_nofocus(dropFiles[file.name].insertLinum, "**已选择使用上传工具上传 "+file.name+"。**", 0);
-                                        $scope.$broadcast(msg, file);
+                                        $rootScope.$broadcast(msg, file);
                                         return false;
                                     });
                                 });
                             }
 
-                            var stop = function(params) {
+                            var stop = function(fileObj) {
                                 line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**因为 "+fileObj.name+" 容量较大，已取消上传。**", 0);
-                                confirmFilesQue[0] && confirmFun(confirmFilesQue[0]) && confirmFilesQue.shift();
+                                if (confirmFilesQue.length > 0) {
+                                    confirmFun(confirmFilesQue[0]);
+                                    confirmFilesQue.shift();
+                                    console.log(confirmFilesQue);
+                                }
                             }
 
                             var editorToQiniu = function(fileObj) {
@@ -2443,11 +2414,15 @@ define([
                                 }
     
                                 qiniuUpload(fileObj);
-                                confirmFilesQue[0] && confirmFun(confirmFilesQue[0]) && confirmFilesQue.shift();
+                                if (confirmFilesQue.length > 0) {
+                                    confirmFun(confirmFilesQue[0]);
+                                    confirmFilesQue.shift();
+                                    console.log(confirmFilesQue);
+                                }
                             }
 
                             var confirmFun = function(fileObj){
-                                var contentHtml = "<p class='file-large-info'>识别到您上传的文件：<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
+                                var contentHtml = "<p class='file-large-info'>识别到您上传的文件:<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
                                 var uploadId = fileObj.name;
                                 var confirmDialog = config.services.confirmDialog({
                                     "title": "提醒",
@@ -2459,20 +2434,27 @@ define([
                                         {
                                             "id": uploadId,
                                             "text": "打开上传工具",
-                                            "clickHandler": function () {
-                                                cmd_bigfile();
+                                            "clickHandler": function ($dialogScope) {
+                                                $dialogScope.$dismiss();
+                                                isConfirmDialogShow = false;
+                                                cmd_bigfile(fileObj);
                                             }
                                         },
                                         {
                                             "text": "继续上传",
-                                            "clickHandler": function (params) {
-                                                editorToQiniu();
+                                            "clickHandler": function ($dialogScope) {
+                                                $dialogScope.$dismiss();
+                                                isConfirmDialogShow = false;
+                                                editorToQiniu(fileObj);
                                             }
                                         },
                                         {
                                             "text": "取消上传",
-                                            "clickHandler": function (params) {
-                                                stop();
+                                            "class": "btn-fill btn-default",
+                                            "clickHandler": function ($dialogScope) {
+                                                $dialogScope.$dismiss();
+                                                isConfirmDialogShow = false;
+                                                stop(fileObj);
                                             }
                                         },
                                     ],
@@ -2500,7 +2482,7 @@ define([
                                 isConfirmDialogShow = true;
                                 confirmFun(fileObj);
                             }else {
-                                editorToQiniu();
+                                editorToQiniu(fileObj);
                             }
                         }else{ // 上传到数据源
                             console.log("正在上传到数据源");
@@ -2519,7 +2501,7 @@ define([
 
                                     currentDataSource.getLastCommitId(callback, callback, false);
                                 }, function(response){
-                                    Message.info(response.data.message);
+                                    Message.danger(response.data.message);
                                     console.log(data);
                                 });
                             }

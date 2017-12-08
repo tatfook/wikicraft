@@ -43,6 +43,7 @@ define([
                     if (params){
                         return;
                     }
+                    clearQue();
                     addedFiles = [];
                     $scope.$dismiss(params);
                 });
@@ -153,6 +154,22 @@ define([
             s = fix(parseInt(stime), fixNum);
             return (h+":"+m+":"+s);
         };
+        var clearQue = function (files) {
+            if (!qiniuBack){
+                return;
+            }
+            if (files && files.length > 0){
+                files.map(function (file) {
+                    file._start_at = file._start_at || new Date();
+                    qiniuBack.removeFile(file);
+                });
+                return;
+            }
+            qiniuBack.files.map(function (file) {
+                file._start_at = file._start_at || new Date();
+                qiniuBack.removeFile(file);
+            });
+        };
 
         $scope.initQiniu = function(type){
             if (type !== "isUpdating" && !$scope.startUpdating){
@@ -168,22 +185,6 @@ define([
             }
             $scope.remainSize = $scope.remainSize|| 0;
             var qiniu = new QiniuJsSDK();
-            var clearQue = function (files) {
-                if (!qiniuBack){
-                    return;
-                }
-                if (files && files.length > 0){
-                    files.map(function (file) {
-                        file._start_at = file._start_at || new Date();
-                        qiniuBack.removeFile(file);
-                    });
-                    return;
-                }
-                qiniuBack.files.map(function (file) {
-                    file._start_at = file._start_at || new Date();
-                    qiniuBack.removeFile(file);
-                });
-            };
             var getExisitedFileSize = function (files, filename) {
                 var resultSize = 0;
                 for (var i = 0; i<files.length; i++){
