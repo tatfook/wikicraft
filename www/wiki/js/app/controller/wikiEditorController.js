@@ -3154,11 +3154,6 @@ define([
                     })
                 });
 
-                $('.toolbar-page-knowledge').on('click', function () {
-                    console.log('toolbar-page-knowledge');
-                    util.go("knowledge");
-                });
-
                 $(function () {
                     var wellStartPos = $('.well').offset().top;
 
