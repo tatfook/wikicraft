@@ -1,12 +1,12 @@
 /**
- * Created by wuxiangan on 2017/12/8.
+ * Created by liangzhijian on 2017/12/8.
  */
 
 define(['app',
     'text!wikimod/chpPermission/html/chpPermission.html',
     'helper/util',
 ], function (app, htmlContent, util) {
-    function registerController(wikiblock) {
+    function registerController(wikiBlock) {
 
         app.registerController("permissionController", ["$scope", function ($scope) {
 
@@ -22,8 +22,8 @@ define(['app',
     }
 
     return {
-        render: function (wikiblock) {
-            registerController(wikiblock);
+        render: function (wikiBlock) {
+            registerController(wikiBlock);
             return htmlContent;
         }
     }
