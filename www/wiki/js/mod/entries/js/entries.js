@@ -14,10 +14,10 @@ define(['app',
     function registerController(wikiBlock) {
 
         app.registerController("entriesController", ['$scope', '$http', '$timeout', '$uibModal', '$sce', function ($scope, $http, $timeout, $uibModal, $sce) {
-            var moduleParams = wikiBlock.modParams || {};
+            var moduleParams = angular.copy(wikiBlock.modParams) || {};
 
             function init() {
-                require(['http://121.14.117.239/js/keepwork_chapter.js'], function (initChapter) {
+                require(['http://www.daofeng-school.com/js/keepwork_chapter.js'], function (initChapter) {
                     initChapter(moduleParams.type, function (data, successCallback) {
 
                         $scope.detailHmtl = $sce.trustAsHtml(data);
