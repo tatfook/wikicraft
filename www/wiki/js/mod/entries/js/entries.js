@@ -14,7 +14,7 @@ define(['app',
     function registerController(wikiBlock) {
 
         app.registerController("entriesController", ['$scope', '$http', '$timeout', '$uibModal', '$sce', function ($scope, $http, $timeout, $uibModal, $sce) {
-            var moduleParams = wikiBlock.modParams || {};
+            var moduleParams = angular.copy(wikiBlock.modParams) || {};
 
             function init() {
                 require(['http://www.daofeng-school.com/js/keepwork_chapter.js'], function (initChapter) {
