@@ -8,6 +8,7 @@ Date: 2017/3/13
 
 function is_spider()
 	local userAgent = request:header("User-Agent") or ""
+	log(userAgent)
 	--log(request, true)
 
 	local spider_list = {
@@ -34,7 +35,7 @@ function is_spider()
 		"sogou in spider",
 	}
 
-	for spiderName in ipairs(spider_list) do
+	for _, spiderName in ipairs(spider_list) do
 		if (string.find(userAgent, spiderName)) then
 			return true
 		end

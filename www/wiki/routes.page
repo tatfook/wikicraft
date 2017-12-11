@@ -190,10 +190,12 @@ end
 
 function RenderPageContent()
 	local isSpider = is_spider()
-
 	if not isSpider then
 		return echo("")
 	end
+
+	local mdwiki = NPL.load('./helpers/md/mdwiki.lua')
+	mdwiki.set_wiki_mod_path(WIKI_ROOT .. "js/mod/")
 
 	local paths = {}
 	for s in string.gmatch(path, "([^/]+)") do
@@ -222,16 +224,24 @@ function RenderPageContent()
 	local _, dataSource = yield()
 
 	local urlstr = "http://git.keepwork.com/" .. dataSource.dataSourceUsername .. "/" .. siteDataSource.projectName .. "/raw/".. (siteDataSource.lastCommitId or "master") .. "/" .. path .. ".md"
+	--local urlstr = "http://git.keepwork.com/" .. dataSource.dataSourceUsername .. "/" .. siteDataSource.projectName .. "/raw/master/" .. path .. ".md"
+	log(urlstr)
 	--log(dataSource)
 	--log(siteDataSource)
 	--log(urlstr)
-	System.os.GetUrl(urlstr, resume)
-	local _, data = yield()
-	if not data or data.rcode ~= 200 or not data.data then
-		return echo("")
-	end
+	
+	--System.os.GetUrl(urlstr, resume)
+	--local _, data = yield()
+	--if not data or data.rcode ~= 200 or not data.data then
+		--return echo("")
+	--end
+	data = {data="# test \n```@wiki\n```"}
+	log("----------")
+	log(data.data)
 
-	return echo(data.data)
+	local htmlStr = mdwiki.render(data.data)
+	log(htmlStr)
+	return echo(htmlStr .. "\n")
 end
 
 -- 加载通用页

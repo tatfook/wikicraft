@@ -8,6 +8,7 @@ Date: 2017/2/27
 include_once("./abstract/base.page")
 include_once("user.page")
 
+local mdwiki = NPL.load('../helpers/md/mdwiki.lua')
 local test = inherit(models.abstract.base, gettable("models.test"))
 local testDir = WIKI_ROOT .. "test/"
 
@@ -24,12 +25,16 @@ function test:api_get()
 	return tostring(testObj.testApiId)	
 end
 
+function test:api_mdwiki(params)
+	log(mdwiki:render("# test"))
+	return 
+end
+
 function test:api_file(params)
 	return sensitive_word_match(params.word)
 end
 
 function test:api_post(params)
-	log("------------------test post-----------------")
 	return response:send_json({key="test"}, 400)
 end
 
