@@ -235,13 +235,13 @@
                             <a href="javascript:;" ng-click="showFavorite()"><img 
                                 class="img-selected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_favorite_selected.png'}}" alt=""><img 
                                 class="img-unselected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_favorite_unselected.png'}}" alt=""
-                            >关注</a>
+                            >{{ "关注" | translate }}</a>
                         </li>
                         <li class="wiki-mod-nav-all" ng-class="{active: filterNavType=='all'}">
                             <a href="javascript:;" ng-click="showAll()"><img
                                 class="img-selected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_all_selected.png'}}" alt=""><img 
                                 class="img-unselected" ng-src="{{imgsPath+'icon/wiki_mod_block_nav_all_unselected.png'}}" alt=""
-                            >全部</a>
+                            >{{ "全部" | translate }}</a>
                         </li>
                         <li 
                             ng-repeat="classify in modClassifyList"

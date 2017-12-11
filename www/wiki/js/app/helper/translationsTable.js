@@ -3013,6 +3013,951 @@ define([], function () {
             "_key": "取消",
             "zh-cn": "取消",
             "en": "cancel"
+        },
+        {
+            "_key": "网盘功能",
+            "zh-cn": "网盘功能",
+            "en": "SkyDrive function"
+        },
+        {
+            "_key": "也可将上传的文件拖拽到此",
+            "zh-cn": "也可将上传的文件拖拽到此",
+            "en": "You can also drag and drop uploaded files here"
+        },
+        {
+            "_key": "您的IE版本过低，请更新到",
+            "zh-cn": "您的IE版本过低，请更新到",
+            "en": "Your version of IE is too low, please update to"
+        },
+        {
+            "_key": "如有任何问题，请发送邮件到",
+            "zh-cn": "如有任何问题，请发送邮件到",
+            "en": "If there is any problem, please send mail to"
+        },
+        {
+            "_key": "默认",
+            "zh-cn": "默认",
+            "en": "give tacit consent to"
+        },
+        {
+            "_key": "左对齐",
+            "zh-cn": "左对齐",
+            "en": "left justifying"
+        },
+        {
+            "_key": "居中",
+            "zh-cn": "居中",
+            "en": "(mediate) between two parties"
+        },
+        {
+            "_key": "右对齐",
+            "zh-cn": "右对齐",
+            "en": "align right"
+        },
+        {
+            "_key": "新建文件夹",
+            "zh-cn": "新建文件夹",
+            "en": "new folder"
+        },
+        {
+            "_key": "新建页",
+            "zh-cn": "新建页",
+            "en": "new page"
+        },
+        {
+            "_key": "默认首页：",
+            "zh-cn": "默认首页：",
+            "en": "Default home page:"
+        },
+        {
+            "_key": "恢复默认",
+            "zh-cn": "恢复默认",
+            "en": "Restore Defaults"
+        },
+        {
+            "_key": "添加",
+            "zh-cn": "添加",
+            "en": "add"
+        },
+        {
+            "_key": "* 您还不是VIP，不能设置cname",
+            "zh-cn": "* 您还不是VIP，不能设置cname",
+            "en": "* you are not VIP, and you can't set up CNAME"
+        },
+        {
+            "_key": "* 您还不是VIP，不能更改项目类型",
+            "zh-cn": "* 您还不是VIP，不能更改项目类型",
+            "en": "* you are not VIP, and you can't change the project type"
+        },
+        {
+            "_key": "粉丝",
+            "zh-cn": "粉丝",
+            "en": "vermicelli made from bean starch, etc."
+        },
+        {
+            "_key": "恭喜您！",
+            "zh-cn": "恭喜您！",
+            "en": "Congratulations!"
+        },
+        {
+            "_key": "记住密码",
+            "zh-cn": "记住密码",
+            "en": "Remember password"
+        },
+        {
+            "_key": "没有账号？点击",
+            "zh-cn": "没有账号？点击",
+            "en": "No account number? Click"
+        },
+        {
+            "_key": "申请即视为同意",
+            "zh-cn": "申请即视为同意",
+            "en": "Application is deemed to be agreed"
+        },
+        {
+            "_key": "恭喜您注册成功！",
+            "zh-cn": "恭喜您注册成功！",
+            "en": "Congratulations on your success in registration!"
+        },
+        {
+            "_key": "请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开",
+            "zh-cn": "请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开",
+            "en": "Please bind the mobile phone in the personal data management. The email. binding cell phone number and email can be used as the login account."
+        },
+        {
+            "_key": "，进行绑定。",
+            "zh-cn": "，进行绑定。",
+            "en": "Bindings."
+        },
+        {
+            "_key": "申请即视为同意",
+            "zh-cn": "申请即视为同意",
+            "en": "Application is deemed to be agreed"
+        },
+        {
+            "_key": "目录",
+            "zh-cn": "目录",
+            "en": "catalogue"
+        },
+        {
+            "_key": "深圳市大富网络技术有限公司（以下简称“大富网络”）同意按照本协议的规定及其不时发布的操作规则提供基于互联网以及移动网的相关服务（以下称“网络服务”），为获得网络服务，服务使用人（以下称“用户”）应当同意本协议的全部条款并按照页面上的提示完成全部的注册程序。用户在进行注册程序过程中点击“同意”按钮即表示用户完全接受本协议项下的全部条款。",
+            "zh-cn": "深圳市大富网络技术有限公司（以下简称“大富网络”）同意按照本协议的规定及其不时发布的操作规则提供基于互联网以及移动网的相关服务（以下称“网络服务”），为获得网络服务，服务使用人（以下称“用户”）应当同意本协议的全部条款并按照页面上的提示完成全部的注册程序。用户在进行注册程序过程中点击“同意”按钮即表示用户完全接受本协议项下的全部条款。",
+            "en": "Shenzhen tatfook Technology Co. Ltd. (hereinafter referred to as the \"rich network\") in accordance with the provisions of this Agreement and agree to the operating rules issued from time to time to provide Internet and related services based on mobile network (hereinafter referred to as the \"network service\"), for network services, service users (hereinafter referred to as the \"user\") shall agree to this agreement all the terms and follow the prompts on the page to complete the registration procedure. The user clicks \"in the course of the registration process agree\" button means that the user fully accept all the terms under the agreement."
+        },
+        {
+            "_key": "用户注册成功后，大富网络将给予每个用户一个用户帐号及相应的密码，该用户帐号和密码由用户负责保管；用户应当对以其用户帐号进行的所有活动和事件负法律责任。",
+            "zh-cn": "用户注册成功后，大富网络将给予每个用户一个用户帐号及相应的密码，该用户帐号和密码由用户负责保管；用户应当对以其用户帐号进行的所有活动和事件负法律责任。",
+            "en": "User registration is successful, rich network will give each user a user account and password, the user account and password custody by the user; the user should bear the legal responsibility for all activities and events to the user account."
+        },
+        {
+            "_key": "用户注册成功后，在使用大富网络/一人一网服务的过程中，大富网络公司有权基于用户的操作行为进行非商业性的调查研究。",
+            "zh-cn": "用户注册成功后，在使用大富网络/一人一网服务的过程中，大富网络公司有权基于用户的操作行为进行非商业性的调查研究。",
+            "en": "User registration is successful, in the use of a rich network / network services in the process of rich network company has the right to investigate the commercial operation based on the user's behavior."
+        },
+        {
+            "_key": "大富网络网络服务的具体内容由大富网络根据实际情况提供，例如创建网站、搜索、留言、存储、发表评论等。",
+            "zh-cn": "大富网络网络服务的具体内容由大富网络根据实际情况提供，例如创建网站、搜索、留言、存储、发表评论等。",
+            "en": "The specific content of rich network network services provided by the rich network according to the actual situation, such as creating a website, search, storage, message, comment and so on."
+        },
+        {
+            "_key": "大富网络提供的部分网络服务（例如域名服务等）为收费的网络服务，用户使用收费网络服务需要向大富网络支付一定的费用。对于收费的网络服务，大富网络会在用户使用之前给予用户明确的提示，只有用户根据提示确认其愿意支付相关费用，用户才能使用该等收费网络服务。如用户拒绝支付相关费用，则大富网络有权不向用户提供该等收费网络服务。",
+            "zh-cn": "大富网络提供的部分网络服务（例如域名服务等）为收费的网络服务，用户使用收费网络服务需要向大富网络支付一定的费用。对于收费的网络服务，大富网络会在用户使用之前给予用户明确的提示，只有用户根据提示确认其愿意支付相关费用，用户才能使用该等收费网络服务。如用户拒绝支付相关费用，则大富网络有权不向用户提供该等收费网络服务。",
+            "en": "Part of the network service provides the rich network (such as domain name service) for charging network services, user charging network services need to pay a fee to the rich network. For charging network services, rich network will give clear indication of the user in the user before, only the user according to the prompt to confirm its willingness to pay related costs, user in order to use the toll network services. If the user refuses to pay related costs, while rich network has the right not to provide the charging network services to users."
+        },
+        {
+            "_key": "用户理解，大富网络仅提供相关的网络服务，除此之外与相关网络服务有关的设备（如个人电脑、手机、及其他与接入互联网或移动网有关的装置）及所需的费用（如为接入互联网而支付的电话费及上网费、为使用移动网而支付的手机费）均应由用户自行负担。",
+            "zh-cn": "用户理解，大富网络仅提供相关的网络服务，除此之外与相关网络服务有关的设备（如个人电脑、手机、及其他与接入互联网或移动网有关的装置）及所需的费用（如为接入互联网而支付的电话费及上网费、为使用移动网而支付的手机费）均应由用户自行负担。",
+            "en": "Users understand, rich network only provide network services, in addition to the related network service related equipment (such as personal computer, mobile phone, and other related with access to the Internet or mobile network device) and costs required for Internet access (such as payment of the telephone and Internet access fees, for the use of mobile network pay the fee shall be borne by the user mobile phone) burden."
+        },
+        {
+            "_key": "鉴于网络服务的特殊性，用户同意大富网络有权随时变更、中断或终止部分或全部的网络服务（包括收费网络服务及免费网络服务）。如变更、中断或终止的网络服务属于免费网络服务，大富网络无需通知用户，也无需对任何用户或任何第三方承担任何责任；如变更、中断或终止的网络服务属于收费网络服务，大富网络应当在变更、中断或终止之前事先通知用户，并应向受影响的用户提供等值的替代性的收费网络服务，如用户不愿意接受替代性的收费网络服务，就该用户已经向大富网络支付的服务费，大富网络应当按照该用户实际使用相应收费网络服务的情况扣除相应服务费之后将剩余的服务费退还给该用户。",
+            "zh-cn": "鉴于网络服务的特殊性，用户同意大富网络有权随时变更、中断或终止部分或全部的网络服务（包括收费网络服务及免费网络服务）。如变更、中断或终止的网络服务属于免费网络服务，大富网络无需通知用户，也无需对任何用户或任何第三方承担任何责任；如变更、中断或终止的网络服务属于收费网络服务，大富网络应当在变更、中断或终止之前事先通知用户，并应向受影响的用户提供等值的替代性的收费网络服务，如用户不愿意接受替代性的收费网络服务，就该用户已经向大富网络支付的服务费，大富网络应当按照该用户实际使用相应收费网络服务的情况扣除相应服务费之后将剩余的服务费退还给该用户。",
+            "en": "In view of the particularity of network, users agree that rich network has the right to change, interrupt or terminate all or part of the network service (including charging network services and free internet service). Such as change, interruption or termination of the service network to network services free of charge, rich network without informing the user, there is no need to take any responsibility for any user or any third party; such as change, interruption or termination of the service network belongs to the charging network services, rich network should be changed before the interruption or termination to notify the user, and should provide the equivalent alternative charging network services to affected users, if the user is not willing to accept alternative charges Network service, the user has to pay the rich network services, rich network should be in accordance with the actual use of the user after the corresponding charging network service the service fee will be deducted from the corresponding remaining service fee to the user."
+        },
+        {
+            "_key": "用户理解，大富网络需要定期或不定期地对提供网络服务的平台（如互联网网站、移动网络等）或相关的设备进行检修或者维护，如因此类情况而造成收费网络服务在合理时间内的中断，大富网络无需为此承担任何责任，但大富网络应尽可能事先进行通告。",
+            "zh-cn": "用户理解，大富网络需要定期或不定期地对提供网络服务的平台（如互联网网站、移动网络等）或相关的设备进行检修或者维护，如因此类情况而造成收费网络服务在合理时间内的中断，大富网络无需为此承担任何责任，但大富网络应尽可能事先进行通告。",
+            "en": "Users need to understand, rich network regularly or periodically to provide network services platform (such as the Internet website, mobile network etc.) or related equipment for repair or maintenance, such as toll network service interruptions within a reasonable period of time for such a situation, the rich network without having to bear any responsibility, but the rich network as far as possible prior notice."
+        },
+        {
+            "_key": "如发生下列任何一种情形，大富网络有权随时中断或终止向用户提供本协议项下的网络服务【该网络服务包括但不限于收费及免费网络服务（其中包括基于广告模式的免费网络服务）】而无需对用户或任何第三方承担任何责任：",
+            "zh-cn": "如发生下列任何一种情形，大富网络有权随时中断或终止向用户提供本协议项下的网络服务【该网络服务包括但不限于收费及免费网络服务（其中包括基于广告模式的免费网络服务）】而无需对用户或任何第三方承担任何责任：",
+            "en": "Such as the occurrence of any of the following circumstances, rich network has the right to suspend or terminate this agreement to provide network services to the user [under the network services including but not limited to fees and free internet service (including advertising model based on network services free of charge)] without any liability to the customer or any third party:"
+        },
+        {
+            "_key": "用户提供的个人资料不真实；",
+            "zh-cn": "用户提供的个人资料不真实；",
+            "en": "The personal information provided by the user is not true."
+        },
+        {
+            "_key": "用户违反本协议中规定的使用规则；",
+            "zh-cn": "用户违反本协议中规定的使用规则；",
+            "en": "The user violates the rules of use stipulated in this agreement."
+        },
+        {
+            "_key": "用户在使用收费网络服务时未按规定向大富网络支付相应的服务费。",
+            "zh-cn": "用户在使用收费网络服务时未按规定向大富网络支付相应的服务费。",
+            "en": "Users in the use of network service charges according to the specified time to the rich network to pay the corresponding fees."
+        },
+        {
+            "_key": "如用户注册的免费网络服务的帐号在任何连续90日内未实际使用，或者用户注册的收费网络服务的帐号在其订购的收费网络服务的服务期满之后连续180日内未实际使用，则大富网络有权删除该帐号并停止为该用户提供相关的网络服务。",
+            "zh-cn": "如用户注册的免费网络服务的帐号在任何连续90日内未实际使用，或者用户注册的收费网络服务的帐号在其订购的收费网络服务的服务期满之后连续180日内未实际使用，则大富网络有权删除该帐号并停止为该用户提供相关的网络服务。",
+            "en": "Such as user registration network services free of charge account in any 90 consecutive days without actual use, or charging network service user registered account after the ordered charging network service expires within 180 consecutive days without actual use, it has the right to delete the rich network account and provide network services for stop the user."
+        },
+        {
+            "_key": "用户注册的免费一人一网帐号在任何连续90日内未实际使用，或者用户注册的收费网络服务的帐号在其订购的收费网络服务的服务期满之后连续180日内未实际使用，则大富网络有权删除该帐号并停止为该用户提供相关的网络服务。",
+            "zh-cn": "用户注册的免费一人一网帐号在任何连续90日内未实际使用，或者用户注册的收费网络服务的帐号在其订购的收费网络服务的服务期满之后连续180日内未实际使用，则大富网络有权删除该帐号并停止为该用户提供相关的网络服务。",
+            "en": "A free user registered a net account in any 90 consecutive days without actual use, or charging network service user registered account after the ordered charging network service expires within 180 consecutive days without actual use, it has the right to delete the rich network account and stop providing related services for the network user."
+        },
+        {
+            "_key": "用户注册的免费一人一网帐号昵称如存在违反法律法规或国家政策要求，或侵犯任何第三方合法权益的情况，大富网络有权收回该账号昵称。",
+            "zh-cn": "用户注册的免费一人一网帐号昵称如存在违反法律法规或国家政策要求，或侵犯任何第三方合法权益的情况，大富网络有权收回该账号昵称。",
+            "en": "A free user registration account if there is a net nickname in violation of laws and regulations and national policy requirements, legal rights or infringe any third party, rich network have the right to recover the account."
+        },
+        {
+            "_key": "用户在申请使用大富网络网络服务时，必须向大富网络提供准确的个人资料，如个人资料有任何变动，必须及时更新。",
+            "zh-cn": "用户在申请使用大富网络网络服务时，必须向大富网络提供准确的个人资料，如个人资料有任何变动，必须及时更新。",
+            "en": "Users apply for the rich network of Web services, must provide accurate personal information to the rich network, such as personal details of any changes must be updated in time."
+        },
+        {
+            "_key": "用户不应将其帐号、密码转让或出借予他人使用。如用户发现其帐号遭他人非法使用，应立即通知大富网络。因黑客行为或用户的保管疏忽导致帐号、密码遭他人非法使用，大富网络不承担任何责任。",
+            "zh-cn": "用户不应将其帐号、密码转让或出借予他人使用。如用户发现其帐号遭他人非法使用，应立即通知大富网络。因黑客行为或用户的保管疏忽导致帐号、密码遭他人非法使用，大富网络不承担任何责任。",
+            "en": "The user should not be the account password, transfer or lend to others. If users find their account of illegal use by others, shall immediately notify the rich network. Account due to hacking or negligent storage of user password, illegal use by others, rich network does not assume any responsibility."
+        },
+        {
+            "_key": "用户同意大富网络有权在提供网络服务过程中以各种方式投放各种商业性广告或其他任何类型的商业信息（包括但不限于在大富网络网站的任何页面上投放广告），并且，用户同意接受大富网络通过电子邮件或其他方式向用户发送商品促销或其他相关商业信息。",
+            "zh-cn": "用户同意大富网络有权在提供网络服务过程中以各种方式投放各种商业性广告或其他任何类型的商业信息（包括但不限于在大富网络网站的任何页面上投放广告），并且，用户同意接受大富网络通过电子邮件或其他方式向用户发送商品促销或其他相关商业信息。",
+            "en": "The user agrees to have the right to rich network to provide network services in the process in a variety of ways to put all kinds of commercial advertisement or any other type of business information (including but not limited to any advertising pages in the rich network on the website), and the user agrees to accept the rich network via e-mail or other means to send goods sales or other related business information."
+        },
+        {
+            "_key": "对于用户通过大富网络网络服务（包括但不限于创建的网站、评论）上传到大富网络网站上可公开获取区域的任何内容，用户同意大富网络在全世界范围内具有免费的、永久性的、不可撤销的、非独家的和完全再许可的权利和许可，以使用、复制、修改、改编、出版、翻译、据以创作衍生作品、传播、表演和展示此等内容（整体或部分），和/或将此等内容编入当前已知的或以后开发的其他任何形式的作品、媒体或技术中。",
+            "zh-cn": "对于用户通过大富网络网络服务（包括但不限于创建的网站、评论）上传到大富网络网站上可公开获取区域的任何内容，用户同意大富网络在全世界范围内具有免费的、永久性的、不可撤销的、非独家的和完全再许可的权利和许可，以使用、复制、修改、改编、出版、翻译、据以创作衍生作品、传播、表演和展示此等内容（整体或部分），和/或将此等内容编入当前已知的或以后开发的其他任何形式的作品、媒体或技术中。",
+            "en": "For the user through the rich network of Web services (including but not limited to creating a web site, comments) uploaded to the rich network of publicly available on the website of any content area, users agree with rich network of worldwide free, permanent, irrevocable, non exclusive and complete re licensing rights and permission to use, copy, modify, publish, adaptation, translation, according to the work, to create derivative communication, perform and display such content (in whole or in part), and / or the content in the current known or later developed any other form of work, media or technology."
+        },
+        {
+            "_key": "个人在大富网络/一人一网中创建、存储的公开的数据，可以以URL的形式被其他用户在在大富网络/一人一网中进行引用。",
+            "zh-cn": "个人在大富网络/一人一网中创建、存储的公开的数据，可以以URL的形式被其他用户在在大富网络/一人一网中进行引用。",
+            "en": "People in the rich network of a network / create the stored public data can be in the form of URL by other users in the network / a rich network of references."
+        },
+        {
+            "_key": "用户在使用大富网络网络服务过程中，必须遵循以下原则：",
+            "zh-cn": "用户在使用大富网络网络服务过程中，必须遵循以下原则：",
+            "en": "Users in the use of rich network network service process, must follow the following principles:"
+        },
+        {
+            "_key": "遵守中国有关的法律和法规；",
+            "zh-cn": "遵守中国有关的法律和法规；",
+            "en": "Abide by the relevant laws and regulations of China;"
+        },
+        {
+            "_key": "遵守所有与网络服务有关的网络协议、规定和程序；",
+            "zh-cn": "遵守所有与网络服务有关的网络协议、规定和程序；",
+            "en": "Comply with all network protocols, regulations and procedures related to network services."
+        },
+        {
+            "_key": "不得为任何非法目的而使用网络服务系统；",
+            "zh-cn": "不得为任何非法目的而使用网络服务系统；",
+            "en": "The network service system should not be used for any illegal purpose."
+        },
+        {
+            "_key": "不得以任何形式使用大富网络网络服务侵犯大富网络的商业利益，包括并不限于发布非经大富网络许可的商业广告；",
+            "zh-cn": "不得以任何形式使用大富网络网络服务侵犯大富网络的商业利益，包括并不限于发布非经大富网络许可的商业广告；",
+            "en": "Do not use rich network of network service in any form of violation of the rich network of commercial interests, including but not limited to the release of the rich network of licensed commercial advertising;"
+        },
+        {
+            "_key": "不得利用大富网络网络服务系统进行任何可能对互联网或移动网正常运转造成不利影响的行为；",
+            "zh-cn": "不得利用大富网络网络服务系统进行任何可能对互联网或移动网正常运转造成不利影响的行为；",
+            "en": "Shall not carry out any of the Internet or mobile network may adversely affect the normal operation of the behavior of using rich network network service system;"
+        },
+        {
+            "_key": "不得利用大富网络提供的网络服务上传、展示或传播任何虚假的、骚扰性的、中伤他人的、辱骂性的、恐吓性的、庸俗淫秽的或其他任何非法的信息资料；",
+            "zh-cn": "不得利用大富网络提供的网络服务上传、展示或传播任何虚假的、骚扰性的、中伤他人的、辱骂性的、恐吓性的、庸俗淫秽的或其他任何非法的信息资料；",
+            "en": "Not use rich network network services to upload, display or transmit any false, sexual harassment, slander others, abusive, threatening, obscene or vulgar in any other unlawful information;"
+        },
+        {
+            "_key": "不得侵犯其他任何第三方的专利权、著作权、商标权、名誉权或其他任何合法权益；",
+            "zh-cn": "不得侵犯其他任何第三方的专利权、著作权、商标权、名誉权或其他任何合法权益；",
+            "en": "No infringement of any other third party's patent rights, copyright, trademark, reputation, or any other lawful rights and interests;"
+        },
+        {
+            "_key": "不得利用大富网络网络服务系统进行任何不利于大富网络的行为；",
+            "zh-cn": "不得利用大富网络网络服务系统进行任何不利于大富网络的行为；",
+            "en": "Any is not conducive to the rich network behavior using rich network network service system;"
+        },
+        {
+            "_key": "大富网络有权对用户使用大富网络网络服务【该网络服务包括但不限于收费及免费网络服务（其中包括基于广告模式的免费网络服务）】的情况进行审查和监督(包括但不限于对用户存储在大富网络的内容进行审核)，如用户在使用网络服务时违反任何上述规定，大富网络或其授权的人有权要求用户改正或直接采取一切必要的措施（包括但不限于更改或删除用户张贴的内容等、暂停或终止用户使用网络服务的权利）以减轻用户不当行为造成的影响。",
+            "zh-cn": "大富网络有权对用户使用大富网络网络服务【该网络服务包括但不限于收费及免费网络服务（其中包括基于广告模式的免费网络服务）】的情况进行审查和监督(包括但不限于对用户存储在大富网络的内容进行审核)，如用户在使用网络服务时违反任何上述规定，大富网络或其授权的人有权要求用户改正或直接采取一切必要的措施（包括但不限于更改或删除用户张贴的内容等、暂停或终止用户使用网络服务的权利）以减轻用户不当行为造成的影响。",
+            "en": "Have the right to use the rich network of users rich network network services [the network services including but not limited to fees and free internet service (including advertising model based on network services free of charge)] review and supervise the situation (including but not limited to the user is stored in the audit content rich network), such as the user in violation of any of the above the provisions in the use of network services, rich network or its authorized person shall have the right to require the user to correct or take all necessary measures (including but not limited to change or delete user posted content, suspend or terminate user rights to use network services) to reduce the impact caused by the improper behavior of the user."
+        },
+        {
+            "_key": "大富网络针对某些特定的大富网络网络服务的使用通过各种方式（包括但不限于网页公告、电子邮件、短信提醒等）作出的任何声明、通知、警示等内容视为本协议的一部分，用户如使用该等大富网络网络服务，视为用户同意该等声明、通知、警示的内容。",
+            "zh-cn": "大富网络针对某些特定的大富网络网络服务的使用通过各种方式（包括但不限于网页公告、电子邮件、短信提醒等）作出的任何声明、通知、警示等内容视为本协议的一部分，用户如使用该等大富网络网络服务，视为用户同意该等声明、通知、警示的内容。",
+            "en": "The use of rich network for certain rich network network services through a variety of ways (including but not limited to \"announcement, email, message etc) any statement made the warning notice, etc. as part of the agreement, such as the use of such a large rich user network services, such as user consent statement, notice, warning of the content."
+        },
+        {
+            "_key": "用户注册一人一网账号，制作、发布、传播信息内容的，应当使用真实身份信息，不得以虚假、冒用的居民身份信息、企业注册信息、组织机构代码信息进行注册。",
+            "zh-cn": "用户注册一人一网账号，制作、发布、传播信息内容的，应当使用真实身份信息，不得以虚假、冒用的居民身份信息、企业注册信息、组织机构代码信息进行注册。",
+            "en": "Users register for one person, one network account, make, publish and disseminate information content. They should use real identity information, and do not register with false or fraudulent use of resident identity information, enterprise registration information and organization code information."
+        },
+        {
+            "_key": "如用户违反前述5.1条之约定，依据相关法律、法规及国家政策要求，大富网络有权随时中止或终止用户对一人一网网络服务的使用且不承担违约责任。",
+            "zh-cn": "如用户违反前述5.1条之约定，依据相关法律、法规及国家政策要求，大富网络有权随时中止或终止用户对一人一网网络服务的使用且不承担违约责任。",
+            "en": "If the user in violation of Article 5.1 of the aforementioned agreement, according to the relevant laws, regulations and national policy requirements, rich network has the right to suspend or terminate the use of a network service and does not bear the liability for breach of contract."
+        },
+        {
+            "_key": "大富网络将建立健全用户信息安全管理制度、落实技术安全防控措施。大富网络将对用户使用一人一网网络服务过程中涉及的用户隐私内容加以保护。",
+            "zh-cn": "大富网络将建立健全用户信息安全管理制度、落实技术安全防控措施。大富网络将对用户使用一人一网网络服务过程中涉及的用户隐私内容加以保护。",
+            "en": "Rich network users will establish a sound information security management system, the implementation of security control measures. The rich network to protect user privacy to users use a network service."
+        },
+        {
+            "_key": "大富网络提供的网络服务中包含的任何文本、图片、图形、音频和/或视频资料均受版权、商标和/或其它财产所有权法律的保护，未经相关权利人同意，上述资料均不得在任何媒体直接或间接发布、播放、出于播放或发布目的而改写或再发行，或者被用于其他任何商业目的。所有这些资料或资料的任何部分仅可作为私人和非商业用途而保存在某台计算机内。大富网络不就由上述资料产生或在传送或递交全部或部分上述资料过程中产生的延误、不准确、错误和遗漏或从中产生或由此产生的任何损害赔偿，以任何形式，向用户或任何第三方负责。",
+            "zh-cn": "大富网络提供的网络服务中包含的任何文本、图片、图形、音频和/或视频资料均受版权、商标和/或其它财产所有权法律的保护，未经相关权利人同意，上述资料均不得在任何媒体直接或间接发布、播放、出于播放或发布目的而改写或再发行，或者被用于其他任何商业目的。所有这些资料或资料的任何部分仅可作为私人和非商业用途而保存在某台计算机内。大富网络不就由上述资料产生或在传送或递交全部或部分上述资料过程中产生的延误、不准确、错误和遗漏或从中产生或由此产生的任何损害赔偿，以任何形式，向用户或任何第三方负责。",
+            "en": "Any text contains rich network to provide network services in pictures, graphics, audio and / or video data are protected by copyright, trademark protection and / or other property rights law, without the consent of the relevant rights, the data are not allowed in any media directly or indirectly issued, for playback, playback or release to rewrite or re issued, or for any other commercial purpose. Any part of all these data or data can only be used as private and non-commercial use and stored in a computer. The data rich network does not produce or produce all or part of the information submitted in the process of delay in delivery or inaccurate, Any form of compensation, in any form, is responsible to the user or any third party in any form, or any damages arising from or resulting from errors and omissions or omissions."
+        },
+        {
+            "_key": "大富网络为提供网络服务而使用的任何软件（包括但不限于软件中所含的任何图象、照片、动画、录像、录音、音乐、文字和附加程序、随附的帮助材料）的一切权利均属于该软件的著作权人，未经该软件的著作权人许可，用户不得对该软件进行反向工程（reverse engineer）、反向编译（decompile）或反汇编（disassemble）。",
+            "zh-cn": "大富网络为提供网络服务而使用的任何软件（包括但不限于软件中所含的任何图象、照片、动画、录像、录音、音乐、文字和附加程序、随附的帮助材料）的一切权利均属于该软件的著作权人，未经该软件的著作权人许可，用户不得对该软件进行反向工程（reverse engineer）、反向编译（decompile）或反汇编（disassemble）。",
+            "en": "Any use of the software for the rich network to provide network services (including but not limited to any image contained in the software, pictures, animation, video, audio, music, text and additional procedures, with the help of materials) all rights belong to the software copyright owner, without the software copyright the license users may not reverse engineer the software (reverse engineer) (decompile), decompile or disassemble (disassemble)."
+        },
+        {
+            "_key": "保护用户隐私是大富网络的一项基本政策，大富网络保证不对外公开或向第三方提供单个用户的注册资料及用户在使用网络服务时存储在大富网络的非公开内容，但下列情况除外：",
+            "zh-cn": "保护用户隐私是大富网络的一项基本政策，大富网络保证不对外公开或向第三方提供单个用户的注册资料及用户在使用网络服务时存储在大富网络的非公开内容，但下列情况除外：",
+            "en": "Privacy protection is a basic policy of rich network, rich network registration information assurance is not open or provided to third parties for individual users and users in the use of network services open storage content in the rich network of private, except for the following circumstances:"
+        },
+        {
+            "_key": "事先获得用户的明确授权；",
+            "zh-cn": "事先获得用户的明确授权；",
+            "en": "Obtain the explicit authorization of the user in advance;"
+        },
+        {
+            "_key": "根据有关的法律法规要求；",
+            "zh-cn": "根据有关的法律法规要求；",
+            "en": "According to the requirements of the relevant laws and regulations;"
+        },
+        {
+            "_key": "按照相关政府主管部门的要求；",
+            "zh-cn": "按照相关政府主管部门的要求；",
+            "en": "In accordance with the requirements of the relevant government departments concerned;"
+        },
+        {
+            "_key": "为维护社会公众的利益；",
+            "zh-cn": "为维护社会公众的利益；",
+            "en": "In order to safeguard the interests of the public;"
+        },
+        {
+            "_key": "为维护大富网络的合法权益。",
+            "zh-cn": "为维护大富网络的合法权益。",
+            "en": "In order to safeguard the legitimate rights and interests of the rich network."
+        },
+        {
+            "_key": "大富网络可能会与第三方合作向用户提供相关的网络服务，在此情况下，如该第三方同意承担与大富网络同等的保护用户隐私的责任，则大富网络有权将用户的注册资料等提供给该第三方。",
+            "zh-cn": "大富网络可能会与第三方合作向用户提供相关的网络服务，在此情况下，如该第三方同意承担与大富网络同等的保护用户隐私的责任，则大富网络有权将用户的注册资料等提供给该第三方。",
+            "en": "Rich network may cooperate with third party to provide network services to users, in this case, if the third party agrees to assume the responsibility to protect user privacy and network is equally rich, rich network has the right to provide user registration information to the third party."
+        },
+        {
+            "_key": "在不透露单个用户隐私资料的前提下，大富网络有权对整个用户数据库进行分析并对用户数据库进行商业上的利用。",
+            "zh-cn": "在不透露单个用户隐私资料的前提下，大富网络有权对整个用户数据库进行分析并对用户数据库进行商业上的利用。",
+            "en": "In the premise of the privacy of individual users is not data, rich network has the right to analyze the entire user database and commercial use of the user database."
+        },
+        {
+            "_key": "用户明确同意其使用大富网络网络服务所存在的风险将完全由其自己承担；因其使用大富网络网络服务而产生的一切后果也由其自己承担，大富网络对用户不承担任何责任。",
+            "zh-cn": "用户明确同意其使用大富网络网络服务所存在的风险将完全由其自己承担；因其使用大富网络网络服务而产生的一切后果也由其自己承担，大富网络对用户不承担任何责任。",
+            "en": "Users expressly agree that the existing use of rich network network service risk will be entirely by themselves; all the consequences caused by the use of rich network network service is also borne by themselves, rich network does not assume any responsibility for the user."
+        },
+        {
+            "_key": "大富网络不担保网络服务一定能满足用户的要求，也不担保网络服务不会中断，对网络服务的及时性、安全性、准确性也都不作担保。",
+            "zh-cn": "大富网络不担保网络服务一定能满足用户的要求，也不担保网络服务不会中断，对网络服务的及时性、安全性、准确性也都不作担保。",
+            "en": "Rich network does not guarantee network services can meet the requirements of the users, nor guarantee network services will not be interrupted, the network service timeliness, safety, accuracy is not guaranteed."
+        },
+        {
+            "_key": "大富网络不保证为向用户提供便利而设置的外部链接的准确性和完整性，同时，对于该等外部链接指向的不由大富网络实际控制的任何网页上的内容，大富网络不承担任何责任。",
+            "zh-cn": "大富网络不保证为向用户提供便利而设置的外部链接的准确性和完整性，同时，对于该等外部链接指向的不由大富网络实际控制的任何网页上的内容，大富网络不承担任何责任。",
+            "en": "Rich network does not guarantee to provide convenience to users and set up the external links the accuracy and completeness, at the same time, for any \"the external links to the rich network of actual control on the contents of the rich network does not assume any responsibility."
+        },
+        {
+            "_key": "对于因不可抗力或大富网络不能控制的原因造成的网络服务中断或其它缺陷，大富网络不承担任何责任，但将尽力减少因此而给用户造成的损失和影响。",
+            "zh-cn": "对于因不可抗力或大富网络不能控制的原因造成的网络服务中断或其它缺陷，大富网络不承担任何责任，但将尽力减少因此而给用户造成的损失和影响。",
+            "en": "Due to force majeure or by rich network of causes beyond the control of network service interruption or other defects, rich network does not assume any responsibility, but will try to reduce the user loss and impact."
+        },
+        {
+            "_key": "用户同意，对于大富网络向用户提供的下列产品或者服务的质量缺陷本身及其引发的任何损失，大富网络无需承担任何责任：",
+            "zh-cn": "用户同意，对于大富网络向用户提供的下列产品或者服务的质量缺陷本身及其引发的任何损失，大富网络无需承担任何责任：",
+            "en": "The user agrees, for any loss of rich network to provide users with the product or service itself and its quality defects caused by the rich network without any responsibility:"
+        },
+        {
+            "_key": "大富网络向用户免费提供的各项网络服务；",
+            "zh-cn": "大富网络向用户免费提供的各项网络服务；",
+            "en": "The network services provided free of charge to the user of the rich network;"
+        },
+        {
+            "_key": "大富网络向用户赠送的任何产品或者服务；",
+            "zh-cn": "大富网络向用户赠送的任何产品或者服务；",
+            "en": "Any product or service to the user a rich network;"
+        },
+        {
+            "_key": "大富网络向收费网络服务用户附赠的各种产品或者服务。",
+            "zh-cn": "大富网络向收费网络服务用户附赠的各种产品或者服务。",
+            "en": "To a rich network of charging network service users of all kinds of products or services."
+        },
+        {
+            "_key": "如因大富网络违反有关法律、法规或本协议项下的任何条款而给用户造成损失，大富网络同意承担由此造成的损害赔偿责任。",
+            "zh-cn": "如因大富网络违反有关法律、法规或本协议项下的任何条款而给用户造成损失，大富网络同意承担由此造成的损害赔偿责任。",
+            "en": "As a result of the rich network in violation of the relevant laws, regulations or any of the provisions of this Agreement and causes losses to the user, rich network agrees to compensate the damage."
+        },
+        {
+            "_key": "用户同意保障和维护大富网络及其他用户的利益，如因用户违反有关法律、法规或本协议项下的任何条款而给大富网络或任何其他第三人造成损失，用户同意承担由此造成的损害赔偿责任。",
+            "zh-cn": "用户同意保障和维护大富网络及其他用户的利益，如因用户违反有关法律、法规或本协议项下的任何条款而给大富网络或任何其他第三人造成损失，用户同意承担由此造成的损害赔偿责任。",
+            "en": "The user agrees to protect and safeguard the interests of users and the rich network of other users, as a result of violation of the relevant laws, regulations or any of the provisions of this Agreement and to the rich network or any other third party causes losses, the user agrees to compensate the damage."
+        },
+        {
+            "_key": "大富网络有权随时修改本协议的任何条款，一旦本协议的内容发生变动，大富网络将会直接在大富网络网站上公布修改之后的协议内容，该公布行为视为大富网络已经通知用户修改内容。大富网络也可通过其他适当方式向用户提示修改内容。",
+            "zh-cn": "大富网络有权随时修改本协议的任何条款，一旦本协议的内容发生变动，大富网络将会直接在大富网络网站上公布修改之后的协议内容，该公布行为视为大富网络已经通知用户修改内容。大富网络也可通过其他适当方式向用户提示修改内容。",
+            "en": "Any provision of rich network have the right to modify this agreement at any time, once change the contents of this agreement, rich network will directly publish content after the modification of the protocol in the rich network website, the announcement behavior is regarded as rich network has to notify the user to change the content. The rich network can also be prompted to modify the content to the user through other appropriate means."
+        },
+        {
+            "_key": "如果不同意大富网络对本协议相关条款所做的修改，用户有权停止使用网络服务。如果用户继续使用网络服务，则视为用户接受大富网络对本协议相关条款所做的修改。",
+            "zh-cn": "如果不同意大富网络对本协议相关条款所做的修改，用户有权停止使用网络服务。如果用户继续使用网络服务，则视为用户接受大富网络对本协议相关条款所做的修改。",
+            "en": "If you do not agree with the rich network of the change of this agreement, the user has the right to stop the use of network services. If users continue to use network services, as user acceptance, rich network made the change of this agreement."
+        },
+        {
+            "_key": "本协议项下大富网络对于用户所有的通知均可通过网页公告、电子邮件、手机短信或常规的信件传送等方式进行；该等通知于发送之日视为已送达收件人。",
+            "zh-cn": "本协议项下大富网络对于用户所有的通知均可通过网页公告、电子邮件、手机短信或常规的信件传送等方式进行；该等通知于发送之日视为已送达收件人。",
+            "en": "Under this Agreement for the rich network of all can notify the user through the website announcement, email, mobile phone messages or regular mail delivery etc.; the notice is sent, deemed to have been delivered to the recipient."
+        },
+        {
+            "_key": "用户对于大富网络的通知应当通过大富网络对外正式公布的通信地址、传真号码、电子邮件地址等联系信息进行送达。",
+            "zh-cn": "用户对于大富网络的通知应当通过大富网络对外正式公布的通信地址、传真号码、电子邮件地址等联系信息进行送达。",
+            "en": "The user should notice for rich network address, the rich network announced the fax number, email address and other contact information service."
+        },
+        {
+            "_key": "本协议的订立、执行和解释及争议的解决均应适用中国法律并受中国法院管辖。",
+            "zh-cn": "本协议的订立、执行和解释及争议的解决均应适用中国法律并受中国法院管辖。",
+            "en": "The conclusion of this agreement, the implementation and interpretation of the agreement and the settlement of the dispute shall be governed by Chinese law and under the jurisdiction of the Chinese court."
+        },
+        {
+            "_key": "如双方就本协议内容或其执行发生任何争议，双方应尽量友好协商解决；协商不成时，任何一方均可向大富网络所在地的人民法院提起诉讼。",
+            "zh-cn": "如双方就本协议内容或其执行发生任何争议，双方应尽量友好协商解决；协商不成时，任何一方均可向大富网络所在地的人民法院提起诉讼。",
+            "en": "If the two sides of this agreement or the execution of any dispute, the two sides should be resolved through friendly consultations; consultation fails, any party may apply to the rich network where the people's court proceedings."
+        },
+        {
+            "_key": "本协议构成双方对本协议之约定事项及其他有关事宜的完整协议，除本协议规定的之外，未赋予本协议各方其他权利。",
+            "zh-cn": "本协议构成双方对本协议之约定事项及其他有关事宜的完整协议，除本协议规定的之外，未赋予本协议各方其他权利。",
+            "en": "This Agreement constitutes a complete agreement between the two parties on the matters agreed upon in this Agreement and other related matters. Except for the provisions of this agreement, no other rights of the parties hereto have been granted."
+        },
+        {
+            "_key": "如本协议中的任何条款无论因何种原因完全或部分无效或不具有执行力，本协议的其余条款仍应有效并且有约束力。",
+            "zh-cn": "如本协议中的任何条款无论因何种原因完全或部分无效或不具有执行力，本协议的其余条款仍应有效并且有约束力。",
+            "en": "If any clause in this agreement is completely or partially invalid or without execution, the remaining provisions of this Agreement shall remain valid and binding."
+        },
+        {
+            "_key": "本协议中的标题仅为方便而设，在解释本协议时应被忽略。",
+            "zh-cn": "本协议中的标题仅为方便而设，在解释本协议时应被忽略。",
+            "en": "The title of this agreement is only convenient and shall be ignored in the interpretation of this agreement."
+        },
+        {
+            "_key": "没有账号？点击",
+            "zh-cn": "没有账号？点击",
+            "en": "No account number? Click"
+        },
+        {
+            "_key": "功能模板：",
+            "zh-cn": "功能模板：",
+            "en": "Functional templates:"
+        },
+        {
+            "_key": "恭喜你，网站创建成功！",
+            "zh-cn": "恭喜你，网站创建成功！",
+            "en": "Congratulations, the website has been created successfully!"
+        },
+        {
+            "_key": "网站名：",
+            "zh-cn": "网站名：",
+            "en": "Website name:"
+        },
+        {
+            "_key": "您还可以在",
+            "zh-cn": "您还可以在",
+            "en": "You can also be in"
+        },
+        {
+            "_key": "页面设置网站名称、标签",
+            "zh-cn": "页面设置网站名称、标签",
+            "en": "The page set the site name, the label"
+        },
+        {
+            "_key": "，额外支持私有权限以及权限管理等特权",
+            "zh-cn": "，额外支持私有权限以及权限管理等特权",
+            "en": "Additional privileges to support private rights and permissions management"
+        },
+        {
+            "_key": "新建网站",
+            "zh-cn": "新建网站",
+            "en": "addon domain"
+        },
+        {
+            "_key": "功能模板：",
+            "zh-cn": "功能模板：",
+            "en": "Functional templates:"
+        },
+        {
+            "_key": "恭喜你，网站创建成功！",
+            "zh-cn": "恭喜你，网站创建成功！",
+            "en": "Congratulations, the website has been created successfully!"
+        },
+        {
+            "_key": "网站名：",
+            "zh-cn": "网站名：",
+            "en": "Website name:"
+        },
+        {
+            "_key": "您还可以在",
+            "zh-cn": "您还可以在",
+            "en": "You can also be in"
+        },
+        {
+            "_key": "页面设置网站名称、标签",
+            "zh-cn": "页面设置网站名称、标签",
+            "en": "The page set the site name, the label"
+        },
+        {
+            "_key": "，额外支持私有权限以及权限管理等特权",
+            "zh-cn": "，额外支持私有权限以及权限管理等特权",
+            "en": "Additional privileges to support private rights and permissions management"
+        },
+        {
+            "_key": "返回上一页",
+            "zh-cn": "返回上一页",
+            "en": "PAGE UP"
+        },
+        {
+            "_key": "将获得以下权限：",
+            "zh-cn": "将获得以下权限：",
+            "en": "The following permissions will be obtained:"
+        },
+        {
+            "_key": "元",
+            "zh-cn": "元",
+            "en": "first"
+        },
+        {
+            "_key": "魔豆（",
+            "zh-cn": "魔豆（",
+            "en": "The Beanstalk ("
+        },
+        {
+            "_key": "人民币等于",
+            "zh-cn": "人民币等于",
+            "en": "RMB is equal to"
+        },
+        {
+            "_key": "魔豆）",
+            "zh-cn": "魔豆）",
+            "en": "Beanstalk)"
+        },
+        {
+            "_key": "打开手机支付宝",
+            "zh-cn": "打开手机支付宝",
+            "en": "Open the Alipay mobile phone"
+        },
+        {
+            "_key": "扫一扫继续付款",
+            "zh-cn": "扫一扫继续付款",
+            "en": "Sweep down payment"
+        },
+        {
+            "_key": "支付金额：",
+            "zh-cn": "支付金额：",
+            "en": "Amount of payment:"
+        },
+        {
+            "_key": "元",
+            "zh-cn": "元",
+            "en": "first"
+        },
+        {
+            "_key": "恭喜，您已支付成功！",
+            "zh-cn": "恭喜，您已支付成功！",
+            "en": "Congratulations, you have paid for it!"
+        },
+        {
+            "_key": "或",
+            "zh-cn": "或",
+            "en": "perhaps"
+        },
+        {
+            "_key": "支付未成功！",
+            "zh-cn": "支付未成功！",
+            "en": "Payment is not successful!"
+        },
+        {
+            "_key": "抱歉！ ~没有搜索到",
+            "zh-cn": "抱歉！ ~没有搜索到",
+            "en": "Sorry! ~ did not search"
+        },
+        {
+            "_key": "相关的页面",
+            "zh-cn": "相关的页面",
+            "en": "Related pages"
+        },
+        {
+            "_key": "抱歉！ ~没有搜索到",
+            "zh-cn": "抱歉！ ~没有搜索到",
+            "en": "Sorry! ~ did not search"
+        },
+        {
+            "_key": "相关的用户",
+            "zh-cn": "相关的用户",
+            "en": "the relevant user"
+        },
+        {
+            "_key": "您的VIP特权将在",
+            "zh-cn": "您的VIP特权将在",
+            "en": "Your VIP privileges will be in"
+        },
+        {
+            "_key": "到期",
+            "zh-cn": "到期",
+            "en": "become due"
+        },
+        {
+            "_key": "免费创建网站",
+            "zh-cn": "免费创建网站",
+            "en": "Create a web site free of charge"
+        },
+        {
+            "_key": "多平台在线编辑器",
+            "zh-cn": "多平台在线编辑器",
+            "en": "Multi platform online editor"
+        },
+        {
+            "_key": "页面功能模块支持",
+            "zh-cn": "页面功能模块支持",
+            "en": "Page function module support"
+        },
+        {
+            "_key": "子域名",
+            "zh-cn": "子域名",
+            "en": "Subdomain"
+        },
+        {
+            "_key": "网站CDN访问加速",
+            "zh-cn": "网站CDN访问加速",
+            "en": "Web site CDN Access Acceleration"
+        },
+        {
+            "_key": "设置VIP才可以访问",
+            "zh-cn": "设置VIP才可以访问",
+            "en": "Set VIP to access"
+        },
+        {
+            "_key": "免费创建网站",
+            "zh-cn": "免费创建网站",
+            "en": "Create a web site free of charge"
+        },
+        {
+            "_key": "多平台在线编辑器",
+            "zh-cn": "多平台在线编辑器",
+            "en": "Multi platform online editor"
+        },
+        {
+            "_key": "页面功能模块支持",
+            "zh-cn": "页面功能模块支持",
+            "en": "Page function module support"
+        },
+        {
+            "_key": "子域名",
+            "zh-cn": "子域名",
+            "en": "Subdomain"
+        },
+        {
+            "_key": "网站CDN访问加速",
+            "zh-cn": "网站CDN访问加速",
+            "en": "Web site CDN Access Acceleration"
+        },
+        {
+            "_key": "设置VIP才可以访问",
+            "zh-cn": "设置VIP才可以访问",
+            "en": "Set VIP to access"
+        },
+        {
+            "_key": "cname 转发",
+            "zh-cn": "cname 转发",
+            "en": "CNAME forwarding"
+        },
+        {
+            "_key": "私有网站（额外权限管理）",
+            "zh-cn": "私有网站（额外权限管理）",
+            "en": "Private web site (extra authority management)"
+        },
+        {
+            "_key": "组织网站模板",
+            "zh-cn": "组织网站模板",
+            "en": "Organization of web templates"
+        },
+        {
+            "_key": "粉丝",
+            "zh-cn": "粉丝",
+            "en": "vermicelli made from bean starch, etc."
+        },
+        {
+            "_key": "弱",
+            "zh-cn": "弱",
+            "en": "weak"
+        },
+        {
+            "_key": "强",
+            "zh-cn": "强",
+            "en": "stubborn"
+        },
+        {
+            "_key": "弱",
+            "zh-cn": "弱",
+            "en": "weak"
+        },
+        {
+            "_key": "强",
+            "zh-cn": "强",
+            "en": "stubborn"
+        },
+        {
+            "_key": "查看更多活动",
+            "zh-cn": "查看更多活动",
+            "en": "Look at more activities"
+        },
+        {
+            "_key": "作者：",
+            "zh-cn": "作者：",
+            "en": "Author:"
+        },
+        {
+            "_key": "修改头像",
+            "zh-cn": "修改头像",
+            "en": "Revise the head image"
+        },
+        {
+            "_key": "男",
+            "zh-cn": "男",
+            "en": "man"
+        },
+        {
+            "_key": "女",
+            "zh-cn": "女",
+            "en": "woman"
+        },
+        {
+            "_key": "保密",
+            "zh-cn": "保密",
+            "en": "maintain secrecy"
+        },
+        {
+            "_key": "删除",
+            "zh-cn": "删除",
+            "en": "delete"
+        },
+        {
+            "_key": "每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。",
+            "zh-cn": "每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。",
+            "en": "Each cell phone number is sent up to 5 messages per day. The excess will be locked and the second day is automatically removed. Please operate carefully."
+        },
+        {
+            "_key": "免费创建网站",
+            "zh-cn": "免费创建网站",
+            "en": "Create a web site free of charge"
+        },
+        {
+            "_key": "多平台在线编辑器",
+            "zh-cn": "多平台在线编辑器",
+            "en": "Multi platform online editor"
+        },
+        {
+            "_key": "页面功能模块支持",
+            "zh-cn": "页面功能模块支持",
+            "en": "Page function module support"
+        },
+        {
+            "_key": "子域名",
+            "zh-cn": "子域名",
+            "en": "Subdomain"
+        },
+        {
+            "_key": "网站CDN访问加速",
+            "zh-cn": "网站CDN访问加速",
+            "en": "Web site CDN Access Acceleration"
+        },
+        {
+            "_key": "设置VIP才可以访问",
+            "zh-cn": "设置VIP才可以访问",
+            "en": "Set VIP to access"
+        },
+        {
+            "_key": "免费创建网站",
+            "zh-cn": "免费创建网站",
+            "en": "Create a web site free of charge"
+        },
+        {
+            "_key": "多平台在线编辑器",
+            "zh-cn": "多平台在线编辑器",
+            "en": "Multi platform online editor"
+        },
+        {
+            "_key": "页面功能模块支持",
+            "zh-cn": "页面功能模块支持",
+            "en": "Page function module support"
+        },
+        {
+            "_key": "子域名",
+            "zh-cn": "子域名",
+            "en": "Subdomain"
+        },
+        {
+            "_key": "网站CDN访问加速",
+            "zh-cn": "网站CDN访问加速",
+            "en": "Web site CDN Access Acceleration"
+        },
+        {
+            "_key": "设置VIP才可以访问",
+            "zh-cn": "设置VIP才可以访问",
+            "en": "Set VIP to access"
+        },
+        {
+            "_key": "cname 转发",
+            "zh-cn": "cname 转发",
+            "en": "CNAME forwarding"
+        },
+        {
+            "_key": "私有网站（额外权限管理）",
+            "zh-cn": "私有网站（额外权限管理）",
+            "en": "Private web site (extra authority management)"
+        },
+        {
+            "_key": "组织网站模板",
+            "zh-cn": "组织网站模板",
+            "en": "Organization of web templates"
+        },
+        {
+            "_key": "个",
+            "zh-cn": "个",
+            "en": "item(s)"
+        },
+        {
+            "_key": "月",
+            "zh-cn": "月",
+            "en": "moon"
+        },
+        {
+            "_key": "经验值+",
+            "zh-cn": "经验值+",
+            "en": "Experience value +"
+        },
+        {
+            "_key": "经验值+",
+            "zh-cn": "经验值+",
+            "en": "Experience value +"
+        },
+        {
+            "_key": "经验值+",
+            "zh-cn": "经验值+",
+            "en": "Experience value +"
+        },
+        {
+            "_key": "经验值+",
+            "zh-cn": "经验值+",
+            "en": "Experience value +"
+        },
+        {
+            "_key": "经验值+",
+            "zh-cn": "经验值+",
+            "en": "Experience value +"
+        },
+        {
+            "_key": "经验值+",
+            "zh-cn": "经验值+",
+            "en": "Experience value +"
+        },
+        {
+            "_key": "删除提醒",
+            "zh-cn": "删除提醒",
+            "en": "Delete reminding"
+        },
+        {
+            "_key": "同时清空全部数据",
+            "zh-cn": "同时清空全部数据",
+            "en": "Emptying all the data at the same time"
+        },
+        {
+            "_key": "确定",
+            "zh-cn": "确定",
+            "en": "confirm"
+        },
+        {
+            "_key": "取消",
+            "zh-cn": "取消",
+            "en": "cancel"
+        },
+        {
+            "_key": "关注",
+            "zh-cn": "关注",
+            "en": "follow with interest"
+        },
+        {
+            "_key": "全部",
+            "zh-cn": "全部",
+            "en": "whole"
+        },
+        {
+            "_key": "保存",
+            "zh-cn": "保存",
+            "en": "preserve"
+        },
+        {
+            "_key": "新建页",
+            "zh-cn": "新建页",
+            "en": "new page"
+        },
+        {
+            "_key": "模块",
+            "zh-cn": "模块",
+            "en": "module"
+        },
+        {
+            "_key": "浏览",
+            "zh-cn": "浏览",
+            "en": "glance over"
+        },
+        {
+            "_key": "新建网站",
+            "zh-cn": "新建网站",
+            "en": "addon domain"
+        },
+        {
+            "_key": "代码",
+            "zh-cn": "代码",
+            "en": "code"
+        },
+        {
+            "_key": "拆分",
+            "zh-cn": "拆分",
+            "en": "split"
+        },
+        {
+            "_key": "预览",
+            "zh-cn": "预览",
+            "en": "preview"
+        },
+        {
+            "_key": "已打开",
+            "zh-cn": "已打开",
+            "en": "Opened"
+        },
+        {
+            "_key": "参与的项目",
+            "zh-cn": "参与的项目",
+            "en": "participated"
+        },
+        {
+            "_key": "临时的项目",
+            "zh-cn": "临时的项目",
+            "en": "Temporary projects"
         }
     ];
 

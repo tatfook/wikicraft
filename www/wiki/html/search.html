@@ -205,9 +205,9 @@
                 <h4 class="title">共{{totalItems || 0}}条页面：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到
+                    <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
-                        相关的页面
+                        {{ "相关的页面" | translate }}
                     </p>
                 </div>
                 <div class="content">
@@ -222,9 +222,9 @@
                 <h4 class="title">共{{totalItems || 0}}名用户：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到
+                    <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
-                        相关的用户
+                        {{ "相关的用户" | translate }}
                     </p>
                 </div>
                 <div class="col-md-12 fans-row" ng-repeat="item in searchList">

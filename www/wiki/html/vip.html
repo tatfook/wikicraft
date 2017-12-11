@@ -188,12 +188,12 @@
                 <h2 translate="免费账户"></h2>
                 <p class="info" translate="免费"></p>
                 <ul>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</span></li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>页面功能模块支持</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>设置VIP才可以访问</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "免费创建网站" | translate }}</span></li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "多平台在线编辑器" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "页面功能模块支持" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "子域名" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "网站CDN访问加速" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "设置VIP才可以访问" | translate }}</li>
                     <li class="text-muted" translate="cname 转发"></li>
                     <li class="text-muted" translate="私有网站（额外权限管理）"></li>
                     <li class="text-muted" translate="组织网站模板"></li>
@@ -203,15 +203,15 @@
                 <h2 translate="VIP账号"></h2>
                 <p class="info" translate="30RMB/月"></p>
                 <ul>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>页面功能模块支持</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>设置VIP才可以访问</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>cname 转发</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>私有网站（额外权限管理）</li>
-                    <li><span class="glyphicon glyphicon-ok text-success"></span>组织网站模板</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "免费创建网站" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "多平台在线编辑器" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "页面功能模块支持" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "子域名" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "网站CDN访问加速" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "设置VIP才可以访问" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "cname 转发" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "私有网站（额外权限管理）" | translate }}</li>
+                    <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "组织网站模板" | translate }}</li>
                 </ul>
             </div>
         </div>
@@ -221,7 +221,7 @@
         <div class="col-sm-4 col-xs-4" ng-repeat="item in vips" ng-click="selectPrice(item)">
             <div class="vip-price" ng-class="{true:'active'}[item.price == selectedVip.price]">
                 <div class="price"><span>￥</span>{{item.price}}</div>
-                <div class="time">{{item.month}}</br>个</br>月</div>
+                <div class="time">{{item.month}}</br>{{ "个" | translate }}</br>{{ "月" | translate }}</div>
             </div>
         </div>
         <div class="btn btn-primary gopay-btn" ng-click="goPayPage(selectedVip)" translate="立即充值"></div>
