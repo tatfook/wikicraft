@@ -80,19 +80,9 @@ define([], function () {
             "en": "My VIP"
         },
         {
-            "_key": "邀请注册",
-            "zh-cn": "邀请注册",
-            "en": "Invitation to register"
-        },
-        {
             "_key": "订单中心",
             "zh-cn": "订单中心",
             "en": "view order"
-        },
-        {
-            "_key": "消费记录",
-            "zh-cn": "消费记录",
-            "en": "Purchase History"
         },
         {
             "_key": "我的网盘",
@@ -270,41 +260,6 @@ define([], function () {
             "en": "Insert selection"
         },
         {
-            "_key": "多选",
-            "zh-cn": "多选",
-            "en": "multiple"
-        },
-        {
-            "_key": "文件名",
-            "zh-cn": "文件名",
-            "en": "document name"
-        },
-        {
-            "_key": "文件类型",
-            "zh-cn": "文件类型",
-            "en": "document type"
-        },
-        {
-            "_key": "大小",
-            "zh-cn": "大小",
-            "en": "big or small"
-        },
-        {
-            "_key": "更新时间",
-            "zh-cn": "更新时间",
-            "en": "refresh time"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
-        },
-        {
             "_key": "内置gitlab",
             "zh-cn": "官方git数据源",
             "en": "Official git data source"
@@ -322,7 +277,7 @@ define([], function () {
         {
             "_key": "当前使用：",
             "zh-cn": "当前使用：",
-            "en": "Usage: ",
+            "en": "Usage: "
         },
         {
             "_key": "可用",
@@ -375,11 +330,6 @@ define([], function () {
             "en": "contact us"
         },
         {
-            "_key": "数据源配置",
-            "zh-cn": "数据源配置",
-            "en": "Data Source Configuration"
-        },
-        {
             "_key": "默认数据源：",
             "zh-cn": "默认数据源：",
             "en": "Default data source:"
@@ -403,11 +353,6 @@ define([], function () {
             "_key": "状态",
             "zh-cn": "状态",
             "en": "status"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
         },
         {
             "_key": "修改",
@@ -480,16 +425,6 @@ define([], function () {
             "en": "interlinkage"
         },
         {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
-        },
-        {
             "_key": "插入表格",
             "zh-cn": "插入表格",
             "en": "table"
@@ -510,29 +445,9 @@ define([], function () {
             "en": "align"
         },
         {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
-        },
-        {
             "_key": "插入视频",
             "zh-cn": "插入视频",
             "en": "rm mov wmv"
-        },
-        {
-            "_key": "网络地址",
-            "zh-cn": "网络地址",
-            "en": "network address"
-        },
-        {
-            "_key": "本地上传",
-            "zh-cn": "本地上传",
-            "en": "Web Upload"
         },
         {
             "_key": "请输入视频地址（url）：",
@@ -543,31 +458,6 @@ define([], function () {
             "_key": "打开文件浏览器",
             "zh-cn": "打开文件浏览器",
             "en": "filebrowser"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
-        },
-        {
-            "_key": "文件名",
-            "zh-cn": "文件名",
-            "en": "document name"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
         },
         {
             "_key": "选择网站",
@@ -603,16 +493,6 @@ define([], function () {
             "_key": "上一步",
             "zh-cn": "上一步",
             "en": "Back"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
         },
         {
             "_key": "常用设置",
@@ -680,29 +560,9 @@ define([], function () {
             "en": "preserve"
         },
         {
-            "_key": "数据源设置",
-            "zh-cn": "数据源设置",
-            "en": "Oracle JDBC"
-        },
-        {
             "_key": "数据源：",
             "zh-cn": "数据源：",
             "en": "Data sources:"
-        },
-        {
-            "_key": "保存",
-            "zh-cn": "保存",
-            "en": "preserve"
-        },
-        {
-            "_key": "域名管理",
-            "zh-cn": "域名管理",
-            "en": "domain name supervising"
-        },
-        {
-            "_key": "网站地址：",
-            "zh-cn": "网站地址：",
-            "en": "Website address:"
         },
         {
             "_key": "独立域名：",
@@ -745,11 +605,6 @@ define([], function () {
             "en": "Project type:"
         },
         {
-            "_key": "成为VIP",
-            "zh-cn": "成为VIP",
-            "en": "Become VIP"
-        },
-        {
             "_key": "公有项目",
             "zh-cn": "公有项目",
             "en": "Public projects"
@@ -780,11 +635,6 @@ define([], function () {
             "en": "Group management"
         },
         {
-            "_key": "分组管理",
-            "zh-cn": "分组管理",
-            "en": "Group management"
-        },
-        {
             "_key": "分组名称：",
             "zh-cn": "分组名称：",
             "en": "Group name:"
@@ -805,11 +655,6 @@ define([], function () {
             "en": "Group members:"
         },
         {
-            "_key": "添加",
-            "zh-cn": "添加",
-            "en": "add"
-        },
-        {
             "_key": "* 可同时添加多名成员，用户名之间以英文半角逗号(,)隔开",
             "zh-cn": "* 可同时添加多名成员，用户名之间以英文半角逗号(,)隔开",
             "en": "* members added to English semiangle, comma (,) separated between the user name"
@@ -818,16 +663,6 @@ define([], function () {
             "_key": "返回分组",
             "zh-cn": "返回分组",
             "en": "Return packet"
-        },
-        {
-            "_key": "创建",
-            "zh-cn": "创建",
-            "en": "found"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
         },
         {
             "_key": "分组名",
@@ -840,19 +675,9 @@ define([], function () {
             "en": "member"
         },
         {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
             "_key": "编辑",
             "zh-cn": "编辑",
             "en": "edit"
-        },
-        {
-            "_key": "删除",
-            "zh-cn": "删除",
-            "en": "delete"
         },
         {
             "_key": "授权列表",
@@ -870,11 +695,6 @@ define([], function () {
             "en": "Select permissions:"
         },
         {
-            "_key": "添加",
-            "zh-cn": "添加",
-            "en": "add"
-        },
-        {
             "_key": "分组",
             "zh-cn": "分组",
             "en": "divide into groups"
@@ -885,24 +705,9 @@ define([], function () {
             "en": "authority"
         },
         {
-            "_key": "删除",
-            "zh-cn": "删除",
-            "en": "delete"
-        },
-        {
-            "_key": "删除",
-            "zh-cn": "删除",
-            "en": "delete"
-        },
-        {
             "_key": "项目类型",
             "zh-cn": "项目类型",
             "en": "Project type"
-        },
-        {
-            "_key": "确 定",
-            "zh-cn": "确 定",
-            "en": "Determine"
         },
         {
             "_key": "取 消",
@@ -960,11 +765,6 @@ define([], function () {
             "en": "Confirmation"
         },
         {
-            "_key": "返回登录",
-            "zh-cn": "返回登录",
-            "en": "Return logon"
-        },
-        {
             "_key": "已成功重置#username#密码，",
             "zh-cn": "已成功重置#username#密码，",
             "en": "The #username# password has been successfully reset,"
@@ -1015,24 +815,9 @@ define([], function () {
             "en": "ICP 14002196 -2, Guangdong Province"
         },
         {
-            "_key": "问题反馈",
-            "zh-cn": "问题反馈",
-            "en": "Feedback"
-        },
-        {
             "_key": "反馈内容：",
             "zh-cn": "反馈内容：",
             "en": "Feedback content:"
-        },
-        {
-            "_key": "提交",
-            "zh-cn": "提交",
-            "en": "submit (a problem, etc.) to"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
         },
         {
             "_key": "投诉",
@@ -1048,16 +833,6 @@ define([], function () {
             "_key": "投诉原因：",
             "zh-cn": "投诉原因：",
             "en": "Cause of complaint:"
-        },
-        {
-            "_key": "提交",
-            "zh-cn": "提交",
-            "en": "submit (a problem, etc.) to"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
         },
         {
             "_key": "Github认证",
@@ -1125,59 +900,9 @@ define([], function () {
             "en": "date"
         },
         {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
-            "_key": "站点版本管理",
-            "zh-cn": "站点版本管理",
-            "en": "Site version management"
-        },
-        {
-            "_key": "文件路径：",
-            "zh-cn": "文件路径：",
-            "en": "File path:"
-        },
-        {
             "_key": "选择站点：",
             "zh-cn": "选择站点：",
             "en": "Select the site:"
-        },
-        {
-            "_key": "起始日期：",
-            "zh-cn": "起始日期：",
-            "en": "Start date:"
-        },
-        {
-            "_key": "终止日期：",
-            "zh-cn": "终止日期：",
-            "en": "Date of termination:"
-        },
-        {
-            "_key": "查询",
-            "zh-cn": "查询",
-            "en": "inquiry"
-        },
-        {
-            "_key": "提交记录",
-            "zh-cn": "提交记录",
-            "en": "Submission of records"
-        },
-        {
-            "_key": "备注",
-            "zh-cn": "备注",
-            "en": "remarks"
-        },
-        {
-            "_key": "日期",
-            "zh-cn": "日期",
-            "en": "date"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
         },
         {
             "_key": "等级0",
@@ -1203,16 +928,6 @@ define([], function () {
             "_key": "页面编辑器",
             "zh-cn": "页面编辑器",
             "en": "a page customizer"
-        },
-        {
-            "_key": "我的网盘",
-            "zh-cn": "我的网盘",
-            "en": "My SkyDrive"
-        },
-        {
-            "_key": "数据源",
-            "zh-cn": "数据源",
-            "en": "data source"
         },
         {
             "_key": "设置中心",
@@ -1243,11 +958,6 @@ define([], function () {
             "_key": "作品",
             "zh-cn": "作品",
             "en": "works"
-        },
-        {
-            "_key": "关注",
-            "zh-cn": "关注",
-            "en": "follow with interest"
         },
         {
             "_key": "历史",
@@ -1288,16 +998,6 @@ define([], function () {
             "_key": "忘记密码？",
             "zh-cn": "忘记密码？",
             "en": "Forget the password?"
-        },
-        {
-            "_key": "登录",
-            "zh-cn": "登录",
-            "en": "entry"
-        },
-        {
-            "_key": "注册",
-            "zh-cn": "注册",
-            "en": "register"
         },
         {
             "_key": "直接使用以下账号登录",
@@ -1350,11 +1050,6 @@ define([], function () {
             "en": "Functions"
         },
         {
-            "_key": "邀请注册",
-            "zh-cn": "邀请注册",
-            "en": "Invitation to register"
-        },
-        {
             "_key": "邀请注册表单",
             "zh-cn": "邀请注册表单",
             "en": "Inviting the registration form"
@@ -1390,24 +1085,9 @@ define([], function () {
             "en": "The system defaults to the personal address address:"
         },
         {
-            "_key": "密码",
-            "zh-cn": "密码",
-            "en": "password"
-        },
-        {
             "_key": "《KeepWork用户协议》",
             "zh-cn": "《KeepWork用户协议》",
             "en": "<KeepWork user protocol >"
-        },
-        {
-            "_key": "注册",
-            "zh-cn": "注册",
-            "en": "register"
-        },
-        {
-            "_key": "直接使用以下账号登录",
-            "zh-cn": "直接使用以下账号登录",
-            "en": "Log in directly with the following account"
         },
         {
             "_key": "返 回",
@@ -1428,41 +1108,6 @@ define([], function () {
             "_key": "完善信息后可使用第三方账号登录页可使用本站账号密码登录。",
             "zh-cn": "完善信息后可使用第三方账号登录页可使用本站账号密码登录。",
             "en": "After improving the information, you can use the third party account login page to log in with the password of the site."
-        },
-        {
-            "_key": "账户名",
-            "zh-cn": "账户名",
-            "en": "account name"
-        },
-        {
-            "_key": "登录账号注册后不可更改",
-            "zh-cn": "登录账号注册后不可更改",
-            "en": "Login account registration can not be changed"
-        },
-        {
-            "_key": "可以使用英文字母、数字组合（例如：keep123）",
-            "zh-cn": "可以使用英文字母、数字组合（例如：keep123）",
-            "en": "You can use English letters, a combination of numbers (for example: keep123)"
-        },
-        {
-            "_key": "系统默认个人网址地址：",
-            "zh-cn": "系统默认个人网址地址：",
-            "en": "The system defaults to the personal address address:"
-        },
-        {
-            "_key": "密码",
-            "zh-cn": "密码",
-            "en": "password"
-        },
-        {
-            "_key": "《KeepWork用户协议》",
-            "zh-cn": "《KeepWork用户协议》",
-            "en": "<KeepWork user protocol >"
-        },
-        {
-            "_key": "确 定",
-            "zh-cn": "确 定",
-            "en": "Determine"
         },
         {
             "_key": "Keepwork用户协议",
@@ -1535,54 +1180,9 @@ define([], function () {
             "en": "13. other provisions"
         },
         {
-            "_key": "登录账号",
-            "zh-cn": "登录账号",
-            "en": "Login Name"
-        },
-        {
-            "_key": "密码",
-            "zh-cn": "密码",
-            "en": "password"
-        },
-        {
-            "_key": "忘记密码？",
-            "zh-cn": "忘记密码？",
-            "en": "Forget the password?"
-        },
-        {
-            "_key": "登录",
-            "zh-cn": "登录",
-            "en": "entry"
-        },
-        {
-            "_key": "注册",
-            "zh-cn": "注册",
-            "en": "register"
-        },
-        {
-            "_key": "直接使用以下账号登录",
-            "zh-cn": "直接使用以下账号登录",
-            "en": "Log in directly with the following account"
-        },
-        {
-            "_key": "我的VIP",
-            "zh-cn": "我的VIP",
-            "en": "My VIP"
-        },
-        {
-            "_key": "追加续费",
-            "zh-cn": "追加续费",
-            "en": "Additional renewals"
-        },
-        {
             "_key": "VIP特权功能开发中，敬请期待！",
             "zh-cn": "VIP特权功能开发中，敬请期待！",
             "en": "In the development of VIP privileged function, please look forward to it!"
-        },
-        {
-            "_key": "追加续费",
-            "zh-cn": "追加续费",
-            "en": "Additional renewals"
         },
         {
             "_key": "新建网站",
@@ -1593,16 +1193,6 @@ define([], function () {
             "_key": "选择功能模板：",
             "zh-cn": "选择功能模板：",
             "en": "Select the function template:"
-        },
-        {
-            "_key": "预览",
-            "zh-cn": "预览",
-            "en": "preview"
-        },
-        {
-            "_key": "选择",
-            "zh-cn": "选择",
-            "en": "select"
         },
         {
             "_key": "设定网站的访问地址",
@@ -1658,71 +1248,6 @@ define([], function () {
             "_key": "功能",
             "zh-cn": "功能",
             "en": "function"
-        },
-        {
-            "_key": "选择功能模板：",
-            "zh-cn": "选择功能模板：",
-            "en": "Select the function template:"
-        },
-        {
-            "_key": "预览",
-            "zh-cn": "预览",
-            "en": "preview"
-        },
-        {
-            "_key": "选择",
-            "zh-cn": "选择",
-            "en": "select"
-        },
-        {
-            "_key": "设定网站的访问地址",
-            "zh-cn": "设定网站的访问地址",
-            "en": "Setting the site's access address"
-        },
-        {
-            "_key": "*可使用小写字母、数字（例如：mysite123）",
-            "zh-cn": "*可使用小写字母、数字（例如：mysite123）",
-            "en": "* can use lowercase letters, numbers (for example: mysite123)"
-        },
-        {
-            "_key": "设定后不可修改",
-            "zh-cn": "设定后不可修改",
-            "en": "Not modifiable after setting"
-        },
-        {
-            "_key": "VIP可在网站设置中设置cname转发",
-            "zh-cn": "VIP可在网站设置中设置cname转发",
-            "en": "VIP can set up CNAME forwarding in Web site settings"
-        },
-        {
-            "_key": "信息确认：",
-            "zh-cn": "信息确认：",
-            "en": "Information confirmation:"
-        },
-        {
-            "_key": "前往设置",
-            "zh-cn": "前往设置",
-            "en": "Go to set up"
-        },
-        {
-            "_key": "网站配置",
-            "zh-cn": "网站配置",
-            "en": "web.config"
-        },
-        {
-            "_key": "开启VIP",
-            "zh-cn": "开启VIP",
-            "en": "Open VIP"
-        },
-        {
-            "_key": "马上编辑",
-            "zh-cn": "马上编辑",
-            "en": "Immediately editors"
-        },
-        {
-            "_key": "马上配置",
-            "zh-cn": "马上配置",
-            "en": "Immediate configuration"
         },
         {
             "_key": "很抱歉！您访问的页面不存在...",
@@ -1855,19 +1380,9 @@ define([], function () {
             "en": "site"
         },
         {
-            "_key": "消费记录",
-            "zh-cn": "消费记录",
-            "en": "Purchase History"
-        },
-        {
             "_key": "暂无消费记录...",
             "zh-cn": "暂无消费记录...",
             "en": "No consumption record."
-        },
-        {
-            "_key": "订单中心",
-            "zh-cn": "订单中心",
-            "en": "view order"
         },
         {
             "_key": "暂无订单记录...",
@@ -1880,29 +1395,14 @@ define([], function () {
             "en": "serve"
         },
         {
-            "_key": "状态",
-            "zh-cn": "状态",
-            "en": "status"
-        },
-        {
             "_key": "到期时间",
             "zh-cn": "到期时间",
             "en": "expiration time"
         },
         {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
             "_key": "续费",
             "zh-cn": "续费",
             "en": "renewals"
-        },
-        {
-            "_key": "我的VIP",
-            "zh-cn": "我的VIP",
-            "en": "My VIP"
         },
         {
             "_key": "您还不是VIP用户。",
@@ -1960,34 +1460,9 @@ define([], function () {
             "en": "Update this week"
         },
         {
-            "_key": "文件名",
-            "zh-cn": "文件名",
-            "en": "document name"
-        },
-        {
-            "_key": "文件类型",
-            "zh-cn": "文件类型",
-            "en": "document type"
-        },
-        {
             "_key": "文件大小",
             "zh-cn": "文件大小",
             "en": "file size"
-        },
-        {
-            "_key": "更新时间",
-            "zh-cn": "更新时间",
-            "en": "refresh time"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
-            "_key": "删除",
-            "zh-cn": "删除",
-            "en": "delete"
         },
         {
             "_key": "选择文件",
@@ -2020,29 +1495,9 @@ define([], function () {
             "en": "withdraw from"
         },
         {
-            "_key": "新建网站",
-            "zh-cn": "新建网站",
-            "en": "addon domain"
-        },
-        {
-            "_key": "网站管理",
-            "zh-cn": "网站管理",
-            "en": "Site Management"
-        },
-        {
-            "_key": "页面编辑器",
-            "zh-cn": "页面编辑器",
-            "en": "a page customizer"
-        },
-        {
             "_key": "概况",
             "zh-cn": "概况",
             "en": "general situation"
-        },
-        {
-            "_key": "关注",
-            "zh-cn": "关注",
-            "en": "follow with interest"
         },
         {
             "_key": "创建的网站",
@@ -2110,34 +1565,9 @@ define([], function () {
             "en": "No vermicelli"
         },
         {
-            "_key": "设置中心",
-            "zh-cn": "设置中心",
-            "en": "on the central"
-        },
-        {
-            "_key": "网站管理",
-            "zh-cn": "网站管理",
-            "en": "Site Management"
-        },
-        {
             "_key": "服务中心",
             "zh-cn": "服务中心",
             "en": "service center"
-        },
-        {
-            "_key": "邀请注册",
-            "zh-cn": "邀请注册",
-            "en": "Invitation to register"
-        },
-        {
-            "_key": "我的资料",
-            "zh-cn": "我的资料",
-            "en": "My Profile"
-        },
-        {
-            "_key": "确 定",
-            "zh-cn": "确 定",
-            "en": "Determine"
         },
         {
             "_key": "完善资料",
@@ -2158,16 +1588,6 @@ define([], function () {
             "_key": "位置：",
             "zh-cn": "位置：",
             "en": "Position:"
-        },
-        {
-            "_key": "广东省",
-            "zh-cn": "广东省",
-            "en": "Guangdong Province"
-        },
-        {
-            "_key": "广东省",
-            "zh-cn": "广东省",
-            "en": "Guangdong Province"
         },
         {
             "_key": "广东省",
@@ -2215,11 +1635,6 @@ define([], function () {
             "en": "Old password:"
         },
         {
-            "_key": "新密码：",
-            "zh-cn": "新密码：",
-            "en": "New password:"
-        },
-        {
             "_key": "重复新密码：",
             "zh-cn": "重复新密码：",
             "en": "Repeat the new password:"
@@ -2255,16 +1670,6 @@ define([], function () {
             "en": "Cell phone binding:"
         },
         {
-            "_key": "绑定",
-            "zh-cn": "绑定",
-            "en": "binding"
-        },
-        {
-            "_key": "解绑",
-            "zh-cn": "解绑",
-            "en": "unwrap"
-        },
-        {
             "_key": "QQ绑定：",
             "zh-cn": "QQ绑定：",
             "en": "QQ binding:"
@@ -2285,26 +1690,6 @@ define([], function () {
             "en": "Github binding:"
         },
         {
-            "_key": "组织",
-            "zh-cn": "组织",
-            "en": "organization"
-        },
-        {
-            "_key": "关注",
-            "zh-cn": "关注",
-            "en": "follow with interest"
-        },
-        {
-            "_key": "作品",
-            "zh-cn": "作品",
-            "en": "works"
-        },
-        {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
-        },
-        {
             "_key": "作者",
             "zh-cn": "作者",
             "en": "author"
@@ -2315,34 +1700,9 @@ define([], function () {
             "en": "website"
         },
         {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
-        },
-        {
             "_key": "关注于2017-03-02",
             "zh-cn": "关注于2017-03-02",
             "en": "Pay attention to 2017-03-02"
-        },
-        {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
-        },
-        {
-            "_key": "关注于2017-03-02",
-            "zh-cn": "关注于2017-03-02",
-            "en": "Pay attention to 2017-03-02"
-        },
-        {
-            "_key": "我的历史",
-            "zh-cn": "我的历史",
-            "en": "I am at history"
-        },
-        {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
         },
         {
             "_key": "暂无粉丝...",
@@ -2380,124 +1740,14 @@ define([], function () {
             "en": "affirm"
         },
         {
-            "_key": "数据源配置",
-            "zh-cn": "数据源配置",
-            "en": "Data Source Configuration"
-        },
-        {
-            "_key": "默认数据源：",
-            "zh-cn": "默认数据源：",
-            "en": "Default data source:"
-        },
-        {
-            "_key": "已配置的数据源",
-            "zh-cn": "已配置的数据源",
-            "en": "Configured data source"
-        },
-        {
-            "_key": "数据源名",
-            "zh-cn": "数据源名",
-            "en": "DSN"
-        },
-        {
-            "_key": "类型",
-            "zh-cn": "类型",
-            "en": "type"
-        },
-        {
-            "_key": "状态",
-            "zh-cn": "状态",
-            "en": "status"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
-            "_key": "修改",
-            "zh-cn": "修改",
-            "en": "revise"
-        },
-        {
-            "_key": "删除",
-            "zh-cn": "删除",
-            "en": "delete"
-        },
-        {
-            "_key": "增改数据源",
-            "zh-cn": "增改数据源",
-            "en": "Data source"
-        },
-        {
-            "_key": "数据源类型：",
-            "zh-cn": "数据源类型：",
-            "en": "Data source type:"
-        },
-        {
-            "_key": "数据源名:",
-            "zh-cn": "数据源名:",
-            "en": "Data source name:"
-        },
-        {
-            "_key": "提交",
-            "zh-cn": "提交",
-            "en": "submit (a problem, etc.) to"
-        },
-        {
-            "_key": "消费记录",
-            "zh-cn": "消费记录",
-            "en": "Purchase History"
-        },
-        {
-            "_key": "邀请注册表单",
-            "zh-cn": "邀请注册表单",
-            "en": "Inviting the registration form"
-        },
-        {
-            "_key": "好友email：",
-            "zh-cn": "好友email：",
-            "en": "Friend Email:"
-        },
-        {
-            "_key": "邀 请",
-            "zh-cn": "邀 请",
-            "en": "Invitation"
-        },
-        {
             "_key": "邮箱验证码：",
             "zh-cn": "邮箱验证码：",
             "en": "Mailbox verification code:"
         },
         {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
-        },
-        {
             "_key": "图片验证码：",
             "zh-cn": "图片验证码：",
             "en": "Picture verification code:"
-        },
-        {
-            "_key": "短信验证码：",
-            "zh-cn": "短信验证码：",
-            "en": "SMS authentication code:"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
         },
         {
             "_key": "更多",
@@ -2510,41 +1760,6 @@ define([], function () {
             "en": "VIP account privileges"
         },
         {
-            "_key": "免费账户",
-            "zh-cn": "免费账户",
-            "en": "free account"
-        },
-        {
-            "_key": "免费",
-            "zh-cn": "免费",
-            "en": "free"
-        },
-        {
-            "_key": "cname 转发",
-            "zh-cn": "cname 转发",
-            "en": "CNAME forwarding"
-        },
-        {
-            "_key": "私有网站（额外权限管理）",
-            "zh-cn": "私有网站（额外权限管理）",
-            "en": "Private web site (extra authority management)"
-        },
-        {
-            "_key": "组织网站模板",
-            "zh-cn": "组织网站模板",
-            "en": "Organization of web templates"
-        },
-        {
-            "_key": "VIP账号",
-            "zh-cn": "VIP账号",
-            "en": "VIP account number"
-        },
-        {
-            "_key": "30RMB/月",
-            "zh-cn": "30RMB/月",
-            "en": "30RMB/ month"
-        },
-        {
             "_key": "VIP购买付费",
             "zh-cn": "VIP购买付费",
             "en": "VIP purchase payment"
@@ -2553,11 +1768,6 @@ define([], function () {
             "_key": "立即充值",
             "zh-cn": "立即充值",
             "en": "Immediate recharge"
-        },
-        {
-            "_key": "微信支付",
-            "zh-cn": "微信支付",
-            "en": "WeChat payment"
         },
         {
             "_key": "手机支付",
@@ -2578,21 +1788,6 @@ define([], function () {
             "_key": "15元",
             "zh-cn": "15元",
             "en": "15 yuan"
-        },
-        {
-            "_key": "手机支付",
-            "zh-cn": "手机支付",
-            "en": "Mobile Payment"
-        },
-        {
-            "_key": "银行卡支付",
-            "zh-cn": "银行卡支付",
-            "en": "bank card"
-        },
-        {
-            "_key": "会员等级说明",
-            "zh-cn": "会员等级说明",
-            "en": "Membership grade description"
         },
         {
             "_key": "等级经验值",
@@ -2645,11 +1840,6 @@ define([], function () {
             "en": "Read others"
         },
         {
-            "_key": "阅读别人",
-            "zh-cn": "阅读别人",
-            "en": "Read others"
-        },
-        {
             "_key": "升级有什么好处？",
             "zh-cn": "升级有什么好处？",
             "en": "What are the benefits of upgrading?"
@@ -2658,16 +1848,6 @@ define([], function () {
             "_key": "VIP的额外经验好处",
             "zh-cn": "VIP的额外经验好处",
             "en": "Additional experience benefits of VIP"
-        },
-        {
-            "_key": "我的站点",
-            "zh-cn": "我的站点",
-            "en": "My Site"
-        },
-        {
-            "_key": "新建网站",
-            "zh-cn": "新建网站",
-            "en": "addon domain"
         },
         {
             "_key": "站点名称",
@@ -2683,16 +1863,6 @@ define([], function () {
             "_key": "创建时间",
             "zh-cn": "创建时间",
             "en": "createtime"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
         },
         {
             "_key": "WIKI模块",
@@ -2713,31 +1883,6 @@ define([], function () {
             "_key": "排行榜",
             "zh-cn": "排行榜",
             "en": "ranking list"
-        },
-        {
-            "_key": "添加",
-            "zh-cn": "添加",
-            "en": "add"
-        },
-        {
-            "_key": "暂无相关内容...",
-            "zh-cn": "暂无相关内容...",
-            "en": "There is no relevant content for the moment."
-        },
-        {
-            "_key": "否",
-            "zh-cn": "否",
-            "en": "deny"
-        },
-        {
-            "_key": "是",
-            "zh-cn": "是",
-            "en": "yes"
-        },
-        {
-            "_key": "我的主页",
-            "zh-cn": "我的主页",
-            "en": "Homepage"
         },
         {
             "_key": "Mod扩展",
@@ -2768,16 +1913,6 @@ define([], function () {
             "_key": "热键表",
             "zh-cn": "热键表",
             "en": "Hot bond table"
-        },
-        {
-            "_key": "操作",
-            "zh-cn": "操作",
-            "en": "operate"
-        },
-        {
-            "_key": "全选",
-            "zh-cn": "全选",
-            "en": "check all"
         },
         {
             "_key": "下划线",
@@ -2860,16 +1995,6 @@ define([], function () {
             "en": "new page"
         },
         {
-            "_key": "编辑",
-            "zh-cn": "编辑",
-            "en": "edit"
-        },
-        {
-            "_key": "保存",
-            "zh-cn": "保存",
-            "en": "preserve"
-        },
-        {
             "_key": "加粗",
             "zh-cn": "加粗",
             "en": "overstriking"
@@ -2925,21 +2050,6 @@ define([], function () {
             "en": "Horizontal Rules"
         },
         {
-            "_key": "链接",
-            "zh-cn": "链接",
-            "en": "interlinkage"
-        },
-        {
-            "_key": "图片",
-            "zh-cn": "图片",
-            "en": "picture"
-        },
-        {
-            "_key": "视频",
-            "zh-cn": "视频",
-            "en": "video frequency (V.F.)"
-        },
-        {
             "_key": "代码",
             "zh-cn": "代码",
             "en": "code"
@@ -2960,59 +2070,14 @@ define([], function () {
             "en": "Choose the work to apply:"
         },
         {
-            "_key": "提交",
-            "zh-cn": "提交",
-            "en": "submit (a problem, etc.) to"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
-        },
-        {
             "_key": "实名手机认证",
             "zh-cn": "实名手机认证",
             "en": "Real name mobile authentication"
         },
         {
-            "_key": "认证状态：已经认证",
-            "zh-cn": "认证状态：已经认证",
-            "en": "Authentication status: already certified"
-        },
-        {
-            "_key": "手机认证表单",
-            "zh-cn": "手机认证表单",
-            "en": "Mobile authentication form"
-        },
-        {
             "_key": "响应国家号召，Keepwork已开启用户实名制。通过实名认证后，才可发表信息与参与评论。如果您不进行实名认证，仍可浏览Keepwork的资源与内容，并在需要的时候得到提示。",
             "zh-cn": "响应国家号召，Keepwork已开启用户实名制。通过实名认证后，才可发表信息与参与评论。如果您不进行实名认证，仍可浏览Keepwork的资源与内容，并在需要的时候得到提示。",
             "en": "In response to the national call, Keepwork has opened the user real name system. After real name authentication, information and participation can be released. If you do not authenticated, you can still browse the resources and contents of Keepwork, and get hints when needed."
-        },
-        {
-            "_key": "输入手机号：",
-            "zh-cn": "输入手机号：",
-            "en": "Enter the cell phone number:"
-        },
-        {
-            "_key": "短信验证码：",
-            "zh-cn": "短信验证码：",
-            "en": "SMS authentication code:"
-        },
-        {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
         },
         {
             "_key": "网盘功能",
@@ -3060,11 +2125,6 @@ define([], function () {
             "en": "new folder"
         },
         {
-            "_key": "新建页",
-            "zh-cn": "新建页",
-            "en": "new page"
-        },
-        {
             "_key": "默认首页：",
             "zh-cn": "默认首页：",
             "en": "Default home page:"
@@ -3073,11 +2133,6 @@ define([], function () {
             "_key": "恢复默认",
             "zh-cn": "恢复默认",
             "en": "Restore Defaults"
-        },
-        {
-            "_key": "添加",
-            "zh-cn": "添加",
-            "en": "add"
         },
         {
             "_key": "* 您还不是VIP，不能设置cname",
@@ -3128,11 +2183,6 @@ define([], function () {
             "_key": "，进行绑定。",
             "zh-cn": "，进行绑定。",
             "en": "Bindings."
-        },
-        {
-            "_key": "申请即视为同意",
-            "zh-cn": "申请即视为同意",
-            "en": "Application is deemed to be agreed"
         },
         {
             "_key": "目录",
@@ -3455,46 +2505,6 @@ define([], function () {
             "en": "The title of this agreement is only convenient and shall be ignored in the interpretation of this agreement."
         },
         {
-            "_key": "没有账号？点击",
-            "zh-cn": "没有账号？点击",
-            "en": "No account number? Click"
-        },
-        {
-            "_key": "功能模板：",
-            "zh-cn": "功能模板：",
-            "en": "Functional templates:"
-        },
-        {
-            "_key": "恭喜你，网站创建成功！",
-            "zh-cn": "恭喜你，网站创建成功！",
-            "en": "Congratulations, the website has been created successfully!"
-        },
-        {
-            "_key": "网站名：",
-            "zh-cn": "网站名：",
-            "en": "Website name:"
-        },
-        {
-            "_key": "您还可以在",
-            "zh-cn": "您还可以在",
-            "en": "You can also be in"
-        },
-        {
-            "_key": "页面设置网站名称、标签",
-            "zh-cn": "页面设置网站名称、标签",
-            "en": "The page set the site name, the label"
-        },
-        {
-            "_key": "，额外支持私有权限以及权限管理等特权",
-            "zh-cn": "，额外支持私有权限以及权限管理等特权",
-            "en": "Additional privileges to support private rights and permissions management"
-        },
-        {
-            "_key": "新建网站",
-            "zh-cn": "新建网站",
-            "en": "addon domain"
-        },
-        {
             "_key": "功能模板：",
             "zh-cn": "功能模板：",
             "en": "Functional templates:"
@@ -3570,11 +2580,6 @@ define([], function () {
             "en": "Amount of payment:"
         },
         {
-            "_key": "元",
-            "zh-cn": "元",
-            "en": "first"
-        },
-        {
             "_key": "恭喜，您已支付成功！",
             "zh-cn": "恭喜，您已支付成功！",
             "en": "Congratulations, you have paid for it!"
@@ -3598,11 +2603,6 @@ define([], function () {
             "_key": "相关的页面",
             "zh-cn": "相关的页面",
             "en": "Related pages"
-        },
-        {
-            "_key": "抱歉！ ~没有搜索到",
-            "zh-cn": "抱歉！ ~没有搜索到",
-            "en": "Sorry! ~ did not search"
         },
         {
             "_key": "相关的用户",
@@ -3650,66 +2650,6 @@ define([], function () {
             "en": "Set VIP to access"
         },
         {
-            "_key": "免费创建网站",
-            "zh-cn": "免费创建网站",
-            "en": "Create a web site free of charge"
-        },
-        {
-            "_key": "多平台在线编辑器",
-            "zh-cn": "多平台在线编辑器",
-            "en": "Multi platform online editor"
-        },
-        {
-            "_key": "页面功能模块支持",
-            "zh-cn": "页面功能模块支持",
-            "en": "Page function module support"
-        },
-        {
-            "_key": "子域名",
-            "zh-cn": "子域名",
-            "en": "Subdomain"
-        },
-        {
-            "_key": "网站CDN访问加速",
-            "zh-cn": "网站CDN访问加速",
-            "en": "Web site CDN Access Acceleration"
-        },
-        {
-            "_key": "设置VIP才可以访问",
-            "zh-cn": "设置VIP才可以访问",
-            "en": "Set VIP to access"
-        },
-        {
-            "_key": "cname 转发",
-            "zh-cn": "cname 转发",
-            "en": "CNAME forwarding"
-        },
-        {
-            "_key": "私有网站（额外权限管理）",
-            "zh-cn": "私有网站（额外权限管理）",
-            "en": "Private web site (extra authority management)"
-        },
-        {
-            "_key": "组织网站模板",
-            "zh-cn": "组织网站模板",
-            "en": "Organization of web templates"
-        },
-        {
-            "_key": "粉丝",
-            "zh-cn": "粉丝",
-            "en": "vermicelli made from bean starch, etc."
-        },
-        {
-            "_key": "弱",
-            "zh-cn": "弱",
-            "en": "weak"
-        },
-        {
-            "_key": "强",
-            "zh-cn": "强",
-            "en": "stubborn"
-        },
-        {
             "_key": "弱",
             "zh-cn": "弱",
             "en": "weak"
@@ -3750,89 +2690,9 @@ define([], function () {
             "en": "maintain secrecy"
         },
         {
-            "_key": "删除",
-            "zh-cn": "删除",
-            "en": "delete"
-        },
-        {
             "_key": "每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。",
             "zh-cn": "每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。",
             "en": "Each cell phone number is sent up to 5 messages per day. The excess will be locked and the second day is automatically removed. Please operate carefully."
-        },
-        {
-            "_key": "免费创建网站",
-            "zh-cn": "免费创建网站",
-            "en": "Create a web site free of charge"
-        },
-        {
-            "_key": "多平台在线编辑器",
-            "zh-cn": "多平台在线编辑器",
-            "en": "Multi platform online editor"
-        },
-        {
-            "_key": "页面功能模块支持",
-            "zh-cn": "页面功能模块支持",
-            "en": "Page function module support"
-        },
-        {
-            "_key": "子域名",
-            "zh-cn": "子域名",
-            "en": "Subdomain"
-        },
-        {
-            "_key": "网站CDN访问加速",
-            "zh-cn": "网站CDN访问加速",
-            "en": "Web site CDN Access Acceleration"
-        },
-        {
-            "_key": "设置VIP才可以访问",
-            "zh-cn": "设置VIP才可以访问",
-            "en": "Set VIP to access"
-        },
-        {
-            "_key": "免费创建网站",
-            "zh-cn": "免费创建网站",
-            "en": "Create a web site free of charge"
-        },
-        {
-            "_key": "多平台在线编辑器",
-            "zh-cn": "多平台在线编辑器",
-            "en": "Multi platform online editor"
-        },
-        {
-            "_key": "页面功能模块支持",
-            "zh-cn": "页面功能模块支持",
-            "en": "Page function module support"
-        },
-        {
-            "_key": "子域名",
-            "zh-cn": "子域名",
-            "en": "Subdomain"
-        },
-        {
-            "_key": "网站CDN访问加速",
-            "zh-cn": "网站CDN访问加速",
-            "en": "Web site CDN Access Acceleration"
-        },
-        {
-            "_key": "设置VIP才可以访问",
-            "zh-cn": "设置VIP才可以访问",
-            "en": "Set VIP to access"
-        },
-        {
-            "_key": "cname 转发",
-            "zh-cn": "cname 转发",
-            "en": "CNAME forwarding"
-        },
-        {
-            "_key": "私有网站（额外权限管理）",
-            "zh-cn": "私有网站（额外权限管理）",
-            "en": "Private web site (extra authority management)"
-        },
-        {
-            "_key": "组织网站模板",
-            "zh-cn": "组织网站模板",
-            "en": "Organization of web templates"
         },
         {
             "_key": "个",
@@ -3850,31 +2710,6 @@ define([], function () {
             "en": "Experience value +"
         },
         {
-            "_key": "经验值+",
-            "zh-cn": "经验值+",
-            "en": "Experience value +"
-        },
-        {
-            "_key": "经验值+",
-            "zh-cn": "经验值+",
-            "en": "Experience value +"
-        },
-        {
-            "_key": "经验值+",
-            "zh-cn": "经验值+",
-            "en": "Experience value +"
-        },
-        {
-            "_key": "经验值+",
-            "zh-cn": "经验值+",
-            "en": "Experience value +"
-        },
-        {
-            "_key": "经验值+",
-            "zh-cn": "经验值+",
-            "en": "Experience value +"
-        },
-        {
             "_key": "删除提醒",
             "zh-cn": "删除提醒",
             "en": "Delete reminding"
@@ -3885,39 +2720,9 @@ define([], function () {
             "en": "Emptying all the data at the same time"
         },
         {
-            "_key": "确定",
-            "zh-cn": "确定",
-            "en": "confirm"
-        },
-        {
-            "_key": "取消",
-            "zh-cn": "取消",
-            "en": "cancel"
-        },
-        {
-            "_key": "关注",
-            "zh-cn": "关注",
-            "en": "follow with interest"
-        },
-        {
             "_key": "全部",
             "zh-cn": "全部",
             "en": "whole"
-        },
-        {
-            "_key": "保存",
-            "zh-cn": "保存",
-            "en": "preserve"
-        },
-        {
-            "_key": "新建页",
-            "zh-cn": "新建页",
-            "en": "new page"
-        },
-        {
-            "_key": "模块",
-            "zh-cn": "模块",
-            "en": "module"
         },
         {
             "_key": "浏览",
@@ -3925,24 +2730,9 @@ define([], function () {
             "en": "glance over"
         },
         {
-            "_key": "新建网站",
-            "zh-cn": "新建网站",
-            "en": "addon domain"
-        },
-        {
-            "_key": "代码",
-            "zh-cn": "代码",
-            "en": "code"
-        },
-        {
             "_key": "拆分",
             "zh-cn": "拆分",
             "en": "split"
-        },
-        {
-            "_key": "预览",
-            "zh-cn": "预览",
-            "en": "preview"
         },
         {
             "_key": "已打开",
@@ -3958,6 +2748,101 @@ define([], function () {
             "_key": "临时的项目",
             "zh-cn": "临时的项目",
             "en": "Temporary projects"
+        },
+        {
+            "_key": "等待计算",
+            "zh-cn": "等待计算",
+            "en": "Wait for calculation"
+        },
+        {
+            "_key": "有效",
+            "zh-cn": "有效",
+            "en": "effective"
+        },
+        {
+            "_key": "无效",
+            "zh-cn": "无效",
+            "en": "of no avail"
+        },
+        {
+            "_key": "深圳",
+            "zh-cn": "深圳",
+            "en": "Shenzhen"
+        },
+        {
+            "_key": "未知应用",
+            "zh-cn": "未知应用",
+            "en": "Unknown application"
+        },
+        {
+            "_key": "站点名",
+            "zh-cn": "站点名",
+            "en": "site name"
+        },
+        {
+            "_key": "页面名",
+            "zh-cn": "页面名",
+            "en": "Page name"
+        },
+        {
+            "_key": "暂无简介",
+            "zh-cn": "暂无简介",
+            "en": "No brief introduction"
+        },
+        {
+            "_key": "取消关注",
+            "zh-cn": "取消关注",
+            "en": "destroy"
+        },
+        {
+            "_key": "作品名未知",
+            "zh-cn": "作品名未知",
+            "en": "The name of the work is unknown"
+        },
+        {
+            "_key": "作者未知",
+            "zh-cn": "作者未知",
+            "en": "The author's unknown"
+        },
+        {
+            "_key": "暂无描述",
+            "zh-cn": "暂无描述",
+            "en": "No description"
+        },
+        {
+            "_key": "暂无说明",
+            "zh-cn": "暂无说明",
+            "en": "No explanation"
+        },
+        {
+            "_key": "站点名未知",
+            "zh-cn": "站点名未知",
+            "en": "Site name is unknown"
+        },
+        {
+            "_key": "发送验证码",
+            "zh-cn": "发送验证码",
+            "en": "Send authentication code"
+        },
+        {
+            "_key": "邮箱解绑",
+            "zh-cn": "邮箱解绑",
+            "en": "Mailbox binding"
+        },
+        {
+            "_key": "邮箱绑定",
+            "zh-cn": "邮箱绑定",
+            "en": "Mailbox binding"
+        },
+        {
+            "_key": "手机解绑",
+            "zh-cn": "手机解绑",
+            "en": "Mobile phone binding"
+        },
+        {
+            "_key": "手机绑定",
+            "zh-cn": "手机绑定",
+            "en": "Cell phone binding"
         }
     ];
 
