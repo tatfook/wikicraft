@@ -371,7 +371,7 @@
 <div ng-controller="bigfileController">
     <div class="bigfile-modal" ng-class="{true: 'bigfile-content'}[!isModal]">
         <div class="modal-header">
-            网盘功能
+            {{ "网盘功能" | translate }}
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
@@ -558,7 +558,7 @@
                     <div id="dropFile" class="file-progress">
                         <p ng-show="!uploadingFiles || uploadingFiles.length  < 1" class="upload-info">
                             <img ng-src="{{getImageUrl('icon/wiki_upload_file.png', imgsPath)}}" alt="">
-                            也可将上传的文件拖拽到此
+                            {{ "也可将上传的文件拖拽到此" | translate }}
                         </p>
                         <div class="file-group" ng-show="uploadingFiles">
                             <div class="file-group-item" ng-repeat="file in uploadingFiles" ng-hide="file.isDelete">
