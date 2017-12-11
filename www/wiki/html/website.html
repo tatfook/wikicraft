@@ -163,19 +163,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteWebsiteConfirmModalLabel">删除提醒</h4>
+                    <h4 class="modal-title" id="deleteWebsiteConfirmModalLabel">{{ "删除提醒" | translate }}</h4>
                 </div>
                 <div class="modal-body" style="padding: 30px 80px;">
                     <form class="form-horizontal">
                         <div class="form-group">
                             <h4 class="delete-website-confirm-msg"><i class="iconfont icon-exclamation-circle text-danger"></i><span>{{ deleteWebsiteConfirmMsg }}</span></h4>
-                            <label><input type="checkbox" ng-model="deleteWebsiteWithGitlabData" /><span>同时清空全部数据</span></label>
+                            <label><input type="checkbox" ng-model="deleteWebsiteWithGitlabData" /><span>{{ "同时清空全部数据" | translate }}</span></label>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" ng-click="confirmDeleteWebsite(deleteWebsiteConfirmSite)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" ng-click="confirmDeleteWebsite(deleteWebsiteConfirmSite)">{{ "确定" | translate }}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ "取消" | translate }}</button>
                 </div>
             </div>
         </div>
