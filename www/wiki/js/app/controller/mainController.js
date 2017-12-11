@@ -28,6 +28,7 @@ define([
         '$http',
         '$auth',
         '$compile',
+        '$translate',
         'Account',
         'Message',
         'github',
@@ -35,7 +36,7 @@ define([
         'gitlab',
         'confirmDialog',
         'realnameVerifyModal',
-        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, realnameVerifyModal) {
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, $translate, Account, Message, github, modal, gitlab, confirmDialog, realnameVerifyModal) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -88,7 +89,8 @@ define([
                 $rootScope.user = Account.getUser();
                 $rootScope.userinfo = $rootScope.user;
 				$rootScope.frameHeaderExist = true;
-				$rootScope.frameFooterExist = true;
+                $rootScope.frameFooterExist = true;
+                $rootScope.translate = $translate.instant.bind($translate);
                 if (config.isLocal()) {
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
