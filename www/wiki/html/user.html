@@ -292,7 +292,7 @@
             <h3 class="clearfix ellipsis-1" title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</h3>
             <p class="info clearfix ellipsis-1">
                 <span title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</span>
-                <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
+                <span class="pull-right">{{ "注册于" | translate }}{{userinfo.joindate || ""}}</span>
             </p>
             <p class="userinfo-introduce">{{userinfo.introduce}}</p>
             <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?translate("取消关注"):translate("关 注")}}</div>
@@ -364,10 +364,10 @@
                                     <p class="ellipsis-1" title="{{x.desc}}">{{x.desc}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                            <span class="glyphicon glyphicon-star text-danger"></span> {{ "关注" | translate }}{{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
@@ -384,10 +384,10 @@
                                     <p class="ellipsis-1" title="{{x.desc}}">{{x.desc || translate("暂无简介")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                            <span class="glyphicon glyphicon-star text-danger"></span> {{ "关注" | translate }}{{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
@@ -449,10 +449,10 @@
                                     <p class="ellipsis-1" title="{{x.userinfo.desc}}">{{x.userinfo.desc || translate("暂无简介")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.userinfo.visitCount || 0}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.userinfo.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.userinfo.favoriteCount || 0}}
+                                            <span class="glyphicon glyphicon-star text-danger"></span> {{ "关注" | translate }}{{x.userinfo.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
@@ -469,10 +469,10 @@
                                     <p title="x.desc" class="ellipsis-1">{{x.desc || translate("暂无描述")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount || 0}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount || 0}}
+                                            <span class="glyphicon glyphicon-star text-danger"></span> {{ "关注" | translate }}{{x.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>

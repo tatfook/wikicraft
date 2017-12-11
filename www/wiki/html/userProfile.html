@@ -755,11 +755,10 @@
                                 <p>说明：{{x.siteinfo.desc || translate("暂无说明")}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.userinfo.visitCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.userinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">关注
-                                        {{x.userinfo.fansCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">{{ "关注" | translate }}{{x.userinfo.fansCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -789,11 +788,10 @@
                                 <p>说明：{{x.siteinfo.desc || translate("暂无简介")}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.siteinfo.visitCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.siteinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">关注
-                                        {{x.siteinfo.favoriteCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">{{ "关注" | translate }}{{x.siteinfo.favoriteCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -828,10 +826,10 @@
                     <!--<p class="ellipsis-1">页数：{{site.siteinfo.pageCount || 1}}</p>-->
                     <div class="col-md-12 info">
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{site.siteinfo.visitCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{site.siteinfo.visitCount}}
                         </div>
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> 关注 {{site.siteinfo.favoriteCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> {{ "关注" | translate }}{{site.siteinfo.favoriteCount}}
                         </div>
                     </div>
                 </div>
