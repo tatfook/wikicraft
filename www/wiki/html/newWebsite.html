@@ -329,8 +329,8 @@
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
-                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? '确认' : '下一步'}}</button>
+                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">{{ "上一步" | translate }}</button>
+                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? translate("确认") : translate("下一步")}}</button>
                 <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()" translate="马上编辑"></button>
                 <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()" translate="马上配置"></button>
             </div>
@@ -404,8 +404,8 @@
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
-                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? '确认' : '下一步'}}</button>
+                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">{{ "上一步" | translate }}</button>
+                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? translate("确认") : translate("下一步")}}</button>
                 <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()" translate="马上编辑"></button>
                 <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()" translate="马上配置"></button>
             </div>

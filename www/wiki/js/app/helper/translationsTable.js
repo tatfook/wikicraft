@@ -950,11 +950,6 @@ define([], function () {
             "en": "organization"
         },
         {
-            "_key": "关注",
-            "zh-cn": "关注",
-            "en": "follow with interest"
-        },
-        {
             "_key": "作品",
             "zh-cn": "作品",
             "en": "works"
@@ -2545,11 +2540,6 @@ define([], function () {
             "en": "The following permissions will be obtained:"
         },
         {
-            "_key": "元",
-            "zh-cn": "元",
-            "en": "first"
-        },
-        {
             "_key": "魔豆（",
             "zh-cn": "魔豆（",
             "en": "The Beanstalk ("
@@ -2843,6 +2833,51 @@ define([], function () {
             "_key": "手机绑定",
             "zh-cn": "手机绑定",
             "en": "Cell phone binding"
+        },
+        {
+            "_key": "的更新文件",
+            "zh-cn": "的更新文件",
+            "en": "Update file"
+        },
+        {
+            "_key": "正在更新",
+            "zh-cn": "正在更新",
+            "en": "Updating"
+        },
+        {
+            "_key": "共",
+            "zh-cn": "共",
+            "en": "Total"
+        },
+        {
+            "_key": "相关的站点",
+            "zh-cn": "相关的站点",
+            "en": "Related sites"
+        },
+        {
+            "_key": "余额",
+            "zh-cn": "余额",
+            "en": "balance"
+        },
+        {
+            "_key": "元",
+            "zh-cn": "元",
+            "en": "RMB"
+        },
+        {
+            "_key": "注册于",
+            "zh-cn": "注册于",
+            "en": "Registered at"
+        },
+        {
+            "_key": "浏览量",
+            "zh-cn": "浏览量",
+            "en": "page view"
+        },
+        {
+            "_key": "关注",
+            "zh-cn": "关注",
+            "en": "follow"
         }
     ];
 

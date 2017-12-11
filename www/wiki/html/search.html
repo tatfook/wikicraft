@@ -202,7 +202,7 @@
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">共{{totalItems || 0}}条页面：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}条页面：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
@@ -219,7 +219,7 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
-                <h4 class="title">共{{totalItems || 0}}名用户：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}名用户：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
@@ -237,10 +237,10 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
-                <h4 class="title">共{{totalItems || 0}}个站点：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}个站点：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}} 相关的站点</p>
+                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}}{{ "相关的站点" | translate }}</p>
                 </div>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">

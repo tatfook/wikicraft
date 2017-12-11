@@ -168,7 +168,7 @@
     <div ng-show="showItem == 'myPay'" class="col-md-10 main-content panel">
         <div class="panel-heading clearfix">
             <div style="float:left" translate="消费记录"></div>
-            <div style="float:right">余额{{balance/100 || "0"}}元</div>
+            <div style="float:right">{{ "余额" | translate }}{{balance/100 || "0"}}{{ "元" | translate }}</div>
         </div>
         <div class="panel-body mypay-panel">
             <div class="empty-box" ng-hide="myPays.length > 0">

@@ -544,8 +544,8 @@
                     </div>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
-                    <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
-                    <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
+                    <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">{{ "选择" | translate }}{{updatingFile.filename}}{{ "的更新文件" | translate }}</h3>
+                    <h3 ng-show="startUpdating && !finishUploading">{{ "正在更新" | translate }}{{updatingFile.filename}}</h3>
                     <div class="clearfix">
                         <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn" translate="选中本地文件"></button>
                         <span class="text-danger" ng-show="isUidErr" translate="出错了，请稍后重试"></span>
