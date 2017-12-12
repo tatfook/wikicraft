@@ -44,8 +44,8 @@ define([
                         editable:true, // 是否可以编辑
                         is_show:true,  // 可视化是否显示 undefined取值editable
                         name:"logo",   // 表单显示名
-                        text:"https://www.baidu.com/img/baidu_jgylogo3.gif", // 默认值
-                        href:"https://www.baidu.com/img/baidu_jgylogo3.gif", // 默认值
+                        text:"", // 默认值
+                        href:"", // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                         },
 				   	h1:{
@@ -54,7 +54,7 @@ define([
 						editable:true, // 是否可以编辑
 						is_show:true,  // 可视化是否显示 undefined取值editable
 						name:"标题",   // 表单显示名
-						text:"title", // 默认值
+						text:"YOUR HEAD LINE", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 				   	h2:{
@@ -63,7 +63,7 @@ define([
 						editable:true, // 是否可以编辑
 						is_show:true,  // 可视化是否显示 undefined取值editable
 						name:"子标题",   // 表单显示名
-						text:"subtitle", // 默认值
+						text:"YOUR SUB LINE", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 				   	// paragraphs:{
