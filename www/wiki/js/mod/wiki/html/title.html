@@ -1,81 +1,47 @@
 <style>
-    .title1 h1{
-        font-size: 36px;
-        position: relative;
-        padding-bottom: 30px;
-        margin-bottom: 20px;
-        font-weight: normal;
+    .title{
+        width: 100%;
+        height: 160px;
+        position: relative; 
     }
-    .title1 h1:before{
-        content: '';
-        width: 50px;
-        height: 1px;
-        background-color: #000;
+    .title .img{
+        width:20%;
+        height:108px;
         position: absolute;
-        bottom: 0;
-        left: 0;
-    }
-    .title1 .content p{
-        font-size: 16px;
-        color: #666;
-    }
-</style>
-<style>
-    .title2 h2{
-        color: #333;
-        display: flex;
-        align-items:center;
-    }
-    .title2 h2 span{
+        background-color:rgb(196, 191, 191); 
+        line-height: 108px;
         font-size: 20px;
-        color: #999;
-        flex:1;
-        padding-left: 10px;
+        text-align: center;
     }
-</style>
-<style>
-    .title3.container{
-        padding: 40px 105px;
+    .title .img img{
+        width:100%;
+        height:100%;
+        overflow: hidden;
     }
-    .title3 h1{
-        font-size: 30px;
-        font-weight: normal;
-        color: #666;
-        margin: 0 0 20px;
+    .title .h1{
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        left:21.5%;
+        top:0;
     }
-    .title3 p{
-        font-size: 16px;
-        color: #666;
-    }
-    .title3 p > a{
-        color: #1E94EC;
-    }
-    @media (max-width: 768px) {
-        .title3.container{
-            padding: 15px;
-        }
-        .title3 p{
-            font-size: 14px;
-        }
+    .title .h2{
+        position: absolute;
+        right:0;
+        bottom: 0;
+        font-size: 20px;
+        color: rgb(196, 191, 191); 
     }
 </style>
 <div ng-controller="titleController">
-    <div class="title1 container" ng-show="modParams.moduleKind=='title' || !modParams.moduleKind">
-        <h1>{{modParams.title}}</h1>
-        <div class="content">
-            <p ng-bind-html="content"></p>
-        </div>
-    </div>
-    <div class="title2 container" ng-show="modParams.moduleKind=='title2'">
-        <h2>{{modParams.column}} <span class="info">{{modParams.columnInfo}}</span></h2>
-        <div class="content">
-            <p ng-bind-html="content"></p>
-        </div>
-    </div>
-    <div class="title3 container" ng-show="modParams.moduleKind == 'title3'">
-        <h1>{{modParams.title}}</h1>
-        <div class="content">
-            <p ng-bind-html="content"></p>
+    <div ng-if='params.design.text=="style1"'>
+        <div class="title">
+            <div class="img">
+                <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
+                <img ng-if="params.img.text.length > 0" src="{{params.img.text}}">
+            </div>
+            <h1 class="h1" ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide">{{params.h1.text}}</h2>
+            <h2 class="h2" ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide">{{params.h2.text}}</h1>
         </div>
     </div>
 </div>
