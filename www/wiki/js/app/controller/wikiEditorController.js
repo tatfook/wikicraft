@@ -2370,7 +2370,7 @@ define([
                         line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onprogressInfo, 0);
                     };
 					fileReader.onload = function () {
-                        if (fileObj.size > UpperLimit){ // 上传到七牛
+                        if (fileObj.size > UpperLimit || /video\/\w+/.test(fileObj.type)){ // 上传到七牛
                             var cmd_bigfile = function(fileObj) {
                                 console.log(fileObj.name);
                                 var msg = "editorUploadFile";
@@ -2462,8 +2462,11 @@ define([
                                     }
                                 }, function(){
                                     isBigfileModalShow = false;
+                                    isConfirmDialogShow = false;
                                 }, function(){
                                     isBigfileModalShow = false;
+                                    isConfirmDialogShow = false;
+                                    stop(fileObj);
                                 }); 
                             }
 
