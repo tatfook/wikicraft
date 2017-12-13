@@ -98,7 +98,7 @@
 		</p>
 	</div>
 	<div class="page-accredit pull-left" ng-show="logined && !isAuth">
-		<p><a class="oauth-origin">{{oauthApp.appName || "未知应用"}} </a>将获得以下权限：</p>
+		<p><a class="oauth-origin">{{oauthApp.appName || translate("未知应用")}} </a>{{ "将获得以下权限：" | translate }}</p>
 		<div class="accredit-info">
 			<ul class="list-group">
 				<li class="list-group-item"><input ng-model="checkAll" type="checkbox" value="all" id="selectAll"><label for="selectAll" translate="全选"></label></li>

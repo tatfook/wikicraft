@@ -21,7 +21,7 @@
     <form name="pageForm" ng-submit="file_new()">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">新建文件夹 <span ng-show="hidePageTree" class="now-page">&gt; {{nowHoverFile.pageNode.name}}</span></h4>
+        <h4 class="modal-title">{{ "新建文件夹" | translate }} <span ng-show="hidePageTree" class="now-page">&gt; {{nowHoverFile.pageNode.name}}</span></h4>
     </div>
     <div class="modal-body newfile-modal">
         <div>

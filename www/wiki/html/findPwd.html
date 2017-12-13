@@ -57,7 +57,7 @@
         <a ng-click="goLogin()" translate="返回登录"></a>
     </div>
     <div class="finish" ng-show="step==3">
-        <h4>恭喜您！<p translate="已成功重置#username#密码，"></p></h4>
+        <h4>{{ "恭喜您！" | translate }}<p translate="已成功重置#username#密码，"></p></h4>
         <p translate="请返回首页，以新密码登录"></p>
         <div class="form-group">
             <button class="btn btn-primary btn-lg" ng-click="goLogin()" translate="返回首页"></button>

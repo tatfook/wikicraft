@@ -499,7 +499,7 @@
                     <img id='userPortraitId' ng-src="{{ user.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt=""
                          style="width: 100%;height: 100%;">
                 </div>
-                <p class="change-profile">修改头像<input onchange="angular.element(this).scope().fileUpload(event)"
+                <p class="change-profile">{{ "修改头像" | translate }}<input onchange="angular.element(this).scope().fileUpload(event)"
                                                      type="file"></p>
                 <a id="finish" class="btn btn-primary sr-only" translate="确 定"></a>
             </div>
@@ -522,16 +522,16 @@
                         <div class="col-sm-10">
                             <label class="radio-inline">
                                 <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="M"
-                                       ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}"> 男
+                                       ng-model="user.sex" checked="{{user.sex == 'M' ? 'checked' : ''}}"> {{ "男" | translate }}
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="F"
-                                       ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}"> 女
+                                       ng-model="user.sex" checked="{{user.sex == 'F' ? 'checked' : ''}}"> {{ "女" | translate }}
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="N"
                                        ng-model="user.sex"
-                                       checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}"> 保密
+                                       checked="{{user.sex != 'F' && user.sex != 'M' ? 'checked' : ''}}"> {{ "保密" | translate }}
                             </label>
                         </div>
                     </div>
@@ -651,7 +651,7 @@
                                 <p class="form-control">{{getServiceUsername("qq")}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block " ng-class="getBindServiceClass('qq')" ng-click="bindThreeService('qq')">{{isBindThreeService("qq") ? "解绑" : "绑定"}}</div>
+                                <div class="btn btn-block " ng-class="getBindServiceClass('qq')" ng-click="bindThreeService('qq')">{{isBindThreeService("qq") ? translate("解绑") : translate("绑定")}}</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -660,7 +660,7 @@
                                 <p class="form-control">{{getServiceUsername("weixin")}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block" ng-class="getBindServiceClass('weixin')" ng-click="bindThreeService('weixin')">{{isBindThreeService("weixin") ? "解绑" : "绑定"}}</div>
+                                <div class="btn btn-block" ng-class="getBindServiceClass('weixin')" ng-click="bindThreeService('weixin')">{{isBindThreeService("weixin") ? translate("解绑") : translate("绑定")}}</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -669,7 +669,7 @@
                                 <p class="form-control">{{getServiceUsername("xinlangweibo")}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block" ng-class="getBindServiceClass('xinlangweibo')" ng-click="bindThreeService('xinlangweibo')">{{isBindThreeService("xinlangweibo") ? "解绑" : "绑定"}}</div>
+                                <div class="btn btn-block" ng-class="getBindServiceClass('xinlangweibo')" ng-click="bindThreeService('xinlangweibo')">{{isBindThreeService("xinlangweibo") ? translate("解绑") : translate("绑定")}}</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -678,7 +678,7 @@
                                 <p class="form-control">{{getServiceUsername("github")}}</p>
                             </div>
                             <div class="col-sm-3">
-                                <div class="btn btn-block" ng-class="getBindServiceClass('github')" ng-click="bindThreeService('github')">{{isBindThreeService("github") ? "解绑" : "绑定"}}</div>
+                                <div class="btn btn-block" ng-class="getBindServiceClass('github')" ng-click="bindThreeService('github')">{{isBindThreeService("github") ? translate("解绑") : translate("绑定")}}</div>
                             </div>
                         </div>
                     </form>
@@ -752,14 +752,13 @@
                                     <!--<span class="pull-right info" translate="关注于2017-03-02"></span>-->
                                 </h4>
                                 <p>作者：{{x.userinfo.username}}</p>
-                                <p>说明：{{x.siteinfo.desc || "暂无说明"}}</p>
+                                <p>说明：{{x.siteinfo.desc || translate("暂无说明")}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.userinfo.visitCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.userinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">关注
-                                        {{x.userinfo.fansCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">{{ "关注" | translate }}{{x.userinfo.fansCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -782,18 +781,17 @@
                             <img ng-src="{{x.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                             <div class="text">
                                 <h4>
-                                    <a ng-click="goSitePage(x.siteinfo.username, x.siteinfo.name)">{{x.siteinfo.displayName || x.siteinfo.name || "站点名未知"}}</a>
+                                    <a ng-click="goSitePage(x.siteinfo.username, x.siteinfo.name)">{{x.siteinfo.displayName || x.siteinfo.name || translate("站点名未知")}}</a>
                                     <!--<span class="pull-right info" translate="关注于2017-03-02"></span>-->
                                 </h4>
-                                <p>作者：{{x.siteinfo.username || "作者未知"}}</p>
-                                <p>说明：{{x.siteinfo.desc || "暂无简介"}}</p>
+                                <p>作者：{{x.siteinfo.username || translate("作者未知")}}</p>
+                                <p>说明：{{x.siteinfo.desc || translate("暂无简介")}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{x.siteinfo.visitCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.siteinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">关注
-                                        {{x.siteinfo.favoriteCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">{{ "关注" | translate }}{{x.siteinfo.favoriteCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -828,15 +826,15 @@
                     <!--<p class="ellipsis-1">页数：{{site.siteinfo.pageCount || 1}}</p>-->
                     <div class="col-md-12 info">
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">浏览量 {{site.siteinfo.visitCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{site.siteinfo.visitCount}}
                         </div>
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> 关注 {{site.siteinfo.favoriteCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> {{ "关注" | translate }}{{site.siteinfo.favoriteCount}}
                         </div>
                     </div>
                 </div>
                 <div class="time hidden-xs"><span>{{site.updateDate}}</span><span></span></div>
-                <div class="rubbish hidden-xs" ng-click="deleteHistory(site)"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">删除</div>
+                <div class="rubbish hidden-xs" ng-click="deleteHistory(site)"><img ng-src="{{imgsPath + 'wiki_rubbish.png'}}" alt="">{{ "删除" | translate }}</div>
             </div>
         </div>
         <div class="pagination-box" ng-show="visitHistoryList.length > 0">
@@ -915,7 +913,7 @@
                                 }[realNameCellPhoneSMSCodeWait>0]"
                                 ng-disabled="realNameCellPhoneSMSCodeWait > 0"
                                 ng-click="sendRealNameCellPhoneSMSCode()"
-                            >{{(realNameCellPhoneSMSCodeWait == 0) ? "发送验证码" : "重新发送(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
+                            >{{(realNameCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
                         </div>
                         <div class="col-sm-9 col-sm-offset-3">
                             <p class="text-danger">{{errorMsg}}</p>
@@ -972,7 +970,7 @@
                     <td class="hidden-xs">{{x.apiBaseUrl}}</td>
                     <td class="hidden-xs">{{x.rawBaseUrl}}</td>
                     <td class="hidden-xs">{{x.dataSourceToken}}</td>
-                    <td>{{x.dataSourceUserId ? "有效" : "无效"}}</td>
+                    <td>{{x.dataSourceUserId ? translate("有效") : translate("无效")}}</td>
                     <td>
                         <div>
                             <a class="btn" ng-click="clickModifyDataSource(x)" translate="修改"></a>
@@ -1078,7 +1076,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="emailModalLabel">{{isBind("email") ? "邮箱解绑" : "邮箱绑定"}} <span class="titleinfo"> > {{userEmail}}</span></h4>
+                    <h4 class="modal-title" id="emailModalLabel">{{isBind("email") ? translate("邮箱解绑") : translate("邮箱绑定")}} <span class="titleinfo"> > {{userEmail}}</span></h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
@@ -1088,7 +1086,7 @@
                                 <input type="text" class="form-control" ng-model="emailVerifyCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[emailWait>0]" ng-disabled="wait > 0" ng-click="sendEmail(userEmail.trim())">{{(emailWait == 0) ? "发送验证码" : "重新发送(" + emailWait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[emailWait>0]" ng-disabled="wait > 0" ng-click="sendEmail(userEmail.trim())">{{(emailWait == 0) ? translate("发送验证码") : "重新发送(" + emailWait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>
@@ -1110,12 +1108,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="phoneModalLabel">{{isBind("phone") ? "手机解绑" : "手机绑定"}} <span class="titleinfo"> > {{userPhone}}</span></h4>
+                    <h4 class="modal-title" id="phoneModalLabel">{{isBind("phone") ? translate("手机解绑") : translate("手机绑定")}} <span class="titleinfo"> > {{userPhone}}</span></h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。<br/><br/>
+                            {{ "每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。" | translate }}<br/><br/>
                         </div>
                         <div class="form-group form-group-lg">
                             <label class="control-label col-sm-3" translate="图片验证码："></label>
@@ -1136,7 +1134,7 @@
                                 <input type="text" class="form-control" ng-model="smsCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? "发送验证码" : "重新发送(" + wait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? translate("发送验证码") : "重新发送(" + wait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>

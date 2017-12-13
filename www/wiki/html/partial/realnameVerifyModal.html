@@ -72,7 +72,7 @@
                                             true: 'btn-default',
                                             false: 'btn-primary'
                                         }[realNameCellPhoneSMSCodeWait>0]" ng-disabled="realNameCellPhoneSMSCodeWait > 0"
-                                ng-click="sendRealNameCellPhoneSMSCode()">{{(realNameCellPhoneSMSCodeWait == 0) ? "发送验证码" : "重新发送(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
+                                ng-click="sendRealNameCellPhoneSMSCode()">{{(realNameCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
                         </div>
                         <div class="col-sm-9 col-sm-offset-3">
                             <p class="text-danger">{{errorMsg}}</p>

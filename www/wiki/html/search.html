@@ -202,45 +202,45 @@
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">共{{totalItems || 0}}条页面：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}条页面：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到
+                    <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
-                        相关的页面
+                        {{ "相关的页面" | translate }}
                     </p>
                 </div>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
-                        <h3><a href="{{item.url}}">{{item.sitename || "站点名"}}——{{item.pagename || "页面名"}}</a></h3>
+                        <h3><a href="{{item.url}}">{{item.sitename || translate("站点名")}}——{{item.pagename || translate("页面名")}}</a></h3>
                         <p class="info"><a href="{{item.url}}">{{item.url}}</a></p>
                         <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
                     </div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
-                <h4 class="title">共{{totalItems || 0}}名用户：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}名用户：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到
+                    <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
-                        相关的用户
+                        {{ "相关的用户" | translate }}
                     </p>
                 </div>
                 <div class="col-md-12 fans-row" ng-repeat="item in searchList">
                     <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
                     <div class="intro">
                         <h4><a class="text-muted" ng-href="{{'/'+item.username}}">{{item.username || item.displayName}}</a></h4>
-                        <p>{{item.introduce || "暂无简介"}}</p>
+                        <p>{{item.introduce || translate("暂无简介")}}</p>
                     </div>
-                    <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?"取消关注":"关 注"}}</div>
+                    <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?translate("取消关注"):translate("关 注")}}</div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
-                <h4 class="title">共{{totalItems || 0}}个站点：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}个站点：</h4>
                 <div class="empty-box" ng-hide="searchList.length > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}} 相关的站点</p>
+                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}}{{ "相关的站点" | translate }}</p>
                 </div>
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchList">
