@@ -1,0 +1,78 @@
+
+<style>
+.input_item_container {
+	margin: 10px 0px;
+}
+
+.input_item_body {
+	margin: 10px;
+}
+</style>
+
+<div ng-controller="moduleEditorController" style="width:100%">
+	<div class="modal-header">
+		<div class="pull-left">
+			<h4 class="modal-title">模块参数编辑</h4>
+		</div>
+		<div class="pull-right">
+			<button type="button" class="close" ng-click="close()">&times;</button>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="modal-body">
+		<div ng-if='show_type == "editor"'>
+			<div ng-repeat="data in datas">
+				<div ng-if='data.type == "text" || !data.type' class="input_item_container">
+					<div>
+						<div class="pull-left">{{data.name}}</div>
+						<div class="pull-right" ng-click="click_hide(data.data)">{{data.data.is_hide ? "显示" : "隐藏"}}</div>
+					</div>
+					<div class="input_item_body">
+						<input id="{{data.id}}" class="form-control" ng-model="data.data.text"/>
+					</div>
+				</div>
+				<div ng-if='data.type == "link"' class="input_item_container">
+					<div>
+						<div class="pull-left">{{data.name}}</div>
+						<div class="pull-right" ng-click="click_hide(data)">{{data.is_hide ? "显示" : "隐藏"}}</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="input_item_body">
+						<div>
+							<div>LINK TEXT</div>
+							<div>
+								<input id="{{data.id}}" class="form-control" ng-model="data.data.text"/>
+							</div>
+						</div>
+						<div>
+							<div>LINK ADDRESS</div>
+							<div>
+								<input class="form-control" ng-model="data.data.href"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div ng-if='data.type == "list"' class="input_item_container">
+					<div>
+						<div class="pull-left">{{data.name}}</div>
+						<div class="pull-right" ng-click="click_hide(data.data)">{{data.data.is_hide ? "显示" : "隐藏"}}</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="input_item_body">
+						<ul>
+							<li ng-repeat="item in data.list track by $index"><a ng-click="click_list_item(item)" class="btn">{{"LIST ITEM " + ($index + 1)}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ng-if='show_type == "design"'>
+			<div ng-repeat="design_view in design_view_list track by $index" >
+				<div style="transform:scale(0.15,0.2); transform-origin:left top;">
+					<div wiki-html="design_view" ></div>
+				</div>
+				<div><button ng-click="click_apply_design($index)">APPLY</button></div>	
+			</div>	
+		</div>
+	</div>
+</div>

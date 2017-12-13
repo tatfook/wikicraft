@@ -17,6 +17,7 @@ define([
     'text!html/wikiEditor.html',
     'controller/editWebsiteController',
     'controller/bigfileController',
+	'controller/moduleEditorController',
     'codemirror/mode/markdown/markdown',
     // 代码折叠
     'codemirror/addon/fold/foldgutter',
@@ -34,7 +35,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
-], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
+], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent, moduleEditorContent) {
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
@@ -2301,6 +2302,11 @@ define([
                 storage.indexedDBSetItem(config.pageStoreName, currentPage, cb, errcb); // 每次改动本地保存
             }//}}}
 
+			function initModuleEditor() {
+				util.html("#moduleEditor", moduleEditorContent);
+				$("#moduleEditorContainer").hide();
+			}
+
             function initEditor() {
                 //console.log("initEditor");
 				//{{{
@@ -2308,6 +2314,8 @@ define([
                     console.log("init editor failed");
                     return;
                 }
+
+				initModuleEditor();
 
                 var winWidth = $(window).width();
                 if (winWidth<992){

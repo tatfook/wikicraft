@@ -18,6 +18,12 @@ define([
         count: 0,    // markdownwiki 数量
     };
 
+	var wikiBlockMap = {};
+
+	function getWikiBlock(containerId) {
+		wikiBlockMap[containerId] = wikiBlockMap[containerId] || {};
+		return wikiBlockMap[containerId];
+	}
     // 获得mdwiki
     function getMdwiki(mdwikiName) {
         mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {};
@@ -212,12 +218,12 @@ define([
         var wikiBlock = blockCache.wikiBlock;
         var render = getRenderFunc(wikiBlock.modName);
         var editor = mdwiki.editor;
-
+		
         var wikiBlockParams = {
 			blockCache:blockCache,
             modName: wikiBlock.modName,
             cmdName: wikiBlock.cmdName,
-            modParams: wikiBlock.modParams,
+            modParams: wikiBlock.modParams || {},
             editorMode: mdwiki.options.editorMode,
 			containerId: blockCache.containerId,
 			blockList:mdwiki.blockList,
@@ -232,10 +238,13 @@ define([
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
                 }
                 util.html('#' + blockCache.containerId, htmlContent);
+
                 blockCache.domNode = $('#' + blockCache.containerId);
                 if (block.isTemplate) {
                     setMdWikiContent(mdwiki);
                 }
+
+				//moduleEditorInit(blockCache.containerId, wikiBlockParams);
             },
             applyModParams: function (modParams) {
 				var pos = blockCache.block.textPosition;
@@ -245,14 +254,221 @@ define([
                 }
 
                 if (typeof(modParams) == "object") {
-                    modParams = angular.toJson(modParams, 4);
+					//modParams = angular.toJson(modParams, 4);
+					modParams = mdconf.jsonToMd(modParams);
                 }
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
                     ch: 0
                 });
-            }
+            },
+
+			formatModParams: function(key, datas, data, hideDefauleValue) {
+				if (typeof(datas) != "object"){
+					return undefined;
+				}
+
+				var self = this;
+				if (datas.is_leaf == true) {
+					datas.type = datas.type || "text";
+					data = data || {};
+					if (datas.require) {
+						if (datas.type == "text") {
+							data.text = data.text || datas.text;
+						}
+						if (datas.type == "link") {
+							data.text = data.text || datas.text;
+							data.href = data.href || datas.href;
+						}
+						if (datas.type == "list") {
+							if (!angular.isArray(data.list)) {
+								data.list = [];
+							}
+							for (var i = 0; i < datas.list.length; i++) {
+								data.list[i] = self.formatModParams(key + '.list.' + i, datas.list[i], data.list[i]);
+							}
+						}
+					}
+					if (hideDefauleValue) {
+						if (datas.type == "text" && datas.text == data.text) {
+							delete data.text;
+						}
+
+						if (datas.type == "link") {
+							if (data.text == datas.text) {
+								delete data.text;
+							}
+							if (data.href == datas.href) {
+								delete data.href;
+							}
+						}
+
+						if (datas.type == "list") {
+							// 列表不作默认隐藏
+						}
+					} else {
+						datas.is_show = datas.is_show == undefined ? datas.editable : datas.is_show;
+						if (datas.is_show) {
+							// 暂不支持单值 应都对象 因为至少存在 text, is_hide 两个值
+							if (typeof(data) != "object")  {
+								datas.value = data;
+							} else {
+								if (datas.type == "text") {
+									datas.text = data.text;
+								}
+								if (datas.type == "link") {
+									datas.text = data.text;
+									datas.href = data.href;
+								}
+								if (datas.type == "list") {
+									if (!angular.isArray(data.list)) {
+										data.list = [];
+									}
+									for (var i = 0; i < data.list.length; i++) {
+										datas.list[i] = datas.list[i] || angular.copy(datas.list[0]);
+										self.formatModParams(key + ".list." + i, datas.list[i], data.list[i]);
+									}
+								}
+								datas.is_hide = data.is_hide;
+							}
+						}
+						datas.id = util.getId();
+						datas.data = data;
+						datas.containerId = self.containerId;
+						data.$kp_datas = datas;
+						datas.$kp_key = key[0] == "." ? key.substring(1) : key;
+					}
+					return data;
+				}
+
+				if (typeof(datas) == "object") {
+					if (angular.isArray(datas)) {
+						if (!angular.isArray(data)) {
+							data = [];
+						}
+						for (var i = 0; i < datas.length; i++) {
+							data[i] = self.formatModParams(key + "." + i, datas[i], data[i],hideDefauleValue);
+						}
+					} else {
+						if (angular.isArray(data) || typeof(data) != "object") {
+							data = {};
+						}
+						for (var k in datas) {
+							data[k] = self.formatModParams(key + "." + k, datas[k], data[k], hideDefauleValue);
+						}
+					}
+				}
+				return data;
+			},
+			init: function(obj) {
+				// {"scope":scope, style_list:[],  params_template:{}}
+				if (!obj || !obj.scope) {
+					return;
+				}
+
+				var self = this;
+				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+				self.scope = obj.scope;
+				self.params_template = obj.params_template || {};
+				self.styles = obj.styles || [];
+
+				self.format_params_template = angular.copy(self.params_template);
+				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
+				self.setEditorObj = moduleEditorParams.setEditorObj;
+				self.setDesignList = moduleEditorParams.setDesignList;
+				obj.scope.params = self.modParams;
+				//console.log(self.format_params_template, self.modParams);
+				//console.log(self.modParams);
+
+				if (!editor) {
+					return;
+				}
+
+				var getSelf = function(obj){
+					if (typeof(obj) == "string") {
+						return getWikiBlock(obj);
+					} else if (angular.isArray(obj) && obj.length > 0) {
+						return getWikiBlock(obj[0].$kp_datas.containerId);	
+					} else if (angular.isObject(obj)){
+						return getWikiBlock(obj.$kp_datas.containerId);
+					}
+				}
+				config.services.$rootScope.viewEditorClick = function(obj, $event) {
+					var self = getSelf(obj);	
+					if (!self) {
+						return;
+					}
+					if ($event) {
+						$event.stopPropagation();
+					}
+					moduleEditorParams.selectObj = obj && obj.$kp_datas;
+					//console.log(obj);
+					if (obj && obj.$kp_datas) {
+						obj = obj.$kp_datas;
+						var keys = obj.$kp_key && obj.$kp_key.split(".");
+						if (keys && keys.length>1) {
+							var root_obj = self.format_params_template;
+							for (var i = 0; i < keys.length-1; i++) {
+								if (angular.isArray(root_obj)) {
+									root_obj = root_obj[parseInt(keys[i])];
+								} else {
+									root_obj = root_obj[keys[i]];
+								}
+							}
+							if (!angular.isArray(root_obj)) {
+								obj = root_obj;
+							}
+						} else {
+							obj = self.format_params_template;
+						}
+					} else {
+						obj = self.format_params_template;
+					}
+					moduleEditorParams.wikiBlock = self;
+					moduleEditorParams.setEditorObj(obj);
+					//console.log(params_template);
+					moduleEditorParams.is_show = true;
+					moduleEditorParams.show_type = "editor";
+					$("#moduleEditorContainer").show();
+				};
+
+
+				config.services.$rootScope.viewDesignClick = function(obj, $event) {
+					var self = getSelf(obj);	
+					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+					moduleEditorParams.wikiBlock = self;
+					moduleEditorParams.is_show = true;
+					moduleEditorParams.show_type = "design";
+					moduleEditorParams.setDesignList();
+					$("#moduleEditorContainer").show();
+
+				}
+
+				var containerId = "#" + self.containerId;
+				if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
+					$(containerId).on("mouseenter mouseleave", function(e) {
+						if (e.handleObj.origType == "mouseenter") {
+							var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick(\'' + self.containerId+ '\')">编辑</button><button class="btn" ng-click="viewDesignClick(\''+self.containerId+'\')">样式</button></div></div>';
+							html_str = util.compile(html_str);
+							$(containerId).prepend(html_str);
+							util.$apply();	
+						} else {
+							$(containerId).children()[0].remove();
+						}
+					});
+				}
+
+				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor && moduleEditorParams.show_type == "editor") {
+					var cursor_pos = editor.getCursor();
+					var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
+					var pos = blockCache.block.textPosition;
+					if (cursor_line_no > pos.from && cursor_line_no < pos.to) {
+						scope.viewEditorClick();
+					}
+				}
+			},
         };
+		wikiBlockMap[wikiBlockParams.containerId] = wikiBlockParams;
         render(wikiBlockParams);
 		// 渲染后回调
 		defaultRender(wikiBlockParams, true);
@@ -532,8 +748,9 @@ define([
                 modParams = angular.fromJson(token.content)
             }
             catch (e) {
-				var params = mdconf.toJson(token.content).params;
+				//var params = mdconf.toJson(token.content).params;
 
+				var params = mdconf.mdToJson(token.content);
                 modParams = params || token.content;
             }
 
@@ -549,17 +766,13 @@ define([
             }
             return wikiBlock;
         }
+
         mdwiki.getBlockCache = function (text, token) {
 			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            //var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="true"') + '></div>';
-            var htmlContent = '<div id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
+            var htmlContent = '<div id="' + idx + '"' + '></div>';
             var blockCache = undefined;
 
-			//console.log(token);
-			if (!isWikiBlock && token.type != "html_block") {
-				//htmlContent = '<div class="markdown-body" id="' + idx + '"' + ((token.type == "html_block" || !mdwiki.editorMode) ? '' : '  contenteditable="false"') + '></div>';
-			}
             //console.log(token);
             var blockCacheList = mdwiki.blockCacheMap[text];
             for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {
@@ -595,9 +808,12 @@ define([
             if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;
+                //blockCache.htmlContent = '<div id="' + idx + '"></div>';
                 blockCache.htmlContent = '<div id="' + idx + '"></div>';
                 blockCache.wikiBlock = wikiBlock;
                 blockCache.isWikiBlock = true;
+
+                //blockCache.htmlContent = '<div style="position: relative;"><div style="position: absolute;"><button class="btn">编辑</button></div><div id="' + idx + '"></div></div>';
             }
             mdwiki.blockCacheMap[text] = mdwiki.blockCacheMap[text] || [];
             mdwiki.blockCacheMap[text].push(blockCache);

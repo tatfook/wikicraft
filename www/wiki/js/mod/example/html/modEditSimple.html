@@ -1,0 +1,23 @@
+
+<div ng-controller="modEditSimpleController">
+	<div ng-if="params.design.text == 'style1'">
+		<div style="height:40px" ng-click="viewEditorClick(params, $event)">
+			<h3>modEditSimple</h3>
+			<div ng-click="viewEditorClick(params.title, $event)" ng-hide="params.title.is_hide">
+				<div style="background-color:red">
+					{{params.title.text}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-if="params.design.text == 'style2'">
+		<div style="height:40px" ng-click="viewEditorClick(params, $event)">
+			<h3>modEditSimple</h3>
+			<div ng-click="viewEditorClick(params.title, $event)" ng-hide="params.title.is_hide">
+				<div style="background-color:blue">
+					{{params.title.text}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

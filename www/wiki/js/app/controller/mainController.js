@@ -8,6 +8,7 @@ define([
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
+    'helper/mdconf',
     'helper/dataSource',
     'helper/loading',
     'controller/homeController',
@@ -16,7 +17,7 @@ define([
     'controller/userController',
     'controller/notfoundController',
     'controller/crosController',
-], function (app, markdownit, markdownwiki, storage, util, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
+], function (app, markdownit, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
@@ -51,10 +52,12 @@ define([
                     $location:$location,
 					$anchorScroll:$anchorScroll,
                     markdownit:markdownit({}),
+					mdconf:mdconf,
                     storage: storage,
                     Account: Account,
                     Message: Message,
                     github: github,
+					modal: modal,
                     gitlab:gitlab,
                     dataSource:dataSource,
                     loading:loading,
