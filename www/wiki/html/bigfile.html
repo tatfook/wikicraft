@@ -371,7 +371,7 @@
 <div ng-controller="bigfileController">
     <div class="bigfile-modal" ng-class="{true: 'bigfile-content'}[!isModal]">
         <div class="modal-header">
-            网盘功能
+            {{ "网盘功能" | translate }}
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
@@ -544,21 +544,21 @@
                     </div>
                 </div>
                 <div class="tab-pane" role="tabpanel" id="uploadFile">
-                    <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">选择 {{updatingFile.filename}} 的更新文件</h3>
-                    <h3 ng-show="startUpdating && !finishUploading">正在更新 {{updatingFile.filename}}</h3>
+                    <h3 ng-show="updatingFile && updatingFile.filename && !startUpdating">{{ "选择" | translate }}{{updatingFile.filename}}{{ "的更新文件" | translate }}</h3>
+                    <h3 ng-show="startUpdating && !finishUploading">{{ "正在更新" | translate }}{{updatingFile.filename}}</h3>
                     <div class="clearfix">
                         <button id="selectFileInput" ng-disabled="(startUpdating && !finishUploading) || isUidErr" class="btn btn-primary file-input-btn" translate="选中本地文件"></button>
                         <span class="text-danger" ng-show="isUidErr" translate="出错了，请稍后重试"></span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
                             <span class="preview-time">
-                                预估完成时间:{{finishTime || "等待计算"}} (剩余 {{remainTime}})
+                                预估完成时间:{{finishTime || translate("等待计算")}} (剩余 {{remainTime}})
                             </span>
                         </p>
                     </div>
                     <div id="dropFile" class="file-progress">
                         <p ng-show="!uploadingFiles || uploadingFiles.length  < 1" class="upload-info">
                             <img ng-src="{{getImageUrl('icon/wiki_upload_file.png', imgsPath)}}" alt="">
-                            也可将上传的文件拖拽到此
+                            {{ "也可将上传的文件拖拽到此" | translate }}
                         </p>
                         <div class="file-group" ng-show="uploadingFiles">
                             <div class="file-group-item" ng-repeat="file in uploadingFiles" ng-hide="file.isDelete">

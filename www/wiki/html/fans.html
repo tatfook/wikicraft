@@ -47,14 +47,14 @@
 <div class="fans-box" ng-controller="fansController">
     <div class="container panel">
         <div class="panel-heading">
-            <h5>作品关注 > 粉丝</h5>
+            <h5>作品关注 > {{ "粉丝" | translate }}</h5>
         </div>
         <div class="panel-body">
             <div class="col-md-12 fans-row" ng-repeat="fans in fansList">
                 <img ng-src="{{fans.userinfo.portrait || imgsPath + 'wiki_photo.jpg'}}" alt="">
                 <div class="intro">
                     <h4>{{fans.userinfo.username}}</h4>
-                    <p><img ng-src="{{imgsPath + 'icon/wiki_location.png'}}" alt="" class="icon"> {{fans.userinfo.location || "深圳"}}</p>
+                    <p><img ng-src="{{imgsPath + 'icon/wiki_location.png'}}" alt="" class="icon"> {{fans.userinfo.location || translate("深圳")}}</p>
                 </div>
                 <div class="btn btn-primary" translate="关 注"></div>
             </div>

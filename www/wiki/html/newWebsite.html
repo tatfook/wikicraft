@@ -313,7 +313,7 @@
                         URL：<span class="break-all">{{'/' + user.username + '/' + website.name + '/index'}}</span>
                     </div>
                     <div class="col-sm-6">
-                        功能模板：
+                        {{ "功能模板：" | translate }}
                         <div class="label-img">
                             <img ng-src="{{template.logoUrl}}" alt="">
                             <div class="label">{{website.templateName}}</div>
@@ -321,16 +321,16 @@
                     </div>
                 </div>
                 <div ng-show="step == 4" class="congratulation">
-                    <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">恭喜你，网站创建成功！ </h4>
-                    <p>网站名：<a ng-click="goEditWebsitePage()" translate="前往设置"></a></p>
+                    <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">{{ "恭喜你，网站创建成功！" | translate }} </h4>
+                    <p>{{ "网站名：" | translate }}<a ng-click="goEditWebsitePage()" translate="前往设置"></a></p>
                     <p class="break-all">网址：http://keepwork.com/{{user.username}}/{{website.name}}</p>
-                    <p>您还可以在 <a ng-click="goEditWebsitePage()" translate="网站配置"></a> 页面设置网站名称、标签</p>
-                    <p><a ng-click="goVIP()" translate="开启VIP"></a>，额外支持私有权限以及权限管理等特权</p>
+                    <p>{{ "您还可以在" | translate }} <a ng-click="goEditWebsitePage()" translate="网站配置"></a> {{ "页面设置网站名称、标签" | translate }}</p>
+                    <p><a ng-click="goVIP()" translate="开启VIP"></a>{{ "，额外支持私有权限以及权限管理等特权" | translate }}</p>
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
-                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? '确认' : '下一步'}}</button>
+                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">{{ "上一步" | translate }}</button>
+                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? translate("确认") : translate("下一步")}}</button>
                 <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()" translate="马上编辑"></button>
                 <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()" translate="马上配置"></button>
             </div>
@@ -338,7 +338,7 @@
     </div>
     <div class="main-content new-website-modal" ng-show="isModal">
         <div class="modal-header">
-            新建网站
+            {{ "新建网站" | translate }}
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
@@ -388,7 +388,7 @@
                         URL：<span>{{'/' + user.username + '/' + website.name + '/index'}}</span>
                     </div>
                     <div class="col-sm-6">
-                        功能模板：
+                        {{ "功能模板：" | translate }}
                         <div class="label-img">
                             <img ng-src="{{template.logoUrl}}" alt="">
                             <div class="label">{{website.templateName}}</div>
@@ -396,16 +396,16 @@
                     </div>
                 </div>
                 <div ng-show="step == 4" class="congratulation">
-                    <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">恭喜你，网站创建成功！ </h4>
-                    <p>网站名：<a ng-click="goEditWebsitePage()" translate="前往设置"></a></p>
+                    <h4><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt="">{{ "恭喜你，网站创建成功！" | translate }} </h4>
+                    <p>{{ "网站名：" | translate }}<a ng-click="goEditWebsitePage()" translate="前往设置"></a></p>
                     <p>网址：http://keepwork.com/{{user.username}}/{{website.name}}</p>
-                    <p>您还可以在 <a ng-click="goEditWebsitePage()" translate="网站配置"></a> 页面设置网站名称、标签</p>
-                    <p><a ng-click="goVIP()" translate="开启VIP"></a>，额外支持私有权限以及权限管理等特权</p>
+                    <p>{{ "您还可以在" | translate }} <a ng-click="goEditWebsitePage()" translate="网站配置"></a> {{ "页面设置网站名称、标签" | translate }}</p>
+                    <p><a ng-click="goVIP()" translate="开启VIP"></a>{{ "，额外支持私有权限以及权限管理等特权" | translate }}</p>
                 </div>
             </div>
             <div class="step-footer">
-                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">上一步</button>
-                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? '确认' : '下一步'}}</button>
+                <button ng-show="step > 1 && step < 4" class="btn btn-primary btn-prev" ng-disabled="prevStepDisabled" ng-click="prevStep()">{{ "上一步" | translate }}</button>
+                <button ng-show="step < 4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="nextStep()">{{step == 3 ? translate("确认") : translate("下一步")}}</button>
                 <button ng-show="step==4" class="btn btn-prev btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditerPage()" translate="马上编辑"></button>
                 <button ng-show="step==4" class="btn btn-primary" ng-disabled="nextStepDisabled" ng-click="goEditWebsitePage()" translate="马上配置"></button>
             </div>
