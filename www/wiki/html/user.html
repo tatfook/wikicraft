@@ -295,7 +295,7 @@
                 <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
             </p>
             <p class="userinfo-introduce">{{userinfo.introduce}}</p>
-            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?"取消喜欢":"喜 欢"}}</div>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?translate("取消喜欢"):translate("喜 欢")}}</div>
             <div class="message-row">
                 <p class="userinfo-location"><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="mailto:{{userinfo.email}}" target="_blank" class="text-primary">{{userinfo.email}}</a></p>
@@ -367,7 +367,7 @@
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="iconfont icon-dianzan text-danger"></span> 喜欢 {{x.favoriteCount}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{"喜欢" | translate}}{{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
@@ -387,7 +387,7 @@
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="iconfont icon-dianzan text-danger"></span> 喜欢 {{x.favoriteCount}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{"喜欢" | translate}}{{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
@@ -412,7 +412,7 @@
                                         强
                                     </div>
                                     <div class="pull-left visible-xs">
-                                        弱
+                                        {{ "弱" | translate }}
                                         <ul class="legend clearfix">
                                             <li style="background-color: #eee"></li>
                                             <li style="background-color: #E8D8F8"></li>
@@ -420,7 +420,7 @@
                                             <li style="background-color: #77A4D0"></li>
                                             <li style="background-color: #3977AD"></li>
                                         </ul>
-                                        强
+                                        {{ "强" | translate }}
                                     </div>
                                 </div>
                             </div>
@@ -452,7 +452,7 @@
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.userinfo.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="iconfont icon-dianzan text-danger"></span> 喜欢 {{x.userinfo.favoriteCount || 0}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{"喜欢" | translate}} {{x.userinfo.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
@@ -472,7 +472,7 @@
                                             <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="iconfont icon-dianzan text-danger"></span> 喜欢 {{x.favoriteCount || 0}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{"喜欢" | translate}} {{x.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
