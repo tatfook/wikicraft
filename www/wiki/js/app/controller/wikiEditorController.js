@@ -1667,7 +1667,7 @@ define([
             };//}}}
 
             $scope.cmd_saveAll = function () {//{{{
-                var tempCurrentPage=currentPage;
+                var tempCurrentPage=currentPage; 
 				var fnList = [];
 				var callback = undefined;
                 for (url in $scope.opens){
@@ -1692,12 +1692,9 @@ define([
 					currentPage=tempCurrentPage;
 				}
 				
-				util.sequenceRun(fnList, undefined, function(){
-					callback();
-					Message.info("全部保存成功");
-				}, function() {
-					callback();
-					Message.danger("全部保存失败");
+				util.batchRun(fnList, function(){
+                    callback();
+                    console.log("全部保存结束");
 				});
             };//}}}
 
@@ -2846,6 +2843,10 @@ define([
                     if (!currentPage.isModify && content != allWebstePageContent[currentPage.url]) {
                         //console.log(currentPage);
                         //console.log(content, allWebstePageContent[currentPage.url],content != allWebstePageContent[currentPage.url]);
+                        var key = currentPage.username + "_" + currentPage.sitename;
+                        if (allSiteMap[key].isReadable) {
+                            return;
+                        }
                         currentPage.isModify = true;
                         $scope.opens[currentPage.url].isModify = true;
                         initTree();
