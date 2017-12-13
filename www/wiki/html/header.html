@@ -50,9 +50,15 @@
         font-size: 28px;
         vertical-align: middle;
     }
-    .navbar-default li.collect-icon>img{
-        width:30px;
-        height:30px;
+    .navbar-default li > i.icon-dianzan{
+        font-size: 30px;
+        line-height: 1;
+    }
+    .navbar-default li > i.icon-dianzan.active{
+        color: #FB2C68;
+    }
+    .navbar-default li > i.icon-dianzan + span{
+        vertical-align: super;
     }
     .navbar-default .search-bar > .input-group{
         width: 200px;
@@ -515,8 +521,8 @@
                             </div>
                         </li>
                         <li class="icon collect-icon" ng-show="isIconShow">
-                            <img ng-show="isCollect" ng-src="{{imgsPath+'icon/wiki_collect.png'}}" ng-click="doWorksFavorite($event,false)" alt="">
-                            <img ng-show="!isCollect" ng-src="{{imgsPath+'icon/wiki_collect_empty.png'}}" ng-click="doWorksFavorite($event,true)" alt="">
+                            <i ng-show="isCollect" class="iconfont icon-dianzan active" ng-click="doWorksFavorite($event,false)" alt=""></i>
+                            <i ng-show="!isCollect" class="iconfont icon-dianzan" ng-click="doWorksFavorite($event,true)" alt=""></i>
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
                         </li>
                         <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)"><i class="iconfont icon-feature"></i> <span translate="功能"></span></li>
@@ -524,7 +530,7 @@
                         <li class="iconfont-icon" ng-show="!isIconShow">
                             <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i><span translate="帮助"></span></a>
                         </li>
-                        <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li>
+                        <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
                         <li class="icon dropdown share-dropdown" ng-show="isIconShow">
@@ -538,7 +544,7 @@
                         <li class="iconfont-icon" ng-show="!isIconShow">
                             <a href="http://keepwork.com/official/help/index"><i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
                         </li>
-                        <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li>
+                        <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar">
