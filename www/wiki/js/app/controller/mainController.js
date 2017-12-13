@@ -36,7 +36,8 @@ define([
         'gitlab',
         'confirmDialog',
         'realnameVerifyModal',
-        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, realnameVerifyModal) {
+        'datatreeEditorModal',
+        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, realnameVerifyModal, datatreeEditorModal) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -63,6 +64,7 @@ define([
                     loading:loading,
                     confirmDialog:confirmDialog,
                     realnameVerifyModal:realnameVerifyModal,
+                    datatreeEditorModal:datatreeEditorModal
                 };
 
                 util.setAngularServices({

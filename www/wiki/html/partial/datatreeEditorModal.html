@@ -1,0 +1,91 @@
+<style>
+    .class-name::after {
+        content: '';
+        display: inline-block;
+        d
+    }
+    .datatree-editor-dialog .modal-body {
+        max-height: 530px;
+        overflow-y: auto;
+    }
+
+    .datatree-editor-dialog h3 {
+        text-align: center;
+        font-weight: normal;
+    }
+
+    .datatree-editor-dialog span.icon {
+        width: 32px;
+        height: 32px;
+        border: 2px solid;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 30px;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .datatree-editor-dialog .icon.text-danger {
+        color: #ED381C;
+    }
+
+    .datatree-editor-dialog .icon.text-success {
+        color: #3C763D;
+        font-weight: normal;
+    }
+
+    .datatree-editor-dialog .titleinfo {
+        font-weight: normal;
+        color: #666;
+    }
+
+    .datatree-editor-dialog td.actions {
+        white-space: nowrap;
+    }
+
+    .datatree-editor-dialog .modal-title {
+        text-align: center;
+    }
+</style>
+<div class="datatree-editor-dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="$dismiss()">&times;</button>
+        <h4 class="modal-title">{{ title | translate }}</h4>
+    </div>
+    <div class="modal-body">
+        <div role="tabpanel" class="tab-pane safety-panel active">
+            <table>
+                <tr>
+                    <th ng-if="showLocation" translate="位置"></th>
+                    <th translate="文字"></th>
+                    <th ng-repeat="keyItem in keys">{{keyItem.name | translate}}</th>
+                    <th translate="操作"></th>
+                </tr>
+                <tbody>
+                    <tr ng-repeat="item in flattenedData">
+                        <td ng-if="showLocation">{{ getPathOfItem(item) }}</td>
+                        <td><input type="text" ng-model="item.name" placeholder="{{'请输入文字' | translate}}"></td>
+                        <td ng-repeat="keyItem in keys">
+                            <input 
+                                type="text" 
+                                type="{{keyItem.type || 'text'}}" 
+                                ng-model="item[keyItem.key]"
+                                placeholder="{{(keyItem.placeholder || '') | translate}}"
+                            >
+                        </td>
+                        <td class="actions">
+                            <button ng-click="addSiblingBefore(item)" translate="前面添加"></button>
+                            <button ng-click="addSiblingAfter(item)" translate="后面添加"></button>
+                            <button ng-click="addChild(item)" translate="添加子项"></button>
+                            <button ng-click="removeItem(item)" translate="删除"></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-fill btn-md btn-primary" ng-click="submit()" translate="确定"></button>
+        <button type="button" class="btn btn-md" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
+    </div>
+</div>

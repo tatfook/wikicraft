@@ -3013,6 +3013,56 @@ define([], function () {
             "_key": "取消",
             "zh-cn": "取消",
             "en": "cancel"
+        },
+        {
+            "_key": "Datatree Editor",
+            "zh-cn": "树状结构数据编辑器",
+            "en": "Datatree Editor"
+        },
+        {
+            "_key": "文字",
+            "zh-cn": "文字",
+            "en": "Text"
+        },
+        {
+            "_key": "位置",
+            "zh-cn": "位置",
+            "en": "Location"
+        },
+        {
+            "_key": "编辑器",
+            "zh-cn": "编辑器",
+            "en": "Editor"
+        },
+        {
+            "_key": "前面添加",
+            "zh-cn": "前面添加",
+            "en": "Add Before"
+        },
+        {
+            "_key": "前面添加",
+            "zh-cn": "前面添加",
+            "en": "Add Before"
+        },
+        {
+            "_key": "后面添加",
+            "zh-cn": "后面添加",
+            "en": "Add After"
+        },
+        {
+            "_key": "添加子项",
+            "zh-cn": "添加子项",
+            "en": "Add Child"
+        },
+        {
+            "_key": "请输入链接",
+            "zh-cn": "请输入链接",
+            "en": "Input Link"
+        },
+        {
+            "_key": "请输入文字",
+            "zh-cn": "请输入文字",
+            "en": "Input Text"
         }
     ];
 
