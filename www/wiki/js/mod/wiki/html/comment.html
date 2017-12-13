@@ -47,7 +47,7 @@
             <img ng-src="{{comment.userInfo.portrait ||  imgsPath + 'default_portrait.png'}}">
             <div class="text">
                 <h4>{{comment.userInfo.username || "未知用户"}}</h4>
-                <p class="info">{{comment.createTime}}</p>
+                <p class="info">{{dateToStandard(comment.updateTime)}}</p>
                 <p>{{comment.content}}</p>
             </div>
             <a class="delete-btn" ng-show="user._id == comment.userId" ng-click="deleteComment(comment)">删除</a>
