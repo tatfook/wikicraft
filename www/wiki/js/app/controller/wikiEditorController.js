@@ -34,6 +34,7 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview',
+    'qiniu',
 ], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
@@ -618,6 +619,10 @@ define([
             $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
+            var dropFiles = {};
+            var isBigfileModalShow = false;
+            var isConfirmDialogShow = false;
+            var confirmFilesQue = [];
 //}}}
 
             // 格式化html文本
@@ -1925,7 +1930,7 @@ define([
                     editor.replaceRange('1. ', CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
                 }
                 editor.focus();
-            }
+            };
 
             //行首关键字
             function hol_keyword(char) {
@@ -2133,17 +2138,20 @@ define([
                 });
             };
 
+            var bigfileModal;
             // 大文件
             $scope.cmd_bigfile = function () {
-				//return ;
-                modal('controller/bigfileController', {
-                    controller: 'bigfileController',
-                    size: 'lg',
-                    backdrop: 'static'
-                }, function (wikiBlock) {
+                bigfileModal = $uibModal.open({
+                    "template": bigfileContent,
+                    "size": "lg",
+                    "controller": "bigfileController",
+                    "backdrop": "static"
+                });
+                bigfileModal.result.then(function (wikiBlock) {
+                    isBigfileModalShow = false;
                     console.log(wikiBlock);
                 }, function (files) {
-                    console.log(files);
+                    isBigfileModalShow = false;
                     if (!files){
                         return;
                     }
@@ -2180,51 +2188,328 @@ define([
                 return new Blob([ab], {type: mimeString});
             } //}}}
 
+            // 整行替换，不自动获取焦点
+            var line_keyword_nofocus = function (lineNo, content) {
+                var originContent = editor.getLine(lineNo);
+                var offsetX = originContent && originContent.length;
+                editor.replaceRange(content, CodeMirror.Pos(lineNo, 0), CodeMirror.Pos(lineNo, offsetX));
+            };
+
+            var setBigfileValue = function () {
+                for (var url in dropFiles){
+                    var file = dropFiles[url];
+                    var editorContent = editor.getLine(file.insertLinum);
+                    if (editorContent == file.name){
+                        if (!file._id){ // 文件上传到七牛，但是没有上传到数据库
+                            setTimeout(function () {
+                                setBigfileValue();
+                            }, 500);
+                            return;
+                        }
+                        var insertContent = '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.type+'",\n"extraMsg":"'+file.name+'","channel":"qiniu"\n}\n```\n';
+                        line_keyword_nofocus(file.insertLinum, insertContent);
+                    }
+                }
+            };
+
 			// 文件上传
 			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
+                const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
+                const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");
 					return;
                 }
-				var username = $scope.user.username;
+                var qiniuBack;
 
-				//var path = "/" + username + "_files/" + fileObj.name;
 				var path = fileObj.name;
+				
+				var initQiniu = function () {
+				    if (qiniuBack){
+				        return;
+                    }
+                    var qiniu = new QiniuJsSDK();
+                    var option = {
+                        "browse_button":"qiniuUploadBtn",
+                        "unique_names": true,
+                        "auto_start": false,
+                        "uptoken_url": '/api/wiki/models/qiniu/uploadToken',
+                        "domain": 'ov62qege8.bkt.clouddn.com',
+                        "chunk_size": "4mb",
+                        "init": {
+                            "FilesAdded": function (up,files) {
+                                files.map(function (file) {
+                                    var uploadInfo = "***网盘： 正在上传文件 " + 0 + "/" + file.size + "(0%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
+                                    line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 2);
+                                });
+                                this.start();
+                            },
+                            "BeforeUpload": function (up, file) {
+                                console.log("BeforeUpload");
+                            },
+                            "UploadProgress": function (up, file) {
+                                var uploadInfo = "***网盘： 正在上传文件 " + file.loaded + "/" + file.size + "(" + file.percent + "%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
+                                line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 0);
+                            },
+                            "FileUploaded": function (up, file, info) {
+                                console.log("FileUploaded");
+                                var lineNo = dropFiles[file.name].insertLinum;
+                                line_keyword_nofocus(lineNo, file.name);
+                                var params = {
+                                    filename:file.name,
+                                    domain:up.getOption('domain'),
+                                    key:info.key || file.target_name,
+                                    size:file.size,
+                                    type:file.type,
+                                    hash:info.hash,
+                                    channel:"qiniu"
+                                };
+                                util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
+                                    dropFiles[file.name]._id = data._id;
+                                    var insertContent = '```@wiki/js/bigfile\n{\n\t"fileId":"' + data._id + '","fileType":"'+file.type+'",\n"extraMsg":"'+file.name+'","channel":"qiniu"\n}\n```\n';
+                                    line_keyword_nofocus(dropFiles[file.name].insertLinum, insertContent);
+                                }, function(){
+                                    line_keyword_nofocus(dropFiles[file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
+                                    util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
+                                        key:params.key
+                                    }, function (result) {
+                                    }, function (err) {
+                                    }, false);
+                                }, false);
+                            },
+                            "UploadComplete": function (up, files, info) {
+                                console.log("UploadComplete");
+                                // setBigfileValue();
+                            },
+                            "Error": function (up, file, errTip) {
+                                console.log(file.file);
+                                console.log(dropFiles[file.name]);
+                                line_keyword_nofocus(dropFiles[file.file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
+                            }
+                        }
+                    };
+
+                    util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                        if(data && data.uid) {
+                            var uid = data.uid;
+                            option.x_vars = {
+                                "uid": uid
+                            };
+                            qiniuBack = qiniu.uploader(option);
+                        }else{
+                            console.log("uid获取失败");
+                        }
+                    }, function () {
+                        console.log("uid获取失败");
+                    });
+                };
+                initQiniu();
+
+				var timer;
+
+				var qiniuUpload = function (fileObj) {
+				    var insertLineNum = dropFiles[fileObj.name].insertLinum;
+				    if (!qiniuBack){
+                        timer = setTimeout(function () {
+                            qiniuUpload(fileObj);
+                        }, 500);
+                        return;
+                    }
+
+                    timer && clearTimeout(timer);
+
+                    util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:[fileObj.name]}, function(data){
+                       if (data.length > 0){
+                           var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
+                           contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ fileObj.name +'</p>';
+                           config.services.confirmDialog({
+                               "title": "上传提醒",
+                               "contentHtml": contentHtml
+                           }, function () {
+                               qiniuBack.addFile(fileObj);
+                               qiniuBack.start();
+                           }, function () {
+                               line_keyword_nofocus(insertLineNum, "", 0);
+                           });
+                       }else{
+                           qiniuBack.addFile(fileObj);
+                           qiniuBack.start();
+                       }
+                    });
+                };
+
+				var getEmptyLine = function (lineNo) {
+				    if(!angular.isNumber(lineNo)){
+				        return 0;
+                    }
+                    var content = editor.getLine(lineNo);
+				    while (content){
+				        content = editor.getLine(++lineNo);
+                    }
+				    if (!angular.isDefined(content)){
+				        editor.replaceRange("\n",{line: lineNo, ch: 0});
+                    }
+				    return lineNo;
+                };
+
 				if (window.FileReader) {
 					var fileReader = new FileReader();
 					var cursor = editor.getCursor();
 					fileReader.onloadstart = function () {
-						console.log("onloadstart");
-						line_keyword(cursor.line, '***uploading...0/' + fileObj.size + ')***', 2);
-					};
-					fileReader.onprogress = function (p) {
-						console.log("onprogress");
-						line_keyword(cursor.line, '***uploading...' + p.loaded + '/' + fileObj.size + ')***', 2);
-					};
+                        console.log("fileLoadStart");
+                        var insertLineNum = getEmptyLine(cursor.line);
+                        dropFiles[fileObj.name].insertLinum = insertLineNum;
+                        var onloadInfo = "***正在获取文件 0/"+ fileObj.size +"***";
+                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onloadInfo, 0);
+                        // editor.setCursor(CodeMirror.Pos(++dropFiles[fileObj.name].insertLinum, 0));
+                        // cursor = editor.getCursor();
+                    };
+					fileReader.onprogress = function (file) {
+					    var onprogressInfo = "***正在获取文件 "+ file.loaded +"/" + fileObj.size  + "***";
+                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onprogressInfo, 0);
+                    };
 					fileReader.onload = function () {
-						console.log("load complete");
-						line_keyword(cursor.line, '***uploading...' + fileObj.size + '/' + fileObj.size + ')***', 2);
-						if (/image\/\w+/.test(fileObj.type)) {
-							currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
-								//console.log(img_url);
-								line_keyword(cursor.line, '![](' + img_url + ')', 2);
-								cb && cb(img_url);
-							});
-						} else {
-							currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
-								var callback = function() {
-									line_keyword(cursor.line, '['+ fileObj.name +'](' + linkUrl + ')', 2);
-									cb && cb(linkCtrl);
-								}
+                        if (fileObj.size > UpperLimit || /video\/\w+/.test(fileObj.type)){ // 上传到七牛
+                            var cmd_bigfile = function(fileObj) {
+                                console.log(fileObj.name);
+                                var msg = "editorUploadFile";
+                                var data = dropFiles[fileObj.name];
+                                line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
+                                if (isBigfileModalShow) {
+                                    $rootScope.$broadcast(msg, data); 
+                                    return;
+                                }
+                                $scope.cmd_bigfile();
+                                
+                                bigfileModal.opened.then(function() {
+                                    isBigfileModalShow = true;
+                                    $rootScope.$broadcast(msg, data); 
 
-								currentDataSource.getLastCommitId(callback, callback, false);
-							}, function(response){
-								Message.info(response.data.message);
-								console.log(data);
-							});	
-						}
-					}
+                                    confirmFilesQue.filter(function(file) {
+                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, "**已选择使用上传工具上传 "+file.name+"。**", 0);
+                                        $rootScope.$broadcast(msg, file);
+                                        return false;
+                                    });
+                                });
+                            }
+
+                            var stop = function(fileObj) {
+                                line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**因为 "+fileObj.name+" 容量较大，已取消上传。**", 0);
+                                if (confirmFilesQue.length > 0) {
+                                    confirmFun(confirmFilesQue[0]);
+                                    confirmFilesQue.shift();
+                                    console.log(confirmFilesQue);
+                                }
+                            }
+
+                            var editorToQiniu = function(fileObj) {
+                                console.log("正在上传到七牛");
+                                $scope.storeInfoByte.used += fileObj.size || 0;
+                            
+                                if ($scope.storeInfoByte.used > $scope.storeInfoByte.total){
+                                    $scope.storeInfoByte.used -= fileObj.size || 0;
+                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
+                                    return;
+                                }
+    
+                                qiniuUpload(fileObj);
+                                if (confirmFilesQue.length > 0) {
+                                    confirmFun(confirmFilesQue[0]);
+                                    confirmFilesQue.shift();
+                                    console.log(confirmFilesQue);
+                                }
+                            }
+
+                            var confirmFun = function(fileObj){
+                                var contentHtml = "<p class='file-large-info'>识别到您上传的文件:<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
+                                var uploadId = fileObj.name;
+                                var confirmDialog = config.services.confirmDialog({
+                                    "title": "提醒",
+                                    "confirmBtn": false,
+                                    "cancelBtn": false,
+                                    "backdrop": "static",
+                                    "contentHtml": contentHtml,
+                                    "operationBtns": [
+                                        {
+                                            "id": uploadId,
+                                            "text": "打开上传工具",
+                                            "clickHandler": function ($dialogScope) {
+                                                $dialogScope.$dismiss();
+                                                isConfirmDialogShow = false;
+                                                cmd_bigfile(fileObj);
+                                            }
+                                        },
+                                        {
+                                            "text": "继续上传",
+                                            "clickHandler": function ($dialogScope) {
+                                                $dialogScope.$dismiss();
+                                                isConfirmDialogShow = false;
+                                                editorToQiniu(fileObj);
+                                            }
+                                        },
+                                        {
+                                            "text": "取消上传",
+                                            "class": "btn-fill btn-default",
+                                            "clickHandler": function ($dialogScope) {
+                                                $dialogScope.$dismiss();
+                                                isConfirmDialogShow = false;
+                                                stop(fileObj);
+                                            }
+                                        },
+                                    ],
+                                    "openedCb": function() {
+                                    }
+                                }, function(){
+                                    isBigfileModalShow = false;
+                                    isConfirmDialogShow = false;
+                                }, function(){
+                                    isBigfileModalShow = false;
+                                    isConfirmDialogShow = false;
+                                    stop(fileObj);
+                                }); 
+                            }
+
+                            if (fileObj.size > BrowerUpperLimit) {
+                                if (isBigfileModalShow) {
+                                    console.log(isBigfileModalShow);
+                                    cmd_bigfile();
+                                    return;
+                                }
+                                if (isConfirmDialogShow) {
+                                    confirmFilesQue = confirmFilesQue || [];
+                                    confirmFilesQue.push(fileObj);
+                                    return;
+                                }
+                                
+                                isConfirmDialogShow = true;
+                                confirmFun(fileObj);
+                            }else {
+                                editorToQiniu(fileObj);
+                            }
+                        }else{ // 上传到数据源
+                            console.log("正在上传到数据源");
+                            if (/image\/\w+/.test(fileObj.type)) {
+                                currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
+                                    //console.log(img_url);
+                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, '![](' + img_url + ')', 2);
+                                    cb && cb(img_url);
+                                });
+                            } else {
+                                currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
+                                    var callback = function() {
+                                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, '['+ fileObj.name +'](' + linkUrl + ')', 2);
+                                        cb && cb(linkCtrl);
+                                    };
+
+                                    currentDataSource.getLastCommitId(callback, callback, false);
+                                }, function(response){
+                                    Message.danger(response.data.message);
+                                    console.log(data);
+                                });
+                            }
+                        }
+                    };
 					fileReader.readAsDataURL(fileObj);
 				} else {
 					alert('浏览器不支持');
@@ -2832,6 +3117,22 @@ define([
 
                 }
 
+                // 正在上传文件时换行、删行，导致正在上传提示插入行数不对
+                function setDropFilePosition(cm, changeObj){
+                    if (isEmptyObject(dropFiles)){
+                        return;
+                    }
+                    var changeLine = changeObj.from.line;
+                    var ch = changeObj.from.ch;
+                    for(var url in dropFiles){
+                        var isToUpdateLine = (changeLine < dropFiles[url].insertLinum) || (changeLine == dropFiles[url].insertLinum && ch == 0);
+                        if(isToUpdateLine){
+                            var diffLine = changeObj.text.length - changeObj.removed.length;
+                            dropFiles[url].insertLinum += diffLine;
+                        }
+                    }
+                }
+
                 // 编辑器改变内容回调
                 function changeCallback(cm, changeObj) {
                     if (!currentPage)
@@ -2839,6 +3140,7 @@ define([
 
                     //console.log(changeObj);
                     foldWikiBlock(cm, changeObj);
+                    setDropFilePosition(cm, changeObj);
 
                     var content = editor.getValue();
                     //console.log(currentPage);
@@ -3207,6 +3509,7 @@ define([
                             })
                         } else if (item.kind === "file") {
                             var pasteFile = item.getAsFile();
+                            dropFiles[pasteFile.name] = pasteFile;
                             // pasteFile就是获取到的文件
                             //console.log(pasteFile);
                             fileUpload(pasteFile);
@@ -3214,16 +3517,39 @@ define([
                     }
                 });
 
+                var getUserStoreInfoPromise = new Promise(function (resolve, reject) {
+                    util.get(config.apiUrlPrefix+"bigfile/getUserStoreInfo", {}, function (result) {
+                        if (!result){
+                            return;
+                        }
+                        resolve(result);
+                    }, function (err) {
+                        // console.log(err);
+                        reject(err);
+                    }, false);
+                });
+
                 editor.on("drop", function (editor, e) {
-                    // console.log(e.dataTransfer.files[0]);
                     if (!(e.dataTransfer && e.dataTransfer.files.length)) {
                         alert("该浏览器不支持操作");
                         return;
                     }
-                    for (var i = 0; i < e.dataTransfer.files.length; i++) {
-                        //console.log(e.dataTransfer.files[i]);
-                        fileUpload(e.dataTransfer.files[i]);
-                    }
+                    var dropUploadList = [];
+
+                    getUserStoreInfoPromise.then(function (result) {
+                        $scope.storeInfoByte = {
+                            "used": result.used || 0,
+                            "total": result.total || 0
+                        };
+                        for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                            var file = e.dataTransfer.files[i];
+                            dropFiles[file.name] = file;
+                            fileUpload(file);
+                        }
+                    }, function (err) {
+                        console.log(err);
+                    });
+
                     e.preventDefault();
                 });
 

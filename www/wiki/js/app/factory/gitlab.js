@@ -482,7 +482,12 @@ define([
 			content = content.length > 1 ? content[1] : content[0];
 			//content = Base64.decode(content);
 			//console.log(content);
-			self.writeFile({path:path, content:content, encoding: "base64"},function(){
+			self.writeFile({
+				path:path,
+				content:content,
+				encoding: "base64",
+                isShowLoading: params.isShowLoading || false,
+			},function(){
 				var linkUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"});
 				cb && cb(linkUrl);
 				// commit id replace master implement

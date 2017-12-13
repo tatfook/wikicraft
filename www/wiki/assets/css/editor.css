@@ -486,6 +486,16 @@ select.resize-view {
     object-fit:cover;
 }
 
+p.file-large-info{
+    padding: 0 35px;
+    font-size: 16px;
+    line-height: 36px;
+}
+p.file-large-info > .filename{
+    font-weight: bold;
+    padding: 5px;
+}
+
 @media (max-width: 768px) {
     .bg-title h1{
         height: 340px;
