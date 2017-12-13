@@ -716,7 +716,7 @@ define([
 						}, function(data){
 							data = data || [];
 							for (var i = 0; i < data.length; i++) {
-								if (isEmptyObject(data[i]) || !data[i].siteinfo) {
+								if (isEmptyObject(data[i]) || !data[i].siteinfo || data[i].siteinfo.username == $scope.user.username) {
 									continue;
 								}
 								data[i].siteinfo.isEditable = true;
@@ -3454,11 +3454,6 @@ define([
                     $('#hotkeyModal').modal({
                         keyboard: true
                     })
-                });
-
-                $('.toolbar-page-knowledge').on('click', function () {
-                    console.log('toolbar-page-knowledge');
-                    util.go("knowledge");
                 });
 
                 $(function () {

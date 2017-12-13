@@ -29,11 +29,11 @@
 <div ng-controller="tempController">
 	<div>
 		<div class="kp_thead">
-			<div>文件名</div>
-			<div>文件类型</div>
-			<div>文件大小</div>
-			<div>更新时间</div>
-			<div>操作</div>
+			<div translate="文件名"></div>
+			<div translate="文件类型"></div>
+			<div translate="文件大小"></div>
+			<div translate="更新时间"></div>
+			<div translate="操作"></div>
 		</div>
 
 		<div class="kp_tbody">
@@ -51,7 +51,7 @@
 					{{x.file.updateDate}}
 				</div>
 				<div>
-					<button ng-click="deleteFile(x)">删除</button>
+					<button ng-click="deleteFile(x)" translate="删除"></button>
 				</div>
 			</div>
 		</div>
@@ -63,7 +63,7 @@
 		</div>
 
 		<div>
-			<button id="uploadFileId">选择文件</button>
+			<button id="uploadFileId" translate="选择文件"></button>
 		</div>
 	</div>
 </div>

@@ -13,8 +13,8 @@
                                 <!--</a>-->
                                 <!--<ul class="dropdown-menu nodot-dropdown">-->
                                     <!--<li><a ng-click="goHomePage()">keepwork.com</a></li>-->
-                                    <!--<li><a ng-click="goUserPage()">我的主页</a></li>-->
-                                    <!--<li><a ng-click="goModPackagePage()">Mod扩展</a></li>-->
+                                    <!--<li><a ng-click="goUserPage()" translate="我的主页"></a></li>-->
+                                    <!--<li><a ng-click="goModPackagePage()" translate="Mod扩展"></a></li>-->
                                 <!--</ul>-->
                             <!--</div>-->
                             <a ng-if="isLogin" ng-click="goUserPage()" class="toolbar-avatar">
@@ -114,9 +114,9 @@
                             <div class="btn btn-default btn-sm" title="模块" ng-click="openWikiBlock()"><img ng-src="{{imgsPath+'icon/wiki_model.png'}}" alt=""> 模块</div>
                         </div>
                         <div class= "btn-group  pull-right">
-                            <div class="btn btn-default toolbar-page-version wiki-btn" title="版本">版本</div>
-                            <div class="btn btn-default toolbar-page-hotkey wiki-btn" title="热键表">热键</div>
-                            <div class="btn btn-default toolbar-page-knowledge wiki-btn" title="知识库">知识库</div>
+                            <div class="btn btn-default toolbar-page-version wiki-btn" title="版本" translate="版本"></div>
+                            <div class="btn btn-default toolbar-page-hotkey wiki-btn" title="热键表" translate="热键"></div>
+                            <a class="btn btn-default toolbar-page-knowledge wiki-btn" title="知识库" ng-href="http://keepwork.com/official/help/index" target="_blank" translate="知识库"></a>
                         </div>
                     </div>
 
@@ -230,7 +230,7 @@
                     <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: auto;display: flex;">
                         <div id="srcview" class="col-xs-6 full-height">
                             <button id="qiniuUploadBtn" style="display: none;"></button>
-                            <div class="demo-control" style="display: none;"><a href="#" class="source-clear">清除</a></div>
+                            <div class="demo-control" style="display: none;"><a href="#" class="source-clear" translate="清除"></a></div>
                             <textarea id="source" name="source" class="source full-height" TextMode="MultiLine"></textarea>
                             <div id="resize-bar" class="border"></div>
                         </div>
@@ -247,52 +247,52 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">热键表</h4>
+                            <h4 class="modal-title" translate="热键表"></h4>
                         </div>
                         <div class="modal-body">
                             <div class="clearfix">
                                 <div class="col-md-6">
                                     <ul class="list-group">
-                                        <li class="list-group-item text-center active">操作</li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">A</span><span style="display: inline-block;float:right;">全选</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">U</span><span style="display: inline-block;float:right;">下划线</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">U</span><span style="display: inline-block;float:right;">重新选中</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Home</span><span style="display: inline-block;float:right;">文档开头</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">End</span><span style="display: inline-block;float:right;">文档末尾</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">Left</span><span style="display: inline-block;float:right;">当前行首</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">Right</span><span style="display: inline-block;float:right;">当前行尾</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">D</span><span style="display: inline-block;float:right;">删除一行</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Backspace</span><span style="display: inline-block;float:right;">删除单词</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Z</span><span style="display: inline-block;float:right;">撤销</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Y</span><span style="display: inline-block;float:right;">重做</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">F</span><span style="display: inline-block;float:right;">查找</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">G</span><span style="display: inline-block;float:right;">查找下一个</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">G</span><span style="display: inline-block;float:right;">查找上一个</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">F</span><span style="display: inline-block;float:right;">替换</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">R</span><span style="display: inline-block;float:right;">全部替换</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">N</span><span style="display: inline-block;float:right;">新建页</span></li>
+                                        <li class="list-group-item text-center active" translate="操作"></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">A</span><span style="display: inline-block;float:right;" translate="全选"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">U</span><span style="display: inline-block;float:right;" translate="下划线"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">U</span><span style="display: inline-block;float:right;" translate="重新选中"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Home</span><span style="display: inline-block;float:right;" translate="文档开头"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">End</span><span style="display: inline-block;float:right;" translate="文档末尾"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">Left</span><span style="display: inline-block;float:right;" translate="当前行首"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">Right</span><span style="display: inline-block;float:right;" translate="当前行尾"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">D</span><span style="display: inline-block;float:right;" translate="删除一行"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Backspace</span><span style="display: inline-block;float:right;" translate="删除单词"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Z</span><span style="display: inline-block;float:right;" translate="撤销"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">Y</span><span style="display: inline-block;float:right;" translate="重做"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">F</span><span style="display: inline-block;float:right;" translate="查找"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">G</span><span style="display: inline-block;float:right;" translate="查找下一个"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">G</span><span style="display: inline-block;float:right;" translate="查找上一个"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">F</span><span style="display: inline-block;float:right;" translate="替换"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">R</span><span style="display: inline-block;float:right;" translate="全部替换"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">N</span><span style="display: inline-block;float:right;" translate="新建页"></span></li>
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
                                     <ul class="list-group">
-                                        <li class="list-group-item text-center active">编辑</li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">S</span><span style="display: inline-block;float:right;">保存</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">B</span><span style="display: inline-block;float:right;">加粗</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">I</span><span style="display: inline-block;float:right;">斜体</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">-</span><span style="display: inline-block;float:right;">删除线</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">[</span><span style="display: inline-block;float:right;">上标</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">]</span><span style="display: inline-block;float:right;">下标</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">1-6</span><span style="display: inline-block;float:right;">标题</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">.</span><span style="display: inline-block;float:right;">无序列表</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">/</span><span style="display: inline-block;float:right;">有序列表</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">]</span><span style="display: inline-block;float:right;">引用内容</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">T</span><span style="display: inline-block;float:right;">表格</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">H</span><span style="display: inline-block;float:right;">水平分割线</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">L</span><span style="display: inline-block;float:right;">链接</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">P</span><span style="display: inline-block;float:right;">图片</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>  +  <span class="label label-default">V</span><span style="display: inline-block;float:right;">视频</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">C</span><span style="display: inline-block;float:right;">代码</span></li>
-                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">M</span><span style="display: inline-block;float:right;">模块</span></li>
+                                        <li class="list-group-item text-center active" translate="编辑"></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">S</span><span style="display: inline-block;float:right;" translate="保存"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">B</span><span style="display: inline-block;float:right;" translate="加粗"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">I</span><span style="display: inline-block;float:right;" translate="斜体"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">-</span><span style="display: inline-block;float:right;" translate="删除线"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">[</span><span style="display: inline-block;float:right;" translate="上标"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">]</span><span style="display: inline-block;float:right;" translate="下标"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">1-6</span><span style="display: inline-block;float:right;" translate="标题"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">.</span><span style="display: inline-block;float:right;" translate="无序列表"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">/</span><span style="display: inline-block;float:right;" translate="有序列表"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">]</span><span style="display: inline-block;float:right;" translate="引用内容"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Shift</span>&nbsp;+&nbsp;<span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">T</span><span style="display: inline-block;float:right;" translate="表格"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">H</span><span style="display: inline-block;float:right;" translate="水平分割线"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">L</span><span style="display: inline-block;float:right;" translate="链接"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">P</span><span style="display: inline-block;float:right;" translate="图片"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>  +  <span class="label label-default">V</span><span style="display: inline-block;float:right;" translate="视频"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Alt</span>&nbsp;+&nbsp;<span class="label label-default">C</span><span style="display: inline-block;float:right;" translate="代码"></span></li>
+                                        <li class="list-group-item"><span class="label label-default">Ctrl</span>&nbsp;+&nbsp;<span class="label label-default">M</span><span style="display: inline-block;float:right;" translate="模块"></span></li>
                                     </ul>
                                 </div>
                             </div>

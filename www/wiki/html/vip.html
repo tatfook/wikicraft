@@ -181,12 +181,12 @@
 </style>
 <div class="container vip-container" ng-controller="vipController">
     <div class="row publicity">
-        <h3><span>VIP账号特权</span></h3>
+        <h3><span translate="VIP账号特权"></span></h3>
         <img ng-src="{{imgsPath+'wiki_vip.png'}}" alt="">
         <div class="clearfix compares">
             <div class="feature-box">
-                <h2>免费账户</h2>
-                <p class="info">免费</p>
+                <h2 translate="免费账户"></h2>
+                <p class="info" translate="免费"></p>
                 <ul>
                     <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</span></li>
                     <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
@@ -194,14 +194,14 @@
                     <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
                     <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
                     <li><span class="glyphicon glyphicon-ok text-success"></span>设置VIP才可以访问</li>
-                    <li class="text-muted">cname 转发</li>
-                    <li class="text-muted">私有网站（额外权限管理）</li>
-                    <li class="text-muted">组织网站模板</li>
+                    <li class="text-muted" translate="cname 转发"></li>
+                    <li class="text-muted" translate="私有网站（额外权限管理）"></li>
+                    <li class="text-muted" translate="组织网站模板"></li>
                 </ul>
             </div>
             <div class="feature-box vip-feature">
-                <h2>VIP账号</h2>
-                <p class="info">30RMB/月</p>
+                <h2 translate="VIP账号"></h2>
+                <p class="info" translate="30RMB/月"></p>
                 <ul>
                     <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</li>
                     <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
@@ -217,27 +217,27 @@
         </div>
     </div>
     <div class="row s-container">
-        <h3><span>VIP购买付费</span></h3>
+        <h3><span translate="VIP购买付费"></span></h3>
         <div class="col-sm-4 col-xs-4" ng-repeat="item in vips" ng-click="selectPrice(item)">
             <div class="vip-price" ng-class="{true:'active'}[item.price == selectedVip.price]">
                 <div class="price"><span>￥</span>{{item.price}}</div>
                 <div class="time">{{item.month}}</br>个</br>月</div>
             </div>
         </div>
-        <div class="btn btn-primary gopay-btn" ng-click="goPayPage(selectedVip)">立即充值</div>
+        <div class="btn btn-primary gopay-btn" ng-click="goPayPage(selectedVip)" translate="立即充值"></div>
     </div>
     <!--<div class="row s-container">-->
         <!--<div role="tabpanel">-->
             <!--&lt;!&ndash; Nav tabs &ndash;&gt;-->
             <!--<ul class="nav nav-tabs" role="tablist">-->
                 <!--<li role="presentation" class="active">-->
-                    <!--<a href="#wexin" aria-controls="wexin" role="tab" data-toggle="tab">微信支付</a>-->
+                    <!--<a href="#wexin" aria-controls="wexin" role="tab" data-toggle="tab" translate="微信支付"></a>-->
                 <!--</li>-->
                 <!--<li role="presentation">-->
-                    <!--<a href="#phone" aria-controls="phone" role="tab" data-toggle="tab">手机支付</a>-->
+                    <!--<a href="#phone" aria-controls="phone" role="tab" data-toggle="tab" translate="手机支付"></a>-->
                 <!--</li>-->
                 <!--<li role="presentation">-->
-                    <!--<a href="#card" aria-controls="card" role="tab" data-toggle="tab">银行卡支付</a>-->
+                    <!--<a href="#card" aria-controls="card" role="tab" data-toggle="tab" translate="银行卡支付"></a>-->
                 <!--</li>-->
             <!--</ul>-->
             <!--&lt;!&ndash; Tab panes &ndash;&gt;-->
@@ -245,14 +245,14 @@
                 <!--<div role="tabpanel" class="tab-pane active pay-box" id="wexin">-->
                     <!--<div class="code-box">-->
                         <!--<img src="" alt="二维码">-->
-                        <!--<p>扫二维码轻松支付</p>-->
+                        <!--<p translate="扫二维码轻松支付"></p>-->
                     <!--</div>-->
                     <!--<div class="pay-msg">-->
-                        <!--<p>应付金额：<span>15元</span></p>-->
+                        <!--<p>应付金额：<span translate="15元"></span></p>-->
                     <!--</div>-->
                 <!--</div>-->
-                <!--<div role="tabpanel" class="tab-pane" id="phone">手机支付</div>-->
-                <!--<div role="tabpanel" class="tab-pane" id="card">银行卡支付</div>-->
+                <!--<div role="tabpanel" class="tab-pane" id="phone" translate="手机支付"></div>-->
+                <!--<div role="tabpanel" class="tab-pane" id="card" translate="银行卡支付"></div>-->
             <!--</div>-->
         <!--</div>-->
     <!--</div>-->

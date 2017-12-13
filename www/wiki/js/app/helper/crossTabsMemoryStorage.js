@@ -74,7 +74,7 @@ define([], function() {
                 window.addEventListener('storage', function(event) {
                     if (event.key == me._getMemoryKey) {
                         // console.log('Some tab asked for the Memory -> send it');
-                        var to = localStorage.newValue;
+                        var to = event.newValue;
                         if (to) {
                             localStorage.removeItem(me._getMemoryKey);
                             me.sendData(to);

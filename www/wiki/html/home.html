@@ -451,21 +451,20 @@
 	<div id="test"></div>
     <div class="banner clearfix">
         <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 hidden-xs hidden-sm">
-            <h1>一网乾坤 个人作品网</h1>
+            <h1 translate="一网乾坤 个人作品网"></h1>
             <h2>KeepWork</h2>
-            <p style="max-width: 37em;">KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。
-            </p>
+            <p style="max-width: 37em;" translate="KeepWork是一个集成了众多创作工具的个人作品创作与分享平台。 学生、老师、企业可以用它制作网站，3D动画和应用软件; 并与成千上万的用户一起学习和创作。 我们致力研发免费易用的面向个人的创作工具和提供持久可靠的数据存储服务。"></p>
         </div>
         <div  ng-show="!isLogin && !isFeature" class="col-lg-3 col-lg-offset-1 col-md-4 col-md-offset-1 col-xs-10 col-xs-offset-1 form-login-box">
             <form>
                 <div class="form-group">
                     <span id="total-err" class="visible-hidden text-danger">*{{errMsg}}</span>
-                    <label class="sr-only">登录账号</label>
+                    <label class="sr-only" translate="登录账号"></label>
                     <input type="text" class="form-control" name="username" placeholder="帐户名或Email或手机号" ng-model="username">
                 </div>
                 <div class="form-group">
                     <span id="pwd-err" class="visible-hidden text-danger">**</span>
-                    <label class="sr-only">密码</label>
+                    <label class="sr-only" translate="密码"></label>
 					<input type="password" style="display: none;" name="password" ng-if="!keepPassword">
                     <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password">
                 </div>
@@ -473,16 +472,16 @@
 					<label class="pull-left">
 						<input class="pull-right" type="checkbox" checked="checked" ng-model="keepPassword" ng-change="changeKeepPassword()">记住密码
 					</label>
-                    <a ng-click="findPwd()" class="pull-right">忘记密码？</a>
+                    <a ng-click="findPwd()" class="pull-right" translate="忘记密码？"></a>
                 </div>
-                <a ng-click="login()" class="btn btn-primary btn-block btn-lg">登录</a>
+                <a ng-click="login()" class="btn btn-primary btn-block btn-lg" translate="登录"></a>
                 <div class="form-group clearfix">
                     <div class="pull-right">
-                        没有账号？点击<a ng-click="goRegisterPage()" class="text-primary">注册</a>
+                        没有账号？点击<a ng-click="goRegisterPage()" class="text-primary" translate="注册"></a>
                     </div>
                 </div>
                 <div class="otherLogin">
-                    <div class="title">直接使用以下账号登录</div>
+                    <div class="title" translate="直接使用以下账号登录"></div>
                     <div class="login-way">
                         <a ng-click="qqLogin()">
                             <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">
@@ -506,20 +505,20 @@
                     <img ng-src="{{getImageUrl('icon/wiki_media.png', imgsPath)}}" alt="">
                 </div>
                 <div class="text">
-                    <h3>第一次使用KeepWork？</h3>
-                    <a href="#">观看教学视频</a>
+                    <h3 translate="第一次使用KeepWork？"></h3>
+                    <a href="#" translate="观看教学视频"></a>
                 </div>
             </div>
             <div class="col-xs-6 col-sm-6 no-padding-left" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
                 <img ng-src="{{getImageUrl('wiki_works.jpg', imgsPath)}}" alt="">
-                <a>KeepWork是什么？</a>
+                <a translate="KeepWork是什么？"></a>
                 <div class="mask">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
             </div>
             <div class="col-xs-6 col-sm-6 no-padding-right" ng-click="playVideo('https://player.vimeo.com/video/222399949')">
                 <img ng-src="{{getImageUrl('wiki_works.jpg', imgsPath)}}" alt="">
-                <a>如何用KeepWork写网站？</a>
+                <a translate="如何用KeepWork写网站？"></a>
                 <div class="mask">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
@@ -533,8 +532,8 @@
                 <img ng-src="{{getImageUrl('icon/gongkai_icon.png',imgsPath)}}" alt="">
             </div>
             <div class="text">
-                <h4>公开网站</h4>
-                <p>免费：任意数量、大小，CDN加速</p>
+                <h4 translate="公开网站"></h4>
+                <p translate="免费：任意数量、大小，CDN加速"></p>
             </div>
         </div>
         <div class="col-xs-12 col-sm-6 right-col">
@@ -542,12 +541,12 @@
                 <img ng-src="{{getImageUrl('icon/vip_icon.png',imgsPath)}}" alt="">
             </div>
             <div class="text">
-                <h4>私有网站</h4>
-                <p>VIP包月</p>
+                <h4 translate="私有网站"></h4>
+                <p translate="VIP包月"></p>
             </div>
         </div>
     </div>
-    <h1 class="visible-xs visible-sm feature-title">功能介绍</h1>
+    <h1 class="visible-xs visible-sm feature-title" translate="功能介绍"></h1>
     <div id="_featureList_"></div>
 
     <!--视频播放弹窗-->

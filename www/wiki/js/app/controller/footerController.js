@@ -7,7 +7,7 @@ define([
     'text!html/footer.html',
     'helper/util',
 ], function (app, htmlContent, util) {
-    app.controller("footerController", ['$scope', function ($scope) {
+    app.controller("footerController", ['$scope', '$translate', function ($scope, $translate) {
         function init() {
             $scope.serverUpdateTime =  config.wikiConfig.serverUpdateTime;
         }
@@ -16,6 +16,11 @@ define([
         $scope.goContact = function () {
             util.go("contact",true);
         };
+
+        $scope.translationUse = function (language) {
+           $translate.use(language);
+           window.localStorage.setItem('keepwork-language-locale', language);
+        }
 
         $scope.goHomePage = function () {
             util.go("home");
