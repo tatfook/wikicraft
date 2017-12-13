@@ -1540,9 +1540,19 @@ define([], function () {
             "en": "The author of concern"
         },
         {
+            "_key": "喜欢的作者",
+            "zh-cn": "喜欢的作者",
+            "en": "Favorite authors"
+        },
+        {
             "_key": "暂未关注他人",
             "zh-cn": "暂未关注他人",
             "en": "Not paying attention to others for the time being"
+        },
+        {
+            "_key": "暂未喜欢他人",
+            "zh-cn": "暂未喜欢他人",
+            "en": "Favorite nobody for the time being"
         },
         {
             "_key": "关注的网站",
@@ -1550,9 +1560,19 @@ define([], function () {
             "en": "Focused Web site"
         },
         {
+            "_key": "喜欢的网站",
+            "zh-cn": "喜欢的网站",
+            "en": "Favorite websites"
+        },
+        {
             "_key": "暂无关注的网站",
             "zh-cn": "暂无关注的网站",
             "en": "A web site that is not concerned"
+        },
+        {
+            "_key": "暂无喜欢的网站",
+            "zh-cn": "暂无喜欢的网站",
+            "en": "Favorite no websites for the time being"
         },
         {
             "_key": "暂无粉丝",
@@ -2785,6 +2805,11 @@ define([], function () {
             "en": "destroy"
         },
         {
+            "_key": "取消喜欢",
+            "zh-cn": "取消喜欢",
+            "en": "dislike"
+        },
+        {
             "_key": "作品名未知",
             "zh-cn": "作品名未知",
             "en": "The name of the work is unknown"
@@ -2878,6 +2903,11 @@ define([], function () {
             "_key": "关注",
             "zh-cn": "关注",
             "en": "follow"
+        },
+        {
+            "_key": "喜欢",
+            "zh-cn": "喜欢",
+            "en": "favorite"
         }
     ];
 
