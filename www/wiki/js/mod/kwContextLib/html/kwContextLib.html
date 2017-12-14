@@ -54,12 +54,6 @@
     .game-rules .rule-content{
         padding-left: 65px;
     }
-    .article_title{
-        text-align:center;
-        font-size:23px;
-        margin-bottom:25px;
-        color: #337ab7;
-    }
 </style>
 <div ng-controller="keepworkLibController">
     <div  class="game-rules container" ng-show="modParams.moduleKind=='game'">
@@ -74,14 +68,6 @@
                     <h2>{{rule.title}}</h2>
                     <p>{{rule.describe}}</p>
                 </div>
-            </div>
-        </div>
-        
-        <div id="keepwork-detail" style="display: none;">
-            <button id="bt2" ng-click="returnList();">返回列表</button>
-            <div id="content">
-                <h3 class="article_title"></h3>
-                <p class="article_content"></p>
             </div>
         </div>
     </div>

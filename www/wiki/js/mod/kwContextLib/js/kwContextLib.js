@@ -15,26 +15,29 @@ define([
                 console.log("----------init Keepwork context Mod---------");
             }
             var context = getContext();
-            getWords(context);
+            getResult(context);
 
             function getContext() {
                 var allDoms = $("div[id^='_mdwiki_content_container_mdwiki']").children();
                 var context = "";
 
                 for (var i = 0; i < allDoms.length; i++) {
-                    var html = allDoms[i].innerHTML;
-                    if (html) {
-                        html = html.replace(/[^\u4e00-\u9fa5]/g,'');
+                    //console.log(allDoms[i]);
+                    if (allDoms[i].hasAttribute('contenteditable')) {
+                        var html = allDoms[i].innerHTML;
                         if (html) {
-                            context = context.concat(html);
+                            html = html.replace(/[^\u4e00-\u9fa5]/g,'');
+                            if (html) {
+                                context = context.concat(html);
+                            }
+                            
                         }
-                        
                     }
                 }
                 return context;
             }
 
-            function getWords(context) {
+            function getResult(context) {
                 $.ajax({
                     url:"http://221.0.111.131:19001/Application/kwsegwords",
                     type: "post",
@@ -44,12 +47,12 @@ define([
                     dataType: "json",
                     success:function(result) {
                         var word = result.msg;
-                        getData(word);
+                        getList(word);
                     }
                 });
             }
 
-            function getData(word) {
+            function getList(word) {
                 $.ajax({
                     url:"http://221.0.111.131:19001/Application/kwfulltext_search",
                     type : "post",
@@ -63,41 +66,13 @@ define([
                     success:function(result){
                         $("#keepwork-list").empty();
                         $(result.data.list).each(function(i, val){
-                            console.log(val.content);
                             var index = "<div class='serial'>"+(i+1)+"</div>";
-                            var content = "<div class='rule-content'><h2><a ng-click='getDetail(\""+val.url+"\")'>"+val.content+"</a></h2>" + "<p><a class=\"link\" onclick='getClick()'>" + val.url + "</a></p></div>";
+                            var content = "<div class='rule-content'><h2><a target=_blank href="+val.access_url+">"+val.content+"</a></h2><p>" + val.url + "</p></div>";
                             $("#keepwork-list").append($compile(index+content)($scope));
                             //$(".link").attr("href",val.url);
                         });
                     }
                 })
-            }
-            
-            $scope.getDetail = function(url) {
-                $.ajax({
-                    url:"http://221.0.111.131:19001/Application/kwdetail_search",
-                    type : "post",
-                    data: {
-                        "keyword": url,
-                    },
-                    dataType: "json",
-                    success:function(result){
-                        //$("#content").empty();
-                        console.log(result);
-                        $("#keepwork-list").hide();
-                        $("#keepwork-detail").show();
-                        var title = result.data.tags;
-                        var content = result.data.content;
-                        //$("#content").append("<h2>"+content.title+"</h2><p>"+content.content+"</p>");
-                        $(".article_title").text(title);
-                        $(".article_content").text(content);
-                    }
-                });
-            }
-            
-            $scope.returnList = function() {
-                $("#keepwork-detail").hide();
-                $("#keepwork-list").show();
             }
             
             $(document).on('click','.link',function(){
