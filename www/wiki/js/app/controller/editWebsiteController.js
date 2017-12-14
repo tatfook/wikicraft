@@ -150,9 +150,9 @@ define([
         // 修改网站设置
         $scope.modifyWebsite = function () {
             $scope.websiteErr = "";
-            $scope.defaultPageErrMsg = "";
+            // $scope.defaultPageErrMsg = "";
             var websiteParams = $scope.website;
-            var checkSensitives = [websiteParams.displayName, websiteParams.desc,websiteParams.defaultPage];
+            var checkSensitives = [websiteParams.displayName, websiteParams.desc];
             var isSensitive = false;
 
             if (($scope.website.sensitiveWordLevel & 2) <= 0){
@@ -176,11 +176,11 @@ define([
                 return;
             }
             
-            if (!/^[\d\w-(\u4e00-\u9fff)]+$/.test($scope.website.defaultPage)) {
-                $scope.defaultPageErrMsg = "域名格式错误";
-                return;
-            }
-
+            // if (!/^[\d\w-(\u4e00-\u9fff)]+$/.test($scope.website.defaultPage)) {
+            //     $scope.defaultPageErrMsg = "域名格式错误";
+            //     return;
+            // }
+            
             sendModifyWebsiteRequest();
         };
 

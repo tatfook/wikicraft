@@ -43,7 +43,6 @@ function website:ctor()
 	self:addfield("desc", "string", false, 240)
 	self:addfield("domain", "string", false, 30)
 	self:addfield("url","string", true, 100)
-    self:addfield("defaultPage", "string", true, 100) -- 默认首页
 	self:addfield("tags","string", false, 300)
 	self:addfield("logoUrl", "string", false, 120)
 	self:addfield("categoryId","number", false, nil, 1)
@@ -116,7 +115,6 @@ function website:api_createSite(params)
 	params.visitCount = 0
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
-    params.defaultPage = "index"
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
@@ -161,7 +159,6 @@ function website:api_upsert(params)
 	params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	params.sitename = params.name
-    params.defaultPage = "index"
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
@@ -417,7 +414,7 @@ function website:api_getByName(params)
 	end
 
 	self:db():findOne({['+username+name']={params.username, params.sitename}}, resume)
-    
+	
 	return errors:wrap(yield())		
 end
 
@@ -429,7 +426,7 @@ function website:api_getById(params)
 
 	self:db():findOne({_id=params.websiteId}, resume)
 
-	return errors:wrap(yield())	
+	return errors:wrap(yield())		
 end
 
 -- 更新访问计数
@@ -643,13 +640,7 @@ function website:api_getDetailInfo(params)
 
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
-    
-    --获取默认首页
-    if not params.pagename then
-        params.pagename = siteinfo.defaultPage or "index"
-        params.url = params.url + params.pagename
-    end
-
+	
 	if siteinfo and siteinfo.state == const.SITE_STATE_EXCEPTION then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
