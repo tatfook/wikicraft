@@ -226,6 +226,10 @@
     .img-text .col-md-6 {
         padding: 0;
     }
+    .img-text span.icon-dianzan{
+        font-size: 20px;
+        line-height: 1;
+    }
 
     /*我的历史*/
     .timeline {
@@ -444,7 +448,7 @@
             width: 100px;
             height: 100px;
         }
-        .collection-pane .img-text.col-sm-12{
+    .collection-pane .img-text.col-sm-12{
             width:100%;
             min-height: unset;
             padding:0;
@@ -758,7 +762,7 @@
                                         <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.userinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">{{ "关注" | translate }}{{x.userinfo.fansCount || 0}}
+                                        <span class="iconfont icon-dianzan text-danger"></span> {{x.userinfo.fansCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -791,7 +795,7 @@
                                         <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.siteinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt="">{{ "关注" | translate }}{{x.siteinfo.favoriteCount || 0}}
+                                        <span class="iconfont icon-dianzan text-danger"></span> {{x.siteinfo.favoriteCount || 0}}
                                     </div>
                                 </div>
                             </div>
@@ -829,7 +833,7 @@
                             <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{site.siteinfo.visitCount}}
                         </div>
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_collect.png'}}" class="icon" alt=""> {{ "关注" | translate }}{{site.siteinfo.favoriteCount}}
+                            <span class="iconfont icon-dianzan text-danger"></span> {{site.siteinfo.favoriteCount}}
                         </div>
                     </div>
                 </div>
