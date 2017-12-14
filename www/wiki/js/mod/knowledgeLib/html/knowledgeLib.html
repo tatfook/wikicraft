@@ -54,16 +54,6 @@
     .game-rules .rule-content{
         padding-left: 65px;
     }
-    .article_title{
-        text-align:center;
-        font-size:23px;
-        margin-bottom:25px;
-        color: #337ab7;
-    }
-    .article_content{
-        height: 451px;
-        overflow-y:scroll; 
-    }
 </style>
 <div ng-controller="knowledgeModController">
     <div  class="game-rules container" ng-show="modParams.moduleKind=='game'">
@@ -78,14 +68,6 @@
                     <h2>{{rule.title}}</h2>
                     <p>{{rule.describe}}</p>
                 </div>
-            </div>
-        </div>
-        
-        <div id="knowledge-detail" style="display: none;">
-            <button ng-click="returnList()">返回列表</button>
-            <div id="knowledge-content">
-                <h3 class="article_title knowledge_title"></h3>
-                <p class="article_content knowledge_content"></p>
             </div>
         </div>
     </div>

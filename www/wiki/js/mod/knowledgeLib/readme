@@ -6,14 +6,6 @@
     "moduleKind":"game",
     "title":"百科推荐",
     "rules":[
-    {
-     "title":"标题一",
-     "describe":"第一项内容介绍"
-    },
-    {
-     "title":"标题二",
-      "describe":"第二项内容描述"
-    }
     ]
  }
 ```
