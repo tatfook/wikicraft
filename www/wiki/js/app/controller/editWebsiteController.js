@@ -150,10 +150,7 @@ define([
         // 修改网站设置
         $scope.modifyWebsite = function () {
             $scope.websiteErr = "";
-<<<<<<< HEAD
-            $scope.defaultPageErrMsg = "";
-=======
->>>>>>> parent of 498442df... feat(setting defaultpage)
+            // $scope.defaultPageErrMsg = "";
             var websiteParams = $scope.website;
             var checkSensitives = [websiteParams.displayName, websiteParams.desc];
             var isSensitive = false;
@@ -178,15 +175,12 @@ define([
                 $scope.websiteErr = "您输入的内容不符合互联网安全规范，请修改";
                 return;
             }
-<<<<<<< HEAD
             
-            if (!/^[\d\w-(\u4e00-\u9fff)]+$/.test($scope.website.defaultPage)) {
-                $scope.defaultPageErrMsg = "域名格式错误";
-                return;
-            }
-
-=======
->>>>>>> parent of 498442df... feat(setting defaultpage)
+            // if (!/^[\d\w-(\u4e00-\u9fff)]+$/.test($scope.website.defaultPage)) {
+            //     $scope.defaultPageErrMsg = "域名格式错误";
+            //     return;
+            // }
+            
             sendModifyWebsiteRequest();
         };
 
