@@ -106,7 +106,7 @@ define([
                     template: htmlContent,
                     controller: 'realnameVerifyModalController',
                 }).result.then(function(res) {
-                    successCallback && successCallback();
+                    successCallback && successCallback(res);
                     resolve(res);
                 }, function(error) {
                     errorCallback && errorCallback(error);
