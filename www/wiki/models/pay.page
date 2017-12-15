@@ -160,8 +160,12 @@ function pay:api_createCharge(params)
 	apiParams.currency   = "cny";
 	apiParams.app        = {id = self.appId};
 
-	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = "http://keepwork.com/wiki/pay"};
+	if(apiParams.channel == "alipay_wap") then
+		if(not query.redirect) then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+
+		apiParams.extra = {success_url = query.redirect};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = trade_no};
 	end
