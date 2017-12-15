@@ -13,7 +13,6 @@ define([], function () {
         //create totally new data
         var result = data.reduce(function(prev, item) {
             item.id = item.id || datatree.uuid();
-
             var tempItem = datatree.copyObj(item);
             tempItem.children = null;
             tempItem.parentId = parentId;
@@ -81,6 +80,35 @@ define([], function () {
         }, []).length;
 
         flattenedData.splice(flattenedData.indexOf(item), removeLength);
+    }
+
+    datatree.clearEmptyItemsInFlattenedData = function(flattenedData, keys) {
+        return flattenedData.filter(function(item) {
+            return !datatree.isItemEmpty(item, flattenedData, keys);
+        });
+    }
+
+    datatree.isItemEmpty = function(item, flattenedData, keys) {
+        var isEmpty = xIsEmpty(item);
+        if (!isEmpty) return false;
+
+        if (isEmpty) {
+            return isEmpty && flattenedData.filter(function(x) {
+                return x.parentId === item.id;
+            }).reduce(function(prevIsEmpty, x) {
+                if (!prevIsEmpty) return prevIsEmpty;
+                return prevIsEmpty && datatree.isItemEmpty(x, flattenedData, keys)
+            }, true)
+        }
+
+        function xIsEmpty(x) {
+            return keys.filter(function(keyItem) {
+                var value = x[keyItem.key];
+                if (typeof value === 'string') return !!value.trim();
+                if (typeof value === 'boolean') return true;
+                return !!value;
+            }).length === 0;
+        }
     }
 
     datatree.makeTreeWithParentId = function (data) {
