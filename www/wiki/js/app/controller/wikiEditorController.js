@@ -2304,7 +2304,7 @@ define([
 
 			function initModuleEditor() {
 				util.html("#moduleEditor", moduleEditorContent);
-				$("#moduleEditorContainer").hide();
+				// $("#moduleEditorContainer").hide();
 			}
 
             function initEditor() {
@@ -2762,10 +2762,13 @@ define([
                     setTimeout(function () {
                         var wikiEditorContainer = $('#wikiEditorContainer')[0];
                         var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                        var attEditHeight = $("#moduleEditorContainer").height();
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
+                        var noAttEditHeight = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop - attEditHeight) + 'px';
                         editor.setSize('auto', height);
                         $('#wikiEditorContainer').css('height', height);
                         $('.full-height').css('height', height);
+                        $('.full-noAttr-height').css('height', noAttEditHeight);
 
                         var w = $("#__mainContent__");
                         w.css("min-height", "0px");

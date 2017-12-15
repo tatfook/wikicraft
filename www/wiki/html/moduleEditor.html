@@ -1,4 +1,180 @@
+<style>
+    .module-editor .nav-tabs{
+        background-color: #F2F2F2;
+    }
+    .module-editor .nav-tabs>li>a{
+        padding: 5px 18px;
+        text-align: center;
+        font-size: 13px;
+        margin-right: 0;
+        color: #333;
+        background-color: #FFFF;
+        border: 1px solid #DDD;
+        border-radius: 0;
+    }
+    .module-editor .nav-tabs>li.active>a{
+        background-color: #3977AD;
+        color: #FFF;
+        border-radius: 0;
+    }
 
+    .module-editor .swiper-container{
+        padding: 0 60px;
+    }
+    .module-editor .attr-item {
+        width: 350px;
+        height: 200px;
+        float: left;
+        margin: 25px 0;
+        border: 1px solid #A7A7A7;
+    }
+
+    .module-editor .attr-item .header {
+        height: 30px;
+        line-height: 30px;
+        background-color: #3977AD;
+        color: #FFF;
+        text-align: center;
+        padding: 0 57px;
+        font-size: 16px;
+        position: relative;
+    }
+    .module-editor .attr-content{
+        padding: 0 24px;
+    }
+
+    .module-editor .attr-item .switch {
+        position: absolute;
+        right: 10px;
+        top: 3px;
+    }
+    .module-editor .card-input{
+        border: none;
+        border-bottom: 1px solid #A7A7A7;
+        width: 100%;
+        font-size: 16px;
+        padding: 30px 0 16px;
+    }
+    .module-editor .card-input:focus{
+        outline: none;
+        border-bottom-color: #3977AD;
+    }
+    .module-editor .swiper-button-next, .module-editor .swiper-button-prev{
+        background-image: none;
+        width: 36px;
+        height: 36px;
+        border: 1px solid #666;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 33px;
+        font-size: 25px;
+        -webkit-text-stroke: 4px #FFF;
+        background-color: #FFF;
+        color: #666;
+    }
+    .module-editor .menu-btn{
+        font-size: 14px;
+        color: #FFF;
+        margin-top: 69px;
+        background-color: #3977AD;
+    }
+    .module-editor .center-center{
+        display: flex;
+        align-items: center;
+        justify-content: center;        
+    }
+
+    .switch {
+        width: 47px;
+        height: 24px;
+        line-height: 24px;
+        background-color: #BFBFBF;
+        color: #FFF;
+        border-radius: 20px;
+        text-align: right;
+        font-size: 13px;
+        padding: 0 8px;
+    }
+    .switch::before{
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #FFF;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: auto;
+    }
+    .switch.active{
+        background-color: #FFF;
+        color: #0088FF;
+        text-align: left;
+        /* padding-left: 6px; */
+    }
+    .switch.active::before{
+        background-color: #0088FF;
+        left: auto;
+        right: 2px;
+    }
+</style>
+<div ng-controller="moduleEditorController" class="module-editor">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#Attr" aria-controls="Attr" role="tab" data-toggle="tab">属性</a>
+        </li>
+        <li role="presentation">
+            <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab">样式</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="Attr">
+            <div class="swiper-container swiper-container-horizontal">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide attr-item" ng-repeat="data in datas">
+                        <div class="header">
+                            <span class="attr-name">{{data.name + $index}}</span>
+                            <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[!data.data.is_hide]">
+                                {{data.data.is_hide ? "关" : "开"}}
+                            </div>
+                        </div>
+                        <div class="attr-content">
+                            <!-- 简单文本及默认类型 -->
+                            <div ng-if="data.type == 'text' || data.type == 'link' || !data.type">
+                                <input id="{{data.id}}" class="card-input" type="text" ng-model="data.data.text" placeholder="链接">
+                                <input type="text" class="card-input" ng-model="data.data.href" placeholder="链接">
+                            </div>
+                            <div ng-if="data.type == 'menu'" class="center-center">
+                                <button class="btn menu-btn">打开菜单编辑器</button>
+                            </div>
+                            <!-- 链接 -->
+                            <!-- <div ng-if="data.type == 'link'">
+                                <input id="{{data.id}}" type="text" ng-model="data.data.text">
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Add Pagination -->
+                <!-- <div class="swiper-pagination"></div> -->
+                <!-- Add Scrollbar -->
+                <div class="swiper-scrollbar"></div>
+                <!-- Add Arrows -->
+                <!-- <div class="swiper-button-next"></div> -->
+                <!-- <div class="swiper-button-prev"></div> -->
+                <div class="glyphicon swiper-button-next glyphicon-chevron-right"></div>
+                <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="StyleSetting">...样式</div>
+    </div>
+
+</div>
+
+<!-- 
 <style>
 .input_item_container {
 	margin: 10px 0px;
@@ -76,3 +252,4 @@
 		</div>
 	</div>
 </div>
+ -->

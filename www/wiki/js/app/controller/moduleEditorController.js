@@ -3,8 +3,9 @@ define([
 	'app',
 	'helper/util',
     'helper/markdownwiki',
-	'text!html/moduleEditor.html',
-], function(app, util, markdownwiki, htmlContent){
+    'text!html/moduleEditor.html',
+    'swiper',
+], function(app, util, markdownwiki, htmlContent, swiper){
 	var objectEditor = {
 		data: {},
 		fields:[],
@@ -113,7 +114,20 @@ define([
 				if (obj.is_leaf) {
 					obj = [obj];
 				}
-				$scope.datas = get_order_list(obj);
+                $scope.datas = get_order_list(obj);
+                setTimeout(() => {
+                    console.log("21432545");
+                    var swiper = new Swiper('.swiper-container',{
+                        nextButton: '.swiper-button-next',
+                        prevButton: '.swiper-button-prev',
+                        pagination: '.swiper-pagination',
+                        scrollbar: '.swiper-scrollbar',
+                        scrollbarHide: false,
+                        slidesPerView: 'auto',
+                        mousewheelControl: true,
+                        spaceBetween: 50,
+                    });  
+                }, 1000);
 			}
 			moduleEditorParams.setDesignList = function(list) {
 				moduleEditorParams = config.shareMap.moduleEditorParams || {};
@@ -132,7 +146,7 @@ define([
 				}
 			}
 			$scope.show_type = "editor";
-			$scope.datas_stack = [];
+            $scope.datas_stack = [];
 		}
 
 		$scope.$watch("$viewContentLoaded", init);
