@@ -25,8 +25,7 @@ define([
 
                 for (var i=0; i<wikiblocks.length; i++) {
                     var wikiblock = wikiblocks[i];
-                    console.log(wikiblock);
-                    var blockchildren = wikiblock.children;console.log(blockchildren);
+                    var blockchildren = wikiblock.children;
                     var isMod = false;
                     for (var j=0; j<blockchildren.length; j++) {
                         if (blockchildren[j].hasAttribute('ng-controller')) {
@@ -43,17 +42,6 @@ define([
                             }
                         }
                     }
-                    
-                    //console.log(allDoms[i].hasAttribute('contenteditable'));
-                    /* if (allDoms[i].hasAttribute('contenteditable')) {
-                        var html = allDoms[i].innerHTML;
-                        if (html) {
-                            html = html.replace(/[^\u4e00-\u9fa5]/g,'');
-                            if (html) {
-                                context = context.concat(html);
-                            }
-                        }
-                    } */
                 }
                 return context;
             }

@@ -18,19 +18,26 @@ define([
             getResult(context);
 
             function getContext() {
-                var allDoms = $("div[id^='_mdwiki_content_container_mdwiki']").children();
+                var wikiblocks = $("div[id^='_mdwiki_content_container_mdwiki']").children();
                 var context = "";
 
-                for (var i = 0; i < allDoms.length; i++) {
-                    //console.log(allDoms[i]);
-                    if (allDoms[i].hasAttribute('contenteditable')) {
-                        var html = allDoms[i].innerHTML;
+                for (var i=0; i<wikiblocks.length; i++) {
+                    var wikiblock = wikiblocks[i];
+                    var blockchildren = wikiblock.children;
+                    var isMod = false;
+                    for (var j=0; j<blockchildren.length; j++) {
+                        if (blockchildren[j].hasAttribute('ng-controller')) {
+                            isMod = true;
+                            break;
+                        }
+                    }
+                    if (!isMod) {
+                        var html = wikiblock.innerHTML;
                         if (html) {
                             html = html.replace(/[^\u4e00-\u9fa5]/g,'');
                             if (html) {
                                 context = context.concat(html);
                             }
-                            
                         }
                     }
                 }

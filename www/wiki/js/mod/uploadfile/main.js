@@ -4,7 +4,7 @@ define([
 	   	'helper/dataSource'
 ], function (app, htmlContent,dataSource) {
     function uploadController(wikiBlock) {
-        app.registerController("fileControlleraa", function($scope,Account,gitlab) {
+        app.registerController("fileUploadController", function($scope,Account,gitlab) {
             $scope.imgsPath1 = config.wikiModPath + 'uploadfile/';
             
             var server_host = "121.14.117.219";
