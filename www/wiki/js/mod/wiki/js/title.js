@@ -26,6 +26,11 @@ define([
 							"text":"style1",
 						},
 					},
+					{
+						"design": {
+							"text":"style2",
+						},
+					},
 				],
 
 				params_template: {
@@ -44,11 +49,11 @@ define([
                         editable:true, // 是否可以编辑
                         is_show:true,  // 可视化是否显示 undefined取值editable
                         name:"logo",   // 表单显示名
-                        text:"", // 默认值
-                        href:"", // 默认值
+                        text:config.wikiModPath + 'wiki/assets/imgs/titleMod.png', // 默认值
+                        href:config.wikiModPath + 'wiki/assets/imgs/titleMod.png', // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                         },
-				   	h1:{
+				   	hOne:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:true, // 是否可以编辑
@@ -57,7 +62,7 @@ define([
 						text:"YOUR HEAD LINE", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
-				   	h2:{
+				   	hTwo:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:true, // 是否可以编辑
