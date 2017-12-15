@@ -74,6 +74,7 @@ define([
     'factory/modal',
     'factory/confirmDialog',
     'factory/realnameVerifyModal',
+    'factory/datatreeEditorModal',
     'factory/loadingInterceptor',
 ], function () {
     return {};
