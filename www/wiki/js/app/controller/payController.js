@@ -150,10 +150,12 @@ define([
 
             $scope.wechatClient = function () {
                 var params = {
-                    "channel": "wx_pub",
+                    "channel": "wx_wap",
                 };
 
-                createCharge(params);
+                createCharge(params, function (charge) {
+                    startPay(charge);
+                });
             }
 
             $scope.alipayQR = function () {
