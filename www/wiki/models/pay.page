@@ -166,8 +166,8 @@ function pay:api_createCharge(params)
 		end
 
 		apiParams.extra = {success_url = query.redirect};
-	elseif(apiParams.channel == "wx_wap") then
-		-- apiParams.extra = {product_id = trade_no};
+	elseif(apiParams.channel == "wx_pub_qr") then
+		apiParams.extra = {product_id = trade_no};
 	end
 
 	if(query.app_name == "魔法哈奇") then
