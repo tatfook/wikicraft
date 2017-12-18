@@ -445,7 +445,7 @@
             </div>
         </div>
         <div class="pay-main-outside clearfix">
-            <div class="pay-main-method">
+            <div class="pay-main-method" ng-if="!alipayCallback">
                 <div class="pay-item">
                     <ul class="clearfix">
                         <li ng-class="{active: method == 'wechat'}" ng-click="onChange('wechat')">
