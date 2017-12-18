@@ -140,7 +140,7 @@ define([
             $scope.alipayClient = function () {
                 var params = {
                     "channel"   : "alipay_wap",
-                    'redirect'  : "http://keepwork.com/wiki/user_center"//$scope.returnUrl
+                    'redirect'  : "http://" + location.host + "/wiki/user_center"//$scope.returnUrl
                 };
 
                 createCharge(params, function (charge) {
@@ -153,11 +153,17 @@ define([
                     "channel": "wx_wap",
                 };
 
-                createCharge(params, function (charge) {
-                    if(charge && charge.credential && charge.credential.wx_wap){
-                        testWechat(charge);
+                if(confirm("使用微信H5支付，必须安装微信后才能继续，请问是否安装了微信客户端？")){
+                    createCharge(params, function (charge) {
+                        if(charge && charge.credential && charge.credential.wx_wap){
+                            startPay(charge);
+                        }
+                    });
+                }else{
+                    if(confirm("请问是否进入微信客户端安装页？")){
+                        location.href = "http://weixin.qq.com";
                     }
-                });
+                }
             }
 
             $scope.alipayQR = function () {
@@ -261,6 +267,8 @@ define([
 
             function startPay(charge) {
                 pingpp.createPayment(charge, function (result, err) {
+                    alert(err.msg);
+                    alert(1111111);
                     console.log(result);
                     console.log(err.msg);
                     console.log(err.extra);
@@ -273,27 +281,6 @@ define([
                     }
                 });
             }
-
-            function testWechat(charge) { 
-                // var timeout, t = 10000, hasApp = true;
-
-                // var ifr = document.createElement("iframe"); 
-                // ifr.setAttribute('src', charge.credential.wx_wap); 
-                // ifr.setAttribute('style', 'display:none'); 
-                // document.body.appendChild(ifr);
-
-                // setTimeout(function () {
-                //     var r = confirm("是否支付完成？");
-
-                //     if (r == false){
-                //         location.href="http://weixin.qq.com/"
-                //     }
-
-                //     document.body.removeChild(ifr); 
-                // }, t)
-                
-                startPay(charge);
-            } 
 
             function getAppGoodsInfo() {
                 var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name };
