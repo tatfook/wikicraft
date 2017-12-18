@@ -23,9 +23,10 @@ define([
 		self.fields.push(field);	
 	}
 
-	app.registerController("moduleEditorController", ['$scope', function($scope){
+	app.registerController("moduleEditorController", ['$scope', '$rootScope', function($scope, $rootScope){
 		var design_list = [];
 		var lastSelectObj = undefined;
+        var editor;
 		// 转换数据格式
 		function get_order_list(obj){
 			var list = [];
@@ -135,25 +136,47 @@ define([
 		$scope.click_apply_design = function(index) {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			var modParams = $scope.styles[index];
-			console.log(modParams);
+            console.log(modParams);
+            $scope.selectedDesign = modParams.design.text;
 			if (moduleEditorParams.wikiBlock) {
 				moduleEditorParams.wikiBlock.applyModParams(modParams);
 			}
-		}
+        }
+
+        $scope.tabTo = function (tabname) {
+            var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+            $scope.show_type = tabname;
+            if (tabname == "design") {
+                moduleEditorParams.setDesignList();
+            }
+        }
+        
+        var setCodePosition = function(from, to){
+            var editor = editor || $rootScope.editor || {};
+            for(var i = from; i < to; i++){
+                editor.addLineClass(i, "gutter", "editingLine");
+            }
+            
+        }
 
 		function init() {
+            editor = editor || $rootScope.editor || {};
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
 			//moduleEditorParams.$scope = $scope;
 			moduleEditorParams.setEditorObj = function(obj) {
 				moduleEditorParams = config.shareMap.moduleEditorParams || {};
-				var selectObj = moduleEditorParams.selectObj;
-				console.log(selectObj);
+                var selectObj = moduleEditorParams.selectObj;
 				if (selectObj) {
 					setTimeout(function(){
 						$("#" + selectObj.id).css("background-color", "red");
 					});
-				}
+                }
+                
+                var blockLineNumFrom = moduleEditorParams.wikiBlock.blockList[0].textPosition.from;
+                var blockLineNumTo = moduleEditorParams.wikiBlock.blockList[0].textPosition.to;
+                setCodePosition(blockLineNumFrom, blockLineNumTo);
+
 				$scope.show_type = "editor";
 
 				if (obj.is_leaf) {
@@ -161,11 +184,11 @@ define([
 				}
                 $scope.datas = get_order_list(obj);
                 setTimeout(() => {
-                    var swiper = new Swiper('.swiper-container',{
-                        nextButton: '.swiper-button-next',
-                        prevButton: '.swiper-button-prev',
-                        pagination: '.swiper-pagination',
-                        scrollbar: '.swiper-scrollbar',
+                    var editorSwiper = new Swiper('#editorSwiper',{
+                        nextButton: '#editorSwiper .swiper-button-next',
+                        prevButton: '#editorSwiper .swiper-button-prev',
+                        pagination: '#editorSwiper .swiper-pagination',
+                        scrollbar: '#editorSwiper .swiper-scrollbar',
                         scrollbarHide: false,
                         slidesPerView: 'auto',
                         mousewheelControl: true,
@@ -174,22 +197,41 @@ define([
                 }, 1000);
 			}
 			moduleEditorParams.setDesignList = function(list) {
-				moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                $scope.selectedDesign = moduleEditorParams.wikiBlock.modParams.design.text;
 				var style_list = moduleEditorParams.wikiBlock.styles || [];
-				$scope.show_type = "design";
+				// $scope.show_type = "design";
 				$scope.styles = [];
 				$scope.design_view_list = [];
 				for (var i = 0; i < style_list.length; i++) {
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
 					modParams = angular.merge(modParams, style_list[i]);
-					$scope.styles[i] = modParams;
+                    $scope.styles[i] = modParams;
 					var md = markdownwiki({html:true, use_template:false});
-					var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";
+                    var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";
 					var view = md.render(text);
-					$scope.design_view_list.push(view);
-				}
+                    var design = {
+                        "text": $scope.styles[i].design.text,
+                        "view": view,
+                        "cover": style_list[i].design.cover || ""
+                    }
+
+					$scope.design_view_list.push(design);
+                }
+                setTimeout(() => {
+                    var editorSwiper = new Swiper('#designSwiper',{
+                        nextButton: '#designSwiper .swiper-button-next',
+                        prevButton: '#designSwiper .swiper-button-prev',
+                        pagination: '#designSwiper .swiper-pagination',
+                        scrollbar: '#designSwiper .swiper-scrollbar',
+                        scrollbarHide: false,
+                        slidesPerView: 'auto',
+                        mousewheelControl: true,
+                        spaceBetween: 50,
+                    });  
+                }, 1000);
 			}
-			$scope.show_type = "editor";
+			// $scope.show_type = "editor";
             $scope.datas_stack = [];
 		}
 

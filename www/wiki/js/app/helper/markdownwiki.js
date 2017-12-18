@@ -423,13 +423,13 @@ define([
 						}
 					} else {
 						obj = self.format_params_template;
-					}
+                    }
 					moduleEditorParams.wikiBlock = self;
-					moduleEditorParams.setEditorObj(obj);
+                    moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
-					moduleEditorParams.is_show = true;
+					// moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
-					$("#moduleEditorContainer").show();
+					// $("#moduleEditorContainer").show();
 				};
 
 
@@ -447,7 +447,7 @@ define([
 				var containerId = "#" + self.containerId;
 				if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
                     var modContainer = $(containerId);
-                    console.log(modContainer);
+                    // console.log(modContainer);
                     modContainer.on("click", function (e) {
                         $(".mod-container.active").removeClass("active");
                         modContainer.addClass("active");

@@ -2459,6 +2459,7 @@ define([
                         },
                     }
                 });
+                $rootScope.editor = editor;
 				//}}}
                 //var viewEditorTimer = undefined;//{{{
                 //$('body').on('focus', '[contenteditable]', function () {

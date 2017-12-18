@@ -1,8 +1,9 @@
 <style>
-    .module-editor .nav-tabs{
+    .module-editor .nav-tabs {
         background-color: #F2F2F2;
     }
-    .module-editor .nav-tabs>li>a{
+
+    .module-editor .nav-tabs>li>a {
         padding: 5px 18px;
         text-align: center;
         font-size: 13px;
@@ -12,21 +13,23 @@
         border: 1px solid #DDD;
         border-radius: 0;
     }
-    .module-editor .nav-tabs>li.active>a{
+
+    .module-editor .nav-tabs>li.active>a {
         background-color: #3977AD;
         color: #FFF;
         border-radius: 0;
     }
 
-    .module-editor .swiper-container{
+    .module-editor .swiper-container {
         padding: 0 60px;
     }
+
     .module-editor .attr-item {
         width: 350px;
         height: 200px;
         float: left;
         margin: 25px 0;
-        border: 1px solid #A7A7A7;
+        border: 1px solid #DDD;
     }
 
     .module-editor .attr-item .header {
@@ -39,7 +42,8 @@
         font-size: 16px;
         position: relative;
     }
-    .module-editor .attr-content{
+
+    .module-editor .attr-content {
         padding: 0 24px;
     }
 
@@ -48,18 +52,22 @@
         right: 10px;
         top: 3px;
     }
-    .module-editor .card-input{
+
+    .module-editor .card-input {
         border: none;
         border-bottom: 1px solid #A7A7A7;
         width: 100%;
         font-size: 16px;
         padding: 30px 0 16px;
     }
-    .module-editor .card-input:focus{
+
+    .module-editor .card-input:focus {
         outline: none;
         border-bottom-color: #3977AD;
     }
-    .module-editor .swiper-button-next, .module-editor .swiper-button-prev{
+
+    .module-editor .swiper-button-next,
+    .module-editor .swiper-button-prev {
         background-image: none;
         width: 36px;
         height: 36px;
@@ -72,16 +80,18 @@
         background-color: #FFF;
         color: #666;
     }
-    .module-editor .menu-btn{
+
+    .module-editor .menu-btn {
         font-size: 14px;
         color: #FFF;
         margin-top: 69px;
         background-color: #3977AD;
     }
-    .module-editor .center-center{
+
+    .module-editor .center-center {
         display: flex;
         align-items: center;
-        justify-content: center;        
+        justify-content: center;
     }
 
     .switch {
@@ -95,7 +105,8 @@
         font-size: 13px;
         padding: 0 8px;
     }
-    .switch::before{
+
+    .switch::before {
         content: "";
         display: inline-block;
         width: 20px;
@@ -107,37 +118,81 @@
         left: 2px;
         right: auto;
     }
-    .switch.active{
+
+    .switch.active {
         background-color: #FFF;
         color: #0088FF;
         text-align: left;
         /* padding-left: 6px; */
     }
-    .switch.active::before{
+
+    .switch.active::before {
         background-color: #0088FF;
         left: auto;
         right: 2px;
+    }
+
+    .module-editor .design-item{
+        display: flex;
+        align-items: center;
+        justify-content: left;
+    }
+    .module-editor .design-item .design-view{
+        width: 100%;
+    }
+    .module-editor .design-item img.design-view{
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    .module-editor .design-item.active{
+        border: 1px solid #0088FF;
+        position: relative;
+    }
+    .module-editor .design-item.active::after{
+        font-family: 'Glyphicons Halflings';
+        content: "\e013";
+        display: inline-block;
+        background-color: #0088FF;
+        position: absolute;
+        right: 6px;
+        top: 14px;
+        color: #FFF;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+        line-height: 28px;
+        font-size: 19px;
+        border-radius: 50%;
+        -webkit-text-stroke: 2px #0088FF;
     }
 </style>
 <div ng-controller="moduleEditorController" class="module-editor">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active">
+        <li role="presentation" ng-show="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]"
+            ng-click="tabTo('knowledge')">
+            <a href="#Knowledge" aria-controls="Knowledge" role="tab" data-toggle="tab">知识库</a>
+        </li>
+        <li role="presentation" ng-hide="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'editor']"
+            ng-click="tabTo('editor')">
             <a href="#Attr" aria-controls="Attr" role="tab" data-toggle="tab">属性</a>
         </li>
-        <li role="presentation">
+        <li role="presentation" ng-hide="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'design']"
+            ng-click="tabTo('design')">
             <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab">样式</a>
         </li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="Attr">
-            <div class="swiper-container swiper-container-horizontal">
+        <div role="tabpanel" class="tab-pane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">...知识库</div>
+        <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
+            <div id="editorSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide attr-item" ng-repeat="data in datas">
                         <div class="header">
-                            <span class="attr-name">{{data.name + $index}}</span>
+                            <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[!data.data.is_hide]">
                                 {{data.data.is_hide ? "关" : "开"}}
                             </div>
@@ -170,7 +225,24 @@
                 <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
             </div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="StyleSetting">...样式</div>
+        <div role="tabpanel" class="tab-pane" id="StyleSetting" ng-class="{true: 'active'}[show_type == 'design']">
+            <div id="designSwiper" class="swiper-container swiper-container-horizontal">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide attr-item design-item" 
+                        ng-class="{true: 'active'}[design_view.text == selectedDesign]"
+                        ng-repeat="design_view in design_view_list track by $index"
+                        ng-click="click_apply_design($index)"
+                    >
+                        <div class="design-view" wiki-html="design_view.view" ng-hide="design_view.cover"></div>
+                        <img class="design-view" ng-src="{{design_view.cover}}" ng-show="design_view.cover" alt="">
+                        <!-- <div class="design-view" wiki-html="design_view.view" ng-hide="design_view.cover"></div> -->
+                    </div>
+                </div>
+                <div class="swiper-scrollbar"></div>
+                <div class="glyphicon swiper-button-next glyphicon-chevron-right"></div>
+                <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
+            </div>
+        </div>
     </div>
 
 </div>

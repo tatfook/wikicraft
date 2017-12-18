@@ -500,6 +500,9 @@ select.resize-view {
     border-left: 1px solid #EEE;
     padding: 0;
 }
+.editingLine{
+    border-right: 4px solid #FFAC36;
+}
 @media (max-width: 768px) {
     .bg-title h1{
         height: 340px;
