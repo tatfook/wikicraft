@@ -156,20 +156,12 @@ define([
                 if(confirm("使用微信H5支付，必须安装微信后才能继续，请问是否安装了微信客户端？")){
                     createCharge(params, function (charge) {
                         if(charge && charge.credential && charge.credential.wx_wap){
-                            
-                            "pushState" in window.history && (
-                                window.history.pushState({
-                                    title: document.title,  
-                                    url: location.href  
-                                }, document.title, location.href),  
-                                setTimeout(function () {  
-                                    window.addEventListener("popstate", function (a) {  
-                                        alert(111111)
-                                    })  
-                                }, 1000)  
-                            );
-                            
-                            startPay(charge);
+                            var ifr = document.createElement("iframe"); 
+                            ifr.setAttribute('src', charge.credential.wx_wap); 
+                            ifr.setAttribute('style', 'display:none');
+                            document.body.appendChild(ifr);
+
+                            getTrade(charge);
                         }
                     });
                 }else{
@@ -280,8 +272,6 @@ define([
 
             function startPay(charge) {
                 pingpp.createPayment(charge, function (result, err) {
-                    alert(err.msg);
-                    alert(1111111);
                     console.log(result);
                     console.log(err.msg);
                     console.log(err.extra);
