@@ -29,16 +29,22 @@ define([
             $scope.ideal_money         = 0;
             $scope.goods               = {};
             $scope.page                = "user";
-            $scope.otherUserinfo       = {}
+            $scope.otherUserinfo       = {};
             $scope.alipayNotice        = null;
             $scope.goods.price         = 0;
             $scope.goods.exchange_rate = 0;
             $scope.additional          = {};
 
-            console.log(queryArgs.redirect);
-
             validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
             validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
+
+            if(queryArgs.out_trade_no){
+                var trade = {};
+                trade.username = queryArgs.username;
+                trade.trade_no = queryArgs.out_trade_no;
+
+                getTrade(trade);
+            }
 
             if (Account.isAuthenticated() && Account.user) {
                 $scope.otherUserinfo.username = Account.user.username;
@@ -140,7 +146,7 @@ define([
             $scope.alipayClient = function () {
                 var params = {
                     "channel"   : "alipay_wap",
-                    'redirect'  : "http://" + location.host + "/wiki/user_center"//$scope.returnUrl
+                    'redirect'  : "http://" + location.host + "/wiki/pay?username=" + $scope.otherUserinfo.username,
                 };
 
                 createCharge(params, function (charge) {
