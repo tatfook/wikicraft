@@ -275,36 +275,24 @@ define([
             }
 
             function testWechat(charge) { 
-                var timeout, t = 1000, hasApp = true;
+                // var timeout, t = 10000, hasApp = true;
 
-                setTimeout(function () { 
-                    if (!hasApp) { 
-                        var r = confirm("您没有安装微信，请先安装微信!");
+                // var ifr = document.createElement("iframe"); 
+                // ifr.setAttribute('src', charge.credential.wx_wap); 
+                // ifr.setAttribute('style', 'display:none'); 
+                // document.body.appendChild(ifr);
 
-                        if (r==true){
-                            location.href="http://weixin.qq.com/"
-                        }
-                    }else{
-                        startPay(charge);
-                    }
+                // setTimeout(function () {
+                //     var r = confirm("是否支付完成？");
 
-                    document.body.removeChild(ifr); 
-                }, 2000)
-  
-                var t1 = Date.now();
+                //     if (r == false){
+                //         location.href="http://weixin.qq.com/"
+                //     }
 
-                var ifr = document.createElement("iframe"); 
-                ifr.setAttribute('src', charge.credential.wx_wap); 
-                ifr.setAttribute('style', 'display:none'); 
-                document.body.appendChild(ifr);
-
-                timeout = setTimeout(function () { 
-                    var t2 = Date.now();
-
-                    if (!t1 || t2 - t1 < t + 100) { 
-                        hasApp = false; 
-                    } 
-                }, t);
+                //     document.body.removeChild(ifr); 
+                // }, t)
+                
+                startPay(charge);
             } 
 
             function getAppGoodsInfo() {
