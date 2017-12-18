@@ -50,10 +50,11 @@ define([
     'text!html/partial/datatreeEditorModal.html',
 ], function (app, util, datatree, Promise, htmlContent) {
     app.registerController("datatreeEditorModalController", ['$scope', 'options', function ($scope, options) {
+        var defaultUUID = datatree.uuid();
         var options = options || {};
         options.title = options.title || 'Datatree Editor';
         options.showLocation = typeof options.showLocation === 'boolean' ? options.showLocation : true;
-        options.datatree = options.datatree || [{id: datatree.uuid()}];
+        options.datatree = options.datatree || [{id: defaultUUID}];
         options.keys = options.keys || [];
 
         $scope.title = options.title;
@@ -78,9 +79,13 @@ define([
         }
         $scope.removeItem = function(item) {
             datatree.removeItemItemInflattenedData(item, $scope.flattenedData);
+            if ($scope.flattenedData.length == 0) {
+                $scope.flattenedData.push({id: defaultUUID}) //add a empty
+            }
         }
         $scope.submit = function() {
-            var result = datatree.makeTreeWithParentId($scope.flattenedData);
+            var result = datatree.clearEmptyItemsInFlattenedData($scope.flattenedData, $scope.keys);
+            result = datatree.makeTreeWithParentId(result);
             $scope.$close(result);
         }
         $scope.cancel = function() {
