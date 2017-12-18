@@ -1,4 +1,4 @@
-﻿<style>
+<style>
     body {
         background-color: #f2f2f2;
     }
@@ -545,8 +545,8 @@
                         </div>
                         <div class="success-operate">
                             <a ng-click="goMypay()" translate="查看支付记录"></a>
-                            {{ "或" | translate }}
-                            <a ng-click="back()" translate="返回"></a>
+                            <span ng-if="!alipayCallback">或</span>
+                            <a ng-click="back()" translate="返回" ng-if="!alipayCallback"></a>
                         </div>
                     </div>
                 </div>
