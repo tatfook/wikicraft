@@ -154,7 +154,9 @@ define([
                 };
 
                 createCharge(params, function (charge) {
-                    startPay(charge);
+                    if(charge && charge.credential && charge.credential.wx_wap && charge.credential.wx_wap.wx_wap){
+                        testWechat(charge);
+                    }
                 });
             }
 
@@ -271,6 +273,39 @@ define([
                     }
                 });
             }
+
+            function testWechat(charge) { 
+                var timeout, t = 1000, hasApp = true;
+
+                setTimeout(function () { 
+                    if (!hasApp) { 
+                        var r = confirm("您没有安装微信，请先安装微信!");
+
+                        if (r==true){
+                            location.href="http://weixin.qq.com/"
+                        }
+                    }else{
+                        startPay(charge);
+                    }
+
+                    document.body.removeChild(ifr); 
+                }, 2000)
+  
+                var t1 = Date.now();
+
+                var ifr = document.createElement("iframe"); 
+                ifr.setAttribute('src', charge.credential.wx_wap.wx_wap); 
+                ifr.setAttribute('style', 'display:none'); 
+                document.body.appendChild(ifr);
+
+                timeout = setTimeout(function () { 
+                    var t2 = Date.now();
+
+                    if (!t1 || t2 - t1 < t + 100) { 
+                        hasApp = false; 
+                    } 
+                }, t);
+            } 
 
             function getAppGoodsInfo() {
                 var params = { "app_goods_id": $scope.app_goods_id, "app_name": $scope.app_name };
