@@ -154,7 +154,7 @@ define([
                 };
 
                 createCharge(params, function (charge) {
-                    if(charge && charge.credential && charge.credential.wx_wap && charge.credential.wx_wap.wx_wap){
+                    if(charge && charge.credential && charge.credential.wx_wap){
                         testWechat(charge);
                     }
                 });
