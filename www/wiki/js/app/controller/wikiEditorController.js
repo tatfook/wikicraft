@@ -2765,7 +2765,7 @@ define([
                         var attEditHeight = $("#moduleEditorContainer").height();
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
                         var noAttEditHeight = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop - attEditHeight) + 'px';
-                        editor.setSize('auto', height);
+                        editor.setSize('auto', noAttEditHeight);
                         $('#wikiEditorContainer').css('height', height);
                         $('.full-height').css('height', height);
                         $('.full-noAttr-height').css('height', noAttEditHeight);
