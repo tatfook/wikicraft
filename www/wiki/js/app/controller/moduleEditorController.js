@@ -59,13 +59,32 @@ define([
 		// 点击列表项
 		$scope.click_list_item = function(item) {
 			$scope.datas_stack.push($scope.datas);
-			//console.log(item);
+			// console.log(item);
 			if (item.is_leaf) {
 				$scope.datas = [item];
 			} else {
 				$scope.datas = item;
 			}
-		}
+        }
+        
+        // 点击菜单
+        $scope.openMenuEditor = function(data) {
+            console.log(data);
+            config.services.datatreeEditorModal({
+                title: data.name, 
+                keys: [
+                    {key:'url', name: '链接', placeholder:"请输入链接"},
+                    {key:'note', name: '备注', placeholder:"请输入备注"},
+                ], 
+                showLocation: true, 
+                datatree: data.text
+            }, function(result){
+                data.text = result;
+                console.log(result);
+            }, function(err){
+                console.log(err);
+            });
+        }
 
 		$scope.close = function() {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
@@ -116,7 +135,6 @@ define([
 				}
                 $scope.datas = get_order_list(obj);
                 setTimeout(() => {
-                    console.log("21432545");
                     var swiper = new Swiper('.swiper-container',{
                         nextButton: '.swiper-button-next',
                         prevButton: '.swiper-button-prev',

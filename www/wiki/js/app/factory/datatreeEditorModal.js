@@ -100,7 +100,7 @@ define([
                         options: options
                     }
                 }).result.then(function(res) {
-                    successCallback && successCallback();
+                    successCallback && successCallback(res);
                     resolve(res);
                 }, function(error) {
                     errorCallback && errorCallback(error);

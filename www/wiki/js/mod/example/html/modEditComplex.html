@@ -9,7 +9,7 @@
             <div ng-click="viewEditorClick(params.menu)" ng-hide="params.menu.is_hide" class="kp_module_editor_input_tag">
                 <div style="text-align:center; font-size: 18px">
                     <ul>
-                        <li ng-repeat="firstItem in params.menu">
+                        <li ng-repeat="firstItem in params.menu.text">
                             <a ng-href="{{firstItem.url}}">{{firstItem.name}}</a>
                             <ul ng-show="firstItem.children.length > 0">
                                 <li ng-repeat="secondItem in firstItem.children">
