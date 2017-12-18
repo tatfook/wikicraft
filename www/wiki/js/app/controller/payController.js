@@ -294,7 +294,7 @@ define([
                 var t1 = Date.now();
 
                 var ifr = document.createElement("iframe"); 
-                ifr.setAttribute('src', charge.credential.wx_wap.wx_wap); 
+                ifr.setAttribute('src', charge.credential.wx_wap); 
                 ifr.setAttribute('style', 'display:none'); 
                 document.body.appendChild(ifr);
 
