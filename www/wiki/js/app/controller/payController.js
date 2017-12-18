@@ -150,8 +150,7 @@ define([
             $scope.alipayClient = function () {
                 var params = {
                     "channel"   : "alipay_wap",
-                    'redirect'  : "http://" + location.host + "/wiki/pay?username=" + $scope.otherUserinfo.username +
-                                  "&redirect=" + $scope.returnUrl,
+                    'redirect'  : "http://" + location.host + "/wiki/pay?username=" + $scope.otherUserinfo.username,
                 };
 
                 createCharge(params, function (charge) {
@@ -352,7 +351,6 @@ define([
 
             function getTrade(charge) {
                 $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, { isShowLoading: false }).then(function (response) {
-                    console.log(response);
                     if(response && response.status){
                         if (response.status == 200 && response.data && response.data.data && response.data.data.status == "Finish") {
                             Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
