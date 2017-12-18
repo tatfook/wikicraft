@@ -145,9 +145,10 @@
                         <div class="attr-content">
                             <!-- 简单文本及默认类型 -->
                             <div ng-if="data.type == 'text' || data.type == 'link' || !data.type">
-                                <input id="{{data.id}}" class="card-input" type="text" ng-model="data.data.text" placeholder="链接">
-                                <input type="text" class="card-input" ng-model="data.data.href" placeholder="链接">
+                                <input id="{{data.id}}" class="card-input" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="链接">
+                                <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.href" placeholder="链接">
                             </div>
+                            <!-- 菜单编辑 -->
                             <div ng-if="data.type == 'menu'" class="center-center">
                                 <button class="btn menu-btn" ng-click="openMenuEditor(data.data)">打开菜单编辑器</button>
                             </div>

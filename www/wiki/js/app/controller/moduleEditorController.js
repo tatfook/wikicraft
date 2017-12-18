@@ -80,6 +80,7 @@ define([
                 datatree: data.text
             }, function(result){
                 data.text = result;
+                $scope.applyAttrChange();
                 console.log(result);
             }, function(err){
                 console.log(err);
@@ -104,7 +105,32 @@ define([
 					//config.shareMap.moduleEditorParams = undefined;
 				}
 			}
-		}
+        }
+
+        function throttle(method, context) {
+            clearTimeout(method.stickTimer);
+            method.stickTimer = setTimeout(function () {
+                method.call(context);
+            },500);
+        }
+
+        function applyAttrChange(){
+            var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+            if (moduleEditorParams.wikiBlock) {
+                var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
+                //console.log(modParams);
+                var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
+                //console.log(paramsTemplate, modParams);
+                modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, true);
+                //console.log(modParams);
+                moduleEditorParams.wikiBlock.applyModParams(modParams);
+                //config.shareMap.moduleEditorParams = undefined;
+            }
+        }
+        
+        $scope.applyAttrChange = function () {
+            throttle(applyAttrChange);
+        }
 
 		$scope.click_apply_design = function(index) {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
