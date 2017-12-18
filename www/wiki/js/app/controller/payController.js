@@ -172,6 +172,10 @@ define([
                             document.body.appendChild(ifr);
 
                             getTrade(charge);
+
+                            setTimeout(function(){
+                                document.body.removeChild(ifr);
+                            }, 1500);
                         }
                     });
                 }else{
