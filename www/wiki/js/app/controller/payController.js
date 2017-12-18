@@ -140,7 +140,7 @@ define([
             $scope.alipayClient = function () {
                 var params = {
                     "channel"   : "alipay_wap",
-                    'redirect'  : $scope.returnUrl
+                    'redirect'  : "http://keepwork.com/wiki/user_center"//$scope.returnUrl
                 };
 
                 createCharge(params, function (charge) {
