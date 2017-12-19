@@ -2491,6 +2491,7 @@ define([
                 //});
 
                 mdwiki.setEditor(editor);
+				config.shareMap.mdwiki = mdwiki;
 
                 var scrollTimer = undefined, changeTimer = undefined;
 					var isScrollPreview = false;
@@ -2537,6 +2538,10 @@ define([
                     //});
                     //return result;
                 //};
+
+				editor.on("cursorActivity", function(cm){
+					mdwiki.cursorActivity();					
+				});
 
                 editor.on("change", function (cm, changeObj) {
                     changeCallback(cm, changeObj);

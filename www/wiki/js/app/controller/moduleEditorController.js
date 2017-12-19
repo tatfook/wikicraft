@@ -114,6 +114,7 @@ define([
 					obj = [obj];
 				}
 				$scope.datas = get_order_list(obj);
+				util.$apply();
 			}
 			moduleEditorParams.setDesignList = function(list) {
 				moduleEditorParams = config.shareMap.moduleEditorParams || {};
