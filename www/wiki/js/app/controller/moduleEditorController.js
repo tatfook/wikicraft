@@ -28,6 +28,7 @@ define([
 		var lastSelectObj = undefined;
         var editor;
         var designViewWidth = 350, win;
+        var lineClassesMap = [];
 		// 转换数据格式
 		function get_order_list(obj){
 			var list = [];
@@ -151,13 +152,28 @@ define([
                 moduleEditorParams.setDesignList();
             }
         }
+
+        var removeAllLineClass = function(){
+            var editor = editor || $rootScope.editor || {};
+            var len = lineClassesMap.length;
+            if (len <= 0) {
+                return;
+            }
+            for(var i = 0; i < len; i++){
+                editor.removeLineClass(lineClassesMap[i], "gutter", "editingLine");
+            }
+            lineClassesMap = [];
+        }
         
         var setCodePosition = function(from, to){
+            removeAllLineClass();
             var editor = editor || $rootScope.editor || {};
             for(var i = from; i < to; i++){
                 editor.addLineClass(i, "gutter", "editingLine");
+                if (lineClassesMap.indexOf(i) === -1) {
+                    lineClassesMap.push(i);
+                }
             }
-            
         }
 
 		function init() {
@@ -174,8 +190,8 @@ define([
 					});
                 }
                 
-                var blockLineNumFrom = moduleEditorParams.wikiBlock.blockList[0].textPosition.from;
-                var blockLineNumTo = moduleEditorParams.wikiBlock.blockList[0].textPosition.to;
+                var blockLineNumFrom = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
+                var blockLineNumTo = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
                 setCodePosition(blockLineNumFrom, blockLineNumTo);
 
 				$scope.show_type = "editor";
@@ -184,7 +200,7 @@ define([
 					obj = [obj];
 				}
                 $scope.datas = get_order_list(obj);
-                setTimeout(() => {
+                setTimeout(function(){
                     var editorSwiper = new Swiper('#editorSwiper',{
                         nextButton: '#editorSwiper .swiper-button-next',
                         prevButton: '#editorSwiper .swiper-button-prev',
@@ -232,7 +248,7 @@ define([
                     $scope.design_view_list.push(design);
                     setDesignViewWidth();
                 }
-                setTimeout(() => {
+                setTimeout(function(){
                     var editorSwiper = new Swiper('#designSwiper',{
                         nextButton: '#designSwiper .swiper-button-next',
                         prevButton: '#designSwiper .swiper-button-prev',
