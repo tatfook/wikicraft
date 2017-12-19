@@ -66,7 +66,7 @@ define([
                     data: {
                         "keyword": word,
                         "page": 1,
-                        "highlight": 1,
+                        "highlight": 0,
                         "size": 10
                     },
                     dataType: "json",
