@@ -199,32 +199,34 @@ define([
 				if (obj.is_leaf) {
 					obj = [obj];
 				}
-                $scope.datas = get_order_list(obj);
-                setTimeout(function(){
-                    var editorSwiper = new Swiper('#editorSwiper',{
-                        nextButton: '#editorSwiper .swiper-button-next',
-                        prevButton: '#editorSwiper .swiper-button-prev',
-                        pagination: '#editorSwiper .swiper-pagination',
-                        scrollbar: '#editorSwiper .swiper-scrollbar',
-                        scrollbarHide: false,
-                        slidesPerView: 'auto',
-                        mousewheelControl: true,
-                        spaceBetween: 50,
-                    });  
-                }, 1000);
-            }
-            var setDesignViewWidth = function(){
-                win = win || $(window);
-                var winWidth = win.width();
-                var scaleSize = designViewWidth / winWidth;
-                setTimeout(function () {
-                    $("#designSwiper div.design-view").css({
-                        "transform": "scale(" + scaleSize + ")",
-                        "transform-origin": "left top"
-                    });    
-                });
-                
-            }
+
+        $scope.datas = get_order_list(obj);
+        util.$apply();
+        setTimeout(function(){				
+              var editorSwiper = new Swiper('#editorSwiper',{
+                  nextButton: '#editorSwiper .swiper-button-next',
+                  prevButton: '#editorSwiper .swiper-button-prev',
+                  pagination: '#editorSwiper .swiper-pagination',
+                  scrollbar: '#editorSwiper .swiper-scrollbar',
+                  scrollbarHide: false,
+                  slidesPerView: 'auto',
+                  mousewheelControl: true,
+                  spaceBetween: 50,
+              });  
+          }, 1000);
+      }
+      var setDesignViewWidth = function(){
+          win = win || $(window);
+          var winWidth = win.width();
+          var scaleSize = designViewWidth / winWidth;
+          setTimeout(function () {
+              $("#designSwiper div.design-view").css({
+                  "transform": "scale(" + scaleSize + ")",
+                  "transform-origin": "left top"
+              });    
+          });
+
+      }
 			moduleEditorParams.setDesignList = function(list) {
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 $scope.selectedDesign = moduleEditorParams.wikiBlock.modParams.design.text;

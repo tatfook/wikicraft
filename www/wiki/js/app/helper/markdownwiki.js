@@ -376,6 +376,8 @@ define([
 				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
 				self.setEditorObj = moduleEditorParams.setEditorObj;
 				self.setDesignList = moduleEditorParams.setDesignList;
+
+				self.blockCache.adiObj = obj;
 				obj.scope.params = self.modParams;
 				//console.log(self.format_params_template, self.modParams);
 				//console.log(self.modParams);
@@ -476,6 +478,7 @@ define([
 				}
 			},
         };
+		blockCache.wikiBlockParams = wikiBlockParams;
 		wikiBlockMap[wikiBlockParams.containerId] = wikiBlockParams;
         render(wikiBlockParams);
 		// 渲染后回调
@@ -702,6 +705,25 @@ define([
             return md;
         };
 
+		mdwiki.cursorActivity = function() {
+			var cur_line = mdwiki.editor.getCursor().line;
+			var blockList = mdwiki.blockList || [], curBlock = undefined;
+			for (var i = 0; i < blockList.length; i++) {
+				var block = blockList[i];
+				if (cur_line >= block.textPosition.from && cur_line < block.textPosition.to) {
+					curBlock = block;
+					break;
+				}
+			}
+			if (curBlock && curBlock.blockCache.isWikiBlock) {
+				// wiki mod todo
+				curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+			} else {
+				// 非wiki mod todo
+			}
+			//console.log(cur_line);
+			//console.log(mdwiki.blockList);
+		}
         // force render a given text
         mdwiki.render = function (text) {
             text = encodeURI(text);
