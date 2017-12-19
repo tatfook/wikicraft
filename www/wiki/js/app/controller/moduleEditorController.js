@@ -27,6 +27,7 @@ define([
 		var design_list = [];
 		var lastSelectObj = undefined;
         var editor;
+        var designViewWidth = 350, win;
 		// 转换数据格式
 		function get_order_list(obj){
 			var list = [];
@@ -195,12 +196,24 @@ define([
                         spaceBetween: 50,
                     });  
                 }, 1000);
-			}
+            }
+            var setDesignViewWidth = function(){
+                win = win || $(window);
+                var winWidth = win.width();
+                var scaleSize = designViewWidth / winWidth;
+                setTimeout(function () {
+                    $("#designSwiper div.design-view").css({
+                        "transform": "scale(" + scaleSize + ")",
+                        "transform-origin": "left top"
+                    });    
+                });
+                
+            }
 			moduleEditorParams.setDesignList = function(list) {
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 $scope.selectedDesign = moduleEditorParams.wikiBlock.modParams.design.text;
 				var style_list = moduleEditorParams.wikiBlock.styles || [];
-				// $scope.show_type = "design";
+				$scope.show_type = "design";
 				$scope.styles = [];
 				$scope.design_view_list = [];
 				for (var i = 0; i < style_list.length; i++) {
@@ -209,14 +222,15 @@ define([
                     $scope.styles[i] = modParams;
 					var md = markdownwiki({html:true, use_template:false});
                     var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";
-					var view = md.render(text);
+                    var view = md.render(text);
                     var design = {
                         "text": $scope.styles[i].design.text,
                         "view": view,
                         "cover": style_list[i].design.cover || ""
                     }
 
-					$scope.design_view_list.push(design);
+                    $scope.design_view_list.push(design);
+                    setDesignViewWidth();
                 }
                 setTimeout(() => {
                     var editorSwiper = new Swiper('#designSwiper',{
