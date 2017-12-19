@@ -423,13 +423,13 @@ define([
 						}
 					} else {
 						obj = self.format_params_template;
-					}
+                    }
 					moduleEditorParams.wikiBlock = self;
-					moduleEditorParams.setEditorObj(obj);
+                    moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
-					moduleEditorParams.is_show = true;
+					// moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
-					$("#moduleEditorContainer").show();
+					// $("#moduleEditorContainer").show();
 				};
 
 
@@ -446,16 +446,24 @@ define([
 
 				var containerId = "#" + self.containerId;
 				if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
-					$(containerId).on("mouseenter mouseleave", function(e) {
-						if (e.handleObj.origType == "mouseenter") {
-							var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick(\'' + self.containerId+ '\')">编辑</button><button class="btn" ng-click="viewDesignClick(\''+self.containerId+'\')">样式</button></div></div>';
-							html_str = util.compile(html_str);
-							$(containerId).prepend(html_str);
-							util.$apply();	
-						} else {
-							$(containerId).children()[0].remove();
-						}
-					});
+                    var modContainer = $(containerId);
+                    // console.log(modContainer);
+                    modContainer.on("click", function (e) {
+                        $(".mod-container.active").removeClass("active");
+                        modContainer.addClass("active");
+                        config.services.$rootScope.viewEditorClick(""+self.containerId+"");
+                        util.$apply();	
+                    });
+					// $(containerId).on("mouseenter mouseleave", function(e) {
+					// 	if (e.handleObj.origType == "mouseenter") {
+					// 		var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick(\'' + self.containerId+ '\')">编辑</button><button class="btn" ng-click="viewDesignClick(\''+self.containerId+'\')">样式</button></div></div>';
+					// 		html_str = util.compile(html_str);
+					// 		$(containerId).prepend(html_str);
+					// 		util.$apply();	
+					// 	} else {
+					// 		$(containerId).children()[0].remove();
+					// 	}
+					// });
 				}
 
 				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor && moduleEditorParams.show_type == "editor") {
@@ -770,7 +778,8 @@ define([
         mdwiki.getBlockCache = function (text, token) {
 			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            var htmlContent = '<div id="' + idx + '"' + '></div>';
+            var modClass = "mod-container";
+            var htmlContent = '<div id="' + idx + '"' + ' class="' + modClass + '"' +'></div>';
             var blockCache = undefined;
 
             //console.log(token);
@@ -809,7 +818,7 @@ define([
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;
                 //blockCache.htmlContent = '<div id="' + idx + '"></div>';
-                blockCache.htmlContent = '<div id="' + idx + '"></div>';
+                blockCache.htmlContent = '<div id="' + idx + '"' + ' class="' + modClass + '"' +'></div>';
                 blockCache.wikiBlock = wikiBlock;
                 blockCache.isWikiBlock = true;
 

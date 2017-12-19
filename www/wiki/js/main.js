@@ -64,6 +64,7 @@
 			'pako': libPathPrefix + "pako/pako.min",
 			'js-aho-corasick': libPathPrefix + "js-aho-corasick/aho-corasick",
 			'md5': libPathPrefix + "md5",
+			'swiper': libPathPrefix + "swiper/swiper.min",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			// 自定义模块

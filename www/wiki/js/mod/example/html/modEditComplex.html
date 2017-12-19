@@ -1,4 +1,3 @@
-
 <div ng-controller="modEditComplexController" class="container">
 	<div ng-if='params.design.text=="style1"'>
 		<div class="col-xs-6">
@@ -7,9 +6,23 @@
 			</div>
 		</div>
 		<div class="col-xs-6" style="padding-top:70px">
+            <div ng-click="viewEditorClick(params.menu)" ng-hide="params.menu.is_hide" class="kp_module_editor_input_tag">
+                <div style="text-align:center; font-size: 18px">
+                    <ul>
+                        <li ng-repeat="firstItem in params.menu.text">
+                            <a ng-href="{{firstItem.url}}">{{firstItem.name}}</a>
+                            <ul ng-show="firstItem.children.length > 0">
+                                <li ng-repeat="secondItem in firstItem.children">
+                                    <a ng-href="{{secondItem.url}}">{{secondItem.name}}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 			<div ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide"class="kp_module_editor_input_tag">
 				<div style="text-align:center; font-size: 18px">
-					{{params.title.text}}
+                    {{params.title.text}}
 				</div>
 			</div>
 			<div ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide" class="kp_module_editor_input_tag">

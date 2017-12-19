@@ -31,7 +31,26 @@ define([
 						name:"样式",   // 表单显示名
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
-					},
+                    },
+                    menu:{
+                        is_leaf: true,
+                        type: "menu",
+                        editable: true,
+                        is_show: true,
+                        name: "菜单",
+                        require: true,
+                        text: [{
+                            id: 12332434,
+                            name: '试图',
+                            url: 'liyu/site/views',
+                            children: [{
+                                      id: 1342143252,
+                                      name: '我的试图',
+                                      url: 'liyu/site/views/mine',
+                                      children: []
+                            }]
+                        }]
+                    },
 				   	title:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
