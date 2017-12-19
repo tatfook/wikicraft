@@ -1,47 +1,92 @@
 <style>
+    /* style1 css */
     .title{
         width: 100%;
-        height: 160px;
-        position: relative; 
+        height: 240px;
+        padding: 0;
+        margin: 0px;
+    }
+    .title .img, .title .title-head{
+        float: left;
+    }
+    .title .title-head{
+        margin-top:32px;
     }
     .title .img{
-        width:20%;
-        height:108px;
-        position: absolute;
-        background-color:rgb(196, 191, 191); 
         line-height: 108px;
         font-size: 20px;
         text-align: center;
+        margin-left: 100px;
+        margin-top: 20px;
     }
     .title .img img{
         width:100%;
         height:100%;
         overflow: hidden;
     }
-    .title .h1{
-        position: absolute;
+    .title .title-head .h1{
         padding: 0;
-        margin: 0;
-        left:21.5%;
-        top:0;
+        margin-left: 10px;
+        font-size: 25px;
     }
-    .title .h2{
-        position: absolute;
-        right:0;
-        bottom: 0;
-        font-size: 20px;
+    .title .title-head .h2{
+        font-size: 15px;
+        color: rgb(196, 191, 191); 
+        margin-left: 10px;
+        margin-top: -10px;
+    }
+
+    /* style2 css */
+    .title2{
+        width: 100%;
+        height: 240px;
+        padding-top: 30px;
+        margin: 0px;
+    }
+    .title2 .img-two{
+        width:100%;
+        overflow: hidden;
+        text-align: center;
+        margin: 0 auto;
+    }
+    .title-head2{
+        padding-top: 10px;
+    }
+    .title2 .title-head2 .h-one{
+        text-align: center;
+        margin: 0 auto;
+        font-size: 25px;
+    }
+    .title2 .title-head2 .h-two{
+        text-align: center;
+        margin: 0 auto;
+        font-size: 15px;
         color: rgb(196, 191, 191); 
     }
 </style>
 <div ng-controller="titleController">
     <div ng-if='params.design.text=="style1"'>
-        <div class="title">
+        <div class="title container">
             <div class="img">
                 <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
                 <img ng-if="params.img.text.length > 0" src="{{params.img.text}}">
             </div>
-            <h1 class="h1" ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide">{{params.h1.text}}</h2>
-            <h2 class="h2" ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide">{{params.h2.text}}</h1>
+            <div class="title-head">
+                <h1 class="h1" ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide">{{params.hOne.text}}</h2>
+                <h2 class="h2" ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide">{{params.hTwo.text}}</h1>
+            </div>
+        </div>
+    </div>
+    <div ng-if='params.design.text=="style2"'>
+        <div class="title2 container">
+            <div class="img-two">
+                <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
+                <img ng-if="params.img.text.length > 0" src="{{params.img.text}}">
+            </div>
+            <div class="title-head2">
+                <h1 class="h-one" ng-click="viewEditorClick(params.title)" ng-hide="params.title.is_hide">{{params.hOne.text}}</h2>
+                <h2 class="h-two" ng-click="viewEditorClick(params.subtitle)" ng-hide="params.subtitle.is_hide">{{params.hTwo.text}}</h1>
+            </div>
         </div>
     </div>
 </div>
