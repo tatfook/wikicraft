@@ -61,12 +61,12 @@ define([
 
 		// 点击列表项
 		$scope.click_list_item = function(item) {
-			$scope.datas_stack.push($scope.datas);
+			$scope.datas_stack.push($scope.editorDatas);
 			// console.log(item);
 			if (item.is_leaf) {
-				$scope.datas = [item];
+				$scope.editorDatas = [item];
 			} else {
-				$scope.datas = item;
+				$scope.editorDatas = item;
 			}
         }
         
@@ -92,8 +92,8 @@ define([
 
 		$scope.close = function() {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-			$scope.datas = $scope.datas_stack.pop();
-			if (!$scope.datas) {
+			$scope.editorDatas = $scope.datas_stack.pop();
+			if (!$scope.editorDatas) {
 				//$scope.$close();
 				$("#moduleEditorContainer").hide();
 				moduleEditorParams.is_show = false;
@@ -176,6 +176,36 @@ define([
             }
         }
 
+        var swiper = {
+            "editor":{},
+            "design":{}
+        };
+
+        var initSwiper = function(type){
+            var swiperContainerId = type + "Swiper";
+            var slides = $("#" + swiperContainerId + " .swiper-slide");
+            var renderedSlidesLen = slides.length;
+            var dataName = type + "Datas";
+            var totalRenderLen = $scope[dataName].length;
+            if (renderedSlidesLen != totalRenderLen) { // ng-repeat渲染完成才能初始化swiper
+                setTimeout(function(){
+                    initSwiper(type);
+                }, 10);
+                return;
+            }
+            swiper[type].destroy && swiper[type].destroy();
+            
+            swiper[type] = new Swiper("#"+swiperContainerId,{
+                nextButton: '#' + swiperContainerId + ' .swiper-button-next',
+                prevButton: '#' + swiperContainerId + ' .swiper-button-prev',
+                scrollbar: '#' + swiperContainerId + ' .swiper-scrollbar',
+                scrollbarHide: false,
+                slidesPerView: 'auto',
+                mousewheelControl: true,
+                spaceBetween: 50,
+            });
+        }
+
 		function init() {
             editor = editor || $rootScope.editor || {};
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
@@ -200,40 +230,29 @@ define([
 					obj = [obj];
 				}
 
-        $scope.datas = get_order_list(obj);
-        util.$apply();
-        setTimeout(function(){				
-              var editorSwiper = new Swiper('#editorSwiper',{
-                  nextButton: '#editorSwiper .swiper-button-next',
-                  prevButton: '#editorSwiper .swiper-button-prev',
-                  pagination: '#editorSwiper .swiper-pagination',
-                  scrollbar: '#editorSwiper .swiper-scrollbar',
-                  scrollbarHide: false,
-                  slidesPerView: 'auto',
-                  mousewheelControl: true,
-                  spaceBetween: 50,
-              });  
-          }, 1000);
-      }
-      var setDesignViewWidth = function(){
-          win = win || $(window);
-          var winWidth = win.width();
-          var scaleSize = designViewWidth / winWidth;
-          setTimeout(function () {
-              $("#designSwiper div.design-view").css({
-                  "transform": "scale(" + scaleSize + ")",
-                  "transform-origin": "left top"
-              });    
-          });
+                $scope.editorDatas = get_order_list(obj);
+                util.$apply();
+                initSwiper("editor");
+            }
+            var setDesignViewWidth = function(){
+                win = win || $(window);
+                var winWidth = win.width();
+                var scaleSize = designViewWidth / winWidth;
+                setTimeout(function () {
+                    $("#designSwiper div.design-view").css({
+                        "transform": "scale(" + scaleSize + ")",
+                        "transform-origin": "left top"
+                    });    
+                });
 
-      }
+            }
 			moduleEditorParams.setDesignList = function(list) {
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 $scope.selectedDesign = moduleEditorParams.wikiBlock.modParams.design.text;
 				var style_list = moduleEditorParams.wikiBlock.styles || [];
 				$scope.show_type = "design";
 				$scope.styles = [];
-				$scope.design_view_list = [];
+				$scope.designDatas = [];
 				for (var i = 0; i < style_list.length; i++) {
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
 					modParams = angular.merge(modParams, style_list[i]);
@@ -247,21 +266,10 @@ define([
                         "cover": style_list[i].design.cover || ""
                     }
 
-                    $scope.design_view_list.push(design);
+                    $scope.designDatas.push(design);
                     setDesignViewWidth();
                 }
-                setTimeout(function(){
-                    var editorSwiper = new Swiper('#designSwiper',{
-                        nextButton: '#designSwiper .swiper-button-next',
-                        prevButton: '#designSwiper .swiper-button-prev',
-                        pagination: '#designSwiper .swiper-pagination',
-                        scrollbar: '#designSwiper .swiper-scrollbar',
-                        scrollbarHide: false,
-                        slidesPerView: 'auto',
-                        mousewheelControl: true,
-                        spaceBetween: 50,
-                    });  
-                }, 1000);
+                initSwiper("design");
 			}
 			// $scope.show_type = "editor";
             $scope.datas_stack = [];
