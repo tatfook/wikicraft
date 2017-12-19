@@ -1,0 +1,109 @@
+<style>
+    .menu {
+        width: 100%;
+        height: 50px;
+        background-color: #327abf;
+    }
+
+    .menu > ul{
+        list-style-type: none;
+        margin: 0;
+        padding-left: 90px;
+        height: 100%;
+        width: auto;
+        background-image: url("/wiki/js/mod/wiki/assets/imgs/menu-button-bg.png");
+        background-repeat: no-repeat;
+        background-position-x: 90px;
+    }
+
+    .menu > ul > li{
+        float: left;
+        height: 50px;
+        color: white;
+        text-align: center;
+        line-height: 50px;
+        padding: 0 30px;
+        background-image: url("/wiki/js/mod/wiki/assets/imgs/menu-button-bg.png");
+        background-repeat: no-repeat;
+        background-position-x: 100%;
+        position: relative;
+        font-size: 17px;
+    }
+
+    .menu > ul > li a{
+        color: white;
+        text-decoration: none;
+    }
+
+    .menu > ul > li:hover > .sub-menu{
+        display: block;
+    }
+
+    .menu > ul > li > .sub-menu{
+        display: none;
+        position: absolute;
+        width: auto;
+        z-index: 9999;
+        list-style-type: none;
+        padding: 0;
+        left: 0;
+    }
+
+    .menu > ul > li > .sub-menu > li{
+        background: #183d60;
+        border-bottom: solid 1px #3a90e3;
+        padding: 0 20px;
+        white-space: nowrap;
+        height: 35px;
+        line-height: 35px;
+        font-size: 14px;
+    }
+
+    .menu > ul > li > .sub-menu > li:last-child{
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .menu-right > ul{
+        padding-left: 0;
+        padding-right: 90px;
+        background: none;
+    }
+
+    .menu-right > ul > li{
+        float: right;
+        background-position-x: 0;
+    }
+
+</style>
+
+<div style="height:500px;" ng-controller="menuController">
+	<div ng-if="params.design.text == 'left'">
+		<div class="menu">
+            <ul class="clearfix">
+                <li ng-repeat="item in params.menu.text">
+                    <a ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
+                    <ul class="sub-menu">
+                        <li ng-repeat="subItem in item.children">
+                            <a ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+		</div>
+	</div>
+	<div ng-if="params.design.text == 'right'">
+        <div class="menu menu-right">
+            <ul class="clearfix">
+                <li ng-repeat="item in params.menu.text">
+                    <a ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
+                    <ul class="sub-menu">
+                        <li ng-repeat="subItem in item.children">
+                            <a ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+	</div>
+</div>
