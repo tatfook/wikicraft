@@ -195,7 +195,7 @@
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item" ng-repeat="data in datas">
+                    <div class="swiper-slide attr-item" ng-repeat="data in editorDatas">
                         <div class="header">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[!data.data.is_hide]">
@@ -235,7 +235,7 @@
                 <div class="swiper-wrapper">
                     <div class="swiper-slide attr-item design-item" 
                         ng-class="{true: 'active'}[design_view.text == selectedDesign]"
-                        ng-repeat="design_view in design_view_list track by $index"
+                        ng-repeat="design_view in designDatas track by $index"
                         ng-click="click_apply_design($index)"
                     >
                         <div class="design-view" wiki-html="design_view.view" ng-hide="design_view.cover"></div>
