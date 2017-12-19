@@ -64,12 +64,12 @@ define([
             function getList(word) {
                 $.ajax({
                     url:"http://221.0.111.131:19001/Application/baikesearch",
-                    type : "post",
+                    type : "get",
                     data: {
                         "keyword": word,
                         "page": 1,
                         "highlight": 0,
-                        "flag": 1
+                        "flag": 0
                     },
                     dataType: "json",
                     success:function(result){
