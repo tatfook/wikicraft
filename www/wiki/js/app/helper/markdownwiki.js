@@ -237,6 +237,9 @@ define([
                     $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
                 }
+                htmlContent = '<span class="fake-icon add-before" ng-click="insertMod(\'before\')">+</span>'
+                            +'<span class="fake-icon add-after" ng-click="insertMod(\'after\')">+</span>'
+                            + htmlContent;
                 util.html('#' + blockCache.containerId, htmlContent);
 
                 blockCache.domNode = $('#' + blockCache.containerId);
@@ -426,7 +429,10 @@ define([
 					} else {
 						obj = self.format_params_template;
                     }
-					moduleEditorParams.wikiBlock = self;
+                    moduleEditorParams.wikiBlock = self;
+                    
+                    $(".mod-container.active").removeClass("active");
+                    self.blockCache.domNode.addClass("active");
                     moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
@@ -451,8 +457,6 @@ define([
                     var modContainer = $(containerId);
                     // console.log(modContainer);
                     modContainer.on("click", function (e) {
-                        $(".mod-container.active").removeClass("active");
-                        modContainer.addClass("active");
                         config.services.$rootScope.viewEditorClick(""+self.containerId+"");
                         util.$apply();	
                     });
@@ -801,7 +805,7 @@ define([
 			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
             var modClass = "mod-container";
-            var htmlContent = '<div id="' + idx + '"' + ' class="' + modClass + '"' +'></div>';
+            var htmlContent = '<div id="' + idx + '"' + '></div>';
             var blockCache = undefined;
 
             //console.log(token);

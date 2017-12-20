@@ -153,6 +153,29 @@ define([
             }
         }
 
+        $scope.deleteMod = function(){
+            config.services.confirmDialog({
+                "title": "删除提示",
+                "theme": "danger",
+                "content": "确定删除这个模块？"
+            }, function(result){
+                removeAllLineClass();
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                var editor = editor || $rootScope.editor || {};
+                var from = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
+                var to = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
+                editor.replaceRange("", {
+                    "line": from,
+                    "ch": 0
+                }, {
+                    "line": to,
+                    "ch": editor.getLine(to).length
+                });
+            }, function(cancel){
+                console.log("cancel delete");
+            });
+        }
+
         var removeAllLineClass = function(){
             var editor = editor || $rootScope.editor || {};
             var len = lineClassesMap.length;
@@ -163,7 +186,7 @@ define([
                 editor.removeLineClass(lineClassesMap[i], "gutter", "editingLine");
             }
             lineClassesMap = [];
-            $(".mod-container.active").removeClass("active");
+            // $(".mod-container.active").removeClass("active");
         }
         
         var setCodePosition = function(from, to){

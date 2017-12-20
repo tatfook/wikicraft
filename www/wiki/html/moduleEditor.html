@@ -1,6 +1,7 @@
 <style>
     .module-editor .nav-tabs {
         background-color: #F2F2F2;
+        padding-right: 60px;
     }
 
     .module-editor .nav-tabs>li>a {
@@ -12,6 +13,14 @@
         background-color: #FFFF;
         border: 1px solid #DDD;
         border-radius: 0;
+    }
+    .module-editor .nav-tabs>li>a.btn{
+        padding: 3px 22px;
+        font-size: 14px;
+    }
+    .module-editor .nav-tabs>li>a.btn>.iconfont{
+        margin-right: 8px;
+        vertical-align: middle;
     }
 
     .module-editor .nav-tabs>li.active>a {
@@ -67,8 +76,22 @@
     }
 
     .module-editor .swiper-button-next,
-    .module-editor .swiper-button-prev {
+    .module-editor .swiper-button-prev{
+        width: 60px;
+        height: 100%;
+        background-color: #FFF;
+        top: 0;
         background-image: none;
+        margin-top: 0;
+        right: 0;
+        text-align: center;
+        line-height: 250px;
+    }
+    .module-editor .swiper-button-prev{
+        left: 0;
+    }
+    .module-editor .glyphicon-chevron-right,
+    .module-editor .glyphicon-chevron-left {
         width: 36px;
         height: 36px;
         border: 1px solid #666;
@@ -187,6 +210,10 @@
             ng-click="tabTo('design')">
             <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab">样式</a>
         </li>
+        <!-- 删除模块按钮 -->
+        <li ng-hide="show_type == 'knowledge' || !show_type" ng-click="deleteMod()" class="pull-right">
+            <a class="btn"><i class="iconfont icon-bianjiqi-shanchu"></i>删除</a>
+        </li>
     </ul>
 
     <!-- Tab panes -->
@@ -228,8 +255,12 @@
                 <!-- Add Arrows -->
                 <!-- <div class="swiper-button-next"></div> -->
                 <!-- <div class="swiper-button-prev"></div> -->
-                <div class="glyphicon swiper-button-next glyphicon-chevron-right"></div>
-                <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
+                <div class="swiper-button-next">
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </div>
+                <div class="swiper-button-prev">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                </div>
             </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="StyleSetting" ng-class="{true: 'active'}[show_type == 'design']">
@@ -246,8 +277,12 @@
                     </div>
                 </div>
                 <div class="swiper-scrollbar"></div>
-                <div class="glyphicon swiper-button-next glyphicon-chevron-right"></div>
-                <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
+                <div class="swiper-button-next">
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </div>
+                <div class="swiper-button-prev">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                </div>
             </div>
         </div>
     </div>

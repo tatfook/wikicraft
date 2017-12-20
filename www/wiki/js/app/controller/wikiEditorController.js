@@ -619,6 +619,8 @@ define([
             $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
+
+            var fakeIconDom = [];
 //}}}
 
             // 格式化html文本
@@ -1409,7 +1411,7 @@ define([
             }//}}}
 
 
-            $scope.openWikiBlock = function () {//{{{
+            $scope.openWikiBlock = function (insertLine) {//{{{
                 function formatWikiCmd(text) {
                     var lines = text.split('\n');
                     var startPos = undefined, endPos = undefined;
@@ -1452,7 +1454,8 @@ define([
                     //console.log(wikiBlock);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
                     var cursor = editor.getCursor();
-                    var content = editor.getLine(cursor.line);
+                    var toInsertLine = insertLine || cursor.line;
+                    var content = editor.getLine(toInsertLine);
                     if (content.length > 0) {
                         wikiBlockContent = '\n' + wikiBlockContent;
                     }
@@ -1461,6 +1464,16 @@ define([
                     console.log(result);
                 });
             }//}}}
+
+            $rootScope.insertMod = function(type){
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                var modPositon = moduleEditorParams.wikiBlock.blockCache.block.textPosition;
+                if (type == "before") {
+                    $scope.openWikiBlock(modPositon.from);
+                }else {
+                    $scope.openWikiBlock(modPositon.to);
+                }
+            }
 
             $scope.openGitFile = function () {//{{{
                 if (!currentPage || !currentPage.url) {
@@ -2583,6 +2596,19 @@ define([
                     }
                 }
 
+                function setFakeIconPosition(leftDistance, scaleSize){
+                    fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".fake-icon");
+                    if (fakeIconDom.length <= 0) {
+                        setTimeout(function(){
+                            setFakeIconPosition(leftDistance, scaleSize);
+                        }, 300);
+                        return;
+                    }
+                    fakeIconDom.css({
+                        "left" : leftDistance / scaleSize
+                    });
+                }
+
                 function getScaleSize(scroll) {
                     var winWidth = $(window).width();
                     var boxWidth = $("#preview").width();//30为#preview的padding宽度
@@ -2617,6 +2643,8 @@ define([
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
+                    var boxWidth = $("#preview").width();
+                    setFakeIconPosition((boxWidth/2), scaleSize);
                     setTimeout(function () {
                         $('#' + mdwiki.getMdWikiContainerId()).css({
                             "transform": "scale(" + scaleSize + ")",
