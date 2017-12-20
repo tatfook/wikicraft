@@ -571,13 +571,13 @@ define([
 
     //合并参数
     util.mergeParams = function(otherObj, thisObj){
-        var OthisParams_template = otherObj.params_template;
-        var TtherParams_template = thisObj.params_template;
+        var Oparams_template = otherObj.params_template;
+        var Tparams_template = thisObj.params_template;
 
-        for(itemA in TtherParams_template){
-            for(itemB in OthisParams_template){
+        for(itemA in Tparams_template){
+            for(itemB in Oparams_template){
                 if(itemA != itemB){
-                    TtherParams_template[itemB] = OthisParams_template[itemB];
+                    Tparams_template[itemB] = Oparams_template[itemB];
                 }
             }
         }
