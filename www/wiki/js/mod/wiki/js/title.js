@@ -72,6 +72,7 @@ define([
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				   	// paragraphs:{
 					// 	is_leaf: true, // 叶子对象默认填true
@@ -146,6 +147,9 @@ define([
 					// 	]
 					// },
 >>>>>>> upload
+=======
+				   
+>>>>>>> delete
 				}
 			}
 			wikiblock.init(initObj);
