@@ -486,6 +486,23 @@ select.resize-view {
     object-fit:cover;
 }
 
+.wikiEditor .mod-container{
+    border: 2px dashed transparent;
+}
+.wikiEditor .mod-container.active{
+    border: 2px dashed #69B9FF;
+}
+
+.att-edit-box {
+    height: 280px;
+    z-index: 4;
+    background-color: #FFF;
+    border-left: 1px solid #EEE;
+    padding: 0;
+}
+.editingLine{
+    border-right: 4px solid #FFAC36;
+}
 @media (max-width: 768px) {
     .bg-title h1{
         height: 340px;

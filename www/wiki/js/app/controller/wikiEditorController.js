@@ -2304,7 +2304,7 @@ define([
 
 			function initModuleEditor() {
 				util.html("#moduleEditor", moduleEditorContent);
-				$("#moduleEditorContainer").hide();
+				// $("#moduleEditorContainer").hide();
 			}
 
             function initEditor() {
@@ -2459,6 +2459,7 @@ define([
                         },
                     }
                 });
+                $rootScope.editor = editor;
 				//}}}
                 //var viewEditorTimer = undefined;//{{{
                 //$('body').on('focus', '[contenteditable]', function () {
@@ -2491,6 +2492,7 @@ define([
                 //});
 
                 mdwiki.setEditor(editor);
+				config.shareMap.mdwiki = mdwiki;
 
                 var scrollTimer = undefined, changeTimer = undefined;
 					var isScrollPreview = false;
@@ -2537,6 +2539,10 @@ define([
                     //});
                     //return result;
                 //};
+
+				editor.on("cursorActivity", function(cm){
+					mdwiki.cursorActivity();					
+				});
 
                 editor.on("change", function (cm, changeObj) {
                     changeCallback(cm, changeObj);
@@ -2762,10 +2768,13 @@ define([
                     setTimeout(function () {
                         var wikiEditorContainer = $('#wikiEditorContainer')[0];
                         var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                        var attEditHeight = $("#moduleEditorContainer").height();
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
-                        editor.setSize('auto', height);
+                        var noAttEditHeight = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop - attEditHeight) + 'px';
+                        editor.setSize('auto', noAttEditHeight);
                         $('#wikiEditorContainer').css('height', height);
                         $('.full-height').css('height', height);
+                        $('.full-noAttr-height').css('height', noAttEditHeight);
 
                         var w = $("#__mainContent__");
                         w.css("min-height", "0px");
