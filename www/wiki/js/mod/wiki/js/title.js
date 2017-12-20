@@ -72,7 +72,8 @@ define([
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 				}
-			}
+            }
+            console.log(initObj)
 			wikiblock.init(initObj);
 			console.log($scope.params);
         }]);
