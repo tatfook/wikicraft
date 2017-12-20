@@ -239,6 +239,9 @@ body,
     box-shadow: none;
 }
 
+.CodeMirror-wrap{
+    margin-right: 9px;
+}
 .border{
     width: 10px;
     height: 100%;

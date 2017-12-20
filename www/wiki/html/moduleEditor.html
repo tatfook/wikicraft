@@ -191,7 +191,9 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">...知识库</div>
+        <div role="tabpanel" class="tab-pane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">
+            <p>{{lineContent ? lineContent : "知识库中暂无相关推荐内容"}}</p>
+        </div>
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">

@@ -163,6 +163,7 @@ define([
                 editor.removeLineClass(lineClassesMap[i], "gutter", "editingLine");
             }
             lineClassesMap = [];
+            $(".mod-container.active").removeClass("active");
         }
         
         var setCodePosition = function(from, to){
@@ -193,7 +194,7 @@ define([
                 }, 10);
                 return;
             }
-            swiper[type].destroy && swiper[type].destroy();
+            swiper[type].destroy && swiper[type].destroy(true, true);
             
             swiper[type] = new Swiper("#"+swiperContainerId,{
                 nextButton: '#' + swiperContainerId + ' .swiper-button-next',
@@ -270,7 +271,16 @@ define([
                     setDesignViewWidth();
                 }
                 initSwiper("design");
-			}
+            }
+
+            moduleEditorParams.setKnowledge = function(lineContent){
+                removeAllLineClass();
+                moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                moduleEditorParams.show_type = "knowledge"; 
+                $scope.show_type = "knowledge";
+                $scope.lineContent = lineContent;
+            }
+            
 			// $scope.show_type = "editor";
             $scope.datas_stack = [];
 		}
