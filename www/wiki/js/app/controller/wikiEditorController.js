@@ -2870,6 +2870,12 @@ define([
 
                     currentPage.isFirstEditor = undefined;
 
+                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                    var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
+                    var isOutMod = (toLineInfo && toLineInfo.handle.gutterClass && toLineInfo.handle.gutterClass.indexOf("editingLine") >= 0); 
+                    moduleEditorParams.show_type = "knowledge";
+                    moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
+
                     /*
                     changeTimer && clearTimeout(changeTimer);
                     changeTimer = setTimeout(function () {
