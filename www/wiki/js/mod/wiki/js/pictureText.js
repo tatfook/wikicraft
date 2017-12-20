@@ -1,17 +1,18 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/wiki/html/pictureText.html',
-], function (app, util, htmlContent) {
+	'../js/title.js',
+	'text!wikimod/wiki/html/pictureText.html',
+], function (app, util, title, htmlContent) {
+	var initObj;
 
-    // 使用闭包使模块重复独立使用
     function registerController(wikiblock) {
-        // 比赛类活动奖励控制器
         app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
-            
-            var initObj = {
-				scope:$scope,
-				styles:[
+			$scope.$apply();
+
+            initObj = {
+				scope  : $scope,
+				styles : [
 					{
 						"design": {
 							"text":"style1",
@@ -23,7 +24,6 @@ define([
 						},
 					},
 				],
-
 				params_template: {
 					design:{
 						is_leaf: true, // 叶子对象默认填true
@@ -34,7 +34,7 @@ define([
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
 					},
-					img:{
+					pictureTextImg:{
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
@@ -44,24 +44,6 @@ define([
                         href:"", // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                     },
-                    hOne:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
-						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
-						name:"标题",   // 表单显示名
-						text:"标题", // 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
-					},
-					hTwo:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
-						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
-						name:"副标题",   // 表单显示名
-						text:"副标题", // 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
-					},
 					spanOne:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
@@ -84,18 +66,19 @@ define([
 				}
 			}
 
-
+			util.mergeParams(title.initObj(), initObj);
+			
             wikiblock.init(initObj);
-			console.log($scope.params);
-
-
         }]);
     }
 
     return {
         render: function (wikiblock) {
             registerController(wikiblock);
-            return htmlContent;
-        }
+            return title.render(wikiblock) + htmlContent;
+		},
+		initObj: function(){
+			return initObj;
+		},
     }
 });
