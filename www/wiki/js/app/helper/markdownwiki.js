@@ -721,7 +721,7 @@ define([
 			}
 			if (curBlock && curBlock.blockCache.isWikiBlock) {
 				// wiki mod todo
-				curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+				curBlock.blockCache.wikiBlockParams.scope && curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
 			} else {
 				// 非wiki mod todo
 			}

@@ -490,8 +490,11 @@ select.resize-view {
     position: relative;
     border: 2px dashed #69B9FF;
 }
-.wikiEditor .fake-icon{
+.wikiEditor .mod-container.active .fake-icon{
     display: inline-block;
+}
+.wikiEditor .fake-icon{
+    display: none;
     width: 38px;
     height: 38px;
     background-color: #7FC3FF;
@@ -502,6 +505,7 @@ select.resize-view {
     font-size: 30px;
     position: absolute;
     left: 271px;
+    z-index: 11;
 }
 .wikiEditor .fake-icon.add-before{
     top: -19px;
