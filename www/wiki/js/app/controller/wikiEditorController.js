@@ -1411,7 +1411,11 @@ define([
             }//}}}
 
 
-            $scope.openWikiBlock = function (insertLine) {//{{{
+            $scope.openWikiBlock = function (insertLine, type) {//{{{
+                $scope.insertMod = {
+                    "insertLine": insertLine,
+                    "type": type
+                };
                 function formatWikiCmd(text) {
                     var lines = text.split('\n');
                     var startPos = undefined, endPos = undefined;
@@ -1445,21 +1449,22 @@ define([
                     }
                 }
 
-                //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
                     size: 'lg',
                     backdrop:true
                 }, function (wikiBlock) {
-                    //console.log(wikiBlock);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
                     var cursor = editor.getCursor();
-                    var toInsertLine = insertLine || cursor.line;
+                    var toInsertLine = ($scope.insertMod.insertLine >= 0) ? $scope.insertMod.insertLine : cursor.line;
                     var content = editor.getLine(toInsertLine);
                     if (content.length > 0) {
-                        wikiBlockContent = '\n' + wikiBlockContent;
+                        wikiBlockContent = '\n' + wikiBlockContent + '\n';
                     }
-                    editor.replaceSelection(wikiBlockContent);
+                    editor.replaceRange(wikiBlockContent, {
+                        "line": toInsertLine,
+                        "ch": 0
+                    });
                 }, function (result) {
                     console.log(result);
                 });
@@ -1469,9 +1474,9 @@ define([
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 var modPositon = moduleEditorParams.wikiBlock.blockCache.block.textPosition;
                 if (type == "before") {
-                    $scope.openWikiBlock(modPositon.from);
+                    $scope.openWikiBlock(modPositon.from, type);
                 }else {
-                    $scope.openWikiBlock(modPositon.to);
+                    $scope.openWikiBlock(modPositon.to, type);
                 }
             }
 
