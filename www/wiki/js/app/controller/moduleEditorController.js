@@ -56,7 +56,7 @@ define([
 
 		// 隐藏事件
 		$scope.click_hide = function(data) {
-            data.is_hide = !data.is_hide;
+            data.is_show = !data.is_show;
             applyAttrChange();
 		}
 

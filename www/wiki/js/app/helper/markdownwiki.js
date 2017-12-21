@@ -332,7 +332,7 @@ define([
 										self.formatModParams(key + ".list." + i, datas.list[i], data.list[i]);
 									}
 								}
-								datas.is_hide = data.is_hide;
+								datas.is_show = data.is_show;
 							}
 						}
 						datas.id = util.getId();
