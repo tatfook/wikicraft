@@ -56,7 +56,8 @@ define([
 
 		// 隐藏事件
 		$scope.click_hide = function(data) {
-			data.is_hide = !data.is_hide;
+            data.is_hide = !data.is_hide;
+            applyAttrChange();
 		}
 
 		// 点击列表项
@@ -83,7 +84,7 @@ define([
                 datatree: data.text
             }, function(result){
                 data.text = result;
-                $scope.applyAttrChange();
+                applyAttrChange();
                 console.log(result);
             }, function(err){
                 console.log(err);
@@ -117,7 +118,7 @@ define([
             },500);
         }
 
-        function applyAttrChange(){
+        var applyAttrChange = function(){
             var moduleEditorParams = config.shareMap.moduleEditorParams || {};
             if (moduleEditorParams.wikiBlock) {
                 var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);

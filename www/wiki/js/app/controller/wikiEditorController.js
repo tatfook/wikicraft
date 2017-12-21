@@ -1458,9 +1458,7 @@ define([
                     var cursor = editor.getCursor();
                     var toInsertLine = ($scope.insertMod.insertLine >= 0) ? $scope.insertMod.insertLine : cursor.line;
                     var content = editor.getLine(toInsertLine);
-                    if (content.length > 0) {
-                        wikiBlockContent = '\n' + wikiBlockContent + '\n';
-                    }
+                    wikiBlockContent = '\n' + wikiBlockContent + '\n';
                     editor.replaceRange(wikiBlockContent, {
                         "line": toInsertLine,
                         "ch": 0
