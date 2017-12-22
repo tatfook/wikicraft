@@ -121,6 +121,7 @@ define([
         var applyAttrChange = function(){
             var moduleEditorParams = config.shareMap.moduleEditorParams || {};
             if (moduleEditorParams.wikiBlock) {
+                moduleEditorParams.renderMod = "editorToCode";
                 var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
                 //console.log(modParams);
                 var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
@@ -227,7 +228,6 @@ define([
                 scrollbarHide: false,
                 slidesPerView: 'auto',
                 mousewheelControl: true,
-                spaceBetween: 50,
             });
         }
 

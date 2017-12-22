@@ -2561,6 +2561,8 @@ define([
 				});
 
                 editor.on("change", function (cm, changeObj) {
+                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                    var isStopRender = moduleEditorParams.renderMod == "editorToCode";
                     changeCallback(cm, changeObj);
 
                     if (currentPage && currentPage.url) {
@@ -2568,16 +2570,25 @@ define([
                     }
 
                     renderTimer && clearTimeout(renderTimer);
-                    renderTimer = setTimeout(function () {
+                    renderTimer = setTimeout((function (isStopRender) {
+                        renderAutoSave();
+                        console.log(isStopRender);
+                        if (isStopRender){
+                            moduleEditorParams.renderMod = undefined;
+                            return;
+                        }
                         var text = editor.getValue();
                         //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
                             //text = filterSensitive(text) || text;
                         //}
                         mdwiki.render(text);
-                        renderAutoSave();
+
+                        var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
+                        moduleEditorParams.show_type = "knowledge";
+                        moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
 
                         timer = undefined;
-                    }, 100);
+                    })(isStopRender), 100);
                 });
                 mdwiki.bindRenderContainer(".result-html");
                 editor.focus();
@@ -2900,12 +2911,6 @@ define([
                     }
 
                     currentPage.isFirstEditor = undefined;
-
-                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                    var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
-                    var isOutMod = (toLineInfo && toLineInfo.handle.gutterClass && toLineInfo.handle.gutterClass.indexOf("editingLine") >= 0); 
-                    moduleEditorParams.show_type = "knowledge";
-                    moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
 
                     /*
                     changeTimer && clearTimeout(changeTimer);
