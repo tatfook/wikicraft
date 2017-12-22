@@ -569,6 +569,20 @@ define([
 		return base32.decode(str);
 	}
 
+    //合并参数
+    util.mergeParams = function(otherObj, thisObj){
+        var Oparams_template = otherObj.params_template;
+        var Tparams_template = thisObj.params_template;
+
+        for(itemA in Tparams_template){
+            for(itemB in Oparams_template){
+                if(itemA != itemB){
+                    Tparams_template[itemB] = Oparams_template[itemB];
+                }
+            }
+        }
+    }
+
     config.util = util;
     return util;
 });
