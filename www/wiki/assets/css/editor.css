@@ -506,6 +506,10 @@ select.resize-view {
     position: absolute;
     left: 271px;
     z-index: 11;
+    cursor: pointer;
+}
+.wikiEditor .fake-icon:hover{
+    transform: scale(1.211);
 }
 .wikiEditor .fake-icon.add-before{
     top: -19px;

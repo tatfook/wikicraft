@@ -29,6 +29,7 @@ define([
         var editor;
         var designViewWidth = 350, win;
         var lineClassesMap = [];
+        var fakeIconDom = [];
 		// 转换数据格式
 		function get_order_list(obj){
 			var list = [];
@@ -56,7 +57,7 @@ define([
 
 		// 隐藏事件
 		$scope.click_hide = function(data) {
-            data.is_show = !data.is_show;
+            data.is_show = angular.isUndefined(data.is_show) ? "false":!data.is_show;
             applyAttrChange();
 		}
 
@@ -231,12 +232,29 @@ define([
             });
         }
 
+        function setFakeIconPosition(){
+            fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".fake-icon");
+            if (fakeIconDom.length <= 0) {
+                setTimeout(function(){
+                    setFakeIconPosition();
+                }, 300);
+                return;
+            }
+            var boxWidth = $("#preview").width();
+            var leftDistance = boxWidth/2;
+            var scaleSize = $rootScope.scaleSelect.scaleValue;
+            fakeIconDom.css({
+                "left" : leftDistance / scaleSize
+            });
+        }
+
 		function init() {
             editor = editor || $rootScope.editor || {};
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
 			//moduleEditorParams.$scope = $scope;
 			moduleEditorParams.setEditorObj = function(obj) {
+                setFakeIconPosition();
 				moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 var selectObj = moduleEditorParams.selectObj;
 				if (selectObj) {

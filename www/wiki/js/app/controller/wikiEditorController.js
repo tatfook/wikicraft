@@ -2572,7 +2572,6 @@ define([
                     renderTimer && clearTimeout(renderTimer);
                     renderTimer = setTimeout((function (isStopRender) {
                         renderAutoSave();
-                        console.log(isStopRender);
                         if (isStopRender){
                             moduleEditorParams.renderMod = undefined;
                             return;
@@ -3036,6 +3035,7 @@ define([
                     var scaleSize=getScaleSize();
                     $scope.scales[$scope.scales.length-1].scaleValue=scaleSize;
                     $scope.scaleSelect=$scope.scales[$scope.scales.length-1];//比例的初始状态为 “适合宽度”
+                    $rootScope.scaleSelect = $scope.scaleSelect;
                     util.$apply();
                 }
 
