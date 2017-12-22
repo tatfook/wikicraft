@@ -40,8 +40,6 @@ define([
 			$scope.editorMode = wikiBlock.editorMode;
 			$scope.isPageTemplate = wikiBlock.isPageTemplate;
 			$scope.mode = wikiBlock.mode;
-			$scope.committer_name = pageinfo.committer_name.substring(11);
-			$scope.committed_date = pageinfo.committed_date.substring(0,10);
 
 			for (var i = 0; i < modParams.rows.list.length; i++) {
 				var row = modParams.rows.list[i];
@@ -66,6 +64,10 @@ define([
 					var pageinfo = $rootScope.pageinfo;
 					var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
 					if (contentUrl && currentDataSource){
+						var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/"; 
+						if (contentUrl.indexOf(urlPrefix) != 0){
+							contentUrl = urlPrefix + contentUrl;
+						}
 						currentDataSource.getRawContent({
 							path:contentUrl+config.pageSuffixName, 
 							isShowLoading:false
