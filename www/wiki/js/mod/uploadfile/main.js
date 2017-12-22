@@ -8,7 +8,7 @@ define([
             $scope.imgsPath1 = config.wikiModPath + 'uploadfile/';
             
             var server_host = "121.14.117.219";
-            var server_port = 82;
+            var server_port = 81;
             var server_name = "ConverterServer";
 
             $scope.fileCheckAndUpload = (function(){
