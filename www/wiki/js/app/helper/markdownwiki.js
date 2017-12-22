@@ -238,7 +238,7 @@ define([
                 if (block.isTemplate) {
                     $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
-					console.log($("#"+mdwiki.getMdWikiContainerId()));
+					//console.log($("#"+mdwiki.getMdWikiContainerId()));
                 }
                 util.html('#' + blockCache.containerId, htmlContent);
 
@@ -318,8 +318,8 @@ define([
 							// 列表不作默认隐藏
 						}
 					} else {
-						datas.is_show = datas.is_show == undefined ? datas.editable : datas.is_show;
-						if (datas.is_show) {
+						//datas.is_show = data.is_show == undefined ? datas.editable : datas.is_show;
+						//if (datas.is_show) {
 							// 暂不支持单值 应都对象 因为至少存在 text, is_hide 两个值
 							if (typeof(data) != "object")  {
 								datas.value = data;
@@ -342,7 +342,7 @@ define([
 								}
 								datas.is_show = data.is_show;
 							}
-						}
+						//}
 						datas.id = util.getId();
 						datas.data = data;
 						datas.containerId = self.containerId;
@@ -390,7 +390,7 @@ define([
 
 				self.blockCache.adiObj = obj;
 				obj.scope.params = self.modParams;
-				console.log(self.modParams);
+				//console.log(self.modParams);
 				//console.log(self.format_params_template, self.modParams);
 				//console.log(self.modParams);
 
@@ -422,7 +422,7 @@ define([
 				}
 				config.services.$rootScope.viewEditorClick = function(obj, $event) {
 					var self = getSelf(obj);	
-					if (!self) {
+					if (!self || !self.blockCache) {
 						return;
 					}
 					if ($event) {
@@ -452,6 +452,7 @@ define([
 						obj = self.format_params_template;
                     }
 					moduleEditorParams.wikiBlock = self;
+					//console.log(self);
                     moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
@@ -463,6 +464,7 @@ define([
 				config.services.$rootScope.viewDesignClick = function(obj, $event) {
 					var self = getSelf(obj);	
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+					//console.log(self);
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "design";
@@ -474,8 +476,16 @@ define([
 				var containerId = "#" + self.containerId;
 				//if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
                     var modContainer = $(containerId);
+					var $rootScope = config.services.$rootScope;
                     // console.log(modContainer);
                     modContainer.on("click", function (e) {
+						if (self.blockCache.block.isTemplate && !self.blockCache.block.isPageTemplate) {
+							//config.services.$rootScope.viewEditorClick(""+self.containerId+"");
+							var pageinfo = $rootScope.pageinfo;
+							var urlObj = {username: pageinfo.username, sitename:pageinfo.sitename, pagename:"_theme"};
+							$rootScope.$broadcast('changeEditorPage', urlObj);
+							return;
+						}
                         $(".mod-container.active").removeClass("active");
                         modContainer.addClass("active");
                         config.services.$rootScope.viewEditorClick(""+self.containerId+"");
@@ -532,9 +542,9 @@ define([
 					for (var j = start; j < block.textPosition.from; j++) {
 						$(selector).append('<br/>');
 					}
-					start = block.textPosition.to + 1;
-                    $(selector).append("<div></div>");
                 }
+				start = block.textPosition.to + 1;
+				$(selector).append("<div></div>");
                 continue;
             }
 
@@ -627,7 +637,7 @@ define([
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         //if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
-        if (pageinfo && mdwiki.options.use_template) {
+		if (pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
 			if (currentDataSource) {
 				currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName, isShowLoading:false}, function (content) {

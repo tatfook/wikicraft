@@ -40,6 +40,8 @@ define([
 			$scope.editorMode = wikiBlock.editorMode;
 			$scope.isPageTemplate = wikiBlock.isPageTemplate;
 			$scope.mode = wikiBlock.mode;
+			$scope.committer_name = pageinfo.committer_name.substring(11);
+			$scope.committed_date = pageinfo.committed_date.substring(0,10);
 
 			for (var i = 0; i < modParams.rows.list.length; i++) {
 				var row = modParams.rows.list[i];
@@ -98,9 +100,8 @@ define([
 				var params_template = {
 					design:{
 						is_leaf:true,
-						type:"text",
-						is_show: false,		
-						require: true,
+						editable:false,
+						require:true,
 						text:"style1",
 					},
 					rows:{
@@ -130,10 +131,9 @@ define([
 					for (var j = 0; j < row.cols.list.length; j++) {
 						var col = row.cols.list[j];
 						params.cols.list.push({
-							is_leaf: true,
+							is_leaf: !col.isMainContent,
 							type:"page",
 							editable: !col.isMainContent,
-							//is_show: true,
 							require:false,
 							name: "行" + (i+1) + "列" + (j+1),
 							content: col.content,
@@ -142,6 +142,7 @@ define([
 					}
 				}
 
+				//console.log(params_template);
 				return params_template;
 			}
 

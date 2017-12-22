@@ -192,7 +192,7 @@ define([
 				for (var key in obj) {
 					// 优先写非对象值
 					value = obj[key];
-					if (mdconf.filter(key) || typeof(value) == "object") {
+					if (value == undefined || mdconf.filter(key) || typeof(value) == "object") {
 						continue;
 					}
 					text += "- " + key + " : " + value + "\n";
@@ -210,6 +210,9 @@ define([
 			} else {
 				for (var i = 0; i < obj.length; i++) {
 					value = obj[i];
+					if (value == undefined) {
+						continue;
+					}
 					if (typeof(value) != "object") {
 						text += "- " + obj[i] + "\n";
 						continue;

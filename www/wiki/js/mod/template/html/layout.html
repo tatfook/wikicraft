@@ -13,6 +13,7 @@
 	<div ng-hide="mode == 'preview'">
 		<div>
 			<span>{{isPageTemplate ? "当前页" : "_theme"}}</span>
+			<span>{{committer_name + "于" + committed_date + "更新"}}</span>
 			<!--<span><a>{{$rootScope.pageinfo.username}}</a></span>-->
 		</div>
 		<div ng-repeat="row in params.rows.list track by $index" ng-class="row.class" ng-style='row.style'>

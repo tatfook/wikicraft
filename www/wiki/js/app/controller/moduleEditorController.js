@@ -31,10 +31,10 @@ define([
         var lineClassesMap = [];
 		// 转换数据格式
 		function get_order_list(obj){
-			console.log(obj);
+			//console.log(obj);
 			var list = [];
 			for (var key in obj) {
-				if (typeof(obj[key]) == "object" && obj[key].editable) {
+				if (typeof(obj[key]) == "object" && obj[key].is_leaf && obj[key].editable) {
 					list.push(obj[key]);
 				}
 			}
@@ -55,7 +55,7 @@ define([
 				var obj = list[i];
 				if (obj.type == "simple_list") {
 					for (var j = 0; j < obj.list.length; j++) {
-						if (obj.list[j].is_show){
+						if (obj.list[j].is_leaf && obj.list[j].editable){
 							newList.push(obj.list[j]);
 						}
 					}
@@ -69,7 +69,7 @@ define([
 				}
 			}
 
-			console.log(newList);
+			//console.log(newList);
 			return newList;
 		}
 
