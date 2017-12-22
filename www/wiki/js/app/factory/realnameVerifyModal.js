@@ -101,6 +101,9 @@ define([
 
     app.factory('realnameVerifyModal', ['$uibModal', function ($uibModal) {
         function realnameVerifyModal(successCallback, errorCallback) {
+			if (config.isLocal()) {
+				return Promise.resolve();
+			}
             return new Promise(function(resolve, reject) {
                 $uibModal.open({
                     template: htmlContent,

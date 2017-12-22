@@ -46,6 +46,7 @@ define([
         content:'',
         contentUrl:'',
         isMainContent: true,
+		isStylePreview: false,
 		//class:'container-fluid',
         //style:{"background-color": "silver"},
         //frameHeaderExist: false,
