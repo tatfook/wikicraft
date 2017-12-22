@@ -48,7 +48,7 @@ define([
 					if (col.isMainContent) {
 						//col.content = wikiBlock.content;
 					}
-					col.id = wikiBlock.containerId + "_templeate_" + i + "_" + j;
+					col.$kp_id = wikiBlock.containerId + "_templeate_" + i + "_" + j;
 				}
 			}
 
@@ -83,11 +83,10 @@ define([
 						var row = modParams.rows.list[i];
 						for (var j = 0; j < row.cols.list.length; j++) {
 							var col = row.cols.list[j];
-							console.log($("#"+col.id), col);
 							if (col.isMainContent) {
-								util.html("#" + col.id, wikiBlock.content);
+								util.html("#" + col.$kp_id, wikiBlock.content);
 							} else {
-								render(col.id, col.content, col.contentUrl);
+								render(col.$kp_id, col.content, col.contentUrl);
 							}
 						}
 					}

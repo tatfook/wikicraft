@@ -17,7 +17,7 @@
 		</div>
 		<div ng-repeat="row in params.rows.list track by $index" ng-class="row.class" ng-style='row.style'>
 			<div ng-repeat="col in row.cols.list track by $index" ng-class="col.class" ng-style='col.style'>
-				<div id="{{col.id}}"></div>
+				<div id="{{col.$kp_id}}"></div>
 			</div>
 		</div>
 	</div>

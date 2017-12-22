@@ -256,7 +256,6 @@ define([
 				$scope.design_view_list = [];
 				for (var i = 0; i < style_list.length; i++) {
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
-					modParams.isStylePreview = true;
 					modParams = angular.merge(modParams, style_list[i]);
                     $scope.styles[i] = modParams;
 					var md = markdownwiki({mode:"preview", html:true, use_template:false});
