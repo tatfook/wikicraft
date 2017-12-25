@@ -32,6 +32,15 @@ define([
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
                     },
+                    multiText:{
+                        is_leaf: true,
+                        type:"multiText",
+                        editable: true,
+                        name: "多行文本",
+                        text: "多行文本内容",
+                        href: "",
+                        target: "_blank"
+                    },
                     menu:{
                         is_leaf: true,
                         type: "menu",

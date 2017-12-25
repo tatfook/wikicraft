@@ -29,7 +29,13 @@
 				<div style="text-align:center; font-size:16px">
 					{{params.subtitle.text}}
 				</div>
-			</div>
+            </div>
+            <div ng-click="viewEditorClick(params.multiText)" class="kp_module_editor_input_tag">
+                    <div style="text-align:center; font-size:18px">
+                        {{params.multiText.text}}
+                        <p>link: <a href="{{params.multiText.text}}" target="{{params.multiText.target}}">{{params.multiText.link}}</a></p>
+                    </div>
+                </div>
 			<div ng-click="viewEditorClick(params.paragraph)" class="kp_module_editor_input_tag">
 				<div style="text-align:center; font-size:18px">
 					{{params.paragraph.text}}
