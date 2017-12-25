@@ -18,6 +18,7 @@ define([
         count: 0,    // markdownwiki 数量
     };
 
+	config.mdwikiMap = mdwikiMap;
 	var wikiBlockMap = {};
 
 	function getWikiBlock(containerId) {
@@ -29,6 +30,7 @@ define([
         mdwikiMap[mdwikiName] = mdwikiMap[mdwikiName] || {};
         return mdwikiMap[mdwikiName];
     }
+
 
     // 获得模块路径
     function getModPath(cmdName) {
@@ -225,6 +227,7 @@ define([
             cmdName: wikiBlock.cmdName,
             modParams: wikiBlock.modParams || {},
             editorMode: mdwiki.options.editorMode,
+			mode: mdwiki.mode,
 			containerId: blockCache.containerId,
 			blockList:mdwiki.blockList,
             isEditorEnable: function () {
@@ -233,9 +236,20 @@ define([
             isPageTemplate: block.isPageTemplate,   // 是页内模板则可编辑   wiki tempate block 使用此字段判断当前是否可以编辑
 			content: block.isTemplate ? defaultTemplateContent : undefined, // 模板模块使用
             render: function (htmlContent) {
+				var self = this;
                 if (block.isTemplate) {
-                    $('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
+					var childrens = $("#" + mdwiki.getMdWikiContainerId()).children();
+					for (var i = 0; i < childrens.length; i++){
+						var temp = $(childrens[i]);
+						//console.log(temp, typeof(temp));
+						if (temp.attr("id") == mdwiki.getMdWikiTempContentContainerId()) {
+							continue;
+						}
+						temp.remove();
+					}
+                    //$('#' + mdwiki.getMdWikiContentContainerId()).remove();  // 删除旧模板  插入新模板
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
+					//console.log($("#"+mdwiki.getMdWikiContainerId()));
                 }
                 htmlContent = '<span class="fake-icon add-before" ng-click="insertMod(\'before\')">+</span>'
                             +'<span class="fake-icon add-after" ng-click="insertMod(\'after\')">+</span>'
@@ -244,7 +258,13 @@ define([
 
                 blockCache.domNode = $('#' + blockCache.containerId);
                 if (block.isTemplate) {
-                    setMdWikiContent(mdwiki);
+					if (self.selfLoadContent) {
+						self.loadContent = function() {
+							setMdWikiContent(mdwiki);
+						}
+					} else {
+						setMdWikiContent(mdwiki);
+					}
                 }
 
 				//moduleEditorInit(blockCache.containerId, wikiBlockParams);
@@ -260,6 +280,7 @@ define([
 					//modParams = angular.toJson(modParams, 4);
 					modParams = mdconf.jsonToMd(modParams);
                 }
+				console.log(modParams, pos);
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
                     ch: 0
@@ -272,6 +293,7 @@ define([
 				}
 
 				var self = this;
+				//console.log(datas);
 				if (datas.is_leaf == true) {
 					datas.type = datas.type || "text";
 					data = data || {};
@@ -310,20 +332,18 @@ define([
 							// 列表不作默认隐藏
 						}
 					} else {
-						datas.is_show = datas.is_show == undefined ? datas.editable : datas.is_show;
-						if (datas.is_show) {
+						//datas.is_show = data.is_show == undefined ? datas.editable : datas.is_show;
+						//if (datas.is_show) {
 							// 暂不支持单值 应都对象 因为至少存在 text, is_hide 两个值
 							if (typeof(data) != "object")  {
 								datas.value = data;
 							} else {
 								if (datas.type == "text") {
 									datas.text = data.text;
-								}
-								if (datas.type == "link") {
+								} else if (datas.type == "link") {
 									datas.text = data.text;
 									datas.href = data.href;
-								}
-								if (datas.type == "list") {
+								} else if (datas.type == "list" || datas.type == "simple_list") {
 									if (!angular.isArray(data.list)) {
 										data.list = [];
 									}
@@ -331,10 +351,12 @@ define([
 										datas.list[i] = datas.list[i] || angular.copy(datas.list[0]);
 										self.formatModParams(key + ".list." + i, datas.list[i], data.list[i]);
 									}
+								} else {
+									//datas = angular.merge(datas, data);
 								}
 								datas.is_show = data.is_show;
 							}
-						}
+						//}
 						datas.id = util.getId();
 						datas.data = data;
 						datas.containerId = self.containerId;
@@ -382,6 +404,7 @@ define([
 
 				self.blockCache.adiObj = obj;
 				obj.scope.params = self.modParams;
+				//console.log(self.modParams);
 				//console.log(self.format_params_template, self.modParams);
 				//console.log(self.modParams);
 
@@ -389,18 +412,31 @@ define([
 					return;
 				}
 
+				
+				if (moduleEditorParams && moduleEditorParams.wikiBlock) {
+					var oldWikiBlock = moduleEditorParams.wikiBlock;
+					var oldPos = oldWikiBlock.blockCache.block.textPosition;
+					var pos = self.blockCache.block.textPosition;
+					if (oldPos.from == pos.from) {
+						moduleEditorParams.wikiBlock = self;
+						console.log("更新wikiblock");
+					}
+				}
+
 				var getSelf = function(obj){
+					//console.log(obj);
 					if (typeof(obj) == "string") {
 						return getWikiBlock(obj);
-					} else if (angular.isArray(obj) && obj.length > 0) {
+					} else if (angular.isArray(obj) && obj.length > 0 && obj[0].$kp_datas && obj[0].$kp_datas.containerId) {
 						return getWikiBlock(obj[0].$kp_datas.containerId);	
-					} else if (angular.isObject(obj)){
+					} else if (angular.isObject(obj) && obj.$kp_datas && obj.$kp_datas.containerId){
 						return getWikiBlock(obj.$kp_datas.containerId);
 					}
+					return undefined;
 				}
 				config.services.$rootScope.viewEditorClick = function(obj, $event) {
 					var self = getSelf(obj);	
-					if (!self) {
+					if (!self || !self.blockCache) {
 						return;
 					}
 					if ($event) {
@@ -444,6 +480,7 @@ define([
 				config.services.$rootScope.viewDesignClick = function(obj, $event) {
 					var self = getSelf(obj);	
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+					//console.log(self);
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "design";
@@ -453,10 +490,20 @@ define([
 				}
 
 				var containerId = "#" + self.containerId;
-				if (!self.blockCache.block.isTemplate || self.blockCache.block.isPageTemplate) {
+				if (!self.blockCache.block.isTemplate) {
                     var modContainer = $(containerId);
+					var $rootScope = config.services.$rootScope;
                     // console.log(modContainer);
                     modContainer.on("click", function (e) {
+						if (self.blockCache.block.isTemplate && !self.blockCache.block.isPageTemplate) {
+							//config.services.$rootScope.viewEditorClick(""+self.containerId+"");
+							var pageinfo = $rootScope.pageinfo;
+							var urlObj = {username: pageinfo.username, sitename:pageinfo.sitename, pagename:"_theme"};
+							$rootScope.$broadcast('changeEditorPage', urlObj);
+							return;
+						}
+                        $(".mod-container.active").removeClass("active");
+                        modContainer.addClass("active");
                         config.services.$rootScope.viewEditorClick(""+self.containerId+"");
                         util.$apply();	
                     });
@@ -472,12 +519,14 @@ define([
 					// });
 				}
 
-				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor && moduleEditorParams.show_type == "editor") {
+				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor) {
 					var cursor_pos = editor.getCursor();
 					var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
 					var pos = blockCache.block.textPosition;
 					if (cursor_line_no > pos.from && cursor_line_no < pos.to) {
-						scope.viewEditorClick();
+						//scope.viewEditorClick();
+						moduleEditorParams.wikiBlock = self;
+						console.log("更新wikiblock");
 					}
 				}
 			},
@@ -509,9 +558,9 @@ define([
 					for (var j = start; j < block.textPosition.from; j++) {
 						$(selector).append('<br/>');
 					}
-					start = block.textPosition.to + 1;
-                    $(selector).append("<div></div>");
                 }
+				start = block.textPosition.to + 1;
+				$(selector).append("<div></div>");
                 continue;
             }
 
@@ -578,24 +627,25 @@ define([
         var tplinfo = util.getAngularServices().$rootScope.tplinfo;
         var existTemplate = isExistTemplate(mdwiki, text);
         mdwiki.templateLineCount = 0;
-        mdwiki.template = undefined;
+        mdwiki.template = {};
 
         var _render = function () {
             var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
+			//console.log(text, mdwiki.template, mdwikiName);
             for (var i = 0; i < blockList.length; i++) {
                 blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
                 blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
             }
 
-            if (mdwiki.template) {
-                if (mdwiki.templateLineCount) {
-                    mdwiki.template.isPageTemplate = false;
-                } else {
-                    mdwiki.template.isPageTemplate = true;
-                }
-            }
+			if (mdwiki.template) {
+				if (mdwiki.template.textPosition && mdwiki.template.textPosition.from < 0) {
+					mdwiki.template.isPageTemplate = false;
+				} else {
+					mdwiki.template.isPageTemplate = true;
+				}
+			}
 
-            if (!mdwiki.template || mdwiki.template.blockCache.domNode) {// 模板不存在 且默认模板也不存在
+            if (!mdwiki.template || !mdwiki.template.blockCache || mdwiki.template.blockCache.domNode) {// 模板不存在 且默认模板也不存在 模板未改动
                 setMdWikiContent(mdwiki);
                 return;
             }
@@ -604,7 +654,8 @@ define([
         };
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
-        if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
+        //if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
+		if (pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
 			if (currentDataSource) {
 				currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName, isShowLoading:false}, function (content) {
@@ -662,6 +713,7 @@ define([
 
         var mdwiki = getMdwiki(mdwikiName);
         mdwiki.editorMode = options.editorMode;
+		mdwiki.mode = options.mode || "normal";
         mdwiki.md = md;
         mdwiki.mdwikiName = mdwikiName;
         mdwiki.renderCount = 0;
@@ -722,6 +774,7 @@ define([
 			if (curBlock && curBlock.blockCache.isWikiBlock) {
 				// wiki mod todo
 				curBlock.blockCache.wikiBlockParams.scope && curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+
 			} else {
 				// 非wiki mod todo
 			}
@@ -741,9 +794,10 @@ define([
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+			var tplheaderContent = '<tplheader data-mdwikiname="' + mdwiki.mdwikiName + '"></tplheader>';
             var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
-            return htmlContent + scriptContent;
+            return tplheaderContent + htmlContent + scriptContent;
         }
 
         mdwiki.bindRenderContainer = function (selector) {
@@ -752,9 +806,11 @@ define([
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
-            var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+			var tplheaderContent = '<tplheader data-mdwikiname="' + mdwiki.mdwikiName + '"></tplheader>';
+			var htmlContent = tplheaderContent + '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             mdwiki.clearBlockCache();
-            $(selector).html(htmlContent);
+            //$(selector).html(htmlContent);
+            util.html(selector, htmlContent);
         }
 
         mdwiki.getMdWikiContainerId = function () {
@@ -876,6 +932,25 @@ define([
             }
         }
 
+		// 模板匹配
+		mdwiki.templateMatch = function(wikiBlock) {
+			var modParams = wikiBlock.modParams;
+			var pageinfo = util.getAngularServices().$rootScope.pageinfo;
+
+			var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
+			var pagePath = pageinfo.url.substring(urlPrefix.length);
+
+			if (typeof(modParams) != "object" || !modParams.urlMatch) {
+				return true;
+			}
+			// 存在urlMatch 字段 做一个子串匹配
+			if (pagePath && pagePath.indexOf(modParams.urlMatch) >= 0) {
+				return true;
+			}
+
+			return false;
+		}
+
         // 解析文本
         mdwiki.parse = function (text) {
             //console.log(text);
@@ -890,6 +965,7 @@ define([
                 content: '',
                 info: '',
             }
+			mdwiki.template = undefined;
             for (var i = 0; i < tokenList.length; i++) {
                 var token = tokenList[i];
                 if (token.type.indexOf('_open') >= 0) {
@@ -918,7 +994,7 @@ define([
                     block.blockCache = mdwiki.getBlockCache(block.content, token);
 					block.blockCache.block = block;
                     block.isTemplate = block.blockCache.isTemplate;
-                    if (block.blockCache.isTemplate) {
+                    if (block.blockCache.isTemplate && mdwiki.templateMatch(block.blockCache.wikiBlock)) {
                         mdwiki.template = block;
                     }
                     blockList.push(block);

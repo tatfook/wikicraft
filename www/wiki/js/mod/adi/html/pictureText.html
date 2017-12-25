@@ -6,7 +6,7 @@
     }
     .picture-one{
         width:100%;
-        height: 520px;
+        height: auto;
         padding-left: 80px;
         padding-right: 80px;
     }
@@ -23,7 +23,7 @@
         height:250px;
         text-align: center;
         line-height: 250px;
-        background: rgb(162, 162, 162);
+        background: rgb(227, 224, 224);
     }
     .picture-body .picture-img img{
         width:100%;
@@ -40,17 +40,14 @@
     /* style2 css */
 
 </style>
+
 <div ng-controller="pictureTextController">
     <div ng-if='params.design.text=="style1"'>
-        <div class="picture-one">
-            <div class="picture-head">
-                <h1>{{params.hOne.text}}</h1>
-                <h2>{{params.hTwo.text}}</h2>
-            </div>
+        <div class="picture-one clearfix">
             <div class="picture-body">
                 <div class="picture-img">
-                    <div ng-if="params.img.text.length == 0">picture</div>
-                    <img ng-if="params.img.text.length > 0" src="{{params.img.text}}">
+                    <div ng-if="params.pictureTextImg.text.length == 0">YOUR PICTURE</div>
+                    <img ng-if="params.pictureTextImg.text.length > 0" src="{{params.pictureTextImg.text}}">
                 </div>
                 <div class="picture-span">
                     <span>{{params.spanOne.text}}</span>

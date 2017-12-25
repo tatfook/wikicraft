@@ -280,6 +280,11 @@ define([
             }, errcb);
         }
 
+		gitlab.getSingleCommit = function(data, cb, errcb) {
+            var url = '/projects/' + this.projectId + '/repository/commits/' + data.sha;
+			this.httpRequest("GET", url, data, cb, errcb);
+		}
+
         // commit
         gitlab.listCommits = function (data, cb, errcb) {
             //data.ref_name = data.ref_name || 'master';
@@ -334,6 +339,16 @@ define([
             });
         }
 
+		gitlab.getFile = function(params, cb, errcb) {
+            var self = this;
+            params.path = self.getLongPath(params).substring(1);
+            var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+            params.ref = params.ref || self.lastCommitId;
+            self.httpRequest("GET", url, params, function (data) {
+                data.content = data.content && Base64.decode(data.content);
+                cb && cb(data);
+            }, errcb);
+		}
         // 获取文件
         gitlab.getContent = function (params, cb, errcb) {
             var self = this;

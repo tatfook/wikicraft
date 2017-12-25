@@ -61,6 +61,7 @@ define([
     //'directive/directive', // 不支持打包 动态加载
     'directive/moduleDirective',
     'directive/userpage',
+    'directive/tplheader',
     'directive/wikiImage',
     'directive/wikiLink',
     'directive/wikiUISelect',

@@ -32,9 +32,10 @@ define([
         var fakeIconDom = [];
 		// 转换数据格式
 		function get_order_list(obj){
+			//console.log(obj);
 			var list = [];
 			for (var key in obj) {
-				if (typeof(obj[key]) == "object" && obj[key].editable) {
+				if (typeof(obj[key]) == "object" && obj[key].is_leaf && obj[key].editable) {
 					list.push(obj[key]);
 				}
 			}
@@ -50,8 +51,27 @@ define([
 					}
 				}
 			}
+			var newList = [];
+			for (var i = 0; i < list.length; i++) {
+				var obj = list[i];
+				if (obj.type == "simple_list") {
+					for (var j = 0; j < obj.list.length; j++) {
+						if (obj.list[j].is_leaf && obj.list[j].editable){
+							newList.push(obj.list[j]);
+						}
+					}
+				} else if(obj.type == "list"){
+					for (var j = 0; j < obj.list.length; j++) {
+						var temp = obj.list[j];
+						newList = newList.concat(get_order_list(temp));
+					}
+				} else {
+					newList.push(obj);
+				}
+			}
 
-			return list;
+			//console.log(newList);
+			return newList;
 		}
 
 
@@ -300,7 +320,7 @@ define([
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
 					modParams = angular.merge(modParams, style_list[i]);
                     $scope.styles[i] = modParams;
-					var md = markdownwiki({html:true, use_template:false});
+					var md = markdownwiki({mode:"preview", html:true, use_template:false});
                     var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";
                     var view = md.render(text);
                     var design = {

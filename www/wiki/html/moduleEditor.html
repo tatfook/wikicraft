@@ -242,6 +242,24 @@
                             <div ng-if="data.type == 'menu'" class="center-center">
                                 <button class="btn menu-btn" ng-click="openMenuEditor(data.data)">打开菜单编辑器</button>
                             </div>
+							<div ng-if="data.type == 'page'">
+								<div>
+									<div>
+										填充文件:
+									</div>
+									<div>
+										<input ng-model="data.data.contentUrl"/>
+									</div>
+								</div>
+								<div>
+									<div>
+										填充内容:
+									</div>
+									<div>
+										<textarea ng-model="data.data.content"></textarea>
+									</div>
+								</div>
+							</div>
                             <!-- 链接 -->
                             <!-- <div ng-if="data.type == 'link'">
                                 <input id="{{data.id}}" type="text" ng-model="data.data.text">

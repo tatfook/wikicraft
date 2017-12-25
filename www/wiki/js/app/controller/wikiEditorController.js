@@ -1253,9 +1253,14 @@ define([
                     var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
                     //console.log(currentDataSource);
                     if (currentDataSource) {
-                        currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
+                        //currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
+                        currentDataSource.getFile({path: url + pageSuffixName}, function (data) {
                             //console.log(data);
-                            cb && cb(data);
+                            cb && cb(data.content);
+							currentDataSource.getSingleCommit({sha:data.last_commit_id}, function(data){
+								page.committer_name = data.committer_name;
+								page.committed_date = data.committed_date;
+							})
                         }, errcb);
                     } else {
                         //console.log("----------data source uninit-------------");
