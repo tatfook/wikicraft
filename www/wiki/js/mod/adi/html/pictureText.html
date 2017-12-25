@@ -37,6 +37,19 @@
     .picture-btn{
         float: right;
     }
+    /* style1 css 伪类 */
+    .picture-head h1 a:link  , .picture-head h1 a:visited , 
+    .picture-head h1 a:hover , .picture-head h1 a:active {
+        color: black;
+    }
+    .picture-head h2 a:link  , .picture-head h2 a:visited , 
+    .picture-head h2 a:hover , .picture-head h2 a:active {
+        color: rgb(206, 206, 206);
+    }
+    .picture-span span a:link  , .picture-span span a:visited ,
+    .picture-span span a:hover , .picture-span span a:active {
+        color: black;
+    }
     /* style2 css */
 
 </style>
@@ -44,13 +57,17 @@
 <div ng-controller="pictureTextController">
     <div ng-if='params.design.text=="style1"'>
         <div class="picture-one clearfix">
+            <div class="picture-head">
+                <h1><a href="{{params.hOne.href}}">{{params.hOne.text}}</a></h1>
+                <h2><a href="{{params.hTwo.href}}">{{params.hTwo.text}}</a></h2>
+            </div>
             <div class="picture-body">
                 <div class="picture-img">
                     <div ng-if="params.pictureTextImg.text.length == 0">YOUR PICTURE</div>
-                    <img ng-if="params.pictureTextImg.text.length > 0" src="{{params.pictureTextImg.text}}">
+                    <a href="{{params.pictureTextImg.href}}"><img ng-if="params.pictureTextImg.text.length > 0" src="{{params.pictureTextImg.text}}"></a>
                 </div>
                 <div class="picture-span">
-                    <span>{{params.spanOne.text}}</span>
+                    <span><a href="{{params.spanOne.href}}">{{params.spanOne.text}}</a></span>
                 </div>
             </div>
             <div class="picture-btn">
