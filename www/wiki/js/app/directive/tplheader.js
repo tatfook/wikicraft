@@ -22,7 +22,7 @@ define([
 				$scope.isShow = mdwiki.editorMode;
 				$scope.mdwiki = mdwiki;
 
-				console.log("---------------", $attrs.mdwikiname, mdwiki);
+				//console.log("---------------", $attrs.mdwikiname, mdwiki);
 				$scope.$watch("mdwiki.template" ,function(){
 					//console.log("================================", mdwiki.template, mdwiki);
 					template = mdwiki.template;
@@ -39,9 +39,13 @@ define([
 					if (!pageinfo) {
 						return;
 					}
-					console.log(pageinfo);
-					$scope.committer_name = pageinfo.committer_name.substring(11);
-					$scope.committed_date = pageinfo.committed_date.substring(0,10);
+					//console.log(pageinfo);
+					if (pageinfo.committer_name) {
+						$scope.committer_name = pageinfo.committer_name.substring(11);
+					}
+					if (pageinfo.committed_date) {
+						$scope.committed_date = pageinfo.committed_date.substring(0,10);
+					}
 
 				});
 				$scope.click = function(){
