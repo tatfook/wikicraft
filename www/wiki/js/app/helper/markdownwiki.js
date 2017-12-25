@@ -772,6 +772,13 @@ define([
 				}
 			}
 			if (curBlock && curBlock.blockCache.isWikiBlock) {
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                var moduleContainerId = moduleEditorParams.wikiBlock && moduleEditorParams.wikiBlock.blockCache.containerId;
+                var curContainerId = curBlock.blockCache.containerId;
+                var isContainerIdChange = (moduleContainerId != curContainerId);
+                if (!isContainerIdChange) {
+                    return;
+                }
 				// wiki mod todo
 				curBlock.blockCache.wikiBlockParams.scope && curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
 

@@ -158,6 +158,7 @@
 
     .module-editor .design-item{
         position: relative;
+        overflow: hidden;
     }
     .module-editor .design-item .design-view{
         width: 100%;
@@ -225,7 +226,7 @@
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item" ng-repeat="data in editorDatas">
+                    <div class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in editorDatas">
                         <div class="header">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[data.data.is_show == undefined || data.data.is_show]">

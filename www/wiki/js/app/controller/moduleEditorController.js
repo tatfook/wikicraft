@@ -162,8 +162,10 @@ define([
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			var modParams = $scope.styles[index];
             console.log(modParams);
+            moduleEditorParams.wikiBlock.modParams.design.text = modParams.design.text;
             $scope.selectedDesign = modParams.design.text;
 			if (moduleEditorParams.wikiBlock) {
+                moduleEditorParams.renderMod = "editorToCode";
 				moduleEditorParams.wikiBlock.applyModParams(modParams);
 			}
         }
@@ -249,6 +251,8 @@ define([
                 scrollbarHide: false,
                 slidesPerView: 'auto',
                 mousewheelControl: true,
+                resistanceRatio: 0,         // 不可脱离边缘
+                noSwiping: true,            // 在slide上增加类名 "swiper-no-swiping"，该slide无法拖动
             });
         }
 
@@ -287,6 +291,7 @@ define([
                 var blockLineNumTo = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
                 setCodePosition(blockLineNumFrom, blockLineNumTo);
 
+				moduleEditorParams.show_type = "editor";
 				$scope.show_type = "editor";
 
 				if (obj.is_leaf) {
@@ -313,6 +318,7 @@ define([
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 $scope.selectedDesign = moduleEditorParams.wikiBlock.modParams.design.text;
 				var style_list = moduleEditorParams.wikiBlock.styles || [];
+				moduleEditorParams.show_type = "design";
 				$scope.show_type = "design";
 				$scope.styles = [];
 				$scope.designDatas = [];
@@ -330,7 +336,7 @@ define([
                     }
 
                     $scope.designDatas.push(design);
-                    setDesignViewWidth();
+                    // setDesignViewWidth();
                 }
                 initSwiper("design");
             }
