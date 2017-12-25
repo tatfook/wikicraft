@@ -35,6 +35,15 @@
         margin-left: 10px;
         margin-top: -10px;
     }
+    /* style1 css 伪类 */
+    .h1 a:link  , .h1 a:visited ,
+    .h1 a:hover , .h1 a:active{
+        color: black;
+    }
+    .h2 a:link  , .h2 a:visited ,
+    .h2 a:hover , .h2 a:active{
+        color: rgb(196, 191, 191); 
+    }
 
     /* style2 css */
     .title2{
@@ -63,17 +72,27 @@
         font-size: 15px;
         color: rgb(196, 191, 191); 
     }
+    
+    /* style2 css 伪类 */
+    .h-one a:link  , .h-one a:visited ,
+    .h-one a:hover , .h-one a:active{
+        color: black;
+    }
+    .h-two a:link  , .h-two a:visited ,
+    .h-two a:hover , .h-two a:active{
+        color: rgb(196, 191, 191); 
+    }
 </style>
 <div ng-controller="titleController">
     <div ng-if='params.design.text=="style1"'>
         <div class="title container">
             <div class="img" ng-if="!params.img.is_show">
                 <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
-                <img ng-if="params.img.text.length > 0" src="{{params.img.text}}">
+                <a href="{{params.img.href}}" target="_blank"><img ng-if="params.img.text.length > 0" src="{{params.img.text}}"></a>
             </div>
             <div class="title-head">
-                <h1 class="h1" ng-hide="params.title.is_hide" ng-if="!params.hOne.is_show">{{params.hOne.text}}</h2>
-                <h2 class="h2" ng-hide="params.subtitle.is_hide" ng-if="!params.hTwo.is_show">{{params.hTwo.text}}</h1>
+                <h1 class="h1" ng-hide="params.title.is_hide" ng-if="!params.hOne.is_show"><a href="{{params.hOne.href}}" target="_blank">{{params.hOne.text}}</a></h1>
+                <h2 class="h2" ng-hide="params.subtitle.is_hide" ng-if="!params.hTwo.is_show"><a href="{{params.hTwo.href}}" target="_blank">{{params.hTwo.text}}</a></h2>
             </div>
         </div>
     </div>
@@ -81,11 +100,11 @@
         <div class="title2 container">
             <div class="img-two" ng-if="!params.img.is_show">
                 <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
-                <img ng-if="params.img.text.length > 0" src="{{params.img.text}}">
+                <a href="{{params.img.href}}" target="_blank"><img ng-if="params.img.text.length > 0" src="{{params.img.text}}"></a>
             </div>
             <div class="title-head2">
-                <h1 class="h-one" ng-hide="params.title.is_hide" ng-if="!params.hOne.is_show">{{params.hOne.text}}</h2>
-                <h2 class="h-two" ng-hide="params.subtitle.is_hide" ng-if="!params.hTwo.is_show">{{params.hTwo.text}}</h1>
+                <h1 class="h-one" ng-hide="params.title.is_hide" ng-if="!params.hOne.is_show"><a href="{{params.hOne.href}}" target="_blank">{{params.hOne.text}}</a></h1>
+                <h2 class="h-two" ng-hide="params.subtitle.is_hide" ng-if="!params.hTwo.is_show"><a href="{{params.hTwo.href}}" target="_blank">{{params.hTwo.text}}</a></h2>
             </div>
         </div>
     </div>
