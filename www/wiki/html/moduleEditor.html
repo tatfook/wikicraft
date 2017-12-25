@@ -1,6 +1,7 @@
 <style>
     .module-editor .nav-tabs {
         background-color: #F2F2F2;
+        padding-right: 60px;
     }
 
     .module-editor .nav-tabs>li>a {
@@ -12,6 +13,14 @@
         background-color: #FFFF;
         border: 1px solid #DDD;
         border-radius: 0;
+    }
+    .module-editor .nav-tabs>li>a.btn{
+        padding: 3px 22px;
+        font-size: 14px;
+    }
+    .module-editor .nav-tabs>li>a.btn>.iconfont{
+        margin-right: 8px;
+        vertical-align: middle;
     }
 
     .module-editor .nav-tabs>li.active>a {
@@ -29,6 +38,7 @@
         height: 200px;
         float: left;
         margin: 25px 0;
+        margin-right: 50px;
         border: 1px solid #DDD;
     }
 
@@ -67,8 +77,22 @@
     }
 
     .module-editor .swiper-button-next,
-    .module-editor .swiper-button-prev {
+    .module-editor .swiper-button-prev{
+        width: 60px;
+        height: 100%;
+        background-color: #FFF;
+        top: 0;
         background-image: none;
+        margin-top: 0;
+        right: 0;
+        text-align: center;
+        line-height: 250px;
+    }
+    .module-editor .swiper-button-prev{
+        left: 0;
+    }
+    .module-editor .glyphicon-chevron-right,
+    .module-editor .glyphicon-chevron-left {
         width: 36px;
         height: 36px;
         border: 1px solid #666;
@@ -187,19 +211,25 @@
             ng-click="tabTo('design')">
             <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab">样式</a>
         </li>
+        <!-- 删除模块按钮 -->
+        <li ng-hide="show_type == 'knowledge' || !show_type" ng-click="deleteMod()" class="pull-right">
+            <a class="btn"><i class="iconfont icon-bianjiqi-shanchu"></i>删除</a>
+        </li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">...知识库</div>
+        <div role="tabpanel" class="tab-pane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">
+            <p>{{lineContent ? lineContent : "知识库中暂无相关推荐内容"}}</p>
+        </div>
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item" ng-repeat="data in datas">
+                    <div class="swiper-slide attr-item" ng-repeat="data in editorDatas">
                         <div class="header">
                             <span class="attr-name">{{data.name}}</span>
-                            <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[!data.data.is_hide]">
-                                {{data.data.is_hide ? "关" : "开"}}
+                            <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[data.data.is_show == undefined || data.data.is_show]">
+                                {{(data.data.is_show == undefined || data.data.is_show) ? "开" : "关"}}
                             </div>
                         </div>
                         <div class="attr-content">
@@ -244,8 +274,12 @@
                 <!-- Add Arrows -->
                 <!-- <div class="swiper-button-next"></div> -->
                 <!-- <div class="swiper-button-prev"></div> -->
-                <div class="glyphicon swiper-button-next glyphicon-chevron-right"></div>
-                <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
+                <div class="swiper-button-next">
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </div>
+                <div class="swiper-button-prev">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                </div>
             </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="StyleSetting" ng-class="{true: 'active'}[show_type == 'design']">
@@ -253,7 +287,7 @@
                 <div class="swiper-wrapper">
                     <div class="swiper-slide attr-item design-item" 
                         ng-class="{true: 'active'}[design_view.text == selectedDesign]"
-                        ng-repeat="design_view in design_view_list track by $index"
+                        ng-repeat="design_view in designDatas track by $index"
                         ng-click="click_apply_design($index)"
                     >
                         <div class="design-view" wiki-html="design_view.view" ng-hide="design_view.cover"></div>
@@ -262,8 +296,12 @@
                     </div>
                 </div>
                 <div class="swiper-scrollbar"></div>
-                <div class="glyphicon swiper-button-next glyphicon-chevron-right"></div>
-                <div class="glyphicon swiper-button-prev glyphicon-chevron-left"></div>
+                <div class="swiper-button-next">
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </div>
+                <div class="swiper-button-prev">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                </div>
             </div>
         </div>
     </div>

@@ -251,6 +251,9 @@ define([
                     $('#' + mdwiki.getMdWikiContainerId()).prepend('<div id="' + blockCache.containerId + '"></div>');
 					//console.log($("#"+mdwiki.getMdWikiContainerId()));
                 }
+                htmlContent = '<span class="fake-icon add-before" ng-click="insertMod(\'before\')">+</span>'
+                            +'<span class="fake-icon add-after" ng-click="insertMod(\'after\')">+</span>'
+                            + htmlContent;
                 util.html('#' + blockCache.containerId, htmlContent);
 
                 blockCache.domNode = $('#' + blockCache.containerId);
@@ -462,8 +465,10 @@ define([
 					} else {
 						obj = self.format_params_template;
                     }
-					moduleEditorParams.wikiBlock = self;
-					//console.log(self);
+                    moduleEditorParams.wikiBlock = self;
+                    
+                    $(".mod-container.active").removeClass("active");
+                    self.blockCache.domNode.addClass("active");
                     moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
@@ -768,8 +773,8 @@ define([
 			}
 			if (curBlock && curBlock.blockCache.isWikiBlock) {
 				// wiki mod todo
-				config.services.$rootScope.viewEditorClick(curBlock.blockCache.containerId);
-				//curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+				curBlock.blockCache.wikiBlockParams.scope && curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+
 			} else {
 				// 非wiki mod todo
 			}
@@ -856,7 +861,7 @@ define([
 			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
             var modClass = "mod-container";
-            var htmlContent = '<div id="' + idx + '"' + ' class="' + modClass + '"' +'></div>';
+            var htmlContent = '<div id="' + idx + '"' + '></div>';
             var blockCache = undefined;
 
             //console.log(token);
