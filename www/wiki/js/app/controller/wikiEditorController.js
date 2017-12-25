@@ -619,6 +619,8 @@ define([
             $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
+
+            var fakeIconDom = [];
 //}}}
 
             // 格式化html文本
@@ -1414,7 +1416,11 @@ define([
             }//}}}
 
 
-            $scope.openWikiBlock = function () {//{{{
+            $scope.openWikiBlock = function (insertLine, type) {//{{{
+                $scope.insertMod = {
+                    "insertLine": insertLine,
+                    "type": type
+                };
                 function formatWikiCmd(text) {
                     var lines = text.split('\n');
                     var startPos = undefined, endPos = undefined;
@@ -1448,24 +1454,34 @@ define([
                     }
                 }
 
-                //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
                     size: 'lg',
                     backdrop:true
                 }, function (wikiBlock) {
-                    //console.log(wikiBlock);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
                     var cursor = editor.getCursor();
-                    var content = editor.getLine(cursor.line);
-                    if (content.length > 0) {
-                        wikiBlockContent = '\n' + wikiBlockContent;
-                    }
-                    editor.replaceSelection(wikiBlockContent);
+                    var toInsertLine = ($scope.insertMod.insertLine >= 0) ? $scope.insertMod.insertLine : cursor.line;
+                    var content = editor.getLine(toInsertLine);
+                    wikiBlockContent = '\n' + wikiBlockContent + '\n';
+                    editor.replaceRange(wikiBlockContent, {
+                        "line": toInsertLine,
+                        "ch": 0
+                    });
                 }, function (result) {
                     console.log(result);
                 });
             }//}}}
+
+            $rootScope.insertMod = function(type){
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                var modPositon = moduleEditorParams.wikiBlock.blockCache.block.textPosition;
+                if (type == "before") {
+                    $scope.openWikiBlock(modPositon.from, type);
+                }else {
+                    $scope.openWikiBlock(modPositon.to, type);
+                }
+            }
 
             $scope.openGitFile = function () {//{{{
                 if (!currentPage || !currentPage.url) {
@@ -2550,6 +2566,8 @@ define([
 				});
 
                 editor.on("change", function (cm, changeObj) {
+                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                    var isStopRender = moduleEditorParams.renderMod == "editorToCode";
                     changeCallback(cm, changeObj);
 
                     if (currentPage && currentPage.url) {
@@ -2557,16 +2575,24 @@ define([
                     }
 
                     renderTimer && clearTimeout(renderTimer);
-                    renderTimer = setTimeout(function () {
+                    renderTimer = setTimeout((function (isStopRender) {
+                        renderAutoSave();
+                        if (isStopRender){
+                            moduleEditorParams.renderMod = undefined;
+                            return;
+                        }
                         var text = editor.getValue();
                         //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
                             //text = filterSensitive(text) || text;
                         //}
                         mdwiki.render(text);
-                        renderAutoSave();
+
+                        var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
+                        moduleEditorParams.show_type = "knowledge";
+                        moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
 
                         timer = undefined;
-                    }, 100);
+                    })(isStopRender), 100);
                 });
                 mdwiki.bindRenderContainer(".result-html");
                 editor.focus();
@@ -2586,6 +2612,19 @@ define([
                     if(resultWidth){
                         $(".result-html").css("width", resultWidth + "px");
                     }
+                }
+
+                function setFakeIconPosition(leftDistance, scaleSize){
+                    fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".fake-icon");
+                    if (fakeIconDom.length <= 0) {
+                        setTimeout(function(){
+                            setFakeIconPosition(leftDistance, scaleSize);
+                        }, 300);
+                        return;
+                    }
+                    fakeIconDom.css({
+                        "left" : leftDistance / scaleSize
+                    });
                 }
 
                 function getScaleSize(scroll) {
@@ -2622,6 +2661,8 @@ define([
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
+                    var boxWidth = $("#preview").width();
+                    setFakeIconPosition((boxWidth/2), scaleSize);
                     setTimeout(function () {
                         $('#' + mdwiki.getMdWikiContainerId()).css({
                             "transform": "scale(" + scaleSize + ")",
@@ -2999,6 +3040,7 @@ define([
                     var scaleSize=getScaleSize();
                     $scope.scales[$scope.scales.length-1].scaleValue=scaleSize;
                     $scope.scaleSelect=$scope.scales[$scope.scales.length-1];//比例的初始状态为 “适合宽度”
+                    $rootScope.scaleSelect = $scope.scaleSelect;
                     util.$apply();
                 }
 
