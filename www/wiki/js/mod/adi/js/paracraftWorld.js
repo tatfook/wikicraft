@@ -14,15 +14,10 @@ define([
 						"design": {
 							"text":"style1",
 						},
-					},
-					{
-						"design": {
-							"text":"style2",
-						},
-					},
+					}
 				],
 				params_template : {
-					design:{
+					design : {
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:false, // 是否可以编辑
@@ -30,7 +25,35 @@ define([
 						name:"样式",   // 表单显示名
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
-                    },
+					},
+					logoUrl : {
+						is_leaf  : true,
+						type     : "link",
+						editable : false,
+						is_show  : false,
+						name     : "样式",
+						text     : "",
+						require  : true,
+					},
+					version : {
+						is_leaf  : true,
+						type     : "link",
+						editable : false,
+						is_show  : false,
+						name     : "样式",
+						text     : "",
+						require  : true,
+					},
+					opusId : {
+						is_leaf  : true,
+						type     : "link",
+						editable : false,
+						is_show  : false,
+						name     : "样式",
+						text     : "",
+						require  : true,
+					},
+
 				}
             }
 
