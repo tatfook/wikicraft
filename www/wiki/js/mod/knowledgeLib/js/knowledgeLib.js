@@ -63,7 +63,7 @@ define([
             
             function getList(word) {
                 $.ajax({
-                    url:"http://221.0.111.131:19001/Application/baikesearch",
+                    url:"http://221.0.111.131:19001/Application/baikesearchv3",
                     type : "post",
                     data: {
                         "keyword": word,
