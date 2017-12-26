@@ -23,13 +23,34 @@ define([
 		self.fields.push(field);	
 	}
 
-	app.registerController("moduleEditorController", ['$scope', '$rootScope', function($scope, $rootScope){
+	app.registerController("moduleEditorController", ['$scope', '$rootScope', '$uibModal', function($scope, $rootScope, $uibModal){
 		var design_list = [];
 		var lastSelectObj = undefined;
         var editor;
         var designViewWidth = 350, win;
         var lineClassesMap = [];
         var fakeIconDom = [];
+        $scope.filelist = [];
+        $scope.showResult = true;
+        $scope.linkFilter = "";
+
+        var getFileList = function(){
+            var username = $scope.user.username;
+            var dataSourceList = dataSource.getDataSourceList(username);
+            for (var i = 0; i < (dataSourceList || []).length; i++) {
+				var siteDataSource = dataSourceList[i];
+				siteDataSource.getTree({path:'/'+ username}, function (data) {
+					for (var i = 0; i < (data || []).length; i++) {
+						if (data[i].pagename.indexOf(".gitignore") >= 0) {
+							continue;
+						}
+						$scope.filelist.push(data[i]);
+                    }
+					//$scope.filelist = $scope.filelist.concat(data || []);
+				});
+			}
+        }
+			
 		// 转换数据格式
 		function get_order_list(obj){
 			//console.log(obj);
@@ -109,6 +130,48 @@ define([
                 console.log(result);
             }, function(err){
                 console.log(err);
+            });
+        }
+
+        // 多行文本弹窗
+        $scope.openMultiText = function(data){
+            $scope.editingData = data;
+            $uibModal.open({
+                templateUrl: config.htmlPath + "editMultiText.html",
+                controller: "multiTextController",
+                size: "multi-text",
+                scope: $scope
+            }).result.then(function(result){
+                console.log(result);
+                applyAttrChange();
+                // $scope.editingData.text = result;
+            });
+        }
+
+        $scope.setShowResult = function(value){
+            setTimeout(function(){
+                $scope.showResult = value;
+                $scope.linkFilter = "";
+            });
+        }
+
+        $scope.selectUrl = function(data, url){
+            data.href = url;
+            $scope.showResult = false;
+            $scope.linkFilter = "";
+            applyAttrChange();
+        }
+
+        $scope.showAllLink = function(){
+            $scope.linkFilter = $scope.user.username;
+            $scope.showResult = true;
+            setTimeout(function(){
+                $(document).bind("click.allLink", function(e){
+                    $scope.showResult = false;
+                    $scope.linkFilter = "";
+                    $scope.$apply();
+                    $(document).unbind("click.allLink");
+                });
             });
         }
 
@@ -351,11 +414,22 @@ define([
             
 			// $scope.show_type = "editor";
             $scope.datas_stack = [];
+            getFileList();
 		}
 
 		$scope.$watch("$viewContentLoaded", init);
 	}]);
 
+    app.registerController("multiTextController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance){
+        console.log("multiTextController");
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        $scope.finishEdit = function(){
+            $uibModalInstance.close('finish');
+        }
+    }])
 
 	return htmlContent;
 })

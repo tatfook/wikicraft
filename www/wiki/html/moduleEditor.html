@@ -65,8 +65,12 @@
         top: 3px;
     }
 
-    .module-editor .card-input-box{
+    .module-editor .card-input-box {
         position: relative;
+    }
+
+    .module-editor .card-input-box .card-input {
+        padding-right: 25px;
     }
 
     .module-editor .card-input {
@@ -77,12 +81,22 @@
         padding: 23px 0 8px;
     }
 
-    .module-editor .iconfont{
+    .module-editor .card-input-box .iconfont,
+    .module-editor .card-input-box .glyphicon {
         font-size: 24px;
         line-height: 1;
         position: absolute;
         right: 0;
+        top: auto;
         bottom: 8px;
+        cursor: pointer;
+        color: #999;
+    }
+
+    .module-editor .card-input-box .glyphicon {
+        right: 4px;
+        bottom: 9px;
+        font-size: 14px;
     }
 
     .module-editor .card-input:focus {
@@ -94,7 +108,7 @@
         margin-top: 9px;
     }
 
-    .module-editor .link-dropdown .dropdown-menu{
+    .module-editor .link-dropdown .dropdown-menu {
         min-width: unset;
         width: 120px;
         padding: 5px 7px;
@@ -116,14 +130,14 @@
         background-color: transparent;
     }
 
-    .module-editor .link-dropdown.open .btn-default{
+    .module-editor .link-dropdown.open .btn-default {
         border-color: #3977AD;
         color: #3977AD;
         background-color: transparent;
         box-shadow: none;
     }
 
-    .module-editor .link-dropdown .glyphicon-chevron-down{
+    .module-editor .link-dropdown .glyphicon-chevron-down {
         -webkit-text-stroke: 1px #FFF;
         position: absolute;
         right: 5px;
@@ -258,6 +272,27 @@
         border-radius: 50%;
         -webkit-text-stroke: 2px #0088FF;
     }
+
+    .module-editor .url-result{
+        position: absolute;
+        left: 112%;
+        top: -85px;
+        max-width: 300px;
+        max-height: 200px;
+        overflow: auto;
+        border-radius: 3px;
+        border: 1px solid #DDD;
+        background-color: #FFF;
+        z-index: 1;
+        padding: 0 20px;
+        /* height: 24px; */
+    }
+
+    .module-editor .url-result .result-item{
+        height: 24px;
+        line-height: 24px;
+        cursor: pointer;
+    }
 </style>
 <div ng-controller="moduleEditorController" class="module-editor">
     <!-- Nav tabs -->
@@ -305,7 +340,7 @@
                                     <button id="dLabel-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{data.data.target}}
                                         <span class="glyphicon glyphicon-chevron-down"></span>
-                                    </button> 
+                                    </button>
                                     <ul class="dropdown-menu" aria-labelledby="dLabel-text">
                                         <li ng-hide="data.data.target == '本窗口打开'">本窗口打开</li>
                                         <li ng-hide="data.data.target == '新窗口打开'">新窗口打开</li>
@@ -321,14 +356,27 @@
                             <div ng-if="data.type == 'multiText'">
                                 <div class="card-input-box">
                                     <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="内容">
-                                    <i class="pull-right iconfont icon-enlarge"></i>
+                                    <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data)"></i>
                                 </div>
-                                <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.href" placeholder="链接">
+                                <div class="card-input-box">
+                                    <input type="text" 
+                                        class="card-input" 
+                                        ng-change="applyAttrChange();setShowResult(true)" 
+                                        ng-model="data.data.href" placeholder="链接"
+                                        ng-blur="setShowResult(false)"
+                                    >
+                                    <i class="pull-right glyphicon glyphicon-play" ng-click="showAllLink()"></i>
+                                    <div class="url-result swiper-no-swiping" ng-show="showResult">
+                                        <p class="result-item" ng-click="selectUrl(data.data, file.url)" ng-repeat="file in (filelist | filter: (linkFilter || data.data.href)) track by $index">
+                                            <span ng-bind="file.url"></span>
+                                        </p>
+                                    </div>
+                                </div>
                                 <div class="dropdown link-dropdown">
                                     <button id="dLabel-multi-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{data.data.target == "_self" ? "本窗口打开":"新窗口打开"}}
                                         <span class="glyphicon glyphicon-chevron-down"></span>
-                                    </button> 
+                                    </button>
                                     <ul class="dropdown-menu" aria-labelledby="dLabel-multi-text">
                                         <li ng-hide="data.data.target == '_self'">本窗口打开</li>
                                         <li ng-hide="data.data.target == '_blank'">新窗口打开</li>
