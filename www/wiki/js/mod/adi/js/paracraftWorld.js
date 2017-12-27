@@ -7,6 +7,8 @@ define([
 
     function registerController(wikiblock) {
         app.registerController("paracraftWorldController", ['$scope','$sce', function ($scope, $sce) {
+			$scope.imgsPath = config.wikiModPath + 'adi/assets/imgs/';
+
 			initObj = {
 				scope  : $scope,
 				styles : [
@@ -18,47 +20,119 @@ define([
 				],
 				params_template : {
 					design : {
-						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
-						editable:false, // 是否可以编辑
-						is_show:false,  // 可视化是否显示 undefined取值editable
-						name:"样式",   // 表单显示名
-						text:"style1", // 默认值
-						require: true, // 必填字段 没有使用默认值
+						is_leaf  : true,
+						type     : "text",
+						editable : false,
+						is_show  : false,
+						name     : "样式",
+						text     : "style1",
+						require  : true,
 					},
 					logoUrl : {
 						is_leaf  : true,
 						type     : "link",
-						editable : false,
-						is_show  : false,
-						name     : "样式",
+						editable : true,
+						is_show  : true,
+						name     : "LOGO",
 						text     : "",
 						require  : true,
 					},
 					version : {
 						is_leaf  : true,
 						type     : "link",
-						editable : false,
-						is_show  : false,
-						name     : "样式",
+						editable : true,
+						is_show  : true,
+						name     : "版本",
 						text     : "",
 						require  : true,
 					},
 					opusId : {
 						is_leaf  : true,
 						type     : "link",
-						editable : false,
-						is_show  : false,
-						name     : "样式",
+						editable : true,
+						is_show  : true,
+						name     : "世界ID",
 						text     : "",
 						require  : true,
 					},
-
+					desc : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "描述",
+						text     : "",
+						require  : true,
+					},
+					worldUrl : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "世界下载地址",
+						text     : "",
+						require  : true,
+					},
+					filesTotals : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "文件大小",
+						text     : "",
+						require  : true,
+					},
+					username : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "用户名",
+						text     : "",
+						require  : true,
+					},
+					updateDate : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "更新时间",
+						text     : "",
+						require  : true,
+					},
+					worldName : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "世界名称",
+						text     : "",
+						require  : true,
+					},
 				}
             }
 
 			wikiblock.init(initObj);
-        }]);
+
+			console.log($scope.params);
+
+			$scope.getImageUrl = function (url) {
+				console.log(url);
+
+				return false;
+
+                // if (!url)
+                //     return undefined;
+
+                // if (url.indexOf("http") == 0)
+                //     return url + "?ver=" + $scope.modParams.version;
+
+                // if (url[0] == '/')
+                //     url = url.substring(1);
+
+                // return $scope.imgsPath + url + "?ver=" + $scope.modParams.version;
+            }
+		}]);
     }
 
     return {

@@ -107,14 +107,14 @@
 <div ng-controller="paracraftWorldController">
     <div class="world3D">
         <div class="img">
-            <img ng-src="{{getImageUrl(modParams.logoUrl) || imgsPath+'3DWorld.jpg'}}" alt="">
+            <img ng-src="{{getImageUrl(modParams.logoUrl) || imgsPath + '3DWorld.jpg'}}" alt="">
         </div>
         <div class="text">
             <h4>{{modParams.worldName}}<p class="info pull-right">{{modParams.updateDate + " 版本：" + modParams.version}}</p></h4>
             <div class="inner clearfix">
                 <p>作者：{{modParams.username}}</p>
                 <div class="col-xs-12">
-                    <div class="col-xs-6 info"><img ng-src="{{imgsPath+'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}</div>
+                    <div class="col-xs-6 info"><img ng-src="{{imgsPath + 'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}</div>
                     <div class="col-xs-6 info">大小 {{modParams.filesTotals}}</div>
                     <!--<div class="col-xs-6 info"><span class="glyphicon glyphicon-star icon"></span>收藏 {{modParams.favoriteCount}}</div>-->
                 </div>
