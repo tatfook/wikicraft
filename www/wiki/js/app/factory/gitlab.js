@@ -488,6 +488,32 @@ define([
             }, errcb);
         }
 
+        // 获得文件列表
+        gitlab.getImageList = function (cb, errcb) {
+            var self = this;
+            var url = '/projects/' + self.projectId + '/repository/tree';
+            var path = '/'+ self.dataSource.username +'_images'
+
+            var params = {};
+            params.path = path.substring(1);
+            params.recursive = false
+            params.isFetchAll = true;
+            self.httpRequest("GET", url, params, function (data) {
+                console.log('gitlab.getImageList: ', data);
+                data && data.forEach && data.forEach(function(item) {
+                    item.url = self.getRawContentUrlPrefix({sha:"master", path:'/'+item.path, token:"visitortoken"})
+                });
+                cb && cb(data);
+            }, errcb);
+        }
+
+        gitlab.removeImage = function (url, cb, errcb) {
+            var self = this;
+            var path_partials = url.split('/');
+            var path = '/' + path_partials.splice(path_partials.length - 2, 2).join('/');
+            self.deleteFile({path: path}, cb, errcb);
+        }
+
 		gitlab.uploadFile = function(params, cb, errcb) {
 			var self = this;
 			var path = '/' + self.dataSource.username + '_files/' + params.path;

@@ -3063,6 +3063,46 @@ define([], function () {
             "_key": "请输入文字",
             "zh-cn": "请输入文字",
             "en": "Input Text"
+        },
+        {
+            "_key": "选择图片",
+            "zh-cn": "选择图片",
+            "en": "Select Image"
+        },
+        {
+            "_key": "网络图片",
+            "zh-cn": "网络图片",
+            "en": "Internet"
+        },
+        {
+            "_key": "我的图片",
+            "zh-cn": "我的图片",
+            "en": "Storage"
+        },
+        {
+            "_key": "美化图片",
+            "zh-cn": "美化图片",
+            "en": "Beautify"
+        },
+        {
+            "_key": "添加图片",
+            "zh-cn": "添加图片",
+            "en": "Add Image"
+        },
+        {
+            "_key": "图片地址",
+            "zh-cn": "图片地址",
+            "en": "Image Address"
+        },
+        {
+            "_key": "引用",
+            "zh-cn": "引用",
+            "en": "Submit"
+        },
+        {
+            "_key": "将图片拖拽此处上传",
+            "zh-cn": "将图片拖拽此处上传",
+            "en": "Drag and drop image to upload"
         }
     ];
 

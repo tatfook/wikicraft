@@ -66,6 +66,7 @@ define([
     'directive/wikiLink',
     'directive/wikiUISelect',
     'directive/wikiHtml',
+    'directive/ngOn',
 
     // factory
     'factory/account',
@@ -76,6 +77,7 @@ define([
     'factory/confirmDialog',
     'factory/realnameVerifyModal',
     'factory/datatreeEditorModal',
+    'factory/imageManagerModal',
     'factory/loadingInterceptor',
 ], function () {
     return {};

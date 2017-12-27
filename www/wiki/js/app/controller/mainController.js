@@ -37,7 +37,26 @@ define([
         'confirmDialog',
         'realnameVerifyModal',
         'datatreeEditorModal',
-        function ($scope, $rootScope, $sce, $location, $anchorScroll, $http, $auth, $compile, Account, Message, github, modal, gitlab, confirmDialog, realnameVerifyModal, datatreeEditorModal) {
+        'imageManagerModal',
+        function (
+            $scope,
+            $rootScope,
+            $sce,
+            $location,
+            $anchorScroll,
+            $http,
+            $auth,
+            $compile,
+            Account,
+            Message,
+            github,
+            modal,
+            gitlab,
+            confirmDialog,
+            realnameVerifyModal,
+            datatreeEditorModal,
+            imageManagerModal
+        ) {
             //console.log("mainController");
             
             // 初始化基本信息
@@ -64,7 +83,8 @@ define([
                     loading:loading,
                     confirmDialog:confirmDialog,
                     realnameVerifyModal:realnameVerifyModal,
-                    datatreeEditorModal:datatreeEditorModal
+                    datatreeEditorModal:datatreeEditorModal,
+                    imageManagerModal:imageManagerModal
                 };
 
                 util.setAngularServices({
