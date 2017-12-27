@@ -31,7 +31,6 @@ define([
         var lineClassesMap = [];
         var fakeIconDom = [];
         $scope.filelist = [];
-        $scope.showResult = true;
         $scope.linkFilter = "";
 
         var getFileList = function(){
@@ -46,7 +45,7 @@ define([
 						}
 						$scope.filelist.push(data[i]);
                     }
-					//$scope.filelist = $scope.filelist.concat(data || []);
+					$scope.filelist = $scope.filelist.concat(data || []);
 				});
 			}
         }
@@ -120,7 +119,6 @@ define([
                 title: data.name, 
                 keys: [
                     {key:'url', name: '链接', placeholder:"请输入链接"},
-                    {key:'note', name: '备注', placeholder:"请输入备注"},
                 ], 
                 showLocation: true, 
                 datatree: data.text
@@ -153,6 +151,11 @@ define([
                 $scope.showResult = value;
                 $scope.linkFilter = "";
             });
+        }
+
+        $scope.urlSelected = function(item, modal, data){
+            data.href = item.url;
+            applyAttrChange();
         }
 
         $scope.selectUrl = function(data, url){
@@ -305,6 +308,12 @@ define([
                 }, 10);
                 return;
             }
+
+            $(".swiper-no-scroll").on("mousewheel", function(event){
+                console.log(event);
+                event.stopPropagation();
+            });
+
             swiper[type].destroy && swiper[type].destroy(true, true);
             
             swiper[type] = new Swiper("#"+swiperContainerId,{

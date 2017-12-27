@@ -42,6 +42,7 @@
         margin: 25px 0;
         margin-right: 50px;
         border: 1px solid #DDD;
+        background-color: #FFF;
     }
 
     .module-editor .attr-item .header {
@@ -273,7 +274,7 @@
         -webkit-text-stroke: 2px #0088FF;
     }
 
-    .module-editor .url-result{
+    .module-editor .url-result {
         position: absolute;
         left: 112%;
         top: -85px;
@@ -288,10 +289,52 @@
         /* height: 24px; */
     }
 
-    .module-editor .url-result .result-item{
+    .module-editor .url-result .result-item {
         height: 24px;
         line-height: 24px;
+        margin: 0;
         cursor: pointer;
+    }
+
+    .module-editor .link-select .ui-select-match {
+        outline: none;
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
+    }
+
+    .module-editor .link-select>.ui-select-match>.btn {
+        border: none;
+        padding: 0;
+        box-shadow: none;
+        height: auto;
+        line-height: 16px;
+        cursor: text;
+    }
+
+    .module-editor .link-select>.ui-select-match>.btn:hover {
+        background-color: transparent;
+    }
+
+    .module-editor .card-input-box .link-select {
+        padding-right: 0;
+    }
+
+    .module-editor .link-select .ui-select-toggle>.caret {
+        border-top-color: transparent;
+        border-bottom: 9px solid #999;
+        border-width: 8px;
+        top: auto;
+        bottom: 4px;
+        right: 5px;
+    }
+
+    .module-editor .link-select input[type="search"] {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        height: auto;
+        outline: none;
     }
 </style>
 <div ng-controller="moduleEditorController" class="module-editor">
@@ -359,18 +402,24 @@
                                     <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data)"></i>
                                 </div>
                                 <div class="card-input-box">
-                                    <input type="text" 
+                                    <!-- <input type="text" 
                                         class="card-input" 
                                         ng-change="applyAttrChange();setShowResult(true)" 
                                         ng-model="data.data.href" placeholder="链接"
                                         ng-blur="setShowResult(false)"
-                                    >
-                                    <i class="pull-right glyphicon glyphicon-play" ng-click="showAllLink()"></i>
-                                    <div class="url-result swiper-no-swiping" ng-show="showResult">
+                                    > -->
+                                    <!-- <i class="pull-right glyphicon glyphicon-play" ng-click="showAllLink()"></i> -->
+                                    <ui-select class="link-select card-input" ng-model="data.data.href" on-select="urlSelected($item, $model, data.data)">
+                                        <ui-select-match allow-clear="false" placeholder="{{data.data.href}}">{{data.data.href}}</ui-select-match>
+                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index">
+                                            <span ng-bind="file.url"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <!-- <div class="url-result swiper-no-scroll" ng-show="showResult">
                                         <p class="result-item" ng-click="selectUrl(data.data, file.url)" ng-repeat="file in (filelist | filter: (linkFilter || data.data.href)) track by $index">
                                             <span ng-bind="file.url"></span>
                                         </p>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="dropdown link-dropdown">
                                     <button id="dLabel-multi-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -444,6 +493,7 @@
         </div>
     </div>
 
+    <!-- <div class="backdrop" ng-show="showResult"></div> -->
 </div>
 
 <!-- 
