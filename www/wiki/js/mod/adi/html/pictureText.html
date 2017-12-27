@@ -118,15 +118,15 @@
     <div ng-if='params.design.text=="style1"'>
         <div class="picture-one">
             <div class="picture-body clearfix">
-                <div ng-if="params.pictureTextImg.is_show" class="picture-img">
+                <div ng-if="!params.pictureTextImg.is_show" class="picture-img">
                     <div ng-if="params.pictureTextImg.text.length == 0">YOUR PICTURE</div>
                     <a target="_blank" href="{{params.pictureTextImg.href}}"><img ng-if="params.pictureTextImg.text.length > 0" src="{{params.pictureTextImg.text}}"></a>
                 </div>
                 <div class="picture-span">
-                    <h2 ng-if="params.hTwo.is_show"><a target="_blank" href="{{params.hTwo.href}}">{{params.hTwo.text}}</a></h2>
-                    <h1 ng-if="params.hOne.is_show"><a target="_blank" href="{{params.hOne.href}}">{{params.hOne.text}}</a></h1>
+                    <h2 ng-if="!params.hTwo.is_show"><a target="_blank" href="{{params.hTwo.href}}">{{params.hTwo.text}}</a></h2>
+                    <h1 ng-if="!params.hOne.is_show"><a target="_blank" href="{{params.hOne.href}}">{{params.hOne.text}}</a></h1>
                     <div class="span-one" >
-                        <span ng-if="params.spanOne.is_show || params.spanOne.text.length == 0">
+                        <span ng-if="!params.spanOne.is_show || params.spanOne.text.length == 0">
                             <a target="_blank" href="{{params.spanOne.href}}">
                                 &nbsp;&nbsp;&nbsp;&nbsp;一个人去旅行，而且是去故乡的山水间徜徉。
                                 临行之前，面对太多的疑问和不解：为何是一个人？
@@ -149,8 +149,8 @@
                                 重要的是，你在我的身边。
                             </a>
                         </span>
-                        <span ng-if="params.spanOne.is_show || params.spanOne.text.length > 0"><a target="_blank" href="{{params.spanOne.href}}">{{params.spanOne.text}}</a></span>
-                        <div ng-if="params.btn.is_show" class="picture-btn">
+                        <span ng-if="!params.spanOne.is_show || params.spanOne.text.length > 0"><a target="_blank" href="{{params.spanOne.href}}">{{params.spanOne.text}}</a></span>
+                        <div ng-if="!params.btn.is_show" class="picture-btn">
                             <a target="_blank" class="btn btn-primary" href="{{params.btn.href}}" role="button">{{params.btn.text}}</a>
                         </div>
                     </div>
@@ -164,7 +164,7 @@
     <div ng-if='params.design.text=="style2"'>
         <div class="picture-two">
             <div class="picture-two-body clearfix">
-                <div ng-if="params.spanOne.is_show" class="picture-spans">
+                <div ng-if="!params.spanOne.is_show" class="picture-spans">
                     <span ng-if="params.spanOne.text.length == 0">
                         <a target="_blank" href="{{params.spanOne.href}}">
                             &nbsp;&nbsp;&nbsp;&nbsp;一个人去旅行，而且是去故乡的山水间徜徉。
@@ -180,15 +180,15 @@
                         </a>
                     </span>
                     <span ng-if="params.spanOne.text.length > 0"><a href="{{params.spanOne.href}}">{{params.spanOne.text}}</a></span>
-                    <h2 ng-if="params.hTwo.is_show"><a target="_blank" href="{{params.hTwo.href}}">{{params.hTwo.text}}</a></h2>
-                    <h1 ng-if="params.hOne.is_show"><a target="_blank" href="{{params.hOne.href}}">{{params.hOne.text}}</a></h1>
+                    <h2 ng-if="!params.hTwo.is_show"><a target="_blank" href="{{params.hTwo.href}}">{{params.hTwo.text}}</a></h2>
+                    <h1 ng-if="!params.hOne.is_show"><a target="_blank" href="{{params.hOne.href}}">{{params.hOne.text}}</a></h1>
                 </div>
-                <div ng-if="params.pictureTextImg.is_show" class="picture-imgs">
+                <div ng-if="!params.pictureTextImg.is_show" class="picture-imgs">
                     <div ng-if="params.pictureTextImg.text.length == 0">YOUR PICTURE</div>
                     <a target="_blank" href="{{params.pictureTextImg.href}}"><img ng-if="params.pictureTextImg.text.length > 0" src="{{params.pictureTextImg.text}}"></a>
                 </div>
             </div>
-            <div ng-if="params.btn.is_show" class="picture-btn2">
+            <div ng-if="!params.btn.is_show" class="picture-btn2">
                 <a target="_blank" class="btn btn-primary" href="{{params.btn.href}}" role="button">{{params.btn.text}}</a>
             </div>
         </div>
