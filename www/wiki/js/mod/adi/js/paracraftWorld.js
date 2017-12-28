@@ -1,13 +1,56 @@
 define([
     'app',
-    'helper/util',
+	'helper/util',
+	'helper/mdconf',
     'text!wikimod/adi/html/paracraftWorld.html',
-], function (app, util, htmlContent) {
+], function (app, util, mdconf, htmlContent) {
 	var initObj;
 
     function registerController(wikiblock) {
         app.registerController("paracraftWorldController", ['$scope','$sce', function ($scope, $sce) {
-			$scope.imgsPath = config.wikiModPath + 'adi/assets/imgs/';
+			$scope.imgsPath  = config.wikiModPath + 'adi/assets/imgs/';
+			$scope.showModal = false;
+
+			var params_text = wikiblock.blockCache.block.content.replace(/```@adi\/js\/paracraftWorld/, "");
+			params_text = params_text.replace(/```/, "");
+
+			var isJSON = true;
+
+			try {
+				JSON.parse(params_text);
+			} catch (error) {
+				isJSON = false;
+			}
+
+			if(isJSON){
+				var oldParams = JSON.parse(params_text);
+				var newParams = {};
+
+				newParams["design"] = {"text" : "style1"};
+
+				for(key in oldParams){
+
+					if(key == "logoUrl"){
+						var logoUrl = JSON.parse(oldParams.logoUrl);
+						
+						for(x in logoUrl){
+							newParams[key] = {"text" : {}};
+
+							for(y in logoUrl[x]){
+								newParams[key].text[x]= {
+									id    : Date.now(),
+									name  : y,
+									url   : logoUrl[x][y],   
+								};
+							}
+						}
+					}else{
+						newParams[key] = {"text" : oldParams[key]};
+					}
+				}
+
+				wikiblock.applyModParams(mdconf.jsonToMd(newParams));
+			}
 
 			initObj = {
 				scope  : $scope,
@@ -30,11 +73,11 @@ define([
 					},
 					logoUrl : {
 						is_leaf  : true,
-						type     : "link",
+						type     : "menu",
 						editable : true,
 						is_show  : true,
 						name     : "LOGO",
-						text     : "",
+						text     : [],
 						require  : true,
 					},
 					version : {
@@ -114,24 +157,55 @@ define([
 
 			wikiblock.init(initObj);
 
-			console.log($scope.params);
+			$scope.checkEngine = function () {
+                $scope.showModal=true;
 
-			$scope.getImageUrl = function (url) {
-				console.log(url);
+                window.open("paracraft://cmd/loadworld " + $scope.params.worldUrl.text);
+			}
+			
+			$scope.clickDownload = function() {
+                $scope.showModal = false;
+                window.open("http://www.paracraft.cn");
+			}
 
-				return false;
-
-                // if (!url)
-                //     return undefined;
-
-                // if (url.indexOf("http") == 0)
-                //     return url + "?ver=" + $scope.modParams.version;
-
-                // if (url[0] == '/')
-                //     url = url.substring(1);
-
-                // return $scope.imgsPath + url + "?ver=" + $scope.modParams.version;
+			$scope.closeModal = function () {
+                $scope.showModal=false;
             }
+			
+			$scope.viewTimes = 0;
+            var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
+            var params       = {opusId: $scope.params.opusId.text};
+
+            util.http("POST", viewTimesUrl, params, function (response) {
+                $scope.viewTimes = response.viewTimes;
+            }, function (response) { });
+
+			$scope.getImageUrl = function (logoUrl) {
+				if(!logoUrl || !logoUrl.text || !logoUrl.text[0] || !logoUrl.text[0].url){
+					return undefined;
+				}
+
+				var url = logoUrl.text[0].url;
+
+                if (!url)
+                    return undefined;
+
+                if (url.indexOf("http") == 0)
+                    return url + "?ver=" + $scope.params.version.text;
+
+                if (url[0] == '/')
+                    url = url.substring(1);
+
+                return $scope.imgsPath + url + "?ver=" + $scope.params.version.text;
+			}
+			
+			$scope.getSize = function(size){
+				if (size <= 1048576) {
+					return parseInt(size / 1024) + "KB";
+				} else {
+					return parseInt(size / 1024 / 1024) + "M";
+				}
+			}
 		}]);
     }
 
