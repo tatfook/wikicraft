@@ -320,6 +320,8 @@ define([
                 nextButton: '#' + swiperContainerId + ' .swiper-button-next',
                 prevButton: '#' + swiperContainerId + ' .swiper-button-prev',
                 scrollbar: '#' + swiperContainerId + ' .swiper-scrollbar',
+                direction : 'horizontal',
+                calculateHeight:true,
                 scrollbarHide: false,
                 slidesPerView: 'auto',
                 mousewheelControl: true,
