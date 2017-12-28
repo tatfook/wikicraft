@@ -466,6 +466,7 @@ define([
 						obj = self.format_params_template;
                     }
                     moduleEditorParams.wikiBlock = self;
+                    moduleEditorParams.activeContainerId = self.containerId;
                     
                     $(".mod-container.active").removeClass("active");
                     self.blockCache.domNode.addClass("active");
@@ -772,11 +773,20 @@ define([
 				}
 			}
 			if (curBlock && curBlock.blockCache.isWikiBlock) {
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                var moduleContainerId = moduleEditorParams.activeContainerId;
+                var curContainerId = curBlock.blockCache.containerId;
+                var isContainerIdChange = (moduleContainerId != curContainerId);
+                if (!isContainerIdChange) {
+                    return;
+                }
 				// wiki mod todo
 				curBlock.blockCache.wikiBlockParams.scope && curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
 
 			} else {
-				// 非wiki mod todo
+                // 非wiki mod todo
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                moduleEditorParams.activeContainerId = "";
 			}
 			//console.log(cur_line);
 			//console.log(mdwiki.blockList);

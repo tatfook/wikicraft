@@ -526,6 +526,7 @@ select.resize-view {
     background-color: #FFF;
     border-left: 1px solid #EEE;
     padding: 0;
+    z-index: 1;
 }
 .editingLine{
     border-right: 4px solid #FFAC36;
