@@ -1,20 +1,16 @@
 /**
  * Created by Rango Yuan on 2017/12/20.
  * 
- * // how to use?
- * 
- * config.services.imageManagerModal({
- *    title: '选择图片',
- *    nav: 'myImages' or 'internetImage' or 'beautifyImage',
- *    currentPage: {
- *        username: xxx,
- *        sitename: xxx
- *    }
- * }, function(url) {
- *    //handle url
- * });
- * 
  */
+
+// how to use
+// config.services.imageManagerModal({
+//    title: '选择图片',
+//    modalPositionCenter: true,
+//    nav: 'myImages'
+// }, function(url) {
+//    //handle url
+// });
 
 define([
     'app',
@@ -264,7 +260,7 @@ define([
                     template: htmlContent,
                     controller: 'imageManagerModalController',
                     size: 'lg',
-                    windowClass: 'image-manager-popup',
+                    windowClass: 'image-manager-popup' + ((options && options.modalPositionCenter) ? ' modal-position-center' : ''),
                     resolve: {
                         options: options
                     }

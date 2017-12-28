@@ -10,7 +10,7 @@ define([
 	'helper/sensitiveWord',
     'text!html/editWebsite.html',
 ], function (app, util, storage,dataSource, sensitiveWord, htmlContent) {
-    app.registerController('editWebsiteController', ['$rootScope', '$scope','github','Message', 'Account',function ($rootScope, $scope, github, Message, Account) {
+    app.registerController('editWebsiteController', ['$rootScope', '$scope', '$translate', 'github', 'Message', 'Account',function ($rootScope, $scope, $translate, github, Message, Account) {
         $scope.classifyList = ["普通","入围","热门"];
         $scope.roleList = [{id:1, name:"普通"},{id:10, name:"评委"}];
         $scope.commonTags = ['旅游', '摄影', 'IT', '游戏', '生活'];
@@ -314,10 +314,10 @@ define([
 
 		$scope.deleteShareGroup = function(group) {
 		    config.services.confirmDialog({
-                "title": "删除提醒",
+                "title": $translate.instant("删除提醒"),
                 "theme": "danger",
                 "confirmBtnClass": "btn-danger",
-                "content": "确定删除对 " + group.groupname + " 分组的授权？"
+                "content": $translate.instant('REMOVE_GROUP_AUTH_CONFIRM_MSG', {groupname: group.groupname})
             },function () {
                 if (!siteDataSource || !group) {
                     $("#deleteModal").modal("hide");
@@ -334,10 +334,10 @@ define([
 
 		$scope.deleteGroup = function(group) {
 		    config.services.confirmDialog({
-                "title": "删除提醒",
+                "title": $translate.instant("删除提醒"),
                 "theme": "danger",
                 "confirmBtnClass": "btn-danger",
-                "content": "确定删除 " + group.name + " 分组？"
+                "content": $translate.instant('REMOVE_GROUP_CONFIRM_MSG', {groupname: group.name})
             },function () {
                 var siteDataSource = dataSource.getDataSource(siteinfo.username, siteinfo.name);
                 if (!siteDataSource) {

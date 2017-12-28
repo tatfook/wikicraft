@@ -1,12 +1,19 @@
 <style>
-    .class-name::after {
-        content: '';
-        display: inline-block;
-        d
+    .datatree-editor-popup .modal-header {
+        background: #437EAC;
+        color: white;
+    }
+    .datatree-editor-popup .modal-title {
+        font-weight: 400;
+    }
+    .datatree-editor-popup .modal-header .close {
+        color: white;
+        opacity: 1;
     }
     .datatree-editor-dialog .modal-body {
         max-height: 530px;
         overflow-y: auto;
+        padding: 20px 20px 0;
     }
 
     .datatree-editor-dialog h3 {
@@ -39,12 +46,36 @@
         color: #666;
     }
 
-    .datatree-editor-dialog td.actions {
-        white-space: nowrap;
-    }
-
     .datatree-editor-dialog .modal-title {
         text-align: center;
+    }
+
+    .datatree-editor-dialog table th {
+        background: #f5f5f5;
+        color: #327ABF;
+        font-weight: 400;
+    }
+
+    .datatree-editor-dialog table .input-cell {
+        padding: 0;
+    }
+
+    .datatree-editor-dialog table .input-cell input {
+        min-height: 38px;
+        padding: 0 7px;
+        border: 0;
+    }
+
+    .datatree-editor-dialog table {
+        vertical-align: middle;
+    }
+    .datatree-editor-dialog table td:not(.input-cell) {
+        padding: 3px 8px;
+        vertical-align: middle;
+    }
+
+    .datatree-editor-dialog td.actions {
+        white-space: nowrap;
     }
 </style>
 <div class="datatree-editor-dialog">
@@ -64,8 +95,8 @@
                 <tbody>
                     <tr ng-repeat="item in flattenedData">
                         <td ng-if="showLocation">{{ getPathOfItem(item) }}</td>
-                        <td><input type="text" ng-model="item.name" placeholder="{{'请输入文字' | translate}}"></td>
-                        <td ng-repeat="keyItem in keys">
+                        <td class="input-cell"><input type="text" ng-model="item.name" placeholder="{{'请输入文字' | translate}}"></td>
+                        <td class="input-cell" ng-repeat="keyItem in keys">
                             <input 
                                 type="text" 
                                 type="{{keyItem.type || 'text'}}" 
@@ -74,10 +105,10 @@
                             >
                         </td>
                         <td class="actions">
-                            <button ng-click="addSiblingBefore(item)" translate="前面添加"></button>
-                            <button ng-click="addSiblingAfter(item)" translate="后面添加"></button>
-                            <button ng-click="addChild(item)" translate="添加子项"></button>
-                            <button ng-click="removeItem(item)" translate="删除"></button>
+                            <button class="btn btn-sm btn-default" ng-click="addSiblingBefore(item)" translate="前面添加"></button>
+                            <button class="btn btn-sm btn-default" ng-click="addSiblingAfter(item)" translate="后面添加"></button>
+                            <button class="btn btn-sm btn-default" ng-click="addChild(item)" translate="添加子项"></button>
+                            <button class="btn btn-sm btn-default" ng-click="removeItem(item)" translate="删除"></button>
                         </td>
                     </tr>
                 </tbody>
