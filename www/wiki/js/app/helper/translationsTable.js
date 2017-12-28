@@ -3103,6 +3103,21 @@ define([], function () {
             "_key": "将图片拖拽此处上传",
             "zh-cn": "将图片拖拽此处上传",
             "en": "Drag and drop image to upload"
+        },
+        {
+            "_key": "REMOVE_GROUP_AUTH_CONFIRM_MSG",
+            "zh-cn": "确定删除对 {{ groupname }} 分组的授权？",
+            "en": "Are you sure to remove {{ groupname }} group authentication?"
+        },
+        {
+            "_key": "REMOVE_GROUP_CONFIRM_MSG",
+            "zh-cn": "确定删除 {{ groupname }} 分组？",
+            "en": "Are you sure to remove {{ groupname }} group?"
+        },
+        {
+            "_key": "删除提醒",
+            "zh-cn": "删除提醒",
+            "en": "Remove Confirm"
         }
     ];
 

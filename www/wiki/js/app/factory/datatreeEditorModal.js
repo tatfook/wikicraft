@@ -6,6 +6,7 @@
  *      {
  *          title: 'Editor Title',
  *          showLocation: false,
+ *          modalPositionCenter: false,
  *          datatree: [
  *              {
  *                  id: '1',
@@ -31,7 +32,8 @@
 // Example:
 //
 // config.services.datatreeEditorModal({
-//     title: "编辑器", 
+//     title: "编辑器",
+//     modalPositionCenter: false,
 //     keys: [
 //         {key:'url', name: '链接', placeholder:"请输入链接"},
 //         {key:'note', name: '备注', placeholder:"请输入备注"},
@@ -100,7 +102,7 @@ define([
                     template: htmlContent,
                     controller: 'datatreeEditorModalController',
                     size: 'lg',
-                    windowClass: 'datatree-editor-popup',
+                    windowClass: 'datatree-editor-popup' + ((options && options.modalPositionCenter) ? ' modal-position-center' : ''),
                     resolve: {
                         options: options
                     }

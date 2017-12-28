@@ -30,6 +30,17 @@ a:hover {
     height:100%;
 }
 
+.modal-position-center .modal-dialog {
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.modal-position-center .modal-content {
+    margin: 0 auto;
+}
+
 .modal-xxl > .modal-content {
     height:100%;
     display:flex;
