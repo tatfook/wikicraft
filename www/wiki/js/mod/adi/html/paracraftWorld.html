@@ -114,9 +114,13 @@
         float: left;
     }
     .world-img2{
-        width:100%;
+        max-height: 314px;
+        max-width: 431px;
+    }
+    .world-img2 img{
+        width: 100%;
+        height: 100%;
         overflow: hidden;
-        text-align: center;
     }
     .world4D .world-body .world-text{
         width: 720px;
@@ -143,11 +147,13 @@
     }
     .world-img3{
         float: left;
-        overflow: hidden;
-    }
-    .world-img3 img{
         max-height: 314px;
         max-width: 431px;
+    }
+    .world-img3 img{
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
     }
     .world-text3{
         float:left;
@@ -233,7 +239,7 @@
                 <div class="world-div2">
                     <div class="worldBtn"><a class="btn btn-block btn-primary world-btn2" ng-click="checkEngine()">进入</a></div>
                     <div ng-hide="params.worldUrl.is_mod_hide" class="worldBtn">
-                        <img src="{{params.ceshitwo.text}}">
+                        <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'down.png'}}" alt="">
                         <a class="btn btn-block btn-default world-btn2" href="{{params.worldUrl.text}}" target="_blank">
                             下载
                         </a>
@@ -242,8 +248,7 @@
             </div>
             <div class="world-body clearfix">
                 <div ng-hide="params.logoUrl.is_mod_hide" class="world-img2">
-                    <img ng-if="params.logoUrl.text.length == 0" src="{{params.logo.text}}">
-                    <img ng-if="params.logoUrl.text.length > 0" src="{{params.logoUrl.text}}">
+                    <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'paracraftWorld.png'}}" alt="">
                 </div>
                 <div ng-hide="params.desc.is_mod_hide" class="world-text">
                     <span>作品简介：</span><br>
@@ -267,8 +272,7 @@
     <div ng-if='params.design.text=="style3"'>
         <div class="world5D clearfix">
             <div ng-hide="params.logoUrl.is_mod_hide" class="world-img3">
-                <img ng-if="params.logoUrl.text.length == 0" src="{{params.logo.text}}">
-                <img ng-if="params.logoUrl.text.length > 0" src="{{params.logoUrl.text}}">
+                <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'paracraftWorld.png'}}" alt="">
             </div>
             <div class="world-text3">
                 <div class="clearfix">
@@ -285,7 +289,7 @@
                     <span ng-if="params.desc.text.length > 0">{{params.desc.text}}</span>
                 </div>
                 <div ng-hide="params.worldUrl.is_mod_hide" class="world-btn3">
-                    <img src="{{params.ceshitwo.text}}">
+                    <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'down.png'}}" alt="">
                     <a class="btn btn-block btn-default" href="{{params.worldUrl.text}}" target="_blank">
                         下载
                     </a>

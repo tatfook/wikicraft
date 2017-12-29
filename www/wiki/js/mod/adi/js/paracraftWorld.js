@@ -187,7 +187,6 @@ define([
             }
 
 			wikiblock.init(initObj);
-			console.log($scope.params.ceshitwo.text);
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 
