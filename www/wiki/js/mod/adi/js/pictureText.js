@@ -1,14 +1,11 @@
 define([
     'app',
     'helper/util',
-	'../js/title.js',
 	'text!wikimod/adi/html/pictureText.html',
-], function (app, util, title, htmlContent) {
-	var initObj;
+], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
         app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
-			$scope.$apply();
 
             initObj = {
 				scope  : $scope,
@@ -29,7 +26,7 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:false, // 是否可以编辑
-						is_show:false,  // 可视化是否显示 undefined取值editable
+						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
 						name:"样式",   // 表单显示名
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
@@ -38,35 +35,55 @@ define([
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
-                        is_show:true,  // 可视化是否显示 undefined取值editable
+                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
                         name:"picture",   // 表单显示名
-                        text:"", // 默认值
-                        href:"", // 默认值
+                        text:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
+                        href:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
-                    },
+					},
+					hOne:{
+						is_leaf: true, // 叶子对象默认填true
+						type:"link",   // 地段类型
+						editable:true, // 是否可以编辑
+						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
+						name:"标题",   // 表单显示名
+						text:"一个人，一条路，人在途中",// 默认值
+						href:"", // 默认值
+						require: true, // 必填字段 没有使用默认值(默认值得有)
+					},
+					hTwo:{
+						is_leaf: true, // 叶子对象默认填true
+						type:"link",   // 地段类型
+						editable:true, // 是否可以编辑
+						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
+						name:"子标题",   // 表单显示名
+						text:"我们一直在旅行",// 默认值
+						href:"", // 默认值
+						require: true, // 必填字段 没有使用默认值(默认值得有)
+					},
 					spanOne:{
 						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
+						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
 						name:"文字说明",   // 表单显示名
-						text:"YOUR ARTUCLE", // 默认值
+						text:"",// 默认值
+						href:"", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 					btn:{
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
-                        is_show:true,  // 可视化是否显示 undefined取值editable
+                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
                         name:"按钮",   // 表单显示名
-                        text:"点击", // 默认值
+                        text:"更多照片", // 默认值
                         href:"", // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                     },
 				}
 			}
 
-			util.mergeParams(title.initObj(), initObj);
 			
             wikiblock.init(initObj);
         }]);
@@ -75,7 +92,7 @@ define([
     return {
         render: function (wikiblock) {
             registerController(wikiblock);
-            return title.render(wikiblock) + htmlContent;
+            return htmlContent;
 		},
 		initObj: function(){
 			return initObj;

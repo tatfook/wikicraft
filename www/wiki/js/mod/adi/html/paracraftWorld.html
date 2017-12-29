@@ -1,0 +1,69 @@
+<style>
+    /* style1 css */
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    .paracraft-one{
+        width:100%;
+        height: auto;
+        padding-left: 80px;
+        padding-right: 80px;
+    }
+    .paracraft-head{
+        width: 100%;
+    }
+    .paracraft-body{
+        width:100%;
+        height:250px;
+    }
+    .paracraft-body .paracraft-img{
+        float: left;
+        width:400px;
+        height:250px;
+        text-align: center;
+        line-height: 250px;
+        background: rgb(227, 224, 224);
+    }
+    .paracraft-body .paracraft-img img{
+        width:100%;
+        height:100%;
+        overflow: hidden;
+    }
+    .paracraft-body .paracraft-span{
+        margin-left: 10px;
+        float: left;
+    }
+    .paracraft-btn-one , .paracraft-btn-two{
+        float: right;
+    }
+    .paracraft-btn-one{
+        margin-left: 10px;
+        margin-right: 33.3333%;
+    }
+    /* style2 css */
+</style>
+<div ng-controller="paracraftWorldController">
+    <div ng-if='params.design.text=="style1"'>
+        <div class="paracraft-one clearfix">
+            <div class="paracraft-body">
+                <div class="paracraft-img">
+                    <div ng-if="params.pictureTextImg.text.length == 0">YOUR PARACRAFT</div>
+                    <img ng-if="params.pictureTextImg.text.length > 0" src="{{params.pictureTextImg.text}}">
+                </div>
+                <div class="paracraft-span">
+                    <span>{{params.spanOne.text}}</span>
+                </div>
+            </div>
+            <div class="paracraft-btn-one">
+                <a class="btn btn-primary" href="{{params.btn.href}}" role="button">{{params.btn.text}}</a>
+            </div>
+            <div class="paracraft-btn-two">
+                <a class="btn btn-primary" href="{{params.btn.href}}" role="button">{{params.btn.text}}</a>
+            </div>
+        </div>
+    </div>
+    <div ng-if='params.design.text=="style2"'>
+
+    </div>
+</div>
