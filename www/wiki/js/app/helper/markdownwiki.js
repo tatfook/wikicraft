@@ -419,7 +419,7 @@ define([
 					var pos = self.blockCache.block.textPosition;
 					if (oldPos.from == pos.from) {
 						moduleEditorParams.wikiBlock = self;
-						console.log("更新wikiblock");
+						console.log("更新wikiblock", moduleEditorParams);
 					}
 				}
 
@@ -520,16 +520,16 @@ define([
 					// });
 				}
 
-				if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor) {
-					var cursor_pos = editor.getCursor();
-					var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
-					var pos = blockCache.block.textPosition;
-					if (cursor_line_no > pos.from && cursor_line_no < pos.to) {
-						//scope.viewEditorClick();
-						moduleEditorParams.wikiBlock = self;
-						console.log("更新wikiblock");
-					}
-				}
+				//if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor) {
+					//var cursor_pos = editor.getCursor();
+					//var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
+					//var pos = blockCache.block.textPosition;
+					//if (cursor_line_no > pos.from && cursor_line_no < pos.to) {
+						////scope.viewEditorClick();
+						//moduleEditorParams.wikiBlock = self;
+						//console.log("更新wikiblock");
+					//}
+				//}
 			},
         };
 		blockCache.wikiBlockParams = wikiBlockParams;
