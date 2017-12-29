@@ -66,7 +66,13 @@ define([
 							"text":"style2",
 						},
 						
-					}
+					},
+					{
+						"design": {
+							"text":"style3",
+						},
+						
+					},
 				],
 				params_template : {
 					design : {
@@ -159,21 +165,21 @@ define([
 						text     : "",
 						require  : true,
 					},
-					ceshi : {
+					logo : {
 						is_leaf  : true,
 						type     : "link",
-						editable : true,
+						editable : false,
 						is_show  : true,
-						name     : "123",
+						name     : "logo",
 						text     : config.wikiModPath + 'adi/assets/imgs/paracraftWorld.png',
 						require  : true,
 					},
-					ceshitwo : {
+					btnLog : {
 						is_leaf  : true,
 						type     : "link",
-						editable : true,
+						editable : false,
 						is_show  : true,
-						name     : "456",
+						name     : "btnLog",
 						text     : config.wikiModPath + 'adi/assets/imgs/down.png',
 						require  : true,
 					},
