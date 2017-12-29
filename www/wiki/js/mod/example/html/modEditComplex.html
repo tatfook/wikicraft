@@ -39,7 +39,7 @@
             </div>
             <div ng-click="viewEditorClick(params.imageType)" ng-hide="params.imageType.is_mod_hide" class="kp_module_editor_input_tag">
                 <a ng-href="{{params.imageType.href}}">
-                    <img src="{{params.imageType.text}}">
+                    <img ng-src="{{params.imageType.text}}">
                 </a>
             </div>
 			<div ng-click="viewEditorClick(params.paragraph)" ng-hide="params.paragraph.is_mod_hide" class="kp_module_editor_input_tag">

@@ -418,7 +418,8 @@ define([
 					var oldPos = oldWikiBlock.blockCache.block.textPosition;
 					var pos = self.blockCache.block.textPosition;
 					if (oldPos.from == pos.from) {
-						moduleEditorParams.wikiBlock = self;
+                        moduleEditorParams.wikiBlock = self;
+                        $("#" + self.containerId).addClass("active");
 						console.log("更新wikiblock", moduleEditorParams);
 					}
 				}

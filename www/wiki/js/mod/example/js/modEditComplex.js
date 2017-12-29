@@ -27,7 +27,7 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:false, // 是否可以编辑
-						is_show:false,  // 可视化是否显示 undefined取值editable
+						is_card_show:false,  // 是否在adi中显示编辑
 						name:"样式",   // 表单显示名
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
@@ -37,7 +37,8 @@ define([
                         type:"media",   // 地段类型
                         mediaType:"image",// 媒体类型（image | video）
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						name:"图像",   // 表单显示名
 						text:"http://localhost:8099/wiki/js/mod/adi/assets/imgs/titleMod.png", // 默认值
 						href:"http://www.baidu.com", // 默认值
@@ -47,6 +48,8 @@ define([
                         is_leaf: true,
                         type:"multiText",
                         editable: true,
+                        is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
                         name: "多行文本",
                         text: "多行文本内容",
                         href: "",
@@ -57,7 +60,8 @@ define([
                         is_leaf: true,
                         type: "menu",
                         editable: true,
-                        is_show: true,
+                        is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
                         name: "菜单",
                         require: true,
                         text: [{
@@ -76,7 +80,8 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						name:"标题",   // 表单显示名
 						text:"title", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
@@ -85,7 +90,8 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						name:"子标题",   // 表单显示名
 						text:"subtitle", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
@@ -94,7 +100,8 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						name:"段落",   // 表单显示名
 						text:"paragraphs", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
@@ -103,7 +110,8 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						name:"链接",   // 表单显示名
 						text:"href text", // 默认值
 						href:"http://www.baidu.com", // 默认值
@@ -113,7 +121,8 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						name:"链接",   // 表单显示名
 						text:"href text", // 默认值
 						href:"http://www.baidu.com", // 默认值
@@ -124,7 +133,8 @@ define([
 						is_leaf: true,
 						type: "list",
 						editable: true,
-						is_show: true,
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						require: true,
 						name:"简单列表",
 						list: [
@@ -132,7 +142,8 @@ define([
 								is_leaf: true, // 叶子对象默认填true
 								type:"link",   // 地段类型
 								editable:true, // 是否可以编辑
-								is_show:true,  // 可视化是否显示 undefined取值editable
+								is_card_show:true,  // 是否在adi中显示编辑
+                                is_mod_hide:false,  // 在模块中是否隐藏
 								name:"链接",   // 表单显示名
 								text:"href text", // 默认值
 								href:"http://www.baidu.com", // 默认值
@@ -144,7 +155,8 @@ define([
 						is_leaf: true,
 						type: "list",
 						editable: true,
-						is_show: true,
+						is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
 						require: true,
 						name:"对象列表",
 						list: [
@@ -153,7 +165,8 @@ define([
 									is_leaf: true, // 叶子对象默认填true
 									type:"link",   // 地段类型
 									editable:true, // 是否可以编辑
-									is_show:true,  // 可视化是否显示 undefined取值editable
+									is_card_show:true,  // 是否在adi中显示编辑
+                                    is_mod_hide:false,  // 在模块中是否隐藏
 									name:"链接",   // 表单显示名
 									text:"href text", // 默认值
 									href:"http://www.baidu.com", // 默认值

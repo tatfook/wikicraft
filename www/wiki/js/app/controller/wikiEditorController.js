@@ -2588,8 +2588,8 @@ define([
                         mdwiki.render(text);
 
                         var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
-                        moduleEditorParams.show_type = "knowledge";
-                        moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
+                        // moduleEditorParams.show_type = "knowledge";
+                        // moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
 
                         timer = undefined;
                     })(isStopRender), 100);
