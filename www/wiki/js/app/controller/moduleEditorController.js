@@ -146,6 +146,55 @@ define([
             });
         }
 
+        // 图库弹窗
+        $scope.showImageModal = function(data){
+            console.log(data);
+            config.services.imageManagerModal({
+                title: '选择图片',
+                nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
+                currentPage: {
+                    username: $scope.userinfo.username,
+                    sitename: $scope.userinfo.sitename
+                }
+            }, function(url) {
+                //handle url
+                console.log(data);
+                data.text = url;
+                applyAttrChange();
+            });
+        }
+
+        $scope.setItem = function(data, type){
+            switch (type) {
+                case "image":
+                    data.mediaType = type;
+                    break;
+                case "video":
+                    data.mediaType = type;
+                    break;
+                default:
+                    data.mediaType = "image";
+                    break;
+            }
+        }
+
+        $scope.setLink = function(key, data){
+            $uibModal.open({
+                templateUrl: config.htmlPath + "editorInsertLink.html",
+                controller: "linkCtrl",
+            }).result.then(function (provider) {
+                if (provider == "link") {
+                    var link = $rootScope.link;
+                    data[key] = link.url;
+                    applyAttrChange();
+                }
+            }, function (text, error) {
+                console.log('text:' + text);
+                console.log('error:' + error);
+                return;
+            });
+        }
+
         $scope.setShowResult = function(value){
             setTimeout(function(){
                 $scope.showResult = value;
@@ -353,7 +402,7 @@ define([
 			//moduleEditorParams.$scope = $scope;
 			moduleEditorParams.setEditorObj = function(obj) {
                 setFakeIconPosition();
-				moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 var selectObj = moduleEditorParams.selectObj;
 				if (selectObj) {
 					setTimeout(function(){
