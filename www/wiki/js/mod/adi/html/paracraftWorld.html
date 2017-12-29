@@ -90,6 +90,25 @@
     .world3D .model-main p{
         line-height: 30px;
     }
+    /* style2 css */
+    .world4D .world-head .world-div1 .worldName , .world4D .world-head .world-div1 .useName{
+        float: left;
+        margin-right: 30px;
+    }
+    .world4D .world-head .world-div2 .worldBtn{
+        float:right;
+        width: 90px;
+        margin-left: 30px;
+    } 
+    .world4D .world-body .world-img2 , .world4D .world-body .world-text{
+        float: left;
+    }
+    .world4D .world-body .world-text{
+        margin-left: 30px;
+        font-size: 18px;
+    }
+
+    /* @media css */
     @media (max-width: 992px) {
         .world3D .inner{
             padding-right:0;
@@ -105,7 +124,7 @@
     }
 </style>
 <div ng-controller="paracraftWorldController">
-    <div class="world3D">
+    <div ng-if='params.design.text=="style1"' class="world3D">
         <div class="img">
             <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + '3DWorld.jpg'}}" alt="">
         </div>
@@ -128,6 +147,38 @@
             <button type="button" class="close close-icon"><span aria-hidden="true" ng-click="closeModal()">&times;</span></button>
             <p>如果您的设备没有自动使用Paracraft启动3D世界，请安装Paracraft</p>
             <div class="btn btn-lg btn-default" ng-click="clickDownload()">点击下载</div>
+        </div>
+    </div>
+    <div ng-if='params.design.text=="style2"'>
+        <div class="world4D">
+            <div class="world-head clearfix">
+                <div class="world-div1">
+                    <h2 class="worldName"><a>3D海洋世界</a></h2>
+                    <h2 class="useName">作者：李珊珊</h2>
+                </div>
+                <div class="world-div2">
+                    <div class="worldBtn"><a class="btn btn-block btn-default" href="{{params.worldUrl.text}}" target="_blank">下载</a></div>
+                    <div class="worldBtn"><a class="btn btn-block btn-primary" ng-click="checkEngine()">进入</a></div>
+                </div>
+            </div>
+            <div class="world-body clearfix">
+                <div class="world-img2">
+                    <img src="{{params.ceshi.text}}">
+                </div>
+                <div class="world-text">
+                    <span>作品简介：<br>
+                        从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去<br>
+                        旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角<br>
+                        的油渍。风景如何，其实并不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不<br>
+                        好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并不重要。于记忆，而在于当时<br>
+                        餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并<br>
+                        不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴<br>
+                        角的油渍。风景如何，其实并不重要。吃得不好，可是却依旧为对方擦去嘴角的油渍。风<br>
+                        景如何，其实并不重要。晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景<br>
+                        如何，其实并不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧<br>
+                        为对方擦去嘴角的油渍。风景如何，其实并不重要。</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

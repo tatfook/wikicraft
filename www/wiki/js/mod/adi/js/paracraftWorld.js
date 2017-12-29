@@ -59,6 +59,13 @@ define([
 						"design": {
 							"text":"style1",
 						},
+						
+					},
+					{
+						"design": {
+							"text":"style2",
+						},
+						
 					}
 				],
 				params_template : {
@@ -76,7 +83,7 @@ define([
 						type     : "menu",
 						editable : true,
 						is_show  : true,
-						name     : "LOGO",
+						name     : "LOGO",  
 						text     : [],
 						require  : true,
 					},
@@ -150,6 +157,15 @@ define([
 						is_show  : true,
 						name     : "世界名称",
 						text     : "",
+						require  : true,
+					},
+					ceshi : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "123",
+						text     : config.wikiModPath + 'adi/assets/imgs/paracraftWorld.png',
 						require  : true,
 					},
 				}
