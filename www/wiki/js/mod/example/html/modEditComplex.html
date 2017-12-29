@@ -1,4 +1,5 @@
 <div ng-controller="modEditComplexController" class="container">
+    <div ng-click="showModal()">showModal</div>
 	<div ng-if='params.design.text=="style1"'>
 		<div class="col-xs-6">
 			<div ng-show="params.image.is_show">
@@ -31,11 +32,16 @@
 				</div>
             </div>
             <div ng-click="viewEditorClick(params.multiText)" class="kp_module_editor_input_tag">
-                    <div style="text-align:center; font-size:18px">
-                        {{params.multiText.text}}
-                        <p>link: <a href="{{params.multiText.href}}" target="{{params.multiText.target}}">{{params.multiText.href}}</a></p>
-                    </div>
+                <div style="text-align:center; font-size:18px">
+                    {{params.multiText.text}}
+                    <p>link: <a href="{{params.multiText.href}}" target="{{params.multiText.target}}">{{params.multiText.href}}</a></p>
                 </div>
+            </div>
+            <div ng-click="viewEditorClick(params.imageType)" class="kp_module_editor_input_tag">
+                <a ng-href="{{params.imageType.href}}">
+                    <img src="{{params.imageType.text}}">
+                </a>
+            </div>
 			<div ng-click="viewEditorClick(params.paragraph)" class="kp_module_editor_input_tag">
 				<div style="text-align:center; font-size:18px">
 					{{params.paragraph.text}}

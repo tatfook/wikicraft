@@ -31,7 +31,18 @@ define([
 						name:"样式",   // 表单显示名
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
-                    },
+					},
+					imageType:{
+						is_leaf: true, // 叶子对象默认填true
+                        type:"media",   // 地段类型
+                        mediaType:"image",// 媒体类型（image | video）
+						editable:true, // 是否可以编辑
+						is_show:true,  // 可视化是否显示 undefined取值editable
+						name:"图像",   // 表单显示名
+						text:"http://localhost:8099/wiki/js/mod/adi/assets/imgs/titleMod.png", // 默认值
+						href:"http://www.baidu.com", // 默认值
+						require: true, // 必填字段 没有使用默认值(默认值得有)
+					},
                     multiText:{
                         is_leaf: true,
                         type:"multiText",
@@ -39,7 +50,8 @@ define([
                         name: "多行文本",
                         text: "多行文本内容",
                         href: "",
-                        target: "_blank"
+						target: "_blank",
+						require: true,
                     },
                     menu:{
                         is_leaf: true,
