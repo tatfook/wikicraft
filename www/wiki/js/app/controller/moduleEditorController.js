@@ -97,7 +97,8 @@ define([
 
 		// 隐藏事件
 		$scope.click_hide = function(data) {
-            data.is_show = angular.isUndefined(data.is_show) ? "false":!data.is_show;
+			data.is_mod_hide = !data.is_mod_hide;
+            //data.is_show = angular.isUndefined(data.is_show) ? "false":!data.is_show;
             applyAttrChange();
 		}
 

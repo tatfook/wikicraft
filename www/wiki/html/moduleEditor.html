@@ -381,7 +381,7 @@
                         <div class="header">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[data.data.is_show == undefined || data.data.is_show]">
-                                {{(data.data.is_show == undefined || data.data.is_show) ? "开" : "关"}}
+                                {{(!data.data.is_mod_hide) ? "开" : "关"}}
                             </div>
                         </div>
                         <div class="attr-content">

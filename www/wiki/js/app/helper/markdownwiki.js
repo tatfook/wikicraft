@@ -354,7 +354,7 @@ define([
 								} else {
 									//datas = angular.merge(datas, data);
 								}
-								datas.is_show = data.is_show;
+								datas.is_card_show = data.is_card_show;
 							}
 						//}
 						datas.id = util.getId();
