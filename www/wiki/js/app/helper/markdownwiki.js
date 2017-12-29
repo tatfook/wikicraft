@@ -419,6 +419,9 @@ define([
 					var pos = self.blockCache.block.textPosition;
 					if (oldPos.from == pos.from) {
 						moduleEditorParams.wikiBlock = self;
+						if (moduleEditorParams.show_type == "design") {
+							moduleEditorParams.updateEditorObj(self.format_params_template);
+						}
 						console.log("更新wikiblock", moduleEditorParams);
 					}
 				}
