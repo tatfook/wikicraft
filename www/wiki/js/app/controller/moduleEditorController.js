@@ -399,7 +399,7 @@ define([
 				$scope.designDatas = [];
 				for (var i = 0; i < style_list.length; i++) {
 					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
-					modParams = angular.merge(modParams, style_list[i]);
+					modParams = angular.extend(modParams, angular.copy(style_list[i]));
                     $scope.styles[i] = modParams;
 					var md = markdownwiki({mode:"preview", html:true, use_template:false});
                     var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";

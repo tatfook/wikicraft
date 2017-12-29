@@ -2577,10 +2577,10 @@ define([
                     renderTimer && clearTimeout(renderTimer);
                     renderTimer = setTimeout((function (isStopRender) {
                         renderAutoSave();
-                        if (isStopRender){
-                            moduleEditorParams.renderMod = undefined;
-                            return;
-                        }
+                        //if (isStopRender){
+                            //moduleEditorParams.renderMod = undefined;
+                            //return;
+                        //}
                         var text = editor.getValue();
                         //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
                             //text = filterSensitive(text) || text;
