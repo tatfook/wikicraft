@@ -4,7 +4,6 @@ define([
     'helper/util',
     'text!wikimod/adi/html/title.html',
 ], function (app, util, htmlContent) {
-	var initObj;
 
     function registerController(wikiblock) {
         app.registerController("titleController", ['$scope','$sce', function ($scope, $sce) {
@@ -44,20 +43,22 @@ define([
                         },
 				   	hOne:{
 						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
+						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
 						is_show:true,  // 可视化是否显示 undefined取值editable
 						name:"标题",   // 表单显示名
 						text:"YOUR HEAD LINE", // 默认值
+						href:"",// 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 				   	hTwo:{
 						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
+						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
 						is_show:true,  // 可视化是否显示 undefined取值editable
 						name:"子标题",   // 表单显示名
 						text:"YOUR SUB LINE", // 默认值
+						href:"",// 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 				}
