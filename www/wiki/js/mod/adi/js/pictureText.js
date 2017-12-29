@@ -33,7 +33,8 @@ define([
 					},
 					pictureTextImg:{
                         is_leaf: true, // 叶子对象默认填true
-                        type:"link",   // 地段类型
+						type:"media",   // 地段类型
+						mediaType: "image",
                         editable:true, // 是否可以编辑
                         is_card_show:true,  // 是否在adi中显示编辑
                         is_mod_hide:false,  // 在模块中是否隐藏
