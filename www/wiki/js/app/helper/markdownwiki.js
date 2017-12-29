@@ -420,6 +420,9 @@ define([
 					if (oldPos.from == pos.from) {
                         moduleEditorParams.wikiBlock = self;
                         $("#" + self.containerId).addClass("active");
+						if (moduleEditorParams.show_type == "design") {
+							moduleEditorParams.updateEditorObj(self.format_params_template);
+						}
 						console.log("更新wikiblock", moduleEditorParams);
 					}
 				}

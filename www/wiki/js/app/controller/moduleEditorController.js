@@ -401,6 +401,12 @@ define([
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
 			//moduleEditorParams.$scope = $scope;
+			
+			moduleEditorParams.updateEditorObj = function(obj) {
+                $scope.editorDatas = get_order_list(obj);
+                util.$apply();
+			}
+
 			moduleEditorParams.setEditorObj = function(obj) {
                 setFakeIconPosition();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
