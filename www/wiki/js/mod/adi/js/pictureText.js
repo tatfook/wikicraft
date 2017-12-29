@@ -26,7 +26,7 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"text",   // 地段类型
 						editable:false, // 是否可以编辑
-						is_show:false,  // 可视化是否显示 undefined取值editable
+						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
 						name:"样式",   // 表单显示名
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
@@ -35,7 +35,7 @@ define([
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
-                        is_show:true,  // 可视化是否显示 undefined取值editable
+                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
                         name:"picture",   // 表单显示名
                         text:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
                         href:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
@@ -45,7 +45,7 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
 						name:"标题",   // 表单显示名
 						text:"一个人，一条路，人在途中",// 默认值
 						href:"", // 默认值
@@ -55,7 +55,7 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
 						name:"子标题",   // 表单显示名
 						text:"我们一直在旅行",// 默认值
 						href:"", // 默认值
@@ -65,7 +65,7 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_show:true,  // 可视化是否显示 undefined取值editable
+						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
 						name:"文字说明",   // 表单显示名
 						text:"",// 默认值
 						href:"", // 默认值
@@ -75,7 +75,7 @@ define([
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
-                        is_show:true,  // 可视化是否显示 undefined取值editable
+                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
                         name:"按钮",   // 表单显示名
                         text:"更多照片", // 默认值
                         href:"", // 默认值
