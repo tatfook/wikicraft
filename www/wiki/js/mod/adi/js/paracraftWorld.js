@@ -168,11 +168,20 @@ define([
 						text     : config.wikiModPath + 'adi/assets/imgs/paracraftWorld.png',
 						require  : true,
 					},
+					ceshitwo : {
+						is_leaf  : true,
+						type     : "link",
+						editable : true,
+						is_show  : true,
+						name     : "456",
+						text     : config.wikiModPath + 'adi/assets/imgs/down.png',
+						require  : true,
+					},
 				}
             }
 
 			wikiblock.init(initObj);
-
+			console.log($scope.params.ceshitwo.text);
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 

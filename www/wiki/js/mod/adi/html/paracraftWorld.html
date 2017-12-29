@@ -91,15 +91,25 @@
         line-height: 30px;
     }
     /* style2 css */
+    .world4D{
+        width: 1190px;
+        margin: 0 auto;
+    }
     .world4D .world-head .world-div1 .worldName , .world4D .world-head .world-div1 .useName{
         float: left;
         margin-right: 30px;
     }
     .world4D .world-head .world-div2 .worldBtn{
         float:right;
-        width: 90px;
+        width: 150px;
         margin-left: 30px;
+        text-align: center;
     } 
+    .world4D .world-head .world-div2 .worldBtn img {
+        float: left;
+        margin-top:6.2px;
+        margin-left: 15px;
+    }
     .world4D .world-body .world-img2 , .world4D .world-body .world-text{
         float: left;
     }
@@ -107,7 +117,13 @@
         margin-left: 30px;
         font-size: 18px;
     }
-
+    .world-btn2{
+        text-align: center;
+    }
+    .world-btn2 span{
+        display: inline-block;
+        margin-top: 1px
+    }
     /* @media css */
     @media (max-width: 992px) {
         .world3D .inner{
@@ -157,8 +173,13 @@
                     <h2 class="useName">作者：李珊珊</h2>
                 </div>
                 <div class="world-div2">
-                    <div class="worldBtn"><a class="btn btn-block btn-default" href="{{params.worldUrl.text}}" target="_blank">下载</a></div>
-                    <div class="worldBtn"><a class="btn btn-block btn-primary" ng-click="checkEngine()">进入</a></div>
+                    <div class="worldBtn"><a class="btn btn-block btn-primary world-btn2" ng-click="checkEngine()">进入</a></div>
+                    <div class="worldBtn">
+                        <img src="{{params.ceshitwo.text}}">
+                        <a class="btn btn-block btn-default world-btn2" href="{{params.worldUrl.text}}" target="_blank">
+                            下载
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="world-body clearfix">
@@ -179,6 +200,11 @@
                         为对方擦去嘴角的油渍。风景如何，其实并不重要。</span>
                 </div>
             </div>
+        </div>
+    </div>
+    <div ng-if='params.design.text=="style2"'>
+        <div class="world5D">
+
         </div>
     </div>
 </div>
