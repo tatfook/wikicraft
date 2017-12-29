@@ -35,7 +35,8 @@ define([
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
-                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
+                        is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
                         name:"picture",   // 表单显示名
                         text:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
                         href:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
@@ -65,7 +66,8 @@ define([
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
-						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
+						is_card_show:true,  // 是否在adi中显示编辑
+            is_mod_hide:false,  // 在模块中是否隐藏
 						name:"文字说明",   // 表单显示名
 						text:"",// 默认值
 						href:"", // 默认值
@@ -75,7 +77,8 @@ define([
                         is_leaf: true, // 叶子对象默认填true
                         type:"link",   // 地段类型
                         editable:true, // 是否可以编辑
-                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
+                        is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
                         name:"按钮",   // 表单显示名
                         text:"更多照片", // 默认值
                         href:"", // 默认值

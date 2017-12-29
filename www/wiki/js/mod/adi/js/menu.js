@@ -29,7 +29,7 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                         is_leaf: true,
                         type: "menu",
                         editable: true,
-                        is_show: true,
+                        is_mod_hide: false,
                         name: "菜单",
                         require: true,
                         text: [

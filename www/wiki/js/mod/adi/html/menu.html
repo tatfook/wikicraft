@@ -78,7 +78,7 @@
 </style>
 
 <div ng-controller="menuController">
-	<div ng-if="params.design.text == 'left' && params.menu.is_show">
+	<div ng-if="params.design.text == 'left' && !params.menu.is_mod_hide">
 		<div class="menu">
             <ul class="clearfix">
                 <li ng-repeat="item in params.menu.text">
@@ -92,7 +92,7 @@
             </ul>
 		</div>
 	</div>
-	<div ng-if="params.design.text == 'right'  && params.menu.is_show">
+	<div ng-if="params.design.text == 'right'  && !params.menu.is_mod_hide">
         <div class="menu menu-right">
             <ul class="clearfix">
                 <li ng-repeat="item in params.menu.text">
