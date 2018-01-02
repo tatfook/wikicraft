@@ -167,6 +167,15 @@ define([
 						text         : "",
 						require      : true,
 					},
+					btnLogo:{
+						is_leaf      : true,
+						type         : "link",
+						editable     : false,
+						is_mod_show  : true,
+						name         : "世界名称",
+						text         : config.wikiModPath + 'adi/assets/imgs/down.png',
+						require      : true,
+					},
 				}
             }
 
