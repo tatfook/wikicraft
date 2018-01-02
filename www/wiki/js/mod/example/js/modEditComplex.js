@@ -43,7 +43,16 @@ define([
 						text:"http://localhost:8099/wiki/js/mod/adi/assets/imgs/titleMod.png", // 默认值
 						href:"http://www.baidu.com", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
-					},
+                    },
+                    board:{
+                        is_leaf: true,
+                        type: "diagram",
+                        editable: true,
+                        is_card_show:true,  // 是否在adi中显示编辑
+                        is_mod_hide:false,  // 在模块中是否隐藏
+                        name: "绘图板",
+                        require: true
+                    },
                     multiText:{
                         is_leaf: true,
                         type:"multiText",

@@ -462,6 +462,10 @@
                             <div ng-if="data.type == 'menu'" class="center-center">
                                 <button class="btn menu-btn" ng-click="openMenuEditor(data.data)">打开菜单编辑器</button>
                             </div>
+                            <!-- 绘图板编辑 -->
+                            <div ng-if="data.type == 'diagram'" class="center-center">
+                                <button class="btn menu-btn" ng-click="openBoard(data.data)">打开绘图板</button>
+                            </div>
                             <!-- 多行文本 -->
                             <div ng-if="data.type == 'multiText'">
                                 <div class="card-input-box">
