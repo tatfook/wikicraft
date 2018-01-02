@@ -31,11 +31,11 @@ case $ENV_TYPE in
     PORT=8900
     ;;
   stage)
-    ROOT_DIR=stage
+    ROOT_DIR=www
     PORT=8099
     ;;
   release)
-    ROOT_DIR=rls
+    ROOT_DIR=test
     PORT=8088
     ;;
   prod)

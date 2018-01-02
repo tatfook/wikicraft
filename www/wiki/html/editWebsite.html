@@ -283,13 +283,13 @@
                             <p class="info-msg break-all">keepwork.com/{{user.username}}/{{website.name}}</p>
                         </div>
                     </div>
-                    <div class="form-group" ng-hide="!defaultPageErrMsg">
+                    <!-- <div class="form-group" ng-hide="!defaultPageErrMsg">
                         <div class="col-sm-6 col-sm-offset-2">
                             <span style="color: red;margin-left:3%">{{ defaultPageErrMsg }}</span>
                         </div>
                     </div>
                     <div class="form-group form-group-lg">
-                        <label class="col-sm-2 control-label">默认首页：</label>
+                        <label class="col-sm-2 control-label">{{ "默认首页：" | translate }}</label>
                         <div class="col-sm-10">
                                 <p class="info-msg break-all">keepwork.com/{{user.username}}/{{website.name}}/</p>
                         </div>
@@ -297,9 +297,9 @@
                             <div  class="col-sm-8 add-label">
                                 <input type="text" class="form-control" ng-model="website.defaultPage">
                             </div>
-                            <div class="col-sm-4 btn btn-primary" ng-disabled="website.defaultPage == 'index'" ng-click="website.defaultPage = 'index'">恢复默认</div>
+                            <div class="col-sm-4 btn btn-primary" ng-disabled="website.defaultPage == 'index'" ng-click="website.defaultPage = 'index'">{{ "恢复默认" | translate }}</div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group form-group-lg">
                         <label for="intro" class="col-sm-2 control-label" translate="网站介绍："></label>
                         <div class="col-sm-5">
@@ -313,7 +313,7 @@
                                 <input id="tagInput" type="text" class="col-sm-8 form-control" ng-model="tag" ng-hide="tags.length >= 20">
                                 <input type="text" placeholder="最多支持20个标签" class="col-sm-8 form-control" disabled ng-show="tags.length >= 20">
                             </div>
-                            <div class="col-sm-4 btn btn-primary" ng-disabled="tags.length >= 20" ng-click="addTag(tag)">添加</div>
+                            <div class="col-sm-4 btn btn-primary" ng-disabled="tags.length >= 20" ng-click="addTag(tag)">{{ "添加" | translate }}</div>
                             <div class="col-sm-12 labels-box">
                                 <div ng-repeat="tag in tags" class="label-selected">{{tag}}<span ng-click="removeTag(tag)" class="glyphicon glyphicon-remove text-danger"></span></div>
                             </div>
@@ -370,7 +370,7 @@
                                 <input type="text" class="form-control" id="cname" ng-model="domain" ng-disabled="!user.vipInfo.isValid">
                             </div>
                             <div class="btn btn-primary btn-add-cname col-sm-4" ng-disabled="!user.vipInfo.isValid || !domain" ng-click="addDomain()" translate="添加"></div>
-                            <div class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能设置cname <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></div>
+                            <div class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">{{ "* 您还不是VIP，不能设置cname" | translate }} <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></div>
                             <div class="col-sm-12 cname-list">
                                 <div ng-show="!x.isDelete" ng-repeat="x in domainList" class="">
                                     <span>{{x.domain}}</span>
@@ -392,7 +392,7 @@
                 <div class="change-type">
                     <h4 class="light-title" translate="项目类型："></h4>
                     <div class="form-group clearfix">
-                        <p class="text-danger" ng-hide="user.vipInfo.isValid">* 您还不是VIP，不能更改项目类型 <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></p>
+                        <p class="text-danger" ng-hide="user.vipInfo.isValid">{{ "* 您还不是VIP，不能更改项目类型" | translate }} <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></p>
                         <div class="col-sm-12">
                             <h4 class="light-title"><input id="publicItem" type="radio" ng-model="changeType" value="public" ng-disabled="!user.vipInfo.isValid" ng-change="changeSiteType()" name="siteType"> <label for="publicItem" translate="公有项目"></label></h4>
                             <p translate="默认允许大多数人访问，即使他们没有登录。可以为部分人设定编辑权限，使他们成为了参与编辑的管理员，还可以为部分人设定拒绝权限，则将他们加入黑名单（如果他们登录的话）。"></p>
@@ -526,7 +526,7 @@
                     <h4 class="modal-title" id="exampleModalLabel" translate="项目类型"></h4>
                 </div>
                 <div class="modal-body">
-                    <h3><span class="icon">!</span>确定设为{{changeType=="private" ? "私有项目" : "公有项目"}}？</h3>
+                    <h3><span class="icon">!</span>确定设为{{changeType=="private" ? translate("私有项目") : translate("公有项目")}}？</h3>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger" ng-click="changeSiteType(true)" translate="确 定"></button>

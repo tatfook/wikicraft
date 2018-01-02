@@ -15,7 +15,8 @@ set -ex
 TEMP_DIR=temp_www_build
 BUILD_DIR=www_build
 DEV_DIR=www
-STAGE_DIR=stage
+STAGE_DIR=www
+RELEASE_DIR=test
 PROD_DIR=rls
 
 clean_dir() {
@@ -33,7 +34,9 @@ clean_dir $TEMP_DIR
 
 clean_dir $DEV_DIR
 clean_dir $STAGE_DIR
+clean_dir $RELEASE_DIR
 clean_dir $PROD_DIR
 ln -s $BUILD_DIR $DEV_DIR
 ln -s $BUILD_DIR $STAGE_DIR
+ln -s $BUILD_DIR $RELEASE_DIR
 ln -s $BUILD_DIR $PROD_DIR
